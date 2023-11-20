@@ -9,7 +9,7 @@ from enum import Enum
 from typing import Callable, Dict, Iterator, List, Optional
 
 from ..errors import OperationFailed
-from ._internal import Wait, _enum, _from_dict, _repeated
+from ._internal import Wait, _enum, _from_dict, _repeated_dict, _repeated_enum
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -153,7 +153,7 @@ class CreateCustomerManagedKeyRequest:
     def from_dict(cls, d: Dict[str, any]) -> 'CreateCustomerManagedKeyRequest':
         return cls(aws_key_info=_from_dict(d, 'aws_key_info', CreateAwsKeyInfo),
                    gcp_key_info=_from_dict(d, 'gcp_key_info', CreateGcpKeyInfo),
-                   use_cases=d.get('use_cases', None))
+                   use_cases=_repeated_enum(d, 'use_cases', KeyUseCase))
 
 
 @dataclass
@@ -379,7 +379,7 @@ class CustomerManagedKey:
                    creation_time=d.get('creation_time', None),
                    customer_managed_key_id=d.get('customer_managed_key_id', None),
                    gcp_key_info=_from_dict(d, 'gcp_key_info', GcpKeyInfo),
-                   use_cases=d.get('use_cases', None))
+                   use_cases=_repeated_enum(d, 'use_cases', KeyUseCase))
 
 
 class EndpointUseCase(Enum):
@@ -596,7 +596,7 @@ class Network:
     def from_dict(cls, d: Dict[str, any]) -> 'Network':
         return cls(account_id=d.get('account_id', None),
                    creation_time=d.get('creation_time', None),
-                   error_messages=_repeated(d, 'error_messages', NetworkHealth),
+                   error_messages=_repeated_dict(d, 'error_messages', NetworkHealth),
                    gcp_network_info=_from_dict(d, 'gcp_network_info', GcpNetworkInfo),
                    network_id=d.get('network_id', None),
                    network_name=d.get('network_name', None),
@@ -605,7 +605,7 @@ class Network:
                    vpc_endpoints=_from_dict(d, 'vpc_endpoints', NetworkVpcEndpoints),
                    vpc_id=d.get('vpc_id', None),
                    vpc_status=_enum(d, 'vpc_status', VpcStatus),
-                   warning_messages=_repeated(d, 'warning_messages', NetworkWarning),
+                   warning_messages=_repeated_dict(d, 'warning_messages', NetworkWarning),
                    workspace_id=d.get('workspace_id', None))
 
 

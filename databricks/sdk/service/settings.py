@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, Iterator, List, Optional
 
-from ._internal import _enum, _from_dict, _repeated
+from ._internal import _enum, _from_dict, _repeated_dict, _repeated_enum
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -290,7 +290,7 @@ class ExchangeTokenRequest:
     def from_dict(cls, d: Dict[str, any]) -> 'ExchangeTokenRequest':
         return cls(partition_id=_from_dict(d, 'partitionId', PartitionId),
                    scopes=d.get('scopes', None),
-                   token_type=d.get('tokenType', None))
+                   token_type=_repeated_enum(d, 'tokenType', TokenType))
 
 
 @dataclass
@@ -304,7 +304,7 @@ class ExchangeTokenResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ExchangeTokenResponse':
-        return cls(values=_repeated(d, 'values', ExchangeToken))
+        return cls(values=_repeated_dict(d, 'values', ExchangeToken))
 
 
 @dataclass
@@ -346,7 +346,7 @@ class GetIpAccessListsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetIpAccessListsResponse':
-        return cls(ip_access_lists=_repeated(d, 'ip_access_lists', IpAccessListInfo))
+        return cls(ip_access_lists=_repeated_dict(d, 'ip_access_lists', IpAccessListInfo))
 
 
 @dataclass
@@ -360,7 +360,7 @@ class GetTokenPermissionLevelsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetTokenPermissionLevelsResponse':
-        return cls(permission_levels=_repeated(d, 'permission_levels', TokenPermissionsDescription))
+        return cls(permission_levels=_repeated_dict(d, 'permission_levels', TokenPermissionsDescription))
 
 
 @dataclass
@@ -415,7 +415,7 @@ class ListIpAccessListResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListIpAccessListResponse':
-        return cls(ip_access_lists=_repeated(d, 'ip_access_lists', IpAccessListInfo))
+        return cls(ip_access_lists=_repeated_dict(d, 'ip_access_lists', IpAccessListInfo))
 
 
 @dataclass
@@ -429,7 +429,7 @@ class ListTokensResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListTokensResponse':
-        return cls(token_infos=_repeated(d, 'token_infos', TokenInfo))
+        return cls(token_infos=_repeated_dict(d, 'token_infos', TokenInfo))
 
 
 class ListType(Enum):
@@ -591,8 +591,8 @@ class NccEgressTargetRules:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'NccEgressTargetRules':
-        return cls(azure_private_endpoint_rules=_repeated(d, 'azure_private_endpoint_rules',
-                                                          NccAzurePrivateEndpointRule))
+        return cls(azure_private_endpoint_rules=_repeated_dict(d, 'azure_private_endpoint_rules',
+                                                               NccAzurePrivateEndpointRule))
 
 
 @dataclass
@@ -811,7 +811,7 @@ class TokenAccessControlResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'TokenAccessControlResponse':
-        return cls(all_permissions=_repeated(d, 'all_permissions', TokenPermission),
+        return cls(all_permissions=_repeated_dict(d, 'all_permissions', TokenPermission),
                    display_name=d.get('display_name', None),
                    group_name=d.get('group_name', None),
                    service_principal_name=d.get('service_principal_name', None),
@@ -892,7 +892,7 @@ class TokenPermissions:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'TokenPermissions':
-        return cls(access_control_list=_repeated(d, 'access_control_list', TokenAccessControlResponse),
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list', TokenAccessControlResponse),
                    object_id=d.get('object_id', None),
                    object_type=d.get('object_type', None))
 
@@ -926,7 +926,7 @@ class TokenPermissionsRequest:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'TokenPermissionsRequest':
-        return cls(access_control_list=_repeated(d, 'access_control_list', TokenAccessControlRequest))
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list', TokenAccessControlRequest))
 
 
 class TokenType(Enum):

@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, Iterator, List, Optional
 
-from ._internal import _enum, _from_dict, _repeated
+from ._internal import _enum, _from_dict, _repeated_dict, _repeated_enum
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -40,8 +40,8 @@ class CentralCleanRoomInfo:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CentralCleanRoomInfo':
-        return cls(clean_room_assets=_repeated(d, 'clean_room_assets', CleanRoomAssetInfo),
-                   collaborators=_repeated(d, 'collaborators', CleanRoomCollaboratorInfo),
+        return cls(clean_room_assets=_repeated_dict(d, 'clean_room_assets', CleanRoomAssetInfo),
+                   collaborators=_repeated_dict(d, 'collaborators', CleanRoomCollaboratorInfo),
                    creator=_from_dict(d, 'creator', CleanRoomCollaboratorInfo),
                    station_cloud=d.get('station_cloud', None),
                    station_region=d.get('station_region', None))
@@ -89,8 +89,8 @@ class CleanRoomCatalog:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CleanRoomCatalog':
         return cls(catalog_name=d.get('catalog_name', None),
-                   notebook_files=_repeated(d, 'notebook_files', SharedDataObject),
-                   tables=_repeated(d, 'tables', SharedDataObject))
+                   notebook_files=_repeated_dict(d, 'notebook_files', SharedDataObject),
+                   tables=_repeated_dict(d, 'tables', SharedDataObject))
 
 
 @dataclass
@@ -157,7 +157,7 @@ class CleanRoomInfo:
         return cls(comment=d.get('comment', None),
                    created_at=d.get('created_at', None),
                    created_by=d.get('created_by', None),
-                   local_catalogs=_repeated(d, 'local_catalogs', CleanRoomCatalog),
+                   local_catalogs=_repeated_dict(d, 'local_catalogs', CleanRoomCatalog),
                    name=d.get('name', None),
                    owner=d.get('owner', None),
                    remote_detailed_info=_from_dict(d, 'remote_detailed_info', CentralCleanRoomInfo),
@@ -202,7 +202,7 @@ class CleanRoomTableInfo:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CleanRoomTableInfo':
         return cls(catalog_name=d.get('catalog_name', None),
-                   columns=_repeated(d, 'columns', ColumnInfo),
+                   columns=_repeated_dict(d, 'columns', ColumnInfo),
                    full_name=d.get('full_name', None),
                    name=d.get('name', None),
                    schema_name=d.get('schema_name', None))
@@ -404,7 +404,7 @@ class GetRecipientSharePermissionsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetRecipientSharePermissionsResponse':
-        return cls(permissions_out=_repeated(d, 'permissions_out', ShareToPrivilegeAssignment))
+        return cls(permissions_out=_repeated_dict(d, 'permissions_out', ShareToPrivilegeAssignment))
 
 
 @dataclass
@@ -434,7 +434,7 @@ class ListCleanRoomsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListCleanRoomsResponse':
-        return cls(clean_rooms=_repeated(d, 'clean_rooms', CleanRoomInfo),
+        return cls(clean_rooms=_repeated_dict(d, 'clean_rooms', CleanRoomInfo),
                    next_page_token=d.get('next_page_token', None))
 
 
@@ -449,7 +449,7 @@ class ListProviderSharesResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListProviderSharesResponse':
-        return cls(shares=_repeated(d, 'shares', ProviderShare))
+        return cls(shares=_repeated_dict(d, 'shares', ProviderShare))
 
 
 @dataclass
@@ -463,7 +463,7 @@ class ListProvidersResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListProvidersResponse':
-        return cls(providers=_repeated(d, 'providers', ProviderInfo))
+        return cls(providers=_repeated_dict(d, 'providers', ProviderInfo))
 
 
 @dataclass
@@ -477,7 +477,7 @@ class ListRecipientsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListRecipientsResponse':
-        return cls(recipients=_repeated(d, 'recipients', RecipientInfo))
+        return cls(recipients=_repeated_dict(d, 'recipients', RecipientInfo))
 
 
 @dataclass
@@ -491,7 +491,7 @@ class ListSharesResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListSharesResponse':
-        return cls(shares=_repeated(d, 'shares', ShareInfo))
+        return cls(shares=_repeated_dict(d, 'shares', ShareInfo))
 
 
 @dataclass
@@ -505,7 +505,7 @@ class Partition:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'Partition':
-        return cls(values=_repeated(d, 'values', PartitionValue))
+        return cls(values=_repeated_dict(d, 'values', PartitionValue))
 
 
 @dataclass
@@ -597,7 +597,7 @@ class PrivilegeAssignment:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'PrivilegeAssignment':
-        return cls(principal=d.get('principal', None), privileges=d.get('privileges', None))
+        return cls(principal=d.get('principal', None), privileges=_repeated_enum(d, 'privileges', Privilege))
 
 
 @dataclass
@@ -729,7 +729,7 @@ class RecipientInfo:
                    properties_kvpairs=_from_dict(d, 'properties_kvpairs', SecurablePropertiesKvPairs),
                    region=d.get('region', None),
                    sharing_code=d.get('sharing_code', None),
-                   tokens=_repeated(d, 'tokens', RecipientTokenInfo),
+                   tokens=_repeated_dict(d, 'tokens', RecipientTokenInfo),
                    updated_at=d.get('updated_at', None),
                    updated_by=d.get('updated_by', None))
 
@@ -877,7 +877,7 @@ class ShareInfo:
                    created_at=d.get('created_at', None),
                    created_by=d.get('created_by', None),
                    name=d.get('name', None),
-                   objects=_repeated(d, 'objects', SharedDataObject),
+                   objects=_repeated_dict(d, 'objects', SharedDataObject),
                    owner=d.get('owner', None),
                    updated_at=d.get('updated_at', None),
                    updated_by=d.get('updated_by', None))
@@ -897,7 +897,7 @@ class ShareToPrivilegeAssignment:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ShareToPrivilegeAssignment':
-        return cls(privilege_assignments=_repeated(d, 'privilege_assignments', PrivilegeAssignment),
+        return cls(privilege_assignments=_repeated_dict(d, 'privilege_assignments', PrivilegeAssignment),
                    share_name=d.get('share_name', None))
 
 
@@ -943,7 +943,7 @@ class SharedDataObject:
                    history_data_sharing_status=_enum(d, 'history_data_sharing_status',
                                                      SharedDataObjectHistoryDataSharingStatus),
                    name=d.get('name', None),
-                   partitions=_repeated(d, 'partitions', Partition),
+                   partitions=_repeated_dict(d, 'partitions', Partition),
                    shared_as=d.get('shared_as', None),
                    start_version=d.get('start_version', None),
                    status=_enum(d, 'status', SharedDataObjectStatus),
@@ -1009,7 +1009,7 @@ class UpdateCleanRoom:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'UpdateCleanRoom':
-        return cls(catalog_updates=_repeated(d, 'catalog_updates', CleanRoomCatalogUpdate),
+        return cls(catalog_updates=_repeated_dict(d, 'catalog_updates', CleanRoomCatalogUpdate),
                    comment=d.get('comment', None),
                    name=d.get('name', None),
                    name_arg=d.get('name_arg', None),
@@ -1085,7 +1085,7 @@ class UpdateShare:
         return cls(comment=d.get('comment', None),
                    name=d.get('name', None),
                    owner=d.get('owner', None),
-                   updates=_repeated(d, 'updates', SharedDataObjectUpdate))
+                   updates=_repeated_dict(d, 'updates', SharedDataObjectUpdate))
 
 
 @dataclass
@@ -1101,7 +1101,8 @@ class UpdateSharePermissions:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'UpdateSharePermissions':
-        return cls(changes=_repeated(d, 'changes', catalog.PermissionsChange), name=d.get('name', None))
+        return cls(changes=_repeated_dict(d, 'changes', sharing.catalog.PermissionsChange),
+                   name=d.get('name', None))
 
 
 class CleanRoomsAPI:

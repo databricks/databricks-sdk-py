@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, Iterator, List, Optional
 
-from ._internal import _enum, _from_dict, _repeated
+from ._internal import _enum, _from_dict, _repeated_dict
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -255,7 +255,7 @@ class GetCredentialsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetCredentialsResponse':
-        return cls(credentials=_repeated(d, 'credentials', CredentialInfo))
+        return cls(credentials=_repeated_dict(d, 'credentials', CredentialInfo))
 
 
 @dataclass
@@ -269,7 +269,7 @@ class GetRepoPermissionLevelsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetRepoPermissionLevelsResponse':
-        return cls(permission_levels=_repeated(d, 'permission_levels', RepoPermissionsDescription))
+        return cls(permission_levels=_repeated_dict(d, 'permission_levels', RepoPermissionsDescription))
 
 
 @dataclass
@@ -299,7 +299,8 @@ class GetWorkspaceObjectPermissionLevelsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetWorkspaceObjectPermissionLevelsResponse':
-        return cls(permission_levels=_repeated(d, 'permission_levels', WorkspaceObjectPermissionsDescription))
+        return cls(
+            permission_levels=_repeated_dict(d, 'permission_levels', WorkspaceObjectPermissionsDescription))
 
 
 @dataclass
@@ -369,7 +370,7 @@ class ListAclsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListAclsResponse':
-        return cls(items=_repeated(d, 'items', AclItem))
+        return cls(items=_repeated_dict(d, 'items', AclItem))
 
 
 @dataclass
@@ -385,7 +386,7 @@ class ListReposResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListReposResponse':
-        return cls(next_page_token=d.get('next_page_token', None), repos=_repeated(d, 'repos', RepoInfo))
+        return cls(next_page_token=d.get('next_page_token', None), repos=_repeated_dict(d, 'repos', RepoInfo))
 
 
 @dataclass
@@ -399,7 +400,7 @@ class ListResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListResponse':
-        return cls(objects=_repeated(d, 'objects', ObjectInfo))
+        return cls(objects=_repeated_dict(d, 'objects', ObjectInfo))
 
 
 @dataclass
@@ -413,7 +414,7 @@ class ListScopesResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListScopesResponse':
-        return cls(scopes=_repeated(d, 'scopes', SecretScope))
+        return cls(scopes=_repeated_dict(d, 'scopes', SecretScope))
 
 
 @dataclass
@@ -427,7 +428,7 @@ class ListSecretsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListSecretsResponse':
-        return cls(secrets=_repeated(d, 'secrets', SecretMetadata))
+        return cls(secrets=_repeated_dict(d, 'secrets', SecretMetadata))
 
 
 @dataclass
@@ -576,7 +577,7 @@ class RepoAccessControlResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'RepoAccessControlResponse':
-        return cls(all_permissions=_repeated(d, 'all_permissions', RepoPermission),
+        return cls(all_permissions=_repeated_dict(d, 'all_permissions', RepoPermission),
                    display_name=d.get('display_name', None),
                    group_name=d.get('group_name', None),
                    service_principal_name=d.get('service_principal_name', None),
@@ -660,7 +661,7 @@ class RepoPermissions:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'RepoPermissions':
-        return cls(access_control_list=_repeated(d, 'access_control_list', RepoAccessControlResponse),
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list', RepoAccessControlResponse),
                    object_id=d.get('object_id', None),
                    object_type=d.get('object_type', None))
 
@@ -696,7 +697,7 @@ class RepoPermissionsRequest:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'RepoPermissionsRequest':
-        return cls(access_control_list=_repeated(d, 'access_control_list', RepoAccessControlRequest),
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list', RepoAccessControlRequest),
                    repo_id=d.get('repo_id', None))
 
 
@@ -861,7 +862,7 @@ class WorkspaceObjectAccessControlResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'WorkspaceObjectAccessControlResponse':
-        return cls(all_permissions=_repeated(d, 'all_permissions', WorkspaceObjectPermission),
+        return cls(all_permissions=_repeated_dict(d, 'all_permissions', WorkspaceObjectPermission),
                    display_name=d.get('display_name', None),
                    group_name=d.get('group_name', None),
                    service_principal_name=d.get('service_principal_name', None),
@@ -913,8 +914,8 @@ class WorkspaceObjectPermissions:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'WorkspaceObjectPermissions':
-        return cls(access_control_list=_repeated(d, 'access_control_list',
-                                                 WorkspaceObjectAccessControlResponse),
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list',
+                                                      WorkspaceObjectAccessControlResponse),
                    object_id=d.get('object_id', None),
                    object_type=d.get('object_type', None))
 
@@ -952,8 +953,8 @@ class WorkspaceObjectPermissionsRequest:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'WorkspaceObjectPermissionsRequest':
-        return cls(access_control_list=_repeated(d, 'access_control_list',
-                                                 WorkspaceObjectAccessControlRequest),
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list',
+                                                      WorkspaceObjectAccessControlRequest),
                    workspace_object_id=d.get('workspace_object_id', None),
                    workspace_object_type=d.get('workspace_object_type', None))
 

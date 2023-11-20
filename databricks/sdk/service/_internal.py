@@ -8,7 +8,7 @@ def _from_dict(d: Dict[str, any], field: str, cls: Type) -> any:
     return getattr(cls, 'from_dict')(d[field])
 
 
-def _repeated(d: Dict[str, any], field: str, cls: Type) -> any:
+def _repeated_dict(d: Dict[str, any], field: str, cls: Type) -> any:
     if field not in d or not d[field]:
         return None
     from_dict = getattr(cls, 'from_dict')
@@ -19,6 +19,12 @@ def _enum(d: Dict[str, any], field: str, cls: Type) -> any:
     if field not in d or not d[field]:
         return None
     return next((v for v in getattr(cls, '__members__').values() if v.value == d[field]), None)
+
+
+def _repeated_enum(d: Dict[str, any], field: str, cls: Type) -> any:
+    if field not in d or not d[field]:
+        return None
+    return [next((v for v in getattr(cls, '__members__').values() if v.value == e), None) for e in d[field]]
 
 
 ReturnType = TypeVar('ReturnType')

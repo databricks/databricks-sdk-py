@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
-from ._internal import _enum, _from_dict, _repeated
+from ._internal import _enum, _from_dict, _repeated_dict, _repeated_enum
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -56,7 +56,7 @@ class AccessControlResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'AccessControlResponse':
-        return cls(all_permissions=_repeated(d, 'all_permissions', Permission),
+        return cls(all_permissions=_repeated_dict(d, 'all_permissions', Permission),
                    display_name=d.get('display_name', None),
                    group_name=d.get('group_name', None),
                    service_principal_name=d.get('service_principal_name', None),
@@ -97,7 +97,7 @@ class GetAssignableRolesForResourceResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetAssignableRolesForResourceResponse':
-        return cls(roles=_repeated(d, 'roles', Role))
+        return cls(roles=_repeated_dict(d, 'roles', Role))
 
 
 @dataclass
@@ -111,7 +111,7 @@ class GetPasswordPermissionLevelsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetPasswordPermissionLevelsResponse':
-        return cls(permission_levels=_repeated(d, 'permission_levels', PasswordPermissionsDescription))
+        return cls(permission_levels=_repeated_dict(d, 'permission_levels', PasswordPermissionsDescription))
 
 
 @dataclass
@@ -125,7 +125,7 @@ class GetPermissionLevelsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetPermissionLevelsResponse':
-        return cls(permission_levels=_repeated(d, 'permission_levels', PermissionsDescription))
+        return cls(permission_levels=_repeated_dict(d, 'permission_levels', PermissionsDescription))
 
 
 class GetSortOrder(Enum):
@@ -178,14 +178,14 @@ class Group:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'Group':
         return cls(display_name=d.get('displayName', None),
-                   entitlements=_repeated(d, 'entitlements', ComplexValue),
+                   entitlements=_repeated_dict(d, 'entitlements', ComplexValue),
                    external_id=d.get('externalId', None),
-                   groups=_repeated(d, 'groups', ComplexValue),
+                   groups=_repeated_dict(d, 'groups', ComplexValue),
                    id=d.get('id', None),
-                   members=_repeated(d, 'members', ComplexValue),
+                   members=_repeated_dict(d, 'members', ComplexValue),
                    meta=_from_dict(d, 'meta', ResourceMeta),
-                   roles=_repeated(d, 'roles', ComplexValue),
-                   schemas=d.get('schemas', None))
+                   roles=_repeated_dict(d, 'roles', ComplexValue),
+                   schemas=_repeated_enum(d, 'schemas', GroupSchema))
 
 
 class GroupSchema(Enum):
@@ -213,8 +213,8 @@ class ListGroupsResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListGroupsResponse':
         return cls(items_per_page=d.get('itemsPerPage', None),
-                   resources=_repeated(d, 'Resources', Group),
-                   schemas=d.get('schemas', None),
+                   resources=_repeated_dict(d, 'Resources', Group),
+                   schemas=_repeated_enum(d, 'schemas', ListResponseSchema),
                    start_index=d.get('startIndex', None),
                    total_results=d.get('totalResults', None))
 
@@ -244,8 +244,8 @@ class ListServicePrincipalResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListServicePrincipalResponse':
         return cls(items_per_page=d.get('itemsPerPage', None),
-                   resources=_repeated(d, 'Resources', ServicePrincipal),
-                   schemas=d.get('schemas', None),
+                   resources=_repeated_dict(d, 'Resources', ServicePrincipal),
+                   schemas=_repeated_enum(d, 'schemas', ListResponseSchema),
                    start_index=d.get('startIndex', None),
                    total_results=d.get('totalResults', None))
 
@@ -276,8 +276,8 @@ class ListUsersResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListUsersResponse':
         return cls(items_per_page=d.get('itemsPerPage', None),
-                   resources=_repeated(d, 'Resources', User),
-                   schemas=d.get('schemas', None),
+                   resources=_repeated_dict(d, 'Resources', User),
+                   schemas=_repeated_enum(d, 'schemas', ListResponseSchema),
                    start_index=d.get('startIndex', None),
                    total_results=d.get('totalResults', None))
 
@@ -314,7 +314,7 @@ class ObjectPermissions:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ObjectPermissions':
-        return cls(access_control_list=_repeated(d, 'access_control_list', AccessControlResponse),
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list', AccessControlResponse),
                    object_id=d.get('object_id', None),
                    object_type=d.get('object_type', None))
 
@@ -335,8 +335,8 @@ class PartialUpdate:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'PartialUpdate':
         return cls(id=d.get('id', None),
-                   operations=_repeated(d, 'Operations', Patch),
-                   schemas=d.get('schemas', None))
+                   operations=_repeated_dict(d, 'Operations', Patch),
+                   schemas=_repeated_enum(d, 'schemas', PatchSchema))
 
 
 @dataclass
@@ -383,7 +383,7 @@ class PasswordAccessControlResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'PasswordAccessControlResponse':
-        return cls(all_permissions=_repeated(d, 'all_permissions', PasswordPermission),
+        return cls(all_permissions=_repeated_dict(d, 'all_permissions', PasswordPermission),
                    display_name=d.get('display_name', None),
                    group_name=d.get('group_name', None),
                    service_principal_name=d.get('service_principal_name', None),
@@ -432,7 +432,8 @@ class PasswordPermissions:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'PasswordPermissions':
-        return cls(access_control_list=_repeated(d, 'access_control_list', PasswordAccessControlResponse),
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list',
+                                                      PasswordAccessControlResponse),
                    object_id=d.get('object_id', None),
                    object_type=d.get('object_type', None))
 
@@ -466,7 +467,7 @@ class PasswordPermissionsRequest:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'PasswordPermissionsRequest':
-        return cls(access_control_list=_repeated(d, 'access_control_list', PasswordAccessControlRequest))
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list', PasswordAccessControlRequest))
 
 
 @dataclass
@@ -536,7 +537,7 @@ class PermissionAssignment:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'PermissionAssignment':
         return cls(error=d.get('error', None),
-                   permissions=d.get('permissions', None),
+                   permissions=_repeated_enum(d, 'permissions', WorkspacePermission),
                    principal=_from_dict(d, 'principal', PrincipalOutput))
 
 
@@ -552,7 +553,7 @@ class PermissionAssignments:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'PermissionAssignments':
-        return cls(permission_assignments=_repeated(d, 'permission_assignments', PermissionAssignment))
+        return cls(permission_assignments=_repeated_dict(d, 'permission_assignments', PermissionAssignment))
 
 
 class PermissionLevel(Enum):
@@ -625,7 +626,7 @@ class PermissionsRequest:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'PermissionsRequest':
-        return cls(access_control_list=_repeated(d, 'access_control_list', AccessControlRequest),
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list', AccessControlRequest),
                    request_object_id=d.get('request_object_id', None),
                    request_object_type=d.get('request_object_type', None))
 
@@ -701,7 +702,7 @@ class RuleSetResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'RuleSetResponse':
         return cls(etag=d.get('etag', None),
-                   grant_rules=_repeated(d, 'grant_rules', GrantRule),
+                   grant_rules=_repeated_dict(d, 'grant_rules', GrantRule),
                    name=d.get('name', None))
 
 
@@ -721,7 +722,7 @@ class RuleSetUpdateRequest:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'RuleSetUpdateRequest':
         return cls(etag=d.get('etag', None),
-                   grant_rules=_repeated(d, 'grant_rules', GrantRule),
+                   grant_rules=_repeated_dict(d, 'grant_rules', GrantRule),
                    name=d.get('name', None))
 
 
@@ -755,12 +756,12 @@ class ServicePrincipal:
         return cls(active=d.get('active', None),
                    application_id=d.get('applicationId', None),
                    display_name=d.get('displayName', None),
-                   entitlements=_repeated(d, 'entitlements', ComplexValue),
+                   entitlements=_repeated_dict(d, 'entitlements', ComplexValue),
                    external_id=d.get('externalId', None),
-                   groups=_repeated(d, 'groups', ComplexValue),
+                   groups=_repeated_dict(d, 'groups', ComplexValue),
                    id=d.get('id', None),
-                   roles=_repeated(d, 'roles', ComplexValue),
-                   schemas=d.get('schemas', None))
+                   roles=_repeated_dict(d, 'roles', ComplexValue),
+                   schemas=_repeated_enum(d, 'schemas', ServicePrincipalSchema))
 
 
 class ServicePrincipalSchema(Enum):
@@ -799,7 +800,7 @@ class UpdateWorkspaceAssignments:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'UpdateWorkspaceAssignments':
-        return cls(permissions=d.get('permissions', None),
+        return cls(permissions=_repeated_enum(d, 'permissions', WorkspacePermission),
                    principal_id=d.get('principal_id', None),
                    workspace_id=d.get('workspace_id', None))
 
@@ -837,14 +838,14 @@ class User:
     def from_dict(cls, d: Dict[str, any]) -> 'User':
         return cls(active=d.get('active', None),
                    display_name=d.get('displayName', None),
-                   emails=_repeated(d, 'emails', ComplexValue),
-                   entitlements=_repeated(d, 'entitlements', ComplexValue),
+                   emails=_repeated_dict(d, 'emails', ComplexValue),
+                   entitlements=_repeated_dict(d, 'entitlements', ComplexValue),
                    external_id=d.get('externalId', None),
-                   groups=_repeated(d, 'groups', ComplexValue),
+                   groups=_repeated_dict(d, 'groups', ComplexValue),
                    id=d.get('id', None),
                    name=_from_dict(d, 'name', Name),
-                   roles=_repeated(d, 'roles', ComplexValue),
-                   schemas=d.get('schemas', None),
+                   roles=_repeated_dict(d, 'roles', ComplexValue),
+                   schemas=_repeated_enum(d, 'schemas', UserSchema),
                    user_name=d.get('userName', None))
 
 
@@ -871,7 +872,7 @@ class WorkspacePermissions:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'WorkspacePermissions':
-        return cls(permissions=_repeated(d, 'permissions', PermissionOutput))
+        return cls(permissions=_repeated_dict(d, 'permissions', PermissionOutput))
 
 
 class AccountAccessControlAPI:
