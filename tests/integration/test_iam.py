@@ -22,6 +22,7 @@ def test_scim_get_user_as_dict(w):
     # should not throw
     user.as_dict()
 
+
 @pytest.mark.parametrize(
     "path,call",
     [("/api/2.0/preview/scim/v2/Users", lambda w: w.users.list(count=10)),
