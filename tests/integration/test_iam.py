@@ -16,6 +16,12 @@ def test_scim_error_unmarshall(w, random):
     assert 'Given filter operator is not supported' in str(exc_info.value)
 
 
+def test_scim_get_user_as_dict(w):
+    first_user = next(w.users.list())
+    user = w.users.get(first_user.id)
+    # should not throw
+    user.as_dict()
+
 @pytest.mark.parametrize(
     "path,call",
     [("/api/2.0/preview/scim/v2/Users", lambda w: w.users.list(count=10)),
