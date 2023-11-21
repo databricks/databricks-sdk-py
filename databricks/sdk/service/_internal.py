@@ -1,5 +1,5 @@
 import datetime
-from typing import Callable, Dict, Generic, Type, TypeVar
+from typing import Callable, Dict, Generic, Type, TypeVar, Optional
 
 
 def _from_dict(d: Dict[str, any], field: str, cls: Type) -> any:
@@ -15,16 +15,27 @@ def _repeated_dict(d: Dict[str, any], field: str, cls: Type) -> any:
     return [from_dict(v) for v in d[field]]
 
 
+def _get_enum_value(cls: Type, value: str) -> Optional[Type]:
+    return next((v for v in getattr(cls, '__members__').values() if v.value == value), None)
+
+
 def _enum(d: Dict[str, any], field: str, cls: Type) -> any:
+    """Unknown enum values are returned as None."""
     if field not in d or not d[field]:
         return None
-    return next((v for v in getattr(cls, '__members__').values() if v.value == d[field]), None)
+    return _get_enum_value(cls, d[field])
 
 
 def _repeated_enum(d: Dict[str, any], field: str, cls: Type) -> any:
+    """For now, unknown enum values are not included in the response."""
     if field not in d or not d[field]:
         return None
-    return [next((v for v in getattr(cls, '__members__').values() if v.value == e), None) for e in d[field]]
+    res = []
+    for e in d[field]:
+        val = _get_enum_value(cls, e)
+        if val:
+            res.append(val)
+    return res
 
 
 ReturnType = TypeVar('ReturnType')
