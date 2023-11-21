@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import BinaryIO, Dict, Iterator, List, Optional
 
-from ._internal import _enum, _from_dict, _repeated
+from ._internal import _enum, _from_dict, _repeated_dict
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -37,7 +37,7 @@ class Budget:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'Budget':
-        return cls(alerts=_repeated(d, 'alerts', BudgetAlert),
+        return cls(alerts=_repeated_dict(d, 'alerts', BudgetAlert),
                    end_date=d.get('end_date', None),
                    filter=d.get('filter', None),
                    name=d.get('name', None),
@@ -76,7 +76,7 @@ class BudgetList:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'BudgetList':
-        return cls(budgets=_repeated(d, 'budgets', BudgetWithStatus))
+        return cls(budgets=_repeated_dict(d, 'budgets', BudgetWithStatus))
 
 
 @dataclass
@@ -112,7 +112,7 @@ class BudgetWithStatus:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'BudgetWithStatus':
-        return cls(alerts=_repeated(d, 'alerts', BudgetAlert),
+        return cls(alerts=_repeated_dict(d, 'alerts', BudgetAlert),
                    budget_id=d.get('budget_id', None),
                    creation_time=d.get('creation_time', None),
                    end_date=d.get('end_date', None),
@@ -120,7 +120,7 @@ class BudgetWithStatus:
                    name=d.get('name', None),
                    period=d.get('period', None),
                    start_date=d.get('start_date', None),
-                   status_daily=_repeated(d, 'status_daily', BudgetWithStatusStatusDailyItem),
+                   status_daily=_repeated_dict(d, 'status_daily', BudgetWithStatusStatusDailyItem),
                    target_amount=d.get('target_amount', None),
                    update_time=d.get('update_time', None))
 
@@ -416,8 +416,8 @@ class WrappedLogDeliveryConfigurations:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'WrappedLogDeliveryConfigurations':
-        return cls(
-            log_delivery_configurations=_repeated(d, 'log_delivery_configurations', LogDeliveryConfiguration))
+        return cls(log_delivery_configurations=_repeated_dict(d, 'log_delivery_configurations',
+                                                              LogDeliveryConfiguration))
 
 
 class BillableUsageAPI:

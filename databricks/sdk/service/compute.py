@@ -9,7 +9,7 @@ from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
 from ..errors import OperationFailed
-from ._internal import Wait, _enum, _from_dict, _repeated
+from ._internal import Wait, _enum, _from_dict, _repeated_dict, _repeated_enum
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -204,7 +204,7 @@ class CloudProviderNodeInfo:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CloudProviderNodeInfo':
-        return cls(status=d.get('status', None))
+        return cls(status=_repeated_enum(d, 'status', CloudProviderNodeStatus))
 
 
 class CloudProviderNodeStatus(Enum):
@@ -257,7 +257,7 @@ class ClusterAccessControlResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ClusterAccessControlResponse':
-        return cls(all_permissions=_repeated(d, 'all_permissions', ClusterPermission),
+        return cls(all_permissions=_repeated_dict(d, 'all_permissions', ClusterPermission),
                    display_name=d.get('display_name', None),
                    group_name=d.get('group_name', None),
                    service_principal_name=d.get('service_principal_name', None),
@@ -340,7 +340,7 @@ class ClusterAttributes:
                    enable_elastic_disk=d.get('enable_elastic_disk', None),
                    enable_local_disk_encryption=d.get('enable_local_disk_encryption', None),
                    gcp_attributes=_from_dict(d, 'gcp_attributes', GcpAttributes),
-                   init_scripts=_repeated(d, 'init_scripts', InitScriptInfo),
+                   init_scripts=_repeated_dict(d, 'init_scripts', InitScriptInfo),
                    instance_pool_id=d.get('instance_pool_id', None),
                    node_type_id=d.get('node_type_id', None),
                    policy_id=d.get('policy_id', None),
@@ -476,9 +476,9 @@ class ClusterDetails:
                    driver_node_type_id=d.get('driver_node_type_id', None),
                    enable_elastic_disk=d.get('enable_elastic_disk', None),
                    enable_local_disk_encryption=d.get('enable_local_disk_encryption', None),
-                   executors=_repeated(d, 'executors', SparkNode),
+                   executors=_repeated_dict(d, 'executors', SparkNode),
                    gcp_attributes=_from_dict(d, 'gcp_attributes', GcpAttributes),
-                   init_scripts=_repeated(d, 'init_scripts', InitScriptInfo),
+                   init_scripts=_repeated_dict(d, 'init_scripts', InitScriptInfo),
                    instance_pool_id=d.get('instance_pool_id', None),
                    jdbc_port=d.get('jdbc_port', None),
                    last_restarted_time=d.get('last_restarted_time', None),
@@ -543,7 +543,7 @@ class ClusterLibraryStatuses:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ClusterLibraryStatuses':
         return cls(cluster_id=d.get('cluster_id', None),
-                   library_statuses=_repeated(d, 'library_statuses', LibraryFullStatus))
+                   library_statuses=_repeated_dict(d, 'library_statuses', LibraryFullStatus))
 
 
 @dataclass
@@ -606,7 +606,7 @@ class ClusterPermissions:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ClusterPermissions':
-        return cls(access_control_list=_repeated(d, 'access_control_list', ClusterAccessControlResponse),
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list', ClusterAccessControlResponse),
                    object_id=d.get('object_id', None),
                    object_type=d.get('object_type', None))
 
@@ -642,7 +642,7 @@ class ClusterPermissionsRequest:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ClusterPermissionsRequest':
-        return cls(access_control_list=_repeated(d, 'access_control_list', ClusterAccessControlRequest),
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list', ClusterAccessControlRequest),
                    cluster_id=d.get('cluster_id', None))
 
 
@@ -690,7 +690,7 @@ class ClusterPolicyAccessControlResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ClusterPolicyAccessControlResponse':
-        return cls(all_permissions=_repeated(d, 'all_permissions', ClusterPolicyPermission),
+        return cls(all_permissions=_repeated_dict(d, 'all_permissions', ClusterPolicyPermission),
                    display_name=d.get('display_name', None),
                    group_name=d.get('group_name', None),
                    service_principal_name=d.get('service_principal_name', None),
@@ -739,8 +739,8 @@ class ClusterPolicyPermissions:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ClusterPolicyPermissions':
-        return cls(access_control_list=_repeated(d, 'access_control_list',
-                                                 ClusterPolicyAccessControlResponse),
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list',
+                                                      ClusterPolicyAccessControlResponse),
                    object_id=d.get('object_id', None),
                    object_type=d.get('object_type', None))
 
@@ -776,7 +776,8 @@ class ClusterPolicyPermissionsRequest:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ClusterPolicyPermissionsRequest':
-        return cls(access_control_list=_repeated(d, 'access_control_list', ClusterPolicyAccessControlRequest),
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list',
+                                                      ClusterPolicyAccessControlRequest),
                    cluster_policy_id=d.get('cluster_policy_id', None))
 
 
@@ -894,7 +895,7 @@ class ClusterSpec:
                    enable_elastic_disk=d.get('enable_elastic_disk', None),
                    enable_local_disk_encryption=d.get('enable_local_disk_encryption', None),
                    gcp_attributes=_from_dict(d, 'gcp_attributes', GcpAttributes),
-                   init_scripts=_repeated(d, 'init_scripts', InitScriptInfo),
+                   init_scripts=_repeated_dict(d, 'init_scripts', InitScriptInfo),
                    instance_pool_id=d.get('instance_pool_id', None),
                    node_type_id=d.get('node_type_id', None),
                    num_workers=d.get('num_workers', None),
@@ -1089,7 +1090,7 @@ class CreateCluster:
                    enable_elastic_disk=d.get('enable_elastic_disk', None),
                    enable_local_disk_encryption=d.get('enable_local_disk_encryption', None),
                    gcp_attributes=_from_dict(d, 'gcp_attributes', GcpAttributes),
-                   init_scripts=_repeated(d, 'init_scripts', InitScriptInfo),
+                   init_scripts=_repeated_dict(d, 'init_scripts', InitScriptInfo),
                    instance_pool_id=d.get('instance_pool_id', None),
                    node_type_id=d.get('node_type_id', None),
                    num_workers=d.get('num_workers', None),
@@ -1182,7 +1183,7 @@ class CreateInstancePool:
                    max_capacity=d.get('max_capacity', None),
                    min_idle_instances=d.get('min_idle_instances', None),
                    node_type_id=d.get('node_type_id', None),
-                   preloaded_docker_images=_repeated(d, 'preloaded_docker_images', DockerImage),
+                   preloaded_docker_images=_repeated_dict(d, 'preloaded_docker_images', DockerImage),
                    preloaded_spark_versions=d.get('preloaded_spark_versions', None))
 
 
@@ -1226,7 +1227,7 @@ class CreatePolicy:
     def from_dict(cls, d: Dict[str, any]) -> 'CreatePolicy':
         return cls(definition=d.get('definition', None),
                    description=d.get('description', None),
-                   libraries=_repeated(d, 'libraries', Library),
+                   libraries=_repeated_dict(d, 'libraries', Library),
                    max_clusters_per_user=d.get('max_clusters_per_user', None),
                    name=d.get('name', None),
                    policy_family_definition_overrides=d.get('policy_family_definition_overrides', None),
@@ -1583,7 +1584,7 @@ class EditCluster:
                    enable_elastic_disk=d.get('enable_elastic_disk', None),
                    enable_local_disk_encryption=d.get('enable_local_disk_encryption', None),
                    gcp_attributes=_from_dict(d, 'gcp_attributes', GcpAttributes),
-                   init_scripts=_repeated(d, 'init_scripts', InitScriptInfo),
+                   init_scripts=_repeated_dict(d, 'init_scripts', InitScriptInfo),
                    instance_pool_id=d.get('instance_pool_id', None),
                    node_type_id=d.get('node_type_id', None),
                    num_workers=d.get('num_workers', None),
@@ -1658,7 +1659,7 @@ class EditPolicy:
     def from_dict(cls, d: Dict[str, any]) -> 'EditPolicy':
         return cls(definition=d.get('definition', None),
                    description=d.get('description', None),
-                   libraries=_repeated(d, 'libraries', Library),
+                   libraries=_repeated_dict(d, 'libraries', Library),
                    max_clusters_per_user=d.get('max_clusters_per_user', None),
                    name=d.get('name', None),
                    policy_family_definition_overrides=d.get('policy_family_definition_overrides', None),
@@ -1821,7 +1822,7 @@ class GetClusterPermissionLevelsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetClusterPermissionLevelsResponse':
-        return cls(permission_levels=_repeated(d, 'permission_levels', ClusterPermissionsDescription))
+        return cls(permission_levels=_repeated_dict(d, 'permission_levels', ClusterPermissionsDescription))
 
 
 @dataclass
@@ -1835,7 +1836,8 @@ class GetClusterPolicyPermissionLevelsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetClusterPolicyPermissionLevelsResponse':
-        return cls(permission_levels=_repeated(d, 'permission_levels', ClusterPolicyPermissionsDescription))
+        return cls(
+            permission_levels=_repeated_dict(d, 'permission_levels', ClusterPolicyPermissionsDescription))
 
 
 @dataclass
@@ -1863,7 +1865,7 @@ class GetEvents:
     def from_dict(cls, d: Dict[str, any]) -> 'GetEvents':
         return cls(cluster_id=d.get('cluster_id', None),
                    end_time=d.get('end_time', None),
-                   event_types=d.get('event_types', None),
+                   event_types=_repeated_enum(d, 'event_types', EventType),
                    limit=d.get('limit', None),
                    offset=d.get('offset', None),
                    order=_enum(d, 'order', GetEventsOrder),
@@ -1892,7 +1894,7 @@ class GetEventsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetEventsResponse':
-        return cls(events=_repeated(d, 'events', ClusterEvent),
+        return cls(events=_repeated_dict(d, 'events', ClusterEvent),
                    next_page=_from_dict(d, 'next_page', GetEvents),
                    total_count=d.get('total_count', None))
 
@@ -1958,7 +1960,7 @@ class GetInstancePool:
                    max_capacity=d.get('max_capacity', None),
                    min_idle_instances=d.get('min_idle_instances', None),
                    node_type_id=d.get('node_type_id', None),
-                   preloaded_docker_images=_repeated(d, 'preloaded_docker_images', DockerImage),
+                   preloaded_docker_images=_repeated_dict(d, 'preloaded_docker_images', DockerImage),
                    preloaded_spark_versions=d.get('preloaded_spark_versions', None),
                    state=_enum(d, 'state', InstancePoolState),
                    stats=_from_dict(d, 'stats', InstancePoolStats),
@@ -1976,7 +1978,8 @@ class GetInstancePoolPermissionLevelsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetInstancePoolPermissionLevelsResponse':
-        return cls(permission_levels=_repeated(d, 'permission_levels', InstancePoolPermissionsDescription))
+        return cls(
+            permission_levels=_repeated_dict(d, 'permission_levels', InstancePoolPermissionsDescription))
 
 
 @dataclass
@@ -1990,7 +1993,7 @@ class GetSparkVersionsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetSparkVersionsResponse':
-        return cls(versions=_repeated(d, 'versions', SparkVersion))
+        return cls(versions=_repeated_dict(d, 'versions', SparkVersion))
 
 
 @dataclass
@@ -2130,8 +2133,8 @@ class InitScriptEventDetails:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'InitScriptEventDetails':
-        return cls(cluster=_repeated(d, 'cluster', InitScriptInfoAndExecutionDetails),
-                   global_=_repeated(d, 'global', InitScriptInfoAndExecutionDetails),
+        return cls(cluster=_repeated_dict(d, 'cluster', InitScriptInfoAndExecutionDetails),
+                   global_=_repeated_dict(d, 'global', InitScriptInfoAndExecutionDetails),
                    reported_for_node=d.get('reported_for_node', None))
 
 
@@ -2223,7 +2226,7 @@ class InstallLibraries:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'InstallLibraries':
-        return cls(cluster_id=d.get('cluster_id', None), libraries=_repeated(d, 'libraries', Library))
+        return cls(cluster_id=d.get('cluster_id', None), libraries=_repeated_dict(d, 'libraries', Library))
 
 
 @dataclass
@@ -2270,7 +2273,7 @@ class InstancePoolAccessControlResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'InstancePoolAccessControlResponse':
-        return cls(all_permissions=_repeated(d, 'all_permissions', InstancePoolPermission),
+        return cls(all_permissions=_repeated_dict(d, 'all_permissions', InstancePoolPermission),
                    display_name=d.get('display_name', None),
                    group_name=d.get('group_name', None),
                    service_principal_name=d.get('service_principal_name', None),
@@ -2338,7 +2341,7 @@ class InstancePoolAndStats:
                    max_capacity=d.get('max_capacity', None),
                    min_idle_instances=d.get('min_idle_instances', None),
                    node_type_id=d.get('node_type_id', None),
-                   preloaded_docker_images=_repeated(d, 'preloaded_docker_images', DockerImage),
+                   preloaded_docker_images=_repeated_dict(d, 'preloaded_docker_images', DockerImage),
                    preloaded_spark_versions=d.get('preloaded_spark_versions', None),
                    state=_enum(d, 'state', InstancePoolState),
                    stats=_from_dict(d, 'stats', InstancePoolStats),
@@ -2464,7 +2467,8 @@ class InstancePoolPermissions:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'InstancePoolPermissions':
-        return cls(access_control_list=_repeated(d, 'access_control_list', InstancePoolAccessControlResponse),
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list',
+                                                      InstancePoolAccessControlResponse),
                    object_id=d.get('object_id', None),
                    object_type=d.get('object_type', None))
 
@@ -2500,7 +2504,8 @@ class InstancePoolPermissionsRequest:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'InstancePoolPermissionsRequest':
-        return cls(access_control_list=_repeated(d, 'access_control_list', InstancePoolAccessControlRequest),
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list',
+                                                      InstancePoolAccessControlRequest),
                    instance_pool_id=d.get('instance_pool_id', None))
 
 
@@ -2547,7 +2552,7 @@ class InstancePoolStatus:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'InstancePoolStatus':
-        return cls(pending_instance_errors=_repeated(d, 'pending_instance_errors', PendingInstanceError))
+        return cls(pending_instance_errors=_repeated_dict(d, 'pending_instance_errors', PendingInstanceError))
 
 
 @dataclass
@@ -2654,7 +2659,7 @@ class ListAllClusterLibraryStatusesResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListAllClusterLibraryStatusesResponse':
-        return cls(statuses=_repeated(d, 'statuses', ClusterLibraryStatuses))
+        return cls(statuses=_repeated_dict(d, 'statuses', ClusterLibraryStatuses))
 
 
 @dataclass
@@ -2684,7 +2689,7 @@ class ListClustersResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListClustersResponse':
-        return cls(clusters=_repeated(d, 'clusters', ClusterDetails))
+        return cls(clusters=_repeated_dict(d, 'clusters', ClusterDetails))
 
 
 @dataclass
@@ -2698,7 +2703,7 @@ class ListGlobalInitScriptsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListGlobalInitScriptsResponse':
-        return cls(scripts=_repeated(d, 'scripts', GlobalInitScriptDetails))
+        return cls(scripts=_repeated_dict(d, 'scripts', GlobalInitScriptDetails))
 
 
 @dataclass
@@ -2712,7 +2717,7 @@ class ListInstancePools:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListInstancePools':
-        return cls(instance_pools=_repeated(d, 'instance_pools', InstancePoolAndStats))
+        return cls(instance_pools=_repeated_dict(d, 'instance_pools', InstancePoolAndStats))
 
 
 @dataclass
@@ -2726,7 +2731,7 @@ class ListInstanceProfilesResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListInstanceProfilesResponse':
-        return cls(instance_profiles=_repeated(d, 'instance_profiles', InstanceProfile))
+        return cls(instance_profiles=_repeated_dict(d, 'instance_profiles', InstanceProfile))
 
 
 @dataclass
@@ -2740,7 +2745,7 @@ class ListNodeTypesResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListNodeTypesResponse':
-        return cls(node_types=_repeated(d, 'node_types', NodeType))
+        return cls(node_types=_repeated_dict(d, 'node_types', NodeType))
 
 
 @dataclass
@@ -2754,7 +2759,7 @@ class ListPoliciesResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListPoliciesResponse':
-        return cls(policies=_repeated(d, 'policies', Policy))
+        return cls(policies=_repeated_dict(d, 'policies', Policy))
 
 
 @dataclass
@@ -2771,7 +2776,7 @@ class ListPolicyFamiliesResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListPolicyFamiliesResponse':
         return cls(next_page_token=d.get('next_page_token', None),
-                   policy_families=_repeated(d, 'policy_families', PolicyFamily))
+                   policy_families=_repeated_dict(d, 'policy_families', PolicyFamily))
 
 
 class ListSortColumn(Enum):
@@ -3039,7 +3044,7 @@ class Policy:
                    definition=d.get('definition', None),
                    description=d.get('description', None),
                    is_default=d.get('is_default', None),
-                   libraries=_repeated(d, 'libraries', Library),
+                   libraries=_repeated_dict(d, 'libraries', Library),
                    max_clusters_per_user=d.get('max_clusters_per_user', None),
                    name=d.get('name', None),
                    policy_family_definition_overrides=d.get('policy_family_definition_overrides', None),
@@ -3458,7 +3463,7 @@ class UninstallLibraries:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'UninstallLibraries':
-        return cls(cluster_id=d.get('cluster_id', None), libraries=_repeated(d, 'libraries', Library))
+        return cls(cluster_id=d.get('cluster_id', None), libraries=_repeated_dict(d, 'libraries', Library))
 
 
 @dataclass

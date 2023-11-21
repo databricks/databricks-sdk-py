@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
-from ._internal import _enum, _from_dict, _repeated
+from ._internal import _enum, _from_dict, _repeated_dict, _repeated_enum
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -180,7 +180,7 @@ class ArtifactAllowlistInfo:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ArtifactAllowlistInfo':
-        return cls(artifact_matchers=_repeated(d, 'artifact_matchers', ArtifactMatcher),
+        return cls(artifact_matchers=_repeated_dict(d, 'artifact_matchers', ArtifactMatcher),
                    created_at=d.get('created_at', None),
                    created_by=d.get('created_by', None),
                    metastore_id=d.get('metastore_id', None))
@@ -1065,7 +1065,7 @@ class DependencyList:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'DependencyList':
-        return cls(dependencies=_repeated(d, 'dependencies', Dependency))
+        return cls(dependencies=_repeated_dict(d, 'dependencies', Dependency))
 
 
 class DisableSchemaName(Enum):
@@ -1088,7 +1088,8 @@ class EffectivePermissionsList:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'EffectivePermissionsList':
-        return cls(privilege_assignments=_repeated(d, 'privilege_assignments', EffectivePrivilegeAssignment))
+        return cls(
+            privilege_assignments=_repeated_dict(d, 'privilege_assignments', EffectivePrivilegeAssignment))
 
 
 @dataclass
@@ -1154,7 +1155,7 @@ class EffectivePrivilegeAssignment:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'EffectivePrivilegeAssignment':
         return cls(principal=d.get('principal', None),
-                   privileges=_repeated(d, 'privileges', EffectivePrivilege))
+                   privileges=_repeated_dict(d, 'privileges', EffectivePrivilege))
 
 
 class EnablePredictiveOptimization(Enum):
@@ -1467,7 +1468,7 @@ class FunctionParameterInfos:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'FunctionParameterInfos':
-        return cls(parameters=_repeated(d, 'parameters', FunctionParameterInfo))
+        return cls(parameters=_repeated_dict(d, 'parameters', FunctionParameterInfo))
 
 
 class FunctionParameterMode(Enum):
@@ -1598,7 +1599,7 @@ class ListCatalogsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListCatalogsResponse':
-        return cls(catalogs=_repeated(d, 'catalogs', CatalogInfo))
+        return cls(catalogs=_repeated_dict(d, 'catalogs', CatalogInfo))
 
 
 @dataclass
@@ -1612,7 +1613,7 @@ class ListConnectionsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListConnectionsResponse':
-        return cls(connections=_repeated(d, 'connections', ConnectionInfo))
+        return cls(connections=_repeated_dict(d, 'connections', ConnectionInfo))
 
 
 @dataclass
@@ -1627,7 +1628,7 @@ class ListExternalLocationsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListExternalLocationsResponse':
-        return cls(external_locations=_repeated(d, 'external_locations', ExternalLocationInfo))
+        return cls(external_locations=_repeated_dict(d, 'external_locations', ExternalLocationInfo))
 
 
 @dataclass
@@ -1641,7 +1642,7 @@ class ListFunctionsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListFunctionsResponse':
-        return cls(functions=_repeated(d, 'functions', FunctionInfo))
+        return cls(functions=_repeated_dict(d, 'functions', FunctionInfo))
 
 
 @dataclass
@@ -1655,7 +1656,7 @@ class ListMetastoresResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListMetastoresResponse':
-        return cls(metastores=_repeated(d, 'metastores', MetastoreInfo))
+        return cls(metastores=_repeated_dict(d, 'metastores', MetastoreInfo))
 
 
 @dataclass
@@ -1671,7 +1672,7 @@ class ListModelVersionsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListModelVersionsResponse':
-        return cls(model_versions=_repeated(d, 'model_versions', ModelVersionInfo),
+        return cls(model_versions=_repeated_dict(d, 'model_versions', ModelVersionInfo),
                    next_page_token=d.get('next_page_token', None))
 
 
@@ -1689,7 +1690,7 @@ class ListRegisteredModelsResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListRegisteredModelsResponse':
         return cls(next_page_token=d.get('next_page_token', None),
-                   registered_models=_repeated(d, 'registered_models', RegisteredModelInfo))
+                   registered_models=_repeated_dict(d, 'registered_models', RegisteredModelInfo))
 
 
 @dataclass
@@ -1703,7 +1704,7 @@ class ListSchemasResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListSchemasResponse':
-        return cls(schemas=_repeated(d, 'schemas', SchemaInfo))
+        return cls(schemas=_repeated_dict(d, 'schemas', SchemaInfo))
 
 
 @dataclass
@@ -1718,7 +1719,7 @@ class ListStorageCredentialsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListStorageCredentialsResponse':
-        return cls(storage_credentials=_repeated(d, 'storage_credentials', StorageCredentialInfo))
+        return cls(storage_credentials=_repeated_dict(d, 'storage_credentials', StorageCredentialInfo))
 
 
 @dataclass
@@ -1732,7 +1733,7 @@ class ListSystemSchemasResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListSystemSchemasResponse':
-        return cls(schemas=_repeated(d, 'schemas', SystemSchemaInfo))
+        return cls(schemas=_repeated_dict(d, 'schemas', SystemSchemaInfo))
 
 
 @dataclass
@@ -1749,7 +1750,7 @@ class ListTableSummariesResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListTableSummariesResponse':
         return cls(next_page_token=d.get('next_page_token', None),
-                   tables=_repeated(d, 'tables', TableSummary))
+                   tables=_repeated_dict(d, 'tables', TableSummary))
 
 
 @dataclass
@@ -1765,7 +1766,8 @@ class ListTablesResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListTablesResponse':
-        return cls(next_page_token=d.get('next_page_token', None), tables=_repeated(d, 'tables', TableInfo))
+        return cls(next_page_token=d.get('next_page_token', None),
+                   tables=_repeated_dict(d, 'tables', TableInfo))
 
 
 @dataclass
@@ -1779,7 +1781,7 @@ class ListVolumesResponseContent:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListVolumesResponseContent':
-        return cls(volumes=_repeated(d, 'volumes', VolumeInfo))
+        return cls(volumes=_repeated_dict(d, 'volumes', VolumeInfo))
 
 
 class MatchType(Enum):
@@ -1990,7 +1992,9 @@ class PermissionsChange:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'PermissionsChange':
-        return cls(add=d.get('add', None), principal=d.get('principal', None), remove=d.get('remove', None))
+        return cls(add=_repeated_enum(d, 'add', Privilege),
+                   principal=d.get('principal', None),
+                   remove=_repeated_enum(d, 'remove', Privilege))
 
 
 @dataclass
@@ -2005,7 +2009,7 @@ class PermissionsList:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'PermissionsList':
-        return cls(privilege_assignments=_repeated(d, 'privilege_assignments', PrivilegeAssignment))
+        return cls(privilege_assignments=_repeated_dict(d, 'privilege_assignments', PrivilegeAssignment))
 
 
 @dataclass
@@ -2082,7 +2086,7 @@ class PrivilegeAssignment:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'PrivilegeAssignment':
-        return cls(principal=d.get('principal', None), privileges=d.get('privileges', None))
+        return cls(principal=d.get('principal', None), privileges=_repeated_enum(d, 'privileges', Privilege))
 
 
 PropertiesKvPairs = Dict[str, str]
@@ -2166,7 +2170,7 @@ class RegisteredModelInfo:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'RegisteredModelInfo':
-        return cls(aliases=_repeated(d, 'aliases', RegisteredModelAlias),
+        return cls(aliases=_repeated_dict(d, 'aliases', RegisteredModelAlias),
                    catalog_name=d.get('catalog_name', None),
                    comment=d.get('comment', None),
                    created_at=d.get('created_at', None),
@@ -2282,7 +2286,7 @@ class SetArtifactAllowlist:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'SetArtifactAllowlist':
-        return cls(artifact_matchers=_repeated(d, 'artifact_matchers', ArtifactMatcher),
+        return cls(artifact_matchers=_repeated_dict(d, 'artifact_matchers', ArtifactMatcher),
                    artifact_type=_enum(d, 'artifact_type', ArtifactType))
 
 
@@ -2453,7 +2457,7 @@ class TableConstraintList:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'TableConstraintList':
-        return cls(table_constraints=_repeated(d, 'table_constraints', TableConstraint))
+        return cls(table_constraints=_repeated_dict(d, 'table_constraints', TableConstraint))
 
 
 @dataclass
@@ -2550,7 +2554,7 @@ class TableInfo:
     def from_dict(cls, d: Dict[str, any]) -> 'TableInfo':
         return cls(access_point=d.get('access_point', None),
                    catalog_name=d.get('catalog_name', None),
-                   columns=_repeated(d, 'columns', ColumnInfo),
+                   columns=_repeated_dict(d, 'columns', ColumnInfo),
                    comment=d.get('comment', None),
                    created_at=d.get('created_at', None),
                    created_by=d.get('created_by', None),
@@ -2833,7 +2837,7 @@ class UpdatePermissions:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'UpdatePermissions':
-        return cls(changes=_repeated(d, 'changes', PermissionsChange),
+        return cls(changes=_repeated_dict(d, 'changes', PermissionsChange),
                    full_name=d.get('full_name', None),
                    securable_type=_enum(d, 'securable_type', SecurableType))
 
@@ -3026,8 +3030,8 @@ class UpdateWorkspaceBindingsParameters:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'UpdateWorkspaceBindingsParameters':
-        return cls(add=_repeated(d, 'add', WorkspaceBinding),
-                   remove=_repeated(d, 'remove', WorkspaceBinding),
+        return cls(add=_repeated_dict(d, 'add', WorkspaceBinding),
+                   remove=_repeated_dict(d, 'remove', WorkspaceBinding),
                    securable_name=d.get('securable_name', None),
                    securable_type=d.get('securable_type', None))
 
@@ -3083,7 +3087,7 @@ class ValidateStorageCredentialResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ValidateStorageCredentialResponse':
-        return cls(is_dir=d.get('isDir', None), results=_repeated(d, 'results', ValidationResult))
+        return cls(is_dir=d.get('isDir', None), results=_repeated_dict(d, 'results', ValidationResult))
 
 
 @dataclass
@@ -3224,7 +3228,7 @@ class WorkspaceBindingsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'WorkspaceBindingsResponse':
-        return cls(bindings=_repeated(d, 'bindings', WorkspaceBinding))
+        return cls(bindings=_repeated_dict(d, 'bindings', WorkspaceBinding))
 
 
 class AccountMetastoreAssignmentsAPI:

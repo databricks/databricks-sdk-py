@@ -4,7 +4,7 @@ import logging
 from dataclasses import dataclass
 from typing import Dict, Iterator, List, Optional
 
-from ._internal import _from_dict, _repeated
+from ._internal import _from_dict, _repeated_dict
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -157,7 +157,7 @@ class GetCustomAppIntegrationsOutput:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetCustomAppIntegrationsOutput':
-        return cls(apps=_repeated(d, 'apps', GetCustomAppIntegrationOutput))
+        return cls(apps=_repeated_dict(d, 'apps', GetCustomAppIntegrationOutput))
 
 
 @dataclass
@@ -194,7 +194,7 @@ class GetPublishedAppIntegrationsOutput:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetPublishedAppIntegrationsOutput':
-        return cls(apps=_repeated(d, 'apps', GetPublishedAppIntegrationOutput))
+        return cls(apps=_repeated_dict(d, 'apps', GetPublishedAppIntegrationOutput))
 
 
 @dataclass
@@ -210,7 +210,7 @@ class GetPublishedAppsOutput:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetPublishedAppsOutput':
-        return cls(apps=_repeated(d, 'apps', PublishedAppOutput),
+        return cls(apps=_repeated_dict(d, 'apps', PublishedAppOutput),
                    next_page_token=d.get('next_page_token', None))
 
 
@@ -225,7 +225,7 @@ class ListServicePrincipalSecretsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListServicePrincipalSecretsResponse':
-        return cls(secrets=_repeated(d, 'secrets', SecretInfo))
+        return cls(secrets=_repeated_dict(d, 'secrets', SecretInfo))
 
 
 @dataclass

@@ -9,7 +9,7 @@ from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
 from ..errors import OperationFailed
-from ._internal import Wait, _enum, _from_dict, _repeated
+from ._internal import Wait, _enum, _from_dict, _repeated_dict
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -125,7 +125,7 @@ class CreateServingEndpoint:
     def from_dict(cls, d: Dict[str, any]) -> 'CreateServingEndpoint':
         return cls(config=_from_dict(d, 'config', EndpointCoreConfigInput),
                    name=d.get('name', None),
-                   tags=_repeated(d, 'tags', EndpointTag))
+                   tags=_repeated_dict(d, 'tags', EndpointTag))
 
 
 @dataclass
@@ -224,7 +224,7 @@ class EndpointCoreConfigInput:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'EndpointCoreConfigInput':
         return cls(name=d.get('name', None),
-                   served_models=_repeated(d, 'served_models', ServedModelInput),
+                   served_models=_repeated_dict(d, 'served_models', ServedModelInput),
                    traffic_config=_from_dict(d, 'traffic_config', TrafficConfig))
 
 
@@ -244,7 +244,7 @@ class EndpointCoreConfigOutput:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'EndpointCoreConfigOutput':
         return cls(config_version=d.get('config_version', None),
-                   served_models=_repeated(d, 'served_models', ServedModelOutput),
+                   served_models=_repeated_dict(d, 'served_models', ServedModelOutput),
                    traffic_config=_from_dict(d, 'traffic_config', TrafficConfig))
 
 
@@ -259,7 +259,7 @@ class EndpointCoreConfigSummary:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'EndpointCoreConfigSummary':
-        return cls(served_models=_repeated(d, 'served_models', ServedModelSpec))
+        return cls(served_models=_repeated_dict(d, 'served_models', ServedModelSpec))
 
 
 @dataclass
@@ -280,7 +280,7 @@ class EndpointPendingConfig:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'EndpointPendingConfig':
         return cls(config_version=d.get('config_version', None),
-                   served_models=_repeated(d, 'served_models', ServedModelOutput),
+                   served_models=_repeated_dict(d, 'served_models', ServedModelOutput),
                    start_time=d.get('start_time', None),
                    traffic_config=_from_dict(d, 'traffic_config', TrafficConfig))
 
@@ -355,9 +355,9 @@ class GetAppResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetAppResponse':
-        return cls(current_services=_repeated(d, 'current_services', AppServiceStatus),
+        return cls(current_services=_repeated_dict(d, 'current_services', AppServiceStatus),
                    name=d.get('name', None),
-                   pending_services=_repeated(d, 'pending_services', AppServiceStatus),
+                   pending_services=_repeated_dict(d, 'pending_services', AppServiceStatus),
                    url=d.get('url', None))
 
 
@@ -372,7 +372,8 @@ class GetServingEndpointPermissionLevelsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetServingEndpointPermissionLevelsResponse':
-        return cls(permission_levels=_repeated(d, 'permission_levels', ServingEndpointPermissionsDescription))
+        return cls(
+            permission_levels=_repeated_dict(d, 'permission_levels', ServingEndpointPermissionsDescription))
 
 
 @dataclass
@@ -386,7 +387,7 @@ class ListAppEventsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListAppEventsResponse':
-        return cls(events=_repeated(d, 'events', AppEvents))
+        return cls(events=_repeated_dict(d, 'events', AppEvents))
 
 
 @dataclass
@@ -416,7 +417,7 @@ class ListEndpointsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListEndpointsResponse':
-        return cls(endpoints=_repeated(d, 'endpoints', ServingEndpoint))
+        return cls(endpoints=_repeated_dict(d, 'endpoints', ServingEndpoint))
 
 
 @dataclass
@@ -434,7 +435,7 @@ class PatchServingEndpointTags:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'PatchServingEndpointTags':
-        return cls(add_tags=_repeated(d, 'add_tags', EndpointTag),
+        return cls(add_tags=_repeated_dict(d, 'add_tags', EndpointTag),
                    delete_tags=d.get('delete_tags', None),
                    name=d.get('name', None))
 
@@ -678,7 +679,7 @@ class ServingEndpoint:
                    last_updated_timestamp=d.get('last_updated_timestamp', None),
                    name=d.get('name', None),
                    state=_from_dict(d, 'state', EndpointState),
-                   tags=_repeated(d, 'tags', EndpointTag))
+                   tags=_repeated_dict(d, 'tags', EndpointTag))
 
 
 @dataclass
@@ -725,7 +726,7 @@ class ServingEndpointAccessControlResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ServingEndpointAccessControlResponse':
-        return cls(all_permissions=_repeated(d, 'all_permissions', ServingEndpointPermission),
+        return cls(all_permissions=_repeated_dict(d, 'all_permissions', ServingEndpointPermission),
                    display_name=d.get('display_name', None),
                    group_name=d.get('group_name', None),
                    service_principal_name=d.get('service_principal_name', None),
@@ -771,7 +772,7 @@ class ServingEndpointDetailed:
                    pending_config=_from_dict(d, 'pending_config', EndpointPendingConfig),
                    permission_level=_enum(d, 'permission_level', ServingEndpointDetailedPermissionLevel),
                    state=_from_dict(d, 'state', EndpointState),
-                   tags=_repeated(d, 'tags', EndpointTag))
+                   tags=_repeated_dict(d, 'tags', EndpointTag))
 
 
 class ServingEndpointDetailedPermissionLevel(Enum):
@@ -826,8 +827,8 @@ class ServingEndpointPermissions:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ServingEndpointPermissions':
-        return cls(access_control_list=_repeated(d, 'access_control_list',
-                                                 ServingEndpointAccessControlResponse),
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list',
+                                                      ServingEndpointAccessControlResponse),
                    object_id=d.get('object_id', None),
                    object_type=d.get('object_type', None))
 
@@ -863,8 +864,8 @@ class ServingEndpointPermissionsRequest:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ServingEndpointPermissionsRequest':
-        return cls(access_control_list=_repeated(d, 'access_control_list',
-                                                 ServingEndpointAccessControlRequest),
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list',
+                                                      ServingEndpointAccessControlRequest),
                    serving_endpoint_id=d.get('serving_endpoint_id', None))
 
 
@@ -879,7 +880,7 @@ class TrafficConfig:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'TrafficConfig':
-        return cls(routes=_repeated(d, 'routes', Route))
+        return cls(routes=_repeated_dict(d, 'routes', Route))
 
 
 class AppsAPI:

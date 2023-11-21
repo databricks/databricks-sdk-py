@@ -4,7 +4,7 @@ import logging
 from dataclasses import dataclass
 from typing import BinaryIO, Dict, Iterator, List, Optional
 
-from ._internal import _repeated
+from ._internal import _repeated_dict
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -126,7 +126,7 @@ class ListStatusResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListStatusResponse':
-        return cls(files=_repeated(d, 'files', FileInfo))
+        return cls(files=_repeated_dict(d, 'files', FileInfo))
 
 
 @dataclass

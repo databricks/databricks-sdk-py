@@ -9,7 +9,7 @@ from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
 from ..errors import OperationFailed
-from ._internal import Wait, _enum, _from_dict, _repeated
+from ._internal import Wait, _enum, _from_dict, _repeated_dict
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -68,7 +68,7 @@ class CreatePipeline:
         return cls(allow_duplicate_names=d.get('allow_duplicate_names', None),
                    catalog=d.get('catalog', None),
                    channel=d.get('channel', None),
-                   clusters=_repeated(d, 'clusters', PipelineCluster),
+                   clusters=_repeated_dict(d, 'clusters', PipelineCluster),
                    configuration=d.get('configuration', None),
                    continuous=d.get('continuous', None),
                    development=d.get('development', None),
@@ -76,9 +76,9 @@ class CreatePipeline:
                    edition=d.get('edition', None),
                    filters=_from_dict(d, 'filters', Filters),
                    id=d.get('id', None),
-                   libraries=_repeated(d, 'libraries', PipelineLibrary),
+                   libraries=_repeated_dict(d, 'libraries', PipelineLibrary),
                    name=d.get('name', None),
-                   notifications=_repeated(d, 'notifications', Notifications),
+                   notifications=_repeated_dict(d, 'notifications', Notifications),
                    photon=d.get('photon', None),
                    serverless=d.get('serverless', None),
                    storage=d.get('storage', None),
@@ -189,7 +189,7 @@ class EditPipeline:
         return cls(allow_duplicate_names=d.get('allow_duplicate_names', None),
                    catalog=d.get('catalog', None),
                    channel=d.get('channel', None),
-                   clusters=_repeated(d, 'clusters', PipelineCluster),
+                   clusters=_repeated_dict(d, 'clusters', PipelineCluster),
                    configuration=d.get('configuration', None),
                    continuous=d.get('continuous', None),
                    development=d.get('development', None),
@@ -197,9 +197,9 @@ class EditPipeline:
                    expected_last_modified=d.get('expected_last_modified', None),
                    filters=_from_dict(d, 'filters', Filters),
                    id=d.get('id', None),
-                   libraries=_repeated(d, 'libraries', PipelineLibrary),
+                   libraries=_repeated_dict(d, 'libraries', PipelineLibrary),
                    name=d.get('name', None),
-                   notifications=_repeated(d, 'notifications', Notifications),
+                   notifications=_repeated_dict(d, 'notifications', Notifications),
                    photon=d.get('photon', None),
                    pipeline_id=d.get('pipeline_id', None),
                    serverless=d.get('serverless', None),
@@ -221,7 +221,8 @@ class ErrorDetail:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ErrorDetail':
-        return cls(exceptions=_repeated(d, 'exceptions', SerializedException), fatal=d.get('fatal', None))
+        return cls(exceptions=_repeated_dict(d, 'exceptions', SerializedException),
+                   fatal=d.get('fatal', None))
 
 
 class EventLevel(Enum):
@@ -274,7 +275,7 @@ class GetPipelinePermissionLevelsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetPipelinePermissionLevelsResponse':
-        return cls(permission_levels=_repeated(d, 'permission_levels', PipelinePermissionsDescription))
+        return cls(permission_levels=_repeated_dict(d, 'permission_levels', PipelinePermissionsDescription))
 
 
 @dataclass
@@ -313,7 +314,7 @@ class GetPipelineResponse:
                    creator_user_name=d.get('creator_user_name', None),
                    health=_enum(d, 'health', GetPipelineResponseHealth),
                    last_modified=d.get('last_modified', None),
-                   latest_updates=_repeated(d, 'latest_updates', UpdateStateInfo),
+                   latest_updates=_repeated_dict(d, 'latest_updates', UpdateStateInfo),
                    name=d.get('name', None),
                    pipeline_id=d.get('pipeline_id', None),
                    run_as_user_name=d.get('run_as_user_name', None),
@@ -357,7 +358,7 @@ class ListPipelineEventsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListPipelineEventsResponse':
-        return cls(events=_repeated(d, 'events', PipelineEvent),
+        return cls(events=_repeated_dict(d, 'events', PipelineEvent),
                    next_page_token=d.get('next_page_token', None),
                    prev_page_token=d.get('prev_page_token', None))
 
@@ -376,7 +377,7 @@ class ListPipelinesResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListPipelinesResponse':
         return cls(next_page_token=d.get('next_page_token', None),
-                   statuses=_repeated(d, 'statuses', PipelineStateInfo))
+                   statuses=_repeated_dict(d, 'statuses', PipelineStateInfo))
 
 
 @dataclass
@@ -396,7 +397,7 @@ class ListUpdatesResponse:
     def from_dict(cls, d: Dict[str, any]) -> 'ListUpdatesResponse':
         return cls(next_page_token=d.get('next_page_token', None),
                    prev_page_token=d.get('prev_page_token', None),
-                   updates=_repeated(d, 'updates', UpdateInfo))
+                   updates=_repeated_dict(d, 'updates', UpdateInfo))
 
 
 class MaturityLevel(Enum):
@@ -543,7 +544,7 @@ class PipelineAccessControlResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'PipelineAccessControlResponse':
-        return cls(all_permissions=_repeated(d, 'all_permissions', PipelinePermission),
+        return cls(all_permissions=_repeated_dict(d, 'all_permissions', PipelinePermission),
                    display_name=d.get('display_name', None),
                    group_name=d.get('group_name', None),
                    service_principal_name=d.get('service_principal_name', None),
@@ -720,7 +721,8 @@ class PipelinePermissions:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'PipelinePermissions':
-        return cls(access_control_list=_repeated(d, 'access_control_list', PipelineAccessControlResponse),
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list',
+                                                      PipelineAccessControlResponse),
                    object_id=d.get('object_id', None),
                    object_type=d.get('object_type', None))
 
@@ -756,7 +758,7 @@ class PipelinePermissionsRequest:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'PipelinePermissionsRequest':
-        return cls(access_control_list=_repeated(d, 'access_control_list', PipelineAccessControlRequest),
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list', PipelineAccessControlRequest),
                    pipeline_id=d.get('pipeline_id', None))
 
 
@@ -805,16 +807,16 @@ class PipelineSpec:
     def from_dict(cls, d: Dict[str, any]) -> 'PipelineSpec':
         return cls(catalog=d.get('catalog', None),
                    channel=d.get('channel', None),
-                   clusters=_repeated(d, 'clusters', PipelineCluster),
+                   clusters=_repeated_dict(d, 'clusters', PipelineCluster),
                    configuration=d.get('configuration', None),
                    continuous=d.get('continuous', None),
                    development=d.get('development', None),
                    edition=d.get('edition', None),
                    filters=_from_dict(d, 'filters', Filters),
                    id=d.get('id', None),
-                   libraries=_repeated(d, 'libraries', PipelineLibrary),
+                   libraries=_repeated_dict(d, 'libraries', PipelineLibrary),
                    name=d.get('name', None),
-                   notifications=_repeated(d, 'notifications', Notifications),
+                   notifications=_repeated_dict(d, 'notifications', Notifications),
                    photon=d.get('photon', None),
                    serverless=d.get('serverless', None),
                    storage=d.get('storage', None),
@@ -861,7 +863,7 @@ class PipelineStateInfo:
     def from_dict(cls, d: Dict[str, any]) -> 'PipelineStateInfo':
         return cls(cluster_id=d.get('cluster_id', None),
                    creator_user_name=d.get('creator_user_name', None),
-                   latest_updates=_repeated(d, 'latest_updates', UpdateStateInfo),
+                   latest_updates=_repeated_dict(d, 'latest_updates', UpdateStateInfo),
                    name=d.get('name', None),
                    pipeline_id=d.get('pipeline_id', None),
                    run_as_user_name=d.get('run_as_user_name', None),
@@ -918,7 +920,7 @@ class SerializedException:
     def from_dict(cls, d: Dict[str, any]) -> 'SerializedException':
         return cls(class_name=d.get('class_name', None),
                    message=d.get('message', None),
-                   stack=_repeated(d, 'stack', StackFrame))
+                   stack=_repeated_dict(d, 'stack', StackFrame))
 
 
 @dataclass
