@@ -1,5 +1,6 @@
 import io
 import logging
+import os
 import pathlib
 import time
 from typing import Callable, List, Tuple, Union
@@ -213,6 +214,9 @@ class ResourceWithCleanup:
 
 
 def test_files_api_upload_download(ucws, random):
+    if "gcp" in os.environ["CLOUD_ENV"]:
+        # TODO: Re-enable this test for GCP once /get-status is enabled.
+        pytest.skip("Skipping this test for GCP until we enable /get-status")
     w = ucws
     schema = 'filesit-' + random()
     volume = 'filesit-' + random()
