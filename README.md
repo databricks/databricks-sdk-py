@@ -451,7 +451,7 @@ Databricks SDK for Python exposes the `oauth_client.initiate_consent()` helper t
 PKCE state verification. Application developers are expected to persist `RefreshableCredentials` in the webapp session
 and restore it via `RefreshableCredentials.from_dict(oauth_client, session['creds'])` helpers.
 
-Works for AWS and Azure. Not supported for GCP at the moment.
+Works for both AWS and Azure. Not supported for GCP at the moment.
 
 ```python
 from databricks.sdk.oauth import OAuthClient
