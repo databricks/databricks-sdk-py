@@ -1,5 +1,5 @@
 import datetime
-from typing import Callable, Dict, Generic, Type, TypeVar, Optional
+from typing import Callable, Dict, Generic, Optional, Type, TypeVar
 
 
 def _from_dict(d: Dict[str, any], field: str, cls: Type) -> any:
