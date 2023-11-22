@@ -1101,8 +1101,7 @@ class UpdateSharePermissions:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'UpdateSharePermissions':
-        return cls(changes=_repeated_dict(d, 'changes', sharing.catalog.PermissionsChange),
-                   name=d.get('name', None))
+        return cls(changes=_repeated_dict(d, 'changes', catalog.PermissionsChange), name=d.get('name', None))
 
 
 class CleanRoomsAPI:

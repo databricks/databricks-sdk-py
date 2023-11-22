@@ -45,13 +45,11 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Descriptio
 {{- define "from_dict_type" -}}
 	{{- if not .Entity }}None
 	{{- else if .Entity.ArrayValue }}
-		{{- if .Entity.ArrayValue.IsObject }}_repeated_dict(d, '{{.Name}}', {{template "type-nq" .Entity.ArrayValue}})
-		{{- else if .Entity.ArrayValue.IsExternal }}_repeated_dict(d, '{{.Name}}', {{.Entity.Package.Name}}.{{template "type-nq" .Entity.ArrayValue}})
+		{{- if (or .Entity.ArrayValue.IsObject .Entity.ArrayValue.IsExternal) }}_repeated_dict(d, '{{.Name}}', {{template "type-nq" .Entity.ArrayValue}})
 		{{- else if .Entity.ArrayValue.Enum }}_repeated_enum(d, '{{.Name}}', {{template "type-nq" .Entity.ArrayValue}})
 		{{- else}}d.get('{{.Name}}', None){{- end -}}
-	{{- else if .Entity.IsObject }}_from_dict(d, '{{.Name}}', {{.Entity.PascalName}})
-	{{- else if .Entity.IsExternal }}_from_dict(d, '{{.Name}}', {{.Entity.Package.Name}}.{{.Entity.PascalName}})
-	{{- else if .Entity.Enum }}_enum(d, '{{.Name}}', {{.Entity.PascalName}})
+	{{- else if (or .Entity.IsObject .Entity.IsExternal) }}_from_dict(d, '{{.Name}}', {{template "type-nq" .Entity}})
+	{{- else if .Entity.Enum }}_enum(d, '{{.Name}}', {{template "type-nq" .Entity}})
 	{{- else}}d.get('{{.Name}}', None){{- end -}}
 {{- end -}}
 {{- define "as_request_type" -}}
