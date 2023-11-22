@@ -9,7 +9,8 @@ from databricks.sdk.service.{{.Package.Name}} import {{.PascalName}}API{{end}}
 
 {{$args := list "host" "account_id" "username" "password" "client_id" "client_secret"
   "token" "profile" "config_file" "azure_workspace_resource_id" "azure_client_secret"
-  "azure_client_id" "azure_tenant_id" "azure_environment" "auth_type" "cluster_id"}}
+  "azure_client_id" "azure_tenant_id" "azure_environment" "auth_type" "cluster_id"
+  "google_credentials" "google_service_account" }}
 
 {{- define "api" -}}
   {{- $mixins := dict "ClustersAPI" "ClustersExt" "DbfsAPI" "DbfsExt" "WorkspaceAPI" "WorkspaceExt" -}}
