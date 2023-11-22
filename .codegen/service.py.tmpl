@@ -8,7 +8,7 @@ import time
 import random
 import logging
 from ..errors import OperationTimeout, OperationFailed
-from ._internal import _enum, _from_dict, _repeated, Wait
+from ._internal import _enum, _from_dict, _repeated_dict, _repeated_enum, Wait
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -21,18 +21,18 @@ from databricks.sdk.service import {{.Package.Name}}{{end}}
 class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Description}}
     """{{.Comment "    " 100}}"""
     {{end}}{{- range .RequiredFields | alphanumOnly}}
-    {{.SnakeName}}: {{template "type" .Entity}}{{end}}{{- range .NonRequiredFields | alphanumOnly}}
-    {{.SnakeName}}: Optional[{{template "type" .Entity}}] = None{{end}}
+    {{template "safe-snake-name" .}}: {{template "type" .Entity}}{{end}}{{- range .NonRequiredFields | alphanumOnly}}
+    {{template "safe-snake-name" .}}: Optional[{{template "type" .Entity}}] = None{{end}}
     {{if .HasJsonField -}}
     def as_dict(self) -> dict:
         body = {}
-        {{range .Fields | alphanumOnly}}if self.{{.SnakeName}}{{with .Entity.IsPrimitive}} is not None{{end}}: body['{{.Name}}'] = {{template "as_request_type" .}}
+        {{range .Fields | alphanumOnly}}if self.{{template "safe-snake-name" .}}{{with .Entity.IsPrimitive}} is not None{{end}}: body['{{.Name}}'] = {{template "as_request_type" .}}
         {{end -}}
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> '{{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}':
-        return cls({{range $i, $f := .Fields | alphanumOnly}}{{if $i}}, {{end}}{{$f.SnakeName}}={{template "from_dict_type" $f}}{{end}})
+        return cls({{range $i, $f := .Fields | alphanumOnly}}{{if $i}}, {{end}}{{template "safe-snake-name" $f}}={{template "from_dict_type" $f}}{{end}})
     {{end}}
 {{end}}
 {{else if .ArrayValue}}type {{.PascalName}} []{{template "type" .ArrayValue}}
@@ -45,21 +45,20 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Descriptio
 {{- define "from_dict_type" -}}
 	{{- if not .Entity }}None
 	{{- else if .Entity.ArrayValue }}
-		{{- if .Entity.ArrayValue.IsObject }}_repeated(d, '{{.Name}}', {{template "type-nq" .Entity.ArrayValue}})
-		{{- else if .Entity.ArrayValue.IsExternal }}_repeated(d, '{{.Name}}', {{template "type-nq" .Entity.ArrayValue}})
+		{{- if (or .Entity.ArrayValue.IsObject .Entity.ArrayValue.IsExternal) }}_repeated_dict(d, '{{.Name}}', {{template "type-nq" .Entity.ArrayValue}})
+		{{- else if .Entity.ArrayValue.Enum }}_repeated_enum(d, '{{.Name}}', {{template "type-nq" .Entity.ArrayValue}})
 		{{- else}}d.get('{{.Name}}', None){{- end -}}
-	{{- else if .Entity.IsObject }}_from_dict(d, '{{.Name}}', {{.Entity.PascalName}})
-	{{- else if .Entity.IsExternal }}_from_dict(d, '{{.Name}}', {{.Entity.Package.Name}}.{{.Entity.PascalName}})
-	{{- else if .Entity.Enum }}_enum(d, '{{.Name}}', {{.Entity.PascalName}})
+	{{- else if (or .Entity.IsObject .Entity.IsExternal) }}_from_dict(d, '{{.Name}}', {{template "type-nq" .Entity}})
+	{{- else if .Entity.Enum }}_enum(d, '{{.Name}}', {{template "type-nq" .Entity}})
 	{{- else}}d.get('{{.Name}}', None){{- end -}}
 {{- end -}}
 {{- define "as_request_type" -}}
 	{{- if not .Entity }}None # ERROR: No Type
 	{{- /* This should be done recursively, but recursion in text templates is not supported. */ -}}
-	{{- else if .Entity.ArrayValue }}[{{if or .Entity.ArrayValue.IsObject .Entity.ArrayValue.IsExternal}}v.as_dict(){{ else if .Entity.ArrayValue.Enum }}v.value{{else}}v{{end}} for v in self.{{.SnakeName}}]
-	{{- else if or .Entity.IsObject .Entity.IsExternal }}self.{{.SnakeName}}.as_dict()
-	{{- else if .Entity.Enum }}self.{{.SnakeName}}.value
-	{{- else}}self.{{.SnakeName}}{{- end -}}
+	{{- else if .Entity.ArrayValue }}[{{if or .Entity.ArrayValue.IsObject .Entity.ArrayValue.IsExternal}}v.as_dict(){{ else if .Entity.ArrayValue.Enum }}v.value{{else}}v{{end}} for v in self.{{template "safe-snake-name" .}}]
+	{{- else if or .Entity.IsObject .Entity.IsExternal }}self.{{template "safe-snake-name" .}}.as_dict()
+	{{- else if .Entity.Enum }}self.{{template "safe-snake-name" .}}.value
+	{{- else}}self.{{template "safe-snake-name" .}}{{- end -}}
 {{- end -}}
 {{- define "type" -}}
 	{{- if not . }}any # ERROR: No Type
@@ -113,7 +112,7 @@ class {{.Name}}API:{{if .Description}}
     def __init__(self, api_client):
         self._api = api_client
     {{range .Waits}}
-    def {{.SnakeName}}(self{{range .Binding}}, {{.PollField.SnakeName}}: {{template "type-nq" .PollField.Entity}}{{end}},
+    def {{template "safe-snake-name" .}}(self{{range .Binding}}, {{template "safe-snake-name" .PollField}}: {{template "type-nq" .PollField.Entity}}{{end}},
       timeout=timedelta(minutes={{.Timeout}}), callback: Optional[Callable[[{{.Poll.Response.PascalName}}], None]] = None) -> {{.Poll.Response.PascalName}}:
       deadline = time.time() + timeout.total_seconds()
       target_states = ({{range .Success}}{{.Entity.PascalName}}.{{.ConstantName}}, {{end}}){{if .Failure}}
@@ -121,14 +120,14 @@ class {{.Name}}API:{{if .Description}}
       status_message = 'polling...'
       attempt = 1
       while time.time() < deadline:
-        poll = self.{{.Poll.SnakeName}}({{range $i, $b := .Binding}}{{if $i}}, {{end}}{{.PollField.SnakeName}}={{.PollField.SnakeName}}{{- end}})
-        status = poll{{range .StatusPath}}.{{.SnakeName}}{{end}}
+        poll = self.{{template "safe-snake-name" .Poll}}({{range $i, $b := .Binding}}{{if $i}}, {{end}}{{template "safe-snake-name" .PollField}}={{template "safe-snake-name" .PollField}}{{- end}})
+        status = poll{{range .StatusPath}}.{{template "safe-snake-name" .}}{{end}}
         {{if .ComplexMessagePath -}}
         status_message = f'current status: {status}'
-        if poll.{{.MessagePathHead.SnakeName}}:
-          status_message = poll{{range .MessagePath}}.{{.SnakeName}}{{end}}
+        if poll.{{template "safe-snake-name" .MessagePathHead}}:
+          status_message = poll{{range .MessagePath}}.{{template "safe-snake-name" .}}{{end}}
         {{- else if .MessagePath -}}
-        status_message = poll{{range .MessagePath}}.{{.SnakeName}}{{end}}
+        status_message = poll{{range .MessagePath}}.{{template "safe-snake-name" .}}{{end}}
         {{- else -}}
         status_message = f'current status: {status}'
         {{- end}}
@@ -141,7 +140,7 @@ class {{.Name}}API:{{if .Description}}
           msg = f'failed to reach {{range $i, $e := .Success}}{{if $i}} or {{end}}{{$e.Content}}{{end}}, got {status}: {status_message}'
           raise OperationFailed(msg)
         {{end}}prefix = f"{{range $i, $b := .Binding}}{{if $i}}, {{end -}}
-           {{.PollField.SnakeName}}={{"{"}}{{.PollField.SnakeName}}{{"}"}}
+           {{template "safe-snake-name" .PollField}}={{"{"}}{{template "safe-snake-name" .PollField}}{{"}"}}
         {{- end}}"
         sleep = attempt
         if sleep > 10:
@@ -154,25 +153,25 @@ class {{.Name}}API:{{if .Description}}
     {{end}}
 
     {{range .Methods}}
-    def {{.SnakeName}}{{if .IsNameReserved}}_{{end}}(self{{if .Request}}
-      {{range .Request.RequiredFields}}, {{.SnakeName}}: {{template "type-nq" .Entity}}{{end}}
+    def {{template "safe-snake-name" .}}(self{{if .Request}}
+      {{range .Request.RequiredFields}}, {{template "safe-snake-name" .}}: {{template "type-nq" .Entity}}{{end}}
       {{if .Request.NonRequiredFields}}, *
-        {{range .Request.NonRequiredFields}}, {{.SnakeName}}: Optional[{{template "type-nq" .Entity}}] = None{{end}}
+        {{range .Request.NonRequiredFields}}, {{template "safe-snake-name" .}}: Optional[{{template "type-nq" .Entity}}] = None{{end}}
       {{- end}}
     {{- end}}){{template "method-return-type" .}}:
         {{if .Description}}"""{{.Comment "        " 110 | trimSuffix "\"" }}
         {{with .Request}}{{range .RequiredFields}}
-        :param {{.SnakeName}}: {{template "type-doc" .Entity}}{{if .Description}}
+        :param {{template "safe-snake-name" .}}: {{template "type-doc" .Entity}}{{if .Description}}
           {{.Comment "          " 110 | trimSuffix "\"" }}{{end}}
         {{- end}}{{range .NonRequiredFields}}
-        :param {{.SnakeName}}: {{template "type-doc" .Entity}} (optional){{if .Description}}
+        :param {{template "safe-snake-name" .}}: {{template "type-doc" .Entity}} (optional){{if .Description}}
           {{.Comment "          " 110 | trimSuffix "\"" }}{{end}}
         {{- end}}
         {{end}}
         {{if and .Wait (and (not .IsCrudRead) (not (eq .SnakeName "get_run"))) -}}
         :returns:
           Long-running operation waiter for {{template "type-doc" .Wait.Poll.Response}}.
-          See :method:{{.Wait.SnakeName}} for more details.
+          See :method:{{template "safe-snake-name" .Wait}} for more details.
         {{- else if .Response}}:returns: {{if .Response.ArrayValue -}}
           Iterator over {{template "type-doc" .Response.ArrayValue}}
         {{- else if .Pagination -}}
@@ -188,10 +187,10 @@ class {{.Name}}API:{{if .Description}}
         {{template "method-call" .}}
 
     {{if and .Wait (and (not .IsCrudRead) (not (eq .SnakeName "get_run"))) }}
-    def {{.SnakeName}}_and_wait(self{{range .Request.RequiredFields}}, {{.SnakeName}}: {{template "type-nq" .Entity}}{{end}}
-        {{if .Request.NonRequiredFields}}, * {{range .Request.NonRequiredFields}}, {{.SnakeName}}: Optional[{{template "type-nq" .Entity}}] = None{{end}}{{- end}},
+    def {{.SnakeName}}_and_wait(self{{range .Request.RequiredFields}}, {{template "safe-snake-name" .}}: {{template "type-nq" .Entity}}{{end}}
+        {{if .Request.NonRequiredFields}}, * {{range .Request.NonRequiredFields}}, {{template "safe-snake-name" .}}: Optional[{{template "type-nq" .Entity}}] = None{{end}}{{- end}},
         timeout=timedelta(minutes={{.Wait.Timeout}})) -> {{.Wait.Poll.Response.PascalName}}:
-        return self.{{.SnakeName}}({{range $i, $x := .Request.Fields}}{{if $i}}, {{end}}{{.SnakeName}}={{.SnakeName}}{{end}}).result(timeout=timeout)
+        return self.{{template "safe-snake-name" .}}({{range $i, $x := .Request.Fields}}{{if $i}}, {{end}}{{template "safe-snake-name" .}}={{template "safe-snake-name" .}}{{end}}).result(timeout=timeout)
     {{end}}
     {{end -}}
 {{- end}}
@@ -202,9 +201,9 @@ class {{.Name}}API:{{if .Description}}
         query = {}{{end}}
         {{- range .Request.Fields}}{{ if not .IsPath }}
         {{- if .IsQuery }}
-        if {{.SnakeName}} is not None: query['{{.Name}}'] = {{template "method-param-bind" .}}{{end}}
+        if {{template "safe-snake-name" .}} is not None: query['{{.Name}}'] = {{template "method-param-bind" .}}{{end}}
         {{- if .IsJson }}
-        if {{.SnakeName}} is not None: body['{{.Name}}'] = {{template "method-param-bind" .}}{{end}}
+        if {{template "safe-snake-name" .}} is not None: body['{{.Name}}'] = {{template "method-param-bind" .}}{{end}}
         {{- end}}
         {{- end}}
         {{- end}}
@@ -221,10 +220,10 @@ class {{.Name}}API:{{if .Description}}
       {{- else if .Entity.ArrayValue }}[
         {{- if or .Entity.ArrayValue.IsObject .Entity.ArrayValue.IsExternal -}}v.as_dict()
         {{- else if .Entity.ArrayValue.Enum -}}v.value
-        {{- else}}v{{end}} for v in {{.SnakeName}}]
-      {{- else if .Entity.IsObject }}{{.SnakeName}}.as_dict()
-      {{- else if .Entity.Enum }}{{.SnakeName}}.value
-      {{- else}}{{.SnakeName}}{{- end -}}
+        {{- else}}v{{end}} for v in {{template "safe-snake-name" .}}]
+      {{- else if .Entity.IsObject }}{{template "safe-snake-name" .}}.as_dict()
+      {{- else if .Entity.Enum }}{{template "safe-snake-name" .}}.value
+      {{- else}}{{template "safe-snake-name" .}}{{- end -}}
 {{- end -}}
 
 {{define "method-call" -}}
@@ -235,9 +234,9 @@ class {{.Name}}API:{{if .Description}}
 
 {{define "method-call-retried" -}}
         {{if .Response}}op_response = {{end}}{{template "method-do" .}}
-        return Wait(self.{{.Wait.SnakeName}}
+        return Wait(self.{{template "safe-snake-name" .Wait}}
           {{if .Response}}, response = {{.Response.PascalName}}.from_dict(op_response){{end}}
-          {{range .Wait.Binding}}, {{.PollField.SnakeName}}={{if .IsResponseBind}}op_response['{{.Bind.Name}}']{{else}}{{.Bind.SnakeName}}{{end}}
+          {{range .Wait.Binding}}, {{template "safe-snake-name" .PollField}}={{if .IsResponseBind}}op_response['{{.Bind.Name}}']{{else}}{{template "safe-snake-name" .Bind}}{{end}}
         {{- end}})
 {{- end}}
 
@@ -247,7 +246,16 @@ class {{.Name}}API:{{if .Description}}
         # deduplicate items that may have been added during iteration
         seen = set()
         {{- end}}{{if and .Pagination.Offset (not (eq .Path "/api/2.0/clusters/events")) }}
-        query['{{.Pagination.Offset.Name}}'] = {{if eq .Pagination.Increment 1}}1{{else}}0{{end}}{{end}}
+        query['{{.Pagination.Offset.Name}}'] =
+        {{- if eq .Pagination.Increment 1 -}}
+          1
+        {{- else if contains .Path "/scim/v2/" -}}
+          1
+        {{- else -}}
+          0
+        {{- end}}{{end}}{{if and .Pagination.Limit (contains .Path "/scim/v2/")}}
+        if "{{.Pagination.Limit.Name}}" not in query: query['{{.Pagination.Limit.Name}}'] = 100
+        {{- end}}
         while True:
           json = {{template "method-do" .}}
           if '{{.Pagination.Results.Name}}' not in json or not json['{{.Pagination.Results.Name}}']:
@@ -275,7 +283,7 @@ class {{.Name}}API:{{if .Description}}
           {{- end}}
         {{else -}}
         json = {{template "method-do" .}}
-        parsed = {{.Response.PascalName}}.from_dict(json).{{.Pagination.Results.SnakeName}}
+        parsed = {{.Response.PascalName}}.from_dict(json).{{template "safe-snake-name" .Pagination.Results}}
         return parsed if parsed is not None else []
         {{end}}
 {{- end}}
@@ -297,14 +305,14 @@ class {{.Name}}API:{{if .Description}}
 {{define "method-do" -}}
 self._api.do('{{.Verb}}',
   {{if .PathParts -}}
-      f'{{range  .PathParts}}{{.Prefix}}{{if .Field}}{{"{"}}{{.Field.SnakeName}}{{with .Field.Entity.Enum}}.value{{end}}{{"}"}}{{else if .IsAccountId}}{{"{self._api.account_id}"}}{{end}}{{ end }}'
+      f'{{range  .PathParts}}{{.Prefix}}{{if .Field}}{{"{"}}{{template "safe-snake-name" .Field}}{{with .Field.Entity.Enum}}.value{{end}}{{"}"}}{{else if .IsAccountId}}{{"{self._api.account_id}"}}{{end}}{{ end }}'
   {{- else}}'{{.Path}}'{{end}}
   {{if .Request}}
       {{- if .Request.HasQueryField}}, query=query{{end}}
       {{- if .Request.HasJsonField}}, body=body{{end}}
   {{end}}
   , headers=headers
-  {{- if and .IsRequestByteStream .RequestBodyField }}, data={{.RequestBodyField.SnakeName}}{{ end }}
+  {{- if and .IsRequestByteStream .RequestBodyField }}, data={{template "safe-snake-name" .RequestBodyField}}{{ end }}
   {{- if .IsResponseByteStream }}, raw=True{{ end }})
 {{- end}}
 

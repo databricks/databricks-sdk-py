@@ -9,7 +9,7 @@ from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
 from ..errors import OperationFailed
-from ._internal import Wait, _enum, _from_dict, _repeated
+from ._internal import Wait, _enum, _from_dict, _repeated_dict, _repeated_enum
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -499,7 +499,7 @@ class Dashboard:
                    updated_at=d.get('updated_at', None),
                    user=_from_dict(d, 'user', User),
                    user_id=d.get('user_id', None),
-                   widgets=_repeated(d, 'widgets', Widget))
+                   widgets=_repeated_dict(d, 'widgets', Widget))
 
 
 @dataclass
@@ -823,7 +823,7 @@ class EndpointTags:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'EndpointTags':
-        return cls(custom_tags=_repeated(d, 'custom_tags', EndpointTagPair))
+        return cls(custom_tags=_repeated_dict(d, 'custom_tags', EndpointTagPair))
 
 
 @dataclass
@@ -862,7 +862,7 @@ class ExecuteStatementRequest:
                    disposition=_enum(d, 'disposition', Disposition),
                    format=_enum(d, 'format', Format),
                    on_wait_timeout=_enum(d, 'on_wait_timeout', ExecuteStatementRequestOnWaitTimeout),
-                   parameters=_repeated(d, 'parameters', StatementParameterListItem),
+                   parameters=_repeated_dict(d, 'parameters', StatementParameterListItem),
                    row_limit=d.get('row_limit', None),
                    schema=d.get('schema', None),
                    statement=d.get('statement', None),
@@ -964,7 +964,7 @@ class GetResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetResponse':
-        return cls(access_control_list=_repeated(d, 'access_control_list', AccessControl),
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list', AccessControl),
                    object_id=d.get('object_id', None),
                    object_type=_enum(d, 'object_type', ObjectType))
 
@@ -1003,7 +1003,7 @@ class GetWarehousePermissionLevelsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetWarehousePermissionLevelsResponse':
-        return cls(permission_levels=_repeated(d, 'permission_levels', WarehousePermissionsDescription))
+        return cls(permission_levels=_repeated_dict(d, 'permission_levels', WarehousePermissionsDescription))
 
 
 @dataclass
@@ -1121,8 +1121,8 @@ class GetWorkspaceWarehouseConfigResponse:
     def from_dict(cls, d: Dict[str, any]) -> 'GetWorkspaceWarehouseConfigResponse':
         return cls(channel=_from_dict(d, 'channel', Channel),
                    config_param=_from_dict(d, 'config_param', RepeatedEndpointConfPairs),
-                   data_access_config=_repeated(d, 'data_access_config', EndpointConfPair),
-                   enabled_warehouse_types=_repeated(d, 'enabled_warehouse_types', WarehouseTypePair),
+                   data_access_config=_repeated_dict(d, 'data_access_config', EndpointConfPair),
+                   enabled_warehouse_types=_repeated_dict(d, 'enabled_warehouse_types', WarehouseTypePair),
                    global_param=_from_dict(d, 'global_param', RepeatedEndpointConfPairs),
                    google_service_account=d.get('google_service_account', None),
                    instance_profile_arn=d.get('instance_profile_arn', None),
@@ -1163,7 +1163,7 @@ class ListQueriesResponse:
     def from_dict(cls, d: Dict[str, any]) -> 'ListQueriesResponse':
         return cls(has_next_page=d.get('has_next_page', None),
                    next_page_token=d.get('next_page_token', None),
-                   res=_repeated(d, 'res', QueryInfo))
+                   res=_repeated_dict(d, 'res', QueryInfo))
 
 
 @dataclass
@@ -1186,7 +1186,7 @@ class ListResponse:
         return cls(count=d.get('count', None),
                    page=d.get('page', None),
                    page_size=d.get('page_size', None),
-                   results=_repeated(d, 'results', Dashboard))
+                   results=_repeated_dict(d, 'results', Dashboard))
 
 
 @dataclass
@@ -1200,7 +1200,7 @@ class ListWarehousesResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListWarehousesResponse':
-        return cls(warehouses=_repeated(d, 'warehouses', EndpointInfo))
+        return cls(warehouses=_repeated_dict(d, 'warehouses', EndpointInfo))
 
 
 class ObjectType(Enum):
@@ -1383,7 +1383,7 @@ class Query:
                    updated_at=d.get('updated_at', None),
                    user=_from_dict(d, 'user', User),
                    user_id=d.get('user_id', None),
-                   visualizations=_repeated(d, 'visualizations', Visualization))
+                   visualizations=_repeated_dict(d, 'visualizations', Visualization))
 
 
 @dataclass
@@ -1435,7 +1435,7 @@ class QueryFilter:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'QueryFilter':
         return cls(query_start_time_range=_from_dict(d, 'query_start_time_range', TimeRange),
-                   statuses=d.get('statuses', None),
+                   statuses=_repeated_enum(d, 'statuses', QueryStatus),
                    user_ids=d.get('user_ids', None),
                    warehouse_ids=d.get('warehouse_ids', None))
 
@@ -1541,7 +1541,7 @@ class QueryList:
         return cls(count=d.get('count', None),
                    page=d.get('page', None),
                    page_size=d.get('page_size', None),
-                   results=_repeated(d, 'results', Query))
+                   results=_repeated_dict(d, 'results', Query))
 
 
 @dataclass
@@ -1653,7 +1653,7 @@ class QueryOptions:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'QueryOptions':
         return cls(moved_to_trash_at=d.get('moved_to_trash_at', None),
-                   parameters=_repeated(d, 'parameters', Parameter))
+                   parameters=_repeated_dict(d, 'parameters', Parameter))
 
 
 @dataclass
@@ -1741,8 +1741,8 @@ class RepeatedEndpointConfPairs:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'RepeatedEndpointConfPairs':
-        return cls(config_pair=_repeated(d, 'config_pair', EndpointConfPair),
-                   configuration_pairs=_repeated(d, 'configuration_pairs', EndpointConfPair))
+        return cls(config_pair=_repeated_dict(d, 'config_pair', EndpointConfPair),
+                   configuration_pairs=_repeated_dict(d, 'configuration_pairs', EndpointConfPair))
 
 
 @dataclass
@@ -1780,7 +1780,7 @@ class ResultData:
         return cls(byte_count=d.get('byte_count', None),
                    chunk_index=d.get('chunk_index', None),
                    data_array=d.get('data_array', None),
-                   external_links=_repeated(d, 'external_links', ExternalLink),
+                   external_links=_repeated_dict(d, 'external_links', ExternalLink),
                    next_chunk_index=d.get('next_chunk_index', None),
                    next_chunk_internal_link=d.get('next_chunk_internal_link', None),
                    row_count=d.get('row_count', None),
@@ -1812,7 +1812,7 @@ class ResultManifest:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ResultManifest':
-        return cls(chunks=_repeated(d, 'chunks', BaseChunkInfo),
+        return cls(chunks=_repeated_dict(d, 'chunks', BaseChunkInfo),
                    format=_enum(d, 'format', Format),
                    schema=_from_dict(d, 'schema', ResultSchema),
                    total_byte_count=d.get('total_byte_count', None),
@@ -1836,7 +1836,7 @@ class ResultSchema:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ResultSchema':
-        return cls(column_count=d.get('column_count', None), columns=_repeated(d, 'columns', ColumnInfo))
+        return cls(column_count=d.get('column_count', None), columns=_repeated_dict(d, 'columns', ColumnInfo))
 
 
 class RunAsRole(Enum):
@@ -1896,7 +1896,7 @@ class SetResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'SetResponse':
-        return cls(access_control_list=_repeated(d, 'access_control_list', AccessControl),
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list', AccessControl),
                    object_id=d.get('object_id', None),
                    object_type=_enum(d, 'object_type', ObjectType))
 
@@ -1934,8 +1934,8 @@ class SetWorkspaceWarehouseConfigRequest:
     def from_dict(cls, d: Dict[str, any]) -> 'SetWorkspaceWarehouseConfigRequest':
         return cls(channel=_from_dict(d, 'channel', Channel),
                    config_param=_from_dict(d, 'config_param', RepeatedEndpointConfPairs),
-                   data_access_config=_repeated(d, 'data_access_config', EndpointConfPair),
-                   enabled_warehouse_types=_repeated(d, 'enabled_warehouse_types', WarehouseTypePair),
+                   data_access_config=_repeated_dict(d, 'data_access_config', EndpointConfPair),
+                   enabled_warehouse_types=_repeated_dict(d, 'enabled_warehouse_types', WarehouseTypePair),
                    global_param=_from_dict(d, 'global_param', RepeatedEndpointConfPairs),
                    google_service_account=d.get('google_service_account', None),
                    instance_profile_arn=d.get('instance_profile_arn', None),
@@ -2293,7 +2293,7 @@ class WarehouseAccessControlResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'WarehouseAccessControlResponse':
-        return cls(all_permissions=_repeated(d, 'all_permissions', WarehousePermission),
+        return cls(all_permissions=_repeated_dict(d, 'all_permissions', WarehousePermission),
                    display_name=d.get('display_name', None),
                    group_name=d.get('group_name', None),
                    service_principal_name=d.get('service_principal_name', None),
@@ -2344,7 +2344,8 @@ class WarehousePermissions:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'WarehousePermissions':
-        return cls(access_control_list=_repeated(d, 'access_control_list', WarehouseAccessControlResponse),
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list',
+                                                      WarehouseAccessControlResponse),
                    object_id=d.get('object_id', None),
                    object_type=d.get('object_type', None))
 
@@ -2380,7 +2381,8 @@ class WarehousePermissionsRequest:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'WarehousePermissionsRequest':
-        return cls(access_control_list=_repeated(d, 'access_control_list', WarehouseAccessControlRequest),
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list',
+                                                      WarehouseAccessControlRequest),
                    warehouse_id=d.get('warehouse_id', None))
 
 
@@ -2579,23 +2581,23 @@ class AlertsAPI:
         return [Alert.from_dict(v) for v in res]
 
     def update(self,
+               alert_id: str,
                name: str,
                options: AlertOptions,
                query_id: str,
-               alert_id: str,
                *,
                rearm: Optional[int] = None):
         """Update an alert.
         
         Updates an alert.
         
+        :param alert_id: str
         :param name: str
           Name of the alert.
         :param options: :class:`AlertOptions`
           Alert configuration options.
         :param query_id: str
           Query ID.
-        :param alert_id: str
         :param rearm: int (optional)
           Number of seconds after being triggered before the alert rearms itself and can be triggered again.
           If `null`, alert will never be triggered again.
@@ -2662,21 +2664,21 @@ class DashboardWidgetsAPI:
         self._api.do('DELETE', f'/api/2.0/preview/sql/widgets/{id}', headers=headers)
 
     def update(self,
+               id: str,
                dashboard_id: str,
                options: WidgetOptions,
                width: int,
-               id: str,
                *,
                text: Optional[str] = None,
                visualization_id: Optional[str] = None) -> Widget:
         """Update existing widget.
         
+        :param id: str
         :param dashboard_id: str
           Dashboard ID returned by :method:dashboards/create.
         :param options: :class:`WidgetOptions`
         :param width: int
           Width of a widget
-        :param id: str
         :param text: str (optional)
           If this is a textbox widget, the application displays this text. This field is ignored if the widget
           contains a visualization in the `visualization` field.

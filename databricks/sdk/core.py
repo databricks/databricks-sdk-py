@@ -3,6 +3,7 @@ import base64
 import configparser
 import copy
 import functools
+import io
 import json
 import logging
 import os
@@ -18,12 +19,16 @@ from types import TracebackType
 from typing import (Any, BinaryIO, Callable, Dict, Iterable, Iterator, List,
                     Optional, Type, Union)
 
+import google.auth
 import requests
-import requests.auth
+from google.auth import impersonated_credentials
+from google.auth.transport.requests import Request
+from google.oauth2 import service_account
 from requests.adapters import HTTPAdapter
 
 from .azure import (ARM_DATABRICKS_RESOURCE_ID, ENVIRONMENTS, AzureEnvironment,
                     add_sp_management_token, add_workspace_id_header)
+from .errors import DatabricksError, error_mapper
 from .oauth import (ClientCredentials, OAuthClient, OidcEndpoints, Refreshable,
                     Token, TokenCache, TokenSource)
 from .retries import retried
@@ -34,6 +39,8 @@ __all__ = ['Config', 'DatabricksError']
 logger = logging.getLogger('databricks.sdk')
 
 HeaderFactory = Callable[[], Dict[str, str]]
+
+GcpScopes = ["https://www.googleapis.com/auth/cloud-platform", "https://www.googleapis.com/auth/compute"]
 
 
 class CredentialsProvider(abc.ABC):
@@ -264,6 +271,70 @@ def github_oidc_azure(cfg: 'Config') -> Optional[HeaderFactory]:
     return refreshed_headers
 
 
+@credentials_provider('google-credentials', ['host', 'google_credentials'])
+def google_credentials(cfg: 'Config') -> Optional[HeaderFactory]:
+    if not cfg.is_gcp:
+        return None
+    # Reads credentials as JSON. Credentials can be either a path to JSON file, or actual JSON string.
+    # Obtain the id token by providing the json file path and target audience.
+    if (os.path.isfile(cfg.google_credentials)):
+        with io.open(cfg.google_credentials, "r", encoding="utf-8") as json_file:
+            account_info = json.load(json_file)
+    else:
+        # If the file doesn't exist, assume that the config is the actual JSON content.
+        account_info = json.loads(cfg.google_credentials)
+
+    credentials = service_account.IDTokenCredentials.from_service_account_info(info=account_info,
+                                                                               target_audience=cfg.host)
+
+    request = Request()
+
+    gcp_credentials = service_account.Credentials.from_service_account_info(info=account_info,
+                                                                            scopes=GcpScopes)
+
+    def refreshed_headers() -> Dict[str, str]:
+        credentials.refresh(request)
+        headers = {'Authorization': f'Bearer {credentials.token}'}
+        if cfg.is_account_client:
+            gcp_credentials.refresh(request)
+            headers["X-Databricks-GCP-SA-Access-Token"] = gcp_credentials.token
+        return headers
+
+    return refreshed_headers
+
+
+@credentials_provider('google-id', ['host', 'google_service_account'])
+def google_id(cfg: 'Config') -> Optional[HeaderFactory]:
+    if not cfg.is_gcp:
+        return None
+    credentials, _project_id = google.auth.default()
+
+    # Create the impersonated credential.
+    target_credentials = impersonated_credentials.Credentials(source_credentials=credentials,
+                                                              target_principal=cfg.google_service_account,
+                                                              target_scopes=[])
+
+    # Set the impersonated credential, target audience and token options.
+    id_creds = impersonated_credentials.IDTokenCredentials(target_credentials,
+                                                           target_audience=cfg.host,
+                                                           include_email=True)
+
+    gcp_impersonated_credentials = impersonated_credentials.Credentials(
+        source_credentials=credentials, target_principal=cfg.google_service_account, target_scopes=GcpScopes)
+
+    request = Request()
+
+    def refreshed_headers() -> Dict[str, str]:
+        id_creds.refresh(request)
+        headers = {'Authorization': f'Bearer {id_creds.token}'}
+        if cfg.is_account_client:
+            gcp_impersonated_credentials.refresh(request)
+            headers["X-Databricks-GCP-SA-Access-Token"] = gcp_impersonated_credentials.token
+        return headers
+
+    return refreshed_headers
+
+
 class CliTokenSource(Refreshable):
 
     def __init__(self, cmd: List[str], token_type_field: str, access_token_field: str, expiry_field: str):
@@ -314,23 +385,42 @@ class AzureCliTokenSource(CliTokenSource):
                          access_token_field='accessToken',
                          expiry_field='expiresOn')
 
+    def is_human_user(self) -> bool:
+        """The UPN claim is the username of the user, but not the Service Principal.
+
+        Azure CLI can be authenticated by both human users (`az login`) and service principals. In case of service
+        principals, it can be either OIDC from GitHub or login with a password:
+
+            ~ $ az login --service-principal --user $clientID --password $clientSecret --tenant $tenantID
+
+        Human users get more claims:
+        - 'amr' - how the subject of the token was authenticated
+        - 'name', 'family_name', 'given_name' - human-readable values that identifies the subject of the token
+        - 'scp' with `user_impersonation` value, that shows the set of scopes exposed by your application for which
+              the client application has requested (and received) consent
+        - 'unique_name' - a human-readable value that identifies the subject of the token. This value is not
+              guaranteed to be unique within a tenant and should be used only for display purposes.
+        - 'upn' - The username of the user.
+        """
+        return 'upn' in self.token().jwt_claims()
+
     @staticmethod
     def for_resource(cfg: 'Config', resource: str) -> 'AzureCliTokenSource':
         subscription = AzureCliTokenSource.get_subscription(cfg)
         if subscription != "":
-            token = AzureCliTokenSource(resource, subscription)
+            token_source = AzureCliTokenSource(resource, subscription)
             try:
                 # This will fail if the user has access to the workspace, but not to the subscription
                 # itself.
                 # In such case, we fall back to not using the subscription.
-                token.token()
-                return token
+                token_source.token()
+                return token_source
             except OSError:
                 logger.warning("Failed to get token for subscription. Using resource only token.")
 
-        token = AzureCliTokenSource(resource)
-        token.token()
-        return token
+        token_source = AzureCliTokenSource(resource)
+        token_source.token()
+        return token_source
 
     @staticmethod
     def get_subscription(cfg: 'Config') -> str:
@@ -355,12 +445,13 @@ def azure_cli(cfg: 'Config') -> Optional[HeaderFactory]:
         doc = 'https://docs.microsoft.com/en-us/cli/azure/?view=azure-cli-latest'
         logger.debug(f'Most likely Azure CLI is not installed. See {doc} for details')
         return None
-    try:
-        mgmt_token_source = AzureCliTokenSource.for_resource(cfg,
-                                                             cfg.arm_environment.service_management_endpoint)
-    except Exception as e:
-        logger.debug(f'Not including service management token in headers', exc_info=e)
-        mgmt_token_source = None
+    if not token_source.is_human_user():
+        try:
+            management_endpoint = cfg.arm_environment.service_management_endpoint
+            mgmt_token_source = AzureCliTokenSource.for_resource(cfg, management_endpoint)
+        except Exception as e:
+            logger.debug(f'Not including service management token in headers', exc_info=e)
+            mgmt_token_source = None
 
     _ensure_host_present(cfg, lambda resource: AzureCliTokenSource.for_resource(cfg, resource))
     logger.info("Using Azure CLI authentication with AAD tokens")
@@ -510,7 +601,8 @@ class DefaultCredentials:
     def __call__(self, cfg: 'Config') -> HeaderFactory:
         auth_providers = [
             pat_auth, basic_auth, metadata_service, oauth_service_principal, azure_service_principal,
-            github_oidc_azure, azure_cli, external_browser, databricks_cli, runtime_native_auth
+            github_oidc_azure, azure_cli, external_browser, databricks_cli, runtime_native_auth,
+            google_credentials, google_id
         ]
         for provider in auth_providers:
             auth_type = provider.auth_type()
@@ -943,70 +1035,6 @@ class Config:
         return cpy
 
 
-class ErrorDetail:
-
-    def __init__(self,
-                 type: str = None,
-                 reason: str = None,
-                 domain: str = None,
-                 metadata: dict = None,
-                 **kwargs):
-        self.type = type
-        self.reason = reason
-        self.domain = domain
-        self.metadata = metadata
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ErrorDetail':
-        if '@type' in d:
-            d['type'] = d['@type']
-        return cls(**d)
-
-
-class DatabricksError(IOError):
-    """ Generic error from Databricks REST API """
-    # Known ErrorDetail types
-    _error_info_type = "type.googleapis.com/google.rpc.ErrorInfo"
-
-    def __init__(self,
-                 message: str = None,
-                 *,
-                 error_code: str = None,
-                 detail: str = None,
-                 status: str = None,
-                 scimType: str = None,
-                 error: str = None,
-                 retry_after_secs: int = None,
-                 details: List[Dict[str, any]] = None,
-                 **kwargs):
-        if error:
-            # API 1.2 has different response format, let's adapt
-            message = error
-        if detail:
-            # Handle SCIM error message details
-            # @see https://tools.ietf.org/html/rfc7644#section-3.7.3
-            if detail == "null":
-                message = "SCIM API Internal Error"
-            else:
-                message = detail
-            # add more context from SCIM responses
-            message = f"{scimType} {message}".strip(" ")
-            error_code = f"SCIM_{status}"
-        super().__init__(message if message else error)
-        self.error_code = error_code
-        self.retry_after_secs = retry_after_secs
-        self.details = [ErrorDetail.from_dict(detail) for detail in details] if details else []
-        self.kwargs = kwargs
-
-    def get_error_info(self) -> List[ErrorDetail]:
-        return self._get_details_by_type(DatabricksError._error_info_type)
-
-    def _get_details_by_type(self, error_type) -> List[ErrorDetail]:
-        if self.details == None:
-            return []
-        return [detail for detail in self.details if detail.type == error_type]
-
-
 class ApiClient:
     _cfg: Config
     _RETRY_AFTER_DEFAULT: int = 1
@@ -1235,7 +1263,7 @@ class ApiClient:
         if is_too_many_requests_or_unavailable:
             kwargs['retry_after_secs'] = self._parse_retry_after(response)
         kwargs['message'] = message
-        return DatabricksError(**kwargs)
+        return error_mapper(status_code, kwargs)
 
     def _record_request_log(self, response: requests.Response, raw=False):
         if not logger.isEnabledFor(logging.DEBUG):

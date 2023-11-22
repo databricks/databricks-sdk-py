@@ -113,7 +113,7 @@ Jobs
           See :method:wait_get_run_job_terminated_or_skipped for more details.
         
 
-    .. py:method:: create( [, access_control_list, compute, continuous, deployment, email_notifications, format, git_source, health, job_clusters, max_concurrent_runs, name, notification_settings, parameters, queue, run_as, schedule, tags, tasks, timeout_seconds, trigger, ui_state, webhook_notifications])
+    .. py:method:: create( [, access_control_list, compute, continuous, deployment, edit_mode, email_notifications, format, git_source, health, job_clusters, max_concurrent_runs, name, notification_settings, parameters, queue, run_as, schedule, tags, tasks, timeout_seconds, trigger, webhook_notifications])
 
         Usage:
 
@@ -157,6 +157,11 @@ Jobs
           always one run executing. Only one of `schedule` and `continuous` can be used.
         :param deployment: :class:`JobDeployment` (optional)
           Deployment information for jobs managed by external sources.
+        :param edit_mode: :class:`CreateJobEditMode` (optional)
+          Edit mode of the job.
+          
+          * `UI_LOCKED`: The job is in a locked UI state and cannot be modified. * `EDITABLE`: The job is in
+          an editable state and can be modified.
         :param email_notifications: :class:`JobEmailNotifications` (optional)
           An optional set of email addresses that is notified when runs of this job begin or complete as well
           as when this job is deleted.
@@ -189,7 +194,7 @@ Jobs
           4 concurrent active runs. Then setting the concurrency to 3 won’t kill any of the active runs.
           However, from then on, new runs are skipped unless there are fewer than 3 active runs.
           
-          This value cannot exceed 1000\. Setting this value to `0` causes all new runs to be skipped.
+          This value cannot exceed 1000. Setting this value to `0` causes all new runs to be skipped.
         :param name: str (optional)
           An optional name for the job. The maximum length is 4096 bytes in UTF-8 encoding.
         :param notification_settings: :class:`JobNotificationSettings` (optional)
@@ -221,11 +226,6 @@ Jobs
           Trigger settings for the job. Can be used to trigger a run when new files arrive in an external
           location. The default behavior is that the job runs only when triggered by clicking “Run Now” in
           the Jobs UI or sending an API request to `runNow`.
-        :param ui_state: :class:`CreateJobUiState` (optional)
-          State of the job in UI.
-          
-          * `LOCKED`: The job is in a locked state and cannot be modified. * `EDITABLE`: The job is in an
-          editable state and can be modified.
         :param webhook_notifications: :class:`WebhookNotifications` (optional)
           A collection of system notification IDs to notify when runs of this job begin or complete.
         
@@ -368,7 +368,7 @@ Jobs
         :returns: :class:`JobPermissions`
         
 
-    .. py:method:: get_run(run_id [, include_history])
+    .. py:method:: get_run(run_id [, include_history, include_resolved_values])
 
         Usage:
 
@@ -407,6 +407,8 @@ Jobs
           The canonical identifier of the run for which to retrieve the metadata. This field is required.
         :param include_history: bool (optional)
           Whether to include the repair history in the response.
+        :param include_resolved_values: bool (optional)
+          Whether to include resolved parameter values in the response.
         
         :returns: :class:`Run`
         

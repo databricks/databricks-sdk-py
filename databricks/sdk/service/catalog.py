@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
-from ._internal import _enum, _from_dict, _repeated
+from ._internal import _enum, _from_dict, _repeated_dict, _repeated_enum
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -180,7 +180,7 @@ class ArtifactAllowlistInfo:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ArtifactAllowlistInfo':
-        return cls(artifact_matchers=_repeated(d, 'artifact_matchers', ArtifactMatcher),
+        return cls(artifact_matchers=_repeated_dict(d, 'artifact_matchers', ArtifactMatcher),
                    created_at=d.get('created_at', None),
                    created_by=d.get('created_by', None),
                    metastore_id=d.get('metastore_id', None))
@@ -675,13 +675,13 @@ class CreateFunction:
     name: str
     catalog_name: str
     schema_name: str
-    input_params: 'List[FunctionParameterInfo]'
+    input_params: 'FunctionParameterInfos'
     data_type: 'ColumnTypeName'
     full_data_type: str
-    return_params: 'List[FunctionParameterInfo]'
+    return_params: 'FunctionParameterInfos'
     routine_body: 'CreateFunctionRoutineBody'
     routine_definition: str
-    routine_dependencies: 'List[Dependency]'
+    routine_dependencies: 'DependencyList'
     parameter_style: 'CreateFunctionParameterStyle'
     is_deterministic: bool
     sql_data_access: 'CreateFunctionSqlDataAccess'
@@ -691,7 +691,7 @@ class CreateFunction:
     comment: Optional[str] = None
     external_language: Optional[str] = None
     external_name: Optional[str] = None
-    properties: Optional['Dict[str,str]'] = None
+    properties: Optional[str] = None
     sql_path: Optional[str] = None
 
     def as_dict(self) -> dict:
@@ -702,17 +702,16 @@ class CreateFunction:
         if self.external_language is not None: body['external_language'] = self.external_language
         if self.external_name is not None: body['external_name'] = self.external_name
         if self.full_data_type is not None: body['full_data_type'] = self.full_data_type
-        if self.input_params: body['input_params'] = [v.as_dict() for v in self.input_params]
+        if self.input_params: body['input_params'] = self.input_params.as_dict()
         if self.is_deterministic is not None: body['is_deterministic'] = self.is_deterministic
         if self.is_null_call is not None: body['is_null_call'] = self.is_null_call
         if self.name is not None: body['name'] = self.name
         if self.parameter_style is not None: body['parameter_style'] = self.parameter_style.value
-        if self.properties: body['properties'] = self.properties
-        if self.return_params: body['return_params'] = [v.as_dict() for v in self.return_params]
+        if self.properties is not None: body['properties'] = self.properties
+        if self.return_params: body['return_params'] = self.return_params.as_dict()
         if self.routine_body is not None: body['routine_body'] = self.routine_body.value
         if self.routine_definition is not None: body['routine_definition'] = self.routine_definition
-        if self.routine_dependencies:
-            body['routine_dependencies'] = [v.as_dict() for v in self.routine_dependencies]
+        if self.routine_dependencies: body['routine_dependencies'] = self.routine_dependencies.as_dict()
         if self.schema_name is not None: body['schema_name'] = self.schema_name
         if self.security_type is not None: body['security_type'] = self.security_type.value
         if self.specific_name is not None: body['specific_name'] = self.specific_name
@@ -728,16 +727,16 @@ class CreateFunction:
                    external_language=d.get('external_language', None),
                    external_name=d.get('external_name', None),
                    full_data_type=d.get('full_data_type', None),
-                   input_params=_repeated(d, 'input_params', FunctionParameterInfo),
+                   input_params=_from_dict(d, 'input_params', FunctionParameterInfos),
                    is_deterministic=d.get('is_deterministic', None),
                    is_null_call=d.get('is_null_call', None),
                    name=d.get('name', None),
                    parameter_style=_enum(d, 'parameter_style', CreateFunctionParameterStyle),
                    properties=d.get('properties', None),
-                   return_params=_repeated(d, 'return_params', FunctionParameterInfo),
+                   return_params=_from_dict(d, 'return_params', FunctionParameterInfos),
                    routine_body=_enum(d, 'routine_body', CreateFunctionRoutineBody),
                    routine_definition=d.get('routine_definition', None),
-                   routine_dependencies=_repeated(d, 'routine_dependencies', Dependency),
+                   routine_dependencies=_from_dict(d, 'routine_dependencies', DependencyList),
                    schema_name=d.get('schema_name', None),
                    security_type=_enum(d, 'security_type', CreateFunctionSecurityType),
                    specific_name=d.get('specific_name', None),
@@ -749,6 +748,20 @@ class CreateFunctionParameterStyle(Enum):
     """Function parameter style. **S** is the value for SQL."""
 
     S = 'S'
+
+
+@dataclass
+class CreateFunctionRequest:
+    function_info: 'CreateFunction'
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.function_info: body['function_info'] = self.function_info.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'CreateFunctionRequest':
+        return cls(function_info=_from_dict(d, 'function_info', CreateFunction))
 
 
 class CreateFunctionRoutineBody(Enum):
@@ -778,8 +791,8 @@ class CreateFunctionSqlDataAccess(Enum):
 @dataclass
 class CreateMetastore:
     name: str
-    storage_root: str
     region: Optional[str] = None
+    storage_root: Optional[str] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -1039,6 +1052,22 @@ class Dependency:
                    table=_from_dict(d, 'table', TableDependency))
 
 
+@dataclass
+class DependencyList:
+    """A list of dependencies."""
+
+    dependencies: Optional['List[Dependency]'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.dependencies: body['dependencies'] = [v.as_dict() for v in self.dependencies]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'DependencyList':
+        return cls(dependencies=_repeated_dict(d, 'dependencies', Dependency))
+
+
 class DisableSchemaName(Enum):
 
     ACCESS = 'access'
@@ -1059,7 +1088,8 @@ class EffectivePermissionsList:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'EffectivePermissionsList':
-        return cls(privilege_assignments=_repeated(d, 'privilege_assignments', EffectivePrivilegeAssignment))
+        return cls(
+            privilege_assignments=_repeated_dict(d, 'privilege_assignments', EffectivePrivilegeAssignment))
 
 
 @dataclass
@@ -1125,7 +1155,7 @@ class EffectivePrivilegeAssignment:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'EffectivePrivilegeAssignment':
         return cls(principal=d.get('principal', None),
-                   privileges=_repeated(d, 'privileges', EffectivePrivilege))
+                   privileges=_repeated_dict(d, 'privileges', EffectivePrivilege))
 
 
 class EnablePredictiveOptimization(Enum):
@@ -1264,18 +1294,18 @@ class FunctionInfo:
     full_data_type: Optional[str] = None
     full_name: Optional[str] = None
     function_id: Optional[str] = None
-    input_params: Optional['List[FunctionParameterInfo]'] = None
+    input_params: Optional['FunctionParameterInfos'] = None
     is_deterministic: Optional[bool] = None
     is_null_call: Optional[bool] = None
     metastore_id: Optional[str] = None
     name: Optional[str] = None
     owner: Optional[str] = None
     parameter_style: Optional['FunctionInfoParameterStyle'] = None
-    properties: Optional['Dict[str,str]'] = None
-    return_params: Optional['List[FunctionParameterInfo]'] = None
+    properties: Optional[str] = None
+    return_params: Optional['FunctionParameterInfos'] = None
     routine_body: Optional['FunctionInfoRoutineBody'] = None
     routine_definition: Optional[str] = None
-    routine_dependencies: Optional['List[Dependency]'] = None
+    routine_dependencies: Optional['DependencyList'] = None
     schema_name: Optional[str] = None
     security_type: Optional['FunctionInfoSecurityType'] = None
     specific_name: Optional[str] = None
@@ -1296,19 +1326,18 @@ class FunctionInfo:
         if self.full_data_type is not None: body['full_data_type'] = self.full_data_type
         if self.full_name is not None: body['full_name'] = self.full_name
         if self.function_id is not None: body['function_id'] = self.function_id
-        if self.input_params: body['input_params'] = [v.as_dict() for v in self.input_params]
+        if self.input_params: body['input_params'] = self.input_params.as_dict()
         if self.is_deterministic is not None: body['is_deterministic'] = self.is_deterministic
         if self.is_null_call is not None: body['is_null_call'] = self.is_null_call
         if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
         if self.name is not None: body['name'] = self.name
         if self.owner is not None: body['owner'] = self.owner
         if self.parameter_style is not None: body['parameter_style'] = self.parameter_style.value
-        if self.properties: body['properties'] = self.properties
-        if self.return_params: body['return_params'] = [v.as_dict() for v in self.return_params]
+        if self.properties is not None: body['properties'] = self.properties
+        if self.return_params: body['return_params'] = self.return_params.as_dict()
         if self.routine_body is not None: body['routine_body'] = self.routine_body.value
         if self.routine_definition is not None: body['routine_definition'] = self.routine_definition
-        if self.routine_dependencies:
-            body['routine_dependencies'] = [v.as_dict() for v in self.routine_dependencies]
+        if self.routine_dependencies: body['routine_dependencies'] = self.routine_dependencies.as_dict()
         if self.schema_name is not None: body['schema_name'] = self.schema_name
         if self.security_type is not None: body['security_type'] = self.security_type.value
         if self.specific_name is not None: body['specific_name'] = self.specific_name
@@ -1330,7 +1359,7 @@ class FunctionInfo:
                    full_data_type=d.get('full_data_type', None),
                    full_name=d.get('full_name', None),
                    function_id=d.get('function_id', None),
-                   input_params=_repeated(d, 'input_params', FunctionParameterInfo),
+                   input_params=_from_dict(d, 'input_params', FunctionParameterInfos),
                    is_deterministic=d.get('is_deterministic', None),
                    is_null_call=d.get('is_null_call', None),
                    metastore_id=d.get('metastore_id', None),
@@ -1338,10 +1367,10 @@ class FunctionInfo:
                    owner=d.get('owner', None),
                    parameter_style=_enum(d, 'parameter_style', FunctionInfoParameterStyle),
                    properties=d.get('properties', None),
-                   return_params=_repeated(d, 'return_params', FunctionParameterInfo),
+                   return_params=_from_dict(d, 'return_params', FunctionParameterInfos),
                    routine_body=_enum(d, 'routine_body', FunctionInfoRoutineBody),
                    routine_definition=d.get('routine_definition', None),
-                   routine_dependencies=_repeated(d, 'routine_dependencies', Dependency),
+                   routine_dependencies=_from_dict(d, 'routine_dependencies', DependencyList),
                    schema_name=d.get('schema_name', None),
                    security_type=_enum(d, 'security_type', FunctionInfoSecurityType),
                    specific_name=d.get('specific_name', None),
@@ -1426,6 +1455,20 @@ class FunctionParameterInfo:
                    type_precision=d.get('type_precision', None),
                    type_scale=d.get('type_scale', None),
                    type_text=d.get('type_text', None))
+
+
+@dataclass
+class FunctionParameterInfos:
+    parameters: Optional['List[FunctionParameterInfo]'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.parameters: body['parameters'] = [v.as_dict() for v in self.parameters]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'FunctionParameterInfos':
+        return cls(parameters=_repeated_dict(d, 'parameters', FunctionParameterInfo))
 
 
 class FunctionParameterMode(Enum):
@@ -1556,7 +1599,7 @@ class ListCatalogsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListCatalogsResponse':
-        return cls(catalogs=_repeated(d, 'catalogs', CatalogInfo))
+        return cls(catalogs=_repeated_dict(d, 'catalogs', CatalogInfo))
 
 
 @dataclass
@@ -1570,7 +1613,7 @@ class ListConnectionsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListConnectionsResponse':
-        return cls(connections=_repeated(d, 'connections', ConnectionInfo))
+        return cls(connections=_repeated_dict(d, 'connections', ConnectionInfo))
 
 
 @dataclass
@@ -1585,7 +1628,7 @@ class ListExternalLocationsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListExternalLocationsResponse':
-        return cls(external_locations=_repeated(d, 'external_locations', ExternalLocationInfo))
+        return cls(external_locations=_repeated_dict(d, 'external_locations', ExternalLocationInfo))
 
 
 @dataclass
@@ -1599,7 +1642,7 @@ class ListFunctionsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListFunctionsResponse':
-        return cls(functions=_repeated(d, 'functions', FunctionInfo))
+        return cls(functions=_repeated_dict(d, 'functions', FunctionInfo))
 
 
 @dataclass
@@ -1613,7 +1656,7 @@ class ListMetastoresResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListMetastoresResponse':
-        return cls(metastores=_repeated(d, 'metastores', MetastoreInfo))
+        return cls(metastores=_repeated_dict(d, 'metastores', MetastoreInfo))
 
 
 @dataclass
@@ -1629,7 +1672,7 @@ class ListModelVersionsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListModelVersionsResponse':
-        return cls(model_versions=_repeated(d, 'model_versions', ModelVersionInfo),
+        return cls(model_versions=_repeated_dict(d, 'model_versions', ModelVersionInfo),
                    next_page_token=d.get('next_page_token', None))
 
 
@@ -1647,7 +1690,7 @@ class ListRegisteredModelsResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListRegisteredModelsResponse':
         return cls(next_page_token=d.get('next_page_token', None),
-                   registered_models=_repeated(d, 'registered_models', RegisteredModelInfo))
+                   registered_models=_repeated_dict(d, 'registered_models', RegisteredModelInfo))
 
 
 @dataclass
@@ -1661,7 +1704,7 @@ class ListSchemasResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListSchemasResponse':
-        return cls(schemas=_repeated(d, 'schemas', SchemaInfo))
+        return cls(schemas=_repeated_dict(d, 'schemas', SchemaInfo))
 
 
 @dataclass
@@ -1676,7 +1719,7 @@ class ListStorageCredentialsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListStorageCredentialsResponse':
-        return cls(storage_credentials=_repeated(d, 'storage_credentials', StorageCredentialInfo))
+        return cls(storage_credentials=_repeated_dict(d, 'storage_credentials', StorageCredentialInfo))
 
 
 @dataclass
@@ -1690,7 +1733,7 @@ class ListSystemSchemasResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListSystemSchemasResponse':
-        return cls(schemas=_repeated(d, 'schemas', SystemSchemaInfo))
+        return cls(schemas=_repeated_dict(d, 'schemas', SystemSchemaInfo))
 
 
 @dataclass
@@ -1707,7 +1750,7 @@ class ListTableSummariesResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListTableSummariesResponse':
         return cls(next_page_token=d.get('next_page_token', None),
-                   tables=_repeated(d, 'tables', TableSummary))
+                   tables=_repeated_dict(d, 'tables', TableSummary))
 
 
 @dataclass
@@ -1723,7 +1766,8 @@ class ListTablesResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListTablesResponse':
-        return cls(next_page_token=d.get('next_page_token', None), tables=_repeated(d, 'tables', TableInfo))
+        return cls(next_page_token=d.get('next_page_token', None),
+                   tables=_repeated_dict(d, 'tables', TableInfo))
 
 
 @dataclass
@@ -1737,7 +1781,7 @@ class ListVolumesResponseContent:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListVolumesResponseContent':
-        return cls(volumes=_repeated(d, 'volumes', VolumeInfo))
+        return cls(volumes=_repeated_dict(d, 'volumes', VolumeInfo))
 
 
 class MatchType(Enum):
@@ -1855,7 +1899,7 @@ class ModelVersionInfo:
     id: Optional[str] = None
     metastore_id: Optional[str] = None
     model_name: Optional[str] = None
-    model_version_dependencies: Optional['List[Dependency]'] = None
+    model_version_dependencies: Optional['DependencyList'] = None
     run_id: Optional[str] = None
     run_workspace_id: Optional[int] = None
     schema_name: Optional[str] = None
@@ -1876,7 +1920,7 @@ class ModelVersionInfo:
         if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
         if self.model_name is not None: body['model_name'] = self.model_name
         if self.model_version_dependencies:
-            body['model_version_dependencies'] = [v.as_dict() for v in self.model_version_dependencies]
+            body['model_version_dependencies'] = self.model_version_dependencies.as_dict()
         if self.run_id is not None: body['run_id'] = self.run_id
         if self.run_workspace_id is not None: body['run_workspace_id'] = self.run_workspace_id
         if self.schema_name is not None: body['schema_name'] = self.schema_name
@@ -1897,7 +1941,7 @@ class ModelVersionInfo:
                    id=d.get('id', None),
                    metastore_id=d.get('metastore_id', None),
                    model_name=d.get('model_name', None),
-                   model_version_dependencies=_repeated(d, 'model_version_dependencies', Dependency),
+                   model_version_dependencies=_from_dict(d, 'model_version_dependencies', DependencyList),
                    run_id=d.get('run_id', None),
                    run_workspace_id=d.get('run_workspace_id', None),
                    schema_name=d.get('schema_name', None),
@@ -1948,7 +1992,9 @@ class PermissionsChange:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'PermissionsChange':
-        return cls(add=d.get('add', None), principal=d.get('principal', None), remove=d.get('remove', None))
+        return cls(add=_repeated_enum(d, 'add', Privilege),
+                   principal=d.get('principal', None),
+                   remove=_repeated_enum(d, 'remove', Privilege))
 
 
 @dataclass
@@ -1963,7 +2009,7 @@ class PermissionsList:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'PermissionsList':
-        return cls(privilege_assignments=_repeated(d, 'privilege_assignments', PrivilegeAssignment))
+        return cls(privilege_assignments=_repeated_dict(d, 'privilege_assignments', PrivilegeAssignment))
 
 
 @dataclass
@@ -2040,7 +2086,7 @@ class PrivilegeAssignment:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'PrivilegeAssignment':
-        return cls(principal=d.get('principal', None), privileges=d.get('privileges', None))
+        return cls(principal=d.get('principal', None), privileges=_repeated_enum(d, 'privileges', Privilege))
 
 
 PropertiesKvPairs = Dict[str, str]
@@ -2124,7 +2170,7 @@ class RegisteredModelInfo:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'RegisteredModelInfo':
-        return cls(aliases=_repeated(d, 'aliases', RegisteredModelAlias),
+        return cls(aliases=_repeated_dict(d, 'aliases', RegisteredModelAlias),
                    catalog_name=d.get('catalog_name', None),
                    comment=d.get('comment', None),
                    created_at=d.get('created_at', None),
@@ -2240,7 +2286,7 @@ class SetArtifactAllowlist:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'SetArtifactAllowlist':
-        return cls(artifact_matchers=_repeated(d, 'artifact_matchers', ArtifactMatcher),
+        return cls(artifact_matchers=_repeated_dict(d, 'artifact_matchers', ArtifactMatcher),
                    artifact_type=_enum(d, 'artifact_type', ArtifactType))
 
 
@@ -2411,7 +2457,7 @@ class TableConstraintList:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'TableConstraintList':
-        return cls(table_constraints=_repeated(d, 'table_constraints', TableConstraint))
+        return cls(table_constraints=_repeated_dict(d, 'table_constraints', TableConstraint))
 
 
 @dataclass
@@ -2461,7 +2507,7 @@ class TableInfo:
     updated_at: Optional[int] = None
     updated_by: Optional[str] = None
     view_definition: Optional[str] = None
-    view_dependencies: Optional['List[Dependency]'] = None
+    view_dependencies: Optional['DependencyList'] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -2501,14 +2547,14 @@ class TableInfo:
         if self.updated_at is not None: body['updated_at'] = self.updated_at
         if self.updated_by is not None: body['updated_by'] = self.updated_by
         if self.view_definition is not None: body['view_definition'] = self.view_definition
-        if self.view_dependencies: body['view_dependencies'] = [v.as_dict() for v in self.view_dependencies]
+        if self.view_dependencies: body['view_dependencies'] = self.view_dependencies.as_dict()
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'TableInfo':
         return cls(access_point=d.get('access_point', None),
                    catalog_name=d.get('catalog_name', None),
-                   columns=_repeated(d, 'columns', ColumnInfo),
+                   columns=_repeated_dict(d, 'columns', ColumnInfo),
                    comment=d.get('comment', None),
                    created_at=d.get('created_at', None),
                    created_by=d.get('created_by', None),
@@ -2538,7 +2584,7 @@ class TableInfo:
                    updated_at=d.get('updated_at', None),
                    updated_by=d.get('updated_by', None),
                    view_definition=d.get('view_definition', None),
-                   view_dependencies=_repeated(d, 'view_dependencies', Dependency))
+                   view_dependencies=_from_dict(d, 'view_dependencies', DependencyList))
 
 
 @dataclass
@@ -2641,6 +2687,7 @@ class UpdateExternalLocation:
     name: Optional[str] = None
     owner: Optional[str] = None
     read_only: Optional[bool] = None
+    skip_validation: Optional[bool] = None
     url: Optional[str] = None
 
     def as_dict(self) -> dict:
@@ -2653,6 +2700,7 @@ class UpdateExternalLocation:
         if self.name is not None: body['name'] = self.name
         if self.owner is not None: body['owner'] = self.owner
         if self.read_only is not None: body['read_only'] = self.read_only
+        if self.skip_validation is not None: body['skip_validation'] = self.skip_validation
         if self.url is not None: body['url'] = self.url
         return body
 
@@ -2666,6 +2714,7 @@ class UpdateExternalLocation:
                    name=d.get('name', None),
                    owner=d.get('owner', None),
                    read_only=d.get('read_only', None),
+                   skip_validation=d.get('skip_validation', None),
                    url=d.get('url', None))
 
 
@@ -2788,7 +2837,7 @@ class UpdatePermissions:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'UpdatePermissions':
-        return cls(changes=_repeated(d, 'changes', PermissionsChange),
+        return cls(changes=_repeated_dict(d, 'changes', PermissionsChange),
                    full_name=d.get('full_name', None),
                    securable_type=_enum(d, 'securable_type', SecurableType))
 
@@ -2981,8 +3030,8 @@ class UpdateWorkspaceBindingsParameters:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'UpdateWorkspaceBindingsParameters':
-        return cls(add=_repeated(d, 'add', WorkspaceBinding),
-                   remove=_repeated(d, 'remove', WorkspaceBinding),
+        return cls(add=_repeated_dict(d, 'add', WorkspaceBinding),
+                   remove=_repeated_dict(d, 'remove', WorkspaceBinding),
                    securable_name=d.get('securable_name', None),
                    securable_type=d.get('securable_type', None))
 
@@ -3038,7 +3087,7 @@ class ValidateStorageCredentialResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ValidateStorageCredentialResponse':
-        return cls(is_dir=d.get('isDir', None), results=_repeated(d, 'results', ValidationResult))
+        return cls(is_dir=d.get('isDir', None), results=_repeated_dict(d, 'results', ValidationResult))
 
 
 @dataclass
@@ -3179,7 +3228,7 @@ class WorkspaceBindingsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'WorkspaceBindingsResponse':
-        return cls(bindings=_repeated(d, 'bindings', WorkspaceBinding))
+        return cls(bindings=_repeated_dict(d, 'bindings', WorkspaceBinding))
 
 
 class AccountMetastoreAssignmentsAPI:
@@ -3552,18 +3601,18 @@ class ArtifactAllowlistsAPI:
                            headers=headers)
         return ArtifactAllowlistInfo.from_dict(res)
 
-    def update(self, artifact_matchers: List[ArtifactMatcher],
-               artifact_type: ArtifactType) -> ArtifactAllowlistInfo:
+    def update(self, artifact_type: ArtifactType,
+               artifact_matchers: List[ArtifactMatcher]) -> ArtifactAllowlistInfo:
         """Set an artifact allowlist.
         
         Set the artifact allowlist of a certain artifact type. The whole artifact allowlist is replaced with
         the new allowlist. The caller must be a metastore admin or have the **MANAGE ALLOWLIST** privilege on
         the metastore.
         
-        :param artifact_matchers: List[:class:`ArtifactMatcher`]
-          A list of allowed artifact match patterns.
         :param artifact_type: :class:`ArtifactType`
           The artifact type of the allowlist.
+        :param artifact_matchers: List[:class:`ArtifactMatcher`]
+          A list of allowed artifact match patterns.
         
         :returns: :class:`ArtifactAllowlistInfo`
         """
@@ -3820,21 +3869,21 @@ class ConnectionsAPI:
         return parsed if parsed is not None else []
 
     def update(self,
+               name_arg: str,
                name: str,
                options: Dict[str, str],
-               name_arg: str,
                *,
                owner: Optional[str] = None) -> ConnectionInfo:
         """Update a connection.
         
         Updates the connection that matches the supplied name.
         
+        :param name_arg: str
+          Name of the connection.
         :param name: str
           Name of the connection.
         :param options: Dict[str,str]
           A map of key-value properties attached to the securable.
-        :param name_arg: str
-          Name of the connection.
         :param owner: str (optional)
           Username of current owner of the connection.
         
@@ -3978,6 +4027,7 @@ class ExternalLocationsAPI:
                force: Optional[bool] = None,
                owner: Optional[str] = None,
                read_only: Optional[bool] = None,
+               skip_validation: Optional[bool] = None,
                url: Optional[str] = None) -> ExternalLocationInfo:
         """Update an external location.
         
@@ -4001,6 +4051,8 @@ class ExternalLocationsAPI:
           The owner of the external location.
         :param read_only: bool (optional)
           Indicates whether the external location is read-only.
+        :param skip_validation: bool (optional)
+          Skips validation of the storage credential associated with the external location.
         :param url: str (optional)
           Path URL of the external location.
         
@@ -4014,6 +4066,7 @@ class ExternalLocationsAPI:
         if force is not None: body['force'] = force
         if owner is not None: body['owner'] = owner
         if read_only is not None: body['read_only'] = read_only
+        if skip_validation is not None: body['skip_validation'] = skip_validation
         if url is not None: body['url'] = url
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         res = self._api.do('PATCH',
@@ -4033,29 +4086,7 @@ class FunctionsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self,
-               name: str,
-               catalog_name: str,
-               schema_name: str,
-               input_params: List[FunctionParameterInfo],
-               data_type: ColumnTypeName,
-               full_data_type: str,
-               return_params: List[FunctionParameterInfo],
-               routine_body: CreateFunctionRoutineBody,
-               routine_definition: str,
-               routine_dependencies: List[Dependency],
-               parameter_style: CreateFunctionParameterStyle,
-               is_deterministic: bool,
-               sql_data_access: CreateFunctionSqlDataAccess,
-               is_null_call: bool,
-               security_type: CreateFunctionSecurityType,
-               specific_name: str,
-               *,
-               comment: Optional[str] = None,
-               external_language: Optional[str] = None,
-               external_name: Optional[str] = None,
-               properties: Optional[Dict[str, str]] = None,
-               sql_path: Optional[str] = None) -> FunctionInfo:
+    def create(self, function_info: CreateFunction) -> FunctionInfo:
         """Create a function.
         
         Creates a new function
@@ -4064,77 +4095,13 @@ class FunctionsAPI:
         **USE_CATALOG** on the function's parent catalog - **USE_SCHEMA** and **CREATE_FUNCTION** on the
         function's parent schema
         
-        :param name: str
-          Name of function, relative to parent schema.
-        :param catalog_name: str
-          Name of parent catalog.
-        :param schema_name: str
-          Name of parent schema relative to its parent catalog.
-        :param input_params: List[:class:`FunctionParameterInfo`]
-          The array of __FunctionParameterInfo__ definitions of the function's parameters.
-        :param data_type: :class:`ColumnTypeName`
-          Scalar function return data type.
-        :param full_data_type: str
-          Pretty printed function data type.
-        :param return_params: List[:class:`FunctionParameterInfo`]
-          Table function return parameters.
-        :param routine_body: :class:`CreateFunctionRoutineBody`
-          Function language. When **EXTERNAL** is used, the language of the routine function should be
-          specified in the __external_language__ field, and the __return_params__ of the function cannot be
-          used (as **TABLE** return type is not supported), and the __sql_data_access__ field must be
-          **NO_SQL**.
-        :param routine_definition: str
-          Function body.
-        :param routine_dependencies: List[:class:`Dependency`]
-          Function dependencies.
-        :param parameter_style: :class:`CreateFunctionParameterStyle`
-          Function parameter style. **S** is the value for SQL.
-        :param is_deterministic: bool
-          Whether the function is deterministic.
-        :param sql_data_access: :class:`CreateFunctionSqlDataAccess`
-          Function SQL data access.
-        :param is_null_call: bool
-          Function null call.
-        :param security_type: :class:`CreateFunctionSecurityType`
-          Function security type.
-        :param specific_name: str
-          Specific name of the function; Reserved for future use.
-        :param comment: str (optional)
-          User-provided free-form text description.
-        :param external_language: str (optional)
-          External function language.
-        :param external_name: str (optional)
-          External function name.
-        :param properties: Dict[str,str] (optional)
-          A map of key-value properties attached to the securable.
-        :param sql_path: str (optional)
-          List of schemes whose objects can be referenced without qualification.
+        :param function_info: :class:`CreateFunction`
+          Partial __FunctionInfo__ specifying the function to be created.
         
         :returns: :class:`FunctionInfo`
         """
         body = {}
-        if catalog_name is not None: body['catalog_name'] = catalog_name
-        if comment is not None: body['comment'] = comment
-        if data_type is not None: body['data_type'] = data_type.value
-        if external_language is not None: body['external_language'] = external_language
-        if external_name is not None: body['external_name'] = external_name
-        if full_data_type is not None: body['full_data_type'] = full_data_type
-        if input_params is not None: body['input_params'] = [v.as_dict() for v in input_params]
-        if is_deterministic is not None: body['is_deterministic'] = is_deterministic
-        if is_null_call is not None: body['is_null_call'] = is_null_call
-        if name is not None: body['name'] = name
-        if parameter_style is not None: body['parameter_style'] = parameter_style.value
-        if properties is not None: body['properties'] = properties
-        if return_params is not None: body['return_params'] = [v.as_dict() for v in return_params]
-        if routine_body is not None: body['routine_body'] = routine_body.value
-        if routine_definition is not None: body['routine_definition'] = routine_definition
-        if routine_dependencies is not None:
-            body['routine_dependencies'] = [v.as_dict() for v in routine_dependencies]
-        if schema_name is not None: body['schema_name'] = schema_name
-        if security_type is not None: body['security_type'] = security_type.value
-        if specific_name is not None: body['specific_name'] = specific_name
-        if sql_data_access is not None: body['sql_data_access'] = sql_data_access.value
-        if sql_path is not None: body['sql_path'] = sql_path
+        if function_info is not None: body['function_info'] = function_info.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         res = self._api.do('POST', '/api/2.1/unity-catalog/functions', body=body, headers=headers)
         return FunctionInfo.from_dict(res)
@@ -4348,19 +4315,19 @@ class MetastoresAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def assign(self, metastore_id: str, default_catalog_name: str, workspace_id: int):
+    def assign(self, workspace_id: int, metastore_id: str, default_catalog_name: str):
         """Create an assignment.
         
         Creates a new metastore assignment. If an assignment for the same __workspace_id__ exists, it will be
         overwritten by the new __metastore_id__ and __default_catalog_name__. The caller must be an account
         admin.
         
+        :param workspace_id: int
+          A workspace ID.
         :param metastore_id: str
           The unique ID of the metastore.
         :param default_catalog_name: str
           The name of the default catalog in the metastore.
-        :param workspace_id: int
-          A workspace ID.
         
         
         """
@@ -4373,18 +4340,25 @@ class MetastoresAPI:
                      body=body,
                      headers=headers)
 
-    def create(self, name: str, storage_root: str, *, region: Optional[str] = None) -> MetastoreInfo:
+    def create(self,
+               name: str,
+               *,
+               region: Optional[str] = None,
+               storage_root: Optional[str] = None) -> MetastoreInfo:
         """Create a metastore.
         
-        Creates a new metastore based on a provided name and storage root path.
+        Creates a new metastore based on a provided name and optional storage root path. By default (if the
+        __owner__ field is not set), the owner of the new metastore is the user calling the
+        __createMetastore__ API. If the __owner__ field is set to the empty string (**""**), the ownership is
+        assigned to the System User instead.
         
         :param name: str
           The user-specified name of the metastore.
-        :param storage_root: str
-          The storage root URL for metastore
         :param region: str (optional)
           Cloud region which the metastore serves (e.g., `us-west-2`, `westus`). If this field is omitted, the
           region of the workspace receiving the request will be used.
+        :param storage_root: str (optional)
+          The storage root URL for metastore
         
         :returns: :class:`MetastoreInfo`
         """
@@ -4521,7 +4495,8 @@ class MetastoresAPI:
                storage_root_credential_id: Optional[str] = None) -> MetastoreInfo:
         """Update a metastore.
         
-        Updates information for a specific metastore. The caller must be a metastore admin.
+        Updates information for a specific metastore. The caller must be a metastore admin. If the __owner__
+        field is set to the empty string (**""**), the ownership is updated to the System User.
         
         :param id: str
           Unique ID of the metastore.

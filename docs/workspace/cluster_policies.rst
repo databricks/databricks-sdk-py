@@ -2,26 +2,25 @@ Cluster Policies
 ================
 .. py:class:: ClusterPoliciesAPI
 
-    Cluster policy limits the ability to configure clusters based on a set of rules. The policy rules limit
-    the attributes or attribute values available for cluster creation. Cluster policies have ACLs that limit
-    their use to specific users and groups.
+    You can use cluster policies to control users' ability to configure clusters based on a set of rules.
+    These rules specify which attributes or attribute values can be used during cluster creation. Cluster
+    policies have ACLs that limit their use to specific users and groups.
     
-    Cluster policies let you limit users to create clusters with prescribed settings, simplify the user
-    interface and enable more users to create their own clusters (by fixing and hiding some values), control
-    cost by limiting per cluster maximum cost (by setting limits on attributes whose values contribute to
-    hourly price).
+    With cluster policies, you can: - Auto-install cluster libraries on the next restart by listing them in
+    the policy's "libraries" field. - Limit users to creating clusters with the prescribed settings. -
+    Simplify the user interface, enabling more users to create clusters, by fixing and hiding some fields. -
+    Manage costs by setting limits on attributes that impact the hourly rate.
     
     Cluster policy permissions limit which policies a user can select in the Policy drop-down when the user
-    creates a cluster: - A user who has cluster create permission can select the Unrestricted policy and
-    create fully-configurable clusters. - A user who has both cluster create permission and access to cluster
-    policies can select the Unrestricted policy and policies they have access to. - A user that has access to
-    only cluster policies, can select the policies they have access to.
+    creates a cluster: - A user who has unrestricted cluster create permission can select the Unrestricted
+    policy and create fully-configurable clusters. - A user who has both unrestricted cluster create
+    permission and access to cluster policies can select the Unrestricted policy and policies they have access
+    to. - A user that has access to only cluster policies, can select the policies they have access to.
     
-    If no policies have been created in the workspace, the Policy drop-down does not display.
-    
-    Only admin users can create, edit, and delete policies. Admin users also have access to all policies.
+    If no policies exist in the workspace, the Policy drop-down doesn't appear. Only admin users can create,
+    edit, and delete policies. Admin users also have access to all policies.
 
-    .. py:method:: create(name [, definition, description, max_clusters_per_user, policy_family_definition_overrides, policy_family_id])
+    .. py:method:: create(name [, definition, description, libraries, max_clusters_per_user, policy_family_definition_overrides, policy_family_id])
 
         Usage:
 
@@ -53,18 +52,24 @@ Cluster Policies
           Cluster Policy name requested by the user. This has to be unique. Length must be between 1 and 100
           characters.
         :param definition: str (optional)
-          Policy definition document expressed in Databricks Cluster Policy Definition Language.
+          Policy definition document expressed in [Databricks Cluster Policy Definition Language].
+          
+          [Databricks Cluster Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html
         :param description: str (optional)
           Additional human-readable description of the cluster policy.
+        :param libraries: List[:class:`Library`] (optional)
+          A list of libraries to be installed on the next cluster restart that uses this policy.
         :param max_clusters_per_user: int (optional)
           Max number of clusters per user that can be active using this policy. If not present, there is no
           max limit.
         :param policy_family_definition_overrides: str (optional)
-          Policy definition JSON document expressed in Databricks Policy Definition Language. The JSON
+          Policy definition JSON document expressed in [Databricks Policy Definition Language]. The JSON
           document must be passed as a string and cannot be embedded in the requests.
           
           You can use this to customize the policy definition inherited from the policy family. Policy rules
           specified here are merged into the inherited policy definition.
+          
+          [Databricks Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html
         :param policy_family_id: str (optional)
           ID of the policy family. The cluster policy's policy definition inherits the policy family's policy
           definition.
@@ -87,7 +92,7 @@ Cluster Policies
         
         
 
-    .. py:method:: edit(policy_id, name [, definition, description, max_clusters_per_user, policy_family_definition_overrides, policy_family_id])
+    .. py:method:: edit(policy_id, name [, definition, description, libraries, max_clusters_per_user, policy_family_definition_overrides, policy_family_id])
 
         Usage:
 
@@ -134,18 +139,24 @@ Cluster Policies
           Cluster Policy name requested by the user. This has to be unique. Length must be between 1 and 100
           characters.
         :param definition: str (optional)
-          Policy definition document expressed in Databricks Cluster Policy Definition Language.
+          Policy definition document expressed in [Databricks Cluster Policy Definition Language].
+          
+          [Databricks Cluster Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html
         :param description: str (optional)
           Additional human-readable description of the cluster policy.
+        :param libraries: List[:class:`Library`] (optional)
+          A list of libraries to be installed on the next cluster restart that uses this policy.
         :param max_clusters_per_user: int (optional)
           Max number of clusters per user that can be active using this policy. If not present, there is no
           max limit.
         :param policy_family_definition_overrides: str (optional)
-          Policy definition JSON document expressed in Databricks Policy Definition Language. The JSON
+          Policy definition JSON document expressed in [Databricks Policy Definition Language]. The JSON
           document must be passed as a string and cannot be embedded in the requests.
           
           You can use this to customize the policy definition inherited from the policy family. Policy rules
           specified here are merged into the inherited policy definition.
+          
+          [Databricks Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html
         :param policy_family_id: str (optional)
           ID of the policy family. The cluster policy's policy definition inherits the policy family's policy
           definition.

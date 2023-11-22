@@ -71,6 +71,8 @@ def w(env_or_skip) -> WorkspaceClient:
 def ucws(env_or_skip) -> WorkspaceClient:
     _load_debug_env_if_runs_from_ide('ucws')
     env_or_skip("CLOUD_ENV")
+    if 'DATABRICKS_ACCOUNT_ID' in os.environ:
+        pytest.skip("Skipping workspace test on account level")
     if 'TEST_METASTORE_ID' not in os.environ:
         pytest.skip("not in Unity Catalog Workspace test env")
     return WorkspaceClient()

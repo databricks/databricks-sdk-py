@@ -8,7 +8,6 @@ Configure OAuth 2.0 application registrations for Databricks
   :maxdepth: 1
 
   custom_app_integration
-  o_auth_enrollment
   o_auth_published_apps
   published_app_integration
   service_principal_secrets

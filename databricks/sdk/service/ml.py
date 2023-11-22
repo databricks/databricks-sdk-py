@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, Iterator, List, Optional
 
-from ._internal import _enum, _from_dict, _repeated
+from ._internal import _enum, _from_dict, _repeated_dict, _repeated_enum
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -165,7 +165,7 @@ class CommentObject:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CommentObject':
-        return cls(available_actions=d.get('available_actions', None),
+        return cls(available_actions=_repeated_enum(d, 'available_actions', CommentActivityAction),
                    comment=d.get('comment', None),
                    creation_timestamp=d.get('creation_timestamp', None),
                    id=d.get('id', None),
@@ -222,7 +222,7 @@ class CreateExperiment:
     def from_dict(cls, d: Dict[str, any]) -> 'CreateExperiment':
         return cls(artifact_location=d.get('artifact_location', None),
                    name=d.get('name', None),
-                   tags=_repeated(d, 'tags', ExperimentTag))
+                   tags=_repeated_dict(d, 'tags', ExperimentTag))
 
 
 @dataclass
@@ -256,7 +256,7 @@ class CreateModelRequest:
     def from_dict(cls, d: Dict[str, any]) -> 'CreateModelRequest':
         return cls(description=d.get('description', None),
                    name=d.get('name', None),
-                   tags=_repeated(d, 'tags', ModelTag))
+                   tags=_repeated_dict(d, 'tags', ModelTag))
 
 
 @dataclass
@@ -299,7 +299,7 @@ class CreateModelVersionRequest:
                    run_id=d.get('run_id', None),
                    run_link=d.get('run_link', None),
                    source=d.get('source', None),
-                   tags=_repeated(d, 'tags', ModelVersionTag))
+                   tags=_repeated_dict(d, 'tags', ModelVersionTag))
 
 
 @dataclass
@@ -338,7 +338,7 @@ class CreateRegistryWebhook:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateRegistryWebhook':
         return cls(description=d.get('description', None),
-                   events=d.get('events', None),
+                   events=_repeated_enum(d, 'events', RegistryWebhookEvent),
                    http_url_spec=_from_dict(d, 'http_url_spec', HttpUrlSpec),
                    job_spec=_from_dict(d, 'job_spec', JobSpec),
                    model_name=d.get('model_name', None),
@@ -364,7 +364,7 @@ class CreateRun:
     def from_dict(cls, d: Dict[str, any]) -> 'CreateRun':
         return cls(experiment_id=d.get('experiment_id', None),
                    start_time=d.get('start_time', None),
-                   tags=_repeated(d, 'tags', RunTag),
+                   tags=_repeated_dict(d, 'tags', RunTag),
                    user_id=d.get('user_id', None))
 
 
@@ -475,7 +475,7 @@ class DatasetInput:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'DatasetInput':
-        return cls(dataset=_from_dict(d, 'dataset', Dataset), tags=_repeated(d, 'tags', InputTag))
+        return cls(dataset=_from_dict(d, 'dataset', Dataset), tags=_repeated_dict(d, 'tags', InputTag))
 
 
 @dataclass
@@ -593,7 +593,7 @@ class Experiment:
                    last_update_time=d.get('last_update_time', None),
                    lifecycle_stage=d.get('lifecycle_stage', None),
                    name=d.get('name', None),
-                   tags=_repeated(d, 'tags', ExperimentTag))
+                   tags=_repeated_dict(d, 'tags', ExperimentTag))
 
 
 @dataclass
@@ -640,7 +640,7 @@ class ExperimentAccessControlResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ExperimentAccessControlResponse':
-        return cls(all_permissions=_repeated(d, 'all_permissions', ExperimentPermission),
+        return cls(all_permissions=_repeated_dict(d, 'all_permissions', ExperimentPermission),
                    display_name=d.get('display_name', None),
                    group_name=d.get('group_name', None),
                    service_principal_name=d.get('service_principal_name', None),
@@ -691,7 +691,8 @@ class ExperimentPermissions:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ExperimentPermissions':
-        return cls(access_control_list=_repeated(d, 'access_control_list', ExperimentAccessControlResponse),
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list',
+                                                      ExperimentAccessControlResponse),
                    object_id=d.get('object_id', None),
                    object_type=d.get('object_type', None))
 
@@ -727,7 +728,8 @@ class ExperimentPermissionsRequest:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ExperimentPermissionsRequest':
-        return cls(access_control_list=_repeated(d, 'access_control_list', ExperimentAccessControlRequest),
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list',
+                                                      ExperimentAccessControlRequest),
                    experiment_id=d.get('experiment_id', None))
 
 
@@ -776,7 +778,7 @@ class GetExperimentPermissionLevelsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetExperimentPermissionLevelsResponse':
-        return cls(permission_levels=_repeated(d, 'permission_levels', ExperimentPermissionsDescription))
+        return cls(permission_levels=_repeated_dict(d, 'permission_levels', ExperimentPermissionsDescription))
 
 
 @dataclass
@@ -820,7 +822,7 @@ class GetLatestVersionsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetLatestVersionsResponse':
-        return cls(model_versions=_repeated(d, 'model_versions', ModelVersion))
+        return cls(model_versions=_repeated_dict(d, 'model_versions', ModelVersion))
 
 
 @dataclass
@@ -836,7 +838,8 @@ class GetMetricHistoryResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetMetricHistoryResponse':
-        return cls(metrics=_repeated(d, 'metrics', Metric), next_page_token=d.get('next_page_token', None))
+        return cls(metrics=_repeated_dict(d, 'metrics', Metric),
+                   next_page_token=d.get('next_page_token', None))
 
 
 @dataclass
@@ -893,7 +896,8 @@ class GetRegisteredModelPermissionLevelsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetRegisteredModelPermissionLevelsResponse':
-        return cls(permission_levels=_repeated(d, 'permission_levels', RegisteredModelPermissionsDescription))
+        return cls(
+            permission_levels=_repeated_dict(d, 'permission_levels', RegisteredModelPermissionsDescription))
 
 
 @dataclass
@@ -1018,7 +1022,7 @@ class ListArtifactsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListArtifactsResponse':
-        return cls(files=_repeated(d, 'files', FileInfo),
+        return cls(files=_repeated_dict(d, 'files', FileInfo),
                    next_page_token=d.get('next_page_token', None),
                    root_uri=d.get('root_uri', None))
 
@@ -1036,7 +1040,7 @@ class ListExperimentsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListExperimentsResponse':
-        return cls(experiments=_repeated(d, 'experiments', Experiment),
+        return cls(experiments=_repeated_dict(d, 'experiments', Experiment),
                    next_page_token=d.get('next_page_token', None))
 
 
@@ -1054,7 +1058,7 @@ class ListModelsResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListModelsResponse':
         return cls(next_page_token=d.get('next_page_token', None),
-                   registered_models=_repeated(d, 'registered_models', Model))
+                   registered_models=_repeated_dict(d, 'registered_models', Model))
 
 
 @dataclass
@@ -1071,7 +1075,7 @@ class ListRegistryWebhooks:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListRegistryWebhooks':
         return cls(next_page_token=d.get('next_page_token', None),
-                   webhooks=_repeated(d, 'webhooks', RegistryWebhook))
+                   webhooks=_repeated_dict(d, 'webhooks', RegistryWebhook))
 
 
 @dataclass
@@ -1085,7 +1089,7 @@ class ListTransitionRequestsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListTransitionRequestsResponse':
-        return cls(requests=_repeated(d, 'requests', Activity))
+        return cls(requests=_repeated_dict(d, 'requests', Activity))
 
 
 @dataclass
@@ -1105,10 +1109,10 @@ class LogBatch:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'LogBatch':
-        return cls(metrics=_repeated(d, 'metrics', Metric),
-                   params=_repeated(d, 'params', Param),
+        return cls(metrics=_repeated_dict(d, 'metrics', Metric),
+                   params=_repeated_dict(d, 'params', Param),
                    run_id=d.get('run_id', None),
-                   tags=_repeated(d, 'tags', RunTag))
+                   tags=_repeated_dict(d, 'tags', RunTag))
 
 
 @dataclass
@@ -1124,7 +1128,7 @@ class LogInputs:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'LogInputs':
-        return cls(datasets=_repeated(d, 'datasets', DatasetInput), run_id=d.get('run_id', None))
+        return cls(datasets=_repeated_dict(d, 'datasets', DatasetInput), run_id=d.get('run_id', None))
 
 
 @dataclass
@@ -1245,9 +1249,9 @@ class Model:
         return cls(creation_timestamp=d.get('creation_timestamp', None),
                    description=d.get('description', None),
                    last_updated_timestamp=d.get('last_updated_timestamp', None),
-                   latest_versions=_repeated(d, 'latest_versions', ModelVersion),
+                   latest_versions=_repeated_dict(d, 'latest_versions', ModelVersion),
                    name=d.get('name', None),
-                   tags=_repeated(d, 'tags', ModelTag),
+                   tags=_repeated_dict(d, 'tags', ModelTag),
                    user_id=d.get('user_id', None))
 
 
@@ -1283,10 +1287,10 @@ class ModelDatabricks:
                    description=d.get('description', None),
                    id=d.get('id', None),
                    last_updated_timestamp=d.get('last_updated_timestamp', None),
-                   latest_versions=_repeated(d, 'latest_versions', ModelVersion),
+                   latest_versions=_repeated_dict(d, 'latest_versions', ModelVersion),
                    name=d.get('name', None),
                    permission_level=_enum(d, 'permission_level', PermissionLevel),
-                   tags=_repeated(d, 'tags', ModelTag),
+                   tags=_repeated_dict(d, 'tags', ModelTag),
                    user_id=d.get('user_id', None))
 
 
@@ -1352,7 +1356,7 @@ class ModelVersion:
                    source=d.get('source', None),
                    status=_enum(d, 'status', ModelVersionStatus),
                    status_message=d.get('status_message', None),
-                   tags=_repeated(d, 'tags', ModelVersionTag),
+                   tags=_repeated_dict(d, 'tags', ModelVersionTag),
                    user_id=d.get('user_id', None),
                    version=d.get('version', None))
 
@@ -1406,7 +1410,7 @@ class ModelVersionDatabricks:
                    source=d.get('source', None),
                    status=_enum(d, 'status', Status),
                    status_message=d.get('status_message', None),
-                   tags=_repeated(d, 'tags', ModelVersionTag),
+                   tags=_repeated_dict(d, 'tags', ModelVersionTag),
                    user_id=d.get('user_id', None),
                    version=d.get('version', None))
 
@@ -1506,7 +1510,7 @@ class RegisteredModelAccessControlResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'RegisteredModelAccessControlResponse':
-        return cls(all_permissions=_repeated(d, 'all_permissions', RegisteredModelPermission),
+        return cls(all_permissions=_repeated_dict(d, 'all_permissions', RegisteredModelPermission),
                    display_name=d.get('display_name', None),
                    group_name=d.get('group_name', None),
                    service_principal_name=d.get('service_principal_name', None),
@@ -1559,8 +1563,8 @@ class RegisteredModelPermissions:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'RegisteredModelPermissions':
-        return cls(access_control_list=_repeated(d, 'access_control_list',
-                                                 RegisteredModelAccessControlResponse),
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list',
+                                                      RegisteredModelAccessControlResponse),
                    object_id=d.get('object_id', None),
                    object_type=d.get('object_type', None))
 
@@ -1596,8 +1600,8 @@ class RegisteredModelPermissionsRequest:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'RegisteredModelPermissionsRequest':
-        return cls(access_control_list=_repeated(d, 'access_control_list',
-                                                 RegisteredModelAccessControlRequest),
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list',
+                                                      RegisteredModelAccessControlRequest),
                    registered_model_id=d.get('registered_model_id', None))
 
 
@@ -1631,7 +1635,7 @@ class RegistryWebhook:
     def from_dict(cls, d: Dict[str, any]) -> 'RegistryWebhook':
         return cls(creation_timestamp=d.get('creation_timestamp', None),
                    description=d.get('description', None),
-                   events=d.get('events', None),
+                   events=_repeated_enum(d, 'events', RegistryWebhookEvent),
                    http_url_spec=_from_dict(d, 'http_url_spec', HttpUrlSpecWithoutSecret),
                    id=d.get('id', None),
                    job_spec=_from_dict(d, 'job_spec', JobSpecWithoutSecret),
@@ -1834,9 +1838,9 @@ class RunData:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'RunData':
-        return cls(metrics=_repeated(d, 'metrics', Metric),
-                   params=_repeated(d, 'params', Param),
-                   tags=_repeated(d, 'tags', RunTag))
+        return cls(metrics=_repeated_dict(d, 'metrics', Metric),
+                   params=_repeated_dict(d, 'params', Param),
+                   tags=_repeated_dict(d, 'tags', RunTag))
 
 
 @dataclass
@@ -1898,7 +1902,7 @@ class RunInputs:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'RunInputs':
-        return cls(dataset_inputs=_repeated(d, 'dataset_inputs', DatasetInput))
+        return cls(dataset_inputs=_repeated_dict(d, 'dataset_inputs', DatasetInput))
 
 
 @dataclass
@@ -1956,7 +1960,7 @@ class SearchExperimentsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'SearchExperimentsResponse':
-        return cls(experiments=_repeated(d, 'experiments', Experiment),
+        return cls(experiments=_repeated_dict(d, 'experiments', Experiment),
                    next_page_token=d.get('next_page_token', None))
 
 
@@ -1982,7 +1986,7 @@ class SearchModelVersionsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'SearchModelVersionsResponse':
-        return cls(model_versions=_repeated(d, 'model_versions', ModelVersion),
+        return cls(model_versions=_repeated_dict(d, 'model_versions', ModelVersion),
                    next_page_token=d.get('next_page_token', None))
 
 
@@ -2000,7 +2004,7 @@ class SearchModelsResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'SearchModelsResponse':
         return cls(next_page_token=d.get('next_page_token', None),
-                   registered_models=_repeated(d, 'registered_models', Model))
+                   registered_models=_repeated_dict(d, 'registered_models', Model))
 
 
 @dataclass
@@ -2045,7 +2049,7 @@ class SearchRunsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'SearchRunsResponse':
-        return cls(next_page_token=d.get('next_page_token', None), runs=_repeated(d, 'runs', Run))
+        return cls(next_page_token=d.get('next_page_token', None), runs=_repeated_dict(d, 'runs', Run))
 
 
 class SearchRunsRunViewType(Enum):
@@ -2266,7 +2270,7 @@ class TransitionRequest:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'TransitionRequest':
-        return cls(available_actions=d.get('available_actions', None),
+        return cls(available_actions=_repeated_enum(d, 'available_actions', ActivityAction),
                    comment=d.get('comment', None),
                    creation_timestamp=d.get('creation_timestamp', None),
                    to_stage=_enum(d, 'to_stage', Stage),
@@ -2391,7 +2395,7 @@ class UpdateRegistryWebhook:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'UpdateRegistryWebhook':
         return cls(description=d.get('description', None),
-                   events=d.get('events', None),
+                   events=_repeated_enum(d, 'events', RegistryWebhookEvent),
                    http_url_spec=_from_dict(d, 'http_url_spec', HttpUrlSpec),
                    id=d.get('id', None),
                    job_spec=_from_dict(d, 'job_spec', JobSpec),

@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import BinaryIO, Dict, Iterator, List, Optional
 
-from ._internal import _enum, _from_dict, _repeated
+from ._internal import _enum, _from_dict, _repeated_dict
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -37,7 +37,7 @@ class Budget:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'Budget':
-        return cls(alerts=_repeated(d, 'alerts', BudgetAlert),
+        return cls(alerts=_repeated_dict(d, 'alerts', BudgetAlert),
                    end_date=d.get('end_date', None),
                    filter=d.get('filter', None),
                    name=d.get('name', None),
@@ -76,7 +76,7 @@ class BudgetList:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'BudgetList':
-        return cls(budgets=_repeated(d, 'budgets', BudgetWithStatus))
+        return cls(budgets=_repeated_dict(d, 'budgets', BudgetWithStatus))
 
 
 @dataclass
@@ -112,7 +112,7 @@ class BudgetWithStatus:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'BudgetWithStatus':
-        return cls(alerts=_repeated(d, 'alerts', BudgetAlert),
+        return cls(alerts=_repeated_dict(d, 'alerts', BudgetAlert),
                    budget_id=d.get('budget_id', None),
                    creation_time=d.get('creation_time', None),
                    end_date=d.get('end_date', None),
@@ -120,7 +120,7 @@ class BudgetWithStatus:
                    name=d.get('name', None),
                    period=d.get('period', None),
                    start_date=d.get('start_date', None),
-                   status_daily=_repeated(d, 'status_daily', BudgetWithStatusStatusDailyItem),
+                   status_daily=_repeated_dict(d, 'status_daily', BudgetWithStatusStatusDailyItem),
                    target_amount=d.get('target_amount', None),
                    update_time=d.get('update_time', None))
 
@@ -416,8 +416,8 @@ class WrappedLogDeliveryConfigurations:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'WrappedLogDeliveryConfigurations':
-        return cls(
-            log_delivery_configurations=_repeated(d, 'log_delivery_configurations', LogDeliveryConfiguration))
+        return cls(log_delivery_configurations=_repeated_dict(d, 'log_delivery_configurations',
+                                                              LogDeliveryConfiguration))
 
 
 class BillableUsageAPI:
@@ -542,15 +542,15 @@ class BudgetsAPI:
         parsed = BudgetList.from_dict(json).budgets
         return parsed if parsed is not None else []
 
-    def update(self, budget: Budget, budget_id: str):
+    def update(self, budget_id: str, budget: Budget):
         """Modify budget.
         
         Modifies a budget in this account. Budget properties are completely overwritten.
         
-        :param budget: :class:`Budget`
-          Budget configuration to be created.
         :param budget_id: str
           Budget ID
+        :param budget: :class:`Budget`
+          Budget configuration to be created.
         
         
         """
@@ -705,7 +705,7 @@ class LogDeliveryAPI:
         parsed = WrappedLogDeliveryConfigurations.from_dict(json).log_delivery_configurations
         return parsed if parsed is not None else []
 
-    def patch_status(self, status: LogDeliveryConfigStatus, log_delivery_configuration_id: str):
+    def patch_status(self, log_delivery_configuration_id: str, status: LogDeliveryConfigStatus):
         """Enable or disable log delivery configuration.
         
         Enables or disables a log delivery configuration. Deletion of delivery configurations is not
@@ -713,13 +713,13 @@ class LogDeliveryAPI:
         re-enable a delivery configuration if this would violate the delivery configuration limits described
         under [Create log delivery](:method:LogDelivery/Create).
         
+        :param log_delivery_configuration_id: str
+          Databricks log delivery configuration ID
         :param status: :class:`LogDeliveryConfigStatus`
           Status of log delivery configuration. Set to `ENABLED` (enabled) or `DISABLED` (disabled). Defaults
           to `ENABLED`. You can [enable or disable the
           configuration](#operation/patch-log-delivery-config-status) later. Deletion of a configuration is
           not supported, so disable a log delivery configuration that is no longer needed.
-        :param log_delivery_configuration_id: str
-          Databricks log delivery configuration ID
         
         
         """

@@ -9,11 +9,37 @@ from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
 from ..errors import OperationFailed
-from ._internal import Wait, _enum, _from_dict, _repeated
+from ._internal import Wait, _enum, _from_dict, _repeated_dict
 
 _LOG = logging.getLogger('databricks.sdk')
 
 # all definitions in this file are in alphabetical order
+
+
+@dataclass
+class AppEvents:
+    event_name: Optional[str] = None
+    event_time: Optional[str] = None
+    event_type: Optional[str] = None
+    message: Optional[str] = None
+    service_name: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.event_name is not None: body['event_name'] = self.event_name
+        if self.event_time is not None: body['event_time'] = self.event_time
+        if self.event_type is not None: body['event_type'] = self.event_type
+        if self.message is not None: body['message'] = self.message
+        if self.service_name is not None: body['service_name'] = self.service_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'AppEvents':
+        return cls(event_name=d.get('event_name', None),
+                   event_time=d.get('event_time', None),
+                   event_type=d.get('event_type', None),
+                   message=d.get('message', None),
+                   service_name=d.get('service_name', None))
 
 
 @dataclass
@@ -24,7 +50,7 @@ class AppManifest:
     name: Optional[str] = None
     registry: Optional[Any] = None
     services: Optional[Any] = None
-    version: Optional[int] = None
+    version: Optional[Any] = None
 
     def as_dict(self) -> dict:
         body = {}
@@ -34,7 +60,7 @@ class AppManifest:
         if self.name is not None: body['name'] = self.name
         if self.registry: body['registry'] = self.registry
         if self.services: body['services'] = self.services
-        if self.version is not None: body['version'] = self.version
+        if self.version: body['version'] = self.version
         return body
 
     @classmethod
@@ -46,6 +72,26 @@ class AppManifest:
                    registry=d.get('registry', None),
                    services=d.get('services', None),
                    version=d.get('version', None))
+
+
+@dataclass
+class AppServiceStatus:
+    deployment: Optional[Any] = None
+    name: Optional[str] = None
+    template: Optional[Any] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.deployment: body['deployment'] = self.deployment
+        if self.name is not None: body['name'] = self.name
+        if self.template: body['template'] = self.template
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'AppServiceStatus':
+        return cls(deployment=d.get('deployment', None),
+                   name=d.get('name', None),
+                   template=d.get('template', None))
 
 
 @dataclass
@@ -79,7 +125,7 @@ class CreateServingEndpoint:
     def from_dict(cls, d: Dict[str, any]) -> 'CreateServingEndpoint':
         return cls(config=_from_dict(d, 'config', EndpointCoreConfigInput),
                    name=d.get('name', None),
-                   tags=_repeated(d, 'tags', EndpointTag))
+                   tags=_repeated_dict(d, 'tags', EndpointTag))
 
 
 @dataclass
@@ -101,6 +147,20 @@ class DataframeSplitInput:
 
 
 @dataclass
+class DeleteAppResponse:
+    name: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.name is not None: body['name'] = self.name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'DeleteAppResponse':
+        return cls(name=d.get('name', None))
+
+
+@dataclass
 class DeployAppRequest:
     manifest: 'AppManifest'
     resources: Optional[Any] = None
@@ -118,18 +178,25 @@ class DeployAppRequest:
 
 @dataclass
 class DeploymentStatus:
+    container_logs: Optional['List[Any]'] = None
     deployment_id: Optional[str] = None
+    extra_info: Optional[str] = None
     state: Optional['DeploymentStatusState'] = None
 
     def as_dict(self) -> dict:
         body = {}
+        if self.container_logs: body['container_logs'] = [v for v in self.container_logs]
         if self.deployment_id is not None: body['deployment_id'] = self.deployment_id
+        if self.extra_info is not None: body['extra_info'] = self.extra_info
         if self.state is not None: body['state'] = self.state.value
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'DeploymentStatus':
-        return cls(deployment_id=d.get('deployment_id', None), state=_enum(d, 'state', DeploymentStatusState))
+        return cls(container_logs=d.get('container_logs', None),
+                   deployment_id=d.get('deployment_id', None),
+                   extra_info=d.get('extra_info', None),
+                   state=_enum(d, 'state', DeploymentStatusState))
 
 
 class DeploymentStatusState(Enum):
@@ -157,7 +224,7 @@ class EndpointCoreConfigInput:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'EndpointCoreConfigInput':
         return cls(name=d.get('name', None),
-                   served_models=_repeated(d, 'served_models', ServedModelInput),
+                   served_models=_repeated_dict(d, 'served_models', ServedModelInput),
                    traffic_config=_from_dict(d, 'traffic_config', TrafficConfig))
 
 
@@ -177,7 +244,7 @@ class EndpointCoreConfigOutput:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'EndpointCoreConfigOutput':
         return cls(config_version=d.get('config_version', None),
-                   served_models=_repeated(d, 'served_models', ServedModelOutput),
+                   served_models=_repeated_dict(d, 'served_models', ServedModelOutput),
                    traffic_config=_from_dict(d, 'traffic_config', TrafficConfig))
 
 
@@ -192,7 +259,7 @@ class EndpointCoreConfigSummary:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'EndpointCoreConfigSummary':
-        return cls(served_models=_repeated(d, 'served_models', ServedModelSpec))
+        return cls(served_models=_repeated_dict(d, 'served_models', ServedModelSpec))
 
 
 @dataclass
@@ -213,7 +280,7 @@ class EndpointPendingConfig:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'EndpointPendingConfig':
         return cls(config_version=d.get('config_version', None),
-                   served_models=_repeated(d, 'served_models', ServedModelOutput),
+                   served_models=_repeated_dict(d, 'served_models', ServedModelOutput),
                    start_time=d.get('start_time', None),
                    traffic_config=_from_dict(d, 'traffic_config', TrafficConfig))
 
@@ -272,6 +339,29 @@ class EndpointTag:
 
 
 @dataclass
+class GetAppResponse:
+    current_services: Optional['List[AppServiceStatus]'] = None
+    name: Optional[str] = None
+    pending_services: Optional['List[AppServiceStatus]'] = None
+    url: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.current_services: body['current_services'] = [v.as_dict() for v in self.current_services]
+        if self.name is not None: body['name'] = self.name
+        if self.pending_services: body['pending_services'] = [v.as_dict() for v in self.pending_services]
+        if self.url is not None: body['url'] = self.url
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'GetAppResponse':
+        return cls(current_services=_repeated_dict(d, 'current_services', AppServiceStatus),
+                   name=d.get('name', None),
+                   pending_services=_repeated_dict(d, 'pending_services', AppServiceStatus),
+                   url=d.get('url', None))
+
+
+@dataclass
 class GetServingEndpointPermissionLevelsResponse:
     permission_levels: Optional['List[ServingEndpointPermissionsDescription]'] = None
 
@@ -282,7 +372,38 @@ class GetServingEndpointPermissionLevelsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetServingEndpointPermissionLevelsResponse':
-        return cls(permission_levels=_repeated(d, 'permission_levels', ServingEndpointPermissionsDescription))
+        return cls(
+            permission_levels=_repeated_dict(d, 'permission_levels', ServingEndpointPermissionsDescription))
+
+
+@dataclass
+class ListAppEventsResponse:
+    events: Optional['List[AppEvents]'] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.events: body['events'] = [v.as_dict() for v in self.events]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ListAppEventsResponse':
+        return cls(events=_repeated_dict(d, 'events', AppEvents))
+
+
+@dataclass
+class ListAppsResponse:
+    apps: Optional['List[Any]'] = None
+    next_page_token: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.apps: body['apps'] = [v for v in self.apps]
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ListAppsResponse':
+        return cls(apps=d.get('apps', None), next_page_token=d.get('next_page_token', None))
 
 
 @dataclass
@@ -296,7 +417,7 @@ class ListEndpointsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListEndpointsResponse':
-        return cls(endpoints=_repeated(d, 'endpoints', ServingEndpoint))
+        return cls(endpoints=_repeated_dict(d, 'endpoints', ServingEndpoint))
 
 
 @dataclass
@@ -314,7 +435,7 @@ class PatchServingEndpointTags:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'PatchServingEndpointTags':
-        return cls(add_tags=_repeated(d, 'add_tags', EndpointTag),
+        return cls(add_tags=_repeated_dict(d, 'add_tags', EndpointTag),
                    delete_tags=d.get('delete_tags', None),
                    name=d.get('name', None))
 
@@ -558,7 +679,7 @@ class ServingEndpoint:
                    last_updated_timestamp=d.get('last_updated_timestamp', None),
                    name=d.get('name', None),
                    state=_from_dict(d, 'state', EndpointState),
-                   tags=_repeated(d, 'tags', EndpointTag))
+                   tags=_repeated_dict(d, 'tags', EndpointTag))
 
 
 @dataclass
@@ -605,7 +726,7 @@ class ServingEndpointAccessControlResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ServingEndpointAccessControlResponse':
-        return cls(all_permissions=_repeated(d, 'all_permissions', ServingEndpointPermission),
+        return cls(all_permissions=_repeated_dict(d, 'all_permissions', ServingEndpointPermission),
                    display_name=d.get('display_name', None),
                    group_name=d.get('group_name', None),
                    service_principal_name=d.get('service_principal_name', None),
@@ -651,7 +772,7 @@ class ServingEndpointDetailed:
                    pending_config=_from_dict(d, 'pending_config', EndpointPendingConfig),
                    permission_level=_enum(d, 'permission_level', ServingEndpointDetailedPermissionLevel),
                    state=_from_dict(d, 'state', EndpointState),
-                   tags=_repeated(d, 'tags', EndpointTag))
+                   tags=_repeated_dict(d, 'tags', EndpointTag))
 
 
 class ServingEndpointDetailedPermissionLevel(Enum):
@@ -706,8 +827,8 @@ class ServingEndpointPermissions:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ServingEndpointPermissions':
-        return cls(access_control_list=_repeated(d, 'access_control_list',
-                                                 ServingEndpointAccessControlResponse),
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list',
+                                                      ServingEndpointAccessControlResponse),
                    object_id=d.get('object_id', None),
                    object_type=d.get('object_type', None))
 
@@ -743,8 +864,8 @@ class ServingEndpointPermissionsRequest:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ServingEndpointPermissionsRequest':
-        return cls(access_control_list=_repeated(d, 'access_control_list',
-                                                 ServingEndpointAccessControlRequest),
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list',
+                                                      ServingEndpointAccessControlRequest),
                    serving_endpoint_id=d.get('serving_endpoint_id', None))
 
 
@@ -759,7 +880,7 @@ class TrafficConfig:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'TrafficConfig':
-        return cls(routes=_repeated(d, 'routes', Route))
+        return cls(routes=_repeated_dict(d, 'routes', Route))
 
 
 class AppsAPI:
@@ -788,7 +909,7 @@ class AppsAPI:
         res = self._api.do('POST', '/api/2.0/preview/apps/deployments', body=body, headers=headers)
         return DeploymentStatus.from_dict(res)
 
-    def delete(self, name: str):
+    def delete_app(self, name: str) -> DeleteAppResponse:
         """Delete an application.
         
         Delete an application definition
@@ -796,13 +917,14 @@ class AppsAPI:
         :param name: str
           The name of an application. This field is required.
         
-        
+        :returns: :class:`DeleteAppResponse`
         """
 
         headers = {'Accept': 'application/json', }
-        self._api.do('DELETE', f'/api/2.0/preview/apps/instances/{name}', headers=headers)
+        res = self._api.do('DELETE', f'/api/2.0/preview/apps/instances/{name}', headers=headers)
+        return DeleteAppResponse.from_dict(res)
 
-    def get(self, name: str):
+    def get_app(self, name: str) -> GetAppResponse:
         """Get definition for an application.
         
         Get an application definition
@@ -810,11 +932,64 @@ class AppsAPI:
         :param name: str
           The name of an application. This field is required.
         
-        
+        :returns: :class:`GetAppResponse`
         """
 
         headers = {'Accept': 'application/json', }
-        self._api.do('GET', f'/api/2.0/preview/apps/instances/{name}', headers=headers)
+        res = self._api.do('GET', f'/api/2.0/preview/apps/instances/{name}', headers=headers)
+        return GetAppResponse.from_dict(res)
+
+    def get_app_deployment_status(self,
+                                  deployment_id: str,
+                                  *,
+                                  include_app_log: Optional[str] = None) -> DeploymentStatus:
+        """Get deployment status for an application.
+        
+        Get deployment status for an application
+        
+        :param deployment_id: str
+          The deployment id for an application. This field is required.
+        :param include_app_log: str (optional)
+          Boolean flag to include application logs
+        
+        :returns: :class:`DeploymentStatus`
+        """
+
+        query = {}
+        if include_app_log is not None: query['include_app_log'] = include_app_log
+        headers = {'Accept': 'application/json', }
+        res = self._api.do('GET',
+                           f'/api/2.0/preview/apps/deployments/{deployment_id}',
+                           query=query,
+                           headers=headers)
+        return DeploymentStatus.from_dict(res)
+
+    def get_apps(self) -> ListAppsResponse:
+        """List all applications.
+        
+        List all available applications
+        
+        :returns: :class:`ListAppsResponse`
+        """
+
+        headers = {'Accept': 'application/json', }
+        res = self._api.do('GET', '/api/2.0/preview/apps/instances', headers=headers)
+        return ListAppsResponse.from_dict(res)
+
+    def get_events(self, name: str) -> ListAppEventsResponse:
+        """Get deployment events for an application.
+        
+        Get deployment events for an application
+        
+        :param name: str
+          The name of an application. This field is required.
+        
+        :returns: :class:`ListAppEventsResponse`
+        """
+
+        headers = {'Accept': 'application/json', }
+        res = self._api.do('GET', f'/api/2.0/preview/apps/{name}/events', headers=headers)
+        return ListAppEventsResponse.from_dict(res)
 
 
 class ServingEndpointsAPI:
@@ -1111,8 +1286,8 @@ class ServingEndpointsAPI:
         return ServingEndpointPermissions.from_dict(res)
 
     def update_config(self,
-                      served_models: List[ServedModelInput],
                       name: str,
+                      served_models: List[ServedModelInput],
                       *,
                       traffic_config: Optional[TrafficConfig] = None) -> Wait[ServingEndpointDetailed]:
         """Update a serving endpoint with a new config.
@@ -1121,11 +1296,11 @@ class ServingEndpointsAPI:
         served models, and the endpoint's traffic config. An endpoint that already has an update in progress
         can not be updated until the current update completes or fails.
         
+        :param name: str
+          The name of the serving endpoint to update. This field is required.
         :param served_models: List[:class:`ServedModelInput`]
           A list of served models for the endpoint to serve. A serving endpoint can have up to 10 served
           models.
-        :param name: str
-          The name of the serving endpoint to update. This field is required.
         :param traffic_config: :class:`TrafficConfig` (optional)
           The traffic config defining how invocations to the serving endpoint should be routed.
         
@@ -1147,8 +1322,8 @@ class ServingEndpointsAPI:
 
     def update_config_and_wait(
         self,
-        served_models: List[ServedModelInput],
         name: str,
+        served_models: List[ServedModelInput],
         *,
         traffic_config: Optional[TrafficConfig] = None,
         timeout=timedelta(minutes=20)) -> ServingEndpointDetailed:

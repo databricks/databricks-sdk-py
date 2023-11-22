@@ -37,14 +37,23 @@ Account Users
         :param active: bool (optional)
           If this user is active
         :param display_name: str (optional)
-          String that represents a concatenation of given and family names. For example `John Smith`.
+          String that represents a concatenation of given and family names. For example `John Smith`. This
+          field cannot be updated through the Workspace SCIM APIs when [identity federation is enabled]. Use
+          Account SCIM APIs to update `displayName`.
+          
+          [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation
         :param emails: List[:class:`ComplexValue`] (optional)
           All the emails associated with the Databricks user.
         :param entitlements: List[:class:`ComplexValue`] (optional)
+          Entitlements assigned to the user. See [assigning entitlements] for a full list of supported values.
+          
+          [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
+          External ID is not currently supported. It is reserved for future use.
         :param groups: List[:class:`ComplexValue`] (optional)
         :param id: str (optional)
-          Databricks user ID.
+          Databricks user ID. This is automatically set by Databricks. Any value provided by the client will
+          be ignored.
         :param name: :class:`Name` (optional)
         :param roles: List[:class:`ComplexValue`] (optional)
           Corresponds to AWS instance profile/arn role.
@@ -228,15 +237,24 @@ Account Users
         Replaces a user's information with the data supplied in request.
         
         :param id: str
-          Databricks user ID.
+          Databricks user ID. This is automatically set by Databricks. Any value provided by the client will
+          be ignored.
         :param active: bool (optional)
           If this user is active
         :param display_name: str (optional)
-          String that represents a concatenation of given and family names. For example `John Smith`.
+          String that represents a concatenation of given and family names. For example `John Smith`. This
+          field cannot be updated through the Workspace SCIM APIs when [identity federation is enabled]. Use
+          Account SCIM APIs to update `displayName`.
+          
+          [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation
         :param emails: List[:class:`ComplexValue`] (optional)
           All the emails associated with the Databricks user.
         :param entitlements: List[:class:`ComplexValue`] (optional)
+          Entitlements assigned to the user. See [assigning entitlements] for a full list of supported values.
+          
+          [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
+          External ID is not currently supported. It is reserved for future use.
         :param groups: List[:class:`ComplexValue`] (optional)
         :param name: :class:`Name` (optional)
         :param roles: List[:class:`ComplexValue`] (optional)

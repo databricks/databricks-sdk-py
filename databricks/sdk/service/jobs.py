@@ -9,7 +9,7 @@ from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
 from ..errors import OperationFailed
-from ._internal import Wait, _enum, _from_dict, _repeated
+from ._internal import Wait, _enum, _from_dict, _repeated_dict
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -114,9 +114,9 @@ class BaseRun:
                    end_time=d.get('end_time', None),
                    execution_duration=d.get('execution_duration', None),
                    git_source=_from_dict(d, 'git_source', GitSource),
-                   job_clusters=_repeated(d, 'job_clusters', JobCluster),
+                   job_clusters=_repeated_dict(d, 'job_clusters', JobCluster),
                    job_id=d.get('job_id', None),
-                   job_parameters=_repeated(d, 'job_parameters', JobParameter),
+                   job_parameters=_repeated_dict(d, 'job_parameters', JobParameter),
                    number_in_job=d.get('number_in_job', None),
                    original_attempt_run_id=d.get('original_attempt_run_id', None),
                    overriding_parameters=_from_dict(d, 'overriding_parameters', RunParameters),
@@ -129,7 +129,7 @@ class BaseRun:
                    setup_duration=d.get('setup_duration', None),
                    start_time=d.get('start_time', None),
                    state=_from_dict(d, 'state', RunState),
-                   tasks=_repeated(d, 'tasks', RunTask),
+                   tasks=_repeated_dict(d, 'tasks', RunTask),
                    trigger=_enum(d, 'trigger', TriggerType),
                    trigger_info=_from_dict(d, 'trigger_info', TriggerInfo))
 
@@ -196,7 +196,7 @@ class ClusterSpec:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ClusterSpec':
         return cls(existing_cluster_id=d.get('existing_cluster_id', None),
-                   libraries=_repeated(d, 'libraries', compute.Library),
+                   libraries=_repeated_dict(d, 'libraries', compute.Library),
                    new_cluster=_from_dict(d, 'new_cluster', compute.ClusterSpec))
 
 
@@ -257,6 +257,7 @@ class CreateJob:
     compute: Optional['List[JobCompute]'] = None
     continuous: Optional['Continuous'] = None
     deployment: Optional['JobDeployment'] = None
+    edit_mode: Optional['CreateJobEditMode'] = None
     email_notifications: Optional['JobEmailNotifications'] = None
     format: Optional['Format'] = None
     git_source: Optional['GitSource'] = None
@@ -273,7 +274,6 @@ class CreateJob:
     tasks: Optional['List[Task]'] = None
     timeout_seconds: Optional[int] = None
     trigger: Optional['TriggerSettings'] = None
-    ui_state: Optional['CreateJobUiState'] = None
     webhook_notifications: Optional['WebhookNotifications'] = None
 
     def as_dict(self) -> dict:
@@ -283,6 +283,7 @@ class CreateJob:
         if self.compute: body['compute'] = [v.as_dict() for v in self.compute]
         if self.continuous: body['continuous'] = self.continuous.as_dict()
         if self.deployment: body['deployment'] = self.deployment.as_dict()
+        if self.edit_mode is not None: body['edit_mode'] = self.edit_mode.value
         if self.email_notifications: body['email_notifications'] = self.email_notifications.as_dict()
         if self.format is not None: body['format'] = self.format.value
         if self.git_source: body['git_source'] = self.git_source.as_dict()
@@ -299,44 +300,43 @@ class CreateJob:
         if self.tasks: body['tasks'] = [v.as_dict() for v in self.tasks]
         if self.timeout_seconds is not None: body['timeout_seconds'] = self.timeout_seconds
         if self.trigger: body['trigger'] = self.trigger.as_dict()
-        if self.ui_state is not None: body['ui_state'] = self.ui_state.value
         if self.webhook_notifications: body['webhook_notifications'] = self.webhook_notifications.as_dict()
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateJob':
-        return cls(access_control_list=_repeated(d, 'access_control_list', iam.AccessControlRequest),
-                   compute=_repeated(d, 'compute', JobCompute),
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list', iam.AccessControlRequest),
+                   compute=_repeated_dict(d, 'compute', JobCompute),
                    continuous=_from_dict(d, 'continuous', Continuous),
                    deployment=_from_dict(d, 'deployment', JobDeployment),
+                   edit_mode=_enum(d, 'edit_mode', CreateJobEditMode),
                    email_notifications=_from_dict(d, 'email_notifications', JobEmailNotifications),
                    format=_enum(d, 'format', Format),
                    git_source=_from_dict(d, 'git_source', GitSource),
                    health=_from_dict(d, 'health', JobsHealthRules),
-                   job_clusters=_repeated(d, 'job_clusters', JobCluster),
+                   job_clusters=_repeated_dict(d, 'job_clusters', JobCluster),
                    max_concurrent_runs=d.get('max_concurrent_runs', None),
                    name=d.get('name', None),
                    notification_settings=_from_dict(d, 'notification_settings', JobNotificationSettings),
-                   parameters=_repeated(d, 'parameters', JobParameterDefinition),
+                   parameters=_repeated_dict(d, 'parameters', JobParameterDefinition),
                    queue=_from_dict(d, 'queue', QueueSettings),
                    run_as=_from_dict(d, 'run_as', JobRunAs),
                    schedule=_from_dict(d, 'schedule', CronSchedule),
                    tags=d.get('tags', None),
-                   tasks=_repeated(d, 'tasks', Task),
+                   tasks=_repeated_dict(d, 'tasks', Task),
                    timeout_seconds=d.get('timeout_seconds', None),
                    trigger=_from_dict(d, 'trigger', TriggerSettings),
-                   ui_state=_enum(d, 'ui_state', CreateJobUiState),
                    webhook_notifications=_from_dict(d, 'webhook_notifications', WebhookNotifications))
 
 
-class CreateJobUiState(Enum):
-    """State of the job in UI.
+class CreateJobEditMode(Enum):
+    """Edit mode of the job.
     
-    * `LOCKED`: The job is in a locked state and cannot be modified. * `EDITABLE`: The job is in an
-    editable state and can be modified."""
+    * `UI_LOCKED`: The job is in a locked UI state and cannot be modified. * `EDITABLE`: The job is
+    in an editable state and can be modified."""
 
     EDITABLE = 'EDITABLE'
-    LOCKED = 'LOCKED'
+    UI_LOCKED = 'UI_LOCKED'
 
 
 @dataclass
@@ -459,7 +459,7 @@ class ExportRunOutput:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ExportRunOutput':
-        return cls(views=_repeated(d, 'views', ViewItem))
+        return cls(views=_repeated_dict(d, 'views', ViewItem))
 
 
 @dataclass
@@ -501,7 +501,7 @@ class GetJobPermissionLevelsResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'GetJobPermissionLevelsResponse':
-        return cls(permission_levels=_repeated(d, 'permission_levels', JobPermissionsDescription))
+        return cls(permission_levels=_repeated_dict(d, 'permission_levels', JobPermissionsDescription))
 
 
 class GitProvider(Enum):
@@ -647,7 +647,7 @@ class JobAccessControlResponse:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'JobAccessControlResponse':
-        return cls(all_permissions=_repeated(d, 'all_permissions', JobPermission),
+        return cls(all_permissions=_repeated_dict(d, 'all_permissions', JobPermission),
                    display_name=d.get('display_name', None),
                    group_name=d.get('group_name', None),
                    service_principal_name=d.get('service_principal_name', None),
@@ -841,7 +841,7 @@ class JobPermissions:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'JobPermissions':
-        return cls(access_control_list=_repeated(d, 'access_control_list', JobAccessControlResponse),
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list', JobAccessControlResponse),
                    object_id=d.get('object_id', None),
                    object_type=d.get('object_type', None))
 
@@ -877,7 +877,7 @@ class JobPermissionsRequest:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'JobPermissionsRequest':
-        return cls(access_control_list=_repeated(d, 'access_control_list', JobAccessControlRequest),
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list', JobAccessControlRequest),
                    job_id=d.get('job_id', None))
 
 
@@ -911,6 +911,7 @@ class JobSettings:
     compute: Optional['List[JobCompute]'] = None
     continuous: Optional['Continuous'] = None
     deployment: Optional['JobDeployment'] = None
+    edit_mode: Optional['JobSettingsEditMode'] = None
     email_notifications: Optional['JobEmailNotifications'] = None
     format: Optional['Format'] = None
     git_source: Optional['GitSource'] = None
@@ -927,7 +928,6 @@ class JobSettings:
     tasks: Optional['List[Task]'] = None
     timeout_seconds: Optional[int] = None
     trigger: Optional['TriggerSettings'] = None
-    ui_state: Optional['JobSettingsUiState'] = None
     webhook_notifications: Optional['WebhookNotifications'] = None
 
     def as_dict(self) -> dict:
@@ -935,6 +935,7 @@ class JobSettings:
         if self.compute: body['compute'] = [v.as_dict() for v in self.compute]
         if self.continuous: body['continuous'] = self.continuous.as_dict()
         if self.deployment: body['deployment'] = self.deployment.as_dict()
+        if self.edit_mode is not None: body['edit_mode'] = self.edit_mode.value
         if self.email_notifications: body['email_notifications'] = self.email_notifications.as_dict()
         if self.format is not None: body['format'] = self.format.value
         if self.git_source: body['git_source'] = self.git_source.as_dict()
@@ -951,43 +952,42 @@ class JobSettings:
         if self.tasks: body['tasks'] = [v.as_dict() for v in self.tasks]
         if self.timeout_seconds is not None: body['timeout_seconds'] = self.timeout_seconds
         if self.trigger: body['trigger'] = self.trigger.as_dict()
-        if self.ui_state is not None: body['ui_state'] = self.ui_state.value
         if self.webhook_notifications: body['webhook_notifications'] = self.webhook_notifications.as_dict()
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'JobSettings':
-        return cls(compute=_repeated(d, 'compute', JobCompute),
+        return cls(compute=_repeated_dict(d, 'compute', JobCompute),
                    continuous=_from_dict(d, 'continuous', Continuous),
                    deployment=_from_dict(d, 'deployment', JobDeployment),
+                   edit_mode=_enum(d, 'edit_mode', JobSettingsEditMode),
                    email_notifications=_from_dict(d, 'email_notifications', JobEmailNotifications),
                    format=_enum(d, 'format', Format),
                    git_source=_from_dict(d, 'git_source', GitSource),
                    health=_from_dict(d, 'health', JobsHealthRules),
-                   job_clusters=_repeated(d, 'job_clusters', JobCluster),
+                   job_clusters=_repeated_dict(d, 'job_clusters', JobCluster),
                    max_concurrent_runs=d.get('max_concurrent_runs', None),
                    name=d.get('name', None),
                    notification_settings=_from_dict(d, 'notification_settings', JobNotificationSettings),
-                   parameters=_repeated(d, 'parameters', JobParameterDefinition),
+                   parameters=_repeated_dict(d, 'parameters', JobParameterDefinition),
                    queue=_from_dict(d, 'queue', QueueSettings),
                    run_as=_from_dict(d, 'run_as', JobRunAs),
                    schedule=_from_dict(d, 'schedule', CronSchedule),
                    tags=d.get('tags', None),
-                   tasks=_repeated(d, 'tasks', Task),
+                   tasks=_repeated_dict(d, 'tasks', Task),
                    timeout_seconds=d.get('timeout_seconds', None),
                    trigger=_from_dict(d, 'trigger', TriggerSettings),
-                   ui_state=_enum(d, 'ui_state', JobSettingsUiState),
                    webhook_notifications=_from_dict(d, 'webhook_notifications', WebhookNotifications))
 
 
-class JobSettingsUiState(Enum):
-    """State of the job in UI.
+class JobSettingsEditMode(Enum):
+    """Edit mode of the job.
     
-    * `LOCKED`: The job is in a locked state and cannot be modified. * `EDITABLE`: The job is in an
-    editable state and can be modified."""
+    * `UI_LOCKED`: The job is in a locked UI state and cannot be modified. * `EDITABLE`: The job is
+    in an editable state and can be modified."""
 
     EDITABLE = 'EDITABLE'
-    LOCKED = 'LOCKED'
+    UI_LOCKED = 'UI_LOCKED'
 
 
 @dataclass
@@ -1072,7 +1072,7 @@ class JobsHealthRules:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'JobsHealthRules':
-        return cls(rules=_repeated(d, 'rules', JobsHealthRule))
+        return cls(rules=_repeated_dict(d, 'rules', JobsHealthRule))
 
 
 @dataclass
@@ -1093,7 +1093,7 @@ class ListJobsResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ListJobsResponse':
         return cls(has_more=d.get('has_more', None),
-                   jobs=_repeated(d, 'jobs', BaseJob),
+                   jobs=_repeated_dict(d, 'jobs', BaseJob),
                    next_page_token=d.get('next_page_token', None),
                    prev_page_token=d.get('prev_page_token', None))
 
@@ -1118,7 +1118,7 @@ class ListRunsResponse:
         return cls(has_more=d.get('has_more', None),
                    next_page_token=d.get('next_page_token', None),
                    prev_page_token=d.get('prev_page_token', None),
-                   runs=_repeated(d, 'runs', BaseRun))
+                   runs=_repeated_dict(d, 'runs', BaseRun))
 
 
 class ListRunsRunType(Enum):
@@ -1585,13 +1585,13 @@ class Run:
                    end_time=d.get('end_time', None),
                    execution_duration=d.get('execution_duration', None),
                    git_source=_from_dict(d, 'git_source', GitSource),
-                   job_clusters=_repeated(d, 'job_clusters', JobCluster),
+                   job_clusters=_repeated_dict(d, 'job_clusters', JobCluster),
                    job_id=d.get('job_id', None),
-                   job_parameters=_repeated(d, 'job_parameters', JobParameter),
+                   job_parameters=_repeated_dict(d, 'job_parameters', JobParameter),
                    number_in_job=d.get('number_in_job', None),
                    original_attempt_run_id=d.get('original_attempt_run_id', None),
                    overriding_parameters=_from_dict(d, 'overriding_parameters', RunParameters),
-                   repair_history=_repeated(d, 'repair_history', RepairHistoryItem),
+                   repair_history=_repeated_dict(d, 'repair_history', RepairHistoryItem),
                    run_duration=d.get('run_duration', None),
                    run_id=d.get('run_id', None),
                    run_name=d.get('run_name', None),
@@ -1601,7 +1601,7 @@ class Run:
                    setup_duration=d.get('setup_duration', None),
                    start_time=d.get('start_time', None),
                    state=_from_dict(d, 'state', RunState),
-                   tasks=_repeated(d, 'tasks', RunTask),
+                   tasks=_repeated_dict(d, 'tasks', RunTask),
                    trigger=_enum(d, 'trigger', TriggerType),
                    trigger_info=_from_dict(d, 'trigger_info', TriggerInfo))
 
@@ -1973,13 +1973,13 @@ class RunTask:
                    cluster_instance=_from_dict(d, 'cluster_instance', ClusterInstance),
                    condition_task=_from_dict(d, 'condition_task', RunConditionTask),
                    dbt_task=_from_dict(d, 'dbt_task', DbtTask),
-                   depends_on=_repeated(d, 'depends_on', TaskDependency),
+                   depends_on=_repeated_dict(d, 'depends_on', TaskDependency),
                    description=d.get('description', None),
                    end_time=d.get('end_time', None),
                    execution_duration=d.get('execution_duration', None),
                    existing_cluster_id=d.get('existing_cluster_id', None),
                    git_source=_from_dict(d, 'git_source', GitSource),
-                   libraries=_repeated(d, 'libraries', compute.Library),
+                   libraries=_repeated_dict(d, 'libraries', compute.Library),
                    new_cluster=_from_dict(d, 'new_cluster', compute.ClusterSpec),
                    notebook_task=_from_dict(d, 'notebook_task', NotebookTask),
                    pipeline_task=_from_dict(d, 'pipeline_task', PipelineTask),
@@ -2093,7 +2093,7 @@ class SqlAlertOutput:
         return cls(alert_state=_enum(d, 'alert_state', SqlAlertState),
                    output_link=d.get('output_link', None),
                    query_text=d.get('query_text', None),
-                   sql_statements=_repeated(d, 'sql_statements', SqlStatementOutput),
+                   sql_statements=_repeated_dict(d, 'sql_statements', SqlStatementOutput),
                    warehouse_id=d.get('warehouse_id', None))
 
 
@@ -2122,7 +2122,7 @@ class SqlDashboardOutput:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'SqlDashboardOutput':
         return cls(warehouse_id=d.get('warehouse_id', None),
-                   widgets=_repeated(d, 'widgets', SqlDashboardWidgetOutput))
+                   widgets=_repeated_dict(d, 'widgets', SqlDashboardWidgetOutput))
 
 
 @dataclass
@@ -2220,7 +2220,7 @@ class SqlQueryOutput:
     def from_dict(cls, d: Dict[str, any]) -> 'SqlQueryOutput':
         return cls(output_link=d.get('output_link', None),
                    query_text=d.get('query_text', None),
-                   sql_statements=_repeated(d, 'sql_statements', SqlStatementOutput),
+                   sql_statements=_repeated_dict(d, 'sql_statements', SqlStatementOutput),
                    warehouse_id=d.get('warehouse_id', None))
 
 
@@ -2284,7 +2284,7 @@ class SqlTaskAlert:
     def from_dict(cls, d: Dict[str, any]) -> 'SqlTaskAlert':
         return cls(alert_id=d.get('alert_id', None),
                    pause_subscriptions=d.get('pause_subscriptions', None),
-                   subscriptions=_repeated(d, 'subscriptions', SqlTaskSubscription))
+                   subscriptions=_repeated_dict(d, 'subscriptions', SqlTaskSubscription))
 
 
 @dataclass
@@ -2307,7 +2307,7 @@ class SqlTaskDashboard:
         return cls(custom_subject=d.get('custom_subject', None),
                    dashboard_id=d.get('dashboard_id', None),
                    pause_subscriptions=d.get('pause_subscriptions', None),
-                   subscriptions=_repeated(d, 'subscriptions', SqlTaskSubscription))
+                   subscriptions=_repeated_dict(d, 'subscriptions', SqlTaskSubscription))
 
 
 @dataclass
@@ -2386,7 +2386,7 @@ class SubmitRun:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'SubmitRun':
-        return cls(access_control_list=_repeated(d, 'access_control_list', iam.AccessControlRequest),
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list', iam.AccessControlRequest),
                    email_notifications=_from_dict(d, 'email_notifications', JobEmailNotifications),
                    git_source=_from_dict(d, 'git_source', GitSource),
                    health=_from_dict(d, 'health', JobsHealthRules),
@@ -2394,7 +2394,7 @@ class SubmitRun:
                    notification_settings=_from_dict(d, 'notification_settings', JobNotificationSettings),
                    queue=_from_dict(d, 'queue', QueueSettings),
                    run_name=d.get('run_name', None),
-                   tasks=_repeated(d, 'tasks', SubmitTask),
+                   tasks=_repeated_dict(d, 'tasks', SubmitTask),
                    timeout_seconds=d.get('timeout_seconds', None),
                    webhook_notifications=_from_dict(d, 'webhook_notifications', WebhookNotifications))
 
@@ -2459,11 +2459,11 @@ class SubmitTask:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'SubmitTask':
         return cls(condition_task=_from_dict(d, 'condition_task', ConditionTask),
-                   depends_on=_repeated(d, 'depends_on', TaskDependency),
+                   depends_on=_repeated_dict(d, 'depends_on', TaskDependency),
                    email_notifications=_from_dict(d, 'email_notifications', JobEmailNotifications),
                    existing_cluster_id=d.get('existing_cluster_id', None),
                    health=_from_dict(d, 'health', JobsHealthRules),
-                   libraries=_repeated(d, 'libraries', compute.Library),
+                   libraries=_repeated_dict(d, 'libraries', compute.Library),
                    new_cluster=_from_dict(d, 'new_cluster', compute.ClusterSpec),
                    notebook_task=_from_dict(d, 'notebook_task', NotebookTask),
                    notification_settings=_from_dict(d, 'notification_settings', TaskNotificationSettings),
@@ -2545,13 +2545,13 @@ class Task:
         return cls(compute_key=d.get('compute_key', None),
                    condition_task=_from_dict(d, 'condition_task', ConditionTask),
                    dbt_task=_from_dict(d, 'dbt_task', DbtTask),
-                   depends_on=_repeated(d, 'depends_on', TaskDependency),
+                   depends_on=_repeated_dict(d, 'depends_on', TaskDependency),
                    description=d.get('description', None),
                    email_notifications=_from_dict(d, 'email_notifications', TaskEmailNotifications),
                    existing_cluster_id=d.get('existing_cluster_id', None),
                    health=_from_dict(d, 'health', JobsHealthRules),
                    job_cluster_key=d.get('job_cluster_key', None),
-                   libraries=_repeated(d, 'libraries', compute.Library),
+                   libraries=_repeated_dict(d, 'libraries', compute.Library),
                    max_retries=d.get('max_retries', None),
                    min_retry_interval_millis=d.get('min_retry_interval_millis', None),
                    new_cluster=_from_dict(d, 'new_cluster', compute.ClusterSpec),
@@ -2814,12 +2814,12 @@ class WebhookNotifications:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'WebhookNotifications':
-        return cls(on_duration_warning_threshold_exceeded=_repeated(
+        return cls(on_duration_warning_threshold_exceeded=_repeated_dict(
             d, 'on_duration_warning_threshold_exceeded',
             WebhookNotificationsOnDurationWarningThresholdExceededItem),
-                   on_failure=_repeated(d, 'on_failure', Webhook),
-                   on_start=_repeated(d, 'on_start', Webhook),
-                   on_success=_repeated(d, 'on_success', Webhook))
+                   on_failure=_repeated_dict(d, 'on_failure', Webhook),
+                   on_start=_repeated_dict(d, 'on_start', Webhook),
+                   on_success=_repeated_dict(d, 'on_success', Webhook))
 
 
 @dataclass
@@ -2936,6 +2936,7 @@ class JobsAPI:
                compute: Optional[List[JobCompute]] = None,
                continuous: Optional[Continuous] = None,
                deployment: Optional[JobDeployment] = None,
+               edit_mode: Optional[CreateJobEditMode] = None,
                email_notifications: Optional[JobEmailNotifications] = None,
                format: Optional[Format] = None,
                git_source: Optional[GitSource] = None,
@@ -2952,7 +2953,6 @@ class JobsAPI:
                tasks: Optional[List[Task]] = None,
                timeout_seconds: Optional[int] = None,
                trigger: Optional[TriggerSettings] = None,
-               ui_state: Optional[CreateJobUiState] = None,
                webhook_notifications: Optional[WebhookNotifications] = None) -> CreateResponse:
         """Create a new job.
         
@@ -2967,6 +2967,11 @@ class JobsAPI:
           always one run executing. Only one of `schedule` and `continuous` can be used.
         :param deployment: :class:`JobDeployment` (optional)
           Deployment information for jobs managed by external sources.
+        :param edit_mode: :class:`CreateJobEditMode` (optional)
+          Edit mode of the job.
+          
+          * `UI_LOCKED`: The job is in a locked UI state and cannot be modified. * `EDITABLE`: The job is in
+          an editable state and can be modified.
         :param email_notifications: :class:`JobEmailNotifications` (optional)
           An optional set of email addresses that is notified when runs of this job begin or complete as well
           as when this job is deleted.
@@ -2999,7 +3004,7 @@ class JobsAPI:
           4 concurrent active runs. Then setting the concurrency to 3 won’t kill any of the active runs.
           However, from then on, new runs are skipped unless there are fewer than 3 active runs.
           
-          This value cannot exceed 1000\. Setting this value to `0` causes all new runs to be skipped.
+          This value cannot exceed 1000. Setting this value to `0` causes all new runs to be skipped.
         :param name: str (optional)
           An optional name for the job. The maximum length is 4096 bytes in UTF-8 encoding.
         :param notification_settings: :class:`JobNotificationSettings` (optional)
@@ -3031,11 +3036,6 @@ class JobsAPI:
           Trigger settings for the job. Can be used to trigger a run when new files arrive in an external
           location. The default behavior is that the job runs only when triggered by clicking “Run Now” in
           the Jobs UI or sending an API request to `runNow`.
-        :param ui_state: :class:`CreateJobUiState` (optional)
-          State of the job in UI.
-          
-          * `LOCKED`: The job is in a locked state and cannot be modified. * `EDITABLE`: The job is in an
-          editable state and can be modified.
         :param webhook_notifications: :class:`WebhookNotifications` (optional)
           A collection of system notification IDs to notify when runs of this job begin or complete.
         
@@ -3047,6 +3047,7 @@ class JobsAPI:
         if compute is not None: body['compute'] = [v.as_dict() for v in compute]
         if continuous is not None: body['continuous'] = continuous.as_dict()
         if deployment is not None: body['deployment'] = deployment.as_dict()
+        if edit_mode is not None: body['edit_mode'] = edit_mode.value
         if email_notifications is not None: body['email_notifications'] = email_notifications.as_dict()
         if format is not None: body['format'] = format.value
         if git_source is not None: body['git_source'] = git_source.as_dict()
@@ -3063,7 +3064,6 @@ class JobsAPI:
         if tasks is not None: body['tasks'] = [v.as_dict() for v in tasks]
         if timeout_seconds is not None: body['timeout_seconds'] = timeout_seconds
         if trigger is not None: body['trigger'] = trigger.as_dict()
-        if ui_state is not None: body['ui_state'] = ui_state.value
         if webhook_notifications is not None: body['webhook_notifications'] = webhook_notifications.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         res = self._api.do('POST', '/api/2.1/jobs/create', body=body, headers=headers)
@@ -3166,7 +3166,11 @@ class JobsAPI:
         res = self._api.do('GET', f'/api/2.0/permissions/jobs/{job_id}', headers=headers)
         return JobPermissions.from_dict(res)
 
-    def get_run(self, run_id: int, *, include_history: Optional[bool] = None) -> Run:
+    def get_run(self,
+                run_id: int,
+                *,
+                include_history: Optional[bool] = None,
+                include_resolved_values: Optional[bool] = None) -> Run:
         """Get a single job run.
         
         Retrieve the metadata of a run.
@@ -3175,12 +3179,15 @@ class JobsAPI:
           The canonical identifier of the run for which to retrieve the metadata. This field is required.
         :param include_history: bool (optional)
           Whether to include the repair history in the response.
+        :param include_resolved_values: bool (optional)
+          Whether to include resolved parameter values in the response.
         
         :returns: :class:`Run`
         """
 
         query = {}
         if include_history is not None: query['include_history'] = include_history
+        if include_resolved_values is not None: query['include_resolved_values'] = include_resolved_values
         if run_id is not None: query['run_id'] = run_id
         headers = {'Accept': 'application/json', }
         res = self._api.do('GET', '/api/2.1/jobs/runs/get', query=query, headers=headers)

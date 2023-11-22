@@ -143,7 +143,7 @@ Private Access Settings
         :returns: Iterator over :class:`PrivateAccessSettings`
         
 
-    .. py:method:: replace(private_access_settings_name, region, private_access_settings_id [, allowed_vpc_endpoint_ids, private_access_level, public_access_enabled])
+    .. py:method:: replace(private_access_settings_id, private_access_settings_name, region [, allowed_vpc_endpoint_ids, private_access_level, public_access_enabled])
 
         Usage:
 
@@ -186,12 +186,12 @@ Private Access Settings
         [AWS PrivateLink]: https://aws.amazon.com/privatelink
         [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
         
+        :param private_access_settings_id: str
+          Databricks Account API private access settings ID.
         :param private_access_settings_name: str
           The human-readable name of the private access settings object.
         :param region: str
           The cloud region for workspaces associated with this private access settings object.
-        :param private_access_settings_id: str
-          Databricks Account API private access settings ID.
         :param allowed_vpc_endpoint_ids: List[str] (optional)
           An array of Databricks VPC endpoint IDs. This is the Databricks ID that is returned when registering
           the VPC endpoint configuration in your Databricks account. This is not the ID of the VPC endpoint in
