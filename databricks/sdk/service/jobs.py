@@ -196,7 +196,7 @@ class ClusterSpec:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'ClusterSpec':
         return cls(existing_cluster_id=d.get('existing_cluster_id', None),
-                   libraries=_repeated_dict(d, 'libraries', jobs.compute.Library),
+                   libraries=_repeated_dict(d, 'libraries', compute.Library),
                    new_cluster=_from_dict(d, 'new_cluster', compute.ClusterSpec))
 
 
@@ -305,8 +305,7 @@ class CreateJob:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'CreateJob':
-        return cls(access_control_list=_repeated_dict(d, 'access_control_list',
-                                                      jobs.iam.AccessControlRequest),
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list', iam.AccessControlRequest),
                    compute=_repeated_dict(d, 'compute', JobCompute),
                    continuous=_from_dict(d, 'continuous', Continuous),
                    deployment=_from_dict(d, 'deployment', JobDeployment),
@@ -1980,7 +1979,7 @@ class RunTask:
                    execution_duration=d.get('execution_duration', None),
                    existing_cluster_id=d.get('existing_cluster_id', None),
                    git_source=_from_dict(d, 'git_source', GitSource),
-                   libraries=_repeated_dict(d, 'libraries', jobs.compute.Library),
+                   libraries=_repeated_dict(d, 'libraries', compute.Library),
                    new_cluster=_from_dict(d, 'new_cluster', compute.ClusterSpec),
                    notebook_task=_from_dict(d, 'notebook_task', NotebookTask),
                    pipeline_task=_from_dict(d, 'pipeline_task', PipelineTask),
@@ -2387,8 +2386,7 @@ class SubmitRun:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'SubmitRun':
-        return cls(access_control_list=_repeated_dict(d, 'access_control_list',
-                                                      jobs.iam.AccessControlRequest),
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list', iam.AccessControlRequest),
                    email_notifications=_from_dict(d, 'email_notifications', JobEmailNotifications),
                    git_source=_from_dict(d, 'git_source', GitSource),
                    health=_from_dict(d, 'health', JobsHealthRules),
@@ -2465,7 +2463,7 @@ class SubmitTask:
                    email_notifications=_from_dict(d, 'email_notifications', JobEmailNotifications),
                    existing_cluster_id=d.get('existing_cluster_id', None),
                    health=_from_dict(d, 'health', JobsHealthRules),
-                   libraries=_repeated_dict(d, 'libraries', jobs.compute.Library),
+                   libraries=_repeated_dict(d, 'libraries', compute.Library),
                    new_cluster=_from_dict(d, 'new_cluster', compute.ClusterSpec),
                    notebook_task=_from_dict(d, 'notebook_task', NotebookTask),
                    notification_settings=_from_dict(d, 'notification_settings', TaskNotificationSettings),
@@ -2553,7 +2551,7 @@ class Task:
                    existing_cluster_id=d.get('existing_cluster_id', None),
                    health=_from_dict(d, 'health', JobsHealthRules),
                    job_cluster_key=d.get('job_cluster_key', None),
-                   libraries=_repeated_dict(d, 'libraries', jobs.compute.Library),
+                   libraries=_repeated_dict(d, 'libraries', compute.Library),
                    max_retries=d.get('max_retries', None),
                    min_retry_interval_millis=d.get('min_retry_interval_millis', None),
                    new_cluster=_from_dict(d, 'new_cluster', compute.ClusterSpec),
