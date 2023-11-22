@@ -5,7 +5,7 @@ from datetime import timedelta
 from random import random
 from typing import Callable, List, Optional, Type
 
-logger = logging.getLogger('databricks.sdk')
+logger = logging.getLogger(__name__)
 
 
 def retried(*,
