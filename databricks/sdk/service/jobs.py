@@ -257,6 +257,7 @@ class CreateJob:
     compute: Optional['List[JobCompute]'] = None
     continuous: Optional['Continuous'] = None
     deployment: Optional['JobDeployment'] = None
+    description: Optional[str] = None
     edit_mode: Optional['CreateJobEditMode'] = None
     email_notifications: Optional['JobEmailNotifications'] = None
     format: Optional['Format'] = None
@@ -283,6 +284,7 @@ class CreateJob:
         if self.compute: body['compute'] = [v.as_dict() for v in self.compute]
         if self.continuous: body['continuous'] = self.continuous.as_dict()
         if self.deployment: body['deployment'] = self.deployment.as_dict()
+        if self.description is not None: body['description'] = self.description
         if self.edit_mode is not None: body['edit_mode'] = self.edit_mode.value
         if self.email_notifications: body['email_notifications'] = self.email_notifications.as_dict()
         if self.format is not None: body['format'] = self.format.value
@@ -309,6 +311,7 @@ class CreateJob:
                    compute=_repeated_dict(d, 'compute', JobCompute),
                    continuous=_from_dict(d, 'continuous', Continuous),
                    deployment=_from_dict(d, 'deployment', JobDeployment),
+                   description=d.get('description', None),
                    edit_mode=_enum(d, 'edit_mode', CreateJobEditMode),
                    email_notifications=_from_dict(d, 'email_notifications', JobEmailNotifications),
                    format=_enum(d, 'format', Format),
@@ -911,6 +914,7 @@ class JobSettings:
     compute: Optional['List[JobCompute]'] = None
     continuous: Optional['Continuous'] = None
     deployment: Optional['JobDeployment'] = None
+    description: Optional[str] = None
     edit_mode: Optional['JobSettingsEditMode'] = None
     email_notifications: Optional['JobEmailNotifications'] = None
     format: Optional['Format'] = None
@@ -935,6 +939,7 @@ class JobSettings:
         if self.compute: body['compute'] = [v.as_dict() for v in self.compute]
         if self.continuous: body['continuous'] = self.continuous.as_dict()
         if self.deployment: body['deployment'] = self.deployment.as_dict()
+        if self.description is not None: body['description'] = self.description
         if self.edit_mode is not None: body['edit_mode'] = self.edit_mode.value
         if self.email_notifications: body['email_notifications'] = self.email_notifications.as_dict()
         if self.format is not None: body['format'] = self.format.value
@@ -960,6 +965,7 @@ class JobSettings:
         return cls(compute=_repeated_dict(d, 'compute', JobCompute),
                    continuous=_from_dict(d, 'continuous', Continuous),
                    deployment=_from_dict(d, 'deployment', JobDeployment),
+                   description=d.get('description', None),
                    edit_mode=_enum(d, 'edit_mode', JobSettingsEditMode),
                    email_notifications=_from_dict(d, 'email_notifications', JobEmailNotifications),
                    format=_enum(d, 'format', Format),
@@ -2936,6 +2942,7 @@ class JobsAPI:
                compute: Optional[List[JobCompute]] = None,
                continuous: Optional[Continuous] = None,
                deployment: Optional[JobDeployment] = None,
+               description: Optional[str] = None,
                edit_mode: Optional[CreateJobEditMode] = None,
                email_notifications: Optional[JobEmailNotifications] = None,
                format: Optional[Format] = None,
@@ -2967,6 +2974,8 @@ class JobsAPI:
           always one run executing. Only one of `schedule` and `continuous` can be used.
         :param deployment: :class:`JobDeployment` (optional)
           Deployment information for jobs managed by external sources.
+        :param description: str (optional)
+          An optional description for the job. The maximum length is 1024 characters in UTF-8 encoding.
         :param edit_mode: :class:`CreateJobEditMode` (optional)
           Edit mode of the job.
           
@@ -3047,6 +3056,7 @@ class JobsAPI:
         if compute is not None: body['compute'] = [v.as_dict() for v in compute]
         if continuous is not None: body['continuous'] = continuous.as_dict()
         if deployment is not None: body['deployment'] = deployment.as_dict()
+        if description is not None: body['description'] = description
         if edit_mode is not None: body['edit_mode'] = edit_mode.value
         if email_notifications is not None: body['email_notifications'] = email_notifications.as_dict()
         if format is not None: body['format'] = format.value

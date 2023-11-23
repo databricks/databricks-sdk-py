@@ -120,7 +120,7 @@ Catalogs
         :returns: Iterator over :class:`CatalogInfo`
         
 
-    .. py:method:: update(name [, comment, isolation_mode, owner, properties])
+    .. py:method:: update(name [, comment, enable_predictive_optimization, isolation_mode, owner, properties])
 
         Usage:
 
@@ -129,12 +129,15 @@ Catalogs
             import time
             
             from databricks.sdk import WorkspaceClient
+            from databricks.sdk.service import catalog
             
             w = WorkspaceClient()
             
             created = w.catalogs.create(name=f'sdk-{time.time_ns()}')
             
-            _ = w.catalogs.update(name=created.name, comment="updated")
+            _ = w.catalogs.update(name=created.name,
+                                  comment="updated",
+                                  enable_predictive_optimization=catalog.EnablePredictiveOptimization.ENABLE)
             
             # cleanup
             w.catalogs.delete(name=created.name, force=True)
@@ -148,6 +151,8 @@ Catalogs
           Name of catalog.
         :param comment: str (optional)
           User-provided free-form text description.
+        :param enable_predictive_optimization: :class:`EnablePredictiveOptimization` (optional)
+          Whether predictive optimization should be enabled for this object and objects under it.
         :param isolation_mode: :class:`IsolationMode` (optional)
           Whether the current securable is accessible from all workspaces or a specific set of workspaces.
         :param owner: str (optional)

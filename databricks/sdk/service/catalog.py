@@ -2495,6 +2495,7 @@ class TableInfo:
     metastore_id: Optional[str] = None
     name: Optional[str] = None
     owner: Optional[str] = None
+    pipeline_id: Optional[str] = None
     properties: Optional['Dict[str,str]'] = None
     row_filter: Optional['TableRowFilter'] = None
     schema_name: Optional[str] = None
@@ -2534,6 +2535,7 @@ class TableInfo:
         if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
         if self.name is not None: body['name'] = self.name
         if self.owner is not None: body['owner'] = self.owner
+        if self.pipeline_id is not None: body['pipeline_id'] = self.pipeline_id
         if self.properties: body['properties'] = self.properties
         if self.row_filter: body['row_filter'] = self.row_filter.as_dict()
         if self.schema_name is not None: body['schema_name'] = self.schema_name
@@ -2572,6 +2574,7 @@ class TableInfo:
                    metastore_id=d.get('metastore_id', None),
                    name=d.get('name', None),
                    owner=d.get('owner', None),
+                   pipeline_id=d.get('pipeline_id', None),
                    properties=d.get('properties', None),
                    row_filter=_from_dict(d, 'row_filter', TableRowFilter),
                    schema_name=d.get('schema_name', None),
@@ -2631,6 +2634,7 @@ class TableType(Enum):
 @dataclass
 class UpdateCatalog:
     comment: Optional[str] = None
+    enable_predictive_optimization: Optional['EnablePredictiveOptimization'] = None
     isolation_mode: Optional['IsolationMode'] = None
     name: Optional[str] = None
     owner: Optional[str] = None
@@ -2639,6 +2643,8 @@ class UpdateCatalog:
     def as_dict(self) -> dict:
         body = {}
         if self.comment is not None: body['comment'] = self.comment
+        if self.enable_predictive_optimization is not None:
+            body['enable_predictive_optimization'] = self.enable_predictive_optimization.value
         if self.isolation_mode is not None: body['isolation_mode'] = self.isolation_mode.value
         if self.name is not None: body['name'] = self.name
         if self.owner is not None: body['owner'] = self.owner
@@ -2648,6 +2654,8 @@ class UpdateCatalog:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'UpdateCatalog':
         return cls(comment=d.get('comment', None),
+                   enable_predictive_optimization=_enum(d, 'enable_predictive_optimization',
+                                                        EnablePredictiveOptimization),
                    isolation_mode=_enum(d, 'isolation_mode', IsolationMode),
                    name=d.get('name', None),
                    owner=d.get('owner', None),
@@ -2843,42 +2851,6 @@ class UpdatePermissions:
 
 
 @dataclass
-class UpdatePredictiveOptimization:
-    metastore_id: str
-    enable: bool
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.enable is not None: body['enable'] = self.enable
-        if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'UpdatePredictiveOptimization':
-        return cls(enable=d.get('enable', None), metastore_id=d.get('metastore_id', None))
-
-
-@dataclass
-class UpdatePredictiveOptimizationResponse:
-    state: Optional[bool] = None
-    user_id: Optional[int] = None
-    username: Optional[str] = None
-
-    def as_dict(self) -> dict:
-        body = {}
-        if self.state is not None: body['state'] = self.state
-        if self.user_id is not None: body['user_id'] = self.user_id
-        if self.username is not None: body['username'] = self.username
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'UpdatePredictiveOptimizationResponse':
-        return cls(state=d.get('state', None),
-                   user_id=d.get('user_id', None),
-                   username=d.get('username', None))
-
-
-@dataclass
 class UpdateRegisteredModelRequest:
     comment: Optional[str] = None
     full_name: Optional[str] = None
@@ -2904,6 +2876,7 @@ class UpdateRegisteredModelRequest:
 @dataclass
 class UpdateSchema:
     comment: Optional[str] = None
+    enable_predictive_optimization: Optional['EnablePredictiveOptimization'] = None
     full_name: Optional[str] = None
     name: Optional[str] = None
     owner: Optional[str] = None
@@ -2912,6 +2885,8 @@ class UpdateSchema:
     def as_dict(self) -> dict:
         body = {}
         if self.comment is not None: body['comment'] = self.comment
+        if self.enable_predictive_optimization is not None:
+            body['enable_predictive_optimization'] = self.enable_predictive_optimization.value
         if self.full_name is not None: body['full_name'] = self.full_name
         if self.name is not None: body['name'] = self.name
         if self.owner is not None: body['owner'] = self.owner
@@ -2921,6 +2896,8 @@ class UpdateSchema:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> 'UpdateSchema':
         return cls(comment=d.get('comment', None),
+                   enable_predictive_optimization=_enum(d, 'enable_predictive_optimization',
+                                                        EnablePredictiveOptimization),
                    full_name=d.get('full_name', None),
                    name=d.get('name', None),
                    owner=d.get('owner', None),
@@ -3741,6 +3718,7 @@ class CatalogsAPI:
                name: str,
                *,
                comment: Optional[str] = None,
+               enable_predictive_optimization: Optional[EnablePredictiveOptimization] = None,
                isolation_mode: Optional[IsolationMode] = None,
                owner: Optional[str] = None,
                properties: Optional[Dict[str, str]] = None) -> CatalogInfo:
@@ -3753,6 +3731,8 @@ class CatalogsAPI:
           Name of catalog.
         :param comment: str (optional)
           User-provided free-form text description.
+        :param enable_predictive_optimization: :class:`EnablePredictiveOptimization` (optional)
+          Whether predictive optimization should be enabled for this object and objects under it.
         :param isolation_mode: :class:`IsolationMode` (optional)
           Whether the current securable is accessible from all workspaces or a specific set of workspaces.
         :param owner: str (optional)
@@ -3764,6 +3744,8 @@ class CatalogsAPI:
         """
         body = {}
         if comment is not None: body['comment'] = comment
+        if enable_predictive_optimization is not None:
+            body['enable_predictive_optimization'] = enable_predictive_optimization.value
         if isolation_mode is not None: body['isolation_mode'] = isolation_mode.value
         if owner is not None: body['owner'] = owner
         if properties is not None: body['properties'] = properties
@@ -4399,25 +4381,6 @@ class MetastoresAPI:
         if force is not None: query['force'] = force
         headers = {'Accept': 'application/json', }
         self._api.do('DELETE', f'/api/2.1/unity-catalog/metastores/{id}', query=query, headers=headers)
-
-    def enable_optimization(self, metastore_id: str, enable: bool) -> UpdatePredictiveOptimizationResponse:
-        """Toggle predictive optimization on the metastore.
-        
-        Enables or disables predictive optimization on the metastore.
-        
-        :param metastore_id: str
-          Unique identifier of metastore.
-        :param enable: bool
-          Whether to enable predictive optimization on the metastore.
-        
-        :returns: :class:`UpdatePredictiveOptimizationResponse`
-        """
-        body = {}
-        if enable is not None: body['enable'] = enable
-        if metastore_id is not None: body['metastore_id'] = metastore_id
-        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        res = self._api.do('PATCH', '/api/2.0/predictive-optimization/service', body=body, headers=headers)
-        return UpdatePredictiveOptimizationResponse.from_dict(res)
 
     def get(self, id: str) -> MetastoreInfo:
         """Get a metastore.
@@ -5064,6 +5027,7 @@ class SchemasAPI:
                full_name: str,
                *,
                comment: Optional[str] = None,
+               enable_predictive_optimization: Optional[EnablePredictiveOptimization] = None,
                name: Optional[str] = None,
                owner: Optional[str] = None,
                properties: Optional[Dict[str, str]] = None) -> SchemaInfo:
@@ -5078,6 +5042,8 @@ class SchemasAPI:
           Full name of the schema.
         :param comment: str (optional)
           User-provided free-form text description.
+        :param enable_predictive_optimization: :class:`EnablePredictiveOptimization` (optional)
+          Whether predictive optimization should be enabled for this object and objects under it.
         :param name: str (optional)
           Name of schema, relative to parent catalog.
         :param owner: str (optional)
@@ -5089,6 +5055,8 @@ class SchemasAPI:
         """
         body = {}
         if comment is not None: body['comment'] = comment
+        if enable_predictive_optimization is not None:
+            body['enable_predictive_optimization'] = enable_predictive_optimization.value
         if name is not None: body['name'] = name
         if owner is not None: body['owner'] = owner
         if properties is not None: body['properties'] = properties

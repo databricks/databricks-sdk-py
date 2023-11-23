@@ -116,3 +116,29 @@ Network Connectivity
         
         :returns: :class:`NccAzurePrivateEndpointRule`
         
+
+    .. py:method:: list_network_connectivity_configurations( [, page_token])
+
+        List network connectivity configurations.
+        
+        Gets an array of network connectivity configurations.
+        
+        :param page_token: str (optional)
+          Pagination token to go to next page based on previous query.
+        
+        :returns: Iterator over :class:`NetworkConnectivityConfiguration`
+        
+
+    .. py:method:: list_private_endpoint_rules(network_connectivity_config_id [, page_token])
+
+        List private endpoint rules.
+        
+        Gets an array of private endpoint rules.
+        
+        :param network_connectivity_config_id: str
+          Your Network Connectvity Configuration ID.
+        :param page_token: str (optional)
+          Pagination token to go to next page based on previous query.
+        
+        :returns: Iterator over :class:`NccAzurePrivateEndpointRule`
+        
