@@ -419,6 +419,40 @@ class ListIpAccessListResponse:
 
 
 @dataclass
+class ListNccAzurePrivateEndpointRulesResponse:
+    items: Optional['List[NccAzurePrivateEndpointRule]'] = None
+    next_page_token: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.items: body['items'] = [v.as_dict() for v in self.items]
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ListNccAzurePrivateEndpointRulesResponse':
+        return cls(items=_repeated_dict(d, 'items', NccAzurePrivateEndpointRule),
+                   next_page_token=d.get('next_page_token', None))
+
+
+@dataclass
+class ListNetworkConnectivityConfigurationsResponse:
+    items: Optional['List[NetworkConnectivityConfiguration]'] = None
+    next_page_token: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.items: body['items'] = [v.as_dict() for v in self.items]
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ListNetworkConnectivityConfigurationsResponse':
+        return cls(items=_repeated_dict(d, 'items', NetworkConnectivityConfiguration),
+                   next_page_token=d.get('next_page_token', None))
+
+
+@dataclass
 class ListTokensResponse:
     token_infos: Optional['List[TokenInfo]'] = None
 
@@ -1761,6 +1795,72 @@ class NetworkConnectivityAPI:
             headers=headers)
         return NccAzurePrivateEndpointRule.from_dict(res)
 
+    def list_network_connectivity_configurations(self,
+                                                 *,
+                                                 page_token: Optional[str] = None
+                                                 ) -> Iterator['NetworkConnectivityConfiguration']:
+        """List network connectivity configurations.
+        
+        Gets an array of network connectivity configurations.
+        
+        :param page_token: str (optional)
+          Pagination token to go to next page based on previous query.
+        
+        :returns: Iterator over :class:`NetworkConnectivityConfiguration`
+        """
+
+        query = {}
+        if page_token is not None: query['page_token'] = page_token
+        headers = {'Accept': 'application/json', }
+
+        while True:
+            json = self._api.do('GET',
+                                f'/api/2.0/accounts/{self._api.account_id}/network-connectivity-configs',
+                                query=query,
+                                headers=headers)
+            if 'items' not in json or not json['items']:
+                return
+            for v in json['items']:
+                yield NetworkConnectivityConfiguration.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
+
+    def list_private_endpoint_rules(
+            self,
+            network_connectivity_config_id: str,
+            *,
+            page_token: Optional[str] = None) -> Iterator['NccAzurePrivateEndpointRule']:
+        """List private endpoint rules.
+        
+        Gets an array of private endpoint rules.
+        
+        :param network_connectivity_config_id: str
+          Your Network Connectvity Configuration ID.
+        :param page_token: str (optional)
+          Pagination token to go to next page based on previous query.
+        
+        :returns: Iterator over :class:`NccAzurePrivateEndpointRule`
+        """
+
+        query = {}
+        if page_token is not None: query['page_token'] = page_token
+        headers = {'Accept': 'application/json', }
+
+        while True:
+            json = self._api.do(
+                'GET',
+                f'/api/2.0/accounts/{self._api.account_id}/network-connectivity-configs/{network_connectivity_config_id}/private-endpoint-rules',
+                query=query,
+                headers=headers)
+            if 'items' not in json or not json['items']:
+                return
+            for v in json['items']:
+                yield NccAzurePrivateEndpointRule.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
+
 
 class SettingsAPI:
     """The default namespace setting API allows users to configure the default namespace for a Databricks
@@ -1834,7 +1934,7 @@ class SettingsAPI:
             allow_missing: Optional[bool] = None,
             field_mask: Optional[str] = None,
             setting: Optional[DefaultNamespaceSetting] = None) -> DefaultNamespaceSetting:
-        """Updates the default namespace setting.
+        """Update the default namespace setting.
         
         Updates the default namespace setting for the workspace. A fresh etag needs to be provided in PATCH
         requests (as part of the setting field). The etag can be retrieved by making a GET request before the

@@ -50,7 +50,7 @@ Default Namespace
 
     .. py:method:: update_default_workspace_namespace( [, allow_missing, field_mask, setting])
 
-        Updates the default namespace setting.
+        Update the default namespace setting.
         
         Updates the default namespace setting for the workspace. A fresh etag needs to be provided in PATCH
         requests (as part of the setting field). The etag can be retrieved by making a GET request before the

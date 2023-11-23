@@ -142,7 +142,6 @@ examples/metastore_assignments/list_metastore_assignments.py linguist-generated=
 examples/metastores/assign_metastores.py linguist-generated=true
 examples/metastores/create_metastores.py linguist-generated=true
 examples/metastores/current_metastores.py linguist-generated=true
-examples/metastores/enable_optimization_metastores.py linguist-generated=true
 examples/metastores/get_metastores.py linguist-generated=true
 examples/metastores/list_metastores.py linguist-generated=true
 examples/metastores/summary_metastores.py linguist-generated=true

@@ -113,7 +113,7 @@ Jobs
           See :method:wait_get_run_job_terminated_or_skipped for more details.
         
 
-    .. py:method:: create( [, access_control_list, compute, continuous, deployment, edit_mode, email_notifications, format, git_source, health, job_clusters, max_concurrent_runs, name, notification_settings, parameters, queue, run_as, schedule, tags, tasks, timeout_seconds, trigger, webhook_notifications])
+    .. py:method:: create( [, access_control_list, compute, continuous, deployment, description, edit_mode, email_notifications, format, git_source, health, job_clusters, max_concurrent_runs, name, notification_settings, parameters, queue, run_as, schedule, tags, tasks, timeout_seconds, trigger, webhook_notifications])
 
         Usage:
 
@@ -157,6 +157,8 @@ Jobs
           always one run executing. Only one of `schedule` and `continuous` can be used.
         :param deployment: :class:`JobDeployment` (optional)
           Deployment information for jobs managed by external sources.
+        :param description: str (optional)
+          An optional description for the job. The maximum length is 1024 characters in UTF-8 encoding.
         :param edit_mode: :class:`CreateJobEditMode` (optional)
           Edit mode of the job.
           

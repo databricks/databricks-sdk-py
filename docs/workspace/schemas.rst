@@ -124,7 +124,7 @@ Schemas
         :returns: Iterator over :class:`SchemaInfo`
         
 
-    .. py:method:: update(full_name [, comment, name, owner, properties])
+    .. py:method:: update(full_name [, comment, enable_predictive_optimization, name, owner, properties])
 
         Usage:
 
@@ -157,6 +157,8 @@ Schemas
           Full name of the schema.
         :param comment: str (optional)
           User-provided free-form text description.
+        :param enable_predictive_optimization: :class:`EnablePredictiveOptimization` (optional)
+          Whether predictive optimization should be enabled for this object and objects under it.
         :param name: str (optional)
           Name of schema, relative to parent catalog.
         :param owner: str (optional)
