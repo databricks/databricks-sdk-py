@@ -359,8 +359,8 @@ class CliTokenSource(Refreshable):
             is_windows = sys.platform.startswith('win')
             # windows requires shell=True to be able to execute 'az login' or other commands
             # cannot use shell=True all the time, as it breaks macOS
-            out = subprocess.check_output(self._cmd, stderr=subprocess.STDOUT, shell=is_windows)
-            it = json.loads(out.decode())
+            out = subprocess.run(self._cmd, capture_output=True, check=True, shell=is_windows)
+            it = json.loads(out.stdout.decode())
             expires_on = self._parse_expiry(it[self._expiry_field])
             return Token(access_token=it[self._access_token_field],
                          token_type=it[self._token_type_field],
@@ -368,7 +368,9 @@ class CliTokenSource(Refreshable):
         except ValueError as e:
             raise ValueError(f"cannot unmarshal CLI result: {e}")
         except subprocess.CalledProcessError as e:
-            message = e.output.decode().strip()
+            stdout = e.stdout.decode().strip()
+            stderr = e.stderr.decode().strip()
+            message = stdout or stderr
             raise IOError(f'cannot get access token: {message}') from e
 
 
