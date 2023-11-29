@@ -30,7 +30,7 @@ Internal changes:
 OpenAPI SHA: 22f09783eb8a84d52026f856be3b2068f9498db3, Date: 2023-11-23
 Dependency updates:
 
- * Bump API spec for Python SDK ([#454](https://github.com/databricks/databricks-sdk-py/pull/454)).
+ * Introduced "google-auth" dependency to support Google authentication.
 
 
 ## 0.13.0
