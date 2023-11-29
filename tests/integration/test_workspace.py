@@ -5,9 +5,17 @@ from databricks.sdk.service.workspace import ImportFormat, Language
 
 def test_workspace_recursive_list(w, random):
     names = []
-    for i in w.workspace.list(f'/Users/{w.current_user.me().user_name}', recursive=True):
+    directory_1 = f'/Users/{w.current_user.me().user_name}/directory-{random(12)}'
+    directory_2 = f'{directory_1}/directory-{random(12)}'
+    directory_3 = f'{directory_2}/directory-{random(12)}'
+    w.workspace.mkdirs(directory_3)
+    for i in w.workspace.list(directory_1, recursive=True):
         names.append(i.path)
-    assert len(names) > 0
+    assert len(names) == 2
+
+    w.workspace.delete(directory_3)
+    w.workspace.delete(directory_2)
+    w.workspace.delete(directory_1)
 
 
 def test_workspace_upload_download_notebooks(w, random):
