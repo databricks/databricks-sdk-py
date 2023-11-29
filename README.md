@@ -206,7 +206,7 @@ w = WorkspaceClient(host=input('Databricks Workspace URL: '),
 
 ### Google Cloud Platform native authentication
 
-By default, the Databricks SDK for Python first tries GCP credentials authentication (`auth_type: 'google-credentials'`, argument). If the SDK is unsuccessful, it then tries Google Cloud Platform (GCP) ID authentication (`auth_type: 'google-id'`, argument).
+By default, the Databricks SDK for Python first tries GCP credentials authentication (`auth_type='google-credentials'`, argument). If the SDK is unsuccessful, it then tries Google Cloud Platform (GCP) ID authentication (`auth_type='google-id'`, argument).
 
 The Databricks SDK for Python picks up an OAuth token in the scope of the Google Default Application Credentials (DAC) flow. This means that if you have run `gcloud auth application-default login` on your development machine, or launch the application on the compute, that is allowed to impersonate the Google Cloud service account specified in `google_service_account`. Authentication should then work out of the box. See [Creating and managing service accounts](https://cloud.google.com/iam/docs/creating-managing-service-accounts).
 
