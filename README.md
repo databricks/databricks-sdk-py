@@ -206,19 +206,19 @@ w = WorkspaceClient(host=input('Databricks Workspace URL: '),
 
 ### Google Cloud Platform native authentication
 
-By default, the Databricks SDK for Python first tries GCP credentials authentication (`AuthType: "google-credentials"` in `*databricks.Config`). If the SDK is unsuccessful, it then tries Google Cloud Platform (GCP) ID authentication (`AuthType: "google-id"` in `*databricks.Config`).
+By default, the Databricks SDK for Python first tries GCP credentials authentication (`auth_type: 'google-credentials'`, argument). If the SDK is unsuccessful, it then tries Google Cloud Platform (GCP) ID authentication (`auth_type: 'google-id'`, argument).
 
-The Databricks SDK for Python picks up an OAuth token in the scope of the Google Default Application Credentials (DAC) flow. This means that if you have run `gcloud auth application-default login` on your development machine, or launch the application on the compute, that is allowed to impersonate the Google Cloud service account specified in `GoogleServiceAccount`. Authentication should then work out of the box. See [Creating and managing service accounts](https://cloud.google.com/iam/docs/creating-managing-service-accounts).
+The Databricks SDK for Python picks up an OAuth token in the scope of the Google Default Application Credentials (DAC) flow. This means that if you have run `gcloud auth application-default login` on your development machine, or launch the application on the compute, that is allowed to impersonate the Google Cloud service account specified in `google_service_account`. Authentication should then work out of the box. See [Creating and managing service accounts](https://cloud.google.com/iam/docs/creating-managing-service-accounts).
 
 To authenticate as a Google Cloud service account, you must provide one of the following:
 
-- `Host` and `GoogleCredentials`; or their environment variable or `.databrickscfg` file field equivalents.
-- `Host` and `GoogleServiceAccount`; or their environment variable or `.databrickscfg` file field equivalents.
+- `host` and `google_credentials`; or their environment variable or `.databrickscfg` file field equivalents.
+- `host` and `google_service_account`; or their environment variable or `.databrickscfg` file field equivalents.
 
-| `*databricks.Config` argument | Description | Environment variable / `.databrickscfg` file field |
-|-------------------------------|-------------|----------------------------------------------------|
-| `GoogleCredentials`| _(String)_ GCP Service Account Credentials JSON or the location of these credentials on the local filesystem. | `GOOGLE_CREDENTIALS` / `google_credentials` |
-| `GoogleServiceAccount`| _(String)_ The Google Cloud Platform (GCP) service account e-mail used for impersonation in the Default Application Credentials Flow that does not require a password. | `DATABRICKS_GOOGLE_SERVICE_ACCOUNT` / `google_service_account` |
+| Argument                 | Description | Environment variable |
+|--------------------------|-------------|--------------------------------------------------|
+| `google_credentials`     | _(String)_ GCP Service Account Credentials JSON or the location of these credentials on the local filesystem. | `GOOGLE_CREDENTIALS` |
+| `google_service_account` | _(String)_ The Google Cloud Platform (GCP) service account e-mail used for impersonation in the Default Application Credentials Flow that does not require a password. | `DATABRICKS_GOOGLE_SERVICE_ACCOUNT` |
 
 For example, to use Google ID authentication:
 
