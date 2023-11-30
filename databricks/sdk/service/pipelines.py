@@ -1,5 +1,7 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
+from __future__ import annotations
+
 import logging
 import random
 import time
@@ -21,26 +23,68 @@ from databricks.sdk.service import compute
 @dataclass
 class CreatePipeline:
     allow_duplicate_names: Optional[bool] = None
+    """If false, deployment will fail if name conflicts with that of another pipeline."""
+
     catalog: Optional[str] = None
+    """A catalog in Unity Catalog to publish data from this pipeline to. If `target` is specified,
+    tables in this pipeline are published to a `target` schema inside `catalog` (for example,
+    `catalog`.`target`.`table`). If `target` is not specified, no data is published to Unity
+    Catalog."""
+
     channel: Optional[str] = None
-    clusters: Optional['List[PipelineCluster]'] = None
-    configuration: Optional['Dict[str,str]'] = None
+    """DLT Release Channel that specifies which version to use."""
+
+    clusters: Optional[List[PipelineCluster]] = None
+    """Cluster settings for this pipeline deployment."""
+
+    configuration: Optional[Dict[str, str]] = None
+    """String-String configuration for this pipeline execution."""
+
     continuous: Optional[bool] = None
+    """Whether the pipeline is continuous or triggered. This replaces `trigger`."""
+
     development: Optional[bool] = None
+    """Whether the pipeline is in Development mode. Defaults to false."""
+
     dry_run: Optional[bool] = None
+
     edition: Optional[str] = None
-    filters: Optional['Filters'] = None
+    """Pipeline product edition."""
+
+    filters: Optional[Filters] = None
+    """Filters on which Pipeline packages to include in the deployed graph."""
+
     id: Optional[str] = None
-    libraries: Optional['List[PipelineLibrary]'] = None
+    """Unique identifier for this pipeline."""
+
+    libraries: Optional[List[PipelineLibrary]] = None
+    """Libraries or code needed by this deployment."""
+
     name: Optional[str] = None
-    notifications: Optional['List[Notifications]'] = None
+    """Friendly identifier for this pipeline."""
+
+    notifications: Optional[List[Notifications]] = None
+    """List of notification settings for this pipeline."""
+
     photon: Optional[bool] = None
+    """Whether Photon is enabled for this pipeline."""
+
     serverless: Optional[bool] = None
+    """Whether serverless compute is enabled for this pipeline."""
+
     storage: Optional[str] = None
+    """DBFS root directory for storing checkpoints and tables."""
+
     target: Optional[str] = None
-    trigger: Optional['PipelineTrigger'] = None
+    """Target schema (database) to add tables in this pipeline to. If not specified, no data is
+    published to the Hive metastore or Unity Catalog. To publish to Unity Catalog, also specify
+    `catalog`."""
+
+    trigger: Optional[PipelineTrigger] = None
+    """Which pipeline trigger to use. Deprecated: Use `continuous` instead."""
 
     def as_dict(self) -> dict:
+        """Serializes the CreatePipeline into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.allow_duplicate_names is not None: body['allow_duplicate_names'] = self.allow_duplicate_names
         if self.catalog is not None: body['catalog'] = self.catalog
@@ -64,7 +108,8 @@ class CreatePipeline:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CreatePipeline':
+    def from_dict(cls, d: Dict[str, any]) -> CreatePipeline:
+        """Deserializes the CreatePipeline from a dictionary."""
         return cls(allow_duplicate_names=d.get('allow_duplicate_names', None),
                    catalog=d.get('catalog', None),
                    channel=d.get('channel', None),
@@ -88,17 +133,22 @@ class CreatePipeline:
 
 @dataclass
 class CreatePipelineResponse:
-    effective_settings: Optional['PipelineSpec'] = None
+    effective_settings: Optional[PipelineSpec] = None
+    """Only returned when dry_run is true."""
+
     pipeline_id: Optional[str] = None
+    """The unique identifier for the newly created pipeline. Only returned when dry_run is false."""
 
     def as_dict(self) -> dict:
+        """Serializes the CreatePipelineResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.effective_settings: body['effective_settings'] = self.effective_settings.as_dict()
         if self.pipeline_id is not None: body['pipeline_id'] = self.pipeline_id
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CreatePipelineResponse':
+    def from_dict(cls, d: Dict[str, any]) -> CreatePipelineResponse:
+        """Deserializes the CreatePipelineResponse from a dictionary."""
         return cls(effective_settings=_from_dict(d, 'effective_settings', PipelineSpec),
                    pipeline_id=d.get('pipeline_id', None))
 
@@ -106,16 +156,19 @@ class CreatePipelineResponse:
 @dataclass
 class CronTrigger:
     quartz_cron_schedule: Optional[str] = None
+
     timezone_id: Optional[str] = None
 
     def as_dict(self) -> dict:
+        """Serializes the CronTrigger into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.quartz_cron_schedule is not None: body['quartz_cron_schedule'] = self.quartz_cron_schedule
         if self.timezone_id is not None: body['timezone_id'] = self.timezone_id
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CronTrigger':
+    def from_dict(cls, d: Dict[str, any]) -> CronTrigger:
+        """Deserializes the CronTrigger from a dictionary."""
         return cls(quartz_cron_schedule=d.get('quartz_cron_schedule', None),
                    timezone_id=d.get('timezone_id', None))
 
@@ -123,43 +176,94 @@ class CronTrigger:
 @dataclass
 class DataPlaneId:
     instance: Optional[str] = None
+    """The instance name of the data plane emitting an event."""
+
     seq_no: Optional[Any] = None
+    """A sequence number, unique and increasing within the data plane instance."""
 
     def as_dict(self) -> dict:
+        """Serializes the DataPlaneId into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.instance is not None: body['instance'] = self.instance
         if self.seq_no: body['seq_no'] = self.seq_no
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'DataPlaneId':
+    def from_dict(cls, d: Dict[str, any]) -> DataPlaneId:
+        """Deserializes the DataPlaneId from a dictionary."""
         return cls(instance=d.get('instance', None), seq_no=d.get('seq_no', None))
 
 
 @dataclass
 class EditPipeline:
     allow_duplicate_names: Optional[bool] = None
+    """If false, deployment will fail if name has changed and conflicts the name of another pipeline."""
+
     catalog: Optional[str] = None
+    """A catalog in Unity Catalog to publish data from this pipeline to. If `target` is specified,
+    tables in this pipeline are published to a `target` schema inside `catalog` (for example,
+    `catalog`.`target`.`table`). If `target` is not specified, no data is published to Unity
+    Catalog."""
+
     channel: Optional[str] = None
-    clusters: Optional['List[PipelineCluster]'] = None
-    configuration: Optional['Dict[str,str]'] = None
+    """DLT Release Channel that specifies which version to use."""
+
+    clusters: Optional[List[PipelineCluster]] = None
+    """Cluster settings for this pipeline deployment."""
+
+    configuration: Optional[Dict[str, str]] = None
+    """String-String configuration for this pipeline execution."""
+
     continuous: Optional[bool] = None
+    """Whether the pipeline is continuous or triggered. This replaces `trigger`."""
+
     development: Optional[bool] = None
+    """Whether the pipeline is in Development mode. Defaults to false."""
+
     edition: Optional[str] = None
+    """Pipeline product edition."""
+
     expected_last_modified: Optional[int] = None
-    filters: Optional['Filters'] = None
+    """If present, the last-modified time of the pipeline settings before the edit. If the settings
+    were modified after that time, then the request will fail with a conflict."""
+
+    filters: Optional[Filters] = None
+    """Filters on which Pipeline packages to include in the deployed graph."""
+
     id: Optional[str] = None
-    libraries: Optional['List[PipelineLibrary]'] = None
+    """Unique identifier for this pipeline."""
+
+    libraries: Optional[List[PipelineLibrary]] = None
+    """Libraries or code needed by this deployment."""
+
     name: Optional[str] = None
-    notifications: Optional['List[Notifications]'] = None
+    """Friendly identifier for this pipeline."""
+
+    notifications: Optional[List[Notifications]] = None
+    """List of notification settings for this pipeline."""
+
     photon: Optional[bool] = None
+    """Whether Photon is enabled for this pipeline."""
+
     pipeline_id: Optional[str] = None
+    """Unique identifier for this pipeline."""
+
     serverless: Optional[bool] = None
+    """Whether serverless compute is enabled for this pipeline."""
+
     storage: Optional[str] = None
+    """DBFS root directory for storing checkpoints and tables."""
+
     target: Optional[str] = None
-    trigger: Optional['PipelineTrigger'] = None
+    """Target schema (database) to add tables in this pipeline to. If not specified, no data is
+    published to the Hive metastore or Unity Catalog. To publish to Unity Catalog, also specify
+    `catalog`."""
+
+    trigger: Optional[PipelineTrigger] = None
+    """Which pipeline trigger to use. Deprecated: Use `continuous` instead."""
 
     def as_dict(self) -> dict:
+        """Serializes the EditPipeline into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.allow_duplicate_names is not None: body['allow_duplicate_names'] = self.allow_duplicate_names
         if self.catalog is not None: body['catalog'] = self.catalog
@@ -185,7 +289,8 @@ class EditPipeline:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'EditPipeline':
+    def from_dict(cls, d: Dict[str, any]) -> EditPipeline:
+        """Deserializes the EditPipeline from a dictionary."""
         return cls(allow_duplicate_names=d.get('allow_duplicate_names', None),
                    catalog=d.get('catalog', None),
                    channel=d.get('channel', None),
@@ -210,17 +315,22 @@ class EditPipeline:
 
 @dataclass
 class ErrorDetail:
-    exceptions: Optional['List[SerializedException]'] = None
+    exceptions: Optional[List[SerializedException]] = None
+    """The exception thrown for this error, with its chain of cause."""
+
     fatal: Optional[bool] = None
+    """Whether this error is considered fatal, that is, unrecoverable."""
 
     def as_dict(self) -> dict:
+        """Serializes the ErrorDetail into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.exceptions: body['exceptions'] = [v.as_dict() for v in self.exceptions]
         if self.fatal is not None: body['fatal'] = self.fatal
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ErrorDetail':
+    def from_dict(cls, d: Dict[str, any]) -> ErrorDetail:
+        """Deserializes the ErrorDetail from a dictionary."""
         return cls(exceptions=_repeated_dict(d, 'exceptions', SerializedException),
                    fatal=d.get('fatal', None))
 
@@ -237,62 +347,95 @@ class EventLevel(Enum):
 @dataclass
 class FileLibrary:
     path: Optional[str] = None
+    """The absolute path of the file."""
 
     def as_dict(self) -> dict:
+        """Serializes the FileLibrary into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.path is not None: body['path'] = self.path
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'FileLibrary':
+    def from_dict(cls, d: Dict[str, any]) -> FileLibrary:
+        """Deserializes the FileLibrary from a dictionary."""
         return cls(path=d.get('path', None))
 
 
 @dataclass
 class Filters:
-    exclude: Optional['List[str]'] = None
-    include: Optional['List[str]'] = None
+    exclude: Optional[List[str]] = None
+    """Paths to exclude."""
+
+    include: Optional[List[str]] = None
+    """Paths to include."""
 
     def as_dict(self) -> dict:
+        """Serializes the Filters into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.exclude: body['exclude'] = [v for v in self.exclude]
         if self.include: body['include'] = [v for v in self.include]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'Filters':
+    def from_dict(cls, d: Dict[str, any]) -> Filters:
+        """Deserializes the Filters from a dictionary."""
         return cls(exclude=d.get('exclude', None), include=d.get('include', None))
 
 
 @dataclass
 class GetPipelinePermissionLevelsResponse:
-    permission_levels: Optional['List[PipelinePermissionsDescription]'] = None
+    permission_levels: Optional[List[PipelinePermissionsDescription]] = None
+    """Specific permission levels"""
 
     def as_dict(self) -> dict:
+        """Serializes the GetPipelinePermissionLevelsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'GetPipelinePermissionLevelsResponse':
+    def from_dict(cls, d: Dict[str, any]) -> GetPipelinePermissionLevelsResponse:
+        """Deserializes the GetPipelinePermissionLevelsResponse from a dictionary."""
         return cls(permission_levels=_repeated_dict(d, 'permission_levels', PipelinePermissionsDescription))
 
 
 @dataclass
 class GetPipelineResponse:
     cause: Optional[str] = None
+    """An optional message detailing the cause of the pipeline state."""
+
     cluster_id: Optional[str] = None
+    """The ID of the cluster that the pipeline is running on."""
+
     creator_user_name: Optional[str] = None
-    health: Optional['GetPipelineResponseHealth'] = None
+    """The username of the pipeline creator."""
+
+    health: Optional[GetPipelineResponseHealth] = None
+    """The health of a pipeline."""
+
     last_modified: Optional[int] = None
-    latest_updates: Optional['List[UpdateStateInfo]'] = None
+    """The last time the pipeline settings were modified or created."""
+
+    latest_updates: Optional[List[UpdateStateInfo]] = None
+    """Status of the latest updates for the pipeline. Ordered with the newest update first."""
+
     name: Optional[str] = None
+    """A human friendly identifier for the pipeline, taken from the `spec`."""
+
     pipeline_id: Optional[str] = None
+    """The ID of the pipeline."""
+
     run_as_user_name: Optional[str] = None
-    spec: Optional['PipelineSpec'] = None
-    state: Optional['PipelineState'] = None
+    """Username of the user that the pipeline will run on behalf of."""
+
+    spec: Optional[PipelineSpec] = None
+    """The pipeline specification. This field is not returned when called by `ListPipelines`."""
+
+    state: Optional[PipelineState] = None
+    """The pipeline state."""
 
     def as_dict(self) -> dict:
+        """Serializes the GetPipelineResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.cause is not None: body['cause'] = self.cause
         if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
@@ -308,7 +451,8 @@ class GetPipelineResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'GetPipelineResponse':
+    def from_dict(cls, d: Dict[str, any]) -> GetPipelineResponse:
+        """Deserializes the GetPipelineResponse from a dictionary."""
         return cls(cause=d.get('cause', None),
                    cluster_id=d.get('cluster_id', None),
                    creator_user_name=d.get('creator_user_name', None),
@@ -331,25 +475,34 @@ class GetPipelineResponseHealth(Enum):
 
 @dataclass
 class GetUpdateResponse:
-    update: Optional['UpdateInfo'] = None
+    update: Optional[UpdateInfo] = None
+    """The current update info."""
 
     def as_dict(self) -> dict:
+        """Serializes the GetUpdateResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.update: body['update'] = self.update.as_dict()
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'GetUpdateResponse':
+    def from_dict(cls, d: Dict[str, any]) -> GetUpdateResponse:
+        """Deserializes the GetUpdateResponse from a dictionary."""
         return cls(update=_from_dict(d, 'update', UpdateInfo))
 
 
 @dataclass
 class ListPipelineEventsResponse:
-    events: Optional['List[PipelineEvent]'] = None
+    events: Optional[List[PipelineEvent]] = None
+    """The list of events matching the request criteria."""
+
     next_page_token: Optional[str] = None
+    """If present, a token to fetch the next page of events."""
+
     prev_page_token: Optional[str] = None
+    """If present, a token to fetch the previous page of events."""
 
     def as_dict(self) -> dict:
+        """Serializes the ListPipelineEventsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.events: body['events'] = [v.as_dict() for v in self.events]
         if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
@@ -357,7 +510,8 @@ class ListPipelineEventsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ListPipelineEventsResponse':
+    def from_dict(cls, d: Dict[str, any]) -> ListPipelineEventsResponse:
+        """Deserializes the ListPipelineEventsResponse from a dictionary."""
         return cls(events=_repeated_dict(d, 'events', PipelineEvent),
                    next_page_token=d.get('next_page_token', None),
                    prev_page_token=d.get('prev_page_token', None))
@@ -366,16 +520,21 @@ class ListPipelineEventsResponse:
 @dataclass
 class ListPipelinesResponse:
     next_page_token: Optional[str] = None
-    statuses: Optional['List[PipelineStateInfo]'] = None
+    """If present, a token to fetch the next page of events."""
+
+    statuses: Optional[List[PipelineStateInfo]] = None
+    """The list of events matching the request criteria."""
 
     def as_dict(self) -> dict:
+        """Serializes the ListPipelinesResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         if self.statuses: body['statuses'] = [v.as_dict() for v in self.statuses]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ListPipelinesResponse':
+    def from_dict(cls, d: Dict[str, any]) -> ListPipelinesResponse:
+        """Deserializes the ListPipelinesResponse from a dictionary."""
         return cls(next_page_token=d.get('next_page_token', None),
                    statuses=_repeated_dict(d, 'statuses', PipelineStateInfo))
 
@@ -383,10 +542,16 @@ class ListPipelinesResponse:
 @dataclass
 class ListUpdatesResponse:
     next_page_token: Optional[str] = None
+    """If present, then there are more results, and this a token to be used in a subsequent request to
+    fetch the next page."""
+
     prev_page_token: Optional[str] = None
-    updates: Optional['List[UpdateInfo]'] = None
+    """If present, then this token can be used in a subsequent request to fetch the previous page."""
+
+    updates: Optional[List[UpdateInfo]] = None
 
     def as_dict(self) -> dict:
+        """Serializes the ListUpdatesResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         if self.prev_page_token is not None: body['prev_page_token'] = self.prev_page_token
@@ -394,7 +559,8 @@ class ListUpdatesResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ListUpdatesResponse':
+    def from_dict(cls, d: Dict[str, any]) -> ListUpdatesResponse:
+        """Deserializes the ListUpdatesResponse from a dictionary."""
         return cls(next_page_token=d.get('next_page_token', None),
                    prev_page_token=d.get('prev_page_token', None),
                    updates=_repeated_dict(d, 'updates', UpdateInfo))
@@ -411,54 +577,102 @@ class MaturityLevel(Enum):
 @dataclass
 class NotebookLibrary:
     path: Optional[str] = None
+    """The absolute path of the notebook."""
 
     def as_dict(self) -> dict:
+        """Serializes the NotebookLibrary into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.path is not None: body['path'] = self.path
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'NotebookLibrary':
+    def from_dict(cls, d: Dict[str, any]) -> NotebookLibrary:
+        """Deserializes the NotebookLibrary from a dictionary."""
         return cls(path=d.get('path', None))
 
 
 @dataclass
 class Notifications:
-    alerts: Optional['List[str]'] = None
-    email_recipients: Optional['List[str]'] = None
+    alerts: Optional[List[str]] = None
+    """A list of alerts that trigger the sending of notifications to the configured destinations. The
+    supported alerts are:
+    
+    * `on-update-success`: A pipeline update completes successfully. * `on-update-failure`: Each
+    time a pipeline update fails. * `on-update-fatal-failure`: A pipeline update fails with a
+    non-retryable (fatal) error. * `on-flow-failure`: A single data flow fails."""
+
+    email_recipients: Optional[List[str]] = None
+    """A list of email addresses notified when a configured alert is triggered."""
 
     def as_dict(self) -> dict:
+        """Serializes the Notifications into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.alerts: body['alerts'] = [v for v in self.alerts]
         if self.email_recipients: body['email_recipients'] = [v for v in self.email_recipients]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'Notifications':
+    def from_dict(cls, d: Dict[str, any]) -> Notifications:
+        """Deserializes the Notifications from a dictionary."""
         return cls(alerts=d.get('alerts', None), email_recipients=d.get('email_recipients', None))
 
 
 @dataclass
 class Origin:
     batch_id: Optional[int] = None
+    """The id of a batch. Unique within a flow."""
+
     cloud: Optional[str] = None
+    """The cloud provider, e.g., AWS or Azure."""
+
     cluster_id: Optional[str] = None
+    """The id of the cluster where an execution happens. Unique within a region."""
+
     dataset_name: Optional[str] = None
+    """The name of a dataset. Unique within a pipeline."""
+
     flow_id: Optional[str] = None
+    """The id of the flow. Globally unique. Incremental queries will generally reuse the same id while
+    complete queries will have a new id per update."""
+
     flow_name: Optional[str] = None
+    """The name of the flow. Not unique."""
+
     host: Optional[str] = None
+    """The optional host name where the event was triggered"""
+
     maintenance_id: Optional[str] = None
+    """The id of a maintenance run. Globally unique."""
+
     materialization_name: Optional[str] = None
+    """Materialization name."""
+
     org_id: Optional[int] = None
+    """The org id of the user. Unique within a cloud."""
+
     pipeline_id: Optional[str] = None
+    """The id of the pipeline. Globally unique."""
+
     pipeline_name: Optional[str] = None
+    """The name of the pipeline. Not unique."""
+
     region: Optional[str] = None
+    """The cloud region."""
+
     request_id: Optional[str] = None
+    """The id of the request that caused an update."""
+
     table_id: Optional[str] = None
+    """The id of a (delta) table. Globally unique."""
+
     uc_resource_id: Optional[str] = None
+    """The Unity Catalog id of the MV or ST being updated."""
+
     update_id: Optional[str] = None
+    """The id of an execution. Globally unique."""
 
     def as_dict(self) -> dict:
+        """Serializes the Origin into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.batch_id is not None: body['batch_id'] = self.batch_id
         if self.cloud is not None: body['cloud'] = self.cloud
@@ -480,7 +694,8 @@ class Origin:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'Origin':
+    def from_dict(cls, d: Dict[str, any]) -> Origin:
+        """Deserializes the Origin from a dictionary."""
         return cls(batch_id=d.get('batch_id', None),
                    cloud=d.get('cloud', None),
                    cluster_id=d.get('cluster_id', None),
@@ -503,11 +718,20 @@ class Origin:
 @dataclass
 class PipelineAccessControlRequest:
     group_name: Optional[str] = None
-    permission_level: Optional['PipelinePermissionLevel'] = None
+    """name of the group"""
+
+    permission_level: Optional[PipelinePermissionLevel] = None
+    """Permission level"""
+
     service_principal_name: Optional[str] = None
+    """Application ID of an active service principal. Setting this field requires the
+    `servicePrincipal/user` role."""
+
     user_name: Optional[str] = None
+    """name of the user"""
 
     def as_dict(self) -> dict:
+        """Serializes the PipelineAccessControlRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.group_name is not None: body['group_name'] = self.group_name
         if self.permission_level is not None: body['permission_level'] = self.permission_level.value
@@ -517,7 +741,8 @@ class PipelineAccessControlRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'PipelineAccessControlRequest':
+    def from_dict(cls, d: Dict[str, any]) -> PipelineAccessControlRequest:
+        """Deserializes the PipelineAccessControlRequest from a dictionary."""
         return cls(group_name=d.get('group_name', None),
                    permission_level=_enum(d, 'permission_level', PipelinePermissionLevel),
                    service_principal_name=d.get('service_principal_name', None),
@@ -526,13 +751,23 @@ class PipelineAccessControlRequest:
 
 @dataclass
 class PipelineAccessControlResponse:
-    all_permissions: Optional['List[PipelinePermission]'] = None
+    all_permissions: Optional[List[PipelinePermission]] = None
+    """All permissions."""
+
     display_name: Optional[str] = None
+    """Display name of the user or service principal."""
+
     group_name: Optional[str] = None
+    """name of the group"""
+
     service_principal_name: Optional[str] = None
+    """Name of the service principal."""
+
     user_name: Optional[str] = None
+    """name of the user"""
 
     def as_dict(self) -> dict:
+        """Serializes the PipelineAccessControlResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.all_permissions: body['all_permissions'] = [v.as_dict() for v in self.all_permissions]
         if self.display_name is not None: body['display_name'] = self.display_name
@@ -543,7 +778,8 @@ class PipelineAccessControlResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'PipelineAccessControlResponse':
+    def from_dict(cls, d: Dict[str, any]) -> PipelineAccessControlResponse:
+        """Deserializes the PipelineAccessControlResponse from a dictionary."""
         return cls(all_permissions=_repeated_dict(d, 'all_permissions', PipelinePermission),
                    display_name=d.get('display_name', None),
                    group_name=d.get('group_name', None),
@@ -554,24 +790,99 @@ class PipelineAccessControlResponse:
 @dataclass
 class PipelineCluster:
     apply_policy_default_values: Optional[bool] = None
-    autoscale: Optional['compute.AutoScale'] = None
-    aws_attributes: Optional['compute.AwsAttributes'] = None
-    azure_attributes: Optional['compute.AzureAttributes'] = None
-    cluster_log_conf: Optional['compute.ClusterLogConf'] = None
-    custom_tags: Optional['Dict[str,str]'] = None
+    """Note: This field won't be persisted. Only API users will check this field."""
+
+    autoscale: Optional[compute.AutoScale] = None
+    """Parameters needed in order to automatically scale clusters up and down based on load. Note:
+    autoscaling works best with DB runtime versions 3.0 or later."""
+
+    aws_attributes: Optional[compute.AwsAttributes] = None
+    """Attributes related to clusters running on Amazon Web Services. If not specified at cluster
+    creation, a set of default values will be used."""
+
+    azure_attributes: Optional[compute.AzureAttributes] = None
+    """Attributes related to clusters running on Microsoft Azure. If not specified at cluster creation,
+    a set of default values will be used."""
+
+    cluster_log_conf: Optional[compute.ClusterLogConf] = None
+    """The configuration for delivering spark logs to a long-term storage destination. Only dbfs
+    destinations are supported. Only one destination can be specified for one cluster. If the conf
+    is given, the logs will be delivered to the destination every `5 mins`. The destination of
+    driver logs is `$destination/$clusterId/driver`, while the destination of executor logs is
+    `$destination/$clusterId/executor`."""
+
+    custom_tags: Optional[Dict[str, str]] = None
+    """Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
+    instances and EBS volumes) with these tags in addition to `default_tags`. Notes:
+    
+    - Currently, Databricks allows at most 45 custom tags
+    
+    - Clusters can only reuse cloud resources if the resources' tags are a subset of the cluster
+    tags"""
+
     driver_instance_pool_id: Optional[str] = None
+    """The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster
+    uses the instance pool with id (instance_pool_id) if the driver pool is not assigned."""
+
     driver_node_type_id: Optional[str] = None
-    gcp_attributes: Optional['compute.GcpAttributes'] = None
+    """The node type of the Spark driver. Note that this field is optional; if unset, the driver node
+    type will be set as the same value as `node_type_id` defined above."""
+
+    gcp_attributes: Optional[compute.GcpAttributes] = None
+    """Attributes related to clusters running on Google Cloud Platform. If not specified at cluster
+    creation, a set of default values will be used."""
+
     instance_pool_id: Optional[str] = None
+    """The optional ID of the instance pool to which the cluster belongs."""
+
     label: Optional[str] = None
+    """A label for the cluster specification, either `default` to configure the default cluster, or
+    `maintenance` to configure the maintenance cluster. This field is optional. The default value is
+    `default`."""
+
     node_type_id: Optional[str] = None
+    """This field encodes, through a single value, the resources available to each of the Spark nodes
+    in this cluster. For example, the Spark nodes can be provisioned and optimized for memory or
+    compute intensive workloads. A list of available node types can be retrieved by using the
+    :method:clusters/listNodeTypes API call."""
+
     num_workers: Optional[int] = None
+    """Number of worker nodes that this cluster should have. A cluster has one Spark Driver and
+    `num_workers` Executors for a total of `num_workers` + 1 Spark nodes.
+    
+    Note: When reading the properties of a cluster, this field reflects the desired number of
+    workers rather than the actual current number of workers. For instance, if a cluster is resized
+    from 5 to 10 workers, this field will immediately be updated to reflect the target size of 10
+    workers, whereas the workers listed in `spark_info` will gradually increase from 5 to 10 as the
+    new nodes are provisioned."""
+
     policy_id: Optional[str] = None
-    spark_conf: Optional['Dict[str,str]'] = None
-    spark_env_vars: Optional['Dict[str,str]'] = None
-    ssh_public_keys: Optional['List[str]'] = None
+    """The ID of the cluster policy used to create the cluster if applicable."""
+
+    spark_conf: Optional[Dict[str, str]] = None
+    """An object containing a set of optional, user-specified Spark configuration key-value pairs. See
+    :method:clusters/create for more details."""
+
+    spark_env_vars: Optional[Dict[str, str]] = None
+    """An object containing a set of optional, user-specified environment variable key-value pairs.
+    Please note that key-value pair of the form (X,Y) will be exported as is (i.e., `export X='Y'`)
+    while launching the driver and workers.
+    
+    In order to specify an additional set of `SPARK_DAEMON_JAVA_OPTS`, we recommend appending them
+    to `$SPARK_DAEMON_JAVA_OPTS` as shown in the example below. This ensures that all default
+    databricks managed environmental variables are included as well.
+    
+    Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m", "SPARK_LOCAL_DIRS":
+    "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS": "$SPARK_DAEMON_JAVA_OPTS
+    -Dspark.shuffle.service.enabled=true"}`"""
+
+    ssh_public_keys: Optional[List[str]] = None
+    """SSH public key contents that will be added to each Spark node in this cluster. The corresponding
+    private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can
+    be specified."""
 
     def as_dict(self) -> dict:
+        """Serializes the PipelineCluster into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.apply_policy_default_values is not None:
             body['apply_policy_default_values'] = self.apply_policy_default_values
@@ -595,7 +906,8 @@ class PipelineCluster:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'PipelineCluster':
+    def from_dict(cls, d: Dict[str, any]) -> PipelineCluster:
+        """Deserializes the PipelineCluster from a dictionary."""
         return cls(apply_policy_default_values=d.get('apply_policy_default_values', None),
                    autoscale=_from_dict(d, 'autoscale', compute.AutoScale),
                    aws_attributes=_from_dict(d, 'aws_attributes', compute.AwsAttributes),
@@ -617,17 +929,35 @@ class PipelineCluster:
 
 @dataclass
 class PipelineEvent:
-    error: Optional['ErrorDetail'] = None
+    error: Optional[ErrorDetail] = None
+    """Information about an error captured by the event."""
+
     event_type: Optional[str] = None
+    """The event type. Should always correspond to the details"""
+
     id: Optional[str] = None
-    level: Optional['EventLevel'] = None
-    maturity_level: Optional['MaturityLevel'] = None
+    """A time-based, globally unique id."""
+
+    level: Optional[EventLevel] = None
+    """The severity level of the event."""
+
+    maturity_level: Optional[MaturityLevel] = None
+    """Maturity level for event_type."""
+
     message: Optional[str] = None
-    origin: Optional['Origin'] = None
-    sequence: Optional['Sequencing'] = None
+    """The display message associated with the event."""
+
+    origin: Optional[Origin] = None
+    """Describes where the event originates from."""
+
+    sequence: Optional[Sequencing] = None
+    """A sequencing object to identify and order events."""
+
     timestamp: Optional[str] = None
+    """The time of the event."""
 
     def as_dict(self) -> dict:
+        """Serializes the PipelineEvent into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.error: body['error'] = self.error.as_dict()
         if self.event_type is not None: body['event_type'] = self.event_type
@@ -641,7 +971,8 @@ class PipelineEvent:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'PipelineEvent':
+    def from_dict(cls, d: Dict[str, any]) -> PipelineEvent:
+        """Deserializes the PipelineEvent from a dictionary."""
         return cls(error=_from_dict(d, 'error', ErrorDetail),
                    event_type=d.get('event_type', None),
                    id=d.get('id', None),
@@ -655,12 +986,20 @@ class PipelineEvent:
 
 @dataclass
 class PipelineLibrary:
-    file: Optional['FileLibrary'] = None
+    file: Optional[FileLibrary] = None
+    """The path to a file that defines a pipeline and is stored in the Databricks Repos."""
+
     jar: Optional[str] = None
-    maven: Optional['compute.MavenLibrary'] = None
-    notebook: Optional['NotebookLibrary'] = None
+    """URI of the jar to be installed. Currently only DBFS is supported."""
+
+    maven: Optional[compute.MavenLibrary] = None
+    """Specification of a maven library to be installed."""
+
+    notebook: Optional[NotebookLibrary] = None
+    """The path to a notebook that defines a pipeline and is stored in the <Databricks> workspace."""
 
     def as_dict(self) -> dict:
+        """Serializes the PipelineLibrary into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.file: body['file'] = self.file.as_dict()
         if self.jar is not None: body['jar'] = self.jar
@@ -669,7 +1008,8 @@ class PipelineLibrary:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'PipelineLibrary':
+    def from_dict(cls, d: Dict[str, any]) -> PipelineLibrary:
+        """Deserializes the PipelineLibrary from a dictionary."""
         return cls(file=_from_dict(d, 'file', FileLibrary),
                    jar=d.get('jar', None),
                    maven=_from_dict(d, 'maven', compute.MavenLibrary),
@@ -679,10 +1019,14 @@ class PipelineLibrary:
 @dataclass
 class PipelinePermission:
     inherited: Optional[bool] = None
-    inherited_from_object: Optional['List[str]'] = None
-    permission_level: Optional['PipelinePermissionLevel'] = None
+
+    inherited_from_object: Optional[List[str]] = None
+
+    permission_level: Optional[PipelinePermissionLevel] = None
+    """Permission level"""
 
     def as_dict(self) -> dict:
+        """Serializes the PipelinePermission into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.inherited is not None: body['inherited'] = self.inherited
         if self.inherited_from_object: body['inherited_from_object'] = [v for v in self.inherited_from_object]
@@ -690,7 +1034,8 @@ class PipelinePermission:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'PipelinePermission':
+    def from_dict(cls, d: Dict[str, any]) -> PipelinePermission:
+        """Deserializes the PipelinePermission from a dictionary."""
         return cls(inherited=d.get('inherited', None),
                    inherited_from_object=d.get('inherited_from_object', None),
                    permission_level=_enum(d, 'permission_level', PipelinePermissionLevel))
@@ -707,11 +1052,14 @@ class PipelinePermissionLevel(Enum):
 
 @dataclass
 class PipelinePermissions:
-    access_control_list: Optional['List[PipelineAccessControlResponse]'] = None
+    access_control_list: Optional[List[PipelineAccessControlResponse]] = None
+
     object_id: Optional[str] = None
+
     object_type: Optional[str] = None
 
     def as_dict(self) -> dict:
+        """Serializes the PipelinePermissions into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.access_control_list:
             body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
@@ -720,7 +1068,8 @@ class PipelinePermissions:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'PipelinePermissions':
+    def from_dict(cls, d: Dict[str, any]) -> PipelinePermissions:
+        """Deserializes the PipelinePermissions from a dictionary."""
         return cls(access_control_list=_repeated_dict(d, 'access_control_list',
                                                       PipelineAccessControlResponse),
                    object_id=d.get('object_id', None),
@@ -730,26 +1079,33 @@ class PipelinePermissions:
 @dataclass
 class PipelinePermissionsDescription:
     description: Optional[str] = None
-    permission_level: Optional['PipelinePermissionLevel'] = None
+
+    permission_level: Optional[PipelinePermissionLevel] = None
+    """Permission level"""
 
     def as_dict(self) -> dict:
+        """Serializes the PipelinePermissionsDescription into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.description is not None: body['description'] = self.description
         if self.permission_level is not None: body['permission_level'] = self.permission_level.value
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'PipelinePermissionsDescription':
+    def from_dict(cls, d: Dict[str, any]) -> PipelinePermissionsDescription:
+        """Deserializes the PipelinePermissionsDescription from a dictionary."""
         return cls(description=d.get('description', None),
                    permission_level=_enum(d, 'permission_level', PipelinePermissionLevel))
 
 
 @dataclass
 class PipelinePermissionsRequest:
-    access_control_list: Optional['List[PipelineAccessControlRequest]'] = None
+    access_control_list: Optional[List[PipelineAccessControlRequest]] = None
+
     pipeline_id: Optional[str] = None
+    """The pipeline for which to get or manage permissions."""
 
     def as_dict(self) -> dict:
+        """Serializes the PipelinePermissionsRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.access_control_list:
             body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
@@ -757,7 +1113,8 @@ class PipelinePermissionsRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'PipelinePermissionsRequest':
+    def from_dict(cls, d: Dict[str, any]) -> PipelinePermissionsRequest:
+        """Deserializes the PipelinePermissionsRequest from a dictionary."""
         return cls(access_control_list=_repeated_dict(d, 'access_control_list', PipelineAccessControlRequest),
                    pipeline_id=d.get('pipeline_id', None))
 
@@ -765,24 +1122,63 @@ class PipelinePermissionsRequest:
 @dataclass
 class PipelineSpec:
     catalog: Optional[str] = None
+    """A catalog in Unity Catalog to publish data from this pipeline to. If `target` is specified,
+    tables in this pipeline are published to a `target` schema inside `catalog` (for example,
+    `catalog`.`target`.`table`). If `target` is not specified, no data is published to Unity
+    Catalog."""
+
     channel: Optional[str] = None
-    clusters: Optional['List[PipelineCluster]'] = None
-    configuration: Optional['Dict[str,str]'] = None
+    """DLT Release Channel that specifies which version to use."""
+
+    clusters: Optional[List[PipelineCluster]] = None
+    """Cluster settings for this pipeline deployment."""
+
+    configuration: Optional[Dict[str, str]] = None
+    """String-String configuration for this pipeline execution."""
+
     continuous: Optional[bool] = None
+    """Whether the pipeline is continuous or triggered. This replaces `trigger`."""
+
     development: Optional[bool] = None
+    """Whether the pipeline is in Development mode. Defaults to false."""
+
     edition: Optional[str] = None
-    filters: Optional['Filters'] = None
+    """Pipeline product edition."""
+
+    filters: Optional[Filters] = None
+    """Filters on which Pipeline packages to include in the deployed graph."""
+
     id: Optional[str] = None
-    libraries: Optional['List[PipelineLibrary]'] = None
+    """Unique identifier for this pipeline."""
+
+    libraries: Optional[List[PipelineLibrary]] = None
+    """Libraries or code needed by this deployment."""
+
     name: Optional[str] = None
-    notifications: Optional['List[Notifications]'] = None
+    """Friendly identifier for this pipeline."""
+
+    notifications: Optional[List[Notifications]] = None
+    """List of notification settings for this pipeline."""
+
     photon: Optional[bool] = None
+    """Whether Photon is enabled for this pipeline."""
+
     serverless: Optional[bool] = None
+    """Whether serverless compute is enabled for this pipeline."""
+
     storage: Optional[str] = None
+    """DBFS root directory for storing checkpoints and tables."""
+
     target: Optional[str] = None
-    trigger: Optional['PipelineTrigger'] = None
+    """Target schema (database) to add tables in this pipeline to. If not specified, no data is
+    published to the Hive metastore or Unity Catalog. To publish to Unity Catalog, also specify
+    `catalog`."""
+
+    trigger: Optional[PipelineTrigger] = None
+    """Which pipeline trigger to use. Deprecated: Use `continuous` instead."""
 
     def as_dict(self) -> dict:
+        """Serializes the PipelineSpec into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.catalog is not None: body['catalog'] = self.catalog
         if self.channel is not None: body['channel'] = self.channel
@@ -804,7 +1200,8 @@ class PipelineSpec:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'PipelineSpec':
+    def from_dict(cls, d: Dict[str, any]) -> PipelineSpec:
+        """Deserializes the PipelineSpec from a dictionary."""
         return cls(catalog=d.get('catalog', None),
                    channel=d.get('channel', None),
                    clusters=_repeated_dict(d, 'clusters', PipelineCluster),
@@ -841,14 +1238,29 @@ class PipelineState(Enum):
 @dataclass
 class PipelineStateInfo:
     cluster_id: Optional[str] = None
+    """The unique identifier of the cluster running the pipeline."""
+
     creator_user_name: Optional[str] = None
-    latest_updates: Optional['List[UpdateStateInfo]'] = None
+    """The username of the pipeline creator."""
+
+    latest_updates: Optional[List[UpdateStateInfo]] = None
+    """Status of the latest updates for the pipeline. Ordered with the newest update first."""
+
     name: Optional[str] = None
+    """The user-friendly name of the pipeline."""
+
     pipeline_id: Optional[str] = None
+    """The unique identifier of the pipeline."""
+
     run_as_user_name: Optional[str] = None
-    state: Optional['PipelineState'] = None
+    """The username that the pipeline runs as. This is a read only value derived from the pipeline
+    owner."""
+
+    state: Optional[PipelineState] = None
+    """The pipeline state."""
 
     def as_dict(self) -> dict:
+        """Serializes the PipelineStateInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
         if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
@@ -860,7 +1272,8 @@ class PipelineStateInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'PipelineStateInfo':
+    def from_dict(cls, d: Dict[str, any]) -> PipelineStateInfo:
+        """Deserializes the PipelineStateInfo from a dictionary."""
         return cls(cluster_id=d.get('cluster_id', None),
                    creator_user_name=d.get('creator_user_name', None),
                    latest_updates=_repeated_dict(d, 'latest_updates', UpdateStateInfo),
@@ -872,33 +1285,41 @@ class PipelineStateInfo:
 
 @dataclass
 class PipelineTrigger:
-    cron: Optional['CronTrigger'] = None
+    cron: Optional[CronTrigger] = None
+
     manual: Optional[Any] = None
 
     def as_dict(self) -> dict:
+        """Serializes the PipelineTrigger into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.cron: body['cron'] = self.cron.as_dict()
         if self.manual: body['manual'] = self.manual
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'PipelineTrigger':
+    def from_dict(cls, d: Dict[str, any]) -> PipelineTrigger:
+        """Deserializes the PipelineTrigger from a dictionary."""
         return cls(cron=_from_dict(d, 'cron', CronTrigger), manual=d.get('manual', None))
 
 
 @dataclass
 class Sequencing:
     control_plane_seq_no: Optional[int] = None
-    data_plane_id: Optional['DataPlaneId'] = None
+    """A sequence number, unique and increasing within the control plane."""
+
+    data_plane_id: Optional[DataPlaneId] = None
+    """the ID assigned by the data plane."""
 
     def as_dict(self) -> dict:
+        """Serializes the Sequencing into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.control_plane_seq_no is not None: body['control_plane_seq_no'] = self.control_plane_seq_no
         if self.data_plane_id: body['data_plane_id'] = self.data_plane_id.as_dict()
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'Sequencing':
+    def from_dict(cls, d: Dict[str, any]) -> Sequencing:
+        """Deserializes the Sequencing from a dictionary."""
         return cls(control_plane_seq_no=d.get('control_plane_seq_no', None),
                    data_plane_id=_from_dict(d, 'data_plane_id', DataPlaneId))
 
@@ -906,10 +1327,16 @@ class Sequencing:
 @dataclass
 class SerializedException:
     class_name: Optional[str] = None
+    """Runtime class of the exception"""
+
     message: Optional[str] = None
-    stack: Optional['List[StackFrame]'] = None
+    """Exception message"""
+
+    stack: Optional[List[StackFrame]] = None
+    """Stack trace consisting of a list of stack frames"""
 
     def as_dict(self) -> dict:
+        """Serializes the SerializedException into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.class_name is not None: body['class_name'] = self.class_name
         if self.message is not None: body['message'] = self.message
@@ -917,7 +1344,8 @@ class SerializedException:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'SerializedException':
+    def from_dict(cls, d: Dict[str, any]) -> SerializedException:
+        """Deserializes the SerializedException from a dictionary."""
         return cls(class_name=d.get('class_name', None),
                    message=d.get('message', None),
                    stack=_repeated_dict(d, 'stack', StackFrame))
@@ -926,11 +1354,19 @@ class SerializedException:
 @dataclass
 class StackFrame:
     declaring_class: Optional[str] = None
+    """Class from which the method call originated"""
+
     file_name: Optional[str] = None
+    """File where the method is defined"""
+
     line_number: Optional[int] = None
+    """Line from which the method was called"""
+
     method_name: Optional[str] = None
+    """Name of the method which was called"""
 
     def as_dict(self) -> dict:
+        """Serializes the StackFrame into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.declaring_class is not None: body['declaring_class'] = self.declaring_class
         if self.file_name is not None: body['file_name'] = self.file_name
@@ -939,7 +1375,8 @@ class StackFrame:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'StackFrame':
+    def from_dict(cls, d: Dict[str, any]) -> StackFrame:
+        """Deserializes the StackFrame from a dictionary."""
         return cls(declaring_class=d.get('declaring_class', None),
                    file_name=d.get('file_name', None),
                    line_number=d.get('line_number', None),
@@ -948,13 +1385,25 @@ class StackFrame:
 
 @dataclass
 class StartUpdate:
-    cause: Optional['StartUpdateCause'] = None
+    cause: Optional[StartUpdateCause] = None
+
     full_refresh: Optional[bool] = None
-    full_refresh_selection: Optional['List[str]'] = None
+    """If true, this update will reset all tables before running."""
+
+    full_refresh_selection: Optional[List[str]] = None
+    """A list of tables to update with fullRefresh. If both refresh_selection and
+    full_refresh_selection are empty, this is a full graph update. Full Refresh on a table means
+    that the states of the table will be reset before the refresh."""
+
     pipeline_id: Optional[str] = None
-    refresh_selection: Optional['List[str]'] = None
+
+    refresh_selection: Optional[List[str]] = None
+    """A list of tables to update without fullRefresh. If both refresh_selection and
+    full_refresh_selection are empty, this is a full graph update. Full Refresh on a table means
+    that the states of the table will be reset before the refresh."""
 
     def as_dict(self) -> dict:
+        """Serializes the StartUpdate into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.cause is not None: body['cause'] = self.cause.value
         if self.full_refresh is not None: body['full_refresh'] = self.full_refresh
@@ -965,7 +1414,8 @@ class StartUpdate:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'StartUpdate':
+    def from_dict(cls, d: Dict[str, any]) -> StartUpdate:
+        """Deserializes the StartUpdate from a dictionary."""
         return cls(cause=_enum(d, 'cause', StartUpdateCause),
                    full_refresh=d.get('full_refresh', None),
                    full_refresh_selection=d.get('full_refresh_selection', None),
@@ -988,29 +1438,56 @@ class StartUpdateResponse:
     update_id: Optional[str] = None
 
     def as_dict(self) -> dict:
+        """Serializes the StartUpdateResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.update_id is not None: body['update_id'] = self.update_id
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'StartUpdateResponse':
+    def from_dict(cls, d: Dict[str, any]) -> StartUpdateResponse:
+        """Deserializes the StartUpdateResponse from a dictionary."""
         return cls(update_id=d.get('update_id', None))
 
 
 @dataclass
 class UpdateInfo:
-    cause: Optional['UpdateInfoCause'] = None
+    cause: Optional[UpdateInfoCause] = None
+    """What triggered this update."""
+
     cluster_id: Optional[str] = None
-    config: Optional['PipelineSpec'] = None
+    """The ID of the cluster that the update is running on."""
+
+    config: Optional[PipelineSpec] = None
+    """The pipeline configuration with system defaults applied where unspecified by the user. Not
+    returned by ListUpdates."""
+
     creation_time: Optional[int] = None
+    """The time when this update was created."""
+
     full_refresh: Optional[bool] = None
-    full_refresh_selection: Optional['List[str]'] = None
+    """If true, this update will reset all tables before running."""
+
+    full_refresh_selection: Optional[List[str]] = None
+    """A list of tables to update with fullRefresh. If both refresh_selection and
+    full_refresh_selection are empty, this is a full graph update. Full Refresh on a table means
+    that the states of the table will be reset before the refresh."""
+
     pipeline_id: Optional[str] = None
-    refresh_selection: Optional['List[str]'] = None
-    state: Optional['UpdateInfoState'] = None
+    """The ID of the pipeline."""
+
+    refresh_selection: Optional[List[str]] = None
+    """A list of tables to update without fullRefresh. If both refresh_selection and
+    full_refresh_selection are empty, this is a full graph update. Full Refresh on a table means
+    that the states of the table will be reset before the refresh."""
+
+    state: Optional[UpdateInfoState] = None
+    """The update state."""
+
     update_id: Optional[str] = None
+    """The ID of this update."""
 
     def as_dict(self) -> dict:
+        """Serializes the UpdateInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.cause is not None: body['cause'] = self.cause.value
         if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
@@ -1026,7 +1503,8 @@ class UpdateInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'UpdateInfo':
+    def from_dict(cls, d: Dict[str, any]) -> UpdateInfo:
+        """Deserializes the UpdateInfo from a dictionary."""
         return cls(cause=_enum(d, 'cause', UpdateInfoCause),
                    cluster_id=d.get('cluster_id', None),
                    config=_from_dict(d, 'config', PipelineSpec),
@@ -1069,10 +1547,13 @@ class UpdateInfoState(Enum):
 @dataclass
 class UpdateStateInfo:
     creation_time: Optional[str] = None
-    state: Optional['UpdateStateInfoState'] = None
+
+    state: Optional[UpdateStateInfoState] = None
+
     update_id: Optional[str] = None
 
     def as_dict(self) -> dict:
+        """Serializes the UpdateStateInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.creation_time is not None: body['creation_time'] = self.creation_time
         if self.state is not None: body['state'] = self.state.value
@@ -1080,7 +1561,8 @@ class UpdateStateInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'UpdateStateInfo':
+    def from_dict(cls, d: Dict[str, any]) -> UpdateStateInfo:
+        """Deserializes the UpdateStateInfo from a dictionary."""
         return cls(creation_time=d.get('creation_time', None),
                    state=_enum(d, 'state', UpdateStateInfoState),
                    update_id=d.get('update_id', None))
@@ -1351,7 +1833,7 @@ class PipelinesAPI:
                              filter: Optional[str] = None,
                              max_results: Optional[int] = None,
                              order_by: Optional[List[str]] = None,
-                             page_token: Optional[str] = None) -> Iterator['PipelineEvent']:
+                             page_token: Optional[str] = None) -> Iterator[PipelineEvent]:
         """List pipeline events.
         
         Retrieves events for a pipeline.
@@ -1404,7 +1886,7 @@ class PipelinesAPI:
                        filter: Optional[str] = None,
                        max_results: Optional[int] = None,
                        order_by: Optional[List[str]] = None,
-                       page_token: Optional[str] = None) -> Iterator['PipelineStateInfo']:
+                       page_token: Optional[str] = None) -> Iterator[PipelineStateInfo]:
         """List pipelines.
         
         Lists pipelines defined in the Delta Live Tables system.

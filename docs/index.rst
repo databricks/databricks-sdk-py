@@ -29,7 +29,8 @@ We are keen to hear feedback from you on these SDKs. Please `file GitHub issues 
    pagination
    logging
    dbutils
-   workspace/index
-   account/index
+   autogen/workspace-client
+   autogen/account-client
+   autogen/reference
 
 

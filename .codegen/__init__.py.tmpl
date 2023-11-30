@@ -35,6 +35,9 @@ def _make_dbutils(config: client.Config):
 
 
 class WorkspaceClient:
+    """
+    The WorkspaceClient is a client for the workspace-level Databricks REST API.
+    """
     def __init__(self, *{{range $args}}, {{.}}: str = None{{end}},
                  debug_truncate_bytes: int = None,
                  debug_headers: bool = None,
@@ -53,7 +56,15 @@ class WorkspaceClient:
         self.dbutils = _make_dbutils(self.config)
         self.api_client = client.ApiClient(self.config)
         {{- range .Services}}{{if not .IsAccounts}}
-        self.{{.SnakeName}} = {{template "api" .}}(self.api_client){{end -}}{{end}}
+        self._{{.SnakeName}} = {{template "api" .}}(self.api_client){{end -}}{{end}}
+
+{{ range .Services }}{{if not .IsAccounts}}
+    @property
+    def {{.SnakeName}}(self) -> {{template "api" .}}:{{if .Description}}
+        """{{.Comment "    " 110}}"""
+        {{end}}
+        return self._{{.SnakeName}}
+{{end}}{{ end}}
 
 class AccountClient:
     def __init__(self, *{{range $args}}, {{.}}: str = None{{end}},

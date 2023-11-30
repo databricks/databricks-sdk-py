@@ -1,1 +1,4 @@
 myst_parser
+sphinx-autobuild
+enum_tools
+sphinx-toolbox

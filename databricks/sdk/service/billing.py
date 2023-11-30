@@ -1,5 +1,7 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
+from __future__ import annotations
+
 import logging
 from dataclasses import dataclass
 from enum import Enum
@@ -17,14 +19,41 @@ class Budget:
     """Budget configuration to be created."""
 
     name: str
+    """Human-readable name of the budget."""
+
     period: str
+    """Period length in years, months, weeks and/or days. Examples: `1 month`, `30 days`, `1 year, 2
+    months, 1 week, 2 days`"""
+
     start_date: str
+    """Start date of the budget period calculation."""
+
     target_amount: str
+    """Target amount of the budget per period in USD."""
+
     filter: str
-    alerts: Optional['List[BudgetAlert]'] = None
+    """SQL-like filter expression with workspaceId, SKU and tag. Usage in your account that matches
+    this expression will be counted in this budget.
+    
+    Supported properties on left-hand side of comparison: * `workspaceId` - the ID of the workspace
+    * `sku` - SKU of the cluster, e.g. `STANDARD_ALL_PURPOSE_COMPUTE` * `tag.tagName`, `tag.'tag
+    name'` - tag of the cluster
+    
+    Supported comparison operators: * `=` - equal * `!=` - not equal
+    
+    Supported logical operators: `AND`, `OR`.
+    
+    Examples: * `workspaceId=123 OR (sku='STANDARD_ALL_PURPOSE_COMPUTE' AND tag.'my tag'='my
+    value')` * `workspaceId!=456` * `sku='STANDARD_ALL_PURPOSE_COMPUTE' OR
+    sku='PREMIUM_ALL_PURPOSE_COMPUTE'` * `tag.name1='value1' AND tag.name2='value2'`"""
+
+    alerts: Optional[List[BudgetAlert]] = None
+
     end_date: Optional[str] = None
+    """Optional end date of the budget."""
 
     def as_dict(self) -> dict:
+        """Serializes the Budget into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.alerts: body['alerts'] = [v.as_dict() for v in self.alerts]
         if self.end_date is not None: body['end_date'] = self.end_date
@@ -36,7 +65,8 @@ class Budget:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'Budget':
+    def from_dict(cls, d: Dict[str, any]) -> Budget:
+        """Deserializes the Budget from a dictionary."""
         return cls(alerts=_repeated_dict(d, 'alerts', BudgetAlert),
                    end_date=d.get('end_date', None),
                    filter=d.get('filter', None),
@@ -48,17 +78,22 @@ class Budget:
 
 @dataclass
 class BudgetAlert:
-    email_notifications: Optional['List[str]'] = None
+    email_notifications: Optional[List[str]] = None
+    """List of email addresses to be notified when budget percentage is exceeded in the given period."""
+
     min_percentage: Optional[int] = None
+    """Percentage of the target amount used in the currect period that will trigger a notification."""
 
     def as_dict(self) -> dict:
+        """Serializes the BudgetAlert into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.email_notifications: body['email_notifications'] = [v for v in self.email_notifications]
         if self.min_percentage is not None: body['min_percentage'] = self.min_percentage
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'BudgetAlert':
+    def from_dict(cls, d: Dict[str, any]) -> BudgetAlert:
+        """Deserializes the BudgetAlert from a dictionary."""
         return cls(email_notifications=d.get('email_notifications', None),
                    min_percentage=d.get('min_percentage', None))
 
@@ -67,15 +102,17 @@ class BudgetAlert:
 class BudgetList:
     """List of budgets."""
 
-    budgets: Optional['List[BudgetWithStatus]'] = None
+    budgets: Optional[List[BudgetWithStatus]] = None
 
     def as_dict(self) -> dict:
+        """Serializes the BudgetList into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.budgets: body['budgets'] = [v.as_dict() for v in self.budgets]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'BudgetList':
+    def from_dict(cls, d: Dict[str, any]) -> BudgetList:
+        """Deserializes the BudgetList from a dictionary."""
         return cls(budgets=_repeated_dict(d, 'budgets', BudgetWithStatus))
 
 
@@ -83,19 +120,51 @@ class BudgetList:
 class BudgetWithStatus:
     """Budget configuration with daily status."""
 
-    alerts: Optional['List[BudgetAlert]'] = None
+    alerts: Optional[List[BudgetAlert]] = None
+
     budget_id: Optional[str] = None
+
     creation_time: Optional[str] = None
+
     end_date: Optional[str] = None
+    """Optional end date of the budget."""
+
     filter: Optional[str] = None
+    """SQL-like filter expression with workspaceId, SKU and tag. Usage in your account that matches
+    this expression will be counted in this budget.
+    
+    Supported properties on left-hand side of comparison: * `workspaceId` - the ID of the workspace
+    * `sku` - SKU of the cluster, e.g. `STANDARD_ALL_PURPOSE_COMPUTE` * `tag.tagName`, `tag.'tag
+    name'` - tag of the cluster
+    
+    Supported comparison operators: * `=` - equal * `!=` - not equal
+    
+    Supported logical operators: `AND`, `OR`.
+    
+    Examples: * `workspaceId=123 OR (sku='STANDARD_ALL_PURPOSE_COMPUTE' AND tag.'my tag'='my
+    value')` * `workspaceId!=456` * `sku='STANDARD_ALL_PURPOSE_COMPUTE' OR
+    sku='PREMIUM_ALL_PURPOSE_COMPUTE'` * `tag.name1='value1' AND tag.name2='value2'`"""
+
     name: Optional[str] = None
+    """Human-readable name of the budget."""
+
     period: Optional[str] = None
+    """Period length in years, months, weeks and/or days. Examples: `1 month`, `30 days`, `1 year, 2
+    months, 1 week, 2 days`"""
+
     start_date: Optional[str] = None
-    status_daily: Optional['List[BudgetWithStatusStatusDailyItem]'] = None
+    """Start date of the budget period calculation."""
+
+    status_daily: Optional[List[BudgetWithStatusStatusDailyItem]] = None
+    """Amount used in the budget for each day (noncumulative)."""
+
     target_amount: Optional[str] = None
+    """Target amount of the budget per period in USD."""
+
     update_time: Optional[str] = None
 
     def as_dict(self) -> dict:
+        """Serializes the BudgetWithStatus into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.alerts: body['alerts'] = [v.as_dict() for v in self.alerts]
         if self.budget_id is not None: body['budget_id'] = self.budget_id
@@ -111,7 +180,8 @@ class BudgetWithStatus:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'BudgetWithStatus':
+    def from_dict(cls, d: Dict[str, any]) -> BudgetWithStatus:
+        """Deserializes the BudgetWithStatus from a dictionary."""
         return cls(alerts=_repeated_dict(d, 'alerts', BudgetAlert),
                    budget_id=d.get('budget_id', None),
                    creation_time=d.get('creation_time', None),
@@ -128,32 +198,96 @@ class BudgetWithStatus:
 @dataclass
 class BudgetWithStatusStatusDailyItem:
     amount: Optional[str] = None
+    """Amount used in this day in USD."""
+
     date: Optional[str] = None
 
     def as_dict(self) -> dict:
+        """Serializes the BudgetWithStatusStatusDailyItem into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.amount is not None: body['amount'] = self.amount
         if self.date is not None: body['date'] = self.date
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'BudgetWithStatusStatusDailyItem':
+    def from_dict(cls, d: Dict[str, any]) -> BudgetWithStatusStatusDailyItem:
+        """Deserializes the BudgetWithStatusStatusDailyItem from a dictionary."""
         return cls(amount=d.get('amount', None), date=d.get('date', None))
 
 
 @dataclass
 class CreateLogDeliveryConfigurationParams:
-    log_type: 'LogType'
-    output_format: 'OutputFormat'
+    log_type: LogType
+    """Log delivery type. Supported values are:
+    
+    * `BILLABLE_USAGE` — Configure [billable usage log delivery]. For the CSV schema, see the
+    [View billable usage].
+    
+    * `AUDIT_LOGS` — Configure [audit log delivery]. For the JSON schema, see [Configure audit
+    logging]
+    
+    [Configure audit logging]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
+    [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html
+    [audit log delivery]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
+    [billable usage log delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html"""
+
+    output_format: OutputFormat
+    """The file type of log delivery.
+    
+    * If `log_type` is `BILLABLE_USAGE`, this value must be `CSV`. Only the CSV (comma-separated
+    values) format is supported. For the schema, see the [View billable usage] * If `log_type` is
+    `AUDIT_LOGS`, this value must be `JSON`. Only the JSON (JavaScript Object Notation) format is
+    supported. For the schema, see the [Configuring audit logs].
+    
+    [Configuring audit logs]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
+    [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html"""
+
     credentials_id: str
+    """The ID for a method:credentials/create that represents the AWS IAM role with policy and trust
+    relationship as described in the main billable usage documentation page. See [Configure billable
+    usage delivery].
+    
+    [Configure billable usage delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html"""
+
     storage_configuration_id: str
+    """The ID for a method:storage/create that represents the S3 bucket with bucket policy as described
+    in the main billable usage documentation page. See [Configure billable usage delivery].
+    
+    [Configure billable usage delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html"""
+
     config_name: Optional[str] = None
+    """The optional human-readable name of the log delivery configuration. Defaults to empty."""
+
     delivery_path_prefix: Optional[str] = None
+    """The optional delivery path prefix within Amazon S3 storage. Defaults to empty, which means that
+    logs are delivered to the root of the bucket. This must be a valid S3 object key. This must not
+    start or end with a slash character."""
+
     delivery_start_time: Optional[str] = None
-    status: Optional['LogDeliveryConfigStatus'] = None
-    workspace_ids_filter: Optional['List[int]'] = None
+    """This field applies only if `log_type` is `BILLABLE_USAGE`. This is the optional start month and
+    year for delivery, specified in `YYYY-MM` format. Defaults to current year and month.
+    `BILLABLE_USAGE` logs are not available for usage before March 2019 (`2019-03`)."""
+
+    status: Optional[LogDeliveryConfigStatus] = None
+    """Status of log delivery configuration. Set to `ENABLED` (enabled) or `DISABLED` (disabled).
+    Defaults to `ENABLED`. You can [enable or disable the
+    configuration](#operation/patch-log-delivery-config-status) later. Deletion of a configuration
+    is not supported, so disable a log delivery configuration that is no longer needed."""
+
+    workspace_ids_filter: Optional[List[int]] = None
+    """Optional filter that specifies workspace IDs to deliver logs for. By default the workspace
+    filter is empty and log delivery applies at the account level, delivering workspace-level logs
+    for all workspaces in your account, plus account level logs. You can optionally set this field
+    to an array of workspace IDs (each one is an `int64`) to which log delivery should apply, in
+    which case only workspace-level logs relating to the specified workspaces are delivered. If you
+    plan to use different log delivery configurations for different workspaces, set this field
+    explicitly. Be aware that delivery configurations mentioning specific workspaces won't apply to
+    new workspaces created in the future, and delivery won't include account level logs. For some
+    types of Databricks deployments there is only one workspace per account ID, so this field is
+    unnecessary."""
 
     def as_dict(self) -> dict:
+        """Serializes the CreateLogDeliveryConfigurationParams into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.config_name is not None: body['config_name'] = self.config_name
         if self.credentials_id is not None: body['credentials_id'] = self.credentials_id
@@ -168,7 +302,8 @@ class CreateLogDeliveryConfigurationParams:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CreateLogDeliveryConfigurationParams':
+    def from_dict(cls, d: Dict[str, any]) -> CreateLogDeliveryConfigurationParams:
+        """Deserializes the CreateLogDeliveryConfigurationParams from a dictionary."""
         return cls(config_name=d.get('config_name', None),
                    credentials_id=d.get('credentials_id', None),
                    delivery_path_prefix=d.get('delivery_path_prefix', None),
@@ -214,21 +349,91 @@ class LogDeliveryConfigStatus(Enum):
 @dataclass
 class LogDeliveryConfiguration:
     account_id: Optional[str] = None
+    """The Databricks account ID that hosts the log delivery configuration."""
+
     config_id: Optional[str] = None
+    """Databricks log delivery configuration ID."""
+
     config_name: Optional[str] = None
+    """The optional human-readable name of the log delivery configuration. Defaults to empty."""
+
     creation_time: Optional[int] = None
+    """Time in epoch milliseconds when the log delivery configuration was created."""
+
     credentials_id: Optional[str] = None
+    """The ID for a method:credentials/create that represents the AWS IAM role with policy and trust
+    relationship as described in the main billable usage documentation page. See [Configure billable
+    usage delivery].
+    
+    [Configure billable usage delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html"""
+
     delivery_path_prefix: Optional[str] = None
+    """The optional delivery path prefix within Amazon S3 storage. Defaults to empty, which means that
+    logs are delivered to the root of the bucket. This must be a valid S3 object key. This must not
+    start or end with a slash character."""
+
     delivery_start_time: Optional[str] = None
-    log_delivery_status: Optional['LogDeliveryStatus'] = None
-    log_type: Optional['LogType'] = None
-    output_format: Optional['OutputFormat'] = None
-    status: Optional['LogDeliveryConfigStatus'] = None
+    """This field applies only if `log_type` is `BILLABLE_USAGE`. This is the optional start month and
+    year for delivery, specified in `YYYY-MM` format. Defaults to current year and month.
+    `BILLABLE_USAGE` logs are not available for usage before March 2019 (`2019-03`)."""
+
+    log_delivery_status: Optional[LogDeliveryStatus] = None
+    """Databricks log delivery status."""
+
+    log_type: Optional[LogType] = None
+    """Log delivery type. Supported values are:
+    
+    * `BILLABLE_USAGE` — Configure [billable usage log delivery]. For the CSV schema, see the
+    [View billable usage].
+    
+    * `AUDIT_LOGS` — Configure [audit log delivery]. For the JSON schema, see [Configure audit
+    logging]
+    
+    [Configure audit logging]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
+    [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html
+    [audit log delivery]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
+    [billable usage log delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html"""
+
+    output_format: Optional[OutputFormat] = None
+    """The file type of log delivery.
+    
+    * If `log_type` is `BILLABLE_USAGE`, this value must be `CSV`. Only the CSV (comma-separated
+    values) format is supported. For the schema, see the [View billable usage] * If `log_type` is
+    `AUDIT_LOGS`, this value must be `JSON`. Only the JSON (JavaScript Object Notation) format is
+    supported. For the schema, see the [Configuring audit logs].
+    
+    [Configuring audit logs]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
+    [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html"""
+
+    status: Optional[LogDeliveryConfigStatus] = None
+    """Status of log delivery configuration. Set to `ENABLED` (enabled) or `DISABLED` (disabled).
+    Defaults to `ENABLED`. You can [enable or disable the
+    configuration](#operation/patch-log-delivery-config-status) later. Deletion of a configuration
+    is not supported, so disable a log delivery configuration that is no longer needed."""
+
     storage_configuration_id: Optional[str] = None
+    """The ID for a method:storage/create that represents the S3 bucket with bucket policy as described
+    in the main billable usage documentation page. See [Configure billable usage delivery].
+    
+    [Configure billable usage delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html"""
+
     update_time: Optional[int] = None
-    workspace_ids_filter: Optional['List[int]'] = None
+    """Time in epoch milliseconds when the log delivery configuration was updated."""
+
+    workspace_ids_filter: Optional[List[int]] = None
+    """Optional filter that specifies workspace IDs to deliver logs for. By default the workspace
+    filter is empty and log delivery applies at the account level, delivering workspace-level logs
+    for all workspaces in your account, plus account level logs. You can optionally set this field
+    to an array of workspace IDs (each one is an `int64`) to which log delivery should apply, in
+    which case only workspace-level logs relating to the specified workspaces are delivered. If you
+    plan to use different log delivery configurations for different workspaces, set this field
+    explicitly. Be aware that delivery configurations mentioning specific workspaces won't apply to
+    new workspaces created in the future, and delivery won't include account level logs. For some
+    types of Databricks deployments there is only one workspace per account ID, so this field is
+    unnecessary."""
 
     def as_dict(self) -> dict:
+        """Serializes the LogDeliveryConfiguration into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.account_id is not None: body['account_id'] = self.account_id
         if self.config_id is not None: body['config_id'] = self.config_id
@@ -248,7 +453,8 @@ class LogDeliveryConfiguration:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'LogDeliveryConfiguration':
+    def from_dict(cls, d: Dict[str, any]) -> LogDeliveryConfiguration:
+        """Deserializes the LogDeliveryConfiguration from a dictionary."""
         return cls(account_id=d.get('account_id', None),
                    config_id=d.get('config_id', None),
                    config_name=d.get('config_name', None),
@@ -270,11 +476,26 @@ class LogDeliveryStatus:
     """Databricks log delivery status."""
 
     last_attempt_time: Optional[str] = None
+    """The UTC time for the latest log delivery attempt."""
+
     last_successful_attempt_time: Optional[str] = None
+    """The UTC time for the latest successful log delivery."""
+
     message: Optional[str] = None
-    status: Optional['DeliveryStatus'] = None
+    """Informative message about the latest log delivery attempt. If the log delivery fails with
+    USER_FAILURE, error details will be provided for fixing misconfigurations in cloud permissions."""
+
+    status: Optional[DeliveryStatus] = None
+    """The status string for log delivery. Possible values are: * `CREATED`: There were no log delivery
+    attempts since the config was created. * `SUCCEEDED`: The latest attempt of log delivery has
+    succeeded completely. * `USER_FAILURE`: The latest attempt of log delivery failed because of
+    misconfiguration of customer provided permissions on role or storage. * `SYSTEM_FAILURE`: The
+    latest attempt of log delivery failed because of an Databricks internal error. Contact support
+    if it doesn't go away soon. * `NOT_FOUND`: The log delivery status as the configuration has been
+    disabled since the release of this feature or there are no workspaces in the account."""
 
     def as_dict(self) -> dict:
+        """Serializes the LogDeliveryStatus into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.last_attempt_time is not None: body['last_attempt_time'] = self.last_attempt_time
         if self.last_successful_attempt_time is not None:
@@ -284,7 +505,8 @@ class LogDeliveryStatus:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'LogDeliveryStatus':
+    def from_dict(cls, d: Dict[str, any]) -> LogDeliveryStatus:
+        """Deserializes the LogDeliveryStatus from a dictionary."""
         return cls(last_attempt_time=d.get('last_attempt_time', None),
                    last_successful_attempt_time=d.get('last_successful_attempt_time', None),
                    message=d.get('message', None),
@@ -326,10 +548,17 @@ class OutputFormat(Enum):
 
 @dataclass
 class UpdateLogDeliveryConfigurationStatusRequest:
-    status: 'LogDeliveryConfigStatus'
+    status: LogDeliveryConfigStatus
+    """Status of log delivery configuration. Set to `ENABLED` (enabled) or `DISABLED` (disabled).
+    Defaults to `ENABLED`. You can [enable or disable the
+    configuration](#operation/patch-log-delivery-config-status) later. Deletion of a configuration
+    is not supported, so disable a log delivery configuration that is no longer needed."""
+
     log_delivery_configuration_id: Optional[str] = None
+    """Databricks log delivery configuration ID"""
 
     def as_dict(self) -> dict:
+        """Serializes the UpdateLogDeliveryConfigurationStatusRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.log_delivery_configuration_id is not None:
             body['log_delivery_configuration_id'] = self.log_delivery_configuration_id
@@ -337,85 +566,100 @@ class UpdateLogDeliveryConfigurationStatusRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'UpdateLogDeliveryConfigurationStatusRequest':
+    def from_dict(cls, d: Dict[str, any]) -> UpdateLogDeliveryConfigurationStatusRequest:
+        """Deserializes the UpdateLogDeliveryConfigurationStatusRequest from a dictionary."""
         return cls(log_delivery_configuration_id=d.get('log_delivery_configuration_id', None),
                    status=_enum(d, 'status', LogDeliveryConfigStatus))
 
 
 @dataclass
 class WrappedBudget:
-    budget: 'Budget'
+    budget: Budget
+    """Budget configuration to be created."""
+
     budget_id: Optional[str] = None
+    """Budget ID"""
 
     def as_dict(self) -> dict:
+        """Serializes the WrappedBudget into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.budget: body['budget'] = self.budget.as_dict()
         if self.budget_id is not None: body['budget_id'] = self.budget_id
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'WrappedBudget':
+    def from_dict(cls, d: Dict[str, any]) -> WrappedBudget:
+        """Deserializes the WrappedBudget from a dictionary."""
         return cls(budget=_from_dict(d, 'budget', Budget), budget_id=d.get('budget_id', None))
 
 
 @dataclass
 class WrappedBudgetWithStatus:
-    budget: 'BudgetWithStatus'
+    budget: BudgetWithStatus
+    """Budget configuration with daily status."""
 
     def as_dict(self) -> dict:
+        """Serializes the WrappedBudgetWithStatus into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.budget: body['budget'] = self.budget.as_dict()
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'WrappedBudgetWithStatus':
+    def from_dict(cls, d: Dict[str, any]) -> WrappedBudgetWithStatus:
+        """Deserializes the WrappedBudgetWithStatus from a dictionary."""
         return cls(budget=_from_dict(d, 'budget', BudgetWithStatus))
 
 
 @dataclass
 class WrappedCreateLogDeliveryConfiguration:
-    log_delivery_configuration: Optional['CreateLogDeliveryConfigurationParams'] = None
+    log_delivery_configuration: Optional[CreateLogDeliveryConfigurationParams] = None
 
     def as_dict(self) -> dict:
+        """Serializes the WrappedCreateLogDeliveryConfiguration into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.log_delivery_configuration:
             body['log_delivery_configuration'] = self.log_delivery_configuration.as_dict()
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'WrappedCreateLogDeliveryConfiguration':
+    def from_dict(cls, d: Dict[str, any]) -> WrappedCreateLogDeliveryConfiguration:
+        """Deserializes the WrappedCreateLogDeliveryConfiguration from a dictionary."""
         return cls(log_delivery_configuration=_from_dict(d, 'log_delivery_configuration',
                                                          CreateLogDeliveryConfigurationParams))
 
 
 @dataclass
 class WrappedLogDeliveryConfiguration:
-    log_delivery_configuration: Optional['LogDeliveryConfiguration'] = None
+    log_delivery_configuration: Optional[LogDeliveryConfiguration] = None
 
     def as_dict(self) -> dict:
+        """Serializes the WrappedLogDeliveryConfiguration into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.log_delivery_configuration:
             body['log_delivery_configuration'] = self.log_delivery_configuration.as_dict()
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'WrappedLogDeliveryConfiguration':
+    def from_dict(cls, d: Dict[str, any]) -> WrappedLogDeliveryConfiguration:
+        """Deserializes the WrappedLogDeliveryConfiguration from a dictionary."""
         return cls(
             log_delivery_configuration=_from_dict(d, 'log_delivery_configuration', LogDeliveryConfiguration))
 
 
 @dataclass
 class WrappedLogDeliveryConfigurations:
-    log_delivery_configurations: Optional['List[LogDeliveryConfiguration]'] = None
+    log_delivery_configurations: Optional[List[LogDeliveryConfiguration]] = None
 
     def as_dict(self) -> dict:
+        """Serializes the WrappedLogDeliveryConfigurations into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.log_delivery_configurations:
             body['log_delivery_configurations'] = [v.as_dict() for v in self.log_delivery_configurations]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'WrappedLogDeliveryConfigurations':
+    def from_dict(cls, d: Dict[str, any]) -> WrappedLogDeliveryConfigurations:
+        """Deserializes the WrappedLogDeliveryConfigurations from a dictionary."""
         return cls(log_delivery_configurations=_repeated_dict(d, 'log_delivery_configurations',
                                                               LogDeliveryConfiguration))
 
@@ -528,7 +772,7 @@ class BudgetsAPI:
                            headers=headers)
         return WrappedBudgetWithStatus.from_dict(res)
 
-    def list(self) -> Iterator['BudgetWithStatus']:
+    def list(self) -> Iterator[BudgetWithStatus]:
         """Get all budgets.
         
         Gets all budgets associated with this account, including noncumulative status for each day that the
@@ -678,7 +922,7 @@ class LogDeliveryAPI:
              *,
              credentials_id: Optional[str] = None,
              status: Optional[LogDeliveryConfigStatus] = None,
-             storage_configuration_id: Optional[str] = None) -> Iterator['LogDeliveryConfiguration']:
+             storage_configuration_id: Optional[str] = None) -> Iterator[LogDeliveryConfiguration]:
         """Get all log delivery configurations.
         
         Gets all Databricks log delivery configurations associated with an account specified by ID.
