@@ -12,30 +12,6 @@ class Package:
     description: str
 
 
-@dataclass
-class Tag:
-    name: str
-    service: str
-    is_account: bool
-    package: Package
-
-
-@dataclass
-class ServiceDoc:
-    service_name: str
-    doc: str
-    tag: Tag
-
-    def as_rst(self) -> str:
-        if not self.doc:
-            self.doc = ''
-        out = [
-            self.tag.name, '=' * len(self.tag.name), f'.. py:class:: {self.class_name}', '', f'    {self.doc}'
-        ]
-
-        return "\n".join(out)
-
-
 class Generator:
     packages = [
         Package("workspace", "Databricks Workspace",
@@ -107,17 +83,6 @@ Reference
    :maxdepth: 1
    
 {all}
-''')
-
-    def write_client_reference(self, title: str, class_name: str, filename: str):
-        with open(f'{__dir__}/autogen/{filename}.rst', 'w') as f:
-            f.write(f'''
-{title}
-{'=' * len(title)}
-            
-.. autoclass:: {class_name}
-   :members:
-   :undoc-members:
 ''')
 
 

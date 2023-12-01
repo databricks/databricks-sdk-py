@@ -40,3 +40,7 @@ html_theme_options = {
     'show_related': 'true',
     'sidebar_collapse': 'true',
 }
+
+autodoc_default_options = {
+    'member-order': 'bysource',
+}

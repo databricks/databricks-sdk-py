@@ -14,7 +14,7 @@ To install the Databricks SDK for Python from a Databricks Notebook as a `notebo
 
 .. code-block::
 
-  %pip install databricks-sdk
+  %pip install databricks-sdk --upgrade
   dbutils.library.restartPython()
 
 This SDK is supported for production use cases, but we do expect future releases to have `some interface changes <https://github.com/databricks/databricks-sdk-py#interface-stability>`_.
