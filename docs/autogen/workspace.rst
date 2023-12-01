@@ -10,4 +10,5 @@ Manage workspace-level entities that include notebooks, Git checkouts, and secre
 
 .. automodule:: databricks.sdk.mixins.workspace
    :members:
+   :inherited-members:
    :undoc-members:

@@ -10,4 +10,5 @@ Use and configure compute for Databricks
 
 .. automodule:: databricks.sdk.mixins.compute
    :members:
+   :inherited-members:
    :undoc-members:

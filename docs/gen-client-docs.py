@@ -92,6 +92,7 @@ class Generator:
                 f.write(f'''
 .. automodule:: databricks.sdk.mixins.{pkg.name}
    :members:
+   :inherited-members:
    :undoc-members:
 ''')
 

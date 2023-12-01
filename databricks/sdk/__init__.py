@@ -888,6 +888,9 @@ class WorkspaceClient:
 
 
 class AccountClient:
+    """
+    The AccountClient is a client for the account-level Databricks REST API.
+    """
 
     def __init__(self,
                  *,
