@@ -204,6 +204,8 @@ w = WorkspaceClient(host=input('Databricks Workspace URL: '),
                     azure_client_secret=input('AAD Client Secret: '))
 ```
 
+Please see more examples in [this document](./docs/azure-ad.md).
+
 ### Google Cloud Platform native authentication
 
 By default, the Databricks SDK for Python first tries GCP credentials authentication (`auth_type='google-credentials'`, argument). If the SDK is unsuccessful, it then tries Google Cloud Platform (GCP) ID authentication (`auth_type='google-id'`, argument).
@@ -228,8 +230,6 @@ w = WorkspaceClient(host=input('Databricks Workspace URL: '),
                     google_service_account=input('Google Service Account: '))
 
 ```
-
-Please see more examples in [this document](./docs/azure-ad.md).
 
 ### Overriding `.databrickscfg`
 
