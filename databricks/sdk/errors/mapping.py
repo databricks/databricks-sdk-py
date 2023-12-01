@@ -51,6 +51,10 @@ class InvalidParameterValue(BadRequest):
     """supplied value for a parameter was invalid"""
 
 
+class ResourceDoesNotExist(NotFound):
+    """operation was performed on a resource that does not exist"""
+
+
 class Aborted(ResourceConflict):
     """the operation was aborted, typically due to a concurrency issue such as a sequencer check
     failure"""
@@ -96,6 +100,7 @@ STATUS_CODE_MAPPING = {
 
 ERROR_CODE_MAPPING = {
     'INVALID_PARAMETER_VALUE': InvalidParameterValue,
+    'RESOURCE_DOES_NOT_EXIST': ResourceDoesNotExist,
     'ABORTED': Aborted,
     'ALREADY_EXISTS': AlreadyExists,
     'RESOURCE_ALREADY_EXISTS': ResourceAlreadyExists,

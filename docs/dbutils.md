@@ -13,7 +13,7 @@ files_in_root = dbutils.fs.ls('/')
 print(f'number of files in root: {len(files_in_root)}')
 ```
 
-Alternatively, you can import `dbutils` from `databricks.sdk.runtime` module, but you have to make sure that all configuration is already [present in the environment variables](#default-authentication-flow):
+Alternatively, you can import `dbutils` from `databricks.sdk.runtime` module, but you have to make sure that all configuration is already [present in the environment variables](authentication.md#default-authentication-flow):
 
 ```python
 from databricks.sdk.runtime import dbutils

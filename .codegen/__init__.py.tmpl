@@ -35,6 +35,9 @@ def _make_dbutils(config: client.Config):
 
 
 class WorkspaceClient:
+    """
+    The WorkspaceClient is a client for the workspace-level Databricks REST API.
+    """
     def __init__(self, *{{range $args}}, {{.}}: str = None{{end}},
                  debug_truncate_bytes: int = None,
                  debug_headers: bool = None,
@@ -52,10 +55,17 @@ class WorkspaceClient:
         self.config = config.copy()
         self.dbutils = _make_dbutils(self.config)
         self.api_client = client.ApiClient(self.config)
+
         {{- range .Services}}{{if not .IsAccounts}}
-        self.{{.SnakeName}} = {{template "api" .}}(self.api_client){{end -}}{{end}}
+        self.{{.SnakeName}}: {{template "api" .}} = {{template "api" .}}(self.api_client){{if .Description}}
+        """{{.Comment "        " 100}}"""{{end}}
+        {{end -}}{{end}}
 
 class AccountClient:
+    """
+    The AccountClient is a client for the account-level Databricks REST API.
+    """
+
     def __init__(self, *{{range $args}}, {{.}}: str = None{{end}},
                  debug_truncate_bytes: int = None,
                  debug_headers: bool = None,
@@ -72,5 +82,8 @@ class AccountClient:
             product_version=product_version)
         self.config = config.copy()
         self.api_client = client.ApiClient(self.config)
+
         {{- range .Services}}{{if .IsAccounts}}
-        self.{{(.TrimPrefix "account").SnakeName}} = {{template "api" .}}(self.api_client){{end -}}{{end}}
+        self.{{.SnakeName}}: {{template "api" .}} = {{template "api" .}}(self.api_client){{if .Description}}
+        """{{.Comment "        " 100}}"""{{end}}
+        {{end -}}{{end}}

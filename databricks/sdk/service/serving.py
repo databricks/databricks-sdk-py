@@ -1,5 +1,7 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
+from __future__ import annotations
+
 import logging
 import random
 import time
@@ -19,12 +21,17 @@ _LOG = logging.getLogger('databricks.sdk')
 @dataclass
 class AppEvents:
     event_name: Optional[str] = None
+
     event_time: Optional[str] = None
+
     event_type: Optional[str] = None
+
     message: Optional[str] = None
+
     service_name: Optional[str] = None
 
     def as_dict(self) -> dict:
+        """Serializes the AppEvents into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.event_name is not None: body['event_name'] = self.event_name
         if self.event_time is not None: body['event_time'] = self.event_time
@@ -34,7 +41,8 @@ class AppEvents:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'AppEvents':
+    def from_dict(cls, d: Dict[str, any]) -> AppEvents:
+        """Deserializes the AppEvents from a dictionary."""
         return cls(event_name=d.get('event_name', None),
                    event_time=d.get('event_time', None),
                    event_type=d.get('event_type', None),
@@ -44,15 +52,29 @@ class AppEvents:
 
 @dataclass
 class AppManifest:
-    dependencies: Optional['List[Any]'] = None
+    dependencies: Optional[List[Any]] = None
+    """Workspace dependencies."""
+
     description: Optional[str] = None
+    """application description"""
+
     ingress: Optional[Any] = None
+    """Ingress rules for app public endpoints"""
+
     name: Optional[str] = None
+    """Only a-z and dashes (-). Max length of 30."""
+
     registry: Optional[Any] = None
+    """Container private registry"""
+
     services: Optional[Any] = None
+    """list of app services. Restricted to one for now."""
+
     version: Optional[Any] = None
+    """The manifest format version. Must be set to 1."""
 
     def as_dict(self) -> dict:
+        """Serializes the AppManifest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.dependencies: body['dependencies'] = [v for v in self.dependencies]
         if self.description is not None: body['description'] = self.description
@@ -64,7 +86,8 @@ class AppManifest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'AppManifest':
+    def from_dict(cls, d: Dict[str, any]) -> AppManifest:
+        """Deserializes the AppManifest from a dictionary."""
         return cls(dependencies=d.get('dependencies', None),
                    description=d.get('description', None),
                    ingress=d.get('ingress', None),
@@ -77,10 +100,13 @@ class AppManifest:
 @dataclass
 class AppServiceStatus:
     deployment: Optional[Any] = None
+
     name: Optional[str] = None
+
     template: Optional[Any] = None
 
     def as_dict(self) -> dict:
+        """Serializes the AppServiceStatus into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.deployment: body['deployment'] = self.deployment
         if self.name is not None: body['name'] = self.name
@@ -88,7 +114,8 @@ class AppServiceStatus:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'AppServiceStatus':
+    def from_dict(cls, d: Dict[str, any]) -> AppServiceStatus:
+        """Deserializes the AppServiceStatus from a dictionary."""
         return cls(deployment=d.get('deployment', None),
                    name=d.get('name', None),
                    template=d.get('template', None))
@@ -97,24 +124,34 @@ class AppServiceStatus:
 @dataclass
 class BuildLogsResponse:
     logs: str
+    """The logs associated with building the served model's environment."""
 
     def as_dict(self) -> dict:
+        """Serializes the BuildLogsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.logs is not None: body['logs'] = self.logs
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'BuildLogsResponse':
+    def from_dict(cls, d: Dict[str, any]) -> BuildLogsResponse:
+        """Deserializes the BuildLogsResponse from a dictionary."""
         return cls(logs=d.get('logs', None))
 
 
 @dataclass
 class CreateServingEndpoint:
     name: str
-    config: 'EndpointCoreConfigInput'
-    tags: Optional['List[EndpointTag]'] = None
+    """The name of the serving endpoint. This field is required and must be unique across a Databricks
+    workspace. An endpoint name can consist of alphanumeric characters, dashes, and underscores."""
+
+    config: EndpointCoreConfigInput
+    """The core config of the serving endpoint."""
+
+    tags: Optional[List[EndpointTag]] = None
+    """Tags to be attached to the serving endpoint and automatically propagated to billing logs."""
 
     def as_dict(self) -> dict:
+        """Serializes the CreateServingEndpoint into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.config: body['config'] = self.config.as_dict()
         if self.name is not None: body['name'] = self.name
@@ -122,7 +159,8 @@ class CreateServingEndpoint:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CreateServingEndpoint':
+    def from_dict(cls, d: Dict[str, any]) -> CreateServingEndpoint:
+        """Deserializes the CreateServingEndpoint from a dictionary."""
         return cls(config=_from_dict(d, 'config', EndpointCoreConfigInput),
                    name=d.get('name', None),
                    tags=_repeated_dict(d, 'tags', EndpointTag))
@@ -130,11 +168,14 @@ class CreateServingEndpoint:
 
 @dataclass
 class DataframeSplitInput:
-    columns: Optional['List[Any]'] = None
-    data: Optional['List[Any]'] = None
-    index: Optional['List[int]'] = None
+    columns: Optional[List[Any]] = None
+
+    data: Optional[List[Any]] = None
+
+    index: Optional[List[int]] = None
 
     def as_dict(self) -> dict:
+        """Serializes the DataframeSplitInput into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.columns: body['columns'] = [v for v in self.columns]
         if self.data: body['data'] = [v for v in self.data]
@@ -142,7 +183,8 @@ class DataframeSplitInput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'DataframeSplitInput':
+    def from_dict(cls, d: Dict[str, any]) -> DataframeSplitInput:
+        """Deserializes the DataframeSplitInput from a dictionary."""
         return cls(columns=d.get('columns', None), data=d.get('data', None), index=d.get('index', None))
 
 
@@ -151,39 +193,54 @@ class DeleteAppResponse:
     name: Optional[str] = None
 
     def as_dict(self) -> dict:
+        """Serializes the DeleteAppResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.name is not None: body['name'] = self.name
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'DeleteAppResponse':
+    def from_dict(cls, d: Dict[str, any]) -> DeleteAppResponse:
+        """Deserializes the DeleteAppResponse from a dictionary."""
         return cls(name=d.get('name', None))
 
 
 @dataclass
 class DeployAppRequest:
-    manifest: 'AppManifest'
+    manifest: AppManifest
+    """Manifest that specifies the application requirements"""
+
     resources: Optional[Any] = None
+    """Information passed at app deployment time to fulfill app dependencies"""
 
     def as_dict(self) -> dict:
+        """Serializes the DeployAppRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.manifest: body['manifest'] = self.manifest.as_dict()
         if self.resources: body['resources'] = self.resources
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'DeployAppRequest':
+    def from_dict(cls, d: Dict[str, any]) -> DeployAppRequest:
+        """Deserializes the DeployAppRequest from a dictionary."""
         return cls(manifest=_from_dict(d, 'manifest', AppManifest), resources=d.get('resources', None))
 
 
 @dataclass
 class DeploymentStatus:
-    container_logs: Optional['List[Any]'] = None
+    container_logs: Optional[List[Any]] = None
+    """Container logs."""
+
     deployment_id: Optional[str] = None
+    """description"""
+
     extra_info: Optional[str] = None
-    state: Optional['DeploymentStatusState'] = None
+    """Supplementary information about pod"""
+
+    state: Optional[DeploymentStatusState] = None
+    """State: one of DEPLOYING,SUCCESS, FAILURE, DEPLOYMENT_STATE_UNSPECIFIED"""
 
     def as_dict(self) -> dict:
+        """Serializes the DeploymentStatus into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.container_logs: body['container_logs'] = [v for v in self.container_logs]
         if self.deployment_id is not None: body['deployment_id'] = self.deployment_id
@@ -192,7 +249,8 @@ class DeploymentStatus:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'DeploymentStatus':
+    def from_dict(cls, d: Dict[str, any]) -> DeploymentStatus:
+        """Deserializes the DeploymentStatus from a dictionary."""
         return cls(container_logs=d.get('container_logs', None),
                    deployment_id=d.get('deployment_id', None),
                    extra_info=d.get('extra_info', None),
@@ -210,11 +268,18 @@ class DeploymentStatusState(Enum):
 
 @dataclass
 class EndpointCoreConfigInput:
-    served_models: 'List[ServedModelInput]'
+    served_models: List[ServedModelInput]
+    """A list of served models for the endpoint to serve. A serving endpoint can have up to 10 served
+    models."""
+
     name: Optional[str] = None
-    traffic_config: Optional['TrafficConfig'] = None
+    """The name of the serving endpoint to update. This field is required."""
+
+    traffic_config: Optional[TrafficConfig] = None
+    """The traffic config defining how invocations to the serving endpoint should be routed."""
 
     def as_dict(self) -> dict:
+        """Serializes the EndpointCoreConfigInput into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.name is not None: body['name'] = self.name
         if self.served_models: body['served_models'] = [v.as_dict() for v in self.served_models]
@@ -222,7 +287,8 @@ class EndpointCoreConfigInput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'EndpointCoreConfigInput':
+    def from_dict(cls, d: Dict[str, any]) -> EndpointCoreConfigInput:
+        """Deserializes the EndpointCoreConfigInput from a dictionary."""
         return cls(name=d.get('name', None),
                    served_models=_repeated_dict(d, 'served_models', ServedModelInput),
                    traffic_config=_from_dict(d, 'traffic_config', TrafficConfig))
@@ -231,10 +297,16 @@ class EndpointCoreConfigInput:
 @dataclass
 class EndpointCoreConfigOutput:
     config_version: Optional[int] = None
-    served_models: Optional['List[ServedModelOutput]'] = None
-    traffic_config: Optional['TrafficConfig'] = None
+    """The config version that the serving endpoint is currently serving."""
+
+    served_models: Optional[List[ServedModelOutput]] = None
+    """The list of served models under the serving endpoint config."""
+
+    traffic_config: Optional[TrafficConfig] = None
+    """The traffic configuration associated with the serving endpoint config."""
 
     def as_dict(self) -> dict:
+        """Serializes the EndpointCoreConfigOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.config_version is not None: body['config_version'] = self.config_version
         if self.served_models: body['served_models'] = [v.as_dict() for v in self.served_models]
@@ -242,7 +314,8 @@ class EndpointCoreConfigOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'EndpointCoreConfigOutput':
+    def from_dict(cls, d: Dict[str, any]) -> EndpointCoreConfigOutput:
+        """Deserializes the EndpointCoreConfigOutput from a dictionary."""
         return cls(config_version=d.get('config_version', None),
                    served_models=_repeated_dict(d, 'served_models', ServedModelOutput),
                    traffic_config=_from_dict(d, 'traffic_config', TrafficConfig))
@@ -250,26 +323,37 @@ class EndpointCoreConfigOutput:
 
 @dataclass
 class EndpointCoreConfigSummary:
-    served_models: Optional['List[ServedModelSpec]'] = None
+    served_models: Optional[List[ServedModelSpec]] = None
+    """The list of served models under the serving endpoint config."""
 
     def as_dict(self) -> dict:
+        """Serializes the EndpointCoreConfigSummary into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.served_models: body['served_models'] = [v.as_dict() for v in self.served_models]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'EndpointCoreConfigSummary':
+    def from_dict(cls, d: Dict[str, any]) -> EndpointCoreConfigSummary:
+        """Deserializes the EndpointCoreConfigSummary from a dictionary."""
         return cls(served_models=_repeated_dict(d, 'served_models', ServedModelSpec))
 
 
 @dataclass
 class EndpointPendingConfig:
     config_version: Optional[int] = None
-    served_models: Optional['List[ServedModelOutput]'] = None
+    """The config version that the serving endpoint is currently serving."""
+
+    served_models: Optional[List[ServedModelOutput]] = None
+    """The list of served models belonging to the last issued update to the serving endpoint."""
+
     start_time: Optional[int] = None
-    traffic_config: Optional['TrafficConfig'] = None
+    """The timestamp when the update to the pending config started."""
+
+    traffic_config: Optional[TrafficConfig] = None
+    """The traffic config defining how invocations to the serving endpoint should be routed."""
 
     def as_dict(self) -> dict:
+        """Serializes the EndpointPendingConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.config_version is not None: body['config_version'] = self.config_version
         if self.served_models: body['served_models'] = [v.as_dict() for v in self.served_models]
@@ -278,7 +362,8 @@ class EndpointPendingConfig:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'EndpointPendingConfig':
+    def from_dict(cls, d: Dict[str, any]) -> EndpointPendingConfig:
+        """Deserializes the EndpointPendingConfig from a dictionary."""
         return cls(config_version=d.get('config_version', None),
                    served_models=_repeated_dict(d, 'served_models', ServedModelOutput),
                    start_time=d.get('start_time', None),
@@ -287,17 +372,27 @@ class EndpointPendingConfig:
 
 @dataclass
 class EndpointState:
-    config_update: Optional['EndpointStateConfigUpdate'] = None
-    ready: Optional['EndpointStateReady'] = None
+    config_update: Optional[EndpointStateConfigUpdate] = None
+    """The state of an endpoint's config update. This informs the user if the pending_config is in
+    progress, if the update failed, or if there is no update in progress. Note that if the
+    endpoint's config_update state value is IN_PROGRESS, another update can not be made until the
+    update completes or fails."""
+
+    ready: Optional[EndpointStateReady] = None
+    """The state of an endpoint, indicating whether or not the endpoint is queryable. An endpoint is
+    READY if all of the served models in its active configuration are ready. If any of the actively
+    served models are in a non-ready state, the endpoint state will be NOT_READY."""
 
     def as_dict(self) -> dict:
+        """Serializes the EndpointState into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.config_update is not None: body['config_update'] = self.config_update.value
         if self.ready is not None: body['ready'] = self.ready.value
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'EndpointState':
+    def from_dict(cls, d: Dict[str, any]) -> EndpointState:
+        """Deserializes the EndpointState from a dictionary."""
         return cls(config_update=_enum(d, 'config_update', EndpointStateConfigUpdate),
                    ready=_enum(d, 'ready', EndpointStateReady))
 
@@ -325,27 +420,36 @@ class EndpointStateReady(Enum):
 @dataclass
 class EndpointTag:
     key: str
+    """Key field for a serving endpoint tag."""
+
     value: Optional[str] = None
+    """Optional value field for a serving endpoint tag."""
 
     def as_dict(self) -> dict:
+        """Serializes the EndpointTag into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.key is not None: body['key'] = self.key
         if self.value is not None: body['value'] = self.value
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'EndpointTag':
+    def from_dict(cls, d: Dict[str, any]) -> EndpointTag:
+        """Deserializes the EndpointTag from a dictionary."""
         return cls(key=d.get('key', None), value=d.get('value', None))
 
 
 @dataclass
 class GetAppResponse:
-    current_services: Optional['List[AppServiceStatus]'] = None
+    current_services: Optional[List[AppServiceStatus]] = None
+
     name: Optional[str] = None
-    pending_services: Optional['List[AppServiceStatus]'] = None
+
+    pending_services: Optional[List[AppServiceStatus]] = None
+
     url: Optional[str] = None
 
     def as_dict(self) -> dict:
+        """Serializes the GetAppResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.current_services: body['current_services'] = [v.as_dict() for v in self.current_services]
         if self.name is not None: body['name'] = self.name
@@ -354,7 +458,8 @@ class GetAppResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'GetAppResponse':
+    def from_dict(cls, d: Dict[str, any]) -> GetAppResponse:
+        """Deserializes the GetAppResponse from a dictionary."""
         return cls(current_services=_repeated_dict(d, 'current_services', AppServiceStatus),
                    name=d.get('name', None),
                    pending_services=_repeated_dict(d, 'pending_services', AppServiceStatus),
@@ -363,70 +468,89 @@ class GetAppResponse:
 
 @dataclass
 class GetServingEndpointPermissionLevelsResponse:
-    permission_levels: Optional['List[ServingEndpointPermissionsDescription]'] = None
+    permission_levels: Optional[List[ServingEndpointPermissionsDescription]] = None
+    """Specific permission levels"""
 
     def as_dict(self) -> dict:
+        """Serializes the GetServingEndpointPermissionLevelsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'GetServingEndpointPermissionLevelsResponse':
+    def from_dict(cls, d: Dict[str, any]) -> GetServingEndpointPermissionLevelsResponse:
+        """Deserializes the GetServingEndpointPermissionLevelsResponse from a dictionary."""
         return cls(
             permission_levels=_repeated_dict(d, 'permission_levels', ServingEndpointPermissionsDescription))
 
 
 @dataclass
 class ListAppEventsResponse:
-    events: Optional['List[AppEvents]'] = None
+    events: Optional[List[AppEvents]] = None
+    """App events"""
 
     def as_dict(self) -> dict:
+        """Serializes the ListAppEventsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.events: body['events'] = [v.as_dict() for v in self.events]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ListAppEventsResponse':
+    def from_dict(cls, d: Dict[str, any]) -> ListAppEventsResponse:
+        """Deserializes the ListAppEventsResponse from a dictionary."""
         return cls(events=_repeated_dict(d, 'events', AppEvents))
 
 
 @dataclass
 class ListAppsResponse:
-    apps: Optional['List[Any]'] = None
+    apps: Optional[List[Any]] = None
+    """Available apps."""
+
     next_page_token: Optional[str] = None
 
     def as_dict(self) -> dict:
+        """Serializes the ListAppsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.apps: body['apps'] = [v for v in self.apps]
         if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ListAppsResponse':
+    def from_dict(cls, d: Dict[str, any]) -> ListAppsResponse:
+        """Deserializes the ListAppsResponse from a dictionary."""
         return cls(apps=d.get('apps', None), next_page_token=d.get('next_page_token', None))
 
 
 @dataclass
 class ListEndpointsResponse:
-    endpoints: Optional['List[ServingEndpoint]'] = None
+    endpoints: Optional[List[ServingEndpoint]] = None
+    """The list of endpoints."""
 
     def as_dict(self) -> dict:
+        """Serializes the ListEndpointsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.endpoints: body['endpoints'] = [v.as_dict() for v in self.endpoints]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ListEndpointsResponse':
+    def from_dict(cls, d: Dict[str, any]) -> ListEndpointsResponse:
+        """Deserializes the ListEndpointsResponse from a dictionary."""
         return cls(endpoints=_repeated_dict(d, 'endpoints', ServingEndpoint))
 
 
 @dataclass
 class PatchServingEndpointTags:
-    add_tags: Optional['List[EndpointTag]'] = None
-    delete_tags: Optional['List[str]'] = None
+    add_tags: Optional[List[EndpointTag]] = None
+    """List of endpoint tags to add"""
+
+    delete_tags: Optional[List[str]] = None
+    """List of tag keys to delete"""
+
     name: Optional[str] = None
+    """The name of the serving endpoint who's tags to patch. This field is required."""
 
     def as_dict(self) -> dict:
+        """Serializes the PatchServingEndpointTags into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.add_tags: body['add_tags'] = [v.as_dict() for v in self.add_tags]
         if self.delete_tags: body['delete_tags'] = [v for v in self.delete_tags]
@@ -434,7 +558,8 @@ class PatchServingEndpointTags:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'PatchServingEndpointTags':
+    def from_dict(cls, d: Dict[str, any]) -> PatchServingEndpointTags:
+        """Deserializes the PatchServingEndpointTags from a dictionary."""
         return cls(add_tags=_repeated_dict(d, 'add_tags', EndpointTag),
                    delete_tags=d.get('delete_tags', None),
                    name=d.get('name', None))
@@ -442,13 +567,23 @@ class PatchServingEndpointTags:
 
 @dataclass
 class QueryEndpointInput:
-    dataframe_records: Optional['List[Any]'] = None
-    dataframe_split: Optional['DataframeSplitInput'] = None
+    dataframe_records: Optional[List[Any]] = None
+    """Pandas Dataframe input in the records orientation."""
+
+    dataframe_split: Optional[DataframeSplitInput] = None
+    """Pandas Dataframe input in the split orientation."""
+
     inputs: Optional[Any] = None
-    instances: Optional['List[Any]'] = None
+    """Tensor-based input in columnar format."""
+
+    instances: Optional[List[Any]] = None
+    """Tensor-based input in row format."""
+
     name: Optional[str] = None
+    """The name of the serving endpoint. This field is required."""
 
     def as_dict(self) -> dict:
+        """Serializes the QueryEndpointInput into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.dataframe_records: body['dataframe_records'] = [v for v in self.dataframe_records]
         if self.dataframe_split: body['dataframe_split'] = self.dataframe_split.as_dict()
@@ -458,7 +593,8 @@ class QueryEndpointInput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'QueryEndpointInput':
+    def from_dict(cls, d: Dict[str, any]) -> QueryEndpointInput:
+        """Deserializes the QueryEndpointInput from a dictionary."""
         return cls(dataframe_records=d.get('dataframe_records', None),
                    dataframe_split=_from_dict(d, 'dataframe_split', DataframeSplitInput),
                    inputs=d.get('inputs', None),
@@ -468,31 +604,40 @@ class QueryEndpointInput:
 
 @dataclass
 class QueryEndpointResponse:
-    predictions: 'List[Any]'
+    predictions: List[Any]
+    """The predictions returned by the serving endpoint."""
 
     def as_dict(self) -> dict:
+        """Serializes the QueryEndpointResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.predictions: body['predictions'] = [v for v in self.predictions]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'QueryEndpointResponse':
+    def from_dict(cls, d: Dict[str, any]) -> QueryEndpointResponse:
+        """Deserializes the QueryEndpointResponse from a dictionary."""
         return cls(predictions=d.get('predictions', None))
 
 
 @dataclass
 class Route:
     served_model_name: str
+    """The name of the served model this route configures traffic for."""
+
     traffic_percentage: int
+    """The percentage of endpoint traffic to send to this route. It must be an integer between 0 and
+    100 inclusive."""
 
     def as_dict(self) -> dict:
+        """Serializes the Route into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.served_model_name is not None: body['served_model_name'] = self.served_model_name
         if self.traffic_percentage is not None: body['traffic_percentage'] = self.traffic_percentage
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'Route':
+    def from_dict(cls, d: Dict[str, any]) -> Route:
+        """Deserializes the Route from a dictionary."""
         return cls(served_model_name=d.get('served_model_name', None),
                    traffic_percentage=d.get('traffic_percentage', None))
 
@@ -500,15 +645,45 @@ class Route:
 @dataclass
 class ServedModelInput:
     model_name: str
+    """The name of the model in Databricks Model Registry to be served or if the model resides in Unity
+    Catalog, the full name of model, in the form of __catalog_name__.__schema_name__.__model_name__."""
+
     model_version: str
+    """The version of the model in Databricks Model Registry or Unity Catalog to be served."""
+
     workload_size: str
+    """The workload size of the served model. The workload size corresponds to a range of provisioned
+    concurrency that the compute will autoscale between. A single unit of provisioned concurrency
+    can process one request at a time. Valid workload sizes are "Small" (4 - 4 provisioned
+    concurrency), "Medium" (8 - 16 provisioned concurrency), and "Large" (16 - 64 provisioned
+    concurrency). If scale-to-zero is enabled, the lower bound of the provisioned concurrency for
+    each workload size will be 0."""
+
     scale_to_zero_enabled: bool
-    environment_vars: Optional['Dict[str,str]'] = None
+    """Whether the compute resources for the served model should scale down to zero."""
+
+    environment_vars: Optional[Dict[str, str]] = None
+    """An object containing a set of optional, user-specified environment variable key-value pairs used
+    for serving this model. Note: this is an experimental feature and subject to change. Example
+    model environment variables that refer to Databricks secrets: `{"OPENAI_API_KEY":
+    "{{secrets/my_scope/my_key}}", "DATABRICKS_TOKEN": "{{secrets/my_scope2/my_key2}}"}`"""
+
     instance_profile_arn: Optional[str] = None
+    """ARN of the instance profile that the served model will use to access AWS resources."""
+
     name: Optional[str] = None
+    """The name of a served model. It must be unique across an endpoint. If not specified, this field
+    will default to <model-name>-<model-version>. A served model name can consist of alphanumeric
+    characters, dashes, and underscores."""
+
     workload_type: Optional[str] = None
+    """The workload type of the served model. The workload type selects which type of compute to use in
+    the endpoint. The default value for this parameter is "CPU". For deep learning workloads, GPU
+    acceleration is available by selecting workload types like GPU_SMALL and others. See
+    documentation for all options."""
 
     def as_dict(self) -> dict:
+        """Serializes the ServedModelInput into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.environment_vars: body['environment_vars'] = self.environment_vars
         if self.instance_profile_arn is not None: body['instance_profile_arn'] = self.instance_profile_arn
@@ -521,7 +696,8 @@ class ServedModelInput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ServedModelInput':
+    def from_dict(cls, d: Dict[str, any]) -> ServedModelInput:
+        """Deserializes the ServedModelInput from a dictionary."""
         return cls(environment_vars=d.get('environment_vars', None),
                    instance_profile_arn=d.get('instance_profile_arn', None),
                    model_name=d.get('model_name', None),
@@ -535,18 +711,52 @@ class ServedModelInput:
 @dataclass
 class ServedModelOutput:
     creation_timestamp: Optional[int] = None
+    """The creation timestamp of the served model in Unix time."""
+
     creator: Optional[str] = None
-    environment_vars: Optional['Dict[str,str]'] = None
+    """The email of the user who created the served model."""
+
+    environment_vars: Optional[Dict[str, str]] = None
+    """An object containing a set of optional, user-specified environment variable key-value pairs used
+    for serving this model. Note: this is an experimental feature and subject to change. Example
+    model environment variables that refer to Databricks secrets: `{"OPENAI_API_KEY":
+    "{{secrets/my_scope/my_key}}", "DATABRICKS_TOKEN": "{{secrets/my_scope2/my_key2}}"}`"""
+
     instance_profile_arn: Optional[str] = None
+    """ARN of the instance profile that the served model will use to access AWS resources."""
+
     model_name: Optional[str] = None
+    """The name of the model in Databricks Model Registry or the full name of the model in Unity
+    Catalog."""
+
     model_version: Optional[str] = None
+    """The version of the model in Databricks Model Registry or Unity Catalog to be served."""
+
     name: Optional[str] = None
+    """The name of the served model."""
+
     scale_to_zero_enabled: Optional[bool] = None
-    state: Optional['ServedModelState'] = None
+    """Whether the compute resources for the Served Model should scale down to zero."""
+
+    state: Optional[ServedModelState] = None
+    """Information corresponding to the state of the Served Model."""
+
     workload_size: Optional[str] = None
+    """The workload size of the served model. The workload size corresponds to a range of provisioned
+    concurrency that the compute will autoscale between. A single unit of provisioned concurrency
+    can process one request at a time. Valid workload sizes are "Small" (4 - 4 provisioned
+    concurrency), "Medium" (8 - 16 provisioned concurrency), and "Large" (16 - 64 provisioned
+    concurrency). If scale-to-zero is enabled, the lower bound of the provisioned concurrency for
+    each workload size will be 0."""
+
     workload_type: Optional[str] = None
+    """The workload type of the served model. The workload type selects which type of compute to use in
+    the endpoint. The default value for this parameter is "CPU". For deep learning workloads, GPU
+    acceleration is available by selecting workload types like GPU_SMALL and others. See
+    documentation for all options."""
 
     def as_dict(self) -> dict:
+        """Serializes the ServedModelOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
         if self.creator is not None: body['creator'] = self.creator
@@ -562,7 +772,8 @@ class ServedModelOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ServedModelOutput':
+    def from_dict(cls, d: Dict[str, any]) -> ServedModelOutput:
+        """Deserializes the ServedModelOutput from a dictionary."""
         return cls(creation_timestamp=d.get('creation_timestamp', None),
                    creator=d.get('creator', None),
                    environment_vars=d.get('environment_vars', None),
@@ -579,10 +790,17 @@ class ServedModelOutput:
 @dataclass
 class ServedModelSpec:
     model_name: Optional[str] = None
+    """The name of the model in Databricks Model Registry or the full name of the model in Unity
+    Catalog."""
+
     model_version: Optional[str] = None
+    """The version of the model in Databricks Model Registry or Unity Catalog to be served."""
+
     name: Optional[str] = None
+    """The name of the served model."""
 
     def as_dict(self) -> dict:
+        """Serializes the ServedModelSpec into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.model_name is not None: body['model_name'] = self.model_name
         if self.model_version is not None: body['model_version'] = self.model_version
@@ -590,7 +808,8 @@ class ServedModelSpec:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ServedModelSpec':
+    def from_dict(cls, d: Dict[str, any]) -> ServedModelSpec:
+        """Deserializes the ServedModelSpec from a dictionary."""
         return cls(model_name=d.get('model_name', None),
                    model_version=d.get('model_version', None),
                    name=d.get('name', None))
@@ -598,10 +817,22 @@ class ServedModelSpec:
 
 @dataclass
 class ServedModelState:
-    deployment: Optional['ServedModelStateDeployment'] = None
+    deployment: Optional[ServedModelStateDeployment] = None
+    """The state of the served model deployment. DEPLOYMENT_CREATING indicates that the served model is
+    not ready yet because the deployment is still being created (i.e container image is building,
+    model server is deploying for the first time, etc.). DEPLOYMENT_RECOVERING indicates that the
+    served model was previously in a ready state but no longer is and is attempting to recover.
+    DEPLOYMENT_READY indicates that the served model is ready to receive traffic. DEPLOYMENT_FAILED
+    indicates that there was an error trying to bring up the served model (e.g container image build
+    failed, the model server failed to start due to a model loading error, etc.) DEPLOYMENT_ABORTED
+    indicates that the deployment was terminated likely due to a failure in bringing up another
+    served model under the same endpoint and config version."""
+
     deployment_state_message: Optional[str] = None
+    """More information about the state of the served model, if available."""
 
     def as_dict(self) -> dict:
+        """Serializes the ServedModelState into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.deployment is not None: body['deployment'] = self.deployment.value
         if self.deployment_state_message is not None:
@@ -609,7 +840,8 @@ class ServedModelState:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ServedModelState':
+    def from_dict(cls, d: Dict[str, any]) -> ServedModelState:
+        """Deserializes the ServedModelState from a dictionary."""
         return cls(deployment=_enum(d, 'deployment', ServedModelStateDeployment),
                    deployment_state_message=d.get('deployment_state_message', None))
 
@@ -635,29 +867,49 @@ class ServedModelStateDeployment(Enum):
 @dataclass
 class ServerLogsResponse:
     logs: str
+    """The most recent log lines of the model server processing invocation requests."""
 
     def as_dict(self) -> dict:
+        """Serializes the ServerLogsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.logs is not None: body['logs'] = self.logs
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ServerLogsResponse':
+    def from_dict(cls, d: Dict[str, any]) -> ServerLogsResponse:
+        """Deserializes the ServerLogsResponse from a dictionary."""
         return cls(logs=d.get('logs', None))
 
 
 @dataclass
 class ServingEndpoint:
-    config: Optional['EndpointCoreConfigSummary'] = None
+    config: Optional[EndpointCoreConfigSummary] = None
+    """The config that is currently being served by the endpoint."""
+
     creation_timestamp: Optional[int] = None
+    """The timestamp when the endpoint was created in Unix time."""
+
     creator: Optional[str] = None
+    """The email of the user who created the serving endpoint."""
+
     id: Optional[str] = None
+    """System-generated ID of the endpoint. This is used to refer to the endpoint in the Permissions
+    API"""
+
     last_updated_timestamp: Optional[int] = None
+    """The timestamp when the endpoint was last updated by a user in Unix time."""
+
     name: Optional[str] = None
-    state: Optional['EndpointState'] = None
-    tags: Optional['List[EndpointTag]'] = None
+    """The name of the serving endpoint."""
+
+    state: Optional[EndpointState] = None
+    """Information corresponding to the state of the serving endpoint."""
+
+    tags: Optional[List[EndpointTag]] = None
+    """Tags attached to the serving endpoint."""
 
     def as_dict(self) -> dict:
+        """Serializes the ServingEndpoint into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.config: body['config'] = self.config.as_dict()
         if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
@@ -671,7 +923,8 @@ class ServingEndpoint:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ServingEndpoint':
+    def from_dict(cls, d: Dict[str, any]) -> ServingEndpoint:
+        """Deserializes the ServingEndpoint from a dictionary."""
         return cls(config=_from_dict(d, 'config', EndpointCoreConfigSummary),
                    creation_timestamp=d.get('creation_timestamp', None),
                    creator=d.get('creator', None),
@@ -685,11 +938,20 @@ class ServingEndpoint:
 @dataclass
 class ServingEndpointAccessControlRequest:
     group_name: Optional[str] = None
-    permission_level: Optional['ServingEndpointPermissionLevel'] = None
+    """name of the group"""
+
+    permission_level: Optional[ServingEndpointPermissionLevel] = None
+    """Permission level"""
+
     service_principal_name: Optional[str] = None
+    """Application ID of an active service principal. Setting this field requires the
+    `servicePrincipal/user` role."""
+
     user_name: Optional[str] = None
+    """name of the user"""
 
     def as_dict(self) -> dict:
+        """Serializes the ServingEndpointAccessControlRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.group_name is not None: body['group_name'] = self.group_name
         if self.permission_level is not None: body['permission_level'] = self.permission_level.value
@@ -699,7 +961,8 @@ class ServingEndpointAccessControlRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ServingEndpointAccessControlRequest':
+    def from_dict(cls, d: Dict[str, any]) -> ServingEndpointAccessControlRequest:
+        """Deserializes the ServingEndpointAccessControlRequest from a dictionary."""
         return cls(group_name=d.get('group_name', None),
                    permission_level=_enum(d, 'permission_level', ServingEndpointPermissionLevel),
                    service_principal_name=d.get('service_principal_name', None),
@@ -708,13 +971,23 @@ class ServingEndpointAccessControlRequest:
 
 @dataclass
 class ServingEndpointAccessControlResponse:
-    all_permissions: Optional['List[ServingEndpointPermission]'] = None
+    all_permissions: Optional[List[ServingEndpointPermission]] = None
+    """All permissions."""
+
     display_name: Optional[str] = None
+    """Display name of the user or service principal."""
+
     group_name: Optional[str] = None
+    """name of the group"""
+
     service_principal_name: Optional[str] = None
+    """Name of the service principal."""
+
     user_name: Optional[str] = None
+    """name of the user"""
 
     def as_dict(self) -> dict:
+        """Serializes the ServingEndpointAccessControlResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.all_permissions: body['all_permissions'] = [v.as_dict() for v in self.all_permissions]
         if self.display_name is not None: body['display_name'] = self.display_name
@@ -725,7 +998,8 @@ class ServingEndpointAccessControlResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ServingEndpointAccessControlResponse':
+    def from_dict(cls, d: Dict[str, any]) -> ServingEndpointAccessControlResponse:
+        """Deserializes the ServingEndpointAccessControlResponse from a dictionary."""
         return cls(all_permissions=_repeated_dict(d, 'all_permissions', ServingEndpointPermission),
                    display_name=d.get('display_name', None),
                    group_name=d.get('group_name', None),
@@ -735,18 +1009,39 @@ class ServingEndpointAccessControlResponse:
 
 @dataclass
 class ServingEndpointDetailed:
-    config: Optional['EndpointCoreConfigOutput'] = None
+    config: Optional[EndpointCoreConfigOutput] = None
+    """The config that is currently being served by the endpoint."""
+
     creation_timestamp: Optional[int] = None
+    """The timestamp when the endpoint was created in Unix time."""
+
     creator: Optional[str] = None
+    """The email of the user who created the serving endpoint."""
+
     id: Optional[str] = None
+    """System-generated ID of the endpoint. This is used to refer to the endpoint in the Permissions
+    API"""
+
     last_updated_timestamp: Optional[int] = None
+    """The timestamp when the endpoint was last updated by a user in Unix time."""
+
     name: Optional[str] = None
-    pending_config: Optional['EndpointPendingConfig'] = None
-    permission_level: Optional['ServingEndpointDetailedPermissionLevel'] = None
-    state: Optional['EndpointState'] = None
-    tags: Optional['List[EndpointTag]'] = None
+    """The name of the serving endpoint."""
+
+    pending_config: Optional[EndpointPendingConfig] = None
+    """The config that the endpoint is attempting to update to."""
+
+    permission_level: Optional[ServingEndpointDetailedPermissionLevel] = None
+    """The permission level of the principal making the request."""
+
+    state: Optional[EndpointState] = None
+    """Information corresponding to the state of the serving endpoint."""
+
+    tags: Optional[List[EndpointTag]] = None
+    """Tags attached to the serving endpoint."""
 
     def as_dict(self) -> dict:
+        """Serializes the ServingEndpointDetailed into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.config: body['config'] = self.config.as_dict()
         if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
@@ -762,7 +1057,8 @@ class ServingEndpointDetailed:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ServingEndpointDetailed':
+    def from_dict(cls, d: Dict[str, any]) -> ServingEndpointDetailed:
+        """Deserializes the ServingEndpointDetailed from a dictionary."""
         return cls(config=_from_dict(d, 'config', EndpointCoreConfigOutput),
                    creation_timestamp=d.get('creation_timestamp', None),
                    creator=d.get('creator', None),
@@ -786,10 +1082,14 @@ class ServingEndpointDetailedPermissionLevel(Enum):
 @dataclass
 class ServingEndpointPermission:
     inherited: Optional[bool] = None
-    inherited_from_object: Optional['List[str]'] = None
-    permission_level: Optional['ServingEndpointPermissionLevel'] = None
+
+    inherited_from_object: Optional[List[str]] = None
+
+    permission_level: Optional[ServingEndpointPermissionLevel] = None
+    """Permission level"""
 
     def as_dict(self) -> dict:
+        """Serializes the ServingEndpointPermission into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.inherited is not None: body['inherited'] = self.inherited
         if self.inherited_from_object: body['inherited_from_object'] = [v for v in self.inherited_from_object]
@@ -797,7 +1097,8 @@ class ServingEndpointPermission:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ServingEndpointPermission':
+    def from_dict(cls, d: Dict[str, any]) -> ServingEndpointPermission:
+        """Deserializes the ServingEndpointPermission from a dictionary."""
         return cls(inherited=d.get('inherited', None),
                    inherited_from_object=d.get('inherited_from_object', None),
                    permission_level=_enum(d, 'permission_level', ServingEndpointPermissionLevel))
@@ -813,11 +1114,14 @@ class ServingEndpointPermissionLevel(Enum):
 
 @dataclass
 class ServingEndpointPermissions:
-    access_control_list: Optional['List[ServingEndpointAccessControlResponse]'] = None
+    access_control_list: Optional[List[ServingEndpointAccessControlResponse]] = None
+
     object_id: Optional[str] = None
+
     object_type: Optional[str] = None
 
     def as_dict(self) -> dict:
+        """Serializes the ServingEndpointPermissions into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.access_control_list:
             body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
@@ -826,7 +1130,8 @@ class ServingEndpointPermissions:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ServingEndpointPermissions':
+    def from_dict(cls, d: Dict[str, any]) -> ServingEndpointPermissions:
+        """Deserializes the ServingEndpointPermissions from a dictionary."""
         return cls(access_control_list=_repeated_dict(d, 'access_control_list',
                                                       ServingEndpointAccessControlResponse),
                    object_id=d.get('object_id', None),
@@ -836,26 +1141,33 @@ class ServingEndpointPermissions:
 @dataclass
 class ServingEndpointPermissionsDescription:
     description: Optional[str] = None
-    permission_level: Optional['ServingEndpointPermissionLevel'] = None
+
+    permission_level: Optional[ServingEndpointPermissionLevel] = None
+    """Permission level"""
 
     def as_dict(self) -> dict:
+        """Serializes the ServingEndpointPermissionsDescription into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.description is not None: body['description'] = self.description
         if self.permission_level is not None: body['permission_level'] = self.permission_level.value
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ServingEndpointPermissionsDescription':
+    def from_dict(cls, d: Dict[str, any]) -> ServingEndpointPermissionsDescription:
+        """Deserializes the ServingEndpointPermissionsDescription from a dictionary."""
         return cls(description=d.get('description', None),
                    permission_level=_enum(d, 'permission_level', ServingEndpointPermissionLevel))
 
 
 @dataclass
 class ServingEndpointPermissionsRequest:
-    access_control_list: Optional['List[ServingEndpointAccessControlRequest]'] = None
+    access_control_list: Optional[List[ServingEndpointAccessControlRequest]] = None
+
     serving_endpoint_id: Optional[str] = None
+    """The serving endpoint for which to get or manage permissions."""
 
     def as_dict(self) -> dict:
+        """Serializes the ServingEndpointPermissionsRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.access_control_list:
             body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
@@ -863,7 +1175,8 @@ class ServingEndpointPermissionsRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ServingEndpointPermissionsRequest':
+    def from_dict(cls, d: Dict[str, any]) -> ServingEndpointPermissionsRequest:
+        """Deserializes the ServingEndpointPermissionsRequest from a dictionary."""
         return cls(access_control_list=_repeated_dict(d, 'access_control_list',
                                                       ServingEndpointAccessControlRequest),
                    serving_endpoint_id=d.get('serving_endpoint_id', None))
@@ -871,15 +1184,18 @@ class ServingEndpointPermissionsRequest:
 
 @dataclass
 class TrafficConfig:
-    routes: Optional['List[Route]'] = None
+    routes: Optional[List[Route]] = None
+    """The list of routes that define traffic to each served model."""
 
     def as_dict(self) -> dict:
+        """Serializes the TrafficConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.routes: body['routes'] = [v.as_dict() for v in self.routes]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'TrafficConfig':
+    def from_dict(cls, d: Dict[str, any]) -> TrafficConfig:
+        """Deserializes the TrafficConfig from a dictionary."""
         return cls(routes=_repeated_dict(d, 'routes', Route))
 
 
@@ -1172,7 +1488,7 @@ class ServingEndpointsAPI:
                            headers=headers)
         return ServingEndpointPermissions.from_dict(res)
 
-    def list(self) -> Iterator['ServingEndpoint']:
+    def list(self) -> Iterator[ServingEndpoint]:
         """Retrieve all serving endpoints.
         
         :returns: Iterator over :class:`ServingEndpoint`
@@ -1206,7 +1522,7 @@ class ServingEndpointsAPI:
               name: str,
               *,
               add_tags: Optional[List[EndpointTag]] = None,
-              delete_tags: Optional[List[str]] = None) -> Iterator['EndpointTag']:
+              delete_tags: Optional[List[str]] = None) -> Iterator[EndpointTag]:
         """Patch the tags of a serving endpoint.
         
         Used to batch add and delete tags from a serving endpoint with a single API call.

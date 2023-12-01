@@ -1,5 +1,7 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
+from __future__ import annotations
+
 import logging
 from dataclasses import dataclass
 from enum import Enum
@@ -23,13 +25,24 @@ class AuthenticationType(Enum):
 
 @dataclass
 class CentralCleanRoomInfo:
-    clean_room_assets: Optional['List[CleanRoomAssetInfo]'] = None
-    collaborators: Optional['List[CleanRoomCollaboratorInfo]'] = None
-    creator: Optional['CleanRoomCollaboratorInfo'] = None
+    clean_room_assets: Optional[List[CleanRoomAssetInfo]] = None
+    """All assets from all collaborators that are available in the clean room. Only one of table_info
+    or notebook_info will be filled in."""
+
+    collaborators: Optional[List[CleanRoomCollaboratorInfo]] = None
+    """All collaborators who are in the clean room."""
+
+    creator: Optional[CleanRoomCollaboratorInfo] = None
+    """The collaborator who created the clean room."""
+
     station_cloud: Optional[str] = None
+    """The cloud where clean room tasks will be run."""
+
     station_region: Optional[str] = None
+    """The region where clean room tasks will be run."""
 
     def as_dict(self) -> dict:
+        """Serializes the CentralCleanRoomInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.clean_room_assets: body['clean_room_assets'] = [v.as_dict() for v in self.clean_room_assets]
         if self.collaborators: body['collaborators'] = [v.as_dict() for v in self.collaborators]
@@ -39,7 +52,8 @@ class CentralCleanRoomInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CentralCleanRoomInfo':
+    def from_dict(cls, d: Dict[str, any]) -> CentralCleanRoomInfo:
+        """Deserializes the CentralCleanRoomInfo from a dictionary."""
         return cls(clean_room_assets=_repeated_dict(d, 'clean_room_assets', CleanRoomAssetInfo),
                    collaborators=_repeated_dict(d, 'collaborators', CleanRoomCollaboratorInfo),
                    creator=_from_dict(d, 'creator', CleanRoomCollaboratorInfo),
@@ -50,12 +64,22 @@ class CentralCleanRoomInfo:
 @dataclass
 class CleanRoomAssetInfo:
     added_at: Optional[int] = None
-    notebook_info: Optional['CleanRoomNotebookInfo'] = None
-    owner: Optional['CleanRoomCollaboratorInfo'] = None
-    table_info: Optional['CleanRoomTableInfo'] = None
+    """Time at which this asset was added, in epoch milliseconds."""
+
+    notebook_info: Optional[CleanRoomNotebookInfo] = None
+    """Details about the notebook asset."""
+
+    owner: Optional[CleanRoomCollaboratorInfo] = None
+    """The collaborator who owns the asset."""
+
+    table_info: Optional[CleanRoomTableInfo] = None
+    """Details about the table asset."""
+
     updated_at: Optional[int] = None
+    """Time at which this asset was updated, in epoch milliseconds."""
 
     def as_dict(self) -> dict:
+        """Serializes the CleanRoomAssetInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.added_at is not None: body['added_at'] = self.added_at
         if self.notebook_info: body['notebook_info'] = self.notebook_info.as_dict()
@@ -65,7 +89,8 @@ class CleanRoomAssetInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CleanRoomAssetInfo':
+    def from_dict(cls, d: Dict[str, any]) -> CleanRoomAssetInfo:
+        """Deserializes the CleanRoomAssetInfo from a dictionary."""
         return cls(added_at=d.get('added_at', None),
                    notebook_info=_from_dict(d, 'notebook_info', CleanRoomNotebookInfo),
                    owner=_from_dict(d, 'owner', CleanRoomCollaboratorInfo),
@@ -76,10 +101,16 @@ class CleanRoomAssetInfo:
 @dataclass
 class CleanRoomCatalog:
     catalog_name: Optional[str] = None
-    notebook_files: Optional['List[SharedDataObject]'] = None
-    tables: Optional['List[SharedDataObject]'] = None
+    """Name of the catalog in the clean room station. Empty for notebooks."""
+
+    notebook_files: Optional[List[SharedDataObject]] = None
+    """The details of the shared notebook files."""
+
+    tables: Optional[List[SharedDataObject]] = None
+    """The details of the shared tables."""
 
     def as_dict(self) -> dict:
+        """Serializes the CleanRoomCatalog into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.catalog_name is not None: body['catalog_name'] = self.catalog_name
         if self.notebook_files: body['notebook_files'] = [v.as_dict() for v in self.notebook_files]
@@ -87,7 +118,8 @@ class CleanRoomCatalog:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CleanRoomCatalog':
+    def from_dict(cls, d: Dict[str, any]) -> CleanRoomCatalog:
+        """Deserializes the CleanRoomCatalog from a dictionary."""
         return cls(catalog_name=d.get('catalog_name', None),
                    notebook_files=_repeated_dict(d, 'notebook_files', SharedDataObject),
                    tables=_repeated_dict(d, 'tables', SharedDataObject))
@@ -96,16 +128,21 @@ class CleanRoomCatalog:
 @dataclass
 class CleanRoomCatalogUpdate:
     catalog_name: Optional[str] = None
-    updates: Optional['SharedDataObjectUpdate'] = None
+    """The name of the catalog to update assets."""
+
+    updates: Optional[SharedDataObjectUpdate] = None
+    """The updates to the assets in the catalog."""
 
     def as_dict(self) -> dict:
+        """Serializes the CleanRoomCatalogUpdate into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.catalog_name is not None: body['catalog_name'] = self.catalog_name
         if self.updates: body['updates'] = self.updates.as_dict()
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CleanRoomCatalogUpdate':
+    def from_dict(cls, d: Dict[str, any]) -> CleanRoomCatalogUpdate:
+        """Deserializes the CleanRoomCatalogUpdate from a dictionary."""
         return cls(catalog_name=d.get('catalog_name', None),
                    updates=_from_dict(d, 'updates', SharedDataObjectUpdate))
 
@@ -113,16 +150,23 @@ class CleanRoomCatalogUpdate:
 @dataclass
 class CleanRoomCollaboratorInfo:
     global_metastore_id: Optional[str] = None
+    """The global Unity Catalog metastore id of the collaborator. Also known as the sharing identifier.
+    The identifier is of format __cloud__:__region__:__metastore-uuid__."""
+
     organization_name: Optional[str] = None
+    """The organization name of the collaborator. This is configured in the metastore for Delta Sharing
+    and is used to identify the organization to other collaborators."""
 
     def as_dict(self) -> dict:
+        """Serializes the CleanRoomCollaboratorInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.global_metastore_id is not None: body['global_metastore_id'] = self.global_metastore_id
         if self.organization_name is not None: body['organization_name'] = self.organization_name
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CleanRoomCollaboratorInfo':
+    def from_dict(cls, d: Dict[str, any]) -> CleanRoomCollaboratorInfo:
+        """Deserializes the CleanRoomCollaboratorInfo from a dictionary."""
         return cls(global_metastore_id=d.get('global_metastore_id', None),
                    organization_name=d.get('organization_name', None))
 
@@ -130,16 +174,34 @@ class CleanRoomCollaboratorInfo:
 @dataclass
 class CleanRoomInfo:
     comment: Optional[str] = None
+    """User-provided free-form text description."""
+
     created_at: Optional[int] = None
+    """Time at which this clean room was created, in epoch milliseconds."""
+
     created_by: Optional[str] = None
-    local_catalogs: Optional['List[CleanRoomCatalog]'] = None
+    """Username of clean room creator."""
+
+    local_catalogs: Optional[List[CleanRoomCatalog]] = None
+    """Catalog aliases shared by the current collaborator with asset details."""
+
     name: Optional[str] = None
+    """Name of the clean room."""
+
     owner: Optional[str] = None
-    remote_detailed_info: Optional['CentralCleanRoomInfo'] = None
+    """Username of current owner of clean room."""
+
+    remote_detailed_info: Optional[CentralCleanRoomInfo] = None
+    """Central clean room details."""
+
     updated_at: Optional[int] = None
+    """Time at which this clean room was updated, in epoch milliseconds."""
+
     updated_by: Optional[str] = None
+    """Username of clean room updater."""
 
     def as_dict(self) -> dict:
+        """Serializes the CleanRoomInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.comment is not None: body['comment'] = self.comment
         if self.created_at is not None: body['created_at'] = self.created_at
@@ -153,7 +215,8 @@ class CleanRoomInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CleanRoomInfo':
+    def from_dict(cls, d: Dict[str, any]) -> CleanRoomInfo:
+        """Deserializes the CleanRoomInfo from a dictionary."""
         return cls(comment=d.get('comment', None),
                    created_at=d.get('created_at', None),
                    created_by=d.get('created_by', None),
@@ -168,16 +231,21 @@ class CleanRoomInfo:
 @dataclass
 class CleanRoomNotebookInfo:
     notebook_content: Optional[str] = None
+    """The base64 representation of the notebook content in HTML."""
+
     notebook_name: Optional[str] = None
+    """The name of the notebook."""
 
     def as_dict(self) -> dict:
+        """Serializes the CleanRoomNotebookInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.notebook_content is not None: body['notebook_content'] = self.notebook_content
         if self.notebook_name is not None: body['notebook_name'] = self.notebook_name
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CleanRoomNotebookInfo':
+    def from_dict(cls, d: Dict[str, any]) -> CleanRoomNotebookInfo:
+        """Deserializes the CleanRoomNotebookInfo from a dictionary."""
         return cls(notebook_content=d.get('notebook_content', None),
                    notebook_name=d.get('notebook_name', None))
 
@@ -185,12 +253,22 @@ class CleanRoomNotebookInfo:
 @dataclass
 class CleanRoomTableInfo:
     catalog_name: Optional[str] = None
-    columns: Optional['List[ColumnInfo]'] = None
+    """Name of parent catalog."""
+
+    columns: Optional[List[ColumnInfo]] = None
+    """The array of __ColumnInfo__ definitions of the table's columns."""
+
     full_name: Optional[str] = None
+    """Full name of table, in form of __catalog_name__.__schema_name__.__table_name__"""
+
     name: Optional[str] = None
+    """Name of table, relative to parent schema."""
+
     schema_name: Optional[str] = None
+    """Name of parent schema relative to its parent catalog."""
 
     def as_dict(self) -> dict:
+        """Serializes the CleanRoomTableInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.catalog_name is not None: body['catalog_name'] = self.catalog_name
         if self.columns: body['columns'] = [v.as_dict() for v in self.columns]
@@ -200,7 +278,8 @@ class CleanRoomTableInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CleanRoomTableInfo':
+    def from_dict(cls, d: Dict[str, any]) -> CleanRoomTableInfo:
+        """Deserializes the CleanRoomTableInfo from a dictionary."""
         return cls(catalog_name=d.get('catalog_name', None),
                    columns=_repeated_dict(d, 'columns', ColumnInfo),
                    full_name=d.get('full_name', None),
@@ -211,19 +290,42 @@ class CleanRoomTableInfo:
 @dataclass
 class ColumnInfo:
     comment: Optional[str] = None
-    mask: Optional['ColumnMask'] = None
+    """User-provided free-form text description."""
+
+    mask: Optional[ColumnMask] = None
+
     name: Optional[str] = None
+    """Name of Column."""
+
     nullable: Optional[bool] = None
+    """Whether field may be Null (default: true)."""
+
     partition_index: Optional[int] = None
+    """Partition index for column."""
+
     position: Optional[int] = None
+    """Ordinal position of column (starting at position 0)."""
+
     type_interval_type: Optional[str] = None
+    """Format of IntervalType."""
+
     type_json: Optional[str] = None
-    type_name: Optional['ColumnTypeName'] = None
+    """Full data type specification, JSON-serialized."""
+
+    type_name: Optional[ColumnTypeName] = None
+    """Name of type (INT, STRUCT, MAP, etc.)."""
+
     type_precision: Optional[int] = None
+    """Digits of precision; required for DecimalTypes."""
+
     type_scale: Optional[int] = None
+    """Digits to right of decimal; Required for DecimalTypes."""
+
     type_text: Optional[str] = None
+    """Full data type specification as SQL/catalogString text."""
 
     def as_dict(self) -> dict:
+        """Serializes the ColumnInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.comment is not None: body['comment'] = self.comment
         if self.mask: body['mask'] = self.mask.as_dict()
@@ -240,7 +342,8 @@ class ColumnInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ColumnInfo':
+    def from_dict(cls, d: Dict[str, any]) -> ColumnInfo:
+        """Deserializes the ColumnInfo from a dictionary."""
         return cls(comment=d.get('comment', None),
                    mask=_from_dict(d, 'mask', ColumnMask),
                    name=d.get('name', None),
@@ -258,16 +361,23 @@ class ColumnInfo:
 @dataclass
 class ColumnMask:
     function_name: Optional[str] = None
-    using_column_names: Optional['List[str]'] = None
+    """The full name of the column mask SQL UDF."""
+
+    using_column_names: Optional[List[str]] = None
+    """The list of additional table columns to be passed as input to the column mask function. The
+    first arg of the mask function should be of the type of the column being masked and the types of
+    the rest of the args should match the types of columns in 'using_column_names'."""
 
     def as_dict(self) -> dict:
+        """Serializes the ColumnMask into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.function_name is not None: body['function_name'] = self.function_name
         if self.using_column_names: body['using_column_names'] = [v for v in self.using_column_names]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ColumnMask':
+    def from_dict(cls, d: Dict[str, any]) -> ColumnMask:
+        """Deserializes the ColumnMask from a dictionary."""
         return cls(function_name=d.get('function_name', None),
                    using_column_names=d.get('using_column_names', None))
 
@@ -301,10 +411,16 @@ class ColumnTypeName(Enum):
 @dataclass
 class CreateCleanRoom:
     name: str
-    remote_detailed_info: 'CentralCleanRoomInfo'
+    """Name of the clean room."""
+
+    remote_detailed_info: CentralCleanRoomInfo
+    """Central clean room details."""
+
     comment: Optional[str] = None
+    """User-provided free-form text description."""
 
     def as_dict(self) -> dict:
+        """Serializes the CreateCleanRoom into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.comment is not None: body['comment'] = self.comment
         if self.name is not None: body['name'] = self.name
@@ -312,7 +428,8 @@ class CreateCleanRoom:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CreateCleanRoom':
+    def from_dict(cls, d: Dict[str, any]) -> CreateCleanRoom:
+        """Deserializes the CreateCleanRoom from a dictionary."""
         return cls(comment=d.get('comment', None),
                    name=d.get('name', None),
                    remote_detailed_info=_from_dict(d, 'remote_detailed_info', CentralCleanRoomInfo))
@@ -321,11 +438,19 @@ class CreateCleanRoom:
 @dataclass
 class CreateProvider:
     name: str
-    authentication_type: 'AuthenticationType'
+    """The name of the Provider."""
+
+    authentication_type: AuthenticationType
+    """The delta sharing authentication type."""
+
     comment: Optional[str] = None
+    """Description about the provider."""
+
     recipient_profile_str: Optional[str] = None
+    """This field is required when the __authentication_type__ is **TOKEN** or not provided."""
 
     def as_dict(self) -> dict:
+        """Serializes the CreateProvider into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.authentication_type is not None: body['authentication_type'] = self.authentication_type.value
         if self.comment is not None: body['comment'] = self.comment
@@ -334,7 +459,8 @@ class CreateProvider:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CreateProvider':
+    def from_dict(cls, d: Dict[str, any]) -> CreateProvider:
+        """Deserializes the CreateProvider from a dictionary."""
         return cls(authentication_type=_enum(d, 'authentication_type', AuthenticationType),
                    comment=d.get('comment', None),
                    name=d.get('name', None),
@@ -344,15 +470,34 @@ class CreateProvider:
 @dataclass
 class CreateRecipient:
     name: str
-    authentication_type: 'AuthenticationType'
+    """Name of Recipient."""
+
+    authentication_type: AuthenticationType
+    """The delta sharing authentication type."""
+
     comment: Optional[str] = None
+    """Description about the recipient."""
+
     data_recipient_global_metastore_id: Optional[str] = None
-    ip_access_list: Optional['IpAccessList'] = None
+    """The global Unity Catalog metastore id provided by the data recipient. This field is required
+    when the __authentication_type__ is **DATABRICKS**. The identifier is of format
+    __cloud__:__region__:__metastore-uuid__."""
+
+    ip_access_list: Optional[IpAccessList] = None
+    """IP Access List"""
+
     owner: Optional[str] = None
-    properties_kvpairs: Optional['SecurablePropertiesKvPairs'] = None
+    """Username of the recipient owner."""
+
+    properties_kvpairs: Optional[SecurablePropertiesKvPairs] = None
+    """Recipient properties as map of string key-value pairs."""
+
     sharing_code: Optional[str] = None
+    """The one-time sharing code provided by the data recipient. This field is required when the
+    __authentication_type__ is **DATABRICKS**."""
 
     def as_dict(self) -> dict:
+        """Serializes the CreateRecipient into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.authentication_type is not None: body['authentication_type'] = self.authentication_type.value
         if self.comment is not None: body['comment'] = self.comment
@@ -366,7 +511,8 @@ class CreateRecipient:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CreateRecipient':
+    def from_dict(cls, d: Dict[str, any]) -> CreateRecipient:
+        """Deserializes the CreateRecipient from a dictionary."""
         return cls(authentication_type=_enum(d, 'authentication_type', AuthenticationType),
                    comment=d.get('comment', None),
                    data_recipient_global_metastore_id=d.get('data_recipient_global_metastore_id', None),
@@ -380,142 +526,183 @@ class CreateRecipient:
 @dataclass
 class CreateShare:
     name: str
+    """Name of the share."""
+
     comment: Optional[str] = None
+    """User-provided free-form text description."""
 
     def as_dict(self) -> dict:
+        """Serializes the CreateShare into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.comment is not None: body['comment'] = self.comment
         if self.name is not None: body['name'] = self.name
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CreateShare':
+    def from_dict(cls, d: Dict[str, any]) -> CreateShare:
+        """Deserializes the CreateShare from a dictionary."""
         return cls(comment=d.get('comment', None), name=d.get('name', None))
 
 
 @dataclass
 class GetRecipientSharePermissionsResponse:
-    permissions_out: Optional['List[ShareToPrivilegeAssignment]'] = None
+    permissions_out: Optional[List[ShareToPrivilegeAssignment]] = None
+    """An array of data share permissions for a recipient."""
 
     def as_dict(self) -> dict:
+        """Serializes the GetRecipientSharePermissionsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.permissions_out: body['permissions_out'] = [v.as_dict() for v in self.permissions_out]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'GetRecipientSharePermissionsResponse':
+    def from_dict(cls, d: Dict[str, any]) -> GetRecipientSharePermissionsResponse:
+        """Deserializes the GetRecipientSharePermissionsResponse from a dictionary."""
         return cls(permissions_out=_repeated_dict(d, 'permissions_out', ShareToPrivilegeAssignment))
 
 
 @dataclass
 class IpAccessList:
-    allowed_ip_addresses: Optional['List[str]'] = None
+    allowed_ip_addresses: Optional[List[str]] = None
+    """Allowed IP Addresses in CIDR notation. Limit of 100."""
 
     def as_dict(self) -> dict:
+        """Serializes the IpAccessList into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.allowed_ip_addresses: body['allowed_ip_addresses'] = [v for v in self.allowed_ip_addresses]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'IpAccessList':
+    def from_dict(cls, d: Dict[str, any]) -> IpAccessList:
+        """Deserializes the IpAccessList from a dictionary."""
         return cls(allowed_ip_addresses=d.get('allowed_ip_addresses', None))
 
 
 @dataclass
 class ListCleanRoomsResponse:
-    clean_rooms: Optional['List[CleanRoomInfo]'] = None
+    clean_rooms: Optional[List[CleanRoomInfo]] = None
+    """An array of clean rooms. Remote details (central) are not included."""
+
     next_page_token: Optional[str] = None
+    """Token to retrieve the next page of results. Absent if there are no more pages."""
 
     def as_dict(self) -> dict:
+        """Serializes the ListCleanRoomsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.clean_rooms: body['clean_rooms'] = [v.as_dict() for v in self.clean_rooms]
         if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ListCleanRoomsResponse':
+    def from_dict(cls, d: Dict[str, any]) -> ListCleanRoomsResponse:
+        """Deserializes the ListCleanRoomsResponse from a dictionary."""
         return cls(clean_rooms=_repeated_dict(d, 'clean_rooms', CleanRoomInfo),
                    next_page_token=d.get('next_page_token', None))
 
 
 @dataclass
 class ListProviderSharesResponse:
-    shares: Optional['List[ProviderShare]'] = None
+    shares: Optional[List[ProviderShare]] = None
+    """An array of provider shares."""
 
     def as_dict(self) -> dict:
+        """Serializes the ListProviderSharesResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.shares: body['shares'] = [v.as_dict() for v in self.shares]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ListProviderSharesResponse':
+    def from_dict(cls, d: Dict[str, any]) -> ListProviderSharesResponse:
+        """Deserializes the ListProviderSharesResponse from a dictionary."""
         return cls(shares=_repeated_dict(d, 'shares', ProviderShare))
 
 
 @dataclass
 class ListProvidersResponse:
-    providers: Optional['List[ProviderInfo]'] = None
+    providers: Optional[List[ProviderInfo]] = None
+    """An array of provider information objects."""
 
     def as_dict(self) -> dict:
+        """Serializes the ListProvidersResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.providers: body['providers'] = [v.as_dict() for v in self.providers]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ListProvidersResponse':
+    def from_dict(cls, d: Dict[str, any]) -> ListProvidersResponse:
+        """Deserializes the ListProvidersResponse from a dictionary."""
         return cls(providers=_repeated_dict(d, 'providers', ProviderInfo))
 
 
 @dataclass
 class ListRecipientsResponse:
-    recipients: Optional['List[RecipientInfo]'] = None
+    recipients: Optional[List[RecipientInfo]] = None
+    """An array of recipient information objects."""
 
     def as_dict(self) -> dict:
+        """Serializes the ListRecipientsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.recipients: body['recipients'] = [v.as_dict() for v in self.recipients]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ListRecipientsResponse':
+    def from_dict(cls, d: Dict[str, any]) -> ListRecipientsResponse:
+        """Deserializes the ListRecipientsResponse from a dictionary."""
         return cls(recipients=_repeated_dict(d, 'recipients', RecipientInfo))
 
 
 @dataclass
 class ListSharesResponse:
-    shares: Optional['List[ShareInfo]'] = None
+    shares: Optional[List[ShareInfo]] = None
+    """An array of data share information objects."""
 
     def as_dict(self) -> dict:
+        """Serializes the ListSharesResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.shares: body['shares'] = [v.as_dict() for v in self.shares]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ListSharesResponse':
+    def from_dict(cls, d: Dict[str, any]) -> ListSharesResponse:
+        """Deserializes the ListSharesResponse from a dictionary."""
         return cls(shares=_repeated_dict(d, 'shares', ShareInfo))
 
 
 @dataclass
 class Partition:
-    values: Optional['List[PartitionValue]'] = None
+    values: Optional[List[PartitionValue]] = None
+    """An array of partition values."""
 
     def as_dict(self) -> dict:
+        """Serializes the Partition into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.values: body['values'] = [v.as_dict() for v in self.values]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'Partition':
+    def from_dict(cls, d: Dict[str, any]) -> Partition:
+        """Deserializes the Partition from a dictionary."""
         return cls(values=_repeated_dict(d, 'values', PartitionValue))
 
 
 @dataclass
 class PartitionValue:
     name: Optional[str] = None
-    op: Optional['PartitionValueOp'] = None
+    """The name of the partition column."""
+
+    op: Optional[PartitionValueOp] = None
+    """The operator to apply for the value."""
+
     recipient_property_key: Optional[str] = None
+    """The key of a Delta Sharing recipient's property. For example `databricks-account-id`. When this
+    field is set, field `value` can not be set."""
+
     value: Optional[str] = None
+    """The value of the partition column. When this value is not set, it means `null` value. When this
+    field is set, field `recipient_property_key` can not be set."""
 
     def as_dict(self) -> dict:
+        """Serializes the PartitionValue into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.name is not None: body['name'] = self.name
         if self.op is not None: body['op'] = self.op.value
@@ -525,7 +712,8 @@ class PartitionValue:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'PartitionValue':
+    def from_dict(cls, d: Dict[str, any]) -> PartitionValue:
+        """Deserializes the PartitionValue from a dictionary."""
         return cls(name=d.get('name', None),
                    op=_enum(d, 'op', PartitionValueOp),
                    recipient_property_key=d.get('recipient_property_key', None),
@@ -587,37 +775,75 @@ class Privilege(Enum):
 @dataclass
 class PrivilegeAssignment:
     principal: Optional[str] = None
-    privileges: Optional['List[Privilege]'] = None
+    """The principal (user email address or group name)."""
+
+    privileges: Optional[List[Privilege]] = None
+    """The privileges assigned to the principal."""
 
     def as_dict(self) -> dict:
+        """Serializes the PrivilegeAssignment into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.principal is not None: body['principal'] = self.principal
         if self.privileges: body['privileges'] = [v.value for v in self.privileges]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'PrivilegeAssignment':
+    def from_dict(cls, d: Dict[str, any]) -> PrivilegeAssignment:
+        """Deserializes the PrivilegeAssignment from a dictionary."""
         return cls(principal=d.get('principal', None), privileges=_repeated_enum(d, 'privileges', Privilege))
 
 
 @dataclass
 class ProviderInfo:
-    authentication_type: Optional['AuthenticationType'] = None
+    authentication_type: Optional[AuthenticationType] = None
+    """The delta sharing authentication type."""
+
     cloud: Optional[str] = None
+    """Cloud vendor of the provider's UC metastore. This field is only present when the
+    __authentication_type__ is **DATABRICKS**."""
+
     comment: Optional[str] = None
+    """Description about the provider."""
+
     created_at: Optional[int] = None
+    """Time at which this Provider was created, in epoch milliseconds."""
+
     created_by: Optional[str] = None
+    """Username of Provider creator."""
+
     data_provider_global_metastore_id: Optional[str] = None
+    """The global UC metastore id of the data provider. This field is only present when the
+    __authentication_type__ is **DATABRICKS**. The identifier is of format
+    <cloud>:<region>:<metastore-uuid>."""
+
     metastore_id: Optional[str] = None
+    """UUID of the provider's UC metastore. This field is only present when the __authentication_type__
+    is **DATABRICKS**."""
+
     name: Optional[str] = None
+    """The name of the Provider."""
+
     owner: Optional[str] = None
-    recipient_profile: Optional['RecipientProfile'] = None
+    """Username of Provider owner."""
+
+    recipient_profile: Optional[RecipientProfile] = None
+    """The recipient profile. This field is only present when the authentication_type is `TOKEN`."""
+
     recipient_profile_str: Optional[str] = None
+    """This field is only present when the authentication_type is `TOKEN` or not provided."""
+
     region: Optional[str] = None
+    """Cloud region of the provider's UC metastore. This field is only present when the
+    __authentication_type__ is **DATABRICKS**."""
+
     updated_at: Optional[int] = None
+    """Time at which this Provider was created, in epoch milliseconds."""
+
     updated_by: Optional[str] = None
+    """Username of user who last modified Share."""
 
     def as_dict(self) -> dict:
+        """Serializes the ProviderInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.authentication_type is not None: body['authentication_type'] = self.authentication_type.value
         if self.cloud is not None: body['cloud'] = self.cloud
@@ -637,7 +863,8 @@ class ProviderInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ProviderInfo':
+    def from_dict(cls, d: Dict[str, any]) -> ProviderInfo:
+        """Deserializes the ProviderInfo from a dictionary."""
         return cls(authentication_type=_enum(d, 'authentication_type', AuthenticationType),
                    cloud=d.get('cloud', None),
                    comment=d.get('comment', None),
@@ -657,39 +884,85 @@ class ProviderInfo:
 @dataclass
 class ProviderShare:
     name: Optional[str] = None
+    """The name of the Provider Share."""
 
     def as_dict(self) -> dict:
+        """Serializes the ProviderShare into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.name is not None: body['name'] = self.name
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ProviderShare':
+    def from_dict(cls, d: Dict[str, any]) -> ProviderShare:
+        """Deserializes the ProviderShare from a dictionary."""
         return cls(name=d.get('name', None))
 
 
 @dataclass
 class RecipientInfo:
     activated: Optional[bool] = None
+    """A boolean status field showing whether the Recipient's activation URL has been exercised or not."""
+
     activation_url: Optional[str] = None
-    authentication_type: Optional['AuthenticationType'] = None
+    """Full activation url to retrieve the access token. It will be empty if the token is already
+    retrieved."""
+
+    authentication_type: Optional[AuthenticationType] = None
+    """The delta sharing authentication type."""
+
     cloud: Optional[str] = None
+    """Cloud vendor of the recipient's Unity Catalog Metstore. This field is only present when the
+    __authentication_type__ is **DATABRICKS**`."""
+
     comment: Optional[str] = None
+    """Description about the recipient."""
+
     created_at: Optional[int] = None
+    """Time at which this recipient was created, in epoch milliseconds."""
+
     created_by: Optional[str] = None
+    """Username of recipient creator."""
+
     data_recipient_global_metastore_id: Optional[str] = None
-    ip_access_list: Optional['IpAccessList'] = None
+    """The global Unity Catalog metastore id provided by the data recipient. This field is only present
+    when the __authentication_type__ is **DATABRICKS**. The identifier is of format
+    __cloud__:__region__:__metastore-uuid__."""
+
+    ip_access_list: Optional[IpAccessList] = None
+    """IP Access List"""
+
     metastore_id: Optional[str] = None
+    """Unique identifier of recipient's Unity Catalog metastore. This field is only present when the
+    __authentication_type__ is **DATABRICKS**"""
+
     name: Optional[str] = None
+    """Name of Recipient."""
+
     owner: Optional[str] = None
-    properties_kvpairs: Optional['SecurablePropertiesKvPairs'] = None
+    """Username of the recipient owner."""
+
+    properties_kvpairs: Optional[SecurablePropertiesKvPairs] = None
+    """Recipient properties as map of string key-value pairs."""
+
     region: Optional[str] = None
+    """Cloud region of the recipient's Unity Catalog Metstore. This field is only present when the
+    __authentication_type__ is **DATABRICKS**."""
+
     sharing_code: Optional[str] = None
-    tokens: Optional['List[RecipientTokenInfo]'] = None
+    """The one-time sharing code provided by the data recipient. This field is only present when the
+    __authentication_type__ is **DATABRICKS**."""
+
+    tokens: Optional[List[RecipientTokenInfo]] = None
+    """This field is only present when the __authentication_type__ is **TOKEN**."""
+
     updated_at: Optional[int] = None
+    """Time at which the recipient was updated, in epoch milliseconds."""
+
     updated_by: Optional[str] = None
+    """Username of recipient updater."""
 
     def as_dict(self) -> dict:
+        """Serializes the RecipientInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.activated is not None: body['activated'] = self.activated
         if self.activation_url is not None: body['activation_url'] = self.activation_url
@@ -713,7 +986,8 @@ class RecipientInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RecipientInfo':
+    def from_dict(cls, d: Dict[str, any]) -> RecipientInfo:
+        """Deserializes the RecipientInfo from a dictionary."""
         return cls(activated=d.get('activated', None),
                    activation_url=d.get('activation_url', None),
                    authentication_type=_enum(d, 'authentication_type', AuthenticationType),
@@ -737,10 +1011,16 @@ class RecipientInfo:
 @dataclass
 class RecipientProfile:
     bearer_token: Optional[str] = None
+    """The token used to authorize the recipient."""
+
     endpoint: Optional[str] = None
+    """The endpoint for the share to be used by the recipient."""
+
     share_credentials_version: Optional[int] = None
+    """The version number of the recipient's credentials on a share."""
 
     def as_dict(self) -> dict:
+        """Serializes the RecipientProfile into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.bearer_token is not None: body['bearer_token'] = self.bearer_token
         if self.endpoint is not None: body['endpoint'] = self.endpoint
@@ -749,7 +1029,8 @@ class RecipientProfile:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RecipientProfile':
+    def from_dict(cls, d: Dict[str, any]) -> RecipientProfile:
+        """Deserializes the RecipientProfile from a dictionary."""
         return cls(bearer_token=d.get('bearer_token', None),
                    endpoint=d.get('endpoint', None),
                    share_credentials_version=d.get('share_credentials_version', None))
@@ -758,14 +1039,29 @@ class RecipientProfile:
 @dataclass
 class RecipientTokenInfo:
     activation_url: Optional[str] = None
+    """Full activation URL to retrieve the access token. It will be empty if the token is already
+    retrieved."""
+
     created_at: Optional[int] = None
+    """Time at which this recipient Token was created, in epoch milliseconds."""
+
     created_by: Optional[str] = None
+    """Username of recipient token creator."""
+
     expiration_time: Optional[int] = None
+    """Expiration timestamp of the token in epoch milliseconds."""
+
     id: Optional[str] = None
+    """Unique ID of the recipient token."""
+
     updated_at: Optional[int] = None
+    """Time at which this recipient Token was updated, in epoch milliseconds."""
+
     updated_by: Optional[str] = None
+    """Username of recipient Token updater."""
 
     def as_dict(self) -> dict:
+        """Serializes the RecipientTokenInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.activation_url is not None: body['activation_url'] = self.activation_url
         if self.created_at is not None: body['created_at'] = self.created_at
@@ -777,7 +1073,8 @@ class RecipientTokenInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RecipientTokenInfo':
+    def from_dict(cls, d: Dict[str, any]) -> RecipientTokenInfo:
+        """Deserializes the RecipientTokenInfo from a dictionary."""
         return cls(activation_url=d.get('activation_url', None),
                    created_at=d.get('created_at', None),
                    created_by=d.get('created_by', None),
@@ -790,11 +1087,19 @@ class RecipientTokenInfo:
 @dataclass
 class RetrieveTokenResponse:
     bearer_token: Optional[str] = None
+    """The token used to authorize the recipient."""
+
     endpoint: Optional[str] = None
+    """The endpoint for the share to be used by the recipient."""
+
     expiration_time: Optional[str] = None
+    """Expiration timestamp of the token in epoch milliseconds."""
+
     share_credentials_version: Optional[int] = None
+    """These field names must follow the delta sharing protocol."""
 
     def as_dict(self) -> dict:
+        """Serializes the RetrieveTokenResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.bearer_token is not None: body['bearerToken'] = self.bearer_token
         if self.endpoint is not None: body['endpoint'] = self.endpoint
@@ -804,7 +1109,8 @@ class RetrieveTokenResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RetrieveTokenResponse':
+    def from_dict(cls, d: Dict[str, any]) -> RetrieveTokenResponse:
+        """Deserializes the RetrieveTokenResponse from a dictionary."""
         return cls(bearer_token=d.get('bearerToken', None),
                    endpoint=d.get('endpoint', None),
                    expiration_time=d.get('expirationTime', None),
@@ -814,9 +1120,15 @@ class RetrieveTokenResponse:
 @dataclass
 class RotateRecipientToken:
     existing_token_expire_in_seconds: int
+    """The expiration time of the bearer token in ISO 8601 format. This will set the expiration_time of
+    existing token only to a smaller timestamp, it cannot extend the expiration_time. Use 0 to
+    expire the existing token immediately, negative number will return an error."""
+
     name: Optional[str] = None
+    """The name of the recipient."""
 
     def as_dict(self) -> dict:
+        """Serializes the RotateRecipientToken into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.existing_token_expire_in_seconds is not None:
             body['existing_token_expire_in_seconds'] = self.existing_token_expire_in_seconds
@@ -824,7 +1136,8 @@ class RotateRecipientToken:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RotateRecipientToken':
+    def from_dict(cls, d: Dict[str, any]) -> RotateRecipientToken:
+        """Deserializes the RotateRecipientToken from a dictionary."""
         return cls(existing_token_expire_in_seconds=d.get('existing_token_expire_in_seconds', None),
                    name=d.get('name', None))
 
@@ -833,15 +1146,18 @@ class RotateRecipientToken:
 class SecurablePropertiesKvPairs:
     """An object with __properties__ containing map of key-value properties attached to the securable."""
 
-    properties: 'Dict[str,str]'
+    properties: Dict[str, str]
+    """A map of key-value properties attached to the securable."""
 
     def as_dict(self) -> dict:
+        """Serializes the SecurablePropertiesKvPairs into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.properties: body['properties'] = self.properties
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'SecurablePropertiesKvPairs':
+    def from_dict(cls, d: Dict[str, any]) -> SecurablePropertiesKvPairs:
+        """Deserializes the SecurablePropertiesKvPairs from a dictionary."""
         return cls(properties=d.get('properties', None))
 
 
@@ -851,15 +1167,31 @@ SecurablePropertiesMap = Dict[str, str]
 @dataclass
 class ShareInfo:
     comment: Optional[str] = None
+    """User-provided free-form text description."""
+
     created_at: Optional[int] = None
+    """Time at which this share was created, in epoch milliseconds."""
+
     created_by: Optional[str] = None
+    """Username of share creator."""
+
     name: Optional[str] = None
-    objects: Optional['List[SharedDataObject]'] = None
+    """Name of the share."""
+
+    objects: Optional[List[SharedDataObject]] = None
+    """A list of shared data objects within the share."""
+
     owner: Optional[str] = None
+    """Username of current owner of share."""
+
     updated_at: Optional[int] = None
+    """Time at which this share was updated, in epoch milliseconds."""
+
     updated_by: Optional[str] = None
+    """Username of share updater."""
 
     def as_dict(self) -> dict:
+        """Serializes the ShareInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.comment is not None: body['comment'] = self.comment
         if self.created_at is not None: body['created_at'] = self.created_at
@@ -872,7 +1204,8 @@ class ShareInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ShareInfo':
+    def from_dict(cls, d: Dict[str, any]) -> ShareInfo:
+        """Deserializes the ShareInfo from a dictionary."""
         return cls(comment=d.get('comment', None),
                    created_at=d.get('created_at', None),
                    created_by=d.get('created_by', None),
@@ -885,10 +1218,14 @@ class ShareInfo:
 
 @dataclass
 class ShareToPrivilegeAssignment:
-    privilege_assignments: Optional['List[PrivilegeAssignment]'] = None
+    privilege_assignments: Optional[List[PrivilegeAssignment]] = None
+    """The privileges assigned to the principal."""
+
     share_name: Optional[str] = None
+    """The share name."""
 
     def as_dict(self) -> dict:
+        """Serializes the ShareToPrivilegeAssignment into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.privilege_assignments:
             body['privilege_assignments'] = [v.as_dict() for v in self.privilege_assignments]
@@ -896,7 +1233,8 @@ class ShareToPrivilegeAssignment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ShareToPrivilegeAssignment':
+    def from_dict(cls, d: Dict[str, any]) -> ShareToPrivilegeAssignment:
+        """Deserializes the ShareToPrivilegeAssignment from a dictionary."""
         return cls(privilege_assignments=_repeated_dict(d, 'privilege_assignments', PrivilegeAssignment),
                    share_name=d.get('share_name', None))
 
@@ -904,19 +1242,56 @@ class ShareToPrivilegeAssignment:
 @dataclass
 class SharedDataObject:
     name: str
+    """A fully qualified name that uniquely identifies a data object.
+    
+    For example, a table's fully qualified name is in the format of `<catalog>.<schema>.<table>`."""
+
     added_at: Optional[int] = None
+    """The time when this data object is added to the share, in epoch milliseconds."""
+
     added_by: Optional[str] = None
+    """Username of the sharer."""
+
     cdf_enabled: Optional[bool] = None
+    """Whether to enable cdf or indicate if cdf is enabled on the shared object."""
+
     comment: Optional[str] = None
+    """A user-provided comment when adding the data object to the share. [Update:OPT]"""
+
     data_object_type: Optional[str] = None
-    history_data_sharing_status: Optional['SharedDataObjectHistoryDataSharingStatus'] = None
-    partitions: Optional['List[Partition]'] = None
+    """The type of the data object."""
+
+    history_data_sharing_status: Optional[SharedDataObjectHistoryDataSharingStatus] = None
+    """Whether to enable or disable sharing of data history. If not specified, the default is
+    **DISABLED**."""
+
+    partitions: Optional[List[Partition]] = None
+    """Array of partitions for the shared data."""
+
     shared_as: Optional[str] = None
+    """A user-provided new name for the data object within the share. If this new name is not provided,
+    the object's original name will be used as the `shared_as` name. The `shared_as` name must be
+    unique within a share. For tables, the new name must follow the format of `<schema>.<table>`."""
+
     start_version: Optional[int] = None
-    status: Optional['SharedDataObjectStatus'] = None
+    """The start version associated with the object. This allows data providers to control the lowest
+    object version that is accessible by clients. If specified, clients can query snapshots or
+    changes for versions >= start_version. If not specified, clients can only query starting from
+    the version of the object at the time it was added to the share.
+    
+    NOTE: The start_version should be <= the `current` version of the object."""
+
+    status: Optional[SharedDataObjectStatus] = None
+    """One of: **ACTIVE**, **PERMISSION_DENIED**."""
+
     string_shared_as: Optional[str] = None
+    """A user-provided new name for the data object within the share. If this new name is not provided,
+    the object's original name will be used as the `string_shared_as` name. The `string_shared_as`
+    name must be unique within a share. For notebooks, the new name should be the new notebook file
+    name."""
 
     def as_dict(self) -> dict:
+        """Serializes the SharedDataObject into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.added_at is not None: body['added_at'] = self.added_at
         if self.added_by is not None: body['added_by'] = self.added_by
@@ -934,7 +1309,8 @@ class SharedDataObject:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'SharedDataObject':
+    def from_dict(cls, d: Dict[str, any]) -> SharedDataObject:
+        """Deserializes the SharedDataObject from a dictionary."""
         return cls(added_at=d.get('added_at', None),
                    added_by=d.get('added_by', None),
                    cdf_enabled=d.get('cdf_enabled', None),
@@ -967,17 +1343,22 @@ class SharedDataObjectStatus(Enum):
 
 @dataclass
 class SharedDataObjectUpdate:
-    action: Optional['SharedDataObjectUpdateAction'] = None
-    data_object: Optional['SharedDataObject'] = None
+    action: Optional[SharedDataObjectUpdateAction] = None
+    """One of: **ADD**, **REMOVE**, **UPDATE**."""
+
+    data_object: Optional[SharedDataObject] = None
+    """The data object that is being added, removed, or updated."""
 
     def as_dict(self) -> dict:
+        """Serializes the SharedDataObjectUpdate into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.action is not None: body['action'] = self.action.value
         if self.data_object: body['data_object'] = self.data_object.as_dict()
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'SharedDataObjectUpdate':
+    def from_dict(cls, d: Dict[str, any]) -> SharedDataObjectUpdate:
+        """Deserializes the SharedDataObjectUpdate from a dictionary."""
         return cls(action=_enum(d, 'action', SharedDataObjectUpdateAction),
                    data_object=_from_dict(d, 'data_object', SharedDataObject))
 
@@ -992,13 +1373,23 @@ class SharedDataObjectUpdateAction(Enum):
 
 @dataclass
 class UpdateCleanRoom:
-    catalog_updates: Optional['List[CleanRoomCatalogUpdate]'] = None
+    catalog_updates: Optional[List[CleanRoomCatalogUpdate]] = None
+    """Array of shared data object updates."""
+
     comment: Optional[str] = None
+    """User-provided free-form text description."""
+
     name: Optional[str] = None
+    """Name of the clean room."""
+
     name_arg: Optional[str] = None
+    """The name of the clean room."""
+
     owner: Optional[str] = None
+    """Username of current owner of clean room."""
 
     def as_dict(self) -> dict:
+        """Serializes the UpdateCleanRoom into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.catalog_updates: body['catalog_updates'] = [v.as_dict() for v in self.catalog_updates]
         if self.comment is not None: body['comment'] = self.comment
@@ -1008,7 +1399,8 @@ class UpdateCleanRoom:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'UpdateCleanRoom':
+    def from_dict(cls, d: Dict[str, any]) -> UpdateCleanRoom:
+        """Deserializes the UpdateCleanRoom from a dictionary."""
         return cls(catalog_updates=_repeated_dict(d, 'catalog_updates', CleanRoomCatalogUpdate),
                    comment=d.get('comment', None),
                    name=d.get('name', None),
@@ -1019,11 +1411,19 @@ class UpdateCleanRoom:
 @dataclass
 class UpdateProvider:
     comment: Optional[str] = None
+    """Description about the provider."""
+
     name: Optional[str] = None
+    """The name of the Provider."""
+
     owner: Optional[str] = None
+    """Username of Provider owner."""
+
     recipient_profile_str: Optional[str] = None
+    """This field is required when the __authentication_type__ is **TOKEN** or not provided."""
 
     def as_dict(self) -> dict:
+        """Serializes the UpdateProvider into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.comment is not None: body['comment'] = self.comment
         if self.name is not None: body['name'] = self.name
@@ -1032,7 +1432,8 @@ class UpdateProvider:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'UpdateProvider':
+    def from_dict(cls, d: Dict[str, any]) -> UpdateProvider:
+        """Deserializes the UpdateProvider from a dictionary."""
         return cls(comment=d.get('comment', None),
                    name=d.get('name', None),
                    owner=d.get('owner', None),
@@ -1042,12 +1443,24 @@ class UpdateProvider:
 @dataclass
 class UpdateRecipient:
     comment: Optional[str] = None
-    ip_access_list: Optional['IpAccessList'] = None
+    """Description about the recipient."""
+
+    ip_access_list: Optional[IpAccessList] = None
+    """IP Access List"""
+
     name: Optional[str] = None
+    """Name of Recipient."""
+
     owner: Optional[str] = None
-    properties_kvpairs: Optional['SecurablePropertiesKvPairs'] = None
+    """Username of the recipient owner."""
+
+    properties_kvpairs: Optional[SecurablePropertiesKvPairs] = None
+    """Recipient properties as map of string key-value pairs. When provided in update request, the
+    specified properties will override the existing properties. To add and remove properties, one
+    would need to perform a read-modify-write."""
 
     def as_dict(self) -> dict:
+        """Serializes the UpdateRecipient into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.comment is not None: body['comment'] = self.comment
         if self.ip_access_list: body['ip_access_list'] = self.ip_access_list.as_dict()
@@ -1057,7 +1470,8 @@ class UpdateRecipient:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'UpdateRecipient':
+    def from_dict(cls, d: Dict[str, any]) -> UpdateRecipient:
+        """Deserializes the UpdateRecipient from a dictionary."""
         return cls(comment=d.get('comment', None),
                    ip_access_list=_from_dict(d, 'ip_access_list', IpAccessList),
                    name=d.get('name', None),
@@ -1068,11 +1482,19 @@ class UpdateRecipient:
 @dataclass
 class UpdateShare:
     comment: Optional[str] = None
+    """User-provided free-form text description."""
+
     name: Optional[str] = None
+    """Name of the share."""
+
     owner: Optional[str] = None
-    updates: Optional['List[SharedDataObjectUpdate]'] = None
+    """Username of current owner of share."""
+
+    updates: Optional[List[SharedDataObjectUpdate]] = None
+    """Array of shared data object updates."""
 
     def as_dict(self) -> dict:
+        """Serializes the UpdateShare into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.comment is not None: body['comment'] = self.comment
         if self.name is not None: body['name'] = self.name
@@ -1081,7 +1503,8 @@ class UpdateShare:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'UpdateShare':
+    def from_dict(cls, d: Dict[str, any]) -> UpdateShare:
+        """Deserializes the UpdateShare from a dictionary."""
         return cls(comment=d.get('comment', None),
                    name=d.get('name', None),
                    owner=d.get('owner', None),
@@ -1090,17 +1513,22 @@ class UpdateShare:
 
 @dataclass
 class UpdateSharePermissions:
-    changes: Optional['List[catalog.PermissionsChange]'] = None
+    changes: Optional[List[catalog.PermissionsChange]] = None
+    """Array of permission changes."""
+
     name: Optional[str] = None
+    """The name of the share."""
 
     def as_dict(self) -> dict:
+        """Serializes the UpdateSharePermissions into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.changes: body['changes'] = [v.as_dict() for v in self.changes]
         if self.name is not None: body['name'] = self.name
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'UpdateSharePermissions':
+    def from_dict(cls, d: Dict[str, any]) -> UpdateSharePermissions:
+        """Deserializes the UpdateSharePermissions from a dictionary."""
         return cls(changes=_repeated_dict(d, 'changes', catalog.PermissionsChange), name=d.get('name', None))
 
 
@@ -1180,7 +1608,7 @@ class CleanRoomsAPI:
     def list(self,
              *,
              max_results: Optional[int] = None,
-             page_token: Optional[str] = None) -> Iterator['CleanRoomInfo']:
+             page_token: Optional[str] = None) -> Iterator[CleanRoomInfo]:
         """List clean rooms.
         
         Gets an array of data object clean rooms from the metastore. The caller must be a metastore admin or
@@ -1328,7 +1756,7 @@ class ProvidersAPI:
         res = self._api.do('GET', f'/api/2.1/unity-catalog/providers/{name}', headers=headers)
         return ProviderInfo.from_dict(res)
 
-    def list(self, *, data_provider_global_metastore_id: Optional[str] = None) -> Iterator['ProviderInfo']:
+    def list(self, *, data_provider_global_metastore_id: Optional[str] = None) -> Iterator[ProviderInfo]:
         """List providers.
         
         Gets an array of available authentication providers. The caller must either be a metastore admin or
@@ -1350,7 +1778,7 @@ class ProvidersAPI:
         parsed = ListProvidersResponse.from_dict(json).providers
         return parsed if parsed is not None else []
 
-    def list_shares(self, name: str) -> Iterator['ProviderShare']:
+    def list_shares(self, name: str) -> Iterator[ProviderShare]:
         """List shares by Provider.
         
         Gets an array of a specified provider's shares within the metastore where:
@@ -1546,7 +1974,7 @@ class RecipientsAPI:
         res = self._api.do('GET', f'/api/2.1/unity-catalog/recipients/{name}', headers=headers)
         return RecipientInfo.from_dict(res)
 
-    def list(self, *, data_recipient_global_metastore_id: Optional[str] = None) -> Iterator['RecipientInfo']:
+    def list(self, *, data_recipient_global_metastore_id: Optional[str] = None) -> Iterator[RecipientInfo]:
         """List share recipients.
         
         Gets an array of all share recipients within the current metastore where:
@@ -1712,7 +2140,7 @@ class SharesAPI:
         res = self._api.do('GET', f'/api/2.1/unity-catalog/shares/{name}', query=query, headers=headers)
         return ShareInfo.from_dict(res)
 
-    def list(self) -> Iterator['ShareInfo']:
+    def list(self) -> Iterator[ShareInfo]:
         """List shares.
         
         Gets an array of data object shares from the metastore. The caller must be a metastore admin or the
