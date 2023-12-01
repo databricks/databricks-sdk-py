@@ -14,6 +14,7 @@ w. # press <TAB> for autocompletion
 
 The conventional name for the variable that holds the workspace-level client of the Databricks SDK for Python is `w`, which is shorthand for `workspace`.
 
+(notebook-native-authentication)=
 ## Notebook-native authentication
 
 If you initialise `WorkspaceClient` without any arguments, credentials will be picked up automatically from the notebook context. 
@@ -23,6 +24,7 @@ If the same code is run outside the notebook environment, like CI/CD, you have t
 
 `databricks.sdk.AccountClient` does not support notebook-native authentication.
 
+(default-authentication-flow)=
 ## Default authentication flow
 
 If you run the [Databricks Terraform Provider](https://registry.terraform.io/providers/databrickslabs/databricks/latest),
@@ -31,7 +33,7 @@ or applications that target the Databricks SDKs for other languages, most likely
 By default, the Databricks SDK for Python tries the following [authentication](https://docs.databricks.com/dev-tools/auth.html) methods,
 in the following order, until it succeeds:
 
-1. [Databricks native authentication](#databricks-native-authentication)
+1. [Databricks native authentication](#notebook-native-authentication)
 2. [Azure native authentication](#azure-native-authentication)
 4. If the SDK is unsuccessful at this point, it returns an authentication error and stops running.
 
@@ -73,6 +75,7 @@ from databricks.sdk import WorkspaceClient
 w = WorkspaceClient(host=input('Databricks Workspace URL: '), token=input('Token: '))
 ```
 
+(azure-native-authentication)=
 ## Azure native authentication
 
 By default, the Databricks SDK for Python first tries Azure client secret authentication (`auth_type='azure-client-secret'` argument). If the SDK is unsuccessful, it then tries Azure CLI authentication (`auth_type='azure-cli'` argument). See [Manage service principals](https://learn.microsoft.com/azure/databricks/administration-guide/users-groups/service-principals).
@@ -106,7 +109,7 @@ w = WorkspaceClient(host=input('Databricks Workspace URL: '),
 
 ## Overriding `.databrickscfg`
 
-For [Databricks native authentication](#databricks-native-authentication), you can override the default behavior for using `.databrickscfg` as follows:
+For [Databricks native authentication](#notebook-native-authentication), you can override the default behavior for using `.databrickscfg` as follows:
 
 | Argument      | Description | Environment variable |
 |---------------|-------------|----------------------|

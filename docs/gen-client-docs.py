@@ -1,16 +1,8 @@
 #!env python3
-import collections
-import inspect
-import json
 import os.path
 from dataclasses import dataclass
-from pathlib import Path
-
-from databricks.sdk import AccountClient, WorkspaceClient
-from databricks.sdk.core import credentials_provider
 
 __dir__ = os.path.dirname(__file__)
-__examples__ = Path(f'{__dir__}/../examples').absolute()
 
 
 @dataclass
@@ -84,12 +76,21 @@ class Generator:
 
     def _write_client_package_doc(self, pkg: Package):
         title = f'``{pkg.name}``: {pkg.label}'
+        has_mixin = os.path.exists(f'{__dir__}/../databricks/sdk/mixins/{pkg.name}.py')
         with open(f'{__dir__}/autogen/{pkg.name}.rst', 'w') as f:
             f.write(f'''
 {title}
 {'=' * len(title)}
+
+{pkg.description}
             
 .. automodule:: databricks.sdk.service.{pkg.name}
+   :members:
+   :undoc-members:
+''')
+            if has_mixin:
+                f.write(f'''
+.. automodule:: databricks.sdk.mixins.{pkg.name}
    :members:
    :undoc-members:
 ''')
@@ -118,14 +119,7 @@ Reference
    :undoc-members:
 ''')
 
+
 if __name__ == '__main__':
-
-    @credentials_provider('noop', [])
-    def noop_credentials(_: any):
-        return lambda: {}
-
     gen = Generator()
-
     gen.write_reference()
-    gen.write_client_reference('``WorkspaceClient``', 'databricks.sdk.WorkspaceClient', 'workspace-client')
-    gen.write_client_reference('``AccountClient``', 'databricks.sdk.AccountClient', 'account-client')
