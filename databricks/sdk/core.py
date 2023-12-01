@@ -652,39 +652,6 @@ class ConfigAttribute:
 
 
 class Config:
-    """The configuration object for the Databricks REST API clients.
-
-    This object is where you configure the workspace or account to connect to, as well as
-    authentication configuration.
-
-    If no parameters are specified, the configuration is loaded from environment variables or
-    from the DEFAULT profile in the .databrickscfg file in the user's home directory.
-
-    :param host: The host to connect to. For a workspace client, this should be your workspace URL, like
-        https://dbc-01234567-89ab.cloud.databricks.com, https://adb-12345678910.1.azuredatabricks.net,
-        or https://012345678910.1.gcp.databricks.com.
-        For an account client, this should be the URL of the account management API, like
-        https://accounts.cloud.databricks.com, https://accounts.azuredatabricks.net, or
-        https://accounts.gcp.databricks.com.
-    :param account_id: The account ID to connect to. This is only used for account clients.
-    :param token: The Databricks personal access token to use for authentication. This is only used for workspace
-        clients.
-    :param username: The username to use for basic authentication.
-    :param password: The password to use for basic authentication.
-    :param client_id: The client ID to use for Databricks OAuth M2M authentication.
-    :param client_secret: The client secret to use for Databricks OAuth M2M authentication.
-    :param profile: The profile to use for Databricks CLI authentication.
-    :param config_file: The path to the Databricks CLI configuration file.
-    :param google_service_account: The Google service account to impersonate for Google ID authentication.
-    :param google_credentials: The path to the Google service account credentials file to use for Google Credentials
-        authentication. This can also be the actual JSON content of the credentials file.
-    :param azure_workspace_resource_id: The Azure workspace resource ID to use for Azure authentication.
-    :param azure_use_msi: Whether to use Managed Service Identity (MSI) for Azure authentication.
-    :param azure_client_id: The Azure Entra ID client ID to use for Azure OAuth M2M authentication.
-    :param azure_client_secret: The Azure Entra ID client secret to use for Azure OAuth M2M authentication.
-    :param azure_tenant_id: The Azure tenant ID to use for Azure authentication.
-    """
-
     host: str = ConfigAttribute(env='DATABRICKS_HOST')
     account_id: str = ConfigAttribute(env='DATABRICKS_ACCOUNT_ID')
     token: str = ConfigAttribute(env='DATABRICKS_TOKEN', auth='pat', sensitive=True)
