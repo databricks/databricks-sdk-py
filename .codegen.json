@@ -26,6 +26,7 @@
       "pip install '.[dev]'"
     ],
     "post_generate": [
+      "pytest -m 'not integration' --cov=databricks --cov-report html tests",
       "pip install .",
       "python docs/gen-client-docs.py"
     ]
