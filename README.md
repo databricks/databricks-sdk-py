@@ -26,7 +26,6 @@ The SDK's internal HTTP client is robust and handles failures on different level
 - [Getting started](#getting-started)
 - [Code examples](#code-examples)
 - [Authentication](#authentication)
-- [Code examples](#code-examples)
 - [Long-running operations](#long-running-operations)
 - [Paginated responses](#paginated-responses)
 - [Single-sign-on with OAuth](#single-sign-on-sso-with-oauth)
@@ -34,7 +33,7 @@ The SDK's internal HTTP client is robust and handles failures on different level
 - [Integration with `dbutils`](#interaction-with-dbutils)
 - [Interface stability](#interface-stability)
 
-## Getting started
+## Getting started<a id="getting-started"></a>
 
 1. Please install Databricks SDK for Python via `pip install databricks-sdk` and instantiate `WorkspaceClient`:
 
@@ -47,59 +46,21 @@ for c in w.clusters.list():
 
 Databricks SDK for Python is compatible with Python 3.7 _(until [June 2023](https://devguide.python.org/versions/))_, 3.8, 3.9, 3.10, and 3.11.
 
-## Code examples
+## Code examples<a id="code-examples"></a>
 
-Please checkout [custom credentials provider](https://github.com/databricks/databricks-sdk-py/tree/main/examples/custom_auth.py), 
-[OAuth with Flask](https://github.com/databricks/databricks-sdk-py/tree/main/examples/flask_app_with_oauth.py), 
-[Last job runs](https://github.com/databricks/databricks-sdk-py/tree/main/examples/last_job_runs.py), 
-[Starting job and waiting](https://github.com/databricks/databricks-sdk-py/tree/main/examples/starting_job_and_waiting.py) examples. You can also dig deeper into different services, like
-[alerts](https://github.com/databricks/databricks-sdk-py/tree/main/examples/alerts), 
-[billable_usage](https://github.com/databricks/databricks-sdk-py/tree/main/examples/billable_usage), 
-[catalogs](https://github.com/databricks/databricks-sdk-py/tree/main/examples/catalogs), 
-[cluster_policies](https://github.com/databricks/databricks-sdk-py/tree/main/examples/cluster_policies), 
-[clusters](https://github.com/databricks/databricks-sdk-py/tree/main/examples/clusters), 
-[credentials](https://github.com/databricks/databricks-sdk-py/tree/main/examples/credentials), 
-[current_user](https://github.com/databricks/databricks-sdk-py/tree/main/examples/current_user), 
-[dashboards](https://github.com/databricks/databricks-sdk-py/tree/main/examples/dashboards), 
-[data_sources](https://github.com/databricks/databricks-sdk-py/tree/main/examples/data_sources), 
-[databricks](https://github.com/databricks/databricks-sdk-py/tree/main/examples/databricks), 
-[encryption_keys](https://github.com/databricks/databricks-sdk-py/tree/main/examples/encryption_keys), 
-[experiments](https://github.com/databricks/databricks-sdk-py/tree/main/examples/experiments), 
-[external_locations](https://github.com/databricks/databricks-sdk-py/tree/main/examples/external_locations), 
-[git_credentials](https://github.com/databricks/databricks-sdk-py/tree/main/examples/git_credentials), 
-[global_init_scripts](https://github.com/databricks/databricks-sdk-py/tree/main/examples/global_init_scripts), 
-[groups](https://github.com/databricks/databricks-sdk-py/tree/main/examples/groups), 
-[instance_pools](https://github.com/databricks/databricks-sdk-py/tree/main/examples/instance_pools), 
-[instance_profiles](https://github.com/databricks/databricks-sdk-py/tree/main/examples/instance_profiles), 
-[ip_access_lists](https://github.com/databricks/databricks-sdk-py/tree/main/examples/ip_access_lists), 
-[jobs](https://github.com/databricks/databricks-sdk-py/tree/main/examples/jobs), 
-[libraries](https://github.com/databricks/databricks-sdk-py/tree/main/examples/libraries), 
-[local_browser_oauth.py](https://github.com/databricks/databricks-sdk-py/tree/main/examples/local_browser_oauth.py), 
-[log_delivery](https://github.com/databricks/databricks-sdk-py/tree/main/examples/log_delivery), 
-[metastores](https://github.com/databricks/databricks-sdk-py/tree/main/examples/metastores), 
-[model_registry](https://github.com/databricks/databricks-sdk-py/tree/main/examples/model_registry), 
-[networks](https://github.com/databricks/databricks-sdk-py/tree/main/examples/networks), 
-[permissions](https://github.com/databricks/databricks-sdk-py/tree/main/examples/permissions), 
-[pipelines](https://github.com/databricks/databricks-sdk-py/tree/main/examples/pipelines), 
-[private_access](https://github.com/databricks/databricks-sdk-py/tree/main/examples/private_access), 
-[queries](https://github.com/databricks/databricks-sdk-py/tree/main/examples/queries), 
-[recipients](https://github.com/databricks/databricks-sdk-py/tree/main/examples/recipients), 
-[repos](https://github.com/databricks/databricks-sdk-py/tree/main/examples/repos), 
-[schemas](https://github.com/databricks/databricks-sdk-py/tree/main/examples/schemas), 
-[secrets](https://github.com/databricks/databricks-sdk-py/tree/main/examples/secrets), 
-[service_principals](https://github.com/databricks/databricks-sdk-py/tree/main/examples/service_principals), 
-[storage](https://github.com/databricks/databricks-sdk-py/tree/main/examples/storage), 
-[storage_credentials](https://github.com/databricks/databricks-sdk-py/tree/main/examples/storage_credentials), 
-[tokens](https://github.com/databricks/databricks-sdk-py/tree/main/examples/tokens), 
-[users](https://github.com/databricks/databricks-sdk-py/tree/main/examples/users), 
-[vpc_endpoints](https://github.com/databricks/databricks-sdk-py/tree/main/examples/vpc_endpoints), 
-[warehouses](https://github.com/databricks/databricks-sdk-py/tree/main/examples/warehouses), 
-[workspace](https://github.com/databricks/databricks-sdk-py/tree/main/examples/workspace), 
-[workspace_assignment](https://github.com/databricks/databricks-sdk-py/tree/main/examples/workspace_assignment), 
-[workspace_conf](https://github.com/databricks/databricks-sdk-py/tree/main/examples/workspace_conf), 
-and [workspaces](https://github.com/databricks/databricks-sdk-py/tree/main/examples/workspaces).
+The Databricks SDK for Python comes with a number of examples demonstrating how to use the library for various common use-cases, including
 
-## Authentication
+* [Using the SDK with OAuth from a webserver](https://github.com/databricks/databricks-sdk-py/blob/main/examples/flask_app_with_oauth.py)
+* [Using long-running operations](https://github.com/databricks/databricks-sdk-py/blob/main/examples/starting_job_and_waiting.py)
+* [Authenticating a client app using OAuth](https://github.com/databricks/databricks-sdk-py/blob/main/examples/local_browser_oauth.py)
+
+These examples and more are located in the [`examples/` directory of the Github repository](https://github.com/databricks/databricks-sdk-py/tree/main/examples).
+
+Some other examples of using the SDK include:
+* [Unity Catalog Automated Migration](https://github.com/databricks/ucx) heavily relies on Python SDK for working with Databricks APIs.
+* [ip-access-list-analyzer](https://github.com/alexott/databricks-playground/tree/main/ip-access-list-analyzer) checks & prunes invalid entries from IP Access Lists.
+
+## Authentication<a id="authentication"></a>
 
 If you use Databricks [configuration profiles](https://docs.databricks.com/dev-tools/auth.html#configuration-profiles)
 or Databricks-specific [environment variables](https://docs.databricks.com/dev-tools/auth.html#environment-variables)
@@ -269,11 +230,7 @@ w = WorkspaceClient(debug_headers=True)
 # Now call the Databricks workspace APIs as desired...
 ```
 
-## Code examples
-
-To find code examples that demonstrate how to call the Databricks SDK for Python, see the top-level [examples](/examples) folder within this repository
-
-## Long-running operations
+## Long-running operations<a id="long-running-operations"></a>
 
 When you invoke a long-running operation, the SDK provides a high-level API to _trigger_ these operations and _wait_ for the related entities
 to reach the correct state or return the error message in case of failure. All long-running operations return generic `Wait` instance with `result()`
@@ -370,7 +327,7 @@ run = waiter.result(timeout=datetime.timedelta(minutes=15),
 logging.info(f'job finished: {run.run_page_url}')
 ```
 
-## Paginated responses
+## Paginated responses<a id="paginated-responses"></a>
 
 On the platform side the Databricks APIs have different wait to deal with pagination:
 * Some APIs follow the offset-plus-limit pagination
@@ -427,7 +384,7 @@ for line in sorted(summary, key=lambda s: s['last_finished'], reverse=True):
     logging.info(f'Latest: {line}')
 ```
 
-## Single-Sign-On (SSO) with OAuth
+## Single-Sign-On (SSO) with OAuth<a id="single-sign-on-sso-with-oauth"></a>
 
 ### Authorization Code flow with PKCE
 
@@ -540,7 +497,7 @@ logging.info(f'Created new custom app: '
              f'--client_secret {custom_app.client_secret}')
 ```
 
-## Logging
+## Logging<a id="logging"></a>
 
 The Databricks SDK for Python seamlessly integrates with the standard [Logging facility for Python](https://docs.python.org/3/library/logging.html).
 This allows developers to easily enable and customize logging for their Databricks Python projects.
@@ -588,7 +545,7 @@ Overall, the logging capabilities provided by the Databricks SDK for Python can 
 Databricks Python projects. Developers can use the various logging methods and configuration options provided by the SDK to customize
 the logging output to their specific needs.
 
-## Interaction with `dbutils`
+## Interaction with `dbutils`<a id="interaction-with-dbutils"></a>
 
 You can use the client-side implementation of [`dbutils`](https://docs.databricks.com/dev-tools/databricks-utils.html) by accessing `dbutils` property on the `WorkspaceClient`.
 Most of the `dbutils.fs` operations and `dbutils.secrets` are implemented natively in Python within Databricks SDK. Non-SDK implementations still require a Databricks cluster,
@@ -615,7 +572,7 @@ for secret_scope in dbutils.secrets.listScopes():
         print(f'found {secret_metadata.key} secret in {secret_scope.name} scope')
 ```
 
-## Interface stability
+## Interface stability<a id="interface-stability"></a>
 
 Databricks is actively working on stabilizing the Databricks SDK for Python's interfaces. 
 API clients for all services are generated from specification files that are synchronized from the main platform. 
