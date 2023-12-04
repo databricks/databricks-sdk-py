@@ -944,7 +944,7 @@ class AccountClient:
                                    product_version=product_version)
         self.config = config.copy()
         self.api_client = client.ApiClient(self.config)
-        self.account_access_control: AccountAccessControlAPI = AccountAccessControlAPI(self.api_client)
+        self.access_control: AccountAccessControlAPI = AccountAccessControlAPI(self.api_client)
         """These APIs manage access rules on resources in an account. Currently, only grant rules are
         supported. A grant rule specifies a role assigned to a set of principals. A list of rules
         attached to a resource is called a rule set."""
@@ -984,7 +984,7 @@ class AccountClient:
         is on the E2 version of the platform. If you have an older workspace, it might not be on the
         E2 version of the platform. If you are not sure, contact your Databricks representative."""
 
-        self.account_groups: AccountGroupsAPI = AccountGroupsAPI(self.api_client)
+        self.groups: AccountGroupsAPI = AccountGroupsAPI(self.api_client)
         """Groups simplify identity management, making it easier to assign access to Databricks
         account, data, and other securable objects.
         
@@ -993,7 +993,7 @@ class AccountClient:
         be assigned as members of groups, and members inherit permissions that are assigned to their
         group."""
 
-        self.account_ip_access_lists: AccountIpAccessListsAPI = AccountIpAccessListsAPI(self.api_client)
+        self.ip_access_lists: AccountIpAccessListsAPI = AccountIpAccessListsAPI(self.api_client)
         """The Accounts IP Access List API enables account admins to configure IP access lists for
         access to the account console.
         
@@ -1069,11 +1069,11 @@ class AccountClient:
         [Usage page]: https://docs.databricks.com/administration-guide/account-settings/usage.html
         [create a new AWS S3 bucket]: https://docs.databricks.com/administration-guide/account-api/aws-storage.html"""
 
-        self.account_metastore_assignments: AccountMetastoreAssignmentsAPI = AccountMetastoreAssignmentsAPI(
+        self.metastore_assignments: AccountMetastoreAssignmentsAPI = AccountMetastoreAssignmentsAPI(
             self.api_client)
         """These APIs manage metastore assignments to a workspace."""
 
-        self.account_metastores: AccountMetastoresAPI = AccountMetastoresAPI(self.api_client)
+        self.metastores: AccountMetastoresAPI = AccountMetastoresAPI(self.api_client)
         """These APIs manage Unity Catalog metastores for an account. A metastore contains catalogs
         that can be associated with workspaces"""
 
@@ -1087,7 +1087,7 @@ class AccountClient:
         
         [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security"""
 
-        self.account_network_policy: AccountNetworkPolicyAPI = AccountNetworkPolicyAPI(self.api_client)
+        self.network_policy: AccountNetworkPolicyAPI = AccountNetworkPolicyAPI(self.api_client)
         """Network policy is a set of rules that defines what can be accessed from your Databricks
         network. E.g.: You can choose to block your SQL UDF to access internet from your Databricks
         serverless clusters.
@@ -1129,15 +1129,14 @@ class AccountClient:
         [Authentication using OAuth tokens for service principals]: https://docs.databricks.com/dev-tools/authentication-oauth.html
         [Databricks Terraform Provider]: https://github.com/databricks/terraform-provider-databricks/blob/master/docs/index.md#authenticating-with-service-principal"""
 
-        self.account_service_principals: AccountServicePrincipalsAPI = AccountServicePrincipalsAPI(
-            self.api_client)
+        self.service_principals: AccountServicePrincipalsAPI = AccountServicePrincipalsAPI(self.api_client)
         """Identities for use with jobs, automated tools, and systems such as scripts, apps, and CI/CD
         platforms. Databricks recommends creating service principals to run production jobs or
         modify production data. If all processes that act on production data run with service
         principals, interactive users do not need any write, delete, or modify privileges in
         production. This eliminates the risk of a user overwriting production data by accident."""
 
-        self.account_settings: AccountSettingsAPI = AccountSettingsAPI(self.api_client)
+        self.settings: AccountSettingsAPI = AccountSettingsAPI(self.api_client)
         """The Personal Compute enablement setting lets you control which users can use the Personal
         Compute default policy to create compute resources. By default all users in all workspaces
         have access (ON), but you can change the setting to instead let individual workspaces
@@ -1154,11 +1153,10 @@ class AccountClient:
         data. A storage configuration encapsulates this bucket information, and its ID is used when
         creating a new workspace."""
 
-        self.account_storage_credentials: AccountStorageCredentialsAPI = AccountStorageCredentialsAPI(
-            self.api_client)
+        self.storage_credentials: AccountStorageCredentialsAPI = AccountStorageCredentialsAPI(self.api_client)
         """These APIs manage storage credentials for a particular metastore."""
 
-        self.account_users: AccountUsersAPI = AccountUsersAPI(self.api_client)
+        self.users: AccountUsersAPI = AccountUsersAPI(self.api_client)
         """User identities recognized by Databricks and represented by email addresses.
         
         Databricks recommends using SCIM provisioning to sync users and groups automatically from

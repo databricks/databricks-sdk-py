@@ -84,6 +84,6 @@ class AccountClient:
         self.api_client = client.ApiClient(self.config)
 
         {{- range .Services}}{{if .IsAccounts}}
-        self.{{.SnakeName}}: {{template "api" .}} = {{template "api" .}}(self.api_client){{if .Description}}
+        self.{{(.TrimPrefix "account").SnakeName}}: {{template "api" .}} = {{template "api" .}}(self.api_client){{if .Description}}
         """{{.Comment "        " 100}}"""{{end}}
         {{end -}}{{end}}
