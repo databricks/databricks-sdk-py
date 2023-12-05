@@ -44,8 +44,17 @@ for c in w.clusters.list():
     print(c.cluster_name)
 ```
 
-Databricks SDK for Python is compatible with Python 3.7 _(until [June 2023](https://devguide.python.org/versions/))_, 3.8, 3.9, 3.10, and 3.11.
+Databricks SDK for Python is compatible with Python 3.7 _(until [June 2023](https://devguide.python.org/versions/))_, 3.8, 3.9, 3.10, and 3.11.  
+**Note:** Databricks Runtime starting from version 13.1 includes a bundled version of the Python SDK.  
+It is highly recommended to upgrade to the latest version which you can do by running the following in a notebook cell:
 
+```python
+%pip install --upgrade databricks-sdk
+```
+followed by
+```python
+dbutils.library.restartPython()
+```
 ## Code examples<a id="code-examples"></a>
 
 The Databricks SDK for Python comes with a number of examples demonstrating how to use the library for various common use-cases, including
