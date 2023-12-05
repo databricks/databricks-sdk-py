@@ -13,7 +13,7 @@ import re
 import subprocess
 import sys
 import urllib.parse
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from json import JSONDecodeError
 from types import TracebackType
 from typing import (Any, BinaryIO, Callable, Dict, Iterable, Iterator, List,
@@ -346,13 +346,7 @@ class CliTokenSource(Refreshable):
 
     @staticmethod
     def _parse_expiry(expiry: str) -> datetime:
-        for fmt in ("%Y-%m-%d %H:%M:%S.%f", "%Y-%m-%d %H:%M:%S", "%Y-%m-%dT%H:%M:%S.%f%z"):
-            try:
-                return datetime.strptime(expiry, fmt)
-            except ValueError as e:
-                last_e = e
-        if last_e:
-            raise last_e
+        return datetime.fromisoformat(expiry)
 
     def refresh(self) -> Token:
         try:
