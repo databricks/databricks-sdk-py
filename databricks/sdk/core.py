@@ -21,7 +21,6 @@ from typing import (Any, BinaryIO, Callable, Dict, Iterable, Iterator, List,
 
 import google.auth
 import requests
-from dateutil import parser as date_parser
 from google.auth import impersonated_credentials
 from google.auth.transport.requests import Request
 from google.oauth2 import service_account
@@ -347,7 +346,14 @@ class CliTokenSource(Refreshable):
 
     @staticmethod
     def _parse_expiry(expiry: str) -> datetime:
-        return date_parser.parse(expiry)
+        expiry = expiry.rstrip("Z").split(".")[0]
+        for fmt in ("%Y-%m-%d %H:%M:%S", "%Y-%m-%dT%H:%M:%S"):
+            try:
+                return datetime.strptime(expiry, fmt)
+            except ValueError as e:
+                last_e = e
+        if last_e:
+            raise last_e
 
     def refresh(self) -> Token:
         try:
