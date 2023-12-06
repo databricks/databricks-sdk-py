@@ -13,7 +13,7 @@ import re
 import subprocess
 import sys
 import urllib.parse
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 from json import JSONDecodeError
 from types import TracebackType
 from typing import (Any, BinaryIO, Callable, Dict, Iterable, Iterator, List,
@@ -21,6 +21,7 @@ from typing import (Any, BinaryIO, Callable, Dict, Iterable, Iterator, List,
 
 import google.auth
 import requests
+from dateutil import parser as date_parser
 from google.auth import impersonated_credentials
 from google.auth.transport.requests import Request
 from google.oauth2 import service_account
@@ -346,7 +347,7 @@ class CliTokenSource(Refreshable):
 
     @staticmethod
     def _parse_expiry(expiry: str) -> datetime:
-        return datetime.fromisoformat(expiry)
+        return date_parser.parse(expiry)
 
     def refresh(self) -> Token:
         try:
