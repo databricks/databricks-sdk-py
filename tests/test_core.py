@@ -6,6 +6,7 @@ import platform
 import random
 import string
 import typing
+from datetime import datetime
 from http.server import BaseHTTPRequestHandler
 from typing import Iterator, List
 
@@ -52,10 +53,12 @@ def test_databricks_cli_token_source_not_installed(config, monkeypatch):
         DatabricksCliTokenSource(config)
 
 
-def test_databricks_cli_token_parse_expiry():
-    CliTokenSource._parse_expiry("2023-12-01T15:19:48.007742617Z")
-    CliTokenSource._parse_expiry("2023-12-05T15:59:01.40081+11:00")
-    CliTokenSource._parse_expiry("2023-12-06 10:06:05")
+@pytest.mark.parametrize("date_string,expected",
+                         [("2023-12-01T15:19:48.007742617Z", datetime(2023, 12, 1, 15, 19, 48)),
+                          ("2023-12-05T15:59:01.40081+11:00", datetime(2023, 12, 5, 15, 59, 1)),
+                          ("2023-12-06 10:06:05", datetime(2023, 12, 6, 10, 6, 5))])
+def test_databricks_cli_token_parse_expiry(date_string, expected):
+    assert CliTokenSource._parse_expiry(date_string) == expected
 
 
 def write_small_dummy_executable(path: pathlib.Path):
