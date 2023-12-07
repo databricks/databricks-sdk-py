@@ -346,7 +346,8 @@ class CliTokenSource(Refreshable):
 
     @staticmethod
     def _parse_expiry(expiry: str) -> datetime:
-        for fmt in ("%Y-%m-%d %H:%M:%S.%f", "%Y-%m-%d %H:%M:%S", "%Y-%m-%dT%H:%M:%S.%f%z"):
+        expiry = expiry.rstrip("Z").split(".")[0]
+        for fmt in ("%Y-%m-%d %H:%M:%S", "%Y-%m-%dT%H:%M:%S"):
             try:
                 return datetime.strptime(expiry, fmt)
             except ValueError as e:
