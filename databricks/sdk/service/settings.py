@@ -15,26 +15,6 @@ _LOG = logging.getLogger('databricks.sdk')
 
 
 @dataclass
-class AccountNetworkPolicyMessage:
-    serverless_internet_access_enabled: Optional[bool] = None
-    """Whether or not serverless UDF can access the internet. When false, access to the internet will
-    be blocked from serverless clusters. Trusted traffic required by clusters for basic
-    functionality will not be affected."""
-
-    def as_dict(self) -> dict:
-        """Serializes the AccountNetworkPolicyMessage into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.serverless_internet_access_enabled is not None:
-            body['serverless_internet_access_enabled'] = self.serverless_internet_access_enabled
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AccountNetworkPolicyMessage:
-        """Deserializes the AccountNetworkPolicyMessage from a dictionary."""
-        return cls(serverless_internet_access_enabled=d.get('serverless_internet_access_enabled', None))
-
-
-@dataclass
 class CreateIpAccessList:
     label: str
     """Label for the IP access list. This **cannot** be empty."""
@@ -275,28 +255,6 @@ class DefaultNamespaceSetting:
         return cls(etag=d.get('etag', None),
                    namespace=_from_dict(d, 'namespace', StringMessage),
                    setting_name=d.get('setting_name', None))
-
-
-@dataclass
-class DeleteAccountNetworkPolicyResponse:
-    etag: str
-    """etag used for versioning. The response is at least as fresh as the eTag provided. This is used
-    for optimistic concurrency control as a way to help prevent simultaneous writes of a setting
-    overwriting each other. It is strongly suggested that systems make use of the etag in the read
-    -> update pattern to perform setting updates in order to avoid race conditions. That is, get an
-    etag from a GET request, and pass it with the PATCH request to identify the setting version you
-    are updating."""
-
-    def as_dict(self) -> dict:
-        """Serializes the DeleteAccountNetworkPolicyResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.etag is not None: body['etag'] = self.etag
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteAccountNetworkPolicyResponse:
-        """Deserializes the DeleteAccountNetworkPolicyResponse from a dictionary."""
-        return cls(etag=d.get('etag', None))
 
 
 @dataclass
@@ -1570,94 +1528,6 @@ class AccountIpAccessListsAPI:
                      f'/api/2.0/accounts/{self._api.account_id}/ip-access-lists/{ip_access_list_id}',
                      body=body,
                      headers=headers)
-
-
-class AccountNetworkPolicyAPI:
-    """Network policy is a set of rules that defines what can be accessed from your Databricks network. E.g.: You
-    can choose to block your SQL UDF to access internet from your Databricks serverless clusters.
-    
-    There is only one instance of this setting per account. Since this setting has a default value, this
-    setting is present on all accounts even though it's never set on a given account. Deletion reverts the
-    value of the setting back to the default value."""
-
-    def __init__(self, api_client):
-        self._api = api_client
-
-    def delete_account_network_policy(self, etag: str) -> DeleteAccountNetworkPolicyResponse:
-        """Delete Account Network Policy.
-        
-        Reverts back all the account network policies back to default.
-        
-        :param etag: str
-          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
-          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
-          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
-          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
-          request, and pass it with the DELETE request to identify the rule set version you are deleting.
-        
-        :returns: :class:`DeleteAccountNetworkPolicyResponse`
-        """
-
-        query = {}
-        if etag is not None: query['etag'] = etag
-        headers = {'Accept': 'application/json', }
-        res = self._api.do(
-            'DELETE',
-            f'/api/2.0/accounts/{self._api.account_id}/settings/types/network_policy/names/default',
-            query=query,
-            headers=headers)
-        return DeleteAccountNetworkPolicyResponse.from_dict(res)
-
-    def read_account_network_policy(self, etag: str) -> AccountNetworkPolicyMessage:
-        """Get Account Network Policy.
-        
-        Gets the value of Account level Network Policy.
-        
-        :param etag: str
-          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
-          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
-          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
-          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
-          request, and pass it with the DELETE request to identify the rule set version you are deleting.
-        
-        :returns: :class:`AccountNetworkPolicyMessage`
-        """
-
-        query = {}
-        if etag is not None: query['etag'] = etag
-        headers = {'Accept': 'application/json', }
-        res = self._api.do(
-            'GET',
-            f'/api/2.0/accounts/{self._api.account_id}/settings/types/network_policy/names/default',
-            query=query,
-            headers=headers)
-        return AccountNetworkPolicyMessage.from_dict(res)
-
-    def update_account_network_policy(
-            self,
-            *,
-            allow_missing: Optional[bool] = None,
-            setting: Optional[AccountNetworkPolicyMessage] = None) -> AccountNetworkPolicyMessage:
-        """Update Account Network Policy.
-        
-        Updates the policy content of Account level Network Policy.
-        
-        :param allow_missing: bool (optional)
-          This should always be set to true for Settings RPCs. Added for AIP compliance.
-        :param setting: :class:`AccountNetworkPolicyMessage` (optional)
-        
-        :returns: :class:`AccountNetworkPolicyMessage`
-        """
-        body = {}
-        if allow_missing is not None: body['allow_missing'] = allow_missing
-        if setting is not None: body['setting'] = setting.as_dict()
-        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        res = self._api.do(
-            'PATCH',
-            f'/api/2.0/accounts/{self._api.account_id}/settings/types/network_policy/names/default',
-            body=body,
-            headers=headers)
-        return AccountNetworkPolicyMessage.from_dict(res)
 
 
 class AccountSettingsAPI:

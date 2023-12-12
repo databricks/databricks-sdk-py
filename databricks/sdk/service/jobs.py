@@ -8,7 +8,7 @@ import time
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Any, Callable, Dict, Iterator, List, Optional
+from typing import Callable, Dict, Iterator, List, Optional
 
 from ..errors import OperationFailed
 from ._internal import Wait, _enum, _from_dict, _repeated_dict
@@ -75,9 +75,6 @@ class BaseRun:
 
     cluster_spec: Optional[ClusterSpec] = None
     """A snapshot of the job’s cluster specification when this run was created."""
-
-    continuous: Optional[Continuous] = None
-    """The continuous trigger that triggered this run."""
 
     creator_user_name: Optional[str] = None
     """The creator user name. This field won’t be included in the response if the user has already
@@ -186,7 +183,6 @@ class BaseRun:
         if self.cleanup_duration is not None: body['cleanup_duration'] = self.cleanup_duration
         if self.cluster_instance: body['cluster_instance'] = self.cluster_instance.as_dict()
         if self.cluster_spec: body['cluster_spec'] = self.cluster_spec.as_dict()
-        if self.continuous: body['continuous'] = self.continuous.as_dict()
         if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
         if self.end_time is not None: body['end_time'] = self.end_time
         if self.execution_duration is not None: body['execution_duration'] = self.execution_duration
@@ -219,7 +215,6 @@ class BaseRun:
                    cleanup_duration=d.get('cleanup_duration', None),
                    cluster_instance=_from_dict(d, 'cluster_instance', ClusterInstance),
                    cluster_spec=_from_dict(d, 'cluster_spec', ClusterSpec),
-                   continuous=_from_dict(d, 'continuous', Continuous),
                    creator_user_name=d.get('creator_user_name', None),
                    end_time=d.get('end_time', None),
                    execution_duration=d.get('execution_duration', None),
@@ -2325,9 +2320,6 @@ class Run:
     cluster_spec: Optional[ClusterSpec] = None
     """A snapshot of the job’s cluster specification when this run was created."""
 
-    continuous: Optional[Continuous] = None
-    """The continuous trigger that triggered this run."""
-
     creator_user_name: Optional[str] = None
     """The creator user name. This field won’t be included in the response if the user has already
     been deleted."""
@@ -2438,7 +2430,6 @@ class Run:
         if self.cleanup_duration is not None: body['cleanup_duration'] = self.cleanup_duration
         if self.cluster_instance: body['cluster_instance'] = self.cluster_instance.as_dict()
         if self.cluster_spec: body['cluster_spec'] = self.cluster_spec.as_dict()
-        if self.continuous: body['continuous'] = self.continuous.as_dict()
         if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
         if self.end_time is not None: body['end_time'] = self.end_time
         if self.execution_duration is not None: body['execution_duration'] = self.execution_duration
@@ -2472,7 +2463,6 @@ class Run:
                    cleanup_duration=d.get('cleanup_duration', None),
                    cluster_instance=_from_dict(d, 'cluster_instance', ClusterInstance),
                    cluster_spec=_from_dict(d, 'cluster_spec', ClusterSpec),
-                   continuous=_from_dict(d, 'continuous', Continuous),
                    creator_user_name=d.get('creator_user_name', None),
                    end_time=d.get('end_time', None),
                    execution_duration=d.get('execution_duration', None),
@@ -2582,7 +2572,7 @@ class RunJobTask:
     job_id: int
     """ID of the job to trigger."""
 
-    job_parameters: Optional[Any] = None
+    job_parameters: Optional[Dict[str, str]] = None
     """Job-level parameters used to trigger the job."""
 
     def as_dict(self) -> dict:
@@ -3881,6 +3871,14 @@ class SubmitTask:
     python_wheel_task: Optional[PythonWheelTask] = None
     """If python_wheel_task, indicates that this job must execute a PythonWheel."""
 
+    run_if: Optional[RunIf] = None
+    """An optional value indicating the condition that determines whether the task should be run once
+    its dependencies have been completed. When omitted, defaults to `ALL_SUCCESS`. See
+    :method:jobs/create for a list of possible values."""
+
+    run_job_task: Optional[RunJobTask] = None
+    """If run_job_task, indicates that this job must execute another job."""
+
     spark_jar_task: Optional[SparkJarTask] = None
     """If spark_jar_task, indicates that this task must run a JAR."""
 
@@ -3929,6 +3927,8 @@ class SubmitTask:
         if self.notification_settings: body['notification_settings'] = self.notification_settings.as_dict()
         if self.pipeline_task: body['pipeline_task'] = self.pipeline_task.as_dict()
         if self.python_wheel_task: body['python_wheel_task'] = self.python_wheel_task.as_dict()
+        if self.run_if is not None: body['run_if'] = self.run_if.value
+        if self.run_job_task: body['run_job_task'] = self.run_job_task.as_dict()
         if self.spark_jar_task: body['spark_jar_task'] = self.spark_jar_task.as_dict()
         if self.spark_python_task: body['spark_python_task'] = self.spark_python_task.as_dict()
         if self.spark_submit_task: body['spark_submit_task'] = self.spark_submit_task.as_dict()
@@ -3952,6 +3952,8 @@ class SubmitTask:
                    notification_settings=_from_dict(d, 'notification_settings', TaskNotificationSettings),
                    pipeline_task=_from_dict(d, 'pipeline_task', PipelineTask),
                    python_wheel_task=_from_dict(d, 'python_wheel_task', PythonWheelTask),
+                   run_if=_enum(d, 'run_if', RunIf),
+                   run_job_task=_from_dict(d, 'run_job_task', RunJobTask),
                    spark_jar_task=_from_dict(d, 'spark_jar_task', SparkJarTask),
                    spark_python_task=_from_dict(d, 'spark_python_task', SparkPythonTask),
                    spark_submit_task=_from_dict(d, 'spark_submit_task', SparkSubmitTask),

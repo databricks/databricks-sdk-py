@@ -47,7 +47,6 @@ from databricks.sdk.service.provisioning import (CredentialsAPI,
                                                  WorkspacesAPI)
 from databricks.sdk.service.serving import AppsAPI, ServingEndpointsAPI
 from databricks.sdk.service.settings import (AccountIpAccessListsAPI,
-                                             AccountNetworkPolicyAPI,
                                              AccountSettingsAPI,
                                              CredentialsManagerAPI,
                                              IpAccessListsAPI,
@@ -667,10 +666,10 @@ class WorkspaceClient:
         serverless compute. This means the endpoints and associated compute resources are fully
         managed by Databricks and will not appear in your cloud account. A serving endpoint can
         consist of one or more MLflow models from the Databricks Model Registry, called served
-        models. A serving endpoint can have at most ten served models. You can configure traffic
-        settings to define how requests should be routed to your served models behind an endpoint.
+        entities. A serving endpoint can have at most ten served entities. You can configure traffic
+        settings to define how requests should be routed to your served entities behind an endpoint.
         Additionally, you can configure the scale of resources that should be applied to each served
-        model."""
+        entity."""
 
         self.settings: SettingsAPI = SettingsAPI(self.api_client)
         """The default namespace setting API allows users to configure the default namespace for a
@@ -1086,15 +1085,6 @@ class AccountClient:
         Link. See [configure serverless secure connectivity].
         
         [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security"""
-
-        self.network_policy: AccountNetworkPolicyAPI = AccountNetworkPolicyAPI(self.api_client)
-        """Network policy is a set of rules that defines what can be accessed from your Databricks
-        network. E.g.: You can choose to block your SQL UDF to access internet from your Databricks
-        serverless clusters.
-        
-        There is only one instance of this setting per account. Since this setting has a default
-        value, this setting is present on all accounts even though it's never set on a given
-        account. Deletion reverts the value of the setting back to the default value."""
 
         self.networks: NetworksAPI = NetworksAPI(self.api_client)
         """These APIs manage network configurations for customer-managed VPCs (optional). Its ID is
