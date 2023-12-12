@@ -514,6 +514,33 @@ class CatalogType(Enum):
 
 
 @dataclass
+class CloudflareApiToken:
+    access_key_id: str
+    """The Cloudflare access key id of the token."""
+
+    secret_access_key: str
+    """The secret access token generated for the access key id"""
+
+    account_id: str
+    """The account id associated with the API token."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CloudflareApiToken into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.access_key_id is not None: body['access_key_id'] = self.access_key_id
+        if self.account_id is not None: body['account_id'] = self.account_id
+        if self.secret_access_key is not None: body['secret_access_key'] = self.secret_access_key
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> CloudflareApiToken:
+        """Deserializes the CloudflareApiToken from a dictionary."""
+        return cls(access_key_id=d.get('access_key_id', None),
+                   account_id=d.get('account_id', None),
+                   secret_access_key=d.get('secret_access_key', None))
+
+
+@dataclass
 class ColumnInfo:
     comment: Optional[str] = None
     """User-provided free-form text description."""
@@ -1223,6 +1250,9 @@ class CreateStorageCredential:
     azure_service_principal: Optional[AzureServicePrincipal] = None
     """The Azure service principal configuration."""
 
+    cloudflare_api_token: Optional[CloudflareApiToken] = None
+    """The Cloudflare API token configuration."""
+
     comment: Optional[str] = None
     """Comment associated with the credential."""
 
@@ -1242,6 +1272,7 @@ class CreateStorageCredential:
         if self.azure_managed_identity: body['azure_managed_identity'] = self.azure_managed_identity.as_dict()
         if self.azure_service_principal:
             body['azure_service_principal'] = self.azure_service_principal.as_dict()
+        if self.cloudflare_api_token: body['cloudflare_api_token'] = self.cloudflare_api_token.as_dict()
         if self.comment is not None: body['comment'] = self.comment
         if self.databricks_gcp_service_account:
             body['databricks_gcp_service_account'] = self.databricks_gcp_service_account
@@ -1256,6 +1287,7 @@ class CreateStorageCredential:
         return cls(aws_iam_role=_from_dict(d, 'aws_iam_role', AwsIamRole),
                    azure_managed_identity=_from_dict(d, 'azure_managed_identity', AzureManagedIdentity),
                    azure_service_principal=_from_dict(d, 'azure_service_principal', AzureServicePrincipal),
+                   cloudflare_api_token=_from_dict(d, 'cloudflare_api_token', CloudflareApiToken),
                    comment=d.get('comment', None),
                    databricks_gcp_service_account=d.get('databricks_gcp_service_account', None),
                    name=d.get('name', None),
@@ -3163,6 +3195,9 @@ class StorageCredentialInfo:
     azure_service_principal: Optional[AzureServicePrincipal] = None
     """The Azure service principal configuration."""
 
+    cloudflare_api_token: Optional[CloudflareApiToken] = None
+    """The Cloudflare API token configuration."""
+
     comment: Optional[str] = None
     """Comment associated with the credential."""
 
@@ -3206,6 +3241,7 @@ class StorageCredentialInfo:
         if self.azure_managed_identity: body['azure_managed_identity'] = self.azure_managed_identity.as_dict()
         if self.azure_service_principal:
             body['azure_service_principal'] = self.azure_service_principal.as_dict()
+        if self.cloudflare_api_token: body['cloudflare_api_token'] = self.cloudflare_api_token.as_dict()
         if self.comment is not None: body['comment'] = self.comment
         if self.created_at is not None: body['created_at'] = self.created_at
         if self.created_by is not None: body['created_by'] = self.created_by
@@ -3228,6 +3264,7 @@ class StorageCredentialInfo:
         return cls(aws_iam_role=_from_dict(d, 'aws_iam_role', AwsIamRole),
                    azure_managed_identity=_from_dict(d, 'azure_managed_identity', AzureManagedIdentity),
                    azure_service_principal=_from_dict(d, 'azure_service_principal', AzureServicePrincipal),
+                   cloudflare_api_token=_from_dict(d, 'cloudflare_api_token', CloudflareApiToken),
                    comment=d.get('comment', None),
                    created_at=d.get('created_at', None),
                    created_by=d.get('created_by', None),
@@ -3582,7 +3619,10 @@ class UpdateCatalog:
     """Whether the current securable is accessible from all workspaces or a specific set of workspaces."""
 
     name: Optional[str] = None
-    """Name of catalog."""
+    """The name of the catalog."""
+
+    new_name: Optional[str] = None
+    """New name for the catalog."""
 
     owner: Optional[str] = None
     """Username of current owner of catalog."""
@@ -3598,6 +3638,7 @@ class UpdateCatalog:
             body['enable_predictive_optimization'] = self.enable_predictive_optimization.value
         if self.isolation_mode is not None: body['isolation_mode'] = self.isolation_mode.value
         if self.name is not None: body['name'] = self.name
+        if self.new_name is not None: body['new_name'] = self.new_name
         if self.owner is not None: body['owner'] = self.owner
         if self.properties: body['properties'] = self.properties
         return body
@@ -3610,20 +3651,24 @@ class UpdateCatalog:
                                                         EnablePredictiveOptimization),
                    isolation_mode=_enum(d, 'isolation_mode', IsolationMode),
                    name=d.get('name', None),
+                   new_name=d.get('new_name', None),
                    owner=d.get('owner', None),
                    properties=d.get('properties', None))
 
 
 @dataclass
 class UpdateConnection:
-    name: str
-    """Name of the connection."""
-
     options: Dict[str, str]
     """A map of key-value properties attached to the securable."""
 
+    name: Optional[str] = None
+    """Name of the connection."""
+
     name_arg: Optional[str] = None
     """Name of the connection."""
+
+    new_name: Optional[str] = None
+    """New name for the connection."""
 
     owner: Optional[str] = None
     """Username of current owner of the connection."""
@@ -3633,6 +3678,7 @@ class UpdateConnection:
         body = {}
         if self.name is not None: body['name'] = self.name
         if self.name_arg is not None: body['name_arg'] = self.name_arg
+        if self.new_name is not None: body['new_name'] = self.new_name
         if self.options: body['options'] = self.options
         if self.owner is not None: body['owner'] = self.owner
         return body
@@ -3642,6 +3688,7 @@ class UpdateConnection:
         """Deserializes the UpdateConnection from a dictionary."""
         return cls(name=d.get('name', None),
                    name_arg=d.get('name_arg', None),
+                   new_name=d.get('new_name', None),
                    options=d.get('options', None),
                    owner=d.get('owner', None))
 
@@ -3666,6 +3713,9 @@ class UpdateExternalLocation:
     name: Optional[str] = None
     """Name of the external location."""
 
+    new_name: Optional[str] = None
+    """New name for the external location."""
+
     owner: Optional[str] = None
     """The owner of the external location."""
 
@@ -3687,6 +3737,7 @@ class UpdateExternalLocation:
         if self.encryption_details: body['encryption_details'] = self.encryption_details.as_dict()
         if self.force is not None: body['force'] = self.force
         if self.name is not None: body['name'] = self.name
+        if self.new_name is not None: body['new_name'] = self.new_name
         if self.owner is not None: body['owner'] = self.owner
         if self.read_only is not None: body['read_only'] = self.read_only
         if self.skip_validation is not None: body['skip_validation'] = self.skip_validation
@@ -3702,6 +3753,7 @@ class UpdateExternalLocation:
                    encryption_details=_from_dict(d, 'encryption_details', EncryptionDetails),
                    force=d.get('force', None),
                    name=d.get('name', None),
+                   new_name=d.get('new_name', None),
                    owner=d.get('owner', None),
                    read_only=d.get('read_only', None),
                    skip_validation=d.get('skip_validation', None),
@@ -3748,6 +3800,9 @@ class UpdateMetastore:
     name: Optional[str] = None
     """The user-specified name of the metastore."""
 
+    new_name: Optional[str] = None
+    """New name for the metastore."""
+
     owner: Optional[str] = None
     """The owner of the metastore."""
 
@@ -3768,6 +3823,7 @@ class UpdateMetastore:
         if self.delta_sharing_scope is not None: body['delta_sharing_scope'] = self.delta_sharing_scope.value
         if self.id is not None: body['id'] = self.id
         if self.name is not None: body['name'] = self.name
+        if self.new_name is not None: body['new_name'] = self.new_name
         if self.owner is not None: body['owner'] = self.owner
         if self.privilege_model_version is not None:
             body['privilege_model_version'] = self.privilege_model_version
@@ -3784,6 +3840,7 @@ class UpdateMetastore:
                    delta_sharing_scope=_enum(d, 'delta_sharing_scope', UpdateMetastoreDeltaSharingScope),
                    id=d.get('id', None),
                    name=d.get('name', None),
+                   new_name=d.get('new_name', None),
                    owner=d.get('owner', None),
                    privilege_model_version=d.get('privilege_model_version', None),
                    storage_root_credential_id=d.get('storage_root_credential_id', None))
@@ -3888,6 +3945,9 @@ class UpdateRegisteredModelRequest:
     name: Optional[str] = None
     """The name of the registered model"""
 
+    new_name: Optional[str] = None
+    """New name for the registered model."""
+
     owner: Optional[str] = None
     """The identifier of the user who owns the registered model"""
 
@@ -3897,6 +3957,7 @@ class UpdateRegisteredModelRequest:
         if self.comment is not None: body['comment'] = self.comment
         if self.full_name is not None: body['full_name'] = self.full_name
         if self.name is not None: body['name'] = self.name
+        if self.new_name is not None: body['new_name'] = self.new_name
         if self.owner is not None: body['owner'] = self.owner
         return body
 
@@ -3906,6 +3967,7 @@ class UpdateRegisteredModelRequest:
         return cls(comment=d.get('comment', None),
                    full_name=d.get('full_name', None),
                    name=d.get('name', None),
+                   new_name=d.get('new_name', None),
                    owner=d.get('owner', None))
 
 
@@ -3923,6 +3985,9 @@ class UpdateSchema:
     name: Optional[str] = None
     """Name of schema, relative to parent catalog."""
 
+    new_name: Optional[str] = None
+    """New name for the schema."""
+
     owner: Optional[str] = None
     """Username of current owner of schema."""
 
@@ -3937,6 +4002,7 @@ class UpdateSchema:
             body['enable_predictive_optimization'] = self.enable_predictive_optimization.value
         if self.full_name is not None: body['full_name'] = self.full_name
         if self.name is not None: body['name'] = self.name
+        if self.new_name is not None: body['new_name'] = self.new_name
         if self.owner is not None: body['owner'] = self.owner
         if self.properties: body['properties'] = self.properties
         return body
@@ -3949,6 +4015,7 @@ class UpdateSchema:
                                                         EnablePredictiveOptimization),
                    full_name=d.get('full_name', None),
                    name=d.get('name', None),
+                   new_name=d.get('new_name', None),
                    owner=d.get('owner', None),
                    properties=d.get('properties', None))
 
@@ -3964,6 +4031,9 @@ class UpdateStorageCredential:
     azure_service_principal: Optional[AzureServicePrincipal] = None
     """The Azure service principal configuration."""
 
+    cloudflare_api_token: Optional[CloudflareApiToken] = None
+    """The Cloudflare API token configuration."""
+
     comment: Optional[str] = None
     """Comment associated with the credential."""
 
@@ -3974,7 +4044,10 @@ class UpdateStorageCredential:
     """Force update even if there are dependent external locations or external tables."""
 
     name: Optional[str] = None
-    """The credential name. The name must be unique within the metastore."""
+    """Name of the storage credential."""
+
+    new_name: Optional[str] = None
+    """New name for the storage credential."""
 
     owner: Optional[str] = None
     """Username of current owner of credential."""
@@ -3992,11 +4065,13 @@ class UpdateStorageCredential:
         if self.azure_managed_identity: body['azure_managed_identity'] = self.azure_managed_identity.as_dict()
         if self.azure_service_principal:
             body['azure_service_principal'] = self.azure_service_principal.as_dict()
+        if self.cloudflare_api_token: body['cloudflare_api_token'] = self.cloudflare_api_token.as_dict()
         if self.comment is not None: body['comment'] = self.comment
         if self.databricks_gcp_service_account:
             body['databricks_gcp_service_account'] = self.databricks_gcp_service_account
         if self.force is not None: body['force'] = self.force
         if self.name is not None: body['name'] = self.name
+        if self.new_name is not None: body['new_name'] = self.new_name
         if self.owner is not None: body['owner'] = self.owner
         if self.read_only is not None: body['read_only'] = self.read_only
         if self.skip_validation is not None: body['skip_validation'] = self.skip_validation
@@ -4008,10 +4083,12 @@ class UpdateStorageCredential:
         return cls(aws_iam_role=_from_dict(d, 'aws_iam_role', AwsIamRole),
                    azure_managed_identity=_from_dict(d, 'azure_managed_identity', AzureManagedIdentity),
                    azure_service_principal=_from_dict(d, 'azure_service_principal', AzureServicePrincipal),
+                   cloudflare_api_token=_from_dict(d, 'cloudflare_api_token', CloudflareApiToken),
                    comment=d.get('comment', None),
                    databricks_gcp_service_account=d.get('databricks_gcp_service_account', None),
                    force=d.get('force', None),
                    name=d.get('name', None),
+                   new_name=d.get('new_name', None),
                    owner=d.get('owner', None),
                    read_only=d.get('read_only', None),
                    skip_validation=d.get('skip_validation', None))
@@ -4028,6 +4105,9 @@ class UpdateVolumeRequestContent:
     name: Optional[str] = None
     """The name of the volume"""
 
+    new_name: Optional[str] = None
+    """New name for the volume."""
+
     owner: Optional[str] = None
     """The identifier of the user who owns the volume"""
 
@@ -4037,6 +4117,7 @@ class UpdateVolumeRequestContent:
         if self.comment is not None: body['comment'] = self.comment
         if self.full_name_arg is not None: body['full_name_arg'] = self.full_name_arg
         if self.name is not None: body['name'] = self.name
+        if self.new_name is not None: body['new_name'] = self.new_name
         if self.owner is not None: body['owner'] = self.owner
         return body
 
@@ -4046,6 +4127,7 @@ class UpdateVolumeRequestContent:
         return cls(comment=d.get('comment', None),
                    full_name_arg=d.get('full_name_arg', None),
                    name=d.get('name', None),
+                   new_name=d.get('new_name', None),
                    owner=d.get('owner', None))
 
 
@@ -4119,6 +4201,9 @@ class ValidateStorageCredential:
     azure_service_principal: Optional[AzureServicePrincipal] = None
     """The Azure service principal configuration."""
 
+    cloudflare_api_token: Optional[CloudflareApiToken] = None
+    """The Cloudflare API token configuration."""
+
     databricks_gcp_service_account: Optional[Any] = None
     """The Databricks created GCP service account configuration."""
 
@@ -4141,6 +4226,7 @@ class ValidateStorageCredential:
         if self.azure_managed_identity: body['azure_managed_identity'] = self.azure_managed_identity.as_dict()
         if self.azure_service_principal:
             body['azure_service_principal'] = self.azure_service_principal.as_dict()
+        if self.cloudflare_api_token: body['cloudflare_api_token'] = self.cloudflare_api_token.as_dict()
         if self.databricks_gcp_service_account:
             body['databricks_gcp_service_account'] = self.databricks_gcp_service_account
         if self.external_location_name is not None:
@@ -4156,6 +4242,7 @@ class ValidateStorageCredential:
         return cls(aws_iam_role=_from_dict(d, 'aws_iam_role', AwsIamRole),
                    azure_managed_identity=_from_dict(d, 'azure_managed_identity', AzureManagedIdentity),
                    azure_service_principal=_from_dict(d, 'azure_service_principal', AzureServicePrincipal),
+                   cloudflare_api_token=_from_dict(d, 'cloudflare_api_token', CloudflareApiToken),
                    databricks_gcp_service_account=d.get('databricks_gcp_service_account', None),
                    external_location_name=d.get('external_location_name', None),
                    read_only=d.get('read_only', None),
@@ -4880,6 +4967,7 @@ class CatalogsAPI:
                comment: Optional[str] = None,
                enable_predictive_optimization: Optional[EnablePredictiveOptimization] = None,
                isolation_mode: Optional[IsolationMode] = None,
+               new_name: Optional[str] = None,
                owner: Optional[str] = None,
                properties: Optional[Dict[str, str]] = None) -> CatalogInfo:
         """Update a catalog.
@@ -4888,13 +4976,15 @@ class CatalogsAPI:
         catalog, or a metastore admin (when changing the owner field of the catalog).
         
         :param name: str
-          Name of catalog.
+          The name of the catalog.
         :param comment: str (optional)
           User-provided free-form text description.
         :param enable_predictive_optimization: :class:`EnablePredictiveOptimization` (optional)
           Whether predictive optimization should be enabled for this object and objects under it.
         :param isolation_mode: :class:`IsolationMode` (optional)
           Whether the current securable is accessible from all workspaces or a specific set of workspaces.
+        :param new_name: str (optional)
+          New name for the catalog.
         :param owner: str (optional)
           Username of current owner of catalog.
         :param properties: Dict[str,str] (optional)
@@ -4907,6 +4997,7 @@ class CatalogsAPI:
         if enable_predictive_optimization is not None:
             body['enable_predictive_optimization'] = enable_predictive_optimization.value
         if isolation_mode is not None: body['isolation_mode'] = isolation_mode.value
+        if new_name is not None: body['new_name'] = new_name
         if owner is not None: body['owner'] = owner
         if properties is not None: body['properties'] = properties
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
@@ -5012,9 +5103,10 @@ class ConnectionsAPI:
 
     def update(self,
                name_arg: str,
-               name: str,
                options: Dict[str, str],
                *,
+               name: Optional[str] = None,
+               new_name: Optional[str] = None,
                owner: Optional[str] = None) -> ConnectionInfo:
         """Update a connection.
         
@@ -5022,10 +5114,12 @@ class ConnectionsAPI:
         
         :param name_arg: str
           Name of the connection.
-        :param name: str
-          Name of the connection.
         :param options: Dict[str,str]
           A map of key-value properties attached to the securable.
+        :param name: str (optional)
+          Name of the connection.
+        :param new_name: str (optional)
+          New name for the connection.
         :param owner: str (optional)
           Username of current owner of the connection.
         
@@ -5033,6 +5127,7 @@ class ConnectionsAPI:
         """
         body = {}
         if name is not None: body['name'] = name
+        if new_name is not None: body['new_name'] = new_name
         if options is not None: body['options'] = options
         if owner is not None: body['owner'] = owner
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
@@ -5167,6 +5262,7 @@ class ExternalLocationsAPI:
                credential_name: Optional[str] = None,
                encryption_details: Optional[EncryptionDetails] = None,
                force: Optional[bool] = None,
+               new_name: Optional[str] = None,
                owner: Optional[str] = None,
                read_only: Optional[bool] = None,
                skip_validation: Optional[bool] = None,
@@ -5189,6 +5285,8 @@ class ExternalLocationsAPI:
           Encryption options that apply to clients connecting to cloud storage.
         :param force: bool (optional)
           Force update even if changing url invalidates dependent external tables or mounts.
+        :param new_name: str (optional)
+          New name for the external location.
         :param owner: str (optional)
           The owner of the external location.
         :param read_only: bool (optional)
@@ -5206,6 +5304,7 @@ class ExternalLocationsAPI:
         if credential_name is not None: body['credential_name'] = credential_name
         if encryption_details is not None: body['encryption_details'] = encryption_details.as_dict()
         if force is not None: body['force'] = force
+        if new_name is not None: body['new_name'] = new_name
         if owner is not None: body['owner'] = owner
         if read_only is not None: body['read_only'] = read_only
         if skip_validation is not None: body['skip_validation'] = skip_validation
@@ -5613,6 +5712,7 @@ class MetastoresAPI:
                delta_sharing_recipient_token_lifetime_in_seconds: Optional[int] = None,
                delta_sharing_scope: Optional[UpdateMetastoreDeltaSharingScope] = None,
                name: Optional[str] = None,
+               new_name: Optional[str] = None,
                owner: Optional[str] = None,
                privilege_model_version: Optional[str] = None,
                storage_root_credential_id: Optional[str] = None) -> MetastoreInfo:
@@ -5632,6 +5732,8 @@ class MetastoresAPI:
           The scope of Delta Sharing enabled for the metastore.
         :param name: str (optional)
           The user-specified name of the metastore.
+        :param new_name: str (optional)
+          New name for the metastore.
         :param owner: str (optional)
           The owner of the metastore.
         :param privilege_model_version: str (optional)
@@ -5649,6 +5751,7 @@ class MetastoresAPI:
                 'delta_sharing_recipient_token_lifetime_in_seconds'] = delta_sharing_recipient_token_lifetime_in_seconds
         if delta_sharing_scope is not None: body['delta_sharing_scope'] = delta_sharing_scope.value
         if name is not None: body['name'] = name
+        if new_name is not None: body['new_name'] = new_name
         if owner is not None: body['owner'] = owner
         if privilege_model_version is not None: body['privilege_model_version'] = privilege_model_version
         if storage_root_credential_id is not None:
@@ -6056,6 +6159,7 @@ class RegisteredModelsAPI:
                *,
                comment: Optional[str] = None,
                name: Optional[str] = None,
+               new_name: Optional[str] = None,
                owner: Optional[str] = None) -> RegisteredModelInfo:
         """Update a Registered Model.
         
@@ -6073,6 +6177,8 @@ class RegisteredModelsAPI:
           The comment attached to the registered model
         :param name: str (optional)
           The name of the registered model
+        :param new_name: str (optional)
+          New name for the registered model.
         :param owner: str (optional)
           The identifier of the user who owns the registered model
         
@@ -6081,6 +6187,7 @@ class RegisteredModelsAPI:
         body = {}
         if comment is not None: body['comment'] = comment
         if name is not None: body['name'] = name
+        if new_name is not None: body['new_name'] = new_name
         if owner is not None: body['owner'] = owner
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         res = self._api.do('PATCH', f'/api/2.1/unity-catalog/models/{full_name}', body=body, headers=headers)
@@ -6189,6 +6296,7 @@ class SchemasAPI:
                comment: Optional[str] = None,
                enable_predictive_optimization: Optional[EnablePredictiveOptimization] = None,
                name: Optional[str] = None,
+               new_name: Optional[str] = None,
                owner: Optional[str] = None,
                properties: Optional[Dict[str, str]] = None) -> SchemaInfo:
         """Update a schema.
@@ -6206,6 +6314,8 @@ class SchemasAPI:
           Whether predictive optimization should be enabled for this object and objects under it.
         :param name: str (optional)
           Name of schema, relative to parent catalog.
+        :param new_name: str (optional)
+          New name for the schema.
         :param owner: str (optional)
           Username of current owner of schema.
         :param properties: Dict[str,str] (optional)
@@ -6218,6 +6328,7 @@ class SchemasAPI:
         if enable_predictive_optimization is not None:
             body['enable_predictive_optimization'] = enable_predictive_optimization.value
         if name is not None: body['name'] = name
+        if new_name is not None: body['new_name'] = new_name
         if owner is not None: body['owner'] = owner
         if properties is not None: body['properties'] = properties
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
@@ -6246,6 +6357,7 @@ class StorageCredentialsAPI:
                aws_iam_role: Optional[AwsIamRole] = None,
                azure_managed_identity: Optional[AzureManagedIdentity] = None,
                azure_service_principal: Optional[AzureServicePrincipal] = None,
+               cloudflare_api_token: Optional[CloudflareApiToken] = None,
                comment: Optional[str] = None,
                databricks_gcp_service_account: Optional[Any] = None,
                read_only: Optional[bool] = None,
@@ -6262,6 +6374,8 @@ class StorageCredentialsAPI:
           The Azure managed identity configuration.
         :param azure_service_principal: :class:`AzureServicePrincipal` (optional)
           The Azure service principal configuration.
+        :param cloudflare_api_token: :class:`CloudflareApiToken` (optional)
+          The Cloudflare API token configuration.
         :param comment: str (optional)
           Comment associated with the credential.
         :param databricks_gcp_service_account: Any (optional)
@@ -6279,6 +6393,7 @@ class StorageCredentialsAPI:
             body['azure_managed_identity'] = azure_managed_identity.as_dict()
         if azure_service_principal is not None:
             body['azure_service_principal'] = azure_service_principal.as_dict()
+        if cloudflare_api_token is not None: body['cloudflare_api_token'] = cloudflare_api_token.as_dict()
         if comment is not None: body['comment'] = comment
         if databricks_gcp_service_account is not None:
             body['databricks_gcp_service_account'] = databricks_gcp_service_account
@@ -6349,9 +6464,11 @@ class StorageCredentialsAPI:
                aws_iam_role: Optional[AwsIamRole] = None,
                azure_managed_identity: Optional[AzureManagedIdentity] = None,
                azure_service_principal: Optional[AzureServicePrincipal] = None,
+               cloudflare_api_token: Optional[CloudflareApiToken] = None,
                comment: Optional[str] = None,
                databricks_gcp_service_account: Optional[Any] = None,
                force: Optional[bool] = None,
+               new_name: Optional[str] = None,
                owner: Optional[str] = None,
                read_only: Optional[bool] = None,
                skip_validation: Optional[bool] = None) -> StorageCredentialInfo:
@@ -6360,19 +6477,23 @@ class StorageCredentialsAPI:
         Updates a storage credential on the metastore.
         
         :param name: str
-          The credential name. The name must be unique within the metastore.
+          Name of the storage credential.
         :param aws_iam_role: :class:`AwsIamRole` (optional)
           The AWS IAM role configuration.
         :param azure_managed_identity: :class:`AzureManagedIdentity` (optional)
           The Azure managed identity configuration.
         :param azure_service_principal: :class:`AzureServicePrincipal` (optional)
           The Azure service principal configuration.
+        :param cloudflare_api_token: :class:`CloudflareApiToken` (optional)
+          The Cloudflare API token configuration.
         :param comment: str (optional)
           Comment associated with the credential.
         :param databricks_gcp_service_account: Any (optional)
           The <Databricks> managed GCP service account configuration.
         :param force: bool (optional)
           Force update even if there are dependent external locations or external tables.
+        :param new_name: str (optional)
+          New name for the storage credential.
         :param owner: str (optional)
           Username of current owner of credential.
         :param read_only: bool (optional)
@@ -6388,10 +6509,12 @@ class StorageCredentialsAPI:
             body['azure_managed_identity'] = azure_managed_identity.as_dict()
         if azure_service_principal is not None:
             body['azure_service_principal'] = azure_service_principal.as_dict()
+        if cloudflare_api_token is not None: body['cloudflare_api_token'] = cloudflare_api_token.as_dict()
         if comment is not None: body['comment'] = comment
         if databricks_gcp_service_account is not None:
             body['databricks_gcp_service_account'] = databricks_gcp_service_account
         if force is not None: body['force'] = force
+        if new_name is not None: body['new_name'] = new_name
         if owner is not None: body['owner'] = owner
         if read_only is not None: body['read_only'] = read_only
         if skip_validation is not None: body['skip_validation'] = skip_validation
@@ -6407,6 +6530,7 @@ class StorageCredentialsAPI:
                  aws_iam_role: Optional[AwsIamRole] = None,
                  azure_managed_identity: Optional[AzureManagedIdentity] = None,
                  azure_service_principal: Optional[AzureServicePrincipal] = None,
+                 cloudflare_api_token: Optional[CloudflareApiToken] = None,
                  databricks_gcp_service_account: Optional[Any] = None,
                  external_location_name: Optional[str] = None,
                  read_only: Optional[bool] = None,
@@ -6430,6 +6554,8 @@ class StorageCredentialsAPI:
           The Azure managed identity configuration.
         :param azure_service_principal: :class:`AzureServicePrincipal` (optional)
           The Azure service principal configuration.
+        :param cloudflare_api_token: :class:`CloudflareApiToken` (optional)
+          The Cloudflare API token configuration.
         :param databricks_gcp_service_account: Any (optional)
           The Databricks created GCP service account configuration.
         :param external_location_name: str (optional)
@@ -6449,6 +6575,7 @@ class StorageCredentialsAPI:
             body['azure_managed_identity'] = azure_managed_identity.as_dict()
         if azure_service_principal is not None:
             body['azure_service_principal'] = azure_service_principal.as_dict()
+        if cloudflare_api_token is not None: body['cloudflare_api_token'] = cloudflare_api_token.as_dict()
         if databricks_gcp_service_account is not None:
             body['databricks_gcp_service_account'] = databricks_gcp_service_account
         if external_location_name is not None: body['external_location_name'] = external_location_name
@@ -6911,6 +7038,7 @@ class VolumesAPI:
                *,
                comment: Optional[str] = None,
                name: Optional[str] = None,
+               new_name: Optional[str] = None,
                owner: Optional[str] = None) -> VolumeInfo:
         """Update a Volume.
         
@@ -6928,6 +7056,8 @@ class VolumesAPI:
           The comment attached to the volume
         :param name: str (optional)
           The name of the volume
+        :param new_name: str (optional)
+          New name for the volume.
         :param owner: str (optional)
           The identifier of the user who owns the volume
         
@@ -6936,6 +7066,7 @@ class VolumesAPI:
         body = {}
         if comment is not None: body['comment'] = comment
         if name is not None: body['name'] = name
+        if new_name is not None: body['new_name'] = new_name
         if owner is not None: body['owner'] = owner
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         res = self._api.do('PATCH',

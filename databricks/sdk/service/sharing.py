@@ -1379,9 +1379,6 @@ class UpdateCleanRoom:
     comment: Optional[str] = None
     """User-provided free-form text description."""
 
-    name: Optional[str] = None
-    """Name of the clean room."""
-
     name_arg: Optional[str] = None
     """The name of the clean room."""
 
@@ -1393,7 +1390,6 @@ class UpdateCleanRoom:
         body = {}
         if self.catalog_updates: body['catalog_updates'] = [v.as_dict() for v in self.catalog_updates]
         if self.comment is not None: body['comment'] = self.comment
-        if self.name is not None: body['name'] = self.name
         if self.name_arg is not None: body['name_arg'] = self.name_arg
         if self.owner is not None: body['owner'] = self.owner
         return body
@@ -1403,7 +1399,6 @@ class UpdateCleanRoom:
         """Deserializes the UpdateCleanRoom from a dictionary."""
         return cls(catalog_updates=_repeated_dict(d, 'catalog_updates', CleanRoomCatalogUpdate),
                    comment=d.get('comment', None),
-                   name=d.get('name', None),
                    name_arg=d.get('name_arg', None),
                    owner=d.get('owner', None))
 
@@ -1414,7 +1409,10 @@ class UpdateProvider:
     """Description about the provider."""
 
     name: Optional[str] = None
-    """The name of the Provider."""
+    """Name of the provider."""
+
+    new_name: Optional[str] = None
+    """New name for the provider."""
 
     owner: Optional[str] = None
     """Username of Provider owner."""
@@ -1427,6 +1425,7 @@ class UpdateProvider:
         body = {}
         if self.comment is not None: body['comment'] = self.comment
         if self.name is not None: body['name'] = self.name
+        if self.new_name is not None: body['new_name'] = self.new_name
         if self.owner is not None: body['owner'] = self.owner
         if self.recipient_profile_str is not None: body['recipient_profile_str'] = self.recipient_profile_str
         return body
@@ -1436,6 +1435,7 @@ class UpdateProvider:
         """Deserializes the UpdateProvider from a dictionary."""
         return cls(comment=d.get('comment', None),
                    name=d.get('name', None),
+                   new_name=d.get('new_name', None),
                    owner=d.get('owner', None),
                    recipient_profile_str=d.get('recipient_profile_str', None))
 
@@ -1449,7 +1449,10 @@ class UpdateRecipient:
     """IP Access List"""
 
     name: Optional[str] = None
-    """Name of Recipient."""
+    """Name of the recipient."""
+
+    new_name: Optional[str] = None
+    """New name for the recipient."""
 
     owner: Optional[str] = None
     """Username of the recipient owner."""
@@ -1465,6 +1468,7 @@ class UpdateRecipient:
         if self.comment is not None: body['comment'] = self.comment
         if self.ip_access_list: body['ip_access_list'] = self.ip_access_list.as_dict()
         if self.name is not None: body['name'] = self.name
+        if self.new_name is not None: body['new_name'] = self.new_name
         if self.owner is not None: body['owner'] = self.owner
         if self.properties_kvpairs: body['properties_kvpairs'] = self.properties_kvpairs.as_dict()
         return body
@@ -1475,6 +1479,7 @@ class UpdateRecipient:
         return cls(comment=d.get('comment', None),
                    ip_access_list=_from_dict(d, 'ip_access_list', IpAccessList),
                    name=d.get('name', None),
+                   new_name=d.get('new_name', None),
                    owner=d.get('owner', None),
                    properties_kvpairs=_from_dict(d, 'properties_kvpairs', SecurablePropertiesKvPairs))
 
@@ -1485,7 +1490,10 @@ class UpdateShare:
     """User-provided free-form text description."""
 
     name: Optional[str] = None
-    """Name of the share."""
+    """The name of the share."""
+
+    new_name: Optional[str] = None
+    """New name for the share."""
 
     owner: Optional[str] = None
     """Username of current owner of share."""
@@ -1498,6 +1506,7 @@ class UpdateShare:
         body = {}
         if self.comment is not None: body['comment'] = self.comment
         if self.name is not None: body['name'] = self.name
+        if self.new_name is not None: body['new_name'] = self.new_name
         if self.owner is not None: body['owner'] = self.owner
         if self.updates: body['updates'] = [v.as_dict() for v in self.updates]
         return body
@@ -1507,6 +1516,7 @@ class UpdateShare:
         """Deserializes the UpdateShare from a dictionary."""
         return cls(comment=d.get('comment', None),
                    name=d.get('name', None),
+                   new_name=d.get('new_name', None),
                    owner=d.get('owner', None),
                    updates=_repeated_dict(d, 'updates', SharedDataObjectUpdate))
 
@@ -1643,7 +1653,6 @@ class CleanRoomsAPI:
                *,
                catalog_updates: Optional[List[CleanRoomCatalogUpdate]] = None,
                comment: Optional[str] = None,
-               name: Optional[str] = None,
                owner: Optional[str] = None) -> CleanRoomInfo:
         """Update a clean room.
         
@@ -1667,8 +1676,6 @@ class CleanRoomsAPI:
           Array of shared data object updates.
         :param comment: str (optional)
           User-provided free-form text description.
-        :param name: str (optional)
-          Name of the clean room.
         :param owner: str (optional)
           Username of current owner of clean room.
         
@@ -1677,7 +1684,6 @@ class CleanRoomsAPI:
         body = {}
         if catalog_updates is not None: body['catalog_updates'] = [v.as_dict() for v in catalog_updates]
         if comment is not None: body['comment'] = comment
-        if name is not None: body['name'] = name
         if owner is not None: body['owner'] = owner
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         res = self._api.do('PATCH',
@@ -1800,6 +1806,7 @@ class ProvidersAPI:
                name: str,
                *,
                comment: Optional[str] = None,
+               new_name: Optional[str] = None,
                owner: Optional[str] = None,
                recipient_profile_str: Optional[str] = None) -> ProviderInfo:
         """Update a provider.
@@ -1809,9 +1816,11 @@ class ProvidersAPI:
         admin and the owner of the provider.
         
         :param name: str
-          The name of the Provider.
+          Name of the provider.
         :param comment: str (optional)
           Description about the provider.
+        :param new_name: str (optional)
+          New name for the provider.
         :param owner: str (optional)
           Username of Provider owner.
         :param recipient_profile_str: str (optional)
@@ -1821,6 +1830,7 @@ class ProvidersAPI:
         """
         body = {}
         if comment is not None: body['comment'] = comment
+        if new_name is not None: body['new_name'] = new_name
         if owner is not None: body['owner'] = owner
         if recipient_profile_str is not None: body['recipient_profile_str'] = recipient_profile_str
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
@@ -2045,6 +2055,7 @@ class RecipientsAPI:
                *,
                comment: Optional[str] = None,
                ip_access_list: Optional[IpAccessList] = None,
+               new_name: Optional[str] = None,
                owner: Optional[str] = None,
                properties_kvpairs: Optional[SecurablePropertiesKvPairs] = None):
         """Update a share recipient.
@@ -2054,11 +2065,13 @@ class RecipientsAPI:
         owner of the recipient.
         
         :param name: str
-          Name of Recipient.
+          Name of the recipient.
         :param comment: str (optional)
           Description about the recipient.
         :param ip_access_list: :class:`IpAccessList` (optional)
           IP Access List
+        :param new_name: str (optional)
+          New name for the recipient.
         :param owner: str (optional)
           Username of the recipient owner.
         :param properties_kvpairs: :class:`SecurablePropertiesKvPairs` (optional)
@@ -2071,6 +2084,7 @@ class RecipientsAPI:
         body = {}
         if comment is not None: body['comment'] = comment
         if ip_access_list is not None: body['ip_access_list'] = ip_access_list.as_dict()
+        if new_name is not None: body['new_name'] = new_name
         if owner is not None: body['owner'] = owner
         if properties_kvpairs is not None: body['properties_kvpairs'] = properties_kvpairs.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
@@ -2174,6 +2188,7 @@ class SharesAPI:
                name: str,
                *,
                comment: Optional[str] = None,
+               new_name: Optional[str] = None,
                owner: Optional[str] = None,
                updates: Optional[List[SharedDataObjectUpdate]] = None) -> ShareInfo:
         """Update a share.
@@ -2193,9 +2208,11 @@ class SharesAPI:
         Table removals through **update** do not require additional privileges.
         
         :param name: str
-          Name of the share.
+          The name of the share.
         :param comment: str (optional)
           User-provided free-form text description.
+        :param new_name: str (optional)
+          New name for the share.
         :param owner: str (optional)
           Username of current owner of share.
         :param updates: List[:class:`SharedDataObjectUpdate`] (optional)
@@ -2205,6 +2222,7 @@ class SharesAPI:
         """
         body = {}
         if comment is not None: body['comment'] = comment
+        if new_name is not None: body['new_name'] = new_name
         if owner is not None: body['owner'] = owner
         if updates is not None: body['updates'] = [v.as_dict() for v in updates]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }

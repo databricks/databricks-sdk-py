@@ -270,7 +270,8 @@ class BaseChunkInfo:
     within a manifest, and when fetching individual chunk data or links."""
 
     byte_count: Optional[int] = None
-    """The number of bytes in the result chunk."""
+    """The number of bytes in the result chunk. This field is not available when using `INLINE`
+    disposition."""
 
     chunk_index: Optional[int] = None
     """The position within the sequence of result set chunks."""
@@ -1466,7 +1467,8 @@ class ExecuteStatementResponse:
 @dataclass
 class ExternalLink:
     byte_count: Optional[int] = None
-    """The number of bytes in the result chunk."""
+    """The number of bytes in the result chunk. This field is not available when using `INLINE`
+    disposition."""
 
     chunk_index: Optional[int] = None
     """The position within the sequence of result set chunks."""
@@ -2218,6 +2220,9 @@ class QueryFilter:
 
     query_start_time_range: Optional[TimeRange] = None
 
+    statement_ids: Optional[List[str]] = None
+    """A list of statement IDs."""
+
     statuses: Optional[List[QueryStatus]] = None
 
     user_ids: Optional[List[int]] = None
@@ -2230,6 +2235,7 @@ class QueryFilter:
         """Serializes the QueryFilter into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.query_start_time_range: body['query_start_time_range'] = self.query_start_time_range.as_dict()
+        if self.statement_ids: body['statement_ids'] = [v for v in self.statement_ids]
         if self.statuses: body['statuses'] = [v.value for v in self.statuses]
         if self.user_ids: body['user_ids'] = [v for v in self.user_ids]
         if self.warehouse_ids: body['warehouse_ids'] = [v for v in self.warehouse_ids]
@@ -2239,6 +2245,7 @@ class QueryFilter:
     def from_dict(cls, d: Dict[str, any]) -> QueryFilter:
         """Deserializes the QueryFilter from a dictionary."""
         return cls(query_start_time_range=_from_dict(d, 'query_start_time_range', TimeRange),
+                   statement_ids=d.get('statement_ids', None),
                    statuses=_repeated_enum(d, 'statuses', QueryStatus),
                    user_ids=d.get('user_ids', None),
                    warehouse_ids=d.get('warehouse_ids', None))
@@ -2698,7 +2705,8 @@ class ResultData:
     only a single link is returned.)"""
 
     byte_count: Optional[int] = None
-    """The number of bytes in the result chunk."""
+    """The number of bytes in the result chunk. This field is not available when using `INLINE`
+    disposition."""
 
     chunk_index: Optional[int] = None
     """The position within the sequence of result set chunks."""
