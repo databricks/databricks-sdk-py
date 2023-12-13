@@ -882,8 +882,19 @@ class WorkspaceClient:
         
         Securables that support binding: - catalog"""
 
-        self.workspace_conf: WorkspaceConfAPI = WorkspaceConfAPI(self.api_client)
+        self._workspace_conf: WorkspaceConfAPI = WorkspaceConfAPI(self.api_client)
+
+    @property
+    def config(self) -> client.Config:
+        return self._config
+
+    @property
+    def workspace_conf(self) -> WorkspaceConfAPI:
         """This API allows updating known workspace settings for advanced users."""
+        return self._workspace_conf
+
+    def __repr__(self):
+        return f'WorkspaceClient<{self._config}>'
 
 
 class AccountClient:

@@ -52,14 +52,35 @@ class WorkspaceClient:
             debug_headers=debug_headers,
             product=product,
             product_version=product_version)
-        self.config = config.copy()
-        self.dbutils = _make_dbutils(self.config)
-        self.api_client = client.ApiClient(self.config)
+        self._config = config.copy()
+        self._dbutils = _make_dbutils(self._config)
+        self._api_client = client.ApiClient(self._config)
 
         {{- range .Services}}{{if not .IsAccounts}}
-        self.{{.SnakeName}}: {{template "api" .}} = {{template "api" .}}(self.api_client){{if .Description}}
-        """{{.Comment "        " 100}}"""{{end}}
+        self._{{.SnakeName}} = {{template "api" .}}(self._api_client)
         {{end -}}{{end}}
+
+    @property
+    def config(self) -> client.Config:
+        return self._config
+
+    @property
+    def api_client(self) -> client.ApiClient:
+        return self._api_client
+
+    @property
+    def dbutils(self) -> dbutils.RemoteDbUtils:
+        return self._dbutils
+
+    {{- range .Services}}{{if not .IsAccounts}}
+    @property
+    def {{.SnakeName}}(self) -> {{template "api" .}}:
+        {{if .Description}}"""{{.Comment "        " 100}}"""{{end}}
+        return self._{{.SnakeName}}
+    {{end -}}{{end}}
+
+    def __repr__(self):
+        return f"WorkspaceClient(host='{self._config.host}', auth_type='{self._config.auth_type}', ...)"
 
 class AccountClient:
     """
@@ -87,3 +108,6 @@ class AccountClient:
         self.{{(.TrimPrefix "account").SnakeName}}: {{template "api" .}} = {{template "api" .}}(self.api_client){{if .Description}}
         """{{.Comment "        " 100}}"""{{end}}
         {{end -}}{{end}}
+
+    def __repr__(self):
+        return f"AccountClient(account_id='{self._config.account_id}', auth_type='{self._config.auth_type}', ...)"
