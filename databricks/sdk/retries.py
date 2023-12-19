@@ -39,8 +39,11 @@ def retried(*,
                         retry_reason = 'throttled by platform'
                     elif is_retryable is not None:
                         retry_reason = is_retryable(err)
-                    elif type(err) in on:
-                        retry_reason = f'{type(err).__name__} is allowed to retry'
+                    elif on is not None:
+                        for err_type in on:
+                            if not isinstance(err, err_type):
+                                continue
+                            retry_reason = f'{type(err).__name__} is allowed to retry'
 
                     if retry_reason is None:
                         # raise if exception is not retryable
