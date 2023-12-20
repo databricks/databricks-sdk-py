@@ -70,6 +70,28 @@ class AwsKeyInfo:
 
 
 @dataclass
+class AzureWorkspaceInfo:
+    resource_group: Optional[str] = None
+    """Azure Resource Group name"""
+
+    subscription_id: Optional[str] = None
+    """Azure Subscription ID"""
+
+    def as_dict(self) -> dict:
+        """Serializes the AzureWorkspaceInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.resource_group is not None: body['resource_group'] = self.resource_group
+        if self.subscription_id is not None: body['subscription_id'] = self.subscription_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> AzureWorkspaceInfo:
+        """Deserializes the AzureWorkspaceInfo from a dictionary."""
+        return cls(resource_group=d.get('resource_group', None),
+                   subscription_id=d.get('subscription_id', None))
+
+
+@dataclass
 class CloudResourceContainer:
     """The general workspace configurations that are specific to cloud providers."""
 
@@ -1356,6 +1378,8 @@ class Workspace:
     aws_region: Optional[str] = None
     """The AWS region of the workspace data plane (for example, `us-west-2`)."""
 
+    azure_workspace_info: Optional[AzureWorkspaceInfo] = None
+
     cloud: Optional[str] = None
     """The cloud name. This field always has the value `gcp`."""
 
@@ -1452,6 +1476,7 @@ class Workspace:
         body = {}
         if self.account_id is not None: body['account_id'] = self.account_id
         if self.aws_region is not None: body['aws_region'] = self.aws_region
+        if self.azure_workspace_info: body['azure_workspace_info'] = self.azure_workspace_info.as_dict()
         if self.cloud is not None: body['cloud'] = self.cloud
         if self.cloud_resource_container:
             body['cloud_resource_container'] = self.cloud_resource_container.as_dict()
@@ -1485,6 +1510,7 @@ class Workspace:
         """Deserializes the Workspace from a dictionary."""
         return cls(account_id=d.get('account_id', None),
                    aws_region=d.get('aws_region', None),
+                   azure_workspace_info=_from_dict(d, 'azure_workspace_info', AzureWorkspaceInfo),
                    cloud=d.get('cloud', None),
                    cloud_resource_container=_from_dict(d, 'cloud_resource_container', CloudResourceContainer),
                    creation_time=d.get('creation_time', None),

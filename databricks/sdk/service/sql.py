@@ -181,7 +181,10 @@ class AlertQuery:
     """The timestamp when this query was created."""
 
     data_source_id: Optional[str] = None
-    """Data source ID."""
+    """Data source ID maps to the ID of the data source used by the resource and is distinct from the
+    warehouse ID. [Learn more].
+    
+    [Learn more]: https://docs.databricks.com/api/workspace/datasources/list"""
 
     description: Optional[str] = None
     """General description that conveys additional information about this query such as usage notes."""
@@ -343,6 +346,7 @@ class ChannelInfo:
 
 
 class ChannelName(Enum):
+    """Name of the channel"""
 
     CHANNEL_NAME_CURRENT = 'CHANNEL_NAME_CURRENT'
     CHANNEL_NAME_CUSTOM = 'CHANNEL_NAME_CUSTOM'
@@ -608,6 +612,7 @@ class CreateWidget:
     """Width of a widget"""
 
     id: Optional[str] = None
+    """Widget ID returned by :method:dashboardwidgets/create"""
 
     text: Optional[str] = None
     """If this is a textbox widget, the application displays this text. This field is ignored if the
@@ -763,7 +768,10 @@ class DataSource:
     """A JSON object representing a DBSQL data source / SQL warehouse."""
 
     id: Optional[str] = None
-    """Data source ID."""
+    """Data source ID maps to the ID of the data source used by the resource and is distinct from the
+    warehouse ID. [Learn more].
+    
+    [Learn more]: https://docs.databricks.com/api/workspace/datasources/list"""
 
     name: Optional[str] = None
     """The string name of this data source / SQL warehouse as it appears in the Databricks SQL web
@@ -2045,7 +2053,10 @@ class Query:
     """The timestamp when this query was created."""
 
     data_source_id: Optional[str] = None
-    """Data source ID."""
+    """Data source ID maps to the ID of the data source used by the resource and is distinct from the
+    warehouse ID. [Learn more].
+    
+    [Learn more]: https://docs.databricks.com/api/workspace/datasources/list"""
 
     description: Optional[str] = None
     """General description that conveys additional information about this query such as usage notes."""
@@ -2174,7 +2185,10 @@ class Query:
 @dataclass
 class QueryEditContent:
     data_source_id: Optional[str] = None
-    """Data source ID."""
+    """Data source ID maps to the ID of the data source used by the resource and is distinct from the
+    warehouse ID. [Learn more].
+    
+    [Learn more]: https://docs.databricks.com/api/workspace/datasources/list"""
 
     description: Optional[str] = None
     """General description that conveys additional information about this query such as usage notes."""
@@ -2589,7 +2603,10 @@ class QueryOptions:
 @dataclass
 class QueryPostContent:
     data_source_id: Optional[str] = None
-    """Data source ID."""
+    """Data source ID maps to the ID of the data source used by the resource and is distinct from the
+    warehouse ID. [Learn more].
+    
+    [Learn more]: https://docs.databricks.com/api/workspace/datasources/list"""
 
     description: Optional[str] = None
     """General description that conveys additional information about this query such as usage notes."""
@@ -3817,6 +3834,7 @@ class DashboardWidgetsAPI:
         """Remove widget.
         
         :param id: str
+          Widget ID returned by :method:dashboardwidgets/create
         
         
         """
@@ -3835,6 +3853,7 @@ class DashboardWidgetsAPI:
         """Update existing widget.
         
         :param id: str
+          Widget ID returned by :method:dashboardwidgets/create
         :param dashboard_id: str
           Dashboard ID returned by :method:dashboards/create.
         :param options: :class:`WidgetOptions`
@@ -4139,7 +4158,10 @@ class QueriesAPI:
         **Note**: You cannot add a visualization until you create the query.
         
         :param data_source_id: str (optional)
-          Data source ID.
+          Data source ID maps to the ID of the data source used by the resource and is distinct from the
+          warehouse ID. [Learn more].
+          
+          [Learn more]: https://docs.databricks.com/api/workspace/datasources/list
         :param description: str (optional)
           General description that conveys additional information about this query such as usage notes.
         :param name: str (optional)
@@ -4284,7 +4306,10 @@ class QueriesAPI:
         
         :param query_id: str
         :param data_source_id: str (optional)
-          Data source ID.
+          Data source ID maps to the ID of the data source used by the resource and is distinct from the
+          warehouse ID. [Learn more].
+          
+          [Learn more]: https://docs.databricks.com/api/workspace/datasources/list
         :param description: str (optional)
           General description that conveys additional information about this query such as usage notes.
         :param name: str (optional)
@@ -4401,6 +4426,7 @@ class QueryVisualizationsAPI:
         """Remove visualization.
         
         :param id: str
+          Widget ID returned by :method:queryvizualisations/create
         
         
         """
@@ -4541,6 +4567,8 @@ class StatementExecutionAPI:
         state.
         
         :param statement_id: str
+          The statement ID is returned upon successfully submitting a SQL statement, and is a required
+          reference for all subsequent calls.
         
         
         """
@@ -4716,6 +4744,8 @@ class StatementExecutionAPI:
         **NOTE** This call currently might take up to 5 seconds to get the latest status and result.
         
         :param statement_id: str
+          The statement ID is returned upon successfully submitting a SQL statement, and is a required
+          reference for all subsequent calls.
         
         :returns: :class:`GetStatementResponse`
         """
@@ -4735,6 +4765,8 @@ class StatementExecutionAPI:
         `next_chunk_index` and `next_chunk_internal_link` fields for simple iteration through the result set.
         
         :param statement_id: str
+          The statement ID is returned upon successfully submitting a SQL statement, and is a required
+          reference for all subsequent calls.
         :param chunk_index: int
         
         :returns: :class:`ResultData`

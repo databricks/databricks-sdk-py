@@ -1,5 +1,35 @@
 # Version changelog
 
+## 0.16.0
+
+* Sort imports in service template ([#479](https://github.com/databricks/databricks-sdk-py/pull/479)).
+* Add `py.typed` to support PEP-561 ([#483](https://github.com/databricks/databricks-sdk-py/pull/483)).
+* Fixed bug in `@retried` when exception subtypes were not respected ([#484](https://github.com/databricks/databricks-sdk-py/pull/484)).
+* Make `WorkspaceClient` and `AccountClient` more friendly with autospeccing ([#480](https://github.com/databricks/databricks-sdk-py/pull/480)).
+
+API Changes:
+
+ * Added `azure_workspace_info` field for `databricks.sdk.service.provisioning.Workspace`.
+ * Added `databricks.sdk.service.provisioning.AzureWorkspaceInfo` dataclass.
+ * Changed `update_config()` method for [w.serving_endpoints](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/serving_endpoints.html) workspace-level service with new required argument order.
+ * Changed `served_entities` field for `databricks.sdk.service.serving.EndpointCoreConfigInput` to no longer be required.
+ * Changed `create()` method for [a.account_ip_access_lists](https://databricks-sdk-py.readthedocs.io/en/latest/account/account_ip_access_lists.html) account-level service with new required argument order.
+ * Changed `replace()` method for [a.account_ip_access_lists](https://databricks-sdk-py.readthedocs.io/en/latest/account/account_ip_access_lists.html) account-level service with new required argument order.
+ * Changed `update()` method for [a.account_ip_access_lists](https://databricks-sdk-py.readthedocs.io/en/latest/account/account_ip_access_lists.html) account-level service with new required argument order.
+ * Changed `create()` method for [w.ip_access_lists](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/ip_access_lists.html) workspace-level service with new required argument order.
+ * Changed `replace()` method for [w.ip_access_lists](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/ip_access_lists.html) workspace-level service with new required argument order.
+ * Changed `update()` method for [w.ip_access_lists](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/ip_access_lists.html) workspace-level service with new required argument order.
+ * Changed `ip_addresses` field for `databricks.sdk.service.settings.CreateIpAccessList` to no longer be required.
+ * Changed `ip_addresses` field for `databricks.sdk.service.settings.ReplaceIpAccessList` to no longer be required.
+ * Removed `list_id` field for `databricks.sdk.service.settings.ReplaceIpAccessList`.
+ * Changed `enabled` field for `databricks.sdk.service.settings.UpdateIpAccessList` to no longer be required.
+ * Changed `ip_addresses` field for `databricks.sdk.service.settings.UpdateIpAccessList` to no longer be required.
+ * Changed `label` field for `databricks.sdk.service.settings.UpdateIpAccessList` to no longer be required.
+ * Removed `list_id` field for `databricks.sdk.service.settings.UpdateIpAccessList`.
+ * Changed `list_type` field for `databricks.sdk.service.settings.UpdateIpAccessList` to no longer be required.
+
+OpenAPI SHA: d3853c8dee5806d04da2ae8910f273ffb35719a5, Date: 2023-12-14
+
 ## 0.15.0
 
 Bugfixes:

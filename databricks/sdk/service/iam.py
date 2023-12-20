@@ -789,9 +789,12 @@ class PermissionsRequest:
     access_control_list: Optional[List[AccessControlRequest]] = None
 
     request_object_id: Optional[str] = None
+    """The id of the request object."""
 
     request_object_type: Optional[str] = None
-    """<needs content>"""
+    """The type of the request object. Can be one of the following: authorization, clusters,
+    cluster-policies, directories, experiments, files, instance-pools, jobs, notebooks, pipelines,
+    registered-models, repos, serving-endpoints, or sql-warehouses."""
 
     def as_dict(self) -> dict:
         """Serializes the PermissionsRequest into a dictionary suitable for use as a JSON request body."""
@@ -2403,8 +2406,11 @@ class PermissionsAPI:
         object.
         
         :param request_object_type: str
-          <needs content>
+          The type of the request object. Can be one of the following: authorization, clusters,
+          cluster-policies, directories, experiments, files, instance-pools, jobs, notebooks, pipelines,
+          registered-models, repos, serving-endpoints, or sql-warehouses.
         :param request_object_id: str
+          The id of the request object.
         
         :returns: :class:`ObjectPermissions`
         """
@@ -2446,8 +2452,11 @@ class PermissionsAPI:
         object.
         
         :param request_object_type: str
-          <needs content>
+          The type of the request object. Can be one of the following: authorization, clusters,
+          cluster-policies, directories, experiments, files, instance-pools, jobs, notebooks, pipelines,
+          registered-models, repos, serving-endpoints, or sql-warehouses.
         :param request_object_id: str
+          The id of the request object.
         :param access_control_list: List[:class:`AccessControlRequest`] (optional)
         
         :returns: :class:`ObjectPermissions`
@@ -2473,8 +2482,11 @@ class PermissionsAPI:
         root object.
         
         :param request_object_type: str
-          <needs content>
+          The type of the request object. Can be one of the following: authorization, clusters,
+          cluster-policies, directories, experiments, files, instance-pools, jobs, notebooks, pipelines,
+          registered-models, repos, serving-endpoints, or sql-warehouses.
         :param request_object_id: str
+          The id of the request object.
         :param access_control_list: List[:class:`AccessControlRequest`] (optional)
         
         :returns: :class:`ObjectPermissions`
