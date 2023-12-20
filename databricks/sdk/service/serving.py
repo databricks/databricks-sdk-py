@@ -545,16 +545,16 @@ class EmbeddingsV1ResponseEmbeddingElementObject(Enum):
 
 @dataclass
 class EndpointCoreConfigInput:
-    served_entities: List[ServedEntityInput]
-    """A list of served entities for the endpoint to serve. A serving endpoint can have up to 10 served
-    entities."""
-
     auto_capture_config: Optional[AutoCaptureConfigInput] = None
     """Configuration for Inference Tables which automatically logs requests and responses to Unity
     Catalog."""
 
     name: Optional[str] = None
     """The name of the serving endpoint to update. This field is required."""
+
+    served_entities: Optional[List[ServedEntityInput]] = None
+    """A list of served entities for the endpoint to serve. A serving endpoint can have up to 10 served
+    entities."""
 
     served_models: Optional[List[ServedModelInput]] = None
     """(Deprecated, use served_entities instead) A list of served models for the endpoint to serve. A
@@ -2721,9 +2721,9 @@ class ServingEndpointsAPI:
 
     def update_config(self,
                       name: str,
-                      served_entities: List[ServedEntityInput],
                       *,
                       auto_capture_config: Optional[AutoCaptureConfigInput] = None,
+                      served_entities: Optional[List[ServedEntityInput]] = None,
                       served_models: Optional[List[ServedModelInput]] = None,
                       traffic_config: Optional[TrafficConfig] = None) -> Wait[ServingEndpointDetailed]:
         """Update a serving endpoint with a new config.
@@ -2734,11 +2734,11 @@ class ServingEndpointsAPI:
         
         :param name: str
           The name of the serving endpoint to update. This field is required.
-        :param served_entities: List[:class:`ServedEntityInput`]
-          A list of served entities for the endpoint to serve. A serving endpoint can have up to 10 served
-          entities.
         :param auto_capture_config: :class:`AutoCaptureConfigInput` (optional)
           Configuration for Inference Tables which automatically logs requests and responses to Unity Catalog.
+        :param served_entities: List[:class:`ServedEntityInput`] (optional)
+          A list of served entities for the endpoint to serve. A serving endpoint can have up to 10 served
+          entities.
         :param served_models: List[:class:`ServedModelInput`] (optional)
           (Deprecated, use served_entities instead) A list of served models for the endpoint to serve. A
           serving endpoint can have up to 10 served models.
@@ -2766,9 +2766,9 @@ class ServingEndpointsAPI:
     def update_config_and_wait(
         self,
         name: str,
-        served_entities: List[ServedEntityInput],
         *,
         auto_capture_config: Optional[AutoCaptureConfigInput] = None,
+        served_entities: Optional[List[ServedEntityInput]] = None,
         served_models: Optional[List[ServedModelInput]] = None,
         traffic_config: Optional[TrafficConfig] = None,
         timeout=timedelta(minutes=20)) -> ServingEndpointDetailed:

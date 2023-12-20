@@ -16,6 +16,8 @@ _LOG = logging.getLogger('databricks.sdk')
 
 @dataclass
 class CreateIpAccessList:
+    """Details required to configure a block list or allow list."""
+
     label: str
     """Label for the IP access list. This **cannot** be empty."""
 
@@ -25,8 +27,7 @@ class CreateIpAccessList:
     * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
     range. IP addresses in the block list are excluded even if they are included in an allow list."""
 
-    ip_addresses: List[str]
-    """Array of IP addresses or CIDR values to be added to the IP access list."""
+    ip_addresses: Optional[List[str]] = None
 
     def as_dict(self) -> dict:
         """Serializes the CreateIpAccessList into a dictionary suitable for use as a JSON request body."""
@@ -46,7 +47,10 @@ class CreateIpAccessList:
 
 @dataclass
 class CreateIpAccessListResponse:
+    """An IP access list was successfully created."""
+
     ip_access_list: Optional[IpAccessListInfo] = None
+    """Definition of an IP Access list"""
 
     def as_dict(self) -> dict:
         """Serializes the CreateIpAccessListResponse into a dictionary suitable for use as a JSON request body."""
@@ -381,7 +385,10 @@ class ExchangeTokenResponse:
 
 @dataclass
 class FetchIpAccessListResponse:
+    """An IP access list was successfully returned."""
+
     ip_access_list: Optional[IpAccessListInfo] = None
+    """Definition of an IP Access list"""
 
     def as_dict(self) -> dict:
         """Serializes the FetchIpAccessListResponse into a dictionary suitable for use as a JSON request body."""
@@ -398,6 +405,7 @@ class FetchIpAccessListResponse:
 @dataclass
 class GetIpAccessListResponse:
     ip_access_list: Optional[IpAccessListInfo] = None
+    """Definition of an IP Access list"""
 
     def as_dict(self) -> dict:
         """Serializes the GetIpAccessListResponse into a dictionary suitable for use as a JSON request body."""
@@ -413,6 +421,8 @@ class GetIpAccessListResponse:
 
 @dataclass
 class GetIpAccessListsResponse:
+    """IP access lists were successfully returned."""
+
     ip_access_lists: Optional[List[IpAccessListInfo]] = None
 
     def as_dict(self) -> dict:
@@ -446,6 +456,8 @@ class GetTokenPermissionLevelsResponse:
 
 @dataclass
 class IpAccessListInfo:
+    """Definition of an IP Access list"""
+
     address_count: Optional[int] = None
     """Total number of IP or CIDR values."""
 
@@ -459,7 +471,6 @@ class IpAccessListInfo:
     """Specifies whether this IP access list is enabled."""
 
     ip_addresses: Optional[List[str]] = None
-    """Array of IP addresses or CIDR values to be added to the IP access list."""
 
     label: Optional[str] = None
     """Label for the IP access list. This **cannot** be empty."""
@@ -511,6 +522,8 @@ class IpAccessListInfo:
 
 @dataclass
 class ListIpAccessListResponse:
+    """IP access lists were successfully returned."""
+
     ip_access_lists: Optional[List[IpAccessListInfo]] = None
 
     def as_dict(self) -> dict:
@@ -970,6 +983,8 @@ class PublicTokenInfo:
 
 @dataclass
 class ReplaceIpAccessList:
+    """Details required to replace an IP access list."""
+
     label: str
     """Label for the IP access list. This **cannot** be empty."""
 
@@ -979,17 +994,13 @@ class ReplaceIpAccessList:
     * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
     range. IP addresses in the block list are excluded even if they are included in an allow list."""
 
-    ip_addresses: List[str]
-    """Array of IP addresses or CIDR values to be added to the IP access list."""
-
     enabled: bool
     """Specifies whether this IP access list is enabled."""
 
     ip_access_list_id: Optional[str] = None
-    """The ID for the corresponding IP access list to modify."""
+    """The ID for the corresponding IP access list to modify"""
 
-    list_id: Optional[str] = None
-    """Universally unique identifier (UUID) of the IP access list."""
+    ip_addresses: Optional[List[str]] = None
 
     def as_dict(self) -> dict:
         """Serializes the ReplaceIpAccessList into a dictionary suitable for use as a JSON request body."""
@@ -998,7 +1009,6 @@ class ReplaceIpAccessList:
         if self.ip_access_list_id is not None: body['ip_access_list_id'] = self.ip_access_list_id
         if self.ip_addresses: body['ip_addresses'] = [v for v in self.ip_addresses]
         if self.label is not None: body['label'] = self.label
-        if self.list_id is not None: body['list_id'] = self.list_id
         if self.list_type is not None: body['list_type'] = self.list_type.value
         return body
 
@@ -1009,7 +1019,6 @@ class ReplaceIpAccessList:
                    ip_access_list_id=d.get('ip_access_list_id', None),
                    ip_addresses=d.get('ip_addresses', None),
                    label=d.get('label', None),
-                   list_id=d.get('list_id', None),
                    list_type=_enum(d, 'list_type', ListType))
 
 
@@ -1268,26 +1277,24 @@ class TokenType(Enum):
 
 @dataclass
 class UpdateIpAccessList:
-    label: str
+    """Details required to update an IP access list."""
+
+    enabled: Optional[bool] = None
+    """Specifies whether this IP access list is enabled."""
+
+    ip_access_list_id: Optional[str] = None
+    """The ID for the corresponding IP access list to modify"""
+
+    ip_addresses: Optional[List[str]] = None
+
+    label: Optional[str] = None
     """Label for the IP access list. This **cannot** be empty."""
 
-    list_type: ListType
+    list_type: Optional[ListType] = None
     """Type of IP access list. Valid values are as follows and are case-sensitive:
     
     * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
     range. IP addresses in the block list are excluded even if they are included in an allow list."""
-
-    ip_addresses: List[str]
-    """Array of IP addresses or CIDR values to be added to the IP access list."""
-
-    enabled: bool
-    """Specifies whether this IP access list is enabled."""
-
-    ip_access_list_id: Optional[str] = None
-    """The ID for the corresponding IP access list to modify."""
-
-    list_id: Optional[str] = None
-    """Universally unique identifier (UUID) of the IP access list."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateIpAccessList into a dictionary suitable for use as a JSON request body."""
@@ -1296,7 +1303,6 @@ class UpdateIpAccessList:
         if self.ip_access_list_id is not None: body['ip_access_list_id'] = self.ip_access_list_id
         if self.ip_addresses: body['ip_addresses'] = [v for v in self.ip_addresses]
         if self.label is not None: body['label'] = self.label
-        if self.list_id is not None: body['list_id'] = self.list_id
         if self.list_type is not None: body['list_type'] = self.list_type.value
         return body
 
@@ -1307,7 +1313,6 @@ class UpdateIpAccessList:
                    ip_access_list_id=d.get('ip_access_list_id', None),
                    ip_addresses=d.get('ip_addresses', None),
                    label=d.get('label', None),
-                   list_id=d.get('list_id', None),
                    list_type=_enum(d, 'list_type', ListType))
 
 
@@ -1337,7 +1342,11 @@ class AccountIpAccessListsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, label: str, list_type: ListType, ip_addresses: List[str]) -> CreateIpAccessListResponse:
+    def create(self,
+               label: str,
+               list_type: ListType,
+               *,
+               ip_addresses: Optional[List[str]] = None) -> CreateIpAccessListResponse:
         """Create access list.
         
         Creates an IP access list for the account.
@@ -1361,8 +1370,7 @@ class AccountIpAccessListsAPI:
           
           * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
           range. IP addresses in the block list are excluded even if they are included in an allow list.
-        :param ip_addresses: List[str]
-          Array of IP addresses or CIDR values to be added to the IP access list.
+        :param ip_addresses: List[str] (optional)
         
         :returns: :class:`CreateIpAccessListResponse`
         """
@@ -1383,12 +1391,11 @@ class AccountIpAccessListsAPI:
         Deletes an IP access list, specified by its list ID.
         
         :param ip_access_list_id: str
-          The ID for the corresponding IP access list.
         
         
         """
 
-        headers = {}
+        headers = {'Accept': 'application/json', }
         self._api.do('DELETE',
                      f'/api/2.0/accounts/{self._api.account_id}/ip-access-lists/{ip_access_list_id}',
                      headers=headers)
@@ -1399,7 +1406,6 @@ class AccountIpAccessListsAPI:
         Gets an IP access list, specified by its list ID.
         
         :param ip_access_list_id: str
-          The ID for the corresponding IP access list.
         
         :returns: :class:`GetIpAccessListResponse`
         """
@@ -1429,10 +1435,9 @@ class AccountIpAccessListsAPI:
                 ip_access_list_id: str,
                 label: str,
                 list_type: ListType,
-                ip_addresses: List[str],
                 enabled: bool,
                 *,
-                list_id: Optional[str] = None):
+                ip_addresses: Optional[List[str]] = None):
         """Replace access list.
         
         Replaces an IP access list, specified by its ID.
@@ -1446,7 +1451,6 @@ class AccountIpAccessListsAPI:
         effect.
         
         :param ip_access_list_id: str
-          The ID for the corresponding IP access list.
         :param label: str
           Label for the IP access list. This **cannot** be empty.
         :param list_type: :class:`ListType`
@@ -1454,12 +1458,9 @@ class AccountIpAccessListsAPI:
           
           * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
           range. IP addresses in the block list are excluded even if they are included in an allow list.
-        :param ip_addresses: List[str]
-          Array of IP addresses or CIDR values to be added to the IP access list.
         :param enabled: bool
           Specifies whether this IP access list is enabled.
-        :param list_id: str (optional)
-          Universally unique identifier (UUID) of the IP access list.
+        :param ip_addresses: List[str] (optional)
         
         
         """
@@ -1467,7 +1468,6 @@ class AccountIpAccessListsAPI:
         if enabled is not None: body['enabled'] = enabled
         if ip_addresses is not None: body['ip_addresses'] = [v for v in ip_addresses]
         if label is not None: body['label'] = label
-        if list_id is not None: body['list_id'] = list_id
         if list_type is not None: body['list_type'] = list_type.value
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('PUT',
@@ -1477,12 +1477,11 @@ class AccountIpAccessListsAPI:
 
     def update(self,
                ip_access_list_id: str,
-               label: str,
-               list_type: ListType,
-               ip_addresses: List[str],
-               enabled: bool,
                *,
-               list_id: Optional[str] = None):
+               enabled: Optional[bool] = None,
+               ip_addresses: Optional[List[str]] = None,
+               label: Optional[str] = None,
+               list_type: Optional[ListType] = None):
         """Update access list.
         
         Updates an existing IP access list, specified by its ID.
@@ -1500,20 +1499,16 @@ class AccountIpAccessListsAPI:
         It can take a few minutes for the changes to take effect.
         
         :param ip_access_list_id: str
-          The ID for the corresponding IP access list.
-        :param label: str
+        :param enabled: bool (optional)
+          Specifies whether this IP access list is enabled.
+        :param ip_addresses: List[str] (optional)
+        :param label: str (optional)
           Label for the IP access list. This **cannot** be empty.
-        :param list_type: :class:`ListType`
+        :param list_type: :class:`ListType` (optional)
           Type of IP access list. Valid values are as follows and are case-sensitive:
           
           * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
           range. IP addresses in the block list are excluded even if they are included in an allow list.
-        :param ip_addresses: List[str]
-          Array of IP addresses or CIDR values to be added to the IP access list.
-        :param enabled: bool
-          Specifies whether this IP access list is enabled.
-        :param list_id: str (optional)
-          Universally unique identifier (UUID) of the IP access list.
         
         
         """
@@ -1521,7 +1516,6 @@ class AccountIpAccessListsAPI:
         if enabled is not None: body['enabled'] = enabled
         if ip_addresses is not None: body['ip_addresses'] = [v for v in ip_addresses]
         if label is not None: body['label'] = label
-        if list_id is not None: body['list_id'] = list_id
         if list_type is not None: body['list_type'] = list_type.value
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('PATCH',
@@ -1674,7 +1668,11 @@ class IpAccessListsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, label: str, list_type: ListType, ip_addresses: List[str]) -> CreateIpAccessListResponse:
+    def create(self,
+               label: str,
+               list_type: ListType,
+               *,
+               ip_addresses: Optional[List[str]] = None) -> CreateIpAccessListResponse:
         """Create access list.
         
         Creates an IP access list for this workspace.
@@ -1699,8 +1697,7 @@ class IpAccessListsAPI:
           
           * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
           range. IP addresses in the block list are excluded even if they are included in an allow list.
-        :param ip_addresses: List[str]
-          Array of IP addresses or CIDR values to be added to the IP access list.
+        :param ip_addresses: List[str] (optional)
         
         :returns: :class:`CreateIpAccessListResponse`
         """
@@ -1718,12 +1715,12 @@ class IpAccessListsAPI:
         Deletes an IP access list, specified by its list ID.
         
         :param ip_access_list_id: str
-          The ID for the corresponding IP access list to modify.
+          The ID for the corresponding IP access list to modify
         
         
         """
 
-        headers = {}
+        headers = {'Accept': 'application/json', }
         self._api.do('DELETE', f'/api/2.0/ip-access-lists/{ip_access_list_id}', headers=headers)
 
     def get(self, ip_access_list_id: str) -> FetchIpAccessListResponse:
@@ -1732,7 +1729,7 @@ class IpAccessListsAPI:
         Gets an IP access list, specified by its list ID.
         
         :param ip_access_list_id: str
-          The ID for the corresponding IP access list to modify.
+          The ID for the corresponding IP access list to modify
         
         :returns: :class:`FetchIpAccessListResponse`
         """
@@ -1758,10 +1755,9 @@ class IpAccessListsAPI:
                 ip_access_list_id: str,
                 label: str,
                 list_type: ListType,
-                ip_addresses: List[str],
                 enabled: bool,
                 *,
-                list_id: Optional[str] = None):
+                ip_addresses: Optional[List[str]] = None):
         """Replace access list.
         
         Replaces an IP access list, specified by its ID.
@@ -1776,7 +1772,7 @@ class IpAccessListsAPI:
         :method:workspaceconf/setStatus.
         
         :param ip_access_list_id: str
-          The ID for the corresponding IP access list to modify.
+          The ID for the corresponding IP access list to modify
         :param label: str
           Label for the IP access list. This **cannot** be empty.
         :param list_type: :class:`ListType`
@@ -1784,12 +1780,9 @@ class IpAccessListsAPI:
           
           * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
           range. IP addresses in the block list are excluded even if they are included in an allow list.
-        :param ip_addresses: List[str]
-          Array of IP addresses or CIDR values to be added to the IP access list.
         :param enabled: bool
           Specifies whether this IP access list is enabled.
-        :param list_id: str (optional)
-          Universally unique identifier (UUID) of the IP access list.
+        :param ip_addresses: List[str] (optional)
         
         
         """
@@ -1797,19 +1790,17 @@ class IpAccessListsAPI:
         if enabled is not None: body['enabled'] = enabled
         if ip_addresses is not None: body['ip_addresses'] = [v for v in ip_addresses]
         if label is not None: body['label'] = label
-        if list_id is not None: body['list_id'] = list_id
         if list_type is not None: body['list_type'] = list_type.value
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('PUT', f'/api/2.0/ip-access-lists/{ip_access_list_id}', body=body, headers=headers)
 
     def update(self,
                ip_access_list_id: str,
-               label: str,
-               list_type: ListType,
-               ip_addresses: List[str],
-               enabled: bool,
                *,
-               list_id: Optional[str] = None):
+               enabled: Optional[bool] = None,
+               ip_addresses: Optional[List[str]] = None,
+               label: Optional[str] = None,
+               list_type: Optional[ListType] = None):
         """Update access list.
         
         Updates an existing IP access list, specified by its ID.
@@ -1828,20 +1819,17 @@ class IpAccessListsAPI:
         no effect until you enable the feature. See :method:workspaceconf/setStatus.
         
         :param ip_access_list_id: str
-          The ID for the corresponding IP access list to modify.
-        :param label: str
+          The ID for the corresponding IP access list to modify
+        :param enabled: bool (optional)
+          Specifies whether this IP access list is enabled.
+        :param ip_addresses: List[str] (optional)
+        :param label: str (optional)
           Label for the IP access list. This **cannot** be empty.
-        :param list_type: :class:`ListType`
+        :param list_type: :class:`ListType` (optional)
           Type of IP access list. Valid values are as follows and are case-sensitive:
           
           * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
           range. IP addresses in the block list are excluded even if they are included in an allow list.
-        :param ip_addresses: List[str]
-          Array of IP addresses or CIDR values to be added to the IP access list.
-        :param enabled: bool
-          Specifies whether this IP access list is enabled.
-        :param list_id: str (optional)
-          Universally unique identifier (UUID) of the IP access list.
         
         
         """
@@ -1849,7 +1837,6 @@ class IpAccessListsAPI:
         if enabled is not None: body['enabled'] = enabled
         if ip_addresses is not None: body['ip_addresses'] = [v for v in ip_addresses]
         if label is not None: body['label'] = label
-        if list_id is not None: body['list_id'] = list_id
         if list_type is not None: body['list_type'] = list_type.value
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('PATCH', f'/api/2.0/ip-access-lists/{ip_access_list_id}', body=body, headers=headers)
