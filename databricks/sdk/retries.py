@@ -3,13 +3,13 @@ import logging
 import time
 from datetime import timedelta
 from random import random
-from typing import Callable, List, Optional, Type
+from typing import Callable, Optional, Type, Sequence
 
 logger = logging.getLogger(__name__)
 
 
 def retried(*,
-            on: List[Type[BaseException]] = None,
+            on: Sequence[Type[BaseException]] = None,
             is_retryable: Callable[[BaseException], Optional[str]] = None,
             timeout=timedelta(minutes=20)):
     has_allowlist = on is not None
