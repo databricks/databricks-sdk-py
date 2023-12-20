@@ -3,7 +3,7 @@ import logging
 import time
 from datetime import timedelta
 from random import random
-from typing import Callable, Optional, Type, Sequence
+from typing import Callable, Optional, Sequence, Type
 
 logger = logging.getLogger(__name__)
 
