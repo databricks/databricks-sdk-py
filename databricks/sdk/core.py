@@ -676,7 +676,7 @@ class Config:
     cluster_id: str = ConfigAttribute(env='DATABRICKS_CLUSTER_ID')
     warehouse_id: str = ConfigAttribute(env='DATABRICKS_WAREHOUSE_ID')
     skip_verify: bool = ConfigAttribute()
-    http_timeout_seconds: int = ConfigAttribute()
+    http_timeout_seconds: float = ConfigAttribute()
     debug_truncate_bytes: int = ConfigAttribute(env='DATABRICKS_DEBUG_TRUNCATE_BYTES')
     debug_headers: bool = ConfigAttribute(env='DATABRICKS_DEBUG_HEADERS')
     rate_limit: int = ConfigAttribute(env='DATABRICKS_RATE_LIMIT')
