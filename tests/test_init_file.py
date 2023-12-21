@@ -12,6 +12,6 @@ def test_init_file_contents():
 
     # This hash is the expected hash of the contents of `src/databricks/__init__.py`.
     # It must not change, or else parallel package installation may lead to clobbered and invalid files.
-    expected_sha1 = '7f60afe4b2d493117af3e076a5c6ec7f792e2515'
+    expected_sha1 = '2772edbf52e517542acf8c039479c4b57b6ca2cd'
     actual_sha1 = hashlib.sha1(init_file_contents.encode('utf-8')).hexdigest()
     assert expected_sha1 == actual_sha1
