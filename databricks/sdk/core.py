@@ -1082,6 +1082,9 @@ class ApiClient:
                                    pool_block=pool_block)
         self._session.mount("https://", http_adapter)
 
+        # Default to 60 seconds
+        self._http_timeout_seconds = cfg.http_timeout_seconds if cfg.http_timeout_seconds else 60
+
     @property
     def account_id(self) -> str:
         return self._cfg.account_id
@@ -1226,7 +1229,8 @@ class ApiClient:
                                          headers=headers,
                                          files=files,
                                          data=data,
-                                         stream=raw)
+                                         stream=raw,
+                                         timeout=self._http_timeout_seconds)
         try:
             self._record_request_log(response, raw=raw or data is not None or files is not None)
             if not response.ok: # internally calls response.raise_for_status()
