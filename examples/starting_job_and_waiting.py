@@ -39,8 +39,8 @@ import logging
 import sys
 import time
 
-from databricks.sdk.service import compute, jobs
 from databricks.sdk import WorkspaceClient
+from databricks.sdk.service import compute, jobs
 
 if __name__ == "__main__":
     logging.basicConfig(stream=sys.stdout,

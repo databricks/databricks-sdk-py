@@ -110,7 +110,9 @@ def register_custom_app(oauth_client: OAuthClient, args: argparse.Namespace) -> 
                                    )
 
     custom_app = account_client.custom_app_integration.create(
-        name=APP_NAME, redirect_urls=[f"http://localhost:{args.port}/callback"], confidential=True,
+        name=APP_NAME,
+        redirect_urls=[f"http://localhost:{args.port}/callback"],
+        confidential=True,
         scopes=["all-apis"],
     )
     logging.info(f"Created new custom app: "
