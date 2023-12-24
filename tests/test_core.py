@@ -523,6 +523,18 @@ def test_http_retried_on_connection_error():
     assert len(requests) == 2
 
 
+@pytest.mark.parametrize(
+    "host,account_host",
+    [('https://accounts.cloud.databricks.com', 'https://accounts.cloud.databricks.com'),
+     ('https://dbc-ldflSlsd.cloud.databricks.com', 'https://accounts.cloud.databricks.com'),
+     ('https://abd-23424234234.12.azuredatabricks.net', 'https://accounts.azuredatabricks.net'),
+     ('https://abd-23424234234.12.databricks.azure.us', 'https://accounts.databricks.azure.us'),
+     ('https://23423423.gcp.databricks.com', 'https://accounts.gcp.databricks.com'), ])
+def test_get_account_host(host, account_host):
+    cfg = Config(host=host, token=...)
+    assert account_host == cfg.account_host
+
+
 def test_github_oidc_flow_works_with_azure(monkeypatch):
 
     def inner(h: BaseHTTPRequestHandler):
