@@ -1,4 +1,4 @@
-from typing import BinaryIO, Iterator, Optional
+from typing import BinaryIO, Iterator, Optional, Union
 
 from ..core import DatabricksError
 from ..service.workspace import (ExportFormat, ImportFormat, Language,
@@ -37,7 +37,7 @@ class WorkspaceExt(WorkspaceAPI):
 
     def upload(self,
                path: str,
-               content: BinaryIO,
+               content: Union[bytes, BinaryIO],
                *,
                format: Optional[ImportFormat] = None,
                language: Optional[Language] = None,
