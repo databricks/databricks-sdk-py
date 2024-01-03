@@ -1651,7 +1651,7 @@ class ServedModelInput:
         if self.model_version is not None: body['model_version'] = self.model_version
         if self.name is not None: body['name'] = self.name
         if self.scale_to_zero_enabled is not None: body['scale_to_zero_enabled'] = self.scale_to_zero_enabled
-        if self.workload_size is not None: body['workload_size'] = self.workload_size.value
+        if self.workload_size is not None: body['workload_size'] = self.workload_size
         if self.workload_type is not None: body['workload_type'] = self.workload_type.value
         return body
 
