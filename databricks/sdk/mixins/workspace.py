@@ -1,4 +1,4 @@
-from typing import BinaryIO, Iterator, Optional
+from typing import BinaryIO, Iterator, Optional, Union
 
 from ..core import DatabricksError
 from ..service.workspace import (ExportFormat, ImportFormat, Language,
@@ -37,7 +37,7 @@ class WorkspaceExt(WorkspaceAPI):
 
     def upload(self,
                path: str,
-               content: BinaryIO,
+               content: Union[bytes, BinaryIO],
                *,
                format: Optional[ImportFormat] = None,
                language: Optional[Language] = None,
@@ -51,7 +51,7 @@ class WorkspaceExt(WorkspaceAPI):
          * `INVALID_PARAMETER_VALUE`: if `format` and `content` values are not compatible.
 
         :param path:     target location of the file on workspace.
-        :param content:  file-like `io.BinaryIO` of the `path` contents.
+        :param content:  the contents as either raw binary data `bytes` or a file-like the file-like `io.BinaryIO` of the `path` contents.
         :param format:   By default, `ImportFormat.SOURCE`. If using `ImportFormat.AUTO` the `path`
                          is imported or exported as either a workspace file or a notebook, depending
                          on an analysis of the `item`’s extension and the header content provided in
