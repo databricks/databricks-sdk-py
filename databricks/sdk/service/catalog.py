@@ -1,13 +1,15 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
 from __future__ import annotations
-
-import logging
 from dataclasses import dataclass
+from datetime import timedelta
 from enum import Enum
-from typing import Any, Dict, Iterator, List, Optional
-
-from ._internal import _enum, _from_dict, _repeated_dict, _repeated_enum
+from typing import Dict, List, Any, Iterator, Type, Callable, Optional, BinaryIO
+import time
+import random
+import logging
+from ..errors import OperationTimeout, OperationFailed
+from ._internal import _enum, _from_dict, _repeated_dict, _repeated_enum, Wait
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -2242,17 +2244,23 @@ class ListExternalLocationsResponse:
     external_locations: Optional[List[ExternalLocationInfo]] = None
     """An array of external locations."""
 
+    next_page_token: Optional[str] = None
+    """Opaque token to retrieve the next page of results. Absent if there are no more pages.
+    __page_token__ should be set to this value for the next request (for the next page of results)."""
+
     def as_dict(self) -> dict:
         """Serializes the ListExternalLocationsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.external_locations:
             body['external_locations'] = [v.as_dict() for v in self.external_locations]
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListExternalLocationsResponse:
         """Deserializes the ListExternalLocationsResponse from a dictionary."""
-        return cls(external_locations=_repeated_dict(d, 'external_locations', ExternalLocationInfo))
+        return cls(external_locations=_repeated_dict(d, 'external_locations', ExternalLocationInfo),
+                   next_page_token=d.get('next_page_token', None))
 
 
 @dataclass
@@ -2260,16 +2268,22 @@ class ListFunctionsResponse:
     functions: Optional[List[FunctionInfo]] = None
     """An array of function information objects."""
 
+    next_page_token: Optional[str] = None
+    """Opaque token to retrieve the next page of results. Absent if there are no more pages.
+    __page_token__ should be set to this value for the next request (for the next page of results)."""
+
     def as_dict(self) -> dict:
         """Serializes the ListFunctionsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.functions: body['functions'] = [v.as_dict() for v in self.functions]
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListFunctionsResponse:
         """Deserializes the ListFunctionsResponse from a dictionary."""
-        return cls(functions=_repeated_dict(d, 'functions', FunctionInfo))
+        return cls(functions=_repeated_dict(d, 'functions', FunctionInfo),
+                   next_page_token=d.get('next_page_token', None))
 
 
 @dataclass
@@ -2294,7 +2308,8 @@ class ListModelVersionsResponse:
     model_versions: Optional[List[ModelVersionInfo]] = None
 
     next_page_token: Optional[str] = None
-    """Token to retrieve the next page of results"""
+    """Opaque token to retrieve the next page of results. Absent if there are no more pages.
+    __page_token__ should be set to this value for the next request (for the next page of results)."""
 
     def as_dict(self) -> dict:
         """Serializes the ListModelVersionsResponse into a dictionary suitable for use as a JSON request body."""
@@ -2334,28 +2349,39 @@ class ListRegisteredModelsResponse:
 
 @dataclass
 class ListSchemasResponse:
+    next_page_token: Optional[str] = None
+    """Opaque token to retrieve the next page of results. Absent if there are no more pages.
+    __page_token__ should be set to this value for the next request (for the next page of results)."""
+
     schemas: Optional[List[SchemaInfo]] = None
     """An array of schema information objects."""
 
     def as_dict(self) -> dict:
         """Serializes the ListSchemasResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         if self.schemas: body['schemas'] = [v.as_dict() for v in self.schemas]
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListSchemasResponse:
         """Deserializes the ListSchemasResponse from a dictionary."""
-        return cls(schemas=_repeated_dict(d, 'schemas', SchemaInfo))
+        return cls(next_page_token=d.get('next_page_token', None),
+                   schemas=_repeated_dict(d, 'schemas', SchemaInfo))
 
 
 @dataclass
 class ListStorageCredentialsResponse:
+    next_page_token: Optional[str] = None
+    """Opaque token to retrieve the next page of results. Absent if there are no more pages.
+    __page_token__ should be set to this value for the next request (for the next page of results)."""
+
     storage_credentials: Optional[List[StorageCredentialInfo]] = None
 
     def as_dict(self) -> dict:
         """Serializes the ListStorageCredentialsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         if self.storage_credentials:
             body['storage_credentials'] = [v.as_dict() for v in self.storage_credentials]
         return body
@@ -2363,7 +2389,8 @@ class ListStorageCredentialsResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListStorageCredentialsResponse:
         """Deserializes the ListStorageCredentialsResponse from a dictionary."""
-        return cls(storage_credentials=_repeated_dict(d, 'storage_credentials', StorageCredentialInfo))
+        return cls(next_page_token=d.get('next_page_token', None),
+                   storage_credentials=_repeated_dict(d, 'storage_credentials', StorageCredentialInfo))
 
 
 @dataclass
@@ -2386,7 +2413,8 @@ class ListSystemSchemasResponse:
 @dataclass
 class ListTableSummariesResponse:
     next_page_token: Optional[str] = None
-    """Opaque token for pagination. Omitted if there are no more results."""
+    """Opaque token to retrieve the next page of results. Absent if there are no more pages.
+    __page_token__ should be set to this value for the next request (for the next page of results)."""
 
     tables: Optional[List[TableSummary]] = None
     """List of table summaries."""
@@ -2408,8 +2436,8 @@ class ListTableSummariesResponse:
 @dataclass
 class ListTablesResponse:
     next_page_token: Optional[str] = None
-    """Opaque token for pagination. Omitted if there are no more results. page_token should be set to
-    this value for fetching the next page."""
+    """Opaque token to retrieve the next page of results. Absent if there are no more pages.
+    __page_token__ should be set to this value for the next request (for the next page of results)."""
 
     tables: Optional[List[TableInfo]] = None
     """An array of table information objects."""
@@ -5239,20 +5267,45 @@ class ExternalLocationsAPI:
         res = self._api.do('GET', f'/api/2.1/unity-catalog/external-locations/{name}', headers=headers)
         return ExternalLocationInfo.from_dict(res)
 
-    def list(self) -> Iterator[ExternalLocationInfo]:
+    def list(self,
+             *,
+             max_results: Optional[int] = None,
+             page_token: Optional[str] = None) -> Iterator[ExternalLocationInfo]:
         """List external locations.
         
         Gets an array of external locations (__ExternalLocationInfo__ objects) from the metastore. The caller
         must be a metastore admin, the owner of the external location, or a user that has some privilege on
-        the external location. There is no guarantee of a specific ordering of the elements in the array.
+        the external location. For unpaginated request, there is no guarantee of a specific ordering of the
+        elements in the array. For paginated request, elements are ordered by their name.
+        
+        :param max_results: int (optional)
+          Maximum number of external locations to return. If not set, all the external locations are returned
+          (not recommended). - when set to a value greater than 0, the page length is the minimum of this
+          value and a server configured value; - when set to 0, the page length is set to a server configured
+          value (recommended); - when set to a value less than 0, an invalid parameter error is returned;
+        :param page_token: str (optional)
+          Opaque pagination token to go to next page based on previous query.
         
         :returns: Iterator over :class:`ExternalLocationInfo`
         """
 
+        query = {}
+        if max_results is not None: query['max_results'] = max_results
+        if page_token is not None: query['page_token'] = page_token
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET', '/api/2.1/unity-catalog/external-locations', headers=headers)
-        parsed = ListExternalLocationsResponse.from_dict(json).external_locations
-        return parsed if parsed is not None else []
+
+        while True:
+            json = self._api.do('GET',
+                                '/api/2.1/unity-catalog/external-locations',
+                                query=query,
+                                headers=headers)
+            if 'external_locations' not in json or not json['external_locations']:
+                return
+            for v in json['external_locations']:
+                yield ExternalLocationInfo.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
 
     def update(self,
                name: str,
@@ -5391,30 +5444,52 @@ class FunctionsAPI:
         res = self._api.do('GET', f'/api/2.1/unity-catalog/functions/{name}', headers=headers)
         return FunctionInfo.from_dict(res)
 
-    def list(self, catalog_name: str, schema_name: str) -> Iterator[FunctionInfo]:
+    def list(self,
+             catalog_name: str,
+             schema_name: str,
+             *,
+             max_results: Optional[int] = None,
+             page_token: Optional[str] = None) -> Iterator[FunctionInfo]:
         """List functions.
         
         List functions within the specified parent catalog and schema. If the user is a metastore admin, all
         functions are returned in the output list. Otherwise, the user must have the **USE_CATALOG** privilege
         on the catalog and the **USE_SCHEMA** privilege on the schema, and the output list contains only
-        functions for which either the user has the **EXECUTE** privilege or the user is the owner. There is
-        no guarantee of a specific ordering of the elements in the array.
+        functions for which either the user has the **EXECUTE** privilege or the user is the owner. For
+        unpaginated request, there is no guarantee of a specific ordering of the elements in the array. For
+        paginated request, elements are ordered by their name.
         
         :param catalog_name: str
           Name of parent catalog for functions of interest.
         :param schema_name: str
           Parent schema of functions.
+        :param max_results: int (optional)
+          Maximum number of functions to return. If not set, all the functions are returned (not recommended).
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+          configured value; - when set to 0, the page length is set to a server configured value
+          (recommended); - when set to a value less than 0, an invalid parameter error is returned;
+        :param page_token: str (optional)
+          Opaque pagination token to go to next page based on previous query.
         
         :returns: Iterator over :class:`FunctionInfo`
         """
 
         query = {}
         if catalog_name is not None: query['catalog_name'] = catalog_name
+        if max_results is not None: query['max_results'] = max_results
+        if page_token is not None: query['page_token'] = page_token
         if schema_name is not None: query['schema_name'] = schema_name
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET', '/api/2.1/unity-catalog/functions', query=query, headers=headers)
-        parsed = ListFunctionsResponse.from_dict(json).functions
-        return parsed if parsed is not None else []
+
+        while True:
+            json = self._api.do('GET', '/api/2.1/unity-catalog/functions', query=query, headers=headers)
+            if 'functions' not in json or not json['functions']:
+                return
+            for v in json['functions']:
+                yield FunctionInfo.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
 
     def update(self, name: str, *, owner: Optional[str] = None) -> FunctionInfo:
         """Update a function.
@@ -5892,9 +5967,13 @@ class ModelVersionsAPI:
         :param full_name: str
           The full three-level name of the registered model under which to list model versions
         :param max_results: int (optional)
-          Max number of model versions to return
+          Maximum number of model versions to return. If not set, the page length is set to a server
+          configured value (100, as of 1/3/2024). - when set to a value greater than 0, the page length is the
+          minimum of this value and a server configured value(1000, as of 1/3/2024); - when set to 0, the page
+          length is set to a server configured value (100, as of 1/3/2024) (recommended); - when set to a
+          value less than 0, an invalid parameter error is returned;
         :param page_token: str (optional)
-          Opaque token to send for the next page of results (pagination).
+          Opaque pagination token to go to next page based on previous query.
         
         :returns: Iterator over :class:`ModelVersionInfo`
         """
@@ -6269,26 +6348,47 @@ class SchemasAPI:
         res = self._api.do('GET', f'/api/2.1/unity-catalog/schemas/{full_name}', headers=headers)
         return SchemaInfo.from_dict(res)
 
-    def list(self, catalog_name: str) -> Iterator[SchemaInfo]:
+    def list(self,
+             catalog_name: str,
+             *,
+             max_results: Optional[int] = None,
+             page_token: Optional[str] = None) -> Iterator[SchemaInfo]:
         """List schemas.
         
         Gets an array of schemas for a catalog in the metastore. If the caller is the metastore admin or the
         owner of the parent catalog, all schemas for the catalog will be retrieved. Otherwise, only schemas
-        owned by the caller (or for which the caller has the **USE_SCHEMA** privilege) will be retrieved.
-        There is no guarantee of a specific ordering of the elements in the array.
+        owned by the caller (or for which the caller has the **USE_SCHEMA** privilege) will be retrieved. For
+        unpaginated request, there is no guarantee of a specific ordering of the elements in the array. For
+        paginated request, elements are ordered by their name.
         
         :param catalog_name: str
           Parent catalog for schemas of interest.
+        :param max_results: int (optional)
+          Maximum number of schemas to return. If not set, all the schemas are returned (not recommended). -
+          when set to a value greater than 0, the page length is the minimum of this value and a server
+          configured value; - when set to 0, the page length is set to a server configured value
+          (recommended); - when set to a value less than 0, an invalid parameter error is returned;
+        :param page_token: str (optional)
+          Opaque pagination token to go to next page based on previous query.
         
         :returns: Iterator over :class:`SchemaInfo`
         """
 
         query = {}
         if catalog_name is not None: query['catalog_name'] = catalog_name
+        if max_results is not None: query['max_results'] = max_results
+        if page_token is not None: query['page_token'] = page_token
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET', '/api/2.1/unity-catalog/schemas', query=query, headers=headers)
-        parsed = ListSchemasResponse.from_dict(json).schemas
-        return parsed if parsed is not None else []
+
+        while True:
+            json = self._api.do('GET', '/api/2.1/unity-catalog/schemas', query=query, headers=headers)
+            if 'schemas' not in json or not json['schemas']:
+                return
+            for v in json['schemas']:
+                yield SchemaInfo.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
 
     def update(self,
                full_name: str,
@@ -6442,21 +6542,47 @@ class StorageCredentialsAPI:
         res = self._api.do('GET', f'/api/2.1/unity-catalog/storage-credentials/{name}', headers=headers)
         return StorageCredentialInfo.from_dict(res)
 
-    def list(self) -> Iterator[StorageCredentialInfo]:
+    def list(self,
+             *,
+             max_results: Optional[int] = None,
+             page_token: Optional[str] = None) -> Iterator[StorageCredentialInfo]:
         """List credentials.
         
         Gets an array of storage credentials (as __StorageCredentialInfo__ objects). The array is limited to
         only those storage credentials the caller has permission to access. If the caller is a metastore
-        admin, all storage credentials will be retrieved. There is no guarantee of a specific ordering of the
-        elements in the array.
+        admin, retrieval of credentials is unrestricted. For unpaginated request, there is no guarantee of a
+        specific ordering of the elements in the array. For paginated request, elements are ordered by their
+        name.
+        
+        :param max_results: int (optional)
+          Maximum number of storage credentials to return. If not set, all the storage credentials are
+          returned (not recommended). - when set to a value greater than 0, the page length is the minimum of
+          this value and a server configured value; - when set to 0, the page length is set to a server
+          configured value (recommended); - when set to a value less than 0, an invalid parameter error is
+          returned;
+        :param page_token: str (optional)
+          Opaque pagination token to go to next page based on previous query.
         
         :returns: Iterator over :class:`StorageCredentialInfo`
         """
 
+        query = {}
+        if max_results is not None: query['max_results'] = max_results
+        if page_token is not None: query['page_token'] = page_token
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET', '/api/2.1/unity-catalog/storage-credentials', headers=headers)
-        parsed = ListStorageCredentialsResponse.from_dict(json).storage_credentials
-        return parsed if parsed is not None else []
+
+        while True:
+            json = self._api.do('GET',
+                                '/api/2.1/unity-catalog/storage-credentials',
+                                query=query,
+                                headers=headers)
+            if 'storage_credentials' not in json or not json['storage_credentials']:
+                return
+            for v in json['storage_credentials']:
+                yield StorageCredentialInfo.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
 
     def update(self,
                name: str,
@@ -6788,6 +6914,8 @@ class TablesAPI:
              *,
              include_delta_metadata: Optional[bool] = None,
              max_results: Optional[int] = None,
+             omit_columns: Optional[bool] = None,
+             omit_properties: Optional[bool] = None,
              page_token: Optional[str] = None) -> Iterator[TableInfo]:
         """List tables.
         
@@ -6804,11 +6932,14 @@ class TablesAPI:
         :param include_delta_metadata: bool (optional)
           Whether delta metadata should be included in the response.
         :param max_results: int (optional)
-          Maximum number of tables to return (page length). If not set, all accessible tables in the schema
-          are returned. If set to:
-          
-          * greater than 0, page length is the minimum of this value and a server configured value. * equal to
-          0, page length is set to a server configured value. * lesser than 0, invalid parameter error.
+          Maximum number of tables to return. If not set, all the tables are returned (not recommended). -
+          when set to a value greater than 0, the page length is the minimum of this value and a server
+          configured value; - when set to 0, the page length is set to a server configured value
+          (recommended); - when set to a value less than 0, an invalid parameter error is returned;
+        :param omit_columns: bool (optional)
+          Whether to omit the columns of the table from the response or not.
+        :param omit_properties: bool (optional)
+          Whether to omit the properties of the table from the response or not.
         :param page_token: str (optional)
           Opaque token to send for the next page of results (pagination).
         
@@ -6819,6 +6950,8 @@ class TablesAPI:
         if catalog_name is not None: query['catalog_name'] = catalog_name
         if include_delta_metadata is not None: query['include_delta_metadata'] = include_delta_metadata
         if max_results is not None: query['max_results'] = max_results
+        if omit_columns is not None: query['omit_columns'] = omit_columns
+        if omit_properties is not None: query['omit_properties'] = omit_properties
         if page_token is not None: query['page_token'] = page_token
         if schema_name is not None: query['schema_name'] = schema_name
         headers = {'Accept': 'application/json', }
@@ -6845,10 +6978,10 @@ class TablesAPI:
         Gets an array of summaries for tables for a schema and catalog within the metastore. The table
         summaries returned are either:
         
-        * summaries for all tables (within the current metastore and parent catalog and schema), when the user
-        is a metastore admin, or: * summaries for all tables and schemas (within the current metastore and
-        parent catalog) for which the user has ownership or the **SELECT** privilege on the table and
-        ownership or **USE_SCHEMA** privilege on the schema, provided that the user also has ownership or the
+        * summaries for tables (within the current metastore and parent catalog and schema), when the user is
+        a metastore admin, or: * summaries for tables and schemas (within the current metastore and parent
+        catalog) for which the user has ownership or the **SELECT** privilege on the table and ownership or
+        **USE_SCHEMA** privilege on the schema, provided that the user also has ownership or the
         **USE_CATALOG** privilege on the parent catalog.
         
         There is no guarantee of a specific ordering of the elements in the array.
@@ -6856,9 +6989,12 @@ class TablesAPI:
         :param catalog_name: str
           Name of parent catalog for tables of interest.
         :param max_results: int (optional)
-          Maximum number of tables to return (page length). Defaults to 10000.
+          Maximum number of summaries for tables to return. If not set, the page length is set to 10000. -
+          when set to a value less than or equal 0, an invalid parameter error is returned; - when set to a
+          value greater than 0 and less than or equal 10000, the page length is set to that value; - when set
+          to a value greater than 10000, an invalid parameter error is returned;
         :param page_token: str (optional)
-          Opaque token to send for the next page of results (pagination).
+          Opaque pagination token to go to next page based on previous query.
         :param schema_name_pattern: str (optional)
           A sql LIKE pattern (% and _) for schema names. All schemas will be returned if not set or empty.
         :param table_name_pattern: str (optional)

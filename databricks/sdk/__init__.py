@@ -1,69 +1,100 @@
 import databricks.sdk.core as client
 import databricks.sdk.dbutils as dbutils
-from databricks.sdk.mixins.compute import ClustersExt
+
 from databricks.sdk.mixins.files import DbfsExt
+from databricks.sdk.mixins.compute import ClustersExt
 from databricks.sdk.mixins.workspace import WorkspaceExt
-from databricks.sdk.service.billing import (BillableUsageAPI, BudgetsAPI,
-                                            LogDeliveryAPI)
-from databricks.sdk.service.catalog import (AccountMetastoreAssignmentsAPI,
-                                            AccountMetastoresAPI,
-                                            AccountStorageCredentialsAPI,
-                                            ArtifactAllowlistsAPI, CatalogsAPI,
-                                            ConnectionsAPI,
-                                            ExternalLocationsAPI, FunctionsAPI,
-                                            GrantsAPI, MetastoresAPI,
-                                            ModelVersionsAPI,
-                                            RegisteredModelsAPI, SchemasAPI,
-                                            StorageCredentialsAPI,
-                                            SystemSchemasAPI,
-                                            TableConstraintsAPI, TablesAPI,
-                                            VolumesAPI, WorkspaceBindingsAPI)
-from databricks.sdk.service.compute import (ClusterPoliciesAPI, ClustersAPI,
-                                            CommandExecutionAPI,
-                                            GlobalInitScriptsAPI,
-                                            InstancePoolsAPI,
-                                            InstanceProfilesAPI, LibrariesAPI,
-                                            PolicyFamiliesAPI)
-from databricks.sdk.service.files import DbfsAPI, FilesAPI
-from databricks.sdk.service.iam import (AccountAccessControlAPI,
-                                        AccountAccessControlProxyAPI,
-                                        AccountGroupsAPI,
-                                        AccountServicePrincipalsAPI,
-                                        AccountUsersAPI, CurrentUserAPI,
-                                        GroupsAPI, PermissionsAPI,
-                                        ServicePrincipalsAPI, UsersAPI,
-                                        WorkspaceAssignmentAPI)
+from databricks.sdk.service.iam import AccountAccessControlAPI
+from databricks.sdk.service.iam import AccountAccessControlProxyAPI
+from databricks.sdk.service.sql import AlertsAPI
+from databricks.sdk.service.serving import AppsAPI
+from databricks.sdk.service.catalog import ArtifactAllowlistsAPI
+from databricks.sdk.service.billing import BillableUsageAPI
+from databricks.sdk.service.billing import BudgetsAPI
+from databricks.sdk.service.catalog import CatalogsAPI
+from databricks.sdk.service.sharing import CleanRoomsAPI
+from databricks.sdk.service.compute import ClusterPoliciesAPI
+from databricks.sdk.service.compute import ClustersAPI
+from databricks.sdk.service.compute import CommandExecutionAPI
+from databricks.sdk.service.catalog import ConnectionsAPI
+from databricks.sdk.service.provisioning import CredentialsAPI
+from databricks.sdk.service.settings import CredentialsManagerAPI
+from databricks.sdk.service.iam import CurrentUserAPI
+from databricks.sdk.service.oauth2 import CustomAppIntegrationAPI
+from databricks.sdk.service.sql import DashboardWidgetsAPI
+from databricks.sdk.service.sql import DashboardsAPI
+from databricks.sdk.service.sql import DataSourcesAPI
+from databricks.sdk.service.files import DbfsAPI
+from databricks.sdk.service.sql import DbsqlPermissionsAPI
+from databricks.sdk.service.provisioning import EncryptionKeysAPI
+from databricks.sdk.service.ml import ExperimentsAPI
+from databricks.sdk.service.catalog import ExternalLocationsAPI
+from databricks.sdk.service.files import FilesAPI
+from databricks.sdk.service.catalog import FunctionsAPI
+from databricks.sdk.service.workspace import GitCredentialsAPI
+from databricks.sdk.service.compute import GlobalInitScriptsAPI
+from databricks.sdk.service.catalog import GrantsAPI
+from databricks.sdk.service.iam import GroupsAPI
+from databricks.sdk.service.iam import AccountGroupsAPI
+from databricks.sdk.service.compute import InstancePoolsAPI
+from databricks.sdk.service.compute import InstanceProfilesAPI
+from databricks.sdk.service.settings import IpAccessListsAPI
+from databricks.sdk.service.settings import AccountIpAccessListsAPI
 from databricks.sdk.service.jobs import JobsAPI
-from databricks.sdk.service.ml import ExperimentsAPI, ModelRegistryAPI
-from databricks.sdk.service.oauth2 import (CustomAppIntegrationAPI,
-                                           OAuthPublishedAppsAPI,
-                                           PublishedAppIntegrationAPI,
-                                           ServicePrincipalSecretsAPI)
+from databricks.sdk.service.dashboards import LakeviewAPI
+from databricks.sdk.service.compute import LibrariesAPI
+from databricks.sdk.service.billing import LogDeliveryAPI
+from databricks.sdk.service.catalog import AccountMetastoreAssignmentsAPI
+from databricks.sdk.service.catalog import MetastoresAPI
+from databricks.sdk.service.catalog import AccountMetastoresAPI
+from databricks.sdk.service.ml import ModelRegistryAPI
+from databricks.sdk.service.catalog import ModelVersionsAPI
+from databricks.sdk.service.settings import NetworkConnectivityAPI
+from databricks.sdk.service.provisioning import NetworksAPI
+from databricks.sdk.service.oauth2 import OAuthPublishedAppsAPI
+from databricks.sdk.service.iam import PermissionsAPI
 from databricks.sdk.service.pipelines import PipelinesAPI
-from databricks.sdk.service.provisioning import (CredentialsAPI,
-                                                 EncryptionKeysAPI,
-                                                 NetworksAPI, PrivateAccessAPI,
-                                                 StorageAPI, VpcEndpointsAPI,
-                                                 WorkspacesAPI)
-from databricks.sdk.service.serving import AppsAPI, ServingEndpointsAPI
-from databricks.sdk.service.settings import (AccountIpAccessListsAPI,
-                                             AccountSettingsAPI,
-                                             CredentialsManagerAPI,
-                                             IpAccessListsAPI,
-                                             NetworkConnectivityAPI,
-                                             SettingsAPI, TokenManagementAPI,
-                                             TokensAPI, WorkspaceConfAPI)
-from databricks.sdk.service.sharing import (CleanRoomsAPI, ProvidersAPI,
-                                            RecipientActivationAPI,
-                                            RecipientsAPI, SharesAPI)
-from databricks.sdk.service.sql import (AlertsAPI, DashboardsAPI,
-                                        DashboardWidgetsAPI, DataSourcesAPI,
-                                        DbsqlPermissionsAPI, QueriesAPI,
-                                        QueryHistoryAPI,
-                                        QueryVisualizationsAPI,
-                                        StatementExecutionAPI, WarehousesAPI)
-from databricks.sdk.service.workspace import (GitCredentialsAPI, ReposAPI,
-                                              SecretsAPI, WorkspaceAPI)
+from databricks.sdk.service.compute import PolicyFamiliesAPI
+from databricks.sdk.service.provisioning import PrivateAccessAPI
+from databricks.sdk.service.sharing import ProvidersAPI
+from databricks.sdk.service.oauth2 import PublishedAppIntegrationAPI
+from databricks.sdk.service.sql import QueriesAPI
+from databricks.sdk.service.sql import QueryHistoryAPI
+from databricks.sdk.service.sql import QueryVisualizationsAPI
+from databricks.sdk.service.sharing import RecipientActivationAPI
+from databricks.sdk.service.sharing import RecipientsAPI
+from databricks.sdk.service.catalog import RegisteredModelsAPI
+from databricks.sdk.service.workspace import ReposAPI
+from databricks.sdk.service.catalog import SchemasAPI
+from databricks.sdk.service.workspace import SecretsAPI
+from databricks.sdk.service.oauth2 import ServicePrincipalSecretsAPI
+from databricks.sdk.service.iam import ServicePrincipalsAPI
+from databricks.sdk.service.iam import AccountServicePrincipalsAPI
+from databricks.sdk.service.serving import ServingEndpointsAPI
+from databricks.sdk.service.settings import SettingsAPI
+from databricks.sdk.service.settings import AccountSettingsAPI
+from databricks.sdk.service.sharing import SharesAPI
+from databricks.sdk.service.sql import StatementExecutionAPI
+from databricks.sdk.service.provisioning import StorageAPI
+from databricks.sdk.service.catalog import StorageCredentialsAPI
+from databricks.sdk.service.catalog import AccountStorageCredentialsAPI
+from databricks.sdk.service.catalog import SystemSchemasAPI
+from databricks.sdk.service.catalog import TableConstraintsAPI
+from databricks.sdk.service.catalog import TablesAPI
+from databricks.sdk.service.settings import TokenManagementAPI
+from databricks.sdk.service.settings import TokensAPI
+from databricks.sdk.service.iam import UsersAPI
+from databricks.sdk.service.iam import AccountUsersAPI
+from databricks.sdk.service.vectorsearch import VectorSearchEndpointsAPI
+from databricks.sdk.service.vectorsearch import VectorSearchIndexesAPI
+from databricks.sdk.service.catalog import VolumesAPI
+from databricks.sdk.service.provisioning import VpcEndpointsAPI
+from databricks.sdk.service.sql import WarehousesAPI
+from databricks.sdk.service.workspace import WorkspaceAPI
+from databricks.sdk.service.iam import WorkspaceAssignmentAPI
+from databricks.sdk.service.catalog import WorkspaceBindingsAPI
+from databricks.sdk.service.settings import WorkspaceConfAPI
+from databricks.sdk.service.provisioning import WorkspacesAPI
 
 
 def _make_dbutils(config: client.Config):
@@ -169,6 +200,7 @@ class WorkspaceClient:
         self._instance_profiles = InstanceProfilesAPI(self._api_client)
         self._ip_access_lists = IpAccessListsAPI(self._api_client)
         self._jobs = JobsAPI(self._api_client)
+        self._lakeview = LakeviewAPI(self._api_client)
         self._libraries = LibrariesAPI(self._api_client)
         self._metastores = MetastoresAPI(self._api_client)
         self._model_registry = ModelRegistryAPI(self._api_client)
@@ -198,6 +230,8 @@ class WorkspaceClient:
         self._token_management = TokenManagementAPI(self._api_client)
         self._tokens = TokensAPI(self._api_client)
         self._users = UsersAPI(self._api_client)
+        self._vector_search_endpoints = VectorSearchEndpointsAPI(self._api_client)
+        self._vector_search_indexes = VectorSearchIndexesAPI(self._api_client)
         self._volumes = VolumesAPI(self._api_client)
         self._warehouses = WarehousesAPI(self._api_client)
         self._workspace = WorkspaceExt(self._api_client)
@@ -362,6 +396,11 @@ class WorkspaceClient:
         return self._jobs
 
     @property
+    def lakeview(self) -> LakeviewAPI:
+        """These APIs provide specific management operations for Lakeview dashboards."""
+        return self._lakeview
+
+    @property
     def libraries(self) -> LibrariesAPI:
         """The Libraries API allows you to install and uninstall libraries and get the status of libraries on a cluster."""
         return self._libraries
@@ -505,6 +544,16 @@ class WorkspaceClient:
     def users(self) -> UsersAPI:
         """User identities recognized by Databricks and represented by email addresses."""
         return self._users
+
+    @property
+    def vector_search_endpoints(self) -> VectorSearchEndpointsAPI:
+        """**Endpoint**: Represents the compute resources to host vector search indexes."""
+        return self._vector_search_endpoints
+
+    @property
+    def vector_search_indexes(self) -> VectorSearchIndexesAPI:
+        """**Index**: An efficient representation of your embedding vectors that supports real-time and efficient approximate nearest neighbor (ANN) search queries."""
+        return self._vector_search_indexes
 
     @property
     def volumes(self) -> VolumesAPI:

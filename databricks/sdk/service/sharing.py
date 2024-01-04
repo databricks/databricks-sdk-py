@@ -1,16 +1,19 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
 from __future__ import annotations
-
-import logging
 from dataclasses import dataclass
+from datetime import timedelta
 from enum import Enum
-from typing import Dict, Iterator, List, Optional
-
-from ._internal import _enum, _from_dict, _repeated_dict, _repeated_enum
+from typing import Dict, List, Any, Iterator, Type, Callable, Optional, BinaryIO
+import time
+import random
+import logging
+from ..errors import OperationTimeout, OperationFailed
+from ._internal import _enum, _from_dict, _repeated_dict, _repeated_enum, Wait
 
 _LOG = logging.getLogger('databricks.sdk')
 
+from databricks.sdk.service import catalog
 from databricks.sdk.service import catalog
 
 # all definitions in this file are in alphabetical order
@@ -584,7 +587,8 @@ class ListCleanRoomsResponse:
     """An array of clean rooms. Remote details (central) are not included."""
 
     next_page_token: Optional[str] = None
-    """Token to retrieve the next page of results. Absent if there are no more pages."""
+    """Opaque token to retrieve the next page of results. Absent if there are no more pages.
+    __page_token__ should be set to this value for the next request (for the next page of results)."""
 
     def as_dict(self) -> dict:
         """Serializes the ListCleanRoomsResponse into a dictionary suitable for use as a JSON request body."""
@@ -1626,9 +1630,12 @@ class CleanRoomsAPI:
         array.
         
         :param max_results: int (optional)
-          Maximum number of clean rooms to return.
+          Maximum number of clean rooms to return. If not set, all the clean rooms are returned (not
+          recommended). - when set to a value greater than 0, the page length is the minimum of this value and
+          a server configured value; - when set to 0, the page length is set to a server configured value
+          (recommended); - when set to a value less than 0, an invalid parameter error is returned;
         :param page_token: str (optional)
-          Pagination token to go to next page based on previous query.
+          Opaque pagination token to go to next page based on previous query.
         
         :returns: Iterator over :class:`CleanRoomInfo`
         """

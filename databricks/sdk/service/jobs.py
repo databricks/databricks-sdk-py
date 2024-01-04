@@ -1,21 +1,22 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
 from __future__ import annotations
-
-import logging
-import random
-import time
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Callable, Dict, Iterator, List, Optional
-
-from ..errors import OperationFailed
-from ._internal import Wait, _enum, _from_dict, _repeated_dict
+from typing import Dict, List, Any, Iterator, Type, Callable, Optional, BinaryIO
+import time
+import random
+import logging
+from ..errors import OperationTimeout, OperationFailed
+from ._internal import _enum, _from_dict, _repeated_dict, _repeated_enum, Wait
 
 _LOG = logging.getLogger('databricks.sdk')
 
-from databricks.sdk.service import compute, iam
+from databricks.sdk.service import compute
+from databricks.sdk.service import compute
+from databricks.sdk.service import compute
+from databricks.sdk.service import iam
 
 # all definitions in this file are in alphabetical order
 
@@ -5185,9 +5186,10 @@ class JobsAPI:
                                sql_params=sql_params).result(timeout=timeout)
 
     def reset(self, job_id: int, new_settings: JobSettings):
-        """Overwrite all settings for a job.
+        """Update all job settings (reset).
         
-        Overwrite all settings for the given job. Use the Update endpoint to update job settings partially.
+        Overwrite all settings for the given job. Use the [_Update_ endpoint](:method:jobs/update) to update
+        job settings partially.
         
         :param job_id: int
           The canonical identifier of the job to reset. This field is required.
@@ -5497,10 +5499,10 @@ class JobsAPI:
                *,
                fields_to_remove: Optional[List[str]] = None,
                new_settings: Optional[JobSettings] = None):
-        """Partially update a job.
+        """Update job settings partially.
         
-        Add, update, or remove specific settings of an existing job. Use the ResetJob to overwrite all job
-        settings.
+        Add, update, or remove specific settings of an existing job. Use the [_Reset_
+        endpoint](:method:jobs/reset) to overwrite all job settings.
         
         :param job_id: int
           The canonical identifier of the job to update. This field is required.

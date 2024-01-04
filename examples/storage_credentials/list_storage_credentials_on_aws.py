@@ -1,5 +1,7 @@
 from databricks.sdk import WorkspaceClient
+from databricks.sdk.service import _internal
+import time, base64, os
 
 w = WorkspaceClient()
 
-all = w.storage_credentials.list()
+all = w.storage_credentials.list(catalog.ListStorageCredentialsRequest())

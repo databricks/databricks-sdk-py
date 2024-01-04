@@ -1,8 +1,6 @@
-import os
-import time
-
 from databricks.sdk import WorkspaceClient
-from databricks.sdk.service import catalog
+from databricks.sdk.service import _internal
+import time, base64, os
 
 w = WorkspaceClient()
 

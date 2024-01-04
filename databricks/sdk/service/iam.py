@@ -1,13 +1,15 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
 from __future__ import annotations
-
-import logging
 from dataclasses import dataclass
+from datetime import timedelta
 from enum import Enum
-from typing import Any, Dict, Iterator, List, Optional
-
-from ._internal import _enum, _from_dict, _repeated_dict, _repeated_enum
+from typing import Dict, List, Any, Iterator, Type, Callable, Optional, BinaryIO
+import time
+import random
+import logging
+from ..errors import OperationTimeout, OperationFailed
+from ._internal import _enum, _from_dict, _repeated_dict, _repeated_enum, Wait
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -1125,6 +1127,7 @@ class User:
 class UserSchema(Enum):
 
     URN_IETF_PARAMS_SCIM_SCHEMAS_CORE_2_0_USER = 'urn:ietf:params:scim:schemas:core:2.0:User'
+    URN_IETF_PARAMS_SCIM_SCHEMAS_EXTENSION_WORKSPACE_2_0_USER = 'urn:ietf:params:scim:schemas:extension:workspace:2.0:User'
 
 
 class WorkspacePermission(Enum):

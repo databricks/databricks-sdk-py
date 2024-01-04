@@ -1,17 +1,15 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
 from __future__ import annotations
-
-import logging
-import random
-import time
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Any, Callable, Dict, Iterator, List, Optional
-
-from ..errors import OperationFailed
-from ._internal import Wait, _enum, _from_dict, _repeated_dict, _repeated_enum
+from typing import Dict, List, Any, Iterator, Type, Callable, Optional, BinaryIO
+import time
+import random
+import logging
+from ..errors import OperationTimeout, OperationFailed
+from ._internal import _enum, _from_dict, _repeated_dict, _repeated_enum, Wait
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -23,8 +21,8 @@ class AccessControl:
     group_name: Optional[str] = None
 
     permission_level: Optional[PermissionLevel] = None
-    """* `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_MANAGE`: Can manage the
-    query"""
+    """* `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_EDIT`: Can edit the query
+    * `CAN_MANAGE`: Can manage the query"""
 
     user_name: Optional[str] = None
 
@@ -346,7 +344,6 @@ class ChannelInfo:
 
 
 class ChannelName(Enum):
-    """Name of the channel"""
 
     CHANNEL_NAME_CURRENT = 'CHANNEL_NAME_CURRENT'
     CHANNEL_NAME_CUSTOM = 'CHANNEL_NAME_CUSTOM'
@@ -681,8 +678,8 @@ class Dashboard:
     """The identifier of the workspace folder containing the object."""
 
     permission_tier: Optional[PermissionLevel] = None
-    """* `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_MANAGE`: Can manage the
-    query"""
+    """* `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_EDIT`: Can edit the query
+    * `CAN_MANAGE`: Can manage the query"""
 
     slug: Optional[str] = None
     """URL slug. Usually mirrors the query name with dashes (`-`) instead of spaces. Appears in the URL
@@ -2025,9 +2022,10 @@ class ParameterType(Enum):
 
 
 class PermissionLevel(Enum):
-    """* `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_MANAGE`: Can manage the
-    query"""
+    """* `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_EDIT`: Can edit the query
+    * `CAN_MANAGE`: Can manage the query"""
 
+    CAN_EDIT = 'CAN_EDIT'
     CAN_MANAGE = 'CAN_MANAGE'
     CAN_RUN = 'CAN_RUN'
     CAN_VIEW = 'CAN_VIEW'
@@ -2100,8 +2098,8 @@ class Query:
     """The identifier of the workspace folder containing the object."""
 
     permission_tier: Optional[PermissionLevel] = None
-    """* `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_MANAGE`: Can manage the
-    query"""
+    """* `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_EDIT`: Can edit the query
+    * `CAN_MANAGE`: Can manage the query"""
 
     query: Optional[str] = None
     """The text of the query to be run."""
