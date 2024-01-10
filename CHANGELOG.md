@@ -1,5 +1,46 @@
 # Version changelog
 
+## 0.17.0
+
+* Use covariant type for `@retried(on=[...])` ([#486](https://github.com/databricks/databricks-sdk-py/pull/486)).
+* Configure request timeout using existing parameter from Config ([#489](https://github.com/databricks/databricks-sdk-py/pull/489)).
+* Make contents of `__init__.py` equal across projects ([#488](https://github.com/databricks/databricks-sdk-py/pull/488)).
+* Update SDK to Latest OpenAPI Specification ([#501](https://github.com/databricks/databricks-sdk-py/pull/501)).
+
+API Changes:
+
+ * Changed `list()` method for [w.external_locations](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/external_locations.html) workspace-level service to require request of `databricks.sdk.service.catalog.ListExternalLocationsRequest` dataclass.
+ * Changed `list()` method for [w.storage_credentials](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/storage_credentials.html) workspace-level service to require request of `databricks.sdk.service.catalog.ListStorageCredentialsRequest` dataclass.
+ * Added `next_page_token` field for `databricks.sdk.service.catalog.ListExternalLocationsResponse`.
+ * Added `max_results` field for `databricks.sdk.service.catalog.ListFunctionsRequest`.
+ * Added `page_token` field for `databricks.sdk.service.catalog.ListFunctionsRequest`.
+ * Added `next_page_token` field for `databricks.sdk.service.catalog.ListFunctionsResponse`.
+ * Added `max_results` field for `databricks.sdk.service.catalog.ListSchemasRequest`.
+ * Added `page_token` field for `databricks.sdk.service.catalog.ListSchemasRequest`.
+ * Added `next_page_token` field for `databricks.sdk.service.catalog.ListSchemasResponse`.
+ * Added `next_page_token` field for `databricks.sdk.service.catalog.ListStorageCredentialsResponse`.
+ * Added `omit_columns` field for `databricks.sdk.service.catalog.ListTablesRequest`.
+ * Added `omit_properties` field for `databricks.sdk.service.catalog.ListTablesRequest`.
+ * Removed `databricks.sdk.service.catalog.TableConstraintList` dataclass.
+ * Added `databricks.sdk.service.catalog.ListExternalLocationsRequest` dataclass.
+ * Added `databricks.sdk.service.catalog.ListStorageCredentialsRequest` dataclass.
+ * Added `init_scripts` field for `databricks.sdk.service.pipelines.PipelineCluster`.
+ * Added `validate_only` field for `databricks.sdk.service.pipelines.StartUpdate`.
+ * Added `validate_only` field for `databricks.sdk.service.pipelines.UpdateInfo`.
+ * Changed `list()` method for [w.tokens](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/tokens.html) workspace-level service to return `databricks.sdk.service.settings.ListPublicTokensResponse` dataclass.
+ * Added `databricks.sdk.service.settings.ListPublicTokensResponse` dataclass.
+ * Changed `create()` method for [w.dashboards](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/dashboards.html) workspace-level service . New request type is `databricks.sdk.service.sql.DashboardPostContent` dataclass.
+ * Added `update()` method for [w.dashboards](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/dashboards.html) workspace-level service.
+ * Removed `databricks.sdk.service.sql.CreateDashboardRequest` dataclass.
+ * Added `http_headers` field for `databricks.sdk.service.sql.ExternalLink`.
+ * Added `run_as_role` field for `databricks.sdk.service.sql.QueryEditContent`.
+ * Added `databricks.sdk.service.sql.DashboardEditContent` dataclass.
+ * Added `databricks.sdk.service.sql.DashboardPostContent` dataclass.
+ * Added `databricks.sdk.service.dashboards` package.
+ * Added `databricks.sdk.service.vectorsearch` package.
+
+OpenAPI SHA: 0e0d4cbe87193e36c73b8b2be3b0dd0f1b013e00, Date: 2024-01-10
+
 ## 0.16.0
 
 * Sort imports in service template ([#479](https://github.com/databricks/databricks-sdk-py/pull/479)).
