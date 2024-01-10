@@ -1125,6 +1125,7 @@ class User:
 class UserSchema(Enum):
 
     URN_IETF_PARAMS_SCIM_SCHEMAS_CORE_2_0_USER = 'urn:ietf:params:scim:schemas:core:2.0:User'
+    URN_IETF_PARAMS_SCIM_SCHEMAS_EXTENSION_WORKSPACE_2_0_USER = 'urn:ietf:params:scim:schemas:extension:workspace:2.0:User'
 
 
 class WorkspacePermission(Enum):

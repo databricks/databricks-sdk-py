@@ -832,6 +832,11 @@ class PipelineCluster:
     """Attributes related to clusters running on Google Cloud Platform. If not specified at cluster
     creation, a set of default values will be used."""
 
+    init_scripts: Optional[List[compute.InitScriptInfo]] = None
+    """The configuration for storing init scripts. Any number of destinations can be specified. The
+    scripts are executed sequentially in the order provided. If `cluster_log_conf` is specified,
+    init script logs are sent to `<destination>/<cluster-ID>/init_scripts`."""
+
     instance_pool_id: Optional[str] = None
     """The optional ID of the instance pool to which the cluster belongs."""
 
@@ -895,6 +900,7 @@ class PipelineCluster:
             body['driver_instance_pool_id'] = self.driver_instance_pool_id
         if self.driver_node_type_id is not None: body['driver_node_type_id'] = self.driver_node_type_id
         if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes.as_dict()
+        if self.init_scripts: body['init_scripts'] = [v.as_dict() for v in self.init_scripts]
         if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
         if self.label is not None: body['label'] = self.label
         if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
@@ -917,6 +923,7 @@ class PipelineCluster:
                    driver_instance_pool_id=d.get('driver_instance_pool_id', None),
                    driver_node_type_id=d.get('driver_node_type_id', None),
                    gcp_attributes=_from_dict(d, 'gcp_attributes', compute.GcpAttributes),
+                   init_scripts=_repeated_dict(d, 'init_scripts', compute.InitScriptInfo),
                    instance_pool_id=d.get('instance_pool_id', None),
                    label=d.get('label', None),
                    node_type_id=d.get('node_type_id', None),
@@ -1402,6 +1409,10 @@ class StartUpdate:
     full_refresh_selection are empty, this is a full graph update. Full Refresh on a table means
     that the states of the table will be reset before the refresh."""
 
+    validate_only: Optional[bool] = None
+    """If true, this update only validates the correctness of pipeline source code but does not
+    materialize or publish any datasets."""
+
     def as_dict(self) -> dict:
         """Serializes the StartUpdate into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1411,6 +1422,7 @@ class StartUpdate:
             body['full_refresh_selection'] = [v for v in self.full_refresh_selection]
         if self.pipeline_id is not None: body['pipeline_id'] = self.pipeline_id
         if self.refresh_selection: body['refresh_selection'] = [v for v in self.refresh_selection]
+        if self.validate_only is not None: body['validate_only'] = self.validate_only
         return body
 
     @classmethod
@@ -1420,7 +1432,8 @@ class StartUpdate:
                    full_refresh=d.get('full_refresh', None),
                    full_refresh_selection=d.get('full_refresh_selection', None),
                    pipeline_id=d.get('pipeline_id', None),
-                   refresh_selection=d.get('refresh_selection', None))
+                   refresh_selection=d.get('refresh_selection', None),
+                   validate_only=d.get('validate_only', None))
 
 
 class StartUpdateCause(Enum):
@@ -1486,6 +1499,10 @@ class UpdateInfo:
     update_id: Optional[str] = None
     """The ID of this update."""
 
+    validate_only: Optional[bool] = None
+    """If true, this update only validates the correctness of pipeline source code but does not
+    materialize or publish any datasets."""
+
     def as_dict(self) -> dict:
         """Serializes the UpdateInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1500,6 +1517,7 @@ class UpdateInfo:
         if self.refresh_selection: body['refresh_selection'] = [v for v in self.refresh_selection]
         if self.state is not None: body['state'] = self.state.value
         if self.update_id is not None: body['update_id'] = self.update_id
+        if self.validate_only is not None: body['validate_only'] = self.validate_only
         return body
 
     @classmethod
@@ -1514,7 +1532,8 @@ class UpdateInfo:
                    pipeline_id=d.get('pipeline_id', None),
                    refresh_selection=d.get('refresh_selection', None),
                    state=_enum(d, 'state', UpdateInfoState),
-                   update_id=d.get('update_id', None))
+                   update_id=d.get('update_id', None),
+                   validate_only=d.get('validate_only', None))
 
 
 class UpdateInfoCause(Enum):
@@ -2007,7 +2026,8 @@ class PipelinesAPI:
                      cause: Optional[StartUpdateCause] = None,
                      full_refresh: Optional[bool] = None,
                      full_refresh_selection: Optional[List[str]] = None,
-                     refresh_selection: Optional[List[str]] = None) -> StartUpdateResponse:
+                     refresh_selection: Optional[List[str]] = None,
+                     validate_only: Optional[bool] = None) -> StartUpdateResponse:
         """Start a pipeline.
         
         Starts a new update for the pipeline. If there is already an active update for the pipeline, the
@@ -2025,6 +2045,9 @@ class PipelinesAPI:
           A list of tables to update without fullRefresh. If both refresh_selection and full_refresh_selection
           are empty, this is a full graph update. Full Refresh on a table means that the states of the table
           will be reset before the refresh.
+        :param validate_only: bool (optional)
+          If true, this update only validates the correctness of pipeline source code but does not materialize
+          or publish any datasets.
         
         :returns: :class:`StartUpdateResponse`
         """
@@ -2034,6 +2057,7 @@ class PipelinesAPI:
         if full_refresh_selection is not None:
             body['full_refresh_selection'] = [v for v in full_refresh_selection]
         if refresh_selection is not None: body['refresh_selection'] = [v for v in refresh_selection]
+        if validate_only is not None: body['validate_only'] = validate_only
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         res = self._api.do('POST', f'/api/2.0/pipelines/{pipeline_id}/updates', body=body, headers=headers)
         return StartUpdateResponse.from_dict(res)
