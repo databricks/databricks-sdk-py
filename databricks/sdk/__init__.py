@@ -24,6 +24,7 @@ from databricks.sdk.service.compute import (ClusterPoliciesAPI, ClustersAPI,
                                             InstancePoolsAPI,
                                             InstanceProfilesAPI, LibrariesAPI,
                                             PolicyFamiliesAPI)
+from databricks.sdk.service.dashboards import LakeviewAPI
 from databricks.sdk.service.files import DbfsAPI, FilesAPI
 from databricks.sdk.service.iam import (AccountAccessControlAPI,
                                         AccountAccessControlProxyAPI,
@@ -62,6 +63,8 @@ from databricks.sdk.service.sql import (AlertsAPI, DashboardsAPI,
                                         QueryHistoryAPI,
                                         QueryVisualizationsAPI,
                                         StatementExecutionAPI, WarehousesAPI)
+from databricks.sdk.service.vectorsearch import (VectorSearchEndpointsAPI,
+                                                 VectorSearchIndexesAPI)
 from databricks.sdk.service.workspace import (GitCredentialsAPI, ReposAPI,
                                               SecretsAPI, WorkspaceAPI)
 
@@ -169,6 +172,7 @@ class WorkspaceClient:
         self._instance_profiles = InstanceProfilesAPI(self._api_client)
         self._ip_access_lists = IpAccessListsAPI(self._api_client)
         self._jobs = JobsAPI(self._api_client)
+        self._lakeview = LakeviewAPI(self._api_client)
         self._libraries = LibrariesAPI(self._api_client)
         self._metastores = MetastoresAPI(self._api_client)
         self._model_registry = ModelRegistryAPI(self._api_client)
@@ -198,6 +202,8 @@ class WorkspaceClient:
         self._token_management = TokenManagementAPI(self._api_client)
         self._tokens = TokensAPI(self._api_client)
         self._users = UsersAPI(self._api_client)
+        self._vector_search_endpoints = VectorSearchEndpointsAPI(self._api_client)
+        self._vector_search_indexes = VectorSearchIndexesAPI(self._api_client)
         self._volumes = VolumesAPI(self._api_client)
         self._warehouses = WarehousesAPI(self._api_client)
         self._workspace = WorkspaceExt(self._api_client)
@@ -362,6 +368,11 @@ class WorkspaceClient:
         return self._jobs
 
     @property
+    def lakeview(self) -> LakeviewAPI:
+        """These APIs provide specific management operations for Lakeview dashboards."""
+        return self._lakeview
+
+    @property
     def libraries(self) -> LibrariesAPI:
         """The Libraries API allows you to install and uninstall libraries and get the status of libraries on a cluster."""
         return self._libraries
@@ -505,6 +516,16 @@ class WorkspaceClient:
     def users(self) -> UsersAPI:
         """User identities recognized by Databricks and represented by email addresses."""
         return self._users
+
+    @property
+    def vector_search_endpoints(self) -> VectorSearchEndpointsAPI:
+        """**Endpoint**: Represents the compute resources to host vector search indexes."""
+        return self._vector_search_endpoints
+
+    @property
+    def vector_search_indexes(self) -> VectorSearchIndexesAPI:
+        """**Index**: An efficient representation of your embedding vectors that supports real-time and efficient approximate nearest neighbor (ANN) search queries."""
+        return self._vector_search_indexes
 
     @property
     def volumes(self) -> VolumesAPI:

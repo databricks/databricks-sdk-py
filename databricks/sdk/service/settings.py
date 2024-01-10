@@ -182,7 +182,7 @@ class CreateTokenRequest:
     lifetime_seconds: Optional[int] = None
     """The lifetime of the token, in seconds.
     
-    If the ifetime is not specified, this token remains valid indefinitely."""
+    If the lifetime is not specified, this token remains valid indefinitely."""
 
     def as_dict(self) -> dict:
         """Serializes the CreateTokenRequest into a dictionary suitable for use as a JSON request body."""
@@ -580,6 +580,23 @@ class ListNetworkConnectivityConfigurationsResponse:
         """Deserializes the ListNetworkConnectivityConfigurationsResponse from a dictionary."""
         return cls(items=_repeated_dict(d, 'items', NetworkConnectivityConfiguration),
                    next_page_token=d.get('next_page_token', None))
+
+
+@dataclass
+class ListPublicTokensResponse:
+    token_infos: Optional[List[PublicTokenInfo]] = None
+    """The information for each token."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListPublicTokensResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.token_infos: body['token_infos'] = [v.as_dict() for v in self.token_infos]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ListPublicTokensResponse:
+        """Deserializes the ListPublicTokensResponse from a dictionary."""
+        return cls(token_infos=_repeated_dict(d, 'token_infos', PublicTokenInfo))
 
 
 @dataclass
@@ -998,7 +1015,7 @@ class ReplaceIpAccessList:
     """Specifies whether this IP access list is enabled."""
 
     ip_access_list_id: Optional[str] = None
-    """The ID for the corresponding IP access list to modify"""
+    """The ID for the corresponding IP access list"""
 
     ip_addresses: Optional[List[str]] = None
 
@@ -1283,7 +1300,7 @@ class UpdateIpAccessList:
     """Specifies whether this IP access list is enabled."""
 
     ip_access_list_id: Optional[str] = None
-    """The ID for the corresponding IP access list to modify"""
+    """The ID for the corresponding IP access list"""
 
     ip_addresses: Optional[List[str]] = None
 
@@ -1391,6 +1408,7 @@ class AccountIpAccessListsAPI:
         Deletes an IP access list, specified by its list ID.
         
         :param ip_access_list_id: str
+          The ID for the corresponding IP access list
         
         
         """
@@ -1406,6 +1424,7 @@ class AccountIpAccessListsAPI:
         Gets an IP access list, specified by its list ID.
         
         :param ip_access_list_id: str
+          The ID for the corresponding IP access list
         
         :returns: :class:`GetIpAccessListResponse`
         """
@@ -1451,6 +1470,7 @@ class AccountIpAccessListsAPI:
         effect.
         
         :param ip_access_list_id: str
+          The ID for the corresponding IP access list
         :param label: str
           Label for the IP access list. This **cannot** be empty.
         :param list_type: :class:`ListType`
@@ -1499,6 +1519,7 @@ class AccountIpAccessListsAPI:
         It can take a few minutes for the changes to take effect.
         
         :param ip_access_list_id: str
+          The ID for the corresponding IP access list
         :param enabled: bool (optional)
           Specifies whether this IP access list is enabled.
         :param ip_addresses: List[str] (optional)
@@ -1715,7 +1736,7 @@ class IpAccessListsAPI:
         Deletes an IP access list, specified by its list ID.
         
         :param ip_access_list_id: str
-          The ID for the corresponding IP access list to modify
+          The ID for the corresponding IP access list
         
         
         """
@@ -1729,7 +1750,7 @@ class IpAccessListsAPI:
         Gets an IP access list, specified by its list ID.
         
         :param ip_access_list_id: str
-          The ID for the corresponding IP access list to modify
+          The ID for the corresponding IP access list
         
         :returns: :class:`FetchIpAccessListResponse`
         """
@@ -1772,7 +1793,7 @@ class IpAccessListsAPI:
         :method:workspaceconf/setStatus.
         
         :param ip_access_list_id: str
-          The ID for the corresponding IP access list to modify
+          The ID for the corresponding IP access list
         :param label: str
           Label for the IP access list. This **cannot** be empty.
         :param list_type: :class:`ListType`
@@ -1819,7 +1840,7 @@ class IpAccessListsAPI:
         no effect until you enable the feature. See :method:workspaceconf/setStatus.
         
         :param ip_access_list_id: str
-          The ID for the corresponding IP access list to modify
+          The ID for the corresponding IP access list
         :param enabled: bool (optional)
           Specifies whether this IP access list is enabled.
         :param ip_addresses: List[str] (optional)
@@ -2363,7 +2384,7 @@ class TokensAPI:
         :param lifetime_seconds: int (optional)
           The lifetime of the token, in seconds.
           
-          If the ifetime is not specified, this token remains valid indefinitely.
+          If the lifetime is not specified, this token remains valid indefinitely.
         
         :returns: :class:`CreateTokenResponse`
         """
@@ -2391,17 +2412,17 @@ class TokensAPI:
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('POST', '/api/2.0/token/delete', body=body, headers=headers)
 
-    def list(self) -> Iterator[TokenInfo]:
+    def list(self) -> Iterator[PublicTokenInfo]:
         """List tokens.
         
         Lists all the valid tokens for a user-workspace pair.
         
-        :returns: Iterator over :class:`TokenInfo`
+        :returns: Iterator over :class:`PublicTokenInfo`
         """
 
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/token/list', headers=headers)
-        parsed = ListTokensResponse.from_dict(json).token_infos
+        parsed = ListPublicTokensResponse.from_dict(json).token_infos
         return parsed if parsed is not None else []
 
 
