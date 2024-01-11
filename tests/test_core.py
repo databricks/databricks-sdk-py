@@ -19,6 +19,7 @@ from databricks.sdk.core import (ApiClient, CliTokenSource, Config,
                                  CredentialsProvider, DatabricksCliTokenSource,
                                  DatabricksError, HeaderFactory,
                                  StreamingResponse, databricks_cli)
+from databricks.sdk.errors import TooManyRequests
 from databricks.sdk.service.catalog import PermissionsChange
 from databricks.sdk.service.iam import AccessControlRequest
 from databricks.sdk.version import __version__
@@ -459,7 +460,7 @@ def test_http_retried_exceed_limit():
 
     with http_fixture_server(inner) as host:
         api_client = ApiClient(Config(host=host, token='_', retry_timeout_seconds=1))
-        with pytest.raises(TimeoutError):
+        with pytest.raises(TooManyRequests):
             api_client.do('GET', '/foo')
 
     assert len(requests) == 1
