@@ -7,9 +7,12 @@
 * Make contents of `__init__.py` equal across projects ([#488](https://github.com/databricks/databricks-sdk-py/pull/488)).
 * Update SDK to Latest OpenAPI Specification ([#501](https://github.com/databricks/databricks-sdk-py/pull/501)).
 
+Note: This release contains breaking changes, please see below for more details.
+
 API Changes:
 
- * Changed `list()` method for [w.external_locations](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/external_locations.html) workspace-level service to require request of `databricks.sdk.service.catalog.ListExternalLocationsRequest` dataclass, [w.storage_credentials](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/storage_credentials.html) workspace-level service to require request of `databricks.sdk.service.catalog.ListStorageCredentialsRequest` dataclass and [w.tokens](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/tokens.html) workspace-level service to return `databricks.sdk.service.settings.ListPublicTokensResponse` dataclass.
+ * [Breaking] Changed `list()` method for [w.tokens](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/tokens.html) workspace-level service to return `databricks.sdk.service.settings.ListPublicTokensResponse` dataclass.
+ * Changed `list()` method for [w.external_locations](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/external_locations.html) workspace-level service to require request of `databricks.sdk.service.catalog.ListExternalLocationsRequest` dataclass and [w.storage_credentials](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/storage_credentials.html) workspace-level service to require request of `databricks.sdk.service.catalog.ListStorageCredentialsRequest` dataclass. 
  * Added `next_page_token` field for `databricks.sdk.service.catalog.ListExternalLocationsResponse`, `databricks.sdk.service.catalog.ListFunctionsResponse`, `databricks.sdk.service.catalog.ListSchemasResponse` and `databricks.sdk.service.catalog.ListStorageCredentialsResponse`.
  * Added `max_results` field for `databricks.sdk.service.catalog.ListFunctionsRequest` and `databricks.sdk.service.catalog.ListSchemasRequest`.
  * Added `page_token` field for `databricks.sdk.service.catalog.ListFunctionsRequest` and `databricks.sdk.service.catalog.ListSchemasRequest`.
