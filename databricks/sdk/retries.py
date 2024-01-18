@@ -52,7 +52,14 @@ def retried(*,
                     logger.debug(f'Retrying: {retry_reason} (sleeping ~{sleep}s)')
                     time.sleep(sleep + random())
                     attempt += 1
-            raise TimeoutError(f'Timed out after {timeout}') from last_err
+
+            # If we `raise TimeoutError(..) from last_err`, pytest displays the timeout error in the summary
+            # `FAILED ...::test_running_real_assessment_job - TimeoutError: Timed out after 0:06:00`, which
+            # makes troubleshooting harder during the stress time.
+            #
+            # This change will put TimeoutError in the __cause__ attribute of re-raised last error.
+            # See more at https://docs.python.org/3/library/exceptions.html#exception-context
+            raise last_err from TimeoutError(f'Timed out after {timeout}')
 
         return wrapper
 
