@@ -1,19 +1,18 @@
-import json
-import logging
 import re
 import urllib.parse
 from datetime import timedelta
 from json import JSONDecodeError
 from types import TracebackType
-from typing import (Any, BinaryIO, Dict, Iterable, Iterator, List, Optional,
-                    Type, Union)
+from typing import (Any, BinaryIO, Iterator, Type)
 
-import requests
 from requests.adapters import HTTPAdapter
 
-from .config import Config
+from .config import *
 from .errors import DatabricksError, error_mapper
 from .retries import retried
+
+# To preserve backwards compatibility (as these definitions were previously in this module)
+from .credentials_provider import *
 
 __all__ = ['Config', 'DatabricksError']
 
