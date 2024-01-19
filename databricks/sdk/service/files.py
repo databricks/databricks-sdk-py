@@ -1,5 +1,7 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
+from __future__ import annotations
+
 import logging
 from dataclasses import dataclass
 from typing import BinaryIO, Dict, Iterator, List, Optional
@@ -14,76 +16,99 @@ _LOG = logging.getLogger('databricks.sdk')
 @dataclass
 class AddBlock:
     handle: int
+    """The handle on an open stream."""
+
     data: str
+    """The base64-encoded data to append to the stream. This has a limit of 1 MB."""
 
     def as_dict(self) -> dict:
+        """Serializes the AddBlock into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.data is not None: body['data'] = self.data
         if self.handle is not None: body['handle'] = self.handle
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'AddBlock':
+    def from_dict(cls, d: Dict[str, any]) -> AddBlock:
+        """Deserializes the AddBlock from a dictionary."""
         return cls(data=d.get('data', None), handle=d.get('handle', None))
 
 
 @dataclass
 class Close:
     handle: int
+    """The handle on an open stream."""
 
     def as_dict(self) -> dict:
+        """Serializes the Close into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.handle is not None: body['handle'] = self.handle
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'Close':
+    def from_dict(cls, d: Dict[str, any]) -> Close:
+        """Deserializes the Close from a dictionary."""
         return cls(handle=d.get('handle', None))
 
 
 @dataclass
 class Create:
     path: str
+    """The path of the new file. The path should be the absolute DBFS path."""
+
     overwrite: Optional[bool] = None
+    """The flag that specifies whether to overwrite existing file/files."""
 
     def as_dict(self) -> dict:
+        """Serializes the Create into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.overwrite is not None: body['overwrite'] = self.overwrite
         if self.path is not None: body['path'] = self.path
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'Create':
+    def from_dict(cls, d: Dict[str, any]) -> Create:
+        """Deserializes the Create from a dictionary."""
         return cls(overwrite=d.get('overwrite', None), path=d.get('path', None))
 
 
 @dataclass
 class CreateResponse:
     handle: Optional[int] = None
+    """Handle which should subsequently be passed into the AddBlock and Close calls when writing to a
+    file through a stream."""
 
     def as_dict(self) -> dict:
+        """Serializes the CreateResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.handle is not None: body['handle'] = self.handle
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CreateResponse':
+    def from_dict(cls, d: Dict[str, any]) -> CreateResponse:
+        """Deserializes the CreateResponse from a dictionary."""
         return cls(handle=d.get('handle', None))
 
 
 @dataclass
 class Delete:
     path: str
+    """The path of the file or directory to delete. The path should be the absolute DBFS path."""
+
     recursive: Optional[bool] = None
+    """Whether or not to recursively delete the directory's contents. Deleting empty directories can be
+    done without providing the recursive flag."""
 
     def as_dict(self) -> dict:
+        """Serializes the Delete into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.path is not None: body['path'] = self.path
         if self.recursive is not None: body['recursive'] = self.recursive
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'Delete':
+    def from_dict(cls, d: Dict[str, any]) -> Delete:
+        """Deserializes the Delete from a dictionary."""
         return cls(path=d.get('path', None), recursive=d.get('recursive', None))
 
 
@@ -95,11 +120,19 @@ class DownloadResponse:
 @dataclass
 class FileInfo:
     file_size: Optional[int] = None
+    """The length of the file in bytes. This field is omitted for directories."""
+
     is_dir: Optional[bool] = None
+    """True if the path is a directory."""
+
     modification_time: Optional[int] = None
+    """Last modification time of given file in milliseconds since epoch."""
+
     path: Optional[str] = None
+    """The absolute path of the file or directory."""
 
     def as_dict(self) -> dict:
+        """Serializes the FileInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.file_size is not None: body['file_size'] = self.file_size
         if self.is_dir is not None: body['is_dir'] = self.is_dir
@@ -108,7 +141,8 @@ class FileInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'FileInfo':
+    def from_dict(cls, d: Dict[str, any]) -> FileInfo:
+        """Deserializes the FileInfo from a dictionary."""
         return cls(file_size=d.get('file_size', None),
                    is_dir=d.get('is_dir', None),
                    modification_time=d.get('modification_time', None),
@@ -117,55 +151,72 @@ class FileInfo:
 
 @dataclass
 class ListStatusResponse:
-    files: Optional['List[FileInfo]'] = None
+    files: Optional[List[FileInfo]] = None
+    """A list of FileInfo's that describe contents of directory or file. See example above."""
 
     def as_dict(self) -> dict:
+        """Serializes the ListStatusResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.files: body['files'] = [v.as_dict() for v in self.files]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ListStatusResponse':
+    def from_dict(cls, d: Dict[str, any]) -> ListStatusResponse:
+        """Deserializes the ListStatusResponse from a dictionary."""
         return cls(files=_repeated_dict(d, 'files', FileInfo))
 
 
 @dataclass
 class MkDirs:
     path: str
+    """The path of the new directory. The path should be the absolute DBFS path."""
 
     def as_dict(self) -> dict:
+        """Serializes the MkDirs into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.path is not None: body['path'] = self.path
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'MkDirs':
+    def from_dict(cls, d: Dict[str, any]) -> MkDirs:
+        """Deserializes the MkDirs from a dictionary."""
         return cls(path=d.get('path', None))
 
 
 @dataclass
 class Move:
     source_path: str
+    """The source path of the file or directory. The path should be the absolute DBFS path."""
+
     destination_path: str
+    """The destination path of the file or directory. The path should be the absolute DBFS path."""
 
     def as_dict(self) -> dict:
+        """Serializes the Move into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.destination_path is not None: body['destination_path'] = self.destination_path
         if self.source_path is not None: body['source_path'] = self.source_path
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'Move':
+    def from_dict(cls, d: Dict[str, any]) -> Move:
+        """Deserializes the Move from a dictionary."""
         return cls(destination_path=d.get('destination_path', None), source_path=d.get('source_path', None))
 
 
 @dataclass
 class Put:
     path: str
+    """The path of the new file. The path should be the absolute DBFS path."""
+
     contents: Optional[str] = None
+    """This parameter might be absent, and instead a posted file will be used."""
+
     overwrite: Optional[bool] = None
+    """The flag that specifies whether to overwrite existing file/files."""
 
     def as_dict(self) -> dict:
+        """Serializes the Put into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.contents is not None: body['contents'] = self.contents
         if self.overwrite is not None: body['overwrite'] = self.overwrite
@@ -173,7 +224,8 @@ class Put:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'Put':
+    def from_dict(cls, d: Dict[str, any]) -> Put:
+        """Deserializes the Put from a dictionary."""
         return cls(contents=d.get('contents', None),
                    overwrite=d.get('overwrite', None),
                    path=d.get('path', None))
@@ -182,16 +234,22 @@ class Put:
 @dataclass
 class ReadResponse:
     bytes_read: Optional[int] = None
+    """The number of bytes read (could be less than `length` if we hit end of file). This refers to
+    number of bytes read in unencoded version (response data is base64-encoded)."""
+
     data: Optional[str] = None
+    """The base64-encoded contents of the file read."""
 
     def as_dict(self) -> dict:
+        """Serializes the ReadResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.bytes_read is not None: body['bytes_read'] = self.bytes_read
         if self.data is not None: body['data'] = self.data
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ReadResponse':
+    def from_dict(cls, d: Dict[str, any]) -> ReadResponse:
+        """Deserializes the ReadResponse from a dictionary."""
         return cls(bytes_read=d.get('bytes_read', None), data=d.get('data', None))
 
 
@@ -315,7 +373,7 @@ class DbfsAPI:
         res = self._api.do('GET', '/api/2.0/dbfs/get-status', query=query, headers=headers)
         return FileInfo.from_dict(res)
 
-    def list(self, path: str) -> Iterator['FileInfo']:
+    def list(self, path: str) -> Iterator[FileInfo]:
         """List directory contents or file details.
         
         List the contents of a directory, or details of the file. If the file or directory does not exist,

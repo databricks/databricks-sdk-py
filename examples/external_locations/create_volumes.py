@@ -16,3 +16,7 @@ external_location = w.external_locations.create(name=f'sdk-{time.time_ns()}',
                                                 comment="created via SDK",
                                                 url="s3://" + os.environ["TEST_BUCKET"] + "/" +
                                                 f'sdk-{time.time_ns()}')
+
+# cleanup
+w.storage_credentials.delete(name=storage_credential.name)
+w.external_locations.delete(name=external_location.name)

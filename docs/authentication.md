@@ -14,6 +14,7 @@ w. # press <TAB> for autocompletion
 
 The conventional name for the variable that holds the workspace-level client of the Databricks SDK for Python is `w`, which is shorthand for `workspace`.
 
+(notebook-native-authentication)=
 ## Notebook-native authentication
 
 If you initialise `WorkspaceClient` without any arguments, credentials will be picked up automatically from the notebook context. 
@@ -23,6 +24,7 @@ If the same code is run outside the notebook environment, like CI/CD, you have t
 
 `databricks.sdk.AccountClient` does not support notebook-native authentication.
 
+(default-authentication-flow)=
 ## Default authentication flow
 
 If you run the [Databricks Terraform Provider](https://registry.terraform.io/providers/databrickslabs/databricks/latest),
@@ -31,7 +33,7 @@ or applications that target the Databricks SDKs for other languages, most likely
 By default, the Databricks SDK for Python tries the following [authentication](https://docs.databricks.com/dev-tools/auth.html) methods,
 in the following order, until it succeeds:
 
-1. [Databricks native authentication](#databricks-native-authentication)
+1. [Databricks native authentication](#notebook-native-authentication)
 2. [Azure native authentication](#azure-native-authentication)
 4. If the SDK is unsuccessful at this point, it returns an authentication error and stops running.
 
@@ -73,6 +75,7 @@ from databricks.sdk import WorkspaceClient
 w = WorkspaceClient(host=input('Databricks Workspace URL: '), token=input('Token: '))
 ```
 
+(azure-native-authentication)=
 ## Azure native authentication
 
 By default, the Databricks SDK for Python first tries Azure client secret authentication (`auth_type='azure-client-secret'` argument). If the SDK is unsuccessful, it then tries Azure CLI authentication (`auth_type='azure-cli'` argument). See [Manage service principals](https://learn.microsoft.com/azure/databricks/administration-guide/users-groups/service-principals).
@@ -81,13 +84,13 @@ The Databricks SDK for Python picks up an Azure CLI token, if you've previously 
 
 To authenticate as an Azure Active Directory (Azure AD) service principal, you must provide one of the following. See also [Add a service principal to your Azure Databricks account](https://learn.microsoft.com/azure/databricks/administration-guide/users-groups/service-principals#add-sp-account):
 
-- `azure_resource_id`, `azure_client_secret`, `azure_client_id`, and `azure_tenant_id`; or their environment variable or `.databrickscfg` file field equivalents.
-- `azure_resource_id` and `azure_use_msi`; or their environment variable or `.databrickscfg` file field equivalents.
+- `azure_workspace_resource_id`, `azure_client_secret`, `azure_client_id`, and `azure_tenant_id`; or their environment variable or `.databrickscfg` file field equivalents.
+- `azure_workspace_resource_id` and `azure_use_msi`; or their environment variable or `.databrickscfg` file field equivalents.
 
 | Argument              | Description | Environment variable |
 |-----------------------|-------------|----------------------|
-| `azure_resource_id`   | _(String)_ The Azure Resource Manager ID for the Azure Databricks workspace, which is exchanged for a Databricks host URL. | `DATABRICKS_AZURE_RESOURCE_ID` |
-| `azure_use_msi`       | _(Boolean)_ `true` to use Azure Managed Service Identity passwordless authentication flow for service principals. _This feature is not yet implemented in the Databricks SDK for Python._ | `ARM_USE_MSI` |
+| `azure_workspace_resource_id`   | _(String)_ The Azure Resource Manager ID for the Azure Databricks workspace, which is exchanged for a Databricks host URL. | `DATABRICKS_AZURE_RESOURCE_ID` |
+| `azure_use_msi`       | _(Boolean)_ `true` to use Azure Managed Service Identity passwordless authentication flow for service principals. | `ARM_USE_MSI` |
 | `azure_client_secret` | _(String)_ The Azure AD service principal's client secret. | `ARM_CLIENT_SECRET` |
 | `azure_client_id`     | _(String)_ The Azure AD service principal's application ID. | `ARM_CLIENT_ID` |
 | `azure_tenant_id`     | _(String)_ The Azure AD service principal's tenant ID. | `ARM_TENANT_ID` |
@@ -106,7 +109,7 @@ w = WorkspaceClient(host=input('Databricks Workspace URL: '),
 
 ## Overriding `.databrickscfg`
 
-For [Databricks native authentication](#databricks-native-authentication), you can override the default behavior for using `.databrickscfg` as follows:
+For [Databricks native authentication](#notebook-native-authentication), you can override the default behavior for using `.databrickscfg` as follows:
 
 | Argument      | Description | Environment variable |
 |---------------|-------------|----------------------|

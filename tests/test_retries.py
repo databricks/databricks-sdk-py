@@ -2,6 +2,7 @@ from datetime import timedelta
 
 import pytest
 
+from databricks.sdk.errors import NotFound, ResourceDoesNotExist
 from databricks.sdk.retries import retried
 
 
@@ -37,6 +38,16 @@ def test_match_on_errors():
         @retried(on=[KeyError, AttributeError], timeout=timedelta(seconds=0.5))
         def foo():
             raise KeyError(1)
+
+        foo()
+
+
+def test_match_on_subclass():
+    with pytest.raises(TimeoutError):
+
+        @retried(on=[NotFound], timeout=timedelta(seconds=0.5))
+        def foo():
+            raise ResourceDoesNotExist(...)
 
         foo()
 

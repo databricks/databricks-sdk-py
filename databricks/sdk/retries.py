@@ -3,13 +3,13 @@ import logging
 import time
 from datetime import timedelta
 from random import random
-from typing import Callable, List, Optional, Type
+from typing import Callable, Optional, Sequence, Type
 
-logger = logging.getLogger('databricks.sdk')
+logger = logging.getLogger(__name__)
 
 
 def retried(*,
-            on: List[Type[BaseException]] = None,
+            on: Sequence[Type[BaseException]] = None,
             is_retryable: Callable[[BaseException], Optional[str]] = None,
             timeout=timedelta(minutes=20)):
     has_allowlist = on is not None
@@ -39,8 +39,11 @@ def retried(*,
                         retry_reason = 'throttled by platform'
                     elif is_retryable is not None:
                         retry_reason = is_retryable(err)
-                    elif type(err) in on:
-                        retry_reason = f'{type(err).__name__} is allowed to retry'
+                    elif on is not None:
+                        for err_type in on:
+                            if not isinstance(err, err_type):
+                                continue
+                            retry_reason = f'{type(err).__name__} is allowed to retry'
 
                     if retry_reason is None:
                         # raise if exception is not retryable

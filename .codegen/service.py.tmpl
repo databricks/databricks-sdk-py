@@ -1,5 +1,6 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
+from __future__ import annotations
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
@@ -21,17 +22,24 @@ from databricks.sdk.service import {{.Package.Name}}{{end}}
 class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Description}}
     """{{.Comment "    " 100}}"""
     {{end}}{{- range .RequiredFields | alphanumOnly}}
-    {{template "safe-snake-name" .}}: {{template "type" .Entity}}{{end}}{{- range .NonRequiredFields | alphanumOnly}}
-    {{template "safe-snake-name" .}}: Optional[{{template "type" .Entity}}] = None{{end}}
+    {{template "safe-snake-name" .}}: {{template "type" .Entity}}{{if .Description}}
+    """{{.Comment "    " 100 | trimSuffix "\""}}"""{{end}}
+    {{end}}
+    {{- range .NonRequiredFields | alphanumOnly}}
+    {{template "safe-snake-name" .}}: Optional[{{template "type" .Entity}}] = None{{if .Description}}
+    """{{.Comment "    " 100 | trimSuffix "\""}}"""{{end}}
+    {{end}}
     {{if .HasJsonField -}}
     def as_dict(self) -> dict:
+        """Serializes the {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}} into a dictionary suitable for use as a JSON request body."""
         body = {}
         {{range .Fields | alphanumOnly}}if self.{{template "safe-snake-name" .}}{{with .Entity.IsPrimitive}} is not None{{end}}: body['{{.Name}}'] = {{template "as_request_type" .}}
         {{end -}}
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> '{{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}':
+    def from_dict(cls, d: Dict[str, any]) -> {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:
+        """Deserializes the {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}} from a dictionary."""
         return cls({{range $i, $f := .Fields | alphanumOnly}}{{if $i}}, {{end}}{{template "safe-snake-name" $f}}={{template "from_dict_type" $f}}{{end}})
     {{end}}
 {{end}}
@@ -62,11 +70,11 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Descriptio
 {{- end -}}
 {{- define "type" -}}
 	{{- if not . }}any # ERROR: No Type
-	{{- else if .ArrayValue }}'List[{{template "type-nq" .ArrayValue}}]'
-	{{- else if .MapValue }}'Dict[str,{{template "type-nq" .MapValue}}]'
-	{{- else if .IsExternal }}'{{.Package.Name}}.{{.PascalName}}'
-	{{- else if .IsObject }}'{{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}'
-	{{- else if .Enum }}'{{.PascalName}}'
+	{{- else if .ArrayValue }}List[{{template "type-nq" .ArrayValue}}]
+	{{- else if .MapValue }}Dict[str,{{template "type-nq" .MapValue}}]
+	{{- else if .IsExternal }}{{.Package.Name}}.{{.PascalName}}
+	{{- else if .IsObject }}{{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}
+	{{- else if .Enum }}{{.PascalName}}
 	{{- else}}{{template "type-nq" .}}{{- end -}}
 {{- end -}}
 {{- define "type-nq" -}}

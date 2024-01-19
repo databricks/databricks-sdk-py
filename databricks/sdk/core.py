@@ -123,12 +123,10 @@ def runtime_native_auth(cfg: 'Config') -> Optional[HeaderFactory]:
     return None
 
 
-@credentials_provider('oauth-m2m', ['is_aws', 'host', 'client_id', 'client_secret'])
+@credentials_provider('oauth-m2m', ['host', 'client_id', 'client_secret'])
 def oauth_service_principal(cfg: 'Config') -> Optional[HeaderFactory]:
     """ Adds refreshed Databricks machine-to-machine OAuth Bearer token to every request,
     if /oidc/.well-known/oauth-authorization-server is available on the given host. """
-    # TODO: Azure returns 404 for UC workspace after redirecting to
-    # https://login.microsoftonline.com/{cfg.azure_tenant_id}/.well-known/oauth-authorization-server
     oidc = cfg.oidc_endpoints
     if oidc is None:
         return None
@@ -346,7 +344,8 @@ class CliTokenSource(Refreshable):
 
     @staticmethod
     def _parse_expiry(expiry: str) -> datetime:
-        for fmt in ("%Y-%m-%d %H:%M:%S.%f", "%Y-%m-%d %H:%M:%S", "%Y-%m-%dT%H:%M:%S.%f%z"):
+        expiry = expiry.rstrip("Z").split(".")[0]
+        for fmt in ("%Y-%m-%d %H:%M:%S", "%Y-%m-%dT%H:%M:%S"):
             try:
                 return datetime.strptime(expiry, fmt)
             except ValueError as e:
@@ -359,8 +358,8 @@ class CliTokenSource(Refreshable):
             is_windows = sys.platform.startswith('win')
             # windows requires shell=True to be able to execute 'az login' or other commands
             # cannot use shell=True all the time, as it breaks macOS
-            out = subprocess.check_output(self._cmd, stderr=subprocess.STDOUT, shell=is_windows)
-            it = json.loads(out.decode())
+            out = subprocess.run(self._cmd, capture_output=True, check=True, shell=is_windows)
+            it = json.loads(out.stdout.decode())
             expires_on = self._parse_expiry(it[self._expiry_field])
             return Token(access_token=it[self._access_token_field],
                          token_type=it[self._token_type_field],
@@ -368,7 +367,9 @@ class CliTokenSource(Refreshable):
         except ValueError as e:
             raise ValueError(f"cannot unmarshal CLI result: {e}")
         except subprocess.CalledProcessError as e:
-            message = e.output.decode().strip()
+            stdout = e.stdout.decode().strip()
+            stderr = e.stderr.decode().strip()
+            message = stdout or stderr
             raise IOError(f'cannot get access token: {message}') from e
 
 
@@ -650,30 +651,30 @@ class ConfigAttribute:
 
 
 class Config:
-    host = ConfigAttribute(env='DATABRICKS_HOST')
-    account_id = ConfigAttribute(env='DATABRICKS_ACCOUNT_ID')
-    token = ConfigAttribute(env='DATABRICKS_TOKEN', auth='pat', sensitive=True)
-    username = ConfigAttribute(env='DATABRICKS_USERNAME', auth='basic')
-    password = ConfigAttribute(env='DATABRICKS_PASSWORD', auth='basic', sensitive=True)
-    client_id = ConfigAttribute(env='DATABRICKS_CLIENT_ID', auth='oauth')
-    client_secret = ConfigAttribute(env='DATABRICKS_CLIENT_SECRET', auth='oauth', sensitive=True)
-    profile = ConfigAttribute(env='DATABRICKS_CONFIG_PROFILE')
-    config_file = ConfigAttribute(env='DATABRICKS_CONFIG_FILE')
-    google_service_account = ConfigAttribute(env='DATABRICKS_GOOGLE_SERVICE_ACCOUNT', auth='google')
-    google_credentials = ConfigAttribute(env='GOOGLE_CREDENTIALS', auth='google', sensitive=True)
-    azure_workspace_resource_id = ConfigAttribute(env='DATABRICKS_AZURE_RESOURCE_ID', auth='azure')
+    host: str = ConfigAttribute(env='DATABRICKS_HOST')
+    account_id: str = ConfigAttribute(env='DATABRICKS_ACCOUNT_ID')
+    token: str = ConfigAttribute(env='DATABRICKS_TOKEN', auth='pat', sensitive=True)
+    username: str = ConfigAttribute(env='DATABRICKS_USERNAME', auth='basic')
+    password: str = ConfigAttribute(env='DATABRICKS_PASSWORD', auth='basic', sensitive=True)
+    client_id: str = ConfigAttribute(env='DATABRICKS_CLIENT_ID', auth='oauth')
+    client_secret: str = ConfigAttribute(env='DATABRICKS_CLIENT_SECRET', auth='oauth', sensitive=True)
+    profile: str = ConfigAttribute(env='DATABRICKS_CONFIG_PROFILE')
+    config_file: str = ConfigAttribute(env='DATABRICKS_CONFIG_FILE')
+    google_service_account: str = ConfigAttribute(env='DATABRICKS_GOOGLE_SERVICE_ACCOUNT', auth='google')
+    google_credentials: str = ConfigAttribute(env='GOOGLE_CREDENTIALS', auth='google', sensitive=True)
+    azure_workspace_resource_id: str = ConfigAttribute(env='DATABRICKS_AZURE_RESOURCE_ID', auth='azure')
     azure_use_msi: bool = ConfigAttribute(env='ARM_USE_MSI', auth='azure')
-    azure_client_secret = ConfigAttribute(env='ARM_CLIENT_SECRET', auth='azure', sensitive=True)
-    azure_client_id = ConfigAttribute(env='ARM_CLIENT_ID', auth='azure')
-    azure_tenant_id = ConfigAttribute(env='ARM_TENANT_ID', auth='azure')
-    azure_environment = ConfigAttribute(env='ARM_ENVIRONMENT')
-    azure_login_app_id = ConfigAttribute(env='DATABRICKS_AZURE_LOGIN_APP_ID', auth='azure')
-    databricks_cli_path = ConfigAttribute(env='DATABRICKS_CLI_PATH')
-    auth_type = ConfigAttribute(env='DATABRICKS_AUTH_TYPE')
-    cluster_id = ConfigAttribute(env='DATABRICKS_CLUSTER_ID')
-    warehouse_id = ConfigAttribute(env='DATABRICKS_WAREHOUSE_ID')
+    azure_client_secret: str = ConfigAttribute(env='ARM_CLIENT_SECRET', auth='azure', sensitive=True)
+    azure_client_id: str = ConfigAttribute(env='ARM_CLIENT_ID', auth='azure')
+    azure_tenant_id: str = ConfigAttribute(env='ARM_TENANT_ID', auth='azure')
+    azure_environment: str = ConfigAttribute(env='ARM_ENVIRONMENT')
+    azure_login_app_id: str = ConfigAttribute(env='DATABRICKS_AZURE_LOGIN_APP_ID', auth='azure')
+    databricks_cli_path: str = ConfigAttribute(env='DATABRICKS_CLI_PATH')
+    auth_type: str = ConfigAttribute(env='DATABRICKS_AUTH_TYPE')
+    cluster_id: str = ConfigAttribute(env='DATABRICKS_CLUSTER_ID')
+    warehouse_id: str = ConfigAttribute(env='DATABRICKS_WAREHOUSE_ID')
     skip_verify: bool = ConfigAttribute()
-    http_timeout_seconds: int = ConfigAttribute()
+    http_timeout_seconds: float = ConfigAttribute()
     debug_truncate_bytes: int = ConfigAttribute(env='DATABRICKS_DEBUG_TRUNCATE_BYTES')
     debug_headers: bool = ConfigAttribute(env='DATABRICKS_DEBUG_HEADERS')
     rate_limit: int = ConfigAttribute(env='DATABRICKS_RATE_LIMIT')
@@ -835,7 +836,7 @@ class Config:
         self._fix_host_if_needed()
         if not self.host:
             return None
-        if self.is_azure:
+        if self.is_azure and self.azure_client_id:
             # Retrieve authorize endpoint to retrieve token endpoint after
             res = requests.get(f'{self.host}/oidc/oauth2/v2.0/authorize', allow_redirects=False)
             real_auth_url = res.headers.get('location')
@@ -1079,6 +1080,9 @@ class ApiClient:
                                    pool_block=pool_block)
         self._session.mount("https://", http_adapter)
 
+        # Default to 60 seconds
+        self._http_timeout_seconds = cfg.http_timeout_seconds if cfg.http_timeout_seconds else 60
+
     @property
     def account_id(self) -> str:
         return self._cfg.account_id
@@ -1223,7 +1227,8 @@ class ApiClient:
                                          headers=headers,
                                          files=files,
                                          data=data,
-                                         stream=raw)
+                                         stream=raw,
+                                         timeout=self._http_timeout_seconds)
         try:
             self._record_request_log(response, raw=raw or data is not None or files is not None)
             if not response.ok: # internally calls response.raise_for_status()
