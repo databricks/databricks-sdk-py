@@ -432,6 +432,11 @@ def azure_cli(cfg: 'Config') -> Optional[HeaderFactory]:
         doc = 'https://docs.microsoft.com/en-us/cli/azure/?view=azure-cli-latest'
         logger.debug(f'Most likely Azure CLI is not installed. See {doc} for details')
         return None
+    except OSError as e:
+        logger.debug('skipping Azure CLI auth', exc_info=e)
+        logger.debug('This may happen if you are attempting to login to a dev or staging workspace')
+        return None
+
     if not token_source.is_human_user():
         try:
             management_endpoint = cfg.arm_environment.service_management_endpoint

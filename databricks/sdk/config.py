@@ -3,15 +3,17 @@ import copy
 import logging
 import os
 import pathlib
+import platform
 import sys
-import urllib
-from sys import platform
+import urllib.parse
 from typing import Dict, Iterable, Optional
 
 import requests
 
-from .azure import ARM_DATABRICKS_RESOURCE_ID, ENVIRONMENTS, AzureEnvironment
+from .azure import AzureEnvironment
 from .credentials_provider import CredentialsProvider, DefaultCredentials
+from .environments import (ALL_ENVS, DEFAULT_ENVIRONMENT, Cloud,
+                           DatabricksEnvironment)
 from .oauth import OidcEndpoints
 from .version import __version__
 
@@ -60,7 +62,6 @@ class Config:
     azure_client_id: str = ConfigAttribute(env='ARM_CLIENT_ID', auth='azure')
     azure_tenant_id: str = ConfigAttribute(env='ARM_TENANT_ID', auth='azure')
     azure_environment: str = ConfigAttribute(env='ARM_ENVIRONMENT')
-    azure_login_app_id: str = ConfigAttribute(env='DATABRICKS_AZURE_LOGIN_APP_ID', auth='azure')
     databricks_cli_path: str = ConfigAttribute(env='DATABRICKS_CLI_PATH')
     auth_type: str = ConfigAttribute(env='DATABRICKS_AUTH_TYPE')
     cluster_id: str = ConfigAttribute(env='DATABRICKS_CLUSTER_ID')
@@ -76,6 +77,7 @@ class Config:
                                            sensitive=True)
     max_connection_pools: int = ConfigAttribute()
     max_connections_per_pool: int = ConfigAttribute()
+    databricks_environment: Optional[DatabricksEnvironment] = None
 
     def __init__(self,
                  *,
@@ -86,6 +88,9 @@ class Config:
         self._inner = {}
         self._user_agent_other_info = []
         self._credentials_provider = credentials_provider if credentials_provider else DefaultCredentials()
+        if 'databricks_environment' in kwargs:
+            self.databricks_environment = kwargs['databricks_environment']
+            del kwargs['databricks_environment']
         try:
             self._set_inner_config(kwargs)
             self._load_from_env()
@@ -130,22 +135,38 @@ class Config:
         return self._inner
 
     @property
+    def environment(self) -> DatabricksEnvironment:
+        """Returns the environment based on configuration."""
+        if self.databricks_environment:
+            return self.databricks_environment
+        if self.azure_workspace_resource_id:
+            azure_env = self.azure_environment if self.azure_environment else "PUBLIC"
+            for environment in ALL_ENVS:
+                if environment.cloud != Cloud.AZURE:
+                    continue
+                if environment.azure_environment.name != azure_env:
+                    continue
+                if environment.dns_zone.startswith(".dev") or environment.dns_zone.startswith(".staging"):
+                    continue
+                return environment
+        if not self.host:
+            return DEFAULT_ENVIRONMENT
+        for environment in ALL_ENVS:
+            if self.host.endswith(environment.dns_zone):
+                return environment
+        return DEFAULT_ENVIRONMENT
+
+    @property
     def is_azure(self) -> bool:
-        has_resource_id = self.azure_workspace_resource_id is not None
-        has_host = self.host is not None
-        is_public_cloud = has_host and ".azuredatabricks.net" in self.host
-        is_china_cloud = has_host and ".databricks.azure.cn" in self.host
-        is_gov_cloud = has_host and ".databricks.azure.us" in self.host
-        is_valid_cloud = is_public_cloud or is_china_cloud or is_gov_cloud
-        return has_resource_id or (has_host and is_valid_cloud)
+        return self.environment.cloud == Cloud.AZURE
 
     @property
     def is_gcp(self) -> bool:
-        return self.host and ".gcp.databricks.com" in self.host
+        return self.environment.cloud == Cloud.GCP
 
     @property
     def is_aws(self) -> bool:
-        return not self.is_azure and not self.is_gcp
+        return self.environment.cloud == Cloud.AWS
 
     @property
     def is_account_client(self) -> bool:
@@ -155,18 +176,11 @@ class Config:
 
     @property
     def arm_environment(self) -> AzureEnvironment:
-        env = self.azure_environment if self.azure_environment else "PUBLIC"
-        try:
-            return ENVIRONMENTS[env]
-        except KeyError:
-            raise ValueError(f"Cannot find Azure {env} Environment")
+        return self.environment.azure_environment
 
     @property
     def effective_azure_login_app_id(self):
-        app_id = self.azure_login_app_id
-        if app_id:
-            return app_id
-        return ARM_DATABRICKS_RESOURCE_ID
+        return self.environment.azure_application_id
 
     @property
     def hostname(self) -> str:

@@ -14,11 +14,14 @@ import pytest
 import requests
 
 from databricks.sdk import WorkspaceClient
-from databricks.sdk.azure import ENVIRONMENTS, AzureEnvironment
-from databricks.sdk.core import (ApiClient, CliTokenSource, Config,
-                                 CredentialsProvider, DatabricksCliTokenSource,
-                                 DatabricksError, HeaderFactory,
-                                 StreamingResponse, databricks_cli)
+from databricks.sdk.azure import AzureEnvironment
+from databricks.sdk.core import (ApiClient, Config, DatabricksError,
+                                 StreamingResponse)
+from databricks.sdk.credentials_provider import (CliTokenSource,
+                                                 CredentialsProvider,
+                                                 DatabricksCliTokenSource,
+                                                 HeaderFactory, databricks_cli)
+from databricks.sdk.environments import Cloud, DatabricksEnvironment
 from databricks.sdk.service.catalog import PermissionsChange
 from databricks.sdk.service.iam import AccessControlRequest
 from databricks.sdk.version import __version__
@@ -282,9 +285,10 @@ class DummyResponse(requests.Response):
     _closed: bool = False
 
     def __init__(self, content: List[bytes]) -> None:
+        super().__init__()
         self._content = iter(content)
 
-    def iter_content(self, chunk_size: int = 1) -> Iterator[bytes]:
+    def iter_content(self, chunk_size: int = 1, decode_unicode=False) -> Iterator[bytes]:
         return self._content
 
     def close(self):
@@ -546,14 +550,18 @@ def test_github_oidc_flow_works_with_azure(monkeypatch):
     with http_fixture_server(inner) as host:
         monkeypatch.setenv('ACTIONS_ID_TOKEN_REQUEST_URL', f'{host}/oidc')
         monkeypatch.setenv('ACTIONS_ID_TOKEN_REQUEST_TOKEN', 'gh-actions-token')
-        ENVIRONMENTS[host] = AzureEnvironment(name=host,
-                                              service_management_endpoint=host + '/',
-                                              resource_manager_endpoint=host + '/',
-                                              active_directory_endpoint=host + '/')
+        azure_environment = AzureEnvironment(name=host,
+                                             service_management_endpoint=host + '/',
+                                             resource_manager_endpoint=host + '/',
+                                             active_directory_endpoint=host + '/')
+        databricks_environment = DatabricksEnvironment(Cloud.AZURE,
+                                                       '...',
+                                                       azure_environment=azure_environment)
         cfg = Config(host=host,
                      azure_workspace_resource_id=...,
                      azure_client_id='test',
-                     azure_environment=host)
+                     azure_environment=host,
+                     databricks_environment=databricks_environment)
         headers = cfg.authenticate()
 
         assert {'Authorization': 'Taker this-is-it'} == headers
