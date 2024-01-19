@@ -3,16 +3,15 @@ import urllib.parse
 from datetime import timedelta
 from json import JSONDecodeError
 from types import TracebackType
-from typing import (Any, BinaryIO, Iterator, Type)
+from typing import Any, BinaryIO, Iterator, Type
 
 from requests.adapters import HTTPAdapter
 
 from .config import *
-from .errors import DatabricksError, error_mapper
-from .retries import retried
-
 # To preserve backwards compatibility (as these definitions were previously in this module)
 from .credentials_provider import *
+from .errors import DatabricksError, error_mapper
+from .retries import retried
 
 __all__ = ['Config', 'DatabricksError']
 
