@@ -357,7 +357,8 @@ class OAuthClient:
                  scopes: List[str] = None,
                  client_secret: str = None):
         # TODO: is it a circular dependency?..
-        from .core import Config, credentials_provider
+        from .core import Config
+        from .credentials_provider import credentials_provider
 
         @credentials_provider('noop', [])
         def noop_credentials(_: any):

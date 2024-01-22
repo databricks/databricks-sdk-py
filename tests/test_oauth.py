@@ -1,5 +1,5 @@
-from databricks.sdk.core import Config, OidcEndpoints
-from databricks.sdk.oauth import OAuthClient, TokenCache
+from databricks.sdk.core import Config
+from databricks.sdk.oauth import OAuthClient, OidcEndpoints, TokenCache
 
 
 def test_token_cache_unique_filename_by_host(mocker):

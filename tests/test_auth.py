@@ -204,7 +204,7 @@ def test_config_azure_cli_host(monkeypatch):
 
 
 @raises(
-    "default auth: azure-cli: cannot get access token: This is just a failing script. Config: azure_workspace_resource_id=/sub/rg/ws"
+    "default auth: cannot configure default credentials, please check https://docs.databricks.com/en/dev-tools/auth.html#databricks-client-unified-authentication to configure credentials for your preferred authentication method. Config: azure_workspace_resource_id=/sub/rg/ws"
 )
 def test_config_azure_cli_host_fail(monkeypatch):
     monkeypatch.setenv('FAIL', 'yes')

@@ -4,7 +4,8 @@ import os
 import pytest as pytest
 from pyfakefs.fake_filesystem_unittest import Patcher
 
-from databricks.sdk.core import Config, credentials_provider
+from databricks.sdk.core import Config
+from databricks.sdk.credentials_provider import credentials_provider
 
 
 @credentials_provider('noop', [])

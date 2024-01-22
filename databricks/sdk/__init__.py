@@ -1,5 +1,6 @@
 import databricks.sdk.core as client
 import databricks.sdk.dbutils as dbutils
+from databricks.sdk.credentials_provider import CredentialsProvider
 from databricks.sdk.mixins.compute import ClustersExt
 from databricks.sdk.mixins.files import DbfsExt
 from databricks.sdk.mixins.workspace import WorkspaceExt
@@ -114,7 +115,7 @@ class WorkspaceClient:
                  debug_headers: bool = None,
                  product="unknown",
                  product_version="0.0.0",
-                 credentials_provider: client.CredentialsProvider = None,
+                 credentials_provider: CredentialsProvider = None,
                  config: client.Config = None):
         if not config:
             config = client.Config(host=host,
@@ -585,7 +586,7 @@ class AccountClient:
                  debug_headers: bool = None,
                  product="unknown",
                  product_version="0.0.0",
-                 credentials_provider: client.CredentialsProvider = None,
+                 credentials_provider: CredentialsProvider = None,
                  config: client.Config = None):
         if not config:
             config = client.Config(host=host,
