@@ -139,6 +139,10 @@ class Config:
         """Returns the environment based on configuration."""
         if self.databricks_environment:
             return self.databricks_environment
+        if self.host:
+            for environment in ALL_ENVS:
+                if self.host.endswith(environment.dns_zone):
+                    return environment
         if self.azure_workspace_resource_id:
             azure_env = self.azure_environment if self.azure_environment else "PUBLIC"
             for environment in ALL_ENVS:
@@ -148,11 +152,6 @@ class Config:
                     continue
                 if environment.dns_zone.startswith(".dev") or environment.dns_zone.startswith(".staging"):
                     continue
-                return environment
-        if not self.host:
-            return DEFAULT_ENVIRONMENT
-        for environment in ALL_ENVS:
-            if self.host.endswith(environment.dns_zone):
                 return environment
         return DEFAULT_ENVIRONMENT
 
