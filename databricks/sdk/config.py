@@ -144,7 +144,7 @@ class Config:
                 if self.host.endswith(environment.dns_zone):
                     return environment
         if self.azure_workspace_resource_id:
-            azure_env = self.azure_environment if self.azure_environment else "PUBLIC"
+            azure_env = self.azure_environment.upper() if self.azure_environment else "PUBLIC"
             for environment in ALL_ENVS:
                 if environment.cloud != Cloud.AZURE:
                     continue

@@ -14,7 +14,7 @@ import pytest
 import requests
 
 from databricks.sdk import WorkspaceClient
-from databricks.sdk.azure import AzureEnvironment
+from databricks.sdk.azure import AzureEnvironment, ENVIRONMENTS
 from databricks.sdk.core import (ApiClient, Config, DatabricksError,
                                  StreamingResponse)
 from databricks.sdk.credentials_provider import (CliTokenSource,
@@ -565,3 +565,15 @@ def test_github_oidc_flow_works_with_azure(monkeypatch):
         headers = cfg.authenticate()
 
         assert {'Authorization': 'Taker this-is-it'} == headers
+
+def test_azure_environment():
+    c = Config(credentials_provider=noop_credentials, azure_workspace_resource_id='...', azure_environment='PUBLIC')
+    assert c.arm_environment == ENVIRONMENTS['PUBLIC']
+
+def test_azure_environment_override():
+    c = Config(credentials_provider=noop_credentials, azure_workspace_resource_id='...', azure_environment='USGOVERNMENT')
+    assert c.arm_environment == ENVIRONMENTS['USGOVERNMENT']
+
+def test_azure_environment_capitalize():
+    c = Config(credentials_provider=noop_credentials, azure_workspace_resource_id='...', azure_environment='usgovernment')
+    assert c.arm_environment == ENVIRONMENTS['USGOVERNMENT']
