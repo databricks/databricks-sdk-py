@@ -134,6 +134,17 @@ class Config:
     def as_dict(self) -> dict:
         return self._inner
 
+    def _get_azure_environment_name(self) -> str:
+        if not self.azure_environment:
+            return "PUBLIC"
+        env = self.azure_environment.upper()
+        # Compatibility with older versions of the SDK that allowed users to specify AzurePublicCloud or AzureChinaCloud
+        if env.startswith("AZURE"):
+            env = env[len("AZURE"):]
+        if env.endswith("CLOUD"):
+            env = env[:-len("CLOUD")]
+        return env
+
     @property
     def environment(self) -> DatabricksEnvironment:
         """Returns the environment based on configuration."""
@@ -144,7 +155,7 @@ class Config:
                 if self.host.endswith(environment.dns_zone):
                     return environment
         if self.azure_workspace_resource_id:
-            azure_env = self.azure_environment.upper() if self.azure_environment else "PUBLIC"
+            azure_env = self._get_azure_environment_name()
             for environment in ALL_ENVS:
                 if environment.cloud != Cloud.AZURE:
                     continue
