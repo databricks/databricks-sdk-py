@@ -14,7 +14,7 @@ import pytest
 import requests
 
 from databricks.sdk import WorkspaceClient
-from databricks.sdk.azure import AzureEnvironment, ENVIRONMENTS
+from databricks.sdk.azure import ENVIRONMENTS, AzureEnvironment
 from databricks.sdk.core import (ApiClient, Config, DatabricksError,
                                  StreamingResponse)
 from databricks.sdk.credentials_provider import (CliTokenSource,
@@ -566,18 +566,17 @@ def test_github_oidc_flow_works_with_azure(monkeypatch):
 
         assert {'Authorization': 'Taker this-is-it'} == headers
 
-@pytest.mark.parametrize(['azure_environment', 'expected'], [
-    ('PUBLIC', ENVIRONMENTS['PUBLIC']),
-    ('USGOVERNMENT', ENVIRONMENTS['USGOVERNMENT']),
-    ('CHINA', ENVIRONMENTS['CHINA']),
-    ('public', ENVIRONMENTS['PUBLIC']),
-    ('usgovernment', ENVIRONMENTS['USGOVERNMENT']),
-    ('china', ENVIRONMENTS['CHINA']),
-    # Kept for historical compatibility
-    ('AzurePublicCloud', ENVIRONMENTS['PUBLIC']),
-    ('AzureUSGovernment', ENVIRONMENTS['USGOVERNMENT']),
-    ('AzureChinaCloud', ENVIRONMENTS['CHINA']),
-])
+
+@pytest.mark.parametrize(['azure_environment', 'expected'],
+                         [('PUBLIC', ENVIRONMENTS['PUBLIC']), ('USGOVERNMENT', ENVIRONMENTS['USGOVERNMENT']),
+                          ('CHINA', ENVIRONMENTS['CHINA']), ('public', ENVIRONMENTS['PUBLIC']),
+                          ('usgovernment', ENVIRONMENTS['USGOVERNMENT']), ('china', ENVIRONMENTS['CHINA']),
+                          # Kept for historical compatibility
+                          ('AzurePublicCloud', ENVIRONMENTS['PUBLIC']),
+                          ('AzureUSGovernment', ENVIRONMENTS['USGOVERNMENT']),
+                          ('AzureChinaCloud', ENVIRONMENTS['CHINA']), ])
 def test_azure_environment(azure_environment, expected):
-    c = Config(credentials_provider=noop_credentials, azure_workspace_resource_id='...', azure_environment=azure_environment)
+    c = Config(credentials_provider=noop_credentials,
+               azure_workspace_resource_id='...',
+               azure_environment=azure_environment)
     assert c.arm_environment == expected
