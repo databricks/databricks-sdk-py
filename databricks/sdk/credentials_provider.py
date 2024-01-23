@@ -472,13 +472,17 @@ class DatabricksCliTokenSource(CliTokenSource):
         if cfg.is_account_client:
             args += ['--account-id', cfg.account_id]
 
+        import platform
+
         cli_path = cfg.databricks_cli_path
         if not cli_path:
-            cli_path = 'databricks'
+            if platform.system() == 'Windows':
+                # Check for both databricks.exe and databricks on Windows
+                cli_path = self.__class__._find_executable('databricks.exe')
+            else:
+                # For non-Windows, look for 'databricks'
+                cli_path = self.__class__._find_executable('databricks')
 
-        # If the path is unqualified, look it up in PATH.
-        if cli_path.count("/") == 0:
-            cli_path = self.__class__._find_executable(cli_path)
 
         super().__init__(cmd=[cli_path, *args],
                          token_type_field='token_type',
