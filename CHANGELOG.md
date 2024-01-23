@@ -1,5 +1,46 @@
 # Version changelog
 
+## 0.18.0
+
+Bugfixes:
+
+* Fix Databricks OAuth M2M on Azure ([#513](https://github.com/databricks/databricks-sdk-py/pull/513)).
+
+Other noteworthy changes:
+
+* Use `[]` instead of `None` as default list value for deserialising responses ([#361](https://github.com/databricks/databricks-sdk-py/pull/361)).
+* Support dev and staging workspaces ([#514](https://github.com/databricks/databricks-sdk-py/pull/514)).
+
+API Changes:
+
+ * Added `exists()` method for [w.tables](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/tables.html) workspace-level service.
+ * Added [w.lakehouse_monitors](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/lakehouse_monitors.html) workspace-level service.
+ * Added the following dataclasses: 
+  `databricks.sdk.service.catalog.CreateMonitor`, 
+  `databricks.sdk.service.catalog.DeleteLakehouseMonitorRequest`, 
+  `databricks.sdk.service.catalog.ExistsRequest`, 
+  `databricks.sdk.service.catalog.GetLakehouseMonitorRequest`, 
+  `databricks.sdk.service.catalog.MonitorCronSchedule`, 
+  `databricks.sdk.service.catalog.MonitorCronSchedulePauseStatus`, 
+  `databricks.sdk.service.catalog.MonitorCustomMetric`, 
+  `databricks.sdk.service.catalog.MonitorCustomMetricType`, 
+  `databricks.sdk.service.catalog.MonitorDataClassificationConfig`, 
+  `databricks.sdk.service.catalog.MonitorDestinations`, 
+  `databricks.sdk.service.catalog.MonitorInferenceLogProfileType`, 
+  `databricks.sdk.service.catalog.MonitorInferenceLogProfileTypeProblemType`, 
+  `databricks.sdk.service.catalog.MonitorInfo`, 
+  `databricks.sdk.service.catalog.MonitorInfoStatus`, 
+  `databricks.sdk.service.catalog.MonitorNotificationsConfig`, 
+  `databricks.sdk.service.catalog.MonitorTimeSeriesProfileType`, 
+  `databricks.sdk.service.catalog.TableExistsResponse` and
+  `databricks.sdk.service.catalog.UpdateMonitor`.
+ * Changed `create_obo_token()` method for [w.token_management](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/token_management.html) workspace-level service with new required argument order.
+ * Changed `get()` method for [w.token_management](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/token_management.html) workspace-level service to return `databricks.sdk.service.settings.GetTokenResponse` dataclass.
+ * Changed `lifetime_seconds` field for `databricks.sdk.service.settings.CreateOboTokenRequest` to no longer be required.
+ * Added `databricks.sdk.service.settings.GetTokenResponse` dataclass.
+
+OpenAPI SHA: e05401ed5dd4974c5333d737ec308a7d451f749f, Date: 2024-01-23
+
 ## 0.17.0
 
 * Use covariant type for `@retried(on=[...])` ([#486](https://github.com/databricks/databricks-sdk-py/pull/486)).

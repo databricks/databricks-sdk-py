@@ -346,7 +346,6 @@ class ChannelInfo:
 
 
 class ChannelName(Enum):
-    """Name of the channel"""
 
     CHANNEL_NAME_CURRENT = 'CHANNEL_NAME_CURRENT'
     CHANNEL_NAME_CUSTOM = 'CHANNEL_NAME_CUSTOM'
@@ -3441,8 +3440,7 @@ class WarehouseAccessControlRequest:
     """Permission level"""
 
     service_principal_name: Optional[str] = None
-    """Application ID of an active service principal. Setting this field requires the
-    `servicePrincipal/user` role."""
+    """application ID of a service principal"""
 
     user_name: Optional[str] = None
     """name of the user"""
@@ -4349,6 +4347,9 @@ class QueriesAPI:
         """Get a list of queries.
         
         Gets a list of queries. Optionally, this list can be filtered by a search term.
+        
+        ### **Warning: Calling this API concurrently 10 or more times could result in throttling, service
+        degradation, or a temporary ban.**
         
         :param order: str (optional)
           Name of query attribute to order by. Default sort order is ascending. Append a dash (`-`) to order

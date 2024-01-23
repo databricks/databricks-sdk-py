@@ -973,8 +973,7 @@ class JobAccessControlRequest:
     """Permission level"""
 
     service_principal_name: Optional[str] = None
-    """Application ID of an active service principal. Setting this field requires the
-    `servicePrincipal/user` role."""
+    """application ID of a service principal"""
 
     user_name: Optional[str] = None
     """name of the user"""
@@ -3844,8 +3843,9 @@ class SubmitTask:
 
     existing_cluster_id: Optional[str] = None
     """If existing_cluster_id, the ID of an existing cluster that is used for all runs of this task.
-    When running tasks on an existing cluster, you may need to manually restart the cluster if it
-    stops responding. We suggest running jobs on new clusters for greater reliability."""
+    Only all-purpose clusters are supported. When running tasks on an existing cluster, you may need
+    to manually restart the cluster if it stops responding. We suggest running jobs on new clusters
+    for greater reliability."""
 
     health: Optional[JobsHealthRules] = None
     """An optional set of health rules that can be defined for this job."""
@@ -3998,8 +3998,9 @@ class Task:
 
     existing_cluster_id: Optional[str] = None
     """If existing_cluster_id, the ID of an existing cluster that is used for all runs of this task.
-    When running tasks on an existing cluster, you may need to manually restart the cluster if it
-    stops responding. We suggest running jobs on new clusters for greater reliability."""
+    Only all-purpose clusters are supported. When running tasks on an existing cluster, you may need
+    to manually restart the cluster if it stops responding. We suggest running jobs on new clusters
+    for greater reliability."""
 
     health: Optional[JobsHealthRules] = None
     """An optional set of health rules that can be defined for this job."""
