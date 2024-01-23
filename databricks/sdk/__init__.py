@@ -12,8 +12,8 @@ from databricks.sdk.service.catalog import (AccountMetastoreAssignmentsAPI,
                                             ArtifactAllowlistsAPI, CatalogsAPI,
                                             ConnectionsAPI,
                                             ExternalLocationsAPI, FunctionsAPI,
-                                            GrantsAPI, MetastoresAPI,
-                                            ModelVersionsAPI,
+                                            GrantsAPI, LakehouseMonitorsAPI,
+                                            MetastoresAPI, ModelVersionsAPI,
                                             RegisteredModelsAPI, SchemasAPI,
                                             StorageCredentialsAPI,
                                             SystemSchemasAPI,
@@ -173,6 +173,7 @@ class WorkspaceClient:
         self._instance_profiles = InstanceProfilesAPI(self._api_client)
         self._ip_access_lists = IpAccessListsAPI(self._api_client)
         self._jobs = JobsAPI(self._api_client)
+        self._lakehouse_monitors = LakehouseMonitorsAPI(self._api_client)
         self._lakeview = LakeviewAPI(self._api_client)
         self._libraries = LibrariesAPI(self._api_client)
         self._metastores = MetastoresAPI(self._api_client)
@@ -367,6 +368,11 @@ class WorkspaceClient:
     def jobs(self) -> JobsAPI:
         """The Jobs API allows you to create, edit, and delete jobs."""
         return self._jobs
+
+    @property
+    def lakehouse_monitors(self) -> LakehouseMonitorsAPI:
+        """A monitor computes and monitors data or model quality metrics for a table over time."""
+        return self._lakehouse_monitors
 
     @property
     def lakeview(self) -> LakeviewAPI:

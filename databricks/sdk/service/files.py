@@ -234,7 +234,7 @@ class Put:
 @dataclass
 class ReadResponse:
     bytes_read: Optional[int] = None
-    """The number of bytes read (could be less than `length` if we hit end of file). This refers to
+    """The number of bytes read (could be less than ``length`` if we hit end of file). This refers to
     number of bytes read in unencoded version (response data is base64-encoded)."""
 
     data: Optional[str] = None
@@ -264,9 +264,9 @@ class DbfsAPI:
         """Append data block.
         
         Appends a block of data to the stream specified by the input handle. If the handle does not exist,
-        this call will throw an exception with `RESOURCE_DOES_NOT_EXIST`.
+        this call will throw an exception with ``RESOURCE_DOES_NOT_EXIST``.
         
-        If the block of data exceeds 1 MB, this call will throw an exception with `MAX_BLOCK_SIZE_EXCEEDED`.
+        If the block of data exceeds 1 MB, this call will throw an exception with ``MAX_BLOCK_SIZE_EXCEEDED``.
         
         :param handle: int
           The handle on an open stream.
@@ -285,7 +285,7 @@ class DbfsAPI:
         """Close the stream.
         
         Closes the stream specified by the input handle. If the handle does not exist, this call throws an
-        exception with `RESOURCE_DOES_NOT_EXIST`.
+        exception with ``RESOURCE_DOES_NOT_EXIST``.
         
         :param handle: int
           The handle on an open stream.
@@ -302,12 +302,12 @@ class DbfsAPI:
         
         Opens a stream to write to a file and returns a handle to this stream. There is a 10 minute idle
         timeout on this handle. If a file or directory already exists on the given path and __overwrite__ is
-        set to `false`, this call throws an exception with `RESOURCE_ALREADY_EXISTS`.
+        set to false, this call will throw an exception with ``RESOURCE_ALREADY_EXISTS``.
         
         A typical workflow for file upload would be:
         
-        1. Issue a `create` call and get a handle. 2. Issue one or more `add-block` calls with the handle you
-        have. 3. Issue a `close` call with the handle you have.
+        1. Issue a ``create`` call and get a handle. 2. Issue one or more ``add-block`` calls with the handle
+        you have. 3. Issue a ``close`` call with the handle you have.
         
         :param path: str
           The path of the new file. The path should be the absolute DBFS path.
@@ -423,7 +423,7 @@ class DbfsAPI:
         Moves a file from one location to another location within DBFS. If the source file does not exist,
         this call throws an exception with `RESOURCE_DOES_NOT_EXIST`. If a file already exists in the
         destination path, this call throws an exception with `RESOURCE_ALREADY_EXISTS`. If the given source
-        path is a directory, this call always recursively moves all files.",
+        path is a directory, this call always recursively moves all files.
         
         :param source_path: str
           The source path of the file or directory. The path should be the absolute DBFS path.
@@ -477,7 +477,7 @@ class DbfsAPI:
         1 MB, this call throws an exception with `MAX_READ_SIZE_EXCEEDED`.
         
         If `offset + length` exceeds the number of bytes in a file, it reads the contents until the end of
-        file.",
+        file.
         
         :param path: str
           The path of the file to read. The path should be the absolute DBFS path.
