@@ -15,24 +15,25 @@ API Changes:
 
  * Added `exists()` method for [w.tables](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/tables.html) workspace-level service.
  * Added [w.lakehouse_monitors](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/lakehouse_monitors.html) workspace-level service.
- * Added `databricks.sdk.service.catalog.CreateMonitor` dataclass.
- * Added `databricks.sdk.service.catalog.DeleteLakehouseMonitorRequest` dataclass.
- * Added `databricks.sdk.service.catalog.ExistsRequest` dataclass.
- * Added `databricks.sdk.service.catalog.GetLakehouseMonitorRequest` dataclass.
- * Added `databricks.sdk.service.catalog.MonitorCronSchedule` dataclass.
- * Added `databricks.sdk.service.catalog.MonitorCronSchedulePauseStatus` dataclass.
- * Added `databricks.sdk.service.catalog.MonitorCustomMetric` dataclass.
- * Added `databricks.sdk.service.catalog.MonitorCustomMetricType` dataclass.
- * Added `databricks.sdk.service.catalog.MonitorDataClassificationConfig` dataclass.
- * Added `databricks.sdk.service.catalog.MonitorDestinations` dataclass.
- * Added `databricks.sdk.service.catalog.MonitorInferenceLogProfileType` dataclass.
- * Added `databricks.sdk.service.catalog.MonitorInferenceLogProfileTypeProblemType` dataclass.
- * Added `databricks.sdk.service.catalog.MonitorInfo` dataclass.
- * Added `databricks.sdk.service.catalog.MonitorInfoStatus` dataclass.
- * Added `databricks.sdk.service.catalog.MonitorNotificationsConfig` dataclass.
- * Added `databricks.sdk.service.catalog.MonitorTimeSeriesProfileType` dataclass.
- * Added `databricks.sdk.service.catalog.TableExistsResponse` dataclass.
- * Added `databricks.sdk.service.catalog.UpdateMonitor` dataclass.
+ * Added the following dataclasses: 
+  `databricks.sdk.service.catalog.CreateMonitor`, 
+  `databricks.sdk.service.catalog.DeleteLakehouseMonitorRequest`, 
+  `databricks.sdk.service.catalog.ExistsRequest`, 
+  `databricks.sdk.service.catalog.GetLakehouseMonitorRequest`, 
+  `databricks.sdk.service.catalog.MonitorCronSchedule`, 
+  `databricks.sdk.service.catalog.MonitorCronSchedulePauseStatus`, 
+  `databricks.sdk.service.catalog.MonitorCustomMetric`, 
+  `databricks.sdk.service.catalog.MonitorCustomMetricType`, 
+  `databricks.sdk.service.catalog.MonitorDataClassificationConfig`, 
+  `databricks.sdk.service.catalog.MonitorDestinations`, 
+  `databricks.sdk.service.catalog.MonitorInferenceLogProfileType`, 
+  `databricks.sdk.service.catalog.MonitorInferenceLogProfileTypeProblemType`, 
+  `databricks.sdk.service.catalog.MonitorInfo`, 
+  `databricks.sdk.service.catalog.MonitorInfoStatus`, 
+  `databricks.sdk.service.catalog.MonitorNotificationsConfig`, 
+  `databricks.sdk.service.catalog.MonitorTimeSeriesProfileType`, 
+  `databricks.sdk.service.catalog.TableExistsResponse` and
+  `databricks.sdk.service.catalog.UpdateMonitor`.
  * Changed `create_obo_token()` method for [w.token_management](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/token_management.html) workspace-level service with new required argument order.
  * Changed `get()` method for [w.token_management](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/token_management.html) workspace-level service to return `databricks.sdk.service.settings.GetTokenResponse` dataclass.
  * Changed `lifetime_seconds` field for `databricks.sdk.service.settings.CreateOboTokenRequest` to no longer be required.
