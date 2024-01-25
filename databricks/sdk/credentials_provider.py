@@ -483,7 +483,6 @@ class DatabricksCliTokenSource(CliTokenSource):
                 # For non-Windows, look for 'databricks'
                 cli_path = self.__class__._find_executable('databricks')
 
-
         super().__init__(cmd=[cli_path, *args],
                          token_type_field='token_type',
                          access_token_field='access_token',
