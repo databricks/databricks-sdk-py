@@ -61,7 +61,7 @@ The Databricks SDK for Python makes use of Python's data classes and enums to re
 
 Specific data classes are organized into separate packages under `databricks.sdk.service`. For example, `databricks.sdk.service.jobs` has defintions for data classes & enums related to the Jobs API.
 
-For more information, consult the [API Reference](autogen/reference.rst).
+For more information, consult the [Dataclasses API Reference](dbdataclasses/index.rst).
 
 ## Examples
 
