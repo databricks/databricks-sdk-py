@@ -167,7 +167,8 @@ class DataclassesDoc:
         else:
             out = [
                 f'.. autoclass:: {cls}',
-                '   :members:'
+                '   :members:',
+                '   :undoc-members:',
                 ''
             ]
         return "\n".join(out)
