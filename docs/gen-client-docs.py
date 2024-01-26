@@ -299,7 +299,13 @@ class Generator:
     def _should_document(obj):
         return is_dataclass(obj) or (type(obj) == type and issubclass(obj, Enum))
 
+    @staticmethod
+    def _make_folder_if_not_exists(folder):
+        if not os.path.exists(folder):
+            os.makedirs(folder)
+
     def write_dataclass_docs(self):
+        self._make_folder_if_not_exists(f'{__dir__}/dbdataclasses')
         for pkg in self.packages:
             module = importlib.import_module(f'databricks.sdk.service.{pkg.name}')
             all_members = [name for name, _ in inspect.getmembers(module, predicate=self._should_document)]
@@ -333,8 +339,10 @@ Dataclasses
         service_docs = self.service_docs(client)
         for svc in service_docs:
             client_services.append(svc.service_name)
-            package_to_services[svc.tag.package.name].append(svc.service_name)
-            with open(f'{__dir__}/{folder}/{svc.service_name}.rst', 'w') as f:
+            package = svc.tag.package.name
+            package_to_services[package].append(svc.service_name)
+            self._make_folder_if_not_exists(f'{__dir__}/{folder}/{package}')
+            with open(f'{__dir__}/{folder}/{package}/{svc.service_name}.rst', 'w') as f:
                 f.write(svc.as_rst())
         ordered_packages = []
         for pkg in self.packages:
@@ -345,8 +353,10 @@ Dataclasses
         self._write_client_packages(folder, label, description, ordered_packages)
 
     def _write_client_packages(self, folder: str, label: str, description: str, packages: list[str]):
+        """Writes out the top-level index for the APIs supported by a client."""
+        self._make_folder_if_not_exists(f'{__dir__}/{folder}')
         with open(f'{__dir__}/{folder}/index.rst', 'w') as f:
-            all = "\n  ".join([f'{folder}-{name}' for name in packages])
+            all = "\n   ".join([f'{name}/index' for name in packages])
             f.write(f'''
 {label}
 {'=' * len(label)}
@@ -354,13 +364,15 @@ Dataclasses
 {description}
 
 .. toctree::
-  :maxdepth: 1
+   :maxdepth: 1
 
-  {all}''')
+   {all}''')
 
     def _write_client_package_doc(self, folder: str, pkg: Package, services: list[str]):
-        with open(f'{__dir__}/{folder}/{folder}-{pkg.name}.rst', 'w') as f:
-            all = "\n  ".join(services)
+        """Writes out the index for a single package supported by a client."""
+        self._make_folder_if_not_exists(f'{__dir__}/{folder}/{pkg.name}')
+        with open(f'{__dir__}/{folder}/{pkg.name}/index.rst', 'w') as f:
+            all = "\n   ".join(services)
             f.write(f'''
 {pkg.label}
 {'=' * len(pkg.label)}
@@ -368,9 +380,9 @@ Dataclasses
 {pkg.description}
 
 .. toctree::
-  :maxdepth: 1
+   :maxdepth: 1
 
-  {all}''')
+   {all}''')
 
 
 if __name__ == '__main__':

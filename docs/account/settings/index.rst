@@ -5,8 +5,8 @@ Settings
 Manage security settings for Accounts and Workspaces
 
 .. toctree::
-  :maxdepth: 1
+   :maxdepth: 1
 
-  ip_access_lists
-  network_connectivity
-  settings
+   ip_access_lists
+   network_connectivity
+   settings

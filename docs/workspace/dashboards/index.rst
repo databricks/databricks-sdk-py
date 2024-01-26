@@ -5,6 +5,6 @@ Dashboards
 Manage Lakeview dashboards
 
 .. toctree::
-  :maxdepth: 1
+   :maxdepth: 1
 
-  lakeview
+   lakeview
