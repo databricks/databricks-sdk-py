@@ -8,7 +8,7 @@ This SDK is supported for production use cases, but we do expect future releases
 We are keen to hear feedback from you on these SDKs. Please `file GitHub issues <https://github.com/databricks/databricks-sdk-py/issues>`_, and we will address them.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
 
    getting-started
    authentication
@@ -17,7 +17,10 @@ We are keen to hear feedback from you on these SDKs. Please `file GitHub issues 
    pagination
    logging
    dbutils
-   clients
-   autogen/reference
+   clients/workspace
+   workspace/index
+   clients/account
+   account/index
+   dbdataclasses/index
 
 

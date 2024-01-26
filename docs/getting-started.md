@@ -20,6 +20,41 @@ followed by
 dbutils.library.restartPython()
 ```
 
+## Usage Overview
+
+At its core, the SDK exposes two primary clients: `databricks.sdk.WorkspaceClient` and `databricks.sdk.AccountClient`. The `WorkspaceClient` is tailored for interacting with resources within the Databricks workspace, such as notebooks, jobs, and clusters, while the `AccountClient` focuses on account-level functionalities including user and group management, billing, and workspace provisioning and management.
+
+To use the SDK to call an API, first find the API in either the [Workspace API Reference](workspace/index.rst) or [Account API reference](account/index.rst). Then, on the appropriate client, call the corresponding method. All API calls have the form
+
+```
+w.<SERVICE>.<METHOD>(<parameters>)
+```
+or
+```
+a.<SERVICE>.<METHOD>(parameters)
+```
+
+For example, to list all SQL queries in the workspace, run:
+
+```python
+# Authenticate as described above
+from databricks.sdk import WorkspaceClient
+w = WorkspaceClient()
+for query in w.queries.list():
+    print(f'query {query.name} was created at {query.created_at}')
+```
+
+To list all workspaces in the account, run:
+
+```python
+# Authenticate as described above
+from databricks.sdk import AccountClient
+a = AccountClient()
+for workspace in a.workspaces.list():
+    print(f'workspace {workspace.workspace_name} was created at {workspace.creation_time}')
+```
+
+
 ## Authentication
 
 There are two primary entry points to the Databricks SDK:
@@ -61,7 +96,7 @@ The Databricks SDK for Python makes use of Python's data classes and enums to re
 
 Specific data classes are organized into separate packages under `databricks.sdk.service`. For example, `databricks.sdk.service.jobs` has defintions for data classes & enums related to the Jobs API.
 
-For more information, consult the [API Reference](autogen/reference.rst).
+For more information, consult the [Dataclasses API Reference](dbdataclasses/index.rst).
 
 ## Examples
 
