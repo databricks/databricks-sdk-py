@@ -81,6 +81,7 @@ class MethodDoc:
 
 @dataclass
 class ServiceDoc:
+    client_prefix: str
     service_name: str
     class_name: str
     methods: list[MethodDoc]
@@ -90,8 +91,9 @@ class ServiceDoc:
     def as_rst(self) -> str:
         if not self.doc:
             self.doc = ''
+        title = f'``{self.client_prefix}.{self.service_name}``: {self.tag.name}'
         out = [
-            self.tag.name, '=' * len(self.tag.name),
+            title, '=' * len(title),
             f'.. currentmodule:: databricks.sdk.service.{self.tag.package.name}', '',
             f'.. py:class:: {self.class_name}', '', f'    {self.doc}'
         ]
@@ -274,6 +276,7 @@ class Generator:
         return method_docs
 
     def service_docs(self, client_inst) -> list[ServiceDoc]:
+        client_prefix = 'w' if isinstance(client_inst, WorkspaceClient) else 'a'
         ignore_client_fields = ('config', 'dbutils', 'api_client', 'files')
         all = []
         for service_name, service_inst in inspect.getmembers(client_inst):
@@ -284,7 +287,8 @@ class Generator:
             class_doc = service_inst.__doc__
             class_name = service_inst.__class__.__name__
             all.append(
-                ServiceDoc(service_name=service_name,
+                ServiceDoc(client_prefix=client_prefix,
+                           service_name=service_name,
                            class_name=class_name,
                            doc=class_doc,
                            tag=self._get_tag_name(service_inst.__class__.__name__, service_name),

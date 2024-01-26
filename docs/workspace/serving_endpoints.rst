@@ -1,5 +1,5 @@
-Serving endpoints
-=================
+``w.serving_endpoints``: Serving endpoints
+==========================================
 .. currentmodule:: databricks.sdk.service.serving
 
 .. py:class:: ServingEndpointsAPI

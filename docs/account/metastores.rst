@@ -1,5 +1,5 @@
-Account Metastores
-==================
+``a.metastores``: Account Metastores
+====================================
 .. currentmodule:: databricks.sdk.service.catalog
 
 .. py:class:: AccountMetastoresAPI

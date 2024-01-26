@@ -1,5 +1,5 @@
-External Locations
-==================
+``w.external_locations``: External Locations
+============================================
 .. currentmodule:: databricks.sdk.service.catalog
 
 .. py:class:: ExternalLocationsAPI

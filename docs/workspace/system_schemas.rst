@@ -1,5 +1,5 @@
-SystemSchemas
-=============
+``w.system_schemas``: SystemSchemas
+===================================
 .. currentmodule:: databricks.sdk.service.catalog
 
 .. py:class:: SystemSchemasAPI

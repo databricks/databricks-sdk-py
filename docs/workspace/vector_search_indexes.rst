@@ -1,5 +1,5 @@
-Indexes
-=======
+``w.vector_search_indexes``: Indexes
+====================================
 .. currentmodule:: databricks.sdk.service.vectorsearch
 
 .. py:class:: VectorSearchIndexesAPI

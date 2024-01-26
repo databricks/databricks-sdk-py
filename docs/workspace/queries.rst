@@ -1,5 +1,5 @@
-Queries / Results
-=================
+``w.queries``: Queries / Results
+================================
 .. currentmodule:: databricks.sdk.service.sql
 
 .. py:class:: QueriesAPI

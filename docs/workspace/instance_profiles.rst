@@ -1,5 +1,5 @@
-Instance Profiles
-=================
+``w.instance_profiles``: Instance Profiles
+==========================================
 .. currentmodule:: databricks.sdk.service.compute
 
 .. py:class:: InstanceProfilesAPI

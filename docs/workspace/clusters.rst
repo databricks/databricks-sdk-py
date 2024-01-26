@@ -1,5 +1,5 @@
-Clusters
-========
+``w.clusters``: Clusters
+========================
 .. currentmodule:: databricks.sdk.service.compute
 
 .. py:class:: ClustersExt

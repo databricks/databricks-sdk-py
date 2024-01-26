@@ -1,5 +1,5 @@
-Account Access Control
-======================
+``a.access_control``: Account Access Control
+============================================
 .. currentmodule:: databricks.sdk.service.iam
 
 .. py:class:: AccountAccessControlAPI

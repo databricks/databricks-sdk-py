@@ -1,5 +1,5 @@
-Jobs
-====
+``w.jobs``: Jobs
+================
 .. currentmodule:: databricks.sdk.service.jobs
 
 .. py:class:: JobsAPI

@@ -1,5 +1,5 @@
-Query Visualizations
-====================
+``w.query_visualizations``: Query Visualizations
+================================================
 .. currentmodule:: databricks.sdk.service.sql
 
 .. py:class:: QueryVisualizationsAPI

@@ -1,5 +1,5 @@
-Workspaces
-==========
+``a.workspaces``: Workspaces
+============================
 .. currentmodule:: databricks.sdk.service.provisioning
 
 .. py:class:: WorkspacesAPI

@@ -1,5 +1,5 @@
-Command Execution
-=================
+``w.command_execution``: Command Execution
+==========================================
 .. currentmodule:: databricks.sdk.service.compute
 
 .. py:class:: CommandExecutionAPI

@@ -1,5 +1,5 @@
-OAuth Published App
-===================
+``a.o_auth_published_apps``: OAuth Published App
+================================================
 .. currentmodule:: databricks.sdk.service.oauth2
 
 .. py:class:: OAuthPublishedAppsAPI

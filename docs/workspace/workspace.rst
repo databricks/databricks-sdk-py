@@ -1,5 +1,5 @@
-Workspace
-=========
+``w.workspace``: Workspace
+==========================
 .. currentmodule:: databricks.sdk.service.workspace
 
 .. py:class:: WorkspaceExt

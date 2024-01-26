@@ -1,5 +1,5 @@
-Storage configurations
-======================
+``a.storage``: Storage configurations
+=====================================
 .. currentmodule:: databricks.sdk.service.provisioning
 
 .. py:class:: StorageAPI

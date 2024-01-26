@@ -1,5 +1,5 @@
-Account Users
-=============
+``a.users``: Account Users
+==========================
 .. currentmodule:: databricks.sdk.service.iam
 
 .. py:class:: AccountUsersAPI

@@ -1,5 +1,5 @@
-Account IP Access Lists
-=======================
+``a.ip_access_lists``: Account IP Access Lists
+==============================================
 .. currentmodule:: databricks.sdk.service.settings
 
 .. py:class:: AccountIpAccessListsAPI

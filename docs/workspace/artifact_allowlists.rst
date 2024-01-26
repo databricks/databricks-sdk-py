@@ -1,5 +1,5 @@
-Artifact Allowlists
-===================
+``w.artifact_allowlists``: Artifact Allowlists
+==============================================
 .. currentmodule:: databricks.sdk.service.catalog
 
 .. py:class:: ArtifactAllowlistsAPI

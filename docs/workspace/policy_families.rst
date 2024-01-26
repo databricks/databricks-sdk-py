@@ -1,5 +1,5 @@
-Policy Families
-===============
+``w.policy_families``: Policy Families
+======================================
 .. currentmodule:: databricks.sdk.service.compute
 
 .. py:class:: PolicyFamiliesAPI

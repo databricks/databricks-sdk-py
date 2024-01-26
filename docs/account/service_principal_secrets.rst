@@ -1,5 +1,5 @@
-Service Principal Secrets
-=========================
+``a.service_principal_secrets``: Service Principal Secrets
+==========================================================
 .. currentmodule:: databricks.sdk.service.oauth2
 
 .. py:class:: ServicePrincipalSecretsAPI

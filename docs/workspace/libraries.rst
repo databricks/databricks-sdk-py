@@ -1,5 +1,5 @@
-Managed Libraries
-=================
+``w.libraries``: Managed Libraries
+==================================
 .. currentmodule:: databricks.sdk.service.compute
 
 .. py:class:: LibrariesAPI

@@ -1,5 +1,5 @@
-Workspace Conf
-==============
+``w.workspace_conf``: Workspace Conf
+====================================
 .. currentmodule:: databricks.sdk.service.settings
 
 .. py:class:: WorkspaceConfAPI

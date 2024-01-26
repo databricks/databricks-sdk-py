@@ -1,5 +1,5 @@
-Clean Rooms
-===========
+``w.clean_rooms``: Clean Rooms
+==============================
 .. currentmodule:: databricks.sdk.service.sharing
 
 .. py:class:: CleanRoomsAPI

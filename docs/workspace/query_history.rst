@@ -1,5 +1,5 @@
-Query History
-=============
+``w.query_history``: Query History
+==================================
 .. currentmodule:: databricks.sdk.service.sql
 
 .. py:class:: QueryHistoryAPI

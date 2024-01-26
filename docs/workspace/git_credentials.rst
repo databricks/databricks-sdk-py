@@ -1,5 +1,5 @@
-Git Credentials
-===============
+``w.git_credentials``: Git Credentials
+======================================
 .. currentmodule:: databricks.sdk.service.workspace
 
 .. py:class:: GitCredentialsAPI

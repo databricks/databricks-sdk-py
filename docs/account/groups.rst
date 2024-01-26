@@ -1,5 +1,5 @@
-Account Groups
-==============
+``a.groups``: Account Groups
+============================
 .. currentmodule:: databricks.sdk.service.iam
 
 .. py:class:: AccountGroupsAPI

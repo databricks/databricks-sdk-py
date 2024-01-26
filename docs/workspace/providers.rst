@@ -1,5 +1,5 @@
-Providers
-=========
+``w.providers``: Providers
+==========================
 .. currentmodule:: databricks.sdk.service.sharing
 
 .. py:class:: ProvidersAPI

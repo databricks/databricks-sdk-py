@@ -1,5 +1,5 @@
-Global Init Scripts
-===================
+``w.global_init_scripts``: Global Init Scripts
+==============================================
 .. currentmodule:: databricks.sdk.service.compute
 
 .. py:class:: GlobalInitScriptsAPI

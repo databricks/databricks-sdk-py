@@ -1,5 +1,5 @@
-Credential configurations
-=========================
+``a.credentials``: Credential configurations
+============================================
 .. currentmodule:: databricks.sdk.service.provisioning
 
 .. py:class:: CredentialsAPI

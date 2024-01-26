@@ -1,5 +1,5 @@
-VPC Endpoint Configurations
-===========================
+``a.vpc_endpoints``: VPC Endpoint Configurations
+================================================
 .. currentmodule:: databricks.sdk.service.provisioning
 
 .. py:class:: VpcEndpointsAPI

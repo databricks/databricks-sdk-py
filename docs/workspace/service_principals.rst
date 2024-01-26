@@ -1,5 +1,5 @@
-Service Principals
-==================
+``w.service_principals``: Service Principals
+============================================
 .. currentmodule:: databricks.sdk.service.iam
 
 .. py:class:: ServicePrincipalsAPI

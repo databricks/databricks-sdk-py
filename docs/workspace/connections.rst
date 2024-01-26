@@ -1,5 +1,5 @@
-Connections
-===========
+``w.connections``: Connections
+==============================
 .. currentmodule:: databricks.sdk.service.catalog
 
 .. py:class:: ConnectionsAPI

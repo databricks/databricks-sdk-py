@@ -1,5 +1,5 @@
-Cluster Policies
-================
+``w.cluster_policies``: Cluster Policies
+========================================
 .. currentmodule:: databricks.sdk.service.compute
 
 .. py:class:: ClusterPoliciesAPI

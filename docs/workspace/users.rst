@@ -1,5 +1,5 @@
-Users
-=====
+``w.users``: Users
+==================
 .. currentmodule:: databricks.sdk.service.iam
 
 .. py:class:: UsersAPI

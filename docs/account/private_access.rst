@@ -1,5 +1,5 @@
-Private Access Settings
-=======================
+``a.private_access``: Private Access Settings
+=============================================
 .. currentmodule:: databricks.sdk.service.provisioning
 
 .. py:class:: PrivateAccessAPI

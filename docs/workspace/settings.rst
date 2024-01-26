@@ -1,5 +1,5 @@
-Default Namespace
-=================
+``w.settings``: Default Namespace
+=================================
 .. currentmodule:: databricks.sdk.service.settings
 
 .. py:class:: SettingsAPI

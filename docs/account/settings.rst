@@ -1,5 +1,5 @@
-Personal Compute Enablement
-===========================
+``a.settings``: Personal Compute Enablement
+===========================================
 .. currentmodule:: databricks.sdk.service.settings
 
 .. py:class:: AccountSettingsAPI

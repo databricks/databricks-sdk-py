@@ -1,5 +1,5 @@
-Account Metastore Assignments
-=============================
+``a.metastore_assignments``: Account Metastore Assignments
+==========================================================
 .. currentmodule:: databricks.sdk.service.catalog
 
 .. py:class:: AccountMetastoreAssignmentsAPI

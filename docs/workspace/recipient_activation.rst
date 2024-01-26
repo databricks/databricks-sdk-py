@@ -1,5 +1,5 @@
-Recipient Activation
-====================
+``w.recipient_activation``: Recipient Activation
+================================================
 .. currentmodule:: databricks.sdk.service.sharing
 
 .. py:class:: RecipientActivationAPI

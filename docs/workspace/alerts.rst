@@ -1,5 +1,5 @@
-Alerts
-======
+``w.alerts``: Alerts
+====================
 .. currentmodule:: databricks.sdk.service.sql
 
 .. py:class:: AlertsAPI

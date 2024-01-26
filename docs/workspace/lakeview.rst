@@ -1,5 +1,5 @@
-Lakeview
-========
+``w.lakeview``: Lakeview
+========================
 .. currentmodule:: databricks.sdk.service.dashboards
 
 .. py:class:: LakeviewAPI

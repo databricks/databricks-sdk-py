@@ -1,5 +1,5 @@
-Catalogs
-========
+``w.catalogs``: Catalogs
+========================
 .. currentmodule:: databricks.sdk.service.catalog
 
 .. py:class:: CatalogsAPI

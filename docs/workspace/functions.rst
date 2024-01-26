@@ -1,5 +1,5 @@
-Functions
-=========
+``w.functions``: Functions
+==========================
 .. currentmodule:: databricks.sdk.service.catalog
 
 .. py:class:: FunctionsAPI

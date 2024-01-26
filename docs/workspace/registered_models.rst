@@ -1,5 +1,5 @@
-Registered Models
-=================
+``w.registered_models``: Registered Models
+==========================================
 .. currentmodule:: databricks.sdk.service.catalog
 
 .. py:class:: RegisteredModelsAPI

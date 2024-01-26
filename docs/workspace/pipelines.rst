@@ -1,5 +1,5 @@
-Pipelines
-=========
+``w.pipelines``: Pipelines
+==========================
 .. currentmodule:: databricks.sdk.service.pipelines
 
 .. py:class:: PipelinesAPI

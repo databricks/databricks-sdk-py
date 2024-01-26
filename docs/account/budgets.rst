@@ -1,5 +1,5 @@
-Budgets
-=======
+``a.budgets``: Budgets
+======================
 .. currentmodule:: databricks.sdk.service.billing
 
 .. py:class:: BudgetsAPI

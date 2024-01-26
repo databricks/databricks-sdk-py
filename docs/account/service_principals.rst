@@ -1,5 +1,5 @@
-Account Service Principals
-==========================
+``a.service_principals``: Account Service Principals
+====================================================
 .. currentmodule:: databricks.sdk.service.iam
 
 .. py:class:: AccountServicePrincipalsAPI

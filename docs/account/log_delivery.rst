@@ -1,5 +1,5 @@
-Log delivery configurations
-===========================
+``a.log_delivery``: Log delivery configurations
+===============================================
 .. currentmodule:: databricks.sdk.service.billing
 
 .. py:class:: LogDeliveryAPI

@@ -1,5 +1,5 @@
-Metastores
-==========
+``w.metastores``: Metastores
+============================
 .. currentmodule:: databricks.sdk.service.catalog
 
 .. py:class:: MetastoresAPI

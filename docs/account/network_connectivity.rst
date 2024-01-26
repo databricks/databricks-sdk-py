@@ -1,5 +1,5 @@
-Network Connectivity
-====================
+``a.network_connectivity``: Network Connectivity
+================================================
 .. currentmodule:: databricks.sdk.service.settings
 
 .. py:class:: NetworkConnectivityAPI

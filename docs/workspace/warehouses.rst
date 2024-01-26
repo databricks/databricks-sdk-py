@@ -1,5 +1,5 @@
-SQL Warehouses
-==============
+``w.warehouses``: SQL Warehouses
+================================
 .. currentmodule:: databricks.sdk.service.sql
 
 .. py:class:: WarehousesAPI

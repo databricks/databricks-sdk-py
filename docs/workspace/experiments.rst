@@ -1,5 +1,5 @@
-Experiments
-===========
+``w.experiments``: Experiments
+==============================
 .. currentmodule:: databricks.sdk.service.ml
 
 .. py:class:: ExperimentsAPI

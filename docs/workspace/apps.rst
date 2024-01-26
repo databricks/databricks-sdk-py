@@ -1,5 +1,5 @@
-Databricks Apps
-===============
+``w.apps``: Databricks Apps
+===========================
 .. currentmodule:: databricks.sdk.service.serving
 
 .. py:class:: AppsAPI

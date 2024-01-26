@@ -1,5 +1,5 @@
-Grants
-======
+``w.grants``: Grants
+====================
 .. currentmodule:: databricks.sdk.service.catalog
 
 .. py:class:: GrantsAPI

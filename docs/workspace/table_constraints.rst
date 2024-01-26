@@ -1,5 +1,5 @@
-Table Constraints
-=================
+``w.table_constraints``: Table Constraints
+==========================================
 .. currentmodule:: databricks.sdk.service.catalog
 
 .. py:class:: TableConstraintsAPI

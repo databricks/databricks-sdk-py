@@ -1,5 +1,5 @@
-Account Access Control Proxy
-============================
+``w.account_access_control_proxy``: Account Access Control Proxy
+================================================================
 .. currentmodule:: databricks.sdk.service.iam
 
 .. py:class:: AccountAccessControlProxyAPI

@@ -1,5 +1,5 @@
-Endpoints
-=========
+``w.vector_search_endpoints``: Endpoints
+========================================
 .. currentmodule:: databricks.sdk.service.vectorsearch
 
 .. py:class:: VectorSearchEndpointsAPI

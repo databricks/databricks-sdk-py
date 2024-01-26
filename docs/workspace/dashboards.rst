@@ -1,5 +1,5 @@
-Dashboards
-==========
+``w.dashboards``: Dashboards
+============================
 .. currentmodule:: databricks.sdk.service.sql
 
 .. py:class:: DashboardsAPI

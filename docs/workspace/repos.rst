@@ -1,5 +1,5 @@
-Repos
-=====
+``w.repos``: Repos
+==================
 .. currentmodule:: databricks.sdk.service.workspace
 
 .. py:class:: ReposAPI

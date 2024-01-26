@@ -1,5 +1,5 @@
-ACL / Permissions
-=================
+``w.dbsql_permissions``: ACL / Permissions
+==========================================
 .. currentmodule:: databricks.sdk.service.sql
 
 .. py:class:: DbsqlPermissionsAPI

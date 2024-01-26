@@ -1,5 +1,5 @@
-Key configurations
-==================
+``a.encryption_keys``: Key configurations
+=========================================
 .. currentmodule:: databricks.sdk.service.provisioning
 
 .. py:class:: EncryptionKeysAPI

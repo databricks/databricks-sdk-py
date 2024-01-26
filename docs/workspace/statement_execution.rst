@@ -1,5 +1,5 @@
-Statement Execution
-===================
+``w.statement_execution``: Statement Execution
+==============================================
 .. currentmodule:: databricks.sdk.service.sql
 
 .. py:class:: StatementExecutionAPI

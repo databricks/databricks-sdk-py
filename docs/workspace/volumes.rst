@@ -1,5 +1,5 @@
-Volumes
-=======
+``w.volumes``: Volumes
+======================
 .. currentmodule:: databricks.sdk.service.catalog
 
 .. py:class:: VolumesAPI

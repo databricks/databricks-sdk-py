@@ -1,5 +1,5 @@
-Data Sources
-============
+``w.data_sources``: Data Sources
+================================
 .. currentmodule:: databricks.sdk.service.sql
 
 .. py:class:: DataSourcesAPI

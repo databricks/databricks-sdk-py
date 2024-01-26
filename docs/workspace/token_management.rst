@@ -1,5 +1,5 @@
-Token management
-================
+``w.token_management``: Token management
+========================================
 .. currentmodule:: databricks.sdk.service.settings
 
 .. py:class:: TokenManagementAPI

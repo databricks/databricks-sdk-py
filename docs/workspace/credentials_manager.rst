@@ -1,5 +1,5 @@
-Credentials Manager
-===================
+``w.credentials_manager``: Credentials Manager
+==============================================
 .. currentmodule:: databricks.sdk.service.settings
 
 .. py:class:: CredentialsManagerAPI

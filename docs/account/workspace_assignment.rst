@@ -1,5 +1,5 @@
-Workspace Assignment
-====================
+``a.workspace_assignment``: Workspace Assignment
+================================================
 .. currentmodule:: databricks.sdk.service.iam
 
 .. py:class:: WorkspaceAssignmentAPI

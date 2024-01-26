@@ -1,5 +1,5 @@
-Network configurations
-======================
+``a.networks``: Network configurations
+======================================
 .. currentmodule:: databricks.sdk.service.provisioning
 
 .. py:class:: NetworksAPI

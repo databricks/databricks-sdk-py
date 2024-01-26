@@ -1,5 +1,5 @@
-OAuth Custom App Integration
-============================
+``a.custom_app_integration``: OAuth Custom App Integration
+==========================================================
 .. currentmodule:: databricks.sdk.service.oauth2
 
 .. py:class:: CustomAppIntegrationAPI

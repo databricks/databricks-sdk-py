@@ -1,5 +1,5 @@
-Tables
-======
+``w.tables``: Tables
+====================
 .. currentmodule:: databricks.sdk.service.catalog
 
 .. py:class:: TablesAPI

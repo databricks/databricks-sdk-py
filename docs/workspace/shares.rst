@@ -1,5 +1,5 @@
-Shares
-======
+``w.shares``: Shares
+====================
 .. currentmodule:: databricks.sdk.service.sharing
 
 .. py:class:: SharesAPI

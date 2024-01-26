@@ -1,5 +1,5 @@
-Token
-=====
+``w.tokens``: Token
+===================
 .. currentmodule:: databricks.sdk.service.settings
 
 .. py:class:: TokensAPI

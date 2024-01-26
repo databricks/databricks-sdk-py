@@ -1,5 +1,5 @@
-DBFS
-====
+``w.dbfs``: DBFS
+================
 .. currentmodule:: databricks.sdk.service.files
 
 .. py:class:: DbfsExt

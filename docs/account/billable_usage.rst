@@ -1,5 +1,5 @@
-Billable usage download
-=======================
+``a.billable_usage``: Billable usage download
+=============================================
 .. currentmodule:: databricks.sdk.service.billing
 
 .. py:class:: BillableUsageAPI

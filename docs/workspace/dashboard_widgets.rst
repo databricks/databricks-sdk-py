@@ -1,5 +1,5 @@
-Dashboard Widgets
-=================
+``w.dashboard_widgets``: Dashboard Widgets
+==========================================
 .. currentmodule:: databricks.sdk.service.sql
 
 .. py:class:: DashboardWidgetsAPI

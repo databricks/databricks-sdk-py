@@ -1,5 +1,5 @@
-Recipients
-==========
+``w.recipients``: Recipients
+============================
 .. currentmodule:: databricks.sdk.service.sharing
 
 .. py:class:: RecipientsAPI

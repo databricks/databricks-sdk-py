@@ -1,5 +1,5 @@
-Instance Pools
-==============
+``w.instance_pools``: Instance Pools
+====================================
 .. currentmodule:: databricks.sdk.service.compute
 
 .. py:class:: InstancePoolsAPI

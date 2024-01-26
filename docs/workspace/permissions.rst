@@ -1,5 +1,5 @@
-Permissions
-===========
+``w.permissions``: Permissions
+==============================
 .. currentmodule:: databricks.sdk.service.iam
 
 .. py:class:: PermissionsAPI

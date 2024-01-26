@@ -1,5 +1,5 @@
-Model Versions
-==============
+``w.model_versions``: Model Versions
+====================================
 .. currentmodule:: databricks.sdk.service.catalog
 
 .. py:class:: ModelVersionsAPI

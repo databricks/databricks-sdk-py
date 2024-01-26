@@ -1,5 +1,5 @@
-OAuth Published App Integration
-===============================
+``a.published_app_integration``: OAuth Published App Integration
+================================================================
 .. currentmodule:: databricks.sdk.service.oauth2
 
 .. py:class:: PublishedAppIntegrationAPI

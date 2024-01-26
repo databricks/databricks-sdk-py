@@ -1,5 +1,5 @@
-Model Registry
-==============
+``w.model_registry``: Model Registry
+====================================
 .. currentmodule:: databricks.sdk.service.ml
 
 .. py:class:: ModelRegistryAPI

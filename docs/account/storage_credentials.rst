@@ -1,5 +1,5 @@
-Account Storage Credentials
-===========================
+``a.storage_credentials``: Account Storage Credentials
+======================================================
 .. currentmodule:: databricks.sdk.service.catalog
 
 .. py:class:: AccountStorageCredentialsAPI

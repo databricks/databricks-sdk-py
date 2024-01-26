@@ -1,5 +1,5 @@
-Groups
-======
+``w.groups``: Groups
+====================
 .. currentmodule:: databricks.sdk.service.iam
 
 .. py:class:: GroupsAPI

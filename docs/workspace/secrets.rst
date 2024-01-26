@@ -1,5 +1,5 @@
-Secret
-======
+``w.secrets``: Secret
+=====================
 .. currentmodule:: databricks.sdk.service.workspace
 
 .. py:class:: SecretsAPI

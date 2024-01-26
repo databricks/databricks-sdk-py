@@ -1,5 +1,5 @@
-Workspace Bindings
-==================
+``w.workspace_bindings``: Workspace Bindings
+============================================
 .. currentmodule:: databricks.sdk.service.catalog
 
 .. py:class:: WorkspaceBindingsAPI

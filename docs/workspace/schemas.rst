@@ -1,5 +1,5 @@
-Schemas
-=======
+``w.schemas``: Schemas
+======================
 .. currentmodule:: databricks.sdk.service.catalog
 
 .. py:class:: SchemasAPI
