@@ -23,8 +23,8 @@ class AccessControl:
     group_name: Optional[str] = None
 
     permission_level: Optional[PermissionLevel] = None
-    """* `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_MANAGE`: Can manage the
-    query"""
+    """* `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_EDIT`: Can edit the query
+    * `CAN_MANAGE`: Can manage the query"""
 
     user_name: Optional[str] = None
 
@@ -346,7 +346,6 @@ class ChannelInfo:
 
 
 class ChannelName(Enum):
-    """Name of the channel"""
 
     CHANNEL_NAME_CURRENT = 'CHANNEL_NAME_CURRENT'
     CHANNEL_NAME_CUSTOM = 'CHANNEL_NAME_CUSTOM'
@@ -681,8 +680,8 @@ class Dashboard:
     """The identifier of the workspace folder containing the object."""
 
     permission_tier: Optional[PermissionLevel] = None
-    """* `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_MANAGE`: Can manage the
-    query"""
+    """* `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_EDIT`: Can edit the query
+    * `CAN_MANAGE`: Can manage the query"""
 
     slug: Optional[str] = None
     """URL slug. Usually mirrors the query name with dashes (`-`) instead of spaces. Appears in the URL
@@ -746,6 +745,33 @@ class Dashboard:
 
 
 @dataclass
+class DashboardEditContent:
+    dashboard_id: Optional[str] = None
+
+    name: Optional[str] = None
+    """The title of this dashboard that appears in list views and at the top of the dashboard page."""
+
+    run_as_role: Optional[RunAsRole] = None
+    """Sets the **Run as** role for the object. Must be set to one of `"viewer"` (signifying "run as
+    viewer" behavior) or `"owner"` (signifying "run as owner" behavior)"""
+
+    def as_dict(self) -> dict:
+        """Serializes the DashboardEditContent into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.dashboard_id is not None: body['dashboard_id'] = self.dashboard_id
+        if self.name is not None: body['name'] = self.name
+        if self.run_as_role is not None: body['run_as_role'] = self.run_as_role.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DashboardEditContent:
+        """Deserializes the DashboardEditContent from a dictionary."""
+        return cls(dashboard_id=d.get('dashboard_id', None),
+                   name=d.get('name', None),
+                   run_as_role=_enum(d, 'run_as_role', RunAsRole))
+
+
+@dataclass
 class DashboardOptions:
     moved_to_trash_at: Optional[str] = None
     """The timestamp when this dashboard was moved to trash. Only present when the `is_archived`
@@ -761,6 +787,49 @@ class DashboardOptions:
     def from_dict(cls, d: Dict[str, any]) -> DashboardOptions:
         """Deserializes the DashboardOptions from a dictionary."""
         return cls(moved_to_trash_at=d.get('moved_to_trash_at', None))
+
+
+@dataclass
+class DashboardPostContent:
+    name: str
+    """The title of this dashboard that appears in list views and at the top of the dashboard page."""
+
+    dashboard_filters_enabled: Optional[bool] = None
+    """Indicates whether the dashboard filters are enabled"""
+
+    is_favorite: Optional[bool] = None
+    """Indicates whether this dashboard object should appear in the current user's favorites list."""
+
+    parent: Optional[str] = None
+    """The identifier of the workspace folder containing the object."""
+
+    run_as_role: Optional[RunAsRole] = None
+    """Sets the **Run as** role for the object. Must be set to one of `"viewer"` (signifying "run as
+    viewer" behavior) or `"owner"` (signifying "run as owner" behavior)"""
+
+    tags: Optional[List[str]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the DashboardPostContent into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.dashboard_filters_enabled is not None:
+            body['dashboard_filters_enabled'] = self.dashboard_filters_enabled
+        if self.is_favorite is not None: body['is_favorite'] = self.is_favorite
+        if self.name is not None: body['name'] = self.name
+        if self.parent is not None: body['parent'] = self.parent
+        if self.run_as_role is not None: body['run_as_role'] = self.run_as_role.value
+        if self.tags: body['tags'] = [v for v in self.tags]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DashboardPostContent:
+        """Deserializes the DashboardPostContent from a dictionary."""
+        return cls(dashboard_filters_enabled=d.get('dashboard_filters_enabled', None),
+                   is_favorite=d.get('is_favorite', None),
+                   name=d.get('name', None),
+                   parent=d.get('parent', None),
+                   run_as_role=_enum(d, 'run_as_role', RunAsRole),
+                   tags=d.get('tags', None))
 
 
 @dataclass
@@ -1488,7 +1557,13 @@ class ExternalLink:
     external_link: Optional[str] = None
     """A presigned URL pointing to a chunk of result data, hosted by an external service, with a short
     expiration time (<= 15 minutes). As this URL contains a temporary credential, it should be
-    considered sensitive and the client should expose this URL in a log."""
+    considered sensitive and the client should not expose this URL in a log."""
+
+    http_headers: Optional[Dict[str, str]] = None
+    """HTTP headers that must be included with a GET request to the `external_link`. Each header is
+    provided as a key-value pair. Headers are typically used to pass a decryption key to the
+    external service. The values of these headers should be considered sensitive and the client
+    should not expose these values in a log."""
 
     next_chunk_index: Optional[int] = None
     """When fetching, provides the `chunk_index` for the _next_ chunk. If absent, indicates there are
@@ -1513,6 +1588,7 @@ class ExternalLink:
         if self.chunk_index is not None: body['chunk_index'] = self.chunk_index
         if self.expiration is not None: body['expiration'] = self.expiration
         if self.external_link is not None: body['external_link'] = self.external_link
+        if self.http_headers: body['http_headers'] = self.http_headers
         if self.next_chunk_index is not None: body['next_chunk_index'] = self.next_chunk_index
         if self.next_chunk_internal_link is not None:
             body['next_chunk_internal_link'] = self.next_chunk_internal_link
@@ -1527,6 +1603,7 @@ class ExternalLink:
                    chunk_index=d.get('chunk_index', None),
                    expiration=d.get('expiration', None),
                    external_link=d.get('external_link', None),
+                   http_headers=d.get('http_headers', None),
                    next_chunk_index=d.get('next_chunk_index', None),
                    next_chunk_internal_link=d.get('next_chunk_internal_link', None),
                    row_count=d.get('row_count', None),
@@ -2025,9 +2102,10 @@ class ParameterType(Enum):
 
 
 class PermissionLevel(Enum):
-    """* `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_MANAGE`: Can manage the
-    query"""
+    """* `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_EDIT`: Can edit the query
+    * `CAN_MANAGE`: Can manage the query"""
 
+    CAN_EDIT = 'CAN_EDIT'
     CAN_MANAGE = 'CAN_MANAGE'
     CAN_RUN = 'CAN_RUN'
     CAN_VIEW = 'CAN_VIEW'
@@ -2100,8 +2178,8 @@ class Query:
     """The identifier of the workspace folder containing the object."""
 
     permission_tier: Optional[PermissionLevel] = None
-    """* `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_MANAGE`: Can manage the
-    query"""
+    """* `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_EDIT`: Can edit the query
+    * `CAN_MANAGE`: Can manage the query"""
 
     query: Optional[str] = None
     """The text of the query to be run."""
@@ -2110,7 +2188,8 @@ class Query:
     """A SHA-256 hash of the query text along with the authenticated user ID."""
 
     run_as_role: Optional[RunAsRole] = None
-    """Run as role"""
+    """Sets the **Run as** role for the object. Must be set to one of `"viewer"` (signifying "run as
+    viewer" behavior) or `"owner"` (signifying "run as owner" behavior)"""
 
     tags: Optional[List[str]] = None
 
@@ -2206,6 +2285,10 @@ class QueryEditContent:
 
     query_id: Optional[str] = None
 
+    run_as_role: Optional[RunAsRole] = None
+    """Sets the **Run as** role for the object. Must be set to one of `"viewer"` (signifying "run as
+    viewer" behavior) or `"owner"` (signifying "run as owner" behavior)"""
+
     def as_dict(self) -> dict:
         """Serializes the QueryEditContent into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -2215,6 +2298,7 @@ class QueryEditContent:
         if self.options: body['options'] = self.options
         if self.query is not None: body['query'] = self.query
         if self.query_id is not None: body['query_id'] = self.query_id
+        if self.run_as_role is not None: body['run_as_role'] = self.run_as_role.value
         return body
 
     @classmethod
@@ -2225,7 +2309,8 @@ class QueryEditContent:
                    name=d.get('name', None),
                    options=d.get('options', None),
                    query=d.get('query', None),
-                   query_id=d.get('query_id', None))
+                   query_id=d.get('query_id', None),
+                   run_as_role=_enum(d, 'run_as_role', RunAsRole))
 
 
 @dataclass
@@ -2626,7 +2711,8 @@ class QueryPostContent:
     """The text of the query to be run."""
 
     run_as_role: Optional[RunAsRole] = None
-    """Run as role"""
+    """Sets the **Run as** role for the object. Must be set to one of `"viewer"` (signifying "run as
+    viewer" behavior) or `"owner"` (signifying "run as owner" behavior)"""
 
     def as_dict(self) -> dict:
         """Serializes the QueryPostContent into a dictionary suitable for use as a JSON request body."""
@@ -2848,7 +2934,8 @@ class ResultSchema:
 
 
 class RunAsRole(Enum):
-    """Run as role"""
+    """Sets the **Run as** role for the object. Must be set to one of `"viewer"` (signifying "run as
+    viewer" behavior) or `"owner"` (signifying "run as owner" behavior)"""
 
     OWNER = 'owner'
     VIEWER = 'viewer'
@@ -3353,8 +3440,7 @@ class WarehouseAccessControlRequest:
     """Permission level"""
 
     service_principal_name: Optional[str] = None
-    """Application ID of an active service principal. Setting this field requires the
-    `servicePrincipal/user` role."""
+    """application ID of a service principal"""
 
     user_name: Optional[str] = None
     """name of the user"""
@@ -3903,12 +3989,12 @@ class DashboardsAPI:
         :param dashboard_filters_enabled: bool (optional)
           Indicates whether the dashboard filters are enabled
         :param is_favorite: bool (optional)
-          Indicates whether this query object should appear in the current user's favorites list. The
-          application uses this flag to determine whether or not the "favorite star " should selected.
+          Indicates whether this dashboard object should appear in the current user's favorites list.
         :param parent: str (optional)
           The identifier of the workspace folder containing the object.
         :param run_as_role: :class:`RunAsRole` (optional)
-          Run as role
+          Sets the **Run as** role for the object. Must be set to one of `"viewer"` (signifying "run as
+          viewer" behavior) or `"owner"` (signifying "run as owner" behavior)
         :param tags: List[str] (optional)
         
         :returns: :class:`Dashboard`
@@ -4009,6 +4095,37 @@ class DashboardsAPI:
 
         headers = {'Accept': 'application/json', }
         self._api.do('POST', f'/api/2.0/preview/sql/dashboards/trash/{dashboard_id}', headers=headers)
+
+    def update(self,
+               dashboard_id: str,
+               *,
+               name: Optional[str] = None,
+               run_as_role: Optional[RunAsRole] = None) -> Dashboard:
+        """Change a dashboard definition.
+        
+        Modify this dashboard definition. This operation only affects attributes of the dashboard object. It
+        does not add, modify, or remove widgets.
+        
+        **Note**: You cannot undo this operation.
+        
+        :param dashboard_id: str
+        :param name: str (optional)
+          The title of this dashboard that appears in list views and at the top of the dashboard page.
+        :param run_as_role: :class:`RunAsRole` (optional)
+          Sets the **Run as** role for the object. Must be set to one of `"viewer"` (signifying "run as
+          viewer" behavior) or `"owner"` (signifying "run as owner" behavior)
+        
+        :returns: :class:`Dashboard`
+        """
+        body = {}
+        if name is not None: body['name'] = name
+        if run_as_role is not None: body['run_as_role'] = run_as_role.value
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        res = self._api.do('POST',
+                           f'/api/2.0/preview/sql/dashboards/{dashboard_id}',
+                           body=body,
+                           headers=headers)
+        return Dashboard.from_dict(res)
 
 
 class DataSourcesAPI:
@@ -4175,7 +4292,8 @@ class QueriesAPI:
         :param query: str (optional)
           The text of the query to be run.
         :param run_as_role: :class:`RunAsRole` (optional)
-          Run as role
+          Sets the **Run as** role for the object. Must be set to one of `"viewer"` (signifying "run as
+          viewer" behavior) or `"owner"` (signifying "run as owner" behavior)
         
         :returns: :class:`Query`
         """
@@ -4229,6 +4347,9 @@ class QueriesAPI:
         """Get a list of queries.
         
         Gets a list of queries. Optionally, this list can be filtered by a search term.
+        
+        ### **Warning: Calling this API concurrently 10 or more times could result in throttling, service
+        degradation, or a temporary ban.**
         
         :param order: str (optional)
           Name of query attribute to order by. Default sort order is ascending. Append a dash (`-`) to order
@@ -4297,7 +4418,8 @@ class QueriesAPI:
                description: Optional[str] = None,
                name: Optional[str] = None,
                options: Optional[Any] = None,
-               query: Optional[str] = None) -> Query:
+               query: Optional[str] = None,
+               run_as_role: Optional[RunAsRole] = None) -> Query:
         """Change a query definition.
         
         Modify this query definition.
@@ -4320,6 +4442,9 @@ class QueriesAPI:
           overridden at runtime.
         :param query: str (optional)
           The text of the query to be run.
+        :param run_as_role: :class:`RunAsRole` (optional)
+          Sets the **Run as** role for the object. Must be set to one of `"viewer"` (signifying "run as
+          viewer" behavior) or `"owner"` (signifying "run as owner" behavior)
         
         :returns: :class:`Query`
         """
@@ -4329,6 +4454,7 @@ class QueriesAPI:
         if name is not None: body['name'] = name
         if options is not None: body['options'] = options
         if query is not None: body['query'] = query
+        if run_as_role is not None: body['run_as_role'] = run_as_role.value
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         res = self._api.do('POST', f'/api/2.0/preview/sql/queries/{query_id}', body=body, headers=headers)
         return Query.from_dict(res)

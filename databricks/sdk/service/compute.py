@@ -357,8 +357,7 @@ class ClusterAccessControlRequest:
     """Permission level"""
 
     service_principal_name: Optional[str] = None
-    """Application ID of an active service principal. Setting this field requires the
-    `servicePrincipal/user` role."""
+    """application ID of a service principal"""
 
     user_name: Optional[str] = None
     """name of the user"""
@@ -1132,8 +1131,7 @@ class ClusterPolicyAccessControlRequest:
     """Permission level"""
 
     service_principal_name: Optional[str] = None
-    """Application ID of an active service principal. Setting this field requires the
-    `servicePrincipal/user` role."""
+    """application ID of a service principal"""
 
     user_name: Optional[str] = None
     """name of the user"""
@@ -2053,7 +2051,8 @@ class CreatePolicy:
     """Additional human-readable description of the cluster policy."""
 
     libraries: Optional[List[Library]] = None
-    """A list of libraries to be installed on the next cluster restart that uses this policy."""
+    """A list of libraries to be installed on the next cluster restart that uses this policy. The
+    maximum number of libraries is 500."""
 
     max_clusters_per_user: Optional[int] = None
     """Max number of clusters per user that can be active using this policy. If not present, there is
@@ -2732,7 +2731,8 @@ class EditPolicy:
     """Additional human-readable description of the cluster policy."""
 
     libraries: Optional[List[Library]] = None
-    """A list of libraries to be installed on the next cluster restart that uses this policy."""
+    """A list of libraries to be installed on the next cluster restart that uses this policy. The
+    maximum number of libraries is 500."""
 
     max_clusters_per_user: Optional[int] = None
     """Max number of clusters per user that can be active using this policy. If not present, there is
@@ -3632,8 +3632,7 @@ class InstancePoolAccessControlRequest:
     """Permission level"""
 
     service_principal_name: Optional[str] = None
-    """Application ID of an active service principal. Setting this field requires the
-    `servicePrincipal/user` role."""
+    """application ID of a service principal"""
 
     user_name: Optional[str] = None
     """name of the user"""
@@ -4740,7 +4739,8 @@ class Policy:
     be deleted, and their policy families cannot be changed."""
 
     libraries: Optional[List[Library]] = None
-    """A list of libraries to be installed on the next cluster restart that uses this policy."""
+    """A list of libraries to be installed on the next cluster restart that uses this policy. The
+    maximum number of libraries is 500."""
 
     max_clusters_per_user: Optional[int] = None
     """Max number of clusters per user that can be active using this policy. If not present, there is
@@ -5426,9 +5426,9 @@ class ClusterPoliciesAPI:
     policies have ACLs that limit their use to specific users and groups.
     
     With cluster policies, you can: - Auto-install cluster libraries on the next restart by listing them in
-    the policy's "libraries" field. - Limit users to creating clusters with the prescribed settings. -
-    Simplify the user interface, enabling more users to create clusters, by fixing and hiding some fields. -
-    Manage costs by setting limits on attributes that impact the hourly rate.
+    the policy's "libraries" field (Public Preview). - Limit users to creating clusters with the prescribed
+    settings. - Simplify the user interface, enabling more users to create clusters, by fixing and hiding some
+    fields. - Manage costs by setting limits on attributes that impact the hourly rate.
     
     Cluster policy permissions limit which policies a user can select in the Policy drop-down when the user
     creates a cluster: - A user who has unrestricted cluster create permission can select the Unrestricted
@@ -5465,7 +5465,8 @@ class ClusterPoliciesAPI:
         :param description: str (optional)
           Additional human-readable description of the cluster policy.
         :param libraries: List[:class:`Library`] (optional)
-          A list of libraries to be installed on the next cluster restart that uses this policy.
+          A list of libraries to be installed on the next cluster restart that uses this policy. The maximum
+          number of libraries is 500.
         :param max_clusters_per_user: int (optional)
           Max number of clusters per user that can be active using this policy. If not present, there is no
           max limit.
@@ -5541,7 +5542,8 @@ class ClusterPoliciesAPI:
         :param description: str (optional)
           Additional human-readable description of the cluster policy.
         :param libraries: List[:class:`Library`] (optional)
-          A list of libraries to be installed on the next cluster restart that uses this policy.
+          A list of libraries to be installed on the next cluster restart that uses this policy. The maximum
+          number of libraries is 500.
         :param max_clusters_per_user: int (optional)
           Max number of clusters per user that can be active using this policy. If not present, there is no
           max limit.
@@ -5798,7 +5800,9 @@ class ClustersAPI:
     def change_owner(self, cluster_id: str, owner_username: str):
         """Change cluster owner.
         
-        Change the owner of the cluster. You must be an admin to perform this operation.
+        Change the owner of the cluster. You must be an admin and the cluster must be terminated to perform
+        this operation. The service principal application ID can be supplied as an argument to
+        `owner_username`.
         
         :param cluster_id: str
           <needs content added>
@@ -7092,7 +7096,7 @@ class GlobalInitScriptsAPI:
         
         Get a list of all global init scripts for this workspace. This returns all properties for each script
         but **not** the script contents. To retrieve the contents of a script, use the [get a global init
-        script](#operation/get-script) operation.
+        script](:method:globalinitscripts/get) operation.
         
         :returns: Iterator over :class:`GlobalInitScriptDetails`
         """

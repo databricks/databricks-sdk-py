@@ -973,8 +973,7 @@ class JobAccessControlRequest:
     """Permission level"""
 
     service_principal_name: Optional[str] = None
-    """Application ID of an active service principal. Setting this field requires the
-    `servicePrincipal/user` role."""
+    """application ID of a service principal"""
 
     user_name: Optional[str] = None
     """name of the user"""
@@ -3844,8 +3843,9 @@ class SubmitTask:
 
     existing_cluster_id: Optional[str] = None
     """If existing_cluster_id, the ID of an existing cluster that is used for all runs of this task.
-    When running tasks on an existing cluster, you may need to manually restart the cluster if it
-    stops responding. We suggest running jobs on new clusters for greater reliability."""
+    Only all-purpose clusters are supported. When running tasks on an existing cluster, you may need
+    to manually restart the cluster if it stops responding. We suggest running jobs on new clusters
+    for greater reliability."""
 
     health: Optional[JobsHealthRules] = None
     """An optional set of health rules that can be defined for this job."""
@@ -3998,8 +3998,9 @@ class Task:
 
     existing_cluster_id: Optional[str] = None
     """If existing_cluster_id, the ID of an existing cluster that is used for all runs of this task.
-    When running tasks on an existing cluster, you may need to manually restart the cluster if it
-    stops responding. We suggest running jobs on new clusters for greater reliability."""
+    Only all-purpose clusters are supported. When running tasks on an existing cluster, you may need
+    to manually restart the cluster if it stops responding. We suggest running jobs on new clusters
+    for greater reliability."""
 
     health: Optional[JobsHealthRules] = None
     """An optional set of health rules that can be defined for this job."""
@@ -5185,9 +5186,10 @@ class JobsAPI:
                                sql_params=sql_params).result(timeout=timeout)
 
     def reset(self, job_id: int, new_settings: JobSettings):
-        """Overwrite all settings for a job.
+        """Update all job settings (reset).
         
-        Overwrite all settings for the given job. Use the Update endpoint to update job settings partially.
+        Overwrite all settings for the given job. Use the [_Update_ endpoint](:method:jobs/update) to update
+        job settings partially.
         
         :param job_id: int
           The canonical identifier of the job to reset. This field is required.
@@ -5497,10 +5499,10 @@ class JobsAPI:
                *,
                fields_to_remove: Optional[List[str]] = None,
                new_settings: Optional[JobSettings] = None):
-        """Partially update a job.
+        """Update job settings partially.
         
-        Add, update, or remove specific settings of an existing job. Use the ResetJob to overwrite all job
-        settings.
+        Add, update, or remove specific settings of an existing job. Use the [_Reset_
+        endpoint](:method:jobs/reset) to overwrite all job settings.
         
         :param job_id: int
           The canonical identifier of the job to update. This field is required.

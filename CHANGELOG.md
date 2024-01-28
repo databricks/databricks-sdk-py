@@ -1,5 +1,76 @@
 # Version changelog
 
+## 0.18.0
+
+Bugfixes:
+
+* Fix Databricks OAuth M2M on Azure ([#513](https://github.com/databricks/databricks-sdk-py/pull/513)).
+
+Other noteworthy changes:
+
+* Use `[]` instead of `None` as default list value for deserialising responses ([#361](https://github.com/databricks/databricks-sdk-py/pull/361)).
+* Support dev and staging workspaces ([#514](https://github.com/databricks/databricks-sdk-py/pull/514)).
+
+API Changes:
+
+ * Added `exists()` method for [w.tables](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/tables.html) workspace-level service.
+ * Added [w.lakehouse_monitors](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/lakehouse_monitors.html) workspace-level service.
+ * Added the following dataclasses: 
+  `databricks.sdk.service.catalog.CreateMonitor`, 
+  `databricks.sdk.service.catalog.DeleteLakehouseMonitorRequest`, 
+  `databricks.sdk.service.catalog.ExistsRequest`, 
+  `databricks.sdk.service.catalog.GetLakehouseMonitorRequest`, 
+  `databricks.sdk.service.catalog.MonitorCronSchedule`, 
+  `databricks.sdk.service.catalog.MonitorCronSchedulePauseStatus`, 
+  `databricks.sdk.service.catalog.MonitorCustomMetric`, 
+  `databricks.sdk.service.catalog.MonitorCustomMetricType`, 
+  `databricks.sdk.service.catalog.MonitorDataClassificationConfig`, 
+  `databricks.sdk.service.catalog.MonitorDestinations`, 
+  `databricks.sdk.service.catalog.MonitorInferenceLogProfileType`, 
+  `databricks.sdk.service.catalog.MonitorInferenceLogProfileTypeProblemType`, 
+  `databricks.sdk.service.catalog.MonitorInfo`, 
+  `databricks.sdk.service.catalog.MonitorInfoStatus`, 
+  `databricks.sdk.service.catalog.MonitorNotificationsConfig`, 
+  `databricks.sdk.service.catalog.MonitorTimeSeriesProfileType`, 
+  `databricks.sdk.service.catalog.TableExistsResponse` and
+  `databricks.sdk.service.catalog.UpdateMonitor`.
+ * Changed `create_obo_token()` method for [w.token_management](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/token_management.html) workspace-level service with new required argument order.
+ * Changed `get()` method for [w.token_management](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/token_management.html) workspace-level service to return `databricks.sdk.service.settings.GetTokenResponse` dataclass.
+ * Changed `lifetime_seconds` field for `databricks.sdk.service.settings.CreateOboTokenRequest` to no longer be required.
+ * Added `databricks.sdk.service.settings.GetTokenResponse` dataclass.
+
+OpenAPI SHA: e05401ed5dd4974c5333d737ec308a7d451f749f, Date: 2024-01-23
+
+## 0.17.0
+
+* Use covariant type for `@retried(on=[...])` ([#486](https://github.com/databricks/databricks-sdk-py/pull/486)).
+* Configure request timeout using existing parameter from Config ([#489](https://github.com/databricks/databricks-sdk-py/pull/489)).
+* Make contents of `__init__.py` equal across projects ([#488](https://github.com/databricks/databricks-sdk-py/pull/488)).
+* Update SDK to Latest OpenAPI Specification ([#501](https://github.com/databricks/databricks-sdk-py/pull/501)).
+
+Note: This release contains breaking changes, please see below for more details.
+
+API Changes:
+
+ * [Breaking] Changed `list()` method for [w.tokens](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/tokens.html) workspace-level service to return `databricks.sdk.service.settings.ListPublicTokensResponse` dataclass.
+ * Changed `list()` method for [w.external_locations](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/external_locations.html) workspace-level service to require request of `databricks.sdk.service.catalog.ListExternalLocationsRequest` dataclass and [w.storage_credentials](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/storage_credentials.html) workspace-level service to require request of `databricks.sdk.service.catalog.ListStorageCredentialsRequest` dataclass. 
+ * Added `next_page_token` field for `databricks.sdk.service.catalog.ListExternalLocationsResponse`, `databricks.sdk.service.catalog.ListFunctionsResponse`, `databricks.sdk.service.catalog.ListSchemasResponse` and `databricks.sdk.service.catalog.ListStorageCredentialsResponse`.
+ * Added `max_results` field for `databricks.sdk.service.catalog.ListFunctionsRequest` and `databricks.sdk.service.catalog.ListSchemasRequest`.
+ * Added `page_token` field for `databricks.sdk.service.catalog.ListFunctionsRequest` and `databricks.sdk.service.catalog.ListSchemasRequest`.
+ * Added `omit_columns` field for `databricks.sdk.service.catalog.ListTablesRequest`.
+ * Added `omit_properties` field for `databricks.sdk.service.catalog.ListTablesRequest`.
+ * Added `init_scripts` field for `databricks.sdk.service.pipelines.PipelineCluster`.
+ * Added `validate_only` field for `databricks.sdk.service.pipelines.StartUpdate` and `databricks.sdk.service.pipelines.UpdateInfo`.
+ * Changed `create()` method for [w.dashboards](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/dashboards.html) workspace-level service . New request type is `databricks.sdk.service.sql.DashboardPostContent` dataclass.
+ * Added `update()` method for [w.dashboards](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/dashboards.html) workspace-level service.
+ * Added `http_headers` field for `databricks.sdk.service.sql.ExternalLink`.
+ * Added `run_as_role` field for `databricks.sdk.service.sql.QueryEditContent`.
+ * Added package: `databricks.sdk.service.dashboards` and `databricks.sdk.service.vectorsearch`.
+ * Added dataclass: `databricks.sdk.service.catalog.ListExternalLocationsRequest`, `databricks.sdk.service.catalog.ListStorageCredentialsRequest`, `databricks.sdk.service.settings.ListPublicTokensResponse`, `databricks.sdk.service.sql.DashboardEditContent` and `databricks.sdk.service.sql.DashboardPostContent`.
+ * Removed dataclass: `databricks.sdk.service.catalog.TableConstraintList` and `databricks.sdk.service.sql.CreateDashboardRequest`.
+
+OpenAPI SHA: 0e0d4cbe87193e36c73b8b2be3b0dd0f1b013e00, Date: 2024-01-10
+
 ## 0.16.0
 
 * Sort imports in service template ([#479](https://github.com/databricks/databricks-sdk-py/pull/479)).

@@ -90,14 +90,16 @@ class CreateNetworkConnectivityConfigRequest:
 
 @dataclass
 class CreateOboTokenRequest:
+    """Configuration details for creating on-behalf tokens."""
+
     application_id: str
     """Application ID of the service principal."""
 
-    lifetime_seconds: int
-    """The number of seconds before the token expires."""
-
     comment: Optional[str] = None
     """Comment that describes the purpose of the token."""
+
+    lifetime_seconds: Optional[int] = None
+    """The number of seconds before the token expires."""
 
     def as_dict(self) -> dict:
         """Serializes the CreateOboTokenRequest into a dictionary suitable for use as a JSON request body."""
@@ -117,6 +119,8 @@ class CreateOboTokenRequest:
 
 @dataclass
 class CreateOboTokenResponse:
+    """An on-behalf token was successfully created for the service principal."""
+
     token_info: Optional[TokenInfo] = None
 
     token_value: Optional[str] = None
@@ -182,7 +186,7 @@ class CreateTokenRequest:
     lifetime_seconds: Optional[int] = None
     """The lifetime of the token, in seconds.
     
-    If the ifetime is not specified, this token remains valid indefinitely."""
+    If the lifetime is not specified, this token remains valid indefinitely."""
 
     def as_dict(self) -> dict:
         """Serializes the CreateTokenRequest into a dictionary suitable for use as a JSON request body."""
@@ -455,6 +459,24 @@ class GetTokenPermissionLevelsResponse:
 
 
 @dataclass
+class GetTokenResponse:
+    """Token with specified Token ID was successfully returned."""
+
+    token_info: Optional[TokenInfo] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the GetTokenResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.token_info: body['token_info'] = self.token_info.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> GetTokenResponse:
+        """Deserializes the GetTokenResponse from a dictionary."""
+        return cls(token_info=_from_dict(d, 'token_info', TokenInfo))
+
+
+@dataclass
 class IpAccessListInfo:
     """Definition of an IP Access list"""
 
@@ -583,8 +605,28 @@ class ListNetworkConnectivityConfigurationsResponse:
 
 
 @dataclass
+class ListPublicTokensResponse:
+    token_infos: Optional[List[PublicTokenInfo]] = None
+    """The information for each token."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListPublicTokensResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.token_infos: body['token_infos'] = [v.as_dict() for v in self.token_infos]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ListPublicTokensResponse:
+        """Deserializes the ListPublicTokensResponse from a dictionary."""
+        return cls(token_infos=_repeated_dict(d, 'token_infos', PublicTokenInfo))
+
+
+@dataclass
 class ListTokensResponse:
+    """Tokens were successfully returned."""
+
     token_infos: Optional[List[TokenInfo]] = None
+    """Token metadata of each user-created token in the workspace"""
 
     def as_dict(self) -> dict:
         """Serializes the ListTokensResponse into a dictionary suitable for use as a JSON request body."""
@@ -998,7 +1040,7 @@ class ReplaceIpAccessList:
     """Specifies whether this IP access list is enabled."""
 
     ip_access_list_id: Optional[str] = None
-    """The ID for the corresponding IP access list to modify"""
+    """The ID for the corresponding IP access list"""
 
     ip_addresses: Optional[List[str]] = None
 
@@ -1065,8 +1107,7 @@ class TokenAccessControlRequest:
     """Permission level"""
 
     service_principal_name: Optional[str] = None
-    """Application ID of an active service principal. Setting this field requires the
-    `servicePrincipal/user` role."""
+    """application ID of a service principal"""
 
     user_name: Optional[str] = None
     """name of the user"""
@@ -1283,7 +1324,7 @@ class UpdateIpAccessList:
     """Specifies whether this IP access list is enabled."""
 
     ip_access_list_id: Optional[str] = None
-    """The ID for the corresponding IP access list to modify"""
+    """The ID for the corresponding IP access list"""
 
     ip_addresses: Optional[List[str]] = None
 
@@ -1391,6 +1432,7 @@ class AccountIpAccessListsAPI:
         Deletes an IP access list, specified by its list ID.
         
         :param ip_access_list_id: str
+          The ID for the corresponding IP access list
         
         
         """
@@ -1406,6 +1448,7 @@ class AccountIpAccessListsAPI:
         Gets an IP access list, specified by its list ID.
         
         :param ip_access_list_id: str
+          The ID for the corresponding IP access list
         
         :returns: :class:`GetIpAccessListResponse`
         """
@@ -1451,6 +1494,7 @@ class AccountIpAccessListsAPI:
         effect.
         
         :param ip_access_list_id: str
+          The ID for the corresponding IP access list
         :param label: str
           Label for the IP access list. This **cannot** be empty.
         :param list_type: :class:`ListType`
@@ -1499,6 +1543,7 @@ class AccountIpAccessListsAPI:
         It can take a few minutes for the changes to take effect.
         
         :param ip_access_list_id: str
+          The ID for the corresponding IP access list
         :param enabled: bool (optional)
           Specifies whether this IP access list is enabled.
         :param ip_addresses: List[str] (optional)
@@ -1715,7 +1760,7 @@ class IpAccessListsAPI:
         Deletes an IP access list, specified by its list ID.
         
         :param ip_access_list_id: str
-          The ID for the corresponding IP access list to modify
+          The ID for the corresponding IP access list
         
         
         """
@@ -1729,7 +1774,7 @@ class IpAccessListsAPI:
         Gets an IP access list, specified by its list ID.
         
         :param ip_access_list_id: str
-          The ID for the corresponding IP access list to modify
+          The ID for the corresponding IP access list
         
         :returns: :class:`FetchIpAccessListResponse`
         """
@@ -1772,7 +1817,7 @@ class IpAccessListsAPI:
         :method:workspaceconf/setStatus.
         
         :param ip_access_list_id: str
-          The ID for the corresponding IP access list to modify
+          The ID for the corresponding IP access list
         :param label: str
           Label for the IP access list. This **cannot** be empty.
         :param list_type: :class:`ListType`
@@ -1819,7 +1864,7 @@ class IpAccessListsAPI:
         no effect until you enable the feature. See :method:workspaceconf/setStatus.
         
         :param ip_access_list_id: str
-          The ID for the corresponding IP access list to modify
+          The ID for the corresponding IP access list
         :param enabled: bool (optional)
           Specifies whether this IP access list is enabled.
         :param ip_addresses: List[str] (optional)
@@ -2196,19 +2241,19 @@ class TokenManagementAPI:
 
     def create_obo_token(self,
                          application_id: str,
-                         lifetime_seconds: int,
                          *,
-                         comment: Optional[str] = None) -> CreateOboTokenResponse:
+                         comment: Optional[str] = None,
+                         lifetime_seconds: Optional[int] = None) -> CreateOboTokenResponse:
         """Create on-behalf token.
         
         Creates a token on behalf of a service principal.
         
         :param application_id: str
           Application ID of the service principal.
-        :param lifetime_seconds: int
-          The number of seconds before the token expires.
         :param comment: str (optional)
           Comment that describes the purpose of the token.
+        :param lifetime_seconds: int (optional)
+          The number of seconds before the token expires.
         
         :returns: :class:`CreateOboTokenResponse`
         """
@@ -2234,10 +2279,10 @@ class TokenManagementAPI:
         
         """
 
-        headers = {}
+        headers = {'Accept': 'application/json', }
         self._api.do('DELETE', f'/api/2.0/token-management/tokens/{token_id}', headers=headers)
 
-    def get(self, token_id: str) -> TokenInfo:
+    def get(self, token_id: str) -> GetTokenResponse:
         """Get token info.
         
         Gets information about a token, specified by its ID.
@@ -2245,12 +2290,12 @@ class TokenManagementAPI:
         :param token_id: str
           The ID of the token to get.
         
-        :returns: :class:`TokenInfo`
+        :returns: :class:`GetTokenResponse`
         """
 
         headers = {'Accept': 'application/json', }
         res = self._api.do('GET', f'/api/2.0/token-management/tokens/{token_id}', headers=headers)
-        return TokenInfo.from_dict(res)
+        return GetTokenResponse.from_dict(res)
 
     def get_permission_levels(self) -> GetTokenPermissionLevelsResponse:
         """Get token permission levels.
@@ -2280,13 +2325,13 @@ class TokenManagementAPI:
 
     def list(self,
              *,
-             created_by_id: Optional[str] = None,
+             created_by_id: Optional[int] = None,
              created_by_username: Optional[str] = None) -> Iterator[TokenInfo]:
         """List all tokens.
         
         Lists all tokens associated with the specified workspace or user.
         
-        :param created_by_id: str (optional)
+        :param created_by_id: int (optional)
           User ID of the user that created the token.
         :param created_by_username: str (optional)
           Username of the user that created the token.
@@ -2363,7 +2408,7 @@ class TokensAPI:
         :param lifetime_seconds: int (optional)
           The lifetime of the token, in seconds.
           
-          If the ifetime is not specified, this token remains valid indefinitely.
+          If the lifetime is not specified, this token remains valid indefinitely.
         
         :returns: :class:`CreateTokenResponse`
         """
@@ -2391,17 +2436,17 @@ class TokensAPI:
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('POST', '/api/2.0/token/delete', body=body, headers=headers)
 
-    def list(self) -> Iterator[TokenInfo]:
+    def list(self) -> Iterator[PublicTokenInfo]:
         """List tokens.
         
         Lists all the valid tokens for a user-workspace pair.
         
-        :returns: Iterator over :class:`TokenInfo`
+        :returns: Iterator over :class:`PublicTokenInfo`
         """
 
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/token/list', headers=headers)
-        parsed = ListTokensResponse.from_dict(json).token_infos
+        parsed = ListPublicTokensResponse.from_dict(json).token_infos
         return parsed if parsed is not None else []
 
 

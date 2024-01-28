@@ -1163,6 +1163,97 @@ class CreateMetastoreAssignment:
 
 
 @dataclass
+class CreateMonitor:
+    assets_dir: str
+    """The directory to store monitoring assets (e.g. dashboard, metric tables)."""
+
+    output_schema_name: str
+    """Schema where output metric tables are created."""
+
+    baseline_table_name: Optional[str] = None
+    """Name of the baseline table from which drift metrics are computed from. Columns in the monitored
+    table should also be present in the baseline table."""
+
+    custom_metrics: Optional[List[MonitorCustomMetric]] = None
+    """Custom metrics to compute on the monitored table. These can be aggregate metrics, derived
+    metrics (from already computed aggregate metrics), or drift metrics (comparing metrics across
+    time windows)."""
+
+    data_classification_config: Optional[MonitorDataClassificationConfig] = None
+    """The data classification config for the monitor."""
+
+    full_name: Optional[str] = None
+    """Full name of the table."""
+
+    inference_log: Optional[MonitorInferenceLogProfileType] = None
+    """Configuration for monitoring inference logs."""
+
+    notifications: Optional[List[MonitorNotificationsConfig]] = None
+    """The notification settings for the monitor."""
+
+    schedule: Optional[MonitorCronSchedule] = None
+    """The schedule for automatically updating and refreshing metric tables."""
+
+    skip_builtin_dashboard: Optional[bool] = None
+    """Whether to skip creating a default dashboard summarizing data quality metrics."""
+
+    slicing_exprs: Optional[List[str]] = None
+    """List of column expressions to slice data with for targeted analysis. The data is grouped by each
+    expression independently, resulting in a separate slice for each predicate and its complements.
+    For high-cardinality columns, only the top 100 unique values by frequency will generate slices."""
+
+    snapshot: Optional[Any] = None
+    """Configuration for monitoring snapshot tables."""
+
+    time_series: Optional[MonitorTimeSeriesProfileType] = None
+    """Configuration for monitoring time series tables."""
+
+    warehouse_id: Optional[str] = None
+    """Optional argument to specify the warehouse for dashboard creation. If not specified, the first
+    running warehouse will be used."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CreateMonitor into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.assets_dir is not None: body['assets_dir'] = self.assets_dir
+        if self.baseline_table_name is not None: body['baseline_table_name'] = self.baseline_table_name
+        if self.custom_metrics: body['custom_metrics'] = [v.as_dict() for v in self.custom_metrics]
+        if self.data_classification_config:
+            body['data_classification_config'] = self.data_classification_config.as_dict()
+        if self.full_name is not None: body['full_name'] = self.full_name
+        if self.inference_log: body['inference_log'] = self.inference_log.as_dict()
+        if self.notifications: body['notifications'] = [v.as_dict() for v in self.notifications]
+        if self.output_schema_name is not None: body['output_schema_name'] = self.output_schema_name
+        if self.schedule: body['schedule'] = self.schedule.as_dict()
+        if self.skip_builtin_dashboard is not None:
+            body['skip_builtin_dashboard'] = self.skip_builtin_dashboard
+        if self.slicing_exprs: body['slicing_exprs'] = [v for v in self.slicing_exprs]
+        if self.snapshot: body['snapshot'] = self.snapshot
+        if self.time_series: body['time_series'] = self.time_series.as_dict()
+        if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> CreateMonitor:
+        """Deserializes the CreateMonitor from a dictionary."""
+        return cls(assets_dir=d.get('assets_dir', None),
+                   baseline_table_name=d.get('baseline_table_name', None),
+                   custom_metrics=_repeated_dict(d, 'custom_metrics', MonitorCustomMetric),
+                   data_classification_config=_from_dict(d, 'data_classification_config',
+                                                         MonitorDataClassificationConfig),
+                   full_name=d.get('full_name', None),
+                   inference_log=_from_dict(d, 'inference_log', MonitorInferenceLogProfileType),
+                   notifications=_repeated_dict(d, 'notifications', MonitorNotificationsConfig),
+                   output_schema_name=d.get('output_schema_name', None),
+                   schedule=_from_dict(d, 'schedule', MonitorCronSchedule),
+                   skip_builtin_dashboard=d.get('skip_builtin_dashboard', None),
+                   slicing_exprs=d.get('slicing_exprs', None),
+                   snapshot=d.get('snapshot', None),
+                   time_series=_from_dict(d, 'time_series', MonitorTimeSeriesProfileType),
+                   warehouse_id=d.get('warehouse_id', None))
+
+
+@dataclass
 class CreateRegisteredModelRequest:
     catalog_name: str
     """The name of the catalog where the schema and the registered model reside"""
@@ -2242,17 +2333,23 @@ class ListExternalLocationsResponse:
     external_locations: Optional[List[ExternalLocationInfo]] = None
     """An array of external locations."""
 
+    next_page_token: Optional[str] = None
+    """Opaque token to retrieve the next page of results. Absent if there are no more pages.
+    __page_token__ should be set to this value for the next request (for the next page of results)."""
+
     def as_dict(self) -> dict:
         """Serializes the ListExternalLocationsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.external_locations:
             body['external_locations'] = [v.as_dict() for v in self.external_locations]
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListExternalLocationsResponse:
         """Deserializes the ListExternalLocationsResponse from a dictionary."""
-        return cls(external_locations=_repeated_dict(d, 'external_locations', ExternalLocationInfo))
+        return cls(external_locations=_repeated_dict(d, 'external_locations', ExternalLocationInfo),
+                   next_page_token=d.get('next_page_token', None))
 
 
 @dataclass
@@ -2260,16 +2357,22 @@ class ListFunctionsResponse:
     functions: Optional[List[FunctionInfo]] = None
     """An array of function information objects."""
 
+    next_page_token: Optional[str] = None
+    """Opaque token to retrieve the next page of results. Absent if there are no more pages.
+    __page_token__ should be set to this value for the next request (for the next page of results)."""
+
     def as_dict(self) -> dict:
         """Serializes the ListFunctionsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.functions: body['functions'] = [v.as_dict() for v in self.functions]
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListFunctionsResponse:
         """Deserializes the ListFunctionsResponse from a dictionary."""
-        return cls(functions=_repeated_dict(d, 'functions', FunctionInfo))
+        return cls(functions=_repeated_dict(d, 'functions', FunctionInfo),
+                   next_page_token=d.get('next_page_token', None))
 
 
 @dataclass
@@ -2294,7 +2397,8 @@ class ListModelVersionsResponse:
     model_versions: Optional[List[ModelVersionInfo]] = None
 
     next_page_token: Optional[str] = None
-    """Token to retrieve the next page of results"""
+    """Opaque token to retrieve the next page of results. Absent if there are no more pages.
+    __page_token__ should be set to this value for the next request (for the next page of results)."""
 
     def as_dict(self) -> dict:
         """Serializes the ListModelVersionsResponse into a dictionary suitable for use as a JSON request body."""
@@ -2334,28 +2438,39 @@ class ListRegisteredModelsResponse:
 
 @dataclass
 class ListSchemasResponse:
+    next_page_token: Optional[str] = None
+    """Opaque token to retrieve the next page of results. Absent if there are no more pages.
+    __page_token__ should be set to this value for the next request (for the next page of results)."""
+
     schemas: Optional[List[SchemaInfo]] = None
     """An array of schema information objects."""
 
     def as_dict(self) -> dict:
         """Serializes the ListSchemasResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         if self.schemas: body['schemas'] = [v.as_dict() for v in self.schemas]
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListSchemasResponse:
         """Deserializes the ListSchemasResponse from a dictionary."""
-        return cls(schemas=_repeated_dict(d, 'schemas', SchemaInfo))
+        return cls(next_page_token=d.get('next_page_token', None),
+                   schemas=_repeated_dict(d, 'schemas', SchemaInfo))
 
 
 @dataclass
 class ListStorageCredentialsResponse:
+    next_page_token: Optional[str] = None
+    """Opaque token to retrieve the next page of results. Absent if there are no more pages.
+    __page_token__ should be set to this value for the next request (for the next page of results)."""
+
     storage_credentials: Optional[List[StorageCredentialInfo]] = None
 
     def as_dict(self) -> dict:
         """Serializes the ListStorageCredentialsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         if self.storage_credentials:
             body['storage_credentials'] = [v.as_dict() for v in self.storage_credentials]
         return body
@@ -2363,7 +2478,8 @@ class ListStorageCredentialsResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListStorageCredentialsResponse:
         """Deserializes the ListStorageCredentialsResponse from a dictionary."""
-        return cls(storage_credentials=_repeated_dict(d, 'storage_credentials', StorageCredentialInfo))
+        return cls(next_page_token=d.get('next_page_token', None),
+                   storage_credentials=_repeated_dict(d, 'storage_credentials', StorageCredentialInfo))
 
 
 @dataclass
@@ -2386,7 +2502,8 @@ class ListSystemSchemasResponse:
 @dataclass
 class ListTableSummariesResponse:
     next_page_token: Optional[str] = None
-    """Opaque token for pagination. Omitted if there are no more results."""
+    """Opaque token to retrieve the next page of results. Absent if there are no more pages.
+    __page_token__ should be set to this value for the next request (for the next page of results)."""
 
     tables: Optional[List[TableSummary]] = None
     """List of table summaries."""
@@ -2408,8 +2525,8 @@ class ListTableSummariesResponse:
 @dataclass
 class ListTablesResponse:
     next_page_token: Optional[str] = None
-    """Opaque token for pagination. Omitted if there are no more results. page_token should be set to
-    this value for fetching the next page."""
+    """Opaque token to retrieve the next page of results. Absent if there are no more pages.
+    __page_token__ should be set to this value for the next request (for the next page of results)."""
 
     tables: Optional[List[TableInfo]] = None
     """An array of table information objects."""
@@ -2703,6 +2820,342 @@ class ModelVersionInfoStatus(Enum):
     FAILED_REGISTRATION = 'FAILED_REGISTRATION'
     PENDING_REGISTRATION = 'PENDING_REGISTRATION'
     READY = 'READY'
+
+
+@dataclass
+class MonitorCronSchedule:
+    pause_status: Optional[MonitorCronSchedulePauseStatus] = None
+    """Whether the schedule is paused or not"""
+
+    quartz_cron_expression: Optional[str] = None
+    """A cron expression using quartz syntax that describes the schedule for a job."""
+
+    timezone_id: Optional[str] = None
+    """A Java timezone id. The schedule for a job will be resolved with respect to this timezone."""
+
+    def as_dict(self) -> dict:
+        """Serializes the MonitorCronSchedule into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.pause_status is not None: body['pause_status'] = self.pause_status.value
+        if self.quartz_cron_expression is not None:
+            body['quartz_cron_expression'] = self.quartz_cron_expression
+        if self.timezone_id is not None: body['timezone_id'] = self.timezone_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> MonitorCronSchedule:
+        """Deserializes the MonitorCronSchedule from a dictionary."""
+        return cls(pause_status=_enum(d, 'pause_status', MonitorCronSchedulePauseStatus),
+                   quartz_cron_expression=d.get('quartz_cron_expression', None),
+                   timezone_id=d.get('timezone_id', None))
+
+
+class MonitorCronSchedulePauseStatus(Enum):
+    """Whether the schedule is paused or not"""
+
+    PAUSED = 'PAUSED'
+    UNPAUSED = 'UNPAUSED'
+
+
+@dataclass
+class MonitorCustomMetric:
+    definition: Optional[str] = None
+    """Jinja template for a SQL expression that specifies how to compute the metric. See [create metric
+    definition].
+    
+    [create metric definition]: https://docs.databricks.com/en/lakehouse-monitoring/custom-metrics.html#create-definition"""
+
+    input_columns: Optional[List[str]] = None
+    """Columns on the monitored table to apply the custom metrics to."""
+
+    name: Optional[str] = None
+    """Name of the custom metric."""
+
+    output_data_type: Optional[str] = None
+    """The output type of the custom metric."""
+
+    type: Optional[MonitorCustomMetricType] = None
+    """The type of the custom metric."""
+
+    def as_dict(self) -> dict:
+        """Serializes the MonitorCustomMetric into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.definition is not None: body['definition'] = self.definition
+        if self.input_columns: body['input_columns'] = [v for v in self.input_columns]
+        if self.name is not None: body['name'] = self.name
+        if self.output_data_type is not None: body['output_data_type'] = self.output_data_type
+        if self.type is not None: body['type'] = self.type.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> MonitorCustomMetric:
+        """Deserializes the MonitorCustomMetric from a dictionary."""
+        return cls(definition=d.get('definition', None),
+                   input_columns=d.get('input_columns', None),
+                   name=d.get('name', None),
+                   output_data_type=d.get('output_data_type', None),
+                   type=_enum(d, 'type', MonitorCustomMetricType))
+
+
+class MonitorCustomMetricType(Enum):
+    """The type of the custom metric."""
+
+    CUSTOM_METRIC_TYPE_AGGREGATE = 'CUSTOM_METRIC_TYPE_AGGREGATE'
+    CUSTOM_METRIC_TYPE_DERIVED = 'CUSTOM_METRIC_TYPE_DERIVED'
+    CUSTOM_METRIC_TYPE_DRIFT = 'CUSTOM_METRIC_TYPE_DRIFT'
+    MONITOR_STATUS_ERROR = 'MONITOR_STATUS_ERROR'
+    MONITOR_STATUS_FAILED = 'MONITOR_STATUS_FAILED'
+
+
+@dataclass
+class MonitorDataClassificationConfig:
+    enabled: Optional[bool] = None
+    """Whether data classification is enabled."""
+
+    def as_dict(self) -> dict:
+        """Serializes the MonitorDataClassificationConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.enabled is not None: body['enabled'] = self.enabled
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> MonitorDataClassificationConfig:
+        """Deserializes the MonitorDataClassificationConfig from a dictionary."""
+        return cls(enabled=d.get('enabled', None))
+
+
+@dataclass
+class MonitorDestinations:
+    email_addresses: Optional[List[str]] = None
+    """The list of email addresses to send the notification to."""
+
+    def as_dict(self) -> dict:
+        """Serializes the MonitorDestinations into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.email_addresses: body['email_addresses'] = [v for v in self.email_addresses]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> MonitorDestinations:
+        """Deserializes the MonitorDestinations from a dictionary."""
+        return cls(email_addresses=d.get('email_addresses', None))
+
+
+@dataclass
+class MonitorInferenceLogProfileType:
+    granularities: Optional[List[str]] = None
+    """List of granularities to use when aggregating data into time windows based on their timestamp."""
+
+    label_col: Optional[str] = None
+    """Column of the model label."""
+
+    model_id_col: Optional[str] = None
+    """Column of the model id or version."""
+
+    prediction_col: Optional[str] = None
+    """Column of the model prediction."""
+
+    prediction_proba_col: Optional[str] = None
+    """Column of the model prediction probabilities."""
+
+    problem_type: Optional[MonitorInferenceLogProfileTypeProblemType] = None
+    """Problem type the model aims to solve."""
+
+    timestamp_col: Optional[str] = None
+    """Column of the timestamp of predictions."""
+
+    def as_dict(self) -> dict:
+        """Serializes the MonitorInferenceLogProfileType into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.granularities: body['granularities'] = [v for v in self.granularities]
+        if self.label_col is not None: body['label_col'] = self.label_col
+        if self.model_id_col is not None: body['model_id_col'] = self.model_id_col
+        if self.prediction_col is not None: body['prediction_col'] = self.prediction_col
+        if self.prediction_proba_col is not None: body['prediction_proba_col'] = self.prediction_proba_col
+        if self.problem_type is not None: body['problem_type'] = self.problem_type.value
+        if self.timestamp_col is not None: body['timestamp_col'] = self.timestamp_col
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> MonitorInferenceLogProfileType:
+        """Deserializes the MonitorInferenceLogProfileType from a dictionary."""
+        return cls(granularities=d.get('granularities', None),
+                   label_col=d.get('label_col', None),
+                   model_id_col=d.get('model_id_col', None),
+                   prediction_col=d.get('prediction_col', None),
+                   prediction_proba_col=d.get('prediction_proba_col', None),
+                   problem_type=_enum(d, 'problem_type', MonitorInferenceLogProfileTypeProblemType),
+                   timestamp_col=d.get('timestamp_col', None))
+
+
+class MonitorInferenceLogProfileTypeProblemType(Enum):
+    """Problem type the model aims to solve."""
+
+    PROBLEM_TYPE_CLASSIFICATION = 'PROBLEM_TYPE_CLASSIFICATION'
+    PROBLEM_TYPE_REGRESSION = 'PROBLEM_TYPE_REGRESSION'
+
+
+@dataclass
+class MonitorInfo:
+    assets_dir: Optional[str] = None
+    """The directory to store monitoring assets (e.g. dashboard, metric tables)."""
+
+    baseline_table_name: Optional[str] = None
+    """Name of the baseline table from which drift metrics are computed from. Columns in the monitored
+    table should also be present in the baseline table."""
+
+    custom_metrics: Optional[List[MonitorCustomMetric]] = None
+    """Custom metrics to compute on the monitored table. These can be aggregate metrics, derived
+    metrics (from already computed aggregate metrics), or drift metrics (comparing metrics across
+    time windows)."""
+
+    dashboard_id: Optional[str] = None
+    """The ID of the generated dashboard."""
+
+    data_classification_config: Optional[MonitorDataClassificationConfig] = None
+    """The data classification config for the monitor."""
+
+    drift_metrics_table_name: Optional[str] = None
+    """The full name of the drift metrics table. Format:
+    __catalog_name__.__schema_name__.__table_name__."""
+
+    inference_log: Optional[MonitorInferenceLogProfileType] = None
+    """Configuration for monitoring inference logs."""
+
+    latest_monitor_failure_msg: Optional[str] = None
+    """The latest failure message of the monitor (if any)."""
+
+    monitor_version: Optional[str] = None
+    """The version of the monitor config (e.g. 1,2,3). If negative, the monitor may be corrupted."""
+
+    notifications: Optional[List[MonitorNotificationsConfig]] = None
+    """The notification settings for the monitor."""
+
+    output_schema_name: Optional[str] = None
+    """Schema where output metric tables are created."""
+
+    profile_metrics_table_name: Optional[str] = None
+    """The full name of the profile metrics table. Format:
+    __catalog_name__.__schema_name__.__table_name__."""
+
+    schedule: Optional[MonitorCronSchedule] = None
+    """The schedule for automatically updating and refreshing metric tables."""
+
+    slicing_exprs: Optional[List[str]] = None
+    """List of column expressions to slice data with for targeted analysis. The data is grouped by each
+    expression independently, resulting in a separate slice for each predicate and its complements.
+    For high-cardinality columns, only the top 100 unique values by frequency will generate slices."""
+
+    snapshot: Optional[Any] = None
+    """Configuration for monitoring snapshot tables."""
+
+    status: Optional[MonitorInfoStatus] = None
+    """The status of the monitor."""
+
+    table_name: Optional[str] = None
+    """The full name of the table to monitor. Format: __catalog_name__.__schema_name__.__table_name__."""
+
+    time_series: Optional[MonitorTimeSeriesProfileType] = None
+    """Configuration for monitoring time series tables."""
+
+    def as_dict(self) -> dict:
+        """Serializes the MonitorInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.assets_dir is not None: body['assets_dir'] = self.assets_dir
+        if self.baseline_table_name is not None: body['baseline_table_name'] = self.baseline_table_name
+        if self.custom_metrics: body['custom_metrics'] = [v.as_dict() for v in self.custom_metrics]
+        if self.dashboard_id is not None: body['dashboard_id'] = self.dashboard_id
+        if self.data_classification_config:
+            body['data_classification_config'] = self.data_classification_config.as_dict()
+        if self.drift_metrics_table_name is not None:
+            body['drift_metrics_table_name'] = self.drift_metrics_table_name
+        if self.inference_log: body['inference_log'] = self.inference_log.as_dict()
+        if self.latest_monitor_failure_msg is not None:
+            body['latest_monitor_failure_msg'] = self.latest_monitor_failure_msg
+        if self.monitor_version is not None: body['monitor_version'] = self.monitor_version
+        if self.notifications: body['notifications'] = [v.as_dict() for v in self.notifications]
+        if self.output_schema_name is not None: body['output_schema_name'] = self.output_schema_name
+        if self.profile_metrics_table_name is not None:
+            body['profile_metrics_table_name'] = self.profile_metrics_table_name
+        if self.schedule: body['schedule'] = self.schedule.as_dict()
+        if self.slicing_exprs: body['slicing_exprs'] = [v for v in self.slicing_exprs]
+        if self.snapshot: body['snapshot'] = self.snapshot
+        if self.status is not None: body['status'] = self.status.value
+        if self.table_name is not None: body['table_name'] = self.table_name
+        if self.time_series: body['time_series'] = self.time_series.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> MonitorInfo:
+        """Deserializes the MonitorInfo from a dictionary."""
+        return cls(assets_dir=d.get('assets_dir', None),
+                   baseline_table_name=d.get('baseline_table_name', None),
+                   custom_metrics=_repeated_dict(d, 'custom_metrics', MonitorCustomMetric),
+                   dashboard_id=d.get('dashboard_id', None),
+                   data_classification_config=_from_dict(d, 'data_classification_config',
+                                                         MonitorDataClassificationConfig),
+                   drift_metrics_table_name=d.get('drift_metrics_table_name', None),
+                   inference_log=_from_dict(d, 'inference_log', MonitorInferenceLogProfileType),
+                   latest_monitor_failure_msg=d.get('latest_monitor_failure_msg', None),
+                   monitor_version=d.get('monitor_version', None),
+                   notifications=_repeated_dict(d, 'notifications', MonitorNotificationsConfig),
+                   output_schema_name=d.get('output_schema_name', None),
+                   profile_metrics_table_name=d.get('profile_metrics_table_name', None),
+                   schedule=_from_dict(d, 'schedule', MonitorCronSchedule),
+                   slicing_exprs=d.get('slicing_exprs', None),
+                   snapshot=d.get('snapshot', None),
+                   status=_enum(d, 'status', MonitorInfoStatus),
+                   table_name=d.get('table_name', None),
+                   time_series=_from_dict(d, 'time_series', MonitorTimeSeriesProfileType))
+
+
+class MonitorInfoStatus(Enum):
+    """The status of the monitor."""
+
+    MONITOR_STATUS_ACTIVE = 'MONITOR_STATUS_ACTIVE'
+    MONITOR_STATUS_DELETE_PENDING = 'MONITOR_STATUS_DELETE_PENDING'
+    MONITOR_STATUS_ERROR = 'MONITOR_STATUS_ERROR'
+    MONITOR_STATUS_FAILED = 'MONITOR_STATUS_FAILED'
+    MONITOR_STATUS_PENDING = 'MONITOR_STATUS_PENDING'
+
+
+@dataclass
+class MonitorNotificationsConfig:
+    on_failure: Optional[MonitorDestinations] = None
+    """Who to send notifications to on monitor failure."""
+
+    def as_dict(self) -> dict:
+        """Serializes the MonitorNotificationsConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.on_failure: body['on_failure'] = self.on_failure.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> MonitorNotificationsConfig:
+        """Deserializes the MonitorNotificationsConfig from a dictionary."""
+        return cls(on_failure=_from_dict(d, 'on_failure', MonitorDestinations))
+
+
+@dataclass
+class MonitorTimeSeriesProfileType:
+    granularities: Optional[List[str]] = None
+    """List of granularities to use when aggregating data into time windows based on their timestamp."""
+
+    timestamp_col: Optional[str] = None
+    """The timestamp column. This must be timestamp types or convertible to timestamp types using the
+    pyspark to_timestamp function."""
+
+    def as_dict(self) -> dict:
+        """Serializes the MonitorTimeSeriesProfileType into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.granularities: body['granularities'] = [v for v in self.granularities]
+        if self.timestamp_col is not None: body['timestamp_col'] = self.timestamp_col
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> MonitorTimeSeriesProfileType:
+        """Deserializes the MonitorTimeSeriesProfileType from a dictionary."""
+        return cls(granularities=d.get('granularities', None), timestamp_col=d.get('timestamp_col', None))
 
 
 @dataclass
@@ -3341,23 +3794,6 @@ class TableConstraint:
 
 
 @dataclass
-class TableConstraintList:
-    table_constraints: Optional[List[TableConstraint]] = None
-    """List of table constraints. Note: this field is not set in the output of the __listTables__ API."""
-
-    def as_dict(self) -> dict:
-        """Serializes the TableConstraintList into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.table_constraints: body['table_constraints'] = [v.as_dict() for v in self.table_constraints]
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TableConstraintList:
-        """Deserializes the TableConstraintList from a dictionary."""
-        return cls(table_constraints=_repeated_dict(d, 'table_constraints', TableConstraint))
-
-
-@dataclass
 class TableDependency:
     """A table that is dependent on a SQL object."""
 
@@ -3375,6 +3811,23 @@ class TableDependency:
     def from_dict(cls, d: Dict[str, any]) -> TableDependency:
         """Deserializes the TableDependency from a dictionary."""
         return cls(table_full_name=d.get('table_full_name', None))
+
+
+@dataclass
+class TableExistsResponse:
+    table_exists: Optional[bool] = None
+    """Whether the table exists or not."""
+
+    def as_dict(self) -> dict:
+        """Serializes the TableExistsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.table_exists is not None: body['table_exists'] = self.table_exists
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> TableExistsResponse:
+        """Deserializes the TableExistsResponse from a dictionary."""
+        return cls(table_exists=d.get('table_exists', None))
 
 
 @dataclass
@@ -3451,7 +3904,8 @@ class TableInfo:
     storage_location: Optional[str] = None
     """Storage root URL for table (for **MANAGED**, **EXTERNAL** tables)"""
 
-    table_constraints: Optional[TableConstraintList] = None
+    table_constraints: Optional[List[TableConstraint]] = None
+    """List of table constraints. Note: this field is not set in the output of the __listTables__ API."""
 
     table_id: Optional[str] = None
     """Name of table, relative to parent schema."""
@@ -3508,7 +3962,7 @@ class TableInfo:
         if self.storage_credential_name is not None:
             body['storage_credential_name'] = self.storage_credential_name
         if self.storage_location is not None: body['storage_location'] = self.storage_location
-        if self.table_constraints: body['table_constraints'] = self.table_constraints.as_dict()
+        if self.table_constraints: body['table_constraints'] = [v.as_dict() for v in self.table_constraints]
         if self.table_id is not None: body['table_id'] = self.table_id
         if self.table_type is not None: body['table_type'] = self.table_type.value
         if self.updated_at is not None: body['updated_at'] = self.updated_at
@@ -3547,7 +4001,7 @@ class TableInfo:
                    sql_path=d.get('sql_path', None),
                    storage_credential_name=d.get('storage_credential_name', None),
                    storage_location=d.get('storage_location', None),
-                   table_constraints=_from_dict(d, 'table_constraints', TableConstraintList),
+                   table_constraints=_repeated_dict(d, 'table_constraints', TableConstraint),
                    table_id=d.get('table_id', None),
                    table_type=_enum(d, 'table_type', TableType),
                    updated_at=d.get('updated_at', None),
@@ -3905,6 +4359,85 @@ class UpdateModelVersionRequest:
         return cls(comment=d.get('comment', None),
                    full_name=d.get('full_name', None),
                    version=d.get('version', None))
+
+
+@dataclass
+class UpdateMonitor:
+    assets_dir: str
+    """The directory to store monitoring assets (e.g. dashboard, metric tables)."""
+
+    output_schema_name: str
+    """Schema where output metric tables are created."""
+
+    baseline_table_name: Optional[str] = None
+    """Name of the baseline table from which drift metrics are computed from. Columns in the monitored
+    table should also be present in the baseline table."""
+
+    custom_metrics: Optional[List[MonitorCustomMetric]] = None
+    """Custom metrics to compute on the monitored table. These can be aggregate metrics, derived
+    metrics (from already computed aggregate metrics), or drift metrics (comparing metrics across
+    time windows)."""
+
+    data_classification_config: Optional[MonitorDataClassificationConfig] = None
+    """The data classification config for the monitor."""
+
+    full_name: Optional[str] = None
+    """Full name of the table."""
+
+    inference_log: Optional[MonitorInferenceLogProfileType] = None
+    """Configuration for monitoring inference logs."""
+
+    notifications: Optional[List[MonitorNotificationsConfig]] = None
+    """The notification settings for the monitor."""
+
+    schedule: Optional[MonitorCronSchedule] = None
+    """The schedule for automatically updating and refreshing metric tables."""
+
+    slicing_exprs: Optional[List[str]] = None
+    """List of column expressions to slice data with for targeted analysis. The data is grouped by each
+    expression independently, resulting in a separate slice for each predicate and its complements.
+    For high-cardinality columns, only the top 100 unique values by frequency will generate slices."""
+
+    snapshot: Optional[Any] = None
+    """Configuration for monitoring snapshot tables."""
+
+    time_series: Optional[MonitorTimeSeriesProfileType] = None
+    """Configuration for monitoring time series tables."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateMonitor into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.assets_dir is not None: body['assets_dir'] = self.assets_dir
+        if self.baseline_table_name is not None: body['baseline_table_name'] = self.baseline_table_name
+        if self.custom_metrics: body['custom_metrics'] = [v.as_dict() for v in self.custom_metrics]
+        if self.data_classification_config:
+            body['data_classification_config'] = self.data_classification_config.as_dict()
+        if self.full_name is not None: body['full_name'] = self.full_name
+        if self.inference_log: body['inference_log'] = self.inference_log.as_dict()
+        if self.notifications: body['notifications'] = [v.as_dict() for v in self.notifications]
+        if self.output_schema_name is not None: body['output_schema_name'] = self.output_schema_name
+        if self.schedule: body['schedule'] = self.schedule.as_dict()
+        if self.slicing_exprs: body['slicing_exprs'] = [v for v in self.slicing_exprs]
+        if self.snapshot: body['snapshot'] = self.snapshot
+        if self.time_series: body['time_series'] = self.time_series.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateMonitor:
+        """Deserializes the UpdateMonitor from a dictionary."""
+        return cls(assets_dir=d.get('assets_dir', None),
+                   baseline_table_name=d.get('baseline_table_name', None),
+                   custom_metrics=_repeated_dict(d, 'custom_metrics', MonitorCustomMetric),
+                   data_classification_config=_from_dict(d, 'data_classification_config',
+                                                         MonitorDataClassificationConfig),
+                   full_name=d.get('full_name', None),
+                   inference_log=_from_dict(d, 'inference_log', MonitorInferenceLogProfileType),
+                   notifications=_repeated_dict(d, 'notifications', MonitorNotificationsConfig),
+                   output_schema_name=d.get('output_schema_name', None),
+                   schedule=_from_dict(d, 'schedule', MonitorCronSchedule),
+                   slicing_exprs=d.get('slicing_exprs', None),
+                   snapshot=d.get('snapshot', None),
+                   time_series=_from_dict(d, 'time_series', MonitorTimeSeriesProfileType))
 
 
 @dataclass
@@ -5239,20 +5772,45 @@ class ExternalLocationsAPI:
         res = self._api.do('GET', f'/api/2.1/unity-catalog/external-locations/{name}', headers=headers)
         return ExternalLocationInfo.from_dict(res)
 
-    def list(self) -> Iterator[ExternalLocationInfo]:
+    def list(self,
+             *,
+             max_results: Optional[int] = None,
+             page_token: Optional[str] = None) -> Iterator[ExternalLocationInfo]:
         """List external locations.
         
         Gets an array of external locations (__ExternalLocationInfo__ objects) from the metastore. The caller
         must be a metastore admin, the owner of the external location, or a user that has some privilege on
-        the external location. There is no guarantee of a specific ordering of the elements in the array.
+        the external location. For unpaginated request, there is no guarantee of a specific ordering of the
+        elements in the array. For paginated request, elements are ordered by their name.
+        
+        :param max_results: int (optional)
+          Maximum number of external locations to return. If not set, all the external locations are returned
+          (not recommended). - when set to a value greater than 0, the page length is the minimum of this
+          value and a server configured value; - when set to 0, the page length is set to a server configured
+          value (recommended); - when set to a value less than 0, an invalid parameter error is returned;
+        :param page_token: str (optional)
+          Opaque pagination token to go to next page based on previous query.
         
         :returns: Iterator over :class:`ExternalLocationInfo`
         """
 
+        query = {}
+        if max_results is not None: query['max_results'] = max_results
+        if page_token is not None: query['page_token'] = page_token
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET', '/api/2.1/unity-catalog/external-locations', headers=headers)
-        parsed = ListExternalLocationsResponse.from_dict(json).external_locations
-        return parsed if parsed is not None else []
+
+        while True:
+            json = self._api.do('GET',
+                                '/api/2.1/unity-catalog/external-locations',
+                                query=query,
+                                headers=headers)
+            if 'external_locations' not in json or not json['external_locations']:
+                return
+            for v in json['external_locations']:
+                yield ExternalLocationInfo.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
 
     def update(self,
                name: str,
@@ -5391,30 +5949,52 @@ class FunctionsAPI:
         res = self._api.do('GET', f'/api/2.1/unity-catalog/functions/{name}', headers=headers)
         return FunctionInfo.from_dict(res)
 
-    def list(self, catalog_name: str, schema_name: str) -> Iterator[FunctionInfo]:
+    def list(self,
+             catalog_name: str,
+             schema_name: str,
+             *,
+             max_results: Optional[int] = None,
+             page_token: Optional[str] = None) -> Iterator[FunctionInfo]:
         """List functions.
         
         List functions within the specified parent catalog and schema. If the user is a metastore admin, all
         functions are returned in the output list. Otherwise, the user must have the **USE_CATALOG** privilege
         on the catalog and the **USE_SCHEMA** privilege on the schema, and the output list contains only
-        functions for which either the user has the **EXECUTE** privilege or the user is the owner. There is
-        no guarantee of a specific ordering of the elements in the array.
+        functions for which either the user has the **EXECUTE** privilege or the user is the owner. For
+        unpaginated request, there is no guarantee of a specific ordering of the elements in the array. For
+        paginated request, elements are ordered by their name.
         
         :param catalog_name: str
           Name of parent catalog for functions of interest.
         :param schema_name: str
           Parent schema of functions.
+        :param max_results: int (optional)
+          Maximum number of functions to return. If not set, all the functions are returned (not recommended).
+          - when set to a value greater than 0, the page length is the minimum of this value and a server
+          configured value; - when set to 0, the page length is set to a server configured value
+          (recommended); - when set to a value less than 0, an invalid parameter error is returned;
+        :param page_token: str (optional)
+          Opaque pagination token to go to next page based on previous query.
         
         :returns: Iterator over :class:`FunctionInfo`
         """
 
         query = {}
         if catalog_name is not None: query['catalog_name'] = catalog_name
+        if max_results is not None: query['max_results'] = max_results
+        if page_token is not None: query['page_token'] = page_token
         if schema_name is not None: query['schema_name'] = schema_name
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET', '/api/2.1/unity-catalog/functions', query=query, headers=headers)
-        parsed = ListFunctionsResponse.from_dict(json).functions
-        return parsed if parsed is not None else []
+
+        while True:
+            json = self._api.do('GET', '/api/2.1/unity-catalog/functions', query=query, headers=headers)
+            if 'functions' not in json or not json['functions']:
+                return
+            for v in json['functions']:
+                yield FunctionInfo.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
 
     def update(self, name: str, *, owner: Optional[str] = None) -> FunctionInfo:
         """Update a function.
@@ -5538,6 +6118,231 @@ class GrantsAPI:
                            body=body,
                            headers=headers)
         return PermissionsList.from_dict(res)
+
+
+class LakehouseMonitorsAPI:
+    """A monitor computes and monitors data or model quality metrics for a table over time. It generates metrics
+    tables and a dashboard that you can use to monitor table health and set alerts.
+    
+    Most write operations require the user to be the owner of the table (or its parent schema or parent
+    catalog). Viewing the dashboard, computed metrics, or monitor configuration only requires the user to have
+    **SELECT** privileges on the table (along with **USE_SCHEMA** and **USE_CATALOG**)."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def create(self,
+               full_name: str,
+               assets_dir: str,
+               output_schema_name: str,
+               *,
+               baseline_table_name: Optional[str] = None,
+               custom_metrics: Optional[List[MonitorCustomMetric]] = None,
+               data_classification_config: Optional[MonitorDataClassificationConfig] = None,
+               inference_log: Optional[MonitorInferenceLogProfileType] = None,
+               notifications: Optional[List[MonitorNotificationsConfig]] = None,
+               schedule: Optional[MonitorCronSchedule] = None,
+               skip_builtin_dashboard: Optional[bool] = None,
+               slicing_exprs: Optional[List[str]] = None,
+               snapshot: Optional[Any] = None,
+               time_series: Optional[MonitorTimeSeriesProfileType] = None,
+               warehouse_id: Optional[str] = None) -> MonitorInfo:
+        """Create a table monitor.
+        
+        Creates a new monitor for the specified table.
+        
+        The caller must either: 1. be an owner of the table's parent catalog, have **USE_SCHEMA** on the
+        table's parent schema, and have **SELECT** access on the table 2. have **USE_CATALOG** on the table's
+        parent catalog, be an owner of the table's parent schema, and have **SELECT** access on the table. 3.
+        have the following permissions: - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on
+        the table's parent schema - be an owner of the table.
+        
+        Workspace assets, such as the dashboard, will be created in the workspace where this call was made.
+        
+        :param full_name: str
+          Full name of the table.
+        :param assets_dir: str
+          The directory to store monitoring assets (e.g. dashboard, metric tables).
+        :param output_schema_name: str
+          Schema where output metric tables are created.
+        :param baseline_table_name: str (optional)
+          Name of the baseline table from which drift metrics are computed from. Columns in the monitored
+          table should also be present in the baseline table.
+        :param custom_metrics: List[:class:`MonitorCustomMetric`] (optional)
+          Custom metrics to compute on the monitored table. These can be aggregate metrics, derived metrics
+          (from already computed aggregate metrics), or drift metrics (comparing metrics across time windows).
+        :param data_classification_config: :class:`MonitorDataClassificationConfig` (optional)
+          The data classification config for the monitor.
+        :param inference_log: :class:`MonitorInferenceLogProfileType` (optional)
+          Configuration for monitoring inference logs.
+        :param notifications: List[:class:`MonitorNotificationsConfig`] (optional)
+          The notification settings for the monitor.
+        :param schedule: :class:`MonitorCronSchedule` (optional)
+          The schedule for automatically updating and refreshing metric tables.
+        :param skip_builtin_dashboard: bool (optional)
+          Whether to skip creating a default dashboard summarizing data quality metrics.
+        :param slicing_exprs: List[str] (optional)
+          List of column expressions to slice data with for targeted analysis. The data is grouped by each
+          expression independently, resulting in a separate slice for each predicate and its complements. For
+          high-cardinality columns, only the top 100 unique values by frequency will generate slices.
+        :param snapshot: Any (optional)
+          Configuration for monitoring snapshot tables.
+        :param time_series: :class:`MonitorTimeSeriesProfileType` (optional)
+          Configuration for monitoring time series tables.
+        :param warehouse_id: str (optional)
+          Optional argument to specify the warehouse for dashboard creation. If not specified, the first
+          running warehouse will be used.
+        
+        :returns: :class:`MonitorInfo`
+        """
+        body = {}
+        if assets_dir is not None: body['assets_dir'] = assets_dir
+        if baseline_table_name is not None: body['baseline_table_name'] = baseline_table_name
+        if custom_metrics is not None: body['custom_metrics'] = [v.as_dict() for v in custom_metrics]
+        if data_classification_config is not None:
+            body['data_classification_config'] = data_classification_config.as_dict()
+        if inference_log is not None: body['inference_log'] = inference_log.as_dict()
+        if notifications is not None: body['notifications'] = [v.as_dict() for v in notifications]
+        if output_schema_name is not None: body['output_schema_name'] = output_schema_name
+        if schedule is not None: body['schedule'] = schedule.as_dict()
+        if skip_builtin_dashboard is not None: body['skip_builtin_dashboard'] = skip_builtin_dashboard
+        if slicing_exprs is not None: body['slicing_exprs'] = [v for v in slicing_exprs]
+        if snapshot is not None: body['snapshot'] = snapshot
+        if time_series is not None: body['time_series'] = time_series.as_dict()
+        if warehouse_id is not None: body['warehouse_id'] = warehouse_id
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        res = self._api.do('POST',
+                           f'/api/2.1/unity-catalog/tables/{full_name}/monitor',
+                           body=body,
+                           headers=headers)
+        return MonitorInfo.from_dict(res)
+
+    def delete(self, full_name: str):
+        """Delete a table monitor.
+        
+        Deletes a monitor for the specified table.
+        
+        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
+        table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
+        - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema - be an
+        owner of the table.
+        
+        Additionally, the call must be made from the workspace where the monitor was created.
+        
+        Note that the metric tables and dashboard will not be deleted as part of this call; those assets must
+        be manually cleaned up (if desired).
+        
+        :param full_name: str
+          Full name of the table.
+        
+        
+        """
+
+        headers = {}
+        self._api.do('DELETE', f'/api/2.1/unity-catalog/tables/{full_name}/monitor', headers=headers)
+
+    def get(self, full_name: str) -> MonitorInfo:
+        """Get a table monitor.
+        
+        Gets a monitor for the specified table.
+        
+        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
+        table's parent catalog and be an owner of the table's parent schema. 3. have the following
+        permissions: - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent
+        schema - **SELECT** privilege on the table.
+        
+        The returned information includes configuration values, as well as information on assets created by
+        the monitor. Some information (e.g., dashboard) may be filtered out if the caller is in a different
+        workspace than where the monitor was created.
+        
+        :param full_name: str
+          Full name of the table.
+        
+        :returns: :class:`MonitorInfo`
+        """
+
+        headers = {'Accept': 'application/json', }
+        res = self._api.do('GET', f'/api/2.1/unity-catalog/tables/{full_name}/monitor', headers=headers)
+        return MonitorInfo.from_dict(res)
+
+    def update(self,
+               full_name: str,
+               assets_dir: str,
+               output_schema_name: str,
+               *,
+               baseline_table_name: Optional[str] = None,
+               custom_metrics: Optional[List[MonitorCustomMetric]] = None,
+               data_classification_config: Optional[MonitorDataClassificationConfig] = None,
+               inference_log: Optional[MonitorInferenceLogProfileType] = None,
+               notifications: Optional[List[MonitorNotificationsConfig]] = None,
+               schedule: Optional[MonitorCronSchedule] = None,
+               slicing_exprs: Optional[List[str]] = None,
+               snapshot: Optional[Any] = None,
+               time_series: Optional[MonitorTimeSeriesProfileType] = None) -> MonitorInfo:
+        """Update a table monitor.
+        
+        Updates a monitor for the specified table.
+        
+        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
+        table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
+        - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema - be an
+        owner of the table.
+        
+        Additionally, the call must be made from the workspace where the monitor was created, and the caller
+        must be the original creator of the monitor.
+        
+        Certain configuration fields, such as output asset identifiers, cannot be updated.
+        
+        :param full_name: str
+          Full name of the table.
+        :param assets_dir: str
+          The directory to store monitoring assets (e.g. dashboard, metric tables).
+        :param output_schema_name: str
+          Schema where output metric tables are created.
+        :param baseline_table_name: str (optional)
+          Name of the baseline table from which drift metrics are computed from. Columns in the monitored
+          table should also be present in the baseline table.
+        :param custom_metrics: List[:class:`MonitorCustomMetric`] (optional)
+          Custom metrics to compute on the monitored table. These can be aggregate metrics, derived metrics
+          (from already computed aggregate metrics), or drift metrics (comparing metrics across time windows).
+        :param data_classification_config: :class:`MonitorDataClassificationConfig` (optional)
+          The data classification config for the monitor.
+        :param inference_log: :class:`MonitorInferenceLogProfileType` (optional)
+          Configuration for monitoring inference logs.
+        :param notifications: List[:class:`MonitorNotificationsConfig`] (optional)
+          The notification settings for the monitor.
+        :param schedule: :class:`MonitorCronSchedule` (optional)
+          The schedule for automatically updating and refreshing metric tables.
+        :param slicing_exprs: List[str] (optional)
+          List of column expressions to slice data with for targeted analysis. The data is grouped by each
+          expression independently, resulting in a separate slice for each predicate and its complements. For
+          high-cardinality columns, only the top 100 unique values by frequency will generate slices.
+        :param snapshot: Any (optional)
+          Configuration for monitoring snapshot tables.
+        :param time_series: :class:`MonitorTimeSeriesProfileType` (optional)
+          Configuration for monitoring time series tables.
+        
+        :returns: :class:`MonitorInfo`
+        """
+        body = {}
+        if assets_dir is not None: body['assets_dir'] = assets_dir
+        if baseline_table_name is not None: body['baseline_table_name'] = baseline_table_name
+        if custom_metrics is not None: body['custom_metrics'] = [v.as_dict() for v in custom_metrics]
+        if data_classification_config is not None:
+            body['data_classification_config'] = data_classification_config.as_dict()
+        if inference_log is not None: body['inference_log'] = inference_log.as_dict()
+        if notifications is not None: body['notifications'] = [v.as_dict() for v in notifications]
+        if output_schema_name is not None: body['output_schema_name'] = output_schema_name
+        if schedule is not None: body['schedule'] = schedule.as_dict()
+        if slicing_exprs is not None: body['slicing_exprs'] = [v for v in slicing_exprs]
+        if snapshot is not None: body['snapshot'] = snapshot
+        if time_series is not None: body['time_series'] = time_series.as_dict()
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        res = self._api.do('PUT',
+                           f'/api/2.1/unity-catalog/tables/{full_name}/monitor',
+                           body=body,
+                           headers=headers)
+        return MonitorInfo.from_dict(res)
 
 
 class MetastoresAPI:
@@ -5892,9 +6697,13 @@ class ModelVersionsAPI:
         :param full_name: str
           The full three-level name of the registered model under which to list model versions
         :param max_results: int (optional)
-          Max number of model versions to return
+          Maximum number of model versions to return. If not set, the page length is set to a server
+          configured value (100, as of 1/3/2024). - when set to a value greater than 0, the page length is the
+          minimum of this value and a server configured value(1000, as of 1/3/2024); - when set to 0, the page
+          length is set to a server configured value (100, as of 1/3/2024) (recommended); - when set to a
+          value less than 0, an invalid parameter error is returned;
         :param page_token: str (optional)
-          Opaque token to send for the next page of results (pagination).
+          Opaque pagination token to go to next page based on previous query.
         
         :returns: Iterator over :class:`ModelVersionInfo`
         """
@@ -6269,26 +7078,47 @@ class SchemasAPI:
         res = self._api.do('GET', f'/api/2.1/unity-catalog/schemas/{full_name}', headers=headers)
         return SchemaInfo.from_dict(res)
 
-    def list(self, catalog_name: str) -> Iterator[SchemaInfo]:
+    def list(self,
+             catalog_name: str,
+             *,
+             max_results: Optional[int] = None,
+             page_token: Optional[str] = None) -> Iterator[SchemaInfo]:
         """List schemas.
         
         Gets an array of schemas for a catalog in the metastore. If the caller is the metastore admin or the
         owner of the parent catalog, all schemas for the catalog will be retrieved. Otherwise, only schemas
-        owned by the caller (or for which the caller has the **USE_SCHEMA** privilege) will be retrieved.
-        There is no guarantee of a specific ordering of the elements in the array.
+        owned by the caller (or for which the caller has the **USE_SCHEMA** privilege) will be retrieved. For
+        unpaginated request, there is no guarantee of a specific ordering of the elements in the array. For
+        paginated request, elements are ordered by their name.
         
         :param catalog_name: str
           Parent catalog for schemas of interest.
+        :param max_results: int (optional)
+          Maximum number of schemas to return. If not set, all the schemas are returned (not recommended). -
+          when set to a value greater than 0, the page length is the minimum of this value and a server
+          configured value; - when set to 0, the page length is set to a server configured value
+          (recommended); - when set to a value less than 0, an invalid parameter error is returned;
+        :param page_token: str (optional)
+          Opaque pagination token to go to next page based on previous query.
         
         :returns: Iterator over :class:`SchemaInfo`
         """
 
         query = {}
         if catalog_name is not None: query['catalog_name'] = catalog_name
+        if max_results is not None: query['max_results'] = max_results
+        if page_token is not None: query['page_token'] = page_token
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET', '/api/2.1/unity-catalog/schemas', query=query, headers=headers)
-        parsed = ListSchemasResponse.from_dict(json).schemas
-        return parsed if parsed is not None else []
+
+        while True:
+            json = self._api.do('GET', '/api/2.1/unity-catalog/schemas', query=query, headers=headers)
+            if 'schemas' not in json or not json['schemas']:
+                return
+            for v in json['schemas']:
+                yield SchemaInfo.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
 
     def update(self,
                full_name: str,
@@ -6442,21 +7272,47 @@ class StorageCredentialsAPI:
         res = self._api.do('GET', f'/api/2.1/unity-catalog/storage-credentials/{name}', headers=headers)
         return StorageCredentialInfo.from_dict(res)
 
-    def list(self) -> Iterator[StorageCredentialInfo]:
+    def list(self,
+             *,
+             max_results: Optional[int] = None,
+             page_token: Optional[str] = None) -> Iterator[StorageCredentialInfo]:
         """List credentials.
         
         Gets an array of storage credentials (as __StorageCredentialInfo__ objects). The array is limited to
         only those storage credentials the caller has permission to access. If the caller is a metastore
-        admin, all storage credentials will be retrieved. There is no guarantee of a specific ordering of the
-        elements in the array.
+        admin, retrieval of credentials is unrestricted. For unpaginated request, there is no guarantee of a
+        specific ordering of the elements in the array. For paginated request, elements are ordered by their
+        name.
+        
+        :param max_results: int (optional)
+          Maximum number of storage credentials to return. If not set, all the storage credentials are
+          returned (not recommended). - when set to a value greater than 0, the page length is the minimum of
+          this value and a server configured value; - when set to 0, the page length is set to a server
+          configured value (recommended); - when set to a value less than 0, an invalid parameter error is
+          returned;
+        :param page_token: str (optional)
+          Opaque pagination token to go to next page based on previous query.
         
         :returns: Iterator over :class:`StorageCredentialInfo`
         """
 
+        query = {}
+        if max_results is not None: query['max_results'] = max_results
+        if page_token is not None: query['page_token'] = page_token
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET', '/api/2.1/unity-catalog/storage-credentials', headers=headers)
-        parsed = ListStorageCredentialsResponse.from_dict(json).storage_credentials
-        return parsed if parsed is not None else []
+
+        while True:
+            json = self._api.do('GET',
+                                '/api/2.1/unity-catalog/storage-credentials',
+                                query=query,
+                                headers=headers)
+            if 'storage_credentials' not in json or not json['storage_credentials']:
+                return
+            for v in json['storage_credentials']:
+                yield StorageCredentialInfo.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
 
     def update(self,
                name: str,
@@ -6760,13 +7616,34 @@ class TablesAPI:
         headers = {'Accept': 'application/json', }
         self._api.do('DELETE', f'/api/2.1/unity-catalog/tables/{full_name}', headers=headers)
 
+    def exists(self, full_name: str) -> TableExistsResponse:
+        """Get boolean reflecting if table exists.
+        
+        Gets if a table exists in the metastore for a specific catalog and schema. The caller must satisfy one
+        of the following requirements: * Be a metastore admin * Be the owner of the parent catalog * Be the
+        owner of the parent schema and have the USE_CATALOG privilege on the parent catalog * Have the
+        **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema,
+        and either be the table owner or have the SELECT privilege on the table. * Have BROWSE privilege on
+        the parent catalog * Have BROWSE privilege on the parent schema.
+        
+        :param full_name: str
+          Full name of the table.
+        
+        :returns: :class:`TableExistsResponse`
+        """
+
+        headers = {'Accept': 'application/json', }
+        res = self._api.do('GET', f'/api/2.1/unity-catalog/tables/{full_name}/exists', headers=headers)
+        return TableExistsResponse.from_dict(res)
+
     def get(self, full_name: str, *, include_delta_metadata: Optional[bool] = None) -> TableInfo:
         """Get a table.
         
-        Gets a table from the metastore for a specific catalog and schema. The caller must be a metastore
-        admin, be the owner of the table and have the **USE_CATALOG** privilege on the parent catalog and the
-        **USE_SCHEMA** privilege on the parent schema, or be the owner of the table and have the **SELECT**
-        privilege on it as well.
+        Gets a table from the metastore for a specific catalog and schema. The caller must satisfy one of the
+        following requirements: * Be a metastore admin * Be the owner of the parent catalog * Be the owner of
+        the parent schema and have the USE_CATALOG privilege on the parent catalog * Have the **USE_CATALOG**
+        privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema, and either be
+        the table owner or have the SELECT privilege on the table.
         
         :param full_name: str
           Full name of the table.
@@ -6788,6 +7665,8 @@ class TablesAPI:
              *,
              include_delta_metadata: Optional[bool] = None,
              max_results: Optional[int] = None,
+             omit_columns: Optional[bool] = None,
+             omit_properties: Optional[bool] = None,
              page_token: Optional[str] = None) -> Iterator[TableInfo]:
         """List tables.
         
@@ -6804,11 +7683,14 @@ class TablesAPI:
         :param include_delta_metadata: bool (optional)
           Whether delta metadata should be included in the response.
         :param max_results: int (optional)
-          Maximum number of tables to return (page length). If not set, all accessible tables in the schema
-          are returned. If set to:
-          
-          * greater than 0, page length is the minimum of this value and a server configured value. * equal to
-          0, page length is set to a server configured value. * lesser than 0, invalid parameter error.
+          Maximum number of tables to return. If not set, all the tables are returned (not recommended). -
+          when set to a value greater than 0, the page length is the minimum of this value and a server
+          configured value; - when set to 0, the page length is set to a server configured value
+          (recommended); - when set to a value less than 0, an invalid parameter error is returned;
+        :param omit_columns: bool (optional)
+          Whether to omit the columns of the table from the response or not.
+        :param omit_properties: bool (optional)
+          Whether to omit the properties of the table from the response or not.
         :param page_token: str (optional)
           Opaque token to send for the next page of results (pagination).
         
@@ -6819,6 +7701,8 @@ class TablesAPI:
         if catalog_name is not None: query['catalog_name'] = catalog_name
         if include_delta_metadata is not None: query['include_delta_metadata'] = include_delta_metadata
         if max_results is not None: query['max_results'] = max_results
+        if omit_columns is not None: query['omit_columns'] = omit_columns
+        if omit_properties is not None: query['omit_properties'] = omit_properties
         if page_token is not None: query['page_token'] = page_token
         if schema_name is not None: query['schema_name'] = schema_name
         headers = {'Accept': 'application/json', }
@@ -6845,10 +7729,10 @@ class TablesAPI:
         Gets an array of summaries for tables for a schema and catalog within the metastore. The table
         summaries returned are either:
         
-        * summaries for all tables (within the current metastore and parent catalog and schema), when the user
-        is a metastore admin, or: * summaries for all tables and schemas (within the current metastore and
-        parent catalog) for which the user has ownership or the **SELECT** privilege on the table and
-        ownership or **USE_SCHEMA** privilege on the schema, provided that the user also has ownership or the
+        * summaries for tables (within the current metastore and parent catalog and schema), when the user is
+        a metastore admin, or: * summaries for tables and schemas (within the current metastore and parent
+        catalog) for which the user has ownership or the **SELECT** privilege on the table and ownership or
+        **USE_SCHEMA** privilege on the schema, provided that the user also has ownership or the
         **USE_CATALOG** privilege on the parent catalog.
         
         There is no guarantee of a specific ordering of the elements in the array.
@@ -6856,9 +7740,13 @@ class TablesAPI:
         :param catalog_name: str
           Name of parent catalog for tables of interest.
         :param max_results: int (optional)
-          Maximum number of tables to return (page length). Defaults to 10000.
+          Maximum number of summaries for tables to return. If not set, the page length is set to a server
+          configured value (10000, as of 1/5/2024). - when set to a value greater than 0, the page length is
+          the minimum of this value and a server configured value (10000, as of 1/5/2024); - when set to 0,
+          the page length is set to a server configured value (10000, as of 1/5/2024) (recommended); - when
+          set to a value less than 0, an invalid parameter error is returned;
         :param page_token: str (optional)
-          Opaque token to send for the next page of results (pagination).
+          Opaque pagination token to go to next page based on previous query.
         :param schema_name_pattern: str (optional)
           A sql LIKE pattern (% and _) for schema names. All schemas will be returned if not set or empty.
         :param table_name_pattern: str (optional)

@@ -23,8 +23,7 @@ class AccessControlRequest:
     """Permission level"""
 
     service_principal_name: Optional[str] = None
-    """Application ID of an active service principal. Setting this field requires the
-    `servicePrincipal/user` role."""
+    """application ID of a service principal"""
 
     user_name: Optional[str] = None
     """name of the user"""
@@ -456,8 +455,7 @@ class PasswordAccessControlRequest:
     """Permission level"""
 
     service_principal_name: Optional[str] = None
-    """Application ID of an active service principal. Setting this field requires the
-    `servicePrincipal/user` role."""
+    """application ID of a service principal"""
 
     user_name: Optional[str] = None
     """name of the user"""
@@ -1125,6 +1123,7 @@ class User:
 class UserSchema(Enum):
 
     URN_IETF_PARAMS_SCIM_SCHEMAS_CORE_2_0_USER = 'urn:ietf:params:scim:schemas:core:2.0:User'
+    URN_IETF_PARAMS_SCIM_SCHEMAS_EXTENSION_WORKSPACE_2_0_USER = 'urn:ietf:params:scim:schemas:extension:workspace:2.0:User'
 
 
 class WorkspacePermission(Enum):

@@ -18,7 +18,8 @@ release = 'beta'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx.ext.autodoc', 'sphinx.ext.autosummary', 'myst_parser', 'enum_tools.autoenum'
+    'sphinx.ext.autodoc', 'sphinx.ext.autosummary', 'myst_parser',
+    'db_sphinx_ext'
 ]
 
 templates_path = ['_templates']
@@ -44,3 +45,5 @@ html_theme_options = {
 autodoc_default_options = {
     'member-order': 'bysource',
 }
+
+toc_object_entries = False
