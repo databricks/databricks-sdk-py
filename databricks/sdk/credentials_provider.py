@@ -6,6 +6,7 @@ import json
 import logging
 import os
 import pathlib
+import platform
 import subprocess
 import sys
 from datetime import datetime
@@ -473,11 +474,21 @@ class DatabricksCliTokenSource(CliTokenSource):
             args += ['--account-id', cfg.account_id]
 
         cli_path = cfg.databricks_cli_path
+
+        # If the path is not specified look for "databricks" / "databricks.exe" in PATH.
         if not cli_path:
-            cli_path = 'databricks'
+            try:
+                # Try to find "databricks" in PATH
+                cli_path = self.__class__._find_executable("databricks")
+            except FileNotFoundError as e:
+                # If "databricks" is not found, try to find "databricks.exe" in PATH (Windows)
+                if platform.system() == "Windows":
+                    cli_path = self.__class__._find_executable("databricks.exe")
+                else:
+                    raise e
 
         # If the path is unqualified, look it up in PATH.
-        if cli_path.count("/") == 0:
+        elif cli_path.count("/") == 0:
             cli_path = self.__class__._find_executable(cli_path)
 
         super().__init__(cmd=[cli_path, *args],
