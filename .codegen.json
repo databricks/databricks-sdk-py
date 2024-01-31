@@ -8,7 +8,7 @@
   },
   "batch": {
     ".codegen/__init__.py.tmpl": "databricks/sdk/__init__.py",
-    ".codegen/error_mapping.py.tmpl": "databricks/sdk/errors/mapping.py"
+    ".codegen/error_mapping.py.tmpl": "databricks/sdk/errors/platform.py"
   },
   "samples": {
     ".codegen/example.py.tmpl": "examples/{{.Service.SnakeName}}/{{.Method.SnakeName}}_{{.SnakeName}}.py"
