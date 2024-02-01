@@ -516,7 +516,7 @@ class DatabricksCliTokenSource(CliTokenSource):
         raise err
 
 
-@credentials_provider('databricks-cli', ['host', 'is_aws'])
+@credentials_provider('databricks-cli', ['host'])
 def databricks_cli(cfg: 'Config') -> Optional[HeaderFactory]:
     try:
         token_source = DatabricksCliTokenSource(cfg)
