@@ -141,7 +141,7 @@ class AccountClient:
             if len(wss) == 0:
                 pytest.skip("no workspaces")
             w = a.get_workspace_client(wss[0])
-            assert w.current_user.me().activ
+            assert w.current_user.me().active
 
         :param workspace: The workspace to construct a client for.
         :return: A ``WorkspaceClient`` for the given workspace.
