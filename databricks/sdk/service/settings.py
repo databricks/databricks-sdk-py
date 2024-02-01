@@ -2470,9 +2470,9 @@ class WorkspaceConfAPI:
         if keys is not None: query['keys'] = keys
         headers = {'Accept': 'application/json', }
         res = self._api.do('GET', '/api/2.0/workspace-conf', query=query, headers=headers)
-        return WorkspaceConf.from_dict(res)
+        return res
 
-    def set_status(self):
+    def set_status(self, contents: Dict[str, str]):
         """Enable/disable features.
         
         Sets the configuration status for a workspace, including enabling or disabling it.
@@ -2482,4 +2482,4 @@ class WorkspaceConfAPI:
         """
 
         headers = {'Content-Type': 'application/json', }
-        self._api.do('PATCH', '/api/2.0/workspace-conf', headers=headers)
+        self._api.do('PATCH', '/api/2.0/workspace-conf', body=contents, headers=headers)

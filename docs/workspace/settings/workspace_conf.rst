@@ -28,7 +28,7 @@
         :returns: Dict[str,str]
         
 
-    .. py:method:: set_status()
+    .. py:method:: set_status(contents: Dict[str, str])
 
         Enable/disable features.
         
