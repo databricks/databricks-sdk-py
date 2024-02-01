@@ -7,7 +7,7 @@
     Enables administrators to get all tokens and delete tokens for other users. Admins can either get every
     token, get a specific token by ID, or get all tokens for a particular user.
 
-    .. py:method:: create_obo_token(application_id: str, lifetime_seconds: int [, comment: Optional[str]]) -> CreateOboTokenResponse
+    .. py:method:: create_obo_token(application_id: str [, comment: Optional[str], lifetime_seconds: Optional[int]]) -> CreateOboTokenResponse
 
 
         Usage:
@@ -38,10 +38,10 @@
         
         :param application_id: str
           Application ID of the service principal.
-        :param lifetime_seconds: int
-          The number of seconds before the token expires.
         :param comment: str (optional)
           Comment that describes the purpose of the token.
+        :param lifetime_seconds: int (optional)
+          The number of seconds before the token expires.
         
         :returns: :class:`CreateOboTokenResponse`
         
@@ -58,7 +58,7 @@
         
         
 
-    .. py:method:: get(token_id: str) -> TokenInfo
+    .. py:method:: get(token_id: str) -> GetTokenResponse
 
 
         Usage:
@@ -92,7 +92,7 @@
         :param token_id: str
           The ID of the token to get.
         
-        :returns: :class:`TokenInfo`
+        :returns: :class:`GetTokenResponse`
         
 
     .. py:method:: get_permission_levels() -> GetTokenPermissionLevelsResponse
@@ -113,7 +113,7 @@
         :returns: :class:`TokenPermissions`
         
 
-    .. py:method:: list( [, created_by_id: Optional[str], created_by_username: Optional[str]]) -> Iterator[TokenInfo]
+    .. py:method:: list( [, created_by_id: Optional[int], created_by_username: Optional[str]]) -> Iterator[TokenInfo]
 
 
         Usage:
@@ -131,7 +131,7 @@
         
         Lists all tokens associated with the specified workspace or user.
         
-        :param created_by_id: str (optional)
+        :param created_by_id: int (optional)
           User ID of the user that created the token.
         :param created_by_username: str (optional)
           Username of the user that created the token.

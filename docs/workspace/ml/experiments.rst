@@ -123,7 +123,8 @@
         Delete runs by creation time.
         
         Bulk delete runs in an experiment that were created prior to or at the specified timestamp. Deletes at
-        most max_runs per request.
+        most max_runs per request. To call this API from a Databricks Notebook in Python, you can use the
+        client code snippet on https://learn.microsoft.com/en-us/azure/databricks/mlflow/runs#bulk-delete.
         
         :param experiment_id: str
           The ID of the experiment containing the runs to delete.
@@ -475,7 +476,8 @@
         Restore runs by deletion time.
         
         Bulk restore runs in an experiment that were deleted no earlier than the specified timestamp. Restores
-        at most max_runs per request.
+        at most max_runs per request. To call this API from a Databricks Notebook in Python, you can use the
+        client code snippet on https://learn.microsoft.com/en-us/azure/databricks/mlflow/runs#bulk-restore.
         
         :param experiment_id: str
           The ID of the experiment containing the runs to restore.

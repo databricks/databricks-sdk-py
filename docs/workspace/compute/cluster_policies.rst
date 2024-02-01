@@ -9,9 +9,9 @@
     policies have ACLs that limit their use to specific users and groups.
     
     With cluster policies, you can: - Auto-install cluster libraries on the next restart by listing them in
-    the policy's "libraries" field. - Limit users to creating clusters with the prescribed settings. -
-    Simplify the user interface, enabling more users to create clusters, by fixing and hiding some fields. -
-    Manage costs by setting limits on attributes that impact the hourly rate.
+    the policy's "libraries" field (Public Preview). - Limit users to creating clusters with the prescribed
+    settings. - Simplify the user interface, enabling more users to create clusters, by fixing and hiding some
+    fields. - Manage costs by setting limits on attributes that impact the hourly rate.
     
     Cluster policy permissions limit which policies a user can select in the Policy drop-down when the user
     creates a cluster: - A user who has unrestricted cluster create permission can select the Unrestricted
@@ -61,7 +61,8 @@
         :param description: str (optional)
           Additional human-readable description of the cluster policy.
         :param libraries: List[:class:`Library`] (optional)
-          A list of libraries to be installed on the next cluster restart that uses this policy.
+          A list of libraries to be installed on the next cluster restart that uses this policy. The maximum
+          number of libraries is 500.
         :param max_clusters_per_user: int (optional)
           Max number of clusters per user that can be active using this policy. If not present, there is no
           max limit.
@@ -149,7 +150,8 @@
         :param description: str (optional)
           Additional human-readable description of the cluster policy.
         :param libraries: List[:class:`Library`] (optional)
-          A list of libraries to be installed on the next cluster restart that uses this policy.
+          A list of libraries to be installed on the next cluster restart that uses this policy. The maximum
+          number of libraries is 500.
         :param max_clusters_per_user: int (optional)
           Max number of clusters per user that can be active using this policy. If not present, there is no
           max limit.
