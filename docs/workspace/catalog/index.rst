@@ -13,6 +13,7 @@ Configure data governance with Unity Catalog for metastores, catalogs, schemas, 
    external_locations
    functions
    grants
+   lakehouse_monitors
    metastores
    model_versions
    registered_models

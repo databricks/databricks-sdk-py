@@ -300,7 +300,7 @@
         :returns: :class:`WorkspaceObjectPermissions`
         
 
-    .. py:method:: upload(path: str, content: BinaryIO [, format: ImportFormat, language: Language, overwrite: bool = False])
+    .. py:method:: upload(path: str, content: bytes [, format: ImportFormat, language: Language, overwrite: bool = False])
 
 
         Usage:
@@ -332,7 +332,7 @@
          * `INVALID_PARAMETER_VALUE`: if `format` and `content` values are not compatible.
 
         :param path:     target location of the file on workspace.
-        :param content:  file-like `io.BinaryIO` of the `path` contents.
+        :param content:  the contents as either raw binary data `bytes` or a file-like the file-like `io.BinaryIO` of the `path` contents.
         :param format:   By default, `ImportFormat.SOURCE`. If using `ImportFormat.AUTO` the `path`
                          is imported or exported as either a workspace file or a notebook, depending
                          on an analysis of the `item`’s extension and the header content provided in

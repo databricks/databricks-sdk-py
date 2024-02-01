@@ -28,6 +28,23 @@
         
         
 
+    .. py:method:: exists(full_name: str) -> TableExistsResponse
+
+        Get boolean reflecting if table exists.
+        
+        Gets if a table exists in the metastore for a specific catalog and schema. The caller must satisfy one
+        of the following requirements: * Be a metastore admin * Be the owner of the parent catalog * Be the
+        owner of the parent schema and have the USE_CATALOG privilege on the parent catalog * Have the
+        **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema,
+        and either be the table owner or have the SELECT privilege on the table. * Have BROWSE privilege on
+        the parent catalog * Have BROWSE privilege on the parent schema.
+        
+        :param full_name: str
+          Full name of the table.
+        
+        :returns: :class:`TableExistsResponse`
+        
+
     .. py:method:: get(full_name: str [, include_delta_metadata: Optional[bool]]) -> TableInfo
 
 
@@ -64,10 +81,11 @@
 
         Get a table.
         
-        Gets a table from the metastore for a specific catalog and schema. The caller must be a metastore
-        admin, be the owner of the table and have the **USE_CATALOG** privilege on the parent catalog and the
-        **USE_SCHEMA** privilege on the parent schema, or be the owner of the table and have the **SELECT**
-        privilege on it as well.
+        Gets a table from the metastore for a specific catalog and schema. The caller must satisfy one of the
+        following requirements: * Be a metastore admin * Be the owner of the parent catalog * Be the owner of
+        the parent schema and have the USE_CATALOG privilege on the parent catalog * Have the **USE_CATALOG**
+        privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema, and either be
+        the table owner or have the SELECT privilege on the table.
         
         :param full_name: str
           Full name of the table.
