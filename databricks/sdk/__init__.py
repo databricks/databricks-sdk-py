@@ -789,6 +789,16 @@ class AccountClient:
         ``azure_workspace_resource_id`` are overridden to match the
         given workspace, and the ``account_id`` field is cleared.
 
+        Usage:
+
+        .. code-block::
+
+            wss = list(a.workspaces.list())
+            if len(wss) == 0:
+                pytest.skip("no workspaces")
+            w = a.get_workspace_client(wss[0])
+            assert w.current_user.me().activ
+
         :param workspace: The workspace to construct a client for.
         :return: A ``WorkspaceClient`` for the given workspace.
         """
