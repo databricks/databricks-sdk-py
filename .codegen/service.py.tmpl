@@ -161,12 +161,7 @@ class {{.Name}}API:{{if .Description}}
     {{end}}
 
     {{range .Methods}}
-    def {{template "safe-snake-name" .}}(self{{if .Request}}
-      {{range .Request.RequiredFields}}, {{template "safe-snake-name" .}}: {{template "type-nq" .Entity}}{{end}}
-      {{if .Request.NonRequiredFields}}, *
-        {{range .Request.NonRequiredFields}}, {{template "safe-snake-name" .}}: Optional[{{template "type-nq" .Entity}}] = None{{end}}
-      {{- end}}
-    {{- end}}){{template "method-return-type" .}}:
+    def {{template "safe-snake-name" .}}({{ template "method-parameters" . }}){{template "method-return-type" .}}:
         {{if .Description}}"""{{.Comment "        " 110 | trimSuffix "\"" }}
         {{with .Request}}{{range .RequiredFields}}
         :param {{template "safe-snake-name" .}}: {{template "type-doc" .Entity}}{{if .Description}}
@@ -195,12 +190,21 @@ class {{.Name}}API:{{if .Description}}
         {{template "method-call" .}}
 
     {{if and .Wait (and (not .IsCrudRead) (not (eq .SnakeName "get_run"))) }}
-    def {{.SnakeName}}_and_wait(self{{range .Request.RequiredFields}}, {{template "safe-snake-name" .}}: {{template "type-nq" .Entity}}{{end}}
-        {{if .Request.NonRequiredFields}}, * {{range .Request.NonRequiredFields}}, {{template "safe-snake-name" .}}: Optional[{{template "type-nq" .Entity}}] = None{{end}}{{- end}},
+    def {{.SnakeName}}_and_wait({{ template "method-parameters" . }},
         timeout=timedelta(minutes={{.Wait.Timeout}})) -> {{.Wait.Poll.Response.PascalName}}:
         return self.{{template "safe-snake-name" .}}({{range $i, $x := .Request.Fields}}{{if $i}}, {{end}}{{template "safe-snake-name" .}}={{template "safe-snake-name" .}}{{end}}).result(timeout=timeout)
     {{end}}
     {{end -}}
+{{- end}}
+
+{{define "method-parameters" -}}
+  self{{if .Request}}
+       {{- if .Request.MapValue }}, contents: {{template "type-nq" .Request }}{{ end }}
+       {{range .Request.RequiredFields}}, {{template "safe-snake-name" .}}: {{template "type-nq" .Entity}}{{end}}
+       {{if .Request.NonRequiredFields}}, *
+         {{range .Request.NonRequiredFields}}, {{template "safe-snake-name" .}}: Optional[{{template "type-nq" .Entity}}] = None{{end}}
+       {{- end}}
+     {{- end}}
 {{- end}}
 
 {{define "method-serialize" -}}
@@ -304,6 +308,8 @@ class {{.Name}}API:{{if .Description}}
             return {{.Response.PascalName}}({{.ResponseBodyField.CamelName}}=res)
           {{- else if .Response.ArrayValue -}}
             return [{{.Response.ArrayValue.PascalName}}.from_dict(v) for v in res]
+          {{- else if .Response.MapValue -}}
+            return res
           {{- else -}}
             return {{.Response.PascalName}}.from_dict(res)
           {{- end}}
@@ -317,7 +323,8 @@ self._api.do('{{.Verb}}',
   {{- else}}'{{.Path}}'{{end}}
   {{if .Request}}
       {{- if .Request.HasQueryField}}, query=query{{end}}
-      {{- if .Request.HasJsonField}}, body=body{{end}}
+      {{- if .Request.MapValue}}, body=contents
+      {{- else if .Request.HasJsonField}}, body=body{{end}}
   {{end}}
   , headers=headers
   {{- if and .IsRequestByteStream .RequestBodyField }}, data={{template "safe-snake-name" .RequestBodyField}}{{ end }}
