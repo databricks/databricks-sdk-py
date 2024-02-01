@@ -49,8 +49,6 @@ def get_azure_resource_id(workspace: Workspace):
     """
     if workspace.azure_workspace_info is None:
         return None
-    return (
-        f'/subscriptions/{workspace.azure_workspace_info.subscription_id}'
-        f'/resourceGroups/{workspace.azure_workspace_info.resource_group}'
-        f'/providers/Microsoft.Databricks/workspaces/{workspace.workspace_name}'
-    )
+    return (f'/subscriptions/{workspace.azure_workspace_info.subscription_id}'
+            f'/resourceGroups/{workspace.azure_workspace_info.resource_group}'
+            f'/providers/Microsoft.Databricks/workspaces/{workspace.workspace_name}')

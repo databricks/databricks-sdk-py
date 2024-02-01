@@ -1,5 +1,6 @@
 import pytest
 
+
 def test_get_workspace_client(a):
     wss = list(a.workspaces.list())
     if len(wss) == 0:
