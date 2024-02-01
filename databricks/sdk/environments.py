@@ -19,7 +19,7 @@ class DatabricksEnvironment:
     azure_environment: Optional[AzureEnvironment] = None
 
     def deployment_url(self, name: str) -> str:
-        return f"https://{name}.{self.dns_zone}"
+        return f"https://{name}{self.dns_zone}"
 
     @property
     def azure_service_management_endpoint(self) -> Optional[str]:

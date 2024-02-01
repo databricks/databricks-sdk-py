@@ -1,5 +1,6 @@
 import databricks.sdk.core as client
 import databricks.sdk.dbutils as dbutils
+from databricks.sdk import azure
 from databricks.sdk.credentials_provider import CredentialsProvider
 from databricks.sdk.mixins.compute import ClustersExt
 from databricks.sdk.mixins.files import DbfsExt
@@ -46,7 +47,7 @@ from databricks.sdk.service.provisioning import (CredentialsAPI,
                                                  EncryptionKeysAPI,
                                                  NetworksAPI, PrivateAccessAPI,
                                                  StorageAPI, VpcEndpointsAPI,
-                                                 WorkspacesAPI)
+                                                 Workspace, WorkspacesAPI)
 from databricks.sdk.service.serving import AppsAPI, ServingEndpointsAPI
 from databricks.sdk.service.settings import (AccountIpAccessListsAPI,
                                              AccountSettingsAPI,
@@ -778,6 +779,24 @@ class AccountClient:
     def workspaces(self) -> WorkspacesAPI:
         """These APIs manage workspaces for this account."""
         return self._workspaces
+
+    def get_workspace_client(self, workspace: Workspace) -> WorkspaceClient:
+        """Constructs a ``WorkspaceClient`` for the given workspace.
+
+        Returns a ``WorkspaceClient`` that is configured to use the same
+        credentials as this ``AccountClient``. The underlying config is
+        copied from this ``AccountClient``, but the ``host`` and
+        ``azure_workspace_resource_id`` are overridden to match the
+        given workspace, and the ``account_id`` field is cleared.
+
+        :param workspace: The workspace to construct a client for.
+        :return: A ``WorkspaceClient`` for the given workspace.
+        """
+        config = self._config.copy()
+        config.host = config.environment.deployment_url(workspace.deployment_name)
+        config.azure_workspace_resource_id = azure.get_azure_resource_id(workspace)
+        config.account_id = None
+        return WorkspaceClient(config=config)
 
     def __repr__(self):
         return f"AccountClient(account_id='{self._config.account_id}', auth_type='{self._config.auth_type}', ...)"

@@ -278,7 +278,7 @@ class Generator:
 
     def service_docs(self, client_inst) -> list[ServiceDoc]:
         client_prefix = 'w' if isinstance(client_inst, WorkspaceClient) else 'a'
-        ignore_client_fields = ('config', 'dbutils', 'api_client', 'files')
+        ignore_client_fields = ('config', 'dbutils', 'api_client', 'files', 'get_workspace_client')
         all = []
         for service_name, service_inst in inspect.getmembers(client_inst):
             if service_name.startswith('_'):
