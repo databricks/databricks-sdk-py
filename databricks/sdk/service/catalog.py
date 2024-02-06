@@ -5804,10 +5804,9 @@ class ExternalLocationsAPI:
                                 '/api/2.1/unity-catalog/external-locations',
                                 query=query,
                                 headers=headers)
-            if 'external_locations' not in json or not json['external_locations']:
-                return
-            for v in json['external_locations']:
-                yield ExternalLocationInfo.from_dict(v)
+            if 'external_locations' in json:
+                for v in json['external_locations']:
+                    yield ExternalLocationInfo.from_dict(v)
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']
@@ -5988,10 +5987,9 @@ class FunctionsAPI:
 
         while True:
             json = self._api.do('GET', '/api/2.1/unity-catalog/functions', query=query, headers=headers)
-            if 'functions' not in json or not json['functions']:
-                return
-            for v in json['functions']:
-                yield FunctionInfo.from_dict(v)
+            if 'functions' in json:
+                for v in json['functions']:
+                    yield FunctionInfo.from_dict(v)
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']
@@ -6718,10 +6716,9 @@ class ModelVersionsAPI:
                                 f'/api/2.1/unity-catalog/models/{full_name}/versions',
                                 query=query,
                                 headers=headers)
-            if 'model_versions' not in json or not json['model_versions']:
-                return
-            for v in json['model_versions']:
-                yield ModelVersionInfo.from_dict(v)
+            if 'model_versions' in json:
+                for v in json['model_versions']:
+                    yield ModelVersionInfo.from_dict(v)
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']
@@ -6928,10 +6925,9 @@ class RegisteredModelsAPI:
 
         while True:
             json = self._api.do('GET', '/api/2.1/unity-catalog/models', query=query, headers=headers)
-            if 'registered_models' not in json or not json['registered_models']:
-                return
-            for v in json['registered_models']:
-                yield RegisteredModelInfo.from_dict(v)
+            if 'registered_models' in json:
+                for v in json['registered_models']:
+                    yield RegisteredModelInfo.from_dict(v)
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']
@@ -7112,10 +7108,9 @@ class SchemasAPI:
 
         while True:
             json = self._api.do('GET', '/api/2.1/unity-catalog/schemas', query=query, headers=headers)
-            if 'schemas' not in json or not json['schemas']:
-                return
-            for v in json['schemas']:
-                yield SchemaInfo.from_dict(v)
+            if 'schemas' in json:
+                for v in json['schemas']:
+                    yield SchemaInfo.from_dict(v)
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']
@@ -7306,10 +7301,9 @@ class StorageCredentialsAPI:
                                 '/api/2.1/unity-catalog/storage-credentials',
                                 query=query,
                                 headers=headers)
-            if 'storage_credentials' not in json or not json['storage_credentials']:
-                return
-            for v in json['storage_credentials']:
-                yield StorageCredentialInfo.from_dict(v)
+            if 'storage_credentials' in json:
+                for v in json['storage_credentials']:
+                    yield StorageCredentialInfo.from_dict(v)
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']
@@ -7709,10 +7703,9 @@ class TablesAPI:
 
         while True:
             json = self._api.do('GET', '/api/2.1/unity-catalog/tables', query=query, headers=headers)
-            if 'tables' not in json or not json['tables']:
-                return
-            for v in json['tables']:
-                yield TableInfo.from_dict(v)
+            if 'tables' in json:
+                for v in json['tables']:
+                    yield TableInfo.from_dict(v)
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']
@@ -7765,10 +7758,9 @@ class TablesAPI:
 
         while True:
             json = self._api.do('GET', '/api/2.1/unity-catalog/table-summaries', query=query, headers=headers)
-            if 'tables' not in json or not json['tables']:
-                return
-            for v in json['tables']:
-                yield TableSummary.from_dict(v)
+            if 'tables' in json:
+                for v in json['tables']:
+                    yield TableSummary.from_dict(v)
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']

@@ -270,16 +270,15 @@ class {{.Name}}API:{{if .Description}}
         {{- end}}
         while True:
           json = {{template "method-do" .}}
-          if '{{.Pagination.Results.Name}}' not in json or not json['{{.Pagination.Results.Name}}']:
-            return
-          for v in json['{{.Pagination.Results.Name}}']:
-            {{if .NeedsOffsetDedupe -}}
-            i = v['{{.IdentifierField.Name}}']
-            if i in seen:
-              continue
-            seen.add(i)
-            {{end -}}
-            yield {{.Pagination.Entity.PascalName}}.from_dict(v)
+          if '{{.Pagination.Results.Name}}' in json:
+            for v in json['{{.Pagination.Results.Name}}']:
+              {{if .NeedsOffsetDedupe -}}
+              i = v['{{.IdentifierField.Name}}']
+              if i in seen:
+                continue
+              seen.add(i)
+              {{end -}}
+              yield {{.Pagination.Entity.PascalName}}.from_dict(v)
           {{if eq .Path "/api/2.0/clusters/events" -}}
           if 'next_page' not in json or not json['next_page']:
             return

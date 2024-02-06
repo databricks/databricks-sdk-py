@@ -1465,14 +1465,13 @@ class AccountGroupsAPI:
                                 f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups',
                                 query=query,
                                 headers=headers)
-            if 'Resources' not in json or not json['Resources']:
-                return
-            for v in json['Resources']:
-                i = v['id']
-                if i in seen:
-                    continue
-                seen.add(i)
-                yield Group.from_dict(v)
+            if 'Resources' in json:
+                for v in json['Resources']:
+                    i = v['id']
+                    if i in seen:
+                        continue
+                    seen.add(i)
+                    yield Group.from_dict(v)
             query['startIndex'] += len(json['Resources'])
 
     def patch(self,
@@ -1705,14 +1704,13 @@ class AccountServicePrincipalsAPI:
                                 f'/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals',
                                 query=query,
                                 headers=headers)
-            if 'Resources' not in json or not json['Resources']:
-                return
-            for v in json['Resources']:
-                i = v['id']
-                if i in seen:
-                    continue
-                seen.add(i)
-                yield ServicePrincipal.from_dict(v)
+            if 'Resources' in json:
+                for v in json['Resources']:
+                    i = v['id']
+                    if i in seen:
+                        continue
+                    seen.add(i)
+                    yield ServicePrincipal.from_dict(v)
             query['startIndex'] += len(json['Resources'])
 
     def patch(self,
@@ -2005,14 +2003,13 @@ class AccountUsersAPI:
                                 f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Users',
                                 query=query,
                                 headers=headers)
-            if 'Resources' not in json or not json['Resources']:
-                return
-            for v in json['Resources']:
-                i = v['id']
-                if i in seen:
-                    continue
-                seen.add(i)
-                yield User.from_dict(v)
+            if 'Resources' in json:
+                for v in json['Resources']:
+                    i = v['id']
+                    if i in seen:
+                        continue
+                    seen.add(i)
+                    yield User.from_dict(v)
             query['startIndex'] += len(json['Resources'])
 
     def patch(self,
@@ -2267,14 +2264,13 @@ class GroupsAPI:
         if "count" not in query: query['count'] = 100
         while True:
             json = self._api.do('GET', '/api/2.0/preview/scim/v2/Groups', query=query, headers=headers)
-            if 'Resources' not in json or not json['Resources']:
-                return
-            for v in json['Resources']:
-                i = v['id']
-                if i in seen:
-                    continue
-                seen.add(i)
-                yield Group.from_dict(v)
+            if 'Resources' in json:
+                for v in json['Resources']:
+                    i = v['id']
+                    if i in seen:
+                        continue
+                    seen.add(i)
+                    yield Group.from_dict(v)
             query['startIndex'] += len(json['Resources'])
 
     def patch(self,
@@ -2646,14 +2642,13 @@ class ServicePrincipalsAPI:
                                 '/api/2.0/preview/scim/v2/ServicePrincipals',
                                 query=query,
                                 headers=headers)
-            if 'Resources' not in json or not json['Resources']:
-                return
-            for v in json['Resources']:
-                i = v['id']
-                if i in seen:
-                    continue
-                seen.add(i)
-                yield ServicePrincipal.from_dict(v)
+            if 'Resources' in json:
+                for v in json['Resources']:
+                    i = v['id']
+                    if i in seen:
+                        continue
+                    seen.add(i)
+                    yield ServicePrincipal.from_dict(v)
             query['startIndex'] += len(json['Resources'])
 
     def patch(self,
@@ -2955,14 +2950,13 @@ class UsersAPI:
         if "count" not in query: query['count'] = 100
         while True:
             json = self._api.do('GET', '/api/2.0/preview/scim/v2/Users', query=query, headers=headers)
-            if 'Resources' not in json or not json['Resources']:
-                return
-            for v in json['Resources']:
-                i = v['id']
-                if i in seen:
-                    continue
-                seen.add(i)
-                yield User.from_dict(v)
+            if 'Resources' in json:
+                for v in json['Resources']:
+                    i = v['id']
+                    if i in seen:
+                        continue
+                    seen.add(i)
+                    yield User.from_dict(v)
             query['startIndex'] += len(json['Resources'])
 
     def patch(self,

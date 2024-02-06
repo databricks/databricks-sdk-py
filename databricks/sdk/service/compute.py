@@ -6405,10 +6405,9 @@ class ClustersAPI:
 
         while True:
             json = self._api.do('POST', '/api/2.0/clusters/events', body=body, headers=headers)
-            if 'events' not in json or not json['events']:
-                return
-            for v in json['events']:
-                yield ClusterEvent.from_dict(v)
+            if 'events' in json:
+                for v in json['events']:
+                    yield ClusterEvent.from_dict(v)
             if 'next_page' not in json or not json['next_page']:
                 return
             body = json['next_page']
@@ -7733,10 +7732,9 @@ class PolicyFamiliesAPI:
 
         while True:
             json = self._api.do('GET', '/api/2.0/policy-families', query=query, headers=headers)
-            if 'policy_families' not in json or not json['policy_families']:
-                return
-            for v in json['policy_families']:
-                yield PolicyFamily.from_dict(v)
+            if 'policy_families' in json:
+                for v in json['policy_families']:
+                    yield PolicyFamily.from_dict(v)
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']
