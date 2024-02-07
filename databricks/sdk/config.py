@@ -208,6 +208,14 @@ class Config:
         return False
 
     @property
+    def product(self):
+        return self._product
+
+    @property
+    def product_version(self):
+        return self._product_version
+
+    @property
     def user_agent(self):
         """ Returns User-Agent header used by this SDK """
         py_version = platform.python_version()

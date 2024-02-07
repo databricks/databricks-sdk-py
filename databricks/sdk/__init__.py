@@ -802,10 +802,17 @@ class AccountClient:
         :param workspace: The workspace to construct a client for.
         :return: A ``WorkspaceClient`` for the given workspace.
         """
-        config = self._config.copy()
-        config.host = config.environment.deployment_url(workspace.deployment_name)
-        config.azure_workspace_resource_id = azure.get_azure_resource_id(workspace)
-        config.account_id = None
+        config_inner = self._config.as_dict().copy()
+        if 'host' in config_inner:
+            del config_inner['host']
+        if 'azure_workspace_resource_id' in config_inner:
+            del config_inner['azure_workspace_resource_id']
+        if 'account_id' in config_inner:
+            del config_inner['account_id']
+        host = self._config.environment.deployment_url(workspace.deployment_name)
+        azure_workspace_resource_id = azure.get_azure_resource_id(workspace)
+        config = client.Config(**config_inner, host=host, azure_workspace_resource_id=azure_workspace_resource_id,
+                               product=self._config.product, product_version=self._config.product_version)
         return WorkspaceClient(config=config)
 
     def __repr__(self):
