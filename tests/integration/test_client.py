@@ -1,4 +1,3 @@
-import pytest
 
 
 def test_get_workspace_client(a, env_or_skip):

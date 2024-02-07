@@ -811,8 +811,11 @@ class AccountClient:
             del config_inner['account_id']
         host = self._config.environment.deployment_url(workspace.deployment_name)
         azure_workspace_resource_id = azure.get_azure_resource_id(workspace)
-        config = client.Config(**config_inner, host=host, azure_workspace_resource_id=azure_workspace_resource_id,
-                               product=self._config.product, product_version=self._config.product_version)
+        config = client.Config(**config_inner,
+                               host=host,
+                               azure_workspace_resource_id=azure_workspace_resource_id,
+                               product=self._config.product,
+                               product_version=self._config.product_version)
         return WorkspaceClient(config=config)
 
     def __repr__(self):
