@@ -4080,6 +4080,8 @@ class DashboardsAPI:
                         continue
                     seen.add(i)
                     yield Dashboard.from_dict(v)
+            if 'results' not in json or not json['results']:
+                return
             query['page'] += 1
 
     def restore(self, dashboard_id: str):
@@ -4393,6 +4395,8 @@ class QueriesAPI:
                         continue
                     seen.add(i)
                     yield Query.from_dict(v)
+            if 'results' not in json or not json['results']:
+                return
             query['page'] += 1
 
     def restore(self, query_id: str):

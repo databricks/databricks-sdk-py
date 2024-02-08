@@ -1472,6 +1472,8 @@ class AccountGroupsAPI:
                         continue
                     seen.add(i)
                     yield Group.from_dict(v)
+            if 'Resources' not in json or not json['Resources']:
+                return
             query['startIndex'] += len(json['Resources'])
 
     def patch(self,
@@ -1711,6 +1713,8 @@ class AccountServicePrincipalsAPI:
                         continue
                     seen.add(i)
                     yield ServicePrincipal.from_dict(v)
+            if 'Resources' not in json or not json['Resources']:
+                return
             query['startIndex'] += len(json['Resources'])
 
     def patch(self,
@@ -2010,6 +2014,8 @@ class AccountUsersAPI:
                         continue
                     seen.add(i)
                     yield User.from_dict(v)
+            if 'Resources' not in json or not json['Resources']:
+                return
             query['startIndex'] += len(json['Resources'])
 
     def patch(self,
@@ -2271,6 +2277,8 @@ class GroupsAPI:
                         continue
                     seen.add(i)
                     yield Group.from_dict(v)
+            if 'Resources' not in json or not json['Resources']:
+                return
             query['startIndex'] += len(json['Resources'])
 
     def patch(self,
@@ -2649,6 +2657,8 @@ class ServicePrincipalsAPI:
                         continue
                     seen.add(i)
                     yield ServicePrincipal.from_dict(v)
+            if 'Resources' not in json or not json['Resources']:
+                return
             query['startIndex'] += len(json['Resources'])
 
     def patch(self,
@@ -2957,6 +2967,8 @@ class UsersAPI:
                         continue
                     seen.add(i)
                     yield User.from_dict(v)
+            if 'Resources' not in json or not json['Resources']:
+                return
             query['startIndex'] += len(json['Resources'])
 
     def patch(self,

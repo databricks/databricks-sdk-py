@@ -279,18 +279,22 @@ class {{.Name}}API:{{if .Description}}
               seen.add(i)
               {{end -}}
               yield {{.Pagination.Entity.PascalName}}.from_dict(v)
-          {{if eq .Path "/api/2.0/clusters/events" -}}
-          if 'next_page' not in json or not json['next_page']:
-            return
-          body = json['next_page']
-          {{- else if .Pagination.Token -}}
+          {{ if .Pagination.Token -}}
           if '{{.Pagination.Token.Bind.Name}}' not in json or not json['{{.Pagination.Token.Bind.Name}}']:
             return
           {{if eq "GET" .Verb}}query{{else}}body{{end}}['{{.Pagination.Token.PollField.Name}}'] = json['{{.Pagination.Token.Bind.Name}}']
-          {{- else if eq .Pagination.Increment 1 -}}
+          {{- else if eq .Path "/api/2.0/clusters/events" -}}
+          if 'next_page' not in json or not json['next_page']:
+            return
+          body = json['next_page']
+          {{- else -}}
+          if '{{.Pagination.Results.Name}}' not in json or not json['{{.Pagination.Results.Name}}']:
+            return
+          {{ if eq .Pagination.Increment 1 -}}
           query['{{.Pagination.Offset.Name}}'] += 1
           {{- else -}}
           query['{{.Pagination.Offset.Name}}'] += len(json['{{.Pagination.Results.Name}}'])
+          {{- end}}
           {{- end}}
         {{else -}}
         json = {{template "method-do" .}}
