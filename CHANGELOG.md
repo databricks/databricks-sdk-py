@@ -18,66 +18,53 @@
 API Changes:
 
 Additions:
- * Added `cancel_refresh()` method for [w.lakehouse_monitors](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/lakehouse_monitors.html) workspace-level service.
- * Added `get_refresh()` method for [w.lakehouse_monitors](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/lakehouse_monitors.html) workspace-level service.
- * Added `list_refreshes()` method for [w.lakehouse_monitors](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/lakehouse_monitors.html) workspace-level service.
- * Added `run_refresh()` method for [w.lakehouse_monitors](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/lakehouse_monitors.html) workspace-level service.
- * Added `databricks.sdk.service.catalog.CancelRefreshRequest` dataclass.
- * Added `databricks.sdk.service.catalog.GetRefreshRequest` dataclass.
- * Added `databricks.sdk.service.catalog.ListRefreshesRequest` dataclass.
- * Added `databricks.sdk.service.catalog.MonitorRefreshInfo` dataclass.
- * Added `databricks.sdk.service.catalog.MonitorRefreshInfoState` dataclass.
- * Added `databricks.sdk.service.catalog.RunRefreshRequest` dataclass.
+ * Added the following dataclasses:
+    - `databricks.sdk.service.catalog.CancelRefreshRequest`
+    - `databricks.sdk.service.catalog.GetRefreshRequest` 
+    - `databricks.sdk.service.catalog.ListRefreshesRequest`
+    - `databricks.sdk.service.catalog.MonitorRefreshInfo`
+    - `databricks.sdk.service.catalog.MonitorRefreshInfoState`
+    - `databricks.sdk.service.catalog.RunRefreshRequest`
+    - `databricks.sdk.service.compute.Adlsgen2Info`
+    - `databricks.sdk.service.compute.GcsStorageInfo`
+    - `databricks.sdk.service.files.CreateDirectoryRequest`
+    - `databricks.sdk.service.files.DeleteDirectoryRequest`
+    - `databricks.sdk.service.files.DirectoryEntry`
+    - `databricks.sdk.service.files.ListDirectoryContentsRequest`
+    - `databricks.sdk.service.files.ListDirectoryResponse`
+    -  `databricks.sdk.service.files.PageToken`
+    - `databricks.sdk.service.jobs.ForEachStats`
+    - `databricks.sdk.service.jobs.ForEachTask`
+    - `databricks.sdk.service.jobs.ForEachTaskErrorMessageStats`
+    - `databricks.sdk.service.jobs.ForEachTaskTaskRunStats`
+    - `databricks.sdk.service.jobs.RunForEachTask`
+    - `databricks.sdk.service.pipelines.PipelineClusterAutoscale`
+    - `databricks.sdk.service.pipelines.PipelineClusterAutoscaleMode`
+    - `databricks.sdk.service.settings.DeleteDefaultNamespaceSettingRequest`
+    - `databricks.sdk.service.settings.DeleteDefaultNamespaceSettingResponse`
+    - `databricks.sdk.service.settings.DeleteRestrictWorkspaceAdminsSettingRequest`
+    - `databricks.sdk.service.settings.DeleteRestrictWorkspaceAdminsSettingResponse`
+    - `databricks.sdk.service.settings.GetDefaultNamespaceSettingRequest`
+    - `databricks.sdk.service.settings.GetPersonalComputeSettingRequest`
+    - `databricks.sdk.service.settings.GetRestrictWorkspaceAdminsSettingRequest`
+    - `databricks.sdk.service.settings.RestrictWorkspaceAdminsMessage`
+    - `databricks.sdk.service.settings.RestrictWorkspaceAdminsMessageStatus`
+    - `databricks.sdk.service.settings.RestrictWorkspaceAdminsSetting`
+    - `databricks.sdk.service.settings.UpdateDefaultNamespaceSettingRequest`
+    - `databricks.sdk.service.settings.UpdateRestrictWorkspaceAdminsSettingRequest`
+ * Added `cancel_refresh()`, `get_refresh()`, `list_refreshes()` and `run_refresh()` method for [w.lakehouse_monitors](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/lakehouse_monitors.html) workspace-level service.
  * Added `use_preemptible_executors` field for `databricks.sdk.service.compute.GcpAttributes`.
  * Added `zone_id` field for `databricks.sdk.service.compute.GcpAttributes`.
- * Added `abfss` field for `databricks.sdk.service.compute.InitScriptInfo`.
- * Added `gcs` field for `databricks.sdk.service.compute.InitScriptInfo`.
- * Added `databricks.sdk.service.compute.Adlsgen2Info` dataclass.
- * Added `databricks.sdk.service.compute.GcsStorageInfo` dataclass.
- * Added `create_directory()` method for [w.files](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/files.html) workspace-level service.
- * Added `delete_directory()` method for [w.files](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/files.html) workspace-level service.
- * Added `list_directory_contents()` method for [w.files](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/files.html) workspace-level service.
- * Added `databricks.sdk.service.files.CreateDirectoryRequest` dataclass.
- * Added `databricks.sdk.service.files.DeleteDirectoryRequest` dataclass.
- * Added `databricks.sdk.service.files.DirectoryEntry` dataclass.
- * Added `databricks.sdk.service.files.ListDirectoryContentsRequest` dataclass.
- * Added `databricks.sdk.service.files.ListDirectoryResponse` dataclass.
- * Added `databricks.sdk.service.files.PageToken` dataclass.
- * Added `source` field for `databricks.sdk.service.jobs.DbtTask`.
- * Added `for_each_task` field for `databricks.sdk.service.jobs.RunTask`.
- * Added `source` field for `databricks.sdk.service.jobs.SqlTaskFile`.
- * Added `for_each_task` field for `databricks.sdk.service.jobs.SubmitTask`.
- * Added `for_each_task` field for `databricks.sdk.service.jobs.Task`.
- * Added `databricks.sdk.service.jobs.ForEachStats` dataclass.
- * Added `databricks.sdk.service.jobs.ForEachTask` dataclass.
- * Added `databricks.sdk.service.jobs.ForEachTaskErrorMessageStats` dataclass.
- * Added `databricks.sdk.service.jobs.ForEachTaskTaskRunStats` dataclass.
- * Added `databricks.sdk.service.jobs.RunForEachTask` dataclass.
- * Added `databricks.sdk.service.pipelines.PipelineClusterAutoscale` dataclass.
- * Added `databricks.sdk.service.pipelines.PipelineClusterAutoscaleMode` dataclass.
+ * Added `abfss` and `gcs` field for `databricks.sdk.service.compute.InitScriptInfo`.
+ * Added `create_directory()`, `delete_directory()` and `list_directory_contents()` method for [w.files](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/files.html) workspace-level service.
+ * Added `source` field for `databricks.sdk.service.jobs.DbtTask` and `databricks.sdk.service.jobs.SqlTaskFile`.
+ * Added `for_each_task` field for `databricks.sdk.service.jobs.RunTask`, `databricks.sdk.service.jobs.SubmitTask` and `databricks.sdk.service.jobs.Task`.
  * Added `field_mask` field for `databricks.sdk.service.settings.UpdatePersonalComputeSettingRequest`.
- * Added `databricks.sdk.service.settings.DeleteDefaultNamespaceSettingRequest` dataclass.
- * Added `databricks.sdk.service.settings.DeleteDefaultNamespaceSettingResponse` dataclass.
- * Added `databricks.sdk.service.settings.DeleteRestrictWorkspaceAdminsSettingRequest` dataclass.
- * Added `databricks.sdk.service.settings.DeleteRestrictWorkspaceAdminsSettingResponse` dataclass.
- * Added `databricks.sdk.service.settings.GetDefaultNamespaceSettingRequest` dataclass.
- * Added `databricks.sdk.service.settings.GetPersonalComputeSettingRequest` dataclass.
- * Added `databricks.sdk.service.settings.GetRestrictWorkspaceAdminsSettingRequest` dataclass.
- * Added `databricks.sdk.service.settings.RestrictWorkspaceAdminsMessage` dataclass.
- * Added `databricks.sdk.service.settings.RestrictWorkspaceAdminsMessageStatus` dataclass.
- * Added `databricks.sdk.service.settings.RestrictWorkspaceAdminsSetting` dataclass.
- * Added `databricks.sdk.service.settings.UpdateDefaultNamespaceSettingRequest` dataclass.
- * Added `databricks.sdk.service.settings.UpdateRestrictWorkspaceAdminsSettingRequest` dataclass.
  * Added `delta_sync_index_spec` field for `databricks.sdk.service.vectorsearch.CreateVectorIndexRequest`.
  * Added `file_type` field for `databricks.sdk.service.workspace.ExportResponse`.
  * Added `resource_id` field for `databricks.sdk.service.workspace.ObjectInfo`.
+ * Added `delete_default_namespace_setting()`, `delete_restrict_workspace_admins_setting()`, `get_default_namespace_setting()`, `get_restrict_workspace_admins_setting()`, `update_default_namespace_setting()` and `update_restrict_workspace_admins_setting()` method for [w.settings](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings.html) workspace-level service.
  * Added `get_personal_compute_setting()` method for [a.account_settings](https://databricks-sdk-py.readthedocs.io/en/latest/account/account_settings.html) account-level service.
- * Added `delete_default_namespace_setting()` method for [w.settings](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings.html) workspace-level service.
- * Added `delete_restrict_workspace_admins_setting()` method for [w.settings](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings.html) workspace-level service.
- * Added `get_default_namespace_setting()` method for [w.settings](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings.html) workspace-level service.
- * Added `get_restrict_workspace_admins_setting()` method for [w.settings](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings.html) workspace-level service.
- * Added `update_default_namespace_setting()` method for [w.settings](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings.html) workspace-level service.
- * Added `update_restrict_workspace_admins_setting()` method for [w.settings](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings.html) workspace-level service.
 
 Removals:
  * Removed the following dataclasses:
