@@ -24,11 +24,19 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: DirectoryEntry
+   :members:
+   :undoc-members:
+
 .. autoclass:: DownloadResponse
    :members:
    :undoc-members:
 
 .. autoclass:: FileInfo
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListDirectoryResponse
    :members:
    :undoc-members:
 

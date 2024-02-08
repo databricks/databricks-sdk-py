@@ -1,5 +1,5 @@
-``w.current_user``: CurrentUser
-===============================
+``w.current_user``: Current User
+================================
 .. currentmodule:: databricks.sdk.service.iam
 
 .. py:class:: CurrentUserAPI

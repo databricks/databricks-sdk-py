@@ -308,22 +308,6 @@
         :returns: :class:`ListUpdatesResponse`
         
 
-    .. py:method:: reset(pipeline_id: str) -> Wait[GetPipelineResponse]
-
-        Reset a pipeline.
-        
-        Resets a pipeline.
-        
-        :param pipeline_id: str
-        
-        :returns:
-          Long-running operation waiter for :class:`GetPipelineResponse`.
-          See :method:wait_get_pipeline_running for more details.
-        
-
-    .. py:method:: reset_and_wait(pipeline_id: str, timeout: datetime.timedelta = 0:20:00) -> GetPipelineResponse
-
-
     .. py:method:: set_permissions(pipeline_id: str [, access_control_list: Optional[List[PipelineAccessControlRequest]]]) -> PipelinePermissions
 
         Set pipeline permissions.

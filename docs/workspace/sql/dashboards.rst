@@ -123,6 +123,9 @@
         
         Fetch a paginated list of dashboard objects.
         
+        ### **Warning: Calling this API concurrently 10 or more times could result in throttling, service
+        degradation, or a temporary ban.**
+        
         :param order: :class:`ListOrder` (optional)
           Name of dashboard attribute to order by.
         :param page: int (optional)

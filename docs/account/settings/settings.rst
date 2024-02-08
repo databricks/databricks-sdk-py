@@ -12,13 +12,13 @@
     setting is present on all accounts even though it's never set on a given account. Deletion reverts the
     value of the setting back to the default value.
 
-    .. py:method:: delete_personal_compute_setting(etag: str) -> DeletePersonalComputeSettingResponse
+    .. py:method:: delete_personal_compute_setting( [, etag: Optional[str]]) -> DeletePersonalComputeSettingResponse
 
         Delete Personal Compute setting.
         
         Reverts back the Personal Compute setting value to default (ON)
         
-        :param etag: str
+        :param etag: str (optional)
           etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
           optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
           each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
@@ -28,13 +28,13 @@
         :returns: :class:`DeletePersonalComputeSettingResponse`
         
 
-    .. py:method:: read_personal_compute_setting(etag: str) -> PersonalComputeSetting
+    .. py:method:: get_personal_compute_setting( [, etag: Optional[str]]) -> PersonalComputeSetting
 
         Get Personal Compute setting.
         
         Gets the value of the Personal Compute setting.
         
-        :param etag: str
+        :param etag: str (optional)
           etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
           optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
           each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
@@ -44,15 +44,19 @@
         :returns: :class:`PersonalComputeSetting`
         
 
-    .. py:method:: update_personal_compute_setting( [, allow_missing: Optional[bool], setting: Optional[PersonalComputeSetting]]) -> PersonalComputeSetting
+    .. py:method:: update_personal_compute_setting(allow_missing: bool, setting: PersonalComputeSetting, field_mask: str) -> PersonalComputeSetting
 
         Update Personal Compute setting.
         
         Updates the value of the Personal Compute setting.
         
-        :param allow_missing: bool (optional)
-          This should always be set to true for Settings RPCs. Added for AIP compliance.
-        :param setting: :class:`PersonalComputeSetting` (optional)
+        :param allow_missing: bool
+          This should always be set to true for Settings API. Added for AIP compliance.
+        :param setting: :class:`PersonalComputeSetting`
+        :param field_mask: str
+          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
+          setting payload will be updated. The field mask needs to be supplied as single string. To specify
+          multiple fields in the field mask, use comma as the separator (no space).
         
         :returns: :class:`PersonalComputeSetting`
         

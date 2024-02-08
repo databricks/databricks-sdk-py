@@ -346,6 +346,7 @@ class ChannelInfo:
 
 
 class ChannelName(Enum):
+    """Name of the channel"""
 
     CHANNEL_NAME_CURRENT = 'CHANNEL_NAME_CURRENT'
     CHANNEL_NAME_CUSTOM = 'CHANNEL_NAME_CUSTOM'
@@ -4049,6 +4050,9 @@ class DashboardsAPI:
         
         Fetch a paginated list of dashboard objects.
         
+        ### **Warning: Calling this API concurrently 10 or more times could result in throttling, service
+        degradation, or a temporary ban.**
+        
         :param order: :class:`ListOrder` (optional)
           Name of dashboard attribute to order by.
         :param page: int (optional)
@@ -4487,7 +4491,9 @@ class QueryHistoryAPI:
         :param max_results: int (optional)
           Limit the number of results returned in one page. The default is 100.
         :param page_token: str (optional)
-          A token that can be used to get the next page of results.
+          A token that can be used to get the next page of results. The token can contains characters that
+          need to be encoded before using it in a URL. For example, the character '+' needs to be replaced by
+          %2B.
         
         :returns: Iterator over :class:`QueryInfo`
         """

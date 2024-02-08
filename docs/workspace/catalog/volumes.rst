@@ -205,7 +205,7 @@
         :returns: :class:`VolumeInfo`
         
 
-    .. py:method:: update(full_name_arg: str [, comment: Optional[str], name: Optional[str], new_name: Optional[str], owner: Optional[str]]) -> VolumeInfo
+    .. py:method:: update(full_name_arg: str [, comment: Optional[str], new_name: Optional[str], owner: Optional[str]]) -> VolumeInfo
 
 
         Usage:
@@ -266,8 +266,6 @@
           The three-level (fully qualified) name of the volume
         :param comment: str (optional)
           The comment attached to the volume
-        :param name: str (optional)
-          The name of the volume
         :param new_name: str (optional)
           New name for the volume.
         :param owner: str (optional)

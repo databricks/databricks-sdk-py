@@ -243,7 +243,7 @@
         
         
 
-    .. py:method:: update(id: str [, delta_sharing_organization_name: Optional[str], delta_sharing_recipient_token_lifetime_in_seconds: Optional[int], delta_sharing_scope: Optional[UpdateMetastoreDeltaSharingScope], name: Optional[str], new_name: Optional[str], owner: Optional[str], privilege_model_version: Optional[str], storage_root_credential_id: Optional[str]]) -> MetastoreInfo
+    .. py:method:: update(id: str [, delta_sharing_organization_name: Optional[str], delta_sharing_recipient_token_lifetime_in_seconds: Optional[int], delta_sharing_scope: Optional[UpdateMetastoreDeltaSharingScope], new_name: Optional[str], owner: Optional[str], privilege_model_version: Optional[str], storage_root_credential_id: Optional[str]]) -> MetastoreInfo
 
 
         Usage:
@@ -261,7 +261,7 @@
                                           storage_root="s3://%s/%s" %
                                           (os.environ["TEST_BUCKET"], f'sdk-{time.time_ns()}'))
             
-            _ = w.metastores.update(id=created.metastore_id, name=f'sdk-{time.time_ns()}')
+            _ = w.metastores.update(id=created.metastore_id, new_name=f'sdk-{time.time_ns()}')
             
             # cleanup
             w.metastores.delete(id=created.metastore_id, force=True)
@@ -280,8 +280,6 @@
           The lifetime of delta sharing recipient token in seconds.
         :param delta_sharing_scope: :class:`UpdateMetastoreDeltaSharingScope` (optional)
           The scope of Delta Sharing enabled for the metastore.
-        :param name: str (optional)
-          The user-specified name of the metastore.
         :param new_name: str (optional)
           New name for the metastore.
         :param owner: str (optional)

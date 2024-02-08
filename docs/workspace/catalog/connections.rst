@@ -103,8 +103,7 @@
                                                    f'sdk-{time.time_ns()}',
                                                })
             
-            conn_update = w.connections.update(name=conn_create.name,
-                                               name_arg=conn_create.name,
+            conn_update = w.connections.update(name_arg=conn_create.name,
                                                options={
                                                    "host":
                                                    "%s-fake-workspace.cloud.databricks.com" % (f'sdk-{time.time_ns()}'),
@@ -149,7 +148,7 @@
         :returns: Iterator over :class:`ConnectionInfo`
         
 
-    .. py:method:: update(name_arg: str, options: Dict[str, str] [, name: Optional[str], new_name: Optional[str], owner: Optional[str]]) -> ConnectionInfo
+    .. py:method:: update(name_arg: str, options: Dict[str, str] [, new_name: Optional[str], owner: Optional[str]]) -> ConnectionInfo
 
 
         Usage:
@@ -175,8 +174,7 @@
                                                    f'sdk-{time.time_ns()}',
                                                })
             
-            conn_update = w.connections.update(name=conn_create.name,
-                                               name_arg=conn_create.name,
+            conn_update = w.connections.update(name_arg=conn_create.name,
                                                options={
                                                    "host":
                                                    "%s-fake-workspace.cloud.databricks.com" % (f'sdk-{time.time_ns()}'),
@@ -197,8 +195,6 @@
           Name of the connection.
         :param options: Dict[str,str]
           A map of key-value properties attached to the securable.
-        :param name: str (optional)
-          Name of the connection.
         :param new_name: str (optional)
           New name for the connection.
         :param owner: str (optional)
