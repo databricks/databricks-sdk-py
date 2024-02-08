@@ -10,12 +10,12 @@
 * Added Union to content (2nd) parameter in upload function ([#493](https://github.com/databricks/databricks-sdk-py/pull/493)).
 * Fixed WorkspaceConf.get_status and WorkspaceConf.set_status ([#525](https://github.com/databricks/databricks-sdk-py/pull/525)).
 
-## Documentation
+### Documentation
 * Make docs useful again ([#519](https://github.com/databricks/databricks-sdk-py/pull/519)).
 * Show undocumented fields in dataclasses ([#520](https://github.com/databricks/databricks-sdk-py/pull/520)).
 
 
-API Changes:
+### API Changes:
 
 Additions:
  * Added the following dataclasses:
