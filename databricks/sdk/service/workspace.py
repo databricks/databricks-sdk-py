@@ -317,16 +317,20 @@ class ExportResponse:
     """The base64-encoded content. If the limit (10MB) is exceeded, exception with error code
     **MAX_NOTEBOOK_SIZE_EXCEEDED** is thrown."""
 
+    file_type: Optional[str] = None
+    """The file type of the exported file."""
+
     def as_dict(self) -> dict:
         """Serializes the ExportResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.content is not None: body['content'] = self.content
+        if self.file_type is not None: body['file_type'] = self.file_type
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ExportResponse:
         """Deserializes the ExportResponse from a dictionary."""
-        return cls(content=d.get('content', None))
+        return cls(content=d.get('content', None), file_type=d.get('file_type', None))
 
 
 @dataclass
@@ -608,10 +612,14 @@ class ObjectInfo:
     """The type of the object in workspace.
     
     - `NOTEBOOK`: document that contains runnable code, visualizations, and explanatory text. -
-    `DIRECTORY`: directory - `LIBRARY`: library - `FILE`: file - `REPO`: repository"""
+    `DIRECTORY`: directory - `LIBRARY`: library - `FILE`: file - `REPO`: repository - `DASHBOARD`:
+    Lakeview dashboard"""
 
     path: Optional[str] = None
     """The absolute path of the object."""
+
+    resource_id: Optional[str] = None
+    """A unique identifier for the object that is consistent across all Databricks APIs."""
 
     size: Optional[int] = None
     """Only applicable to files. The file size in bytes can be returned."""
@@ -625,6 +633,7 @@ class ObjectInfo:
         if self.object_id is not None: body['object_id'] = self.object_id
         if self.object_type is not None: body['object_type'] = self.object_type.value
         if self.path is not None: body['path'] = self.path
+        if self.resource_id is not None: body['resource_id'] = self.resource_id
         if self.size is not None: body['size'] = self.size
         return body
 
@@ -637,6 +646,7 @@ class ObjectInfo:
                    object_id=d.get('object_id', None),
                    object_type=_enum(d, 'object_type', ObjectType),
                    path=d.get('path', None),
+                   resource_id=d.get('resource_id', None),
                    size=d.get('size', None))
 
 
@@ -644,8 +654,10 @@ class ObjectType(Enum):
     """The type of the object in workspace.
     
     - `NOTEBOOK`: document that contains runnable code, visualizations, and explanatory text. -
-    `DIRECTORY`: directory - `LIBRARY`: library - `FILE`: file - `REPO`: repository"""
+    `DIRECTORY`: directory - `LIBRARY`: library - `FILE`: file - `REPO`: repository - `DASHBOARD`:
+    Lakeview dashboard"""
 
+    DASHBOARD = 'DASHBOARD'
     DIRECTORY = 'DIRECTORY'
     FILE = 'FILE'
     LIBRARY = 'LIBRARY'

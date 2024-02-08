@@ -34,7 +34,9 @@
         :param max_results: int (optional)
           Limit the number of results returned in one page. The default is 100.
         :param page_token: str (optional)
-          A token that can be used to get the next page of results.
+          A token that can be used to get the next page of results. The token can contains characters that
+          need to be encoded before using it in a URL. For example, the character '+' needs to be replaced by
+          %2B.
         
         :returns: Iterator over :class:`QueryInfo`
         

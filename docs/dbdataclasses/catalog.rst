@@ -296,6 +296,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: MonitorRefreshInfo
+   :members:
+   :undoc-members:
+
 .. autoclass:: MonitorTimeSeriesProfileType
    :members:
    :undoc-members:

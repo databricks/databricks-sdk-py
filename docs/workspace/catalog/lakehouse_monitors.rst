@@ -11,6 +11,27 @@
     catalog). Viewing the dashboard, computed metrics, or monitor configuration only requires the user to have
     **SELECT** privileges on the table (along with **USE_SCHEMA** and **USE_CATALOG**).
 
+    .. py:method:: cancel_refresh(full_name: str, refresh_id: str)
+
+        Cancel refresh.
+        
+        Cancel an active monitor refresh for the given refresh ID.
+        
+        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
+        table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
+        - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema - be an
+        owner of the table
+        
+        Additionally, the call must be made from the workspace where the monitor was created.
+        
+        :param full_name: str
+          Full name of the table.
+        :param refresh_id: str
+          ID of the refresh.
+        
+        
+        
+
     .. py:method:: create(full_name: str, assets_dir: str, output_schema_name: str [, baseline_table_name: Optional[str], custom_metrics: Optional[List[MonitorCustomMetric]], data_classification_config: Optional[MonitorDataClassificationConfig], inference_log: Optional[MonitorInferenceLogProfileType], notifications: Optional[List[MonitorNotificationsConfig]], schedule: Optional[MonitorCronSchedule], skip_builtin_dashboard: Optional[bool], slicing_exprs: Optional[List[str]], snapshot: Optional[Any], time_series: Optional[MonitorTimeSeriesProfileType], warehouse_id: Optional[str]]) -> MonitorInfo
 
         Create a table monitor.
@@ -103,6 +124,66 @@
           Full name of the table.
         
         :returns: :class:`MonitorInfo`
+        
+
+    .. py:method:: get_refresh(full_name: str, refresh_id: str) -> MonitorRefreshInfo
+
+        Get refresh.
+        
+        Gets info about a specific monitor refresh using the given refresh ID.
+        
+        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
+        table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
+        - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema -
+        **SELECT** privilege on the table.
+        
+        Additionally, the call must be made from the workspace where the monitor was created.
+        
+        :param full_name: str
+          Full name of the table.
+        :param refresh_id: str
+          ID of the refresh.
+        
+        :returns: :class:`MonitorRefreshInfo`
+        
+
+    .. py:method:: list_refreshes(full_name: str) -> Iterator[MonitorRefreshInfo]
+
+        List refreshes.
+        
+        Gets an array containing the history of the most recent refreshes (up to 25) for this table.
+        
+        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
+        table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
+        - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema -
+        **SELECT** privilege on the table.
+        
+        Additionally, the call must be made from the workspace where the monitor was created.
+        
+        :param full_name: str
+          Full name of the table.
+        
+        :returns: Iterator over :class:`MonitorRefreshInfo`
+        
+
+    .. py:method:: run_refresh(full_name: str) -> MonitorRefreshInfo
+
+        Queue a metric refresh for a monitor.
+        
+        Queues a metric refresh on the monitor for the specified table. The refresh will execute in the
+        background.
+        
+        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
+        table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
+        - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema - be an
+        owner of the table
+        
+        Additionally, the call must be made from the workspace where the monitor was created.
+        
+        :param full_name: str
+          Full name of the table.
+        
+        :returns: :class:`MonitorRefreshInfo`
         
 
     .. py:method:: update(full_name: str, assets_dir: str, output_schema_name: str [, baseline_table_name: Optional[str], custom_metrics: Optional[List[MonitorCustomMetric]], data_classification_config: Optional[MonitorDataClassificationConfig], inference_log: Optional[MonitorInferenceLogProfileType], notifications: Optional[List[MonitorNotificationsConfig]], schedule: Optional[MonitorCronSchedule], slicing_exprs: Optional[List[str]], snapshot: Optional[Any], time_series: Optional[MonitorTimeSeriesProfileType]]) -> MonitorInfo
