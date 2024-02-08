@@ -16,8 +16,8 @@ class Clock(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def sleep(self, seconds: float) -> None:
         """
-        Return the current time in seconds since the Epoch.
-        Fractions of a second may be present if the system clock provides them.
+        Delay execution for a given number of seconds.  The argument may be
+        a floating point number for subsecond precision.
 
         :param seconds: The duration to sleep in seconds.
         :return:
@@ -40,8 +40,8 @@ class RealClock(Clock):
 
     def sleep(self, seconds: float) -> None:
         """
-        Return the current time in seconds since the Epoch.
-        Fractions of a second may be present if the system clock provides them.
+        Delay execution for a given number of seconds.  The argument may be
+        a floating point number for subsecond precision.
 
         :param seconds: The duration to sleep in seconds.
         :return:
