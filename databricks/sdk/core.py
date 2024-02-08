@@ -7,7 +7,6 @@ from typing import Any, BinaryIO, Iterator, Type
 
 from requests.adapters import HTTPAdapter
 
-from .clock import Clock, RealClock
 from .config import *
 # To preserve backwards compatibility (as these definitions were previously in this module)
 from .credentials_provider import *

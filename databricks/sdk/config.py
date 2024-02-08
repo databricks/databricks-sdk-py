@@ -85,7 +85,7 @@ class Config:
                  credentials_provider: CredentialsProvider = None,
                  product="unknown",
                  product_version="0.0.0",
-                 clock: Clock=None,
+                 clock: Clock = None,
                  **kwargs):
         self._inner = {}
         self._user_agent_other_info = []
