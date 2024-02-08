@@ -15,7 +15,7 @@
 * Show undocumented fields in dataclasses ([#520](https://github.com/databricks/databricks-sdk-py/pull/520)).
 
 
-### API Changes:
+### API Changes
 
 Additions:
  * Added the following dataclasses:
