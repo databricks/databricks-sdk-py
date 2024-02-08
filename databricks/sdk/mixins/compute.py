@@ -311,7 +311,7 @@ class _ReturnToPrintJson(ast.NodeTransformer):
 
         if unsupported_version and has_return_in_last_line:
             raise ValueError(f'dynamic conversion of return .. to print(json.dumps(..)) '
-                             f'is only possible starting from Python 3.8')
+                             f'is only possible starting from Python 3.9')
 
         # perform AST transformations for very repetitive tasks, like JSON serialization
         code_tree = ast.parse(code)
@@ -434,7 +434,7 @@ class CommandExecutor:
         if not self._is_failed(results):
             return ''
         if results.cause:
-            sys.stderr.write(_ascii_escape_re.sub("", results.cause))
+            _LOG.error(_ascii_escape_re.sub("", results.cause))
 
         summary = _tag_re.sub("", results.summary)
         summary = html.unescape(summary)
