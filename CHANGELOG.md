@@ -3,7 +3,7 @@
 ## 0.19.0
 
 ### Improvements and Bug Fixes
-* Constructed workspace client from account client ([#527](https://github.com/databricks/databricks-sdk-py/pull/527)).
+* Construct workspace client from account client ([#527](https://github.com/databricks/databricks-sdk-py/pull/527)).
 * Enabled Databricks OAuth also for Azure and GCP ([#526](https://github.com/databricks/databricks-sdk-py/pull/526)).
 * Do not terminate listing for token-based pagination resources on empty response ([#530](https://github.com/databricks/databricks-sdk-py/pull/530)).
 * Renamed `databricks.sdk.errors.mapping` to `databricks.sdk.errors.platform` ([#522](https://github.com/databricks/databricks-sdk-py/pull/522)).
