@@ -26,6 +26,7 @@ from databricks.sdk.service.catalog import PermissionsChange
 from databricks.sdk.service.iam import AccessControlRequest
 from databricks.sdk.version import __version__
 
+from .clock import FakeClock
 from .conftest import noop_credentials
 
 
@@ -422,7 +423,7 @@ def test_http_retry_after(status_code, include_retry_after):
         requests.append(h.requestline)
 
     with http_fixture_server(inner) as host:
-        api_client = ApiClient(Config(host=host, token='_'))
+        api_client = ApiClient(Config(host=host, token='_', clock=FakeClock()))
         res = api_client.do('GET', '/foo')
         assert 'foo' in res
 
@@ -445,7 +446,7 @@ def test_http_retry_after_wrong_format():
         requests.append(h.requestline)
 
     with http_fixture_server(inner) as host:
-        api_client = ApiClient(Config(host=host, token='_'))
+        api_client = ApiClient(Config(host=host, token='_', clock=FakeClock()))
         res = api_client.do('GET', '/foo')
         assert 'foo' in res
 
@@ -462,7 +463,7 @@ def test_http_retried_exceed_limit():
         requests.append(h.requestline)
 
     with http_fixture_server(inner) as host:
-        api_client = ApiClient(Config(host=host, token='_', retry_timeout_seconds=1))
+        api_client = ApiClient(Config(host=host, token='_', retry_timeout_seconds=1, clock=FakeClock()))
         with pytest.raises(TimeoutError):
             api_client.do('GET', '/foo')
 
@@ -484,7 +485,7 @@ def test_http_retried_on_match():
         requests.append(h.requestline)
 
     with http_fixture_server(inner) as host:
-        api_client = ApiClient(Config(host=host, token='_'))
+        api_client = ApiClient(Config(host=host, token='_', clock=FakeClock()))
         res = api_client.do('GET', '/foo')
         assert 'foo' in res
 
@@ -502,7 +503,7 @@ def test_http_not_retried_on_normal_errors():
         requests.append(h.requestline)
 
     with http_fixture_server(inner) as host:
-        api_client = ApiClient(Config(host=host, token='_'))
+        api_client = ApiClient(Config(host=host, token='_', clock=FakeClock()))
         with pytest.raises(DatabricksError):
             api_client.do('GET', '/foo')
 
@@ -520,7 +521,7 @@ def test_http_retried_on_connection_error():
         requests.append(h.requestline)
 
     with http_fixture_server(inner) as host:
-        api_client = ApiClient(Config(host=host, token='_'))
+        api_client = ApiClient(Config(host=host, token='_', clock=FakeClock()))
         res = api_client.do('GET', '/foo')
         assert 'foo' in res
 

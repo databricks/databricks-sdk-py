@@ -11,6 +11,7 @@ from typing import Dict, Iterable, Optional
 import requests
 
 from .azure import AzureEnvironment
+from .clock import Clock, RealClock
 from .credentials_provider import CredentialsProvider, DefaultCredentials
 from .environments import (ALL_ENVS, DEFAULT_ENVIRONMENT, Cloud,
                            DatabricksEnvironment)
@@ -84,6 +85,7 @@ class Config:
                  credentials_provider: CredentialsProvider = None,
                  product="unknown",
                  product_version="0.0.0",
+                 clock: Clock = None,
                  **kwargs):
         self._inner = {}
         self._user_agent_other_info = []
@@ -91,6 +93,7 @@ class Config:
         if 'databricks_environment' in kwargs:
             self.databricks_environment = kwargs['databricks_environment']
             del kwargs['databricks_environment']
+        self._clock = clock if clock is not None else RealClock()
         try:
             self._set_inner_config(kwargs)
             self._load_from_env()
@@ -316,6 +319,10 @@ class Config:
             return f'sql/protocolv1/o/{workspace_id}/{self.cluster_id}'
         if self.warehouse_id:
             return f'/sql/1.0/warehouses/{self.warehouse_id}'
+
+    @property
+    def clock(self) -> Clock:
+        return self._clock
 
     @classmethod
     def attributes(cls) -> Iterable[ConfigAttribute]:

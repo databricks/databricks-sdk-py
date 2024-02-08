@@ -123,7 +123,8 @@ class ApiClient:
             headers = {}
         headers['User-Agent'] = self._user_agent_base
         retryable = retried(timeout=timedelta(seconds=self._retry_timeout_seconds),
-                            is_retryable=self._is_retryable)
+                            is_retryable=self._is_retryable,
+                            clock=self._cfg.clock)
         return retryable(self._perform)(method,
                                         path,
                                         query=query,
