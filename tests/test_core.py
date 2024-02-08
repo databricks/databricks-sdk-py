@@ -26,8 +26,8 @@ from databricks.sdk.service.catalog import PermissionsChange
 from databricks.sdk.service.iam import AccessControlRequest
 from databricks.sdk.version import __version__
 
-from .conftest import noop_credentials
 from .clock import FakeClock
+from .conftest import noop_credentials
 
 
 def test_parse_dsn():

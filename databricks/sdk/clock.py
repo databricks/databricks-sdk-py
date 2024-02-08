@@ -3,6 +3,7 @@ import time
 
 
 class Clock(metaclass=abc.ABCMeta):
+
     @abc.abstractmethod
     def time(self) -> float:
         """
@@ -11,7 +12,6 @@ class Clock(metaclass=abc.ABCMeta):
 
         :return: The current time in seconds since the Epoch.
         """
-        pass
 
     @abc.abstractmethod
     def sleep(self, seconds: float) -> None:
@@ -22,7 +22,6 @@ class Clock(metaclass=abc.ABCMeta):
         :param seconds: The duration to sleep in seconds.
         :return:
         """
-        pass
 
 
 class RealClock(Clock):

@@ -7,12 +7,12 @@ from typing import Any, BinaryIO, Iterator, Type
 
 from requests.adapters import HTTPAdapter
 
+from .clock import Clock, RealClock
 from .config import *
 # To preserve backwards compatibility (as these definitions were previously in this module)
 from .credentials_provider import *
 from .errors import DatabricksError, error_mapper
 from .retries import retried
-from .clock import Clock, RealClock
 
 __all__ = ['Config', 'DatabricksError']
 
@@ -23,7 +23,7 @@ class ApiClient:
     _cfg: Config
     _RETRY_AFTER_DEFAULT: int = 1
 
-    def __init__(self, cfg: Config = None, clock: Clock=None):
+    def __init__(self, cfg: Config = None, clock: Clock = None):
 
         if cfg is None:
             cfg = Config()

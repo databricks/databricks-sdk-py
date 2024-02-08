@@ -13,7 +13,7 @@ def retried(*,
             on: Sequence[Type[BaseException]] = None,
             is_retryable: Callable[[BaseException], Optional[str]] = None,
             timeout=timedelta(minutes=20),
-            clock: Clock=None):
+            clock: Clock = None):
     has_allowlist = on is not None
     has_callback = is_retryable is not None
     if not (has_allowlist or has_callback) or (has_allowlist and has_callback):
