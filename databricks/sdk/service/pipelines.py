@@ -1891,10 +1891,9 @@ class PipelinesAPI:
                                 f'/api/2.0/pipelines/{pipeline_id}/events',
                                 query=query,
                                 headers=headers)
-            if 'events' not in json or not json['events']:
-                return
-            for v in json['events']:
-                yield PipelineEvent.from_dict(v)
+            if 'events' in json:
+                for v in json['events']:
+                    yield PipelineEvent.from_dict(v)
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']
@@ -1940,10 +1939,9 @@ class PipelinesAPI:
 
         while True:
             json = self._api.do('GET', '/api/2.0/pipelines', query=query, headers=headers)
-            if 'statuses' not in json or not json['statuses']:
-                return
-            for v in json['statuses']:
-                yield PipelineStateInfo.from_dict(v)
+            if 'statuses' in json:
+                for v in json['statuses']:
+                    yield PipelineStateInfo.from_dict(v)
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']

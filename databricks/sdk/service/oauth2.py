@@ -629,10 +629,9 @@ class OAuthPublishedAppsAPI:
                                 f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-apps/',
                                 query=query,
                                 headers=headers)
-            if 'apps' not in json or not json['apps']:
-                return
-            for v in json['apps']:
-                yield PublishedAppOutput.from_dict(v)
+            if 'apps' in json:
+                for v in json['apps']:
+                    yield PublishedAppOutput.from_dict(v)
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']

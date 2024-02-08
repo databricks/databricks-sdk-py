@@ -978,10 +978,9 @@ class VectorSearchEndpointsAPI:
 
         while True:
             json = self._api.do('GET', '/api/2.0/vector-search/endpoints', query=query, headers=headers)
-            if 'endpoints' not in json or not json['endpoints']:
-                return
-            for v in json['endpoints']:
-                yield EndpointInfo.from_dict(v)
+            if 'endpoints' in json:
+                for v in json['endpoints']:
+                    yield EndpointInfo.from_dict(v)
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']
@@ -1117,10 +1116,9 @@ class VectorSearchIndexesAPI:
 
         while True:
             json = self._api.do('GET', '/api/2.0/vector-search/indexes', query=query, headers=headers)
-            if 'vector_indexes' not in json or not json['vector_indexes']:
-                return
-            for v in json['vector_indexes']:
-                yield MiniVectorIndex.from_dict(v)
+            if 'vector_indexes' in json:
+                for v in json['vector_indexes']:
+                    yield MiniVectorIndex.from_dict(v)
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']

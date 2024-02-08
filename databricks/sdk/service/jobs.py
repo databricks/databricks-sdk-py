@@ -4945,10 +4945,9 @@ class JobsAPI:
 
         while True:
             json = self._api.do('GET', '/api/2.1/jobs/list', query=query, headers=headers)
-            if 'jobs' not in json or not json['jobs']:
-                return
-            for v in json['jobs']:
-                yield BaseJob.from_dict(v)
+            if 'jobs' in json:
+                for v in json['jobs']:
+                    yield BaseJob.from_dict(v)
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']
@@ -5017,10 +5016,9 @@ class JobsAPI:
 
         while True:
             json = self._api.do('GET', '/api/2.1/jobs/runs/list', query=query, headers=headers)
-            if 'runs' not in json or not json['runs']:
-                return
-            for v in json['runs']:
-                yield BaseRun.from_dict(v)
+            if 'runs' in json:
+                for v in json['runs']:
+                    yield BaseRun.from_dict(v)
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']

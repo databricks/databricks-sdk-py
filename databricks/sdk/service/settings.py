@@ -2075,10 +2075,9 @@ class NetworkConnectivityAPI:
                                 f'/api/2.0/accounts/{self._api.account_id}/network-connectivity-configs',
                                 query=query,
                                 headers=headers)
-            if 'items' not in json or not json['items']:
-                return
-            for v in json['items']:
-                yield NetworkConnectivityConfiguration.from_dict(v)
+            if 'items' in json:
+                for v in json['items']:
+                    yield NetworkConnectivityConfiguration.from_dict(v)
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']
@@ -2110,10 +2109,9 @@ class NetworkConnectivityAPI:
                 f'/api/2.0/accounts/{self._api.account_id}/network-connectivity-configs/{network_connectivity_config_id}/private-endpoint-rules',
                 query=query,
                 headers=headers)
-            if 'items' not in json or not json['items']:
-                return
-            for v in json['items']:
-                yield NccAzurePrivateEndpointRule.from_dict(v)
+            if 'items' in json:
+                for v in json['items']:
+                    yield NccAzurePrivateEndpointRule.from_dict(v)
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']
