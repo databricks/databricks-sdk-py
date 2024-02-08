@@ -12,6 +12,7 @@ from .config import *
 from .credentials_provider import *
 from .errors import DatabricksError, error_mapper
 from .retries import retried
+from .clock import Clock, RealClock
 
 __all__ = ['Config', 'DatabricksError']
 
@@ -22,12 +23,16 @@ class ApiClient:
     _cfg: Config
     _RETRY_AFTER_DEFAULT: int = 1
 
-    def __init__(self, cfg: Config = None):
+    def __init__(self, cfg: Config = None, clock: Clock=None):
 
         if cfg is None:
             cfg = Config()
 
+        if clock is None:
+            clock = RealClock()
+
         self._cfg = cfg
+        self._clock = clock
         # See https://github.com/databricks/databricks-sdk-go/blob/main/client/client.go#L34-L35
         self._debug_truncate_bytes = cfg.debug_truncate_bytes if cfg.debug_truncate_bytes else 96
         self._retry_timeout_seconds = cfg.retry_timeout_seconds if cfg.retry_timeout_seconds else 300
@@ -123,7 +128,8 @@ class ApiClient:
             headers = {}
         headers['User-Agent'] = self._user_agent_base
         retryable = retried(timeout=timedelta(seconds=self._retry_timeout_seconds),
-                            is_retryable=self._is_retryable)
+                            is_retryable=self._is_retryable,
+                            clock=self._clock)
         return retryable(self._perform)(method,
                                         path,
                                         query=query,
