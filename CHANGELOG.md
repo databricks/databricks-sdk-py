@@ -2,52 +2,38 @@
 
 ## 0.19.0
 
+### Improvements and Bug Fixes
+* Constructed workspace client from account client ([#527](https://github.com/databricks/databricks-sdk-py/pull/527)).
+* Enabled Databricks OAuth also for Azure and GCP ([#526](https://github.com/databricks/databricks-sdk-py/pull/526)).
+* Do not terminate listing for token-based pagination resources on empty response ([#530](https://github.com/databricks/databricks-sdk-py/pull/530)).
+* Renamed `databricks.sdk.errors.mapping` to `databricks.sdk.errors.platform` ([#522](https://github.com/databricks/databricks-sdk-py/pull/522)).
+* Added Union to content (2nd) parameter in upload function ([#493](https://github.com/databricks/databricks-sdk-py/pull/493)).
+* Fixed WorkspaceConf.get_status and WorkspaceConf.set_status ([#525](https://github.com/databricks/databricks-sdk-py/pull/525)).
+
+## Documentation
 * Make docs useful again ([#519](https://github.com/databricks/databricks-sdk-py/pull/519)).
 * Show undocumented fields in dataclasses ([#520](https://github.com/databricks/databricks-sdk-py/pull/520)).
-* Search for both databricks.exe and databricks binaries in windows ([#517](https://github.com/databricks/databricks-sdk-py/pull/517)).
-* Rename `databricks.sdk.errors.mapping` to `databricks.sdk.errors.platform` ([#522](https://github.com/databricks/databricks-sdk-py/pull/522)).
-* refactor: add Union to content (2nd) parameter in upload function ([#493](https://github.com/databricks/databricks-sdk-py/pull/493)).
-* Regenerate from the tip of main ([#524](https://github.com/databricks/databricks-sdk-py/pull/524)).
-* Fix WorkspaceConf.get_status and WorkspaceConf.set_status ([#525](https://github.com/databricks/databricks-sdk-py/pull/525)).
-* Enable Databricks OAuth also for Azure and GCP ([#526](https://github.com/databricks/databricks-sdk-py/pull/526)).
-* Construct workspace client from account client ([#527](https://github.com/databricks/databricks-sdk-py/pull/527)).
-* Skip test_get_workspace_client in Azure and GCP ([#531](https://github.com/databricks/databricks-sdk-py/pull/531)).
-* Do not terminate listing for token-based pagination resources on empty response ([#530](https://github.com/databricks/databricks-sdk-py/pull/530)).
-* Use fake clock for faster unit tests ([#533](https://github.com/databricks/databricks-sdk-py/pull/533)).
-* Generate SDK ([#536](https://github.com/databricks/databricks-sdk-py/pull/536)).
+
 
 API Changes:
 
+Additions:
  * Added `cancel_refresh()` method for [w.lakehouse_monitors](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/lakehouse_monitors.html) workspace-level service.
  * Added `get_refresh()` method for [w.lakehouse_monitors](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/lakehouse_monitors.html) workspace-level service.
  * Added `list_refreshes()` method for [w.lakehouse_monitors](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/lakehouse_monitors.html) workspace-level service.
  * Added `run_refresh()` method for [w.lakehouse_monitors](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/lakehouse_monitors.html) workspace-level service.
- * Removed `name` field for `databricks.sdk.service.catalog.UpdateConnection`.
- * Removed `name` field for `databricks.sdk.service.catalog.UpdateMetastore`.
- * Removed `name` field for `databricks.sdk.service.catalog.UpdateRegisteredModelRequest`.
- * Removed `name` field for `databricks.sdk.service.catalog.UpdateSchema`.
- * Removed `name` field for `databricks.sdk.service.catalog.UpdateVolumeRequestContent`.
  * Added `databricks.sdk.service.catalog.CancelRefreshRequest` dataclass.
  * Added `databricks.sdk.service.catalog.GetRefreshRequest` dataclass.
  * Added `databricks.sdk.service.catalog.ListRefreshesRequest` dataclass.
  * Added `databricks.sdk.service.catalog.MonitorRefreshInfo` dataclass.
  * Added `databricks.sdk.service.catalog.MonitorRefreshInfoState` dataclass.
  * Added `databricks.sdk.service.catalog.RunRefreshRequest` dataclass.
- * Changed `max_workers` field for `databricks.sdk.service.compute.AutoScale` to no longer be required.
- * Changed `min_workers` field for `databricks.sdk.service.compute.AutoScale` to no longer be required.
- * Changed `destination` field for `databricks.sdk.service.compute.DbfsStorageInfo` to be required.
  * Added `use_preemptible_executors` field for `databricks.sdk.service.compute.GcpAttributes`.
  * Added `zone_id` field for `databricks.sdk.service.compute.GcpAttributes`.
  * Added `abfss` field for `databricks.sdk.service.compute.InitScriptInfo`.
  * Added `gcs` field for `databricks.sdk.service.compute.InitScriptInfo`.
- * Changed `destination` field for `databricks.sdk.service.compute.LocalFileInfo` to be required.
- * Changed `destination` field for `databricks.sdk.service.compute.S3StorageInfo` to be required.
- * Changed `destination` field for `databricks.sdk.service.compute.VolumesStorageInfo` to be required.
- * Changed `clients` field for `databricks.sdk.service.compute.WorkloadType` to be required.
- * Changed `destination` field for `databricks.sdk.service.compute.WorkspaceStorageInfo` to be required.
  * Added `databricks.sdk.service.compute.Adlsgen2Info` dataclass.
  * Added `databricks.sdk.service.compute.GcsStorageInfo` dataclass.
- * Removed `get_status()` method for [w.files](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/files.html) workspace-level service.
  * Added `create_directory()` method for [w.files](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/files.html) workspace-level service.
  * Added `delete_directory()` method for [w.files](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/files.html) workspace-level service.
  * Added `list_directory_contents()` method for [w.files](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/files.html) workspace-level service.
@@ -67,32 +53,8 @@ API Changes:
  * Added `databricks.sdk.service.jobs.ForEachTaskErrorMessageStats` dataclass.
  * Added `databricks.sdk.service.jobs.ForEachTaskTaskRunStats` dataclass.
  * Added `databricks.sdk.service.jobs.RunForEachTask` dataclass.
- * Removed `reset()` method for [w.pipelines](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/pipelines.html) workspace-level service.
- * Changed `autoscale` field for `databricks.sdk.service.pipelines.PipelineCluster` to `databricks.sdk.service.pipelines.PipelineClusterAutoscale` dataclass.
- * Removed `databricks.sdk.service.pipelines.ResetRequest` dataclass.
  * Added `databricks.sdk.service.pipelines.PipelineClusterAutoscale` dataclass.
  * Added `databricks.sdk.service.pipelines.PipelineClusterAutoscaleMode` dataclass.
- * Changed `delete_personal_compute_setting()` method for [a.account_settings](https://databricks-sdk-py.readthedocs.io/en/latest/account/account_settings.html) account-level service with new required argument order.
- * Removed `read_personal_compute_setting()` method for [a.account_settings](https://databricks-sdk-py.readthedocs.io/en/latest/account/account_settings.html) account-level service.
- * Changed `update_personal_compute_setting()` method for [a.account_settings](https://databricks-sdk-py.readthedocs.io/en/latest/account/account_settings.html) account-level service with new required argument order.
- * Added `get_personal_compute_setting()` method for [a.account_settings](https://databricks-sdk-py.readthedocs.io/en/latest/account/account_settings.html) account-level service.
- * Removed `delete_default_workspace_namespace()` method for [w.settings](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings.html) workspace-level service.
- * Removed `read_default_workspace_namespace()` method for [w.settings](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings.html) workspace-level service.
- * Removed `update_default_workspace_namespace()` method for [w.settings](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings.html) workspace-level service.
- * Added `delete_default_namespace_setting()` method for [w.settings](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings.html) workspace-level service.
- * Added `delete_restrict_workspace_admins_setting()` method for [w.settings](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings.html) workspace-level service.
- * Added `get_default_namespace_setting()` method for [w.settings](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings.html) workspace-level service.
- * Added `get_restrict_workspace_admins_setting()` method for [w.settings](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings.html) workspace-level service.
- * Added `update_default_namespace_setting()` method for [w.settings](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings.html) workspace-level service.
- * Added `update_restrict_workspace_admins_setting()` method for [w.settings](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings.html) workspace-level service.
- * Removed `databricks.sdk.service.settings.DeleteDefaultWorkspaceNamespaceRequest` dataclass.
- * Removed `databricks.sdk.service.settings.DeleteDefaultWorkspaceNamespaceResponse` dataclass.
- * Changed `etag` field for `databricks.sdk.service.settings.DeletePersonalComputeSettingRequest` to no longer be required.
- * Removed `databricks.sdk.service.settings.ReadDefaultWorkspaceNamespaceRequest` dataclass.
- * Removed `databricks.sdk.service.settings.ReadPersonalComputeSettingRequest` dataclass.
- * Removed `databricks.sdk.service.settings.UpdateDefaultWorkspaceNamespaceRequest` dataclass.
- * Changed `allow_missing` field for `databricks.sdk.service.settings.UpdatePersonalComputeSettingRequest` to be required.
- * Changed `setting` field for `databricks.sdk.service.settings.UpdatePersonalComputeSettingRequest` to be required.
  * Added `field_mask` field for `databricks.sdk.service.settings.UpdatePersonalComputeSettingRequest`.
  * Added `databricks.sdk.service.settings.DeleteDefaultNamespaceSettingRequest` dataclass.
  * Added `databricks.sdk.service.settings.DeleteDefaultNamespaceSettingResponse` dataclass.
@@ -106,10 +68,50 @@ API Changes:
  * Added `databricks.sdk.service.settings.RestrictWorkspaceAdminsSetting` dataclass.
  * Added `databricks.sdk.service.settings.UpdateDefaultNamespaceSettingRequest` dataclass.
  * Added `databricks.sdk.service.settings.UpdateRestrictWorkspaceAdminsSettingRequest` dataclass.
- * Removed `delta_sync_vector_index_spec` field for `databricks.sdk.service.vectorsearch.CreateVectorIndexRequest`.
  * Added `delta_sync_index_spec` field for `databricks.sdk.service.vectorsearch.CreateVectorIndexRequest`.
  * Added `file_type` field for `databricks.sdk.service.workspace.ExportResponse`.
  * Added `resource_id` field for `databricks.sdk.service.workspace.ObjectInfo`.
+ * Added `get_personal_compute_setting()` method for [a.account_settings](https://databricks-sdk-py.readthedocs.io/en/latest/account/account_settings.html) account-level service.
+ * Added `delete_default_namespace_setting()` method for [w.settings](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings.html) workspace-level service.
+ * Added `delete_restrict_workspace_admins_setting()` method for [w.settings](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings.html) workspace-level service.
+ * Added `get_default_namespace_setting()` method for [w.settings](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings.html) workspace-level service.
+ * Added `get_restrict_workspace_admins_setting()` method for [w.settings](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings.html) workspace-level service.
+ * Added `update_default_namespace_setting()` method for [w.settings](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings.html) workspace-level service.
+ * Added `update_restrict_workspace_admins_setting()` method for [w.settings](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings.html) workspace-level service.
+
+Removals:
+ * Removed the following dataclasses:
+    - `databricks.sdk.service.settings.ReadDefaultWorkspaceNamespaceRequest`
+    - `databricks.sdk.service.settings.ReadPersonalComputeSettingRequest`
+    - `databricks.sdk.service.settings.UpdateDefaultWorkspaceNamespaceRequest`
+    - `databricks.sdk.service.settings.DeleteDefaultWorkspaceNamespaceRequest`
+    - `databricks.sdk.service.settings.DeleteDefaultWorkspaceNamespaceResponse`
+    - `databricks.sdk.service.pipelines.ResetRequest`
+ * Removed the following methods:
+    - `get_status()` for [w.files](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/files.html) workspace-level service.
+    - `reset()` for [w.pipelines](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/pipelines.html) workspace-level service.
+    - `delete_default_workspace_namespace()` for [w.settings](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings.html) workspace-level service.
+    - `read_default_workspace_namespace()` for [w.settings](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings.html) workspace-level service.
+    - `update_default_workspace_namespace()` for [w.settings](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings.html) workspace-level service.
+    - `read_personal_compute_setting()` for [a.account_settings](https://databricks-sdk-py.readthedocs.io/en/latest/account/account_settings.html) account-level service.
+ * Removed `name` field for `databricks.sdk.service.catalog.UpdateConnection`, `databricks.sdk.service.catalog.UpdateMetastore`, `databricks.sdk.service.catalog.UpdateRegisteredModelRequest`. `databricks.sdk.service.catalog.UpdateSchema`and `databricks.sdk.service.catalog.UpdateVolumeRequestContent`.
+ * Removed `delta_sync_vector_index_spec` field for `databricks.sdk.service.vectorsearch.CreateVectorIndexRequest`.
+
+Changes:
+ * Changed `max_workers` and `min_workers` field for `databricks.sdk.service.compute.AutoScale` to no longer be required.
+ * Changed `destination` field for `databricks.sdk.service.compute.DbfsStorageInfo`, `databricks.sdk.service.compute.LocalFileInfo`, `databricks.sdk.service.compute.S3StorageInfo`, `databricks.sdk.service.compute.VolumesStorageInfo` and `databricks.sdk.service.compute.WorkspaceStorageInfo` to be required.
+ * Changed `clients` field for `databricks.sdk.service.compute.WorkloadType` to be required.
+ * Changed `allow_missing` and `setting` field for `databricks.sdk.service.settings.UpdatePersonalComputeSettingRequest` to be required.
+ * Changed `etag` field for `databricks.sdk.service.settings.DeletePersonalComputeSettingRequest` to no longer be required.
+ * Changed `autoscale` field for `databricks.sdk.service.pipelines.PipelineCluster` to `databricks.sdk.service.pipelines.PipelineClusterAutoscale` dataclass.
+ * Changed `delete_personal_compute_setting()` and `update_personal_compute_setting()` method for [a.account_settings](https://databricks-sdk-py.readthedocs.io/en/latest/account/account_settings.html) account-level service with new required argument order.
+
+### Internal Changes
+* Generate SDK ([#536](https://github.com/databricks/databricks-sdk-py/pull/536)).
+* Use fake clock for faster unit tests ([#533](https://github.com/databricks/databricks-sdk-py/pull/533)).
+* Skip test_get_workspace_client in Azure and GCP ([#531](https://github.com/databricks/databricks-sdk-py/pull/531)).
+* Regenerate from the tip of main ([#524](https://github.com/databricks/databricks-sdk-py/pull/524)).
+* Search for both databricks.exe and databricks binaries in windows ([#517](https://github.com/databricks/databricks-sdk-py/pull/517)).
 
 OpenAPI SHA: 6b897bc95b23abed8b9f5eff0e6b8ec034046180, Date: 2024-02-08
 
