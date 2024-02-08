@@ -4,19 +4,25 @@ from databricks.sdk.core import Config
 
 from .conftest import __tests__, raises
 
+default_auth_base_error_message = \
+    "default auth: cannot configure default credentials, " \
+    "please check https://docs.databricks.com/en/dev-tools/auth.html#databricks-client-unified-authentication " \
+    "to configure credentials for your preferred authentication method"
 
-@raises("default auth: cannot configure default credentials")
-def test_config_no_params():
+
+# This test uses the fake file system to avoid interference from local default profile.
+@raises(default_auth_base_error_message)
+def test_config_no_params(fake_fs):
     Config()
 
 
-@raises("default auth: cannot configure default credentials. Config: host=https://x. Env: DATABRICKS_HOST")
+@raises(f"{default_auth_base_error_message}. Config: host=https://x. Env: DATABRICKS_HOST")
 def test_config_host_env(monkeypatch):
     monkeypatch.setenv('DATABRICKS_HOST', 'x')
     Config()
 
 
-@raises("default auth: cannot configure default credentials. Config: token=***. Env: DATABRICKS_TOKEN")
+@raises(f"{default_auth_base_error_message}. Config: token=***. Env: DATABRICKS_TOKEN")
 def test_config_token_env(monkeypatch):
     monkeypatch.setenv('DATABRICKS_TOKEN', 'x')
     Config()
@@ -40,7 +46,7 @@ def test_config_host_param_token_env(monkeypatch):
 
 
 @raises(
-    "default auth: cannot configure default credentials. Config: username=x, password=***. Env: DATABRICKS_USERNAME, DATABRICKS_PASSWORD"
+    f"{default_auth_base_error_message}. Config: username=x, password=***. Env: DATABRICKS_USERNAME, DATABRICKS_PASSWORD"
 )
 def test_config_user_password_env(monkeypatch):
     monkeypatch.setenv('DATABRICKS_PASSWORD', 'x')
@@ -107,20 +113,19 @@ def test_config_conflicting_envs_auth_type(monkeypatch):
     assert cfg.host == 'https://x'
 
 
-@raises(
-    "default auth: cannot configure default credentials. Config: config_file=x. Env: DATABRICKS_CONFIG_FILE")
+@raises(f"{default_auth_base_error_message}. Config: config_file=x. Env: DATABRICKS_CONFIG_FILE")
 def test_config_config_file(monkeypatch):
     monkeypatch.setenv('DATABRICKS_CONFIG_FILE', 'x')
     Config()
 
 
-@raises("default auth: cannot configure default credentials. Config: host=https://x")
+@raises(f"{default_auth_base_error_message}. Config: host=https://x")
 def test_config_config_file_skip_default_profile_if_host_specified(monkeypatch):
     monkeypatch.setenv('HOME', __tests__ + '/testdata')
     cfg = Config(host='x')
 
 
-@raises("default auth: cannot configure default credentials")
+@raises(default_auth_base_error_message)
 def test_config_config_file_with_empty_default_profile_select_default(monkeypatch):
     monkeypatch.setenv('HOME', __tests__ + '/testdata/empty_default')
     Config()
@@ -153,8 +158,7 @@ def test_config_pat_from_databricks_cfg_dot_profile(monkeypatch):
 
 
 @raises(
-    "default auth: cannot configure default credentials. Config: token=***, profile=nohost. Env: DATABRICKS_CONFIG_PROFILE"
-)
+    f"{default_auth_base_error_message}. Config: token=***, profile=nohost. Env: DATABRICKS_CONFIG_PROFILE")
 def test_config_pat_from_databricks_cfg_nohost_profile(monkeypatch):
     monkeypatch.setenv('DATABRICKS_CONFIG_PROFILE', 'nohost')
     monkeypatch.setenv('HOME', __tests__ + '/testdata')
@@ -162,7 +166,7 @@ def test_config_pat_from_databricks_cfg_nohost_profile(monkeypatch):
 
 
 @raises(
-    "default auth: cannot configure default credentials. Config: token=***, profile=nohost. Env: DATABRICKS_TOKEN, DATABRICKS_CONFIG_PROFILE"
+    f"{default_auth_base_error_message}. Config: token=***, profile=nohost. Env: DATABRICKS_TOKEN, DATABRICKS_CONFIG_PROFILE"
 )
 def test_config_config_profile_and_token(monkeypatch):
     monkeypatch.setenv('DATABRICKS_CONFIG_PROFILE', 'nohost')
@@ -200,7 +204,7 @@ def test_config_azure_cli_host(monkeypatch):
 
 
 @raises(
-    "default auth: azure-cli: cannot get access token: This is just a failing script. Config: azure_workspace_resource_id=/sub/rg/ws"
+    "default auth: cannot configure default credentials, please check https://docs.databricks.com/en/dev-tools/auth.html#databricks-client-unified-authentication to configure credentials for your preferred authentication method. Config: azure_workspace_resource_id=/sub/rg/ws"
 )
 def test_config_azure_cli_host_fail(monkeypatch):
     monkeypatch.setenv('FAIL', 'yes')
@@ -209,7 +213,7 @@ def test_config_azure_cli_host_fail(monkeypatch):
     cfg = Config(azure_workspace_resource_id='/sub/rg/ws')
 
 
-@raises("default auth: cannot configure default credentials. Config: azure_workspace_resource_id=/sub/rg/ws")
+@raises(f"{default_auth_base_error_message}. Config: azure_workspace_resource_id=/sub/rg/ws")
 def test_config_azure_cli_host_az_not_installed(monkeypatch):
     monkeypatch.setenv('HOME', __tests__ + '/testdata/azure')
     monkeypatch.setenv('PATH', __tests__ + '/whatever')

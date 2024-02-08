@@ -1,11 +1,13 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
+from __future__ import annotations
+
 import logging
 from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, Iterator, List, Optional
 
-from ._internal import _enum, _from_dict, _repeated
+from ._internal import _enum, _from_dict, _repeated_dict, _repeated_enum
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -16,17 +18,65 @@ _LOG = logging.getLogger('databricks.sdk')
 class Activity:
     """Activity recorded for the action."""
 
-    activity_type: Optional['ActivityType'] = None
+    activity_type: Optional[ActivityType] = None
+    """Type of activity. Valid values are: * `APPLIED_TRANSITION`: User applied the corresponding stage
+    transition.
+    
+    * `REQUESTED_TRANSITION`: User requested the corresponding stage transition.
+    
+    * `CANCELLED_REQUEST`: User cancelled an existing transition request.
+    
+    * `APPROVED_REQUEST`: User approved the corresponding stage transition.
+    
+    * `REJECTED_REQUEST`: User rejected the coressponding stage transition.
+    
+    * `SYSTEM_TRANSITION`: For events performed as a side effect, such as archiving existing model
+    versions in a stage."""
+
     comment: Optional[str] = None
+    """User-provided comment associated with the activity."""
+
     creation_timestamp: Optional[int] = None
-    from_stage: Optional['Stage'] = None
+    """Creation time of the object, as a Unix timestamp in milliseconds."""
+
+    from_stage: Optional[Stage] = None
+    """Source stage of the transition (if the activity is stage transition related). Valid values are:
+    
+    * `None`: The initial stage of a model version.
+    
+    * `Staging`: Staging or pre-production stage.
+    
+    * `Production`: Production stage.
+    
+    * `Archived`: Archived stage."""
+
     id: Optional[str] = None
+    """Unique identifier for the object."""
+
     last_updated_timestamp: Optional[int] = None
+    """Time of the object at last update, as a Unix timestamp in milliseconds."""
+
     system_comment: Optional[str] = None
-    to_stage: Optional['Stage'] = None
+    """Comment made by system, for example explaining an activity of type `SYSTEM_TRANSITION`. It
+    usually describes a side effect, such as a version being archived as part of another version's
+    stage transition, and may not be returned for some activity types."""
+
+    to_stage: Optional[Stage] = None
+    """Target stage of the transition (if the activity is stage transition related). Valid values are:
+    
+    * `None`: The initial stage of a model version.
+    
+    * `Staging`: Staging or pre-production stage.
+    
+    * `Production`: Production stage.
+    
+    * `Archived`: Archived stage."""
+
     user_id: Optional[str] = None
+    """The username of the user that created the object."""
 
     def as_dict(self) -> dict:
+        """Serializes the Activity into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.activity_type is not None: body['activity_type'] = self.activity_type.value
         if self.comment is not None: body['comment'] = self.comment
@@ -41,7 +91,8 @@ class Activity:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'Activity':
+    def from_dict(cls, d: Dict[str, any]) -> Activity:
+        """Deserializes the Activity from a dictionary."""
         return cls(activity_type=_enum(d, 'activity_type', ActivityType),
                    comment=d.get('comment', None),
                    creation_timestamp=d.get('creation_timestamp', None),
@@ -54,7 +105,12 @@ class Activity:
 
 
 class ActivityAction(Enum):
-    """This describes an enum"""
+    """An action that a user (with sufficient permissions) could take on an activity. Valid values are:
+    * `APPROVE_TRANSITION_REQUEST`: Approve a transition request
+    
+    * `REJECT_TRANSITION_REQUEST`: Reject a transition request
+    
+    * `CANCEL_TRANSITION_REQUEST`: Cancel (delete) a transition request"""
 
     APPROVE_TRANSITION_REQUEST = 'APPROVE_TRANSITION_REQUEST'
     CANCEL_TRANSITION_REQUEST = 'CANCEL_TRANSITION_REQUEST'
@@ -62,7 +118,19 @@ class ActivityAction(Enum):
 
 
 class ActivityType(Enum):
-    """This describes an enum"""
+    """Type of activity. Valid values are: * `APPLIED_TRANSITION`: User applied the corresponding stage
+    transition.
+    
+    * `REQUESTED_TRANSITION`: User requested the corresponding stage transition.
+    
+    * `CANCELLED_REQUEST`: User cancelled an existing transition request.
+    
+    * `APPROVED_REQUEST`: User approved the corresponding stage transition.
+    
+    * `REJECTED_REQUEST`: User rejected the coressponding stage transition.
+    
+    * `SYSTEM_TRANSITION`: For events performed as a side effect, such as archiving existing model
+    versions in a stage."""
 
     APPLIED_TRANSITION = 'APPLIED_TRANSITION'
     APPROVED_REQUEST = 'APPROVED_REQUEST'
@@ -76,12 +144,30 @@ class ActivityType(Enum):
 @dataclass
 class ApproveTransitionRequest:
     name: str
+    """Name of the model."""
+
     version: str
-    stage: 'Stage'
+    """Version of the model."""
+
+    stage: Stage
+    """Target stage of the transition. Valid values are:
+    
+    * `None`: The initial stage of a model version.
+    
+    * `Staging`: Staging or pre-production stage.
+    
+    * `Production`: Production stage.
+    
+    * `Archived`: Archived stage."""
+
     archive_existing_versions: bool
+    """Specifies whether to archive all current model versions in the target stage."""
+
     comment: Optional[str] = None
+    """User-provided comment on the action."""
 
     def as_dict(self) -> dict:
+        """Serializes the ApproveTransitionRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.archive_existing_versions is not None:
             body['archive_existing_versions'] = self.archive_existing_versions
@@ -92,7 +178,8 @@ class ApproveTransitionRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ApproveTransitionRequest':
+    def from_dict(cls, d: Dict[str, any]) -> ApproveTransitionRequest:
+        """Deserializes the ApproveTransitionRequest from a dictionary."""
         return cls(archive_existing_versions=d.get('archive_existing_versions', None),
                    comment=d.get('comment', None),
                    name=d.get('name', None),
@@ -102,20 +189,26 @@ class ApproveTransitionRequest:
 
 @dataclass
 class ApproveTransitionRequestResponse:
-    activity: Optional['Activity'] = None
+    activity: Optional[Activity] = None
+    """Activity recorded for the action."""
 
     def as_dict(self) -> dict:
+        """Serializes the ApproveTransitionRequestResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.activity: body['activity'] = self.activity.as_dict()
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ApproveTransitionRequestResponse':
+    def from_dict(cls, d: Dict[str, any]) -> ApproveTransitionRequestResponse:
+        """Deserializes the ApproveTransitionRequestResponse from a dictionary."""
         return cls(activity=_from_dict(d, 'activity', Activity))
 
 
 class CommentActivityAction(Enum):
-    """This describes an enum"""
+    """An action that a user (with sufficient permissions) could take on a comment. Valid values are: *
+    `EDIT_COMMENT`: Edit the comment
+    
+    * `DELETE_COMMENT`: Delete the comment"""
 
     DELETE_COMMENT = 'DELETE_COMMENT'
     EDIT_COMMENT = 'EDIT_COMMENT'
@@ -125,14 +218,26 @@ class CommentActivityAction(Enum):
 class CommentObject:
     """Comment details."""
 
-    available_actions: Optional['List[CommentActivityAction]'] = None
+    available_actions: Optional[List[CommentActivityAction]] = None
+    """Array of actions on the activity allowed for the current viewer."""
+
     comment: Optional[str] = None
+    """User-provided comment on the action."""
+
     creation_timestamp: Optional[int] = None
+    """Creation time of the object, as a Unix timestamp in milliseconds."""
+
     id: Optional[str] = None
+    """Comment ID"""
+
     last_updated_timestamp: Optional[int] = None
+    """Time of the object at last update, as a Unix timestamp in milliseconds."""
+
     user_id: Optional[str] = None
+    """The username of the user that created the object."""
 
     def as_dict(self) -> dict:
+        """Serializes the CommentObject into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.available_actions: body['available_actions'] = [v.value for v in self.available_actions]
         if self.comment is not None: body['comment'] = self.comment
@@ -144,8 +249,9 @@ class CommentObject:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CommentObject':
-        return cls(available_actions=d.get('available_actions', None),
+    def from_dict(cls, d: Dict[str, any]) -> CommentObject:
+        """Deserializes the CommentObject from a dictionary."""
+        return cls(available_actions=_repeated_enum(d, 'available_actions', CommentActivityAction),
                    comment=d.get('comment', None),
                    creation_timestamp=d.get('creation_timestamp', None),
                    id=d.get('id', None),
@@ -156,10 +262,16 @@ class CommentObject:
 @dataclass
 class CreateComment:
     name: str
+    """Name of the model."""
+
     version: str
+    """Version of the model."""
+
     comment: str
+    """User-provided comment on the action."""
 
     def as_dict(self) -> dict:
+        """Serializes the CreateComment into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.comment is not None: body['comment'] = self.comment
         if self.name is not None: body['name'] = self.name
@@ -167,31 +279,45 @@ class CreateComment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CreateComment':
+    def from_dict(cls, d: Dict[str, any]) -> CreateComment:
+        """Deserializes the CreateComment from a dictionary."""
         return cls(comment=d.get('comment', None), name=d.get('name', None), version=d.get('version', None))
 
 
 @dataclass
 class CreateCommentResponse:
-    comment: Optional['CommentObject'] = None
+    comment: Optional[CommentObject] = None
+    """Comment details."""
 
     def as_dict(self) -> dict:
+        """Serializes the CreateCommentResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.comment: body['comment'] = self.comment.as_dict()
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CreateCommentResponse':
+    def from_dict(cls, d: Dict[str, any]) -> CreateCommentResponse:
+        """Deserializes the CreateCommentResponse from a dictionary."""
         return cls(comment=_from_dict(d, 'comment', CommentObject))
 
 
 @dataclass
 class CreateExperiment:
     name: str
+    """Experiment name."""
+
     artifact_location: Optional[str] = None
-    tags: Optional['List[ExperimentTag]'] = None
+    """Location where all artifacts for the experiment are stored. If not provided, the remote server
+    will select an appropriate default."""
+
+    tags: Optional[List[ExperimentTag]] = None
+    """A collection of tags to set on the experiment. Maximum tag size and number of tags per request
+    depends on the storage backend. All storage backends are guaranteed to support tag keys up to
+    250 bytes in size and tag values up to 5000 bytes in size. All storage backends are also
+    guaranteed to support up to 20 tags per request."""
 
     def as_dict(self) -> dict:
+        """Serializes the CreateExperiment into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.artifact_location is not None: body['artifact_location'] = self.artifact_location
         if self.name is not None: body['name'] = self.name
@@ -199,33 +325,43 @@ class CreateExperiment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CreateExperiment':
+    def from_dict(cls, d: Dict[str, any]) -> CreateExperiment:
+        """Deserializes the CreateExperiment from a dictionary."""
         return cls(artifact_location=d.get('artifact_location', None),
                    name=d.get('name', None),
-                   tags=_repeated(d, 'tags', ExperimentTag))
+                   tags=_repeated_dict(d, 'tags', ExperimentTag))
 
 
 @dataclass
 class CreateExperimentResponse:
     experiment_id: Optional[str] = None
+    """Unique identifier for the experiment."""
 
     def as_dict(self) -> dict:
+        """Serializes the CreateExperimentResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.experiment_id is not None: body['experiment_id'] = self.experiment_id
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CreateExperimentResponse':
+    def from_dict(cls, d: Dict[str, any]) -> CreateExperimentResponse:
+        """Deserializes the CreateExperimentResponse from a dictionary."""
         return cls(experiment_id=d.get('experiment_id', None))
 
 
 @dataclass
 class CreateModelRequest:
     name: str
+    """Register models under this name"""
+
     description: Optional[str] = None
-    tags: Optional['List[ModelTag]'] = None
+    """Optional description for registered model."""
+
+    tags: Optional[List[ModelTag]] = None
+    """Additional metadata for registered model."""
 
     def as_dict(self) -> dict:
+        """Serializes the CreateModelRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.description is not None: body['description'] = self.description
         if self.name is not None: body['name'] = self.name
@@ -233,36 +369,53 @@ class CreateModelRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CreateModelRequest':
+    def from_dict(cls, d: Dict[str, any]) -> CreateModelRequest:
+        """Deserializes the CreateModelRequest from a dictionary."""
         return cls(description=d.get('description', None),
                    name=d.get('name', None),
-                   tags=_repeated(d, 'tags', ModelTag))
+                   tags=_repeated_dict(d, 'tags', ModelTag))
 
 
 @dataclass
 class CreateModelResponse:
-    registered_model: Optional['Model'] = None
+    registered_model: Optional[Model] = None
 
     def as_dict(self) -> dict:
+        """Serializes the CreateModelResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.registered_model: body['registered_model'] = self.registered_model.as_dict()
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CreateModelResponse':
+    def from_dict(cls, d: Dict[str, any]) -> CreateModelResponse:
+        """Deserializes the CreateModelResponse from a dictionary."""
         return cls(registered_model=_from_dict(d, 'registered_model', Model))
 
 
 @dataclass
 class CreateModelVersionRequest:
     name: str
+    """Register model under this name"""
+
     source: str
+    """URI indicating the location of the model artifacts."""
+
     description: Optional[str] = None
+    """Optional description for model version."""
+
     run_id: Optional[str] = None
+    """MLflow run ID for correlation, if `source` was generated by an experiment run in MLflow tracking
+    server"""
+
     run_link: Optional[str] = None
-    tags: Optional['List[ModelVersionTag]'] = None
+    """MLflow run link - this is the exact link of the run that generated this model version,
+    potentially hosted at another instance of MLflow."""
+
+    tags: Optional[List[ModelVersionTag]] = None
+    """Additional metadata for model version."""
 
     def as_dict(self) -> dict:
+        """Serializes the CreateModelVersionRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.description is not None: body['description'] = self.description
         if self.name is not None: body['name'] = self.name
@@ -273,39 +426,86 @@ class CreateModelVersionRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CreateModelVersionRequest':
+    def from_dict(cls, d: Dict[str, any]) -> CreateModelVersionRequest:
+        """Deserializes the CreateModelVersionRequest from a dictionary."""
         return cls(description=d.get('description', None),
                    name=d.get('name', None),
                    run_id=d.get('run_id', None),
                    run_link=d.get('run_link', None),
                    source=d.get('source', None),
-                   tags=_repeated(d, 'tags', ModelVersionTag))
+                   tags=_repeated_dict(d, 'tags', ModelVersionTag))
 
 
 @dataclass
 class CreateModelVersionResponse:
-    model_version: Optional['ModelVersion'] = None
+    model_version: Optional[ModelVersion] = None
+    """Return new version number generated for this model in registry."""
 
     def as_dict(self) -> dict:
+        """Serializes the CreateModelVersionResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.model_version: body['model_version'] = self.model_version.as_dict()
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CreateModelVersionResponse':
+    def from_dict(cls, d: Dict[str, any]) -> CreateModelVersionResponse:
+        """Deserializes the CreateModelVersionResponse from a dictionary."""
         return cls(model_version=_from_dict(d, 'model_version', ModelVersion))
 
 
 @dataclass
 class CreateRegistryWebhook:
-    events: 'List[RegistryWebhookEvent]'
+    events: List[RegistryWebhookEvent]
+    """Events that can trigger a registry webhook: * `MODEL_VERSION_CREATED`: A new model version was
+    created for the associated model.
+    
+    * `MODEL_VERSION_TRANSITIONED_STAGE`: A model version’s stage was changed.
+    
+    * `TRANSITION_REQUEST_CREATED`: A user requested a model version’s stage be transitioned.
+    
+    * `COMMENT_CREATED`: A user wrote a comment on a registered model.
+    
+    * `REGISTERED_MODEL_CREATED`: A new registered model was created. This event type can only be
+    specified for a registry-wide webhook, which can be created by not specifying a model name in
+    the create request.
+    
+    * `MODEL_VERSION_TAG_SET`: A user set a tag on the model version.
+    
+    * `MODEL_VERSION_TRANSITIONED_TO_STAGING`: A model version was transitioned to staging.
+    
+    * `MODEL_VERSION_TRANSITIONED_TO_PRODUCTION`: A model version was transitioned to production.
+    
+    * `MODEL_VERSION_TRANSITIONED_TO_ARCHIVED`: A model version was archived.
+    
+    * `TRANSITION_REQUEST_TO_STAGING_CREATED`: A user requested a model version be transitioned to
+    staging.
+    
+    * `TRANSITION_REQUEST_TO_PRODUCTION_CREATED`: A user requested a model version be transitioned
+    to production.
+    
+    * `TRANSITION_REQUEST_TO_ARCHIVED_CREATED`: A user requested a model version be archived."""
+
     description: Optional[str] = None
-    http_url_spec: Optional['HttpUrlSpec'] = None
-    job_spec: Optional['JobSpec'] = None
+    """User-specified description for the webhook."""
+
+    http_url_spec: Optional[HttpUrlSpec] = None
+
+    job_spec: Optional[JobSpec] = None
+
     model_name: Optional[str] = None
-    status: Optional['RegistryWebhookStatus'] = None
+    """Name of the model whose events would trigger this webhook."""
+
+    status: Optional[RegistryWebhookStatus] = None
+    """Enable or disable triggering the webhook, or put the webhook into test mode. The default is
+    `ACTIVE`: * `ACTIVE`: Webhook is triggered when an associated event happens.
+    
+    * `DISABLED`: Webhook is not triggered.
+    
+    * `TEST_MODE`: Webhook can be triggered through the test endpoint, but is not triggered on a
+    real event."""
 
     def as_dict(self) -> dict:
+        """Serializes the CreateRegistryWebhook into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.description is not None: body['description'] = self.description
         if self.events: body['events'] = [v.value for v in self.events]
@@ -316,9 +516,10 @@ class CreateRegistryWebhook:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CreateRegistryWebhook':
+    def from_dict(cls, d: Dict[str, any]) -> CreateRegistryWebhook:
+        """Deserializes the CreateRegistryWebhook from a dictionary."""
         return cls(description=d.get('description', None),
-                   events=d.get('events', None),
+                   events=_repeated_enum(d, 'events', RegistryWebhookEvent),
                    http_url_spec=_from_dict(d, 'http_url_spec', HttpUrlSpec),
                    job_spec=_from_dict(d, 'job_spec', JobSpec),
                    model_name=d.get('model_name', None),
@@ -328,11 +529,20 @@ class CreateRegistryWebhook:
 @dataclass
 class CreateRun:
     experiment_id: Optional[str] = None
+    """ID of the associated experiment."""
+
     start_time: Optional[int] = None
-    tags: Optional['List[RunTag]'] = None
+    """Unix timestamp in milliseconds of when the run started."""
+
+    tags: Optional[List[RunTag]] = None
+    """Additional metadata for run."""
+
     user_id: Optional[str] = None
+    """ID of the user executing the run. This field is deprecated as of MLflow 1.0, and will be removed
+    in a future MLflow release. Use 'mlflow.user' tag instead."""
 
     def as_dict(self) -> dict:
+        """Serializes the CreateRun into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.experiment_id is not None: body['experiment_id'] = self.experiment_id
         if self.start_time is not None: body['start_time'] = self.start_time
@@ -341,35 +551,55 @@ class CreateRun:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CreateRun':
+    def from_dict(cls, d: Dict[str, any]) -> CreateRun:
+        """Deserializes the CreateRun from a dictionary."""
         return cls(experiment_id=d.get('experiment_id', None),
                    start_time=d.get('start_time', None),
-                   tags=_repeated(d, 'tags', RunTag),
+                   tags=_repeated_dict(d, 'tags', RunTag),
                    user_id=d.get('user_id', None))
 
 
 @dataclass
 class CreateRunResponse:
-    run: Optional['Run'] = None
+    run: Optional[Run] = None
+    """The newly created run."""
 
     def as_dict(self) -> dict:
+        """Serializes the CreateRunResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.run: body['run'] = self.run.as_dict()
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CreateRunResponse':
+    def from_dict(cls, d: Dict[str, any]) -> CreateRunResponse:
+        """Deserializes the CreateRunResponse from a dictionary."""
         return cls(run=_from_dict(d, 'run', Run))
 
 
 @dataclass
 class CreateTransitionRequest:
     name: str
+    """Name of the model."""
+
     version: str
-    stage: 'Stage'
+    """Version of the model."""
+
+    stage: Stage
+    """Target stage of the transition. Valid values are:
+    
+    * `None`: The initial stage of a model version.
+    
+    * `Staging`: Staging or pre-production stage.
+    
+    * `Production`: Production stage.
+    
+    * `Archived`: Archived stage."""
+
     comment: Optional[str] = None
+    """User-provided comment on the action."""
 
     def as_dict(self) -> dict:
+        """Serializes the CreateTransitionRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.comment is not None: body['comment'] = self.comment
         if self.name is not None: body['name'] = self.name
@@ -378,7 +608,8 @@ class CreateTransitionRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CreateTransitionRequest':
+    def from_dict(cls, d: Dict[str, any]) -> CreateTransitionRequest:
+        """Deserializes the CreateTransitionRequest from a dictionary."""
         return cls(comment=d.get('comment', None),
                    name=d.get('name', None),
                    stage=_enum(d, 'stage', Stage),
@@ -387,42 +618,63 @@ class CreateTransitionRequest:
 
 @dataclass
 class CreateTransitionRequestResponse:
-    request: Optional['TransitionRequest'] = None
+    request: Optional[TransitionRequest] = None
+    """Transition request details."""
 
     def as_dict(self) -> dict:
+        """Serializes the CreateTransitionRequestResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.request: body['request'] = self.request.as_dict()
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CreateTransitionRequestResponse':
+    def from_dict(cls, d: Dict[str, any]) -> CreateTransitionRequestResponse:
+        """Deserializes the CreateTransitionRequestResponse from a dictionary."""
         return cls(request=_from_dict(d, 'request', TransitionRequest))
 
 
 @dataclass
 class CreateWebhookResponse:
-    webhook: Optional['RegistryWebhook'] = None
+    webhook: Optional[RegistryWebhook] = None
 
     def as_dict(self) -> dict:
+        """Serializes the CreateWebhookResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.webhook: body['webhook'] = self.webhook.as_dict()
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CreateWebhookResponse':
+    def from_dict(cls, d: Dict[str, any]) -> CreateWebhookResponse:
+        """Deserializes the CreateWebhookResponse from a dictionary."""
         return cls(webhook=_from_dict(d, 'webhook', RegistryWebhook))
 
 
 @dataclass
 class Dataset:
     digest: Optional[str] = None
+    """Dataset digest, e.g. an md5 hash of the dataset that uniquely identifies it within datasets of
+    the same name."""
+
     name: Optional[str] = None
+    """The name of the dataset. E.g. “my.uc.table@2” “nyc-taxi-dataset”, “fantastic-elk-3”"""
+
     profile: Optional[str] = None
+    """The profile of the dataset. Summary statistics for the dataset, such as the number of rows in a
+    table, the mean / std / mode of each column in a table, or the number of elements in an array."""
+
     schema: Optional[str] = None
+    """The schema of the dataset. E.g., MLflow ColSpec JSON for a dataframe, MLflow TensorSpec JSON for
+    an ndarray, or another schema format."""
+
     source: Optional[str] = None
+    """The type of the dataset source, e.g. ‘databricks-uc-table’, ‘DBFS’, ‘S3’, ..."""
+
     source_type: Optional[str] = None
+    """Source information for the dataset. Note that the source may not exactly reproduce the dataset
+    if it was transformed / modified before use with MLflow."""
 
     def as_dict(self) -> dict:
+        """Serializes the Dataset into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.digest is not None: body['digest'] = self.digest
         if self.name is not None: body['name'] = self.name
@@ -433,7 +685,8 @@ class Dataset:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'Dataset':
+    def from_dict(cls, d: Dict[str, any]) -> Dataset:
+        """Deserializes the Dataset from a dictionary."""
         return cls(digest=d.get('digest', None),
                    name=d.get('name', None),
                    profile=d.get('profile', None),
@@ -444,55 +697,74 @@ class Dataset:
 
 @dataclass
 class DatasetInput:
-    dataset: Optional['Dataset'] = None
-    tags: Optional['List[InputTag]'] = None
+    dataset: Optional[Dataset] = None
+    """The dataset being used as a Run input."""
+
+    tags: Optional[List[InputTag]] = None
+    """A list of tags for the dataset input, e.g. a “context” tag with value “training”"""
 
     def as_dict(self) -> dict:
+        """Serializes the DatasetInput into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.dataset: body['dataset'] = self.dataset.as_dict()
         if self.tags: body['tags'] = [v.as_dict() for v in self.tags]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'DatasetInput':
-        return cls(dataset=_from_dict(d, 'dataset', Dataset), tags=_repeated(d, 'tags', InputTag))
+    def from_dict(cls, d: Dict[str, any]) -> DatasetInput:
+        """Deserializes the DatasetInput from a dictionary."""
+        return cls(dataset=_from_dict(d, 'dataset', Dataset), tags=_repeated_dict(d, 'tags', InputTag))
 
 
 @dataclass
 class DeleteExperiment:
     experiment_id: str
+    """ID of the associated experiment."""
 
     def as_dict(self) -> dict:
+        """Serializes the DeleteExperiment into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.experiment_id is not None: body['experiment_id'] = self.experiment_id
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'DeleteExperiment':
+    def from_dict(cls, d: Dict[str, any]) -> DeleteExperiment:
+        """Deserializes the DeleteExperiment from a dictionary."""
         return cls(experiment_id=d.get('experiment_id', None))
 
 
 @dataclass
 class DeleteRun:
     run_id: str
+    """ID of the run to delete."""
 
     def as_dict(self) -> dict:
+        """Serializes the DeleteRun into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.run_id is not None: body['run_id'] = self.run_id
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'DeleteRun':
+    def from_dict(cls, d: Dict[str, any]) -> DeleteRun:
+        """Deserializes the DeleteRun from a dictionary."""
         return cls(run_id=d.get('run_id', None))
 
 
 @dataclass
 class DeleteRuns:
     experiment_id: str
+    """The ID of the experiment containing the runs to delete."""
+
     max_timestamp_millis: int
+    """The maximum creation timestamp in milliseconds since the UNIX epoch for deleting runs. Only runs
+    created prior to or at this timestamp are deleted."""
+
     max_runs: Optional[int] = None
+    """An optional positive integer indicating the maximum number of runs to delete. The maximum
+    allowed value for max_runs is 10000."""
 
     def as_dict(self) -> dict:
+        """Serializes the DeleteRuns into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.experiment_id is not None: body['experiment_id'] = self.experiment_id
         if self.max_runs is not None: body['max_runs'] = self.max_runs
@@ -500,7 +772,8 @@ class DeleteRuns:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'DeleteRuns':
+    def from_dict(cls, d: Dict[str, any]) -> DeleteRuns:
+        """Deserializes the DeleteRuns from a dictionary."""
         return cls(experiment_id=d.get('experiment_id', None),
                    max_runs=d.get('max_runs', None),
                    max_timestamp_millis=d.get('max_timestamp_millis', None))
@@ -509,30 +782,38 @@ class DeleteRuns:
 @dataclass
 class DeleteRunsResponse:
     runs_deleted: Optional[int] = None
+    """The number of runs deleted."""
 
     def as_dict(self) -> dict:
+        """Serializes the DeleteRunsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.runs_deleted is not None: body['runs_deleted'] = self.runs_deleted
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'DeleteRunsResponse':
+    def from_dict(cls, d: Dict[str, any]) -> DeleteRunsResponse:
+        """Deserializes the DeleteRunsResponse from a dictionary."""
         return cls(runs_deleted=d.get('runs_deleted', None))
 
 
 @dataclass
 class DeleteTag:
     run_id: str
+    """ID of the run that the tag was logged under. Must be provided."""
+
     key: str
+    """Name of the tag. Maximum size is 255 bytes. Must be provided."""
 
     def as_dict(self) -> dict:
+        """Serializes the DeleteTag into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.key is not None: body['key'] = self.key
         if self.run_id is not None: body['run_id'] = self.run_id
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'DeleteTag':
+    def from_dict(cls, d: Dict[str, any]) -> DeleteTag:
+        """Deserializes the DeleteTag from a dictionary."""
         return cls(key=d.get('key', None), run_id=d.get('run_id', None))
 
 
@@ -547,14 +828,29 @@ class DeleteTransitionRequestStage(Enum):
 @dataclass
 class Experiment:
     artifact_location: Optional[str] = None
+    """Location where artifacts for the experiment are stored."""
+
     creation_time: Optional[int] = None
+    """Creation time"""
+
     experiment_id: Optional[str] = None
+    """Unique identifier for the experiment."""
+
     last_update_time: Optional[int] = None
+    """Last update time"""
+
     lifecycle_stage: Optional[str] = None
+    """Current life cycle stage of the experiment: "active" or "deleted". Deleted experiments are not
+    returned by APIs."""
+
     name: Optional[str] = None
-    tags: Optional['List[ExperimentTag]'] = None
+    """Human readable name that identifies the experiment."""
+
+    tags: Optional[List[ExperimentTag]] = None
+    """Tags: Additional metadata key-value pairs."""
 
     def as_dict(self) -> dict:
+        """Serializes the Experiment into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.artifact_location is not None: body['artifact_location'] = self.artifact_location
         if self.creation_time is not None: body['creation_time'] = self.creation_time
@@ -566,24 +862,33 @@ class Experiment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'Experiment':
+    def from_dict(cls, d: Dict[str, any]) -> Experiment:
+        """Deserializes the Experiment from a dictionary."""
         return cls(artifact_location=d.get('artifact_location', None),
                    creation_time=d.get('creation_time', None),
                    experiment_id=d.get('experiment_id', None),
                    last_update_time=d.get('last_update_time', None),
                    lifecycle_stage=d.get('lifecycle_stage', None),
                    name=d.get('name', None),
-                   tags=_repeated(d, 'tags', ExperimentTag))
+                   tags=_repeated_dict(d, 'tags', ExperimentTag))
 
 
 @dataclass
 class ExperimentAccessControlRequest:
     group_name: Optional[str] = None
-    permission_level: Optional['ExperimentPermissionLevel'] = None
+    """name of the group"""
+
+    permission_level: Optional[ExperimentPermissionLevel] = None
+    """Permission level"""
+
     service_principal_name: Optional[str] = None
+    """application ID of a service principal"""
+
     user_name: Optional[str] = None
+    """name of the user"""
 
     def as_dict(self) -> dict:
+        """Serializes the ExperimentAccessControlRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.group_name is not None: body['group_name'] = self.group_name
         if self.permission_level is not None: body['permission_level'] = self.permission_level.value
@@ -593,7 +898,8 @@ class ExperimentAccessControlRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ExperimentAccessControlRequest':
+    def from_dict(cls, d: Dict[str, any]) -> ExperimentAccessControlRequest:
+        """Deserializes the ExperimentAccessControlRequest from a dictionary."""
         return cls(group_name=d.get('group_name', None),
                    permission_level=_enum(d, 'permission_level', ExperimentPermissionLevel),
                    service_principal_name=d.get('service_principal_name', None),
@@ -602,13 +908,23 @@ class ExperimentAccessControlRequest:
 
 @dataclass
 class ExperimentAccessControlResponse:
-    all_permissions: Optional['List[ExperimentPermission]'] = None
+    all_permissions: Optional[List[ExperimentPermission]] = None
+    """All permissions."""
+
     display_name: Optional[str] = None
+    """Display name of the user or service principal."""
+
     group_name: Optional[str] = None
+    """name of the group"""
+
     service_principal_name: Optional[str] = None
+    """Name of the service principal."""
+
     user_name: Optional[str] = None
+    """name of the user"""
 
     def as_dict(self) -> dict:
+        """Serializes the ExperimentAccessControlResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.all_permissions: body['all_permissions'] = [v.as_dict() for v in self.all_permissions]
         if self.display_name is not None: body['display_name'] = self.display_name
@@ -619,8 +935,9 @@ class ExperimentAccessControlResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ExperimentAccessControlResponse':
-        return cls(all_permissions=_repeated(d, 'all_permissions', ExperimentPermission),
+    def from_dict(cls, d: Dict[str, any]) -> ExperimentAccessControlResponse:
+        """Deserializes the ExperimentAccessControlResponse from a dictionary."""
+        return cls(all_permissions=_repeated_dict(d, 'all_permissions', ExperimentPermission),
                    display_name=d.get('display_name', None),
                    group_name=d.get('group_name', None),
                    service_principal_name=d.get('service_principal_name', None),
@@ -630,10 +947,14 @@ class ExperimentAccessControlResponse:
 @dataclass
 class ExperimentPermission:
     inherited: Optional[bool] = None
-    inherited_from_object: Optional['List[str]'] = None
-    permission_level: Optional['ExperimentPermissionLevel'] = None
+
+    inherited_from_object: Optional[List[str]] = None
+
+    permission_level: Optional[ExperimentPermissionLevel] = None
+    """Permission level"""
 
     def as_dict(self) -> dict:
+        """Serializes the ExperimentPermission into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.inherited is not None: body['inherited'] = self.inherited
         if self.inherited_from_object: body['inherited_from_object'] = [v for v in self.inherited_from_object]
@@ -641,7 +962,8 @@ class ExperimentPermission:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ExperimentPermission':
+    def from_dict(cls, d: Dict[str, any]) -> ExperimentPermission:
+        """Deserializes the ExperimentPermission from a dictionary."""
         return cls(inherited=d.get('inherited', None),
                    inherited_from_object=d.get('inherited_from_object', None),
                    permission_level=_enum(d, 'permission_level', ExperimentPermissionLevel))
@@ -657,11 +979,14 @@ class ExperimentPermissionLevel(Enum):
 
 @dataclass
 class ExperimentPermissions:
-    access_control_list: Optional['List[ExperimentAccessControlResponse]'] = None
+    access_control_list: Optional[List[ExperimentAccessControlResponse]] = None
+
     object_id: Optional[str] = None
+
     object_type: Optional[str] = None
 
     def as_dict(self) -> dict:
+        """Serializes the ExperimentPermissions into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.access_control_list:
             body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
@@ -670,8 +995,10 @@ class ExperimentPermissions:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ExperimentPermissions':
-        return cls(access_control_list=_repeated(d, 'access_control_list', ExperimentAccessControlResponse),
+    def from_dict(cls, d: Dict[str, any]) -> ExperimentPermissions:
+        """Deserializes the ExperimentPermissions from a dictionary."""
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list',
+                                                      ExperimentAccessControlResponse),
                    object_id=d.get('object_id', None),
                    object_type=d.get('object_type', None))
 
@@ -679,26 +1006,33 @@ class ExperimentPermissions:
 @dataclass
 class ExperimentPermissionsDescription:
     description: Optional[str] = None
-    permission_level: Optional['ExperimentPermissionLevel'] = None
+
+    permission_level: Optional[ExperimentPermissionLevel] = None
+    """Permission level"""
 
     def as_dict(self) -> dict:
+        """Serializes the ExperimentPermissionsDescription into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.description is not None: body['description'] = self.description
         if self.permission_level is not None: body['permission_level'] = self.permission_level.value
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ExperimentPermissionsDescription':
+    def from_dict(cls, d: Dict[str, any]) -> ExperimentPermissionsDescription:
+        """Deserializes the ExperimentPermissionsDescription from a dictionary."""
         return cls(description=d.get('description', None),
                    permission_level=_enum(d, 'permission_level', ExperimentPermissionLevel))
 
 
 @dataclass
 class ExperimentPermissionsRequest:
-    access_control_list: Optional['List[ExperimentAccessControlRequest]'] = None
+    access_control_list: Optional[List[ExperimentAccessControlRequest]] = None
+
     experiment_id: Optional[str] = None
+    """The experiment for which to get or manage permissions."""
 
     def as_dict(self) -> dict:
+        """Serializes the ExperimentPermissionsRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.access_control_list:
             body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
@@ -706,34 +1040,47 @@ class ExperimentPermissionsRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ExperimentPermissionsRequest':
-        return cls(access_control_list=_repeated(d, 'access_control_list', ExperimentAccessControlRequest),
+    def from_dict(cls, d: Dict[str, any]) -> ExperimentPermissionsRequest:
+        """Deserializes the ExperimentPermissionsRequest from a dictionary."""
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list',
+                                                      ExperimentAccessControlRequest),
                    experiment_id=d.get('experiment_id', None))
 
 
 @dataclass
 class ExperimentTag:
     key: Optional[str] = None
+    """The tag key."""
+
     value: Optional[str] = None
+    """The tag value."""
 
     def as_dict(self) -> dict:
+        """Serializes the ExperimentTag into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.key is not None: body['key'] = self.key
         if self.value is not None: body['value'] = self.value
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ExperimentTag':
+    def from_dict(cls, d: Dict[str, any]) -> ExperimentTag:
+        """Deserializes the ExperimentTag from a dictionary."""
         return cls(key=d.get('key', None), value=d.get('value', None))
 
 
 @dataclass
 class FileInfo:
     file_size: Optional[int] = None
+    """Size in bytes. Unset for directories."""
+
     is_dir: Optional[bool] = None
+    """Whether the path is a directory."""
+
     path: Optional[str] = None
+    """Path relative to the root artifact directory run."""
 
     def as_dict(self) -> dict:
+        """Serializes the FileInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.file_size is not None: body['file_size'] = self.file_size
         if self.is_dir is not None: body['is_dir'] = self.is_dir
@@ -741,163 +1088,214 @@ class FileInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'FileInfo':
+    def from_dict(cls, d: Dict[str, any]) -> FileInfo:
+        """Deserializes the FileInfo from a dictionary."""
         return cls(file_size=d.get('file_size', None), is_dir=d.get('is_dir', None), path=d.get('path', None))
 
 
 @dataclass
 class GetExperimentPermissionLevelsResponse:
-    permission_levels: Optional['List[ExperimentPermissionsDescription]'] = None
+    permission_levels: Optional[List[ExperimentPermissionsDescription]] = None
+    """Specific permission levels"""
 
     def as_dict(self) -> dict:
+        """Serializes the GetExperimentPermissionLevelsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'GetExperimentPermissionLevelsResponse':
-        return cls(permission_levels=_repeated(d, 'permission_levels', ExperimentPermissionsDescription))
+    def from_dict(cls, d: Dict[str, any]) -> GetExperimentPermissionLevelsResponse:
+        """Deserializes the GetExperimentPermissionLevelsResponse from a dictionary."""
+        return cls(permission_levels=_repeated_dict(d, 'permission_levels', ExperimentPermissionsDescription))
 
 
 @dataclass
 class GetExperimentResponse:
-    experiment: Optional['Experiment'] = None
+    experiment: Optional[Experiment] = None
+    """Experiment details."""
 
     def as_dict(self) -> dict:
+        """Serializes the GetExperimentResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.experiment: body['experiment'] = self.experiment.as_dict()
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'GetExperimentResponse':
+    def from_dict(cls, d: Dict[str, any]) -> GetExperimentResponse:
+        """Deserializes the GetExperimentResponse from a dictionary."""
         return cls(experiment=_from_dict(d, 'experiment', Experiment))
 
 
 @dataclass
 class GetLatestVersionsRequest:
     name: str
-    stages: Optional['List[str]'] = None
+    """Registered model unique name identifier."""
+
+    stages: Optional[List[str]] = None
+    """List of stages."""
 
     def as_dict(self) -> dict:
+        """Serializes the GetLatestVersionsRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.name is not None: body['name'] = self.name
         if self.stages: body['stages'] = [v for v in self.stages]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'GetLatestVersionsRequest':
+    def from_dict(cls, d: Dict[str, any]) -> GetLatestVersionsRequest:
+        """Deserializes the GetLatestVersionsRequest from a dictionary."""
         return cls(name=d.get('name', None), stages=d.get('stages', None))
 
 
 @dataclass
 class GetLatestVersionsResponse:
-    model_versions: Optional['List[ModelVersion]'] = None
+    model_versions: Optional[List[ModelVersion]] = None
+    """Latest version models for each requests stage. Only return models with current `READY` status.
+    If no `stages` provided, returns the latest version for each stage, including `"None"`."""
 
     def as_dict(self) -> dict:
+        """Serializes the GetLatestVersionsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.model_versions: body['model_versions'] = [v.as_dict() for v in self.model_versions]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'GetLatestVersionsResponse':
-        return cls(model_versions=_repeated(d, 'model_versions', ModelVersion))
+    def from_dict(cls, d: Dict[str, any]) -> GetLatestVersionsResponse:
+        """Deserializes the GetLatestVersionsResponse from a dictionary."""
+        return cls(model_versions=_repeated_dict(d, 'model_versions', ModelVersion))
 
 
 @dataclass
 class GetMetricHistoryResponse:
-    metrics: Optional['List[Metric]'] = None
+    metrics: Optional[List[Metric]] = None
+    """All logged values for this metric."""
+
     next_page_token: Optional[str] = None
+    """Token that can be used to retrieve the next page of metric history results"""
 
     def as_dict(self) -> dict:
+        """Serializes the GetMetricHistoryResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.metrics: body['metrics'] = [v.as_dict() for v in self.metrics]
         if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'GetMetricHistoryResponse':
-        return cls(metrics=_repeated(d, 'metrics', Metric), next_page_token=d.get('next_page_token', None))
+    def from_dict(cls, d: Dict[str, any]) -> GetMetricHistoryResponse:
+        """Deserializes the GetMetricHistoryResponse from a dictionary."""
+        return cls(metrics=_repeated_dict(d, 'metrics', Metric),
+                   next_page_token=d.get('next_page_token', None))
 
 
 @dataclass
 class GetModelResponse:
-    registered_model_databricks: Optional['ModelDatabricks'] = None
+    registered_model_databricks: Optional[ModelDatabricks] = None
 
     def as_dict(self) -> dict:
+        """Serializes the GetModelResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.registered_model_databricks:
             body['registered_model_databricks'] = self.registered_model_databricks.as_dict()
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'GetModelResponse':
+    def from_dict(cls, d: Dict[str, any]) -> GetModelResponse:
+        """Deserializes the GetModelResponse from a dictionary."""
         return cls(registered_model_databricks=_from_dict(d, 'registered_model_databricks', ModelDatabricks))
 
 
 @dataclass
 class GetModelVersionDownloadUriResponse:
     artifact_uri: Optional[str] = None
+    """URI corresponding to where artifacts for this model version are stored."""
 
     def as_dict(self) -> dict:
+        """Serializes the GetModelVersionDownloadUriResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.artifact_uri is not None: body['artifact_uri'] = self.artifact_uri
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'GetModelVersionDownloadUriResponse':
+    def from_dict(cls, d: Dict[str, any]) -> GetModelVersionDownloadUriResponse:
+        """Deserializes the GetModelVersionDownloadUriResponse from a dictionary."""
         return cls(artifact_uri=d.get('artifact_uri', None))
 
 
 @dataclass
 class GetModelVersionResponse:
-    model_version: Optional['ModelVersion'] = None
+    model_version: Optional[ModelVersion] = None
 
     def as_dict(self) -> dict:
+        """Serializes the GetModelVersionResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.model_version: body['model_version'] = self.model_version.as_dict()
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'GetModelVersionResponse':
+    def from_dict(cls, d: Dict[str, any]) -> GetModelVersionResponse:
+        """Deserializes the GetModelVersionResponse from a dictionary."""
         return cls(model_version=_from_dict(d, 'model_version', ModelVersion))
 
 
 @dataclass
 class GetRegisteredModelPermissionLevelsResponse:
-    permission_levels: Optional['List[RegisteredModelPermissionsDescription]'] = None
+    permission_levels: Optional[List[RegisteredModelPermissionsDescription]] = None
+    """Specific permission levels"""
 
     def as_dict(self) -> dict:
+        """Serializes the GetRegisteredModelPermissionLevelsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'GetRegisteredModelPermissionLevelsResponse':
-        return cls(permission_levels=_repeated(d, 'permission_levels', RegisteredModelPermissionsDescription))
+    def from_dict(cls, d: Dict[str, any]) -> GetRegisteredModelPermissionLevelsResponse:
+        """Deserializes the GetRegisteredModelPermissionLevelsResponse from a dictionary."""
+        return cls(
+            permission_levels=_repeated_dict(d, 'permission_levels', RegisteredModelPermissionsDescription))
 
 
 @dataclass
 class GetRunResponse:
-    run: Optional['Run'] = None
+    run: Optional[Run] = None
+    """Run metadata (name, start time, etc) and data (metrics, params, and tags)."""
 
     def as_dict(self) -> dict:
+        """Serializes the GetRunResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.run: body['run'] = self.run.as_dict()
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'GetRunResponse':
+    def from_dict(cls, d: Dict[str, any]) -> GetRunResponse:
+        """Deserializes the GetRunResponse from a dictionary."""
         return cls(run=_from_dict(d, 'run', Run))
 
 
 @dataclass
 class HttpUrlSpec:
     url: str
+    """External HTTPS URL called on event trigger (by using a POST request)."""
+
     authorization: Optional[str] = None
+    """Value of the authorization header that should be sent in the request sent by the wehbook. It
+    should be of the form `"<auth type> <credentials>"`. If set to an empty string, no authorization
+    header will be included in the request."""
+
     enable_ssl_verification: Optional[bool] = None
+    """Enable/disable SSL certificate validation. Default is true. For self-signed certificates, this
+    field must be false AND the destination server must disable certificate validation as well. For
+    security purposes, it is encouraged to perform secret validation with the HMAC-encoded portion
+    of the payload and acknowledge the risk associated with disabling hostname validation whereby it
+    becomes more likely that requests can be maliciously routed to an unintended host."""
+
     secret: Optional[str] = None
+    """Shared secret required for HMAC encoding payload. The HMAC-encoded payload will be sent in the
+    header as: { "X-Databricks-Signature": $encoded_payload }."""
 
     def as_dict(self) -> dict:
+        """Serializes the HttpUrlSpec into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.authorization is not None: body['authorization'] = self.authorization
         if self.enable_ssl_verification is not None:
@@ -907,7 +1305,8 @@ class HttpUrlSpec:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'HttpUrlSpec':
+    def from_dict(cls, d: Dict[str, any]) -> HttpUrlSpec:
+        """Deserializes the HttpUrlSpec from a dictionary."""
         return cls(authorization=d.get('authorization', None),
                    enable_ssl_verification=d.get('enable_ssl_verification', None),
                    secret=d.get('secret', None),
@@ -917,9 +1316,17 @@ class HttpUrlSpec:
 @dataclass
 class HttpUrlSpecWithoutSecret:
     enable_ssl_verification: Optional[bool] = None
+    """Enable/disable SSL certificate validation. Default is true. For self-signed certificates, this
+    field must be false AND the destination server must disable certificate validation as well. For
+    security purposes, it is encouraged to perform secret validation with the HMAC-encoded portion
+    of the payload and acknowledge the risk associated with disabling hostname validation whereby it
+    becomes more likely that requests can be maliciously routed to an unintended host."""
+
     url: Optional[str] = None
+    """External HTTPS URL called on event trigger (by using a POST request)."""
 
     def as_dict(self) -> dict:
+        """Serializes the HttpUrlSpecWithoutSecret into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.enable_ssl_verification is not None:
             body['enable_ssl_verification'] = self.enable_ssl_verification
@@ -927,33 +1334,46 @@ class HttpUrlSpecWithoutSecret:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'HttpUrlSpecWithoutSecret':
+    def from_dict(cls, d: Dict[str, any]) -> HttpUrlSpecWithoutSecret:
+        """Deserializes the HttpUrlSpecWithoutSecret from a dictionary."""
         return cls(enable_ssl_verification=d.get('enable_ssl_verification', None), url=d.get('url', None))
 
 
 @dataclass
 class InputTag:
     key: Optional[str] = None
+    """The tag key."""
+
     value: Optional[str] = None
+    """The tag value."""
 
     def as_dict(self) -> dict:
+        """Serializes the InputTag into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.key is not None: body['key'] = self.key
         if self.value is not None: body['value'] = self.value
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'InputTag':
+    def from_dict(cls, d: Dict[str, any]) -> InputTag:
+        """Deserializes the InputTag from a dictionary."""
         return cls(key=d.get('key', None), value=d.get('value', None))
 
 
 @dataclass
 class JobSpec:
     job_id: str
+    """ID of the job that the webhook runs."""
+
     access_token: str
+    """The personal access token used to authorize webhook's job runs."""
+
     workspace_url: Optional[str] = None
+    """URL of the workspace containing the job that this webhook runs. If not specified, the job’s
+    workspace URL is assumed to be the same as the workspace where the webhook is created."""
 
     def as_dict(self) -> dict:
+        """Serializes the JobSpec into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.access_token is not None: body['access_token'] = self.access_token
         if self.job_id is not None: body['job_id'] = self.job_id
@@ -961,7 +1381,8 @@ class JobSpec:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'JobSpec':
+    def from_dict(cls, d: Dict[str, any]) -> JobSpec:
+        """Deserializes the JobSpec from a dictionary."""
         return cls(access_token=d.get('access_token', None),
                    job_id=d.get('job_id', None),
                    workspace_url=d.get('workspace_url', None))
@@ -970,26 +1391,39 @@ class JobSpec:
 @dataclass
 class JobSpecWithoutSecret:
     job_id: Optional[str] = None
+    """ID of the job that the webhook runs."""
+
     workspace_url: Optional[str] = None
+    """URL of the workspace containing the job that this webhook runs. Defaults to the workspace URL in
+    which the webhook is created. If not specified, the job’s workspace is assumed to be the same
+    as the webhook’s."""
 
     def as_dict(self) -> dict:
+        """Serializes the JobSpecWithoutSecret into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.job_id is not None: body['job_id'] = self.job_id
         if self.workspace_url is not None: body['workspace_url'] = self.workspace_url
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'JobSpecWithoutSecret':
+    def from_dict(cls, d: Dict[str, any]) -> JobSpecWithoutSecret:
+        """Deserializes the JobSpecWithoutSecret from a dictionary."""
         return cls(job_id=d.get('job_id', None), workspace_url=d.get('workspace_url', None))
 
 
 @dataclass
 class ListArtifactsResponse:
-    files: Optional['List[FileInfo]'] = None
+    files: Optional[List[FileInfo]] = None
+    """File location and metadata for artifacts."""
+
     next_page_token: Optional[str] = None
+    """Token that can be used to retrieve the next page of artifact results"""
+
     root_uri: Optional[str] = None
+    """Root artifact directory for the run."""
 
     def as_dict(self) -> dict:
+        """Serializes the ListArtifactsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.files: body['files'] = [v.as_dict() for v in self.files]
         if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
@@ -997,85 +1431,115 @@ class ListArtifactsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ListArtifactsResponse':
-        return cls(files=_repeated(d, 'files', FileInfo),
+    def from_dict(cls, d: Dict[str, any]) -> ListArtifactsResponse:
+        """Deserializes the ListArtifactsResponse from a dictionary."""
+        return cls(files=_repeated_dict(d, 'files', FileInfo),
                    next_page_token=d.get('next_page_token', None),
                    root_uri=d.get('root_uri', None))
 
 
 @dataclass
 class ListExperimentsResponse:
-    experiments: Optional['List[Experiment]'] = None
+    experiments: Optional[List[Experiment]] = None
+    """Paginated Experiments beginning with the first item on the requested page."""
+
     next_page_token: Optional[str] = None
+    """Token that can be used to retrieve the next page of experiments. Empty token means no more
+    experiment is available for retrieval."""
 
     def as_dict(self) -> dict:
+        """Serializes the ListExperimentsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.experiments: body['experiments'] = [v.as_dict() for v in self.experiments]
         if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ListExperimentsResponse':
-        return cls(experiments=_repeated(d, 'experiments', Experiment),
+    def from_dict(cls, d: Dict[str, any]) -> ListExperimentsResponse:
+        """Deserializes the ListExperimentsResponse from a dictionary."""
+        return cls(experiments=_repeated_dict(d, 'experiments', Experiment),
                    next_page_token=d.get('next_page_token', None))
 
 
 @dataclass
 class ListModelsResponse:
     next_page_token: Optional[str] = None
-    registered_models: Optional['List[Model]'] = None
+    """Pagination token to request next page of models for the same query."""
+
+    registered_models: Optional[List[Model]] = None
 
     def as_dict(self) -> dict:
+        """Serializes the ListModelsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         if self.registered_models: body['registered_models'] = [v.as_dict() for v in self.registered_models]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ListModelsResponse':
+    def from_dict(cls, d: Dict[str, any]) -> ListModelsResponse:
+        """Deserializes the ListModelsResponse from a dictionary."""
         return cls(next_page_token=d.get('next_page_token', None),
-                   registered_models=_repeated(d, 'registered_models', Model))
+                   registered_models=_repeated_dict(d, 'registered_models', Model))
 
 
 @dataclass
 class ListRegistryWebhooks:
     next_page_token: Optional[str] = None
-    webhooks: Optional['List[RegistryWebhook]'] = None
+    """Token that can be used to retrieve the next page of artifact results"""
+
+    webhooks: Optional[List[RegistryWebhook]] = None
+    """Array of registry webhooks."""
 
     def as_dict(self) -> dict:
+        """Serializes the ListRegistryWebhooks into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         if self.webhooks: body['webhooks'] = [v.as_dict() for v in self.webhooks]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ListRegistryWebhooks':
+    def from_dict(cls, d: Dict[str, any]) -> ListRegistryWebhooks:
+        """Deserializes the ListRegistryWebhooks from a dictionary."""
         return cls(next_page_token=d.get('next_page_token', None),
-                   webhooks=_repeated(d, 'webhooks', RegistryWebhook))
+                   webhooks=_repeated_dict(d, 'webhooks', RegistryWebhook))
 
 
 @dataclass
 class ListTransitionRequestsResponse:
-    requests: Optional['List[Activity]'] = None
+    requests: Optional[List[Activity]] = None
+    """Array of open transition requests."""
 
     def as_dict(self) -> dict:
+        """Serializes the ListTransitionRequestsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.requests: body['requests'] = [v.as_dict() for v in self.requests]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ListTransitionRequestsResponse':
-        return cls(requests=_repeated(d, 'requests', Activity))
+    def from_dict(cls, d: Dict[str, any]) -> ListTransitionRequestsResponse:
+        """Deserializes the ListTransitionRequestsResponse from a dictionary."""
+        return cls(requests=_repeated_dict(d, 'requests', Activity))
 
 
 @dataclass
 class LogBatch:
-    metrics: Optional['List[Metric]'] = None
-    params: Optional['List[Param]'] = None
+    metrics: Optional[List[Metric]] = None
+    """Metrics to log. A single request can contain up to 1000 metrics, and up to 1000 metrics, params,
+    and tags in total."""
+
+    params: Optional[List[Param]] = None
+    """Params to log. A single request can contain up to 100 params, and up to 1000 metrics, params,
+    and tags in total."""
+
     run_id: Optional[str] = None
-    tags: Optional['List[RunTag]'] = None
+    """ID of the run to log under"""
+
+    tags: Optional[List[RunTag]] = None
+    """Tags to log. A single request can contain up to 100 tags, and up to 1000 metrics, params, and
+    tags in total."""
 
     def as_dict(self) -> dict:
+        """Serializes the LogBatch into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.metrics: body['metrics'] = [v.as_dict() for v in self.metrics]
         if self.params: body['params'] = [v.as_dict() for v in self.params]
@@ -1084,39 +1548,58 @@ class LogBatch:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'LogBatch':
-        return cls(metrics=_repeated(d, 'metrics', Metric),
-                   params=_repeated(d, 'params', Param),
+    def from_dict(cls, d: Dict[str, any]) -> LogBatch:
+        """Deserializes the LogBatch from a dictionary."""
+        return cls(metrics=_repeated_dict(d, 'metrics', Metric),
+                   params=_repeated_dict(d, 'params', Param),
                    run_id=d.get('run_id', None),
-                   tags=_repeated(d, 'tags', RunTag))
+                   tags=_repeated_dict(d, 'tags', RunTag))
 
 
 @dataclass
 class LogInputs:
-    datasets: Optional['List[DatasetInput]'] = None
+    datasets: Optional[List[DatasetInput]] = None
+    """Dataset inputs"""
+
     run_id: Optional[str] = None
+    """ID of the run to log under"""
 
     def as_dict(self) -> dict:
+        """Serializes the LogInputs into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.datasets: body['datasets'] = [v.as_dict() for v in self.datasets]
         if self.run_id is not None: body['run_id'] = self.run_id
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'LogInputs':
-        return cls(datasets=_repeated(d, 'datasets', DatasetInput), run_id=d.get('run_id', None))
+    def from_dict(cls, d: Dict[str, any]) -> LogInputs:
+        """Deserializes the LogInputs from a dictionary."""
+        return cls(datasets=_repeated_dict(d, 'datasets', DatasetInput), run_id=d.get('run_id', None))
 
 
 @dataclass
 class LogMetric:
     key: str
+    """Name of the metric."""
+
     value: float
+    """Double value of the metric being logged."""
+
     timestamp: int
+    """Unix timestamp in milliseconds at the time metric was logged."""
+
     run_id: Optional[str] = None
+    """ID of the run under which to log the metric. Must be provided."""
+
     run_uuid: Optional[str] = None
+    """[Deprecated, use run_id instead] ID of the run under which to log the metric. This field will be
+    removed in a future MLflow version."""
+
     step: Optional[int] = None
+    """Step at which to log the metric"""
 
     def as_dict(self) -> dict:
+        """Serializes the LogMetric into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.key is not None: body['key'] = self.key
         if self.run_id is not None: body['run_id'] = self.run_id
@@ -1127,7 +1610,8 @@ class LogMetric:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'LogMetric':
+    def from_dict(cls, d: Dict[str, any]) -> LogMetric:
+        """Deserializes the LogMetric from a dictionary."""
         return cls(key=d.get('key', None),
                    run_id=d.get('run_id', None),
                    run_uuid=d.get('run_uuid', None),
@@ -1139,27 +1623,41 @@ class LogMetric:
 @dataclass
 class LogModel:
     model_json: Optional[str] = None
+    """MLmodel file in json format."""
+
     run_id: Optional[str] = None
+    """ID of the run to log under"""
 
     def as_dict(self) -> dict:
+        """Serializes the LogModel into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.model_json is not None: body['model_json'] = self.model_json
         if self.run_id is not None: body['run_id'] = self.run_id
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'LogModel':
+    def from_dict(cls, d: Dict[str, any]) -> LogModel:
+        """Deserializes the LogModel from a dictionary."""
         return cls(model_json=d.get('model_json', None), run_id=d.get('run_id', None))
 
 
 @dataclass
 class LogParam:
     key: str
+    """Name of the param. Maximum size is 255 bytes."""
+
     value: str
+    """String value of the param being logged. Maximum size is 500 bytes."""
+
     run_id: Optional[str] = None
+    """ID of the run under which to log the param. Must be provided."""
+
     run_uuid: Optional[str] = None
+    """[Deprecated, use run_id instead] ID of the run under which to log the param. This field will be
+    removed in a future MLflow version."""
 
     def as_dict(self) -> dict:
+        """Serializes the LogParam into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.key is not None: body['key'] = self.key
         if self.run_id is not None: body['run_id'] = self.run_id
@@ -1168,7 +1666,8 @@ class LogParam:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'LogParam':
+    def from_dict(cls, d: Dict[str, any]) -> LogParam:
+        """Deserializes the LogParam from a dictionary."""
         return cls(key=d.get('key', None),
                    run_id=d.get('run_id', None),
                    run_uuid=d.get('run_uuid', None),
@@ -1178,11 +1677,19 @@ class LogParam:
 @dataclass
 class Metric:
     key: Optional[str] = None
+    """Key identifying this metric."""
+
     step: Optional[int] = None
+    """Step at which to log the metric."""
+
     timestamp: Optional[int] = None
+    """The timestamp at which this metric was recorded."""
+
     value: Optional[float] = None
+    """Value associated with this metric."""
 
     def as_dict(self) -> dict:
+        """Serializes the Metric into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.key is not None: body['key'] = self.key
         if self.step is not None: body['step'] = self.step
@@ -1191,7 +1698,8 @@ class Metric:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'Metric':
+    def from_dict(cls, d: Dict[str, any]) -> Metric:
+        """Deserializes the Metric from a dictionary."""
         return cls(key=d.get('key', None),
                    step=d.get('step', None),
                    timestamp=d.get('timestamp', None),
@@ -1201,14 +1709,29 @@ class Metric:
 @dataclass
 class Model:
     creation_timestamp: Optional[int] = None
+    """Timestamp recorded when this `registered_model` was created."""
+
     description: Optional[str] = None
+    """Description of this `registered_model`."""
+
     last_updated_timestamp: Optional[int] = None
-    latest_versions: Optional['List[ModelVersion]'] = None
+    """Timestamp recorded when metadata for this `registered_model` was last updated."""
+
+    latest_versions: Optional[List[ModelVersion]] = None
+    """Collection of latest model versions for each stage. Only contains models with current `READY`
+    status."""
+
     name: Optional[str] = None
-    tags: Optional['List[ModelTag]'] = None
+    """Unique name for the model."""
+
+    tags: Optional[List[ModelTag]] = None
+    """Tags: Additional metadata key-value pairs for this `registered_model`."""
+
     user_id: Optional[str] = None
+    """User that created this `registered_model`"""
 
     def as_dict(self) -> dict:
+        """Serializes the Model into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
         if self.description is not None: body['description'] = self.description
@@ -1221,29 +1744,49 @@ class Model:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'Model':
+    def from_dict(cls, d: Dict[str, any]) -> Model:
+        """Deserializes the Model from a dictionary."""
         return cls(creation_timestamp=d.get('creation_timestamp', None),
                    description=d.get('description', None),
                    last_updated_timestamp=d.get('last_updated_timestamp', None),
-                   latest_versions=_repeated(d, 'latest_versions', ModelVersion),
+                   latest_versions=_repeated_dict(d, 'latest_versions', ModelVersion),
                    name=d.get('name', None),
-                   tags=_repeated(d, 'tags', ModelTag),
+                   tags=_repeated_dict(d, 'tags', ModelTag),
                    user_id=d.get('user_id', None))
 
 
 @dataclass
 class ModelDatabricks:
     creation_timestamp: Optional[int] = None
+    """Creation time of the object, as a Unix timestamp in milliseconds."""
+
     description: Optional[str] = None
+    """User-specified description for the object."""
+
     id: Optional[str] = None
+    """Unique identifier for the object."""
+
     last_updated_timestamp: Optional[int] = None
-    latest_versions: Optional['List[ModelVersion]'] = None
+    """Time of the object at last update, as a Unix timestamp in milliseconds."""
+
+    latest_versions: Optional[List[ModelVersion]] = None
+    """Array of model versions, each the latest version for its stage."""
+
     name: Optional[str] = None
-    permission_level: Optional['PermissionLevel'] = None
-    tags: Optional['List[ModelTag]'] = None
+    """Name of the model."""
+
+    permission_level: Optional[PermissionLevel] = None
+    """Permission level of the requesting user on the object. For what is allowed at each level, see
+    [MLflow Model permissions](..)."""
+
+    tags: Optional[List[ModelTag]] = None
+    """Array of tags associated with the model."""
+
     user_id: Optional[str] = None
+    """The username of the user that created the object."""
 
     def as_dict(self) -> dict:
+        """Serializes the ModelDatabricks into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
         if self.description is not None: body['description'] = self.description
@@ -1258,51 +1801,84 @@ class ModelDatabricks:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ModelDatabricks':
+    def from_dict(cls, d: Dict[str, any]) -> ModelDatabricks:
+        """Deserializes the ModelDatabricks from a dictionary."""
         return cls(creation_timestamp=d.get('creation_timestamp', None),
                    description=d.get('description', None),
                    id=d.get('id', None),
                    last_updated_timestamp=d.get('last_updated_timestamp', None),
-                   latest_versions=_repeated(d, 'latest_versions', ModelVersion),
+                   latest_versions=_repeated_dict(d, 'latest_versions', ModelVersion),
                    name=d.get('name', None),
                    permission_level=_enum(d, 'permission_level', PermissionLevel),
-                   tags=_repeated(d, 'tags', ModelTag),
+                   tags=_repeated_dict(d, 'tags', ModelTag),
                    user_id=d.get('user_id', None))
 
 
 @dataclass
 class ModelTag:
     key: Optional[str] = None
+    """The tag key."""
+
     value: Optional[str] = None
+    """The tag value."""
 
     def as_dict(self) -> dict:
+        """Serializes the ModelTag into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.key is not None: body['key'] = self.key
         if self.value is not None: body['value'] = self.value
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ModelTag':
+    def from_dict(cls, d: Dict[str, any]) -> ModelTag:
+        """Deserializes the ModelTag from a dictionary."""
         return cls(key=d.get('key', None), value=d.get('value', None))
 
 
 @dataclass
 class ModelVersion:
     creation_timestamp: Optional[int] = None
+    """Timestamp recorded when this `model_version` was created."""
+
     current_stage: Optional[str] = None
+    """Current stage for this `model_version`."""
+
     description: Optional[str] = None
+    """Description of this `model_version`."""
+
     last_updated_timestamp: Optional[int] = None
+    """Timestamp recorded when metadata for this `model_version` was last updated."""
+
     name: Optional[str] = None
+    """Unique name of the model"""
+
     run_id: Optional[str] = None
+    """MLflow run ID used when creating `model_version`, if `source` was generated by an experiment run
+    stored in MLflow tracking server."""
+
     run_link: Optional[str] = None
+    """Run Link: Direct link to the run that generated this version"""
+
     source: Optional[str] = None
-    status: Optional['ModelVersionStatus'] = None
+    """URI indicating the location of the source model artifacts, used when creating `model_version`"""
+
+    status: Optional[ModelVersionStatus] = None
+    """Current status of `model_version`"""
+
     status_message: Optional[str] = None
-    tags: Optional['List[ModelVersionTag]'] = None
+    """Details on current `status`, if it is pending or failed."""
+
+    tags: Optional[List[ModelVersionTag]] = None
+    """Tags: Additional metadata key-value pairs for this `model_version`."""
+
     user_id: Optional[str] = None
+    """User that created this `model_version`."""
+
     version: Optional[str] = None
+    """Model's version number."""
 
     def as_dict(self) -> dict:
+        """Serializes the ModelVersion into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
         if self.current_stage is not None: body['current_stage'] = self.current_stage
@@ -1321,7 +1897,8 @@ class ModelVersion:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ModelVersion':
+    def from_dict(cls, d: Dict[str, any]) -> ModelVersion:
+        """Deserializes the ModelVersion from a dictionary."""
         return cls(creation_timestamp=d.get('creation_timestamp', None),
                    current_stage=d.get('current_stage', None),
                    description=d.get('description', None),
@@ -1332,7 +1909,7 @@ class ModelVersion:
                    source=d.get('source', None),
                    status=_enum(d, 'status', ModelVersionStatus),
                    status_message=d.get('status_message', None),
-                   tags=_repeated(d, 'tags', ModelVersionTag),
+                   tags=_repeated_dict(d, 'tags', ModelVersionTag),
                    user_id=d.get('user_id', None),
                    version=d.get('version', None))
 
@@ -1340,21 +1917,66 @@ class ModelVersion:
 @dataclass
 class ModelVersionDatabricks:
     creation_timestamp: Optional[int] = None
-    current_stage: Optional['Stage'] = None
+    """Creation time of the object, as a Unix timestamp in milliseconds."""
+
+    current_stage: Optional[Stage] = None
+    """Stage of the model version. Valid values are:
+    
+    * `None`: The initial stage of a model version.
+    
+    * `Staging`: Staging or pre-production stage.
+    
+    * `Production`: Production stage.
+    
+    * `Archived`: Archived stage."""
+
     description: Optional[str] = None
+    """User-specified description for the object."""
+
     last_updated_timestamp: Optional[int] = None
+    """Time of the object at last update, as a Unix timestamp in milliseconds."""
+
     name: Optional[str] = None
-    permission_level: Optional['PermissionLevel'] = None
+    """Name of the model."""
+
+    permission_level: Optional[PermissionLevel] = None
+    """Permission level of the requesting user on the object. For what is allowed at each level, see
+    [MLflow Model permissions](..)."""
+
     run_id: Optional[str] = None
+    """Unique identifier for the MLflow tracking run associated with the source model artifacts."""
+
     run_link: Optional[str] = None
+    """URL of the run associated with the model artifacts. This field is set at model version creation
+    time only for model versions whose source run is from a tracking server that is different from
+    the registry server."""
+
     source: Optional[str] = None
-    status: Optional['Status'] = None
+    """URI that indicates the location of the source model artifacts. This is used when creating the
+    model version."""
+
+    status: Optional[Status] = None
+    """The status of the model version. Valid values are: * `PENDING_REGISTRATION`: Request to register
+    a new model version is pending as server performs background tasks.
+    
+    * `FAILED_REGISTRATION`: Request to register a new model version has failed.
+    
+    * `READY`: Model version is ready for use."""
+
     status_message: Optional[str] = None
-    tags: Optional['List[ModelVersionTag]'] = None
+    """Details on the current status, for example why registration failed."""
+
+    tags: Optional[List[ModelVersionTag]] = None
+    """Array of tags that are associated with the model version."""
+
     user_id: Optional[str] = None
+    """The username of the user that created the object."""
+
     version: Optional[str] = None
+    """Version of the model."""
 
     def as_dict(self) -> dict:
+        """Serializes the ModelVersionDatabricks into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
         if self.current_stage is not None: body['current_stage'] = self.current_stage.value
@@ -1374,7 +1996,8 @@ class ModelVersionDatabricks:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ModelVersionDatabricks':
+    def from_dict(cls, d: Dict[str, any]) -> ModelVersionDatabricks:
+        """Deserializes the ModelVersionDatabricks from a dictionary."""
         return cls(creation_timestamp=d.get('creation_timestamp', None),
                    current_stage=_enum(d, 'current_stage', Stage),
                    description=d.get('description', None),
@@ -1386,7 +2009,7 @@ class ModelVersionDatabricks:
                    source=d.get('source', None),
                    status=_enum(d, 'status', Status),
                    status_message=d.get('status_message', None),
-                   tags=_repeated(d, 'tags', ModelVersionTag),
+                   tags=_repeated_dict(d, 'tags', ModelVersionTag),
                    user_id=d.get('user_id', None),
                    version=d.get('version', None))
 
@@ -1402,32 +2025,42 @@ class ModelVersionStatus(Enum):
 @dataclass
 class ModelVersionTag:
     key: Optional[str] = None
+    """The tag key."""
+
     value: Optional[str] = None
+    """The tag value."""
 
     def as_dict(self) -> dict:
+        """Serializes the ModelVersionTag into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.key is not None: body['key'] = self.key
         if self.value is not None: body['value'] = self.value
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ModelVersionTag':
+    def from_dict(cls, d: Dict[str, any]) -> ModelVersionTag:
+        """Deserializes the ModelVersionTag from a dictionary."""
         return cls(key=d.get('key', None), value=d.get('value', None))
 
 
 @dataclass
 class Param:
     key: Optional[str] = None
+    """Key identifying this param."""
+
     value: Optional[str] = None
+    """Value associated with this param."""
 
     def as_dict(self) -> dict:
+        """Serializes the Param into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.key is not None: body['key'] = self.key
         if self.value is not None: body['value'] = self.value
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'Param':
+    def from_dict(cls, d: Dict[str, any]) -> Param:
+        """Deserializes the Param from a dictionary."""
         return cls(key=d.get('key', None), value=d.get('value', None))
 
 
@@ -1445,11 +2078,19 @@ class PermissionLevel(Enum):
 @dataclass
 class RegisteredModelAccessControlRequest:
     group_name: Optional[str] = None
-    permission_level: Optional['RegisteredModelPermissionLevel'] = None
+    """name of the group"""
+
+    permission_level: Optional[RegisteredModelPermissionLevel] = None
+    """Permission level"""
+
     service_principal_name: Optional[str] = None
+    """application ID of a service principal"""
+
     user_name: Optional[str] = None
+    """name of the user"""
 
     def as_dict(self) -> dict:
+        """Serializes the RegisteredModelAccessControlRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.group_name is not None: body['group_name'] = self.group_name
         if self.permission_level is not None: body['permission_level'] = self.permission_level.value
@@ -1459,7 +2100,8 @@ class RegisteredModelAccessControlRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RegisteredModelAccessControlRequest':
+    def from_dict(cls, d: Dict[str, any]) -> RegisteredModelAccessControlRequest:
+        """Deserializes the RegisteredModelAccessControlRequest from a dictionary."""
         return cls(group_name=d.get('group_name', None),
                    permission_level=_enum(d, 'permission_level', RegisteredModelPermissionLevel),
                    service_principal_name=d.get('service_principal_name', None),
@@ -1468,13 +2110,23 @@ class RegisteredModelAccessControlRequest:
 
 @dataclass
 class RegisteredModelAccessControlResponse:
-    all_permissions: Optional['List[RegisteredModelPermission]'] = None
+    all_permissions: Optional[List[RegisteredModelPermission]] = None
+    """All permissions."""
+
     display_name: Optional[str] = None
+    """Display name of the user or service principal."""
+
     group_name: Optional[str] = None
+    """name of the group"""
+
     service_principal_name: Optional[str] = None
+    """Name of the service principal."""
+
     user_name: Optional[str] = None
+    """name of the user"""
 
     def as_dict(self) -> dict:
+        """Serializes the RegisteredModelAccessControlResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.all_permissions: body['all_permissions'] = [v.as_dict() for v in self.all_permissions]
         if self.display_name is not None: body['display_name'] = self.display_name
@@ -1485,8 +2137,9 @@ class RegisteredModelAccessControlResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RegisteredModelAccessControlResponse':
-        return cls(all_permissions=_repeated(d, 'all_permissions', RegisteredModelPermission),
+    def from_dict(cls, d: Dict[str, any]) -> RegisteredModelAccessControlResponse:
+        """Deserializes the RegisteredModelAccessControlResponse from a dictionary."""
+        return cls(all_permissions=_repeated_dict(d, 'all_permissions', RegisteredModelPermission),
                    display_name=d.get('display_name', None),
                    group_name=d.get('group_name', None),
                    service_principal_name=d.get('service_principal_name', None),
@@ -1496,10 +2149,14 @@ class RegisteredModelAccessControlResponse:
 @dataclass
 class RegisteredModelPermission:
     inherited: Optional[bool] = None
-    inherited_from_object: Optional['List[str]'] = None
-    permission_level: Optional['RegisteredModelPermissionLevel'] = None
+
+    inherited_from_object: Optional[List[str]] = None
+
+    permission_level: Optional[RegisteredModelPermissionLevel] = None
+    """Permission level"""
 
     def as_dict(self) -> dict:
+        """Serializes the RegisteredModelPermission into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.inherited is not None: body['inherited'] = self.inherited
         if self.inherited_from_object: body['inherited_from_object'] = [v for v in self.inherited_from_object]
@@ -1507,7 +2164,8 @@ class RegisteredModelPermission:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RegisteredModelPermission':
+    def from_dict(cls, d: Dict[str, any]) -> RegisteredModelPermission:
+        """Deserializes the RegisteredModelPermission from a dictionary."""
         return cls(inherited=d.get('inherited', None),
                    inherited_from_object=d.get('inherited_from_object', None),
                    permission_level=_enum(d, 'permission_level', RegisteredModelPermissionLevel))
@@ -1525,11 +2183,14 @@ class RegisteredModelPermissionLevel(Enum):
 
 @dataclass
 class RegisteredModelPermissions:
-    access_control_list: Optional['List[RegisteredModelAccessControlResponse]'] = None
+    access_control_list: Optional[List[RegisteredModelAccessControlResponse]] = None
+
     object_id: Optional[str] = None
+
     object_type: Optional[str] = None
 
     def as_dict(self) -> dict:
+        """Serializes the RegisteredModelPermissions into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.access_control_list:
             body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
@@ -1538,9 +2199,10 @@ class RegisteredModelPermissions:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RegisteredModelPermissions':
-        return cls(access_control_list=_repeated(d, 'access_control_list',
-                                                 RegisteredModelAccessControlResponse),
+    def from_dict(cls, d: Dict[str, any]) -> RegisteredModelPermissions:
+        """Deserializes the RegisteredModelPermissions from a dictionary."""
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list',
+                                                      RegisteredModelAccessControlResponse),
                    object_id=d.get('object_id', None),
                    object_type=d.get('object_type', None))
 
@@ -1548,26 +2210,33 @@ class RegisteredModelPermissions:
 @dataclass
 class RegisteredModelPermissionsDescription:
     description: Optional[str] = None
-    permission_level: Optional['RegisteredModelPermissionLevel'] = None
+
+    permission_level: Optional[RegisteredModelPermissionLevel] = None
+    """Permission level"""
 
     def as_dict(self) -> dict:
+        """Serializes the RegisteredModelPermissionsDescription into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.description is not None: body['description'] = self.description
         if self.permission_level is not None: body['permission_level'] = self.permission_level.value
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RegisteredModelPermissionsDescription':
+    def from_dict(cls, d: Dict[str, any]) -> RegisteredModelPermissionsDescription:
+        """Deserializes the RegisteredModelPermissionsDescription from a dictionary."""
         return cls(description=d.get('description', None),
                    permission_level=_enum(d, 'permission_level', RegisteredModelPermissionLevel))
 
 
 @dataclass
 class RegisteredModelPermissionsRequest:
-    access_control_list: Optional['List[RegisteredModelAccessControlRequest]'] = None
+    access_control_list: Optional[List[RegisteredModelAccessControlRequest]] = None
+
     registered_model_id: Optional[str] = None
+    """The registered model for which to get or manage permissions."""
 
     def as_dict(self) -> dict:
+        """Serializes the RegisteredModelPermissionsRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.access_control_list:
             body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
@@ -1575,25 +2244,75 @@ class RegisteredModelPermissionsRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RegisteredModelPermissionsRequest':
-        return cls(access_control_list=_repeated(d, 'access_control_list',
-                                                 RegisteredModelAccessControlRequest),
+    def from_dict(cls, d: Dict[str, any]) -> RegisteredModelPermissionsRequest:
+        """Deserializes the RegisteredModelPermissionsRequest from a dictionary."""
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list',
+                                                      RegisteredModelAccessControlRequest),
                    registered_model_id=d.get('registered_model_id', None))
 
 
 @dataclass
 class RegistryWebhook:
     creation_timestamp: Optional[int] = None
+    """Creation time of the object, as a Unix timestamp in milliseconds."""
+
     description: Optional[str] = None
-    events: Optional['List[RegistryWebhookEvent]'] = None
-    http_url_spec: Optional['HttpUrlSpecWithoutSecret'] = None
+    """User-specified description for the webhook."""
+
+    events: Optional[List[RegistryWebhookEvent]] = None
+    """Events that can trigger a registry webhook: * `MODEL_VERSION_CREATED`: A new model version was
+    created for the associated model.
+    
+    * `MODEL_VERSION_TRANSITIONED_STAGE`: A model version’s stage was changed.
+    
+    * `TRANSITION_REQUEST_CREATED`: A user requested a model version’s stage be transitioned.
+    
+    * `COMMENT_CREATED`: A user wrote a comment on a registered model.
+    
+    * `REGISTERED_MODEL_CREATED`: A new registered model was created. This event type can only be
+    specified for a registry-wide webhook, which can be created by not specifying a model name in
+    the create request.
+    
+    * `MODEL_VERSION_TAG_SET`: A user set a tag on the model version.
+    
+    * `MODEL_VERSION_TRANSITIONED_TO_STAGING`: A model version was transitioned to staging.
+    
+    * `MODEL_VERSION_TRANSITIONED_TO_PRODUCTION`: A model version was transitioned to production.
+    
+    * `MODEL_VERSION_TRANSITIONED_TO_ARCHIVED`: A model version was archived.
+    
+    * `TRANSITION_REQUEST_TO_STAGING_CREATED`: A user requested a model version be transitioned to
+    staging.
+    
+    * `TRANSITION_REQUEST_TO_PRODUCTION_CREATED`: A user requested a model version be transitioned
+    to production.
+    
+    * `TRANSITION_REQUEST_TO_ARCHIVED_CREATED`: A user requested a model version be archived."""
+
+    http_url_spec: Optional[HttpUrlSpecWithoutSecret] = None
+
     id: Optional[str] = None
-    job_spec: Optional['JobSpecWithoutSecret'] = None
+    """Webhook ID"""
+
+    job_spec: Optional[JobSpecWithoutSecret] = None
+
     last_updated_timestamp: Optional[int] = None
+    """Time of the object at last update, as a Unix timestamp in milliseconds."""
+
     model_name: Optional[str] = None
-    status: Optional['RegistryWebhookStatus'] = None
+    """Name of the model whose events would trigger this webhook."""
+
+    status: Optional[RegistryWebhookStatus] = None
+    """Enable or disable triggering the webhook, or put the webhook into test mode. The default is
+    `ACTIVE`: * `ACTIVE`: Webhook is triggered when an associated event happens.
+    
+    * `DISABLED`: Webhook is not triggered.
+    
+    * `TEST_MODE`: Webhook can be triggered through the test endpoint, but is not triggered on a
+    real event."""
 
     def as_dict(self) -> dict:
+        """Serializes the RegistryWebhook into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
         if self.description is not None: body['description'] = self.description
@@ -1608,10 +2327,11 @@ class RegistryWebhook:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RegistryWebhook':
+    def from_dict(cls, d: Dict[str, any]) -> RegistryWebhook:
+        """Deserializes the RegistryWebhook from a dictionary."""
         return cls(creation_timestamp=d.get('creation_timestamp', None),
                    description=d.get('description', None),
-                   events=d.get('events', None),
+                   events=_repeated_enum(d, 'events', RegistryWebhookEvent),
                    http_url_spec=_from_dict(d, 'http_url_spec', HttpUrlSpecWithoutSecret),
                    id=d.get('id', None),
                    job_spec=_from_dict(d, 'job_spec', JobSpecWithoutSecret),
@@ -1637,7 +2357,13 @@ class RegistryWebhookEvent(Enum):
 
 
 class RegistryWebhookStatus(Enum):
-    """This describes an enum"""
+    """Enable or disable triggering the webhook, or put the webhook into test mode. The default is
+    `ACTIVE`: * `ACTIVE`: Webhook is triggered when an associated event happens.
+    
+    * `DISABLED`: Webhook is not triggered.
+    
+    * `TEST_MODE`: Webhook can be triggered through the test endpoint, but is not triggered on a
+    real event."""
 
     ACTIVE = 'ACTIVE'
     DISABLED = 'DISABLED'
@@ -1647,11 +2373,27 @@ class RegistryWebhookStatus(Enum):
 @dataclass
 class RejectTransitionRequest:
     name: str
+    """Name of the model."""
+
     version: str
-    stage: 'Stage'
+    """Version of the model."""
+
+    stage: Stage
+    """Target stage of the transition. Valid values are:
+    
+    * `None`: The initial stage of a model version.
+    
+    * `Staging`: Staging or pre-production stage.
+    
+    * `Production`: Production stage.
+    
+    * `Archived`: Archived stage."""
+
     comment: Optional[str] = None
+    """User-provided comment on the action."""
 
     def as_dict(self) -> dict:
+        """Serializes the RejectTransitionRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.comment is not None: body['comment'] = self.comment
         if self.name is not None: body['name'] = self.name
@@ -1660,7 +2402,8 @@ class RejectTransitionRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RejectTransitionRequest':
+    def from_dict(cls, d: Dict[str, any]) -> RejectTransitionRequest:
+        """Deserializes the RejectTransitionRequest from a dictionary."""
         return cls(comment=d.get('comment', None),
                    name=d.get('name', None),
                    stage=_enum(d, 'stage', Stage),
@@ -1669,83 +2412,107 @@ class RejectTransitionRequest:
 
 @dataclass
 class RejectTransitionRequestResponse:
-    activity: Optional['Activity'] = None
+    activity: Optional[Activity] = None
+    """Activity recorded for the action."""
 
     def as_dict(self) -> dict:
+        """Serializes the RejectTransitionRequestResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.activity: body['activity'] = self.activity.as_dict()
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RejectTransitionRequestResponse':
+    def from_dict(cls, d: Dict[str, any]) -> RejectTransitionRequestResponse:
+        """Deserializes the RejectTransitionRequestResponse from a dictionary."""
         return cls(activity=_from_dict(d, 'activity', Activity))
 
 
 @dataclass
 class RenameModelRequest:
     name: str
+    """Registered model unique name identifier."""
+
     new_name: Optional[str] = None
+    """If provided, updates the name for this `registered_model`."""
 
     def as_dict(self) -> dict:
+        """Serializes the RenameModelRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.name is not None: body['name'] = self.name
         if self.new_name is not None: body['new_name'] = self.new_name
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RenameModelRequest':
+    def from_dict(cls, d: Dict[str, any]) -> RenameModelRequest:
+        """Deserializes the RenameModelRequest from a dictionary."""
         return cls(name=d.get('name', None), new_name=d.get('new_name', None))
 
 
 @dataclass
 class RenameModelResponse:
-    registered_model: Optional['Model'] = None
+    registered_model: Optional[Model] = None
 
     def as_dict(self) -> dict:
+        """Serializes the RenameModelResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.registered_model: body['registered_model'] = self.registered_model.as_dict()
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RenameModelResponse':
+    def from_dict(cls, d: Dict[str, any]) -> RenameModelResponse:
+        """Deserializes the RenameModelResponse from a dictionary."""
         return cls(registered_model=_from_dict(d, 'registered_model', Model))
 
 
 @dataclass
 class RestoreExperiment:
     experiment_id: str
+    """ID of the associated experiment."""
 
     def as_dict(self) -> dict:
+        """Serializes the RestoreExperiment into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.experiment_id is not None: body['experiment_id'] = self.experiment_id
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RestoreExperiment':
+    def from_dict(cls, d: Dict[str, any]) -> RestoreExperiment:
+        """Deserializes the RestoreExperiment from a dictionary."""
         return cls(experiment_id=d.get('experiment_id', None))
 
 
 @dataclass
 class RestoreRun:
     run_id: str
+    """ID of the run to restore."""
 
     def as_dict(self) -> dict:
+        """Serializes the RestoreRun into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.run_id is not None: body['run_id'] = self.run_id
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RestoreRun':
+    def from_dict(cls, d: Dict[str, any]) -> RestoreRun:
+        """Deserializes the RestoreRun from a dictionary."""
         return cls(run_id=d.get('run_id', None))
 
 
 @dataclass
 class RestoreRuns:
     experiment_id: str
+    """The ID of the experiment containing the runs to restore."""
+
     min_timestamp_millis: int
+    """The minimum deletion timestamp in milliseconds since the UNIX epoch for restoring runs. Only
+    runs deleted no earlier than this timestamp are restored."""
+
     max_runs: Optional[int] = None
+    """An optional positive integer indicating the maximum number of runs to restore. The maximum
+    allowed value for max_runs is 10000."""
 
     def as_dict(self) -> dict:
+        """Serializes the RestoreRuns into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.experiment_id is not None: body['experiment_id'] = self.experiment_id
         if self.max_runs is not None: body['max_runs'] = self.max_runs
@@ -1753,7 +2520,8 @@ class RestoreRuns:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RestoreRuns':
+    def from_dict(cls, d: Dict[str, any]) -> RestoreRuns:
+        """Deserializes the RestoreRuns from a dictionary."""
         return cls(experiment_id=d.get('experiment_id', None),
                    max_runs=d.get('max_runs', None),
                    min_timestamp_millis=d.get('min_timestamp_millis', None))
@@ -1762,24 +2530,33 @@ class RestoreRuns:
 @dataclass
 class RestoreRunsResponse:
     runs_restored: Optional[int] = None
+    """The number of runs restored."""
 
     def as_dict(self) -> dict:
+        """Serializes the RestoreRunsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.runs_restored is not None: body['runs_restored'] = self.runs_restored
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RestoreRunsResponse':
+    def from_dict(cls, d: Dict[str, any]) -> RestoreRunsResponse:
+        """Deserializes the RestoreRunsResponse from a dictionary."""
         return cls(runs_restored=d.get('runs_restored', None))
 
 
 @dataclass
 class Run:
-    data: Optional['RunData'] = None
-    info: Optional['RunInfo'] = None
-    inputs: Optional['RunInputs'] = None
+    data: Optional[RunData] = None
+    """Run data."""
+
+    info: Optional[RunInfo] = None
+    """Run metadata."""
+
+    inputs: Optional[RunInputs] = None
+    """Run inputs."""
 
     def as_dict(self) -> dict:
+        """Serializes the Run into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.data: body['data'] = self.data.as_dict()
         if self.info: body['info'] = self.info.as_dict()
@@ -1787,7 +2564,8 @@ class Run:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'Run':
+    def from_dict(cls, d: Dict[str, any]) -> Run:
+        """Deserializes the Run from a dictionary."""
         return cls(data=_from_dict(d, 'data', RunData),
                    info=_from_dict(d, 'info', RunInfo),
                    inputs=_from_dict(d, 'inputs', RunInputs))
@@ -1795,11 +2573,17 @@ class Run:
 
 @dataclass
 class RunData:
-    metrics: Optional['List[Metric]'] = None
-    params: Optional['List[Param]'] = None
-    tags: Optional['List[RunTag]'] = None
+    metrics: Optional[List[Metric]] = None
+    """Run metrics."""
+
+    params: Optional[List[Param]] = None
+    """Run parameters."""
+
+    tags: Optional[List[RunTag]] = None
+    """Additional metadata key-value pairs."""
 
     def as_dict(self) -> dict:
+        """Serializes the RunData into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.metrics: body['metrics'] = [v.as_dict() for v in self.metrics]
         if self.params: body['params'] = [v.as_dict() for v in self.params]
@@ -1807,25 +2591,48 @@ class RunData:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RunData':
-        return cls(metrics=_repeated(d, 'metrics', Metric),
-                   params=_repeated(d, 'params', Param),
-                   tags=_repeated(d, 'tags', RunTag))
+    def from_dict(cls, d: Dict[str, any]) -> RunData:
+        """Deserializes the RunData from a dictionary."""
+        return cls(metrics=_repeated_dict(d, 'metrics', Metric),
+                   params=_repeated_dict(d, 'params', Param),
+                   tags=_repeated_dict(d, 'tags', RunTag))
 
 
 @dataclass
 class RunInfo:
     artifact_uri: Optional[str] = None
+    """URI of the directory where artifacts should be uploaded. This can be a local path (starting with
+    "/"), or a distributed file system (DFS) path, like `s3://bucket/directory` or
+    `dbfs:/my/directory`. If not set, the local `./mlruns` directory is chosen."""
+
     end_time: Optional[int] = None
+    """Unix timestamp of when the run ended in milliseconds."""
+
     experiment_id: Optional[str] = None
+    """The experiment ID."""
+
     lifecycle_stage: Optional[str] = None
+    """Current life cycle stage of the experiment : OneOf("active", "deleted")"""
+
     run_id: Optional[str] = None
+    """Unique identifier for the run."""
+
     run_uuid: Optional[str] = None
+    """[Deprecated, use run_id instead] Unique identifier for the run. This field will be removed in a
+    future MLflow version."""
+
     start_time: Optional[int] = None
-    status: Optional['RunInfoStatus'] = None
+    """Unix timestamp of when the run started in milliseconds."""
+
+    status: Optional[RunInfoStatus] = None
+    """Current status of the run."""
+
     user_id: Optional[str] = None
+    """User who initiated the run. This field is deprecated as of MLflow 1.0, and will be removed in a
+    future MLflow release. Use 'mlflow.user' tag instead."""
 
     def as_dict(self) -> dict:
+        """Serializes the RunInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.artifact_uri is not None: body['artifact_uri'] = self.artifact_uri
         if self.end_time is not None: body['end_time'] = self.end_time
@@ -1839,7 +2646,8 @@ class RunInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RunInfo':
+    def from_dict(cls, d: Dict[str, any]) -> RunInfo:
+        """Deserializes the RunInfo from a dictionary."""
         return cls(artifact_uri=d.get('artifact_uri', None),
                    end_time=d.get('end_time', None),
                    experiment_id=d.get('experiment_id', None),
@@ -1863,43 +2671,64 @@ class RunInfoStatus(Enum):
 
 @dataclass
 class RunInputs:
-    dataset_inputs: Optional['List[DatasetInput]'] = None
+    dataset_inputs: Optional[List[DatasetInput]] = None
+    """Run metrics."""
 
     def as_dict(self) -> dict:
+        """Serializes the RunInputs into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.dataset_inputs: body['dataset_inputs'] = [v.as_dict() for v in self.dataset_inputs]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RunInputs':
-        return cls(dataset_inputs=_repeated(d, 'dataset_inputs', DatasetInput))
+    def from_dict(cls, d: Dict[str, any]) -> RunInputs:
+        """Deserializes the RunInputs from a dictionary."""
+        return cls(dataset_inputs=_repeated_dict(d, 'dataset_inputs', DatasetInput))
 
 
 @dataclass
 class RunTag:
     key: Optional[str] = None
+    """The tag key."""
+
     value: Optional[str] = None
+    """The tag value."""
 
     def as_dict(self) -> dict:
+        """Serializes the RunTag into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.key is not None: body['key'] = self.key
         if self.value is not None: body['value'] = self.value
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RunTag':
+    def from_dict(cls, d: Dict[str, any]) -> RunTag:
+        """Deserializes the RunTag from a dictionary."""
         return cls(key=d.get('key', None), value=d.get('value', None))
 
 
 @dataclass
 class SearchExperiments:
     filter: Optional[str] = None
+    """String representing a SQL filter condition (e.g. "name ILIKE 'my-experiment%'")"""
+
     max_results: Optional[int] = None
-    order_by: Optional['List[str]'] = None
+    """Maximum number of experiments desired. Max threshold is 3000."""
+
+    order_by: Optional[List[str]] = None
+    """List of columns for ordering search results, which can include experiment name and last updated
+    timestamp with an optional "DESC" or "ASC" annotation, where "ASC" is the default. Tiebreaks are
+    done by experiment id DESC."""
+
     page_token: Optional[str] = None
-    view_type: Optional['SearchExperimentsViewType'] = None
+    """Token indicating the page of experiments to fetch"""
+
+    view_type: Optional[SearchExperimentsViewType] = None
+    """Qualifier for type of experiments to be returned. If unspecified, return only active
+    experiments."""
 
     def as_dict(self) -> dict:
+        """Serializes the SearchExperiments into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.filter is not None: body['filter'] = self.filter
         if self.max_results is not None: body['max_results'] = self.max_results
@@ -1909,7 +2738,8 @@ class SearchExperiments:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'SearchExperiments':
+    def from_dict(cls, d: Dict[str, any]) -> SearchExperiments:
+        """Deserializes the SearchExperiments from a dictionary."""
         return cls(filter=d.get('filter', None),
                    max_results=d.get('max_results', None),
                    order_by=d.get('order_by', None),
@@ -1919,18 +2749,24 @@ class SearchExperiments:
 
 @dataclass
 class SearchExperimentsResponse:
-    experiments: Optional['List[Experiment]'] = None
+    experiments: Optional[List[Experiment]] = None
+    """Experiments that match the search criteria"""
+
     next_page_token: Optional[str] = None
+    """Token that can be used to retrieve the next page of experiments. An empty token means that no
+    more experiments are available for retrieval."""
 
     def as_dict(self) -> dict:
+        """Serializes the SearchExperimentsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.experiments: body['experiments'] = [v.as_dict() for v in self.experiments]
         if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'SearchExperimentsResponse':
-        return cls(experiments=_repeated(d, 'experiments', Experiment),
+    def from_dict(cls, d: Dict[str, any]) -> SearchExperimentsResponse:
+        """Deserializes the SearchExperimentsResponse from a dictionary."""
+        return cls(experiments=_repeated_dict(d, 'experiments', Experiment),
                    next_page_token=d.get('next_page_token', None))
 
 
@@ -1945,48 +2781,83 @@ class SearchExperimentsViewType(Enum):
 
 @dataclass
 class SearchModelVersionsResponse:
-    model_versions: Optional['List[ModelVersion]'] = None
+    model_versions: Optional[List[ModelVersion]] = None
+    """Models that match the search criteria"""
+
     next_page_token: Optional[str] = None
+    """Pagination token to request next page of models for the same search query."""
 
     def as_dict(self) -> dict:
+        """Serializes the SearchModelVersionsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.model_versions: body['model_versions'] = [v.as_dict() for v in self.model_versions]
         if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'SearchModelVersionsResponse':
-        return cls(model_versions=_repeated(d, 'model_versions', ModelVersion),
+    def from_dict(cls, d: Dict[str, any]) -> SearchModelVersionsResponse:
+        """Deserializes the SearchModelVersionsResponse from a dictionary."""
+        return cls(model_versions=_repeated_dict(d, 'model_versions', ModelVersion),
                    next_page_token=d.get('next_page_token', None))
 
 
 @dataclass
 class SearchModelsResponse:
     next_page_token: Optional[str] = None
-    registered_models: Optional['List[Model]'] = None
+    """Pagination token to request the next page of models."""
+
+    registered_models: Optional[List[Model]] = None
+    """Registered Models that match the search criteria."""
 
     def as_dict(self) -> dict:
+        """Serializes the SearchModelsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         if self.registered_models: body['registered_models'] = [v.as_dict() for v in self.registered_models]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'SearchModelsResponse':
+    def from_dict(cls, d: Dict[str, any]) -> SearchModelsResponse:
+        """Deserializes the SearchModelsResponse from a dictionary."""
         return cls(next_page_token=d.get('next_page_token', None),
-                   registered_models=_repeated(d, 'registered_models', Model))
+                   registered_models=_repeated_dict(d, 'registered_models', Model))
 
 
 @dataclass
 class SearchRuns:
-    experiment_ids: Optional['List[str]'] = None
+    experiment_ids: Optional[List[str]] = None
+    """List of experiment IDs to search over."""
+
     filter: Optional[str] = None
+    """A filter expression over params, metrics, and tags, that allows returning a subset of runs. The
+    syntax is a subset of SQL that supports ANDing together binary operations between a param,
+    metric, or tag and a constant.
+    
+    Example: `metrics.rmse < 1 and params.model_class = 'LogisticRegression'`
+    
+    You can select columns with special characters (hyphen, space, period, etc.) by using double
+    quotes: `metrics."model class" = 'LinearRegression' and tags."user-name" = 'Tomas'`
+    
+    Supported operators are `=`, `!=`, `>`, `>=`, `<`, and `<=`."""
+
     max_results: Optional[int] = None
-    order_by: Optional['List[str]'] = None
+    """Maximum number of runs desired. Max threshold is 50000"""
+
+    order_by: Optional[List[str]] = None
+    """List of columns to be ordered by, including attributes, params, metrics, and tags with an
+    optional "DESC" or "ASC" annotation, where "ASC" is the default. Example: ["params.input DESC",
+    "metrics.alpha ASC", "metrics.rmse"] Tiebreaks are done by start_time DESC followed by run_id
+    for runs with the same start time (and this is the default ordering criterion if order_by is not
+    provided)."""
+
     page_token: Optional[str] = None
-    run_view_type: Optional['SearchRunsRunViewType'] = None
+    """Token for the current page of runs."""
+
+    run_view_type: Optional[SearchRunsRunViewType] = None
+    """Whether to display only active, only deleted, or all runs. Defaults to only active runs."""
 
     def as_dict(self) -> dict:
+        """Serializes the SearchRuns into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.experiment_ids: body['experiment_ids'] = [v for v in self.experiment_ids]
         if self.filter is not None: body['filter'] = self.filter
@@ -1997,7 +2868,8 @@ class SearchRuns:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'SearchRuns':
+    def from_dict(cls, d: Dict[str, any]) -> SearchRuns:
+        """Deserializes the SearchRuns from a dictionary."""
         return cls(experiment_ids=d.get('experiment_ids', None),
                    filter=d.get('filter', None),
                    max_results=d.get('max_results', None),
@@ -2009,17 +2881,22 @@ class SearchRuns:
 @dataclass
 class SearchRunsResponse:
     next_page_token: Optional[str] = None
-    runs: Optional['List[Run]'] = None
+    """Token for the next page of runs."""
+
+    runs: Optional[List[Run]] = None
+    """Runs that match the search criteria."""
 
     def as_dict(self) -> dict:
+        """Serializes the SearchRunsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         if self.runs: body['runs'] = [v.as_dict() for v in self.runs]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'SearchRunsResponse':
-        return cls(next_page_token=d.get('next_page_token', None), runs=_repeated(d, 'runs', Run))
+    def from_dict(cls, d: Dict[str, any]) -> SearchRunsResponse:
+        """Deserializes the SearchRunsResponse from a dictionary."""
+        return cls(next_page_token=d.get('next_page_token', None), runs=_repeated_dict(d, 'runs', Run))
 
 
 class SearchRunsRunViewType(Enum):
@@ -2033,10 +2910,18 @@ class SearchRunsRunViewType(Enum):
 @dataclass
 class SetExperimentTag:
     experiment_id: str
+    """ID of the experiment under which to log the tag. Must be provided."""
+
     key: str
+    """Name of the tag. Maximum size depends on storage backend. All storage backends are guaranteed to
+    support key values up to 250 bytes in size."""
+
     value: str
+    """String value of the tag being logged. Maximum size depends on storage backend. All storage
+    backends are guaranteed to support key values up to 5000 bytes in size."""
 
     def as_dict(self) -> dict:
+        """Serializes the SetExperimentTag into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.experiment_id is not None: body['experiment_id'] = self.experiment_id
         if self.key is not None: body['key'] = self.key
@@ -2044,7 +2929,8 @@ class SetExperimentTag:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'SetExperimentTag':
+    def from_dict(cls, d: Dict[str, any]) -> SetExperimentTag:
+        """Deserializes the SetExperimentTag from a dictionary."""
         return cls(experiment_id=d.get('experiment_id', None),
                    key=d.get('key', None),
                    value=d.get('value', None))
@@ -2053,10 +2939,19 @@ class SetExperimentTag:
 @dataclass
 class SetModelTagRequest:
     name: str
+    """Unique name of the model."""
+
     key: str
+    """Name of the tag. Maximum size depends on storage backend. If a tag with this name already
+    exists, its preexisting value will be replaced by the specified `value`. All storage backends
+    are guaranteed to support key values up to 250 bytes in size."""
+
     value: str
+    """String value of the tag being logged. Maximum size depends on storage backend. All storage
+    backends are guaranteed to support key values up to 5000 bytes in size."""
 
     def as_dict(self) -> dict:
+        """Serializes the SetModelTagRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.key is not None: body['key'] = self.key
         if self.name is not None: body['name'] = self.name
@@ -2064,18 +2959,30 @@ class SetModelTagRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'SetModelTagRequest':
+    def from_dict(cls, d: Dict[str, any]) -> SetModelTagRequest:
+        """Deserializes the SetModelTagRequest from a dictionary."""
         return cls(key=d.get('key', None), name=d.get('name', None), value=d.get('value', None))
 
 
 @dataclass
 class SetModelVersionTagRequest:
     name: str
+    """Unique name of the model."""
+
     version: str
+    """Model version number."""
+
     key: str
+    """Name of the tag. Maximum size depends on storage backend. If a tag with this name already
+    exists, its preexisting value will be replaced by the specified `value`. All storage backends
+    are guaranteed to support key values up to 250 bytes in size."""
+
     value: str
+    """String value of the tag being logged. Maximum size depends on storage backend. All storage
+    backends are guaranteed to support key values up to 5000 bytes in size."""
 
     def as_dict(self) -> dict:
+        """Serializes the SetModelVersionTagRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.key is not None: body['key'] = self.key
         if self.name is not None: body['name'] = self.name
@@ -2084,7 +2991,8 @@ class SetModelVersionTagRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'SetModelVersionTagRequest':
+    def from_dict(cls, d: Dict[str, any]) -> SetModelVersionTagRequest:
+        """Deserializes the SetModelVersionTagRequest from a dictionary."""
         return cls(key=d.get('key', None),
                    name=d.get('name', None),
                    value=d.get('value', None),
@@ -2094,11 +3002,22 @@ class SetModelVersionTagRequest:
 @dataclass
 class SetTag:
     key: str
+    """Name of the tag. Maximum size depends on storage backend. All storage backends are guaranteed to
+    support key values up to 250 bytes in size."""
+
     value: str
+    """String value of the tag being logged. Maximum size depends on storage backend. All storage
+    backends are guaranteed to support key values up to 5000 bytes in size."""
+
     run_id: Optional[str] = None
+    """ID of the run under which to log the tag. Must be provided."""
+
     run_uuid: Optional[str] = None
+    """[Deprecated, use run_id instead] ID of the run under which to log the tag. This field will be
+    removed in a future MLflow version."""
 
     def as_dict(self) -> dict:
+        """Serializes the SetTag into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.key is not None: body['key'] = self.key
         if self.run_id is not None: body['run_id'] = self.run_id
@@ -2107,7 +3026,8 @@ class SetTag:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'SetTag':
+    def from_dict(cls, d: Dict[str, any]) -> SetTag:
+        """Deserializes the SetTag from a dictionary."""
         return cls(key=d.get('key', None),
                    run_id=d.get('run_id', None),
                    run_uuid=d.get('run_uuid', None),
@@ -2115,7 +3035,15 @@ class SetTag:
 
 
 class Stage(Enum):
-    """This describes an enum"""
+    """Stage of the model version. Valid values are:
+    
+    * `None`: The initial stage of a model version.
+    
+    * `Staging`: Staging or pre-production stage.
+    
+    * `Production`: Production stage.
+    
+    * `Archived`: Archived stage."""
 
     ARCHIVED = 'Archived'
     NONE = 'None'
@@ -2124,7 +3052,12 @@ class Stage(Enum):
 
 
 class Status(Enum):
-    """This describes an enum"""
+    """The status of the model version. Valid values are: * `PENDING_REGISTRATION`: Request to register
+    a new model version is pending as server performs background tasks.
+    
+    * `FAILED_REGISTRATION`: Request to register a new model version has failed.
+    
+    * `READY`: Model version is ready for use."""
 
     FAILED_REGISTRATION = 'FAILED_REGISTRATION'
     PENDING_REGISTRATION = 'PENDING_REGISTRATION'
@@ -2136,58 +3069,90 @@ class TestRegistryWebhook:
     """Test webhook response object."""
 
     body: Optional[str] = None
+    """Body of the response from the webhook URL"""
+
     status_code: Optional[int] = None
+    """Status code returned by the webhook URL"""
 
     def as_dict(self) -> dict:
+        """Serializes the TestRegistryWebhook into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.body is not None: body['body'] = self.body
         if self.status_code is not None: body['status_code'] = self.status_code
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'TestRegistryWebhook':
+    def from_dict(cls, d: Dict[str, any]) -> TestRegistryWebhook:
+        """Deserializes the TestRegistryWebhook from a dictionary."""
         return cls(body=d.get('body', None), status_code=d.get('status_code', None))
 
 
 @dataclass
 class TestRegistryWebhookRequest:
     id: str
-    event: Optional['RegistryWebhookEvent'] = None
+    """Webhook ID"""
+
+    event: Optional[RegistryWebhookEvent] = None
+    """If `event` is specified, the test trigger uses the specified event. If `event` is not specified,
+    the test trigger uses a randomly chosen event associated with the webhook."""
 
     def as_dict(self) -> dict:
+        """Serializes the TestRegistryWebhookRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.event is not None: body['event'] = self.event.value
         if self.id is not None: body['id'] = self.id
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'TestRegistryWebhookRequest':
+    def from_dict(cls, d: Dict[str, any]) -> TestRegistryWebhookRequest:
+        """Deserializes the TestRegistryWebhookRequest from a dictionary."""
         return cls(event=_enum(d, 'event', RegistryWebhookEvent), id=d.get('id', None))
 
 
 @dataclass
 class TestRegistryWebhookResponse:
-    webhook: Optional['TestRegistryWebhook'] = None
+    webhook: Optional[TestRegistryWebhook] = None
+    """Test webhook response object."""
 
     def as_dict(self) -> dict:
+        """Serializes the TestRegistryWebhookResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.webhook: body['webhook'] = self.webhook.as_dict()
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'TestRegistryWebhookResponse':
+    def from_dict(cls, d: Dict[str, any]) -> TestRegistryWebhookResponse:
+        """Deserializes the TestRegistryWebhookResponse from a dictionary."""
         return cls(webhook=_from_dict(d, 'webhook', TestRegistryWebhook))
 
 
 @dataclass
 class TransitionModelVersionStageDatabricks:
     name: str
+    """Name of the model."""
+
     version: str
-    stage: 'Stage'
+    """Version of the model."""
+
+    stage: Stage
+    """Target stage of the transition. Valid values are:
+    
+    * `None`: The initial stage of a model version.
+    
+    * `Staging`: Staging or pre-production stage.
+    
+    * `Production`: Production stage.
+    
+    * `Archived`: Archived stage."""
+
     archive_existing_versions: bool
+    """Specifies whether to archive all current model versions in the target stage."""
+
     comment: Optional[str] = None
+    """User-provided comment on the action."""
 
     def as_dict(self) -> dict:
+        """Serializes the TransitionModelVersionStageDatabricks into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.archive_existing_versions is not None:
             body['archive_existing_versions'] = self.archive_existing_versions
@@ -2198,7 +3163,8 @@ class TransitionModelVersionStageDatabricks:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'TransitionModelVersionStageDatabricks':
+    def from_dict(cls, d: Dict[str, any]) -> TransitionModelVersionStageDatabricks:
+        """Deserializes the TransitionModelVersionStageDatabricks from a dictionary."""
         return cls(archive_existing_versions=d.get('archive_existing_versions', None),
                    comment=d.get('comment', None),
                    name=d.get('name', None),
@@ -2210,13 +3176,31 @@ class TransitionModelVersionStageDatabricks:
 class TransitionRequest:
     """Transition request details."""
 
-    available_actions: Optional['List[ActivityAction]'] = None
+    available_actions: Optional[List[ActivityAction]] = None
+    """Array of actions on the activity allowed for the current viewer."""
+
     comment: Optional[str] = None
+    """User-provided comment associated with the transition request."""
+
     creation_timestamp: Optional[int] = None
-    to_stage: Optional['Stage'] = None
+    """Creation time of the object, as a Unix timestamp in milliseconds."""
+
+    to_stage: Optional[Stage] = None
+    """Target stage of the transition (if the activity is stage transition related). Valid values are:
+    
+    * `None`: The initial stage of a model version.
+    
+    * `Staging`: Staging or pre-production stage.
+    
+    * `Production`: Production stage.
+    
+    * `Archived`: Archived stage."""
+
     user_id: Optional[str] = None
+    """The username of the user that created the object."""
 
     def as_dict(self) -> dict:
+        """Serializes the TransitionRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.available_actions: body['available_actions'] = [v.value for v in self.available_actions]
         if self.comment is not None: body['comment'] = self.comment
@@ -2226,8 +3210,9 @@ class TransitionRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'TransitionRequest':
-        return cls(available_actions=d.get('available_actions', None),
+    def from_dict(cls, d: Dict[str, any]) -> TransitionRequest:
+        """Deserializes the TransitionRequest from a dictionary."""
+        return cls(available_actions=_repeated_enum(d, 'available_actions', ActivityAction),
                    comment=d.get('comment', None),
                    creation_timestamp=d.get('creation_timestamp', None),
                    to_stage=_enum(d, 'to_stage', Stage),
@@ -2236,87 +3221,113 @@ class TransitionRequest:
 
 @dataclass
 class TransitionStageResponse:
-    model_version: Optional['ModelVersionDatabricks'] = None
+    model_version: Optional[ModelVersionDatabricks] = None
 
     def as_dict(self) -> dict:
+        """Serializes the TransitionStageResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.model_version: body['model_version'] = self.model_version.as_dict()
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'TransitionStageResponse':
+    def from_dict(cls, d: Dict[str, any]) -> TransitionStageResponse:
+        """Deserializes the TransitionStageResponse from a dictionary."""
         return cls(model_version=_from_dict(d, 'model_version', ModelVersionDatabricks))
 
 
 @dataclass
 class UpdateComment:
     id: str
+    """Unique identifier of an activity"""
+
     comment: str
+    """User-provided comment on the action."""
 
     def as_dict(self) -> dict:
+        """Serializes the UpdateComment into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.comment is not None: body['comment'] = self.comment
         if self.id is not None: body['id'] = self.id
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'UpdateComment':
+    def from_dict(cls, d: Dict[str, any]) -> UpdateComment:
+        """Deserializes the UpdateComment from a dictionary."""
         return cls(comment=d.get('comment', None), id=d.get('id', None))
 
 
 @dataclass
 class UpdateCommentResponse:
-    comment: Optional['CommentObject'] = None
+    comment: Optional[CommentObject] = None
+    """Comment details."""
 
     def as_dict(self) -> dict:
+        """Serializes the UpdateCommentResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.comment: body['comment'] = self.comment.as_dict()
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'UpdateCommentResponse':
+    def from_dict(cls, d: Dict[str, any]) -> UpdateCommentResponse:
+        """Deserializes the UpdateCommentResponse from a dictionary."""
         return cls(comment=_from_dict(d, 'comment', CommentObject))
 
 
 @dataclass
 class UpdateExperiment:
     experiment_id: str
+    """ID of the associated experiment."""
+
     new_name: Optional[str] = None
+    """If provided, the experiment's name is changed to the new name. The new name must be unique."""
 
     def as_dict(self) -> dict:
+        """Serializes the UpdateExperiment into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.experiment_id is not None: body['experiment_id'] = self.experiment_id
         if self.new_name is not None: body['new_name'] = self.new_name
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'UpdateExperiment':
+    def from_dict(cls, d: Dict[str, any]) -> UpdateExperiment:
+        """Deserializes the UpdateExperiment from a dictionary."""
         return cls(experiment_id=d.get('experiment_id', None), new_name=d.get('new_name', None))
 
 
 @dataclass
 class UpdateModelRequest:
     name: str
+    """Registered model unique name identifier."""
+
     description: Optional[str] = None
+    """If provided, updates the description for this `registered_model`."""
 
     def as_dict(self) -> dict:
+        """Serializes the UpdateModelRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.description is not None: body['description'] = self.description
         if self.name is not None: body['name'] = self.name
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'UpdateModelRequest':
+    def from_dict(cls, d: Dict[str, any]) -> UpdateModelRequest:
+        """Deserializes the UpdateModelRequest from a dictionary."""
         return cls(description=d.get('description', None), name=d.get('name', None))
 
 
 @dataclass
 class UpdateModelVersionRequest:
     name: str
+    """Name of the registered model"""
+
     version: str
+    """Model version number"""
+
     description: Optional[str] = None
+    """If provided, updates the description for this `registered_model`."""
 
     def as_dict(self) -> dict:
+        """Serializes the UpdateModelVersionRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.description is not None: body['description'] = self.description
         if self.name is not None: body['name'] = self.name
@@ -2324,7 +3335,8 @@ class UpdateModelVersionRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'UpdateModelVersionRequest':
+    def from_dict(cls, d: Dict[str, any]) -> UpdateModelVersionRequest:
+        """Deserializes the UpdateModelVersionRequest from a dictionary."""
         return cls(description=d.get('description', None),
                    name=d.get('name', None),
                    version=d.get('version', None))
@@ -2333,13 +3345,56 @@ class UpdateModelVersionRequest:
 @dataclass
 class UpdateRegistryWebhook:
     id: str
+    """Webhook ID"""
+
     description: Optional[str] = None
-    events: Optional['List[RegistryWebhookEvent]'] = None
-    http_url_spec: Optional['HttpUrlSpec'] = None
-    job_spec: Optional['JobSpec'] = None
-    status: Optional['RegistryWebhookStatus'] = None
+    """User-specified description for the webhook."""
+
+    events: Optional[List[RegistryWebhookEvent]] = None
+    """Events that can trigger a registry webhook: * `MODEL_VERSION_CREATED`: A new model version was
+    created for the associated model.
+    
+    * `MODEL_VERSION_TRANSITIONED_STAGE`: A model version’s stage was changed.
+    
+    * `TRANSITION_REQUEST_CREATED`: A user requested a model version’s stage be transitioned.
+    
+    * `COMMENT_CREATED`: A user wrote a comment on a registered model.
+    
+    * `REGISTERED_MODEL_CREATED`: A new registered model was created. This event type can only be
+    specified for a registry-wide webhook, which can be created by not specifying a model name in
+    the create request.
+    
+    * `MODEL_VERSION_TAG_SET`: A user set a tag on the model version.
+    
+    * `MODEL_VERSION_TRANSITIONED_TO_STAGING`: A model version was transitioned to staging.
+    
+    * `MODEL_VERSION_TRANSITIONED_TO_PRODUCTION`: A model version was transitioned to production.
+    
+    * `MODEL_VERSION_TRANSITIONED_TO_ARCHIVED`: A model version was archived.
+    
+    * `TRANSITION_REQUEST_TO_STAGING_CREATED`: A user requested a model version be transitioned to
+    staging.
+    
+    * `TRANSITION_REQUEST_TO_PRODUCTION_CREATED`: A user requested a model version be transitioned
+    to production.
+    
+    * `TRANSITION_REQUEST_TO_ARCHIVED_CREATED`: A user requested a model version be archived."""
+
+    http_url_spec: Optional[HttpUrlSpec] = None
+
+    job_spec: Optional[JobSpec] = None
+
+    status: Optional[RegistryWebhookStatus] = None
+    """Enable or disable triggering the webhook, or put the webhook into test mode. The default is
+    `ACTIVE`: * `ACTIVE`: Webhook is triggered when an associated event happens.
+    
+    * `DISABLED`: Webhook is not triggered.
+    
+    * `TEST_MODE`: Webhook can be triggered through the test endpoint, but is not triggered on a
+    real event."""
 
     def as_dict(self) -> dict:
+        """Serializes the UpdateRegistryWebhook into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.description is not None: body['description'] = self.description
         if self.events: body['events'] = [v.value for v in self.events]
@@ -2350,9 +3405,10 @@ class UpdateRegistryWebhook:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'UpdateRegistryWebhook':
+    def from_dict(cls, d: Dict[str, any]) -> UpdateRegistryWebhook:
+        """Deserializes the UpdateRegistryWebhook from a dictionary."""
         return cls(description=d.get('description', None),
-                   events=d.get('events', None),
+                   events=_repeated_enum(d, 'events', RegistryWebhookEvent),
                    http_url_spec=_from_dict(d, 'http_url_spec', HttpUrlSpec),
                    id=d.get('id', None),
                    job_spec=_from_dict(d, 'job_spec', JobSpec),
@@ -2362,11 +3418,20 @@ class UpdateRegistryWebhook:
 @dataclass
 class UpdateRun:
     end_time: Optional[int] = None
+    """Unix timestamp in milliseconds of when the run ended."""
+
     run_id: Optional[str] = None
+    """ID of the run to update. Must be provided."""
+
     run_uuid: Optional[str] = None
-    status: Optional['UpdateRunStatus'] = None
+    """[Deprecated, use run_id instead] ID of the run to update.. This field will be removed in a
+    future MLflow version."""
+
+    status: Optional[UpdateRunStatus] = None
+    """Updated status of the run."""
 
     def as_dict(self) -> dict:
+        """Serializes the UpdateRun into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.end_time is not None: body['end_time'] = self.end_time
         if self.run_id is not None: body['run_id'] = self.run_id
@@ -2375,7 +3440,8 @@ class UpdateRun:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'UpdateRun':
+    def from_dict(cls, d: Dict[str, any]) -> UpdateRun:
+        """Deserializes the UpdateRun from a dictionary."""
         return cls(end_time=d.get('end_time', None),
                    run_id=d.get('run_id', None),
                    run_uuid=d.get('run_uuid', None),
@@ -2384,15 +3450,18 @@ class UpdateRun:
 
 @dataclass
 class UpdateRunResponse:
-    run_info: Optional['RunInfo'] = None
+    run_info: Optional[RunInfo] = None
+    """Updated metadata of the run."""
 
     def as_dict(self) -> dict:
+        """Serializes the UpdateRunResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.run_info: body['run_info'] = self.run_info.as_dict()
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'UpdateRunResponse':
+    def from_dict(cls, d: Dict[str, any]) -> UpdateRunResponse:
+        """Deserializes the UpdateRunResponse from a dictionary."""
         return cls(run_info=_from_dict(d, 'run_info', RunInfo))
 
 
@@ -2523,7 +3592,8 @@ class ExperimentsAPI:
         """Delete runs by creation time.
         
         Bulk delete runs in an experiment that were created prior to or at the specified timestamp. Deletes at
-        most max_runs per request.
+        most max_runs per request. To call this API from a Databricks Notebook in Python, you can use the
+        client code snippet on https://learn.microsoft.com/en-us/azure/databricks/mlflow/runs#bulk-delete.
         
         :param experiment_id: str
           The ID of the experiment containing the runs to delete.
@@ -2603,38 +3673,6 @@ class ExperimentsAPI:
         res = self._api.do('GET', '/api/2.0/mlflow/experiments/get', query=query, headers=headers)
         return GetExperimentResponse.from_dict(res)
 
-    def get_experiment_permission_levels(self, experiment_id: str) -> GetExperimentPermissionLevelsResponse:
-        """Get experiment permission levels.
-        
-        Gets the permission levels that a user can have on an object.
-        
-        :param experiment_id: str
-          The experiment for which to get or manage permissions.
-        
-        :returns: :class:`GetExperimentPermissionLevelsResponse`
-        """
-
-        headers = {'Accept': 'application/json', }
-        res = self._api.do('GET',
-                           f'/api/2.0/permissions/experiments/{experiment_id}/permissionLevels',
-                           headers=headers)
-        return GetExperimentPermissionLevelsResponse.from_dict(res)
-
-    def get_experiment_permissions(self, experiment_id: str) -> ExperimentPermissions:
-        """Get experiment permissions.
-        
-        Gets the permissions of an experiment. Experiments can inherit permissions from their root object.
-        
-        :param experiment_id: str
-          The experiment for which to get or manage permissions.
-        
-        :returns: :class:`ExperimentPermissions`
-        """
-
-        headers = {'Accept': 'application/json', }
-        res = self._api.do('GET', f'/api/2.0/permissions/experiments/{experiment_id}', headers=headers)
-        return ExperimentPermissions.from_dict(res)
-
     def get_history(self,
                     metric_key: str,
                     *,
@@ -2679,6 +3717,38 @@ class ExperimentsAPI:
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']
+
+    def get_permission_levels(self, experiment_id: str) -> GetExperimentPermissionLevelsResponse:
+        """Get experiment permission levels.
+        
+        Gets the permission levels that a user can have on an object.
+        
+        :param experiment_id: str
+          The experiment for which to get or manage permissions.
+        
+        :returns: :class:`GetExperimentPermissionLevelsResponse`
+        """
+
+        headers = {'Accept': 'application/json', }
+        res = self._api.do('GET',
+                           f'/api/2.0/permissions/experiments/{experiment_id}/permissionLevels',
+                           headers=headers)
+        return GetExperimentPermissionLevelsResponse.from_dict(res)
+
+    def get_permissions(self, experiment_id: str) -> ExperimentPermissions:
+        """Get experiment permissions.
+        
+        Gets the permissions of an experiment. Experiments can inherit permissions from their root object.
+        
+        :param experiment_id: str
+          The experiment for which to get or manage permissions.
+        
+        :returns: :class:`ExperimentPermissions`
+        """
+
+        headers = {'Accept': 'application/json', }
+        res = self._api.do('GET', f'/api/2.0/permissions/experiments/{experiment_id}', headers=headers)
+        return ExperimentPermissions.from_dict(res)
 
     def get_run(self, run_id: str, *, run_uuid: Optional[str] = None) -> GetRunResponse:
         """Get a run.
@@ -2997,7 +4067,8 @@ class ExperimentsAPI:
         """Restore runs by deletion time.
         
         Bulk restore runs in an experiment that were deleted no earlier than the specified timestamp. Restores
-        at most max_runs per request.
+        at most max_runs per request. To call this API from a Databricks Notebook in Python, you can use the
+        client code snippet on https://learn.microsoft.com/en-us/azure/databricks/mlflow/runs#bulk-restore.
         
         :param experiment_id: str
           The ID of the experiment containing the runs to restore.
@@ -3123,7 +4194,30 @@ class ExperimentsAPI:
                 return
             body['page_token'] = json['next_page_token']
 
-    def set_experiment_permissions(
+    def set_experiment_tag(self, experiment_id: str, key: str, value: str):
+        """Set a tag.
+        
+        Sets a tag on an experiment. Experiment tags are metadata that can be updated.
+        
+        :param experiment_id: str
+          ID of the experiment under which to log the tag. Must be provided.
+        :param key: str
+          Name of the tag. Maximum size depends on storage backend. All storage backends are guaranteed to
+          support key values up to 250 bytes in size.
+        :param value: str
+          String value of the tag being logged. Maximum size depends on storage backend. All storage backends
+          are guaranteed to support key values up to 5000 bytes in size.
+        
+        
+        """
+        body = {}
+        if experiment_id is not None: body['experiment_id'] = experiment_id
+        if key is not None: body['key'] = key
+        if value is not None: body['value'] = value
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        self._api.do('POST', '/api/2.0/mlflow/experiments/set-experiment-tag', body=body, headers=headers)
+
+    def set_permissions(
             self,
             experiment_id: str,
             *,
@@ -3148,29 +4242,6 @@ class ExperimentsAPI:
                            body=body,
                            headers=headers)
         return ExperimentPermissions.from_dict(res)
-
-    def set_experiment_tag(self, experiment_id: str, key: str, value: str):
-        """Set a tag.
-        
-        Sets a tag on an experiment. Experiment tags are metadata that can be updated.
-        
-        :param experiment_id: str
-          ID of the experiment under which to log the tag. Must be provided.
-        :param key: str
-          Name of the tag. Maximum size depends on storage backend. All storage backends are guaranteed to
-          support key values up to 250 bytes in size.
-        :param value: str
-          String value of the tag being logged. Maximum size depends on storage backend. All storage backends
-          are guaranteed to support key values up to 5000 bytes in size.
-        
-        
-        """
-        body = {}
-        if experiment_id is not None: body['experiment_id'] = experiment_id
-        if key is not None: body['key'] = key
-        if value is not None: body['value'] = value
-        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        self._api.do('POST', '/api/2.0/mlflow/experiments/set-experiment-tag', body=body, headers=headers)
 
     def set_tag(self, key: str, value: str, *, run_id: Optional[str] = None, run_uuid: Optional[str] = None):
         """Set a tag.
@@ -3217,7 +4288,7 @@ class ExperimentsAPI:
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('POST', '/api/2.0/mlflow/experiments/update', body=body, headers=headers)
 
-    def update_experiment_permissions(
+    def update_permissions(
             self,
             experiment_id: str,
             *,
@@ -3276,8 +4347,13 @@ class ExperimentsAPI:
 
 
 class ModelRegistryAPI:
-    """MLflow Model Registry is a centralized model repository and a UI and set of APIs that enable you to manage
-    the full lifecycle of MLflow Models."""
+    """Note: This API reference documents APIs for the Workspace Model Registry. Databricks recommends using
+    [Models in Unity Catalog](/api/workspace/registeredmodels) instead. Models in Unity Catalog provides
+    centralized model governance, cross-workspace access, lineage, and deployment. Workspace Model Registry
+    will be deprecated in the future.
+    
+    The Workspace Model Registry is a centralized model repository and a UI and set of APIs that enable you to
+    manage the full lifecycle of MLflow Models."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -3504,7 +4580,13 @@ class ModelRegistryAPI:
         :param model_name: str (optional)
           Name of the model whose events would trigger this webhook.
         :param status: :class:`RegistryWebhookStatus` (optional)
-          This describes an enum
+          Enable or disable triggering the webhook, or put the webhook into test mode. The default is
+          `ACTIVE`: * `ACTIVE`: Webhook is triggered when an associated event happens.
+          
+          * `DISABLED`: Webhook is not triggered.
+          
+          * `TEST_MODE`: Webhook can be triggered through the test endpoint, but is not triggered on a real
+          event.
         
         :returns: :class:`CreateWebhookResponse`
         """
@@ -3693,7 +4775,8 @@ class ModelRegistryAPI:
                             '/api/2.0/mlflow/registered-models/get-latest-versions',
                             body=body,
                             headers=headers)
-        return [ModelVersion.from_dict(v) for v in json.get('model_versions', [])]
+        parsed = GetLatestVersionsResponse.from_dict(json).model_versions
+        return parsed if parsed is not None else []
 
     def get_model(self, name: str) -> GetModelResponse:
         """Get model.
@@ -3762,8 +4845,7 @@ class ModelRegistryAPI:
                            headers=headers)
         return GetModelVersionDownloadUriResponse.from_dict(res)
 
-    def get_registered_model_permission_levels(
-            self, registered_model_id: str) -> GetRegisteredModelPermissionLevelsResponse:
+    def get_permission_levels(self, registered_model_id: str) -> GetRegisteredModelPermissionLevelsResponse:
         """Get registered model permission levels.
         
         Gets the permission levels that a user can have on an object.
@@ -3780,7 +4862,7 @@ class ModelRegistryAPI:
                            headers=headers)
         return GetRegisteredModelPermissionLevelsResponse.from_dict(res)
 
-    def get_registered_model_permissions(self, registered_model_id: str) -> RegisteredModelPermissions:
+    def get_permissions(self, registered_model_id: str) -> RegisteredModelPermissions:
         """Get registered model permissions.
         
         Gets the permissions of a registered model. Registered models can inherit permissions from their root
@@ -3847,7 +4929,8 @@ class ModelRegistryAPI:
         if version is not None: query['version'] = version
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/mlflow/transition-requests/list', query=query, headers=headers)
-        return [Activity.from_dict(v) for v in json.get('requests', [])]
+        parsed = ListTransitionRequestsResponse.from_dict(json).requests
+        return parsed if parsed is not None else []
 
     def list_webhooks(self,
                       *,
@@ -4084,7 +5167,7 @@ class ModelRegistryAPI:
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('POST', '/api/2.0/mlflow/model-versions/set-tag', body=body, headers=headers)
 
-    def set_registered_model_permissions(
+    def set_permissions(
         self,
         registered_model_id: str,
         *,
@@ -4243,7 +5326,7 @@ class ModelRegistryAPI:
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('PATCH', '/api/2.0/mlflow/model-versions/update', body=body, headers=headers)
 
-    def update_registered_model_permissions(
+    def update_permissions(
         self,
         registered_model_id: str,
         *,
@@ -4320,7 +5403,13 @@ class ModelRegistryAPI:
         :param http_url_spec: :class:`HttpUrlSpec` (optional)
         :param job_spec: :class:`JobSpec` (optional)
         :param status: :class:`RegistryWebhookStatus` (optional)
-          This describes an enum
+          Enable or disable triggering the webhook, or put the webhook into test mode. The default is
+          `ACTIVE`: * `ACTIVE`: Webhook is triggered when an associated event happens.
+          
+          * `DISABLED`: Webhook is not triggered.
+          
+          * `TEST_MODE`: Webhook can be triggered through the test endpoint, but is not triggered on a real
+          event.
         
         
         """

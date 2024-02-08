@@ -9,7 +9,7 @@
 project = 'Databricks SDK for Python'
 copyright = '2023, Databricks'
 author = 'Serge Smertin'
-release = 'alpha'
+release = 'beta'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -18,7 +18,8 @@ release = 'alpha'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx.ext.autodoc', 'sphinx.ext.autosummary', 'myst_parser', # pip install myst-parser
+    'sphinx.ext.autodoc', 'sphinx.ext.autosummary', 'myst_parser',
+    'db_sphinx_ext'
 ]
 
 templates_path = ['_templates']
@@ -36,8 +37,13 @@ html_theme_options = {
     'description': 'Databricks SDK for Python',
     'fixed_sidebar': 'true',
     'logo_text_align': 'center',
-    'github_banner': 'true',
     'github_button': 'true',
     'show_related': 'true',
     'sidebar_collapse': 'true',
 }
+
+autodoc_default_options = {
+    'member-order': 'bysource',
+}
+
+toc_object_entries = False

@@ -1,11 +1,13 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
+from __future__ import annotations
+
 import logging
 from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
-from ._internal import _enum, _from_dict, _repeated
+from ._internal import _enum, _from_dict, _repeated_dict, _repeated_enum
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -15,11 +17,19 @@ _LOG = logging.getLogger('databricks.sdk')
 @dataclass
 class AccessControlRequest:
     group_name: Optional[str] = None
-    permission_level: Optional['PermissionLevel'] = None
+    """name of the group"""
+
+    permission_level: Optional[PermissionLevel] = None
+    """Permission level"""
+
     service_principal_name: Optional[str] = None
+    """application ID of a service principal"""
+
     user_name: Optional[str] = None
+    """name of the user"""
 
     def as_dict(self) -> dict:
+        """Serializes the AccessControlRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.group_name is not None: body['group_name'] = self.group_name
         if self.permission_level is not None: body['permission_level'] = self.permission_level.value
@@ -29,7 +39,8 @@ class AccessControlRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'AccessControlRequest':
+    def from_dict(cls, d: Dict[str, any]) -> AccessControlRequest:
+        """Deserializes the AccessControlRequest from a dictionary."""
         return cls(group_name=d.get('group_name', None),
                    permission_level=_enum(d, 'permission_level', PermissionLevel),
                    service_principal_name=d.get('service_principal_name', None),
@@ -38,13 +49,23 @@ class AccessControlRequest:
 
 @dataclass
 class AccessControlResponse:
-    all_permissions: Optional['List[Permission]'] = None
+    all_permissions: Optional[List[Permission]] = None
+    """All permissions."""
+
     display_name: Optional[str] = None
+    """Display name of the user or service principal."""
+
     group_name: Optional[str] = None
+    """name of the group"""
+
     service_principal_name: Optional[str] = None
+    """Name of the service principal."""
+
     user_name: Optional[str] = None
+    """name of the user"""
 
     def as_dict(self) -> dict:
+        """Serializes the AccessControlResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.all_permissions: body['all_permissions'] = [v.as_dict() for v in self.all_permissions]
         if self.display_name is not None: body['display_name'] = self.display_name
@@ -55,8 +76,9 @@ class AccessControlResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'AccessControlResponse':
-        return cls(all_permissions=_repeated(d, 'all_permissions', Permission),
+    def from_dict(cls, d: Dict[str, any]) -> AccessControlResponse:
+        """Deserializes the AccessControlResponse from a dictionary."""
+        return cls(all_permissions=_repeated_dict(d, 'all_permissions', Permission),
                    display_name=d.get('display_name', None),
                    group_name=d.get('group_name', None),
                    service_principal_name=d.get('service_principal_name', None),
@@ -66,11 +88,15 @@ class AccessControlResponse:
 @dataclass
 class ComplexValue:
     display: Optional[str] = None
+
     primary: Optional[bool] = None
+
     type: Optional[str] = None
+
     value: Optional[str] = None
 
     def as_dict(self) -> dict:
+        """Serializes the ComplexValue into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.display is not None: body['display'] = self.display
         if self.primary is not None: body['primary'] = self.primary
@@ -79,7 +105,8 @@ class ComplexValue:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ComplexValue':
+    def from_dict(cls, d: Dict[str, any]) -> ComplexValue:
+        """Deserializes the ComplexValue from a dictionary."""
         return cls(display=d.get('display', None),
                    primary=d.get('primary', None),
                    type=d.get('type', None),
@@ -88,74 +115,112 @@ class ComplexValue:
 
 @dataclass
 class GetAssignableRolesForResourceResponse:
-    roles: Optional['List[Role]'] = None
+    roles: Optional[List[Role]] = None
 
     def as_dict(self) -> dict:
+        """Serializes the GetAssignableRolesForResourceResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.roles: body['roles'] = [v.as_dict() for v in self.roles]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'GetAssignableRolesForResourceResponse':
-        return cls(roles=_repeated(d, 'roles', Role))
+    def from_dict(cls, d: Dict[str, any]) -> GetAssignableRolesForResourceResponse:
+        """Deserializes the GetAssignableRolesForResourceResponse from a dictionary."""
+        return cls(roles=_repeated_dict(d, 'roles', Role))
 
 
 @dataclass
 class GetPasswordPermissionLevelsResponse:
-    permission_levels: Optional['List[PasswordPermissionsDescription]'] = None
+    permission_levels: Optional[List[PasswordPermissionsDescription]] = None
+    """Specific permission levels"""
 
     def as_dict(self) -> dict:
+        """Serializes the GetPasswordPermissionLevelsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'GetPasswordPermissionLevelsResponse':
-        return cls(permission_levels=_repeated(d, 'permission_levels', PasswordPermissionsDescription))
+    def from_dict(cls, d: Dict[str, any]) -> GetPasswordPermissionLevelsResponse:
+        """Deserializes the GetPasswordPermissionLevelsResponse from a dictionary."""
+        return cls(permission_levels=_repeated_dict(d, 'permission_levels', PasswordPermissionsDescription))
 
 
 @dataclass
 class GetPermissionLevelsResponse:
-    permission_levels: Optional['List[PermissionsDescription]'] = None
+    permission_levels: Optional[List[PermissionsDescription]] = None
+    """Specific permission levels"""
 
     def as_dict(self) -> dict:
+        """Serializes the GetPermissionLevelsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'GetPermissionLevelsResponse':
-        return cls(permission_levels=_repeated(d, 'permission_levels', PermissionsDescription))
+    def from_dict(cls, d: Dict[str, any]) -> GetPermissionLevelsResponse:
+        """Deserializes the GetPermissionLevelsResponse from a dictionary."""
+        return cls(permission_levels=_repeated_dict(d, 'permission_levels', PermissionsDescription))
+
+
+class GetSortOrder(Enum):
+
+    ASCENDING = 'ascending'
+    DESCENDING = 'descending'
 
 
 @dataclass
 class GrantRule:
     role: str
-    principals: Optional['List[str]'] = None
+    """Role that is assigned to the list of principals."""
+
+    principals: Optional[List[str]] = None
+    """Principals this grant rule applies to."""
 
     def as_dict(self) -> dict:
+        """Serializes the GrantRule into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.principals: body['principals'] = [v for v in self.principals]
         if self.role is not None: body['role'] = self.role
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'GrantRule':
+    def from_dict(cls, d: Dict[str, any]) -> GrantRule:
+        """Deserializes the GrantRule from a dictionary."""
         return cls(principals=d.get('principals', None), role=d.get('role', None))
 
 
 @dataclass
 class Group:
     display_name: Optional[str] = None
-    entitlements: Optional['List[ComplexValue]'] = None
+    """String that represents a human-readable group name"""
+
+    entitlements: Optional[List[ComplexValue]] = None
+    """Entitlements assigned to the group. See [assigning entitlements] for a full list of supported
+    values.
+    
+    [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements"""
+
     external_id: Optional[str] = None
-    groups: Optional['List[ComplexValue]'] = None
+
+    groups: Optional[List[ComplexValue]] = None
+
     id: Optional[str] = None
-    members: Optional['List[ComplexValue]'] = None
-    meta: Optional['ResourceMeta'] = None
-    roles: Optional['List[ComplexValue]'] = None
+    """Databricks group ID"""
+
+    members: Optional[List[ComplexValue]] = None
+
+    meta: Optional[ResourceMeta] = None
+    """Container for the group identifier. Workspace local versus account."""
+
+    roles: Optional[List[ComplexValue]] = None
+    """Corresponds to AWS instance profile/arn role."""
+
+    schemas: Optional[List[GroupSchema]] = None
+    """The schema of the group."""
 
     def as_dict(self) -> dict:
+        """Serializes the Group into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.display_name is not None: body['displayName'] = self.display_name
         if self.entitlements: body['entitlements'] = [v.as_dict() for v in self.entitlements]
@@ -165,62 +230,103 @@ class Group:
         if self.members: body['members'] = [v.as_dict() for v in self.members]
         if self.meta: body['meta'] = self.meta.as_dict()
         if self.roles: body['roles'] = [v.as_dict() for v in self.roles]
+        if self.schemas: body['schemas'] = [v.value for v in self.schemas]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'Group':
+    def from_dict(cls, d: Dict[str, any]) -> Group:
+        """Deserializes the Group from a dictionary."""
         return cls(display_name=d.get('displayName', None),
-                   entitlements=_repeated(d, 'entitlements', ComplexValue),
+                   entitlements=_repeated_dict(d, 'entitlements', ComplexValue),
                    external_id=d.get('externalId', None),
-                   groups=_repeated(d, 'groups', ComplexValue),
+                   groups=_repeated_dict(d, 'groups', ComplexValue),
                    id=d.get('id', None),
-                   members=_repeated(d, 'members', ComplexValue),
+                   members=_repeated_dict(d, 'members', ComplexValue),
                    meta=_from_dict(d, 'meta', ResourceMeta),
-                   roles=_repeated(d, 'roles', ComplexValue))
+                   roles=_repeated_dict(d, 'roles', ComplexValue),
+                   schemas=_repeated_enum(d, 'schemas', GroupSchema))
+
+
+class GroupSchema(Enum):
+
+    URN_IETF_PARAMS_SCIM_SCHEMAS_CORE_2_0_GROUP = 'urn:ietf:params:scim:schemas:core:2.0:Group'
 
 
 @dataclass
 class ListGroupsResponse:
     items_per_page: Optional[int] = None
-    resources: Optional['List[Group]'] = None
+    """Total results returned in the response."""
+
+    resources: Optional[List[Group]] = None
+    """User objects returned in the response."""
+
+    schemas: Optional[List[ListResponseSchema]] = None
+    """The schema of the service principal."""
+
     start_index: Optional[int] = None
+    """Starting index of all the results that matched the request filters. First item is number 1."""
+
     total_results: Optional[int] = None
+    """Total results that match the request filters."""
 
     def as_dict(self) -> dict:
+        """Serializes the ListGroupsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.items_per_page is not None: body['itemsPerPage'] = self.items_per_page
         if self.resources: body['Resources'] = [v.as_dict() for v in self.resources]
+        if self.schemas: body['schemas'] = [v.value for v in self.schemas]
         if self.start_index is not None: body['startIndex'] = self.start_index
         if self.total_results is not None: body['totalResults'] = self.total_results
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ListGroupsResponse':
+    def from_dict(cls, d: Dict[str, any]) -> ListGroupsResponse:
+        """Deserializes the ListGroupsResponse from a dictionary."""
         return cls(items_per_page=d.get('itemsPerPage', None),
-                   resources=_repeated(d, 'Resources', Group),
+                   resources=_repeated_dict(d, 'Resources', Group),
+                   schemas=_repeated_enum(d, 'schemas', ListResponseSchema),
                    start_index=d.get('startIndex', None),
                    total_results=d.get('totalResults', None))
+
+
+class ListResponseSchema(Enum):
+
+    URN_IETF_PARAMS_SCIM_API_MESSAGES_2_0_LIST_RESPONSE = 'urn:ietf:params:scim:api:messages:2.0:ListResponse'
 
 
 @dataclass
 class ListServicePrincipalResponse:
     items_per_page: Optional[int] = None
-    resources: Optional['List[ServicePrincipal]'] = None
+    """Total results returned in the response."""
+
+    resources: Optional[List[ServicePrincipal]] = None
+    """User objects returned in the response."""
+
+    schemas: Optional[List[ListResponseSchema]] = None
+    """The schema of the List response."""
+
     start_index: Optional[int] = None
+    """Starting index of all the results that matched the request filters. First item is number 1."""
+
     total_results: Optional[int] = None
+    """Total results that match the request filters."""
 
     def as_dict(self) -> dict:
+        """Serializes the ListServicePrincipalResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.items_per_page is not None: body['itemsPerPage'] = self.items_per_page
         if self.resources: body['Resources'] = [v.as_dict() for v in self.resources]
+        if self.schemas: body['schemas'] = [v.value for v in self.schemas]
         if self.start_index is not None: body['startIndex'] = self.start_index
         if self.total_results is not None: body['totalResults'] = self.total_results
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ListServicePrincipalResponse':
+    def from_dict(cls, d: Dict[str, any]) -> ListServicePrincipalResponse:
+        """Deserializes the ListServicePrincipalResponse from a dictionary."""
         return cls(items_per_page=d.get('itemsPerPage', None),
-                   resources=_repeated(d, 'Resources', ServicePrincipal),
+                   resources=_repeated_dict(d, 'Resources', ServicePrincipal),
+                   schemas=_repeated_enum(d, 'schemas', ListResponseSchema),
                    start_index=d.get('startIndex', None),
                    total_results=d.get('totalResults', None))
 
@@ -234,22 +340,36 @@ class ListSortOrder(Enum):
 @dataclass
 class ListUsersResponse:
     items_per_page: Optional[int] = None
-    resources: Optional['List[User]'] = None
+    """Total results returned in the response."""
+
+    resources: Optional[List[User]] = None
+    """User objects returned in the response."""
+
+    schemas: Optional[List[ListResponseSchema]] = None
+    """The schema of the List response."""
+
     start_index: Optional[int] = None
+    """Starting index of all the results that matched the request filters. First item is number 1."""
+
     total_results: Optional[int] = None
+    """Total results that match the request filters."""
 
     def as_dict(self) -> dict:
+        """Serializes the ListUsersResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.items_per_page is not None: body['itemsPerPage'] = self.items_per_page
         if self.resources: body['Resources'] = [v.as_dict() for v in self.resources]
+        if self.schemas: body['schemas'] = [v.value for v in self.schemas]
         if self.start_index is not None: body['startIndex'] = self.start_index
         if self.total_results is not None: body['totalResults'] = self.total_results
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ListUsersResponse':
+    def from_dict(cls, d: Dict[str, any]) -> ListUsersResponse:
+        """Deserializes the ListUsersResponse from a dictionary."""
         return cls(items_per_page=d.get('itemsPerPage', None),
-                   resources=_repeated(d, 'Resources', User),
+                   resources=_repeated_dict(d, 'Resources', User),
+                   schemas=_repeated_enum(d, 'schemas', ListResponseSchema),
                    start_index=d.get('startIndex', None),
                    total_results=d.get('totalResults', None))
 
@@ -257,26 +377,34 @@ class ListUsersResponse:
 @dataclass
 class Name:
     family_name: Optional[str] = None
+    """Family name of the Databricks user."""
+
     given_name: Optional[str] = None
+    """Given name of the Databricks user."""
 
     def as_dict(self) -> dict:
+        """Serializes the Name into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.family_name is not None: body['familyName'] = self.family_name
         if self.given_name is not None: body['givenName'] = self.given_name
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'Name':
+    def from_dict(cls, d: Dict[str, any]) -> Name:
+        """Deserializes the Name from a dictionary."""
         return cls(family_name=d.get('familyName', None), given_name=d.get('givenName', None))
 
 
 @dataclass
 class ObjectPermissions:
-    access_control_list: Optional['List[AccessControlResponse]'] = None
+    access_control_list: Optional[List[AccessControlResponse]] = None
+
     object_id: Optional[str] = None
+
     object_type: Optional[str] = None
 
     def as_dict(self) -> dict:
+        """Serializes the ObjectPermissions into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.access_control_list:
             body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
@@ -285,8 +413,9 @@ class ObjectPermissions:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ObjectPermissions':
-        return cls(access_control_list=_repeated(d, 'access_control_list', AccessControlResponse),
+    def from_dict(cls, d: Dict[str, any]) -> ObjectPermissions:
+        """Deserializes the ObjectPermissions from a dictionary."""
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list', AccessControlResponse),
                    object_id=d.get('object_id', None),
                    object_type=d.get('object_type', None))
 
@@ -294,10 +423,15 @@ class ObjectPermissions:
 @dataclass
 class PartialUpdate:
     id: Optional[str] = None
-    operations: Optional['List[Patch]'] = None
-    schemas: Optional['List[PatchSchema]'] = None
+    """Unique ID for a user in the Databricks workspace."""
+
+    operations: Optional[List[Patch]] = None
+
+    schemas: Optional[List[PatchSchema]] = None
+    """The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"]."""
 
     def as_dict(self) -> dict:
+        """Serializes the PartialUpdate into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.id is not None: body['id'] = self.id
         if self.operations: body['Operations'] = [v.as_dict() for v in self.operations]
@@ -305,20 +439,29 @@ class PartialUpdate:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'PartialUpdate':
+    def from_dict(cls, d: Dict[str, any]) -> PartialUpdate:
+        """Deserializes the PartialUpdate from a dictionary."""
         return cls(id=d.get('id', None),
-                   operations=_repeated(d, 'Operations', Patch),
-                   schemas=d.get('schemas', None))
+                   operations=_repeated_dict(d, 'Operations', Patch),
+                   schemas=_repeated_enum(d, 'schemas', PatchSchema))
 
 
 @dataclass
 class PasswordAccessControlRequest:
     group_name: Optional[str] = None
-    permission_level: Optional['PasswordPermissionLevel'] = None
+    """name of the group"""
+
+    permission_level: Optional[PasswordPermissionLevel] = None
+    """Permission level"""
+
     service_principal_name: Optional[str] = None
+    """application ID of a service principal"""
+
     user_name: Optional[str] = None
+    """name of the user"""
 
     def as_dict(self) -> dict:
+        """Serializes the PasswordAccessControlRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.group_name is not None: body['group_name'] = self.group_name
         if self.permission_level is not None: body['permission_level'] = self.permission_level.value
@@ -328,7 +471,8 @@ class PasswordAccessControlRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'PasswordAccessControlRequest':
+    def from_dict(cls, d: Dict[str, any]) -> PasswordAccessControlRequest:
+        """Deserializes the PasswordAccessControlRequest from a dictionary."""
         return cls(group_name=d.get('group_name', None),
                    permission_level=_enum(d, 'permission_level', PasswordPermissionLevel),
                    service_principal_name=d.get('service_principal_name', None),
@@ -337,13 +481,23 @@ class PasswordAccessControlRequest:
 
 @dataclass
 class PasswordAccessControlResponse:
-    all_permissions: Optional['List[PasswordPermission]'] = None
+    all_permissions: Optional[List[PasswordPermission]] = None
+    """All permissions."""
+
     display_name: Optional[str] = None
+    """Display name of the user or service principal."""
+
     group_name: Optional[str] = None
+    """name of the group"""
+
     service_principal_name: Optional[str] = None
+    """Name of the service principal."""
+
     user_name: Optional[str] = None
+    """name of the user"""
 
     def as_dict(self) -> dict:
+        """Serializes the PasswordAccessControlResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.all_permissions: body['all_permissions'] = [v.as_dict() for v in self.all_permissions]
         if self.display_name is not None: body['display_name'] = self.display_name
@@ -354,8 +508,9 @@ class PasswordAccessControlResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'PasswordAccessControlResponse':
-        return cls(all_permissions=_repeated(d, 'all_permissions', PasswordPermission),
+    def from_dict(cls, d: Dict[str, any]) -> PasswordAccessControlResponse:
+        """Deserializes the PasswordAccessControlResponse from a dictionary."""
+        return cls(all_permissions=_repeated_dict(d, 'all_permissions', PasswordPermission),
                    display_name=d.get('display_name', None),
                    group_name=d.get('group_name', None),
                    service_principal_name=d.get('service_principal_name', None),
@@ -365,10 +520,14 @@ class PasswordAccessControlResponse:
 @dataclass
 class PasswordPermission:
     inherited: Optional[bool] = None
-    inherited_from_object: Optional['List[str]'] = None
-    permission_level: Optional['PasswordPermissionLevel'] = None
+
+    inherited_from_object: Optional[List[str]] = None
+
+    permission_level: Optional[PasswordPermissionLevel] = None
+    """Permission level"""
 
     def as_dict(self) -> dict:
+        """Serializes the PasswordPermission into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.inherited is not None: body['inherited'] = self.inherited
         if self.inherited_from_object: body['inherited_from_object'] = [v for v in self.inherited_from_object]
@@ -376,7 +535,8 @@ class PasswordPermission:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'PasswordPermission':
+    def from_dict(cls, d: Dict[str, any]) -> PasswordPermission:
+        """Deserializes the PasswordPermission from a dictionary."""
         return cls(inherited=d.get('inherited', None),
                    inherited_from_object=d.get('inherited_from_object', None),
                    permission_level=_enum(d, 'permission_level', PasswordPermissionLevel))
@@ -390,11 +550,14 @@ class PasswordPermissionLevel(Enum):
 
 @dataclass
 class PasswordPermissions:
-    access_control_list: Optional['List[PasswordAccessControlResponse]'] = None
+    access_control_list: Optional[List[PasswordAccessControlResponse]] = None
+
     object_id: Optional[str] = None
+
     object_type: Optional[str] = None
 
     def as_dict(self) -> dict:
+        """Serializes the PasswordPermissions into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.access_control_list:
             body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
@@ -403,8 +566,10 @@ class PasswordPermissions:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'PasswordPermissions':
-        return cls(access_control_list=_repeated(d, 'access_control_list', PasswordAccessControlResponse),
+    def from_dict(cls, d: Dict[str, any]) -> PasswordPermissions:
+        """Deserializes the PasswordPermissions from a dictionary."""
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list',
+                                                      PasswordAccessControlResponse),
                    object_id=d.get('object_id', None),
                    object_type=d.get('object_type', None))
 
@@ -412,42 +577,54 @@ class PasswordPermissions:
 @dataclass
 class PasswordPermissionsDescription:
     description: Optional[str] = None
-    permission_level: Optional['PasswordPermissionLevel'] = None
+
+    permission_level: Optional[PasswordPermissionLevel] = None
+    """Permission level"""
 
     def as_dict(self) -> dict:
+        """Serializes the PasswordPermissionsDescription into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.description is not None: body['description'] = self.description
         if self.permission_level is not None: body['permission_level'] = self.permission_level.value
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'PasswordPermissionsDescription':
+    def from_dict(cls, d: Dict[str, any]) -> PasswordPermissionsDescription:
+        """Deserializes the PasswordPermissionsDescription from a dictionary."""
         return cls(description=d.get('description', None),
                    permission_level=_enum(d, 'permission_level', PasswordPermissionLevel))
 
 
 @dataclass
 class PasswordPermissionsRequest:
-    access_control_list: Optional['List[PasswordAccessControlRequest]'] = None
+    access_control_list: Optional[List[PasswordAccessControlRequest]] = None
 
     def as_dict(self) -> dict:
+        """Serializes the PasswordPermissionsRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.access_control_list:
             body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'PasswordPermissionsRequest':
-        return cls(access_control_list=_repeated(d, 'access_control_list', PasswordAccessControlRequest))
+    def from_dict(cls, d: Dict[str, any]) -> PasswordPermissionsRequest:
+        """Deserializes the PasswordPermissionsRequest from a dictionary."""
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list', PasswordAccessControlRequest))
 
 
 @dataclass
 class Patch:
-    op: Optional['PatchOp'] = None
+    op: Optional[PatchOp] = None
+    """Type of patch operation."""
+
     path: Optional[str] = None
+    """Selection of patch operation"""
+
     value: Optional[Any] = None
+    """Value to modify"""
 
     def as_dict(self) -> dict:
+        """Serializes the Patch into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.op is not None: body['op'] = self.op.value
         if self.path is not None: body['path'] = self.path
@@ -455,7 +632,8 @@ class Patch:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'Patch':
+    def from_dict(cls, d: Dict[str, any]) -> Patch:
+        """Deserializes the Patch from a dictionary."""
         return cls(op=_enum(d, 'op', PatchOp), path=d.get('path', None), value=d.get('value', None))
 
 
@@ -475,10 +653,14 @@ class PatchSchema(Enum):
 @dataclass
 class Permission:
     inherited: Optional[bool] = None
-    inherited_from_object: Optional['List[str]'] = None
-    permission_level: Optional['PermissionLevel'] = None
+
+    inherited_from_object: Optional[List[str]] = None
+
+    permission_level: Optional[PermissionLevel] = None
+    """Permission level"""
 
     def as_dict(self) -> dict:
+        """Serializes the Permission into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.inherited is not None: body['inherited'] = self.inherited
         if self.inherited_from_object: body['inherited_from_object'] = [v for v in self.inherited_from_object]
@@ -486,7 +668,8 @@ class Permission:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'Permission':
+    def from_dict(cls, d: Dict[str, any]) -> Permission:
+        """Deserializes the Permission from a dictionary."""
         return cls(inherited=d.get('inherited', None),
                    inherited_from_object=d.get('inherited_from_object', None),
                    permission_level=_enum(d, 'permission_level', PermissionLevel))
@@ -495,10 +678,16 @@ class Permission:
 @dataclass
 class PermissionAssignment:
     error: Optional[str] = None
-    permissions: Optional['List[WorkspacePermission]'] = None
-    principal: Optional['PrincipalOutput'] = None
+    """Error response associated with a workspace permission assignment, if any."""
+
+    permissions: Optional[List[WorkspacePermission]] = None
+    """The permissions level of the principal."""
+
+    principal: Optional[PrincipalOutput] = None
+    """Information about the principal assigned to the workspace."""
 
     def as_dict(self) -> dict:
+        """Serializes the PermissionAssignment into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.error is not None: body['error'] = self.error
         if self.permissions: body['permissions'] = [v.value for v in self.permissions]
@@ -506,25 +695,29 @@ class PermissionAssignment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'PermissionAssignment':
+    def from_dict(cls, d: Dict[str, any]) -> PermissionAssignment:
+        """Deserializes the PermissionAssignment from a dictionary."""
         return cls(error=d.get('error', None),
-                   permissions=d.get('permissions', None),
+                   permissions=_repeated_enum(d, 'permissions', WorkspacePermission),
                    principal=_from_dict(d, 'principal', PrincipalOutput))
 
 
 @dataclass
 class PermissionAssignments:
-    permission_assignments: Optional['List[PermissionAssignment]'] = None
+    permission_assignments: Optional[List[PermissionAssignment]] = None
+    """Array of permissions assignments defined for a workspace."""
 
     def as_dict(self) -> dict:
+        """Serializes the PermissionAssignments into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.permission_assignments:
             body['permission_assignments'] = [v.as_dict() for v in self.permission_assignments]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'PermissionAssignments':
-        return cls(permission_assignments=_repeated(d, 'permission_assignments', PermissionAssignment))
+    def from_dict(cls, d: Dict[str, any]) -> PermissionAssignments:
+        """Deserializes the PermissionAssignments from a dictionary."""
+        return cls(permission_assignments=_repeated_dict(d, 'permission_assignments', PermissionAssignment))
 
 
 class PermissionLevel(Enum):
@@ -550,16 +743,20 @@ class PermissionLevel(Enum):
 @dataclass
 class PermissionOutput:
     description: Optional[str] = None
-    permission_level: Optional['WorkspacePermission'] = None
+    """The results of a permissions query."""
+
+    permission_level: Optional[WorkspacePermission] = None
 
     def as_dict(self) -> dict:
+        """Serializes the PermissionOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.description is not None: body['description'] = self.description
         if self.permission_level is not None: body['permission_level'] = self.permission_level.value
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'PermissionOutput':
+    def from_dict(cls, d: Dict[str, any]) -> PermissionOutput:
+        """Deserializes the PermissionOutput from a dictionary."""
         return cls(description=d.get('description', None),
                    permission_level=_enum(d, 'permission_level', WorkspacePermission))
 
@@ -567,27 +764,38 @@ class PermissionOutput:
 @dataclass
 class PermissionsDescription:
     description: Optional[str] = None
-    permission_level: Optional['PermissionLevel'] = None
+
+    permission_level: Optional[PermissionLevel] = None
+    """Permission level"""
 
     def as_dict(self) -> dict:
+        """Serializes the PermissionsDescription into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.description is not None: body['description'] = self.description
         if self.permission_level is not None: body['permission_level'] = self.permission_level.value
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'PermissionsDescription':
+    def from_dict(cls, d: Dict[str, any]) -> PermissionsDescription:
+        """Deserializes the PermissionsDescription from a dictionary."""
         return cls(description=d.get('description', None),
                    permission_level=_enum(d, 'permission_level', PermissionLevel))
 
 
 @dataclass
 class PermissionsRequest:
-    access_control_list: Optional['List[AccessControlRequest]'] = None
+    access_control_list: Optional[List[AccessControlRequest]] = None
+
     request_object_id: Optional[str] = None
+    """The id of the request object."""
+
     request_object_type: Optional[str] = None
+    """The type of the request object. Can be one of the following: authorization, clusters,
+    cluster-policies, directories, experiments, files, instance-pools, jobs, notebooks, pipelines,
+    registered-models, repos, serving-endpoints, or sql-warehouses."""
 
     def as_dict(self) -> dict:
+        """Serializes the PermissionsRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.access_control_list:
             body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
@@ -596,8 +804,9 @@ class PermissionsRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'PermissionsRequest':
-        return cls(access_control_list=_repeated(d, 'access_control_list', AccessControlRequest),
+    def from_dict(cls, d: Dict[str, any]) -> PermissionsRequest:
+        """Deserializes the PermissionsRequest from a dictionary."""
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list', AccessControlRequest),
                    request_object_id=d.get('request_object_id', None),
                    request_object_type=d.get('request_object_type', None))
 
@@ -605,12 +814,22 @@ class PermissionsRequest:
 @dataclass
 class PrincipalOutput:
     display_name: Optional[str] = None
+    """The display name of the principal."""
+
     group_name: Optional[str] = None
+    """The group name of the groupl. Present only if the principal is a group."""
+
     principal_id: Optional[int] = None
+    """The unique, opaque id of the principal."""
+
     service_principal_name: Optional[str] = None
+    """The name of the service principal. Present only if the principal is a service principal."""
+
     user_name: Optional[str] = None
+    """The username of the user. Present only if the principal is a user."""
 
     def as_dict(self) -> dict:
+        """Serializes the PrincipalOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.display_name is not None: body['display_name'] = self.display_name
         if self.group_name is not None: body['group_name'] = self.group_name
@@ -621,7 +840,8 @@ class PrincipalOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'PrincipalOutput':
+    def from_dict(cls, d: Dict[str, any]) -> PrincipalOutput:
+        """Deserializes the PrincipalOutput from a dictionary."""
         return cls(display_name=d.get('display_name', None),
                    group_name=d.get('group_name', None),
                    principal_id=d.get('principal_id', None),
@@ -632,38 +852,50 @@ class PrincipalOutput:
 @dataclass
 class ResourceMeta:
     resource_type: Optional[str] = None
+    """Identifier for group type. Can be local workspace group (`WorkspaceGroup`) or account group
+    (`Group`)."""
 
     def as_dict(self) -> dict:
+        """Serializes the ResourceMeta into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.resource_type is not None: body['resourceType'] = self.resource_type
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ResourceMeta':
+    def from_dict(cls, d: Dict[str, any]) -> ResourceMeta:
+        """Deserializes the ResourceMeta from a dictionary."""
         return cls(resource_type=d.get('resourceType', None))
 
 
 @dataclass
 class Role:
     name: str
+    """Role to assign to a principal or a list of principals on a resource."""
 
     def as_dict(self) -> dict:
+        """Serializes the Role into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.name is not None: body['name'] = self.name
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'Role':
+    def from_dict(cls, d: Dict[str, any]) -> Role:
+        """Deserializes the Role from a dictionary."""
         return cls(name=d.get('name', None))
 
 
 @dataclass
 class RuleSetResponse:
     etag: Optional[str] = None
-    grant_rules: Optional['List[GrantRule]'] = None
+    """Identifies the version of the rule set returned."""
+
+    grant_rules: Optional[List[GrantRule]] = None
+
     name: Optional[str] = None
+    """Name of the rule set."""
 
     def as_dict(self) -> dict:
+        """Serializes the RuleSetResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.etag is not None: body['etag'] = self.etag
         if self.grant_rules: body['grant_rules'] = [v.as_dict() for v in self.grant_rules]
@@ -671,19 +903,26 @@ class RuleSetResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RuleSetResponse':
+    def from_dict(cls, d: Dict[str, any]) -> RuleSetResponse:
+        """Deserializes the RuleSetResponse from a dictionary."""
         return cls(etag=d.get('etag', None),
-                   grant_rules=_repeated(d, 'grant_rules', GrantRule),
+                   grant_rules=_repeated_dict(d, 'grant_rules', GrantRule),
                    name=d.get('name', None))
 
 
 @dataclass
 class RuleSetUpdateRequest:
     name: str
+    """Name of the rule set."""
+
     etag: str
-    grant_rules: Optional['List[GrantRule]'] = None
+    """The expected etag of the rule set to update. The update will fail if the value does not match
+    the value that is stored in account access control service."""
+
+    grant_rules: Optional[List[GrantRule]] = None
 
     def as_dict(self) -> dict:
+        """Serializes the RuleSetUpdateRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.etag is not None: body['etag'] = self.etag
         if self.grant_rules: body['grant_rules'] = [v.as_dict() for v in self.grant_rules]
@@ -691,24 +930,45 @@ class RuleSetUpdateRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RuleSetUpdateRequest':
+    def from_dict(cls, d: Dict[str, any]) -> RuleSetUpdateRequest:
+        """Deserializes the RuleSetUpdateRequest from a dictionary."""
         return cls(etag=d.get('etag', None),
-                   grant_rules=_repeated(d, 'grant_rules', GrantRule),
+                   grant_rules=_repeated_dict(d, 'grant_rules', GrantRule),
                    name=d.get('name', None))
 
 
 @dataclass
 class ServicePrincipal:
     active: Optional[bool] = None
+    """If this user is active"""
+
     application_id: Optional[str] = None
+    """UUID relating to the service principal"""
+
     display_name: Optional[str] = None
-    entitlements: Optional['List[ComplexValue]'] = None
+    """String that represents a concatenation of given and family names."""
+
+    entitlements: Optional[List[ComplexValue]] = None
+    """Entitlements assigned to the service principal. See [assigning entitlements] for a full list of
+    supported values.
+    
+    [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements"""
+
     external_id: Optional[str] = None
-    groups: Optional['List[ComplexValue]'] = None
+
+    groups: Optional[List[ComplexValue]] = None
+
     id: Optional[str] = None
-    roles: Optional['List[ComplexValue]'] = None
+    """Databricks service principal ID."""
+
+    roles: Optional[List[ComplexValue]] = None
+    """Corresponds to AWS instance profile/arn role."""
+
+    schemas: Optional[List[ServicePrincipalSchema]] = None
+    """The schema of the List response."""
 
     def as_dict(self) -> dict:
+        """Serializes the ServicePrincipal into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.active is not None: body['active'] = self.active
         if self.application_id is not None: body['applicationId'] = self.application_id
@@ -718,43 +978,61 @@ class ServicePrincipal:
         if self.groups: body['groups'] = [v.as_dict() for v in self.groups]
         if self.id is not None: body['id'] = self.id
         if self.roles: body['roles'] = [v.as_dict() for v in self.roles]
+        if self.schemas: body['schemas'] = [v.value for v in self.schemas]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ServicePrincipal':
+    def from_dict(cls, d: Dict[str, any]) -> ServicePrincipal:
+        """Deserializes the ServicePrincipal from a dictionary."""
         return cls(active=d.get('active', None),
                    application_id=d.get('applicationId', None),
                    display_name=d.get('displayName', None),
-                   entitlements=_repeated(d, 'entitlements', ComplexValue),
+                   entitlements=_repeated_dict(d, 'entitlements', ComplexValue),
                    external_id=d.get('externalId', None),
-                   groups=_repeated(d, 'groups', ComplexValue),
+                   groups=_repeated_dict(d, 'groups', ComplexValue),
                    id=d.get('id', None),
-                   roles=_repeated(d, 'roles', ComplexValue))
+                   roles=_repeated_dict(d, 'roles', ComplexValue),
+                   schemas=_repeated_enum(d, 'schemas', ServicePrincipalSchema))
+
+
+class ServicePrincipalSchema(Enum):
+
+    URN_IETF_PARAMS_SCIM_SCHEMAS_CORE_2_0_SERVICE_PRINCIPAL = 'urn:ietf:params:scim:schemas:core:2.0:ServicePrincipal'
 
 
 @dataclass
 class UpdateRuleSetRequest:
     name: str
-    rule_set: 'RuleSetUpdateRequest'
+    """Name of the rule set."""
+
+    rule_set: RuleSetUpdateRequest
 
     def as_dict(self) -> dict:
+        """Serializes the UpdateRuleSetRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.name is not None: body['name'] = self.name
         if self.rule_set: body['rule_set'] = self.rule_set.as_dict()
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'UpdateRuleSetRequest':
+    def from_dict(cls, d: Dict[str, any]) -> UpdateRuleSetRequest:
+        """Deserializes the UpdateRuleSetRequest from a dictionary."""
         return cls(name=d.get('name', None), rule_set=_from_dict(d, 'rule_set', RuleSetUpdateRequest))
 
 
 @dataclass
 class UpdateWorkspaceAssignments:
-    permissions: 'List[WorkspacePermission]'
+    permissions: List[WorkspacePermission]
+    """Array of permissions assignments to update on the workspace."""
+
     principal_id: Optional[int] = None
+    """The ID of the user, service principal, or group."""
+
     workspace_id: Optional[int] = None
+    """The workspace ID."""
 
     def as_dict(self) -> dict:
+        """Serializes the UpdateWorkspaceAssignments into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.permissions: body['permissions'] = [v.value for v in self.permissions]
         if self.principal_id is not None: body['principal_id'] = self.principal_id
@@ -762,8 +1040,9 @@ class UpdateWorkspaceAssignments:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'UpdateWorkspaceAssignments':
-        return cls(permissions=d.get('permissions', None),
+    def from_dict(cls, d: Dict[str, any]) -> UpdateWorkspaceAssignments:
+        """Deserializes the UpdateWorkspaceAssignments from a dictionary."""
+        return cls(permissions=_repeated_enum(d, 'permissions', WorkspacePermission),
                    principal_id=d.get('principal_id', None),
                    workspace_id=d.get('workspace_id', None))
 
@@ -771,17 +1050,46 @@ class UpdateWorkspaceAssignments:
 @dataclass
 class User:
     active: Optional[bool] = None
+    """If this user is active"""
+
     display_name: Optional[str] = None
-    emails: Optional['List[ComplexValue]'] = None
-    entitlements: Optional['List[ComplexValue]'] = None
+    """String that represents a concatenation of given and family names. For example `John Smith`. This
+    field cannot be updated through the Workspace SCIM APIs when [identity federation is enabled].
+    Use Account SCIM APIs to update `displayName`.
+    
+    [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation"""
+
+    emails: Optional[List[ComplexValue]] = None
+    """All the emails associated with the Databricks user."""
+
+    entitlements: Optional[List[ComplexValue]] = None
+    """Entitlements assigned to the user. See [assigning entitlements] for a full list of supported
+    values.
+    
+    [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements"""
+
     external_id: Optional[str] = None
-    groups: Optional['List[ComplexValue]'] = None
+    """External ID is not currently supported. It is reserved for future use."""
+
+    groups: Optional[List[ComplexValue]] = None
+
     id: Optional[str] = None
-    name: Optional['Name'] = None
-    roles: Optional['List[ComplexValue]'] = None
+    """Databricks user ID. This is automatically set by Databricks. Any value provided by the client
+    will be ignored."""
+
+    name: Optional[Name] = None
+
+    roles: Optional[List[ComplexValue]] = None
+    """Corresponds to AWS instance profile/arn role."""
+
+    schemas: Optional[List[UserSchema]] = None
+    """The schema of the user."""
+
     user_name: Optional[str] = None
+    """Email address of the Databricks user."""
 
     def as_dict(self) -> dict:
+        """Serializes the User into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.active is not None: body['active'] = self.active
         if self.display_name is not None: body['displayName'] = self.display_name
@@ -792,21 +1100,30 @@ class User:
         if self.id is not None: body['id'] = self.id
         if self.name: body['name'] = self.name.as_dict()
         if self.roles: body['roles'] = [v.as_dict() for v in self.roles]
+        if self.schemas: body['schemas'] = [v.value for v in self.schemas]
         if self.user_name is not None: body['userName'] = self.user_name
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'User':
+    def from_dict(cls, d: Dict[str, any]) -> User:
+        """Deserializes the User from a dictionary."""
         return cls(active=d.get('active', None),
                    display_name=d.get('displayName', None),
-                   emails=_repeated(d, 'emails', ComplexValue),
-                   entitlements=_repeated(d, 'entitlements', ComplexValue),
+                   emails=_repeated_dict(d, 'emails', ComplexValue),
+                   entitlements=_repeated_dict(d, 'entitlements', ComplexValue),
                    external_id=d.get('externalId', None),
-                   groups=_repeated(d, 'groups', ComplexValue),
+                   groups=_repeated_dict(d, 'groups', ComplexValue),
                    id=d.get('id', None),
                    name=_from_dict(d, 'name', Name),
-                   roles=_repeated(d, 'roles', ComplexValue),
+                   roles=_repeated_dict(d, 'roles', ComplexValue),
+                   schemas=_repeated_enum(d, 'schemas', UserSchema),
                    user_name=d.get('userName', None))
+
+
+class UserSchema(Enum):
+
+    URN_IETF_PARAMS_SCIM_SCHEMAS_CORE_2_0_USER = 'urn:ietf:params:scim:schemas:core:2.0:User'
+    URN_IETF_PARAMS_SCIM_SCHEMAS_EXTENSION_WORKSPACE_2_0_USER = 'urn:ietf:params:scim:schemas:extension:workspace:2.0:User'
 
 
 class WorkspacePermission(Enum):
@@ -818,16 +1135,19 @@ class WorkspacePermission(Enum):
 
 @dataclass
 class WorkspacePermissions:
-    permissions: Optional['List[PermissionOutput]'] = None
+    permissions: Optional[List[PermissionOutput]] = None
+    """Array of permissions defined for a workspace."""
 
     def as_dict(self) -> dict:
+        """Serializes the WorkspacePermissions into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.permissions: body['permissions'] = [v.as_dict() for v in self.permissions]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'WorkspacePermissions':
-        return cls(permissions=_repeated(d, 'permissions', PermissionOutput))
+    def from_dict(cls, d: Dict[str, any]) -> WorkspacePermissions:
+        """Deserializes the WorkspacePermissions from a dictionary."""
+        return cls(permissions=_repeated_dict(d, 'permissions', PermissionOutput))
 
 
 class AccountAccessControlAPI:
@@ -1013,7 +1333,8 @@ class AccountGroupsAPI:
                id: Optional[str] = None,
                members: Optional[List[ComplexValue]] = None,
                meta: Optional[ResourceMeta] = None,
-               roles: Optional[List[ComplexValue]] = None) -> Group:
+               roles: Optional[List[ComplexValue]] = None,
+               schemas: Optional[List[GroupSchema]] = None) -> Group:
         """Create a new group.
         
         Creates a group in the Databricks account with a unique name, using the supplied group details.
@@ -1021,6 +1342,10 @@ class AccountGroupsAPI:
         :param display_name: str (optional)
           String that represents a human-readable group name
         :param entitlements: List[:class:`ComplexValue`] (optional)
+          Entitlements assigned to the group. See [assigning entitlements] for a full list of supported
+          values.
+          
+          [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
         :param groups: List[:class:`ComplexValue`] (optional)
         :param id: str (optional)
@@ -1029,6 +1354,9 @@ class AccountGroupsAPI:
         :param meta: :class:`ResourceMeta` (optional)
           Container for the group identifier. Workspace local versus account.
         :param roles: List[:class:`ComplexValue`] (optional)
+          Corresponds to AWS instance profile/arn role.
+        :param schemas: List[:class:`GroupSchema`] (optional)
+          The schema of the group.
         
         :returns: :class:`Group`
         """
@@ -1041,6 +1369,7 @@ class AccountGroupsAPI:
         if members is not None: body['members'] = [v.as_dict() for v in members]
         if meta is not None: body['meta'] = meta.as_dict()
         if roles is not None: body['roles'] = [v.as_dict() for v in roles]
+        if schemas is not None: body['schemas'] = [v.value for v in schemas]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         res = self._api.do('POST',
                            f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups',
@@ -1126,11 +1455,25 @@ class AccountGroupsAPI:
         if sort_order is not None: query['sortOrder'] = sort_order.value
         if start_index is not None: query['startIndex'] = start_index
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET',
-                            f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups',
-                            query=query,
-                            headers=headers)
-        return [Group.from_dict(v) for v in json.get('Resources', [])]
+
+        # deduplicate items that may have been added during iteration
+        seen = set()
+        query['startIndex'] = 1
+        if "count" not in query: query['count'] = 100
+        while True:
+            json = self._api.do('GET',
+                                f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups',
+                                query=query,
+                                headers=headers)
+            if 'Resources' not in json or not json['Resources']:
+                return
+            for v in json['Resources']:
+                i = v['id']
+                if i in seen:
+                    continue
+                seen.add(i)
+                yield Group.from_dict(v)
+            query['startIndex'] += len(json['Resources'])
 
     def patch(self,
               id: str,
@@ -1167,7 +1510,8 @@ class AccountGroupsAPI:
                groups: Optional[List[ComplexValue]] = None,
                members: Optional[List[ComplexValue]] = None,
                meta: Optional[ResourceMeta] = None,
-               roles: Optional[List[ComplexValue]] = None):
+               roles: Optional[List[ComplexValue]] = None,
+               schemas: Optional[List[GroupSchema]] = None):
         """Replace a group.
         
         Updates the details of a group by replacing the entire group entity.
@@ -1177,12 +1521,19 @@ class AccountGroupsAPI:
         :param display_name: str (optional)
           String that represents a human-readable group name
         :param entitlements: List[:class:`ComplexValue`] (optional)
+          Entitlements assigned to the group. See [assigning entitlements] for a full list of supported
+          values.
+          
+          [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
         :param groups: List[:class:`ComplexValue`] (optional)
         :param members: List[:class:`ComplexValue`] (optional)
         :param meta: :class:`ResourceMeta` (optional)
           Container for the group identifier. Workspace local versus account.
         :param roles: List[:class:`ComplexValue`] (optional)
+          Corresponds to AWS instance profile/arn role.
+        :param schemas: List[:class:`GroupSchema`] (optional)
+          The schema of the group.
         
         
         """
@@ -1194,6 +1545,7 @@ class AccountGroupsAPI:
         if members is not None: body['members'] = [v.as_dict() for v in members]
         if meta is not None: body['meta'] = meta.as_dict()
         if roles is not None: body['roles'] = [v.as_dict() for v in roles]
+        if schemas is not None: body['schemas'] = [v.value for v in schemas]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('PUT',
                      f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups/{id}',
@@ -1220,7 +1572,8 @@ class AccountServicePrincipalsAPI:
                external_id: Optional[str] = None,
                groups: Optional[List[ComplexValue]] = None,
                id: Optional[str] = None,
-               roles: Optional[List[ComplexValue]] = None) -> ServicePrincipal:
+               roles: Optional[List[ComplexValue]] = None,
+               schemas: Optional[List[ServicePrincipalSchema]] = None) -> ServicePrincipal:
         """Create a service principal.
         
         Creates a new service principal in the Databricks account.
@@ -1232,11 +1585,18 @@ class AccountServicePrincipalsAPI:
         :param display_name: str (optional)
           String that represents a concatenation of given and family names.
         :param entitlements: List[:class:`ComplexValue`] (optional)
+          Entitlements assigned to the service principal. See [assigning entitlements] for a full list of
+          supported values.
+          
+          [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
         :param groups: List[:class:`ComplexValue`] (optional)
         :param id: str (optional)
           Databricks service principal ID.
         :param roles: List[:class:`ComplexValue`] (optional)
+          Corresponds to AWS instance profile/arn role.
+        :param schemas: List[:class:`ServicePrincipalSchema`] (optional)
+          The schema of the List response.
         
         :returns: :class:`ServicePrincipal`
         """
@@ -1249,6 +1609,7 @@ class AccountServicePrincipalsAPI:
         if groups is not None: body['groups'] = [v.as_dict() for v in groups]
         if id is not None: body['id'] = id
         if roles is not None: body['roles'] = [v.as_dict() for v in roles]
+        if schemas is not None: body['schemas'] = [v.value for v in schemas]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         res = self._api.do('POST',
                            f'/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals',
@@ -1334,11 +1695,25 @@ class AccountServicePrincipalsAPI:
         if sort_order is not None: query['sortOrder'] = sort_order.value
         if start_index is not None: query['startIndex'] = start_index
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET',
-                            f'/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals',
-                            query=query,
-                            headers=headers)
-        return [ServicePrincipal.from_dict(v) for v in json.get('Resources', [])]
+
+        # deduplicate items that may have been added during iteration
+        seen = set()
+        query['startIndex'] = 1
+        if "count" not in query: query['count'] = 100
+        while True:
+            json = self._api.do('GET',
+                                f'/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals',
+                                query=query,
+                                headers=headers)
+            if 'Resources' not in json or not json['Resources']:
+                return
+            for v in json['Resources']:
+                i = v['id']
+                if i in seen:
+                    continue
+                seen.add(i)
+                yield ServicePrincipal.from_dict(v)
+            query['startIndex'] += len(json['Resources'])
 
     def patch(self,
               id: str,
@@ -1375,7 +1750,8 @@ class AccountServicePrincipalsAPI:
                entitlements: Optional[List[ComplexValue]] = None,
                external_id: Optional[str] = None,
                groups: Optional[List[ComplexValue]] = None,
-               roles: Optional[List[ComplexValue]] = None):
+               roles: Optional[List[ComplexValue]] = None,
+               schemas: Optional[List[ServicePrincipalSchema]] = None):
         """Replace service principal.
         
         Updates the details of a single service principal.
@@ -1391,9 +1767,16 @@ class AccountServicePrincipalsAPI:
         :param display_name: str (optional)
           String that represents a concatenation of given and family names.
         :param entitlements: List[:class:`ComplexValue`] (optional)
+          Entitlements assigned to the service principal. See [assigning entitlements] for a full list of
+          supported values.
+          
+          [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
         :param groups: List[:class:`ComplexValue`] (optional)
         :param roles: List[:class:`ComplexValue`] (optional)
+          Corresponds to AWS instance profile/arn role.
+        :param schemas: List[:class:`ServicePrincipalSchema`] (optional)
+          The schema of the List response.
         
         
         """
@@ -1405,6 +1788,7 @@ class AccountServicePrincipalsAPI:
         if external_id is not None: body['externalId'] = external_id
         if groups is not None: body['groups'] = [v.as_dict() for v in groups]
         if roles is not None: body['roles'] = [v.as_dict() for v in roles]
+        if schemas is not None: body['schemas'] = [v.value for v in schemas]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('PUT',
                      f'/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals/{id}',
@@ -1437,6 +1821,7 @@ class AccountUsersAPI:
                id: Optional[str] = None,
                name: Optional[Name] = None,
                roles: Optional[List[ComplexValue]] = None,
+               schemas: Optional[List[UserSchema]] = None,
                user_name: Optional[str] = None) -> User:
         """Create a new user.
         
@@ -1446,16 +1831,28 @@ class AccountUsersAPI:
         :param active: bool (optional)
           If this user is active
         :param display_name: str (optional)
-          String that represents a concatenation of given and family names. For example `John Smith`.
+          String that represents a concatenation of given and family names. For example `John Smith`. This
+          field cannot be updated through the Workspace SCIM APIs when [identity federation is enabled]. Use
+          Account SCIM APIs to update `displayName`.
+          
+          [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation
         :param emails: List[:class:`ComplexValue`] (optional)
           All the emails associated with the Databricks user.
         :param entitlements: List[:class:`ComplexValue`] (optional)
+          Entitlements assigned to the user. See [assigning entitlements] for a full list of supported values.
+          
+          [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
+          External ID is not currently supported. It is reserved for future use.
         :param groups: List[:class:`ComplexValue`] (optional)
         :param id: str (optional)
-          Databricks user ID.
+          Databricks user ID. This is automatically set by Databricks. Any value provided by the client will
+          be ignored.
         :param name: :class:`Name` (optional)
         :param roles: List[:class:`ComplexValue`] (optional)
+          Corresponds to AWS instance profile/arn role.
+        :param schemas: List[:class:`UserSchema`] (optional)
+          The schema of the user.
         :param user_name: str (optional)
           Email address of the Databricks user.
         
@@ -1471,6 +1868,7 @@ class AccountUsersAPI:
         if id is not None: body['id'] = id
         if name is not None: body['name'] = name.as_dict()
         if roles is not None: body['roles'] = [v.as_dict() for v in roles]
+        if schemas is not None: body['schemas'] = [v.value for v in schemas]
         if user_name is not None: body['userName'] = user_name
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         res = self._api.do('POST',
@@ -1496,20 +1894,58 @@ class AccountUsersAPI:
                      f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Users/{id}',
                      headers=headers)
 
-    def get(self, id: str) -> User:
+    def get(self,
+            id: str,
+            *,
+            attributes: Optional[str] = None,
+            count: Optional[int] = None,
+            excluded_attributes: Optional[str] = None,
+            filter: Optional[str] = None,
+            sort_by: Optional[str] = None,
+            sort_order: Optional[GetSortOrder] = None,
+            start_index: Optional[int] = None) -> User:
         """Get user details.
         
         Gets information for a specific user in Databricks account.
         
         :param id: str
           Unique ID for a user in the Databricks account.
+        :param attributes: str (optional)
+          Comma-separated list of attributes to return in response.
+        :param count: int (optional)
+          Desired number of results per page. Default is 10000.
+        :param excluded_attributes: str (optional)
+          Comma-separated list of attributes to exclude in response.
+        :param filter: str (optional)
+          Query by which the results have to be filtered. Supported operators are equals(`eq`),
+          contains(`co`), starts with(`sw`) and not equals(`ne`). Additionally, simple expressions can be
+          formed using logical operators - `and` and `or`. The [SCIM RFC] has more details but we currently
+          only support simple expressions.
+          
+          [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
+        :param sort_by: str (optional)
+          Attribute to sort the results. Multi-part paths are supported. For example, `userName`,
+          `name.givenName`, and `emails`.
+        :param sort_order: :class:`GetSortOrder` (optional)
+          The order to sort the results.
+        :param start_index: int (optional)
+          Specifies the index of the first result. First item is number 1.
         
         :returns: :class:`User`
         """
 
+        query = {}
+        if attributes is not None: query['attributes'] = attributes
+        if count is not None: query['count'] = count
+        if excluded_attributes is not None: query['excludedAttributes'] = excluded_attributes
+        if filter is not None: query['filter'] = filter
+        if sort_by is not None: query['sortBy'] = sort_by
+        if sort_order is not None: query['sortOrder'] = sort_order.value
+        if start_index is not None: query['startIndex'] = start_index
         headers = {'Accept': 'application/json', }
         res = self._api.do('GET',
                            f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Users/{id}',
+                           query=query,
                            headers=headers)
         return User.from_dict(res)
 
@@ -1559,11 +1995,25 @@ class AccountUsersAPI:
         if sort_order is not None: query['sortOrder'] = sort_order.value
         if start_index is not None: query['startIndex'] = start_index
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET',
-                            f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Users',
-                            query=query,
-                            headers=headers)
-        return [User.from_dict(v) for v in json.get('Resources', [])]
+
+        # deduplicate items that may have been added during iteration
+        seen = set()
+        query['startIndex'] = 1
+        if "count" not in query: query['count'] = 100
+        while True:
+            json = self._api.do('GET',
+                                f'/api/2.0/accounts/{self._api.account_id}/scim/v2/Users',
+                                query=query,
+                                headers=headers)
+            if 'Resources' not in json or not json['Resources']:
+                return
+            for v in json['Resources']:
+                i = v['id']
+                if i in seen:
+                    continue
+                seen.add(i)
+                yield User.from_dict(v)
+            query['startIndex'] += len(json['Resources'])
 
     def patch(self,
               id: str,
@@ -1602,24 +2052,37 @@ class AccountUsersAPI:
                groups: Optional[List[ComplexValue]] = None,
                name: Optional[Name] = None,
                roles: Optional[List[ComplexValue]] = None,
+               schemas: Optional[List[UserSchema]] = None,
                user_name: Optional[str] = None):
         """Replace a user.
         
         Replaces a user's information with the data supplied in request.
         
         :param id: str
-          Databricks user ID.
+          Databricks user ID. This is automatically set by Databricks. Any value provided by the client will
+          be ignored.
         :param active: bool (optional)
           If this user is active
         :param display_name: str (optional)
-          String that represents a concatenation of given and family names. For example `John Smith`.
+          String that represents a concatenation of given and family names. For example `John Smith`. This
+          field cannot be updated through the Workspace SCIM APIs when [identity federation is enabled]. Use
+          Account SCIM APIs to update `displayName`.
+          
+          [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation
         :param emails: List[:class:`ComplexValue`] (optional)
           All the emails associated with the Databricks user.
         :param entitlements: List[:class:`ComplexValue`] (optional)
+          Entitlements assigned to the user. See [assigning entitlements] for a full list of supported values.
+          
+          [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
+          External ID is not currently supported. It is reserved for future use.
         :param groups: List[:class:`ComplexValue`] (optional)
         :param name: :class:`Name` (optional)
         :param roles: List[:class:`ComplexValue`] (optional)
+          Corresponds to AWS instance profile/arn role.
+        :param schemas: List[:class:`UserSchema`] (optional)
+          The schema of the user.
         :param user_name: str (optional)
           Email address of the Databricks user.
         
@@ -1634,6 +2097,7 @@ class AccountUsersAPI:
         if groups is not None: body['groups'] = [v.as_dict() for v in groups]
         if name is not None: body['name'] = name.as_dict()
         if roles is not None: body['roles'] = [v.as_dict() for v in roles]
+        if schemas is not None: body['schemas'] = [v.value for v in schemas]
         if user_name is not None: body['userName'] = user_name
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('PUT',
@@ -1681,7 +2145,8 @@ class GroupsAPI:
                id: Optional[str] = None,
                members: Optional[List[ComplexValue]] = None,
                meta: Optional[ResourceMeta] = None,
-               roles: Optional[List[ComplexValue]] = None) -> Group:
+               roles: Optional[List[ComplexValue]] = None,
+               schemas: Optional[List[GroupSchema]] = None) -> Group:
         """Create a new group.
         
         Creates a group in the Databricks workspace with a unique name, using the supplied group details.
@@ -1689,6 +2154,10 @@ class GroupsAPI:
         :param display_name: str (optional)
           String that represents a human-readable group name
         :param entitlements: List[:class:`ComplexValue`] (optional)
+          Entitlements assigned to the group. See [assigning entitlements] for a full list of supported
+          values.
+          
+          [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
         :param groups: List[:class:`ComplexValue`] (optional)
         :param id: str (optional)
@@ -1697,6 +2166,9 @@ class GroupsAPI:
         :param meta: :class:`ResourceMeta` (optional)
           Container for the group identifier. Workspace local versus account.
         :param roles: List[:class:`ComplexValue`] (optional)
+          Corresponds to AWS instance profile/arn role.
+        :param schemas: List[:class:`GroupSchema`] (optional)
+          The schema of the group.
         
         :returns: :class:`Group`
         """
@@ -1709,6 +2181,7 @@ class GroupsAPI:
         if members is not None: body['members'] = [v.as_dict() for v in members]
         if meta is not None: body['meta'] = meta.as_dict()
         if roles is not None: body['roles'] = [v.as_dict() for v in roles]
+        if schemas is not None: body['schemas'] = [v.value for v in schemas]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         res = self._api.do('POST', '/api/2.0/preview/scim/v2/Groups', body=body, headers=headers)
         return Group.from_dict(res)
@@ -1787,8 +2260,22 @@ class GroupsAPI:
         if sort_order is not None: query['sortOrder'] = sort_order.value
         if start_index is not None: query['startIndex'] = start_index
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET', '/api/2.0/preview/scim/v2/Groups', query=query, headers=headers)
-        return [Group.from_dict(v) for v in json.get('Resources', [])]
+
+        # deduplicate items that may have been added during iteration
+        seen = set()
+        query['startIndex'] = 1
+        if "count" not in query: query['count'] = 100
+        while True:
+            json = self._api.do('GET', '/api/2.0/preview/scim/v2/Groups', query=query, headers=headers)
+            if 'Resources' not in json or not json['Resources']:
+                return
+            for v in json['Resources']:
+                i = v['id']
+                if i in seen:
+                    continue
+                seen.add(i)
+                yield Group.from_dict(v)
+            query['startIndex'] += len(json['Resources'])
 
     def patch(self,
               id: str,
@@ -1822,7 +2309,8 @@ class GroupsAPI:
                groups: Optional[List[ComplexValue]] = None,
                members: Optional[List[ComplexValue]] = None,
                meta: Optional[ResourceMeta] = None,
-               roles: Optional[List[ComplexValue]] = None):
+               roles: Optional[List[ComplexValue]] = None,
+               schemas: Optional[List[GroupSchema]] = None):
         """Replace a group.
         
         Updates the details of a group by replacing the entire group entity.
@@ -1832,12 +2320,19 @@ class GroupsAPI:
         :param display_name: str (optional)
           String that represents a human-readable group name
         :param entitlements: List[:class:`ComplexValue`] (optional)
+          Entitlements assigned to the group. See [assigning entitlements] for a full list of supported
+          values.
+          
+          [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
         :param groups: List[:class:`ComplexValue`] (optional)
         :param members: List[:class:`ComplexValue`] (optional)
         :param meta: :class:`ResourceMeta` (optional)
           Container for the group identifier. Workspace local versus account.
         :param roles: List[:class:`ComplexValue`] (optional)
+          Corresponds to AWS instance profile/arn role.
+        :param schemas: List[:class:`GroupSchema`] (optional)
+          The schema of the group.
         
         
         """
@@ -1849,6 +2344,7 @@ class GroupsAPI:
         if members is not None: body['members'] = [v.as_dict() for v in members]
         if meta is not None: body['meta'] = meta.as_dict()
         if roles is not None: body['roles'] = [v.as_dict() for v in roles]
+        if schemas is not None: body['schemas'] = [v.value for v in schemas]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('PUT', f'/api/2.0/preview/scim/v2/Groups/{id}', body=body, headers=headers)
 
@@ -1909,8 +2405,11 @@ class PermissionsAPI:
         object.
         
         :param request_object_type: str
-          <needs content>
+          The type of the request object. Can be one of the following: authorization, clusters,
+          cluster-policies, directories, experiments, files, instance-pools, jobs, notebooks, pipelines,
+          registered-models, repos, serving-endpoints, or sql-warehouses.
         :param request_object_id: str
+          The id of the request object.
         
         :returns: :class:`ObjectPermissions`
         """
@@ -1952,8 +2451,11 @@ class PermissionsAPI:
         object.
         
         :param request_object_type: str
-          <needs content>
+          The type of the request object. Can be one of the following: authorization, clusters,
+          cluster-policies, directories, experiments, files, instance-pools, jobs, notebooks, pipelines,
+          registered-models, repos, serving-endpoints, or sql-warehouses.
         :param request_object_id: str
+          The id of the request object.
         :param access_control_list: List[:class:`AccessControlRequest`] (optional)
         
         :returns: :class:`ObjectPermissions`
@@ -1979,8 +2481,11 @@ class PermissionsAPI:
         root object.
         
         :param request_object_type: str
-          <needs content>
+          The type of the request object. Can be one of the following: authorization, clusters,
+          cluster-policies, directories, experiments, files, instance-pools, jobs, notebooks, pipelines,
+          registered-models, repos, serving-endpoints, or sql-warehouses.
         :param request_object_id: str
+          The id of the request object.
         :param access_control_list: List[:class:`AccessControlRequest`] (optional)
         
         :returns: :class:`ObjectPermissions`
@@ -2015,7 +2520,8 @@ class ServicePrincipalsAPI:
                external_id: Optional[str] = None,
                groups: Optional[List[ComplexValue]] = None,
                id: Optional[str] = None,
-               roles: Optional[List[ComplexValue]] = None) -> ServicePrincipal:
+               roles: Optional[List[ComplexValue]] = None,
+               schemas: Optional[List[ServicePrincipalSchema]] = None) -> ServicePrincipal:
         """Create a service principal.
         
         Creates a new service principal in the Databricks workspace.
@@ -2027,11 +2533,18 @@ class ServicePrincipalsAPI:
         :param display_name: str (optional)
           String that represents a concatenation of given and family names.
         :param entitlements: List[:class:`ComplexValue`] (optional)
+          Entitlements assigned to the service principal. See [assigning entitlements] for a full list of
+          supported values.
+          
+          [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
         :param groups: List[:class:`ComplexValue`] (optional)
         :param id: str (optional)
           Databricks service principal ID.
         :param roles: List[:class:`ComplexValue`] (optional)
+          Corresponds to AWS instance profile/arn role.
+        :param schemas: List[:class:`ServicePrincipalSchema`] (optional)
+          The schema of the List response.
         
         :returns: :class:`ServicePrincipal`
         """
@@ -2044,6 +2557,7 @@ class ServicePrincipalsAPI:
         if groups is not None: body['groups'] = [v.as_dict() for v in groups]
         if id is not None: body['id'] = id
         if roles is not None: body['roles'] = [v.as_dict() for v in roles]
+        if schemas is not None: body['schemas'] = [v.value for v in schemas]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         res = self._api.do('POST', '/api/2.0/preview/scim/v2/ServicePrincipals', body=body, headers=headers)
         return ServicePrincipal.from_dict(res)
@@ -2122,8 +2636,25 @@ class ServicePrincipalsAPI:
         if sort_order is not None: query['sortOrder'] = sort_order.value
         if start_index is not None: query['startIndex'] = start_index
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET', '/api/2.0/preview/scim/v2/ServicePrincipals', query=query, headers=headers)
-        return [ServicePrincipal.from_dict(v) for v in json.get('Resources', [])]
+
+        # deduplicate items that may have been added during iteration
+        seen = set()
+        query['startIndex'] = 1
+        if "count" not in query: query['count'] = 100
+        while True:
+            json = self._api.do('GET',
+                                '/api/2.0/preview/scim/v2/ServicePrincipals',
+                                query=query,
+                                headers=headers)
+            if 'Resources' not in json or not json['Resources']:
+                return
+            for v in json['Resources']:
+                i = v['id']
+                if i in seen:
+                    continue
+                seen.add(i)
+                yield ServicePrincipal.from_dict(v)
+            query['startIndex'] += len(json['Resources'])
 
     def patch(self,
               id: str,
@@ -2157,7 +2688,8 @@ class ServicePrincipalsAPI:
                entitlements: Optional[List[ComplexValue]] = None,
                external_id: Optional[str] = None,
                groups: Optional[List[ComplexValue]] = None,
-               roles: Optional[List[ComplexValue]] = None):
+               roles: Optional[List[ComplexValue]] = None,
+               schemas: Optional[List[ServicePrincipalSchema]] = None):
         """Replace service principal.
         
         Updates the details of a single service principal.
@@ -2173,9 +2705,16 @@ class ServicePrincipalsAPI:
         :param display_name: str (optional)
           String that represents a concatenation of given and family names.
         :param entitlements: List[:class:`ComplexValue`] (optional)
+          Entitlements assigned to the service principal. See [assigning entitlements] for a full list of
+          supported values.
+          
+          [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
         :param groups: List[:class:`ComplexValue`] (optional)
         :param roles: List[:class:`ComplexValue`] (optional)
+          Corresponds to AWS instance profile/arn role.
+        :param schemas: List[:class:`ServicePrincipalSchema`] (optional)
+          The schema of the List response.
         
         
         """
@@ -2187,6 +2726,7 @@ class ServicePrincipalsAPI:
         if external_id is not None: body['externalId'] = external_id
         if groups is not None: body['groups'] = [v.as_dict() for v in groups]
         if roles is not None: body['roles'] = [v.as_dict() for v in roles]
+        if schemas is not None: body['schemas'] = [v.value for v in schemas]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('PUT', f'/api/2.0/preview/scim/v2/ServicePrincipals/{id}', body=body, headers=headers)
 
@@ -2216,6 +2756,7 @@ class UsersAPI:
                id: Optional[str] = None,
                name: Optional[Name] = None,
                roles: Optional[List[ComplexValue]] = None,
+               schemas: Optional[List[UserSchema]] = None,
                user_name: Optional[str] = None) -> User:
         """Create a new user.
         
@@ -2225,16 +2766,28 @@ class UsersAPI:
         :param active: bool (optional)
           If this user is active
         :param display_name: str (optional)
-          String that represents a concatenation of given and family names. For example `John Smith`.
+          String that represents a concatenation of given and family names. For example `John Smith`. This
+          field cannot be updated through the Workspace SCIM APIs when [identity federation is enabled]. Use
+          Account SCIM APIs to update `displayName`.
+          
+          [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation
         :param emails: List[:class:`ComplexValue`] (optional)
           All the emails associated with the Databricks user.
         :param entitlements: List[:class:`ComplexValue`] (optional)
+          Entitlements assigned to the user. See [assigning entitlements] for a full list of supported values.
+          
+          [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
+          External ID is not currently supported. It is reserved for future use.
         :param groups: List[:class:`ComplexValue`] (optional)
         :param id: str (optional)
-          Databricks user ID.
+          Databricks user ID. This is automatically set by Databricks. Any value provided by the client will
+          be ignored.
         :param name: :class:`Name` (optional)
         :param roles: List[:class:`ComplexValue`] (optional)
+          Corresponds to AWS instance profile/arn role.
+        :param schemas: List[:class:`UserSchema`] (optional)
+          The schema of the user.
         :param user_name: str (optional)
           Email address of the Databricks user.
         
@@ -2250,6 +2803,7 @@ class UsersAPI:
         if id is not None: body['id'] = id
         if name is not None: body['name'] = name.as_dict()
         if roles is not None: body['roles'] = [v.as_dict() for v in roles]
+        if schemas is not None: body['schemas'] = [v.value for v in schemas]
         if user_name is not None: body['userName'] = user_name
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         res = self._api.do('POST', '/api/2.0/preview/scim/v2/Users', body=body, headers=headers)
@@ -2270,22 +2824,59 @@ class UsersAPI:
         headers = {}
         self._api.do('DELETE', f'/api/2.0/preview/scim/v2/Users/{id}', headers=headers)
 
-    def get(self, id: str) -> User:
+    def get(self,
+            id: str,
+            *,
+            attributes: Optional[str] = None,
+            count: Optional[int] = None,
+            excluded_attributes: Optional[str] = None,
+            filter: Optional[str] = None,
+            sort_by: Optional[str] = None,
+            sort_order: Optional[GetSortOrder] = None,
+            start_index: Optional[int] = None) -> User:
         """Get user details.
         
         Gets information for a specific user in Databricks workspace.
         
         :param id: str
           Unique ID for a user in the Databricks workspace.
+        :param attributes: str (optional)
+          Comma-separated list of attributes to return in response.
+        :param count: int (optional)
+          Desired number of results per page.
+        :param excluded_attributes: str (optional)
+          Comma-separated list of attributes to exclude in response.
+        :param filter: str (optional)
+          Query by which the results have to be filtered. Supported operators are equals(`eq`),
+          contains(`co`), starts with(`sw`) and not equals(`ne`). Additionally, simple expressions can be
+          formed using logical operators - `and` and `or`. The [SCIM RFC] has more details but we currently
+          only support simple expressions.
+          
+          [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
+        :param sort_by: str (optional)
+          Attribute to sort the results. Multi-part paths are supported. For example, `userName`,
+          `name.givenName`, and `emails`.
+        :param sort_order: :class:`GetSortOrder` (optional)
+          The order to sort the results.
+        :param start_index: int (optional)
+          Specifies the index of the first result. First item is number 1.
         
         :returns: :class:`User`
         """
 
+        query = {}
+        if attributes is not None: query['attributes'] = attributes
+        if count is not None: query['count'] = count
+        if excluded_attributes is not None: query['excludedAttributes'] = excluded_attributes
+        if filter is not None: query['filter'] = filter
+        if sort_by is not None: query['sortBy'] = sort_by
+        if sort_order is not None: query['sortOrder'] = sort_order.value
+        if start_index is not None: query['startIndex'] = start_index
         headers = {'Accept': 'application/json', }
-        res = self._api.do('GET', f'/api/2.0/preview/scim/v2/Users/{id}', headers=headers)
+        res = self._api.do('GET', f'/api/2.0/preview/scim/v2/Users/{id}', query=query, headers=headers)
         return User.from_dict(res)
 
-    def get_password_permission_levels(self) -> GetPasswordPermissionLevelsResponse:
+    def get_permission_levels(self) -> GetPasswordPermissionLevelsResponse:
         """Get password permission levels.
         
         Gets the permission levels that a user can have on an object.
@@ -2299,7 +2890,7 @@ class UsersAPI:
                            headers=headers)
         return GetPasswordPermissionLevelsResponse.from_dict(res)
 
-    def get_password_permissions(self) -> PasswordPermissions:
+    def get_permissions(self) -> PasswordPermissions:
         """Get password permissions.
         
         Gets the permissions of all passwords. Passwords can inherit permissions from their root object.
@@ -2357,8 +2948,22 @@ class UsersAPI:
         if sort_order is not None: query['sortOrder'] = sort_order.value
         if start_index is not None: query['startIndex'] = start_index
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET', '/api/2.0/preview/scim/v2/Users', query=query, headers=headers)
-        return [User.from_dict(v) for v in json.get('Resources', [])]
+
+        # deduplicate items that may have been added during iteration
+        seen = set()
+        query['startIndex'] = 1
+        if "count" not in query: query['count'] = 100
+        while True:
+            json = self._api.do('GET', '/api/2.0/preview/scim/v2/Users', query=query, headers=headers)
+            if 'Resources' not in json or not json['Resources']:
+                return
+            for v in json['Resources']:
+                i = v['id']
+                if i in seen:
+                    continue
+                seen.add(i)
+                yield User.from_dict(v)
+            query['startIndex'] += len(json['Resources'])
 
     def patch(self,
               id: str,
@@ -2383,7 +2988,7 @@ class UsersAPI:
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('PATCH', f'/api/2.0/preview/scim/v2/Users/{id}', body=body, headers=headers)
 
-    def set_password_permissions(
+    def set_permissions(
             self,
             *,
             access_control_list: Optional[List[PasswordAccessControlRequest]] = None) -> PasswordPermissions:
@@ -2413,24 +3018,37 @@ class UsersAPI:
                groups: Optional[List[ComplexValue]] = None,
                name: Optional[Name] = None,
                roles: Optional[List[ComplexValue]] = None,
+               schemas: Optional[List[UserSchema]] = None,
                user_name: Optional[str] = None):
         """Replace a user.
         
         Replaces a user's information with the data supplied in request.
         
         :param id: str
-          Databricks user ID.
+          Databricks user ID. This is automatically set by Databricks. Any value provided by the client will
+          be ignored.
         :param active: bool (optional)
           If this user is active
         :param display_name: str (optional)
-          String that represents a concatenation of given and family names. For example `John Smith`.
+          String that represents a concatenation of given and family names. For example `John Smith`. This
+          field cannot be updated through the Workspace SCIM APIs when [identity federation is enabled]. Use
+          Account SCIM APIs to update `displayName`.
+          
+          [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation
         :param emails: List[:class:`ComplexValue`] (optional)
           All the emails associated with the Databricks user.
         :param entitlements: List[:class:`ComplexValue`] (optional)
+          Entitlements assigned to the user. See [assigning entitlements] for a full list of supported values.
+          
+          [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
+          External ID is not currently supported. It is reserved for future use.
         :param groups: List[:class:`ComplexValue`] (optional)
         :param name: :class:`Name` (optional)
         :param roles: List[:class:`ComplexValue`] (optional)
+          Corresponds to AWS instance profile/arn role.
+        :param schemas: List[:class:`UserSchema`] (optional)
+          The schema of the user.
         :param user_name: str (optional)
           Email address of the Databricks user.
         
@@ -2445,11 +3063,12 @@ class UsersAPI:
         if groups is not None: body['groups'] = [v.as_dict() for v in groups]
         if name is not None: body['name'] = name.as_dict()
         if roles is not None: body['roles'] = [v.as_dict() for v in roles]
+        if schemas is not None: body['schemas'] = [v.value for v in schemas]
         if user_name is not None: body['userName'] = user_name
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('PUT', f'/api/2.0/preview/scim/v2/Users/{id}', body=body, headers=headers)
 
-    def update_password_permissions(
+    def update_permissions(
             self,
             *,
             access_control_list: Optional[List[PasswordAccessControlRequest]] = None) -> PasswordPermissions:
@@ -2533,20 +3152,21 @@ class WorkspaceAssignmentAPI:
             'GET',
             f'/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}/permissionassignments',
             headers=headers)
-        return [PermissionAssignment.from_dict(v) for v in json.get('permission_assignments', [])]
+        parsed = PermissionAssignments.from_dict(json).permission_assignments
+        return parsed if parsed is not None else []
 
-    def update(self, permissions: List[WorkspacePermission], workspace_id: int, principal_id: int):
+    def update(self, workspace_id: int, principal_id: int, permissions: List[WorkspacePermission]):
         """Create or update permissions assignment.
         
         Creates or updates the workspace permissions assignment in a given account and workspace for the
         specified principal.
         
-        :param permissions: List[:class:`WorkspacePermission`]
-          Array of permissions assignments to update on the workspace.
         :param workspace_id: int
           The workspace ID.
         :param principal_id: int
           The ID of the user, service principal, or group.
+        :param permissions: List[:class:`WorkspacePermission`]
+          Array of permissions assignments to update on the workspace.
         
         
         """

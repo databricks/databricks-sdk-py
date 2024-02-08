@@ -1,15 +1,17 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
+from __future__ import annotations
+
 import logging
 import random
 import time
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Any, Callable, Dict, Iterator, List, Optional
+from typing import Callable, Dict, Iterator, List, Optional
 
 from ..errors import OperationFailed
-from ._internal import Wait, _enum, _from_dict, _repeated
+from ._internal import Wait, _enum, _from_dict, _repeated_dict
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -21,11 +23,21 @@ from databricks.sdk.service import compute, iam
 @dataclass
 class BaseJob:
     created_time: Optional[int] = None
+    """The time at which this job was created in epoch milliseconds (milliseconds since 1/1/1970 UTC)."""
+
     creator_user_name: Optional[str] = None
+    """The creator user name. This field won’t be included in the response if the user has already
+    been deleted."""
+
     job_id: Optional[int] = None
-    settings: Optional['JobSettings'] = None
+    """The canonical identifier for this job."""
+
+    settings: Optional[JobSettings] = None
+    """Settings for this job and all of its runs. These settings can be updated using the `resetJob`
+    method."""
 
     def as_dict(self) -> dict:
+        """Serializes the BaseJob into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.created_time is not None: body['created_time'] = self.created_time
         if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
@@ -34,7 +46,8 @@ class BaseJob:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'BaseJob':
+    def from_dict(cls, d: Dict[str, any]) -> BaseJob:
+        """Deserializes the BaseJob from a dictionary."""
         return cls(created_time=d.get('created_time', None),
                    creator_user_name=d.get('creator_user_name', None),
                    job_id=d.get('job_id', None),
@@ -44,40 +57,132 @@ class BaseJob:
 @dataclass
 class BaseRun:
     attempt_number: Optional[int] = None
+    """The sequence number of this run attempt for a triggered job run. The initial attempt of a run
+    has an attempt_number of 0\. If the initial run attempt fails, and the job has a retry policy
+    (`max_retries` \> 0), subsequent runs are created with an `original_attempt_run_id` of the
+    original attempt’s ID and an incrementing `attempt_number`. Runs are retried only until they
+    succeed, and the maximum `attempt_number` is the same as the `max_retries` value for the job."""
+
     cleanup_duration: Optional[int] = None
-    cluster_instance: Optional['ClusterInstance'] = None
-    cluster_spec: Optional['ClusterSpec'] = None
-    continuous: Optional['Continuous'] = None
+    """The time in milliseconds it took to terminate the cluster and clean up any associated artifacts.
+    The duration of a task run is the sum of the `setup_duration`, `execution_duration`, and the
+    `cleanup_duration`. The `cleanup_duration` field is set to 0 for multitask job runs. The total
+    duration of a multitask job run is the value of the `run_duration` field."""
+
+    cluster_instance: Optional[ClusterInstance] = None
+    """The cluster used for this run. If the run is specified to use a new cluster, this field is set
+    once the Jobs service has requested a cluster for the run."""
+
+    cluster_spec: Optional[ClusterSpec] = None
+    """A snapshot of the job’s cluster specification when this run was created."""
+
     creator_user_name: Optional[str] = None
+    """The creator user name. This field won’t be included in the response if the user has already
+    been deleted."""
+
     end_time: Optional[int] = None
+    """The time at which this run ended in epoch milliseconds (milliseconds since 1/1/1970 UTC). This
+    field is set to 0 if the job is still running."""
+
     execution_duration: Optional[int] = None
-    git_source: Optional['GitSource'] = None
-    job_clusters: Optional['List[JobCluster]'] = None
+    """The time in milliseconds it took to execute the commands in the JAR or notebook until they
+    completed, failed, timed out, were cancelled, or encountered an unexpected error. The duration
+    of a task run is the sum of the `setup_duration`, `execution_duration`, and the
+    `cleanup_duration`. The `execution_duration` field is set to 0 for multitask job runs. The total
+    duration of a multitask job run is the value of the `run_duration` field."""
+
+    git_source: Optional[GitSource] = None
+    """An optional specification for a remote Git repository containing the source code used by tasks.
+    Version-controlled source code is supported by notebook, dbt, Python script, and SQL File tasks.
+    
+    If `git_source` is set, these tasks retrieve the file from the remote repository by default.
+    However, this behavior can be overridden by setting `source` to `WORKSPACE` on the task.
+    
+    Note: dbt and SQL File tasks support only version-controlled sources. If dbt or SQL File tasks
+    are used, `git_source` must be defined on the job."""
+
+    job_clusters: Optional[List[JobCluster]] = None
+    """A list of job cluster specifications that can be shared and reused by tasks of this job.
+    Libraries cannot be declared in a shared job cluster. You must declare dependent libraries in
+    task settings."""
+
     job_id: Optional[int] = None
-    job_parameters: Optional['List[JobParameter]'] = None
+    """The canonical identifier of the job that contains this run."""
+
+    job_parameters: Optional[List[JobParameter]] = None
+    """Job-level parameters used in the run"""
+
     number_in_job: Optional[int] = None
+    """A unique identifier for this job run. This is set to the same value as `run_id`."""
+
     original_attempt_run_id: Optional[int] = None
-    overriding_parameters: Optional['RunParameters'] = None
+    """If this run is a retry of a prior run attempt, this field contains the run_id of the original
+    attempt; otherwise, it is the same as the run_id."""
+
+    overriding_parameters: Optional[RunParameters] = None
+    """The parameters used for this run."""
+
     run_duration: Optional[int] = None
+    """The time in milliseconds it took the job run and all of its repairs to finish."""
+
     run_id: Optional[int] = None
+    """The canonical identifier of the run. This ID is unique across all runs of all jobs."""
+
     run_name: Optional[str] = None
+    """An optional name for the run. The maximum length is 4096 bytes in UTF-8 encoding."""
+
     run_page_url: Optional[str] = None
-    run_type: Optional['RunType'] = None
-    schedule: Optional['CronSchedule'] = None
+    """The URL to the detail page of the run."""
+
+    run_type: Optional[RunType] = None
+    """* `JOB_RUN`: Normal job run. A run created with :method:jobs/runNow. * `WORKFLOW_RUN`: Workflow
+    run. A run created with [dbutils.notebook.run]. * `SUBMIT_RUN`: Submit run. A run created with
+    :method:jobs/submit.
+    
+    [dbutils.notebook.run]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-workflow"""
+
+    schedule: Optional[CronSchedule] = None
+    """The cron schedule that triggered this run if it was triggered by the periodic scheduler."""
+
     setup_duration: Optional[int] = None
+    """The time in milliseconds it took to set up the cluster. For runs that run on new clusters this
+    is the cluster creation time, for runs that run on existing clusters this time should be very
+    short. The duration of a task run is the sum of the `setup_duration`, `execution_duration`, and
+    the `cleanup_duration`. The `setup_duration` field is set to 0 for multitask job runs. The total
+    duration of a multitask job run is the value of the `run_duration` field."""
+
     start_time: Optional[int] = None
-    state: Optional['RunState'] = None
-    tasks: Optional['List[RunTask]'] = None
-    trigger: Optional['TriggerType'] = None
-    trigger_info: Optional['TriggerInfo'] = None
+    """The time at which this run was started in epoch milliseconds (milliseconds since 1/1/1970 UTC).
+    This may not be the time when the job task starts executing, for example, if the job is
+    scheduled to run on a new cluster, this is the time the cluster creation call is issued."""
+
+    state: Optional[RunState] = None
+    """The current state of the run."""
+
+    tasks: Optional[List[RunTask]] = None
+    """The list of tasks performed by the run. Each task has its own `run_id` which you can use to call
+    `JobsGetOutput` to retrieve the run resutls."""
+
+    trigger: Optional[TriggerType] = None
+    """The type of trigger that fired this run.
+    
+    * `PERIODIC`: Schedules that periodically trigger runs, such as a cron scheduler. * `ONE_TIME`:
+    One time triggers that fire a single run. This occurs you triggered a single run on demand
+    through the UI or the API. * `RETRY`: Indicates a run that is triggered as a retry of a
+    previously failed run. This occurs when you request to re-run the job in case of failures. *
+    `RUN_JOB_TASK`: Indicates a run that is triggered using a Run Job task.
+    
+    * `FILE_ARRIVAL`: Indicates a run that is triggered by a file arrival."""
+
+    trigger_info: Optional[TriggerInfo] = None
 
     def as_dict(self) -> dict:
+        """Serializes the BaseRun into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.attempt_number is not None: body['attempt_number'] = self.attempt_number
         if self.cleanup_duration is not None: body['cleanup_duration'] = self.cleanup_duration
         if self.cluster_instance: body['cluster_instance'] = self.cluster_instance.as_dict()
         if self.cluster_spec: body['cluster_spec'] = self.cluster_spec.as_dict()
-        if self.continuous: body['continuous'] = self.continuous.as_dict()
         if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
         if self.end_time is not None: body['end_time'] = self.end_time
         if self.execution_duration is not None: body['execution_duration'] = self.execution_duration
@@ -104,19 +209,19 @@ class BaseRun:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'BaseRun':
+    def from_dict(cls, d: Dict[str, any]) -> BaseRun:
+        """Deserializes the BaseRun from a dictionary."""
         return cls(attempt_number=d.get('attempt_number', None),
                    cleanup_duration=d.get('cleanup_duration', None),
                    cluster_instance=_from_dict(d, 'cluster_instance', ClusterInstance),
                    cluster_spec=_from_dict(d, 'cluster_spec', ClusterSpec),
-                   continuous=_from_dict(d, 'continuous', Continuous),
                    creator_user_name=d.get('creator_user_name', None),
                    end_time=d.get('end_time', None),
                    execution_duration=d.get('execution_duration', None),
                    git_source=_from_dict(d, 'git_source', GitSource),
-                   job_clusters=_repeated(d, 'job_clusters', JobCluster),
+                   job_clusters=_repeated_dict(d, 'job_clusters', JobCluster),
                    job_id=d.get('job_id', None),
-                   job_parameters=_repeated(d, 'job_parameters', JobParameter),
+                   job_parameters=_repeated_dict(d, 'job_parameters', JobParameter),
                    number_in_job=d.get('number_in_job', None),
                    original_attempt_run_id=d.get('original_attempt_run_id', None),
                    overriding_parameters=_from_dict(d, 'overriding_parameters', RunParameters),
@@ -129,62 +234,98 @@ class BaseRun:
                    setup_duration=d.get('setup_duration', None),
                    start_time=d.get('start_time', None),
                    state=_from_dict(d, 'state', RunState),
-                   tasks=_repeated(d, 'tasks', RunTask),
+                   tasks=_repeated_dict(d, 'tasks', RunTask),
                    trigger=_enum(d, 'trigger', TriggerType),
                    trigger_info=_from_dict(d, 'trigger_info', TriggerInfo))
 
 
 @dataclass
 class CancelAllRuns:
-    job_id: int
+    all_queued_runs: Optional[bool] = None
+    """Optional boolean parameter to cancel all queued runs. If no job_id is provided, all queued runs
+    in the workspace are canceled."""
+
+    job_id: Optional[int] = None
+    """The canonical identifier of the job to cancel all runs of."""
 
     def as_dict(self) -> dict:
+        """Serializes the CancelAllRuns into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.all_queued_runs is not None: body['all_queued_runs'] = self.all_queued_runs
         if self.job_id is not None: body['job_id'] = self.job_id
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CancelAllRuns':
-        return cls(job_id=d.get('job_id', None))
+    def from_dict(cls, d: Dict[str, any]) -> CancelAllRuns:
+        """Deserializes the CancelAllRuns from a dictionary."""
+        return cls(all_queued_runs=d.get('all_queued_runs', None), job_id=d.get('job_id', None))
 
 
 @dataclass
 class CancelRun:
     run_id: int
+    """This field is required."""
 
     def as_dict(self) -> dict:
+        """Serializes the CancelRun into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.run_id is not None: body['run_id'] = self.run_id
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CancelRun':
+    def from_dict(cls, d: Dict[str, any]) -> CancelRun:
+        """Deserializes the CancelRun from a dictionary."""
         return cls(run_id=d.get('run_id', None))
 
 
 @dataclass
 class ClusterInstance:
     cluster_id: Optional[str] = None
+    """The canonical identifier for the cluster used by a run. This field is always available for runs
+    on existing clusters. For runs on new clusters, it becomes available once the cluster is
+    created. This value can be used to view logs by browsing to
+    `/#setting/sparkui/$cluster_id/driver-logs`. The logs continue to be available after the run
+    completes.
+    
+    The response won’t include this field if the identifier is not available yet."""
+
     spark_context_id: Optional[str] = None
+    """The canonical identifier for the Spark context used by a run. This field is filled in once the
+    run begins execution. This value can be used to view the Spark UI by browsing to
+    `/#setting/sparkui/$cluster_id/$spark_context_id`. The Spark UI continues to be available after
+    the run has completed.
+    
+    The response won’t include this field if the identifier is not available yet."""
 
     def as_dict(self) -> dict:
+        """Serializes the ClusterInstance into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
         if self.spark_context_id is not None: body['spark_context_id'] = self.spark_context_id
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ClusterInstance':
+    def from_dict(cls, d: Dict[str, any]) -> ClusterInstance:
+        """Deserializes the ClusterInstance from a dictionary."""
         return cls(cluster_id=d.get('cluster_id', None), spark_context_id=d.get('spark_context_id', None))
 
 
 @dataclass
 class ClusterSpec:
     existing_cluster_id: Optional[str] = None
-    libraries: Optional['List[compute.Library]'] = None
-    new_cluster: Optional['compute.ClusterSpec'] = None
+    """If existing_cluster_id, the ID of an existing cluster that is used for all runs of this job.
+    When running jobs on an existing cluster, you may need to manually restart the cluster if it
+    stops responding. We suggest running jobs on new clusters for greater reliability"""
+
+    libraries: Optional[List[compute.Library]] = None
+    """An optional list of libraries to be installed on the cluster that executes the job. The default
+    value is an empty list."""
+
+    new_cluster: Optional[compute.ClusterSpec] = None
+    """If new_cluster, a description of a cluster that is created for each run."""
 
     def as_dict(self) -> dict:
+        """Serializes the ClusterSpec into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.existing_cluster_id is not None: body['existing_cluster_id'] = self.existing_cluster_id
         if self.libraries: body['libraries'] = [v.as_dict() for v in self.libraries]
@@ -192,19 +333,36 @@ class ClusterSpec:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ClusterSpec':
+    def from_dict(cls, d: Dict[str, any]) -> ClusterSpec:
+        """Deserializes the ClusterSpec from a dictionary."""
         return cls(existing_cluster_id=d.get('existing_cluster_id', None),
-                   libraries=_repeated(d, 'libraries', compute.Library),
+                   libraries=_repeated_dict(d, 'libraries', compute.Library),
                    new_cluster=_from_dict(d, 'new_cluster', compute.ClusterSpec))
 
 
 @dataclass
 class ConditionTask:
     left: Optional[str] = None
-    op: Optional['ConditionTaskOp'] = None
+    """The left operand of the condition task. Can be either a string value or a job state or parameter
+    reference."""
+
+    op: Optional[ConditionTaskOp] = None
+    """* `EQUAL_TO`, `NOT_EQUAL` operators perform string comparison of their operands. This means that
+    `“12.0” == “12”` will evaluate to `false`. * `GREATER_THAN`, `GREATER_THAN_OR_EQUAL`,
+    `LESS_THAN`, `LESS_THAN_OR_EQUAL` operators perform numeric comparison of their operands.
+    `“12.0” >= “12”` will evaluate to `true`, `“10.0” >= “12”` will evaluate to
+    `false`.
+    
+    The boolean comparison to task values can be implemented with operators `EQUAL_TO`, `NOT_EQUAL`.
+    If a task value was set to a boolean value, it will be serialized to `“true”` or
+    `“false”` for the comparison."""
+
     right: Optional[str] = None
+    """The right operand of the condition task. Can be either a string value or a job state or
+    parameter reference."""
 
     def as_dict(self) -> dict:
+        """Serializes the ConditionTask into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.left is not None: body['left'] = self.left
         if self.op is not None: body['op'] = self.op.value
@@ -212,7 +370,8 @@ class ConditionTask:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ConditionTask':
+    def from_dict(cls, d: Dict[str, any]) -> ConditionTask:
+        """Deserializes the ConditionTask from a dictionary."""
         return cls(left=d.get('left', None), op=_enum(d, 'op', ConditionTaskOp), right=d.get('right', None))
 
 
@@ -237,46 +396,139 @@ class ConditionTaskOp(Enum):
 
 @dataclass
 class Continuous:
-    pause_status: Optional['PauseStatus'] = None
+    pause_status: Optional[PauseStatus] = None
+    """Indicate whether the continuous execution of the job is paused or not. Defaults to UNPAUSED."""
 
     def as_dict(self) -> dict:
+        """Serializes the Continuous into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.pause_status is not None: body['pause_status'] = self.pause_status.value
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'Continuous':
+    def from_dict(cls, d: Dict[str, any]) -> Continuous:
+        """Deserializes the Continuous from a dictionary."""
         return cls(pause_status=_enum(d, 'pause_status', PauseStatus))
 
 
 @dataclass
 class CreateJob:
-    access_control_list: Optional['List[iam.AccessControlRequest]'] = None
-    compute: Optional['List[JobCompute]'] = None
-    continuous: Optional['Continuous'] = None
-    email_notifications: Optional['JobEmailNotifications'] = None
-    format: Optional['Format'] = None
-    git_source: Optional['GitSource'] = None
-    health: Optional['JobsHealthRules'] = None
-    job_clusters: Optional['List[JobCluster]'] = None
+    access_control_list: Optional[List[iam.AccessControlRequest]] = None
+    """List of permissions to set on the job."""
+
+    compute: Optional[List[JobCompute]] = None
+    """A list of compute requirements that can be referenced by tasks of this job."""
+
+    continuous: Optional[Continuous] = None
+    """An optional continuous property for this job. The continuous property will ensure that there is
+    always one run executing. Only one of `schedule` and `continuous` can be used."""
+
+    deployment: Optional[JobDeployment] = None
+    """Deployment information for jobs managed by external sources."""
+
+    description: Optional[str] = None
+    """An optional description for the job. The maximum length is 1024 characters in UTF-8 encoding."""
+
+    edit_mode: Optional[CreateJobEditMode] = None
+    """Edit mode of the job.
+    
+    * `UI_LOCKED`: The job is in a locked UI state and cannot be modified. * `EDITABLE`: The job is
+    in an editable state and can be modified."""
+
+    email_notifications: Optional[JobEmailNotifications] = None
+    """An optional set of email addresses that is notified when runs of this job begin or complete as
+    well as when this job is deleted."""
+
+    format: Optional[Format] = None
+    """Used to tell what is the format of the job. This field is ignored in Create/Update/Reset calls.
+    When using the Jobs API 2.1 this value is always set to `"MULTI_TASK"`."""
+
+    git_source: Optional[GitSource] = None
+    """An optional specification for a remote Git repository containing the source code used by tasks.
+    Version-controlled source code is supported by notebook, dbt, Python script, and SQL File tasks.
+    
+    If `git_source` is set, these tasks retrieve the file from the remote repository by default.
+    However, this behavior can be overridden by setting `source` to `WORKSPACE` on the task.
+    
+    Note: dbt and SQL File tasks support only version-controlled sources. If dbt or SQL File tasks
+    are used, `git_source` must be defined on the job."""
+
+    health: Optional[JobsHealthRules] = None
+    """An optional set of health rules that can be defined for this job."""
+
+    job_clusters: Optional[List[JobCluster]] = None
+    """A list of job cluster specifications that can be shared and reused by tasks of this job.
+    Libraries cannot be declared in a shared job cluster. You must declare dependent libraries in
+    task settings."""
+
     max_concurrent_runs: Optional[int] = None
+    """An optional maximum allowed number of concurrent runs of the job.
+    
+    Set this value if you want to be able to execute multiple runs of the same job concurrently.
+    This is useful for example if you trigger your job on a frequent schedule and want to allow
+    consecutive runs to overlap with each other, or if you want to trigger multiple runs which
+    differ by their input parameters.
+    
+    This setting affects only new runs. For example, suppose the job’s concurrency is 4 and there
+    are 4 concurrent active runs. Then setting the concurrency to 3 won’t kill any of the active
+    runs. However, from then on, new runs are skipped unless there are fewer than 3 active runs.
+    
+    This value cannot exceed 1000. Setting this value to `0` causes all new runs to be skipped."""
+
     name: Optional[str] = None
-    notification_settings: Optional['JobNotificationSettings'] = None
-    parameters: Optional['List[JobParameterDefinition]'] = None
-    run_as: Optional['JobRunAs'] = None
-    schedule: Optional['CronSchedule'] = None
-    tags: Optional['Dict[str,str]'] = None
-    tasks: Optional['List[Task]'] = None
+    """An optional name for the job. The maximum length is 4096 bytes in UTF-8 encoding."""
+
+    notification_settings: Optional[JobNotificationSettings] = None
+    """Optional notification settings that are used when sending notifications to each of the
+    `email_notifications` and `webhook_notifications` for this job."""
+
+    parameters: Optional[List[JobParameterDefinition]] = None
+    """Job-level parameter definitions"""
+
+    queue: Optional[QueueSettings] = None
+    """The queue settings of the job."""
+
+    run_as: Optional[JobRunAs] = None
+    """Write-only setting, available only in Create/Update/Reset and Submit calls. Specifies the user
+    or service principal that the job runs as. If not specified, the job runs as the user who
+    created the job.
+    
+    Only `user_name` or `service_principal_name` can be specified. If both are specified, an error
+    is thrown."""
+
+    schedule: Optional[CronSchedule] = None
+    """An optional periodic schedule for this job. The default behavior is that the job only runs when
+    triggered by clicking “Run Now” in the Jobs UI or sending an API request to `runNow`."""
+
+    tags: Optional[Dict[str, str]] = None
+    """A map of tags associated with the job. These are forwarded to the cluster as cluster tags for
+    jobs clusters, and are subject to the same limitations as cluster tags. A maximum of 25 tags can
+    be added to the job."""
+
+    tasks: Optional[List[Task]] = None
+    """A list of task specifications to be executed by this job."""
+
     timeout_seconds: Optional[int] = None
-    trigger: Optional['TriggerSettings'] = None
-    webhook_notifications: Optional['WebhookNotifications'] = None
+    """An optional timeout applied to each run of this job. A value of `0` means no timeout."""
+
+    trigger: Optional[TriggerSettings] = None
+    """Trigger settings for the job. Can be used to trigger a run when new files arrive in an external
+    location. The default behavior is that the job runs only when triggered by clicking “Run
+    Now” in the Jobs UI or sending an API request to `runNow`."""
+
+    webhook_notifications: Optional[WebhookNotifications] = None
+    """A collection of system notification IDs to notify when runs of this job begin or complete."""
 
     def as_dict(self) -> dict:
+        """Serializes the CreateJob into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.access_control_list:
             body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
         if self.compute: body['compute'] = [v.as_dict() for v in self.compute]
         if self.continuous: body['continuous'] = self.continuous.as_dict()
+        if self.deployment: body['deployment'] = self.deployment.as_dict()
+        if self.description is not None: body['description'] = self.description
+        if self.edit_mode is not None: body['edit_mode'] = self.edit_mode.value
         if self.email_notifications: body['email_notifications'] = self.email_notifications.as_dict()
         if self.format is not None: body['format'] = self.format.value
         if self.git_source: body['git_source'] = self.git_source.as_dict()
@@ -286,6 +538,7 @@ class CreateJob:
         if self.name is not None: body['name'] = self.name
         if self.notification_settings: body['notification_settings'] = self.notification_settings.as_dict()
         if self.parameters: body['parameters'] = [v.as_dict() for v in self.parameters]
+        if self.queue: body['queue'] = self.queue.as_dict()
         if self.run_as: body['run_as'] = self.run_as.as_dict()
         if self.schedule: body['schedule'] = self.schedule.as_dict()
         if self.tags: body['tags'] = self.tags
@@ -296,49 +549,79 @@ class CreateJob:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CreateJob':
-        return cls(access_control_list=_repeated(d, 'access_control_list', iam.AccessControlRequest),
-                   compute=_repeated(d, 'compute', JobCompute),
+    def from_dict(cls, d: Dict[str, any]) -> CreateJob:
+        """Deserializes the CreateJob from a dictionary."""
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list', iam.AccessControlRequest),
+                   compute=_repeated_dict(d, 'compute', JobCompute),
                    continuous=_from_dict(d, 'continuous', Continuous),
+                   deployment=_from_dict(d, 'deployment', JobDeployment),
+                   description=d.get('description', None),
+                   edit_mode=_enum(d, 'edit_mode', CreateJobEditMode),
                    email_notifications=_from_dict(d, 'email_notifications', JobEmailNotifications),
                    format=_enum(d, 'format', Format),
                    git_source=_from_dict(d, 'git_source', GitSource),
                    health=_from_dict(d, 'health', JobsHealthRules),
-                   job_clusters=_repeated(d, 'job_clusters', JobCluster),
+                   job_clusters=_repeated_dict(d, 'job_clusters', JobCluster),
                    max_concurrent_runs=d.get('max_concurrent_runs', None),
                    name=d.get('name', None),
                    notification_settings=_from_dict(d, 'notification_settings', JobNotificationSettings),
-                   parameters=_repeated(d, 'parameters', JobParameterDefinition),
+                   parameters=_repeated_dict(d, 'parameters', JobParameterDefinition),
+                   queue=_from_dict(d, 'queue', QueueSettings),
                    run_as=_from_dict(d, 'run_as', JobRunAs),
                    schedule=_from_dict(d, 'schedule', CronSchedule),
                    tags=d.get('tags', None),
-                   tasks=_repeated(d, 'tasks', Task),
+                   tasks=_repeated_dict(d, 'tasks', Task),
                    timeout_seconds=d.get('timeout_seconds', None),
                    trigger=_from_dict(d, 'trigger', TriggerSettings),
                    webhook_notifications=_from_dict(d, 'webhook_notifications', WebhookNotifications))
 
 
+class CreateJobEditMode(Enum):
+    """Edit mode of the job.
+    
+    * `UI_LOCKED`: The job is in a locked UI state and cannot be modified. * `EDITABLE`: The job is
+    in an editable state and can be modified."""
+
+    EDITABLE = 'EDITABLE'
+    UI_LOCKED = 'UI_LOCKED'
+
+
 @dataclass
 class CreateResponse:
     job_id: Optional[int] = None
+    """The canonical identifier for the newly created job."""
 
     def as_dict(self) -> dict:
+        """Serializes the CreateResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.job_id is not None: body['job_id'] = self.job_id
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CreateResponse':
+    def from_dict(cls, d: Dict[str, any]) -> CreateResponse:
+        """Deserializes the CreateResponse from a dictionary."""
         return cls(job_id=d.get('job_id', None))
 
 
 @dataclass
 class CronSchedule:
     quartz_cron_expression: str
+    """A Cron expression using Quartz syntax that describes the schedule for a job. See [Cron Trigger]
+    for details. This field is required."
+    
+    [Cron Trigger]: http://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html"""
+
     timezone_id: str
-    pause_status: Optional['PauseStatus'] = None
+    """A Java timezone ID. The schedule for a job is resolved with respect to this timezone. See [Java
+    TimeZone] for details. This field is required.
+    
+    [Java TimeZone]: https://docs.oracle.com/javase/7/docs/api/java/util/TimeZone.html"""
+
+    pause_status: Optional[PauseStatus] = None
+    """Indicate whether this schedule is paused or not."""
 
     def as_dict(self) -> dict:
+        """Serializes the CronSchedule into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.pause_status is not None: body['pause_status'] = self.pause_status.value
         if self.quartz_cron_expression is not None:
@@ -347,7 +630,8 @@ class CronSchedule:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CronSchedule':
+    def from_dict(cls, d: Dict[str, any]) -> CronSchedule:
+        """Deserializes the CronSchedule from a dictionary."""
         return cls(pause_status=_enum(d, 'pause_status', PauseStatus),
                    quartz_cron_expression=d.get('quartz_cron_expression', None),
                    timezone_id=d.get('timezone_id', None))
@@ -355,31 +639,57 @@ class CronSchedule:
 
 @dataclass
 class DbtOutput:
-    artifacts_headers: Optional['Dict[str,str]'] = None
+    artifacts_headers: Optional[Dict[str, str]] = None
+    """An optional map of headers to send when retrieving the artifact from the `artifacts_link`."""
+
     artifacts_link: Optional[str] = None
+    """A pre-signed URL to download the (compressed) dbt artifacts. This link is valid for a limited
+    time (30 minutes). This information is only available after the run has finished."""
 
     def as_dict(self) -> dict:
+        """Serializes the DbtOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.artifacts_headers: body['artifacts_headers'] = self.artifacts_headers
         if self.artifacts_link is not None: body['artifacts_link'] = self.artifacts_link
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'DbtOutput':
+    def from_dict(cls, d: Dict[str, any]) -> DbtOutput:
+        """Deserializes the DbtOutput from a dictionary."""
         return cls(artifacts_headers=d.get('artifacts_headers', None),
                    artifacts_link=d.get('artifacts_link', None))
 
 
 @dataclass
 class DbtTask:
-    commands: 'List[str]'
+    commands: List[str]
+    """A list of dbt commands to execute. All commands must start with `dbt`. This parameter must not
+    be empty. A maximum of up to 10 commands can be provided."""
+
     catalog: Optional[str] = None
+    """Optional name of the catalog to use. The value is the top level in the 3-level namespace of
+    Unity Catalog (catalog / schema / relation). The catalog value can only be specified if a
+    warehouse_id is specified. Requires dbt-databricks >= 1.1.1."""
+
     profiles_directory: Optional[str] = None
+    """Optional (relative) path to the profiles directory. Can only be specified if no warehouse_id is
+    specified. If no warehouse_id is specified and this folder is unset, the root directory is used."""
+
     project_directory: Optional[str] = None
+    """Optional (relative) path to the project directory, if no value is provided, the root of the git
+    repository is used."""
+
     schema: Optional[str] = None
+    """Optional schema to write to. This parameter is only used when a warehouse_id is also provided.
+    If not provided, the `default` schema is used."""
+
     warehouse_id: Optional[str] = None
+    """ID of the SQL warehouse to connect to. If provided, we automatically generate and provide the
+    profile and connection details to dbt. It can be overridden on a per-command basis by using the
+    `--profiles-dir` command line argument."""
 
     def as_dict(self) -> dict:
+        """Serializes the DbtTask into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.catalog is not None: body['catalog'] = self.catalog
         if self.commands: body['commands'] = [v for v in self.commands]
@@ -390,7 +700,8 @@ class DbtTask:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'DbtTask':
+    def from_dict(cls, d: Dict[str, any]) -> DbtTask:
+        """Deserializes the DbtTask from a dictionary."""
         return cls(catalog=d.get('catalog', None),
                    commands=d.get('commands', None),
                    profiles_directory=d.get('profiles_directory', None),
@@ -402,52 +713,74 @@ class DbtTask:
 @dataclass
 class DeleteJob:
     job_id: int
+    """The canonical identifier of the job to delete. This field is required."""
 
     def as_dict(self) -> dict:
+        """Serializes the DeleteJob into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.job_id is not None: body['job_id'] = self.job_id
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'DeleteJob':
+    def from_dict(cls, d: Dict[str, any]) -> DeleteJob:
+        """Deserializes the DeleteJob from a dictionary."""
         return cls(job_id=d.get('job_id', None))
 
 
 @dataclass
 class DeleteRun:
     run_id: int
+    """The canonical identifier of the run for which to retrieve the metadata."""
 
     def as_dict(self) -> dict:
+        """Serializes the DeleteRun into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.run_id is not None: body['run_id'] = self.run_id
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'DeleteRun':
+    def from_dict(cls, d: Dict[str, any]) -> DeleteRun:
+        """Deserializes the DeleteRun from a dictionary."""
         return cls(run_id=d.get('run_id', None))
 
 
 @dataclass
 class ExportRunOutput:
-    views: Optional['List[ViewItem]'] = None
+    views: Optional[List[ViewItem]] = None
+    """The exported content in HTML format (one for every view item). To extract the HTML notebook from
+    the JSON response, download and run this [Python script].
+    
+    [Python script]: https://docs.databricks.com/en/_static/examples/extract.py"""
 
     def as_dict(self) -> dict:
+        """Serializes the ExportRunOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.views: body['views'] = [v.as_dict() for v in self.views]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ExportRunOutput':
-        return cls(views=_repeated(d, 'views', ViewItem))
+    def from_dict(cls, d: Dict[str, any]) -> ExportRunOutput:
+        """Deserializes the ExportRunOutput from a dictionary."""
+        return cls(views=_repeated_dict(d, 'views', ViewItem))
 
 
 @dataclass
 class FileArrivalTriggerConfiguration:
     min_time_between_triggers_seconds: Optional[int] = None
+    """If set, the trigger starts a run only after the specified amount of time passed since the last
+    time the trigger fired. The minimum allowed value is 60 seconds"""
+
     url: Optional[str] = None
+    """URL to be monitored for file arrivals. The path must point to the root or a subpath of the
+    external location."""
+
     wait_after_last_change_seconds: Optional[int] = None
+    """If set, the trigger starts a run only after no file activity has occurred for the specified
+    amount of time. This makes it possible to wait for a batch of incoming files to arrive before
+    triggering a run. The minimum allowed value is 60 seconds."""
 
     def as_dict(self) -> dict:
+        """Serializes the FileArrivalTriggerConfiguration into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.min_time_between_triggers_seconds is not None:
             body['min_time_between_triggers_seconds'] = self.min_time_between_triggers_seconds
@@ -457,7 +790,8 @@ class FileArrivalTriggerConfiguration:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'FileArrivalTriggerConfiguration':
+    def from_dict(cls, d: Dict[str, any]) -> FileArrivalTriggerConfiguration:
+        """Deserializes the FileArrivalTriggerConfiguration from a dictionary."""
         return cls(min_time_between_triggers_seconds=d.get('min_time_between_triggers_seconds', None),
                    url=d.get('url', None),
                    wait_after_last_change_seconds=d.get('wait_after_last_change_seconds', None))
@@ -471,16 +805,19 @@ class Format(Enum):
 
 @dataclass
 class GetJobPermissionLevelsResponse:
-    permission_levels: Optional['List[JobPermissionsDescription]'] = None
+    permission_levels: Optional[List[JobPermissionsDescription]] = None
+    """Specific permission levels"""
 
     def as_dict(self) -> dict:
+        """Serializes the GetJobPermissionLevelsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'GetJobPermissionLevelsResponse':
-        return cls(permission_levels=_repeated(d, 'permission_levels', JobPermissionsDescription))
+    def from_dict(cls, d: Dict[str, any]) -> GetJobPermissionLevelsResponse:
+        """Deserializes the GetJobPermissionLevelsResponse from a dictionary."""
+        return cls(permission_levels=_repeated_dict(d, 'permission_levels', JobPermissionsDescription))
 
 
 class GitProvider(Enum):
@@ -501,14 +838,19 @@ class GitSnapshot:
     included on job runs."""
 
     used_commit: Optional[str] = None
+    """Commit that was used to execute the run. If git_branch was specified, this points to the HEAD of
+    the branch at the time of the run; if git_tag was specified, this points to the commit the tag
+    points to."""
 
     def as_dict(self) -> dict:
+        """Serializes the GitSnapshot into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.used_commit is not None: body['used_commit'] = self.used_commit
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'GitSnapshot':
+    def from_dict(cls, d: Dict[str, any]) -> GitSnapshot:
+        """Deserializes the GitSnapshot from a dictionary."""
         return cls(used_commit=d.get('used_commit', None))
 
 
@@ -524,14 +866,32 @@ class GitSource:
     are used, `git_source` must be defined on the job."""
 
     git_url: str
-    git_provider: 'GitProvider'
+    """URL of the repository to be cloned by this job."""
+
+    git_provider: GitProvider
+    """Unique identifier of the service used to host the Git repository. The value is case insensitive."""
+
     git_branch: Optional[str] = None
+    """Name of the branch to be checked out and used by this job. This field cannot be specified in
+    conjunction with git_tag or git_commit."""
+
     git_commit: Optional[str] = None
-    git_snapshot: Optional['GitSnapshot'] = None
+    """Commit to be checked out and used by this job. This field cannot be specified in conjunction
+    with git_branch or git_tag."""
+
+    git_snapshot: Optional[GitSnapshot] = None
+    """Read-only state of the remote repository at the time the job was run. This field is only
+    included on job runs."""
+
     git_tag: Optional[str] = None
-    job_source: Optional['JobSource'] = None
+    """Name of the tag to be checked out and used by this job. This field cannot be specified in
+    conjunction with git_branch or git_commit."""
+
+    job_source: Optional[JobSource] = None
+    """The source of the job specification in the remote repository when the job is source controlled."""
 
     def as_dict(self) -> dict:
+        """Serializes the GitSource into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.git_branch is not None: body['git_branch'] = self.git_branch
         if self.git_commit is not None: body['git_commit'] = self.git_commit
@@ -543,7 +903,8 @@ class GitSource:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'GitSource':
+    def from_dict(cls, d: Dict[str, any]) -> GitSource:
+        """Deserializes the GitSource from a dictionary."""
         return cls(git_branch=d.get('git_branch', None),
                    git_commit=d.get('git_commit', None),
                    git_provider=_enum(d, 'git_provider', GitProvider),
@@ -556,13 +917,33 @@ class GitSource:
 @dataclass
 class Job:
     created_time: Optional[int] = None
+    """The time at which this job was created in epoch milliseconds (milliseconds since 1/1/1970 UTC)."""
+
     creator_user_name: Optional[str] = None
+    """The creator user name. This field won’t be included in the response if the user has already
+    been deleted."""
+
     job_id: Optional[int] = None
+    """The canonical identifier for this job."""
+
     run_as_user_name: Optional[str] = None
-    settings: Optional['JobSettings'] = None
-    trigger_history: Optional['TriggerHistory'] = None
+    """The email of an active workspace user or the application ID of a service principal that the job
+    runs as. This value can be changed by setting the `run_as` field when creating or updating a
+    job.
+    
+    By default, `run_as_user_name` is based on the current job settings and is set to the creator of
+    the job if job access control is disabled or to the user with the `is_owner` permission if job
+    access control is enabled."""
+
+    settings: Optional[JobSettings] = None
+    """Settings for this job and all of its runs. These settings can be updated using the `resetJob`
+    method."""
+
+    trigger_history: Optional[TriggerHistory] = None
+    """History of the file arrival trigger associated with the job."""
 
     def as_dict(self) -> dict:
+        """Serializes the Job into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.created_time is not None: body['created_time'] = self.created_time
         if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
@@ -573,7 +954,8 @@ class Job:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'Job':
+    def from_dict(cls, d: Dict[str, any]) -> Job:
+        """Deserializes the Job from a dictionary."""
         return cls(created_time=d.get('created_time', None),
                    creator_user_name=d.get('creator_user_name', None),
                    job_id=d.get('job_id', None),
@@ -585,11 +967,19 @@ class Job:
 @dataclass
 class JobAccessControlRequest:
     group_name: Optional[str] = None
-    permission_level: Optional['JobPermissionLevel'] = None
+    """name of the group"""
+
+    permission_level: Optional[JobPermissionLevel] = None
+    """Permission level"""
+
     service_principal_name: Optional[str] = None
+    """application ID of a service principal"""
+
     user_name: Optional[str] = None
+    """name of the user"""
 
     def as_dict(self) -> dict:
+        """Serializes the JobAccessControlRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.group_name is not None: body['group_name'] = self.group_name
         if self.permission_level is not None: body['permission_level'] = self.permission_level.value
@@ -599,7 +989,8 @@ class JobAccessControlRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'JobAccessControlRequest':
+    def from_dict(cls, d: Dict[str, any]) -> JobAccessControlRequest:
+        """Deserializes the JobAccessControlRequest from a dictionary."""
         return cls(group_name=d.get('group_name', None),
                    permission_level=_enum(d, 'permission_level', JobPermissionLevel),
                    service_principal_name=d.get('service_principal_name', None),
@@ -608,13 +999,23 @@ class JobAccessControlRequest:
 
 @dataclass
 class JobAccessControlResponse:
-    all_permissions: Optional['List[JobPermission]'] = None
+    all_permissions: Optional[List[JobPermission]] = None
+    """All permissions."""
+
     display_name: Optional[str] = None
+    """Display name of the user or service principal."""
+
     group_name: Optional[str] = None
+    """name of the group"""
+
     service_principal_name: Optional[str] = None
+    """Name of the service principal."""
+
     user_name: Optional[str] = None
+    """name of the user"""
 
     def as_dict(self) -> dict:
+        """Serializes the JobAccessControlResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.all_permissions: body['all_permissions'] = [v.as_dict() for v in self.all_permissions]
         if self.display_name is not None: body['display_name'] = self.display_name
@@ -625,8 +1026,9 @@ class JobAccessControlResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'JobAccessControlResponse':
-        return cls(all_permissions=_repeated(d, 'all_permissions', JobPermission),
+    def from_dict(cls, d: Dict[str, any]) -> JobAccessControlResponse:
+        """Deserializes the JobAccessControlResponse from a dictionary."""
+        return cls(all_permissions=_repeated_dict(d, 'all_permissions', JobPermission),
                    display_name=d.get('display_name', None),
                    group_name=d.get('group_name', None),
                    service_principal_name=d.get('service_principal_name', None),
@@ -636,16 +1038,23 @@ class JobAccessControlResponse:
 @dataclass
 class JobCluster:
     job_cluster_key: str
-    new_cluster: Optional['compute.ClusterSpec'] = None
+    """A unique name for the job cluster. This field is required and must be unique within the job.
+    `JobTaskSettings` may refer to this field to determine which cluster to launch for the task
+    execution."""
+
+    new_cluster: Optional[compute.ClusterSpec] = None
+    """If new_cluster, a description of a cluster that is created for each task."""
 
     def as_dict(self) -> dict:
+        """Serializes the JobCluster into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.job_cluster_key is not None: body['job_cluster_key'] = self.job_cluster_key
         if self.new_cluster: body['new_cluster'] = self.new_cluster.as_dict()
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'JobCluster':
+    def from_dict(cls, d: Dict[str, any]) -> JobCluster:
+        """Deserializes the JobCluster from a dictionary."""
         return cls(job_cluster_key=d.get('job_cluster_key', None),
                    new_cluster=_from_dict(d, 'new_cluster', compute.ClusterSpec))
 
@@ -653,28 +1062,86 @@ class JobCluster:
 @dataclass
 class JobCompute:
     compute_key: str
-    spec: 'compute.ComputeSpec'
+    """A unique name for the compute requirement. This field is required and must be unique within the
+    job. `JobTaskSettings` may refer to this field to determine the compute requirements for the
+    task execution."""
+
+    spec: compute.ComputeSpec
 
     def as_dict(self) -> dict:
+        """Serializes the JobCompute into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.compute_key is not None: body['compute_key'] = self.compute_key
         if self.spec: body['spec'] = self.spec.as_dict()
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'JobCompute':
+    def from_dict(cls, d: Dict[str, any]) -> JobCompute:
+        """Deserializes the JobCompute from a dictionary."""
         return cls(compute_key=d.get('compute_key', None), spec=_from_dict(d, 'spec', compute.ComputeSpec))
+
+
+@dataclass
+class JobDeployment:
+    kind: JobDeploymentKind
+    """The kind of deployment that manages the job.
+    
+    * `BUNDLE`: The job is managed by Databricks Asset Bundle."""
+
+    metadata_file_path: Optional[str] = None
+    """Path of the file that contains deployment metadata."""
+
+    def as_dict(self) -> dict:
+        """Serializes the JobDeployment into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.kind is not None: body['kind'] = self.kind.value
+        if self.metadata_file_path is not None: body['metadata_file_path'] = self.metadata_file_path
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> JobDeployment:
+        """Deserializes the JobDeployment from a dictionary."""
+        return cls(kind=_enum(d, 'kind', JobDeploymentKind),
+                   metadata_file_path=d.get('metadata_file_path', None))
+
+
+class JobDeploymentKind(Enum):
+    """The kind of deployment that manages the job.
+    
+    * `BUNDLE`: The job is managed by Databricks Asset Bundle."""
+
+    BUNDLE = 'BUNDLE'
 
 
 @dataclass
 class JobEmailNotifications:
     no_alert_for_skipped_runs: Optional[bool] = None
-    on_duration_warning_threshold_exceeded: Optional['List[str]'] = None
-    on_failure: Optional['List[str]'] = None
-    on_start: Optional['List[str]'] = None
-    on_success: Optional['List[str]'] = None
+    """If true, do not send email to recipients specified in `on_failure` if the run is skipped."""
+
+    on_duration_warning_threshold_exceeded: Optional[List[str]] = None
+    """A list of email addresses to be notified when the duration of a run exceeds the threshold
+    specified for the `RUN_DURATION_SECONDS` metric in the `health` field. If no rule for the
+    `RUN_DURATION_SECONDS` metric is specified in the `health` field for the job, notifications are
+    not sent."""
+
+    on_failure: Optional[List[str]] = None
+    """A list of email addresses to be notified when a run unsuccessfully completes. A run is
+    considered to have completed unsuccessfully if it ends with an `INTERNAL_ERROR`
+    `life_cycle_state` or a `FAILED`, or `TIMED_OUT` result_state. If this is not specified on job
+    creation, reset, or update the list is empty, and notifications are not sent."""
+
+    on_start: Optional[List[str]] = None
+    """A list of email addresses to be notified when a run begins. If not specified on job creation,
+    reset, or update, the list is empty, and notifications are not sent."""
+
+    on_success: Optional[List[str]] = None
+    """A list of email addresses to be notified when a run successfully completes. A run is considered
+    to have completed successfully if it ends with a `TERMINATED` `life_cycle_state` and a `SUCCESS`
+    result_state. If not specified on job creation, reset, or update, the list is empty, and
+    notifications are not sent."""
 
     def as_dict(self) -> dict:
+        """Serializes the JobEmailNotifications into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.no_alert_for_skipped_runs is not None:
             body['no_alert_for_skipped_runs'] = self.no_alert_for_skipped_runs
@@ -688,7 +1155,8 @@ class JobEmailNotifications:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'JobEmailNotifications':
+    def from_dict(cls, d: Dict[str, any]) -> JobEmailNotifications:
+        """Deserializes the JobEmailNotifications from a dictionary."""
         return cls(no_alert_for_skipped_runs=d.get('no_alert_for_skipped_runs', None),
                    on_duration_warning_threshold_exceeded=d.get('on_duration_warning_threshold_exceeded',
                                                                 None),
@@ -700,9 +1168,15 @@ class JobEmailNotifications:
 @dataclass
 class JobNotificationSettings:
     no_alert_for_canceled_runs: Optional[bool] = None
+    """If true, do not send notifications to recipients specified in `on_failure` if the run is
+    canceled."""
+
     no_alert_for_skipped_runs: Optional[bool] = None
+    """If true, do not send notifications to recipients specified in `on_failure` if the run is
+    skipped."""
 
     def as_dict(self) -> dict:
+        """Serializes the JobNotificationSettings into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.no_alert_for_canceled_runs is not None:
             body['no_alert_for_canceled_runs'] = self.no_alert_for_canceled_runs
@@ -711,7 +1185,8 @@ class JobNotificationSettings:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'JobNotificationSettings':
+    def from_dict(cls, d: Dict[str, any]) -> JobNotificationSettings:
+        """Deserializes the JobNotificationSettings from a dictionary."""
         return cls(no_alert_for_canceled_runs=d.get('no_alert_for_canceled_runs', None),
                    no_alert_for_skipped_runs=d.get('no_alert_for_skipped_runs', None))
 
@@ -719,10 +1194,16 @@ class JobNotificationSettings:
 @dataclass
 class JobParameter:
     default: Optional[str] = None
+    """The optional default value of the parameter"""
+
     name: Optional[str] = None
+    """The name of the parameter"""
+
     value: Optional[str] = None
+    """The value used in the run"""
 
     def as_dict(self) -> dict:
+        """Serializes the JobParameter into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.default is not None: body['default'] = self.default
         if self.name is not None: body['name'] = self.name
@@ -730,33 +1211,43 @@ class JobParameter:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'JobParameter':
+    def from_dict(cls, d: Dict[str, any]) -> JobParameter:
+        """Deserializes the JobParameter from a dictionary."""
         return cls(default=d.get('default', None), name=d.get('name', None), value=d.get('value', None))
 
 
 @dataclass
 class JobParameterDefinition:
     name: str
+    """The name of the defined parameter. May only contain alphanumeric characters, `_`, `-`, and `.`"""
+
     default: str
+    """Default value of the parameter."""
 
     def as_dict(self) -> dict:
+        """Serializes the JobParameterDefinition into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.default is not None: body['default'] = self.default
         if self.name is not None: body['name'] = self.name
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'JobParameterDefinition':
+    def from_dict(cls, d: Dict[str, any]) -> JobParameterDefinition:
+        """Deserializes the JobParameterDefinition from a dictionary."""
         return cls(default=d.get('default', None), name=d.get('name', None))
 
 
 @dataclass
 class JobPermission:
     inherited: Optional[bool] = None
-    inherited_from_object: Optional['List[str]'] = None
-    permission_level: Optional['JobPermissionLevel'] = None
+
+    inherited_from_object: Optional[List[str]] = None
+
+    permission_level: Optional[JobPermissionLevel] = None
+    """Permission level"""
 
     def as_dict(self) -> dict:
+        """Serializes the JobPermission into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.inherited is not None: body['inherited'] = self.inherited
         if self.inherited_from_object: body['inherited_from_object'] = [v for v in self.inherited_from_object]
@@ -764,7 +1255,8 @@ class JobPermission:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'JobPermission':
+    def from_dict(cls, d: Dict[str, any]) -> JobPermission:
+        """Deserializes the JobPermission from a dictionary."""
         return cls(inherited=d.get('inherited', None),
                    inherited_from_object=d.get('inherited_from_object', None),
                    permission_level=_enum(d, 'permission_level', JobPermissionLevel))
@@ -781,11 +1273,14 @@ class JobPermissionLevel(Enum):
 
 @dataclass
 class JobPermissions:
-    access_control_list: Optional['List[JobAccessControlResponse]'] = None
+    access_control_list: Optional[List[JobAccessControlResponse]] = None
+
     object_id: Optional[str] = None
+
     object_type: Optional[str] = None
 
     def as_dict(self) -> dict:
+        """Serializes the JobPermissions into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.access_control_list:
             body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
@@ -794,8 +1289,9 @@ class JobPermissions:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'JobPermissions':
-        return cls(access_control_list=_repeated(d, 'access_control_list', JobAccessControlResponse),
+    def from_dict(cls, d: Dict[str, any]) -> JobPermissions:
+        """Deserializes the JobPermissions from a dictionary."""
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list', JobAccessControlResponse),
                    object_id=d.get('object_id', None),
                    object_type=d.get('object_type', None))
 
@@ -803,26 +1299,33 @@ class JobPermissions:
 @dataclass
 class JobPermissionsDescription:
     description: Optional[str] = None
-    permission_level: Optional['JobPermissionLevel'] = None
+
+    permission_level: Optional[JobPermissionLevel] = None
+    """Permission level"""
 
     def as_dict(self) -> dict:
+        """Serializes the JobPermissionsDescription into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.description is not None: body['description'] = self.description
         if self.permission_level is not None: body['permission_level'] = self.permission_level.value
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'JobPermissionsDescription':
+    def from_dict(cls, d: Dict[str, any]) -> JobPermissionsDescription:
+        """Deserializes the JobPermissionsDescription from a dictionary."""
         return cls(description=d.get('description', None),
                    permission_level=_enum(d, 'permission_level', JobPermissionLevel))
 
 
 @dataclass
 class JobPermissionsRequest:
-    access_control_list: Optional['List[JobAccessControlRequest]'] = None
+    access_control_list: Optional[List[JobAccessControlRequest]] = None
+
     job_id: Optional[str] = None
+    """The job for which to get or manage permissions."""
 
     def as_dict(self) -> dict:
+        """Serializes the JobPermissionsRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.access_control_list:
             body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
@@ -830,8 +1333,9 @@ class JobPermissionsRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'JobPermissionsRequest':
-        return cls(access_control_list=_repeated(d, 'access_control_list', JobAccessControlRequest),
+    def from_dict(cls, d: Dict[str, any]) -> JobPermissionsRequest:
+        """Deserializes the JobPermissionsRequest from a dictionary."""
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list', JobAccessControlRequest),
                    job_id=d.get('job_id', None))
 
 
@@ -845,9 +1349,15 @@ class JobRunAs:
     is thrown."""
 
     service_principal_name: Optional[str] = None
+    """Application ID of an active service principal. Setting this field requires the
+    `servicePrincipal/user` role."""
+
     user_name: Optional[str] = None
+    """The email of an active workspace user. Non-admin users can only set this field to their own
+    email."""
 
     def as_dict(self) -> dict:
+        """Serializes the JobRunAs into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.service_principal_name is not None:
             body['service_principal_name'] = self.service_principal_name
@@ -855,36 +1365,125 @@ class JobRunAs:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'JobRunAs':
+    def from_dict(cls, d: Dict[str, any]) -> JobRunAs:
+        """Deserializes the JobRunAs from a dictionary."""
         return cls(service_principal_name=d.get('service_principal_name', None),
                    user_name=d.get('user_name', None))
 
 
 @dataclass
 class JobSettings:
-    compute: Optional['List[JobCompute]'] = None
-    continuous: Optional['Continuous'] = None
-    email_notifications: Optional['JobEmailNotifications'] = None
-    format: Optional['Format'] = None
-    git_source: Optional['GitSource'] = None
-    health: Optional['JobsHealthRules'] = None
-    job_clusters: Optional['List[JobCluster]'] = None
+    compute: Optional[List[JobCompute]] = None
+    """A list of compute requirements that can be referenced by tasks of this job."""
+
+    continuous: Optional[Continuous] = None
+    """An optional continuous property for this job. The continuous property will ensure that there is
+    always one run executing. Only one of `schedule` and `continuous` can be used."""
+
+    deployment: Optional[JobDeployment] = None
+    """Deployment information for jobs managed by external sources."""
+
+    description: Optional[str] = None
+    """An optional description for the job. The maximum length is 1024 characters in UTF-8 encoding."""
+
+    edit_mode: Optional[JobSettingsEditMode] = None
+    """Edit mode of the job.
+    
+    * `UI_LOCKED`: The job is in a locked UI state and cannot be modified. * `EDITABLE`: The job is
+    in an editable state and can be modified."""
+
+    email_notifications: Optional[JobEmailNotifications] = None
+    """An optional set of email addresses that is notified when runs of this job begin or complete as
+    well as when this job is deleted."""
+
+    format: Optional[Format] = None
+    """Used to tell what is the format of the job. This field is ignored in Create/Update/Reset calls.
+    When using the Jobs API 2.1 this value is always set to `"MULTI_TASK"`."""
+
+    git_source: Optional[GitSource] = None
+    """An optional specification for a remote Git repository containing the source code used by tasks.
+    Version-controlled source code is supported by notebook, dbt, Python script, and SQL File tasks.
+    
+    If `git_source` is set, these tasks retrieve the file from the remote repository by default.
+    However, this behavior can be overridden by setting `source` to `WORKSPACE` on the task.
+    
+    Note: dbt and SQL File tasks support only version-controlled sources. If dbt or SQL File tasks
+    are used, `git_source` must be defined on the job."""
+
+    health: Optional[JobsHealthRules] = None
+    """An optional set of health rules that can be defined for this job."""
+
+    job_clusters: Optional[List[JobCluster]] = None
+    """A list of job cluster specifications that can be shared and reused by tasks of this job.
+    Libraries cannot be declared in a shared job cluster. You must declare dependent libraries in
+    task settings."""
+
     max_concurrent_runs: Optional[int] = None
+    """An optional maximum allowed number of concurrent runs of the job.
+    
+    Set this value if you want to be able to execute multiple runs of the same job concurrently.
+    This is useful for example if you trigger your job on a frequent schedule and want to allow
+    consecutive runs to overlap with each other, or if you want to trigger multiple runs which
+    differ by their input parameters.
+    
+    This setting affects only new runs. For example, suppose the job’s concurrency is 4 and there
+    are 4 concurrent active runs. Then setting the concurrency to 3 won’t kill any of the active
+    runs. However, from then on, new runs are skipped unless there are fewer than 3 active runs.
+    
+    This value cannot exceed 1000. Setting this value to `0` causes all new runs to be skipped."""
+
     name: Optional[str] = None
-    notification_settings: Optional['JobNotificationSettings'] = None
-    parameters: Optional['List[JobParameterDefinition]'] = None
-    run_as: Optional['JobRunAs'] = None
-    schedule: Optional['CronSchedule'] = None
-    tags: Optional['Dict[str,str]'] = None
-    tasks: Optional['List[Task]'] = None
+    """An optional name for the job. The maximum length is 4096 bytes in UTF-8 encoding."""
+
+    notification_settings: Optional[JobNotificationSettings] = None
+    """Optional notification settings that are used when sending notifications to each of the
+    `email_notifications` and `webhook_notifications` for this job."""
+
+    parameters: Optional[List[JobParameterDefinition]] = None
+    """Job-level parameter definitions"""
+
+    queue: Optional[QueueSettings] = None
+    """The queue settings of the job."""
+
+    run_as: Optional[JobRunAs] = None
+    """Write-only setting, available only in Create/Update/Reset and Submit calls. Specifies the user
+    or service principal that the job runs as. If not specified, the job runs as the user who
+    created the job.
+    
+    Only `user_name` or `service_principal_name` can be specified. If both are specified, an error
+    is thrown."""
+
+    schedule: Optional[CronSchedule] = None
+    """An optional periodic schedule for this job. The default behavior is that the job only runs when
+    triggered by clicking “Run Now” in the Jobs UI or sending an API request to `runNow`."""
+
+    tags: Optional[Dict[str, str]] = None
+    """A map of tags associated with the job. These are forwarded to the cluster as cluster tags for
+    jobs clusters, and are subject to the same limitations as cluster tags. A maximum of 25 tags can
+    be added to the job."""
+
+    tasks: Optional[List[Task]] = None
+    """A list of task specifications to be executed by this job."""
+
     timeout_seconds: Optional[int] = None
-    trigger: Optional['TriggerSettings'] = None
-    webhook_notifications: Optional['WebhookNotifications'] = None
+    """An optional timeout applied to each run of this job. A value of `0` means no timeout."""
+
+    trigger: Optional[TriggerSettings] = None
+    """Trigger settings for the job. Can be used to trigger a run when new files arrive in an external
+    location. The default behavior is that the job runs only when triggered by clicking “Run
+    Now” in the Jobs UI or sending an API request to `runNow`."""
+
+    webhook_notifications: Optional[WebhookNotifications] = None
+    """A collection of system notification IDs to notify when runs of this job begin or complete."""
 
     def as_dict(self) -> dict:
+        """Serializes the JobSettings into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.compute: body['compute'] = [v.as_dict() for v in self.compute]
         if self.continuous: body['continuous'] = self.continuous.as_dict()
+        if self.deployment: body['deployment'] = self.deployment.as_dict()
+        if self.description is not None: body['description'] = self.description
+        if self.edit_mode is not None: body['edit_mode'] = self.edit_mode.value
         if self.email_notifications: body['email_notifications'] = self.email_notifications.as_dict()
         if self.format is not None: body['format'] = self.format.value
         if self.git_source: body['git_source'] = self.git_source.as_dict()
@@ -894,6 +1493,7 @@ class JobSettings:
         if self.name is not None: body['name'] = self.name
         if self.notification_settings: body['notification_settings'] = self.notification_settings.as_dict()
         if self.parameters: body['parameters'] = [v.as_dict() for v in self.parameters]
+        if self.queue: body['queue'] = self.queue.as_dict()
         if self.run_as: body['run_as'] = self.run_as.as_dict()
         if self.schedule: body['schedule'] = self.schedule.as_dict()
         if self.tags: body['tags'] = self.tags
@@ -904,25 +1504,40 @@ class JobSettings:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'JobSettings':
-        return cls(compute=_repeated(d, 'compute', JobCompute),
+    def from_dict(cls, d: Dict[str, any]) -> JobSettings:
+        """Deserializes the JobSettings from a dictionary."""
+        return cls(compute=_repeated_dict(d, 'compute', JobCompute),
                    continuous=_from_dict(d, 'continuous', Continuous),
+                   deployment=_from_dict(d, 'deployment', JobDeployment),
+                   description=d.get('description', None),
+                   edit_mode=_enum(d, 'edit_mode', JobSettingsEditMode),
                    email_notifications=_from_dict(d, 'email_notifications', JobEmailNotifications),
                    format=_enum(d, 'format', Format),
                    git_source=_from_dict(d, 'git_source', GitSource),
                    health=_from_dict(d, 'health', JobsHealthRules),
-                   job_clusters=_repeated(d, 'job_clusters', JobCluster),
+                   job_clusters=_repeated_dict(d, 'job_clusters', JobCluster),
                    max_concurrent_runs=d.get('max_concurrent_runs', None),
                    name=d.get('name', None),
                    notification_settings=_from_dict(d, 'notification_settings', JobNotificationSettings),
-                   parameters=_repeated(d, 'parameters', JobParameterDefinition),
+                   parameters=_repeated_dict(d, 'parameters', JobParameterDefinition),
+                   queue=_from_dict(d, 'queue', QueueSettings),
                    run_as=_from_dict(d, 'run_as', JobRunAs),
                    schedule=_from_dict(d, 'schedule', CronSchedule),
                    tags=d.get('tags', None),
-                   tasks=_repeated(d, 'tasks', Task),
+                   tasks=_repeated_dict(d, 'tasks', Task),
                    timeout_seconds=d.get('timeout_seconds', None),
                    trigger=_from_dict(d, 'trigger', TriggerSettings),
                    webhook_notifications=_from_dict(d, 'webhook_notifications', WebhookNotifications))
+
+
+class JobSettingsEditMode(Enum):
+    """Edit mode of the job.
+    
+    * `UI_LOCKED`: The job is in a locked UI state and cannot be modified. * `EDITABLE`: The job is
+    in an editable state and can be modified."""
+
+    EDITABLE = 'EDITABLE'
+    UI_LOCKED = 'UI_LOCKED'
 
 
 @dataclass
@@ -930,10 +1545,23 @@ class JobSource:
     """The source of the job specification in the remote repository when the job is source controlled."""
 
     job_config_path: str
+    """Path of the job YAML file that contains the job specification."""
+
     import_from_git_branch: str
-    dirty_state: Optional['JobSourceDirtyState'] = None
+    """Name of the branch which the job is imported from."""
+
+    dirty_state: Optional[JobSourceDirtyState] = None
+    """Dirty state indicates the job is not fully synced with the job specification in the remote
+    repository.
+    
+    Possible values are: * `NOT_SYNCED`: The job is not yet synced with the remote job
+    specification. Import the remote job specification from UI to make the job fully synced. *
+    `DISCONNECTED`: The job is temporary disconnected from the remote job specification and is
+    allowed for live edit. Import the remote job specification again from UI to make the job fully
+    synced."""
 
     def as_dict(self) -> dict:
+        """Serializes the JobSource into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.dirty_state is not None: body['dirty_state'] = self.dirty_state.value
         if self.import_from_git_branch is not None:
@@ -942,14 +1570,22 @@ class JobSource:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'JobSource':
+    def from_dict(cls, d: Dict[str, any]) -> JobSource:
+        """Deserializes the JobSource from a dictionary."""
         return cls(dirty_state=_enum(d, 'dirty_state', JobSourceDirtyState),
                    import_from_git_branch=d.get('import_from_git_branch', None),
                    job_config_path=d.get('job_config_path', None))
 
 
 class JobSourceDirtyState(Enum):
-    """This describes an enum"""
+    """Dirty state indicates the job is not fully synced with the job specification in the remote
+    repository.
+    
+    Possible values are: * `NOT_SYNCED`: The job is not yet synced with the remote job
+    specification. Import the remote job specification from UI to make the job fully synced. *
+    `DISCONNECTED`: The job is temporary disconnected from the remote job specification and is
+    allowed for live edit. Import the remote job specification again from UI to make the job fully
+    synced."""
 
     DISCONNECTED = 'DISCONNECTED'
     NOT_SYNCED = 'NOT_SYNCED'
@@ -969,11 +1605,17 @@ class JobsHealthOperator(Enum):
 
 @dataclass
 class JobsHealthRule:
-    metric: Optional['JobsHealthMetric'] = None
-    op: Optional['JobsHealthOperator'] = None
+    metric: Optional[JobsHealthMetric] = None
+    """Specifies the health metric that is being evaluated for a particular health rule."""
+
+    op: Optional[JobsHealthOperator] = None
+    """Specifies the operator used to compare the health metric value with the specified threshold."""
+
     value: Optional[int] = None
+    """Specifies the threshold value that the health metric should obey to satisfy the health rule."""
 
     def as_dict(self) -> dict:
+        """Serializes the JobsHealthRule into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.metric is not None: body['metric'] = self.metric.value
         if self.op is not None: body['op'] = self.op.value
@@ -981,7 +1623,8 @@ class JobsHealthRule:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'JobsHealthRule':
+    def from_dict(cls, d: Dict[str, any]) -> JobsHealthRule:
+        """Deserializes the JobsHealthRule from a dictionary."""
         return cls(metric=_enum(d, 'metric', JobsHealthMetric),
                    op=_enum(d, 'op', JobsHealthOperator),
                    value=d.get('value', None))
@@ -991,26 +1634,36 @@ class JobsHealthRule:
 class JobsHealthRules:
     """An optional set of health rules that can be defined for this job."""
 
-    rules: Optional['List[JobsHealthRule]'] = None
+    rules: Optional[List[JobsHealthRule]] = None
 
     def as_dict(self) -> dict:
+        """Serializes the JobsHealthRules into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.rules: body['rules'] = [v.as_dict() for v in self.rules]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'JobsHealthRules':
-        return cls(rules=_repeated(d, 'rules', JobsHealthRule))
+    def from_dict(cls, d: Dict[str, any]) -> JobsHealthRules:
+        """Deserializes the JobsHealthRules from a dictionary."""
+        return cls(rules=_repeated_dict(d, 'rules', JobsHealthRule))
 
 
 @dataclass
 class ListJobsResponse:
     has_more: Optional[bool] = None
-    jobs: Optional['List[BaseJob]'] = None
+    """If true, additional jobs matching the provided filter are available for listing."""
+
+    jobs: Optional[List[BaseJob]] = None
+    """The list of jobs."""
+
     next_page_token: Optional[str] = None
+    """A token that can be used to list the next page of jobs."""
+
     prev_page_token: Optional[str] = None
+    """A token that can be used to list the previous page of jobs."""
 
     def as_dict(self) -> dict:
+        """Serializes the ListJobsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.has_more is not None: body['has_more'] = self.has_more
         if self.jobs: body['jobs'] = [v.as_dict() for v in self.jobs]
@@ -1019,9 +1672,10 @@ class ListJobsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ListJobsResponse':
+    def from_dict(cls, d: Dict[str, any]) -> ListJobsResponse:
+        """Deserializes the ListJobsResponse from a dictionary."""
         return cls(has_more=d.get('has_more', None),
-                   jobs=_repeated(d, 'jobs', BaseJob),
+                   jobs=_repeated_dict(d, 'jobs', BaseJob),
                    next_page_token=d.get('next_page_token', None),
                    prev_page_token=d.get('prev_page_token', None))
 
@@ -1029,11 +1683,19 @@ class ListJobsResponse:
 @dataclass
 class ListRunsResponse:
     has_more: Optional[bool] = None
+    """If true, additional runs matching the provided filter are available for listing."""
+
     next_page_token: Optional[str] = None
+    """A token that can be used to list the next page of runs."""
+
     prev_page_token: Optional[str] = None
-    runs: Optional['List[BaseRun]'] = None
+    """A token that can be used to list the previous page of runs."""
+
+    runs: Optional[List[BaseRun]] = None
+    """A list of runs, from most recently started to least."""
 
     def as_dict(self) -> dict:
+        """Serializes the ListRunsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.has_more is not None: body['has_more'] = self.has_more
         if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
@@ -1042,15 +1704,20 @@ class ListRunsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ListRunsResponse':
+    def from_dict(cls, d: Dict[str, any]) -> ListRunsResponse:
+        """Deserializes the ListRunsResponse from a dictionary."""
         return cls(has_more=d.get('has_more', None),
                    next_page_token=d.get('next_page_token', None),
                    prev_page_token=d.get('prev_page_token', None),
-                   runs=_repeated(d, 'runs', BaseRun))
+                   runs=_repeated_dict(d, 'runs', BaseRun))
 
 
 class ListRunsRunType(Enum):
-    """This describes an enum"""
+    """* `JOB_RUN`: Normal job run. A run created with :method:jobs/runNow. * `WORKFLOW_RUN`: Workflow
+    run. A run created with [dbutils.notebook.run]. * `SUBMIT_RUN`: Submit run. A run created with
+    :method:jobs/submit.
+    
+    [dbutils.notebook.run]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-workflow"""
 
     JOB_RUN = 'JOB_RUN'
     SUBMIT_RUN = 'SUBMIT_RUN'
@@ -1060,26 +1727,63 @@ class ListRunsRunType(Enum):
 @dataclass
 class NotebookOutput:
     result: Optional[str] = None
+    """The value passed to
+    [dbutils.notebook.exit()](/notebooks/notebook-workflows.html#notebook-workflows-exit).
+    Databricks restricts this API to return the first 5 MB of the value. For a larger result, your
+    job can store the results in a cloud storage service. This field is absent if
+    `dbutils.notebook.exit()` was never called."""
+
     truncated: Optional[bool] = None
+    """Whether or not the result was truncated."""
 
     def as_dict(self) -> dict:
+        """Serializes the NotebookOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.result is not None: body['result'] = self.result
         if self.truncated is not None: body['truncated'] = self.truncated
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'NotebookOutput':
+    def from_dict(cls, d: Dict[str, any]) -> NotebookOutput:
+        """Deserializes the NotebookOutput from a dictionary."""
         return cls(result=d.get('result', None), truncated=d.get('truncated', None))
 
 
 @dataclass
 class NotebookTask:
     notebook_path: str
-    base_parameters: Optional['Dict[str,str]'] = None
-    source: Optional['Source'] = None
+    """The path of the notebook to be run in the Databricks workspace or remote repository. For
+    notebooks stored in the Databricks workspace, the path must be absolute and begin with a slash.
+    For notebooks stored in a remote repository, the path must be relative. This field is required."""
+
+    base_parameters: Optional[Dict[str, str]] = None
+    """Base parameters to be used for each run of this job. If the run is initiated by a call to
+    :method:jobs/runNow with parameters specified, the two parameters maps are merged. If the same
+    key is specified in `base_parameters` and in `run-now`, the value from `run-now` is used.
+    
+    Use [Task parameter variables] to set parameters containing information about job runs.
+    
+    If the notebook takes a parameter that is not specified in the job’s `base_parameters` or the
+    `run-now` override parameters, the default value from the notebook is used.
+    
+    Retrieve these parameters in a notebook using [dbutils.widgets.get].
+    
+    The JSON representation of this field cannot exceed 1MB.
+    
+    [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
+    [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-widgets"""
+
+    source: Optional[Source] = None
+    """Optional location type of the notebook. When set to `WORKSPACE`, the notebook will be retrieved
+    from the local <Databricks> workspace. When set to `GIT`, the notebook will be retrieved from a
+    Git repository defined in `git_source`. If the value is empty, the task will use `GIT` if
+    `git_source` is defined and `WORKSPACE` otherwise.
+    
+    * `WORKSPACE`: Notebook is located in <Databricks> workspace. * `GIT`: Notebook is located in
+    cloud Git provider."""
 
     def as_dict(self) -> dict:
+        """Serializes the NotebookTask into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.base_parameters: body['base_parameters'] = self.base_parameters
         if self.notebook_path is not None: body['notebook_path'] = self.notebook_path
@@ -1087,7 +1791,8 @@ class NotebookTask:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'NotebookTask':
+    def from_dict(cls, d: Dict[str, any]) -> NotebookTask:
+        """Deserializes the NotebookTask from a dictionary."""
         return cls(base_parameters=d.get('base_parameters', None),
                    notebook_path=d.get('notebook_path', None),
                    source=_enum(d, 'source', Source))
@@ -1105,41 +1810,60 @@ class PauseStatus(Enum):
 @dataclass
 class PipelineParams:
     full_refresh: Optional[bool] = None
+    """If true, triggers a full refresh on the delta live table."""
 
     def as_dict(self) -> dict:
+        """Serializes the PipelineParams into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.full_refresh is not None: body['full_refresh'] = self.full_refresh
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'PipelineParams':
+    def from_dict(cls, d: Dict[str, any]) -> PipelineParams:
+        """Deserializes the PipelineParams from a dictionary."""
         return cls(full_refresh=d.get('full_refresh', None))
 
 
 @dataclass
 class PipelineTask:
     full_refresh: Optional[bool] = None
+    """If true, a full refresh will be triggered on the delta live table."""
+
     pipeline_id: Optional[str] = None
+    """The full name of the pipeline task to execute."""
 
     def as_dict(self) -> dict:
+        """Serializes the PipelineTask into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.full_refresh is not None: body['full_refresh'] = self.full_refresh
         if self.pipeline_id is not None: body['pipeline_id'] = self.pipeline_id
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'PipelineTask':
+    def from_dict(cls, d: Dict[str, any]) -> PipelineTask:
+        """Deserializes the PipelineTask from a dictionary."""
         return cls(full_refresh=d.get('full_refresh', None), pipeline_id=d.get('pipeline_id', None))
 
 
 @dataclass
 class PythonWheelTask:
     entry_point: Optional[str] = None
-    named_parameters: Optional['Dict[str,str]'] = None
+    """Named entry point to use, if it does not exist in the metadata of the package it executes the
+    function from the package directly using `$packageName.$entryPoint()`"""
+
+    named_parameters: Optional[Dict[str, str]] = None
+    """Command-line parameters passed to Python wheel task in the form of `["--name=task",
+    "--data=dbfs:/path/to/data.json"]`. Leave it empty if `parameters` is not null."""
+
     package_name: Optional[str] = None
-    parameters: Optional['List[str]'] = None
+    """Name of the package to execute"""
+
+    parameters: Optional[List[str]] = None
+    """Command-line parameters passed to Python wheel task. Leave it empty if `named_parameters` is not
+    null."""
 
     def as_dict(self) -> dict:
+        """Serializes the PythonWheelTask into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.entry_point is not None: body['entry_point'] = self.entry_point
         if self.named_parameters: body['named_parameters'] = self.named_parameters
@@ -1148,7 +1872,8 @@ class PythonWheelTask:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'PythonWheelTask':
+    def from_dict(cls, d: Dict[str, any]) -> PythonWheelTask:
+        """Deserializes the PythonWheelTask from a dictionary."""
         return cls(entry_point=d.get('entry_point', None),
                    named_parameters=d.get('named_parameters', None),
                    package_name=d.get('package_name', None),
@@ -1156,15 +1881,44 @@ class PythonWheelTask:
 
 
 @dataclass
-class RepairHistoryItem:
-    end_time: Optional[int] = None
-    id: Optional[int] = None
-    start_time: Optional[int] = None
-    state: Optional['RunState'] = None
-    task_run_ids: Optional['List[int]'] = None
-    type: Optional['RepairHistoryItemType'] = None
+class QueueSettings:
+    enabled: bool
+    """If true, enable queueing for the job. This is a required field."""
 
     def as_dict(self) -> dict:
+        """Serializes the QueueSettings into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.enabled is not None: body['enabled'] = self.enabled
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> QueueSettings:
+        """Deserializes the QueueSettings from a dictionary."""
+        return cls(enabled=d.get('enabled', None))
+
+
+@dataclass
+class RepairHistoryItem:
+    end_time: Optional[int] = None
+    """The end time of the (repaired) run."""
+
+    id: Optional[int] = None
+    """The ID of the repair. Only returned for the items that represent a repair in `repair_history`."""
+
+    start_time: Optional[int] = None
+    """The start time of the (repaired) run."""
+
+    state: Optional[RunState] = None
+    """The current state of the run."""
+
+    task_run_ids: Optional[List[int]] = None
+    """The run IDs of the task runs that ran as part of this repair history item."""
+
+    type: Optional[RepairHistoryItemType] = None
+    """The repair history item type. Indicates whether a run is the original run or a repair run."""
+
+    def as_dict(self) -> dict:
+        """Serializes the RepairHistoryItem into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.end_time is not None: body['end_time'] = self.end_time
         if self.id is not None: body['id'] = self.id
@@ -1175,7 +1929,8 @@ class RepairHistoryItem:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RepairHistoryItem':
+    def from_dict(cls, d: Dict[str, any]) -> RepairHistoryItem:
+        """Deserializes the RepairHistoryItem from a dictionary."""
         return cls(end_time=d.get('end_time', None),
                    id=d.get('id', None),
                    start_time=d.get('start_time', None),
@@ -1194,23 +1949,106 @@ class RepairHistoryItemType(Enum):
 @dataclass
 class RepairRun:
     run_id: int
-    dbt_commands: Optional['List[str]'] = None
-    jar_params: Optional['List[str]'] = None
+    """The job run ID of the run to repair. The run must not be in progress."""
+
+    dbt_commands: Optional[List[str]] = None
+    """An array of commands to execute for jobs with the dbt task, for example `"dbt_commands": ["dbt
+    deps", "dbt seed", "dbt run"]`"""
+
+    jar_params: Optional[List[str]] = None
+    """A list of parameters for jobs with Spark JAR tasks, for example `"jar_params": ["john doe",
+    "35"]`. The parameters are used to invoke the main function of the main class specified in the
+    Spark JAR task. If not specified upon `run-now`, it defaults to an empty list. jar_params cannot
+    be specified in conjunction with notebook_params. The JSON representation of this field (for
+    example `{"jar_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
+    
+    Use [Task parameter variables](/jobs.html"#parameter-variables") to set parameters containing
+    information about job runs."""
+
+    job_parameters: Optional[Dict[str, str]] = None
+    """Job-level parameters used in the run. for example `"param": "overriding_val"`"""
+
     latest_repair_id: Optional[int] = None
-    notebook_params: Optional['Dict[str,str]'] = None
-    pipeline_params: Optional['PipelineParams'] = None
-    python_named_params: Optional['Dict[str,str]'] = None
-    python_params: Optional['List[str]'] = None
+    """The ID of the latest repair. This parameter is not required when repairing a run for the first
+    time, but must be provided on subsequent requests to repair the same run."""
+
+    notebook_params: Optional[Dict[str, str]] = None
+    """A map from keys to values for jobs with notebook task, for example `"notebook_params": {"name":
+    "john doe", "age": "35"}`. The map is passed to the notebook and is accessible through the
+    [dbutils.widgets.get] function.
+    
+    If not specified upon `run-now`, the triggered run uses the job’s base parameters.
+    
+    notebook_params cannot be specified in conjunction with jar_params.
+    
+    Use [Task parameter variables] to set parameters containing information about job runs.
+    
+    The JSON representation of this field (for example `{"notebook_params":{"name":"john
+    doe","age":"35"}}`) cannot exceed 10,000 bytes.
+    
+    [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
+    [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html"""
+
+    pipeline_params: Optional[PipelineParams] = None
+
+    python_named_params: Optional[Dict[str, str]] = None
+    """A map from keys to values for jobs with Python wheel task, for example `"python_named_params":
+    {"name": "task", "data": "dbfs:/path/to/data.json"}`."""
+
+    python_params: Optional[List[str]] = None
+    """A list of parameters for jobs with Python tasks, for example `"python_params": ["john doe",
+    "35"]`. The parameters are passed to Python file as command-line parameters. If specified upon
+    `run-now`, it would overwrite the parameters specified in job setting. The JSON representation
+    of this field (for example `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
+    
+    Use [Task parameter variables] to set parameters containing information about job runs.
+    
+    Important
+    
+    These parameters accept only Latin characters (ASCII character set). Using non-ASCII characters
+    returns an error. Examples of invalid, non-ASCII characters are Chinese, Japanese kanjis, and
+    emojis.
+    
+    [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables"""
+
     rerun_all_failed_tasks: Optional[bool] = None
+    """If true, repair all failed tasks. Only one of `rerun_tasks` or `rerun_all_failed_tasks` can be
+    used."""
+
     rerun_dependent_tasks: Optional[bool] = None
-    rerun_tasks: Optional['List[str]'] = None
-    spark_submit_params: Optional['List[str]'] = None
-    sql_params: Optional['Dict[str,str]'] = None
+    """If true, repair all tasks that depend on the tasks in `rerun_tasks`, even if they were
+    previously successful. Can be also used in combination with `rerun_all_failed_tasks`."""
+
+    rerun_tasks: Optional[List[str]] = None
+    """The task keys of the task runs to repair."""
+
+    spark_submit_params: Optional[List[str]] = None
+    """A list of parameters for jobs with spark submit task, for example `"spark_submit_params":
+    ["--class", "org.apache.spark.examples.SparkPi"]`. The parameters are passed to spark-submit
+    script as command-line parameters. If specified upon `run-now`, it would overwrite the
+    parameters specified in job setting. The JSON representation of this field (for example
+    `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
+    
+    Use [Task parameter variables] to set parameters containing information about job runs
+    
+    Important
+    
+    These parameters accept only Latin characters (ASCII character set). Using non-ASCII characters
+    returns an error. Examples of invalid, non-ASCII characters are Chinese, Japanese kanjis, and
+    emojis.
+    
+    [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables"""
+
+    sql_params: Optional[Dict[str, str]] = None
+    """A map from keys to values for jobs with SQL task, for example `"sql_params": {"name": "john
+    doe", "age": "35"}`. The SQL alert task does not support custom parameters."""
 
     def as_dict(self) -> dict:
+        """Serializes the RepairRun into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.dbt_commands: body['dbt_commands'] = [v for v in self.dbt_commands]
         if self.jar_params: body['jar_params'] = [v for v in self.jar_params]
+        if self.job_parameters: body['job_parameters'] = self.job_parameters
         if self.latest_repair_id is not None: body['latest_repair_id'] = self.latest_repair_id
         if self.notebook_params: body['notebook_params'] = self.notebook_params
         if self.pipeline_params: body['pipeline_params'] = self.pipeline_params.as_dict()
@@ -1226,9 +2064,11 @@ class RepairRun:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RepairRun':
+    def from_dict(cls, d: Dict[str, any]) -> RepairRun:
+        """Deserializes the RepairRun from a dictionary."""
         return cls(dbt_commands=d.get('dbt_commands', None),
                    jar_params=d.get('jar_params', None),
+                   job_parameters=d.get('job_parameters', None),
                    latest_repair_id=d.get('latest_repair_id', None),
                    notebook_params=d.get('notebook_params', None),
                    pipeline_params=_from_dict(d, 'pipeline_params', PipelineParams),
@@ -1245,151 +2085,190 @@ class RepairRun:
 @dataclass
 class RepairRunResponse:
     repair_id: Optional[int] = None
+    """The ID of the repair. Must be provided in subsequent repairs using the `latest_repair_id` field
+    to ensure sequential repairs."""
 
     def as_dict(self) -> dict:
+        """Serializes the RepairRunResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.repair_id is not None: body['repair_id'] = self.repair_id
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RepairRunResponse':
+    def from_dict(cls, d: Dict[str, any]) -> RepairRunResponse:
+        """Deserializes the RepairRunResponse from a dictionary."""
         return cls(repair_id=d.get('repair_id', None))
 
 
 @dataclass
 class ResetJob:
     job_id: int
-    new_settings: 'JobSettings'
+    """The canonical identifier of the job to reset. This field is required."""
+
+    new_settings: JobSettings
+    """The new settings of the job. These settings completely replace the old settings.
+    
+    Changes to the field `JobBaseSettings.timeout_seconds` are applied to active runs. Changes to
+    other fields are applied to future runs only."""
 
     def as_dict(self) -> dict:
+        """Serializes the ResetJob into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.job_id is not None: body['job_id'] = self.job_id
         if self.new_settings: body['new_settings'] = self.new_settings.as_dict()
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ResetJob':
+    def from_dict(cls, d: Dict[str, any]) -> ResetJob:
+        """Deserializes the ResetJob from a dictionary."""
         return cls(job_id=d.get('job_id', None), new_settings=_from_dict(d, 'new_settings', JobSettings))
 
 
 @dataclass
 class ResolvedConditionTaskValues:
     left: Optional[str] = None
+
     right: Optional[str] = None
 
     def as_dict(self) -> dict:
+        """Serializes the ResolvedConditionTaskValues into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.left is not None: body['left'] = self.left
         if self.right is not None: body['right'] = self.right
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ResolvedConditionTaskValues':
+    def from_dict(cls, d: Dict[str, any]) -> ResolvedConditionTaskValues:
+        """Deserializes the ResolvedConditionTaskValues from a dictionary."""
         return cls(left=d.get('left', None), right=d.get('right', None))
 
 
 @dataclass
 class ResolvedDbtTaskValues:
-    commands: Optional['List[str]'] = None
+    commands: Optional[List[str]] = None
 
     def as_dict(self) -> dict:
+        """Serializes the ResolvedDbtTaskValues into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.commands: body['commands'] = [v for v in self.commands]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ResolvedDbtTaskValues':
+    def from_dict(cls, d: Dict[str, any]) -> ResolvedDbtTaskValues:
+        """Deserializes the ResolvedDbtTaskValues from a dictionary."""
         return cls(commands=d.get('commands', None))
 
 
 @dataclass
 class ResolvedNotebookTaskValues:
-    base_parameters: Optional['Dict[str,str]'] = None
+    base_parameters: Optional[Dict[str, str]] = None
 
     def as_dict(self) -> dict:
+        """Serializes the ResolvedNotebookTaskValues into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.base_parameters: body['base_parameters'] = self.base_parameters
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ResolvedNotebookTaskValues':
+    def from_dict(cls, d: Dict[str, any]) -> ResolvedNotebookTaskValues:
+        """Deserializes the ResolvedNotebookTaskValues from a dictionary."""
         return cls(base_parameters=d.get('base_parameters', None))
 
 
 @dataclass
 class ResolvedParamPairValues:
-    parameters: Optional['Dict[str,str]'] = None
+    parameters: Optional[Dict[str, str]] = None
 
     def as_dict(self) -> dict:
+        """Serializes the ResolvedParamPairValues into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.parameters: body['parameters'] = self.parameters
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ResolvedParamPairValues':
+    def from_dict(cls, d: Dict[str, any]) -> ResolvedParamPairValues:
+        """Deserializes the ResolvedParamPairValues from a dictionary."""
         return cls(parameters=d.get('parameters', None))
 
 
 @dataclass
 class ResolvedPythonWheelTaskValues:
-    named_parameters: Optional['Dict[str,str]'] = None
-    parameters: Optional['List[str]'] = None
+    named_parameters: Optional[Dict[str, str]] = None
+
+    parameters: Optional[List[str]] = None
 
     def as_dict(self) -> dict:
+        """Serializes the ResolvedPythonWheelTaskValues into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.named_parameters: body['named_parameters'] = self.named_parameters
         if self.parameters: body['parameters'] = [v for v in self.parameters]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ResolvedPythonWheelTaskValues':
+    def from_dict(cls, d: Dict[str, any]) -> ResolvedPythonWheelTaskValues:
+        """Deserializes the ResolvedPythonWheelTaskValues from a dictionary."""
         return cls(named_parameters=d.get('named_parameters', None), parameters=d.get('parameters', None))
 
 
 @dataclass
 class ResolvedRunJobTaskValues:
-    named_parameters: Optional['Dict[str,str]'] = None
-    parameters: Optional['Dict[str,str]'] = None
+    named_parameters: Optional[Dict[str, str]] = None
+
+    parameters: Optional[Dict[str, str]] = None
 
     def as_dict(self) -> dict:
+        """Serializes the ResolvedRunJobTaskValues into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.named_parameters: body['named_parameters'] = self.named_parameters
         if self.parameters: body['parameters'] = self.parameters
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ResolvedRunJobTaskValues':
+    def from_dict(cls, d: Dict[str, any]) -> ResolvedRunJobTaskValues:
+        """Deserializes the ResolvedRunJobTaskValues from a dictionary."""
         return cls(named_parameters=d.get('named_parameters', None), parameters=d.get('parameters', None))
 
 
 @dataclass
 class ResolvedStringParamsValues:
-    parameters: Optional['List[str]'] = None
+    parameters: Optional[List[str]] = None
 
     def as_dict(self) -> dict:
+        """Serializes the ResolvedStringParamsValues into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.parameters: body['parameters'] = [v for v in self.parameters]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ResolvedStringParamsValues':
+    def from_dict(cls, d: Dict[str, any]) -> ResolvedStringParamsValues:
+        """Deserializes the ResolvedStringParamsValues from a dictionary."""
         return cls(parameters=d.get('parameters', None))
 
 
 @dataclass
 class ResolvedValues:
-    condition_task: Optional['ResolvedConditionTaskValues'] = None
-    dbt_task: Optional['ResolvedDbtTaskValues'] = None
-    notebook_task: Optional['ResolvedNotebookTaskValues'] = None
-    python_wheel_task: Optional['ResolvedPythonWheelTaskValues'] = None
-    run_job_task: Optional['ResolvedRunJobTaskValues'] = None
-    simulation_task: Optional['ResolvedParamPairValues'] = None
-    spark_jar_task: Optional['ResolvedStringParamsValues'] = None
-    spark_python_task: Optional['ResolvedStringParamsValues'] = None
-    spark_submit_task: Optional['ResolvedStringParamsValues'] = None
-    sql_task: Optional['ResolvedParamPairValues'] = None
+    condition_task: Optional[ResolvedConditionTaskValues] = None
+
+    dbt_task: Optional[ResolvedDbtTaskValues] = None
+
+    notebook_task: Optional[ResolvedNotebookTaskValues] = None
+
+    python_wheel_task: Optional[ResolvedPythonWheelTaskValues] = None
+
+    run_job_task: Optional[ResolvedRunJobTaskValues] = None
+
+    simulation_task: Optional[ResolvedParamPairValues] = None
+
+    spark_jar_task: Optional[ResolvedStringParamsValues] = None
+
+    spark_python_task: Optional[ResolvedStringParamsValues] = None
+
+    spark_submit_task: Optional[ResolvedStringParamsValues] = None
+
+    sql_task: Optional[ResolvedParamPairValues] = None
 
     def as_dict(self) -> dict:
+        """Serializes the ResolvedValues into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.condition_task: body['condition_task'] = self.condition_task.as_dict()
         if self.dbt_task: body['dbt_task'] = self.dbt_task.as_dict()
@@ -1404,7 +2283,8 @@ class ResolvedValues:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ResolvedValues':
+    def from_dict(cls, d: Dict[str, any]) -> ResolvedValues:
+        """Deserializes the ResolvedValues from a dictionary."""
         return cls(condition_task=_from_dict(d, 'condition_task', ResolvedConditionTaskValues),
                    dbt_task=_from_dict(d, 'dbt_task', ResolvedDbtTaskValues),
                    notebook_task=_from_dict(d, 'notebook_task', ResolvedNotebookTaskValues),
@@ -1420,41 +2300,135 @@ class ResolvedValues:
 @dataclass
 class Run:
     attempt_number: Optional[int] = None
+    """The sequence number of this run attempt for a triggered job run. The initial attempt of a run
+    has an attempt_number of 0\. If the initial run attempt fails, and the job has a retry policy
+    (`max_retries` \> 0), subsequent runs are created with an `original_attempt_run_id` of the
+    original attempt’s ID and an incrementing `attempt_number`. Runs are retried only until they
+    succeed, and the maximum `attempt_number` is the same as the `max_retries` value for the job."""
+
     cleanup_duration: Optional[int] = None
-    cluster_instance: Optional['ClusterInstance'] = None
-    cluster_spec: Optional['ClusterSpec'] = None
-    continuous: Optional['Continuous'] = None
+    """The time in milliseconds it took to terminate the cluster and clean up any associated artifacts.
+    The duration of a task run is the sum of the `setup_duration`, `execution_duration`, and the
+    `cleanup_duration`. The `cleanup_duration` field is set to 0 for multitask job runs. The total
+    duration of a multitask job run is the value of the `run_duration` field."""
+
+    cluster_instance: Optional[ClusterInstance] = None
+    """The cluster used for this run. If the run is specified to use a new cluster, this field is set
+    once the Jobs service has requested a cluster for the run."""
+
+    cluster_spec: Optional[ClusterSpec] = None
+    """A snapshot of the job’s cluster specification when this run was created."""
+
     creator_user_name: Optional[str] = None
+    """The creator user name. This field won’t be included in the response if the user has already
+    been deleted."""
+
     end_time: Optional[int] = None
+    """The time at which this run ended in epoch milliseconds (milliseconds since 1/1/1970 UTC). This
+    field is set to 0 if the job is still running."""
+
     execution_duration: Optional[int] = None
-    git_source: Optional['GitSource'] = None
-    job_clusters: Optional['List[JobCluster]'] = None
+    """The time in milliseconds it took to execute the commands in the JAR or notebook until they
+    completed, failed, timed out, were cancelled, or encountered an unexpected error. The duration
+    of a task run is the sum of the `setup_duration`, `execution_duration`, and the
+    `cleanup_duration`. The `execution_duration` field is set to 0 for multitask job runs. The total
+    duration of a multitask job run is the value of the `run_duration` field."""
+
+    git_source: Optional[GitSource] = None
+    """An optional specification for a remote Git repository containing the source code used by tasks.
+    Version-controlled source code is supported by notebook, dbt, Python script, and SQL File tasks.
+    
+    If `git_source` is set, these tasks retrieve the file from the remote repository by default.
+    However, this behavior can be overridden by setting `source` to `WORKSPACE` on the task.
+    
+    Note: dbt and SQL File tasks support only version-controlled sources. If dbt or SQL File tasks
+    are used, `git_source` must be defined on the job."""
+
+    job_clusters: Optional[List[JobCluster]] = None
+    """A list of job cluster specifications that can be shared and reused by tasks of this job.
+    Libraries cannot be declared in a shared job cluster. You must declare dependent libraries in
+    task settings."""
+
     job_id: Optional[int] = None
-    job_parameters: Optional['List[JobParameter]'] = None
+    """The canonical identifier of the job that contains this run."""
+
+    job_parameters: Optional[List[JobParameter]] = None
+    """Job-level parameters used in the run"""
+
     number_in_job: Optional[int] = None
+    """A unique identifier for this job run. This is set to the same value as `run_id`."""
+
     original_attempt_run_id: Optional[int] = None
-    overriding_parameters: Optional['RunParameters'] = None
-    repair_history: Optional['List[RepairHistoryItem]'] = None
+    """If this run is a retry of a prior run attempt, this field contains the run_id of the original
+    attempt; otherwise, it is the same as the run_id."""
+
+    overriding_parameters: Optional[RunParameters] = None
+    """The parameters used for this run."""
+
+    repair_history: Optional[List[RepairHistoryItem]] = None
+    """The repair history of the run."""
+
     run_duration: Optional[int] = None
+    """The time in milliseconds it took the job run and all of its repairs to finish."""
+
     run_id: Optional[int] = None
+    """The canonical identifier of the run. This ID is unique across all runs of all jobs."""
+
     run_name: Optional[str] = None
+    """An optional name for the run. The maximum length is 4096 bytes in UTF-8 encoding."""
+
     run_page_url: Optional[str] = None
-    run_type: Optional['RunType'] = None
-    schedule: Optional['CronSchedule'] = None
+    """The URL to the detail page of the run."""
+
+    run_type: Optional[RunType] = None
+    """* `JOB_RUN`: Normal job run. A run created with :method:jobs/runNow. * `WORKFLOW_RUN`: Workflow
+    run. A run created with [dbutils.notebook.run]. * `SUBMIT_RUN`: Submit run. A run created with
+    :method:jobs/submit.
+    
+    [dbutils.notebook.run]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-workflow"""
+
+    schedule: Optional[CronSchedule] = None
+    """The cron schedule that triggered this run if it was triggered by the periodic scheduler."""
+
     setup_duration: Optional[int] = None
+    """The time in milliseconds it took to set up the cluster. For runs that run on new clusters this
+    is the cluster creation time, for runs that run on existing clusters this time should be very
+    short. The duration of a task run is the sum of the `setup_duration`, `execution_duration`, and
+    the `cleanup_duration`. The `setup_duration` field is set to 0 for multitask job runs. The total
+    duration of a multitask job run is the value of the `run_duration` field."""
+
     start_time: Optional[int] = None
-    state: Optional['RunState'] = None
-    tasks: Optional['List[RunTask]'] = None
-    trigger: Optional['TriggerType'] = None
-    trigger_info: Optional['TriggerInfo'] = None
+    """The time at which this run was started in epoch milliseconds (milliseconds since 1/1/1970 UTC).
+    This may not be the time when the job task starts executing, for example, if the job is
+    scheduled to run on a new cluster, this is the time the cluster creation call is issued."""
+
+    state: Optional[RunState] = None
+    """The current state of the run."""
+
+    tasks: Optional[List[RunTask]] = None
+    """The list of tasks performed by the run. Each task has its own `run_id` which you can use to call
+    `JobsGetOutput` to retrieve the run resutls."""
+
+    trigger: Optional[TriggerType] = None
+    """The type of trigger that fired this run.
+    
+    * `PERIODIC`: Schedules that periodically trigger runs, such as a cron scheduler. * `ONE_TIME`:
+    One time triggers that fire a single run. This occurs you triggered a single run on demand
+    through the UI or the API. * `RETRY`: Indicates a run that is triggered as a retry of a
+    previously failed run. This occurs when you request to re-run the job in case of failures. *
+    `RUN_JOB_TASK`: Indicates a run that is triggered using a Run Job task.
+    
+    * `FILE_ARRIVAL`: Indicates a run that is triggered by a file arrival."""
+
+    trigger_info: Optional[TriggerInfo] = None
 
     def as_dict(self) -> dict:
+        """Serializes the Run into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.attempt_number is not None: body['attempt_number'] = self.attempt_number
         if self.cleanup_duration is not None: body['cleanup_duration'] = self.cleanup_duration
         if self.cluster_instance: body['cluster_instance'] = self.cluster_instance.as_dict()
         if self.cluster_spec: body['cluster_spec'] = self.cluster_spec.as_dict()
-        if self.continuous: body['continuous'] = self.continuous.as_dict()
         if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
         if self.end_time is not None: body['end_time'] = self.end_time
         if self.execution_duration is not None: body['execution_duration'] = self.execution_duration
@@ -1482,23 +2456,23 @@ class Run:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'Run':
+    def from_dict(cls, d: Dict[str, any]) -> Run:
+        """Deserializes the Run from a dictionary."""
         return cls(attempt_number=d.get('attempt_number', None),
                    cleanup_duration=d.get('cleanup_duration', None),
                    cluster_instance=_from_dict(d, 'cluster_instance', ClusterInstance),
                    cluster_spec=_from_dict(d, 'cluster_spec', ClusterSpec),
-                   continuous=_from_dict(d, 'continuous', Continuous),
                    creator_user_name=d.get('creator_user_name', None),
                    end_time=d.get('end_time', None),
                    execution_duration=d.get('execution_duration', None),
                    git_source=_from_dict(d, 'git_source', GitSource),
-                   job_clusters=_repeated(d, 'job_clusters', JobCluster),
+                   job_clusters=_repeated_dict(d, 'job_clusters', JobCluster),
                    job_id=d.get('job_id', None),
-                   job_parameters=_repeated(d, 'job_parameters', JobParameter),
+                   job_parameters=_repeated_dict(d, 'job_parameters', JobParameter),
                    number_in_job=d.get('number_in_job', None),
                    original_attempt_run_id=d.get('original_attempt_run_id', None),
                    overriding_parameters=_from_dict(d, 'overriding_parameters', RunParameters),
-                   repair_history=_repeated(d, 'repair_history', RepairHistoryItem),
+                   repair_history=_repeated_dict(d, 'repair_history', RepairHistoryItem),
                    run_duration=d.get('run_duration', None),
                    run_id=d.get('run_id', None),
                    run_name=d.get('run_name', None),
@@ -1508,7 +2482,7 @@ class Run:
                    setup_duration=d.get('setup_duration', None),
                    start_time=d.get('start_time', None),
                    state=_from_dict(d, 'state', RunState),
-                   tasks=_repeated(d, 'tasks', RunTask),
+                   tasks=_repeated_dict(d, 'tasks', RunTask),
                    trigger=_enum(d, 'trigger', TriggerType),
                    trigger_info=_from_dict(d, 'trigger_info', TriggerInfo))
 
@@ -1516,11 +2490,20 @@ class Run:
 @dataclass
 class RunConditionTask:
     left: str
+    """The left operand of the condition task."""
+
     right: str
-    op: 'RunConditionTaskOp'
+    """The right operand of the condition task."""
+
+    op: RunConditionTaskOp
+    """The condtion task operator."""
+
     outcome: Optional[str] = None
+    """The condition expression evaluation result. Filled in if the task was successfully completed.
+    Can be `"true"` or `"false"`"""
 
     def as_dict(self) -> dict:
+        """Serializes the RunConditionTask into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.left is not None: body['left'] = self.left
         if self.op is not None: body['op'] = self.op.value
@@ -1529,7 +2512,8 @@ class RunConditionTask:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RunConditionTask':
+    def from_dict(cls, d: Dict[str, any]) -> RunConditionTask:
+        """Deserializes the RunConditionTask from a dictionary."""
         return cls(left=d.get('left', None),
                    op=_enum(d, 'op', RunConditionTaskOp),
                    outcome=d.get('outcome', None),
@@ -1548,7 +2532,14 @@ class RunConditionTaskOp(Enum):
 
 
 class RunIf(Enum):
-    """This describes an enum"""
+    """An optional value indicating the condition that determines whether the task should be run once
+    its dependencies have been completed. When omitted, defaults to `ALL_SUCCESS`.
+    
+    Possible values are: * `ALL_SUCCESS`: All dependencies have executed and succeeded *
+    `AT_LEAST_ONE_SUCCESS`: At least one dependency has succeeded * `NONE_FAILED`: None of the
+    dependencies have failed and at least one was executed * `ALL_DONE`: All dependencies have been
+    completed * `AT_LEAST_ONE_FAILED`: At least one dependency failed * `ALL_FAILED`: ALl
+    dependencies have failed"""
 
     ALL_DONE = 'ALL_DONE'
     ALL_FAILED = 'ALL_FAILED'
@@ -1561,39 +2552,58 @@ class RunIf(Enum):
 @dataclass
 class RunJobOutput:
     run_id: Optional[int] = None
+    """The run id of the triggered job run"""
 
     def as_dict(self) -> dict:
+        """Serializes the RunJobOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.run_id is not None: body['run_id'] = self.run_id
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RunJobOutput':
+    def from_dict(cls, d: Dict[str, any]) -> RunJobOutput:
+        """Deserializes the RunJobOutput from a dictionary."""
         return cls(run_id=d.get('run_id', None))
 
 
 @dataclass
 class RunJobTask:
     job_id: int
-    job_parameters: Optional[Any] = None
+    """ID of the job to trigger."""
+
+    job_parameters: Optional[Dict[str, str]] = None
+    """Job-level parameters used to trigger the job."""
 
     def as_dict(self) -> dict:
+        """Serializes the RunJobTask into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.job_id is not None: body['job_id'] = self.job_id
         if self.job_parameters: body['job_parameters'] = self.job_parameters
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RunJobTask':
+    def from_dict(cls, d: Dict[str, any]) -> RunJobTask:
+        """Deserializes the RunJobTask from a dictionary."""
         return cls(job_id=d.get('job_id', None), job_parameters=d.get('job_parameters', None))
 
 
 class RunLifeCycleState(Enum):
-    """This describes an enum"""
+    """A value indicating the run's lifecycle state. The possible values are: * `QUEUED`: The run is
+    queued. * `PENDING`: The run is waiting to be executed while the cluster and execution context
+    are being prepared. * `RUNNING`: The task of this run is being executed. * `TERMINATING`: The
+    task of this run has completed, and the cluster and execution context are being cleaned up. *
+    `TERMINATED`: The task of this run has completed, and the cluster and execution context have
+    been cleaned up. This state is terminal. * `SKIPPED`: This run was aborted because a previous
+    run of the same job was already active. This state is terminal. * `INTERNAL_ERROR`: An
+    exceptional state that indicates a failure in the Jobs service, such as network failure over a
+    long period. If a run on a new cluster ends in the `INTERNAL_ERROR` state, the Jobs service
+    terminates the cluster as soon as possible. This state is terminal. * `BLOCKED`: The run is
+    blocked on an upstream dependency. * `WAITING_FOR_RETRY`: The run is waiting for a retry."""
 
     BLOCKED = 'BLOCKED'
     INTERNAL_ERROR = 'INTERNAL_ERROR'
     PENDING = 'PENDING'
+    QUEUED = 'QUEUED'
     RUNNING = 'RUNNING'
     SKIPPED = 'SKIPPED'
     TERMINATED = 'TERMINATED'
@@ -1604,34 +2614,122 @@ class RunLifeCycleState(Enum):
 @dataclass
 class RunNow:
     job_id: int
-    dbt_commands: Optional['List[str]'] = None
+    """The ID of the job to be executed"""
+
+    dbt_commands: Optional[List[str]] = None
+    """An array of commands to execute for jobs with the dbt task, for example `"dbt_commands": ["dbt
+    deps", "dbt seed", "dbt run"]`"""
+
     idempotency_token: Optional[str] = None
-    jar_params: Optional['List[str]'] = None
-    job_parameters: Optional['List[Dict[str,str]]'] = None
-    notebook_params: Optional['Dict[str,str]'] = None
-    pipeline_params: Optional['PipelineParams'] = None
-    python_named_params: Optional['Dict[str,str]'] = None
-    python_params: Optional['List[str]'] = None
-    spark_submit_params: Optional['List[str]'] = None
-    sql_params: Optional['Dict[str,str]'] = None
+    """An optional token to guarantee the idempotency of job run requests. If a run with the provided
+    token already exists, the request does not create a new run but returns the ID of the existing
+    run instead. If a run with the provided token is deleted, an error is returned.
+    
+    If you specify the idempotency token, upon failure you can retry until the request succeeds.
+    Databricks guarantees that exactly one run is launched with that idempotency token.
+    
+    This token must have at most 64 characters.
+    
+    For more information, see [How to ensure idempotency for jobs].
+    
+    [How to ensure idempotency for jobs]: https://kb.databricks.com/jobs/jobs-idempotency.html"""
+
+    jar_params: Optional[List[str]] = None
+    """A list of parameters for jobs with Spark JAR tasks, for example `"jar_params": ["john doe",
+    "35"]`. The parameters are used to invoke the main function of the main class specified in the
+    Spark JAR task. If not specified upon `run-now`, it defaults to an empty list. jar_params cannot
+    be specified in conjunction with notebook_params. The JSON representation of this field (for
+    example `{"jar_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
+    
+    Use [Task parameter variables](/jobs.html"#parameter-variables") to set parameters containing
+    information about job runs."""
+
+    job_parameters: Optional[Dict[str, str]] = None
+    """Job-level parameters used in the run. for example `"param": "overriding_val"`"""
+
+    notebook_params: Optional[Dict[str, str]] = None
+    """A map from keys to values for jobs with notebook task, for example `"notebook_params": {"name":
+    "john doe", "age": "35"}`. The map is passed to the notebook and is accessible through the
+    [dbutils.widgets.get] function.
+    
+    If not specified upon `run-now`, the triggered run uses the job’s base parameters.
+    
+    notebook_params cannot be specified in conjunction with jar_params.
+    
+    Use [Task parameter variables] to set parameters containing information about job runs.
+    
+    The JSON representation of this field (for example `{"notebook_params":{"name":"john
+    doe","age":"35"}}`) cannot exceed 10,000 bytes.
+    
+    [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
+    [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html"""
+
+    pipeline_params: Optional[PipelineParams] = None
+
+    python_named_params: Optional[Dict[str, str]] = None
+    """A map from keys to values for jobs with Python wheel task, for example `"python_named_params":
+    {"name": "task", "data": "dbfs:/path/to/data.json"}`."""
+
+    python_params: Optional[List[str]] = None
+    """A list of parameters for jobs with Python tasks, for example `"python_params": ["john doe",
+    "35"]`. The parameters are passed to Python file as command-line parameters. If specified upon
+    `run-now`, it would overwrite the parameters specified in job setting. The JSON representation
+    of this field (for example `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
+    
+    Use [Task parameter variables] to set parameters containing information about job runs.
+    
+    Important
+    
+    These parameters accept only Latin characters (ASCII character set). Using non-ASCII characters
+    returns an error. Examples of invalid, non-ASCII characters are Chinese, Japanese kanjis, and
+    emojis.
+    
+    [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables"""
+
+    queue: Optional[QueueSettings] = None
+    """The queue settings of the run."""
+
+    spark_submit_params: Optional[List[str]] = None
+    """A list of parameters for jobs with spark submit task, for example `"spark_submit_params":
+    ["--class", "org.apache.spark.examples.SparkPi"]`. The parameters are passed to spark-submit
+    script as command-line parameters. If specified upon `run-now`, it would overwrite the
+    parameters specified in job setting. The JSON representation of this field (for example
+    `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
+    
+    Use [Task parameter variables] to set parameters containing information about job runs
+    
+    Important
+    
+    These parameters accept only Latin characters (ASCII character set). Using non-ASCII characters
+    returns an error. Examples of invalid, non-ASCII characters are Chinese, Japanese kanjis, and
+    emojis.
+    
+    [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables"""
+
+    sql_params: Optional[Dict[str, str]] = None
+    """A map from keys to values for jobs with SQL task, for example `"sql_params": {"name": "john
+    doe", "age": "35"}`. The SQL alert task does not support custom parameters."""
 
     def as_dict(self) -> dict:
+        """Serializes the RunNow into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.dbt_commands: body['dbt_commands'] = [v for v in self.dbt_commands]
         if self.idempotency_token is not None: body['idempotency_token'] = self.idempotency_token
         if self.jar_params: body['jar_params'] = [v for v in self.jar_params]
         if self.job_id is not None: body['job_id'] = self.job_id
-        if self.job_parameters: body['job_parameters'] = [v for v in self.job_parameters]
+        if self.job_parameters: body['job_parameters'] = self.job_parameters
         if self.notebook_params: body['notebook_params'] = self.notebook_params
         if self.pipeline_params: body['pipeline_params'] = self.pipeline_params.as_dict()
         if self.python_named_params: body['python_named_params'] = self.python_named_params
         if self.python_params: body['python_params'] = [v for v in self.python_params]
+        if self.queue: body['queue'] = self.queue.as_dict()
         if self.spark_submit_params: body['spark_submit_params'] = [v for v in self.spark_submit_params]
         if self.sql_params: body['sql_params'] = self.sql_params
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RunNow':
+    def from_dict(cls, d: Dict[str, any]) -> RunNow:
+        """Deserializes the RunNow from a dictionary."""
         return cls(dbt_commands=d.get('dbt_commands', None),
                    idempotency_token=d.get('idempotency_token', None),
                    jar_params=d.get('jar_params', None),
@@ -1641,6 +2739,7 @@ class RunNow:
                    pipeline_params=_from_dict(d, 'pipeline_params', PipelineParams),
                    python_named_params=d.get('python_named_params', None),
                    python_params=d.get('python_params', None),
+                   queue=_from_dict(d, 'queue', QueueSettings),
                    spark_submit_params=d.get('spark_submit_params', None),
                    sql_params=d.get('sql_params', None))
 
@@ -1648,35 +2747,67 @@ class RunNow:
 @dataclass
 class RunNowResponse:
     number_in_job: Optional[int] = None
+    """A unique identifier for this job run. This is set to the same value as `run_id`."""
+
     run_id: Optional[int] = None
+    """The globally unique ID of the newly triggered run."""
 
     def as_dict(self) -> dict:
+        """Serializes the RunNowResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.number_in_job is not None: body['number_in_job'] = self.number_in_job
         if self.run_id is not None: body['run_id'] = self.run_id
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RunNowResponse':
+    def from_dict(cls, d: Dict[str, any]) -> RunNowResponse:
+        """Deserializes the RunNowResponse from a dictionary."""
         return cls(number_in_job=d.get('number_in_job', None), run_id=d.get('run_id', None))
 
 
 @dataclass
 class RunOutput:
-    condition_task: Optional[Any] = None
-    dbt_output: Optional['DbtOutput'] = None
+    dbt_output: Optional[DbtOutput] = None
+    """The output of a dbt task, if available."""
+
     error: Optional[str] = None
+    """An error message indicating why a task failed or why output is not available. The message is
+    unstructured, and its exact format is subject to change."""
+
     error_trace: Optional[str] = None
+    """If there was an error executing the run, this field contains any available stack traces."""
+
     logs: Optional[str] = None
+    """The output from tasks that write to standard streams (stdout/stderr) such as spark_jar_task,
+    spark_python_task, python_wheel_task.
+    
+    It's not supported for the notebook_task, pipeline_task or spark_submit_task.
+    
+    Databricks restricts this API to return the last 5 MB of these logs."""
+
     logs_truncated: Optional[bool] = None
-    metadata: Optional['Run'] = None
-    notebook_output: Optional['NotebookOutput'] = None
-    run_job_output: Optional['RunJobOutput'] = None
-    sql_output: Optional['SqlOutput'] = None
+    """Whether the logs are truncated."""
+
+    metadata: Optional[Run] = None
+    """All details of the run except for its output."""
+
+    notebook_output: Optional[NotebookOutput] = None
+    """The output of a notebook task, if available. A notebook task that terminates (either
+    successfully or with a failure) without calling `dbutils.notebook.exit()` is considered to have
+    an empty output. This field is set but its result value is empty. <Databricks> restricts this
+    API to return the first 5 MB of the output. To return a larger result, use the
+    [ClusterLogConf](/dev-tools/api/latest/clusters.html#clusterlogconf) field to configure log
+    storage for the job cluster."""
+
+    run_job_output: Optional[RunJobOutput] = None
+    """The output of a run job task, if available"""
+
+    sql_output: Optional[SqlOutput] = None
+    """The output of a SQL task, if available."""
 
     def as_dict(self) -> dict:
+        """Serializes the RunOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.condition_task: body['condition_task'] = self.condition_task
         if self.dbt_output: body['dbt_output'] = self.dbt_output.as_dict()
         if self.error is not None: body['error'] = self.error
         if self.error_trace is not None: body['error_trace'] = self.error_trace
@@ -1689,9 +2820,9 @@ class RunOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RunOutput':
-        return cls(condition_task=d.get('condition_task', None),
-                   dbt_output=_from_dict(d, 'dbt_output', DbtOutput),
+    def from_dict(cls, d: Dict[str, any]) -> RunOutput:
+        """Deserializes the RunOutput from a dictionary."""
+        return cls(dbt_output=_from_dict(d, 'dbt_output', DbtOutput),
                    error=d.get('error', None),
                    error_trace=d.get('error_trace', None),
                    logs=d.get('logs', None),
@@ -1704,19 +2835,89 @@ class RunOutput:
 
 @dataclass
 class RunParameters:
-    dbt_commands: Optional['List[str]'] = None
-    jar_params: Optional['List[str]'] = None
-    notebook_params: Optional['Dict[str,str]'] = None
-    pipeline_params: Optional['PipelineParams'] = None
-    python_named_params: Optional['Dict[str,str]'] = None
-    python_params: Optional['List[str]'] = None
-    spark_submit_params: Optional['List[str]'] = None
-    sql_params: Optional['Dict[str,str]'] = None
+    dbt_commands: Optional[List[str]] = None
+    """An array of commands to execute for jobs with the dbt task, for example `"dbt_commands": ["dbt
+    deps", "dbt seed", "dbt run"]`"""
+
+    jar_params: Optional[List[str]] = None
+    """A list of parameters for jobs with Spark JAR tasks, for example `"jar_params": ["john doe",
+    "35"]`. The parameters are used to invoke the main function of the main class specified in the
+    Spark JAR task. If not specified upon `run-now`, it defaults to an empty list. jar_params cannot
+    be specified in conjunction with notebook_params. The JSON representation of this field (for
+    example `{"jar_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
+    
+    Use [Task parameter variables](/jobs.html"#parameter-variables") to set parameters containing
+    information about job runs."""
+
+    job_parameters: Optional[Dict[str, str]] = None
+    """Job-level parameters used in the run. for example `"param": "overriding_val"`"""
+
+    notebook_params: Optional[Dict[str, str]] = None
+    """A map from keys to values for jobs with notebook task, for example `"notebook_params": {"name":
+    "john doe", "age": "35"}`. The map is passed to the notebook and is accessible through the
+    [dbutils.widgets.get] function.
+    
+    If not specified upon `run-now`, the triggered run uses the job’s base parameters.
+    
+    notebook_params cannot be specified in conjunction with jar_params.
+    
+    Use [Task parameter variables] to set parameters containing information about job runs.
+    
+    The JSON representation of this field (for example `{"notebook_params":{"name":"john
+    doe","age":"35"}}`) cannot exceed 10,000 bytes.
+    
+    [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
+    [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html"""
+
+    pipeline_params: Optional[PipelineParams] = None
+
+    python_named_params: Optional[Dict[str, str]] = None
+    """A map from keys to values for jobs with Python wheel task, for example `"python_named_params":
+    {"name": "task", "data": "dbfs:/path/to/data.json"}`."""
+
+    python_params: Optional[List[str]] = None
+    """A list of parameters for jobs with Python tasks, for example `"python_params": ["john doe",
+    "35"]`. The parameters are passed to Python file as command-line parameters. If specified upon
+    `run-now`, it would overwrite the parameters specified in job setting. The JSON representation
+    of this field (for example `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
+    
+    Use [Task parameter variables] to set parameters containing information about job runs.
+    
+    Important
+    
+    These parameters accept only Latin characters (ASCII character set). Using non-ASCII characters
+    returns an error. Examples of invalid, non-ASCII characters are Chinese, Japanese kanjis, and
+    emojis.
+    
+    [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables"""
+
+    spark_submit_params: Optional[List[str]] = None
+    """A list of parameters for jobs with spark submit task, for example `"spark_submit_params":
+    ["--class", "org.apache.spark.examples.SparkPi"]`. The parameters are passed to spark-submit
+    script as command-line parameters. If specified upon `run-now`, it would overwrite the
+    parameters specified in job setting. The JSON representation of this field (for example
+    `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
+    
+    Use [Task parameter variables] to set parameters containing information about job runs
+    
+    Important
+    
+    These parameters accept only Latin characters (ASCII character set). Using non-ASCII characters
+    returns an error. Examples of invalid, non-ASCII characters are Chinese, Japanese kanjis, and
+    emojis.
+    
+    [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables"""
+
+    sql_params: Optional[Dict[str, str]] = None
+    """A map from keys to values for jobs with SQL task, for example `"sql_params": {"name": "john
+    doe", "age": "35"}`. The SQL alert task does not support custom parameters."""
 
     def as_dict(self) -> dict:
+        """Serializes the RunParameters into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.dbt_commands: body['dbt_commands'] = [v for v in self.dbt_commands]
         if self.jar_params: body['jar_params'] = [v for v in self.jar_params]
+        if self.job_parameters: body['job_parameters'] = self.job_parameters
         if self.notebook_params: body['notebook_params'] = self.notebook_params
         if self.pipeline_params: body['pipeline_params'] = self.pipeline_params.as_dict()
         if self.python_named_params: body['python_named_params'] = self.python_named_params
@@ -1726,9 +2927,11 @@ class RunParameters:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RunParameters':
+    def from_dict(cls, d: Dict[str, any]) -> RunParameters:
+        """Deserializes the RunParameters from a dictionary."""
         return cls(dbt_commands=d.get('dbt_commands', None),
                    jar_params=d.get('jar_params', None),
+                   job_parameters=d.get('job_parameters', None),
                    notebook_params=d.get('notebook_params', None),
                    pipeline_params=_from_dict(d, 'pipeline_params', PipelineParams),
                    python_named_params=d.get('python_named_params', None),
@@ -1738,7 +2941,14 @@ class RunParameters:
 
 
 class RunResultState(Enum):
-    """This describes an enum"""
+    """A value indicating the run's result. The possible values are: * `SUCCESS`: The task completed
+    successfully. * `FAILED`: The task completed with an error. * `TIMEDOUT`: The run was stopped
+    after reaching the timeout. * `CANCELED`: The run was canceled at user request. *
+    `MAXIMUM_CONCURRENT_RUNS_REACHED`: The run was skipped because the maximum concurrent runs were
+    reached. * `EXCLUDED`: The run was skipped because the necessary conditions were not met. *
+    `SUCCESS_WITH_FAILURES`: The job run completed successfully with some failures; leaf tasks were
+    successful. * `UPSTREAM_FAILED`: The run was skipped because of an upstream failure. *
+    `UPSTREAM_CANCELED`: The run was skipped because an upstream task was canceled."""
 
     CANCELED = 'CANCELED'
     EXCLUDED = 'EXCLUDED'
@@ -1755,14 +2965,29 @@ class RunResultState(Enum):
 class RunState:
     """The current state of the run."""
 
-    life_cycle_state: Optional['RunLifeCycleState'] = None
-    result_state: Optional['RunResultState'] = None
+    life_cycle_state: Optional[RunLifeCycleState] = None
+    """A value indicating the run's current lifecycle state. This field is always available in the
+    response."""
+
+    queue_reason: Optional[str] = None
+    """The reason indicating why the run was queued."""
+
+    result_state: Optional[RunResultState] = None
+    """A value indicating the run's result. This field is only available for terminal lifecycle states."""
+
     state_message: Optional[str] = None
+    """A descriptive message for the current state. This field is unstructured, and its exact format is
+    subject to change."""
+
     user_cancelled_or_timedout: Optional[bool] = None
+    """A value indicating whether a run was canceled manually by a user or by the scheduler because the
+    run timed out."""
 
     def as_dict(self) -> dict:
+        """Serializes the RunState into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.life_cycle_state is not None: body['life_cycle_state'] = self.life_cycle_state.value
+        if self.queue_reason is not None: body['queue_reason'] = self.queue_reason
         if self.result_state is not None: body['result_state'] = self.result_state.value
         if self.state_message is not None: body['state_message'] = self.state_message
         if self.user_cancelled_or_timedout is not None:
@@ -1770,8 +2995,10 @@ class RunState:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RunState':
+    def from_dict(cls, d: Dict[str, any]) -> RunState:
+        """Deserializes the RunState from a dictionary."""
         return cls(life_cycle_state=_enum(d, 'life_cycle_state', RunLifeCycleState),
+                   queue_reason=d.get('queue_reason', None),
                    result_state=_enum(d, 'result_state', RunResultState),
                    state_message=d.get('state_message', None),
                    user_cancelled_or_timedout=d.get('user_cancelled_or_timedout', None))
@@ -1780,35 +3007,147 @@ class RunState:
 @dataclass
 class RunTask:
     attempt_number: Optional[int] = None
+    """The sequence number of this run attempt for a triggered job run. The initial attempt of a run
+    has an attempt_number of 0\. If the initial run attempt fails, and the job has a retry policy
+    (`max_retries` \> 0), subsequent runs are created with an `original_attempt_run_id` of the
+    original attempt’s ID and an incrementing `attempt_number`. Runs are retried only until they
+    succeed, and the maximum `attempt_number` is the same as the `max_retries` value for the job."""
+
     cleanup_duration: Optional[int] = None
-    cluster_instance: Optional['ClusterInstance'] = None
-    condition_task: Optional['RunConditionTask'] = None
-    dbt_task: Optional['DbtTask'] = None
-    depends_on: Optional['List[TaskDependency]'] = None
+    """The time in milliseconds it took to terminate the cluster and clean up any associated artifacts.
+    The duration of a task run is the sum of the `setup_duration`, `execution_duration`, and the
+    `cleanup_duration`. The `cleanup_duration` field is set to 0 for multitask job runs. The total
+    duration of a multitask job run is the value of the `run_duration` field."""
+
+    cluster_instance: Optional[ClusterInstance] = None
+    """The cluster used for this run. If the run is specified to use a new cluster, this field is set
+    once the Jobs service has requested a cluster for the run."""
+
+    condition_task: Optional[RunConditionTask] = None
+    """If condition_task, specifies a condition with an outcome that can be used to control the
+    execution of other tasks. Does not require a cluster to execute and does not support retries or
+    notifications."""
+
+    dbt_task: Optional[DbtTask] = None
+    """If dbt_task, indicates that this must execute a dbt task. It requires both Databricks SQL and
+    the ability to use a serverless or a pro SQL warehouse."""
+
+    depends_on: Optional[List[TaskDependency]] = None
+    """An optional array of objects specifying the dependency graph of the task. All tasks specified in
+    this field must complete successfully before executing this task. The key is `task_key`, and the
+    value is the name assigned to the dependent task."""
+
     description: Optional[str] = None
+    """An optional description for this task."""
+
     end_time: Optional[int] = None
+    """The time at which this run ended in epoch milliseconds (milliseconds since 1/1/1970 UTC). This
+    field is set to 0 if the job is still running."""
+
     execution_duration: Optional[int] = None
+    """The time in milliseconds it took to execute the commands in the JAR or notebook until they
+    completed, failed, timed out, were cancelled, or encountered an unexpected error. The duration
+    of a task run is the sum of the `setup_duration`, `execution_duration`, and the
+    `cleanup_duration`. The `execution_duration` field is set to 0 for multitask job runs. The total
+    duration of a multitask job run is the value of the `run_duration` field."""
+
     existing_cluster_id: Optional[str] = None
-    git_source: Optional['GitSource'] = None
-    libraries: Optional['List[compute.Library]'] = None
-    new_cluster: Optional['compute.ClusterSpec'] = None
-    notebook_task: Optional['NotebookTask'] = None
-    pipeline_task: Optional['PipelineTask'] = None
-    python_wheel_task: Optional['PythonWheelTask'] = None
-    resolved_values: Optional['ResolvedValues'] = None
+    """If existing_cluster_id, the ID of an existing cluster that is used for all runs of this job.
+    When running jobs on an existing cluster, you may need to manually restart the cluster if it
+    stops responding. We suggest running jobs on new clusters for greater reliability."""
+
+    git_source: Optional[GitSource] = None
+    """An optional specification for a remote Git repository containing the source code used by tasks.
+    Version-controlled source code is supported by notebook, dbt, Python script, and SQL File tasks.
+    
+    If `git_source` is set, these tasks retrieve the file from the remote repository by default.
+    However, this behavior can be overridden by setting `source` to `WORKSPACE` on the task.
+    
+    Note: dbt and SQL File tasks support only version-controlled sources. If dbt or SQL File tasks
+    are used, `git_source` must be defined on the job."""
+
+    libraries: Optional[List[compute.Library]] = None
+    """An optional list of libraries to be installed on the cluster that executes the job. The default
+    value is an empty list."""
+
+    new_cluster: Optional[compute.ClusterSpec] = None
+    """If new_cluster, a description of a new cluster that is created only for this task."""
+
+    notebook_task: Optional[NotebookTask] = None
+    """If notebook_task, indicates that this job must run a notebook. This field may not be specified
+    in conjunction with spark_jar_task."""
+
+    pipeline_task: Optional[PipelineTask] = None
+    """If pipeline_task, indicates that this job must execute a Pipeline."""
+
+    python_wheel_task: Optional[PythonWheelTask] = None
+    """If python_wheel_task, indicates that this job must execute a PythonWheel."""
+
+    queue_duration: Optional[int] = None
+    """The time in milliseconds that the run has spent in the queue."""
+
+    resolved_values: Optional[ResolvedValues] = None
+    """Parameter values including resolved references"""
+
     run_id: Optional[int] = None
-    run_if: Optional['RunIf'] = None
-    run_job_task: Optional['RunJobTask'] = None
+    """The ID of the task run."""
+
+    run_if: Optional[RunIf] = None
+    """An optional value indicating the condition that determines whether the task should be run once
+    its dependencies have been completed. When omitted, defaults to `ALL_SUCCESS`. See
+    :method:jobs/create for a list of possible values."""
+
+    run_job_task: Optional[RunJobTask] = None
+    """If run_job_task, indicates that this task must execute another job."""
+
     setup_duration: Optional[int] = None
-    spark_jar_task: Optional['SparkJarTask'] = None
-    spark_python_task: Optional['SparkPythonTask'] = None
-    spark_submit_task: Optional['SparkSubmitTask'] = None
-    sql_task: Optional['SqlTask'] = None
+    """The time in milliseconds it took to set up the cluster. For runs that run on new clusters this
+    is the cluster creation time, for runs that run on existing clusters this time should be very
+    short. The duration of a task run is the sum of the `setup_duration`, `execution_duration`, and
+    the `cleanup_duration`. The `setup_duration` field is set to 0 for multitask job runs. The total
+    duration of a multitask job run is the value of the `run_duration` field."""
+
+    spark_jar_task: Optional[SparkJarTask] = None
+    """If spark_jar_task, indicates that this job must run a JAR."""
+
+    spark_python_task: Optional[SparkPythonTask] = None
+    """If spark_python_task, indicates that this job must run a Python file."""
+
+    spark_submit_task: Optional[SparkSubmitTask] = None
+    """If `spark_submit_task`, indicates that this task must be launched by the spark submit script.
+    This task can run only on new clusters.
+    
+    In the `new_cluster` specification, `libraries` and `spark_conf` are not supported. Instead, use
+    `--jars` and `--py-files` to add Java and Python libraries and `--conf` to set the Spark
+    configurations.
+    
+    `master`, `deploy-mode`, and `executor-cores` are automatically configured by Databricks; you
+    _cannot_ specify them in parameters.
+    
+    By default, the Spark submit job uses all available memory (excluding reserved memory for
+    Databricks services). You can set `--driver-memory`, and `--executor-memory` to a smaller value
+    to leave some room for off-heap usage.
+    
+    The `--jars`, `--py-files`, `--files` arguments support DBFS and S3 paths."""
+
+    sql_task: Optional[SqlTask] = None
+    """If sql_task, indicates that this job must execute a SQL."""
+
     start_time: Optional[int] = None
-    state: Optional['RunState'] = None
+    """The time at which this run was started in epoch milliseconds (milliseconds since 1/1/1970 UTC).
+    This may not be the time when the job task starts executing, for example, if the job is
+    scheduled to run on a new cluster, this is the time the cluster creation call is issued."""
+
+    state: Optional[RunState] = None
+    """The current state of the run."""
+
     task_key: Optional[str] = None
+    """A unique name for the task. This field is used to refer to this task from other tasks. This
+    field is required and must be unique within its parent job. On Update or Reset, this field is
+    used to reference the tasks to be updated or reset."""
 
     def as_dict(self) -> dict:
+        """Serializes the RunTask into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.attempt_number is not None: body['attempt_number'] = self.attempt_number
         if self.cleanup_duration is not None: body['cleanup_duration'] = self.cleanup_duration
@@ -1826,6 +3165,7 @@ class RunTask:
         if self.notebook_task: body['notebook_task'] = self.notebook_task.as_dict()
         if self.pipeline_task: body['pipeline_task'] = self.pipeline_task.as_dict()
         if self.python_wheel_task: body['python_wheel_task'] = self.python_wheel_task.as_dict()
+        if self.queue_duration is not None: body['queue_duration'] = self.queue_duration
         if self.resolved_values: body['resolved_values'] = self.resolved_values.as_dict()
         if self.run_id is not None: body['run_id'] = self.run_id
         if self.run_if is not None: body['run_if'] = self.run_if.value
@@ -1841,23 +3181,25 @@ class RunTask:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RunTask':
+    def from_dict(cls, d: Dict[str, any]) -> RunTask:
+        """Deserializes the RunTask from a dictionary."""
         return cls(attempt_number=d.get('attempt_number', None),
                    cleanup_duration=d.get('cleanup_duration', None),
                    cluster_instance=_from_dict(d, 'cluster_instance', ClusterInstance),
                    condition_task=_from_dict(d, 'condition_task', RunConditionTask),
                    dbt_task=_from_dict(d, 'dbt_task', DbtTask),
-                   depends_on=_repeated(d, 'depends_on', TaskDependency),
+                   depends_on=_repeated_dict(d, 'depends_on', TaskDependency),
                    description=d.get('description', None),
                    end_time=d.get('end_time', None),
                    execution_duration=d.get('execution_duration', None),
                    existing_cluster_id=d.get('existing_cluster_id', None),
                    git_source=_from_dict(d, 'git_source', GitSource),
-                   libraries=_repeated(d, 'libraries', compute.Library),
+                   libraries=_repeated_dict(d, 'libraries', compute.Library),
                    new_cluster=_from_dict(d, 'new_cluster', compute.ClusterSpec),
                    notebook_task=_from_dict(d, 'notebook_task', NotebookTask),
                    pipeline_task=_from_dict(d, 'pipeline_task', PipelineTask),
                    python_wheel_task=_from_dict(d, 'python_wheel_task', PythonWheelTask),
+                   queue_duration=d.get('queue_duration', None),
                    resolved_values=_from_dict(d, 'resolved_values', ResolvedValues),
                    run_id=d.get('run_id', None),
                    run_if=_enum(d, 'run_if', RunIf),
@@ -1873,7 +3215,11 @@ class RunTask:
 
 
 class RunType(Enum):
-    """This describes an enum"""
+    """* `JOB_RUN`: Normal job run. A run created with :method:jobs/runNow. * `WORKFLOW_RUN`: Workflow
+    run. A run created with [dbutils.notebook.run]. * `SUBMIT_RUN`: Submit run. A run created with
+    :method:jobs/submit.
+    
+    [dbutils.notebook.run]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-workflow"""
 
     JOB_RUN = 'JOB_RUN'
     SUBMIT_RUN = 'SUBMIT_RUN'
@@ -1889,10 +3235,25 @@ class Source(Enum):
 @dataclass
 class SparkJarTask:
     jar_uri: Optional[str] = None
+    """Deprecated since 04/2016. Provide a `jar` through the `libraries` field instead. For an example,
+    see :method:jobs/create."""
+
     main_class_name: Optional[str] = None
-    parameters: Optional['List[str]'] = None
+    """The full name of the class containing the main method to be executed. This class must be
+    contained in a JAR provided as a library.
+    
+    The code must use `SparkContext.getOrCreate` to obtain a Spark context; otherwise, runs of the
+    job fail."""
+
+    parameters: Optional[List[str]] = None
+    """Parameters passed to the main method.
+    
+    Use [Task parameter variables] to set parameters containing information about job runs.
+    
+    [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables"""
 
     def as_dict(self) -> dict:
+        """Serializes the SparkJarTask into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.jar_uri is not None: body['jar_uri'] = self.jar_uri
         if self.main_class_name is not None: body['main_class_name'] = self.main_class_name
@@ -1900,7 +3261,8 @@ class SparkJarTask:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'SparkJarTask':
+    def from_dict(cls, d: Dict[str, any]) -> SparkJarTask:
+        """Deserializes the SparkJarTask from a dictionary."""
         return cls(jar_uri=d.get('jar_uri', None),
                    main_class_name=d.get('main_class_name', None),
                    parameters=d.get('parameters', None))
@@ -1909,10 +3271,29 @@ class SparkJarTask:
 @dataclass
 class SparkPythonTask:
     python_file: str
-    parameters: Optional['List[str]'] = None
-    source: Optional['Source'] = None
+    """The Python file to be executed. Cloud file URIs (such as dbfs:/, s3:/, adls:/, gcs:/) and
+    workspace paths are supported. For python files stored in the Databricks workspace, the path
+    must be absolute and begin with `/`. For files stored in a remote repository, the path must be
+    relative. This field is required."""
+
+    parameters: Optional[List[str]] = None
+    """Command line parameters passed to the Python file.
+    
+    Use [Task parameter variables] to set parameters containing information about job runs.
+    
+    [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables"""
+
+    source: Optional[Source] = None
+    """Optional location type of the Python file. When set to `WORKSPACE` or not specified, the file
+    will be retrieved from the local <Databricks> workspace or cloud location (if the `python_file`
+    has a URI format). When set to `GIT`, the Python file will be retrieved from a Git repository
+    defined in `git_source`.
+    
+    * `WORKSPACE`: The Python file is located in a <Databricks> workspace or at a cloud filesystem
+    URI. * `GIT`: The Python file is located in a remote Git repository."""
 
     def as_dict(self) -> dict:
+        """Serializes the SparkPythonTask into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.parameters: body['parameters'] = [v for v in self.parameters]
         if self.python_file is not None: body['python_file'] = self.python_file
@@ -1920,7 +3301,8 @@ class SparkPythonTask:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'SparkPythonTask':
+    def from_dict(cls, d: Dict[str, any]) -> SparkPythonTask:
+        """Deserializes the SparkPythonTask from a dictionary."""
         return cls(parameters=d.get('parameters', None),
                    python_file=d.get('python_file', None),
                    source=_enum(d, 'source', Source))
@@ -1928,27 +3310,48 @@ class SparkPythonTask:
 
 @dataclass
 class SparkSubmitTask:
-    parameters: Optional['List[str]'] = None
+    parameters: Optional[List[str]] = None
+    """Command-line parameters passed to spark submit.
+    
+    Use [Task parameter variables] to set parameters containing information about job runs.
+    
+    [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables"""
 
     def as_dict(self) -> dict:
+        """Serializes the SparkSubmitTask into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.parameters: body['parameters'] = [v for v in self.parameters]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'SparkSubmitTask':
+    def from_dict(cls, d: Dict[str, any]) -> SparkSubmitTask:
+        """Deserializes the SparkSubmitTask from a dictionary."""
         return cls(parameters=d.get('parameters', None))
 
 
 @dataclass
 class SqlAlertOutput:
-    alert_state: Optional['SqlAlertState'] = None
+    alert_state: Optional[SqlAlertState] = None
+    """The state of the SQL alert.
+    
+    * UNKNOWN: alert yet to be evaluated * OK: alert evaluated and did not fulfill trigger
+    conditions * TRIGGERED: alert evaluated and fulfilled trigger conditions"""
+
     output_link: Optional[str] = None
+    """The link to find the output results."""
+
     query_text: Optional[str] = None
-    sql_statements: Optional['List[SqlStatementOutput]'] = None
+    """The text of the SQL query. Can Run permission of the SQL query associated with the SQL alert is
+    required to view this field."""
+
+    sql_statements: Optional[List[SqlStatementOutput]] = None
+    """Information about SQL statements executed in the run."""
+
     warehouse_id: Optional[str] = None
+    """The canonical identifier of the SQL warehouse."""
 
     def as_dict(self) -> dict:
+        """Serializes the SqlAlertOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.alert_state is not None: body['alert_state'] = self.alert_state.value
         if self.output_link is not None: body['output_link'] = self.output_link
@@ -1958,11 +3361,12 @@ class SqlAlertOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'SqlAlertOutput':
+    def from_dict(cls, d: Dict[str, any]) -> SqlAlertOutput:
+        """Deserializes the SqlAlertOutput from a dictionary."""
         return cls(alert_state=_enum(d, 'alert_state', SqlAlertState),
                    output_link=d.get('output_link', None),
                    query_text=d.get('query_text', None),
-                   sql_statements=_repeated(d, 'sql_statements', SqlStatementOutput),
+                   sql_statements=_repeated_dict(d, 'sql_statements', SqlStatementOutput),
                    warehouse_id=d.get('warehouse_id', None))
 
 
@@ -1980,31 +3384,50 @@ class SqlAlertState(Enum):
 @dataclass
 class SqlDashboardOutput:
     warehouse_id: Optional[str] = None
-    widgets: Optional['List[SqlDashboardWidgetOutput]'] = None
+    """The canonical identifier of the SQL warehouse."""
+
+    widgets: Optional[List[SqlDashboardWidgetOutput]] = None
+    """Widgets executed in the run. Only SQL query based widgets are listed."""
 
     def as_dict(self) -> dict:
+        """Serializes the SqlDashboardOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
         if self.widgets: body['widgets'] = [v.as_dict() for v in self.widgets]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'SqlDashboardOutput':
+    def from_dict(cls, d: Dict[str, any]) -> SqlDashboardOutput:
+        """Deserializes the SqlDashboardOutput from a dictionary."""
         return cls(warehouse_id=d.get('warehouse_id', None),
-                   widgets=_repeated(d, 'widgets', SqlDashboardWidgetOutput))
+                   widgets=_repeated_dict(d, 'widgets', SqlDashboardWidgetOutput))
 
 
 @dataclass
 class SqlDashboardWidgetOutput:
     end_time: Optional[int] = None
-    error: Optional['SqlOutputError'] = None
+    """Time (in epoch milliseconds) when execution of the SQL widget ends."""
+
+    error: Optional[SqlOutputError] = None
+    """The information about the error when execution fails."""
+
     output_link: Optional[str] = None
+    """The link to find the output results."""
+
     start_time: Optional[int] = None
-    status: Optional['SqlDashboardWidgetOutputStatus'] = None
+    """Time (in epoch milliseconds) when execution of the SQL widget starts."""
+
+    status: Optional[SqlDashboardWidgetOutputStatus] = None
+    """The execution status of the SQL widget."""
+
     widget_id: Optional[str] = None
+    """The canonical identifier of the SQL widget."""
+
     widget_title: Optional[str] = None
+    """The title of the SQL widget."""
 
     def as_dict(self) -> dict:
+        """Serializes the SqlDashboardWidgetOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.end_time is not None: body['end_time'] = self.end_time
         if self.error: body['error'] = self.error.as_dict()
@@ -2016,7 +3439,8 @@ class SqlDashboardWidgetOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'SqlDashboardWidgetOutput':
+    def from_dict(cls, d: Dict[str, any]) -> SqlDashboardWidgetOutput:
+        """Deserializes the SqlDashboardWidgetOutput from a dictionary."""
         return cls(end_time=d.get('end_time', None),
                    error=_from_dict(d, 'error', SqlOutputError),
                    output_link=d.get('output_link', None),
@@ -2038,11 +3462,17 @@ class SqlDashboardWidgetOutputStatus(Enum):
 
 @dataclass
 class SqlOutput:
-    alert_output: Optional['SqlAlertOutput'] = None
-    dashboard_output: Optional['SqlDashboardOutput'] = None
-    query_output: Optional['SqlQueryOutput'] = None
+    alert_output: Optional[SqlAlertOutput] = None
+    """The output of a SQL alert task, if available."""
+
+    dashboard_output: Optional[SqlDashboardOutput] = None
+    """The output of a SQL dashboard task, if available."""
+
+    query_output: Optional[SqlQueryOutput] = None
+    """The output of a SQL query task, if available."""
 
     def as_dict(self) -> dict:
+        """Serializes the SqlOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.alert_output: body['alert_output'] = self.alert_output.as_dict()
         if self.dashboard_output: body['dashboard_output'] = self.dashboard_output.as_dict()
@@ -2050,7 +3480,8 @@ class SqlOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'SqlOutput':
+    def from_dict(cls, d: Dict[str, any]) -> SqlOutput:
+        """Deserializes the SqlOutput from a dictionary."""
         return cls(alert_output=_from_dict(d, 'alert_output', SqlAlertOutput),
                    dashboard_output=_from_dict(d, 'dashboard_output', SqlDashboardOutput),
                    query_output=_from_dict(d, 'query_output', SqlQueryOutput))
@@ -2059,25 +3490,36 @@ class SqlOutput:
 @dataclass
 class SqlOutputError:
     message: Optional[str] = None
+    """The error message when execution fails."""
 
     def as_dict(self) -> dict:
+        """Serializes the SqlOutputError into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.message is not None: body['message'] = self.message
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'SqlOutputError':
+    def from_dict(cls, d: Dict[str, any]) -> SqlOutputError:
+        """Deserializes the SqlOutputError from a dictionary."""
         return cls(message=d.get('message', None))
 
 
 @dataclass
 class SqlQueryOutput:
     output_link: Optional[str] = None
+    """The link to find the output results."""
+
     query_text: Optional[str] = None
-    sql_statements: Optional['List[SqlStatementOutput]'] = None
+    """The text of the SQL query. Can Run permission of the SQL query is required to view this field."""
+
+    sql_statements: Optional[List[SqlStatementOutput]] = None
+    """Information about SQL statements executed in the run."""
+
     warehouse_id: Optional[str] = None
+    """The canonical identifier of the SQL warehouse."""
 
     def as_dict(self) -> dict:
+        """Serializes the SqlQueryOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.output_link is not None: body['output_link'] = self.output_link
         if self.query_text is not None: body['query_text'] = self.query_text
@@ -2086,37 +3528,58 @@ class SqlQueryOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'SqlQueryOutput':
+    def from_dict(cls, d: Dict[str, any]) -> SqlQueryOutput:
+        """Deserializes the SqlQueryOutput from a dictionary."""
         return cls(output_link=d.get('output_link', None),
                    query_text=d.get('query_text', None),
-                   sql_statements=_repeated(d, 'sql_statements', SqlStatementOutput),
+                   sql_statements=_repeated_dict(d, 'sql_statements', SqlStatementOutput),
                    warehouse_id=d.get('warehouse_id', None))
 
 
 @dataclass
 class SqlStatementOutput:
     lookup_key: Optional[str] = None
+    """A key that can be used to look up query details."""
 
     def as_dict(self) -> dict:
+        """Serializes the SqlStatementOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.lookup_key is not None: body['lookup_key'] = self.lookup_key
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'SqlStatementOutput':
+    def from_dict(cls, d: Dict[str, any]) -> SqlStatementOutput:
+        """Deserializes the SqlStatementOutput from a dictionary."""
         return cls(lookup_key=d.get('lookup_key', None))
 
 
 @dataclass
 class SqlTask:
     warehouse_id: str
-    alert: Optional['SqlTaskAlert'] = None
-    dashboard: Optional['SqlTaskDashboard'] = None
-    file: Optional['SqlTaskFile'] = None
-    parameters: Optional['Dict[str,str]'] = None
-    query: Optional['SqlTaskQuery'] = None
+    """The canonical identifier of the SQL warehouse. Recommended to use with serverless or pro SQL
+    warehouses. Classic SQL warehouses are only supported for SQL alert, dashboard and query tasks
+    and are limited to scheduled single-task jobs."""
+
+    alert: Optional[SqlTaskAlert] = None
+    """If alert, indicates that this job must refresh a SQL alert."""
+
+    dashboard: Optional[SqlTaskDashboard] = None
+    """If dashboard, indicates that this job must refresh a SQL dashboard."""
+
+    file: Optional[SqlTaskFile] = None
+    """If file, indicates that this job runs a SQL file in a remote Git repository. Only one SQL
+    statement is supported in a file. Multiple SQL statements separated by semicolons (;) are not
+    permitted."""
+
+    parameters: Optional[Dict[str, str]] = None
+    """Parameters to be used for each run of this job. The SQL alert task does not support custom
+    parameters."""
+
+    query: Optional[SqlTaskQuery] = None
+    """If query, indicates that this job must execute a SQL query."""
 
     def as_dict(self) -> dict:
+        """Serializes the SqlTask into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.alert: body['alert'] = self.alert.as_dict()
         if self.dashboard: body['dashboard'] = self.dashboard.as_dict()
@@ -2127,7 +3590,8 @@ class SqlTask:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'SqlTask':
+    def from_dict(cls, d: Dict[str, any]) -> SqlTask:
+        """Deserializes the SqlTask from a dictionary."""
         return cls(alert=_from_dict(d, 'alert', SqlTaskAlert),
                    dashboard=_from_dict(d, 'dashboard', SqlTaskDashboard),
                    file=_from_dict(d, 'file', SqlTaskFile),
@@ -2139,10 +3603,16 @@ class SqlTask:
 @dataclass
 class SqlTaskAlert:
     alert_id: str
+    """The canonical identifier of the SQL alert."""
+
     pause_subscriptions: Optional[bool] = None
-    subscriptions: Optional['List[SqlTaskSubscription]'] = None
+    """If true, the alert notifications are not sent to subscribers."""
+
+    subscriptions: Optional[List[SqlTaskSubscription]] = None
+    """If specified, alert notifications are sent to subscribers."""
 
     def as_dict(self) -> dict:
+        """Serializes the SqlTaskAlert into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.alert_id is not None: body['alert_id'] = self.alert_id
         if self.pause_subscriptions is not None: body['pause_subscriptions'] = self.pause_subscriptions
@@ -2150,20 +3620,29 @@ class SqlTaskAlert:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'SqlTaskAlert':
+    def from_dict(cls, d: Dict[str, any]) -> SqlTaskAlert:
+        """Deserializes the SqlTaskAlert from a dictionary."""
         return cls(alert_id=d.get('alert_id', None),
                    pause_subscriptions=d.get('pause_subscriptions', None),
-                   subscriptions=_repeated(d, 'subscriptions', SqlTaskSubscription))
+                   subscriptions=_repeated_dict(d, 'subscriptions', SqlTaskSubscription))
 
 
 @dataclass
 class SqlTaskDashboard:
     dashboard_id: str
+    """The canonical identifier of the SQL dashboard."""
+
     custom_subject: Optional[str] = None
+    """Subject of the email sent to subscribers of this task."""
+
     pause_subscriptions: Optional[bool] = None
-    subscriptions: Optional['List[SqlTaskSubscription]'] = None
+    """If true, the dashboard snapshot is not taken, and emails are not sent to subscribers."""
+
+    subscriptions: Optional[List[SqlTaskSubscription]] = None
+    """If specified, dashboard snapshots are sent to subscriptions."""
 
     def as_dict(self) -> dict:
+        """Serializes the SqlTaskDashboard into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.custom_subject is not None: body['custom_subject'] = self.custom_subject
         if self.dashboard_id is not None: body['dashboard_id'] = self.dashboard_id
@@ -2172,71 +3651,127 @@ class SqlTaskDashboard:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'SqlTaskDashboard':
+    def from_dict(cls, d: Dict[str, any]) -> SqlTaskDashboard:
+        """Deserializes the SqlTaskDashboard from a dictionary."""
         return cls(custom_subject=d.get('custom_subject', None),
                    dashboard_id=d.get('dashboard_id', None),
                    pause_subscriptions=d.get('pause_subscriptions', None),
-                   subscriptions=_repeated(d, 'subscriptions', SqlTaskSubscription))
+                   subscriptions=_repeated_dict(d, 'subscriptions', SqlTaskSubscription))
 
 
 @dataclass
 class SqlTaskFile:
     path: str
+    """Relative path of the SQL file in the remote Git repository."""
 
     def as_dict(self) -> dict:
+        """Serializes the SqlTaskFile into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.path is not None: body['path'] = self.path
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'SqlTaskFile':
+    def from_dict(cls, d: Dict[str, any]) -> SqlTaskFile:
+        """Deserializes the SqlTaskFile from a dictionary."""
         return cls(path=d.get('path', None))
 
 
 @dataclass
 class SqlTaskQuery:
     query_id: str
+    """The canonical identifier of the SQL query."""
 
     def as_dict(self) -> dict:
+        """Serializes the SqlTaskQuery into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.query_id is not None: body['query_id'] = self.query_id
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'SqlTaskQuery':
+    def from_dict(cls, d: Dict[str, any]) -> SqlTaskQuery:
+        """Deserializes the SqlTaskQuery from a dictionary."""
         return cls(query_id=d.get('query_id', None))
 
 
 @dataclass
 class SqlTaskSubscription:
     destination_id: Optional[str] = None
+    """The canonical identifier of the destination to receive email notification. This parameter is
+    mutually exclusive with user_name. You cannot set both destination_id and user_name for
+    subscription notifications."""
+
     user_name: Optional[str] = None
+    """The user name to receive the subscription email. This parameter is mutually exclusive with
+    destination_id. You cannot set both destination_id and user_name for subscription notifications."""
 
     def as_dict(self) -> dict:
+        """Serializes the SqlTaskSubscription into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.destination_id is not None: body['destination_id'] = self.destination_id
         if self.user_name is not None: body['user_name'] = self.user_name
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'SqlTaskSubscription':
+    def from_dict(cls, d: Dict[str, any]) -> SqlTaskSubscription:
+        """Deserializes the SqlTaskSubscription from a dictionary."""
         return cls(destination_id=d.get('destination_id', None), user_name=d.get('user_name', None))
 
 
 @dataclass
 class SubmitRun:
-    access_control_list: Optional['List[iam.AccessControlRequest]'] = None
-    email_notifications: Optional['JobEmailNotifications'] = None
-    git_source: Optional['GitSource'] = None
-    health: Optional['JobsHealthRules'] = None
+    access_control_list: Optional[List[iam.AccessControlRequest]] = None
+    """List of permissions to set on the job."""
+
+    email_notifications: Optional[JobEmailNotifications] = None
+    """An optional set of email addresses notified when the run begins or completes."""
+
+    git_source: Optional[GitSource] = None
+    """An optional specification for a remote Git repository containing the source code used by tasks.
+    Version-controlled source code is supported by notebook, dbt, Python script, and SQL File tasks.
+    
+    If `git_source` is set, these tasks retrieve the file from the remote repository by default.
+    However, this behavior can be overridden by setting `source` to `WORKSPACE` on the task.
+    
+    Note: dbt and SQL File tasks support only version-controlled sources. If dbt or SQL File tasks
+    are used, `git_source` must be defined on the job."""
+
+    health: Optional[JobsHealthRules] = None
+    """An optional set of health rules that can be defined for this job."""
+
     idempotency_token: Optional[str] = None
-    notification_settings: Optional['JobNotificationSettings'] = None
+    """An optional token that can be used to guarantee the idempotency of job run requests. If a run
+    with the provided token already exists, the request does not create a new run but returns the ID
+    of the existing run instead. If a run with the provided token is deleted, an error is returned.
+    
+    If you specify the idempotency token, upon failure you can retry until the request succeeds.
+    Databricks guarantees that exactly one run is launched with that idempotency token.
+    
+    This token must have at most 64 characters.
+    
+    For more information, see [How to ensure idempotency for jobs].
+    
+    [How to ensure idempotency for jobs]: https://kb.databricks.com/jobs/jobs-idempotency.html"""
+
+    notification_settings: Optional[JobNotificationSettings] = None
+    """Optional notification settings that are used when sending notifications to each of the
+    `email_notifications` and `webhook_notifications` for this run."""
+
+    queue: Optional[QueueSettings] = None
+    """The queue settings of the one-time run."""
+
     run_name: Optional[str] = None
-    tasks: Optional['List[SubmitTask]'] = None
+    """An optional name for the run. The default value is `Untitled`."""
+
+    tasks: Optional[List[SubmitTask]] = None
+
     timeout_seconds: Optional[int] = None
-    webhook_notifications: Optional['WebhookNotifications'] = None
+    """An optional timeout applied to each run of this job. A value of `0` means no timeout."""
+
+    webhook_notifications: Optional[WebhookNotifications] = None
+    """A collection of system notification IDs to notify when the run begins or completes."""
 
     def as_dict(self) -> dict:
+        """Serializes the SubmitRun into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.access_control_list:
             body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
@@ -2245,6 +3780,7 @@ class SubmitRun:
         if self.health: body['health'] = self.health.as_dict()
         if self.idempotency_token is not None: body['idempotency_token'] = self.idempotency_token
         if self.notification_settings: body['notification_settings'] = self.notification_settings.as_dict()
+        if self.queue: body['queue'] = self.queue.as_dict()
         if self.run_name is not None: body['run_name'] = self.run_name
         if self.tasks: body['tasks'] = [v.as_dict() for v in self.tasks]
         if self.timeout_seconds is not None: body['timeout_seconds'] = self.timeout_seconds
@@ -2252,15 +3788,17 @@ class SubmitRun:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'SubmitRun':
-        return cls(access_control_list=_repeated(d, 'access_control_list', iam.AccessControlRequest),
+    def from_dict(cls, d: Dict[str, any]) -> SubmitRun:
+        """Deserializes the SubmitRun from a dictionary."""
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list', iam.AccessControlRequest),
                    email_notifications=_from_dict(d, 'email_notifications', JobEmailNotifications),
                    git_source=_from_dict(d, 'git_source', GitSource),
                    health=_from_dict(d, 'health', JobsHealthRules),
                    idempotency_token=d.get('idempotency_token', None),
                    notification_settings=_from_dict(d, 'notification_settings', JobNotificationSettings),
+                   queue=_from_dict(d, 'queue', QueueSettings),
                    run_name=d.get('run_name', None),
-                   tasks=_repeated(d, 'tasks', SubmitTask),
+                   tasks=_repeated_dict(d, 'tasks', SubmitTask),
                    timeout_seconds=d.get('timeout_seconds', None),
                    webhook_notifications=_from_dict(d, 'webhook_notifications', WebhookNotifications))
 
@@ -2268,38 +3806,115 @@ class SubmitRun:
 @dataclass
 class SubmitRunResponse:
     run_id: Optional[int] = None
+    """The canonical identifier for the newly submitted run."""
 
     def as_dict(self) -> dict:
+        """Serializes the SubmitRunResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.run_id is not None: body['run_id'] = self.run_id
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'SubmitRunResponse':
+    def from_dict(cls, d: Dict[str, any]) -> SubmitRunResponse:
+        """Deserializes the SubmitRunResponse from a dictionary."""
         return cls(run_id=d.get('run_id', None))
 
 
 @dataclass
 class SubmitTask:
     task_key: str
-    condition_task: Optional['ConditionTask'] = None
-    depends_on: Optional['List[TaskDependency]'] = None
-    email_notifications: Optional['JobEmailNotifications'] = None
+    """A unique name for the task. This field is used to refer to this task from other tasks. This
+    field is required and must be unique within its parent job. On Update or Reset, this field is
+    used to reference the tasks to be updated or reset."""
+
+    condition_task: Optional[ConditionTask] = None
+    """If condition_task, specifies a condition with an outcome that can be used to control the
+    execution of other tasks. Does not require a cluster to execute and does not support retries or
+    notifications."""
+
+    depends_on: Optional[List[TaskDependency]] = None
+    """An optional array of objects specifying the dependency graph of the task. All tasks specified in
+    this field must complete successfully before executing this task. The key is `task_key`, and the
+    value is the name assigned to the dependent task."""
+
+    email_notifications: Optional[JobEmailNotifications] = None
+    """An optional set of email addresses notified when the task run begins or completes. The default
+    behavior is to not send any emails."""
+
     existing_cluster_id: Optional[str] = None
-    health: Optional['JobsHealthRules'] = None
-    libraries: Optional['List[compute.Library]'] = None
-    new_cluster: Optional['compute.ClusterSpec'] = None
-    notebook_task: Optional['NotebookTask'] = None
-    notification_settings: Optional['TaskNotificationSettings'] = None
-    pipeline_task: Optional['PipelineTask'] = None
-    python_wheel_task: Optional['PythonWheelTask'] = None
-    spark_jar_task: Optional['SparkJarTask'] = None
-    spark_python_task: Optional['SparkPythonTask'] = None
-    spark_submit_task: Optional['SparkSubmitTask'] = None
-    sql_task: Optional['SqlTask'] = None
+    """If existing_cluster_id, the ID of an existing cluster that is used for all runs of this task.
+    Only all-purpose clusters are supported. When running tasks on an existing cluster, you may need
+    to manually restart the cluster if it stops responding. We suggest running jobs on new clusters
+    for greater reliability."""
+
+    health: Optional[JobsHealthRules] = None
+    """An optional set of health rules that can be defined for this job."""
+
+    libraries: Optional[List[compute.Library]] = None
+    """An optional list of libraries to be installed on the cluster that executes the task. The default
+    value is an empty list."""
+
+    new_cluster: Optional[compute.ClusterSpec] = None
+    """If new_cluster, a description of a cluster that is created for each run."""
+
+    notebook_task: Optional[NotebookTask] = None
+    """If notebook_task, indicates that this task must run a notebook. This field may not be specified
+    in conjunction with spark_jar_task."""
+
+    notification_settings: Optional[TaskNotificationSettings] = None
+    """Optional notification settings that are used when sending notifications to each of the
+    `email_notifications` and `webhook_notifications` for this task run."""
+
+    pipeline_task: Optional[PipelineTask] = None
+    """If pipeline_task, indicates that this task must execute a Pipeline."""
+
+    python_wheel_task: Optional[PythonWheelTask] = None
+    """If python_wheel_task, indicates that this job must execute a PythonWheel."""
+
+    run_if: Optional[RunIf] = None
+    """An optional value indicating the condition that determines whether the task should be run once
+    its dependencies have been completed. When omitted, defaults to `ALL_SUCCESS`. See
+    :method:jobs/create for a list of possible values."""
+
+    run_job_task: Optional[RunJobTask] = None
+    """If run_job_task, indicates that this job must execute another job."""
+
+    spark_jar_task: Optional[SparkJarTask] = None
+    """If spark_jar_task, indicates that this task must run a JAR."""
+
+    spark_python_task: Optional[SparkPythonTask] = None
+    """If spark_python_task, indicates that this task must run a Python file."""
+
+    spark_submit_task: Optional[SparkSubmitTask] = None
+    """If `spark_submit_task`, indicates that this task must be launched by the spark submit script.
+    This task can run only on new clusters.
+    
+    In the `new_cluster` specification, `libraries` and `spark_conf` are not supported. Instead, use
+    `--jars` and `--py-files` to add Java and Python libraries and `--conf` to set the Spark
+    configurations.
+    
+    `master`, `deploy-mode`, and `executor-cores` are automatically configured by Databricks; you
+    _cannot_ specify them in parameters.
+    
+    By default, the Spark submit job uses all available memory (excluding reserved memory for
+    Databricks services). You can set `--driver-memory`, and `--executor-memory` to a smaller value
+    to leave some room for off-heap usage.
+    
+    The `--jars`, `--py-files`, `--files` arguments support DBFS and S3 paths."""
+
+    sql_task: Optional[SqlTask] = None
+    """If sql_task, indicates that this job must execute a SQL."""
+
     timeout_seconds: Optional[int] = None
+    """An optional timeout applied to each run of this job task. A value of `0` means no timeout."""
+
+    webhook_notifications: Optional[WebhookNotifications] = None
+    """A collection of system notification IDs to notify when the run begins or completes. The default
+    behavior is to not send any system notifications. Task webhooks respect the task notification
+    settings."""
 
     def as_dict(self) -> dict:
+        """Serializes the SubmitTask into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.condition_task: body['condition_task'] = self.condition_task.as_dict()
         if self.depends_on: body['depends_on'] = [v.as_dict() for v in self.depends_on]
@@ -2312,65 +3927,169 @@ class SubmitTask:
         if self.notification_settings: body['notification_settings'] = self.notification_settings.as_dict()
         if self.pipeline_task: body['pipeline_task'] = self.pipeline_task.as_dict()
         if self.python_wheel_task: body['python_wheel_task'] = self.python_wheel_task.as_dict()
+        if self.run_if is not None: body['run_if'] = self.run_if.value
+        if self.run_job_task: body['run_job_task'] = self.run_job_task.as_dict()
         if self.spark_jar_task: body['spark_jar_task'] = self.spark_jar_task.as_dict()
         if self.spark_python_task: body['spark_python_task'] = self.spark_python_task.as_dict()
         if self.spark_submit_task: body['spark_submit_task'] = self.spark_submit_task.as_dict()
         if self.sql_task: body['sql_task'] = self.sql_task.as_dict()
         if self.task_key is not None: body['task_key'] = self.task_key
         if self.timeout_seconds is not None: body['timeout_seconds'] = self.timeout_seconds
+        if self.webhook_notifications: body['webhook_notifications'] = self.webhook_notifications.as_dict()
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'SubmitTask':
+    def from_dict(cls, d: Dict[str, any]) -> SubmitTask:
+        """Deserializes the SubmitTask from a dictionary."""
         return cls(condition_task=_from_dict(d, 'condition_task', ConditionTask),
-                   depends_on=_repeated(d, 'depends_on', TaskDependency),
+                   depends_on=_repeated_dict(d, 'depends_on', TaskDependency),
                    email_notifications=_from_dict(d, 'email_notifications', JobEmailNotifications),
                    existing_cluster_id=d.get('existing_cluster_id', None),
                    health=_from_dict(d, 'health', JobsHealthRules),
-                   libraries=_repeated(d, 'libraries', compute.Library),
+                   libraries=_repeated_dict(d, 'libraries', compute.Library),
                    new_cluster=_from_dict(d, 'new_cluster', compute.ClusterSpec),
                    notebook_task=_from_dict(d, 'notebook_task', NotebookTask),
                    notification_settings=_from_dict(d, 'notification_settings', TaskNotificationSettings),
                    pipeline_task=_from_dict(d, 'pipeline_task', PipelineTask),
                    python_wheel_task=_from_dict(d, 'python_wheel_task', PythonWheelTask),
+                   run_if=_enum(d, 'run_if', RunIf),
+                   run_job_task=_from_dict(d, 'run_job_task', RunJobTask),
                    spark_jar_task=_from_dict(d, 'spark_jar_task', SparkJarTask),
                    spark_python_task=_from_dict(d, 'spark_python_task', SparkPythonTask),
                    spark_submit_task=_from_dict(d, 'spark_submit_task', SparkSubmitTask),
                    sql_task=_from_dict(d, 'sql_task', SqlTask),
                    task_key=d.get('task_key', None),
-                   timeout_seconds=d.get('timeout_seconds', None))
+                   timeout_seconds=d.get('timeout_seconds', None),
+                   webhook_notifications=_from_dict(d, 'webhook_notifications', WebhookNotifications))
 
 
 @dataclass
 class Task:
     task_key: str
+    """A unique name for the task. This field is used to refer to this task from other tasks. This
+    field is required and must be unique within its parent job. On Update or Reset, this field is
+    used to reference the tasks to be updated or reset."""
+
     compute_key: Optional[str] = None
-    condition_task: Optional['ConditionTask'] = None
-    dbt_task: Optional['DbtTask'] = None
-    depends_on: Optional['List[TaskDependency]'] = None
+    """The key of the compute requirement, specified in `job.settings.compute`, to use for execution of
+    this task."""
+
+    condition_task: Optional[ConditionTask] = None
+    """If condition_task, specifies a condition with an outcome that can be used to control the
+    execution of other tasks. Does not require a cluster to execute and does not support retries or
+    notifications."""
+
+    dbt_task: Optional[DbtTask] = None
+    """If dbt_task, indicates that this must execute a dbt task. It requires both Databricks SQL and
+    the ability to use a serverless or a pro SQL warehouse."""
+
+    depends_on: Optional[List[TaskDependency]] = None
+    """An optional array of objects specifying the dependency graph of the task. All tasks specified in
+    this field must complete before executing this task. The task will run only if the `run_if`
+    condition is true. The key is `task_key`, and the value is the name assigned to the dependent
+    task."""
+
     description: Optional[str] = None
-    email_notifications: Optional['TaskEmailNotifications'] = None
+    """An optional description for this task."""
+
+    email_notifications: Optional[TaskEmailNotifications] = None
+    """An optional set of email addresses that is notified when runs of this task begin or complete as
+    well as when this task is deleted. The default behavior is to not send any emails."""
+
     existing_cluster_id: Optional[str] = None
-    health: Optional['JobsHealthRules'] = None
+    """If existing_cluster_id, the ID of an existing cluster that is used for all runs of this task.
+    Only all-purpose clusters are supported. When running tasks on an existing cluster, you may need
+    to manually restart the cluster if it stops responding. We suggest running jobs on new clusters
+    for greater reliability."""
+
+    health: Optional[JobsHealthRules] = None
+    """An optional set of health rules that can be defined for this job."""
+
     job_cluster_key: Optional[str] = None
-    libraries: Optional['List[compute.Library]'] = None
+    """If job_cluster_key, this task is executed reusing the cluster specified in
+    `job.settings.job_clusters`."""
+
+    libraries: Optional[List[compute.Library]] = None
+    """An optional list of libraries to be installed on the cluster that executes the task. The default
+    value is an empty list."""
+
     max_retries: Optional[int] = None
+    """An optional maximum number of times to retry an unsuccessful run. A run is considered to be
+    unsuccessful if it completes with the `FAILED` result_state or `INTERNAL_ERROR`
+    `life_cycle_state`. The value `-1` means to retry indefinitely and the value `0` means to never
+    retry."""
+
     min_retry_interval_millis: Optional[int] = None
-    new_cluster: Optional['compute.ClusterSpec'] = None
-    notebook_task: Optional['NotebookTask'] = None
-    notification_settings: Optional['TaskNotificationSettings'] = None
-    pipeline_task: Optional['PipelineTask'] = None
-    python_wheel_task: Optional['PythonWheelTask'] = None
+    """An optional minimal interval in milliseconds between the start of the failed run and the
+    subsequent retry run. The default behavior is that unsuccessful runs are immediately retried."""
+
+    new_cluster: Optional[compute.ClusterSpec] = None
+    """If new_cluster, a description of a cluster that is created for only for this task."""
+
+    notebook_task: Optional[NotebookTask] = None
+    """If notebook_task, indicates that this task must run a notebook. This field may not be specified
+    in conjunction with spark_jar_task."""
+
+    notification_settings: Optional[TaskNotificationSettings] = None
+    """Optional notification settings that are used when sending notifications to each of the
+    `email_notifications` and `webhook_notifications` for this task."""
+
+    pipeline_task: Optional[PipelineTask] = None
+    """If pipeline_task, indicates that this task must execute a Pipeline."""
+
+    python_wheel_task: Optional[PythonWheelTask] = None
+    """If python_wheel_task, indicates that this job must execute a PythonWheel."""
+
     retry_on_timeout: Optional[bool] = None
-    run_if: Optional['RunIf'] = None
-    run_job_task: Optional['RunJobTask'] = None
-    spark_jar_task: Optional['SparkJarTask'] = None
-    spark_python_task: Optional['SparkPythonTask'] = None
-    spark_submit_task: Optional['SparkSubmitTask'] = None
-    sql_task: Optional['SqlTask'] = None
+    """An optional policy to specify whether to retry a task when it times out."""
+
+    run_if: Optional[RunIf] = None
+    """An optional value specifying the condition determining whether the task is run once its
+    dependencies have been completed.
+    
+    * `ALL_SUCCESS`: All dependencies have executed and succeeded * `AT_LEAST_ONE_SUCCESS`: At least
+    one dependency has succeeded * `NONE_FAILED`: None of the dependencies have failed and at least
+    one was executed * `ALL_DONE`: All dependencies have been completed * `AT_LEAST_ONE_FAILED`: At
+    least one dependency failed * `ALL_FAILED`: ALl dependencies have failed"""
+
+    run_job_task: Optional[RunJobTask] = None
+    """If run_job_task, indicates that this task must execute another job."""
+
+    spark_jar_task: Optional[SparkJarTask] = None
+    """If spark_jar_task, indicates that this task must run a JAR."""
+
+    spark_python_task: Optional[SparkPythonTask] = None
+    """If spark_python_task, indicates that this task must run a Python file."""
+
+    spark_submit_task: Optional[SparkSubmitTask] = None
+    """If `spark_submit_task`, indicates that this task must be launched by the spark submit script.
+    This task can run only on new clusters.
+    
+    In the `new_cluster` specification, `libraries` and `spark_conf` are not supported. Instead, use
+    `--jars` and `--py-files` to add Java and Python libraries and `--conf` to set the Spark
+    configurations.
+    
+    `master`, `deploy-mode`, and `executor-cores` are automatically configured by Databricks; you
+    _cannot_ specify them in parameters.
+    
+    By default, the Spark submit job uses all available memory (excluding reserved memory for
+    Databricks services). You can set `--driver-memory`, and `--executor-memory` to a smaller value
+    to leave some room for off-heap usage.
+    
+    The `--jars`, `--py-files`, `--files` arguments support DBFS and S3 paths."""
+
+    sql_task: Optional[SqlTask] = None
+    """If sql_task, indicates that this job must execute a SQL task."""
+
     timeout_seconds: Optional[int] = None
+    """An optional timeout applied to each run of this job task. A value of `0` means no timeout."""
+
+    webhook_notifications: Optional[WebhookNotifications] = None
+    """A collection of system notification IDs to notify when runs of this task begin or complete. The
+    default behavior is to not send any system notifications."""
 
     def as_dict(self) -> dict:
+        """Serializes the Task into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.compute_key is not None: body['compute_key'] = self.compute_key
         if self.condition_task: body['condition_task'] = self.condition_task.as_dict()
@@ -2399,20 +4118,22 @@ class Task:
         if self.sql_task: body['sql_task'] = self.sql_task.as_dict()
         if self.task_key is not None: body['task_key'] = self.task_key
         if self.timeout_seconds is not None: body['timeout_seconds'] = self.timeout_seconds
+        if self.webhook_notifications: body['webhook_notifications'] = self.webhook_notifications.as_dict()
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'Task':
+    def from_dict(cls, d: Dict[str, any]) -> Task:
+        """Deserializes the Task from a dictionary."""
         return cls(compute_key=d.get('compute_key', None),
                    condition_task=_from_dict(d, 'condition_task', ConditionTask),
                    dbt_task=_from_dict(d, 'dbt_task', DbtTask),
-                   depends_on=_repeated(d, 'depends_on', TaskDependency),
+                   depends_on=_repeated_dict(d, 'depends_on', TaskDependency),
                    description=d.get('description', None),
                    email_notifications=_from_dict(d, 'email_notifications', TaskEmailNotifications),
                    existing_cluster_id=d.get('existing_cluster_id', None),
                    health=_from_dict(d, 'health', JobsHealthRules),
                    job_cluster_key=d.get('job_cluster_key', None),
-                   libraries=_repeated(d, 'libraries', compute.Library),
+                   libraries=_repeated_dict(d, 'libraries', compute.Library),
                    max_retries=d.get('max_retries', None),
                    min_retry_interval_millis=d.get('min_retry_interval_millis', None),
                    new_cluster=_from_dict(d, 'new_cluster', compute.ClusterSpec),
@@ -2428,33 +4149,58 @@ class Task:
                    spark_submit_task=_from_dict(d, 'spark_submit_task', SparkSubmitTask),
                    sql_task=_from_dict(d, 'sql_task', SqlTask),
                    task_key=d.get('task_key', None),
-                   timeout_seconds=d.get('timeout_seconds', None))
+                   timeout_seconds=d.get('timeout_seconds', None),
+                   webhook_notifications=_from_dict(d, 'webhook_notifications', WebhookNotifications))
 
 
 @dataclass
 class TaskDependency:
     task_key: str
+    """The name of the task this task depends on."""
+
     outcome: Optional[str] = None
+    """Can only be specified on condition task dependencies. The outcome of the dependent task that
+    must be met for this task to run."""
 
     def as_dict(self) -> dict:
+        """Serializes the TaskDependency into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.outcome is not None: body['outcome'] = self.outcome
         if self.task_key is not None: body['task_key'] = self.task_key
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'TaskDependency':
+    def from_dict(cls, d: Dict[str, any]) -> TaskDependency:
+        """Deserializes the TaskDependency from a dictionary."""
         return cls(outcome=d.get('outcome', None), task_key=d.get('task_key', None))
 
 
 @dataclass
 class TaskEmailNotifications:
-    on_duration_warning_threshold_exceeded: Optional['List[str]'] = None
-    on_failure: Optional['List[str]'] = None
-    on_start: Optional['List[str]'] = None
-    on_success: Optional['List[str]'] = None
+    on_duration_warning_threshold_exceeded: Optional[List[str]] = None
+    """A list of email addresses to be notified when the duration of a run exceeds the threshold
+    specified for the `RUN_DURATION_SECONDS` metric in the `health` field. If no rule for the
+    `RUN_DURATION_SECONDS` metric is specified in the `health` field for the job, notifications are
+    not sent."""
+
+    on_failure: Optional[List[str]] = None
+    """A list of email addresses to be notified when a run unsuccessfully completes. A run is
+    considered to have completed unsuccessfully if it ends with an `INTERNAL_ERROR`
+    `life_cycle_state` or a `FAILED`, or `TIMED_OUT` result_state. If this is not specified on job
+    creation, reset, or update the list is empty, and notifications are not sent."""
+
+    on_start: Optional[List[str]] = None
+    """A list of email addresses to be notified when a run begins. If not specified on job creation,
+    reset, or update, the list is empty, and notifications are not sent."""
+
+    on_success: Optional[List[str]] = None
+    """A list of email addresses to be notified when a run successfully completes. A run is considered
+    to have completed successfully if it ends with a `TERMINATED` `life_cycle_state` and a `SUCCESS`
+    result_state. If not specified on job creation, reset, or update, the list is empty, and
+    notifications are not sent."""
 
     def as_dict(self) -> dict:
+        """Serializes the TaskEmailNotifications into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.on_duration_warning_threshold_exceeded:
             body['on_duration_warning_threshold_exceeded'] = [
@@ -2466,7 +4212,8 @@ class TaskEmailNotifications:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'TaskEmailNotifications':
+    def from_dict(cls, d: Dict[str, any]) -> TaskEmailNotifications:
+        """Deserializes the TaskEmailNotifications from a dictionary."""
         return cls(on_duration_warning_threshold_exceeded=d.get('on_duration_warning_threshold_exceeded',
                                                                 None),
                    on_failure=d.get('on_failure', None),
@@ -2477,10 +4224,20 @@ class TaskEmailNotifications:
 @dataclass
 class TaskNotificationSettings:
     alert_on_last_attempt: Optional[bool] = None
+    """If true, do not send notifications to recipients specified in `on_start` for the retried runs
+    and do not send notifications to recipients specified in `on_failure` until the last retry of
+    the run."""
+
     no_alert_for_canceled_runs: Optional[bool] = None
+    """If true, do not send notifications to recipients specified in `on_failure` if the run is
+    canceled."""
+
     no_alert_for_skipped_runs: Optional[bool] = None
+    """If true, do not send notifications to recipients specified in `on_failure` if the run is
+    skipped."""
 
     def as_dict(self) -> dict:
+        """Serializes the TaskNotificationSettings into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.alert_on_last_attempt is not None: body['alert_on_last_attempt'] = self.alert_on_last_attempt
         if self.no_alert_for_canceled_runs is not None:
@@ -2490,7 +4247,8 @@ class TaskNotificationSettings:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'TaskNotificationSettings':
+    def from_dict(cls, d: Dict[str, any]) -> TaskNotificationSettings:
+        """Deserializes the TaskNotificationSettings from a dictionary."""
         return cls(alert_on_last_attempt=d.get('alert_on_last_attempt', None),
                    no_alert_for_canceled_runs=d.get('no_alert_for_canceled_runs', None),
                    no_alert_for_skipped_runs=d.get('no_alert_for_skipped_runs', None))
@@ -2499,10 +4257,18 @@ class TaskNotificationSettings:
 @dataclass
 class TriggerEvaluation:
     description: Optional[str] = None
+    """Human-readable description of the the trigger evaluation result. Explains why the trigger
+    evaluation triggered or did not trigger a run, or failed."""
+
     run_id: Optional[int] = None
+    """The ID of the run that was triggered by the trigger evaluation. Only returned if a run was
+    triggered."""
+
     timestamp: Optional[int] = None
+    """Timestamp at which the trigger was evaluated."""
 
     def as_dict(self) -> dict:
+        """Serializes the TriggerEvaluation into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.description is not None: body['description'] = self.description
         if self.run_id is not None: body['run_id'] = self.run_id
@@ -2510,7 +4276,8 @@ class TriggerEvaluation:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'TriggerEvaluation':
+    def from_dict(cls, d: Dict[str, any]) -> TriggerEvaluation:
+        """Deserializes the TriggerEvaluation from a dictionary."""
         return cls(description=d.get('description', None),
                    run_id=d.get('run_id', None),
                    timestamp=d.get('timestamp', None))
@@ -2518,11 +4285,17 @@ class TriggerEvaluation:
 
 @dataclass
 class TriggerHistory:
-    last_failed: Optional['TriggerEvaluation'] = None
-    last_not_triggered: Optional['TriggerEvaluation'] = None
-    last_triggered: Optional['TriggerEvaluation'] = None
+    last_failed: Optional[TriggerEvaluation] = None
+    """The last time the trigger failed to evaluate."""
+
+    last_not_triggered: Optional[TriggerEvaluation] = None
+    """The last time the trigger was evaluated but did not trigger a run."""
+
+    last_triggered: Optional[TriggerEvaluation] = None
+    """The last time the run was triggered due to a file arrival."""
 
     def as_dict(self) -> dict:
+        """Serializes the TriggerHistory into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.last_failed: body['last_failed'] = self.last_failed.as_dict()
         if self.last_not_triggered: body['last_not_triggered'] = self.last_not_triggered.as_dict()
@@ -2530,7 +4303,8 @@ class TriggerHistory:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'TriggerHistory':
+    def from_dict(cls, d: Dict[str, any]) -> TriggerHistory:
+        """Deserializes the TriggerHistory from a dictionary."""
         return cls(last_failed=_from_dict(d, 'last_failed', TriggerEvaluation),
                    last_not_triggered=_from_dict(d, 'last_not_triggered', TriggerEvaluation),
                    last_triggered=_from_dict(d, 'last_triggered', TriggerEvaluation))
@@ -2539,36 +4313,52 @@ class TriggerHistory:
 @dataclass
 class TriggerInfo:
     run_id: Optional[int] = None
+    """The run id of the Run Job task run"""
 
     def as_dict(self) -> dict:
+        """Serializes the TriggerInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.run_id is not None: body['run_id'] = self.run_id
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'TriggerInfo':
+    def from_dict(cls, d: Dict[str, any]) -> TriggerInfo:
+        """Deserializes the TriggerInfo from a dictionary."""
         return cls(run_id=d.get('run_id', None))
 
 
 @dataclass
 class TriggerSettings:
-    file_arrival: Optional['FileArrivalTriggerConfiguration'] = None
-    pause_status: Optional['PauseStatus'] = None
+    file_arrival: Optional[FileArrivalTriggerConfiguration] = None
+    """File arrival trigger settings."""
+
+    pause_status: Optional[PauseStatus] = None
+    """Whether this trigger is paused or not."""
 
     def as_dict(self) -> dict:
+        """Serializes the TriggerSettings into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.file_arrival: body['file_arrival'] = self.file_arrival.as_dict()
         if self.pause_status is not None: body['pause_status'] = self.pause_status.value
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'TriggerSettings':
+    def from_dict(cls, d: Dict[str, any]) -> TriggerSettings:
+        """Deserializes the TriggerSettings from a dictionary."""
         return cls(file_arrival=_from_dict(d, 'file_arrival', FileArrivalTriggerConfiguration),
                    pause_status=_enum(d, 'pause_status', PauseStatus))
 
 
 class TriggerType(Enum):
-    """This describes an enum"""
+    """The type of trigger that fired this run.
+    
+    * `PERIODIC`: Schedules that periodically trigger runs, such as a cron scheduler. * `ONE_TIME`:
+    One time triggers that fire a single run. This occurs you triggered a single run on demand
+    through the UI or the API. * `RETRY`: Indicates a run that is triggered as a retry of a
+    previously failed run. This occurs when you request to re-run the job in case of failures. *
+    `RUN_JOB_TASK`: Indicates a run that is triggered using a Run Job task.
+    
+    * `FILE_ARRIVAL`: Indicates a run that is triggered by a file arrival."""
 
     FILE_ARRIVAL = 'FILE_ARRIVAL'
     ONE_TIME = 'ONE_TIME'
@@ -2580,10 +4370,26 @@ class TriggerType(Enum):
 @dataclass
 class UpdateJob:
     job_id: int
-    fields_to_remove: Optional['List[str]'] = None
-    new_settings: Optional['JobSettings'] = None
+    """The canonical identifier of the job to update. This field is required."""
+
+    fields_to_remove: Optional[List[str]] = None
+    """Remove top-level fields in the job settings. Removing nested fields is not supported, except for
+    tasks and job clusters (`tasks/task_1`). This field is optional."""
+
+    new_settings: Optional[JobSettings] = None
+    """The new settings for the job.
+    
+    Top-level fields specified in `new_settings` are completely replaced, except for arrays which
+    are merged. That is, new and existing entries are completely replaced based on the respective
+    key fields, i.e. `task_key` or `job_cluster_key`, while previous entries are kept.
+    
+    Partially updating nested fields is not supported.
+    
+    Changes to the field `JobSettings.timeout_seconds` are applied to active runs. Changes to other
+    fields are applied to future runs only."""
 
     def as_dict(self) -> dict:
+        """Serializes the UpdateJob into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.fields_to_remove: body['fields_to_remove'] = [v for v in self.fields_to_remove]
         if self.job_id is not None: body['job_id'] = self.job_id
@@ -2591,7 +4397,8 @@ class UpdateJob:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'UpdateJob':
+    def from_dict(cls, d: Dict[str, any]) -> UpdateJob:
+        """Deserializes the UpdateJob from a dictionary."""
         return cls(fields_to_remove=d.get('fields_to_remove', None),
                    job_id=d.get('job_id', None),
                    new_settings=_from_dict(d, 'new_settings', JobSettings))
@@ -2600,10 +4407,17 @@ class UpdateJob:
 @dataclass
 class ViewItem:
     content: Optional[str] = None
+    """Content of the view."""
+
     name: Optional[str] = None
-    type: Optional['ViewType'] = None
+    """Name of the view item. In the case of code view, it would be the notebook’s name. In the case
+    of dashboard view, it would be the dashboard’s name."""
+
+    type: Optional[ViewType] = None
+    """Type of the view item."""
 
     def as_dict(self) -> dict:
+        """Serializes the ViewItem into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.content is not None: body['content'] = self.content
         if self.name is not None: body['name'] = self.name
@@ -2611,19 +4425,21 @@ class ViewItem:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ViewItem':
+    def from_dict(cls, d: Dict[str, any]) -> ViewItem:
+        """Deserializes the ViewItem from a dictionary."""
         return cls(content=d.get('content', None), name=d.get('name', None), type=_enum(d, 'type', ViewType))
 
 
 class ViewType(Enum):
-    """This describes an enum"""
+    """* `NOTEBOOK`: Notebook view item. * `DASHBOARD`: Dashboard view item."""
 
     DASHBOARD = 'DASHBOARD'
     NOTEBOOK = 'NOTEBOOK'
 
 
 class ViewsToExport(Enum):
-    """This describes an enum"""
+    """* `CODE`: Code view of the notebook. * `DASHBOARDS`: All dashboard views of the notebook. *
+    `ALL`: All views of the notebook."""
 
     ALL = 'ALL'
     CODE = 'CODE'
@@ -2635,24 +4451,39 @@ class Webhook:
     id: Optional[str] = None
 
     def as_dict(self) -> dict:
+        """Serializes the Webhook into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.id is not None: body['id'] = self.id
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'Webhook':
+    def from_dict(cls, d: Dict[str, any]) -> Webhook:
+        """Deserializes the Webhook from a dictionary."""
         return cls(id=d.get('id', None))
 
 
 @dataclass
 class WebhookNotifications:
     on_duration_warning_threshold_exceeded: Optional[
-        'List[WebhookNotificationsOnDurationWarningThresholdExceededItem]'] = None
-    on_failure: Optional['List[Webhook]'] = None
-    on_start: Optional['List[Webhook]'] = None
-    on_success: Optional['List[Webhook]'] = None
+        List[WebhookNotificationsOnDurationWarningThresholdExceededItem]] = None
+    """An optional list of system notification IDs to call when the duration of a run exceeds the
+    threshold specified for the `RUN_DURATION_SECONDS` metric in the `health` field. A maximum of 3
+    destinations can be specified for the `on_duration_warning_threshold_exceeded` property."""
+
+    on_failure: Optional[List[Webhook]] = None
+    """An optional list of system notification IDs to call when the run fails. A maximum of 3
+    destinations can be specified for the `on_failure` property."""
+
+    on_start: Optional[List[Webhook]] = None
+    """An optional list of system notification IDs to call when the run starts. A maximum of 3
+    destinations can be specified for the `on_start` property."""
+
+    on_success: Optional[List[Webhook]] = None
+    """An optional list of system notification IDs to call when the run completes successfully. A
+    maximum of 3 destinations can be specified for the `on_success` property."""
 
     def as_dict(self) -> dict:
+        """Serializes the WebhookNotifications into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.on_duration_warning_threshold_exceeded:
             body['on_duration_warning_threshold_exceeded'] = [
@@ -2664,13 +4495,14 @@ class WebhookNotifications:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'WebhookNotifications':
-        return cls(on_duration_warning_threshold_exceeded=_repeated(
+    def from_dict(cls, d: Dict[str, any]) -> WebhookNotifications:
+        """Deserializes the WebhookNotifications from a dictionary."""
+        return cls(on_duration_warning_threshold_exceeded=_repeated_dict(
             d, 'on_duration_warning_threshold_exceeded',
             WebhookNotificationsOnDurationWarningThresholdExceededItem),
-                   on_failure=_repeated(d, 'on_failure', Webhook),
-                   on_start=_repeated(d, 'on_start', Webhook),
-                   on_success=_repeated(d, 'on_success', Webhook))
+                   on_failure=_repeated_dict(d, 'on_failure', Webhook),
+                   on_start=_repeated_dict(d, 'on_start', Webhook),
+                   on_success=_repeated_dict(d, 'on_success', Webhook))
 
 
 @dataclass
@@ -2678,12 +4510,14 @@ class WebhookNotificationsOnDurationWarningThresholdExceededItem:
     id: Optional[str] = None
 
     def as_dict(self) -> dict:
+        """Serializes the WebhookNotificationsOnDurationWarningThresholdExceededItem into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.id is not None: body['id'] = self.id
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'WebhookNotificationsOnDurationWarningThresholdExceededItem':
+    def from_dict(cls, d: Dict[str, any]) -> WebhookNotificationsOnDurationWarningThresholdExceededItem:
+        """Deserializes the WebhookNotificationsOnDurationWarningThresholdExceededItem from a dictionary."""
         return cls(id=d.get('id', None))
 
 
@@ -2739,27 +4573,31 @@ class JobsAPI:
             attempt += 1
         raise TimeoutError(f'timed out after {timeout}: {status_message}')
 
-    def cancel_all_runs(self, job_id: int):
+    def cancel_all_runs(self, *, all_queued_runs: Optional[bool] = None, job_id: Optional[int] = None):
         """Cancel all runs of a job.
         
         Cancels all active runs of a job. The runs are canceled asynchronously, so it doesn't prevent new runs
         from being started.
         
-        :param job_id: int
-          The canonical identifier of the job to cancel all runs of. This field is required.
+        :param all_queued_runs: bool (optional)
+          Optional boolean parameter to cancel all queued runs. If no job_id is provided, all queued runs in
+          the workspace are canceled.
+        :param job_id: int (optional)
+          The canonical identifier of the job to cancel all runs of.
         
         
         """
         body = {}
+        if all_queued_runs is not None: body['all_queued_runs'] = all_queued_runs
         if job_id is not None: body['job_id'] = job_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('POST', '/api/2.1/jobs/runs/cancel-all', body=body, headers=headers)
 
     def cancel_run(self, run_id: int) -> Wait[Run]:
-        """Cancel a job run.
+        """Cancel a run.
         
-        Cancels a job run. The run is canceled asynchronously, so it may still be running when this request
-        completes.
+        Cancels a job run or a task run. The run is canceled asynchronously, so it may still be running when
+        this request completes.
         
         :param run_id: int
           This field is required.
@@ -2782,6 +4620,9 @@ class JobsAPI:
                access_control_list: Optional[List[iam.AccessControlRequest]] = None,
                compute: Optional[List[JobCompute]] = None,
                continuous: Optional[Continuous] = None,
+               deployment: Optional[JobDeployment] = None,
+               description: Optional[str] = None,
+               edit_mode: Optional[CreateJobEditMode] = None,
                email_notifications: Optional[JobEmailNotifications] = None,
                format: Optional[Format] = None,
                git_source: Optional[GitSource] = None,
@@ -2791,6 +4632,7 @@ class JobsAPI:
                name: Optional[str] = None,
                notification_settings: Optional[JobNotificationSettings] = None,
                parameters: Optional[List[JobParameterDefinition]] = None,
+               queue: Optional[QueueSettings] = None,
                run_as: Optional[JobRunAs] = None,
                schedule: Optional[CronSchedule] = None,
                tags: Optional[Dict[str, str]] = None,
@@ -2809,9 +4651,18 @@ class JobsAPI:
         :param continuous: :class:`Continuous` (optional)
           An optional continuous property for this job. The continuous property will ensure that there is
           always one run executing. Only one of `schedule` and `continuous` can be used.
+        :param deployment: :class:`JobDeployment` (optional)
+          Deployment information for jobs managed by external sources.
+        :param description: str (optional)
+          An optional description for the job. The maximum length is 1024 characters in UTF-8 encoding.
+        :param edit_mode: :class:`CreateJobEditMode` (optional)
+          Edit mode of the job.
+          
+          * `UI_LOCKED`: The job is in a locked UI state and cannot be modified. * `EDITABLE`: The job is in
+          an editable state and can be modified.
         :param email_notifications: :class:`JobEmailNotifications` (optional)
           An optional set of email addresses that is notified when runs of this job begin or complete as well
-          as when this job is deleted. The default behavior is to not send any emails.
+          as when this job is deleted.
         :param format: :class:`Format` (optional)
           Used to tell what is the format of the job. This field is ignored in Create/Update/Reset calls. When
           using the Jobs API 2.1 this value is always set to `"MULTI_TASK"`.
@@ -2841,8 +4692,7 @@ class JobsAPI:
           4 concurrent active runs. Then setting the concurrency to 3 won’t kill any of the active runs.
           However, from then on, new runs are skipped unless there are fewer than 3 active runs.
           
-          This value cannot exceed 1000\. Setting this value to 0 causes all new runs to be skipped. The
-          default behavior is to allow only 1 concurrent run.
+          This value cannot exceed 1000. Setting this value to `0` causes all new runs to be skipped.
         :param name: str (optional)
           An optional name for the job. The maximum length is 4096 bytes in UTF-8 encoding.
         :param notification_settings: :class:`JobNotificationSettings` (optional)
@@ -2850,6 +4700,8 @@ class JobsAPI:
           `email_notifications` and `webhook_notifications` for this job.
         :param parameters: List[:class:`JobParameterDefinition`] (optional)
           Job-level parameter definitions
+        :param queue: :class:`QueueSettings` (optional)
+          The queue settings of the job.
         :param run_as: :class:`JobRunAs` (optional)
           Write-only setting, available only in Create/Update/Reset and Submit calls. Specifies the user or
           service principal that the job runs as. If not specified, the job runs as the user who created the
@@ -2867,21 +4719,24 @@ class JobsAPI:
         :param tasks: List[:class:`Task`] (optional)
           A list of task specifications to be executed by this job.
         :param timeout_seconds: int (optional)
-          An optional timeout applied to each run of this job. The default behavior is to have no timeout.
+          An optional timeout applied to each run of this job. A value of `0` means no timeout.
         :param trigger: :class:`TriggerSettings` (optional)
           Trigger settings for the job. Can be used to trigger a run when new files arrive in an external
           location. The default behavior is that the job runs only when triggered by clicking “Run Now” in
           the Jobs UI or sending an API request to `runNow`.
         :param webhook_notifications: :class:`WebhookNotifications` (optional)
-          A collection of system notification IDs to notify when the run begins or completes. The default
-          behavior is to not send any system notifications.
+          A collection of system notification IDs to notify when runs of this job begin or complete.
         
         :returns: :class:`CreateResponse`
         """
         body = {}
-        if access_control_list is not None: body['access_control_list'] = [v for v in access_control_list]
+        if access_control_list is not None:
+            body['access_control_list'] = [v.as_dict() for v in access_control_list]
         if compute is not None: body['compute'] = [v.as_dict() for v in compute]
         if continuous is not None: body['continuous'] = continuous.as_dict()
+        if deployment is not None: body['deployment'] = deployment.as_dict()
+        if description is not None: body['description'] = description
+        if edit_mode is not None: body['edit_mode'] = edit_mode.value
         if email_notifications is not None: body['email_notifications'] = email_notifications.as_dict()
         if format is not None: body['format'] = format.value
         if git_source is not None: body['git_source'] = git_source.as_dict()
@@ -2891,6 +4746,7 @@ class JobsAPI:
         if name is not None: body['name'] = name
         if notification_settings is not None: body['notification_settings'] = notification_settings.as_dict()
         if parameters is not None: body['parameters'] = [v.as_dict() for v in parameters]
+        if queue is not None: body['queue'] = queue.as_dict()
         if run_as is not None: body['run_as'] = run_as.as_dict()
         if schedule is not None: body['schedule'] = schedule.as_dict()
         if tags is not None: body['tags'] = tags
@@ -2969,7 +4825,7 @@ class JobsAPI:
         res = self._api.do('GET', '/api/2.1/jobs/get', query=query, headers=headers)
         return Job.from_dict(res)
 
-    def get_job_permission_levels(self, job_id: str) -> GetJobPermissionLevelsResponse:
+    def get_permission_levels(self, job_id: str) -> GetJobPermissionLevelsResponse:
         """Get job permission levels.
         
         Gets the permission levels that a user can have on an object.
@@ -2984,7 +4840,7 @@ class JobsAPI:
         res = self._api.do('GET', f'/api/2.0/permissions/jobs/{job_id}/permissionLevels', headers=headers)
         return GetJobPermissionLevelsResponse.from_dict(res)
 
-    def get_job_permissions(self, job_id: str) -> JobPermissions:
+    def get_permissions(self, job_id: str) -> JobPermissions:
         """Get job permissions.
         
         Gets the permissions of a job. Jobs can inherit permissions from their root object.
@@ -2999,7 +4855,11 @@ class JobsAPI:
         res = self._api.do('GET', f'/api/2.0/permissions/jobs/{job_id}', headers=headers)
         return JobPermissions.from_dict(res)
 
-    def get_run(self, run_id: int, *, include_history: Optional[bool] = None) -> Run:
+    def get_run(self,
+                run_id: int,
+                *,
+                include_history: Optional[bool] = None,
+                include_resolved_values: Optional[bool] = None) -> Run:
         """Get a single job run.
         
         Retrieve the metadata of a run.
@@ -3008,12 +4868,15 @@ class JobsAPI:
           The canonical identifier of the run for which to retrieve the metadata. This field is required.
         :param include_history: bool (optional)
           Whether to include the repair history in the response.
+        :param include_resolved_values: bool (optional)
+          Whether to include resolved parameter values in the response.
         
         :returns: :class:`Run`
         """
 
         query = {}
         if include_history is not None: query['include_history'] = include_history
+        if include_resolved_values is not None: query['include_resolved_values'] = include_resolved_values
         if run_id is not None: query['run_id'] = run_id
         headers = {'Accept': 'application/json', }
         res = self._api.do('GET', '/api/2.1/jobs/runs/get', query=query, headers=headers)
@@ -3108,8 +4971,8 @@ class JobsAPI:
         
         :param active_only: bool (optional)
           If active_only is `true`, only active runs are included in the results; otherwise, lists both active
-          and completed runs. An active run is a run in the `PENDING`, `RUNNING`, or `TERMINATING`. This field
-          cannot be `true` when completed_only is `true`.
+          and completed runs. An active run is a run in the `QUEUED`, `PENDING`, `RUNNING`, or `TERMINATING`.
+          This field cannot be `true` when completed_only is `true`.
         :param completed_only: bool (optional)
           If completed_only is `true`, only completed runs are included in the results; otherwise, lists both
           active and completed runs. This field cannot be `true` when active_only is `true`.
@@ -3119,7 +4982,7 @@ class JobsAPI:
           The job for which to list runs. If omitted, the Jobs service lists runs from all jobs.
         :param limit: int (optional)
           The number of runs to return. This value must be greater than 0 and less than 25. The default value
-          is 25. If a request specifies a limit of 0, the service instead uses the maximum limit.
+          is 20. If a request specifies a limit of 0, the service instead uses the maximum limit.
         :param offset: int (optional)
           The offset of the first run to return, relative to the most recent run.
           
@@ -3167,6 +5030,7 @@ class JobsAPI:
                    *,
                    dbt_commands: Optional[List[str]] = None,
                    jar_params: Optional[List[str]] = None,
+                   job_parameters: Optional[Dict[str, str]] = None,
                    latest_repair_id: Optional[int] = None,
                    notebook_params: Optional[Dict[str, str]] = None,
                    pipeline_params: Optional[PipelineParams] = None,
@@ -3188,20 +5052,22 @@ class JobsAPI:
           An array of commands to execute for jobs with the dbt task, for example `"dbt_commands": ["dbt
           deps", "dbt seed", "dbt run"]`
         :param jar_params: List[str] (optional)
-          A list of parameters for jobs with Spark JAR tasks, for example `\"jar_params\": [\"john doe\",
-          \"35\"]`. The parameters are used to invoke the main function of the main class specified in the
-          Spark JAR task. If not specified upon `run-now`, it defaults to an empty list. jar_params cannot be
-          specified in conjunction with notebook_params. The JSON representation of this field (for example
-          `{\"jar_params\":[\"john doe\",\"35\"]}`) cannot exceed 10,000 bytes.
+          A list of parameters for jobs with Spark JAR tasks, for example `"jar_params": ["john doe", "35"]`.
+          The parameters are used to invoke the main function of the main class specified in the Spark JAR
+          task. If not specified upon `run-now`, it defaults to an empty list. jar_params cannot be specified
+          in conjunction with notebook_params. The JSON representation of this field (for example
+          `{"jar_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
           
           Use [Task parameter variables](/jobs.html"#parameter-variables") to set parameters containing
           information about job runs.
+        :param job_parameters: Dict[str,str] (optional)
+          Job-level parameters used in the run. for example `"param": "overriding_val"`
         :param latest_repair_id: int (optional)
           The ID of the latest repair. This parameter is not required when repairing a run for the first time,
           but must be provided on subsequent requests to repair the same run.
         :param notebook_params: Dict[str,str] (optional)
-          A map from keys to values for jobs with notebook task, for example `\"notebook_params\": {\"name\":
-          \"john doe\", \"age\": \"35\"}`. The map is passed to the notebook and is accessible through the
+          A map from keys to values for jobs with notebook task, for example `"notebook_params": {"name":
+          "john doe", "age": "35"}`. The map is passed to the notebook and is accessible through the
           [dbutils.widgets.get] function.
           
           If not specified upon `run-now`, the triggered run uses the job’s base parameters.
@@ -3210,8 +5076,8 @@ class JobsAPI:
           
           Use [Task parameter variables] to set parameters containing information about job runs.
           
-          The JSON representation of this field (for example `{\"notebook_params\":{\"name\":\"john
-          doe\",\"age\":\"35\"}}`) cannot exceed 10,000 bytes.
+          The JSON representation of this field (for example `{"notebook_params":{"name":"john
+          doe","age":"35"}}`) cannot exceed 10,000 bytes.
           
           [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
           [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
@@ -3220,10 +5086,10 @@ class JobsAPI:
           A map from keys to values for jobs with Python wheel task, for example `"python_named_params":
           {"name": "task", "data": "dbfs:/path/to/data.json"}`.
         :param python_params: List[str] (optional)
-          A list of parameters for jobs with Python tasks, for example `\"python_params\": [\"john doe\",
-          \"35\"]`. The parameters are passed to Python file as command-line parameters. If specified upon
-          `run-now`, it would overwrite the parameters specified in job setting. The JSON representation of
-          this field (for example `{\"python_params\":[\"john doe\",\"35\"]}`) cannot exceed 10,000 bytes.
+          A list of parameters for jobs with Python tasks, for example `"python_params": ["john doe", "35"]`.
+          The parameters are passed to Python file as command-line parameters. If specified upon `run-now`, it
+          would overwrite the parameters specified in job setting. The JSON representation of this field (for
+          example `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
           
           Use [Task parameter variables] to set parameters containing information about job runs.
           
@@ -3242,11 +5108,11 @@ class JobsAPI:
         :param rerun_tasks: List[str] (optional)
           The task keys of the task runs to repair.
         :param spark_submit_params: List[str] (optional)
-          A list of parameters for jobs with spark submit task, for example `\"spark_submit_params\":
-          [\"--class\", \"org.apache.spark.examples.SparkPi\"]`. The parameters are passed to spark-submit
-          script as command-line parameters. If specified upon `run-now`, it would overwrite the parameters
-          specified in job setting. The JSON representation of this field (for example
-          `{\"python_params\":[\"john doe\",\"35\"]}`) cannot exceed 10,000 bytes.
+          A list of parameters for jobs with spark submit task, for example `"spark_submit_params":
+          ["--class", "org.apache.spark.examples.SparkPi"]`. The parameters are passed to spark-submit script
+          as command-line parameters. If specified upon `run-now`, it would overwrite the parameters specified
+          in job setting. The JSON representation of this field (for example `{"python_params":["john
+          doe","35"]}`) cannot exceed 10,000 bytes.
           
           Use [Task parameter variables] to set parameters containing information about job runs
           
@@ -3268,6 +5134,7 @@ class JobsAPI:
         body = {}
         if dbt_commands is not None: body['dbt_commands'] = [v for v in dbt_commands]
         if jar_params is not None: body['jar_params'] = [v for v in jar_params]
+        if job_parameters is not None: body['job_parameters'] = job_parameters
         if latest_repair_id is not None: body['latest_repair_id'] = latest_repair_id
         if notebook_params is not None: body['notebook_params'] = notebook_params
         if pipeline_params is not None: body['pipeline_params'] = pipeline_params.as_dict()
@@ -3291,6 +5158,7 @@ class JobsAPI:
         *,
         dbt_commands: Optional[List[str]] = None,
         jar_params: Optional[List[str]] = None,
+        job_parameters: Optional[Dict[str, str]] = None,
         latest_repair_id: Optional[int] = None,
         notebook_params: Optional[Dict[str, str]] = None,
         pipeline_params: Optional[PipelineParams] = None,
@@ -3304,6 +5172,7 @@ class JobsAPI:
         timeout=timedelta(minutes=20)) -> Run:
         return self.repair_run(dbt_commands=dbt_commands,
                                jar_params=jar_params,
+                               job_parameters=job_parameters,
                                latest_repair_id=latest_repair_id,
                                notebook_params=notebook_params,
                                pipeline_params=pipeline_params,
@@ -3317,10 +5186,10 @@ class JobsAPI:
                                sql_params=sql_params).result(timeout=timeout)
 
     def reset(self, job_id: int, new_settings: JobSettings):
-        """Overwrites all settings for a job.
+        """Update all job settings (reset).
         
-        Overwrites all the settings for a specific job. Use the Update endpoint to update job settings
-        partially.
+        Overwrite all settings for the given job. Use the [_Update_ endpoint](:method:jobs/update) to update
+        job settings partially.
         
         :param job_id: int
           The canonical identifier of the job to reset. This field is required.
@@ -3344,11 +5213,12 @@ class JobsAPI:
                 dbt_commands: Optional[List[str]] = None,
                 idempotency_token: Optional[str] = None,
                 jar_params: Optional[List[str]] = None,
-                job_parameters: Optional[List[Dict[str, str]]] = None,
+                job_parameters: Optional[Dict[str, str]] = None,
                 notebook_params: Optional[Dict[str, str]] = None,
                 pipeline_params: Optional[PipelineParams] = None,
                 python_named_params: Optional[Dict[str, str]] = None,
                 python_params: Optional[List[str]] = None,
+                queue: Optional[QueueSettings] = None,
                 spark_submit_params: Optional[List[str]] = None,
                 sql_params: Optional[Dict[str, str]] = None) -> Wait[Run]:
         """Trigger a new job run.
@@ -3374,19 +5244,19 @@ class JobsAPI:
           
           [How to ensure idempotency for jobs]: https://kb.databricks.com/jobs/jobs-idempotency.html
         :param jar_params: List[str] (optional)
-          A list of parameters for jobs with Spark JAR tasks, for example `\"jar_params\": [\"john doe\",
-          \"35\"]`. The parameters are used to invoke the main function of the main class specified in the
-          Spark JAR task. If not specified upon `run-now`, it defaults to an empty list. jar_params cannot be
-          specified in conjunction with notebook_params. The JSON representation of this field (for example
-          `{\"jar_params\":[\"john doe\",\"35\"]}`) cannot exceed 10,000 bytes.
+          A list of parameters for jobs with Spark JAR tasks, for example `"jar_params": ["john doe", "35"]`.
+          The parameters are used to invoke the main function of the main class specified in the Spark JAR
+          task. If not specified upon `run-now`, it defaults to an empty list. jar_params cannot be specified
+          in conjunction with notebook_params. The JSON representation of this field (for example
+          `{"jar_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
           
           Use [Task parameter variables](/jobs.html"#parameter-variables") to set parameters containing
           information about job runs.
-        :param job_parameters: List[Dict[str,str]] (optional)
-          Job-level parameters used in the run
+        :param job_parameters: Dict[str,str] (optional)
+          Job-level parameters used in the run. for example `"param": "overriding_val"`
         :param notebook_params: Dict[str,str] (optional)
-          A map from keys to values for jobs with notebook task, for example `\"notebook_params\": {\"name\":
-          \"john doe\", \"age\": \"35\"}`. The map is passed to the notebook and is accessible through the
+          A map from keys to values for jobs with notebook task, for example `"notebook_params": {"name":
+          "john doe", "age": "35"}`. The map is passed to the notebook and is accessible through the
           [dbutils.widgets.get] function.
           
           If not specified upon `run-now`, the triggered run uses the job’s base parameters.
@@ -3395,8 +5265,8 @@ class JobsAPI:
           
           Use [Task parameter variables] to set parameters containing information about job runs.
           
-          The JSON representation of this field (for example `{\"notebook_params\":{\"name\":\"john
-          doe\",\"age\":\"35\"}}`) cannot exceed 10,000 bytes.
+          The JSON representation of this field (for example `{"notebook_params":{"name":"john
+          doe","age":"35"}}`) cannot exceed 10,000 bytes.
           
           [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
           [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
@@ -3405,10 +5275,10 @@ class JobsAPI:
           A map from keys to values for jobs with Python wheel task, for example `"python_named_params":
           {"name": "task", "data": "dbfs:/path/to/data.json"}`.
         :param python_params: List[str] (optional)
-          A list of parameters for jobs with Python tasks, for example `\"python_params\": [\"john doe\",
-          \"35\"]`. The parameters are passed to Python file as command-line parameters. If specified upon
-          `run-now`, it would overwrite the parameters specified in job setting. The JSON representation of
-          this field (for example `{\"python_params\":[\"john doe\",\"35\"]}`) cannot exceed 10,000 bytes.
+          A list of parameters for jobs with Python tasks, for example `"python_params": ["john doe", "35"]`.
+          The parameters are passed to Python file as command-line parameters. If specified upon `run-now`, it
+          would overwrite the parameters specified in job setting. The JSON representation of this field (for
+          example `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
           
           Use [Task parameter variables] to set parameters containing information about job runs.
           
@@ -3419,12 +5289,14 @@ class JobsAPI:
           emojis.
           
           [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
+        :param queue: :class:`QueueSettings` (optional)
+          The queue settings of the run.
         :param spark_submit_params: List[str] (optional)
-          A list of parameters for jobs with spark submit task, for example `\"spark_submit_params\":
-          [\"--class\", \"org.apache.spark.examples.SparkPi\"]`. The parameters are passed to spark-submit
-          script as command-line parameters. If specified upon `run-now`, it would overwrite the parameters
-          specified in job setting. The JSON representation of this field (for example
-          `{\"python_params\":[\"john doe\",\"35\"]}`) cannot exceed 10,000 bytes.
+          A list of parameters for jobs with spark submit task, for example `"spark_submit_params":
+          ["--class", "org.apache.spark.examples.SparkPi"]`. The parameters are passed to spark-submit script
+          as command-line parameters. If specified upon `run-now`, it would overwrite the parameters specified
+          in job setting. The JSON representation of this field (for example `{"python_params":["john
+          doe","35"]}`) cannot exceed 10,000 bytes.
           
           Use [Task parameter variables] to set parameters containing information about job runs
           
@@ -3448,11 +5320,12 @@ class JobsAPI:
         if idempotency_token is not None: body['idempotency_token'] = idempotency_token
         if jar_params is not None: body['jar_params'] = [v for v in jar_params]
         if job_id is not None: body['job_id'] = job_id
-        if job_parameters is not None: body['job_parameters'] = [v for v in job_parameters]
+        if job_parameters is not None: body['job_parameters'] = job_parameters
         if notebook_params is not None: body['notebook_params'] = notebook_params
         if pipeline_params is not None: body['pipeline_params'] = pipeline_params.as_dict()
         if python_named_params is not None: body['python_named_params'] = python_named_params
         if python_params is not None: body['python_params'] = [v for v in python_params]
+        if queue is not None: body['queue'] = queue.as_dict()
         if spark_submit_params is not None: body['spark_submit_params'] = [v for v in spark_submit_params]
         if sql_params is not None: body['sql_params'] = sql_params
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
@@ -3467,11 +5340,12 @@ class JobsAPI:
                          dbt_commands: Optional[List[str]] = None,
                          idempotency_token: Optional[str] = None,
                          jar_params: Optional[List[str]] = None,
-                         job_parameters: Optional[List[Dict[str, str]]] = None,
+                         job_parameters: Optional[Dict[str, str]] = None,
                          notebook_params: Optional[Dict[str, str]] = None,
                          pipeline_params: Optional[PipelineParams] = None,
                          python_named_params: Optional[Dict[str, str]] = None,
                          python_params: Optional[List[str]] = None,
+                         queue: Optional[QueueSettings] = None,
                          spark_submit_params: Optional[List[str]] = None,
                          sql_params: Optional[Dict[str, str]] = None,
                          timeout=timedelta(minutes=20)) -> Run:
@@ -3484,10 +5358,11 @@ class JobsAPI:
                             pipeline_params=pipeline_params,
                             python_named_params=python_named_params,
                             python_params=python_params,
+                            queue=queue,
                             spark_submit_params=spark_submit_params,
                             sql_params=sql_params).result(timeout=timeout)
 
-    def set_job_permissions(
+    def set_permissions(
             self,
             job_id: str,
             *,
@@ -3517,6 +5392,7 @@ class JobsAPI:
                health: Optional[JobsHealthRules] = None,
                idempotency_token: Optional[str] = None,
                notification_settings: Optional[JobNotificationSettings] = None,
+               queue: Optional[QueueSettings] = None,
                run_name: Optional[str] = None,
                tasks: Optional[List[SubmitTask]] = None,
                timeout_seconds: Optional[int] = None,
@@ -3530,8 +5406,7 @@ class JobsAPI:
         :param access_control_list: List[:class:`AccessControlRequest`] (optional)
           List of permissions to set on the job.
         :param email_notifications: :class:`JobEmailNotifications` (optional)
-          An optional set of email addresses notified when the run begins or completes. The default behavior
-          is to not send any emails.
+          An optional set of email addresses notified when the run begins or completes.
         :param git_source: :class:`GitSource` (optional)
           An optional specification for a remote Git repository containing the source code used by tasks.
           Version-controlled source code is supported by notebook, dbt, Python script, and SQL File tasks.
@@ -3558,27 +5433,30 @@ class JobsAPI:
           [How to ensure idempotency for jobs]: https://kb.databricks.com/jobs/jobs-idempotency.html
         :param notification_settings: :class:`JobNotificationSettings` (optional)
           Optional notification settings that are used when sending notifications to each of the
-          `webhook_notifications` for this run.
+          `email_notifications` and `webhook_notifications` for this run.
+        :param queue: :class:`QueueSettings` (optional)
+          The queue settings of the one-time run.
         :param run_name: str (optional)
           An optional name for the run. The default value is `Untitled`.
         :param tasks: List[:class:`SubmitTask`] (optional)
         :param timeout_seconds: int (optional)
-          An optional timeout applied to each run of this job. The default behavior is to have no timeout.
+          An optional timeout applied to each run of this job. A value of `0` means no timeout.
         :param webhook_notifications: :class:`WebhookNotifications` (optional)
-          A collection of system notification IDs to notify when the run begins or completes. The default
-          behavior is to not send any system notifications.
+          A collection of system notification IDs to notify when the run begins or completes.
         
         :returns:
           Long-running operation waiter for :class:`Run`.
           See :method:wait_get_run_job_terminated_or_skipped for more details.
         """
         body = {}
-        if access_control_list is not None: body['access_control_list'] = [v for v in access_control_list]
+        if access_control_list is not None:
+            body['access_control_list'] = [v.as_dict() for v in access_control_list]
         if email_notifications is not None: body['email_notifications'] = email_notifications.as_dict()
         if git_source is not None: body['git_source'] = git_source.as_dict()
         if health is not None: body['health'] = health.as_dict()
         if idempotency_token is not None: body['idempotency_token'] = idempotency_token
         if notification_settings is not None: body['notification_settings'] = notification_settings.as_dict()
+        if queue is not None: body['queue'] = queue.as_dict()
         if run_name is not None: body['run_name'] = run_name
         if tasks is not None: body['tasks'] = [v.as_dict() for v in tasks]
         if timeout_seconds is not None: body['timeout_seconds'] = timeout_seconds
@@ -3598,6 +5476,7 @@ class JobsAPI:
         health: Optional[JobsHealthRules] = None,
         idempotency_token: Optional[str] = None,
         notification_settings: Optional[JobNotificationSettings] = None,
+        queue: Optional[QueueSettings] = None,
         run_name: Optional[str] = None,
         tasks: Optional[List[SubmitTask]] = None,
         timeout_seconds: Optional[int] = None,
@@ -3609,6 +5488,7 @@ class JobsAPI:
                            health=health,
                            idempotency_token=idempotency_token,
                            notification_settings=notification_settings,
+                           queue=queue,
                            run_name=run_name,
                            tasks=tasks,
                            timeout_seconds=timeout_seconds,
@@ -3619,10 +5499,10 @@ class JobsAPI:
                *,
                fields_to_remove: Optional[List[str]] = None,
                new_settings: Optional[JobSettings] = None):
-        """Partially update a job.
+        """Update job settings partially.
         
-        Add, update, or remove specific settings of an existing job. Use the ResetJob to overwrite all job
-        settings.
+        Add, update, or remove specific settings of an existing job. Use the [_Reset_
+        endpoint](:method:jobs/reset) to overwrite all job settings.
         
         :param job_id: int
           The canonical identifier of the job to update. This field is required.
@@ -3650,7 +5530,7 @@ class JobsAPI:
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('POST', '/api/2.1/jobs/update', body=body, headers=headers)
 
-    def update_job_permissions(
+    def update_permissions(
             self,
             job_id: str,
             *,

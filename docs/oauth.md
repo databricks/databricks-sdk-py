@@ -55,11 +55,11 @@ for cl in clusters:
 
 It will launch a browser, prompting user to login with Azure credentials and give consent like described on the following screen:
 
-![](./images/aad-approve-app.png)
+![](images/aad-approve-app.png)
 
 After giving consent, the user can close the browser tab:
 
-![](./images/external-browser-finish.png)
+![](images/external-browser-finish.png)
 
 ### Public Client 3-legged OAuth flow on local machines
 

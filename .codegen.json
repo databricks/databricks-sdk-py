@@ -1,10 +1,14 @@
 {
   "formatter": "yapf -pri $FILENAMES && autoflake -i $FILENAMES && isort $FILENAMES",
+  "template_libraries": [
+    ".codegen/lib.tmpl"
+  ],
   "packages": {
     ".codegen/service.py.tmpl": "databricks/sdk/service/{{.Name}}.py"
   },
   "batch": {
-    ".codegen/__init__.py.tmpl": "databricks/sdk/__init__.py"
+    ".codegen/__init__.py.tmpl": "databricks/sdk/__init__.py",
+    ".codegen/error_mapping.py.tmpl": "databricks/sdk/errors/platform.py"
   },
   "samples": {
     ".codegen/example.py.tmpl": "examples/{{.Service.SnakeName}}/{{.Method.SnakeName}}_{{.SnakeName}}.py"

@@ -57,7 +57,9 @@ class Token:
     def expired(self):
         if not self.expiry:
             return False
-        potentially_expired = self.expiry - timedelta(seconds=10)
+        # Azure Databricks rejects tokens that expire in 30 seconds or less,
+        # so we refresh the token 40 seconds before it expires.
+        potentially_expired = self.expiry - timedelta(seconds=40)
         now = datetime.now(tz=potentially_expired.tzinfo)
         is_expired = potentially_expired < now
         return is_expired
@@ -80,6 +82,43 @@ class Token:
                      token_type=raw['token_type'],
                      expiry=datetime.fromisoformat(raw['expiry']),
                      refresh_token=raw.get('refresh_token'))
+
+    def jwt_claims(self) -> Dict[str, str]:
+        """Get claims from the access token or return an empty dictionary if it is not a JWT token.
+
+        All refreshable tokens we're dealing with are JSON Web Tokens (JWT).
+
+        The common claims are:
+        - 'aud' represents the intended recipient of the token. In case of Azure, this is an app's Application ID
+                assigned within the Azure portal.
+        - 'iss' serves to identify the security token service (STS) responsible for creating and delivering the token.
+                In case of Azure, it includes the Azure AD tenant where user authentication occurred.
+        - 'appid' stands for the application ID of the client utilizing this token. This application can operate either
+                autonomously or on behalf of a user. The application ID commonly represents an application object but
+                may also denote a service principal object in case of Azure.
+        - 'idp' is used to document the identity provider that authenticated the subject of the token.
+        - 'oid' is the unchanging identifier for an entity within the identity system.
+        - 'sub' identifies the primary entity for the token, such as the user of an app. This value is specific to
+                a particular application ID. If a single user logs into two different apps using distinct client IDs,
+                these apps will receive different values for the subject claim.
+        - 'tid' In case of Azure, this value represents Azure Tenant ID.
+
+        See https://datatracker.ietf.org/doc/html/rfc7519 for specification.
+        See https://jwt.ms for debugger.
+        """
+        try:
+            jwt_split = self.access_token.split(".")
+            if len(jwt_split) != 3:
+                logger.debug(f'Tried to decode access token as JWT, but failed: {len(jwt_split)} components')
+                return {}
+            payload_with_padding = jwt_split[1] + "=="
+            payload_bytes = base64.standard_b64decode(payload_with_padding)
+            payload_json = payload_bytes.decode("utf8")
+            claims = json.loads(payload_json)
+            return claims
+        except ValueError as err:
+            logger.debug(f'Tried to decode access token as JWT, but failed: {err}')
+            return {}
 
 
 class TokenSource:
@@ -318,7 +357,8 @@ class OAuthClient:
                  scopes: List[str] = None,
                  client_secret: str = None):
         # TODO: is it a circular dependency?..
-        from .core import Config, credentials_provider
+        from .core import Config
+        from .credentials_provider import credentials_provider
 
         @credentials_provider('noop', [])
         def noop_credentials(_: any):

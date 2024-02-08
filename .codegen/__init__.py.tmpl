@@ -1,15 +1,19 @@
 import databricks.sdk.core as client
 import databricks.sdk.dbutils as dbutils
+from databricks.sdk.credentials_provider import CredentialsProvider
 
 from databricks.sdk.mixins.files import DbfsExt
 from databricks.sdk.mixins.compute import ClustersExt
 from databricks.sdk.mixins.workspace import WorkspaceExt
 {{- range .Services}}
 from databricks.sdk.service.{{.Package.Name}} import {{.PascalName}}API{{end}}
+from databricks.sdk.service.provisioning import Workspace
+from databricks.sdk import azure
 
 {{$args := list "host" "account_id" "username" "password" "client_id" "client_secret"
   "token" "profile" "config_file" "azure_workspace_resource_id" "azure_client_secret"
-  "azure_client_id" "azure_tenant_id" "azure_environment" "auth_type" "cluster_id"}}
+  "azure_client_id" "azure_tenant_id" "azure_environment" "auth_type" "cluster_id"
+  "google_credentials" "google_service_account" }}
 
 {{- define "api" -}}
   {{- $mixins := dict "ClustersAPI" "ClustersExt" "DbfsAPI" "DbfsExt" "WorkspaceAPI" "WorkspaceExt" -}}
@@ -34,12 +38,15 @@ def _make_dbutils(config: client.Config):
 
 
 class WorkspaceClient:
+    """
+    The WorkspaceClient is a client for the workspace-level Databricks REST API.
+    """
     def __init__(self, *{{range $args}}, {{.}}: str = None{{end}},
                  debug_truncate_bytes: int = None,
                  debug_headers: bool = None,
                  product="unknown",
                  product_version="0.0.0",
-                 credentials_provider: client.CredentialsProvider = None,
+                 credentials_provider: CredentialsProvider = None,
                  config: client.Config = None):
         if not config:
           config = client.Config({{range $args}}{{.}}={{.}}, {{end}}
@@ -48,19 +55,46 @@ class WorkspaceClient:
             debug_headers=debug_headers,
             product=product,
             product_version=product_version)
-        self.config = config.copy()
-        self.dbutils = _make_dbutils(self.config)
-        self.api_client = client.ApiClient(self.config)
+        self._config = config.copy()
+        self._dbutils = _make_dbutils(self._config)
+        self._api_client = client.ApiClient(self._config)
+
         {{- range .Services}}{{if not .IsAccounts}}
-        self.{{.SnakeName}} = {{template "api" .}}(self.api_client){{end -}}{{end}}
+        self._{{.SnakeName}} = {{template "api" .}}(self._api_client){{end -}}{{end}}
+
+    @property
+    def config(self) -> client.Config:
+        return self._config
+
+    @property
+    def api_client(self) -> client.ApiClient:
+        return self._api_client
+
+    @property
+    def dbutils(self) -> dbutils.RemoteDbUtils:
+        return self._dbutils
+
+    {{- range .Services}}{{if not .IsAccounts}}
+    @property
+    def {{.SnakeName}}(self) -> {{template "api" .}}:
+        {{if .Description}}"""{{.Summary}}"""{{end}}
+        return self._{{.SnakeName}}
+    {{end -}}{{end}}
+
+    def __repr__(self):
+        return f"WorkspaceClient(host='{self._config.host}', auth_type='{self._config.auth_type}', ...)"
 
 class AccountClient:
+    """
+    The AccountClient is a client for the account-level Databricks REST API.
+    """
+
     def __init__(self, *{{range $args}}, {{.}}: str = None{{end}},
                  debug_truncate_bytes: int = None,
                  debug_headers: bool = None,
                  product="unknown",
                  product_version="0.0.0",
-                 credentials_provider: client.CredentialsProvider = None,
+                 credentials_provider: CredentialsProvider = None,
                  config: client.Config = None):
         if not config:
           config = client.Config({{range $args}}{{.}}={{.}}, {{end}}
@@ -69,7 +103,54 @@ class AccountClient:
             debug_headers=debug_headers,
             product=product,
             product_version=product_version)
-        self.config = config.copy()
-        self.api_client = client.ApiClient(self.config)
+        self._config = config.copy()
+        self._api_client = client.ApiClient(self._config)
+
         {{- range .Services}}{{if .IsAccounts}}
-        self.{{(.TrimPrefix "account").SnakeName}} = {{template "api" .}}(self.api_client){{end -}}{{end}}
+        self._{{(.TrimPrefix "account").SnakeName}} = {{template "api" .}}(self._api_client){{end -}}{{end}}
+
+    @property
+    def config(self) -> client.Config:
+        return self._config
+
+    @property
+    def api_client(self) -> client.ApiClient:
+        return self._api_client
+
+    {{- range .Services}}{{if .IsAccounts}}
+    @property
+    def {{(.TrimPrefix "account").SnakeName}}(self) -> {{template "api" .}}:{{if .Description}}
+        """{{.Summary}}"""{{end}}
+        return self._{{(.TrimPrefix "account").SnakeName}}
+    {{end -}}{{end}}
+
+    def get_workspace_client(self, workspace: Workspace) -> WorkspaceClient:
+        """Constructs a ``WorkspaceClient`` for the given workspace.
+
+        Returns a ``WorkspaceClient`` that is configured to use the same
+        credentials as this ``AccountClient``. The underlying config is
+        copied from this ``AccountClient``, but the ``host`` and
+        ``azure_workspace_resource_id`` are overridden to match the
+        given workspace, and the ``account_id`` field is cleared.
+
+        Usage:
+
+        .. code-block::
+
+            wss = list(a.workspaces.list())
+            if len(wss) == 0:
+                pytest.skip("no workspaces")
+            w = a.get_workspace_client(wss[0])
+            assert w.current_user.me().active
+
+        :param workspace: The workspace to construct a client for.
+        :return: A ``WorkspaceClient`` for the given workspace.
+        """
+        config = self._config.copy()
+        config.host = config.environment.deployment_url(workspace.deployment_name)
+        config.azure_workspace_resource_id = azure.get_azure_resource_id(workspace)
+        config.account_id = None
+        return WorkspaceClient(config=config)
+
+    def __repr__(self):
+        return f"AccountClient(account_id='{self._config.account_id}', auth_type='{self._config.auth_type}', ...)"

@@ -222,9 +222,6 @@ def test_files_api_upload_download(ucws, random):
             target_file = f'/Volumes/main/{schema}/{volume}/filesit-{random()}.txt'
             w.files.upload(target_file, f)
 
-            res = w.files.get_status(target_file)
-            assert not res.is_dir
-
             with w.files.download(target_file).contents as f:
                 assert f.read() == b"some text data"
 

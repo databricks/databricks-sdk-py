@@ -1,11 +1,13 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
+from __future__ import annotations
+
 import logging
 from dataclasses import dataclass
 from enum import Enum
 from typing import Dict, Iterator, List, Optional
 
-from ._internal import _enum, _from_dict, _repeated
+from ._internal import _enum, _from_dict, _repeated_dict
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -15,16 +17,21 @@ _LOG = logging.getLogger('databricks.sdk')
 @dataclass
 class AclItem:
     principal: str
-    permission: 'AclPermission'
+    """The principal in which the permission is applied."""
+
+    permission: AclPermission
+    """The permission level applied to the principal."""
 
     def as_dict(self) -> dict:
+        """Serializes the AclItem into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.permission is not None: body['permission'] = self.permission.value
         if self.principal is not None: body['principal'] = self.principal
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'AclItem':
+    def from_dict(cls, d: Dict[str, any]) -> AclItem:
+        """Deserializes the AclItem from a dictionary."""
         return cls(permission=_enum(d, 'permission', AclPermission), principal=d.get('principal', None))
 
 
@@ -38,26 +45,39 @@ class AclPermission(Enum):
 @dataclass
 class AzureKeyVaultSecretScopeMetadata:
     resource_id: str
+    """The resource id of the azure KeyVault that user wants to associate the scope with."""
+
     dns_name: str
+    """The DNS of the KeyVault"""
 
     def as_dict(self) -> dict:
+        """Serializes the AzureKeyVaultSecretScopeMetadata into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.dns_name is not None: body['dns_name'] = self.dns_name
         if self.resource_id is not None: body['resource_id'] = self.resource_id
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'AzureKeyVaultSecretScopeMetadata':
+    def from_dict(cls, d: Dict[str, any]) -> AzureKeyVaultSecretScopeMetadata:
+        """Deserializes the AzureKeyVaultSecretScopeMetadata from a dictionary."""
         return cls(dns_name=d.get('dns_name', None), resource_id=d.get('resource_id', None))
 
 
 @dataclass
 class CreateCredentials:
     git_provider: str
+    """Git provider. This field is case-insensitive. The available Git providers are gitHub,
+    bitbucketCloud, gitLab, azureDevOpsServices, gitHubEnterprise, bitbucketServer,
+    gitLabEnterpriseEdition and awsCodeCommit."""
+
     git_username: Optional[str] = None
+    """Git username."""
+
     personal_access_token: Optional[str] = None
+    """The personal access token used to authenticate to the corresponding Git provider."""
 
     def as_dict(self) -> dict:
+        """Serializes the CreateCredentials into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.git_provider is not None: body['git_provider'] = self.git_provider
         if self.git_username is not None: body['git_username'] = self.git_username
@@ -65,7 +85,8 @@ class CreateCredentials:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CreateCredentials':
+    def from_dict(cls, d: Dict[str, any]) -> CreateCredentials:
+        """Deserializes the CreateCredentials from a dictionary."""
         return cls(git_provider=d.get('git_provider', None),
                    git_username=d.get('git_username', None),
                    personal_access_token=d.get('personal_access_token', None))
@@ -74,10 +95,18 @@ class CreateCredentials:
 @dataclass
 class CreateCredentialsResponse:
     credential_id: Optional[int] = None
+    """ID of the credential object in the workspace."""
+
     git_provider: Optional[str] = None
+    """Git provider. This field is case-insensitive. The available Git providers are gitHub,
+    bitbucketCloud, gitLab, azureDevOpsServices, gitHubEnterprise, bitbucketServer,
+    gitLabEnterpriseEdition and awsCodeCommit."""
+
     git_username: Optional[str] = None
+    """Git username."""
 
     def as_dict(self) -> dict:
+        """Serializes the CreateCredentialsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.credential_id is not None: body['credential_id'] = self.credential_id
         if self.git_provider is not None: body['git_provider'] = self.git_provider
@@ -85,7 +114,8 @@ class CreateCredentialsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CreateCredentialsResponse':
+    def from_dict(cls, d: Dict[str, any]) -> CreateCredentialsResponse:
+        """Deserializes the CreateCredentialsResponse from a dictionary."""
         return cls(credential_id=d.get('credential_id', None),
                    git_provider=d.get('git_provider', None),
                    git_username=d.get('git_username', None))
@@ -94,11 +124,22 @@ class CreateCredentialsResponse:
 @dataclass
 class CreateRepo:
     url: str
+    """URL of the Git repository to be linked."""
+
     provider: str
+    """Git provider. This field is case-insensitive. The available Git providers are gitHub,
+    bitbucketCloud, gitLab, azureDevOpsServices, gitHubEnterprise, bitbucketServer,
+    gitLabEnterpriseEdition and awsCodeCommit."""
+
     path: Optional[str] = None
-    sparse_checkout: Optional['SparseCheckout'] = None
+    """Desired path for the repo in the workspace. Must be in the format /Repos/{folder}/{repo-name}."""
+
+    sparse_checkout: Optional[SparseCheckout] = None
+    """If specified, the repo will be created with sparse checkout enabled. You cannot enable/disable
+    sparse checkout after the repo is created."""
 
     def as_dict(self) -> dict:
+        """Serializes the CreateRepo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.path is not None: body['path'] = self.path
         if self.provider is not None: body['provider'] = self.provider
@@ -107,7 +148,8 @@ class CreateRepo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CreateRepo':
+    def from_dict(cls, d: Dict[str, any]) -> CreateRepo:
+        """Deserializes the CreateRepo from a dictionary."""
         return cls(path=d.get('path', None),
                    provider=d.get('provider', None),
                    sparse_checkout=_from_dict(d, 'sparse_checkout', SparseCheckout),
@@ -117,11 +159,19 @@ class CreateRepo:
 @dataclass
 class CreateScope:
     scope: str
-    backend_azure_keyvault: Optional['AzureKeyVaultSecretScopeMetadata'] = None
+    """Scope name requested by the user. Scope names are unique."""
+
+    backend_azure_keyvault: Optional[AzureKeyVaultSecretScopeMetadata] = None
+    """The metadata for the secret scope if the type is `AZURE_KEYVAULT`"""
+
     initial_manage_principal: Optional[str] = None
-    scope_backend_type: Optional['ScopeBackendType'] = None
+    """The principal that is initially granted `MANAGE` permission to the created scope."""
+
+    scope_backend_type: Optional[ScopeBackendType] = None
+    """The backend type the scope will be created with. If not specified, will default to `DATABRICKS`"""
 
     def as_dict(self) -> dict:
+        """Serializes the CreateScope into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.backend_azure_keyvault: body['backend_azure_keyvault'] = self.backend_azure_keyvault.as_dict()
         if self.initial_manage_principal is not None:
@@ -131,7 +181,8 @@ class CreateScope:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CreateScope':
+    def from_dict(cls, d: Dict[str, any]) -> CreateScope:
+        """Deserializes the CreateScope from a dictionary."""
         return cls(backend_azure_keyvault=_from_dict(d, 'backend_azure_keyvault',
                                                      AzureKeyVaultSecretScopeMetadata),
                    initial_manage_principal=d.get('initial_manage_principal', None),
@@ -142,10 +193,18 @@ class CreateScope:
 @dataclass
 class CredentialInfo:
     credential_id: Optional[int] = None
+    """ID of the credential object in the workspace."""
+
     git_provider: Optional[str] = None
+    """Git provider. This field is case-insensitive. The available Git providers are gitHub,
+    gitHubOAuth, bitbucketCloud, gitLab, azureDevOpsServices, gitHubEnterprise, bitbucketServer,
+    gitLabEnterpriseEdition and awsCodeCommit."""
+
     git_username: Optional[str] = None
+    """Git username."""
 
     def as_dict(self) -> dict:
+        """Serializes the CredentialInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.credential_id is not None: body['credential_id'] = self.credential_id
         if self.git_provider is not None: body['git_provider'] = self.git_provider
@@ -153,7 +212,8 @@ class CredentialInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'CredentialInfo':
+    def from_dict(cls, d: Dict[str, any]) -> CredentialInfo:
+        """Deserializes the CredentialInfo from a dictionary."""
         return cls(credential_id=d.get('credential_id', None),
                    git_provider=d.get('git_provider', None),
                    git_username=d.get('git_username', None))
@@ -162,67 +222,88 @@ class CredentialInfo:
 @dataclass
 class Delete:
     path: str
+    """The absolute path of the notebook or directory."""
+
     recursive: Optional[bool] = None
+    """The flag that specifies whether to delete the object recursively. It is `false` by default.
+    Please note this deleting directory is not atomic. If it fails in the middle, some of objects
+    under this directory may be deleted and cannot be undone."""
 
     def as_dict(self) -> dict:
+        """Serializes the Delete into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.path is not None: body['path'] = self.path
         if self.recursive is not None: body['recursive'] = self.recursive
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'Delete':
+    def from_dict(cls, d: Dict[str, any]) -> Delete:
+        """Deserializes the Delete from a dictionary."""
         return cls(path=d.get('path', None), recursive=d.get('recursive', None))
 
 
 @dataclass
 class DeleteAcl:
     scope: str
+    """The name of the scope to remove permissions from."""
+
     principal: str
+    """The principal to remove an existing ACL from."""
 
     def as_dict(self) -> dict:
+        """Serializes the DeleteAcl into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.principal is not None: body['principal'] = self.principal
         if self.scope is not None: body['scope'] = self.scope
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'DeleteAcl':
+    def from_dict(cls, d: Dict[str, any]) -> DeleteAcl:
+        """Deserializes the DeleteAcl from a dictionary."""
         return cls(principal=d.get('principal', None), scope=d.get('scope', None))
 
 
 @dataclass
 class DeleteScope:
     scope: str
+    """Name of the scope to delete."""
 
     def as_dict(self) -> dict:
+        """Serializes the DeleteScope into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.scope is not None: body['scope'] = self.scope
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'DeleteScope':
+    def from_dict(cls, d: Dict[str, any]) -> DeleteScope:
+        """Deserializes the DeleteScope from a dictionary."""
         return cls(scope=d.get('scope', None))
 
 
 @dataclass
 class DeleteSecret:
     scope: str
+    """The name of the scope that contains the secret to delete."""
+
     key: str
+    """Name of the secret to delete."""
 
     def as_dict(self) -> dict:
+        """Serializes the DeleteSecret into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.key is not None: body['key'] = self.key
         if self.scope is not None: body['scope'] = self.scope
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'DeleteSecret':
+    def from_dict(cls, d: Dict[str, any]) -> DeleteSecret:
+        """Deserializes the DeleteSecret from a dictionary."""
         return cls(key=d.get('key', None), scope=d.get('scope', None))
 
 
 class ExportFormat(Enum):
 
+    AUTO = 'AUTO'
     DBC = 'DBC'
     HTML = 'HTML'
     JUPYTER = 'JUPYTER'
@@ -233,84 +314,127 @@ class ExportFormat(Enum):
 @dataclass
 class ExportResponse:
     content: Optional[str] = None
+    """The base64-encoded content. If the limit (10MB) is exceeded, exception with error code
+    **MAX_NOTEBOOK_SIZE_EXCEEDED** is thrown."""
 
     def as_dict(self) -> dict:
+        """Serializes the ExportResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.content is not None: body['content'] = self.content
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ExportResponse':
+    def from_dict(cls, d: Dict[str, any]) -> ExportResponse:
+        """Deserializes the ExportResponse from a dictionary."""
         return cls(content=d.get('content', None))
 
 
 @dataclass
 class GetCredentialsResponse:
-    credentials: Optional['List[CredentialInfo]'] = None
+    credentials: Optional[List[CredentialInfo]] = None
 
     def as_dict(self) -> dict:
+        """Serializes the GetCredentialsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.credentials: body['credentials'] = [v.as_dict() for v in self.credentials]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'GetCredentialsResponse':
-        return cls(credentials=_repeated(d, 'credentials', CredentialInfo))
+    def from_dict(cls, d: Dict[str, any]) -> GetCredentialsResponse:
+        """Deserializes the GetCredentialsResponse from a dictionary."""
+        return cls(credentials=_repeated_dict(d, 'credentials', CredentialInfo))
 
 
 @dataclass
 class GetRepoPermissionLevelsResponse:
-    permission_levels: Optional['List[RepoPermissionsDescription]'] = None
+    permission_levels: Optional[List[RepoPermissionsDescription]] = None
+    """Specific permission levels"""
 
     def as_dict(self) -> dict:
+        """Serializes the GetRepoPermissionLevelsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'GetRepoPermissionLevelsResponse':
-        return cls(permission_levels=_repeated(d, 'permission_levels', RepoPermissionsDescription))
+    def from_dict(cls, d: Dict[str, any]) -> GetRepoPermissionLevelsResponse:
+        """Deserializes the GetRepoPermissionLevelsResponse from a dictionary."""
+        return cls(permission_levels=_repeated_dict(d, 'permission_levels', RepoPermissionsDescription))
 
 
 @dataclass
 class GetSecretResponse:
     key: Optional[str] = None
+    """A unique name to identify the secret."""
+
     value: Optional[str] = None
+    """The value of the secret in its byte representation."""
 
     def as_dict(self) -> dict:
+        """Serializes the GetSecretResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.key is not None: body['key'] = self.key
         if self.value is not None: body['value'] = self.value
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'GetSecretResponse':
+    def from_dict(cls, d: Dict[str, any]) -> GetSecretResponse:
+        """Deserializes the GetSecretResponse from a dictionary."""
         return cls(key=d.get('key', None), value=d.get('value', None))
 
 
 @dataclass
 class GetWorkspaceObjectPermissionLevelsResponse:
-    permission_levels: Optional['List[WorkspaceObjectPermissionsDescription]'] = None
+    permission_levels: Optional[List[WorkspaceObjectPermissionsDescription]] = None
+    """Specific permission levels"""
 
     def as_dict(self) -> dict:
+        """Serializes the GetWorkspaceObjectPermissionLevelsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'GetWorkspaceObjectPermissionLevelsResponse':
-        return cls(permission_levels=_repeated(d, 'permission_levels', WorkspaceObjectPermissionsDescription))
+    def from_dict(cls, d: Dict[str, any]) -> GetWorkspaceObjectPermissionLevelsResponse:
+        """Deserializes the GetWorkspaceObjectPermissionLevelsResponse from a dictionary."""
+        return cls(
+            permission_levels=_repeated_dict(d, 'permission_levels', WorkspaceObjectPermissionsDescription))
 
 
 @dataclass
 class Import:
     path: str
+    """The absolute path of the object or directory. Importing a directory is only supported for the
+    `DBC` and `SOURCE` formats."""
+
     content: Optional[str] = None
-    format: Optional['ImportFormat'] = None
-    language: Optional['Language'] = None
+    """The base64-encoded content. This has a limit of 10 MB.
+    
+    If the limit (10MB) is exceeded, exception with error code **MAX_NOTEBOOK_SIZE_EXCEEDED** is
+    thrown. This parameter might be absent, and instead a posted file is used."""
+
+    format: Optional[ImportFormat] = None
+    """This specifies the format of the file to be imported.
+    
+    The value is case sensitive.
+    
+    - `AUTO`: The item is imported depending on an analysis of the item's extension and the header
+    content provided in the request. If the item is imported as a notebook, then the item's
+    extension is automatically removed. - `SOURCE`: The notebook or directory is imported as source
+    code. - `HTML`: The notebook is imported as an HTML file. - `JUPYTER`: The notebook is imported
+    as a Jupyter/IPython Notebook file. - `DBC`: The notebook is imported in Databricks archive
+    format. Required for directories. - `R_MARKDOWN`: The notebook is imported from R Markdown
+    format."""
+
+    language: Optional[Language] = None
+    """The language of the object. This value is set only if the object type is `NOTEBOOK`."""
+
     overwrite: Optional[bool] = None
+    """The flag that specifies whether to overwrite existing object. It is `false` by default. For
+    `DBC` format, `overwrite` is not supported since it may contain a directory."""
 
     def as_dict(self) -> dict:
+        """Serializes the Import into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.content is not None: body['content'] = self.content
         if self.format is not None: body['format'] = self.format.value
@@ -320,7 +444,8 @@ class Import:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'Import':
+    def from_dict(cls, d: Dict[str, any]) -> Import:
+        """Deserializes the Import from a dictionary."""
         return cls(content=d.get('content', None),
                    format=_enum(d, 'format', ImportFormat),
                    language=_enum(d, 'language', Language),
@@ -335,10 +460,11 @@ class ImportFormat(Enum):
     
     - `AUTO`: The item is imported depending on an analysis of the item's extension and the header
     content provided in the request. If the item is imported as a notebook, then the item's
-    extension is automatically removed. - `SOURCE`: The notebook is imported as source code. -
-    `HTML`: The notebook is imported as an HTML file. - `JUPYTER`: The notebook is imported as a
-    Jupyter/IPython Notebook file. - `DBC`: The notebook is imported in Databricks archive format.
-    Required for directories. - `R_MARKDOWN`: The notebook is imported from R Markdown format."""
+    extension is automatically removed. - `SOURCE`: The notebook or directory is imported as source
+    code. - `HTML`: The notebook is imported as an HTML file. - `JUPYTER`: The notebook is imported
+    as a Jupyter/IPython Notebook file. - `DBC`: The notebook is imported in Databricks archive
+    format. Required for directories. - `R_MARKDOWN`: The notebook is imported from R Markdown
+    format."""
 
     AUTO = 'AUTO'
     DBC = 'DBC'
@@ -359,101 +485,139 @@ class Language(Enum):
 
 @dataclass
 class ListAclsResponse:
-    items: Optional['List[AclItem]'] = None
+    items: Optional[List[AclItem]] = None
+    """The associated ACLs rule applied to principals in the given scope."""
 
     def as_dict(self) -> dict:
+        """Serializes the ListAclsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.items: body['items'] = [v.as_dict() for v in self.items]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ListAclsResponse':
-        return cls(items=_repeated(d, 'items', AclItem))
+    def from_dict(cls, d: Dict[str, any]) -> ListAclsResponse:
+        """Deserializes the ListAclsResponse from a dictionary."""
+        return cls(items=_repeated_dict(d, 'items', AclItem))
 
 
 @dataclass
 class ListReposResponse:
     next_page_token: Optional[str] = None
-    repos: Optional['List[RepoInfo]'] = None
+    """Token that can be specified as a query parameter to the GET /repos endpoint to retrieve the next
+    page of results."""
+
+    repos: Optional[List[RepoInfo]] = None
 
     def as_dict(self) -> dict:
+        """Serializes the ListReposResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         if self.repos: body['repos'] = [v.as_dict() for v in self.repos]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ListReposResponse':
-        return cls(next_page_token=d.get('next_page_token', None), repos=_repeated(d, 'repos', RepoInfo))
+    def from_dict(cls, d: Dict[str, any]) -> ListReposResponse:
+        """Deserializes the ListReposResponse from a dictionary."""
+        return cls(next_page_token=d.get('next_page_token', None), repos=_repeated_dict(d, 'repos', RepoInfo))
 
 
 @dataclass
 class ListResponse:
-    objects: Optional['List[ObjectInfo]'] = None
+    objects: Optional[List[ObjectInfo]] = None
+    """List of objects."""
 
     def as_dict(self) -> dict:
+        """Serializes the ListResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.objects: body['objects'] = [v.as_dict() for v in self.objects]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ListResponse':
-        return cls(objects=_repeated(d, 'objects', ObjectInfo))
+    def from_dict(cls, d: Dict[str, any]) -> ListResponse:
+        """Deserializes the ListResponse from a dictionary."""
+        return cls(objects=_repeated_dict(d, 'objects', ObjectInfo))
 
 
 @dataclass
 class ListScopesResponse:
-    scopes: Optional['List[SecretScope]'] = None
+    scopes: Optional[List[SecretScope]] = None
+    """The available secret scopes."""
 
     def as_dict(self) -> dict:
+        """Serializes the ListScopesResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.scopes: body['scopes'] = [v.as_dict() for v in self.scopes]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ListScopesResponse':
-        return cls(scopes=_repeated(d, 'scopes', SecretScope))
+    def from_dict(cls, d: Dict[str, any]) -> ListScopesResponse:
+        """Deserializes the ListScopesResponse from a dictionary."""
+        return cls(scopes=_repeated_dict(d, 'scopes', SecretScope))
 
 
 @dataclass
 class ListSecretsResponse:
-    secrets: Optional['List[SecretMetadata]'] = None
+    secrets: Optional[List[SecretMetadata]] = None
+    """Metadata information of all secrets contained within the given scope."""
 
     def as_dict(self) -> dict:
+        """Serializes the ListSecretsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.secrets: body['secrets'] = [v.as_dict() for v in self.secrets]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ListSecretsResponse':
-        return cls(secrets=_repeated(d, 'secrets', SecretMetadata))
+    def from_dict(cls, d: Dict[str, any]) -> ListSecretsResponse:
+        """Deserializes the ListSecretsResponse from a dictionary."""
+        return cls(secrets=_repeated_dict(d, 'secrets', SecretMetadata))
 
 
 @dataclass
 class Mkdirs:
     path: str
+    """The absolute path of the directory. If the parent directories do not exist, it will also create
+    them. If the directory already exists, this command will do nothing and succeed."""
 
     def as_dict(self) -> dict:
+        """Serializes the Mkdirs into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.path is not None: body['path'] = self.path
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'Mkdirs':
+    def from_dict(cls, d: Dict[str, any]) -> Mkdirs:
+        """Deserializes the Mkdirs from a dictionary."""
         return cls(path=d.get('path', None))
 
 
 @dataclass
 class ObjectInfo:
     created_at: Optional[int] = None
-    language: Optional['Language'] = None
+    """Only applicable to files. The creation UTC timestamp."""
+
+    language: Optional[Language] = None
+    """The language of the object. This value is set only if the object type is `NOTEBOOK`."""
+
     modified_at: Optional[int] = None
+    """Only applicable to files, the last modified UTC timestamp."""
+
     object_id: Optional[int] = None
-    object_type: Optional['ObjectType'] = None
+    """Unique identifier for the object."""
+
+    object_type: Optional[ObjectType] = None
+    """The type of the object in workspace.
+    
+    - `NOTEBOOK`: document that contains runnable code, visualizations, and explanatory text. -
+    `DIRECTORY`: directory - `LIBRARY`: library - `FILE`: file - `REPO`: repository"""
+
     path: Optional[str] = None
+    """The absolute path of the object."""
+
     size: Optional[int] = None
+    """Only applicable to files. The file size in bytes can be returned."""
 
     def as_dict(self) -> dict:
+        """Serializes the ObjectInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.created_at is not None: body['created_at'] = self.created_at
         if self.language is not None: body['language'] = self.language.value
@@ -465,7 +629,8 @@ class ObjectInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ObjectInfo':
+    def from_dict(cls, d: Dict[str, any]) -> ObjectInfo:
+        """Deserializes the ObjectInfo from a dictionary."""
         return cls(created_at=d.get('created_at', None),
                    language=_enum(d, 'language', Language),
                    modified_at=d.get('modified_at', None),
@@ -491,10 +656,16 @@ class ObjectType(Enum):
 @dataclass
 class PutAcl:
     scope: str
+    """The name of the scope to apply permissions to."""
+
     principal: str
-    permission: 'AclPermission'
+    """The principal in which the permission is applied."""
+
+    permission: AclPermission
+    """The permission level applied to the principal."""
 
     def as_dict(self) -> dict:
+        """Serializes the PutAcl into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.permission is not None: body['permission'] = self.permission.value
         if self.principal is not None: body['principal'] = self.principal
@@ -502,7 +673,8 @@ class PutAcl:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'PutAcl':
+    def from_dict(cls, d: Dict[str, any]) -> PutAcl:
+        """Deserializes the PutAcl from a dictionary."""
         return cls(permission=_enum(d, 'permission', AclPermission),
                    principal=d.get('principal', None),
                    scope=d.get('scope', None))
@@ -511,11 +683,19 @@ class PutAcl:
 @dataclass
 class PutSecret:
     scope: str
+    """The name of the scope to which the secret will be associated with."""
+
     key: str
+    """A unique name to identify the secret."""
+
     bytes_value: Optional[str] = None
+    """If specified, value will be stored as bytes."""
+
     string_value: Optional[str] = None
+    """If specified, note that the value will be stored in UTF-8 (MB4) form."""
 
     def as_dict(self) -> dict:
+        """Serializes the PutSecret into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.bytes_value is not None: body['bytes_value'] = self.bytes_value
         if self.key is not None: body['key'] = self.key
@@ -524,7 +704,8 @@ class PutSecret:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'PutSecret':
+    def from_dict(cls, d: Dict[str, any]) -> PutSecret:
+        """Deserializes the PutSecret from a dictionary."""
         return cls(bytes_value=d.get('bytes_value', None),
                    key=d.get('key', None),
                    scope=d.get('scope', None),
@@ -534,11 +715,19 @@ class PutSecret:
 @dataclass
 class RepoAccessControlRequest:
     group_name: Optional[str] = None
-    permission_level: Optional['RepoPermissionLevel'] = None
+    """name of the group"""
+
+    permission_level: Optional[RepoPermissionLevel] = None
+    """Permission level"""
+
     service_principal_name: Optional[str] = None
+    """application ID of a service principal"""
+
     user_name: Optional[str] = None
+    """name of the user"""
 
     def as_dict(self) -> dict:
+        """Serializes the RepoAccessControlRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.group_name is not None: body['group_name'] = self.group_name
         if self.permission_level is not None: body['permission_level'] = self.permission_level.value
@@ -548,7 +737,8 @@ class RepoAccessControlRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RepoAccessControlRequest':
+    def from_dict(cls, d: Dict[str, any]) -> RepoAccessControlRequest:
+        """Deserializes the RepoAccessControlRequest from a dictionary."""
         return cls(group_name=d.get('group_name', None),
                    permission_level=_enum(d, 'permission_level', RepoPermissionLevel),
                    service_principal_name=d.get('service_principal_name', None),
@@ -557,13 +747,23 @@ class RepoAccessControlRequest:
 
 @dataclass
 class RepoAccessControlResponse:
-    all_permissions: Optional['List[RepoPermission]'] = None
+    all_permissions: Optional[List[RepoPermission]] = None
+    """All permissions."""
+
     display_name: Optional[str] = None
+    """Display name of the user or service principal."""
+
     group_name: Optional[str] = None
+    """name of the group"""
+
     service_principal_name: Optional[str] = None
+    """Name of the service principal."""
+
     user_name: Optional[str] = None
+    """name of the user"""
 
     def as_dict(self) -> dict:
+        """Serializes the RepoAccessControlResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.all_permissions: body['all_permissions'] = [v.as_dict() for v in self.all_permissions]
         if self.display_name is not None: body['display_name'] = self.display_name
@@ -574,8 +774,9 @@ class RepoAccessControlResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RepoAccessControlResponse':
-        return cls(all_permissions=_repeated(d, 'all_permissions', RepoPermission),
+    def from_dict(cls, d: Dict[str, any]) -> RepoAccessControlResponse:
+        """Deserializes the RepoAccessControlResponse from a dictionary."""
+        return cls(all_permissions=_repeated_dict(d, 'all_permissions', RepoPermission),
                    display_name=d.get('display_name', None),
                    group_name=d.get('group_name', None),
                    service_principal_name=d.get('service_principal_name', None),
@@ -585,14 +786,29 @@ class RepoAccessControlResponse:
 @dataclass
 class RepoInfo:
     branch: Optional[str] = None
+    """Branch that the local version of the repo is checked out to."""
+
     head_commit_id: Optional[str] = None
+    """SHA-1 hash representing the commit ID of the current HEAD of the repo."""
+
     id: Optional[int] = None
+    """ID of the repo object in the workspace."""
+
     path: Optional[str] = None
+    """Desired path for the repo in the workspace. Must be in the format /Repos/{folder}/{repo-name}."""
+
     provider: Optional[str] = None
-    sparse_checkout: Optional['SparseCheckout'] = None
+    """Git provider. This field is case-insensitive. The available Git providers are gitHub,
+    bitbucketCloud, gitLab, azureDevOpsServices, gitHubEnterprise, bitbucketServer,
+    gitLabEnterpriseEdition and awsCodeCommit."""
+
+    sparse_checkout: Optional[SparseCheckout] = None
+
     url: Optional[str] = None
+    """URL of the Git repository to be linked."""
 
     def as_dict(self) -> dict:
+        """Serializes the RepoInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.branch is not None: body['branch'] = self.branch
         if self.head_commit_id is not None: body['head_commit_id'] = self.head_commit_id
@@ -604,7 +820,8 @@ class RepoInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RepoInfo':
+    def from_dict(cls, d: Dict[str, any]) -> RepoInfo:
+        """Deserializes the RepoInfo from a dictionary."""
         return cls(branch=d.get('branch', None),
                    head_commit_id=d.get('head_commit_id', None),
                    id=d.get('id', None),
@@ -617,10 +834,14 @@ class RepoInfo:
 @dataclass
 class RepoPermission:
     inherited: Optional[bool] = None
-    inherited_from_object: Optional['List[str]'] = None
-    permission_level: Optional['RepoPermissionLevel'] = None
+
+    inherited_from_object: Optional[List[str]] = None
+
+    permission_level: Optional[RepoPermissionLevel] = None
+    """Permission level"""
 
     def as_dict(self) -> dict:
+        """Serializes the RepoPermission into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.inherited is not None: body['inherited'] = self.inherited
         if self.inherited_from_object: body['inherited_from_object'] = [v for v in self.inherited_from_object]
@@ -628,7 +849,8 @@ class RepoPermission:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RepoPermission':
+    def from_dict(cls, d: Dict[str, any]) -> RepoPermission:
+        """Deserializes the RepoPermission from a dictionary."""
         return cls(inherited=d.get('inherited', None),
                    inherited_from_object=d.get('inherited_from_object', None),
                    permission_level=_enum(d, 'permission_level', RepoPermissionLevel))
@@ -645,11 +867,14 @@ class RepoPermissionLevel(Enum):
 
 @dataclass
 class RepoPermissions:
-    access_control_list: Optional['List[RepoAccessControlResponse]'] = None
+    access_control_list: Optional[List[RepoAccessControlResponse]] = None
+
     object_id: Optional[str] = None
+
     object_type: Optional[str] = None
 
     def as_dict(self) -> dict:
+        """Serializes the RepoPermissions into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.access_control_list:
             body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
@@ -658,8 +883,9 @@ class RepoPermissions:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RepoPermissions':
-        return cls(access_control_list=_repeated(d, 'access_control_list', RepoAccessControlResponse),
+    def from_dict(cls, d: Dict[str, any]) -> RepoPermissions:
+        """Deserializes the RepoPermissions from a dictionary."""
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list', RepoAccessControlResponse),
                    object_id=d.get('object_id', None),
                    object_type=d.get('object_type', None))
 
@@ -667,26 +893,33 @@ class RepoPermissions:
 @dataclass
 class RepoPermissionsDescription:
     description: Optional[str] = None
-    permission_level: Optional['RepoPermissionLevel'] = None
+
+    permission_level: Optional[RepoPermissionLevel] = None
+    """Permission level"""
 
     def as_dict(self) -> dict:
+        """Serializes the RepoPermissionsDescription into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.description is not None: body['description'] = self.description
         if self.permission_level is not None: body['permission_level'] = self.permission_level.value
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RepoPermissionsDescription':
+    def from_dict(cls, d: Dict[str, any]) -> RepoPermissionsDescription:
+        """Deserializes the RepoPermissionsDescription from a dictionary."""
         return cls(description=d.get('description', None),
                    permission_level=_enum(d, 'permission_level', RepoPermissionLevel))
 
 
 @dataclass
 class RepoPermissionsRequest:
-    access_control_list: Optional['List[RepoAccessControlRequest]'] = None
+    access_control_list: Optional[List[RepoAccessControlRequest]] = None
+
     repo_id: Optional[str] = None
+    """The repo for which to get or manage permissions."""
 
     def as_dict(self) -> dict:
+        """Serializes the RepoPermissionsRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.access_control_list:
             body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
@@ -694,8 +927,9 @@ class RepoPermissionsRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'RepoPermissionsRequest':
-        return cls(access_control_list=_repeated(d, 'access_control_list', RepoAccessControlRequest),
+    def from_dict(cls, d: Dict[str, any]) -> RepoPermissionsRequest:
+        """Deserializes the RepoPermissionsRequest from a dictionary."""
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list', RepoAccessControlRequest),
                    repo_id=d.get('repo_id', None))
 
 
@@ -708,9 +942,13 @@ class ScopeBackendType(Enum):
 @dataclass
 class SecretMetadata:
     key: Optional[str] = None
+    """A unique name to identify the secret."""
+
     last_updated_timestamp: Optional[int] = None
+    """The last updated timestamp (in milliseconds) for the secret."""
 
     def as_dict(self) -> dict:
+        """Serializes the SecretMetadata into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.key is not None: body['key'] = self.key
         if self.last_updated_timestamp is not None:
@@ -718,17 +956,24 @@ class SecretMetadata:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'SecretMetadata':
+    def from_dict(cls, d: Dict[str, any]) -> SecretMetadata:
+        """Deserializes the SecretMetadata from a dictionary."""
         return cls(key=d.get('key', None), last_updated_timestamp=d.get('last_updated_timestamp', None))
 
 
 @dataclass
 class SecretScope:
-    backend_type: Optional['ScopeBackendType'] = None
-    keyvault_metadata: Optional['AzureKeyVaultSecretScopeMetadata'] = None
+    backend_type: Optional[ScopeBackendType] = None
+    """The type of secret scope backend."""
+
+    keyvault_metadata: Optional[AzureKeyVaultSecretScopeMetadata] = None
+    """The metadata for the secret scope if the type is `AZURE_KEYVAULT`"""
+
     name: Optional[str] = None
+    """A unique name to identify the secret scope."""
 
     def as_dict(self) -> dict:
+        """Serializes the SecretScope into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.backend_type is not None: body['backend_type'] = self.backend_type.value
         if self.keyvault_metadata: body['keyvault_metadata'] = self.keyvault_metadata.as_dict()
@@ -736,7 +981,8 @@ class SecretScope:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'SecretScope':
+    def from_dict(cls, d: Dict[str, any]) -> SecretScope:
+        """Deserializes the SecretScope from a dictionary."""
         return cls(backend_type=_enum(d, 'backend_type', ScopeBackendType),
                    keyvault_metadata=_from_dict(d, 'keyvault_metadata', AzureKeyVaultSecretScopeMetadata),
                    name=d.get('name', None))
@@ -744,40 +990,56 @@ class SecretScope:
 
 @dataclass
 class SparseCheckout:
-    patterns: Optional['List[str]'] = None
+    patterns: Optional[List[str]] = None
+    """List of patterns to include for sparse checkout."""
 
     def as_dict(self) -> dict:
+        """Serializes the SparseCheckout into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.patterns: body['patterns'] = [v for v in self.patterns]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'SparseCheckout':
+    def from_dict(cls, d: Dict[str, any]) -> SparseCheckout:
+        """Deserializes the SparseCheckout from a dictionary."""
         return cls(patterns=d.get('patterns', None))
 
 
 @dataclass
 class SparseCheckoutUpdate:
-    patterns: Optional['List[str]'] = None
+    patterns: Optional[List[str]] = None
+    """List of patterns to include for sparse checkout."""
 
     def as_dict(self) -> dict:
+        """Serializes the SparseCheckoutUpdate into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.patterns: body['patterns'] = [v for v in self.patterns]
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'SparseCheckoutUpdate':
+    def from_dict(cls, d: Dict[str, any]) -> SparseCheckoutUpdate:
+        """Deserializes the SparseCheckoutUpdate from a dictionary."""
         return cls(patterns=d.get('patterns', None))
 
 
 @dataclass
 class UpdateCredentials:
     credential_id: Optional[int] = None
+    """The ID for the corresponding credential to access."""
+
     git_provider: Optional[str] = None
+    """Git provider. This field is case-insensitive. The available Git providers are gitHub,
+    bitbucketCloud, gitLab, azureDevOpsServices, gitHubEnterprise, bitbucketServer,
+    gitLabEnterpriseEdition and awsCodeCommit."""
+
     git_username: Optional[str] = None
+    """Git username."""
+
     personal_access_token: Optional[str] = None
+    """The personal access token used to authenticate to the corresponding Git provider."""
 
     def as_dict(self) -> dict:
+        """Serializes the UpdateCredentials into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.credential_id is not None: body['credential_id'] = self.credential_id
         if self.git_provider is not None: body['git_provider'] = self.git_provider
@@ -786,7 +1048,8 @@ class UpdateCredentials:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'UpdateCredentials':
+    def from_dict(cls, d: Dict[str, any]) -> UpdateCredentials:
+        """Deserializes the UpdateCredentials from a dictionary."""
         return cls(credential_id=d.get('credential_id', None),
                    git_provider=d.get('git_provider', None),
                    git_username=d.get('git_username', None),
@@ -796,11 +1059,22 @@ class UpdateCredentials:
 @dataclass
 class UpdateRepo:
     branch: Optional[str] = None
+    """Branch that the local version of the repo is checked out to."""
+
     repo_id: Optional[int] = None
-    sparse_checkout: Optional['SparseCheckoutUpdate'] = None
+    """The ID for the corresponding repo to access."""
+
+    sparse_checkout: Optional[SparseCheckoutUpdate] = None
+    """If specified, update the sparse checkout settings. The update will fail if sparse checkout is
+    not enabled for the repo."""
+
     tag: Optional[str] = None
+    """Tag that the local version of the repo is checked out to. Updating the repo to a tag puts the
+    repo in a detached HEAD state. Before committing new changes, you must update the repo to a
+    branch instead of the detached HEAD."""
 
     def as_dict(self) -> dict:
+        """Serializes the UpdateRepo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.branch is not None: body['branch'] = self.branch
         if self.repo_id is not None: body['repo_id'] = self.repo_id
@@ -809,7 +1083,8 @@ class UpdateRepo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'UpdateRepo':
+    def from_dict(cls, d: Dict[str, any]) -> UpdateRepo:
+        """Deserializes the UpdateRepo from a dictionary."""
         return cls(branch=d.get('branch', None),
                    repo_id=d.get('repo_id', None),
                    sparse_checkout=_from_dict(d, 'sparse_checkout', SparseCheckoutUpdate),
@@ -819,11 +1094,19 @@ class UpdateRepo:
 @dataclass
 class WorkspaceObjectAccessControlRequest:
     group_name: Optional[str] = None
-    permission_level: Optional['WorkspaceObjectPermissionLevel'] = None
+    """name of the group"""
+
+    permission_level: Optional[WorkspaceObjectPermissionLevel] = None
+    """Permission level"""
+
     service_principal_name: Optional[str] = None
+    """application ID of a service principal"""
+
     user_name: Optional[str] = None
+    """name of the user"""
 
     def as_dict(self) -> dict:
+        """Serializes the WorkspaceObjectAccessControlRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.group_name is not None: body['group_name'] = self.group_name
         if self.permission_level is not None: body['permission_level'] = self.permission_level.value
@@ -833,7 +1116,8 @@ class WorkspaceObjectAccessControlRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'WorkspaceObjectAccessControlRequest':
+    def from_dict(cls, d: Dict[str, any]) -> WorkspaceObjectAccessControlRequest:
+        """Deserializes the WorkspaceObjectAccessControlRequest from a dictionary."""
         return cls(group_name=d.get('group_name', None),
                    permission_level=_enum(d, 'permission_level', WorkspaceObjectPermissionLevel),
                    service_principal_name=d.get('service_principal_name', None),
@@ -842,13 +1126,23 @@ class WorkspaceObjectAccessControlRequest:
 
 @dataclass
 class WorkspaceObjectAccessControlResponse:
-    all_permissions: Optional['List[WorkspaceObjectPermission]'] = None
+    all_permissions: Optional[List[WorkspaceObjectPermission]] = None
+    """All permissions."""
+
     display_name: Optional[str] = None
+    """Display name of the user or service principal."""
+
     group_name: Optional[str] = None
+    """name of the group"""
+
     service_principal_name: Optional[str] = None
+    """Name of the service principal."""
+
     user_name: Optional[str] = None
+    """name of the user"""
 
     def as_dict(self) -> dict:
+        """Serializes the WorkspaceObjectAccessControlResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.all_permissions: body['all_permissions'] = [v.as_dict() for v in self.all_permissions]
         if self.display_name is not None: body['display_name'] = self.display_name
@@ -859,8 +1153,9 @@ class WorkspaceObjectAccessControlResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'WorkspaceObjectAccessControlResponse':
-        return cls(all_permissions=_repeated(d, 'all_permissions', WorkspaceObjectPermission),
+    def from_dict(cls, d: Dict[str, any]) -> WorkspaceObjectAccessControlResponse:
+        """Deserializes the WorkspaceObjectAccessControlResponse from a dictionary."""
+        return cls(all_permissions=_repeated_dict(d, 'all_permissions', WorkspaceObjectPermission),
                    display_name=d.get('display_name', None),
                    group_name=d.get('group_name', None),
                    service_principal_name=d.get('service_principal_name', None),
@@ -870,10 +1165,14 @@ class WorkspaceObjectAccessControlResponse:
 @dataclass
 class WorkspaceObjectPermission:
     inherited: Optional[bool] = None
-    inherited_from_object: Optional['List[str]'] = None
-    permission_level: Optional['WorkspaceObjectPermissionLevel'] = None
+
+    inherited_from_object: Optional[List[str]] = None
+
+    permission_level: Optional[WorkspaceObjectPermissionLevel] = None
+    """Permission level"""
 
     def as_dict(self) -> dict:
+        """Serializes the WorkspaceObjectPermission into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.inherited is not None: body['inherited'] = self.inherited
         if self.inherited_from_object: body['inherited_from_object'] = [v for v in self.inherited_from_object]
@@ -881,7 +1180,8 @@ class WorkspaceObjectPermission:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'WorkspaceObjectPermission':
+    def from_dict(cls, d: Dict[str, any]) -> WorkspaceObjectPermission:
+        """Deserializes the WorkspaceObjectPermission from a dictionary."""
         return cls(inherited=d.get('inherited', None),
                    inherited_from_object=d.get('inherited_from_object', None),
                    permission_level=_enum(d, 'permission_level', WorkspaceObjectPermissionLevel))
@@ -898,11 +1198,14 @@ class WorkspaceObjectPermissionLevel(Enum):
 
 @dataclass
 class WorkspaceObjectPermissions:
-    access_control_list: Optional['List[WorkspaceObjectAccessControlResponse]'] = None
+    access_control_list: Optional[List[WorkspaceObjectAccessControlResponse]] = None
+
     object_id: Optional[str] = None
+
     object_type: Optional[str] = None
 
     def as_dict(self) -> dict:
+        """Serializes the WorkspaceObjectPermissions into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.access_control_list:
             body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
@@ -911,9 +1214,10 @@ class WorkspaceObjectPermissions:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'WorkspaceObjectPermissions':
-        return cls(access_control_list=_repeated(d, 'access_control_list',
-                                                 WorkspaceObjectAccessControlResponse),
+    def from_dict(cls, d: Dict[str, any]) -> WorkspaceObjectPermissions:
+        """Deserializes the WorkspaceObjectPermissions from a dictionary."""
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list',
+                                                      WorkspaceObjectAccessControlResponse),
                    object_id=d.get('object_id', None),
                    object_type=d.get('object_type', None))
 
@@ -921,27 +1225,36 @@ class WorkspaceObjectPermissions:
 @dataclass
 class WorkspaceObjectPermissionsDescription:
     description: Optional[str] = None
-    permission_level: Optional['WorkspaceObjectPermissionLevel'] = None
+
+    permission_level: Optional[WorkspaceObjectPermissionLevel] = None
+    """Permission level"""
 
     def as_dict(self) -> dict:
+        """Serializes the WorkspaceObjectPermissionsDescription into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.description is not None: body['description'] = self.description
         if self.permission_level is not None: body['permission_level'] = self.permission_level.value
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'WorkspaceObjectPermissionsDescription':
+    def from_dict(cls, d: Dict[str, any]) -> WorkspaceObjectPermissionsDescription:
+        """Deserializes the WorkspaceObjectPermissionsDescription from a dictionary."""
         return cls(description=d.get('description', None),
                    permission_level=_enum(d, 'permission_level', WorkspaceObjectPermissionLevel))
 
 
 @dataclass
 class WorkspaceObjectPermissionsRequest:
-    access_control_list: Optional['List[WorkspaceObjectAccessControlRequest]'] = None
+    access_control_list: Optional[List[WorkspaceObjectAccessControlRequest]] = None
+
     workspace_object_id: Optional[str] = None
+    """The workspace object for which to get or manage permissions."""
+
     workspace_object_type: Optional[str] = None
+    """The workspace object type for which to get or manage permissions."""
 
     def as_dict(self) -> dict:
+        """Serializes the WorkspaceObjectPermissionsRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.access_control_list:
             body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
@@ -950,9 +1263,10 @@ class WorkspaceObjectPermissionsRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'WorkspaceObjectPermissionsRequest':
-        return cls(access_control_list=_repeated(d, 'access_control_list',
-                                                 WorkspaceObjectAccessControlRequest),
+    def from_dict(cls, d: Dict[str, any]) -> WorkspaceObjectPermissionsRequest:
+        """Deserializes the WorkspaceObjectPermissionsRequest from a dictionary."""
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list',
+                                                      WorkspaceObjectAccessControlRequest),
                    workspace_object_id=d.get('workspace_object_id', None),
                    workspace_object_type=d.get('workspace_object_type', None))
 
@@ -1036,7 +1350,8 @@ class GitCredentialsAPI:
 
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/git-credentials', headers=headers)
-        return [CredentialInfo.from_dict(v) for v in json.get('credentials', [])]
+        parsed = GetCredentialsResponse.from_dict(json).credentials
+        return parsed if parsed is not None else []
 
     def update(self,
                credential_id: int,
@@ -1146,7 +1461,7 @@ class ReposAPI:
         res = self._api.do('GET', f'/api/2.0/repos/{repo_id}', headers=headers)
         return RepoInfo.from_dict(res)
 
-    def get_repo_permission_levels(self, repo_id: str) -> GetRepoPermissionLevelsResponse:
+    def get_permission_levels(self, repo_id: str) -> GetRepoPermissionLevelsResponse:
         """Get repo permission levels.
         
         Gets the permission levels that a user can have on an object.
@@ -1161,7 +1476,7 @@ class ReposAPI:
         res = self._api.do('GET', f'/api/2.0/permissions/repos/{repo_id}/permissionLevels', headers=headers)
         return GetRepoPermissionLevelsResponse.from_dict(res)
 
-    def get_repo_permissions(self, repo_id: str) -> RepoPermissions:
+    def get_permissions(self, repo_id: str) -> RepoPermissions:
         """Get repo permissions.
         
         Gets the permissions of a repo. Repos can inherit permissions from their root object.
@@ -1209,7 +1524,7 @@ class ReposAPI:
                 return
             query['next_page_token'] = json['next_page_token']
 
-    def set_repo_permissions(
+    def set_permissions(
             self,
             repo_id: str,
             *,
@@ -1263,7 +1578,7 @@ class ReposAPI:
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('PATCH', f'/api/2.0/repos/{repo_id}', body=body, headers=headers)
 
-    def update_repo_permissions(
+    def update_permissions(
             self,
             repo_id: str,
             *,
@@ -1463,7 +1778,8 @@ class SecretsAPI:
         if scope is not None: query['scope'] = scope
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/secrets/acls/list', query=query, headers=headers)
-        return [AclItem.from_dict(v) for v in json.get('items', [])]
+        parsed = ListAclsResponse.from_dict(json).items
+        return parsed if parsed is not None else []
 
     def list_scopes(self) -> Iterator[SecretScope]:
         """List all scopes.
@@ -1477,7 +1793,8 @@ class SecretsAPI:
 
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/secrets/scopes/list', headers=headers)
-        return [SecretScope.from_dict(v) for v in json.get('scopes', [])]
+        parsed = ListScopesResponse.from_dict(json).scopes
+        return parsed if parsed is not None else []
 
     def list_secrets(self, scope: str) -> Iterator[SecretMetadata]:
         """List secret keys.
@@ -1499,7 +1816,8 @@ class SecretsAPI:
         if scope is not None: query['scope'] = scope
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/secrets/list', query=query, headers=headers)
-        return [SecretMetadata.from_dict(v) for v in json.get('secrets', [])]
+        parsed = ListSecretsResponse.from_dict(json).secrets
+        return parsed if parsed is not None else []
 
     def put_acl(self, scope: str, principal: str, permission: AclPermission):
         """Create/update an ACL.
@@ -1634,17 +1952,19 @@ class WorkspaceAPI:
         Currently, this API does not support exporting a library.
         
         :param path: str
-          The absolute path of the object or directory. Exporting a directory is only supported for the `DBC`
-          and `SOURCE` format.
+          The absolute path of the object or directory. Exporting a directory is only supported for the `DBC`,
+          `SOURCE`, and `AUTO` format.
         :param format: :class:`ExportFormat` (optional)
           This specifies the format of the exported file. By default, this is `SOURCE`.
           
           The value is case sensitive.
           
-          - `SOURCE`: The notebook is exported as source code. - `HTML`: The notebook is exported as an HTML
-          file. - `JUPYTER`: The notebook is exported as a Jupyter/IPython Notebook file. - `DBC`: The
-          notebook is exported in Databricks archive format. - `R_MARKDOWN`: The notebook is exported to R
-          Markdown format.
+          - `SOURCE`: The notebook is exported as source code. Directory exports will not include non-notebook
+          entries. - `HTML`: The notebook is exported as an HTML file. - `JUPYTER`: The notebook is exported
+          as a Jupyter/IPython Notebook file. - `DBC`: The notebook is exported in Databricks archive format.
+          Directory exports will not include non-notebook entries. - `R_MARKDOWN`: The notebook is exported to
+          R Markdown format. - `AUTO`: The object or directory is exported depending on the objects type.
+          Directory exports will include notebooks and workspace files.
         
         :returns: :class:`ExportResponse`
         """
@@ -1656,27 +1976,8 @@ class WorkspaceAPI:
         res = self._api.do('GET', '/api/2.0/workspace/export', query=query, headers=headers)
         return ExportResponse.from_dict(res)
 
-    def get_status(self, path: str) -> ObjectInfo:
-        """Get status.
-        
-        Gets the status of an object or a directory. If `path` does not exist, this call returns an error
-        `RESOURCE_DOES_NOT_EXIST`.
-        
-        :param path: str
-          The absolute path of the notebook or directory.
-        
-        :returns: :class:`ObjectInfo`
-        """
-
-        query = {}
-        if path is not None: query['path'] = path
-        headers = {'Accept': 'application/json', }
-        res = self._api.do('GET', '/api/2.0/workspace/get-status', query=query, headers=headers)
-        return ObjectInfo.from_dict(res)
-
-    def get_workspace_object_permission_levels(
-            self, workspace_object_type: str,
-            workspace_object_id: str) -> GetWorkspaceObjectPermissionLevelsResponse:
+    def get_permission_levels(self, workspace_object_type: str,
+                              workspace_object_id: str) -> GetWorkspaceObjectPermissionLevelsResponse:
         """Get workspace object permission levels.
         
         Gets the permission levels that a user can have on an object.
@@ -1696,8 +1997,8 @@ class WorkspaceAPI:
             headers=headers)
         return GetWorkspaceObjectPermissionLevelsResponse.from_dict(res)
 
-    def get_workspace_object_permissions(self, workspace_object_type: str,
-                                         workspace_object_id: str) -> WorkspaceObjectPermissions:
+    def get_permissions(self, workspace_object_type: str,
+                        workspace_object_id: str) -> WorkspaceObjectPermissions:
         """Get workspace object permissions.
         
         Gets the permissions of a workspace object. Workspace objects can inherit permissions from their
@@ -1717,6 +2018,24 @@ class WorkspaceAPI:
                            headers=headers)
         return WorkspaceObjectPermissions.from_dict(res)
 
+    def get_status(self, path: str) -> ObjectInfo:
+        """Get status.
+        
+        Gets the status of an object or a directory. If `path` does not exist, this call returns an error
+        `RESOURCE_DOES_NOT_EXIST`.
+        
+        :param path: str
+          The absolute path of the notebook or directory.
+        
+        :returns: :class:`ObjectInfo`
+        """
+
+        query = {}
+        if path is not None: query['path'] = path
+        headers = {'Accept': 'application/json', }
+        res = self._api.do('GET', '/api/2.0/workspace/get-status', query=query, headers=headers)
+        return ObjectInfo.from_dict(res)
+
     def import_(self,
                 path: str,
                 *,
@@ -1728,11 +2047,13 @@ class WorkspaceAPI:
         
         Imports a workspace object (for example, a notebook or file) or the contents of an entire directory.
         If `path` already exists and `overwrite` is set to `false`, this call returns an error
-        `RESOURCE_ALREADY_EXISTS`. One can only use `DBC` format to import a directory.
+        `RESOURCE_ALREADY_EXISTS`. To import a directory, you can use either the `DBC` format or the `SOURCE`
+        format with the `language` field unset. To import a single file as `SOURCE`, you must set the
+        `language` field.
         
         :param path: str
           The absolute path of the object or directory. Importing a directory is only supported for the `DBC`
-          format.
+          and `SOURCE` formats.
         :param content: str (optional)
           The base64-encoded content. This has a limit of 10 MB.
           
@@ -1745,10 +2066,10 @@ class WorkspaceAPI:
           
           - `AUTO`: The item is imported depending on an analysis of the item's extension and the header
           content provided in the request. If the item is imported as a notebook, then the item's extension is
-          automatically removed. - `SOURCE`: The notebook is imported as source code. - `HTML`: The notebook
-          is imported as an HTML file. - `JUPYTER`: The notebook is imported as a Jupyter/IPython Notebook
-          file. - `DBC`: The notebook is imported in Databricks archive format. Required for directories. -
-          `R_MARKDOWN`: The notebook is imported from R Markdown format.
+          automatically removed. - `SOURCE`: The notebook or directory is imported as source code. - `HTML`:
+          The notebook is imported as an HTML file. - `JUPYTER`: The notebook is imported as a Jupyter/IPython
+          Notebook file. - `DBC`: The notebook is imported in Databricks archive format. Required for
+          directories. - `R_MARKDOWN`: The notebook is imported from R Markdown format.
         :param language: :class:`Language` (optional)
           The language of the object. This value is set only if the object type is `NOTEBOOK`.
         :param overwrite: bool (optional)
@@ -1785,7 +2106,8 @@ class WorkspaceAPI:
         if path is not None: query['path'] = path
         headers = {'Accept': 'application/json', }
         json = self._api.do('GET', '/api/2.0/workspace/list', query=query, headers=headers)
-        return [ObjectInfo.from_dict(v) for v in json.get('objects', [])]
+        parsed = ListResponse.from_dict(json).objects
+        return parsed if parsed is not None else []
 
     def mkdirs(self, path: str):
         """Create a directory.
@@ -1808,7 +2130,7 @@ class WorkspaceAPI:
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         self._api.do('POST', '/api/2.0/workspace/mkdirs', body=body, headers=headers)
 
-    def set_workspace_object_permissions(
+    def set_permissions(
         self,
         workspace_object_type: str,
         workspace_object_id: str,
@@ -1838,7 +2160,7 @@ class WorkspaceAPI:
                            headers=headers)
         return WorkspaceObjectPermissions.from_dict(res)
 
-    def update_workspace_object_permissions(
+    def update_permissions(
         self,
         workspace_object_type: str,
         workspace_object_id: str,

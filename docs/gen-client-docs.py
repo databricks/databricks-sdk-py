@@ -1,10 +1,15 @@
 #!env python3
 import collections
+import dbdataclasses
 import inspect
 import json
 import os.path
-from dataclasses import dataclass
+import subprocess
+import importlib
+from dataclasses import dataclass, is_dataclass
+from enum import Enum
 from pathlib import Path
+from typing import Optional, Any, get_args
 
 from databricks.sdk import AccountClient, WorkspaceClient
 from databricks.sdk.core import credentials_provider
@@ -29,27 +34,54 @@ class Tag:
 
 
 @dataclass
+class TypedArgument:
+    name: str
+    tpe: Optional[str]
+    default: Optional[Any]
+
+    def __str__(self):
+        ret = self.name
+        if self.tpe is not None:
+            ret += f': {self.tpe}'
+        elif self.default is not None:
+            tpe = type(self.default)
+            if tpe.__module__ == 'builtins':
+                ret += f': {tpe.__name__}'
+            else:
+                ret += f': {tpe.__module__}.{tpe.__name__}'
+        if self.default is not None:
+            ret += f' = {self.default}'
+        return ret
+
+
+@dataclass
 class MethodDoc:
     method_name: str
-    doc: str
-    required_args: list[str]
-    kwonly_args: list[str]
+    doc: Optional[str]
+    required_args: list[TypedArgument]
+    kwonly_args: list[TypedArgument]
+    return_type: Optional[str]
 
     def argspec(self):
-        args = ', '.join(self.required_args)
+        args = ', '.join([str(x) for x in self.required_args])
         if len(self.kwonly_args) > 0:
-            other = ', '.join(self.kwonly_args)
+            other = ', '.join([str(x) for x in self.kwonly_args])
             args = f'{args} [, {other}]'
         return args
 
     def as_rst(self, usage) -> str:
-        if self.doc is None: return ''
-        out = ['', f'    .. py:method:: {self.method_name}({self.argspec()})', usage, f'        {self.doc}']
+        ret_annotation = f' -> {self.return_type}' if self.return_type is not None else ''
+        out = ['', f'    .. py:method:: {self.method_name}({self.argspec()}){ret_annotation}', '']
+        if usage != '':
+            out.append(usage)
+        if self.doc is not None:
+            out.append(f'        {self.doc}')
         return "\n".join(out)
 
 
 @dataclass
 class ServiceDoc:
+    client_prefix: str
     service_name: str
     class_name: str
     methods: list[MethodDoc]
@@ -59,8 +91,11 @@ class ServiceDoc:
     def as_rst(self) -> str:
         if not self.doc:
             self.doc = ''
+        title = f'``{self.client_prefix}.{self.service_name}``: {self.tag.name}'
         out = [
-            self.tag.name, '=' * len(self.tag.name), f'.. py:class:: {self.class_name}', '', f'    {self.doc}'
+            title, '=' * len(title),
+            f'.. currentmodule:: databricks.sdk.service.{self.tag.package.name}', '',
+            f'.. py:class:: {self.class_name}', '', f'    {self.doc}'
         ]
         for m in self.methods:
             usage = self.usage_example(m)
@@ -97,10 +132,51 @@ class ServiceDoc:
         except:
             return None, []
 
+@dataclass
+class DataclassesDoc:
+    package: Package
+    dataclasses: list[str]
+
+    def as_rst(self) -> str:
+        title = f'{self.package.label}'
+        out = [
+            title, '=' * len(title), '',
+            f'These dataclasses are used in the SDK to represent API requests and responses for services in the ``databricks.sdk.service.{self.package.name}`` module.',
+            '',
+            f'.. py:currentmodule:: databricks.sdk.service.{self.package.name}',
+        ]
+        for d in self.dataclasses:
+            out.append(self.dataclass_rst(d))
+        return "\n".join(out)
+
+    def dataclass_rst(self, cls) -> str:
+        mod = importlib.import_module(f'databricks.sdk.service.{self.package.name}')
+        clss = getattr(mod, cls)
+        if issubclass(clss, Enum):
+            out = [
+                f'.. py:class:: {cls}',
+                '',
+            ]
+            if clss.__doc__ is not None:
+                out.append(f'   {clss.__doc__}')
+                out.append('')
+            for v in clss.__members__.keys():
+                out.append(f'   .. py:attribute:: {v}')
+                out.append(f'      :value: "{v}"')
+                out.append('')
+        else:
+            out = [
+                f'.. autoclass:: {cls}',
+                '   :members:',
+                '   :undoc-members:',
+                ''
+            ]
+        return "\n".join(out)
+
 
 class Generator:
     packages = [
-        Package("workspace", "Databricks Workspace",
+        Package("workspace", "Workspace",
                 "Manage workspace-level entities that include notebooks, Git checkouts, and secrets"),
         Package("compute", "Compute", "Use and configure compute for Databricks"),
         Package("jobs", "Jobs", "Schedule automated jobs on Databricks Workspaces"),
@@ -128,33 +204,59 @@ class Generator:
             "Resource management for secure Databricks Workspace deployment, cross-account IAM roles, " +
             "storage, encryption, networking and private access."),
         Package("billing", "Billing", "Configure different aspects of Databricks billing and usage."),
-        Package("oauth2", "OAuth", "Configure OAuth 2.0 application registrations for Databricks")
+        Package("oauth2", "OAuth", "Configure OAuth 2.0 application registrations for Databricks"),
+        Package("vectorsearch", "Vector Search", "Create and query Vector Search indexes"),
+        Package("dashboards", "Dashboards", "Manage Lakeview dashboards"),
     ]
 
     def __init__(self):
         self.mapping = self._load_mapping()
 
-    def _spec_file(self) -> str:
+    def _openapi_spec(self) -> str:
         if 'DATABRICKS_OPENAPI_SPEC' in os.environ:
-            return os.environ['DATABRICKS_OPENAPI_SPEC']
-        with open(os.path.expanduser('~/.openapi-codegen.json'), 'r') as f:
-            config = json.load(f)
-            if 'spec' not in config:
-                raise ValueError('Cannot find OpenAPI spec')
-            return config['spec']
+            with open(os.environ['DATABRICKS_OPENAPI_SPEC']) as f:
+                return f.read()
+        with open(f'{__dir__}/../.codegen/_openapi_sha') as f:
+            sha = f.read().strip()
+        return subprocess.check_output(['deco', 'openapi', 'get', sha]).decode('utf-8')
 
     def _load_mapping(self) -> dict[str, Tag]:
         mapping = {}
         pkgs = {p.name: p for p in self.packages}
-        with open(self._spec_file(), 'r') as fspec:
-            spec = json.load(fspec)
-            for tag in spec['tags']:
-                t = Tag(name=tag['name'],
-                        service=tag['x-databricks-service'],
-                        is_account=tag.get('x-databricks-is-accounts', False),
-                        package=pkgs[tag['x-databricks-package']])
-                mapping[tag['name']] = t
+        spec = json.loads(self._openapi_spec())
+        for tag in spec['tags']:
+            t = Tag(name=tag['name'],
+                    service=tag['x-databricks-service'],
+                    is_account=tag.get('x-databricks-is-accounts', False),
+                    package=pkgs[tag['x-databricks-package']])
+            mapping[tag['name']] = t
         return mapping
+
+    @staticmethod
+    def _get_type_from_annotations(annotations, name):
+        tpe = annotations.get(name)
+        if len(get_args(tpe)) > 0:
+            tpe = get_args(tpe)[0]
+        if isinstance(tpe, type):
+            tpe = tpe.__name__
+        return tpe
+
+    @staticmethod
+    def _to_typed_args(argspec: inspect.FullArgSpec, required: bool) -> list[TypedArgument]:
+        annotations = argspec.annotations if argspec.annotations is not None else {}
+        if required:
+            argslist = argspec.args[1:]
+            defaults = {}
+            for i, x in enumerate(argspec.defaults if argspec.defaults is not None else []):
+                defaults[argslist[i - len(argspec.defaults)]] = x
+        else:
+            argslist = argspec.kwonlyargs
+            defaults = argspec.kwonlydefaults
+        out = []
+        for arg in argslist:
+            tpe = Generator._get_type_from_annotations(annotations, arg)
+            out.append(TypedArgument(name=arg, tpe=tpe, default=defaults.get(arg)))
+        return out
 
     def class_methods(self, inst) -> list[MethodDoc]:
         method_docs = []
@@ -168,26 +270,59 @@ class Generator:
             args = inspect.getfullargspec(instance_attr)
             method_docs.append(
                 MethodDoc(method_name=name,
-                          required_args=args.args[1:],
-                          kwonly_args=args.kwonlyargs,
-                          doc=instance_attr.__doc__))
+                          required_args=self._to_typed_args(args, required=True),
+                          kwonly_args=self._to_typed_args(args, required=False),
+                          doc=instance_attr.__doc__,
+                          return_type=Generator._get_type_from_annotations(args.annotations, 'return')))
         return method_docs
 
     def service_docs(self, client_inst) -> list[ServiceDoc]:
-        ignore_client_fields = ('config', 'dbutils', 'api_client', 'files')
+        client_prefix = 'w' if isinstance(client_inst, WorkspaceClient) else 'a'
+        ignore_client_fields = ('config', 'dbutils', 'api_client', 'files', 'get_workspace_client')
         all = []
-        for service_name, service_inst in client_inst.__dict__.items():
+        for service_name, service_inst in inspect.getmembers(client_inst):
+            if service_name.startswith('_'):
+                continue
             if service_name in ignore_client_fields:
                 continue
             class_doc = service_inst.__doc__
             class_name = service_inst.__class__.__name__
             all.append(
-                ServiceDoc(service_name=service_name,
+                ServiceDoc(client_prefix=client_prefix,
+                           service_name=service_name,
                            class_name=class_name,
                            doc=class_doc,
                            tag=self._get_tag_name(service_inst.__class__.__name__, service_name),
                            methods=self.class_methods(service_inst)))
         return all
+
+    @staticmethod
+    def _should_document(obj):
+        return is_dataclass(obj) or (type(obj) == type and issubclass(obj, Enum))
+
+    @staticmethod
+    def _make_folder_if_not_exists(folder):
+        if not os.path.exists(folder):
+            os.makedirs(folder)
+
+    def write_dataclass_docs(self):
+        self._make_folder_if_not_exists(f'{__dir__}/dbdataclasses')
+        for pkg in self.packages:
+            module = importlib.import_module(f'databricks.sdk.service.{pkg.name}')
+            all_members = [name for name, _ in inspect.getmembers(module, predicate=self._should_document)]
+            doc = DataclassesDoc(package=pkg, dataclasses=sorted(all_members))
+            with open(f'{__dir__}/dbdataclasses/{pkg.name}.rst', 'w') as f:
+                f.write(doc.as_rst())
+        all = "\n   ".join([f'{p.name}' for p in self.packages])
+        with open(f'{__dir__}/dbdataclasses/index.rst', 'w') as f:
+            f.write(f'''
+Dataclasses
+===========
+
+.. toctree::
+   :maxdepth: 1
+   
+   {all}''')
 
     def _get_tag_name(self, class_name, service_name) -> Tag:
         if class_name[-3:] == 'Ext':
@@ -202,10 +337,13 @@ class Generator:
     def load_client(self, client, folder, label, description):
         client_services = []
         package_to_services = collections.defaultdict(list)
-        for svc in self.service_docs(client):
+        service_docs = self.service_docs(client)
+        for svc in service_docs:
             client_services.append(svc.service_name)
-            package_to_services[svc.tag.package.name].append(svc.service_name)
-            with open(f'{__dir__}/{folder}/{svc.service_name}.rst', 'w') as f:
+            package = svc.tag.package.name
+            package_to_services[package].append(svc.service_name)
+            self._make_folder_if_not_exists(f'{__dir__}/{folder}/{package}')
+            with open(f'{__dir__}/{folder}/{package}/{svc.service_name}.rst', 'w') as f:
                 f.write(svc.as_rst())
         ordered_packages = []
         for pkg in self.packages:
@@ -216,8 +354,10 @@ class Generator:
         self._write_client_packages(folder, label, description, ordered_packages)
 
     def _write_client_packages(self, folder: str, label: str, description: str, packages: list[str]):
+        """Writes out the top-level index for the APIs supported by a client."""
+        self._make_folder_if_not_exists(f'{__dir__}/{folder}')
         with open(f'{__dir__}/{folder}/index.rst', 'w') as f:
-            all = "\n  ".join([f'{folder}-{name}' for name in packages])
+            all = "\n   ".join([f'{name}/index' for name in packages])
             f.write(f'''
 {label}
 {'=' * len(label)}
@@ -225,13 +365,15 @@ class Generator:
 {description}
 
 .. toctree::
-  :maxdepth: 1
+   :maxdepth: 1
 
-  {all}''')
+   {all}''')
 
     def _write_client_package_doc(self, folder: str, pkg: Package, services: list[str]):
-        with open(f'{__dir__}/{folder}/{folder}-{pkg.name}.rst', 'w') as f:
-            all = "\n  ".join(services)
+        """Writes out the index for a single package supported by a client."""
+        self._make_folder_if_not_exists(f'{__dir__}/{folder}/{pkg.name}')
+        with open(f'{__dir__}/{folder}/{pkg.name}/index.rst', 'w') as f:
+            all = "\n   ".join(services)
             f.write(f'''
 {pkg.label}
 {'=' * len(pkg.label)}
@@ -239,9 +381,9 @@ class Generator:
 {pkg.description}
 
 .. toctree::
-  :maxdepth: 1
+   :maxdepth: 1
 
-  {all}''')
+   {all}''')
 
 
 if __name__ == '__main__':
@@ -257,3 +399,5 @@ if __name__ == '__main__':
 
     a = AccountClient(credentials_provider=noop_credentials)
     gen.load_client(a, 'account', 'Account APIs', 'These APIs are available from AccountClient')
+
+    gen.write_dataclass_docs()

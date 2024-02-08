@@ -197,3 +197,25 @@ def test_secrets_get_and_redacting_logs(dbutils, mocker):
     inner.assert_called_with('GET', '/api/2.0/secrets/get', query={'key': 'bar', 'scope': 'foo'})
 
     assert value == 'hello'
+
+
+def test_jobs_task_values_set(dbutils):
+    dbutils.jobs.taskValues.set('key', 'value')
+
+
+def test_jobs_task_values_get(dbutils):
+    assert dbutils.jobs.taskValues.get('taskKey', 'key', debugValue='debug') == 'debug'
+
+    dbutils.jobs.taskValues.set('key', 'value')
+
+    # Expect `get` to always return the `debugValue`` when calling outside of a job context and not what was previously set using `set`
+    assert dbutils.jobs.taskValues.get('taskKey', 'key', debugValue='debug') == 'debug'
+
+
+def test_jobs_task_values_get_throws(dbutils):
+    try:
+        dbutils.jobs.taskValues.get('taskKey', 'key')
+        assert False
+    except TypeError as e:
+        assert str(
+            e) == 'Must pass debugValue when calling get outside of a job context. debugValue cannot be None.'

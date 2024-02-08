@@ -8,6 +8,10 @@ psf/requests - https://github.com/psf/requests
 Copyright 2019 Kenneth Reitz
 License - https://github.com/psf/requests/blob/main/LICENSE
 
+googleapis/google-auth-library-python - https://github.com/googleapis/google-auth-library-python/tree/main
+Copyright google-auth-library-python authors
+License - https://github.com/googleapis/google-auth-library-python/blob/main/LICENSE
+
 This software contains code from the following open source projects, licensed under the BSD (3-clause) license.
 
 x/oauth2 - https://cs.opensource.google/go/x/oauth2/+/master:oauth2.go
