@@ -117,22 +117,11 @@ class ApiClient:
            files=None,
            data=None) -> Union[dict, BinaryIO]:
         response = self.do_inner(method, path, query=query, headers=headers, body=body, raw=raw, files=files, data=data)
-        try:
-            if not response.ok: # internally calls response.raise_for_status()
-                # TODO: experiment with traceback pruning for better readability
-                # See https://stackoverflow.com/a/58821552/277035
-                payload = response.json()
-                raise self._make_nicer_error(response=response, **payload) from None
-            if raw:
-                return StreamingResponse(response)
-            if not len(response.content):
-                return {}
-            return response.json()
-        except requests.exceptions.JSONDecodeError:
-            message = self._make_sense_from_html(response.text)
-            if not message:
-                message = response.reason
-            raise self._make_nicer_error(response=response, message=message) from None
+        if raw:
+            return StreamingResponse(response)
+        if not len(response.content):
+            return {}
+        return response.json()
 
     def do_inner(self,
                  method: str,
@@ -241,7 +230,18 @@ class ApiClient:
                                          stream=raw,
                                          timeout=self._http_timeout_seconds)
         self._record_request_log(response, raw=raw or data is not None or files is not None)
-        return response
+        try:
+            if not response.ok: # internally calls response.raise_for_status()
+                # TODO: experiment with traceback pruning for better readability
+                # See https://stackoverflow.com/a/58821552/277035
+                payload = response.json()
+                raise self._make_nicer_error(response=response, **payload) from None
+            return response
+        except requests.exceptions.JSONDecodeError:
+            message = self._make_sense_from_html(response.text)
+            if not message:
+                message = response.reason
+            raise self._make_nicer_error(response=response, message=message) from None
 
     @staticmethod
     def _make_sense_from_html(txt: str) -> str:
