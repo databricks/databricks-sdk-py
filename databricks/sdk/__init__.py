@@ -562,8 +562,8 @@ class WorkspaceClient:
 
     def get_workspace_id(self) -> int:
         """Get the workspace ID of the workspace that this client is connected to."""
-        response = self._api_client.do_inner("GET", "/api/2.0/preview/scim/v2/Me")
-        return int(response.headers.get("X-Databricks-Org-Id"))
+        response = self._api_client.do("GET", "/api/2.0/preview/scim/v2/Me", response_headers=['X-Databricks-Org-Id'])
+        return int(response["X-Databricks-Org-Id"])
 
     def __repr__(self):
         return f"WorkspaceClient(host='{self._config.host}', auth_type='{self._config.auth_type}', ...)"

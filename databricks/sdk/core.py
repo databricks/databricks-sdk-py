@@ -7,6 +7,7 @@ from typing import Any, BinaryIO, Iterator, Type
 
 from requests.adapters import HTTPAdapter
 
+from .casing import Casing
 from .config import *
 # To preserve backwards compatibility (as these definitions were previously in this module)
 from .credentials_provider import *
@@ -115,23 +116,8 @@ class ApiClient:
            body: dict = None,
            raw: bool = False,
            files=None,
-           data=None) -> Union[dict, BinaryIO]:
-        response = self.do_inner(method, path, query=query, headers=headers, body=body, raw=raw, files=files, data=data)
-        if raw:
-            return StreamingResponse(response)
-        if not len(response.content):
-            return {}
-        return response.json()
-
-    def do_inner(self,
-                 method: str,
-                 path: str,
-                 query: dict = None,
-                 headers: dict = None,
-                 body: dict = None,
-                 raw: bool = False,
-                 files=None,
-                 data=None) -> requests.Response:
+           data=None,
+           response_headers: List[str] = None) -> Union[dict, BinaryIO]:
         # Remove extra `/` from path for Files API
         # Once we've fixed the OpenAPI spec, we can remove this
         path = re.sub('^/api/2.0/fs/files//', '/api/2.0/fs/files/', path)
@@ -141,7 +127,7 @@ class ApiClient:
         retryable = retried(timeout=timedelta(seconds=self._retry_timeout_seconds),
                             is_retryable=self._is_retryable,
                             clock=self._cfg.clock)
-        return retryable(self._perform)(method,
+        response = retryable(self._perform)(method,
                                         path,
                                         query=query,
                                         headers=headers,
@@ -149,7 +135,14 @@ class ApiClient:
                                         raw=raw,
                                         files=files,
                                         data=data)
-
+        if raw:
+            return StreamingResponse(response)
+        resp = dict()
+        for header in response_headers if response_headers else []:
+            resp[header] = response.headers.get(Casing.to_header_case(header))
+        if not len(response.content):
+            return resp
+        return {**resp, **response.json()}
 
     @staticmethod
     def _is_retryable(err: BaseException) -> Optional[str]:
