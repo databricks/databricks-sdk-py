@@ -128,13 +128,13 @@ class ApiClient:
                             is_retryable=self._is_retryable,
                             clock=self._cfg.clock)
         response = retryable(self._perform)(method,
-                                        path,
-                                        query=query,
-                                        headers=headers,
-                                        body=body,
-                                        raw=raw,
-                                        files=files,
-                                        data=data)
+                                            path,
+                                            query=query,
+                                            headers=headers,
+                                            body=body,
+                                            raw=raw,
+                                            files=files,
+                                            data=data)
         if raw:
             return StreamingResponse(response)
         resp = dict()
