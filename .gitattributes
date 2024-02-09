@@ -190,7 +190,6 @@ examples/queries/create_queries.py linguist-generated=true
 examples/queries/get_queries.py linguist-generated=true
 examples/queries/update_queries.py linguist-generated=true
 examples/query_history/list_sql_query_history.py linguist-generated=true
-examples/r/wait_catalog_workspace_bindings.py linguist-generated=true
 examples/recipients/create_recipients.py linguist-generated=true
 examples/recipients/get_recipients.py linguist-generated=true
 examples/recipients/list_recipients.py linguist-generated=true
