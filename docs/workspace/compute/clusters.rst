@@ -40,7 +40,7 @@
             
             w = WorkspaceClient()
             
-            latest = w.clusters.select_spark_version(latest=True)
+            latest = w.clusters.select_spark_version(latest=True, long_term_support=True)
             
             cluster_name = f'sdk-{time.time_ns()}'
             
@@ -86,7 +86,7 @@
             
             w = WorkspaceClient()
             
-            latest = w.clusters.select_spark_version(latest=True)
+            latest = w.clusters.select_spark_version(latest=True, long_term_support=True)
             
             cluster_name = f'sdk-{time.time_ns()}'
             
@@ -244,7 +244,7 @@
             
             w = WorkspaceClient()
             
-            latest = w.clusters.select_spark_version(latest=True)
+            latest = w.clusters.select_spark_version(latest=True, long_term_support=True)
             
             cluster_name = f'sdk-{time.time_ns()}'
             
@@ -292,7 +292,7 @@
             
             cluster_name = f'sdk-{time.time_ns()}'
             
-            latest = w.clusters.select_spark_version(latest=True)
+            latest = w.clusters.select_spark_version(latest=True, long_term_support=True)
             
             clstr = w.clusters.create(cluster_name=cluster_name,
                                       spark_version=latest,
@@ -487,7 +487,7 @@
             
             w = WorkspaceClient()
             
-            latest = w.clusters.select_spark_version(latest=True)
+            latest = w.clusters.select_spark_version(latest=True, long_term_support=True)
             
             cluster_name = f'sdk-{time.time_ns()}'
             
@@ -542,7 +542,7 @@
             
             w = WorkspaceClient()
             
-            latest = w.clusters.select_spark_version(latest=True)
+            latest = w.clusters.select_spark_version(latest=True, long_term_support=True)
             
             cluster_name = f'sdk-{time.time_ns()}'
             
@@ -685,7 +685,7 @@
             
             w = WorkspaceClient()
             
-            latest = w.clusters.select_spark_version(latest=True)
+            latest = w.clusters.select_spark_version(latest=True, long_term_support=True)
             
             cluster_name = f'sdk-{time.time_ns()}'
             
@@ -725,7 +725,7 @@
             
             w = WorkspaceClient()
             
-            latest = w.clusters.select_spark_version(latest=True)
+            latest = w.clusters.select_spark_version(latest=True, long_term_support=True)
             
             cluster_name = f'sdk-{time.time_ns()}'
             
@@ -782,7 +782,7 @@
             
             w = WorkspaceClient()
             
-            latest = w.clusters.select_spark_version(latest=True)
+            latest = w.clusters.select_spark_version(latest=True, long_term_support=True)
             
             cluster_name = f'sdk-{time.time_ns()}'
             
@@ -856,7 +856,7 @@
             
             w = WorkspaceClient()
             
-            latest = w.clusters.select_spark_version(latest=True)
+            latest = w.clusters.select_spark_version(latest=True, long_term_support=True)
 
         Selects the latest Databricks Runtime Version.
 
@@ -909,7 +909,7 @@
             
             w = WorkspaceClient()
             
-            latest = w.clusters.select_spark_version(latest=True)
+            latest = w.clusters.select_spark_version(latest=True, long_term_support=True)
             
             cluster_name = f'sdk-{time.time_ns()}'
             
@@ -958,7 +958,7 @@
             
             w = WorkspaceClient()
             
-            latest = w.clusters.select_spark_version(latest=True)
+            latest = w.clusters.select_spark_version(latest=True, long_term_support=True)
             
             cluster_name = f'sdk-{time.time_ns()}'
             

@@ -158,7 +158,7 @@
         :returns: :class:`RegisteredModelAlias`
         
 
-    .. py:method:: update(full_name: str [, comment: Optional[str], name: Optional[str], new_name: Optional[str], owner: Optional[str]]) -> RegisteredModelInfo
+    .. py:method:: update(full_name: str [, comment: Optional[str], new_name: Optional[str], owner: Optional[str]]) -> RegisteredModelInfo
 
         Update a Registered Model.
         
@@ -174,8 +174,6 @@
           The three-level (fully qualified) name of the registered model
         :param comment: str (optional)
           The comment attached to the registered model
-        :param name: str (optional)
-          The name of the registered model
         :param new_name: str (optional)
           New name for the registered model.
         :param owner: str (optional)

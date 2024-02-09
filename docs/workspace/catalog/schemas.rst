@@ -137,7 +137,7 @@
         :returns: Iterator over :class:`SchemaInfo`
         
 
-    .. py:method:: update(full_name: str [, comment: Optional[str], enable_predictive_optimization: Optional[EnablePredictiveOptimization], name: Optional[str], new_name: Optional[str], owner: Optional[str], properties: Optional[Dict[str, str]]]) -> SchemaInfo
+    .. py:method:: update(full_name: str [, comment: Optional[str], enable_predictive_optimization: Optional[EnablePredictiveOptimization], new_name: Optional[str], owner: Optional[str], properties: Optional[Dict[str, str]]]) -> SchemaInfo
 
 
         Usage:
@@ -173,8 +173,6 @@
           User-provided free-form text description.
         :param enable_predictive_optimization: :class:`EnablePredictiveOptimization` (optional)
           Whether predictive optimization should be enabled for this object and objects under it.
-        :param name: str (optional)
-          Name of schema, relative to parent catalog.
         :param new_name: str (optional)
           New name for the schema.
         :param owner: str (optional)

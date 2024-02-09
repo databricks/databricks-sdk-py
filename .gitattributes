@@ -285,7 +285,6 @@ examples/workspace/list_workspace_integration.py linguist-generated=true
 examples/workspace_assignment/list_workspace_assignment_on_aws.py linguist-generated=true
 examples/workspace_assignment/update_workspace_assignment_on_aws.py linguist-generated=true
 examples/workspace_bindings/get_catalog_workspace_bindings.py linguist-generated=true
-examples/workspace_bindings/update_catalog_workspace_bindings.py linguist-generated=true
 examples/workspace_conf/get_status_repos.py linguist-generated=true
 examples/workspaces/create_workspaces.py linguist-generated=true
 examples/workspaces/get_workspaces.py linguist-generated=true
