@@ -12,7 +12,7 @@
 
 ### Documentation
 * Make docs useful again ([#519](https://github.com/databricks/databricks-sdk-py/pull/519)).
-* Show undocumented fields in dataclasses ([#520](https://github.com/databricks/databricks-sdk-py/pull/520)).
+* Show undocumented fields in dataclasses ([#520](https://github.com/databricks/databricks-sdk-py/pull/520)). 
 
 
 ### API Changes
