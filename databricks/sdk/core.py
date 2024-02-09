@@ -222,8 +222,8 @@ class ApiClient:
                                          data=data,
                                          stream=raw,
                                          timeout=self._http_timeout_seconds)
-        self._record_request_log(response, raw=raw or data is not None or files is not None)
         try:
+            self._record_request_log(response, raw=raw or data is not None or files is not None)
             if not response.ok: # internally calls response.raise_for_status()
                 # TODO: experiment with traceback pruning for better readability
                 # See https://stackoverflow.com/a/58821552/277035
