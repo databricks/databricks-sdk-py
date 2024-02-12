@@ -462,4 +462,3 @@ class Config:
         """Creates a deep copy of the config object.
         """
         return copy.deepcopy(self)
-        
