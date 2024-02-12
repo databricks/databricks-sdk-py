@@ -17,8 +17,6 @@ def test_get_workspace_id(ucws, env_or_skip):
 
 
 def test_creating_ws_client_from_ac_client_does_not_override_config(a):
-    if a.config.is_azure or a.config.is_gcp:
-        pytest.skip('Not available on Azure and GCP currently')
     wss = list(a.workspaces.list())
     if len(wss) == 0:
         pytest.skip("no workspaces")

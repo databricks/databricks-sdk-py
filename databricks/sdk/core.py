@@ -142,7 +142,12 @@ class ApiClient:
             resp[header] = response.headers.get(Casing.to_header_case(header))
         if not len(response.content):
             return resp
-        return {**resp, **response.json()}
+
+        json = response.json()
+        if isinstance(json, list):
+            return json
+
+        return {**resp, **json}
 
     @staticmethod
     def _is_retryable(err: BaseException) -> Optional[str]:
