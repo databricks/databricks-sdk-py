@@ -809,7 +809,7 @@ class AccountClient:
         :param workspace: The workspace to construct a client for.
         :return: A ``WorkspaceClient`` for the given workspace.
         """
-        config = self._config.copy()
+        config = self._config.deep_copy()
         config.host = config.environment.deployment_url(workspace.deployment_name)
         config.azure_workspace_resource_id = azure.get_azure_resource_id(workspace)
         config.account_id = None
