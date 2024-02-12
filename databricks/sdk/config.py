@@ -457,3 +457,8 @@ class Config:
         cpy: Config = copy.copy(self)
         cpy._user_agent_other_info = copy.deepcopy(self._user_agent_other_info)
         return cpy
+
+    def deep_copy(self):
+        """Creates a deep copy of the config object.
+        """
+        return copy.deepcopy(self)
