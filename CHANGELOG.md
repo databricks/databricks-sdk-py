@@ -1,5 +1,14 @@
 # Version changelog
 
+## 0.19.1
+
+New features:
+
+* Add `get_workspace_id()` to WorkspaceClient ([#537](https://github.com/databricks/databricks-sdk-py/pull/537)).
+
+Bugfix:
+
+* Create a deepcopy of config when creating workspace client from account client ([#542](https://github.com/databricks/databricks-sdk-py/pull/542)). This fixes an issue where `AccountClient` instances would stop working after calling `get_workspace_client()`.
 ## 0.19.0
 
 ### Improvements and Bug Fixes
