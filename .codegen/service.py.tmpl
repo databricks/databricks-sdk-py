@@ -29,7 +29,7 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Descriptio
     {{template "safe-snake-name" .}}: Optional[{{template "type" .Entity}}] = None{{if .Description}}
     """{{.Comment "    " 100 | trimSuffix "\""}}"""{{end}}
     {{end}}
-    {{if .HasJsonField -}}
+    {{if or .HasJsonField .HasHeaderField -}}
     def as_dict(self) -> dict:
         """Serializes the {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}} into a dictionary suitable for use as a JSON request body."""
         body = {}

@@ -194,6 +194,21 @@ class GetMetadataResponse:
 
     last_modified: Optional[str] = None
 
+    def as_dict(self) -> dict:
+        """Serializes the GetMetadataResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.content_length is not None: body['content-length'] = self.content_length
+        if self.content_type is not None: body['content-type'] = self.content_type
+        if self.last_modified is not None: body['last-modified'] = self.last_modified
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> GetMetadataResponse:
+        """Deserializes the GetMetadataResponse from a dictionary."""
+        return cls(content_length=d.get('content-length', None),
+                   content_type=d.get('content-type', None),
+                   last_modified=d.get('last-modified', None))
+
 
 @dataclass
 class ListDirectoryResponse:
