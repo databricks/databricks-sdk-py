@@ -221,7 +221,8 @@ def test_files_api_upload_download(ucws, random):
             f = io.BytesIO(b"some text data")
             target_file = f'/Volumes/main/{schema}/{volume}/filesit-{random()}.txt'
             w.files.upload(target_file, f)
-
+            m = w.files.get_metadata(target_file)
+            assert m.content_type == 'text/plain'
             with w.files.download(target_file).contents as f:
                 assert f.read() == b"some text data"
 

@@ -1320,7 +1320,12 @@ class GitCredentialsAPI:
         if git_username is not None: body['git_username'] = git_username
         if personal_access_token is not None: body['personal_access_token'] = personal_access_token
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        res = self._api.do('POST', '/api/2.0/git-credentials', body=body, headers=headers)
+        response_headers = []
+        res = self._api.do('POST',
+                           '/api/2.0/git-credentials',
+                           body=body,
+                           headers=headers,
+                           response_headers=response_headers)
         return CreateCredentialsResponse.from_dict(res)
 
     def delete(self, credential_id: int):
@@ -1335,7 +1340,11 @@ class GitCredentialsAPI:
         """
 
         headers = {}
-        self._api.do('DELETE', f'/api/2.0/git-credentials/{credential_id}', headers=headers)
+        response_headers = []
+        self._api.do('DELETE',
+                     f'/api/2.0/git-credentials/{credential_id}',
+                     headers=headers,
+                     response_headers=response_headers)
 
     def get(self, credential_id: int) -> CredentialInfo:
         """Get a credential entry.
@@ -1349,7 +1358,11 @@ class GitCredentialsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        res = self._api.do('GET', f'/api/2.0/git-credentials/{credential_id}', headers=headers)
+        response_headers = []
+        res = self._api.do('GET',
+                           f'/api/2.0/git-credentials/{credential_id}',
+                           headers=headers,
+                           response_headers=response_headers)
         return CredentialInfo.from_dict(res)
 
     def list(self) -> Iterator[CredentialInfo]:
@@ -1361,7 +1374,11 @@ class GitCredentialsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET', '/api/2.0/git-credentials', headers=headers)
+        response_headers = []
+        json = self._api.do('GET',
+                            '/api/2.0/git-credentials',
+                            headers=headers,
+                            response_headers=response_headers)
         parsed = GetCredentialsResponse.from_dict(json).credentials
         return parsed if parsed is not None else []
 
@@ -1393,7 +1410,12 @@ class GitCredentialsAPI:
         if git_username is not None: body['git_username'] = git_username
         if personal_access_token is not None: body['personal_access_token'] = personal_access_token
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        self._api.do('PATCH', f'/api/2.0/git-credentials/{credential_id}', body=body, headers=headers)
+        response_headers = []
+        self._api.do('PATCH',
+                     f'/api/2.0/git-credentials/{credential_id}',
+                     body=body,
+                     headers=headers,
+                     response_headers=response_headers)
 
 
 class ReposAPI:
@@ -1441,7 +1463,12 @@ class ReposAPI:
         if sparse_checkout is not None: body['sparse_checkout'] = sparse_checkout.as_dict()
         if url is not None: body['url'] = url
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        res = self._api.do('POST', '/api/2.0/repos', body=body, headers=headers)
+        response_headers = []
+        res = self._api.do('POST',
+                           '/api/2.0/repos',
+                           body=body,
+                           headers=headers,
+                           response_headers=response_headers)
         return RepoInfo.from_dict(res)
 
     def delete(self, repo_id: int):
@@ -1456,7 +1483,11 @@ class ReposAPI:
         """
 
         headers = {}
-        self._api.do('DELETE', f'/api/2.0/repos/{repo_id}', headers=headers)
+        response_headers = []
+        self._api.do('DELETE',
+                     f'/api/2.0/repos/{repo_id}',
+                     headers=headers,
+                     response_headers=response_headers)
 
     def get(self, repo_id: int) -> RepoInfo:
         """Get a repo.
@@ -1470,7 +1501,11 @@ class ReposAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        res = self._api.do('GET', f'/api/2.0/repos/{repo_id}', headers=headers)
+        response_headers = []
+        res = self._api.do('GET',
+                           f'/api/2.0/repos/{repo_id}',
+                           headers=headers,
+                           response_headers=response_headers)
         return RepoInfo.from_dict(res)
 
     def get_permission_levels(self, repo_id: str) -> GetRepoPermissionLevelsResponse:
@@ -1485,7 +1520,11 @@ class ReposAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        res = self._api.do('GET', f'/api/2.0/permissions/repos/{repo_id}/permissionLevels', headers=headers)
+        response_headers = []
+        res = self._api.do('GET',
+                           f'/api/2.0/permissions/repos/{repo_id}/permissionLevels',
+                           headers=headers,
+                           response_headers=response_headers)
         return GetRepoPermissionLevelsResponse.from_dict(res)
 
     def get_permissions(self, repo_id: str) -> RepoPermissions:
@@ -1500,7 +1539,11 @@ class ReposAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        res = self._api.do('GET', f'/api/2.0/permissions/repos/{repo_id}', headers=headers)
+        response_headers = []
+        res = self._api.do('GET',
+                           f'/api/2.0/permissions/repos/{repo_id}',
+                           headers=headers,
+                           response_headers=response_headers)
         return RepoPermissions.from_dict(res)
 
     def list(self,
@@ -1525,9 +1568,14 @@ class ReposAPI:
         if next_page_token is not None: query['next_page_token'] = next_page_token
         if path_prefix is not None: query['path_prefix'] = path_prefix
         headers = {'Accept': 'application/json', }
+        response_headers = []
 
         while True:
-            json = self._api.do('GET', '/api/2.0/repos', query=query, headers=headers)
+            json = self._api.do('GET',
+                                '/api/2.0/repos',
+                                query=query,
+                                headers=headers,
+                                response_headers=response_headers)
             if 'repos' in json:
                 for v in json['repos']:
                     yield RepoInfo.from_dict(v)
@@ -1554,7 +1602,12 @@ class ReposAPI:
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        res = self._api.do('PUT', f'/api/2.0/permissions/repos/{repo_id}', body=body, headers=headers)
+        response_headers = []
+        res = self._api.do('PUT',
+                           f'/api/2.0/permissions/repos/{repo_id}',
+                           body=body,
+                           headers=headers,
+                           response_headers=response_headers)
         return RepoPermissions.from_dict(res)
 
     def update(self,
@@ -1587,7 +1640,12 @@ class ReposAPI:
         if sparse_checkout is not None: body['sparse_checkout'] = sparse_checkout.as_dict()
         if tag is not None: body['tag'] = tag
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        self._api.do('PATCH', f'/api/2.0/repos/{repo_id}', body=body, headers=headers)
+        response_headers = []
+        self._api.do('PATCH',
+                     f'/api/2.0/repos/{repo_id}',
+                     body=body,
+                     headers=headers,
+                     response_headers=response_headers)
 
     def update_permissions(
             self,
@@ -1608,7 +1666,12 @@ class ReposAPI:
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        res = self._api.do('PATCH', f'/api/2.0/permissions/repos/{repo_id}', body=body, headers=headers)
+        response_headers = []
+        res = self._api.do('PATCH',
+                           f'/api/2.0/permissions/repos/{repo_id}',
+                           body=body,
+                           headers=headers,
+                           response_headers=response_headers)
         return RepoPermissions.from_dict(res)
 
 
@@ -1655,7 +1718,12 @@ class SecretsAPI:
         if scope is not None: body['scope'] = scope
         if scope_backend_type is not None: body['scope_backend_type'] = scope_backend_type.value
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        self._api.do('POST', '/api/2.0/secrets/scopes/create', body=body, headers=headers)
+        response_headers = []
+        self._api.do('POST',
+                     '/api/2.0/secrets/scopes/create',
+                     body=body,
+                     headers=headers,
+                     response_headers=response_headers)
 
     def delete_acl(self, scope: str, principal: str):
         """Delete an ACL.
@@ -1677,7 +1745,12 @@ class SecretsAPI:
         if principal is not None: body['principal'] = principal
         if scope is not None: body['scope'] = scope
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        self._api.do('POST', '/api/2.0/secrets/acls/delete', body=body, headers=headers)
+        response_headers = []
+        self._api.do('POST',
+                     '/api/2.0/secrets/acls/delete',
+                     body=body,
+                     headers=headers,
+                     response_headers=response_headers)
 
     def delete_scope(self, scope: str):
         """Delete a secret scope.
@@ -1695,7 +1768,12 @@ class SecretsAPI:
         body = {}
         if scope is not None: body['scope'] = scope
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        self._api.do('POST', '/api/2.0/secrets/scopes/delete', body=body, headers=headers)
+        response_headers = []
+        self._api.do('POST',
+                     '/api/2.0/secrets/scopes/delete',
+                     body=body,
+                     headers=headers,
+                     response_headers=response_headers)
 
     def delete_secret(self, scope: str, key: str):
         """Delete a secret.
@@ -1717,7 +1795,12 @@ class SecretsAPI:
         if key is not None: body['key'] = key
         if scope is not None: body['scope'] = scope
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        self._api.do('POST', '/api/2.0/secrets/delete', body=body, headers=headers)
+        response_headers = []
+        self._api.do('POST',
+                     '/api/2.0/secrets/delete',
+                     body=body,
+                     headers=headers,
+                     response_headers=response_headers)
 
     def get_acl(self, scope: str, principal: str) -> AclItem:
         """Get secret ACL details.
@@ -1740,7 +1823,12 @@ class SecretsAPI:
         if principal is not None: query['principal'] = principal
         if scope is not None: query['scope'] = scope
         headers = {'Accept': 'application/json', }
-        res = self._api.do('GET', '/api/2.0/secrets/acls/get', query=query, headers=headers)
+        response_headers = []
+        res = self._api.do('GET',
+                           '/api/2.0/secrets/acls/get',
+                           query=query,
+                           headers=headers,
+                           response_headers=response_headers)
         return AclItem.from_dict(res)
 
     def get_secret(self, scope: str, key: str) -> GetSecretResponse:
@@ -1768,7 +1856,12 @@ class SecretsAPI:
         if key is not None: query['key'] = key
         if scope is not None: query['scope'] = scope
         headers = {'Accept': 'application/json', }
-        res = self._api.do('GET', '/api/2.0/secrets/get', query=query, headers=headers)
+        response_headers = []
+        res = self._api.do('GET',
+                           '/api/2.0/secrets/get',
+                           query=query,
+                           headers=headers,
+                           response_headers=response_headers)
         return GetSecretResponse.from_dict(res)
 
     def list_acls(self, scope: str) -> Iterator[AclItem]:
@@ -1788,7 +1881,12 @@ class SecretsAPI:
         query = {}
         if scope is not None: query['scope'] = scope
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET', '/api/2.0/secrets/acls/list', query=query, headers=headers)
+        response_headers = []
+        json = self._api.do('GET',
+                            '/api/2.0/secrets/acls/list',
+                            query=query,
+                            headers=headers,
+                            response_headers=response_headers)
         parsed = ListAclsResponse.from_dict(json).items
         return parsed if parsed is not None else []
 
@@ -1803,7 +1901,11 @@ class SecretsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET', '/api/2.0/secrets/scopes/list', headers=headers)
+        response_headers = []
+        json = self._api.do('GET',
+                            '/api/2.0/secrets/scopes/list',
+                            headers=headers,
+                            response_headers=response_headers)
         parsed = ListScopesResponse.from_dict(json).scopes
         return parsed if parsed is not None else []
 
@@ -1826,7 +1928,12 @@ class SecretsAPI:
         query = {}
         if scope is not None: query['scope'] = scope
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET', '/api/2.0/secrets/list', query=query, headers=headers)
+        response_headers = []
+        json = self._api.do('GET',
+                            '/api/2.0/secrets/list',
+                            query=query,
+                            headers=headers,
+                            response_headers=response_headers)
         parsed = ListSecretsResponse.from_dict(json).secrets
         return parsed if parsed is not None else []
 
@@ -1872,7 +1979,12 @@ class SecretsAPI:
         if principal is not None: body['principal'] = principal
         if scope is not None: body['scope'] = scope
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        self._api.do('POST', '/api/2.0/secrets/acls/put', body=body, headers=headers)
+        response_headers = []
+        self._api.do('POST',
+                     '/api/2.0/secrets/acls/put',
+                     body=body,
+                     headers=headers,
+                     response_headers=response_headers)
 
     def put_secret(self,
                    scope: str,
@@ -1915,7 +2027,12 @@ class SecretsAPI:
         if scope is not None: body['scope'] = scope
         if string_value is not None: body['string_value'] = string_value
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        self._api.do('POST', '/api/2.0/secrets/put', body=body, headers=headers)
+        response_headers = []
+        self._api.do('POST',
+                     '/api/2.0/secrets/put',
+                     body=body,
+                     headers=headers,
+                     response_headers=response_headers)
 
 
 class WorkspaceAPI:
@@ -1950,7 +2067,12 @@ class WorkspaceAPI:
         if path is not None: body['path'] = path
         if recursive is not None: body['recursive'] = recursive
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        self._api.do('POST', '/api/2.0/workspace/delete', body=body, headers=headers)
+        response_headers = []
+        self._api.do('POST',
+                     '/api/2.0/workspace/delete',
+                     body=body,
+                     headers=headers,
+                     response_headers=response_headers)
 
     def export(self, path: str, *, format: Optional[ExportFormat] = None) -> ExportResponse:
         """Export a workspace object.
@@ -1984,7 +2106,12 @@ class WorkspaceAPI:
         if format is not None: query['format'] = format.value
         if path is not None: query['path'] = path
         headers = {'Accept': 'application/json', }
-        res = self._api.do('GET', '/api/2.0/workspace/export', query=query, headers=headers)
+        response_headers = []
+        res = self._api.do('GET',
+                           '/api/2.0/workspace/export',
+                           query=query,
+                           headers=headers,
+                           response_headers=response_headers)
         return ExportResponse.from_dict(res)
 
     def get_permission_levels(self, workspace_object_type: str,
@@ -2002,10 +2129,12 @@ class WorkspaceAPI:
         """
 
         headers = {'Accept': 'application/json', }
+        response_headers = []
         res = self._api.do(
             'GET',
             f'/api/2.0/permissions/{workspace_object_type}/{workspace_object_id}/permissionLevels',
-            headers=headers)
+            headers=headers,
+            response_headers=response_headers)
         return GetWorkspaceObjectPermissionLevelsResponse.from_dict(res)
 
     def get_permissions(self, workspace_object_type: str,
@@ -2024,9 +2153,11 @@ class WorkspaceAPI:
         """
 
         headers = {'Accept': 'application/json', }
+        response_headers = []
         res = self._api.do('GET',
                            f'/api/2.0/permissions/{workspace_object_type}/{workspace_object_id}',
-                           headers=headers)
+                           headers=headers,
+                           response_headers=response_headers)
         return WorkspaceObjectPermissions.from_dict(res)
 
     def get_status(self, path: str) -> ObjectInfo:
@@ -2044,7 +2175,12 @@ class WorkspaceAPI:
         query = {}
         if path is not None: query['path'] = path
         headers = {'Accept': 'application/json', }
-        res = self._api.do('GET', '/api/2.0/workspace/get-status', query=query, headers=headers)
+        response_headers = []
+        res = self._api.do('GET',
+                           '/api/2.0/workspace/get-status',
+                           query=query,
+                           headers=headers,
+                           response_headers=response_headers)
         return ObjectInfo.from_dict(res)
 
     def import_(self,
@@ -2096,7 +2232,12 @@ class WorkspaceAPI:
         if overwrite is not None: body['overwrite'] = overwrite
         if path is not None: body['path'] = path
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        self._api.do('POST', '/api/2.0/workspace/import', body=body, headers=headers)
+        response_headers = []
+        self._api.do('POST',
+                     '/api/2.0/workspace/import',
+                     body=body,
+                     headers=headers,
+                     response_headers=response_headers)
 
     def list(self, path: str, *, notebooks_modified_after: Optional[int] = None) -> Iterator[ObjectInfo]:
         """List contents.
@@ -2116,7 +2257,12 @@ class WorkspaceAPI:
         if notebooks_modified_after is not None: query['notebooks_modified_after'] = notebooks_modified_after
         if path is not None: query['path'] = path
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET', '/api/2.0/workspace/list', query=query, headers=headers)
+        response_headers = []
+        json = self._api.do('GET',
+                            '/api/2.0/workspace/list',
+                            query=query,
+                            headers=headers,
+                            response_headers=response_headers)
         parsed = ListResponse.from_dict(json).objects
         return parsed if parsed is not None else []
 
@@ -2139,7 +2285,12 @@ class WorkspaceAPI:
         body = {}
         if path is not None: body['path'] = path
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        self._api.do('POST', '/api/2.0/workspace/mkdirs', body=body, headers=headers)
+        response_headers = []
+        self._api.do('POST',
+                     '/api/2.0/workspace/mkdirs',
+                     body=body,
+                     headers=headers,
+                     response_headers=response_headers)
 
     def set_permissions(
         self,
@@ -2165,10 +2316,12 @@ class WorkspaceAPI:
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        response_headers = []
         res = self._api.do('PUT',
                            f'/api/2.0/permissions/{workspace_object_type}/{workspace_object_id}',
                            body=body,
-                           headers=headers)
+                           headers=headers,
+                           response_headers=response_headers)
         return WorkspaceObjectPermissions.from_dict(res)
 
     def update_permissions(
@@ -2195,8 +2348,10 @@ class WorkspaceAPI:
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        response_headers = []
         res = self._api.do('PATCH',
                            f'/api/2.0/permissions/{workspace_object_type}/{workspace_object_id}',
                            body=body,
-                           headers=headers)
+                           headers=headers,
+                           response_headers=response_headers)
         return WorkspaceObjectPermissions.from_dict(res)

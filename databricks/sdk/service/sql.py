@@ -346,7 +346,6 @@ class ChannelInfo:
 
 
 class ChannelName(Enum):
-    """Name of the channel"""
 
     CHANNEL_NAME_CURRENT = 'CHANNEL_NAME_CURRENT'
     CHANNEL_NAME_CUSTOM = 'CHANNEL_NAME_CUSTOM'
@@ -2008,6 +2007,36 @@ class ListWarehousesResponse:
         return cls(warehouses=_repeated_dict(d, 'warehouses', EndpointInfo))
 
 
+@dataclass
+class MultiValuesOptions:
+    """If specified, allows multiple values to be selected for this parameter. Only applies to dropdown
+    list and query-based dropdown list parameters."""
+
+    prefix: Optional[str] = None
+    """Character that prefixes each selected parameter value."""
+
+    separator: Optional[str] = None
+    """Character that separates each selected parameter value. Defaults to a comma."""
+
+    suffix: Optional[str] = None
+    """Character that suffixes each selected parameter value."""
+
+    def as_dict(self) -> dict:
+        """Serializes the MultiValuesOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.prefix is not None: body['prefix'] = self.prefix
+        if self.separator is not None: body['separator'] = self.separator
+        if self.suffix is not None: body['suffix'] = self.suffix
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> MultiValuesOptions:
+        """Deserializes the MultiValuesOptions from a dictionary."""
+        return cls(prefix=d.get('prefix', None),
+                   separator=d.get('separator', None),
+                   suffix=d.get('suffix', None))
+
+
 class ObjectType(Enum):
     """A singular noun object type."""
 
@@ -2064,8 +2093,19 @@ class OwnableObjectType(Enum):
 
 @dataclass
 class Parameter:
+    enum_options: Optional[str] = None
+    """List of valid parameter values, newline delimited. Only applies for dropdown list parameters."""
+
+    multi_values_options: Optional[MultiValuesOptions] = None
+    """If specified, allows multiple values to be selected for this parameter. Only applies to dropdown
+    list and query-based dropdown list parameters."""
+
     name: Optional[str] = None
     """The literal parameter marker that appears between double curly braces in the query text."""
+
+    query_id: Optional[str] = None
+    """The UUID of the query that provides the parameter values. Only applies for query-based dropdown
+    list parameters."""
 
     title: Optional[str] = None
     """The text displayed in a parameter picking widget."""
@@ -2079,7 +2119,10 @@ class Parameter:
     def as_dict(self) -> dict:
         """Serializes the Parameter into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.enum_options is not None: body['enumOptions'] = self.enum_options
+        if self.multi_values_options: body['multiValuesOptions'] = self.multi_values_options.as_dict()
         if self.name is not None: body['name'] = self.name
+        if self.query_id is not None: body['queryId'] = self.query_id
         if self.title is not None: body['title'] = self.title
         if self.type is not None: body['type'] = self.type.value
         if self.value: body['value'] = self.value
@@ -2088,7 +2131,10 @@ class Parameter:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> Parameter:
         """Deserializes the Parameter from a dictionary."""
-        return cls(name=d.get('name', None),
+        return cls(enum_options=d.get('enumOptions', None),
+                   multi_values_options=_from_dict(d, 'multiValuesOptions', MultiValuesOptions),
+                   name=d.get('name', None),
+                   query_id=d.get('queryId', None),
                    title=d.get('title', None),
                    type=_enum(d, 'type', ParameterType),
                    value=d.get('value', None))
@@ -2098,7 +2144,9 @@ class ParameterType(Enum):
     """Parameters can have several different types."""
 
     DATETIME = 'datetime'
+    ENUM = 'enum'
     NUMBER = 'number'
+    QUERY = 'query'
     TEXT = 'text'
 
 
@@ -3802,7 +3850,12 @@ class AlertsAPI:
         if query_id is not None: body['query_id'] = query_id
         if rearm is not None: body['rearm'] = rearm
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        res = self._api.do('POST', '/api/2.0/preview/sql/alerts', body=body, headers=headers)
+        response_headers = []
+        res = self._api.do('POST',
+                           '/api/2.0/preview/sql/alerts',
+                           body=body,
+                           headers=headers,
+                           response_headers=response_headers)
         return Alert.from_dict(res)
 
     def delete(self, alert_id: str):
@@ -3817,7 +3870,11 @@ class AlertsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        self._api.do('DELETE', f'/api/2.0/preview/sql/alerts/{alert_id}', headers=headers)
+        response_headers = []
+        self._api.do('DELETE',
+                     f'/api/2.0/preview/sql/alerts/{alert_id}',
+                     headers=headers,
+                     response_headers=response_headers)
 
     def get(self, alert_id: str) -> Alert:
         """Get an alert.
@@ -3830,7 +3887,11 @@ class AlertsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        res = self._api.do('GET', f'/api/2.0/preview/sql/alerts/{alert_id}', headers=headers)
+        response_headers = []
+        res = self._api.do('GET',
+                           f'/api/2.0/preview/sql/alerts/{alert_id}',
+                           headers=headers,
+                           response_headers=response_headers)
         return Alert.from_dict(res)
 
     def list(self) -> Iterator[Alert]:
@@ -3842,7 +3903,11 @@ class AlertsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        res = self._api.do('GET', '/api/2.0/preview/sql/alerts', headers=headers)
+        response_headers = []
+        res = self._api.do('GET',
+                           '/api/2.0/preview/sql/alerts',
+                           headers=headers,
+                           response_headers=response_headers)
         return [Alert.from_dict(v) for v in res]
 
     def update(self,
@@ -3875,7 +3940,12 @@ class AlertsAPI:
         if query_id is not None: body['query_id'] = query_id
         if rearm is not None: body['rearm'] = rearm
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        self._api.do('PUT', f'/api/2.0/preview/sql/alerts/{alert_id}', body=body, headers=headers)
+        response_headers = []
+        self._api.do('PUT',
+                     f'/api/2.0/preview/sql/alerts/{alert_id}',
+                     body=body,
+                     headers=headers,
+                     response_headers=response_headers)
 
 
 class DashboardWidgetsAPI:
@@ -3914,7 +3984,12 @@ class DashboardWidgetsAPI:
         if visualization_id is not None: body['visualization_id'] = visualization_id
         if width is not None: body['width'] = width
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        res = self._api.do('POST', '/api/2.0/preview/sql/widgets', body=body, headers=headers)
+        response_headers = []
+        res = self._api.do('POST',
+                           '/api/2.0/preview/sql/widgets',
+                           body=body,
+                           headers=headers,
+                           response_headers=response_headers)
         return Widget.from_dict(res)
 
     def delete(self, id: str):
@@ -3927,7 +4002,11 @@ class DashboardWidgetsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        self._api.do('DELETE', f'/api/2.0/preview/sql/widgets/{id}', headers=headers)
+        response_headers = []
+        self._api.do('DELETE',
+                     f'/api/2.0/preview/sql/widgets/{id}',
+                     headers=headers,
+                     response_headers=response_headers)
 
     def update(self,
                id: str,
@@ -3961,7 +4040,12 @@ class DashboardWidgetsAPI:
         if visualization_id is not None: body['visualization_id'] = visualization_id
         if width is not None: body['width'] = width
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        res = self._api.do('POST', f'/api/2.0/preview/sql/widgets/{id}', body=body, headers=headers)
+        response_headers = []
+        res = self._api.do('POST',
+                           f'/api/2.0/preview/sql/widgets/{id}',
+                           body=body,
+                           headers=headers,
+                           response_headers=response_headers)
         return Widget.from_dict(res)
 
 
@@ -4009,7 +4093,12 @@ class DashboardsAPI:
         if run_as_role is not None: body['run_as_role'] = run_as_role.value
         if tags is not None: body['tags'] = [v for v in tags]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        res = self._api.do('POST', '/api/2.0/preview/sql/dashboards', body=body, headers=headers)
+        response_headers = []
+        res = self._api.do('POST',
+                           '/api/2.0/preview/sql/dashboards',
+                           body=body,
+                           headers=headers,
+                           response_headers=response_headers)
         return Dashboard.from_dict(res)
 
     def delete(self, dashboard_id: str):
@@ -4024,7 +4113,11 @@ class DashboardsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        self._api.do('DELETE', f'/api/2.0/preview/sql/dashboards/{dashboard_id}', headers=headers)
+        response_headers = []
+        self._api.do('DELETE',
+                     f'/api/2.0/preview/sql/dashboards/{dashboard_id}',
+                     headers=headers,
+                     response_headers=response_headers)
 
     def get(self, dashboard_id: str) -> Dashboard:
         """Retrieve a definition.
@@ -4037,7 +4130,11 @@ class DashboardsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        res = self._api.do('GET', f'/api/2.0/preview/sql/dashboards/{dashboard_id}', headers=headers)
+        response_headers = []
+        res = self._api.do('GET',
+                           f'/api/2.0/preview/sql/dashboards/{dashboard_id}',
+                           headers=headers,
+                           response_headers=response_headers)
         return Dashboard.from_dict(res)
 
     def list(self,
@@ -4071,12 +4168,17 @@ class DashboardsAPI:
         if page_size is not None: query['page_size'] = page_size
         if q is not None: query['q'] = q
         headers = {'Accept': 'application/json', }
+        response_headers = []
 
         # deduplicate items that may have been added during iteration
         seen = set()
         query['page'] = 1
         while True:
-            json = self._api.do('GET', '/api/2.0/preview/sql/dashboards', query=query, headers=headers)
+            json = self._api.do('GET',
+                                '/api/2.0/preview/sql/dashboards',
+                                query=query,
+                                headers=headers,
+                                response_headers=response_headers)
             if 'results' in json:
                 for v in json['results']:
                     i = v['id']
@@ -4099,7 +4201,11 @@ class DashboardsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        self._api.do('POST', f'/api/2.0/preview/sql/dashboards/trash/{dashboard_id}', headers=headers)
+        response_headers = []
+        self._api.do('POST',
+                     f'/api/2.0/preview/sql/dashboards/trash/{dashboard_id}',
+                     headers=headers,
+                     response_headers=response_headers)
 
     def update(self,
                dashboard_id: str,
@@ -4126,10 +4232,12 @@ class DashboardsAPI:
         if name is not None: body['name'] = name
         if run_as_role is not None: body['run_as_role'] = run_as_role.value
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        response_headers = []
         res = self._api.do('POST',
                            f'/api/2.0/preview/sql/dashboards/{dashboard_id}',
                            body=body,
-                           headers=headers)
+                           headers=headers,
+                           response_headers=response_headers)
         return Dashboard.from_dict(res)
 
 
@@ -4156,7 +4264,11 @@ class DataSourcesAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        res = self._api.do('GET', '/api/2.0/preview/sql/data_sources', headers=headers)
+        response_headers = []
+        res = self._api.do('GET',
+                           '/api/2.0/preview/sql/data_sources',
+                           headers=headers,
+                           response_headers=response_headers)
         return [DataSource.from_dict(v) for v in res]
 
 
@@ -4190,9 +4302,11 @@ class DbsqlPermissionsAPI:
         """
 
         headers = {'Accept': 'application/json', }
+        response_headers = []
         res = self._api.do('GET',
                            f'/api/2.0/preview/sql/permissions/{object_type.value}/{object_id}',
-                           headers=headers)
+                           headers=headers,
+                           response_headers=response_headers)
         return GetResponse.from_dict(res)
 
     def set(self,
@@ -4217,10 +4331,12 @@ class DbsqlPermissionsAPI:
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        response_headers = []
         res = self._api.do('POST',
                            f'/api/2.0/preview/sql/permissions/{object_type.value}/{object_id}',
                            body=body,
-                           headers=headers)
+                           headers=headers,
+                           response_headers=response_headers)
         return SetResponse.from_dict(res)
 
     def transfer_ownership(self,
@@ -4244,10 +4360,12 @@ class DbsqlPermissionsAPI:
         body = {}
         if new_owner is not None: body['new_owner'] = new_owner
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        response_headers = []
         res = self._api.do('POST',
                            f'/api/2.0/preview/sql/permissions/{object_type.value}/{object_id}/transfer',
                            body=body,
-                           headers=headers)
+                           headers=headers,
+                           response_headers=response_headers)
         return Success.from_dict(res)
 
 
@@ -4311,7 +4429,12 @@ class QueriesAPI:
         if query is not None: body['query'] = query
         if run_as_role is not None: body['run_as_role'] = run_as_role.value
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        res = self._api.do('POST', '/api/2.0/preview/sql/queries', body=body, headers=headers)
+        response_headers = []
+        res = self._api.do('POST',
+                           '/api/2.0/preview/sql/queries',
+                           body=body,
+                           headers=headers,
+                           response_headers=response_headers)
         return Query.from_dict(res)
 
     def delete(self, query_id: str):
@@ -4326,7 +4449,11 @@ class QueriesAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        self._api.do('DELETE', f'/api/2.0/preview/sql/queries/{query_id}', headers=headers)
+        response_headers = []
+        self._api.do('DELETE',
+                     f'/api/2.0/preview/sql/queries/{query_id}',
+                     headers=headers,
+                     response_headers=response_headers)
 
     def get(self, query_id: str) -> Query:
         """Get a query definition.
@@ -4340,7 +4467,11 @@ class QueriesAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        res = self._api.do('GET', f'/api/2.0/preview/sql/queries/{query_id}', headers=headers)
+        response_headers = []
+        res = self._api.do('GET',
+                           f'/api/2.0/preview/sql/queries/{query_id}',
+                           headers=headers,
+                           response_headers=response_headers)
         return Query.from_dict(res)
 
     def list(self,
@@ -4386,12 +4517,17 @@ class QueriesAPI:
         if page_size is not None: query['page_size'] = page_size
         if q is not None: query['q'] = q
         headers = {'Accept': 'application/json', }
+        response_headers = []
 
         # deduplicate items that may have been added during iteration
         seen = set()
         query['page'] = 1
         while True:
-            json = self._api.do('GET', '/api/2.0/preview/sql/queries', query=query, headers=headers)
+            json = self._api.do('GET',
+                                '/api/2.0/preview/sql/queries',
+                                query=query,
+                                headers=headers,
+                                response_headers=response_headers)
             if 'results' in json:
                 for v in json['results']:
                     i = v['id']
@@ -4415,7 +4551,11 @@ class QueriesAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        self._api.do('POST', f'/api/2.0/preview/sql/queries/trash/{query_id}', headers=headers)
+        response_headers = []
+        self._api.do('POST',
+                     f'/api/2.0/preview/sql/queries/trash/{query_id}',
+                     headers=headers,
+                     response_headers=response_headers)
 
     def update(self,
                query_id: str,
@@ -4462,7 +4602,12 @@ class QueriesAPI:
         if query is not None: body['query'] = query
         if run_as_role is not None: body['run_as_role'] = run_as_role.value
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        res = self._api.do('POST', f'/api/2.0/preview/sql/queries/{query_id}', body=body, headers=headers)
+        response_headers = []
+        res = self._api.do('POST',
+                           f'/api/2.0/preview/sql/queries/{query_id}',
+                           body=body,
+                           headers=headers,
+                           response_headers=response_headers)
         return Query.from_dict(res)
 
 
@@ -4504,9 +4649,14 @@ class QueryHistoryAPI:
         if max_results is not None: query['max_results'] = max_results
         if page_token is not None: query['page_token'] = page_token
         headers = {'Accept': 'application/json', }
+        response_headers = []
 
         while True:
-            json = self._api.do('GET', '/api/2.0/sql/history/queries', query=query, headers=headers)
+            json = self._api.do('GET',
+                                '/api/2.0/sql/history/queries',
+                                query=query,
+                                headers=headers,
+                                response_headers=response_headers)
             if 'res' in json:
                 for v in json['res']:
                     yield QueryInfo.from_dict(v)
@@ -4552,7 +4702,12 @@ class QueryVisualizationsAPI:
         if query_id is not None: body['query_id'] = query_id
         if type is not None: body['type'] = type
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        res = self._api.do('POST', '/api/2.0/preview/sql/visualizations', body=body, headers=headers)
+        response_headers = []
+        res = self._api.do('POST',
+                           '/api/2.0/preview/sql/visualizations',
+                           body=body,
+                           headers=headers,
+                           response_headers=response_headers)
         return Visualization.from_dict(res)
 
     def delete(self, id: str):
@@ -4565,7 +4720,11 @@ class QueryVisualizationsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        self._api.do('DELETE', f'/api/2.0/preview/sql/visualizations/{id}', headers=headers)
+        response_headers = []
+        self._api.do('DELETE',
+                     f'/api/2.0/preview/sql/visualizations/{id}',
+                     headers=headers,
+                     response_headers=response_headers)
 
     def update(self,
                id: str,
@@ -4602,7 +4761,12 @@ class QueryVisualizationsAPI:
         if type is not None: body['type'] = type
         if updated_at is not None: body['updated_at'] = updated_at
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        res = self._api.do('POST', f'/api/2.0/preview/sql/visualizations/{id}', body=body, headers=headers)
+        response_headers = []
+        res = self._api.do('POST',
+                           f'/api/2.0/preview/sql/visualizations/{id}',
+                           body=body,
+                           headers=headers,
+                           response_headers=response_headers)
         return Visualization.from_dict(res)
 
 
@@ -4707,7 +4871,11 @@ class StatementExecutionAPI:
         """
 
         headers = {}
-        self._api.do('POST', f'/api/2.0/sql/statements/{statement_id}/cancel', headers=headers)
+        response_headers = []
+        self._api.do('POST',
+                     f'/api/2.0/sql/statements/{statement_id}/cancel',
+                     headers=headers,
+                     response_headers=response_headers)
 
     def execute_statement(self,
                           statement: str,
@@ -4862,7 +5030,12 @@ class StatementExecutionAPI:
         if wait_timeout is not None: body['wait_timeout'] = wait_timeout
         if warehouse_id is not None: body['warehouse_id'] = warehouse_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        res = self._api.do('POST', '/api/2.0/sql/statements/', body=body, headers=headers)
+        response_headers = []
+        res = self._api.do('POST',
+                           '/api/2.0/sql/statements/',
+                           body=body,
+                           headers=headers,
+                           response_headers=response_headers)
         return ExecuteStatementResponse.from_dict(res)
 
     def get_statement(self, statement_id: str) -> GetStatementResponse:
@@ -4884,7 +5057,11 @@ class StatementExecutionAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        res = self._api.do('GET', f'/api/2.0/sql/statements/{statement_id}', headers=headers)
+        response_headers = []
+        res = self._api.do('GET',
+                           f'/api/2.0/sql/statements/{statement_id}',
+                           headers=headers,
+                           response_headers=response_headers)
         return GetStatementResponse.from_dict(res)
 
     def get_statement_result_chunk_n(self, statement_id: str, chunk_index: int) -> ResultData:
@@ -4906,9 +5083,11 @@ class StatementExecutionAPI:
         """
 
         headers = {'Accept': 'application/json', }
+        response_headers = []
         res = self._api.do('GET',
                            f'/api/2.0/sql/statements/{statement_id}/result/chunks/{chunk_index}',
-                           headers=headers)
+                           headers=headers,
+                           response_headers=response_headers)
         return ResultData.from_dict(res)
 
 
@@ -5077,7 +5256,12 @@ class WarehousesAPI:
         if tags is not None: body['tags'] = tags.as_dict()
         if warehouse_type is not None: body['warehouse_type'] = warehouse_type.value
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        op_response = self._api.do('POST', '/api/2.0/sql/warehouses', body=body, headers=headers)
+        response_headers = []
+        op_response = self._api.do('POST',
+                                   '/api/2.0/sql/warehouses',
+                                   body=body,
+                                   headers=headers,
+                                   response_headers=response_headers)
         return Wait(self.wait_get_warehouse_running,
                     response=CreateWarehouseResponse.from_dict(op_response),
                     id=op_response['id'])
@@ -5126,7 +5310,11 @@ class WarehousesAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        self._api.do('DELETE', f'/api/2.0/sql/warehouses/{id}', headers=headers)
+        response_headers = []
+        self._api.do('DELETE',
+                     f'/api/2.0/sql/warehouses/{id}',
+                     headers=headers,
+                     response_headers=response_headers)
 
     def edit(
             self,
@@ -5226,7 +5414,12 @@ class WarehousesAPI:
         if tags is not None: body['tags'] = tags.as_dict()
         if warehouse_type is not None: body['warehouse_type'] = warehouse_type.value
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        self._api.do('POST', f'/api/2.0/sql/warehouses/{id}/edit', body=body, headers=headers)
+        response_headers = []
+        self._api.do('POST',
+                     f'/api/2.0/sql/warehouses/{id}/edit',
+                     body=body,
+                     headers=headers,
+                     response_headers=response_headers)
         return Wait(self.wait_get_warehouse_running, id=id)
 
     def edit_and_wait(
@@ -5275,7 +5468,11 @@ class WarehousesAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        res = self._api.do('GET', f'/api/2.0/sql/warehouses/{id}', headers=headers)
+        response_headers = []
+        res = self._api.do('GET',
+                           f'/api/2.0/sql/warehouses/{id}',
+                           headers=headers,
+                           response_headers=response_headers)
         return GetWarehouseResponse.from_dict(res)
 
     def get_permission_levels(self, warehouse_id: str) -> GetWarehousePermissionLevelsResponse:
@@ -5290,9 +5487,11 @@ class WarehousesAPI:
         """
 
         headers = {'Accept': 'application/json', }
+        response_headers = []
         res = self._api.do('GET',
                            f'/api/2.0/permissions/warehouses/{warehouse_id}/permissionLevels',
-                           headers=headers)
+                           headers=headers,
+                           response_headers=response_headers)
         return GetWarehousePermissionLevelsResponse.from_dict(res)
 
     def get_permissions(self, warehouse_id: str) -> WarehousePermissions:
@@ -5308,7 +5507,11 @@ class WarehousesAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        res = self._api.do('GET', f'/api/2.0/permissions/warehouses/{warehouse_id}', headers=headers)
+        response_headers = []
+        res = self._api.do('GET',
+                           f'/api/2.0/permissions/warehouses/{warehouse_id}',
+                           headers=headers,
+                           response_headers=response_headers)
         return WarehousePermissions.from_dict(res)
 
     def get_workspace_warehouse_config(self) -> GetWorkspaceWarehouseConfigResponse:
@@ -5320,7 +5523,11 @@ class WarehousesAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        res = self._api.do('GET', '/api/2.0/sql/config/warehouses', headers=headers)
+        response_headers = []
+        res = self._api.do('GET',
+                           '/api/2.0/sql/config/warehouses',
+                           headers=headers,
+                           response_headers=response_headers)
         return GetWorkspaceWarehouseConfigResponse.from_dict(res)
 
     def list(self, *, run_as_user_id: Optional[int] = None) -> Iterator[EndpointInfo]:
@@ -5338,7 +5545,12 @@ class WarehousesAPI:
         query = {}
         if run_as_user_id is not None: query['run_as_user_id'] = run_as_user_id
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET', '/api/2.0/sql/warehouses', query=query, headers=headers)
+        response_headers = []
+        json = self._api.do('GET',
+                            '/api/2.0/sql/warehouses',
+                            query=query,
+                            headers=headers,
+                            response_headers=response_headers)
         parsed = ListWarehousesResponse.from_dict(json).warehouses
         return parsed if parsed is not None else []
 
@@ -5361,10 +5573,12 @@ class WarehousesAPI:
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        response_headers = []
         res = self._api.do('PUT',
                            f'/api/2.0/permissions/warehouses/{warehouse_id}',
                            body=body,
-                           headers=headers)
+                           headers=headers,
+                           response_headers=response_headers)
         return WarehousePermissions.from_dict(res)
 
     def set_workspace_warehouse_config(
@@ -5422,7 +5636,12 @@ class WarehousesAPI:
         if sql_configuration_parameters is not None:
             body['sql_configuration_parameters'] = sql_configuration_parameters.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        self._api.do('PUT', '/api/2.0/sql/config/warehouses', body=body, headers=headers)
+        response_headers = []
+        self._api.do('PUT',
+                     '/api/2.0/sql/config/warehouses',
+                     body=body,
+                     headers=headers,
+                     response_headers=response_headers)
 
     def start(self, id: str) -> Wait[GetWarehouseResponse]:
         """Start a warehouse.
@@ -5438,7 +5657,11 @@ class WarehousesAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        self._api.do('POST', f'/api/2.0/sql/warehouses/{id}/start', headers=headers)
+        response_headers = []
+        self._api.do('POST',
+                     f'/api/2.0/sql/warehouses/{id}/start',
+                     headers=headers,
+                     response_headers=response_headers)
         return Wait(self.wait_get_warehouse_running, id=id)
 
     def start_and_wait(self, id: str, timeout=timedelta(minutes=20)) -> GetWarehouseResponse:
@@ -5458,7 +5681,11 @@ class WarehousesAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        self._api.do('POST', f'/api/2.0/sql/warehouses/{id}/stop', headers=headers)
+        response_headers = []
+        self._api.do('POST',
+                     f'/api/2.0/sql/warehouses/{id}/stop',
+                     headers=headers,
+                     response_headers=response_headers)
         return Wait(self.wait_get_warehouse_stopped, id=id)
 
     def stop_and_wait(self, id: str, timeout=timedelta(minutes=20)) -> GetWarehouseResponse:
@@ -5484,8 +5711,10 @@ class WarehousesAPI:
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        response_headers = []
         res = self._api.do('PATCH',
                            f'/api/2.0/permissions/warehouses/{warehouse_id}',
                            body=body,
-                           headers=headers)
+                           headers=headers,
+                           response_headers=response_headers)
         return WarehousePermissions.from_dict(res)

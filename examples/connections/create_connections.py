@@ -18,4 +18,4 @@ conn_create = w.connections.create(comment="Go SDK Acceptance Test Connection",
                                    })
 
 # cleanup
-w.connections.delete(name_arg=conn_create.name)
+w.connections.delete(name=conn_create.name)

@@ -17,7 +17,7 @@ conn_create = w.connections.create(comment="Go SDK Acceptance Test Connection",
                                        f'sdk-{time.time_ns()}',
                                    })
 
-conn_update = w.connections.update(name_arg=conn_create.name,
+conn_update = w.connections.update(name=conn_create.name,
                                    options={
                                        "host":
                                        "%s-fake-workspace.cloud.databricks.com" % (f'sdk-{time.time_ns()}'),
@@ -28,4 +28,4 @@ conn_update = w.connections.update(name_arg=conn_create.name,
                                    })
 
 # cleanup
-w.connections.delete(name_arg=conn_create.name)
+w.connections.delete(name=conn_create.name)

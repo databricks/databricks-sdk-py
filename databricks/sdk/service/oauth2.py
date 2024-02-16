@@ -508,10 +508,12 @@ class CustomAppIntegrationAPI:
         if scopes is not None: body['scopes'] = [v for v in scopes]
         if token_access_policy is not None: body['token_access_policy'] = token_access_policy.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        response_headers = []
         res = self._api.do('POST',
                            f'/api/2.0/accounts/{self._api.account_id}/oauth2/custom-app-integrations',
                            body=body,
-                           headers=headers)
+                           headers=headers,
+                           response_headers=response_headers)
         return CreateCustomAppIntegrationOutput.from_dict(res)
 
     def delete(self, integration_id: str):
@@ -527,10 +529,12 @@ class CustomAppIntegrationAPI:
         """
 
         headers = {'Accept': 'application/json', }
+        response_headers = []
         self._api.do(
             'DELETE',
             f'/api/2.0/accounts/{self._api.account_id}/oauth2/custom-app-integrations/{integration_id}',
-            headers=headers)
+            headers=headers,
+            response_headers=response_headers)
 
     def get(self, integration_id: str) -> GetCustomAppIntegrationOutput:
         """Get OAuth Custom App Integration.
@@ -544,10 +548,12 @@ class CustomAppIntegrationAPI:
         """
 
         headers = {'Accept': 'application/json', }
+        response_headers = []
         res = self._api.do(
             'GET',
             f'/api/2.0/accounts/{self._api.account_id}/oauth2/custom-app-integrations/{integration_id}',
-            headers=headers)
+            headers=headers,
+            response_headers=response_headers)
         return GetCustomAppIntegrationOutput.from_dict(res)
 
     def list(self) -> Iterator[GetCustomAppIntegrationOutput]:
@@ -559,9 +565,11 @@ class CustomAppIntegrationAPI:
         """
 
         headers = {'Accept': 'application/json', }
+        response_headers = []
         json = self._api.do('GET',
                             f'/api/2.0/accounts/{self._api.account_id}/oauth2/custom-app-integrations',
-                            headers=headers)
+                            headers=headers,
+                            response_headers=response_headers)
         parsed = GetCustomAppIntegrationsOutput.from_dict(json).apps
         return parsed if parsed is not None else []
 
@@ -588,11 +596,13 @@ class CustomAppIntegrationAPI:
         if redirect_urls is not None: body['redirect_urls'] = [v for v in redirect_urls]
         if token_access_policy is not None: body['token_access_policy'] = token_access_policy.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        response_headers = []
         self._api.do(
             'PATCH',
             f'/api/2.0/accounts/{self._api.account_id}/oauth2/custom-app-integrations/{integration_id}',
             body=body,
-            headers=headers)
+            headers=headers,
+            response_headers=response_headers)
 
 
 class OAuthPublishedAppsAPI:
@@ -623,12 +633,14 @@ class OAuthPublishedAppsAPI:
         if page_size is not None: query['page_size'] = page_size
         if page_token is not None: query['page_token'] = page_token
         headers = {'Accept': 'application/json', }
+        response_headers = []
 
         while True:
             json = self._api.do('GET',
                                 f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-apps/',
                                 query=query,
-                                headers=headers)
+                                headers=headers,
+                                response_headers=response_headers)
             if 'apps' in json:
                 for v in json['apps']:
                     yield PublishedAppOutput.from_dict(v)
@@ -666,10 +678,12 @@ class PublishedAppIntegrationAPI:
         if app_id is not None: body['app_id'] = app_id
         if token_access_policy is not None: body['token_access_policy'] = token_access_policy.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        response_headers = []
         res = self._api.do('POST',
                            f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integrations',
                            body=body,
-                           headers=headers)
+                           headers=headers,
+                           response_headers=response_headers)
         return CreatePublishedAppIntegrationOutput.from_dict(res)
 
     def delete(self, integration_id: str):
@@ -685,10 +699,12 @@ class PublishedAppIntegrationAPI:
         """
 
         headers = {'Accept': 'application/json', }
+        response_headers = []
         self._api.do(
             'DELETE',
             f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integrations/{integration_id}',
-            headers=headers)
+            headers=headers,
+            response_headers=response_headers)
 
     def get(self, integration_id: str) -> GetPublishedAppIntegrationOutput:
         """Get OAuth Published App Integration.
@@ -702,10 +718,12 @@ class PublishedAppIntegrationAPI:
         """
 
         headers = {'Accept': 'application/json', }
+        response_headers = []
         res = self._api.do(
             'GET',
             f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integrations/{integration_id}',
-            headers=headers)
+            headers=headers,
+            response_headers=response_headers)
         return GetPublishedAppIntegrationOutput.from_dict(res)
 
     def list(self) -> Iterator[GetPublishedAppIntegrationOutput]:
@@ -717,9 +735,11 @@ class PublishedAppIntegrationAPI:
         """
 
         headers = {'Accept': 'application/json', }
+        response_headers = []
         json = self._api.do('GET',
                             f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integrations',
-                            headers=headers)
+                            headers=headers,
+                            response_headers=response_headers)
         parsed = GetPublishedAppIntegrationsOutput.from_dict(json).apps
         return parsed if parsed is not None else []
 
@@ -739,11 +759,13 @@ class PublishedAppIntegrationAPI:
         body = {}
         if token_access_policy is not None: body['token_access_policy'] = token_access_policy.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        response_headers = []
         self._api.do(
             'PATCH',
             f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integrations/{integration_id}',
             body=body,
-            headers=headers)
+            headers=headers,
+            response_headers=response_headers)
 
 
 class ServicePrincipalSecretsAPI:
@@ -774,10 +796,12 @@ class ServicePrincipalSecretsAPI:
         """
 
         headers = {'Accept': 'application/json', }
+        response_headers = []
         res = self._api.do(
             'POST',
             f'/api/2.0/accounts/{self._api.account_id}/servicePrincipals/{service_principal_id}/credentials/secrets',
-            headers=headers)
+            headers=headers,
+            response_headers=response_headers)
         return CreateServicePrincipalSecretResponse.from_dict(res)
 
     def delete(self, service_principal_id: int, secret_id: str):
@@ -794,10 +818,12 @@ class ServicePrincipalSecretsAPI:
         """
 
         headers = {}
+        response_headers = []
         self._api.do(
             'DELETE',
             f'/api/2.0/accounts/{self._api.account_id}/servicePrincipals/{service_principal_id}/credentials/secrets/{secret_id}',
-            headers=headers)
+            headers=headers,
+            response_headers=response_headers)
 
     def list(self, service_principal_id: int) -> Iterator[SecretInfo]:
         """List service principal secrets.
@@ -812,9 +838,11 @@ class ServicePrincipalSecretsAPI:
         """
 
         headers = {'Accept': 'application/json', }
+        response_headers = []
         json = self._api.do(
             'GET',
             f'/api/2.0/accounts/{self._api.account_id}/servicePrincipals/{service_principal_id}/credentials/secrets',
-            headers=headers)
+            headers=headers,
+            response_headers=response_headers)
         parsed = ListServicePrincipalSecretsResponse.from_dict(json).secrets
         return parsed if parsed is not None else []

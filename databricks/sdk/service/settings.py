@@ -1615,10 +1615,12 @@ class AccountIpAccessListsAPI:
         if label is not None: body['label'] = label
         if list_type is not None: body['list_type'] = list_type.value
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        response_headers = []
         res = self._api.do('POST',
                            f'/api/2.0/accounts/{self._api.account_id}/ip-access-lists',
                            body=body,
-                           headers=headers)
+                           headers=headers,
+                           response_headers=response_headers)
         return CreateIpAccessListResponse.from_dict(res)
 
     def delete(self, ip_access_list_id: str):
@@ -1633,9 +1635,11 @@ class AccountIpAccessListsAPI:
         """
 
         headers = {'Accept': 'application/json', }
+        response_headers = []
         self._api.do('DELETE',
                      f'/api/2.0/accounts/{self._api.account_id}/ip-access-lists/{ip_access_list_id}',
-                     headers=headers)
+                     headers=headers,
+                     response_headers=response_headers)
 
     def get(self, ip_access_list_id: str) -> GetIpAccessListResponse:
         """Get IP access list.
@@ -1649,9 +1653,11 @@ class AccountIpAccessListsAPI:
         """
 
         headers = {'Accept': 'application/json', }
+        response_headers = []
         res = self._api.do('GET',
                            f'/api/2.0/accounts/{self._api.account_id}/ip-access-lists/{ip_access_list_id}',
-                           headers=headers)
+                           headers=headers,
+                           response_headers=response_headers)
         return GetIpAccessListResponse.from_dict(res)
 
     def list(self) -> Iterator[IpAccessListInfo]:
@@ -1663,9 +1669,11 @@ class AccountIpAccessListsAPI:
         """
 
         headers = {'Accept': 'application/json', }
+        response_headers = []
         json = self._api.do('GET',
                             f'/api/2.0/accounts/{self._api.account_id}/ip-access-lists',
-                            headers=headers)
+                            headers=headers,
+                            response_headers=response_headers)
         parsed = GetIpAccessListsResponse.from_dict(json).ip_access_lists
         return parsed if parsed is not None else []
 
@@ -1709,10 +1717,12 @@ class AccountIpAccessListsAPI:
         if label is not None: body['label'] = label
         if list_type is not None: body['list_type'] = list_type.value
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        response_headers = []
         self._api.do('PUT',
                      f'/api/2.0/accounts/{self._api.account_id}/ip-access-lists/{ip_access_list_id}',
                      body=body,
-                     headers=headers)
+                     headers=headers,
+                     response_headers=response_headers)
 
     def update(self,
                ip_access_list_id: str,
@@ -1758,10 +1768,12 @@ class AccountIpAccessListsAPI:
         if label is not None: body['label'] = label
         if list_type is not None: body['list_type'] = list_type.value
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        response_headers = []
         self._api.do('PATCH',
                      f'/api/2.0/accounts/{self._api.account_id}/ip-access-lists/{ip_access_list_id}',
                      body=body,
-                     headers=headers)
+                     headers=headers,
+                     response_headers=response_headers)
 
 
 class AccountSettingsAPI:
@@ -1796,11 +1808,13 @@ class AccountSettingsAPI:
         query = {}
         if etag is not None: query['etag'] = etag
         headers = {'Accept': 'application/json', }
+        response_headers = []
         res = self._api.do(
             'DELETE',
             f'/api/2.0/accounts/{self._api.account_id}/settings/types/dcp_acct_enable/names/default',
             query=query,
-            headers=headers)
+            headers=headers,
+            response_headers=response_headers)
         return DeletePersonalComputeSettingResponse.from_dict(res)
 
     def get_personal_compute_setting(self, *, etag: Optional[str] = None) -> PersonalComputeSetting:
@@ -1821,11 +1835,13 @@ class AccountSettingsAPI:
         query = {}
         if etag is not None: query['etag'] = etag
         headers = {'Accept': 'application/json', }
+        response_headers = []
         res = self._api.do(
             'GET',
             f'/api/2.0/accounts/{self._api.account_id}/settings/types/dcp_acct_enable/names/default',
             query=query,
-            headers=headers)
+            headers=headers,
+            response_headers=response_headers)
         return PersonalComputeSetting.from_dict(res)
 
     def update_personal_compute_setting(self, allow_missing: bool, setting: PersonalComputeSetting,
@@ -1849,11 +1865,13 @@ class AccountSettingsAPI:
         if field_mask is not None: body['field_mask'] = field_mask
         if setting is not None: body['setting'] = setting.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        response_headers = []
         res = self._api.do(
             'PATCH',
             f'/api/2.0/accounts/{self._api.account_id}/settings/types/dcp_acct_enable/names/default',
             body=body,
-            headers=headers)
+            headers=headers,
+            response_headers=response_headers)
         return PersonalComputeSetting.from_dict(res)
 
 
@@ -1885,10 +1903,12 @@ class CredentialsManagerAPI:
         if scopes is not None: body['scopes'] = [v for v in scopes]
         if token_type is not None: body['tokenType'] = [v.value for v in token_type]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        response_headers = []
         res = self._api.do('POST',
                            '/api/2.0/credentials-manager/exchange-tokens/token',
                            body=body,
-                           headers=headers)
+                           headers=headers,
+                           response_headers=response_headers)
         return ExchangeTokenResponse.from_dict(res)
 
 
@@ -1952,7 +1972,12 @@ class IpAccessListsAPI:
         if label is not None: body['label'] = label
         if list_type is not None: body['list_type'] = list_type.value
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        res = self._api.do('POST', '/api/2.0/ip-access-lists', body=body, headers=headers)
+        response_headers = []
+        res = self._api.do('POST',
+                           '/api/2.0/ip-access-lists',
+                           body=body,
+                           headers=headers,
+                           response_headers=response_headers)
         return CreateIpAccessListResponse.from_dict(res)
 
     def delete(self, ip_access_list_id: str):
@@ -1967,7 +1992,11 @@ class IpAccessListsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        self._api.do('DELETE', f'/api/2.0/ip-access-lists/{ip_access_list_id}', headers=headers)
+        response_headers = []
+        self._api.do('DELETE',
+                     f'/api/2.0/ip-access-lists/{ip_access_list_id}',
+                     headers=headers,
+                     response_headers=response_headers)
 
     def get(self, ip_access_list_id: str) -> FetchIpAccessListResponse:
         """Get access list.
@@ -1981,7 +2010,11 @@ class IpAccessListsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        res = self._api.do('GET', f'/api/2.0/ip-access-lists/{ip_access_list_id}', headers=headers)
+        response_headers = []
+        res = self._api.do('GET',
+                           f'/api/2.0/ip-access-lists/{ip_access_list_id}',
+                           headers=headers,
+                           response_headers=response_headers)
         return FetchIpAccessListResponse.from_dict(res)
 
     def list(self) -> Iterator[IpAccessListInfo]:
@@ -1993,7 +2026,11 @@ class IpAccessListsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET', '/api/2.0/ip-access-lists', headers=headers)
+        response_headers = []
+        json = self._api.do('GET',
+                            '/api/2.0/ip-access-lists',
+                            headers=headers,
+                            response_headers=response_headers)
         parsed = ListIpAccessListResponse.from_dict(json).ip_access_lists
         return parsed if parsed is not None else []
 
@@ -2038,7 +2075,12 @@ class IpAccessListsAPI:
         if label is not None: body['label'] = label
         if list_type is not None: body['list_type'] = list_type.value
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        self._api.do('PUT', f'/api/2.0/ip-access-lists/{ip_access_list_id}', body=body, headers=headers)
+        response_headers = []
+        self._api.do('PUT',
+                     f'/api/2.0/ip-access-lists/{ip_access_list_id}',
+                     body=body,
+                     headers=headers,
+                     response_headers=response_headers)
 
     def update(self,
                ip_access_list_id: str,
@@ -2085,7 +2127,12 @@ class IpAccessListsAPI:
         if label is not None: body['label'] = label
         if list_type is not None: body['list_type'] = list_type.value
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        self._api.do('PATCH', f'/api/2.0/ip-access-lists/{ip_access_list_id}', body=body, headers=headers)
+        response_headers = []
+        self._api.do('PATCH',
+                     f'/api/2.0/ip-access-lists/{ip_access_list_id}',
+                     body=body,
+                     headers=headers,
+                     response_headers=response_headers)
 
 
 class NetworkConnectivityAPI:
@@ -2130,10 +2177,12 @@ class NetworkConnectivityAPI:
         if name is not None: body['name'] = name
         if region is not None: body['region'] = region
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        response_headers = []
         res = self._api.do('POST',
                            f'/api/2.0/accounts/{self._api.account_id}/network-connectivity-configs',
                            body=body,
-                           headers=headers)
+                           headers=headers,
+                           response_headers=response_headers)
         return NetworkConnectivityConfiguration.from_dict(res)
 
     def create_private_endpoint_rule(
@@ -2165,11 +2214,13 @@ class NetworkConnectivityAPI:
         if group_id is not None: body['group_id'] = group_id.value
         if resource_id is not None: body['resource_id'] = resource_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        response_headers = []
         res = self._api.do(
             'POST',
             f'/api/2.0/accounts/{self._api.account_id}/network-connectivity-configs/{network_connectivity_config_id}/private-endpoint-rules',
             body=body,
-            headers=headers)
+            headers=headers,
+            response_headers=response_headers)
         return NccAzurePrivateEndpointRule.from_dict(res)
 
     def delete_network_connectivity_configuration(self, network_connectivity_config_id: str):
@@ -2184,10 +2235,12 @@ class NetworkConnectivityAPI:
         """
 
         headers = {'Accept': 'application/json', }
+        response_headers = []
         self._api.do(
             'DELETE',
             f'/api/2.0/accounts/{self._api.account_id}/network-connectivity-configs/{network_connectivity_config_id}',
-            headers=headers)
+            headers=headers,
+            response_headers=response_headers)
 
     def delete_private_endpoint_rule(self, network_connectivity_config_id: str,
                                      private_endpoint_rule_id: str) -> NccAzurePrivateEndpointRule:
@@ -2207,10 +2260,12 @@ class NetworkConnectivityAPI:
         """
 
         headers = {'Accept': 'application/json', }
+        response_headers = []
         res = self._api.do(
             'DELETE',
             f'/api/2.0/accounts/{self._api.account_id}/network-connectivity-configs/{network_connectivity_config_id}/private-endpoint-rules/{private_endpoint_rule_id}',
-            headers=headers)
+            headers=headers,
+            response_headers=response_headers)
         return NccAzurePrivateEndpointRule.from_dict(res)
 
     def get_network_connectivity_configuration(
@@ -2226,10 +2281,12 @@ class NetworkConnectivityAPI:
         """
 
         headers = {'Accept': 'application/json', }
+        response_headers = []
         res = self._api.do(
             'GET',
             f'/api/2.0/accounts/{self._api.account_id}/network-connectivity-configs/{network_connectivity_config_id}',
-            headers=headers)
+            headers=headers,
+            response_headers=response_headers)
         return NetworkConnectivityConfiguration.from_dict(res)
 
     def get_private_endpoint_rule(self, network_connectivity_config_id: str,
@@ -2247,10 +2304,12 @@ class NetworkConnectivityAPI:
         """
 
         headers = {'Accept': 'application/json', }
+        response_headers = []
         res = self._api.do(
             'GET',
             f'/api/2.0/accounts/{self._api.account_id}/network-connectivity-configs/{network_connectivity_config_id}/private-endpoint-rules/{private_endpoint_rule_id}',
-            headers=headers)
+            headers=headers,
+            response_headers=response_headers)
         return NccAzurePrivateEndpointRule.from_dict(res)
 
     def list_network_connectivity_configurations(self,
@@ -2270,12 +2329,14 @@ class NetworkConnectivityAPI:
         query = {}
         if page_token is not None: query['page_token'] = page_token
         headers = {'Accept': 'application/json', }
+        response_headers = []
 
         while True:
             json = self._api.do('GET',
                                 f'/api/2.0/accounts/{self._api.account_id}/network-connectivity-configs',
                                 query=query,
-                                headers=headers)
+                                headers=headers,
+                                response_headers=response_headers)
             if 'items' in json:
                 for v in json['items']:
                     yield NetworkConnectivityConfiguration.from_dict(v)
@@ -2303,13 +2364,15 @@ class NetworkConnectivityAPI:
         query = {}
         if page_token is not None: query['page_token'] = page_token
         headers = {'Accept': 'application/json', }
+        response_headers = []
 
         while True:
             json = self._api.do(
                 'GET',
                 f'/api/2.0/accounts/{self._api.account_id}/network-connectivity-configs/{network_connectivity_config_id}/private-endpoint-rules',
                 query=query,
-                headers=headers)
+                headers=headers,
+                response_headers=response_headers)
             if 'items' in json:
                 for v in json['items']:
                     yield NccAzurePrivateEndpointRule.from_dict(v)
@@ -2356,10 +2419,12 @@ class SettingsAPI:
         query = {}
         if etag is not None: query['etag'] = etag
         headers = {'Accept': 'application/json', }
+        response_headers = []
         res = self._api.do('DELETE',
                            '/api/2.0/settings/types/default_namespace_ws/names/default',
                            query=query,
-                           headers=headers)
+                           headers=headers,
+                           response_headers=response_headers)
         return DeleteDefaultNamespaceSettingResponse.from_dict(res)
 
     def delete_restrict_workspace_admins_setting(self,
@@ -2386,10 +2451,12 @@ class SettingsAPI:
         query = {}
         if etag is not None: query['etag'] = etag
         headers = {'Accept': 'application/json', }
+        response_headers = []
         res = self._api.do('DELETE',
                            '/api/2.0/settings/types/restrict_workspace_admins/names/default',
                            query=query,
-                           headers=headers)
+                           headers=headers,
+                           response_headers=response_headers)
         return DeleteRestrictWorkspaceAdminsSettingResponse.from_dict(res)
 
     def get_default_namespace_setting(self, *, etag: Optional[str] = None) -> DefaultNamespaceSetting:
@@ -2410,10 +2477,12 @@ class SettingsAPI:
         query = {}
         if etag is not None: query['etag'] = etag
         headers = {'Accept': 'application/json', }
+        response_headers = []
         res = self._api.do('GET',
                            '/api/2.0/settings/types/default_namespace_ws/names/default',
                            query=query,
-                           headers=headers)
+                           headers=headers,
+                           response_headers=response_headers)
         return DefaultNamespaceSetting.from_dict(res)
 
     def get_restrict_workspace_admins_setting(self,
@@ -2436,10 +2505,12 @@ class SettingsAPI:
         query = {}
         if etag is not None: query['etag'] = etag
         headers = {'Accept': 'application/json', }
+        response_headers = []
         res = self._api.do('GET',
                            '/api/2.0/settings/types/restrict_workspace_admins/names/default',
                            query=query,
-                           headers=headers)
+                           headers=headers,
+                           response_headers=response_headers)
         return RestrictWorkspaceAdminsSetting.from_dict(res)
 
     def update_default_namespace_setting(self, allow_missing: bool, setting: DefaultNamespaceSetting,
@@ -2475,10 +2546,12 @@ class SettingsAPI:
         if field_mask is not None: body['field_mask'] = field_mask
         if setting is not None: body['setting'] = setting.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        response_headers = []
         res = self._api.do('PATCH',
                            '/api/2.0/settings/types/default_namespace_ws/names/default',
                            body=body,
-                           headers=headers)
+                           headers=headers,
+                           response_headers=response_headers)
         return DefaultNamespaceSetting.from_dict(res)
 
     def update_restrict_workspace_admins_setting(self, allow_missing: bool,
@@ -2506,10 +2579,12 @@ class SettingsAPI:
         if field_mask is not None: body['field_mask'] = field_mask
         if setting is not None: body['setting'] = setting.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        response_headers = []
         res = self._api.do('PATCH',
                            '/api/2.0/settings/types/restrict_workspace_admins/names/default',
                            body=body,
-                           headers=headers)
+                           headers=headers,
+                           response_headers=response_headers)
         return RestrictWorkspaceAdminsSetting.from_dict(res)
 
 
@@ -2543,10 +2618,12 @@ class TokenManagementAPI:
         if comment is not None: body['comment'] = comment
         if lifetime_seconds is not None: body['lifetime_seconds'] = lifetime_seconds
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        response_headers = []
         res = self._api.do('POST',
                            '/api/2.0/token-management/on-behalf-of/tokens',
                            body=body,
-                           headers=headers)
+                           headers=headers,
+                           response_headers=response_headers)
         return CreateOboTokenResponse.from_dict(res)
 
     def delete(self, token_id: str):
@@ -2561,7 +2638,11 @@ class TokenManagementAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        self._api.do('DELETE', f'/api/2.0/token-management/tokens/{token_id}', headers=headers)
+        response_headers = []
+        self._api.do('DELETE',
+                     f'/api/2.0/token-management/tokens/{token_id}',
+                     headers=headers,
+                     response_headers=response_headers)
 
     def get(self, token_id: str) -> GetTokenResponse:
         """Get token info.
@@ -2575,7 +2656,11 @@ class TokenManagementAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        res = self._api.do('GET', f'/api/2.0/token-management/tokens/{token_id}', headers=headers)
+        response_headers = []
+        res = self._api.do('GET',
+                           f'/api/2.0/token-management/tokens/{token_id}',
+                           headers=headers,
+                           response_headers=response_headers)
         return GetTokenResponse.from_dict(res)
 
     def get_permission_levels(self) -> GetTokenPermissionLevelsResponse:
@@ -2587,9 +2672,11 @@ class TokenManagementAPI:
         """
 
         headers = {'Accept': 'application/json', }
+        response_headers = []
         res = self._api.do('GET',
                            '/api/2.0/permissions/authorization/tokens/permissionLevels',
-                           headers=headers)
+                           headers=headers,
+                           response_headers=response_headers)
         return GetTokenPermissionLevelsResponse.from_dict(res)
 
     def get_permissions(self) -> TokenPermissions:
@@ -2601,7 +2688,11 @@ class TokenManagementAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        res = self._api.do('GET', '/api/2.0/permissions/authorization/tokens', headers=headers)
+        response_headers = []
+        res = self._api.do('GET',
+                           '/api/2.0/permissions/authorization/tokens',
+                           headers=headers,
+                           response_headers=response_headers)
         return TokenPermissions.from_dict(res)
 
     def list(self,
@@ -2624,7 +2715,12 @@ class TokenManagementAPI:
         if created_by_id is not None: query['created_by_id'] = created_by_id
         if created_by_username is not None: query['created_by_username'] = created_by_username
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET', '/api/2.0/token-management/tokens', query=query, headers=headers)
+        response_headers = []
+        json = self._api.do('GET',
+                            '/api/2.0/token-management/tokens',
+                            query=query,
+                            headers=headers,
+                            response_headers=response_headers)
         parsed = ListTokensResponse.from_dict(json).token_infos
         return parsed if parsed is not None else []
 
@@ -2644,7 +2740,12 @@ class TokenManagementAPI:
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        res = self._api.do('PUT', '/api/2.0/permissions/authorization/tokens', body=body, headers=headers)
+        response_headers = []
+        res = self._api.do('PUT',
+                           '/api/2.0/permissions/authorization/tokens',
+                           body=body,
+                           headers=headers,
+                           response_headers=response_headers)
         return TokenPermissions.from_dict(res)
 
     def update_permissions(
@@ -2663,7 +2764,12 @@ class TokenManagementAPI:
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        res = self._api.do('PATCH', '/api/2.0/permissions/authorization/tokens', body=body, headers=headers)
+        response_headers = []
+        res = self._api.do('PATCH',
+                           '/api/2.0/permissions/authorization/tokens',
+                           body=body,
+                           headers=headers,
+                           response_headers=response_headers)
         return TokenPermissions.from_dict(res)
 
 
@@ -2697,7 +2803,12 @@ class TokensAPI:
         if comment is not None: body['comment'] = comment
         if lifetime_seconds is not None: body['lifetime_seconds'] = lifetime_seconds
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        res = self._api.do('POST', '/api/2.0/token/create', body=body, headers=headers)
+        response_headers = []
+        res = self._api.do('POST',
+                           '/api/2.0/token/create',
+                           body=body,
+                           headers=headers,
+                           response_headers=response_headers)
         return CreateTokenResponse.from_dict(res)
 
     def delete(self, token_id: str):
@@ -2715,7 +2826,12 @@ class TokensAPI:
         body = {}
         if token_id is not None: body['token_id'] = token_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        self._api.do('POST', '/api/2.0/token/delete', body=body, headers=headers)
+        response_headers = []
+        self._api.do('POST',
+                     '/api/2.0/token/delete',
+                     body=body,
+                     headers=headers,
+                     response_headers=response_headers)
 
     def list(self) -> Iterator[PublicTokenInfo]:
         """List tokens.
@@ -2726,7 +2842,8 @@ class TokensAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        json = self._api.do('GET', '/api/2.0/token/list', headers=headers)
+        response_headers = []
+        json = self._api.do('GET', '/api/2.0/token/list', headers=headers, response_headers=response_headers)
         parsed = ListPublicTokensResponse.from_dict(json).token_infos
         return parsed if parsed is not None else []
 
@@ -2750,7 +2867,12 @@ class WorkspaceConfAPI:
         query = {}
         if keys is not None: query['keys'] = keys
         headers = {'Accept': 'application/json', }
-        res = self._api.do('GET', '/api/2.0/workspace-conf', query=query, headers=headers)
+        response_headers = []
+        res = self._api.do('GET',
+                           '/api/2.0/workspace-conf',
+                           query=query,
+                           headers=headers,
+                           response_headers=response_headers)
         return res
 
     def set_status(self, contents: Dict[str, str]):
@@ -2763,4 +2885,9 @@ class WorkspaceConfAPI:
         """
 
         headers = {'Content-Type': 'application/json', }
-        self._api.do('PATCH', '/api/2.0/workspace-conf', body=contents, headers=headers)
+        response_headers = []
+        self._api.do('PATCH',
+                     '/api/2.0/workspace-conf',
+                     body=contents,
+                     headers=headers,
+                     response_headers=response_headers)
