@@ -140,8 +140,8 @@ class ApiClient:
         for header in response_headers if response_headers else []:
             resp[header] = response.headers.get(Casing.to_header_case(header))
         if raw:
-            resp["contents"] = StreamingResponse(response)
-            return resp
+            # Don't add the Streaming Reponse to support from_dict method
+            return resp, StreamingResponse(response)
         if not len(response.content):
             return resp
 
