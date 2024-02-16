@@ -151,7 +151,30 @@ class DirectoryEntry:
 
 @dataclass
 class DownloadResponse:
+    content_length: Optional[int] = None
+
+    content_type: Optional[str] = None
+
     contents: Optional[BinaryIO] = None
+
+    last_modified: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the DownloadResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.content_length is not None: body['content-length'] = self.content_length
+        if self.content_type is not None: body['content-type'] = self.content_type
+        if self.contents: body['contents'] = self.contents
+        if self.last_modified is not None: body['last-modified'] = self.last_modified
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DownloadResponse:
+        """Deserializes the DownloadResponse from a dictionary."""
+        return cls(content_length=d.get('content-length', None),
+                   content_type=d.get('content-type', None),
+                   contents=d.get('contents', None),
+                   last_modified=d.get('last-modified', None))
 
 
 @dataclass
@@ -723,13 +746,15 @@ class FilesAPI:
         """
 
         headers = {'Accept': 'application/octet-stream', }
-        response_headers = []
+        response_headers = ['content-length', 'content-type', 'last-modified', ]
         res, content = self._api.do('GET',
                                     f'/api/2.0/fs/files{file_path}',
                                     headers=headers,
                                     response_headers=response_headers,
                                     raw=True)
-        return DownloadResponse(contents=res)
+        deserialized = DownloadResponse.from_dict(res)
+        DownloadResponse.contents = content
+        return deserialized
 
     def get_directory_metadata(self, directory_path: str):
         """Get directory metadata.
@@ -767,7 +792,7 @@ class FilesAPI:
         """
 
         headers = {}
-        response_headers = ['content_length', 'content_type', 'last_modified', ]
+        response_headers = ['content-length', 'content-type', 'last-modified', ]
         res = self._api.do('HEAD',
                            f'/api/2.0/fs/files{file_path}',
                            headers=headers,

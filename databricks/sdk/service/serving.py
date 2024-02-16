@@ -2753,7 +2753,7 @@ class ServingEndpointsAPI:
         if stream is not None: body['stream'] = stream
         if temperature is not None: body['temperature'] = temperature
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = ['served_model_name', ]
+        response_headers = ['served-model-name', ]
         res = self._api.do('POST',
                            f'/serving-endpoints/{name}/invocations',
                            body=body,
