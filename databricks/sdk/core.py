@@ -135,7 +135,7 @@ class ApiClient:
                                             raw=raw,
                                             files=files,
                                             data=data)
-        
+
         resp = dict()
         for header in response_headers if response_headers else []:
             resp[header] = response.headers.get(Casing.to_header_case(header))
