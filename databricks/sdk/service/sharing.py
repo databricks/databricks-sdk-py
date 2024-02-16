@@ -1380,7 +1380,7 @@ class UpdateCleanRoom:
     comment: Optional[str] = None
     """User-provided free-form text description."""
 
-    name_arg: Optional[str] = None
+    name: Optional[str] = None
     """The name of the clean room."""
 
     owner: Optional[str] = None
@@ -1391,7 +1391,7 @@ class UpdateCleanRoom:
         body = {}
         if self.catalog_updates: body['catalog_updates'] = [v.as_dict() for v in self.catalog_updates]
         if self.comment is not None: body['comment'] = self.comment
-        if self.name_arg is not None: body['name_arg'] = self.name_arg
+        if self.name is not None: body['name'] = self.name
         if self.owner is not None: body['owner'] = self.owner
         return body
 
@@ -1400,7 +1400,7 @@ class UpdateCleanRoom:
         """Deserializes the UpdateCleanRoom from a dictionary."""
         return cls(catalog_updates=_repeated_dict(d, 'catalog_updates', CleanRoomCatalogUpdate),
                    comment=d.get('comment', None),
-                   name_arg=d.get('name_arg', None),
+                   name=d.get('name', None),
                    owner=d.get('owner', None))
 
 
@@ -1584,12 +1584,12 @@ class CleanRoomsAPI:
                            response_headers=response_headers)
         return CleanRoomInfo.from_dict(res)
 
-    def delete(self, name_arg: str):
+    def delete(self, name: str):
         """Delete a clean room.
         
         Deletes a data object clean room from the metastore. The caller must be an owner of the clean room.
         
-        :param name_arg: str
+        :param name: str
           The name of the clean room.
         
         
@@ -1598,17 +1598,17 @@ class CleanRoomsAPI:
         headers = {'Accept': 'application/json', }
         response_headers = []
         self._api.do('DELETE',
-                     f'/api/2.1/unity-catalog/clean-rooms/{name_arg}',
+                     f'/api/2.1/unity-catalog/clean-rooms/{name}',
                      headers=headers,
                      response_headers=response_headers)
 
-    def get(self, name_arg: str, *, include_remote_details: Optional[bool] = None) -> CleanRoomInfo:
+    def get(self, name: str, *, include_remote_details: Optional[bool] = None) -> CleanRoomInfo:
         """Get a clean room.
         
         Gets a data object clean room from the metastore. The caller must be a metastore admin or the owner of
         the clean room.
         
-        :param name_arg: str
+        :param name: str
           The name of the clean room.
         :param include_remote_details: bool (optional)
           Whether to include remote details (central) on the clean room.
@@ -1621,7 +1621,7 @@ class CleanRoomsAPI:
         headers = {'Accept': 'application/json', }
         response_headers = []
         res = self._api.do('GET',
-                           f'/api/2.1/unity-catalog/clean-rooms/{name_arg}',
+                           f'/api/2.1/unity-catalog/clean-rooms/{name}',
                            query=query,
                            headers=headers,
                            response_headers=response_headers)
@@ -1668,7 +1668,7 @@ class CleanRoomsAPI:
             query['page_token'] = json['next_page_token']
 
     def update(self,
-               name_arg: str,
+               name: str,
                *,
                catalog_updates: Optional[List[CleanRoomCatalogUpdate]] = None,
                comment: Optional[str] = None,
@@ -1689,7 +1689,7 @@ class CleanRoomsAPI:
         
         Table removals through **update** do not require additional privileges.
         
-        :param name_arg: str
+        :param name: str
           The name of the clean room.
         :param catalog_updates: List[:class:`CleanRoomCatalogUpdate`] (optional)
           Array of shared data object updates.
@@ -1707,7 +1707,7 @@ class CleanRoomsAPI:
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         response_headers = []
         res = self._api.do('PATCH',
-                           f'/api/2.1/unity-catalog/clean-rooms/{name_arg}',
+                           f'/api/2.1/unity-catalog/clean-rooms/{name}',
                            body=body,
                            headers=headers,
                            response_headers=response_headers)
