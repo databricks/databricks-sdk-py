@@ -230,7 +230,7 @@ class {{.Name}}API:{{if .Description}}
 
 {{ define "method-response-headers" -}}
     response_headers = [
-      {{- range $h := .ResponseHeaders}}'{{ $h.SnakeName }}',{{ end -}}
+      {{- range $h := .ResponseHeaders}}'{{ $h.Name }}',{{ end -}}
     ]
 {{- end }}
 
@@ -333,7 +333,7 @@ class {{.Name}}API:{{if .Description}}
         {{.Response.PascalName}}.{{.ResponseBodyField.CamelName}}=content
         return deserialized
     {{- else -}}
-        return {{.Response.PascalName}}({{.ResponseBodyField.CamelName}}=res)
+        return {{.Response.PascalName}}({{.ResponseBodyField.CamelName}}=content)
     {{end}}
 {{- end}}
 

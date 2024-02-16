@@ -711,7 +711,7 @@ class BillableUsageAPI:
                                     headers=headers,
                                     response_headers=response_headers,
                                     raw=True)
-        return DownloadResponse(contents=res)
+        return DownloadResponse(contents=content)
 
 
 class BudgetsAPI:
