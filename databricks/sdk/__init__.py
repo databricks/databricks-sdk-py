@@ -15,7 +15,6 @@ from databricks.sdk.service.catalog import (AccountMetastoreAssignmentsAPI,
                                             ExternalLocationsAPI, FunctionsAPI,
                                             GrantsAPI, LakehouseMonitorsAPI,
                                             MetastoresAPI, ModelVersionsAPI,
-                                            OnlineTablesAPI,
                                             RegisteredModelsAPI, SchemasAPI,
                                             StorageCredentialsAPI,
                                             SystemSchemasAPI,
@@ -181,7 +180,6 @@ class WorkspaceClient:
         self._metastores = MetastoresAPI(self._api_client)
         self._model_registry = ModelRegistryAPI(self._api_client)
         self._model_versions = ModelVersionsAPI(self._api_client)
-        self._online_tables = OnlineTablesAPI(self._api_client)
         self._permissions = PermissionsAPI(self._api_client)
         self._pipelines = PipelinesAPI(self._api_client)
         self._policy_families = PolicyFamiliesAPI(self._api_client)
@@ -324,7 +322,7 @@ class WorkspaceClient:
 
     @property
     def files(self) -> FilesAPI:
-        """The Files API allows you to read, write, list, and delete files and directories."""
+        """The Files API allows you to read, write, and delete files and directories in Unity Catalog volumes."""
         return self._files
 
     @property
@@ -401,11 +399,6 @@ class WorkspaceClient:
     def model_versions(self) -> ModelVersionsAPI:
         """Databricks provides a hosted version of MLflow Model Registry in Unity Catalog."""
         return self._model_versions
-
-    @property
-    def online_tables(self) -> OnlineTablesAPI:
-        """Online tables provide lower latency and higher QPS access to data from Delta tables."""
-        return self._online_tables
 
     @property
     def permissions(self) -> PermissionsAPI:
