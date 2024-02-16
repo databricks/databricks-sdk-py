@@ -330,7 +330,7 @@ class {{.Name}}API:{{if .Description}}
 {{define "deserialize-stream" -}}
     {{if or .Response.HasJsonField .Response.HasHeaderField -}}
         deserialized = {{.Response.PascalName}}.from_dict(res)
-        {{.Response.PascalName}}.{{.ResponseBodyField.CamelName}}=content
+        deserialized.{{.ResponseBodyField.CamelName}}=content
         return deserialized
     {{- else -}}
         return {{.Response.PascalName}}({{.ResponseBodyField.CamelName}}=content)
