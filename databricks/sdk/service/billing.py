@@ -711,9 +711,7 @@ class BillableUsageAPI:
                                     headers=headers,
                                     response_headers=response_headers,
                                     raw=True)
-        deserialized = DownloadResponse.from_dict(res)
-        DownloadResponse.contents = content
-        return deserialized
+        return DownloadResponse(contents=res)
 
 
 class BudgetsAPI:

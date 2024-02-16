@@ -729,9 +729,7 @@ class FilesAPI:
                                     headers=headers,
                                     response_headers=response_headers,
                                     raw=True)
-        deserialized = DownloadResponse.from_dict(res)
-        DownloadResponse.contents = content
-        return deserialized
+        return DownloadResponse(contents=res)
 
     def get_directory_metadata(self, directory_path: str):
         """Get directory metadata.
