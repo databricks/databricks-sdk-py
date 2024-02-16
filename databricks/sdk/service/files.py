@@ -681,12 +681,14 @@ class FilesAPI:
 
         headers = {'Accept': 'application/octet-stream', }
         response_headers = []
-        res = self._api.do('GET',
-                           f'/api/2.0/fs/files{file_path}',
-                           headers=headers,
-                           response_headers=response_headers,
-                           raw=True)
-        return DownloadResponse.from_dict(res)
+        res, content = self._api.do('GET',
+                                    f'/api/2.0/fs/files{file_path}',
+                                    headers=headers,
+                                    response_headers=response_headers,
+                                    raw=True)
+        deserialized = DownloadResponse.from_dict(res)
+        DownloadResponse.contents = content
+        return deserialized
 
     def list_directory_contents(self,
                                 directory_path: str,

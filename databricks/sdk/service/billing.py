@@ -705,13 +705,15 @@ class BillableUsageAPI:
         if start_month is not None: query['start_month'] = start_month
         headers = {'Accept': 'text/plain', }
         response_headers = []
-        res = self._api.do('GET',
-                           f'/api/2.0/accounts/{self._api.account_id}/usage/download',
-                           query=query,
-                           headers=headers,
-                           response_headers=response_headers,
-                           raw=True)
-        return DownloadResponse.from_dict(res)
+        res, content = self._api.do('GET',
+                                    f'/api/2.0/accounts/{self._api.account_id}/usage/download',
+                                    query=query,
+                                    headers=headers,
+                                    response_headers=response_headers,
+                                    raw=True)
+        deserialized = DownloadResponse.from_dict(res)
+        DownloadResponse.contents = content
+        return deserialized
 
 
 class BudgetsAPI:
