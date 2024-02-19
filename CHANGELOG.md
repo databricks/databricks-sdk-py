@@ -13,26 +13,23 @@ Internal Changes:
 
 API Changes:
 
- * Changed `delete()` method for [w.connections](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/connections.html) workspace-level service with new required argument order.
- * Changed `get()` method for [w.connections](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/connections.html) workspace-level service with new required argument order.
- * Changed `update()` method for [w.connections](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/connections.html) workspace-level service with new required argument order.
+ * Changed `delete()`, `get()` and `update()` methods for [w.connections](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/connections.html) workspace-level service with new required argument order.
  * Changed `update()` method for [w.lakehouse_monitors](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/lakehouse_monitors.html) workspace-level service with new required argument order.
- * Changed `delete()` method for [w.volumes](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/volumes.html) workspace-level service with new required argument order.
- * Changed `read()` method for [w.volumes](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/volumes.html) workspace-level service with new required argument order.
- * Changed `update()` method for [w.volumes](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/volumes.html) workspace-level service with new required argument order.
+ * Changed `delete()`, `get()` and `update()` methods for [w.volumes](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/volumes.html) workspace-level service with new required argument order.
  * Added [w.online_tables](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/online_tables.html) workspace-level service.
- * Removed `name_arg` field for `databricks.sdk.service.catalog.DeleteConnectionRequest`.
- * Added `name` field for `databricks.sdk.service.catalog.DeleteConnectionRequest`.
+ * Renamed `name_arg` field to `name` for the following dataclasses: `databricks.sdk.service.catalog.DeleteConnectionRequest`,
+   `databricks.sdk.service.catalog.GetConnectionRequest`,
+   `databricks.sdk.service.catalog.UpdateConnection`,
+   `databricks.sdk.service.sharing.DeleteCleanRoomRequest`, 
+   `databricks.sdk.service.sharing.GetCleanRoomRequest` and
+   `databricks.sdk.service.sharing.UpdateCleanRoom`.
  * Removed `full_name_arg` field for `databricks.sdk.service.catalog.DeleteVolumeRequest`.
  * Added `name` field for `databricks.sdk.service.catalog.DeleteVolumeRequest`.
- * Removed `name_arg` field for `databricks.sdk.service.catalog.GetConnectionRequest`.
- * Added `name` field for `databricks.sdk.service.catalog.GetConnectionRequest`.
  * Added `max_results` field for `databricks.sdk.service.catalog.ListVolumesRequest`.
  * Added `page_token` field for `databricks.sdk.service.catalog.ListVolumesRequest`.
  * Added `next_page_token` field for `databricks.sdk.service.catalog.ListVolumesResponseContent`.
  * Removed `full_name_arg` field for `databricks.sdk.service.catalog.ReadVolumeRequest`.
  * Added `name` field for `databricks.sdk.service.catalog.ReadVolumeRequest`.
- * Renamed `name_arg` field to `name` for `databricks.sdk.service.catalog.UpdateConnection`.
  * Removed `assets_dir` field for `databricks.sdk.service.catalog.UpdateMonitor`.
  * Removed `full_name_arg` field for `databricks.sdk.service.catalog.UpdateVolumeRequestContent`.
  * Added `name` field for `databricks.sdk.service.catalog.UpdateVolumeRequestContent`.
@@ -57,9 +54,6 @@ API Changes:
  * Changed `delete()` method for [w.clean_rooms](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/clean_rooms.html) workspace-level service with new required argument order.
  * Changed `get()` method for [w.clean_rooms](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/clean_rooms.html) workspace-level service with new required argument order.
  * Changed `update()` method for [w.clean_rooms](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/clean_rooms.html) workspace-level service with new required argument order.
- * Renamed `name_arg` field to `name` for `databricks.sdk.service.sharing.DeleteCleanRoomRequest`.
- * Renamed `name_arg` field to `name` for `databricks.sdk.service.sharing.GetCleanRoomRequest`.
- * Renamed `name_arg` field to `name` for `databricks.sdk.service.sharing.UpdateCleanRoom`.
  * Added `enum_options` field for `databricks.sdk.service.sql.Parameter`.
  * Added `multi_values_options` field for `databricks.sdk.service.sql.Parameter`.
  * Added `query_id` field for `databricks.sdk.service.sql.Parameter`.
