@@ -27,11 +27,11 @@ created_volume = w.volumes.create(catalog_name=created_catalog.name,
                                   storage_location=external_location.url,
                                   volume_type=catalog.VolumeType.EXTERNAL)
 
-loaded_volume = w.volumes.read(full_name_arg=created_volume.full_name)
+loaded_volume = w.volumes.read(name=created_volume.full_name)
 
 # cleanup
 w.storage_credentials.delete(name=storage_credential.name)
 w.external_locations.delete(name=external_location.name)
 w.schemas.delete(full_name=created_schema.full_name)
 w.catalogs.delete(name=created_catalog.name, force=True)
-w.volumes.delete(full_name_arg=created_volume.full_name)
+w.volumes.delete(name=created_volume.full_name)

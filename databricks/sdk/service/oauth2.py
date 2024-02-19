@@ -508,6 +508,7 @@ class CustomAppIntegrationAPI:
         if scopes is not None: body['scopes'] = [v for v in scopes]
         if token_access_policy is not None: body['token_access_policy'] = token_access_policy.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         res = self._api.do('POST',
                            f'/api/2.0/accounts/{self._api.account_id}/oauth2/custom-app-integrations',
                            body=body,
@@ -527,6 +528,7 @@ class CustomAppIntegrationAPI:
         """
 
         headers = {'Accept': 'application/json', }
+
         self._api.do(
             'DELETE',
             f'/api/2.0/accounts/{self._api.account_id}/oauth2/custom-app-integrations/{integration_id}',
@@ -544,6 +546,7 @@ class CustomAppIntegrationAPI:
         """
 
         headers = {'Accept': 'application/json', }
+
         res = self._api.do(
             'GET',
             f'/api/2.0/accounts/{self._api.account_id}/oauth2/custom-app-integrations/{integration_id}',
@@ -559,6 +562,7 @@ class CustomAppIntegrationAPI:
         """
 
         headers = {'Accept': 'application/json', }
+
         json = self._api.do('GET',
                             f'/api/2.0/accounts/{self._api.account_id}/oauth2/custom-app-integrations',
                             headers=headers)
@@ -588,6 +592,7 @@ class CustomAppIntegrationAPI:
         if redirect_urls is not None: body['redirect_urls'] = [v for v in redirect_urls]
         if token_access_policy is not None: body['token_access_policy'] = token_access_policy.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         self._api.do(
             'PATCH',
             f'/api/2.0/accounts/{self._api.account_id}/oauth2/custom-app-integrations/{integration_id}',
@@ -666,6 +671,7 @@ class PublishedAppIntegrationAPI:
         if app_id is not None: body['app_id'] = app_id
         if token_access_policy is not None: body['token_access_policy'] = token_access_policy.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         res = self._api.do('POST',
                            f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integrations',
                            body=body,
@@ -685,6 +691,7 @@ class PublishedAppIntegrationAPI:
         """
 
         headers = {'Accept': 'application/json', }
+
         self._api.do(
             'DELETE',
             f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integrations/{integration_id}',
@@ -702,6 +709,7 @@ class PublishedAppIntegrationAPI:
         """
 
         headers = {'Accept': 'application/json', }
+
         res = self._api.do(
             'GET',
             f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integrations/{integration_id}',
@@ -717,6 +725,7 @@ class PublishedAppIntegrationAPI:
         """
 
         headers = {'Accept': 'application/json', }
+
         json = self._api.do('GET',
                             f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integrations',
                             headers=headers)
@@ -739,6 +748,7 @@ class PublishedAppIntegrationAPI:
         body = {}
         if token_access_policy is not None: body['token_access_policy'] = token_access_policy.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         self._api.do(
             'PATCH',
             f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integrations/{integration_id}',
@@ -774,6 +784,7 @@ class ServicePrincipalSecretsAPI:
         """
 
         headers = {'Accept': 'application/json', }
+
         res = self._api.do(
             'POST',
             f'/api/2.0/accounts/{self._api.account_id}/servicePrincipals/{service_principal_id}/credentials/secrets',
@@ -794,6 +805,7 @@ class ServicePrincipalSecretsAPI:
         """
 
         headers = {}
+
         self._api.do(
             'DELETE',
             f'/api/2.0/accounts/{self._api.account_id}/servicePrincipals/{service_principal_id}/credentials/secrets/{secret_id}',
@@ -812,6 +824,7 @@ class ServicePrincipalSecretsAPI:
         """
 
         headers = {'Accept': 'application/json', }
+
         json = self._api.do(
             'GET',
             f'/api/2.0/accounts/{self._api.account_id}/servicePrincipals/{service_principal_id}/credentials/secrets',

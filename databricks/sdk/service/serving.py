@@ -1272,6 +1272,10 @@ class QueryEndpointResponse:
     predictions: Optional[List[Any]] = None
     """The predictions returned by the serving endpoint."""
 
+    served_model_name: Optional[str] = None
+    """The name of the served model that served the request. This is useful when there are multiple
+    models behind the same endpoint with traffic split."""
+
     usage: Optional[ExternalModelUsageElement] = None
     """The usage object that may be returned by the __external/foundation model__ serving endpoint.
     This contains information about the number of tokens used in the prompt and response."""
@@ -1286,6 +1290,7 @@ class QueryEndpointResponse:
         if self.model is not None: body['model'] = self.model
         if self.object is not None: body['object'] = self.object.value
         if self.predictions: body['predictions'] = [v for v in self.predictions]
+        if self.served_model_name is not None: body['served-model-name'] = self.served_model_name
         if self.usage: body['usage'] = self.usage.as_dict()
         return body
 
@@ -1299,6 +1304,7 @@ class QueryEndpointResponse:
                    model=d.get('model', None),
                    object=_enum(d, 'object', QueryEndpointResponseObject),
                    predictions=d.get('predictions', None),
+                   served_model_name=d.get('served-model-name', None),
                    usage=_from_dict(d, 'usage', ExternalModelUsageElement))
 
 
@@ -2258,6 +2264,7 @@ class AppsAPI:
         if manifest is not None: body['manifest'] = manifest.as_dict()
         if resources is not None: body['resources'] = resources
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         res = self._api.do('POST', '/api/2.0/preview/apps/deployments', body=body, headers=headers)
         return DeploymentStatus.from_dict(res)
 
@@ -2273,6 +2280,7 @@ class AppsAPI:
         """
 
         headers = {'Accept': 'application/json', }
+
         res = self._api.do('DELETE', f'/api/2.0/preview/apps/instances/{name}', headers=headers)
         return DeleteAppResponse.from_dict(res)
 
@@ -2288,6 +2296,7 @@ class AppsAPI:
         """
 
         headers = {'Accept': 'application/json', }
+
         res = self._api.do('GET', f'/api/2.0/preview/apps/instances/{name}', headers=headers)
         return GetAppResponse.from_dict(res)
 
@@ -2310,6 +2319,7 @@ class AppsAPI:
         query = {}
         if include_app_log is not None: query['include_app_log'] = include_app_log
         headers = {'Accept': 'application/json', }
+
         res = self._api.do('GET',
                            f'/api/2.0/preview/apps/deployments/{deployment_id}',
                            query=query,
@@ -2325,6 +2335,7 @@ class AppsAPI:
         """
 
         headers = {'Accept': 'application/json', }
+
         res = self._api.do('GET', '/api/2.0/preview/apps/instances', headers=headers)
         return ListAppsResponse.from_dict(res)
 
@@ -2340,6 +2351,7 @@ class AppsAPI:
         """
 
         headers = {'Accept': 'application/json', }
+
         res = self._api.do('GET', f'/api/2.0/preview/apps/{name}/events', headers=headers)
         return ListAppEventsResponse.from_dict(res)
 
@@ -2405,6 +2417,7 @@ class ServingEndpointsAPI:
         """
 
         headers = {'Accept': 'application/json', }
+
         res = self._api.do('GET',
                            f'/api/2.0/serving-endpoints/{name}/served-models/{served_model_name}/build-logs',
                            headers=headers)
@@ -2439,6 +2452,7 @@ class ServingEndpointsAPI:
         if rate_limits is not None: body['rate_limits'] = [v.as_dict() for v in rate_limits]
         if tags is not None: body['tags'] = [v.as_dict() for v in tags]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         op_response = self._api.do('POST', '/api/2.0/serving-endpoints', body=body, headers=headers)
         return Wait(self.wait_get_serving_endpoint_not_updating,
                     response=ServingEndpointDetailed.from_dict(op_response),
@@ -2465,6 +2479,7 @@ class ServingEndpointsAPI:
         """
 
         headers = {'Accept': 'application/json', }
+
         self._api.do('DELETE', f'/api/2.0/serving-endpoints/{name}', headers=headers)
 
     def export_metrics(self, name: str):
@@ -2480,6 +2495,7 @@ class ServingEndpointsAPI:
         """
 
         headers = {}
+
         self._api.do('GET', f'/api/2.0/serving-endpoints/{name}/metrics', headers=headers)
 
     def get(self, name: str) -> ServingEndpointDetailed:
@@ -2494,6 +2510,7 @@ class ServingEndpointsAPI:
         """
 
         headers = {'Accept': 'application/json', }
+
         res = self._api.do('GET', f'/api/2.0/serving-endpoints/{name}', headers=headers)
         return ServingEndpointDetailed.from_dict(res)
 
@@ -2509,6 +2526,7 @@ class ServingEndpointsAPI:
         """
 
         headers = {'Accept': 'application/json', }
+
         res = self._api.do('GET',
                            f'/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}/permissionLevels',
                            headers=headers)
@@ -2527,6 +2545,7 @@ class ServingEndpointsAPI:
         """
 
         headers = {'Accept': 'application/json', }
+
         res = self._api.do('GET',
                            f'/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}',
                            headers=headers)
@@ -2539,6 +2558,7 @@ class ServingEndpointsAPI:
         """
 
         headers = {'Accept': 'application/json', }
+
         json = self._api.do('GET', '/api/2.0/serving-endpoints', headers=headers)
         parsed = ListEndpointsResponse.from_dict(json).endpoints
         return parsed if parsed is not None else []
@@ -2557,6 +2577,7 @@ class ServingEndpointsAPI:
         """
 
         headers = {'Accept': 'application/json', }
+
         res = self._api.do('GET',
                            f'/api/2.0/serving-endpoints/{name}/served-models/{served_model_name}/logs',
                            headers=headers)
@@ -2584,6 +2605,7 @@ class ServingEndpointsAPI:
         if add_tags is not None: body['add_tags'] = [v.as_dict() for v in add_tags]
         if delete_tags is not None: body['delete_tags'] = [v for v in delete_tags]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         res = self._api.do('PATCH', f'/api/2.0/serving-endpoints/{name}/tags', body=body, headers=headers)
         return [EndpointTag.from_dict(v) for v in res]
 
@@ -2603,6 +2625,7 @@ class ServingEndpointsAPI:
         body = {}
         if rate_limits is not None: body['rate_limits'] = [v.as_dict() for v in rate_limits]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         res = self._api.do('PUT',
                            f'/api/2.0/serving-endpoints/{name}/rate-limits',
                            body=body,
@@ -2688,7 +2711,12 @@ class ServingEndpointsAPI:
         if stream is not None: body['stream'] = stream
         if temperature is not None: body['temperature'] = temperature
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        res = self._api.do('POST', f'/serving-endpoints/{name}/invocations', body=body, headers=headers)
+        response_headers = ['served-model-name', ]
+        res = self._api.do('POST',
+                           f'/serving-endpoints/{name}/invocations',
+                           body=body,
+                           headers=headers,
+                           response_headers=response_headers)
         return QueryEndpointResponse.from_dict(res)
 
     def set_permissions(
@@ -2712,6 +2740,7 @@ class ServingEndpointsAPI:
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         res = self._api.do('PUT',
                            f'/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}',
                            body=body,
@@ -2754,6 +2783,7 @@ class ServingEndpointsAPI:
         if served_models is not None: body['served_models'] = [v.as_dict() for v in served_models]
         if traffic_config is not None: body['traffic_config'] = traffic_config.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         op_response = self._api.do('PUT',
                                    f'/api/2.0/serving-endpoints/{name}/config',
                                    body=body,
@@ -2798,6 +2828,7 @@ class ServingEndpointsAPI:
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         res = self._api.do('PATCH',
                            f'/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}',
                            body=body,

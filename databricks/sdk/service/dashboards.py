@@ -69,6 +69,7 @@ class LakeviewAPI:
         if embed_credentials is not None: body['embed_credentials'] = embed_credentials
         if warehouse_id is not None: body['warehouse_id'] = warehouse_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         self._api.do('POST',
                      f'/api/2.0/lakeview/dashboards/{dashboard_id}/published',
                      body=body,

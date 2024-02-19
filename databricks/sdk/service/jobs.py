@@ -4771,6 +4771,7 @@ class JobsAPI:
         if all_queued_runs is not None: body['all_queued_runs'] = all_queued_runs
         if job_id is not None: body['job_id'] = job_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         self._api.do('POST', '/api/2.1/jobs/runs/cancel-all', body=body, headers=headers)
 
     def cancel_run(self, run_id: int) -> Wait[Run]:
@@ -4789,6 +4790,7 @@ class JobsAPI:
         body = {}
         if run_id is not None: body['run_id'] = run_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         self._api.do('POST', '/api/2.1/jobs/runs/cancel', body=body, headers=headers)
         return Wait(self.wait_get_run_job_terminated_or_skipped, run_id=run_id)
 
@@ -4935,6 +4937,7 @@ class JobsAPI:
         if trigger is not None: body['trigger'] = trigger.as_dict()
         if webhook_notifications is not None: body['webhook_notifications'] = webhook_notifications.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         res = self._api.do('POST', '/api/2.1/jobs/create', body=body, headers=headers)
         return CreateResponse.from_dict(res)
 
@@ -4951,6 +4954,7 @@ class JobsAPI:
         body = {}
         if job_id is not None: body['job_id'] = job_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         self._api.do('POST', '/api/2.1/jobs/delete', body=body, headers=headers)
 
     def delete_run(self, run_id: int):
@@ -4966,6 +4970,7 @@ class JobsAPI:
         body = {}
         if run_id is not None: body['run_id'] = run_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         self._api.do('POST', '/api/2.1/jobs/runs/delete', body=body, headers=headers)
 
     def export_run(self, run_id: int, *, views_to_export: Optional[ViewsToExport] = None) -> ExportRunOutput:
@@ -4985,6 +4990,7 @@ class JobsAPI:
         if run_id is not None: query['run_id'] = run_id
         if views_to_export is not None: query['views_to_export'] = views_to_export.value
         headers = {'Accept': 'application/json', }
+
         res = self._api.do('GET', '/api/2.1/jobs/runs/export', query=query, headers=headers)
         return ExportRunOutput.from_dict(res)
 
@@ -5002,6 +5008,7 @@ class JobsAPI:
         query = {}
         if job_id is not None: query['job_id'] = job_id
         headers = {'Accept': 'application/json', }
+
         res = self._api.do('GET', '/api/2.1/jobs/get', query=query, headers=headers)
         return Job.from_dict(res)
 
@@ -5017,6 +5024,7 @@ class JobsAPI:
         """
 
         headers = {'Accept': 'application/json', }
+
         res = self._api.do('GET', f'/api/2.0/permissions/jobs/{job_id}/permissionLevels', headers=headers)
         return GetJobPermissionLevelsResponse.from_dict(res)
 
@@ -5032,6 +5040,7 @@ class JobsAPI:
         """
 
         headers = {'Accept': 'application/json', }
+
         res = self._api.do('GET', f'/api/2.0/permissions/jobs/{job_id}', headers=headers)
         return JobPermissions.from_dict(res)
 
@@ -5059,6 +5068,7 @@ class JobsAPI:
         if include_resolved_values is not None: query['include_resolved_values'] = include_resolved_values
         if run_id is not None: query['run_id'] = run_id
         headers = {'Accept': 'application/json', }
+
         res = self._api.do('GET', '/api/2.1/jobs/runs/get', query=query, headers=headers)
         return Run.from_dict(res)
 
@@ -5083,6 +5093,7 @@ class JobsAPI:
         query = {}
         if run_id is not None: query['run_id'] = run_id
         headers = {'Accept': 'application/json', }
+
         res = self._api.do('GET', '/api/2.1/jobs/runs/get-output', query=query, headers=headers)
         return RunOutput.from_dict(res)
 
@@ -5325,6 +5336,7 @@ class JobsAPI:
         if spark_submit_params is not None: body['spark_submit_params'] = [v for v in spark_submit_params]
         if sql_params is not None: body['sql_params'] = sql_params
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         op_response = self._api.do('POST', '/api/2.1/jobs/runs/repair', body=body, headers=headers)
         return Wait(self.wait_get_run_job_terminated_or_skipped,
                     response=RepairRunResponse.from_dict(op_response),
@@ -5383,6 +5395,7 @@ class JobsAPI:
         if job_id is not None: body['job_id'] = job_id
         if new_settings is not None: body['new_settings'] = new_settings.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         self._api.do('POST', '/api/2.1/jobs/reset', body=body, headers=headers)
 
     def run_now(self,
@@ -5507,6 +5520,7 @@ class JobsAPI:
         if spark_submit_params is not None: body['spark_submit_params'] = [v for v in spark_submit_params]
         if sql_params is not None: body['sql_params'] = sql_params
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         op_response = self._api.do('POST', '/api/2.1/jobs/run-now', body=body, headers=headers)
         return Wait(self.wait_get_run_job_terminated_or_skipped,
                     response=RunNowResponse.from_dict(op_response),
@@ -5559,6 +5573,7 @@ class JobsAPI:
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         res = self._api.do('PUT', f'/api/2.0/permissions/jobs/{job_id}', body=body, headers=headers)
         return JobPermissions.from_dict(res)
 
@@ -5640,6 +5655,7 @@ class JobsAPI:
         if timeout_seconds is not None: body['timeout_seconds'] = timeout_seconds
         if webhook_notifications is not None: body['webhook_notifications'] = webhook_notifications.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         op_response = self._api.do('POST', '/api/2.1/jobs/runs/submit', body=body, headers=headers)
         return Wait(self.wait_get_run_job_terminated_or_skipped,
                     response=SubmitRunResponse.from_dict(op_response),
@@ -5706,6 +5722,7 @@ class JobsAPI:
         if job_id is not None: body['job_id'] = job_id
         if new_settings is not None: body['new_settings'] = new_settings.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         self._api.do('POST', '/api/2.1/jobs/update', body=body, headers=headers)
 
     def update_permissions(
@@ -5727,5 +5744,6 @@ class JobsAPI:
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         res = self._api.do('PATCH', f'/api/2.0/permissions/jobs/{job_id}', body=body, headers=headers)
         return JobPermissions.from_dict(res)

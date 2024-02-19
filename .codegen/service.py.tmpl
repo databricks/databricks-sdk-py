@@ -21,26 +21,26 @@ from databricks.sdk.service import {{.Package.Name}}{{end}}
 {{if .Fields -}}{{if not .IsRequest}}@dataclass
 class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Description}}
     """{{.Comment "    " 100}}"""
-    {{end}}{{- range .RequiredFields | alphanumOnly}}
+    {{end}}{{- range .RequiredFields}}
     {{template "safe-snake-name" .}}: {{template "type" .Entity}}{{if .Description}}
     """{{.Comment "    " 100 | trimSuffix "\""}}"""{{end}}
     {{end}}
-    {{- range .NonRequiredFields | alphanumOnly}}
+    {{- range .NonRequiredFields}}
     {{template "safe-snake-name" .}}: Optional[{{template "type" .Entity}}] = None{{if .Description}}
     """{{.Comment "    " 100 | trimSuffix "\""}}"""{{end}}
     {{end}}
-    {{if .HasJsonField -}}
+    {{if or .HasJsonField .HasHeaderField .HasByteStreamField -}}
     def as_dict(self) -> dict:
         """Serializes the {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}} into a dictionary suitable for use as a JSON request body."""
         body = {}
-        {{range .Fields | alphanumOnly}}if self.{{template "safe-snake-name" .}}{{with .Entity.IsPrimitive}} is not None{{end}}: body['{{.Name}}'] = {{template "as_request_type" .}}
+        {{range .Fields}}if self.{{template "safe-snake-name" .}}{{with .Entity.IsPrimitive}} is not None{{end}}: body['{{.Name}}'] = {{template "as_request_type" .}}
         {{end -}}
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:
         """Deserializes the {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}} from a dictionary."""
-        return cls({{range $i, $f := .Fields | alphanumOnly}}{{if $i}}, {{end}}{{template "safe-snake-name" $f}}={{template "from_dict_type" $f}}{{end}})
+        return cls({{range $i, $f := .Fields}}{{if $i}}, {{end}}{{template "safe-snake-name" $f}}={{template "from_dict_type" $f}}{{end}})
     {{end}}
 {{end}}
 {{else if .ArrayValue}}type {{.PascalName}} []{{template "type" .ArrayValue}}
@@ -187,6 +187,9 @@ class {{.Name}}API:{{if .Description}}
         {{template "method-serialize" .}}
         {{- end}}
         {{template "method-headers" . }}
+        {{if and .Response .Response.HasHeaderField -}}
+        {{template "method-response-headers" . }}
+        {{- end}}
         {{template "method-call" .}}
 
     {{if and .Wait (and (not .IsCrudRead) (not (eq .SnakeName "get_run"))) }}
@@ -211,7 +214,7 @@ class {{.Name}}API:{{if .Description}}
         {{if or .Request.HasJsonField .Request.HasQueryField -}}
         {{if .Request.HasJsonField}}body = {}{{end}}{{if .Request.HasQueryField}}
         query = {}{{end}}
-        {{- range .Request.Fields}}{{ if not .IsPath }}
+        {{- range .Request.Fields}}{{ if and (not .IsPath) (not .IsHeader) }}
         {{- if .IsQuery }}
         if {{template "safe-snake-name" .}} is not None: query['{{.Name}}'] = {{template "method-param-bind" .}}{{end}}
         {{- if .IsJson }}
@@ -225,6 +228,12 @@ class {{.Name}}API:{{if .Description}}
     headers = {
       {{- range $k, $v := .FixedRequestHeaders}}'{{ $k }}': '{{ $v }}',{{ end -}}
     }
+{{- end }}
+
+{{ define "method-response-headers" -}}
+    response_headers = [
+      {{- range $h := .ResponseHeaders}}'{{ $h.Name }}',{{ end -}}
+    ]
 {{- end }}
 
 {{- define "method-param-bind" -}}
@@ -282,7 +291,7 @@ class {{.Name}}API:{{if .Description}}
           {{ if .Pagination.Token -}}
           if '{{.Pagination.Token.Bind.Name}}' not in json or not json['{{.Pagination.Token.Bind.Name}}']:
             return
-          {{if eq "GET" .Verb}}query{{else}}body{{end}}['{{.Pagination.Token.PollField.Name}}'] = json['{{.Pagination.Token.Bind.Name}}']
+          {{if or (eq "GET" .Verb) (eq "HEAD" .Verb)}}query{{else}}body{{end}}['{{.Pagination.Token.PollField.Name}}'] = json['{{.Pagination.Token.Bind.Name}}']
           {{- else if eq .Path "/api/2.0/clusters/events" -}}
           if 'next_page' not in json or not json['next_page']:
             return
@@ -307,9 +316,7 @@ class {{.Name}}API:{{if .Description}}
         {{if .Response -}}
         res = {{end}}{{template "method-do" .}}
         {{if .Response -}}
-          {{- if .IsResponseByteStream -}}
-            return {{.Response.PascalName}}({{.ResponseBodyField.CamelName}}=res)
-          {{- else if .Response.ArrayValue -}}
+          {{- if .Response.ArrayValue -}}
             return [{{.Response.ArrayValue.PascalName}}.from_dict(v) for v in res]
           {{- else if .Response.MapValue -}}
             return res
@@ -330,6 +337,9 @@ self._api.do('{{.Verb}}',
       {{- else if .Request.HasJsonField}}, body=body{{end}}
   {{end}}
   , headers=headers
+  {{if and .Response .Response.HasHeaderField -}}
+  , response_headers=response_headers
+  {{- end}}
   {{- if and .IsRequestByteStream .RequestBodyField }}, data={{template "safe-snake-name" .RequestBodyField}}{{ end }}
   {{- if .IsResponseByteStream }}, raw=True{{ end }})
 {{- end}}

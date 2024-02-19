@@ -926,6 +926,7 @@ class VectorSearchEndpointsAPI:
         if endpoint_type is not None: body['endpoint_type'] = endpoint_type.value
         if name is not None: body['name'] = name
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         op_response = self._api.do('POST', '/api/2.0/vector-search/endpoints', body=body, headers=headers)
         return Wait(self.wait_get_endpoint_vector_search_endpoint_online,
                     response=EndpointInfo.from_dict(op_response),
@@ -947,6 +948,7 @@ class VectorSearchEndpointsAPI:
         """
 
         headers = {}
+
         self._api.do('DELETE', f'/api/2.0/vector-search/endpoints/{endpoint_name}', headers=headers)
 
     def get_endpoint(self, endpoint_name: str) -> EndpointInfo:
@@ -959,6 +961,7 @@ class VectorSearchEndpointsAPI:
         """
 
         headers = {'Accept': 'application/json', }
+
         res = self._api.do('GET', f'/api/2.0/vector-search/endpoints/{endpoint_name}', headers=headers)
         return EndpointInfo.from_dict(res)
 
@@ -1038,6 +1041,7 @@ class VectorSearchIndexesAPI:
         if name is not None: body['name'] = name
         if primary_key is not None: body['primary_key'] = primary_key
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         res = self._api.do('POST', '/api/2.0/vector-search/indexes', body=body, headers=headers)
         return CreateVectorIndexResponse.from_dict(res)
 
@@ -1056,6 +1060,7 @@ class VectorSearchIndexesAPI:
         body = {}
         if primary_keys is not None: body['primary_keys'] = [v for v in primary_keys]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         res = self._api.do('POST',
                            f'/api/2.0/vector-search/indexes/{name}/delete-data',
                            body=body,
@@ -1074,6 +1079,7 @@ class VectorSearchIndexesAPI:
         """
 
         headers = {}
+
         self._api.do('DELETE', f'/api/2.0/vector-search/indexes/{index_name}', headers=headers)
 
     def get_index(self, index_name: str) -> VectorIndex:
@@ -1088,6 +1094,7 @@ class VectorSearchIndexesAPI:
         """
 
         headers = {'Accept': 'application/json', }
+
         res = self._api.do('GET', f'/api/2.0/vector-search/indexes/{index_name}', headers=headers)
         return VectorIndex.from_dict(res)
 
@@ -1160,6 +1167,7 @@ class VectorSearchIndexesAPI:
         if query_text is not None: body['query_text'] = query_text
         if query_vector is not None: body['query_vector'] = [v for v in query_vector]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         res = self._api.do('POST',
                            f'/api/2.0/vector-search/indexes/{index_name}/query',
                            body=body,
@@ -1178,6 +1186,7 @@ class VectorSearchIndexesAPI:
         """
 
         headers = {}
+
         self._api.do('POST', f'/api/2.0/vector-search/indexes/{index_name}/sync', headers=headers)
 
     def upsert_data_vector_index(self, name: str, inputs_json: str) -> UpsertDataVectorIndexResponse:
@@ -1195,6 +1204,7 @@ class VectorSearchIndexesAPI:
         body = {}
         if inputs_json is not None: body['inputs_json'] = inputs_json
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         res = self._api.do('POST',
                            f'/api/2.0/vector-search/indexes/{name}/upsert-data',
                            body=body,

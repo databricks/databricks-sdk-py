@@ -153,6 +153,17 @@ class DirectoryEntry:
 class DownloadResponse:
     contents: Optional[BinaryIO] = None
 
+    def as_dict(self) -> dict:
+        """Serializes the DownloadResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.contents: body['contents'] = self.contents
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DownloadResponse:
+        """Deserializes the DownloadResponse from a dictionary."""
+        return cls(contents=d.get('contents', None))
+
 
 @dataclass
 class FileInfo:
@@ -338,6 +349,7 @@ class DbfsAPI:
         if data is not None: body['data'] = data
         if handle is not None: body['handle'] = handle
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         self._api.do('POST', '/api/2.0/dbfs/add-block', body=body, headers=headers)
 
     def close(self, handle: int):
@@ -354,6 +366,7 @@ class DbfsAPI:
         body = {}
         if handle is not None: body['handle'] = handle
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         self._api.do('POST', '/api/2.0/dbfs/close', body=body, headers=headers)
 
     def create(self, path: str, *, overwrite: Optional[bool] = None) -> CreateResponse:
@@ -379,6 +392,7 @@ class DbfsAPI:
         if overwrite is not None: body['overwrite'] = overwrite
         if path is not None: body['path'] = path
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         res = self._api.do('POST', '/api/2.0/dbfs/create', body=body, headers=headers)
         return CreateResponse.from_dict(res)
 
@@ -412,6 +426,7 @@ class DbfsAPI:
         if path is not None: body['path'] = path
         if recursive is not None: body['recursive'] = recursive
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         self._api.do('POST', '/api/2.0/dbfs/delete', body=body, headers=headers)
 
     def get_status(self, path: str) -> FileInfo:
@@ -429,6 +444,7 @@ class DbfsAPI:
         query = {}
         if path is not None: query['path'] = path
         headers = {'Accept': 'application/json', }
+
         res = self._api.do('GET', '/api/2.0/dbfs/get-status', query=query, headers=headers)
         return FileInfo.from_dict(res)
 
@@ -454,6 +470,7 @@ class DbfsAPI:
         query = {}
         if path is not None: query['path'] = path
         headers = {'Accept': 'application/json', }
+
         json = self._api.do('GET', '/api/2.0/dbfs/list', query=query, headers=headers)
         parsed = ListStatusResponse.from_dict(json).files
         return parsed if parsed is not None else []
@@ -474,6 +491,7 @@ class DbfsAPI:
         body = {}
         if path is not None: body['path'] = path
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         self._api.do('POST', '/api/2.0/dbfs/mkdirs', body=body, headers=headers)
 
     def move(self, source_path: str, destination_path: str):
@@ -495,6 +513,7 @@ class DbfsAPI:
         if destination_path is not None: body['destination_path'] = destination_path
         if source_path is not None: body['source_path'] = source_path
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         self._api.do('POST', '/api/2.0/dbfs/move', body=body, headers=headers)
 
     def put(self, path: str, *, contents: Optional[str] = None, overwrite: Optional[bool] = None):
@@ -525,6 +544,7 @@ class DbfsAPI:
         if overwrite is not None: body['overwrite'] = overwrite
         if path is not None: body['path'] = path
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         self._api.do('POST', '/api/2.0/dbfs/put', body=body, headers=headers)
 
     def read(self, path: str, *, length: Optional[int] = None, offset: Optional[int] = None) -> ReadResponse:
@@ -554,6 +574,7 @@ class DbfsAPI:
         if offset is not None: query['offset'] = offset
         if path is not None: query['path'] = path
         headers = {'Accept': 'application/json', }
+
         res = self._api.do('GET', '/api/2.0/dbfs/read', query=query, headers=headers)
         return ReadResponse.from_dict(res)
 
@@ -576,6 +597,7 @@ class FilesAPI:
         """
 
         headers = {}
+
         self._api.do('PUT', f'/api/2.0/fs/directories{directory_path}', headers=headers)
 
     def delete(self, file_path: str):
@@ -590,6 +612,7 @@ class FilesAPI:
         """
 
         headers = {}
+
         self._api.do('DELETE', f'/api/2.0/fs/files{file_path}', headers=headers)
 
     def delete_directory(self, directory_path: str):
@@ -604,6 +627,7 @@ class FilesAPI:
         """
 
         headers = {}
+
         self._api.do('DELETE', f'/api/2.0/fs/directories{directory_path}', headers=headers)
 
     def download(self, file_path: str) -> DownloadResponse:
@@ -618,8 +642,9 @@ class FilesAPI:
         """
 
         headers = {'Accept': 'application/octet-stream', }
+
         res = self._api.do('GET', f'/api/2.0/fs/files{file_path}', headers=headers, raw=True)
-        return DownloadResponse(contents=res)
+        return DownloadResponse.from_dict(res)
 
     def list_directory_contents(self,
                                 directory_path: str,
@@ -682,4 +707,5 @@ class FilesAPI:
         query = {}
         if overwrite is not None: query['overwrite'] = overwrite
         headers = {'Content-Type': 'application/octet-stream', }
+
         self._api.do('PUT', f'/api/2.0/fs/files{file_path}', query=query, headers=headers, data=contents)
