@@ -153,6 +153,17 @@ class DirectoryEntry:
 class DownloadResponse:
     contents: Optional[BinaryIO] = None
 
+    def as_dict(self) -> dict:
+        """Serializes the DownloadResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.contents: body['contents'] = self.contents
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DownloadResponse:
+        """Deserializes the DownloadResponse from a dictionary."""
+        return cls(contents=d.get('contents', None))
+
 
 @dataclass
 class FileInfo:
@@ -338,12 +349,8 @@ class DbfsAPI:
         if data is not None: body['data'] = data
         if handle is not None: body['handle'] = handle
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
-        self._api.do('POST',
-                     '/api/2.0/dbfs/add-block',
-                     body=body,
-                     headers=headers,
-                     response_headers=response_headers)
+
+        self._api.do('POST', '/api/2.0/dbfs/add-block', body=body, headers=headers)
 
     def close(self, handle: int):
         """Close the stream.
@@ -359,12 +366,8 @@ class DbfsAPI:
         body = {}
         if handle is not None: body['handle'] = handle
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
-        self._api.do('POST',
-                     '/api/2.0/dbfs/close',
-                     body=body,
-                     headers=headers,
-                     response_headers=response_headers)
+
+        self._api.do('POST', '/api/2.0/dbfs/close', body=body, headers=headers)
 
     def create(self, path: str, *, overwrite: Optional[bool] = None) -> CreateResponse:
         """Open a stream.
@@ -389,12 +392,8 @@ class DbfsAPI:
         if overwrite is not None: body['overwrite'] = overwrite
         if path is not None: body['path'] = path
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
-        res = self._api.do('POST',
-                           '/api/2.0/dbfs/create',
-                           body=body,
-                           headers=headers,
-                           response_headers=response_headers)
+
+        res = self._api.do('POST', '/api/2.0/dbfs/create', body=body, headers=headers)
         return CreateResponse.from_dict(res)
 
     def delete(self, path: str, *, recursive: Optional[bool] = None):
@@ -427,12 +426,8 @@ class DbfsAPI:
         if path is not None: body['path'] = path
         if recursive is not None: body['recursive'] = recursive
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
-        self._api.do('POST',
-                     '/api/2.0/dbfs/delete',
-                     body=body,
-                     headers=headers,
-                     response_headers=response_headers)
+
+        self._api.do('POST', '/api/2.0/dbfs/delete', body=body, headers=headers)
 
     def get_status(self, path: str) -> FileInfo:
         """Get the information of a file or directory.
@@ -449,12 +444,8 @@ class DbfsAPI:
         query = {}
         if path is not None: query['path'] = path
         headers = {'Accept': 'application/json', }
-        response_headers = []
-        res = self._api.do('GET',
-                           '/api/2.0/dbfs/get-status',
-                           query=query,
-                           headers=headers,
-                           response_headers=response_headers)
+
+        res = self._api.do('GET', '/api/2.0/dbfs/get-status', query=query, headers=headers)
         return FileInfo.from_dict(res)
 
     def list(self, path: str) -> Iterator[FileInfo]:
@@ -479,12 +470,8 @@ class DbfsAPI:
         query = {}
         if path is not None: query['path'] = path
         headers = {'Accept': 'application/json', }
-        response_headers = []
-        json = self._api.do('GET',
-                            '/api/2.0/dbfs/list',
-                            query=query,
-                            headers=headers,
-                            response_headers=response_headers)
+
+        json = self._api.do('GET', '/api/2.0/dbfs/list', query=query, headers=headers)
         parsed = ListStatusResponse.from_dict(json).files
         return parsed if parsed is not None else []
 
@@ -504,12 +491,8 @@ class DbfsAPI:
         body = {}
         if path is not None: body['path'] = path
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
-        self._api.do('POST',
-                     '/api/2.0/dbfs/mkdirs',
-                     body=body,
-                     headers=headers,
-                     response_headers=response_headers)
+
+        self._api.do('POST', '/api/2.0/dbfs/mkdirs', body=body, headers=headers)
 
     def move(self, source_path: str, destination_path: str):
         """Move a file.
@@ -530,12 +513,8 @@ class DbfsAPI:
         if destination_path is not None: body['destination_path'] = destination_path
         if source_path is not None: body['source_path'] = source_path
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
-        self._api.do('POST',
-                     '/api/2.0/dbfs/move',
-                     body=body,
-                     headers=headers,
-                     response_headers=response_headers)
+
+        self._api.do('POST', '/api/2.0/dbfs/move', body=body, headers=headers)
 
     def put(self, path: str, *, contents: Optional[str] = None, overwrite: Optional[bool] = None):
         """Upload a file.
@@ -565,12 +544,8 @@ class DbfsAPI:
         if overwrite is not None: body['overwrite'] = overwrite
         if path is not None: body['path'] = path
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
-        self._api.do('POST',
-                     '/api/2.0/dbfs/put',
-                     body=body,
-                     headers=headers,
-                     response_headers=response_headers)
+
+        self._api.do('POST', '/api/2.0/dbfs/put', body=body, headers=headers)
 
     def read(self, path: str, *, length: Optional[int] = None, offset: Optional[int] = None) -> ReadResponse:
         """Get the contents of a file.
@@ -599,12 +574,8 @@ class DbfsAPI:
         if offset is not None: query['offset'] = offset
         if path is not None: query['path'] = path
         headers = {'Accept': 'application/json', }
-        response_headers = []
-        res = self._api.do('GET',
-                           '/api/2.0/dbfs/read',
-                           query=query,
-                           headers=headers,
-                           response_headers=response_headers)
+
+        res = self._api.do('GET', '/api/2.0/dbfs/read', query=query, headers=headers)
         return ReadResponse.from_dict(res)
 
 
@@ -626,11 +597,8 @@ class FilesAPI:
         """
 
         headers = {}
-        response_headers = []
-        self._api.do('PUT',
-                     f'/api/2.0/fs/directories{directory_path}',
-                     headers=headers,
-                     response_headers=response_headers)
+
+        self._api.do('PUT', f'/api/2.0/fs/directories{directory_path}', headers=headers)
 
     def delete(self, file_path: str):
         """Delete a file.
@@ -644,11 +612,8 @@ class FilesAPI:
         """
 
         headers = {}
-        response_headers = []
-        self._api.do('DELETE',
-                     f'/api/2.0/fs/files{file_path}',
-                     headers=headers,
-                     response_headers=response_headers)
+
+        self._api.do('DELETE', f'/api/2.0/fs/files{file_path}', headers=headers)
 
     def delete_directory(self, directory_path: str):
         """Delete a directory.
@@ -662,11 +627,8 @@ class FilesAPI:
         """
 
         headers = {}
-        response_headers = []
-        self._api.do('DELETE',
-                     f'/api/2.0/fs/directories{directory_path}',
-                     headers=headers,
-                     response_headers=response_headers)
+
+        self._api.do('DELETE', f'/api/2.0/fs/directories{directory_path}', headers=headers)
 
     def download(self, file_path: str) -> DownloadResponse:
         """Download a file.
@@ -680,13 +642,9 @@ class FilesAPI:
         """
 
         headers = {'Accept': 'application/octet-stream', }
-        response_headers = []
-        res, content = self._api.do('GET',
-                                    f'/api/2.0/fs/files{file_path}',
-                                    headers=headers,
-                                    response_headers=response_headers,
-                                    raw=True)
-        return DownloadResponse(contents=content)
+
+        res = self._api.do('GET', f'/api/2.0/fs/files{file_path}', headers=headers, raw=True)
+        return DownloadResponse.from_dict(res)
 
     def list_directory_contents(self,
                                 directory_path: str,
@@ -719,14 +677,12 @@ class FilesAPI:
         if page_size is not None: query['page_size'] = page_size
         if page_token is not None: query['page_token'] = page_token
         headers = {'Accept': 'application/json', }
-        response_headers = []
 
         while True:
             json = self._api.do('GET',
                                 f'/api/2.0/fs/directories{directory_path}',
                                 query=query,
-                                headers=headers,
-                                response_headers=response_headers)
+                                headers=headers)
             if 'contents' in json:
                 for v in json['contents']:
                     yield DirectoryEntry.from_dict(v)
@@ -751,10 +707,5 @@ class FilesAPI:
         query = {}
         if overwrite is not None: query['overwrite'] = overwrite
         headers = {'Content-Type': 'application/octet-stream', }
-        response_headers = []
-        self._api.do('PUT',
-                     f'/api/2.0/fs/files{file_path}',
-                     query=query,
-                     headers=headers,
-                     response_headers=response_headers,
-                     data=contents)
+
+        self._api.do('PUT', f'/api/2.0/fs/files{file_path}', query=query, headers=headers, data=contents)

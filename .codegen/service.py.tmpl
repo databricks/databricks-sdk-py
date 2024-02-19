@@ -29,7 +29,7 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Descriptio
     {{template "safe-snake-name" .}}: Optional[{{template "type" .Entity}}] = None{{if .Description}}
     """{{.Comment "    " 100 | trimSuffix "\""}}"""{{end}}
     {{end}}
-    {{if or .HasJsonField .HasHeaderField -}}
+    {{if or .HasJsonField .HasHeaderField .HasByteStreamField -}}
     def as_dict(self) -> dict:
         """Serializes the {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}} into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -187,7 +187,9 @@ class {{.Name}}API:{{if .Description}}
         {{template "method-serialize" .}}
         {{- end}}
         {{template "method-headers" . }}
+        {{if and .Response .Response.HasHeaderField -}}
         {{template "method-response-headers" . }}
+        {{- end}}
         {{template "method-call" .}}
 
     {{if and .Wait (and (not .IsCrudRead) (not (eq .SnakeName "get_run"))) }}
@@ -311,13 +313,10 @@ class {{.Name}}API:{{if .Description}}
 {{- end}}
 
 {{define "method-call-default" -}}
-        {{if and .Response .IsResponseByteStream -}}
-        res, content =
-        {{- else if .Response -}}
+        {{if and .Response -}}
         res = {{end}}{{template "method-do" .}}
         {{if .Response -}}
-          {{- if .IsResponseByteStream -}} {{template "deserialize-stream" .}}
-          {{- else if .Response.ArrayValue -}}
+          {{- if .Response.ArrayValue -}}
             return [{{.Response.ArrayValue.PascalName}}.from_dict(v) for v in res]
           {{- else if .Response.MapValue -}}
             return res
@@ -325,16 +324,6 @@ class {{.Name}}API:{{if .Description}}
             return {{.Response.PascalName}}.from_dict(res)
           {{- end}}
         {{- end}}
-{{- end}}
-
-{{define "deserialize-stream" -}}
-    {{if or .Response.HasJsonField .Response.HasHeaderField -}}
-        deserialized = {{.Response.PascalName}}.from_dict(res)
-        deserialized.{{.ResponseBodyField.CamelName}}=content
-        return deserialized
-    {{- else -}}
-        return {{.Response.PascalName}}({{.ResponseBodyField.CamelName}}=content)
-    {{end}}
 {{- end}}
 
 {{define "method-do" -}}
@@ -348,7 +337,9 @@ self._api.do('{{.Verb}}',
       {{- else if .Request.HasJsonField}}, body=body{{end}}
   {{end}}
   , headers=headers
+  {{if and .Response .Response.HasHeaderField -}}
   , response_headers=response_headers
+  {{- end}}
   {{- if and .IsRequestByteStream .RequestBodyField }}, data={{template "safe-snake-name" .RequestBodyField}}{{ end }}
   {{- if .IsResponseByteStream }}, raw=True{{ end }})
 {{- end}}

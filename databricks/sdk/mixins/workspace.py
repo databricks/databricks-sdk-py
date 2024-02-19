@@ -102,5 +102,5 @@ class WorkspaceExt(WorkspaceAPI):
         """
         query = {'path': path, 'direct_download': 'true'}
         if format: query['format'] = format.value
-        headers, content = self._api.do('GET', '/api/2.0/workspace/export', query=query, raw=True)
-        return content
+        response = self._api.do('GET', '/api/2.0/workspace/export', query=query, raw=True)
+        return response["contents"]

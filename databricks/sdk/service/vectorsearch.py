@@ -926,12 +926,8 @@ class VectorSearchEndpointsAPI:
         if endpoint_type is not None: body['endpoint_type'] = endpoint_type.value
         if name is not None: body['name'] = name
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
-        op_response = self._api.do('POST',
-                                   '/api/2.0/vector-search/endpoints',
-                                   body=body,
-                                   headers=headers,
-                                   response_headers=response_headers)
+
+        op_response = self._api.do('POST', '/api/2.0/vector-search/endpoints', body=body, headers=headers)
         return Wait(self.wait_get_endpoint_vector_search_endpoint_online,
                     response=EndpointInfo.from_dict(op_response),
                     endpoint_name=op_response['name'])
@@ -952,11 +948,8 @@ class VectorSearchEndpointsAPI:
         """
 
         headers = {}
-        response_headers = []
-        self._api.do('DELETE',
-                     f'/api/2.0/vector-search/endpoints/{endpoint_name}',
-                     headers=headers,
-                     response_headers=response_headers)
+
+        self._api.do('DELETE', f'/api/2.0/vector-search/endpoints/{endpoint_name}', headers=headers)
 
     def get_endpoint(self, endpoint_name: str) -> EndpointInfo:
         """Get an endpoint.
@@ -968,11 +961,8 @@ class VectorSearchEndpointsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        response_headers = []
-        res = self._api.do('GET',
-                           f'/api/2.0/vector-search/endpoints/{endpoint_name}',
-                           headers=headers,
-                           response_headers=response_headers)
+
+        res = self._api.do('GET', f'/api/2.0/vector-search/endpoints/{endpoint_name}', headers=headers)
         return EndpointInfo.from_dict(res)
 
     def list_endpoints(self, *, page_token: Optional[str] = None) -> Iterator[EndpointInfo]:
@@ -987,14 +977,9 @@ class VectorSearchEndpointsAPI:
         query = {}
         if page_token is not None: query['page_token'] = page_token
         headers = {'Accept': 'application/json', }
-        response_headers = []
 
         while True:
-            json = self._api.do('GET',
-                                '/api/2.0/vector-search/endpoints',
-                                query=query,
-                                headers=headers,
-                                response_headers=response_headers)
+            json = self._api.do('GET', '/api/2.0/vector-search/endpoints', query=query, headers=headers)
             if 'endpoints' in json:
                 for v in json['endpoints']:
                     yield EndpointInfo.from_dict(v)
@@ -1056,12 +1041,8 @@ class VectorSearchIndexesAPI:
         if name is not None: body['name'] = name
         if primary_key is not None: body['primary_key'] = primary_key
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
-        res = self._api.do('POST',
-                           '/api/2.0/vector-search/indexes',
-                           body=body,
-                           headers=headers,
-                           response_headers=response_headers)
+
+        res = self._api.do('POST', '/api/2.0/vector-search/indexes', body=body, headers=headers)
         return CreateVectorIndexResponse.from_dict(res)
 
     def delete_data_vector_index(self, name: str, primary_keys: List[str]) -> DeleteDataVectorIndexResponse:
@@ -1079,12 +1060,11 @@ class VectorSearchIndexesAPI:
         body = {}
         if primary_keys is not None: body['primary_keys'] = [v for v in primary_keys]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
+
         res = self._api.do('POST',
                            f'/api/2.0/vector-search/indexes/{name}/delete-data',
                            body=body,
-                           headers=headers,
-                           response_headers=response_headers)
+                           headers=headers)
         return DeleteDataVectorIndexResponse.from_dict(res)
 
     def delete_index(self, index_name: str):
@@ -1099,11 +1079,8 @@ class VectorSearchIndexesAPI:
         """
 
         headers = {}
-        response_headers = []
-        self._api.do('DELETE',
-                     f'/api/2.0/vector-search/indexes/{index_name}',
-                     headers=headers,
-                     response_headers=response_headers)
+
+        self._api.do('DELETE', f'/api/2.0/vector-search/indexes/{index_name}', headers=headers)
 
     def get_index(self, index_name: str) -> VectorIndex:
         """Get an index.
@@ -1117,11 +1094,8 @@ class VectorSearchIndexesAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        response_headers = []
-        res = self._api.do('GET',
-                           f'/api/2.0/vector-search/indexes/{index_name}',
-                           headers=headers,
-                           response_headers=response_headers)
+
+        res = self._api.do('GET', f'/api/2.0/vector-search/indexes/{index_name}', headers=headers)
         return VectorIndex.from_dict(res)
 
     def list_indexes(self,
@@ -1144,14 +1118,9 @@ class VectorSearchIndexesAPI:
         if endpoint_name is not None: query['endpoint_name'] = endpoint_name
         if page_token is not None: query['page_token'] = page_token
         headers = {'Accept': 'application/json', }
-        response_headers = []
 
         while True:
-            json = self._api.do('GET',
-                                '/api/2.0/vector-search/indexes',
-                                query=query,
-                                headers=headers,
-                                response_headers=response_headers)
+            json = self._api.do('GET', '/api/2.0/vector-search/indexes', query=query, headers=headers)
             if 'vector_indexes' in json:
                 for v in json['vector_indexes']:
                     yield MiniVectorIndex.from_dict(v)
@@ -1198,12 +1167,11 @@ class VectorSearchIndexesAPI:
         if query_text is not None: body['query_text'] = query_text
         if query_vector is not None: body['query_vector'] = [v for v in query_vector]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
+
         res = self._api.do('POST',
                            f'/api/2.0/vector-search/indexes/{index_name}/query',
                            body=body,
-                           headers=headers,
-                           response_headers=response_headers)
+                           headers=headers)
         return QueryVectorIndexResponse.from_dict(res)
 
     def sync_index(self, index_name: str):
@@ -1218,11 +1186,8 @@ class VectorSearchIndexesAPI:
         """
 
         headers = {}
-        response_headers = []
-        self._api.do('POST',
-                     f'/api/2.0/vector-search/indexes/{index_name}/sync',
-                     headers=headers,
-                     response_headers=response_headers)
+
+        self._api.do('POST', f'/api/2.0/vector-search/indexes/{index_name}/sync', headers=headers)
 
     def upsert_data_vector_index(self, name: str, inputs_json: str) -> UpsertDataVectorIndexResponse:
         """Upsert data into an index.
@@ -1239,10 +1204,9 @@ class VectorSearchIndexesAPI:
         body = {}
         if inputs_json is not None: body['inputs_json'] = inputs_json
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
+
         res = self._api.do('POST',
                            f'/api/2.0/vector-search/indexes/{name}/upsert-data',
                            body=body,
-                           headers=headers,
-                           response_headers=response_headers)
+                           headers=headers)
         return UpsertDataVectorIndexResponse.from_dict(res)

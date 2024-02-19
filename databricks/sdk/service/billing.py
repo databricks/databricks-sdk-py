@@ -335,6 +335,17 @@ class DeliveryStatus(Enum):
 class DownloadResponse:
     contents: Optional[BinaryIO] = None
 
+    def as_dict(self) -> dict:
+        """Serializes the DownloadResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.contents: body['contents'] = self.contents
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DownloadResponse:
+        """Deserializes the DownloadResponse from a dictionary."""
+        return cls(contents=d.get('contents', None))
+
 
 class LogDeliveryConfigStatus(Enum):
     """Status of log delivery configuration. Set to `ENABLED` (enabled) or `DISABLED` (disabled).
@@ -704,14 +715,13 @@ class BillableUsageAPI:
         if personal_data is not None: query['personal_data'] = personal_data
         if start_month is not None: query['start_month'] = start_month
         headers = {'Accept': 'text/plain', }
-        response_headers = []
-        res, content = self._api.do('GET',
-                                    f'/api/2.0/accounts/{self._api.account_id}/usage/download',
-                                    query=query,
-                                    headers=headers,
-                                    response_headers=response_headers,
-                                    raw=True)
-        return DownloadResponse(contents=content)
+
+        res = self._api.do('GET',
+                           f'/api/2.0/accounts/{self._api.account_id}/usage/download',
+                           query=query,
+                           headers=headers,
+                           raw=True)
+        return DownloadResponse.from_dict(res)
 
 
 class BudgetsAPI:
@@ -734,12 +744,11 @@ class BudgetsAPI:
         body = {}
         if budget is not None: body['budget'] = budget.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
+
         res = self._api.do('POST',
                            f'/api/2.0/accounts/{self._api.account_id}/budget',
                            body=body,
-                           headers=headers,
-                           response_headers=response_headers)
+                           headers=headers)
         return WrappedBudgetWithStatus.from_dict(res)
 
     def delete(self, budget_id: str):
@@ -754,11 +763,10 @@ class BudgetsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        response_headers = []
+
         self._api.do('DELETE',
                      f'/api/2.0/accounts/{self._api.account_id}/budget/{budget_id}',
-                     headers=headers,
-                     response_headers=response_headers)
+                     headers=headers)
 
     def get(self, budget_id: str) -> WrappedBudgetWithStatus:
         """Get budget and its status.
@@ -773,11 +781,10 @@ class BudgetsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        response_headers = []
+
         res = self._api.do('GET',
                            f'/api/2.0/accounts/{self._api.account_id}/budget/{budget_id}',
-                           headers=headers,
-                           response_headers=response_headers)
+                           headers=headers)
         return WrappedBudgetWithStatus.from_dict(res)
 
     def list(self) -> Iterator[BudgetWithStatus]:
@@ -790,11 +797,8 @@ class BudgetsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        response_headers = []
-        json = self._api.do('GET',
-                            f'/api/2.0/accounts/{self._api.account_id}/budget',
-                            headers=headers,
-                            response_headers=response_headers)
+
+        json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/budget', headers=headers)
         parsed = BudgetList.from_dict(json).budgets
         return parsed if parsed is not None else []
 
@@ -813,12 +817,11 @@ class BudgetsAPI:
         body = {}
         if budget is not None: body['budget'] = budget.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
+
         self._api.do('PATCH',
                      f'/api/2.0/accounts/{self._api.account_id}/budget/{budget_id}',
                      body=body,
-                     headers=headers,
-                     response_headers=response_headers)
+                     headers=headers)
 
 
 class LogDeliveryAPI:
@@ -908,12 +911,11 @@ class LogDeliveryAPI:
         if log_delivery_configuration is not None:
             body['log_delivery_configuration'] = log_delivery_configuration.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
+
         res = self._api.do('POST',
                            f'/api/2.0/accounts/{self._api.account_id}/log-delivery',
                            body=body,
-                           headers=headers,
-                           response_headers=response_headers)
+                           headers=headers)
         return WrappedLogDeliveryConfiguration.from_dict(res)
 
     def get(self, log_delivery_configuration_id: str) -> WrappedLogDeliveryConfiguration:
@@ -928,12 +930,11 @@ class LogDeliveryAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        response_headers = []
+
         res = self._api.do(
             'GET',
             f'/api/2.0/accounts/{self._api.account_id}/log-delivery/{log_delivery_configuration_id}',
-            headers=headers,
-            response_headers=response_headers)
+            headers=headers)
         return WrappedLogDeliveryConfiguration.from_dict(res)
 
     def list(self,
@@ -960,12 +961,11 @@ class LogDeliveryAPI:
         if status is not None: query['status'] = status.value
         if storage_configuration_id is not None: query['storage_configuration_id'] = storage_configuration_id
         headers = {'Accept': 'application/json', }
-        response_headers = []
+
         json = self._api.do('GET',
                             f'/api/2.0/accounts/{self._api.account_id}/log-delivery',
                             query=query,
-                            headers=headers,
-                            response_headers=response_headers)
+                            headers=headers)
         parsed = WrappedLogDeliveryConfigurations.from_dict(json).log_delivery_configurations
         return parsed if parsed is not None else []
 
@@ -990,9 +990,8 @@ class LogDeliveryAPI:
         body = {}
         if status is not None: body['status'] = status.value
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
+
         self._api.do('PATCH',
                      f'/api/2.0/accounts/{self._api.account_id}/log-delivery/{log_delivery_configuration_id}',
                      body=body,
-                     headers=headers,
-                     response_headers=response_headers)
+                     headers=headers)

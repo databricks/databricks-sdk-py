@@ -3517,12 +3517,8 @@ class ExperimentsAPI:
         if name is not None: body['name'] = name
         if tags is not None: body['tags'] = [v.as_dict() for v in tags]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
-        res = self._api.do('POST',
-                           '/api/2.0/mlflow/experiments/create',
-                           body=body,
-                           headers=headers,
-                           response_headers=response_headers)
+
+        res = self._api.do('POST', '/api/2.0/mlflow/experiments/create', body=body, headers=headers)
         return CreateExperimentResponse.from_dict(res)
 
     def create_run(self,
@@ -3555,12 +3551,8 @@ class ExperimentsAPI:
         if tags is not None: body['tags'] = [v.as_dict() for v in tags]
         if user_id is not None: body['user_id'] = user_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
-        res = self._api.do('POST',
-                           '/api/2.0/mlflow/runs/create',
-                           body=body,
-                           headers=headers,
-                           response_headers=response_headers)
+
+        res = self._api.do('POST', '/api/2.0/mlflow/runs/create', body=body, headers=headers)
         return CreateRunResponse.from_dict(res)
 
     def delete_experiment(self, experiment_id: str):
@@ -3577,12 +3569,8 @@ class ExperimentsAPI:
         body = {}
         if experiment_id is not None: body['experiment_id'] = experiment_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
-        self._api.do('POST',
-                     '/api/2.0/mlflow/experiments/delete',
-                     body=body,
-                     headers=headers,
-                     response_headers=response_headers)
+
+        self._api.do('POST', '/api/2.0/mlflow/experiments/delete', body=body, headers=headers)
 
     def delete_run(self, run_id: str):
         """Delete a run.
@@ -3597,12 +3585,8 @@ class ExperimentsAPI:
         body = {}
         if run_id is not None: body['run_id'] = run_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
-        self._api.do('POST',
-                     '/api/2.0/mlflow/runs/delete',
-                     body=body,
-                     headers=headers,
-                     response_headers=response_headers)
+
+        self._api.do('POST', '/api/2.0/mlflow/runs/delete', body=body, headers=headers)
 
     def delete_runs(self,
                     experiment_id: str,
@@ -3631,12 +3615,8 @@ class ExperimentsAPI:
         if max_runs is not None: body['max_runs'] = max_runs
         if max_timestamp_millis is not None: body['max_timestamp_millis'] = max_timestamp_millis
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
-        res = self._api.do('POST',
-                           '/api/2.0/mlflow/databricks/runs/delete-runs',
-                           body=body,
-                           headers=headers,
-                           response_headers=response_headers)
+
+        res = self._api.do('POST', '/api/2.0/mlflow/databricks/runs/delete-runs', body=body, headers=headers)
         return DeleteRunsResponse.from_dict(res)
 
     def delete_tag(self, run_id: str, key: str):
@@ -3656,12 +3636,8 @@ class ExperimentsAPI:
         if key is not None: body['key'] = key
         if run_id is not None: body['run_id'] = run_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
-        self._api.do('POST',
-                     '/api/2.0/mlflow/runs/delete-tag',
-                     body=body,
-                     headers=headers,
-                     response_headers=response_headers)
+
+        self._api.do('POST', '/api/2.0/mlflow/runs/delete-tag', body=body, headers=headers)
 
     def get_by_name(self, experiment_name: str) -> GetExperimentResponse:
         """Get metadata.
@@ -3683,12 +3659,8 @@ class ExperimentsAPI:
         query = {}
         if experiment_name is not None: query['experiment_name'] = experiment_name
         headers = {'Accept': 'application/json', }
-        response_headers = []
-        res = self._api.do('GET',
-                           '/api/2.0/mlflow/experiments/get-by-name',
-                           query=query,
-                           headers=headers,
-                           response_headers=response_headers)
+
+        res = self._api.do('GET', '/api/2.0/mlflow/experiments/get-by-name', query=query, headers=headers)
         return GetExperimentResponse.from_dict(res)
 
     def get_experiment(self, experiment_id: str) -> GetExperimentResponse:
@@ -3705,12 +3677,8 @@ class ExperimentsAPI:
         query = {}
         if experiment_id is not None: query['experiment_id'] = experiment_id
         headers = {'Accept': 'application/json', }
-        response_headers = []
-        res = self._api.do('GET',
-                           '/api/2.0/mlflow/experiments/get',
-                           query=query,
-                           headers=headers,
-                           response_headers=response_headers)
+
+        res = self._api.do('GET', '/api/2.0/mlflow/experiments/get', query=query, headers=headers)
         return GetExperimentResponse.from_dict(res)
 
     def get_history(self,
@@ -3747,14 +3715,9 @@ class ExperimentsAPI:
         if run_id is not None: query['run_id'] = run_id
         if run_uuid is not None: query['run_uuid'] = run_uuid
         headers = {'Accept': 'application/json', }
-        response_headers = []
 
         while True:
-            json = self._api.do('GET',
-                                '/api/2.0/mlflow/metrics/get-history',
-                                query=query,
-                                headers=headers,
-                                response_headers=response_headers)
+            json = self._api.do('GET', '/api/2.0/mlflow/metrics/get-history', query=query, headers=headers)
             if 'metrics' in json:
                 for v in json['metrics']:
                     yield Metric.from_dict(v)
@@ -3774,11 +3737,10 @@ class ExperimentsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        response_headers = []
+
         res = self._api.do('GET',
                            f'/api/2.0/permissions/experiments/{experiment_id}/permissionLevels',
-                           headers=headers,
-                           response_headers=response_headers)
+                           headers=headers)
         return GetExperimentPermissionLevelsResponse.from_dict(res)
 
     def get_permissions(self, experiment_id: str) -> ExperimentPermissions:
@@ -3793,11 +3755,8 @@ class ExperimentsAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        response_headers = []
-        res = self._api.do('GET',
-                           f'/api/2.0/permissions/experiments/{experiment_id}',
-                           headers=headers,
-                           response_headers=response_headers)
+
+        res = self._api.do('GET', f'/api/2.0/permissions/experiments/{experiment_id}', headers=headers)
         return ExperimentPermissions.from_dict(res)
 
     def get_run(self, run_id: str, *, run_uuid: Optional[str] = None) -> GetRunResponse:
@@ -3821,12 +3780,8 @@ class ExperimentsAPI:
         if run_id is not None: query['run_id'] = run_id
         if run_uuid is not None: query['run_uuid'] = run_uuid
         headers = {'Accept': 'application/json', }
-        response_headers = []
-        res = self._api.do('GET',
-                           '/api/2.0/mlflow/runs/get',
-                           query=query,
-                           headers=headers,
-                           response_headers=response_headers)
+
+        res = self._api.do('GET', '/api/2.0/mlflow/runs/get', query=query, headers=headers)
         return GetRunResponse.from_dict(res)
 
     def list_artifacts(self,
@@ -3859,14 +3814,9 @@ class ExperimentsAPI:
         if run_id is not None: query['run_id'] = run_id
         if run_uuid is not None: query['run_uuid'] = run_uuid
         headers = {'Accept': 'application/json', }
-        response_headers = []
 
         while True:
-            json = self._api.do('GET',
-                                '/api/2.0/mlflow/artifacts/list',
-                                query=query,
-                                headers=headers,
-                                response_headers=response_headers)
+            json = self._api.do('GET', '/api/2.0/mlflow/artifacts/list', query=query, headers=headers)
             if 'files' in json:
                 for v in json['files']:
                     yield FileInfo.from_dict(v)
@@ -3900,14 +3850,9 @@ class ExperimentsAPI:
         if page_token is not None: query['page_token'] = page_token
         if view_type is not None: query['view_type'] = view_type
         headers = {'Accept': 'application/json', }
-        response_headers = []
 
         while True:
-            json = self._api.do('GET',
-                                '/api/2.0/mlflow/experiments/list',
-                                query=query,
-                                headers=headers,
-                                response_headers=response_headers)
+            json = self._api.do('GET', '/api/2.0/mlflow/experiments/list', query=query, headers=headers)
             if 'experiments' in json:
                 for v in json['experiments']:
                     yield Experiment.from_dict(v)
@@ -3978,12 +3923,8 @@ class ExperimentsAPI:
         if run_id is not None: body['run_id'] = run_id
         if tags is not None: body['tags'] = [v.as_dict() for v in tags]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
-        self._api.do('POST',
-                     '/api/2.0/mlflow/runs/log-batch',
-                     body=body,
-                     headers=headers,
-                     response_headers=response_headers)
+
+        self._api.do('POST', '/api/2.0/mlflow/runs/log-batch', body=body, headers=headers)
 
     def log_inputs(self, *, datasets: Optional[List[DatasetInput]] = None, run_id: Optional[str] = None):
         """Log inputs to a run.
@@ -4001,12 +3942,8 @@ class ExperimentsAPI:
         if datasets is not None: body['datasets'] = [v.as_dict() for v in datasets]
         if run_id is not None: body['run_id'] = run_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
-        self._api.do('POST',
-                     '/api/2.0/mlflow/runs/log-inputs',
-                     body=body,
-                     headers=headers,
-                     response_headers=response_headers)
+
+        self._api.do('POST', '/api/2.0/mlflow/runs/log-inputs', body=body, headers=headers)
 
     def log_metric(self,
                    key: str,
@@ -4046,12 +3983,8 @@ class ExperimentsAPI:
         if timestamp is not None: body['timestamp'] = timestamp
         if value is not None: body['value'] = value
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
-        self._api.do('POST',
-                     '/api/2.0/mlflow/runs/log-metric',
-                     body=body,
-                     headers=headers,
-                     response_headers=response_headers)
+
+        self._api.do('POST', '/api/2.0/mlflow/runs/log-metric', body=body, headers=headers)
 
     def log_model(self, *, model_json: Optional[str] = None, run_id: Optional[str] = None):
         """Log a model.
@@ -4069,12 +4002,8 @@ class ExperimentsAPI:
         if model_json is not None: body['model_json'] = model_json
         if run_id is not None: body['run_id'] = run_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
-        self._api.do('POST',
-                     '/api/2.0/mlflow/runs/log-model',
-                     body=body,
-                     headers=headers,
-                     response_headers=response_headers)
+
+        self._api.do('POST', '/api/2.0/mlflow/runs/log-model', body=body, headers=headers)
 
     def log_param(self,
                   key: str,
@@ -4106,12 +4035,8 @@ class ExperimentsAPI:
         if run_uuid is not None: body['run_uuid'] = run_uuid
         if value is not None: body['value'] = value
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
-        self._api.do('POST',
-                     '/api/2.0/mlflow/runs/log-parameter',
-                     body=body,
-                     headers=headers,
-                     response_headers=response_headers)
+
+        self._api.do('POST', '/api/2.0/mlflow/runs/log-parameter', body=body, headers=headers)
 
     def restore_experiment(self, experiment_id: str):
         """Restores an experiment.
@@ -4130,12 +4055,8 @@ class ExperimentsAPI:
         body = {}
         if experiment_id is not None: body['experiment_id'] = experiment_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
-        self._api.do('POST',
-                     '/api/2.0/mlflow/experiments/restore',
-                     body=body,
-                     headers=headers,
-                     response_headers=response_headers)
+
+        self._api.do('POST', '/api/2.0/mlflow/experiments/restore', body=body, headers=headers)
 
     def restore_run(self, run_id: str):
         """Restore a run.
@@ -4150,12 +4071,8 @@ class ExperimentsAPI:
         body = {}
         if run_id is not None: body['run_id'] = run_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
-        self._api.do('POST',
-                     '/api/2.0/mlflow/runs/restore',
-                     body=body,
-                     headers=headers,
-                     response_headers=response_headers)
+
+        self._api.do('POST', '/api/2.0/mlflow/runs/restore', body=body, headers=headers)
 
     def restore_runs(self,
                      experiment_id: str,
@@ -4184,12 +4101,8 @@ class ExperimentsAPI:
         if max_runs is not None: body['max_runs'] = max_runs
         if min_timestamp_millis is not None: body['min_timestamp_millis'] = min_timestamp_millis
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
-        res = self._api.do('POST',
-                           '/api/2.0/mlflow/databricks/runs/restore-runs',
-                           body=body,
-                           headers=headers,
-                           response_headers=response_headers)
+
+        res = self._api.do('POST', '/api/2.0/mlflow/databricks/runs/restore-runs', body=body, headers=headers)
         return RestoreRunsResponse.from_dict(res)
 
     def search_experiments(self,
@@ -4225,14 +4138,9 @@ class ExperimentsAPI:
         if page_token is not None: body['page_token'] = page_token
         if view_type is not None: body['view_type'] = view_type.value
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
 
         while True:
-            json = self._api.do('POST',
-                                '/api/2.0/mlflow/experiments/search',
-                                body=body,
-                                headers=headers,
-                                response_headers=response_headers)
+            json = self._api.do('POST', '/api/2.0/mlflow/experiments/search', body=body, headers=headers)
             if 'experiments' in json:
                 for v in json['experiments']:
                     yield Experiment.from_dict(v)
@@ -4290,14 +4198,9 @@ class ExperimentsAPI:
         if page_token is not None: body['page_token'] = page_token
         if run_view_type is not None: body['run_view_type'] = run_view_type.value
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
 
         while True:
-            json = self._api.do('POST',
-                                '/api/2.0/mlflow/runs/search',
-                                body=body,
-                                headers=headers,
-                                response_headers=response_headers)
+            json = self._api.do('POST', '/api/2.0/mlflow/runs/search', body=body, headers=headers)
             if 'runs' in json:
                 for v in json['runs']:
                     yield Run.from_dict(v)
@@ -4326,12 +4229,8 @@ class ExperimentsAPI:
         if key is not None: body['key'] = key
         if value is not None: body['value'] = value
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
-        self._api.do('POST',
-                     '/api/2.0/mlflow/experiments/set-experiment-tag',
-                     body=body,
-                     headers=headers,
-                     response_headers=response_headers)
+
+        self._api.do('POST', '/api/2.0/mlflow/experiments/set-experiment-tag', body=body, headers=headers)
 
     def set_permissions(
             self,
@@ -4353,12 +4252,11 @@ class ExperimentsAPI:
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
+
         res = self._api.do('PUT',
                            f'/api/2.0/permissions/experiments/{experiment_id}',
                            body=body,
-                           headers=headers,
-                           response_headers=response_headers)
+                           headers=headers)
         return ExperimentPermissions.from_dict(res)
 
     def set_tag(self, key: str, value: str, *, run_id: Optional[str] = None, run_uuid: Optional[str] = None):
@@ -4386,12 +4284,8 @@ class ExperimentsAPI:
         if run_uuid is not None: body['run_uuid'] = run_uuid
         if value is not None: body['value'] = value
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
-        self._api.do('POST',
-                     '/api/2.0/mlflow/runs/set-tag',
-                     body=body,
-                     headers=headers,
-                     response_headers=response_headers)
+
+        self._api.do('POST', '/api/2.0/mlflow/runs/set-tag', body=body, headers=headers)
 
     def update_experiment(self, experiment_id: str, *, new_name: Optional[str] = None):
         """Update an experiment.
@@ -4409,12 +4303,8 @@ class ExperimentsAPI:
         if experiment_id is not None: body['experiment_id'] = experiment_id
         if new_name is not None: body['new_name'] = new_name
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
-        self._api.do('POST',
-                     '/api/2.0/mlflow/experiments/update',
-                     body=body,
-                     headers=headers,
-                     response_headers=response_headers)
+
+        self._api.do('POST', '/api/2.0/mlflow/experiments/update', body=body, headers=headers)
 
     def update_permissions(
             self,
@@ -4436,12 +4326,11 @@ class ExperimentsAPI:
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
+
         res = self._api.do('PATCH',
                            f'/api/2.0/permissions/experiments/{experiment_id}',
                            body=body,
-                           headers=headers,
-                           response_headers=response_headers)
+                           headers=headers)
         return ExperimentPermissions.from_dict(res)
 
     def update_run(self,
@@ -4472,12 +4361,8 @@ class ExperimentsAPI:
         if run_uuid is not None: body['run_uuid'] = run_uuid
         if status is not None: body['status'] = status.value
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
-        res = self._api.do('POST',
-                           '/api/2.0/mlflow/runs/update',
-                           body=body,
-                           headers=headers,
-                           response_headers=response_headers)
+
+        res = self._api.do('POST', '/api/2.0/mlflow/runs/update', body=body, headers=headers)
         return UpdateRunResponse.from_dict(res)
 
 
@@ -4533,12 +4418,8 @@ class ModelRegistryAPI:
         if stage is not None: body['stage'] = stage.value
         if version is not None: body['version'] = version
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
-        res = self._api.do('POST',
-                           '/api/2.0/mlflow/transition-requests/approve',
-                           body=body,
-                           headers=headers,
-                           response_headers=response_headers)
+
+        res = self._api.do('POST', '/api/2.0/mlflow/transition-requests/approve', body=body, headers=headers)
         return ApproveTransitionRequestResponse.from_dict(res)
 
     def create_comment(self, name: str, version: str, comment: str) -> CreateCommentResponse:
@@ -4561,12 +4442,8 @@ class ModelRegistryAPI:
         if name is not None: body['name'] = name
         if version is not None: body['version'] = version
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
-        res = self._api.do('POST',
-                           '/api/2.0/mlflow/comments/create',
-                           body=body,
-                           headers=headers,
-                           response_headers=response_headers)
+
+        res = self._api.do('POST', '/api/2.0/mlflow/comments/create', body=body, headers=headers)
         return CreateCommentResponse.from_dict(res)
 
     def create_model(self,
@@ -4594,12 +4471,8 @@ class ModelRegistryAPI:
         if name is not None: body['name'] = name
         if tags is not None: body['tags'] = [v.as_dict() for v in tags]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
-        res = self._api.do('POST',
-                           '/api/2.0/mlflow/registered-models/create',
-                           body=body,
-                           headers=headers,
-                           response_headers=response_headers)
+
+        res = self._api.do('POST', '/api/2.0/mlflow/registered-models/create', body=body, headers=headers)
         return CreateModelResponse.from_dict(res)
 
     def create_model_version(self,
@@ -4639,12 +4512,8 @@ class ModelRegistryAPI:
         if source is not None: body['source'] = source
         if tags is not None: body['tags'] = [v.as_dict() for v in tags]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
-        res = self._api.do('POST',
-                           '/api/2.0/mlflow/model-versions/create',
-                           body=body,
-                           headers=headers,
-                           response_headers=response_headers)
+
+        res = self._api.do('POST', '/api/2.0/mlflow/model-versions/create', body=body, headers=headers)
         return CreateModelVersionResponse.from_dict(res)
 
     def create_transition_request(self,
@@ -4682,12 +4551,8 @@ class ModelRegistryAPI:
         if stage is not None: body['stage'] = stage.value
         if version is not None: body['version'] = version
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
-        res = self._api.do('POST',
-                           '/api/2.0/mlflow/transition-requests/create',
-                           body=body,
-                           headers=headers,
-                           response_headers=response_headers)
+
+        res = self._api.do('POST', '/api/2.0/mlflow/transition-requests/create', body=body, headers=headers)
         return CreateTransitionRequestResponse.from_dict(res)
 
     def create_webhook(self,
@@ -4758,12 +4623,8 @@ class ModelRegistryAPI:
         if model_name is not None: body['model_name'] = model_name
         if status is not None: body['status'] = status.value
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
-        res = self._api.do('POST',
-                           '/api/2.0/mlflow/registry-webhooks/create',
-                           body=body,
-                           headers=headers,
-                           response_headers=response_headers)
+
+        res = self._api.do('POST', '/api/2.0/mlflow/registry-webhooks/create', body=body, headers=headers)
         return CreateWebhookResponse.from_dict(res)
 
     def delete_comment(self, id: str):
@@ -4779,12 +4640,8 @@ class ModelRegistryAPI:
         query = {}
         if id is not None: query['id'] = id
         headers = {'Accept': 'application/json', }
-        response_headers = []
-        self._api.do('DELETE',
-                     '/api/2.0/mlflow/comments/delete',
-                     query=query,
-                     headers=headers,
-                     response_headers=response_headers)
+
+        self._api.do('DELETE', '/api/2.0/mlflow/comments/delete', query=query, headers=headers)
 
     def delete_model(self, name: str):
         """Delete a model.
@@ -4800,12 +4657,8 @@ class ModelRegistryAPI:
         query = {}
         if name is not None: query['name'] = name
         headers = {'Accept': 'application/json', }
-        response_headers = []
-        self._api.do('DELETE',
-                     '/api/2.0/mlflow/registered-models/delete',
-                     query=query,
-                     headers=headers,
-                     response_headers=response_headers)
+
+        self._api.do('DELETE', '/api/2.0/mlflow/registered-models/delete', query=query, headers=headers)
 
     def delete_model_tag(self, name: str, key: str):
         """Delete a model tag.
@@ -4825,12 +4678,8 @@ class ModelRegistryAPI:
         if key is not None: query['key'] = key
         if name is not None: query['name'] = name
         headers = {'Accept': 'application/json', }
-        response_headers = []
-        self._api.do('DELETE',
-                     '/api/2.0/mlflow/registered-models/delete-tag',
-                     query=query,
-                     headers=headers,
-                     response_headers=response_headers)
+
+        self._api.do('DELETE', '/api/2.0/mlflow/registered-models/delete-tag', query=query, headers=headers)
 
     def delete_model_version(self, name: str, version: str):
         """Delete a model version.
@@ -4849,12 +4698,8 @@ class ModelRegistryAPI:
         if name is not None: query['name'] = name
         if version is not None: query['version'] = version
         headers = {'Accept': 'application/json', }
-        response_headers = []
-        self._api.do('DELETE',
-                     '/api/2.0/mlflow/model-versions/delete',
-                     query=query,
-                     headers=headers,
-                     response_headers=response_headers)
+
+        self._api.do('DELETE', '/api/2.0/mlflow/model-versions/delete', query=query, headers=headers)
 
     def delete_model_version_tag(self, name: str, version: str, key: str):
         """Delete a model version tag.
@@ -4877,12 +4722,8 @@ class ModelRegistryAPI:
         if name is not None: query['name'] = name
         if version is not None: query['version'] = version
         headers = {'Accept': 'application/json', }
-        response_headers = []
-        self._api.do('DELETE',
-                     '/api/2.0/mlflow/model-versions/delete-tag',
-                     query=query,
-                     headers=headers,
-                     response_headers=response_headers)
+
+        self._api.do('DELETE', '/api/2.0/mlflow/model-versions/delete-tag', query=query, headers=headers)
 
     def delete_transition_request(self,
                                   name: str,
@@ -4925,12 +4766,8 @@ class ModelRegistryAPI:
         if stage is not None: query['stage'] = stage.value
         if version is not None: query['version'] = version
         headers = {'Accept': 'application/json', }
-        response_headers = []
-        self._api.do('DELETE',
-                     '/api/2.0/mlflow/transition-requests/delete',
-                     query=query,
-                     headers=headers,
-                     response_headers=response_headers)
+
+        self._api.do('DELETE', '/api/2.0/mlflow/transition-requests/delete', query=query, headers=headers)
 
     def delete_webhook(self, *, id: Optional[str] = None):
         """Delete a webhook.
@@ -4948,12 +4785,8 @@ class ModelRegistryAPI:
         query = {}
         if id is not None: query['id'] = id
         headers = {'Accept': 'application/json', }
-        response_headers = []
-        self._api.do('DELETE',
-                     '/api/2.0/mlflow/registry-webhooks/delete',
-                     query=query,
-                     headers=headers,
-                     response_headers=response_headers)
+
+        self._api.do('DELETE', '/api/2.0/mlflow/registry-webhooks/delete', query=query, headers=headers)
 
     def get_latest_versions(self, name: str, *, stages: Optional[List[str]] = None) -> Iterator[ModelVersion]:
         """Get the latest version.
@@ -4971,12 +4804,11 @@ class ModelRegistryAPI:
         if name is not None: body['name'] = name
         if stages is not None: body['stages'] = [v for v in stages]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
+
         json = self._api.do('POST',
                             '/api/2.0/mlflow/registered-models/get-latest-versions',
                             body=body,
-                            headers=headers,
-                            response_headers=response_headers)
+                            headers=headers)
         parsed = GetLatestVersionsResponse.from_dict(json).model_versions
         return parsed if parsed is not None else []
 
@@ -4998,12 +4830,11 @@ class ModelRegistryAPI:
         query = {}
         if name is not None: query['name'] = name
         headers = {'Accept': 'application/json', }
-        response_headers = []
+
         res = self._api.do('GET',
                            '/api/2.0/mlflow/databricks/registered-models/get',
                            query=query,
-                           headers=headers,
-                           response_headers=response_headers)
+                           headers=headers)
         return GetModelResponse.from_dict(res)
 
     def get_model_version(self, name: str, version: str) -> GetModelVersionResponse:
@@ -5023,12 +4854,8 @@ class ModelRegistryAPI:
         if name is not None: query['name'] = name
         if version is not None: query['version'] = version
         headers = {'Accept': 'application/json', }
-        response_headers = []
-        res = self._api.do('GET',
-                           '/api/2.0/mlflow/model-versions/get',
-                           query=query,
-                           headers=headers,
-                           response_headers=response_headers)
+
+        res = self._api.do('GET', '/api/2.0/mlflow/model-versions/get', query=query, headers=headers)
         return GetModelVersionResponse.from_dict(res)
 
     def get_model_version_download_uri(self, name: str, version: str) -> GetModelVersionDownloadUriResponse:
@@ -5048,12 +4875,11 @@ class ModelRegistryAPI:
         if name is not None: query['name'] = name
         if version is not None: query['version'] = version
         headers = {'Accept': 'application/json', }
-        response_headers = []
+
         res = self._api.do('GET',
                            '/api/2.0/mlflow/model-versions/get-download-uri',
                            query=query,
-                           headers=headers,
-                           response_headers=response_headers)
+                           headers=headers)
         return GetModelVersionDownloadUriResponse.from_dict(res)
 
     def get_permission_levels(self, registered_model_id: str) -> GetRegisteredModelPermissionLevelsResponse:
@@ -5068,11 +4894,10 @@ class ModelRegistryAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        response_headers = []
+
         res = self._api.do('GET',
                            f'/api/2.0/permissions/registered-models/{registered_model_id}/permissionLevels',
-                           headers=headers,
-                           response_headers=response_headers)
+                           headers=headers)
         return GetRegisteredModelPermissionLevelsResponse.from_dict(res)
 
     def get_permissions(self, registered_model_id: str) -> RegisteredModelPermissions:
@@ -5088,11 +4913,10 @@ class ModelRegistryAPI:
         """
 
         headers = {'Accept': 'application/json', }
-        response_headers = []
+
         res = self._api.do('GET',
                            f'/api/2.0/permissions/registered-models/{registered_model_id}',
-                           headers=headers,
-                           response_headers=response_headers)
+                           headers=headers)
         return RegisteredModelPermissions.from_dict(res)
 
     def list_models(self,
@@ -5115,14 +4939,9 @@ class ModelRegistryAPI:
         if max_results is not None: query['max_results'] = max_results
         if page_token is not None: query['page_token'] = page_token
         headers = {'Accept': 'application/json', }
-        response_headers = []
 
         while True:
-            json = self._api.do('GET',
-                                '/api/2.0/mlflow/registered-models/list',
-                                query=query,
-                                headers=headers,
-                                response_headers=response_headers)
+            json = self._api.do('GET', '/api/2.0/mlflow/registered-models/list', query=query, headers=headers)
             if 'registered_models' in json:
                 for v in json['registered_models']:
                     yield Model.from_dict(v)
@@ -5147,12 +4966,8 @@ class ModelRegistryAPI:
         if name is not None: query['name'] = name
         if version is not None: query['version'] = version
         headers = {'Accept': 'application/json', }
-        response_headers = []
-        json = self._api.do('GET',
-                            '/api/2.0/mlflow/transition-requests/list',
-                            query=query,
-                            headers=headers,
-                            response_headers=response_headers)
+
+        json = self._api.do('GET', '/api/2.0/mlflow/transition-requests/list', query=query, headers=headers)
         parsed = ListTransitionRequestsResponse.from_dict(json).requests
         return parsed if parsed is not None else []
 
@@ -5184,14 +4999,9 @@ class ModelRegistryAPI:
         if model_name is not None: query['model_name'] = model_name
         if page_token is not None: query['page_token'] = page_token
         headers = {'Accept': 'application/json', }
-        response_headers = []
 
         while True:
-            json = self._api.do('GET',
-                                '/api/2.0/mlflow/registry-webhooks/list',
-                                query=query,
-                                headers=headers,
-                                response_headers=response_headers)
+            json = self._api.do('GET', '/api/2.0/mlflow/registry-webhooks/list', query=query, headers=headers)
             if 'webhooks' in json:
                 for v in json['webhooks']:
                     yield RegistryWebhook.from_dict(v)
@@ -5234,12 +5044,8 @@ class ModelRegistryAPI:
         if stage is not None: body['stage'] = stage.value
         if version is not None: body['version'] = version
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
-        res = self._api.do('POST',
-                           '/api/2.0/mlflow/transition-requests/reject',
-                           body=body,
-                           headers=headers,
-                           response_headers=response_headers)
+
+        res = self._api.do('POST', '/api/2.0/mlflow/transition-requests/reject', body=body, headers=headers)
         return RejectTransitionRequestResponse.from_dict(res)
 
     def rename_model(self, name: str, *, new_name: Optional[str] = None) -> RenameModelResponse:
@@ -5258,12 +5064,8 @@ class ModelRegistryAPI:
         if name is not None: body['name'] = name
         if new_name is not None: body['new_name'] = new_name
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
-        res = self._api.do('POST',
-                           '/api/2.0/mlflow/registered-models/rename',
-                           body=body,
-                           headers=headers,
-                           response_headers=response_headers)
+
+        res = self._api.do('POST', '/api/2.0/mlflow/registered-models/rename', body=body, headers=headers)
         return RenameModelResponse.from_dict(res)
 
     def search_model_versions(self,
@@ -5297,14 +5099,9 @@ class ModelRegistryAPI:
         if order_by is not None: query['order_by'] = [v for v in order_by]
         if page_token is not None: query['page_token'] = page_token
         headers = {'Accept': 'application/json', }
-        response_headers = []
 
         while True:
-            json = self._api.do('GET',
-                                '/api/2.0/mlflow/model-versions/search',
-                                query=query,
-                                headers=headers,
-                                response_headers=response_headers)
+            json = self._api.do('GET', '/api/2.0/mlflow/model-versions/search', query=query, headers=headers)
             if 'model_versions' in json:
                 for v in json['model_versions']:
                     yield ModelVersion.from_dict(v)
@@ -5344,14 +5141,12 @@ class ModelRegistryAPI:
         if order_by is not None: query['order_by'] = [v for v in order_by]
         if page_token is not None: query['page_token'] = page_token
         headers = {'Accept': 'application/json', }
-        response_headers = []
 
         while True:
             json = self._api.do('GET',
                                 '/api/2.0/mlflow/registered-models/search',
                                 query=query,
-                                headers=headers,
-                                response_headers=response_headers)
+                                headers=headers)
             if 'registered_models' in json:
                 for v in json['registered_models']:
                     yield Model.from_dict(v)
@@ -5381,12 +5176,8 @@ class ModelRegistryAPI:
         if name is not None: body['name'] = name
         if value is not None: body['value'] = value
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
-        self._api.do('POST',
-                     '/api/2.0/mlflow/registered-models/set-tag',
-                     body=body,
-                     headers=headers,
-                     response_headers=response_headers)
+
+        self._api.do('POST', '/api/2.0/mlflow/registered-models/set-tag', body=body, headers=headers)
 
     def set_model_version_tag(self, name: str, version: str, key: str, value: str):
         """Set a version tag.
@@ -5413,12 +5204,8 @@ class ModelRegistryAPI:
         if value is not None: body['value'] = value
         if version is not None: body['version'] = version
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
-        self._api.do('POST',
-                     '/api/2.0/mlflow/model-versions/set-tag',
-                     body=body,
-                     headers=headers,
-                     response_headers=response_headers)
+
+        self._api.do('POST', '/api/2.0/mlflow/model-versions/set-tag', body=body, headers=headers)
 
     def set_permissions(
         self,
@@ -5441,12 +5228,11 @@ class ModelRegistryAPI:
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
+
         res = self._api.do('PUT',
                            f'/api/2.0/permissions/registered-models/{registered_model_id}',
                            body=body,
-                           headers=headers,
-                           response_headers=response_headers)
+                           headers=headers)
         return RegisteredModelPermissions.from_dict(res)
 
     def test_registry_webhook(self,
@@ -5471,12 +5257,8 @@ class ModelRegistryAPI:
         if event is not None: body['event'] = event.value
         if id is not None: body['id'] = id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
-        res = self._api.do('POST',
-                           '/api/2.0/mlflow/registry-webhooks/test',
-                           body=body,
-                           headers=headers,
-                           response_headers=response_headers)
+
+        res = self._api.do('POST', '/api/2.0/mlflow/registry-webhooks/test', body=body, headers=headers)
         return TestRegistryWebhookResponse.from_dict(res)
 
     def transition_stage(self,
@@ -5522,12 +5304,11 @@ class ModelRegistryAPI:
         if stage is not None: body['stage'] = stage.value
         if version is not None: body['version'] = version
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
+
         res = self._api.do('POST',
                            '/api/2.0/mlflow/databricks/model-versions/transition-stage',
                            body=body,
-                           headers=headers,
-                           response_headers=response_headers)
+                           headers=headers)
         return TransitionStageResponse.from_dict(res)
 
     def update_comment(self, id: str, comment: str) -> UpdateCommentResponse:
@@ -5546,12 +5327,8 @@ class ModelRegistryAPI:
         if comment is not None: body['comment'] = comment
         if id is not None: body['id'] = id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
-        res = self._api.do('PATCH',
-                           '/api/2.0/mlflow/comments/update',
-                           body=body,
-                           headers=headers,
-                           response_headers=response_headers)
+
+        res = self._api.do('PATCH', '/api/2.0/mlflow/comments/update', body=body, headers=headers)
         return UpdateCommentResponse.from_dict(res)
 
     def update_model(self, name: str, *, description: Optional[str] = None):
@@ -5570,12 +5347,8 @@ class ModelRegistryAPI:
         if description is not None: body['description'] = description
         if name is not None: body['name'] = name
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
-        self._api.do('PATCH',
-                     '/api/2.0/mlflow/registered-models/update',
-                     body=body,
-                     headers=headers,
-                     response_headers=response_headers)
+
+        self._api.do('PATCH', '/api/2.0/mlflow/registered-models/update', body=body, headers=headers)
 
     def update_model_version(self, name: str, version: str, *, description: Optional[str] = None):
         """Update model version.
@@ -5596,12 +5369,8 @@ class ModelRegistryAPI:
         if name is not None: body['name'] = name
         if version is not None: body['version'] = version
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
-        self._api.do('PATCH',
-                     '/api/2.0/mlflow/model-versions/update',
-                     body=body,
-                     headers=headers,
-                     response_headers=response_headers)
+
+        self._api.do('PATCH', '/api/2.0/mlflow/model-versions/update', body=body, headers=headers)
 
     def update_permissions(
         self,
@@ -5624,12 +5393,11 @@ class ModelRegistryAPI:
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
+
         res = self._api.do('PATCH',
                            f'/api/2.0/permissions/registered-models/{registered_model_id}',
                            body=body,
-                           headers=headers,
-                           response_headers=response_headers)
+                           headers=headers)
         return RegisteredModelPermissions.from_dict(res)
 
     def update_webhook(self,
@@ -5700,9 +5468,5 @@ class ModelRegistryAPI:
         if job_spec is not None: body['job_spec'] = job_spec.as_dict()
         if status is not None: body['status'] = status.value
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        response_headers = []
-        self._api.do('PATCH',
-                     '/api/2.0/mlflow/registry-webhooks/update',
-                     body=body,
-                     headers=headers,
-                     response_headers=response_headers)
+
+        self._api.do('PATCH', '/api/2.0/mlflow/registry-webhooks/update', body=body, headers=headers)
