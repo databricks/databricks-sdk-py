@@ -1,5 +1,99 @@
 # Version changelog
 
+## 0.20.0
+
+Major Changes:
+
+* Updated behaviour for raw parameter in `ApiClient.do()` method. The raw data is not returned directly anymore, but as part of a dict with the `contents` key. This dict will also contain response headers if returned by the API.
+
+Internal Changes:
+ 
+* Add get_workspace_id to docgen blocklist ([#549](https://github.com/databricks/databricks-sdk-py/pull/549)).
+* Support HEAD operation and response Headers ([#547](https://github.com/databricks/databricks-sdk-py/pull/547)).
+
+API Changes:
+
+ * Changed `delete()` method for [w.connections](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/connections.html) workspace-level service with new required argument order.
+ * Changed `get()` method for [w.connections](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/connections.html) workspace-level service with new required argument order.
+ * Changed `update()` method for [w.connections](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/connections.html) workspace-level service with new required argument order.
+ * Changed `update()` method for [w.lakehouse_monitors](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/lakehouse_monitors.html) workspace-level service with new required argument order.
+ * Changed `delete()` method for [w.volumes](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/volumes.html) workspace-level service with new required argument order.
+ * Changed `read()` method for [w.volumes](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/volumes.html) workspace-level service with new required argument order.
+ * Changed `update()` method for [w.volumes](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/volumes.html) workspace-level service with new required argument order.
+ * Added [w.online_tables](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/online_tables.html) workspace-level service.
+ * Removed `name_arg` field for `databricks.sdk.service.catalog.DeleteConnectionRequest`.
+ * Added `name` field for `databricks.sdk.service.catalog.DeleteConnectionRequest`.
+ * Removed `full_name_arg` field for `databricks.sdk.service.catalog.DeleteVolumeRequest`.
+ * Added `name` field for `databricks.sdk.service.catalog.DeleteVolumeRequest`.
+ * Removed `name_arg` field for `databricks.sdk.service.catalog.GetConnectionRequest`.
+ * Added `name` field for `databricks.sdk.service.catalog.GetConnectionRequest`.
+ * Added `max_results` field for `databricks.sdk.service.catalog.ListVolumesRequest`.
+ * Added `page_token` field for `databricks.sdk.service.catalog.ListVolumesRequest`.
+ * Added `next_page_token` field for `databricks.sdk.service.catalog.ListVolumesResponseContent`.
+ * Removed `full_name_arg` field for `databricks.sdk.service.catalog.ReadVolumeRequest`.
+ * Added `name` field for `databricks.sdk.service.catalog.ReadVolumeRequest`.
+ * Removed `name_arg` field for `databricks.sdk.service.catalog.UpdateConnection`.
+ * Added `name` field for `databricks.sdk.service.catalog.UpdateConnection`.
+ * Removed `assets_dir` field for `databricks.sdk.service.catalog.UpdateMonitor`.
+ * Removed `full_name_arg` field for `databricks.sdk.service.catalog.UpdateVolumeRequestContent`.
+ * Added `name` field for `databricks.sdk.service.catalog.UpdateVolumeRequestContent`.
+ * Added `databricks.sdk.service.catalog.ContinuousUpdateStatus` dataclass.
+ * Added `databricks.sdk.service.catalog.DeleteOnlineTableRequest` dataclass.
+ * Added `databricks.sdk.service.catalog.FailedStatus` dataclass.
+ * Added `databricks.sdk.service.catalog.GetOnlineTableRequest` dataclass.
+ * Added `databricks.sdk.service.catalog.OnlineTable` dataclass.
+ * Added `databricks.sdk.service.catalog.OnlineTableSpec` dataclass.
+ * Added `databricks.sdk.service.catalog.OnlineTableState` dataclass.
+ * Added `databricks.sdk.service.catalog.OnlineTableStatus` dataclass.
+ * Added `databricks.sdk.service.catalog.PipelineProgress` dataclass.
+ * Added `databricks.sdk.service.catalog.ProvisioningStatus` dataclass.
+ * Added `databricks.sdk.service.catalog.TriggeredUpdateStatus` dataclass.
+ * Added `databricks.sdk.service.catalog.ViewData` dataclass.
+ * Added `get_directory_metadata()` method for [w.files](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/files.html) workspace-level service.
+ * Added `get_metadata()` method for [w.files](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/files.html) workspace-level service.
+ * Added `content_length` field for `databricks.sdk.service.files.DownloadResponse`.
+ * Added `content_type` field for `databricks.sdk.service.files.DownloadResponse`.
+ * Added `last_modified` field for `databricks.sdk.service.files.DownloadResponse`.
+ * Added `databricks.sdk.service.files.FileSize` dataclass.
+ * Added `databricks.sdk.service.files.GetDirectoryMetadataRequest` dataclass.
+ * Added `databricks.sdk.service.files.GetMetadataRequest` dataclass.
+ * Added `databricks.sdk.service.files.GetMetadataResponse` dataclass.
+ * Added `databricks.sdk.service.files.LastModifiedHttpDate` dataclass.
+ * Removed `trigger_history` field for `databricks.sdk.service.jobs.Job`.
+ * Removed `databricks.sdk.service.jobs.TriggerEvaluation` dataclass.
+ * Removed `databricks.sdk.service.jobs.TriggerHistory` dataclass.
+ * Added `table` field for `databricks.sdk.service.jobs.TriggerSettings`.
+ * Added `databricks.sdk.service.jobs.Condition` dataclass.
+ * Added `databricks.sdk.service.jobs.TableTriggerConfiguration` dataclass.
+ * Removed `config` field for `databricks.sdk.service.serving.ExternalModel`.
+ * Added `ai21labs_config` field for `databricks.sdk.service.serving.ExternalModel`.
+ * Added `anthropic_config` field for `databricks.sdk.service.serving.ExternalModel`.
+ * Added `aws_bedrock_config` field for `databricks.sdk.service.serving.ExternalModel`.
+ * Added `cohere_config` field for `databricks.sdk.service.serving.ExternalModel`.
+ * Added `databricks_model_serving_config` field for `databricks.sdk.service.serving.ExternalModel`.
+ * Added `openai_config` field for `databricks.sdk.service.serving.ExternalModel`.
+ * Added `palm_config` field for `databricks.sdk.service.serving.ExternalModel`.
+ * Removed `databricks.sdk.service.serving.ExternalModelConfig` dataclass.
+ * Added `max_provisioned_throughput` field for `databricks.sdk.service.serving.ServedEntityInput`.
+ * Added `min_provisioned_throughput` field for `databricks.sdk.service.serving.ServedEntityInput`.
+ * Added `max_provisioned_throughput` field for `databricks.sdk.service.serving.ServedEntityOutput`.
+ * Added `min_provisioned_throughput` field for `databricks.sdk.service.serving.ServedEntityOutput`.
+ * Changed `delete()` method for [w.clean_rooms](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/clean_rooms.html) workspace-level service with new required argument order.
+ * Changed `get()` method for [w.clean_rooms](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/clean_rooms.html) workspace-level service with new required argument order.
+ * Changed `update()` method for [w.clean_rooms](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/clean_rooms.html) workspace-level service with new required argument order.
+ * Removed `name_arg` field for `databricks.sdk.service.sharing.DeleteCleanRoomRequest`.
+ * Added `name` field for `databricks.sdk.service.sharing.DeleteCleanRoomRequest`.
+ * Removed `name_arg` field for `databricks.sdk.service.sharing.GetCleanRoomRequest`.
+ * Added `name` field for `databricks.sdk.service.sharing.GetCleanRoomRequest`.
+ * Removed `name_arg` field for `databricks.sdk.service.sharing.UpdateCleanRoom`.
+ * Added `name` field for `databricks.sdk.service.sharing.UpdateCleanRoom`.
+ * Added `enum_options` field for `databricks.sdk.service.sql.Parameter`.
+ * Added `multi_values_options` field for `databricks.sdk.service.sql.Parameter`.
+ * Added `query_id` field for `databricks.sdk.service.sql.Parameter`.
+ * Added `databricks.sdk.service.sql.MultiValuesOptions` dataclass.
+
+OpenAPI SHA: cdd76a98a4fca7008572b3a94427566dd286c63b, Date: 2024-02-19
+
 ## 0.19.1
 
 New features:

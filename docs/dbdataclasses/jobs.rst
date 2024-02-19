@@ -376,6 +376,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: TableTriggerConfiguration
+   :members:
+   :undoc-members:
+
 .. autoclass:: Task
    :members:
    :undoc-members:
@@ -389,14 +393,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: TaskNotificationSettings
-   :members:
-   :undoc-members:
-
-.. autoclass:: TriggerEvaluation
-   :members:
-   :undoc-members:
-
-.. autoclass:: TriggerHistory
    :members:
    :undoc-members:
 

@@ -52,7 +52,7 @@
             w.external_locations.delete(name=external_location.name)
             w.schemas.delete(full_name=created_schema.full_name)
             w.catalogs.delete(name=created_catalog.name, force=True)
-            w.volumes.delete(full_name_arg=created_volume.full_name)
+            w.volumes.delete(name=created_volume.full_name)
 
         Create a Volume.
         
@@ -87,7 +87,7 @@
         :returns: :class:`VolumeInfo`
         
 
-    .. py:method:: delete(full_name_arg: str)
+    .. py:method:: delete(name: str)
 
         Delete a Volume.
         
@@ -97,13 +97,13 @@
         also be the owner or have the **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
         privilege on the parent schema.
         
-        :param full_name_arg: str
+        :param name: str
           The three-level (fully qualified) name of the volume
         
         
         
 
-    .. py:method:: list(catalog_name: str, schema_name: str) -> Iterator[VolumeInfo]
+    .. py:method:: list(catalog_name: str, schema_name: str [, max_results: Optional[int], page_token: Optional[str]]) -> Iterator[VolumeInfo]
 
 
         Usage:
@@ -128,7 +128,7 @@
 
         List Volumes.
         
-        Gets an array of all volumes for the current metastore under the parent catalog and schema.
+        Gets an array of volumes for the current metastore under the parent catalog and schema.
         
         The returned volumes are filtered based on the privileges of the calling user. For example, the
         metastore admin is able to list all the volumes. A regular user needs to be the owner or have the
@@ -142,11 +142,26 @@
           The identifier of the catalog
         :param schema_name: str
           The identifier of the schema
+        :param max_results: int (optional)
+          Maximum number of volumes to return (page length).
+          
+          If not set, the page length is set to a server configured value (10000, as of 1/29/2024). - when set
+          to a value greater than 0, the page length is the minimum of this value and a server configured
+          value (10000, as of 1/29/2024); - when set to 0, the page length is set to a server configured value
+          (10000, as of 1/29/2024) (recommended); - when set to a value less than 0, an invalid parameter
+          error is returned;
+          
+          Note: this parameter controls only the maximum number of volumes to return. The actual number of
+          volumes returned in a page may be smaller than this value, including 0, even if there are more
+          pages.
+        :param page_token: str (optional)
+          Opaque token returned by a previous request. It must be included in the request to retrieve the next
+          page of results (pagination).
         
         :returns: Iterator over :class:`VolumeInfo`
         
 
-    .. py:method:: read(full_name_arg: str) -> VolumeInfo
+    .. py:method:: read(name: str) -> VolumeInfo
 
 
         Usage:
@@ -182,14 +197,14 @@
                                               storage_location=external_location.url,
                                               volume_type=catalog.VolumeType.EXTERNAL)
             
-            loaded_volume = w.volumes.read(full_name_arg=created_volume.full_name)
+            loaded_volume = w.volumes.read(name=created_volume.full_name)
             
             # cleanup
             w.storage_credentials.delete(name=storage_credential.name)
             w.external_locations.delete(name=external_location.name)
             w.schemas.delete(full_name=created_schema.full_name)
             w.catalogs.delete(name=created_catalog.name, force=True)
-            w.volumes.delete(full_name_arg=created_volume.full_name)
+            w.volumes.delete(name=created_volume.full_name)
 
         Get a Volume.
         
@@ -199,13 +214,13 @@
         volume. For the latter case, the caller must also be the owner or have the **USE_CATALOG** privilege
         on the parent catalog and the **USE_SCHEMA** privilege on the parent schema.
         
-        :param full_name_arg: str
+        :param name: str
           The three-level (fully qualified) name of the volume
         
         :returns: :class:`VolumeInfo`
         
 
-    .. py:method:: update(full_name_arg: str [, comment: Optional[str], new_name: Optional[str], owner: Optional[str]]) -> VolumeInfo
+    .. py:method:: update(name: str [, comment: Optional[str], new_name: Optional[str], owner: Optional[str]]) -> VolumeInfo
 
 
         Usage:
@@ -241,16 +256,16 @@
                                               storage_location=external_location.url,
                                               volume_type=catalog.VolumeType.EXTERNAL)
             
-            loaded_volume = w.volumes.read(full_name_arg=created_volume.full_name)
+            loaded_volume = w.volumes.read(name=created_volume.full_name)
             
-            _ = w.volumes.update(full_name_arg=loaded_volume.full_name, comment="Updated volume comment")
+            _ = w.volumes.update(name=loaded_volume.full_name, comment="Updated volume comment")
             
             # cleanup
             w.storage_credentials.delete(name=storage_credential.name)
             w.external_locations.delete(name=external_location.name)
             w.schemas.delete(full_name=created_schema.full_name)
             w.catalogs.delete(name=created_catalog.name, force=True)
-            w.volumes.delete(full_name_arg=created_volume.full_name)
+            w.volumes.delete(name=created_volume.full_name)
 
         Update a Volume.
         
@@ -262,7 +277,7 @@
         
         Currently only the name, the owner or the comment of the volume could be updated.
         
-        :param full_name_arg: str
+        :param name: str
           The three-level (fully qualified) name of the volume
         :param comment: str (optional)
           The comment attached to the volume

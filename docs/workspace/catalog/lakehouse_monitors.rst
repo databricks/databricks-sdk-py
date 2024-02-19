@@ -186,7 +186,7 @@
         :returns: :class:`MonitorRefreshInfo`
         
 
-    .. py:method:: update(full_name: str, assets_dir: str, output_schema_name: str [, baseline_table_name: Optional[str], custom_metrics: Optional[List[MonitorCustomMetric]], data_classification_config: Optional[MonitorDataClassificationConfig], inference_log: Optional[MonitorInferenceLogProfileType], notifications: Optional[List[MonitorNotificationsConfig]], schedule: Optional[MonitorCronSchedule], slicing_exprs: Optional[List[str]], snapshot: Optional[Any], time_series: Optional[MonitorTimeSeriesProfileType]]) -> MonitorInfo
+    .. py:method:: update(full_name: str, output_schema_name: str [, baseline_table_name: Optional[str], custom_metrics: Optional[List[MonitorCustomMetric]], data_classification_config: Optional[MonitorDataClassificationConfig], inference_log: Optional[MonitorInferenceLogProfileType], notifications: Optional[List[MonitorNotificationsConfig]], schedule: Optional[MonitorCronSchedule], slicing_exprs: Optional[List[str]], snapshot: Optional[Any], time_series: Optional[MonitorTimeSeriesProfileType]]) -> MonitorInfo
 
         Update a table monitor.
         
@@ -204,8 +204,6 @@
         
         :param full_name: str
           Full name of the table.
-        :param assets_dir: str
-          The directory to store monitoring assets (e.g. dashboard, metric tables).
         :param output_schema_name: str
           Schema where output metric tables are created.
         :param baseline_table_name: str (optional)
