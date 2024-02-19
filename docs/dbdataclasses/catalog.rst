@@ -80,6 +80,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ContinuousUpdateStatus
+   :members:
+   :undoc-members:
+
 .. autoclass:: CreateCatalog
    :members:
    :undoc-members:
@@ -173,6 +177,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ExternalLocationInfo
+   :members:
+   :undoc-members:
+
+.. autoclass:: FailedStatus
    :members:
    :undoc-members:
 
@@ -308,11 +316,27 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: OnlineTable
+   :members:
+   :undoc-members:
+
+.. autoclass:: OnlineTableSpec
+   :members:
+   :undoc-members:
+
+.. autoclass:: OnlineTableStatus
+   :members:
+   :undoc-members:
+
 .. autoclass:: PermissionsChange
    :members:
    :undoc-members:
 
 .. autoclass:: PermissionsList
+   :members:
+   :undoc-members:
+
+.. autoclass:: PipelineProgress
    :members:
    :undoc-members:
 
@@ -325,6 +349,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ProvisioningInfo
+   :members:
+   :undoc-members:
+
+.. autoclass:: ProvisioningStatus
    :members:
    :undoc-members:
 
@@ -381,6 +409,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: TableSummary
+   :members:
+   :undoc-members:
+
+.. autoclass:: TriggeredUpdateStatus
    :members:
    :undoc-members:
 
@@ -453,6 +485,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ValidationResult
+   :members:
+   :undoc-members:
+
+.. autoclass:: ViewData
    :members:
    :undoc-members:
 

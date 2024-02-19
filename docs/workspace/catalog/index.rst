@@ -16,6 +16,7 @@ Configure data governance with Unity Catalog for metastores, catalogs, schemas, 
    lakehouse_monitors
    metastores
    model_versions
+   online_tables
    registered_models
    schemas
    storage_credentials

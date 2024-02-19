@@ -1,5 +1,66 @@
 # Version changelog
 
+## 0.20.0
+
+Major Changes:
+
+* Updated behaviour for raw parameter in `ApiClient.do()` method. The raw data is not returned directly anymore, but as part of a dict with the `contents` key. This dict will also contain response headers if returned by the API.
+
+Internal Changes:
+ 
+* Add get_workspace_id to docgen blocklist ([#549](https://github.com/databricks/databricks-sdk-py/pull/549)).
+* Support HEAD operation and response Headers ([#547](https://github.com/databricks/databricks-sdk-py/pull/547)).
+
+API Changes:
+
+ * Changed `delete()`, `get()` and `update()` methods for [w.connections](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/connections.html) workspace-level service with new required argument order.
+ * Changed `update()` method for [w.lakehouse_monitors](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/lakehouse_monitors.html) workspace-level service with new required argument order.
+ * Changed `delete()`, `get()` and `update()` methods for [w.volumes](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/volumes.html) workspace-level service with new required argument order.
+ * Added [w.online_tables](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/online_tables.html) workspace-level service.
+ * Renamed `name_arg` field to `name` for the following dataclasses: `databricks.sdk.service.catalog.DeleteConnectionRequest`,
+   `databricks.sdk.service.catalog.GetConnectionRequest`,
+   `databricks.sdk.service.catalog.UpdateConnection`,
+   `databricks.sdk.service.sharing.DeleteCleanRoomRequest`, 
+   `databricks.sdk.service.sharing.GetCleanRoomRequest` and
+   `databricks.sdk.service.sharing.UpdateCleanRoom`.
+ * Removed `full_name_arg` field for `databricks.sdk.service.catalog.DeleteVolumeRequest`.
+ * Added `name` field for `databricks.sdk.service.catalog.DeleteVolumeRequest`.
+ * Added `max_results` field for `databricks.sdk.service.catalog.ListVolumesRequest`.
+ * Added `page_token` field for `databricks.sdk.service.catalog.ListVolumesRequest`.
+ * Added `next_page_token` field for `databricks.sdk.service.catalog.ListVolumesResponseContent`.
+ * Removed `full_name_arg` field for `databricks.sdk.service.catalog.ReadVolumeRequest`.
+ * Added `name` field for `databricks.sdk.service.catalog.ReadVolumeRequest`.
+ * Removed `assets_dir` field for `databricks.sdk.service.catalog.UpdateMonitor`.
+ * Removed `full_name_arg` field for `databricks.sdk.service.catalog.UpdateVolumeRequestContent`.
+ * Added `name` field for `databricks.sdk.service.catalog.UpdateVolumeRequestContent`.
+ * Added the following catalog dataclasses: `ContinuousUpdateStatus`, `DeleteOnlineTableRequest`, `FailedStatus`,
+   `GetOnlineTableRequest`, `OnlineTable`, `OnlineTableSpec`, `OnlineTableState`, `OnlineTableStatus`,
+   `PipelineProgress`, `ProvisioningStatus`, `TriggeredUpdateStatus` and `ViewData`.
+ * Added `get_directory_metadata()` method for [w.files](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/files.html) workspace-level service.
+ * Added `get_metadata()` method for [w.files](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/files.html) workspace-level service.
+ * Added `content_length`, `content_type` and `last_modified` fields for `databricks.sdk.service.files.DownloadResponse`.
+ * Added the following files dataclasses: `FileSize`, `GetDirectoryMetadataRequest`, `GetMetadataRequest`,
+   `GetMetadataResponse` and `LastModifiedHttpDate`.
+ * Removed `trigger_history` field for `databricks.sdk.service.jobs.Job`.
+ * Removed `databricks.sdk.service.jobs.TriggerEvaluation` dataclass.
+ * Removed `databricks.sdk.service.jobs.TriggerHistory` dataclass.
+ * Added `table` field for `databricks.sdk.service.jobs.TriggerSettings`.
+ * Added `databricks.sdk.service.jobs.Condition` dataclass.
+ * Added `databricks.sdk.service.jobs.TableTriggerConfiguration` dataclass.
+ * Removed `config` field for `databricks.sdk.service.serving.ExternalModel`.
+ * Removed `databricks.sdk.service.serving.ExternalModelConfig` dataclass. Fields moved to `databricks.sdk.service.serving.ExternalModel`.
+ * Added `max_provisioned_throughput` and `min_provisioned_throughput` fields for `databricks.sdk.service.serving.ServedEntityInput`.
+ * Added `max_provisioned_throughput` and `min_provisioned_throughput` fields for `databricks.sdk.service.serving.ServedEntityOutput`.
+ * Changed `delete()` method for [w.clean_rooms](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/clean_rooms.html) workspace-level service with new required argument order.
+ * Changed `get()` method for [w.clean_rooms](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/clean_rooms.html) workspace-level service with new required argument order.
+ * Changed `update()` method for [w.clean_rooms](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/clean_rooms.html) workspace-level service with new required argument order.
+ * Added `enum_options` field for `databricks.sdk.service.sql.Parameter`.
+ * Added `multi_values_options` field for `databricks.sdk.service.sql.Parameter`.
+ * Added `query_id` field for `databricks.sdk.service.sql.Parameter`.
+ * Added `databricks.sdk.service.sql.MultiValuesOptions` dataclass.
+
+OpenAPI SHA: cdd76a98a4fca7008572b3a94427566dd286c63b, Date: 2024-02-19
+
 ## 0.19.1
 
 New features:

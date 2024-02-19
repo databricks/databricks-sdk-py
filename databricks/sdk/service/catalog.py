@@ -795,6 +795,41 @@ class ConnectionType(Enum):
 
 
 @dataclass
+class ContinuousUpdateStatus:
+    """Detailed status of an online table. Shown if the online table is in the ONLINE_CONTINUOUS_UPDATE
+    or the ONLINE_UPDATING_PIPELINE_RESOURCES state."""
+
+    initial_pipeline_sync_progress: Optional[PipelineProgress] = None
+    """Progress of the initial data synchronization."""
+
+    last_processed_commit_version: Optional[int] = None
+    """The last source table Delta version that was synced to the online table. Note that this Delta
+    version may not be completely synced to the online table yet."""
+
+    timestamp: Optional[str] = None
+    """The timestamp of the last time any data was synchronized from the source table to the online
+    table."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ContinuousUpdateStatus into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.initial_pipeline_sync_progress:
+            body['initial_pipeline_sync_progress'] = self.initial_pipeline_sync_progress.as_dict()
+        if self.last_processed_commit_version is not None:
+            body['last_processed_commit_version'] = self.last_processed_commit_version
+        if self.timestamp is not None: body['timestamp'] = self.timestamp
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ContinuousUpdateStatus:
+        """Deserializes the ContinuousUpdateStatus from a dictionary."""
+        return cls(initial_pipeline_sync_progress=_from_dict(d, 'initial_pipeline_sync_progress',
+                                                             PipelineProgress),
+                   last_processed_commit_version=d.get('last_processed_commit_version', None),
+                   timestamp=d.get('timestamp', None))
+
+
+@dataclass
 class CreateCatalog:
     name: str
     """Name of catalog."""
@@ -1809,6 +1844,35 @@ class ExternalLocationInfo:
 
 
 @dataclass
+class FailedStatus:
+    """Detailed status of an online table. Shown if the online table is in the OFFLINE_FAILED or the
+    ONLINE_PIPELINE_FAILED state."""
+
+    last_processed_commit_version: Optional[int] = None
+    """The last source table Delta version that was synced to the online table. Note that this Delta
+    version may only be partially synced to the online table. Only populated if the table is still
+    online and available for serving."""
+
+    timestamp: Optional[str] = None
+    """The timestamp of the last time any data was synchronized from the source table to the online
+    table. Only populated if the table is still online and available for serving."""
+
+    def as_dict(self) -> dict:
+        """Serializes the FailedStatus into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.last_processed_commit_version is not None:
+            body['last_processed_commit_version'] = self.last_processed_commit_version
+        if self.timestamp is not None: body['timestamp'] = self.timestamp
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> FailedStatus:
+        """Deserializes the FailedStatus from a dictionary."""
+        return cls(last_processed_commit_version=d.get('last_processed_commit_version', None),
+                   timestamp=d.get('timestamp', None))
+
+
+@dataclass
 class ForeignKeyConstraint:
     name: str
     """The name of the constraint."""
@@ -2548,18 +2612,25 @@ class ListTablesResponse:
 
 @dataclass
 class ListVolumesResponseContent:
+    next_page_token: Optional[str] = None
+    """Opaque token to retrieve the next page of results. Absent if there are no more pages.
+    __page_token__ should be set to this value for the next request to retrieve the next page of
+    results."""
+
     volumes: Optional[List[VolumeInfo]] = None
 
     def as_dict(self) -> dict:
         """Serializes the ListVolumesResponseContent into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         if self.volumes: body['volumes'] = [v.as_dict() for v in self.volumes]
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListVolumesResponseContent:
         """Deserializes the ListVolumesResponseContent from a dictionary."""
-        return cls(volumes=_repeated_dict(d, 'volumes', VolumeInfo))
+        return cls(next_page_token=d.get('next_page_token', None),
+                   volumes=_repeated_dict(d, 'volumes', VolumeInfo))
 
 
 class MatchType(Enum):
@@ -3224,6 +3295,158 @@ class NamedTableConstraint:
 
 
 @dataclass
+class OnlineTable:
+    """Online Table information."""
+
+    name: Optional[str] = None
+    """Full three-part (catalog, schema, table) name of the table."""
+
+    spec: Optional[OnlineTableSpec] = None
+    """Specification of the online table."""
+
+    status: Optional[OnlineTableStatus] = None
+    """Online Table status"""
+
+    def as_dict(self) -> dict:
+        """Serializes the OnlineTable into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None: body['name'] = self.name
+        if self.spec: body['spec'] = self.spec.as_dict()
+        if self.status: body['status'] = self.status.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> OnlineTable:
+        """Deserializes the OnlineTable from a dictionary."""
+        return cls(name=d.get('name', None),
+                   spec=_from_dict(d, 'spec', OnlineTableSpec),
+                   status=_from_dict(d, 'status', OnlineTableStatus))
+
+
+@dataclass
+class OnlineTableSpec:
+    """Specification of an online table."""
+
+    perform_full_copy: Optional[bool] = None
+    """Whether to create a full-copy pipeline -- a pipeline that stops after creates a full copy of the
+    source table upon initialization and does not process any change data feeds (CDFs) afterwards.
+    The pipeline can still be manually triggered afterwards, but it always perform a full copy of
+    the source table and there are no incremental updates. This mode is useful for syncing views or
+    tables without CDFs to online tables. Note that the full-copy pipeline only supports "triggered"
+    scheduling policy."""
+
+    pipeline_id: Optional[str] = None
+    """ID of the associated pipeline. Generated by the server - cannot be set by the caller."""
+
+    primary_key_columns: Optional[List[str]] = None
+    """Primary Key columns to be used for data insert/update in the destination."""
+
+    run_continuously: Optional[Any] = None
+    """Pipeline runs continuously after generating the initial data."""
+
+    run_triggered: Optional[Any] = None
+    """Pipeline stops after generating the initial data and can be triggered later (manually, through a
+    cron job or through data triggers)"""
+
+    source_table_full_name: Optional[str] = None
+    """Three-part (catalog, schema, table) name of the source Delta table."""
+
+    timeseries_key: Optional[str] = None
+    """Time series key to deduplicate (tie-break) rows with the same primary key."""
+
+    def as_dict(self) -> dict:
+        """Serializes the OnlineTableSpec into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.perform_full_copy is not None: body['perform_full_copy'] = self.perform_full_copy
+        if self.pipeline_id is not None: body['pipeline_id'] = self.pipeline_id
+        if self.primary_key_columns: body['primary_key_columns'] = [v for v in self.primary_key_columns]
+        if self.run_continuously: body['run_continuously'] = self.run_continuously
+        if self.run_triggered: body['run_triggered'] = self.run_triggered
+        if self.source_table_full_name is not None:
+            body['source_table_full_name'] = self.source_table_full_name
+        if self.timeseries_key is not None: body['timeseries_key'] = self.timeseries_key
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> OnlineTableSpec:
+        """Deserializes the OnlineTableSpec from a dictionary."""
+        return cls(perform_full_copy=d.get('perform_full_copy', None),
+                   pipeline_id=d.get('pipeline_id', None),
+                   primary_key_columns=d.get('primary_key_columns', None),
+                   run_continuously=d.get('run_continuously', None),
+                   run_triggered=d.get('run_triggered', None),
+                   source_table_full_name=d.get('source_table_full_name', None),
+                   timeseries_key=d.get('timeseries_key', None))
+
+
+class OnlineTableState(Enum):
+    """The state of an online table."""
+
+    OFFLINE = 'OFFLINE'
+    OFFLINE_FAILED = 'OFFLINE_FAILED'
+    ONLINE = 'ONLINE'
+    ONLINE_CONTINUOUS_UPDATE = 'ONLINE_CONTINUOUS_UPDATE'
+    ONLINE_NO_PENDING_UPDATE = 'ONLINE_NO_PENDING_UPDATE'
+    ONLINE_PIPELINE_FAILED = 'ONLINE_PIPELINE_FAILED'
+    ONLINE_TABLE_STATE_UNSPECIFIED = 'ONLINE_TABLE_STATE_UNSPECIFIED'
+    ONLINE_TRIGGERED_UPDATE = 'ONLINE_TRIGGERED_UPDATE'
+    ONLINE_UPDATING_PIPELINE_RESOURCES = 'ONLINE_UPDATING_PIPELINE_RESOURCES'
+    PROVISIONING = 'PROVISIONING'
+    PROVISIONING_INITIAL_SNAPSHOT = 'PROVISIONING_INITIAL_SNAPSHOT'
+    PROVISIONING_PIPELINE_RESOURCES = 'PROVISIONING_PIPELINE_RESOURCES'
+
+
+@dataclass
+class OnlineTableStatus:
+    """Status of an online table."""
+
+    continuous_update_status: Optional[ContinuousUpdateStatus] = None
+    """Detailed status of an online table. Shown if the online table is in the ONLINE_CONTINUOUS_UPDATE
+    or the ONLINE_UPDATING_PIPELINE_RESOURCES state."""
+
+    detailed_state: Optional[OnlineTableState] = None
+    """The state of the online table."""
+
+    failed_status: Optional[FailedStatus] = None
+    """Detailed status of an online table. Shown if the online table is in the OFFLINE_FAILED or the
+    ONLINE_PIPELINE_FAILED state."""
+
+    message: Optional[str] = None
+    """A text description of the current state of the online table."""
+
+    provisioning_status: Optional[ProvisioningStatus] = None
+    """Detailed status of an online table. Shown if the online table is in the
+    PROVISIONING_PIPELINE_RESOURCES or the PROVISIONING_INITIAL_SNAPSHOT state."""
+
+    triggered_update_status: Optional[TriggeredUpdateStatus] = None
+    """Detailed status of an online table. Shown if the online table is in the ONLINE_TRIGGERED_UPDATE
+    or the ONLINE_NO_PENDING_UPDATE state."""
+
+    def as_dict(self) -> dict:
+        """Serializes the OnlineTableStatus into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.continuous_update_status:
+            body['continuous_update_status'] = self.continuous_update_status.as_dict()
+        if self.detailed_state is not None: body['detailed_state'] = self.detailed_state.value
+        if self.failed_status: body['failed_status'] = self.failed_status.as_dict()
+        if self.message is not None: body['message'] = self.message
+        if self.provisioning_status: body['provisioning_status'] = self.provisioning_status.as_dict()
+        if self.triggered_update_status:
+            body['triggered_update_status'] = self.triggered_update_status.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> OnlineTableStatus:
+        """Deserializes the OnlineTableStatus from a dictionary."""
+        return cls(continuous_update_status=_from_dict(d, 'continuous_update_status', ContinuousUpdateStatus),
+                   detailed_state=_enum(d, 'detailed_state', OnlineTableState),
+                   failed_status=_from_dict(d, 'failed_status', FailedStatus),
+                   message=d.get('message', None),
+                   provisioning_status=_from_dict(d, 'provisioning_status', ProvisioningStatus),
+                   triggered_update_status=_from_dict(d, 'triggered_update_status', TriggeredUpdateStatus))
+
+
+@dataclass
 class PermissionsChange:
     add: Optional[List[Privilege]] = None
     """The set of privileges to add."""
@@ -3266,6 +3489,49 @@ class PermissionsList:
     def from_dict(cls, d: Dict[str, any]) -> PermissionsList:
         """Deserializes the PermissionsList from a dictionary."""
         return cls(privilege_assignments=_repeated_dict(d, 'privilege_assignments', PrivilegeAssignment))
+
+
+@dataclass
+class PipelineProgress:
+    """Progress information of the Online Table data synchronization pipeline."""
+
+    estimated_completion_time_seconds: Optional[float] = None
+    """The estimated time remaining to complete this update in seconds."""
+
+    latest_version_currently_processing: Optional[int] = None
+    """The source table Delta version that was last processed by the pipeline. The pipeline may not
+    have completely processed this version yet."""
+
+    sync_progress_completion: Optional[float] = None
+    """The completion ratio of this update. This is a number between 0 and 1."""
+
+    synced_row_count: Optional[int] = None
+    """The number of rows that have been synced in this update."""
+
+    total_row_count: Optional[int] = None
+    """The total number of rows that need to be synced in this update. This number may be an estimate."""
+
+    def as_dict(self) -> dict:
+        """Serializes the PipelineProgress into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.estimated_completion_time_seconds is not None:
+            body['estimated_completion_time_seconds'] = self.estimated_completion_time_seconds
+        if self.latest_version_currently_processing is not None:
+            body['latest_version_currently_processing'] = self.latest_version_currently_processing
+        if self.sync_progress_completion is not None:
+            body['sync_progress_completion'] = self.sync_progress_completion
+        if self.synced_row_count is not None: body['synced_row_count'] = self.synced_row_count
+        if self.total_row_count is not None: body['total_row_count'] = self.total_row_count
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> PipelineProgress:
+        """Deserializes the PipelineProgress from a dictionary."""
+        return cls(estimated_completion_time_seconds=d.get('estimated_completion_time_seconds', None),
+                   latest_version_currently_processing=d.get('latest_version_currently_processing', None),
+                   sync_progress_completion=d.get('sync_progress_completion', None),
+                   synced_row_count=d.get('synced_row_count', None),
+                   total_row_count=d.get('total_row_count', None))
 
 
 @dataclass
@@ -3383,6 +3649,29 @@ class ProvisioningInfoState(Enum):
     FAILED = 'FAILED'
     PROVISIONING = 'PROVISIONING'
     STATE_UNSPECIFIED = 'STATE_UNSPECIFIED'
+
+
+@dataclass
+class ProvisioningStatus:
+    """Detailed status of an online table. Shown if the online table is in the
+    PROVISIONING_PIPELINE_RESOURCES or the PROVISIONING_INITIAL_SNAPSHOT state."""
+
+    initial_pipeline_sync_progress: Optional[PipelineProgress] = None
+    """Details about initial data synchronization. Only populated when in the
+    PROVISIONING_INITIAL_SNAPSHOT state."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ProvisioningStatus into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.initial_pipeline_sync_progress:
+            body['initial_pipeline_sync_progress'] = self.initial_pipeline_sync_progress.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ProvisioningStatus:
+        """Deserializes the ProvisioningStatus from a dictionary."""
+        return cls(
+            initial_pipeline_sync_progress=_from_dict(d, 'initial_pipeline_sync_progress', PipelineProgress))
 
 
 @dataclass
@@ -4110,6 +4399,40 @@ class TableType(Enum):
 
 
 @dataclass
+class TriggeredUpdateStatus:
+    """Detailed status of an online table. Shown if the online table is in the ONLINE_TRIGGERED_UPDATE
+    or the ONLINE_NO_PENDING_UPDATE state."""
+
+    last_processed_commit_version: Optional[int] = None
+    """The last source table Delta version that was synced to the online table. Note that this Delta
+    version may not be completely synced to the online table yet."""
+
+    timestamp: Optional[str] = None
+    """The timestamp of the last time any data was synchronized from the source table to the online
+    table."""
+
+    triggered_update_progress: Optional[PipelineProgress] = None
+    """Progress of the active data synchronization pipeline."""
+
+    def as_dict(self) -> dict:
+        """Serializes the TriggeredUpdateStatus into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.last_processed_commit_version is not None:
+            body['last_processed_commit_version'] = self.last_processed_commit_version
+        if self.timestamp is not None: body['timestamp'] = self.timestamp
+        if self.triggered_update_progress:
+            body['triggered_update_progress'] = self.triggered_update_progress.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> TriggeredUpdateStatus:
+        """Deserializes the TriggeredUpdateStatus from a dictionary."""
+        return cls(last_processed_commit_version=d.get('last_processed_commit_version', None),
+                   timestamp=d.get('timestamp', None),
+                   triggered_update_progress=_from_dict(d, 'triggered_update_progress', PipelineProgress))
+
+
+@dataclass
 class UpdateCatalog:
     comment: Optional[str] = None
     """User-provided free-form text description."""
@@ -4163,7 +4486,7 @@ class UpdateConnection:
     options: Dict[str, str]
     """A map of key-value properties attached to the securable."""
 
-    name_arg: Optional[str] = None
+    name: Optional[str] = None
     """Name of the connection."""
 
     new_name: Optional[str] = None
@@ -4175,7 +4498,7 @@ class UpdateConnection:
     def as_dict(self) -> dict:
         """Serializes the UpdateConnection into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.name_arg is not None: body['name_arg'] = self.name_arg
+        if self.name is not None: body['name'] = self.name
         if self.new_name is not None: body['new_name'] = self.new_name
         if self.options: body['options'] = self.options
         if self.owner is not None: body['owner'] = self.owner
@@ -4184,7 +4507,7 @@ class UpdateConnection:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> UpdateConnection:
         """Deserializes the UpdateConnection from a dictionary."""
-        return cls(name_arg=d.get('name_arg', None),
+        return cls(name=d.get('name', None),
                    new_name=d.get('new_name', None),
                    options=d.get('options', None),
                    owner=d.get('owner', None))
@@ -4401,9 +4724,6 @@ class UpdateModelVersionRequest:
 
 @dataclass
 class UpdateMonitor:
-    assets_dir: str
-    """The directory to store monitoring assets (e.g. dashboard, metric tables)."""
-
     output_schema_name: str
     """Schema where output metric tables are created."""
 
@@ -4445,7 +4765,6 @@ class UpdateMonitor:
     def as_dict(self) -> dict:
         """Serializes the UpdateMonitor into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.assets_dir is not None: body['assets_dir'] = self.assets_dir
         if self.baseline_table_name is not None: body['baseline_table_name'] = self.baseline_table_name
         if self.custom_metrics: body['custom_metrics'] = [v.as_dict() for v in self.custom_metrics]
         if self.data_classification_config:
@@ -4463,8 +4782,7 @@ class UpdateMonitor:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> UpdateMonitor:
         """Deserializes the UpdateMonitor from a dictionary."""
-        return cls(assets_dir=d.get('assets_dir', None),
-                   baseline_table_name=d.get('baseline_table_name', None),
+        return cls(baseline_table_name=d.get('baseline_table_name', None),
                    custom_metrics=_repeated_dict(d, 'custom_metrics', MonitorCustomMetric),
                    data_classification_config=_from_dict(d, 'data_classification_config',
                                                          MonitorDataClassificationConfig),
@@ -4660,7 +4978,7 @@ class UpdateVolumeRequestContent:
     comment: Optional[str] = None
     """The comment attached to the volume"""
 
-    full_name_arg: Optional[str] = None
+    name: Optional[str] = None
     """The three-level (fully qualified) name of the volume"""
 
     new_name: Optional[str] = None
@@ -4673,7 +4991,7 @@ class UpdateVolumeRequestContent:
         """Serializes the UpdateVolumeRequestContent into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.comment is not None: body['comment'] = self.comment
-        if self.full_name_arg is not None: body['full_name_arg'] = self.full_name_arg
+        if self.name is not None: body['name'] = self.name
         if self.new_name is not None: body['new_name'] = self.new_name
         if self.owner is not None: body['owner'] = self.owner
         return body
@@ -4682,7 +5000,7 @@ class UpdateVolumeRequestContent:
     def from_dict(cls, d: Dict[str, any]) -> UpdateVolumeRequestContent:
         """Deserializes the UpdateVolumeRequestContent from a dictionary."""
         return cls(comment=d.get('comment', None),
-                   full_name_arg=d.get('full_name_arg', None),
+                   name=d.get('name', None),
                    new_name=d.get('new_name', None),
                    owner=d.get('owner', None))
 
@@ -4869,6 +5187,29 @@ class ValidationResultResult(Enum):
     FAIL = 'FAIL'
     PASS = 'PASS'
     SKIP = 'SKIP'
+
+
+@dataclass
+class ViewData:
+    """Online Table information."""
+
+    name: Optional[str] = None
+    """Full three-part (catalog, schema, table) name of the table."""
+
+    spec: Optional[OnlineTableSpec] = None
+    """Specification of the online table."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ViewData into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None: body['name'] = self.name
+        if self.spec: body['spec'] = self.spec.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ViewData:
+        """Deserializes the ViewData from a dictionary."""
+        return cls(name=d.get('name', None), spec=_from_dict(d, 'spec', OnlineTableSpec))
 
 
 @dataclass
@@ -5638,12 +5979,12 @@ class ConnectionsAPI:
         res = self._api.do('POST', '/api/2.1/unity-catalog/connections', body=body, headers=headers)
         return ConnectionInfo.from_dict(res)
 
-    def delete(self, name_arg: str):
+    def delete(self, name: str):
         """Delete a connection.
         
         Deletes the connection that matches the supplied name.
         
-        :param name_arg: str
+        :param name: str
           The name of the connection to be deleted.
         
         
@@ -5651,14 +5992,14 @@ class ConnectionsAPI:
 
         headers = {'Accept': 'application/json', }
 
-        self._api.do('DELETE', f'/api/2.1/unity-catalog/connections/{name_arg}', headers=headers)
+        self._api.do('DELETE', f'/api/2.1/unity-catalog/connections/{name}', headers=headers)
 
-    def get(self, name_arg: str) -> ConnectionInfo:
+    def get(self, name: str) -> ConnectionInfo:
         """Get a connection.
         
         Gets a connection from it's name.
         
-        :param name_arg: str
+        :param name: str
           Name of the connection.
         
         :returns: :class:`ConnectionInfo`
@@ -5666,7 +6007,7 @@ class ConnectionsAPI:
 
         headers = {'Accept': 'application/json', }
 
-        res = self._api.do('GET', f'/api/2.1/unity-catalog/connections/{name_arg}', headers=headers)
+        res = self._api.do('GET', f'/api/2.1/unity-catalog/connections/{name}', headers=headers)
         return ConnectionInfo.from_dict(res)
 
     def list(self) -> Iterator[ConnectionInfo]:
@@ -5684,7 +6025,7 @@ class ConnectionsAPI:
         return parsed if parsed is not None else []
 
     def update(self,
-               name_arg: str,
+               name: str,
                options: Dict[str, str],
                *,
                new_name: Optional[str] = None,
@@ -5693,7 +6034,7 @@ class ConnectionsAPI:
         
         Updates the connection that matches the supplied name.
         
-        :param name_arg: str
+        :param name: str
           Name of the connection.
         :param options: Dict[str,str]
           A map of key-value properties attached to the securable.
@@ -5710,10 +6051,7 @@ class ConnectionsAPI:
         if owner is not None: body['owner'] = owner
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        res = self._api.do('PATCH',
-                           f'/api/2.1/unity-catalog/connections/{name_arg}',
-                           body=body,
-                           headers=headers)
+        res = self._api.do('PATCH', f'/api/2.1/unity-catalog/connections/{name}', body=body, headers=headers)
         return ConnectionInfo.from_dict(res)
 
 
@@ -6429,7 +6767,6 @@ class LakehouseMonitorsAPI:
 
     def update(self,
                full_name: str,
-               assets_dir: str,
                output_schema_name: str,
                *,
                baseline_table_name: Optional[str] = None,
@@ -6457,8 +6794,6 @@ class LakehouseMonitorsAPI:
         
         :param full_name: str
           Full name of the table.
-        :param assets_dir: str
-          The directory to store monitoring assets (e.g. dashboard, metric tables).
         :param output_schema_name: str
           Schema where output metric tables are created.
         :param baseline_table_name: str (optional)
@@ -6487,7 +6822,6 @@ class LakehouseMonitorsAPI:
         :returns: :class:`MonitorInfo`
         """
         body = {}
-        if assets_dir is not None: body['assets_dir'] = assets_dir
         if baseline_table_name is not None: body['baseline_table_name'] = baseline_table_name
         if custom_metrics is not None: body['custom_metrics'] = [v.as_dict() for v in custom_metrics]
         if data_classification_config is not None:
@@ -6926,6 +7260,66 @@ class ModelVersionsAPI:
                            body=body,
                            headers=headers)
         return ModelVersionInfo.from_dict(res)
+
+
+class OnlineTablesAPI:
+    """Online tables provide lower latency and higher QPS access to data from Delta tables."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def create(self, *, name: Optional[str] = None, spec: Optional[OnlineTableSpec] = None) -> OnlineTable:
+        """Create an Online Table.
+        
+        Create a new Online Table.
+        
+        :param name: str (optional)
+          Full three-part (catalog, schema, table) name of the table.
+        :param spec: :class:`OnlineTableSpec` (optional)
+          Specification of the online table.
+        
+        :returns: :class:`OnlineTable`
+        """
+        body = {}
+        if name is not None: body['name'] = name
+        if spec is not None: body['spec'] = spec.as_dict()
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do('POST', '/api/2.0/online-tables', body=body, headers=headers)
+        return OnlineTable.from_dict(res)
+
+    def delete(self, name: str):
+        """Delete an Online Table.
+        
+        Delete an online table. Warning: This will delete all the data in the online table. If the source
+        Delta table was deleted or modified since this Online Table was created, this will lose the data
+        forever!
+        
+        :param name: str
+          Full three-part (catalog, schema, table) name of the table.
+        
+        
+        """
+
+        headers = {'Accept': 'application/json', }
+
+        self._api.do('DELETE', f'/api/2.0/online-tables/{name}', headers=headers)
+
+    def get(self, name: str) -> OnlineTable:
+        """Get an Online Table.
+        
+        Get information about an existing online table and its status.
+        
+        :param name: str
+          Full three-part (catalog, schema, table) name of the table.
+        
+        :returns: :class:`OnlineTable`
+        """
+
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do('GET', f'/api/2.0/online-tables/{name}', headers=headers)
+        return OnlineTable.from_dict(res)
 
 
 class RegisteredModelsAPI:
@@ -8039,7 +8433,7 @@ class VolumesAPI:
         res = self._api.do('POST', '/api/2.1/unity-catalog/volumes', body=body, headers=headers)
         return VolumeInfo.from_dict(res)
 
-    def delete(self, full_name_arg: str):
+    def delete(self, name: str):
         """Delete a Volume.
         
         Deletes a volume from the specified parent catalog and schema.
@@ -8048,7 +8442,7 @@ class VolumesAPI:
         also be the owner or have the **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
         privilege on the parent schema.
         
-        :param full_name_arg: str
+        :param name: str
           The three-level (fully qualified) name of the volume
         
         
@@ -8056,12 +8450,17 @@ class VolumesAPI:
 
         headers = {}
 
-        self._api.do('DELETE', f'/api/2.1/unity-catalog/volumes/{full_name_arg}', headers=headers)
+        self._api.do('DELETE', f'/api/2.1/unity-catalog/volumes/{name}', headers=headers)
 
-    def list(self, catalog_name: str, schema_name: str) -> Iterator[VolumeInfo]:
+    def list(self,
+             catalog_name: str,
+             schema_name: str,
+             *,
+             max_results: Optional[int] = None,
+             page_token: Optional[str] = None) -> Iterator[VolumeInfo]:
         """List Volumes.
         
-        Gets an array of all volumes for the current metastore under the parent catalog and schema.
+        Gets an array of volumes for the current metastore under the parent catalog and schema.
         
         The returned volumes are filtered based on the privileges of the calling user. For example, the
         metastore admin is able to list all the volumes. A regular user needs to be the owner or have the
@@ -8075,20 +8474,42 @@ class VolumesAPI:
           The identifier of the catalog
         :param schema_name: str
           The identifier of the schema
+        :param max_results: int (optional)
+          Maximum number of volumes to return (page length).
+          
+          If not set, the page length is set to a server configured value (10000, as of 1/29/2024). - when set
+          to a value greater than 0, the page length is the minimum of this value and a server configured
+          value (10000, as of 1/29/2024); - when set to 0, the page length is set to a server configured value
+          (10000, as of 1/29/2024) (recommended); - when set to a value less than 0, an invalid parameter
+          error is returned;
+          
+          Note: this parameter controls only the maximum number of volumes to return. The actual number of
+          volumes returned in a page may be smaller than this value, including 0, even if there are more
+          pages.
+        :param page_token: str (optional)
+          Opaque token returned by a previous request. It must be included in the request to retrieve the next
+          page of results (pagination).
         
         :returns: Iterator over :class:`VolumeInfo`
         """
 
         query = {}
         if catalog_name is not None: query['catalog_name'] = catalog_name
+        if max_results is not None: query['max_results'] = max_results
+        if page_token is not None: query['page_token'] = page_token
         if schema_name is not None: query['schema_name'] = schema_name
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET', '/api/2.1/unity-catalog/volumes', query=query, headers=headers)
-        parsed = ListVolumesResponseContent.from_dict(json).volumes
-        return parsed if parsed is not None else []
+        while True:
+            json = self._api.do('GET', '/api/2.1/unity-catalog/volumes', query=query, headers=headers)
+            if 'volumes' in json:
+                for v in json['volumes']:
+                    yield VolumeInfo.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
 
-    def read(self, full_name_arg: str) -> VolumeInfo:
+    def read(self, name: str) -> VolumeInfo:
         """Get a Volume.
         
         Gets a volume from the metastore for a specific catalog and schema.
@@ -8097,7 +8518,7 @@ class VolumesAPI:
         volume. For the latter case, the caller must also be the owner or have the **USE_CATALOG** privilege
         on the parent catalog and the **USE_SCHEMA** privilege on the parent schema.
         
-        :param full_name_arg: str
+        :param name: str
           The three-level (fully qualified) name of the volume
         
         :returns: :class:`VolumeInfo`
@@ -8105,11 +8526,11 @@ class VolumesAPI:
 
         headers = {'Accept': 'application/json', }
 
-        res = self._api.do('GET', f'/api/2.1/unity-catalog/volumes/{full_name_arg}', headers=headers)
+        res = self._api.do('GET', f'/api/2.1/unity-catalog/volumes/{name}', headers=headers)
         return VolumeInfo.from_dict(res)
 
     def update(self,
-               full_name_arg: str,
+               name: str,
                *,
                comment: Optional[str] = None,
                new_name: Optional[str] = None,
@@ -8124,7 +8545,7 @@ class VolumesAPI:
         
         Currently only the name, the owner or the comment of the volume could be updated.
         
-        :param full_name_arg: str
+        :param name: str
           The three-level (fully qualified) name of the volume
         :param comment: str (optional)
           The comment attached to the volume
@@ -8141,10 +8562,7 @@ class VolumesAPI:
         if owner is not None: body['owner'] = owner
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        res = self._api.do('PATCH',
-                           f'/api/2.1/unity-catalog/volumes/{full_name_arg}',
-                           body=body,
-                           headers=headers)
+        res = self._api.do('PATCH', f'/api/2.1/unity-catalog/volumes/{name}', body=body, headers=headers)
         return VolumeInfo.from_dict(res)
 
 

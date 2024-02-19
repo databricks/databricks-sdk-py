@@ -2007,6 +2007,36 @@ class ListWarehousesResponse:
         return cls(warehouses=_repeated_dict(d, 'warehouses', EndpointInfo))
 
 
+@dataclass
+class MultiValuesOptions:
+    """If specified, allows multiple values to be selected for this parameter. Only applies to dropdown
+    list and query-based dropdown list parameters."""
+
+    prefix: Optional[str] = None
+    """Character that prefixes each selected parameter value."""
+
+    separator: Optional[str] = None
+    """Character that separates each selected parameter value. Defaults to a comma."""
+
+    suffix: Optional[str] = None
+    """Character that suffixes each selected parameter value."""
+
+    def as_dict(self) -> dict:
+        """Serializes the MultiValuesOptions into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.prefix is not None: body['prefix'] = self.prefix
+        if self.separator is not None: body['separator'] = self.separator
+        if self.suffix is not None: body['suffix'] = self.suffix
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> MultiValuesOptions:
+        """Deserializes the MultiValuesOptions from a dictionary."""
+        return cls(prefix=d.get('prefix', None),
+                   separator=d.get('separator', None),
+                   suffix=d.get('suffix', None))
+
+
 class ObjectType(Enum):
     """A singular noun object type."""
 
@@ -2063,8 +2093,19 @@ class OwnableObjectType(Enum):
 
 @dataclass
 class Parameter:
+    enum_options: Optional[str] = None
+    """List of valid parameter values, newline delimited. Only applies for dropdown list parameters."""
+
+    multi_values_options: Optional[MultiValuesOptions] = None
+    """If specified, allows multiple values to be selected for this parameter. Only applies to dropdown
+    list and query-based dropdown list parameters."""
+
     name: Optional[str] = None
     """The literal parameter marker that appears between double curly braces in the query text."""
+
+    query_id: Optional[str] = None
+    """The UUID of the query that provides the parameter values. Only applies for query-based dropdown
+    list parameters."""
 
     title: Optional[str] = None
     """The text displayed in a parameter picking widget."""
@@ -2078,7 +2119,10 @@ class Parameter:
     def as_dict(self) -> dict:
         """Serializes the Parameter into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.enum_options is not None: body['enumOptions'] = self.enum_options
+        if self.multi_values_options: body['multiValuesOptions'] = self.multi_values_options.as_dict()
         if self.name is not None: body['name'] = self.name
+        if self.query_id is not None: body['queryId'] = self.query_id
         if self.title is not None: body['title'] = self.title
         if self.type is not None: body['type'] = self.type.value
         if self.value: body['value'] = self.value
@@ -2087,7 +2131,10 @@ class Parameter:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> Parameter:
         """Deserializes the Parameter from a dictionary."""
-        return cls(name=d.get('name', None),
+        return cls(enum_options=d.get('enumOptions', None),
+                   multi_values_options=_from_dict(d, 'multiValuesOptions', MultiValuesOptions),
+                   name=d.get('name', None),
+                   query_id=d.get('queryId', None),
                    title=d.get('title', None),
                    type=_enum(d, 'type', ParameterType),
                    value=d.get('value', None))
@@ -2097,7 +2144,9 @@ class ParameterType(Enum):
     """Parameters can have several different types."""
 
     DATETIME = 'datetime'
+    ENUM = 'enum'
     NUMBER = 'number'
+    QUERY = 'query'
     TEXT = 'text'
 
 
