@@ -37,28 +37,16 @@ API Changes:
  * Removed `assets_dir` field for `databricks.sdk.service.catalog.UpdateMonitor`.
  * Removed `full_name_arg` field for `databricks.sdk.service.catalog.UpdateVolumeRequestContent`.
  * Added `name` field for `databricks.sdk.service.catalog.UpdateVolumeRequestContent`.
- * Added `databricks.sdk.service.catalog.ContinuousUpdateStatus` dataclass.
- * Added `databricks.sdk.service.catalog.DeleteOnlineTableRequest` dataclass.
- * Added `databricks.sdk.service.catalog.FailedStatus` dataclass.
- * Added `databricks.sdk.service.catalog.GetOnlineTableRequest` dataclass.
- * Added `databricks.sdk.service.catalog.OnlineTable` dataclass.
- * Added `databricks.sdk.service.catalog.OnlineTableSpec` dataclass.
- * Added `databricks.sdk.service.catalog.OnlineTableState` dataclass.
- * Added `databricks.sdk.service.catalog.OnlineTableStatus` dataclass.
- * Added `databricks.sdk.service.catalog.PipelineProgress` dataclass.
- * Added `databricks.sdk.service.catalog.ProvisioningStatus` dataclass.
- * Added `databricks.sdk.service.catalog.TriggeredUpdateStatus` dataclass.
- * Added `databricks.sdk.service.catalog.ViewData` dataclass.
+ * Added the following catalog dataclasses: `ContinuousUpdateStatus`, `DeleteOnlineTableRequest`, `FailedStatus`,
+   `GetOnlineTableRequest`, `OnlineTable`, `OnlineTableSpec`, `OnlineTableState`, `OnlineTableStatus`,
+   `PipelineProgress`, `ProvisioningStatus`, `TriggeredUpdateStatus` and `ViewData`.
  * Added `get_directory_metadata()` method for [w.files](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/files.html) workspace-level service.
  * Added `get_metadata()` method for [w.files](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/files.html) workspace-level service.
  * Added `content_length` field for `databricks.sdk.service.files.DownloadResponse`.
  * Added `content_type` field for `databricks.sdk.service.files.DownloadResponse`.
  * Added `last_modified` field for `databricks.sdk.service.files.DownloadResponse`.
- * Added `databricks.sdk.service.files.FileSize` dataclass.
- * Added `databricks.sdk.service.files.GetDirectoryMetadataRequest` dataclass.
- * Added `databricks.sdk.service.files.GetMetadataRequest` dataclass.
- * Added `databricks.sdk.service.files.GetMetadataResponse` dataclass.
- * Added `databricks.sdk.service.files.LastModifiedHttpDate` dataclass.
+ * Added the following files dataclasses: `FileSize`, `GetDirectoryMetadataRequest`, `GetMetadataRequest`,
+   `GetMetadataResponse` and `LastModifiedHttpDate`.
  * Removed `trigger_history` field for `databricks.sdk.service.jobs.Job`.
  * Removed `databricks.sdk.service.jobs.TriggerEvaluation` dataclass.
  * Removed `databricks.sdk.service.jobs.TriggerHistory` dataclass.
@@ -66,14 +54,7 @@ API Changes:
  * Added `databricks.sdk.service.jobs.Condition` dataclass.
  * Added `databricks.sdk.service.jobs.TableTriggerConfiguration` dataclass.
  * Removed `config` field for `databricks.sdk.service.serving.ExternalModel`.
- * Added `ai21labs_config` field for `databricks.sdk.service.serving.ExternalModel`.
- * Added `anthropic_config` field for `databricks.sdk.service.serving.ExternalModel`.
- * Added `aws_bedrock_config` field for `databricks.sdk.service.serving.ExternalModel`.
- * Added `cohere_config` field for `databricks.sdk.service.serving.ExternalModel`.
- * Added `databricks_model_serving_config` field for `databricks.sdk.service.serving.ExternalModel`.
- * Added `openai_config` field for `databricks.sdk.service.serving.ExternalModel`.
- * Added `palm_config` field for `databricks.sdk.service.serving.ExternalModel`.
- * Removed `databricks.sdk.service.serving.ExternalModelConfig` dataclass.
+ * Removed `databricks.sdk.service.serving.ExternalModelConfig` dataclass. Fields moved to `databricks.sdk.service.serving.ExternalModel`.
  * Added `max_provisioned_throughput` field for `databricks.sdk.service.serving.ServedEntityInput`.
  * Added `min_provisioned_throughput` field for `databricks.sdk.service.serving.ServedEntityInput`.
  * Added `max_provisioned_throughput` field for `databricks.sdk.service.serving.ServedEntityOutput`.
