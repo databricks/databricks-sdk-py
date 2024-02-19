@@ -313,7 +313,7 @@ class {{.Name}}API:{{if .Description}}
 {{- end}}
 
 {{define "method-call-default" -}}
-        {{if and .Response -}}
+        {{if .Response -}}
         res = {{end}}{{template "method-do" .}}
         {{if .Response -}}
           {{- if .Response.ArrayValue -}}
