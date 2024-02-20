@@ -288,7 +288,7 @@ def test_files_api_list_directory_contents(ucws, random):
     volume = 'filesit-' + random()
     with ResourceWithCleanup.create_schema(w, 'main', schema):
         with ResourceWithCleanup.create_volume(w, 'main', schema, volume):
-            target_directory = f'/Volumes/main/{schema}/{volume}/filesit-{random()}/'
+            target_directory = f'/Volumes/main/{schema}/{volume}/filesit-{random()}'
             w.files.upload(target_directory + "/file1.txt", io.BytesIO(b"some text data"))
             w.files.upload(target_directory + "/file2.txt", io.BytesIO(b"some text data"))
             w.files.upload(target_directory + "/file3.txt", io.BytesIO(b"some text data"))
