@@ -1,13 +1,10 @@
 import pytest
 
 
-def test_get_workspace_client(a):
-    if a.config.is_azure or a.config.is_gcp:
-        pytest.skip('Not available on Azure and GCP currently')
-    wss = list(a.workspaces.list())
-    if len(wss) == 0:
-        pytest.skip("no workspaces")
-    w = a.get_workspace_client(wss[0])
+def test_get_workspace_client(a, env_or_skip):
+    workspace_id = env_or_skip("TEST_WORKSPACE_ID")
+    ws = a.workspaces.get(workspace_id)
+    w = a.get_workspace_client(ws)
     assert w.current_user.me().active
 
 

@@ -820,6 +820,7 @@ class AccountClient:
         config.host = config.environment.deployment_url(workspace.deployment_name)
         config.azure_workspace_resource_id = azure.get_azure_resource_id(workspace)
         config.account_id = None
+        config.init_auth()
         return WorkspaceClient(config=config)
 
     def __repr__(self):
