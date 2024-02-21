@@ -87,6 +87,7 @@ class Config:
                  product_version="0.0.0",
                  clock: Clock = None,
                  **kwargs):
+        self._header_factory = None
         self._inner = {}
         self._user_agent_other_info = []
         self._credentials_provider = credentials_provider if credentials_provider else DefaultCredentials()
@@ -100,7 +101,7 @@ class Config:
             self._known_file_config_loader()
             self._fix_host_if_needed()
             self._validate()
-            self._init_auth()
+            self.init_auth()
             self._product = product
             self._product_version = product_version
         except ValueError as e:
@@ -444,7 +445,7 @@ class Config:
         names = " and ".join(sorted(auths_used))
         raise ValueError(f'validate: more than one authorization method configured: {names}')
 
-    def _init_auth(self):
+    def init_auth(self):
         try:
             self._header_factory = self._credentials_provider(self)
             self.auth_type = self._credentials_provider.auth_type()
