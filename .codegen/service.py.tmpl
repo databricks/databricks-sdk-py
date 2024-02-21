@@ -58,6 +58,7 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Descriptio
 		{{- else}}d.get('{{.Name}}', None){{- end -}}
 	{{- else if (or .Entity.IsObject .Entity.IsExternal) }}_from_dict(d, '{{.Name}}', {{template "type-nq" .Entity}})
 	{{- else if .Entity.Enum }}_enum(d, '{{.Name}}', {{template "type-nq" .Entity}})
+	{{- else if and .IsHeader (or .Entity.IsInt64 .Entity.IsInt) }} int(d.get('{{.Name}}', None))
 	{{- else}}d.get('{{.Name}}', None){{- end -}}
 {{- end -}}
 {{- define "as_request_type" -}}
