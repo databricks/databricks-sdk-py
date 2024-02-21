@@ -113,6 +113,43 @@ class Delete:
 
 
 @dataclass
+class DirectoryEntry:
+    file_size: Optional[int] = None
+    """The length of the file in bytes. This field is omitted for directories."""
+
+    is_directory: Optional[bool] = None
+    """True if the path is a directory."""
+
+    last_modified: Optional[int] = None
+    """Last modification time of given file in milliseconds since unix epoch."""
+
+    name: Optional[str] = None
+    """The name of the file or directory."""
+
+    path: Optional[str] = None
+    """The absolute path of the file or directory."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DirectoryEntry into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.file_size is not None: body['file_size'] = self.file_size
+        if self.is_directory is not None: body['is_directory'] = self.is_directory
+        if self.last_modified is not None: body['last_modified'] = self.last_modified
+        if self.name is not None: body['name'] = self.name
+        if self.path is not None: body['path'] = self.path
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DirectoryEntry:
+        """Deserializes the DirectoryEntry from a dictionary."""
+        return cls(file_size=d.get('file_size', None),
+                   is_directory=d.get('is_directory', None),
+                   last_modified=d.get('last_modified', None),
+                   name=d.get('name', None),
+                   path=d.get('path', None))
+
+
+@dataclass
 class DownloadResponse:
     contents: Optional[BinaryIO] = None
 
@@ -147,6 +184,28 @@ class FileInfo:
                    is_dir=d.get('is_dir', None),
                    modification_time=d.get('modification_time', None),
                    path=d.get('path', None))
+
+
+@dataclass
+class ListDirectoryResponse:
+    contents: Optional[List[DirectoryEntry]] = None
+    """Array of DirectoryEntry."""
+
+    next_page_token: Optional[str] = None
+    """A token, which can be sent as `page_token` to retrieve the next page."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListDirectoryResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.contents: body['contents'] = [v.as_dict() for v in self.contents]
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ListDirectoryResponse:
+        """Deserializes the ListDirectoryResponse from a dictionary."""
+        return cls(contents=_repeated_dict(d, 'contents', DirectoryEntry),
+                   next_page_token=d.get('next_page_token', None))
 
 
 @dataclass
@@ -505,59 +564,114 @@ class FilesAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def delete(self, file_path: str):
-        """Delete a file or directory.
+    def create_directory(self, directory_path: str):
+        """Create a directory.
         
-        Deletes a file or directory.
+        Creates an empty directory. If called on an existing directory, the API returns a success response.
         
-        :param file_path: str
-          The absolute path of the file or directory in DBFS.
+        :param directory_path: str
+          The absolute path of a directory.
         
         
         """
 
         headers = {}
-        self._api.do('DELETE', f'/api/2.0/fs/files/{file_path}', headers=headers)
+        self._api.do('PUT', f'/api/2.0/fs/directories{directory_path}', headers=headers)
+
+    def delete(self, file_path: str):
+        """Delete a file.
+        
+        Deletes a file.
+        
+        :param file_path: str
+          The absolute path of the file.
+        
+        
+        """
+
+        headers = {}
+        self._api.do('DELETE', f'/api/2.0/fs/files{file_path}', headers=headers)
+
+    def delete_directory(self, directory_path: str):
+        """Delete a directory.
+        
+        Deletes an empty directory. If the directory is not empty, the API returns a HTTP 400 error.
+        
+        :param directory_path: str
+          The absolute path of a directory.
+        
+        
+        """
+
+        headers = {}
+        self._api.do('DELETE', f'/api/2.0/fs/directories{directory_path}', headers=headers)
 
     def download(self, file_path: str) -> DownloadResponse:
         """Download a file.
         
-        Downloads a file of up to 2 GiB.
+        Downloads a file of up to 5 GiB.
         
         :param file_path: str
-          The absolute path of the file or directory in DBFS.
+          The absolute path of the file.
         
         :returns: :class:`DownloadResponse`
         """
 
         headers = {'Accept': 'application/octet-stream', }
-        res = self._api.do('GET', f'/api/2.0/fs/files/{file_path}', headers=headers, raw=True)
+        res = self._api.do('GET', f'/api/2.0/fs/files{file_path}', headers=headers, raw=True)
         return DownloadResponse(contents=res)
 
-    def get_status(self, path: str) -> FileInfo:
-        """Get file or directory status.
+    def list_directory_contents(self,
+                                directory_path: str,
+                                *,
+                                page_size: Optional[int] = None,
+                                page_token: Optional[str] = None) -> Iterator[DirectoryEntry]:
+        """List directory contents.
         
-        Returns the status of a file or directory.
+        Returns the contents of a directory. If there is no directory at the specified path, the API returns a
+        HTTP 404 error.
         
-        :param path: str
-          The absolute path of the file or directory in the Files API, omitting the initial slash.
+        :param directory_path: str
+          The absolute path of a directory.
+        :param page_size: int (optional)
+          The maximum number of directory entries to return. The API may return fewer than this value.
+          Receiving fewer results does not imply there are no more results. As long as the response contains a
+          next_page_token, there may be more results.
+          
+          If unspecified, at most 1000 directory entries will be returned. The maximum value is 1000. Values
+          above 1000 will be coerced to 1000.
+        :param page_token: str (optional)
+          A page token, received from a previous `list` call. Provide this to retrieve the subsequent page.
+          When paginating, all other parameters provided to `list` must match the call that provided the page
+          token.
         
-        :returns: :class:`FileInfo`
+        :returns: Iterator over :class:`DirectoryEntry`
         """
 
         query = {}
-        if path is not None: query['path'] = path
+        if page_size is not None: query['page_size'] = page_size
+        if page_token is not None: query['page_token'] = page_token
         headers = {'Accept': 'application/json', }
-        res = self._api.do('GET', '/api/2.0/fs/get-status', query=query, headers=headers)
-        return FileInfo.from_dict(res)
+
+        while True:
+            json = self._api.do('GET',
+                                f'/api/2.0/fs/directories{directory_path}',
+                                query=query,
+                                headers=headers)
+            if 'contents' in json:
+                for v in json['contents']:
+                    yield DirectoryEntry.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
 
     def upload(self, file_path: str, contents: BinaryIO, *, overwrite: Optional[bool] = None):
         """Upload a file.
         
-        Uploads a file of up to 2 GiB.
+        Uploads a file of up to 5 GiB.
         
         :param file_path: str
-          The absolute path of the file or directory in DBFS.
+          The absolute path of the file.
         :param contents: BinaryIO
         :param overwrite: bool (optional)
           If true, an existing file will be overwritten.
@@ -568,4 +682,4 @@ class FilesAPI:
         query = {}
         if overwrite is not None: query['overwrite'] = overwrite
         headers = {'Content-Type': 'application/octet-stream', }
-        self._api.do('PUT', f'/api/2.0/fs/files/{file_path}', query=query, headers=headers, data=contents)
+        self._api.do('PUT', f'/api/2.0/fs/files{file_path}', query=query, headers=headers, data=contents)

@@ -4049,6 +4049,9 @@ class DashboardsAPI:
         
         Fetch a paginated list of dashboard objects.
         
+        ### **Warning: Calling this API concurrently 10 or more times could result in throttling, service
+        degradation, or a temporary ban.**
+        
         :param order: :class:`ListOrder` (optional)
           Name of dashboard attribute to order by.
         :param page: int (optional)
@@ -4073,14 +4076,15 @@ class DashboardsAPI:
         query['page'] = 1
         while True:
             json = self._api.do('GET', '/api/2.0/preview/sql/dashboards', query=query, headers=headers)
+            if 'results' in json:
+                for v in json['results']:
+                    i = v['id']
+                    if i in seen:
+                        continue
+                    seen.add(i)
+                    yield Dashboard.from_dict(v)
             if 'results' not in json or not json['results']:
                 return
-            for v in json['results']:
-                i = v['id']
-                if i in seen:
-                    continue
-                seen.add(i)
-                yield Dashboard.from_dict(v)
             query['page'] += 1
 
     def restore(self, dashboard_id: str):
@@ -4387,14 +4391,15 @@ class QueriesAPI:
         query['page'] = 1
         while True:
             json = self._api.do('GET', '/api/2.0/preview/sql/queries', query=query, headers=headers)
+            if 'results' in json:
+                for v in json['results']:
+                    i = v['id']
+                    if i in seen:
+                        continue
+                    seen.add(i)
+                    yield Query.from_dict(v)
             if 'results' not in json or not json['results']:
                 return
-            for v in json['results']:
-                i = v['id']
-                if i in seen:
-                    continue
-                seen.add(i)
-                yield Query.from_dict(v)
             query['page'] += 1
 
     def restore(self, query_id: str):
@@ -4485,7 +4490,9 @@ class QueryHistoryAPI:
         :param max_results: int (optional)
           Limit the number of results returned in one page. The default is 100.
         :param page_token: str (optional)
-          A token that can be used to get the next page of results.
+          A token that can be used to get the next page of results. The token can contains characters that
+          need to be encoded before using it in a URL. For example, the character '+' needs to be replaced by
+          %2B.
         
         :returns: Iterator over :class:`QueryInfo`
         """
@@ -4499,10 +4506,9 @@ class QueryHistoryAPI:
 
         while True:
             json = self._api.do('GET', '/api/2.0/sql/history/queries', query=query, headers=headers)
-            if 'res' not in json or not json['res']:
-                return
-            for v in json['res']:
-                yield QueryInfo.from_dict(v)
+            if 'res' in json:
+                for v in json['res']:
+                    yield QueryInfo.from_dict(v)
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']

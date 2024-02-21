@@ -40,11 +40,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: DeleteDefaultWorkspaceNamespaceResponse
+.. autoclass:: DeleteDefaultNamespaceSettingResponse
    :members:
    :undoc-members:
 
 .. autoclass:: DeletePersonalComputeSettingResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: DeleteRestrictWorkspaceAdminsSettingResponse
    :members:
    :undoc-members:
 
@@ -148,6 +152,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: RestrictWorkspaceAdminsMessage
+   :members:
+   :undoc-members:
+
+.. autoclass:: RestrictWorkspaceAdminsSetting
+   :members:
+   :undoc-members:
+
 .. autoclass:: RevokeTokenRequest
    :members:
    :undoc-members:
@@ -184,6 +196,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: UpdateDefaultNamespaceSettingRequest
+   :members:
+   :undoc-members:
+
 .. autoclass:: UpdateIpAccessList
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdatePersonalComputeSettingRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateRestrictWorkspaceAdminsSettingRequest
    :members:
    :undoc-members:

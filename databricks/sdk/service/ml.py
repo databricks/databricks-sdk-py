@@ -3710,10 +3710,9 @@ class ExperimentsAPI:
 
         while True:
             json = self._api.do('GET', '/api/2.0/mlflow/metrics/get-history', query=query, headers=headers)
-            if 'metrics' not in json or not json['metrics']:
-                return
-            for v in json['metrics']:
-                yield Metric.from_dict(v)
+            if 'metrics' in json:
+                for v in json['metrics']:
+                    yield Metric.from_dict(v)
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']
@@ -3807,10 +3806,9 @@ class ExperimentsAPI:
 
         while True:
             json = self._api.do('GET', '/api/2.0/mlflow/artifacts/list', query=query, headers=headers)
-            if 'files' not in json or not json['files']:
-                return
-            for v in json['files']:
-                yield FileInfo.from_dict(v)
+            if 'files' in json:
+                for v in json['files']:
+                    yield FileInfo.from_dict(v)
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']
@@ -3844,10 +3842,9 @@ class ExperimentsAPI:
 
         while True:
             json = self._api.do('GET', '/api/2.0/mlflow/experiments/list', query=query, headers=headers)
-            if 'experiments' not in json or not json['experiments']:
-                return
-            for v in json['experiments']:
-                yield Experiment.from_dict(v)
+            if 'experiments' in json:
+                for v in json['experiments']:
+                    yield Experiment.from_dict(v)
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']
@@ -4125,10 +4122,9 @@ class ExperimentsAPI:
 
         while True:
             json = self._api.do('POST', '/api/2.0/mlflow/experiments/search', body=body, headers=headers)
-            if 'experiments' not in json or not json['experiments']:
-                return
-            for v in json['experiments']:
-                yield Experiment.from_dict(v)
+            if 'experiments' in json:
+                for v in json['experiments']:
+                    yield Experiment.from_dict(v)
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             body['page_token'] = json['next_page_token']
@@ -4186,10 +4182,9 @@ class ExperimentsAPI:
 
         while True:
             json = self._api.do('POST', '/api/2.0/mlflow/runs/search', body=body, headers=headers)
-            if 'runs' not in json or not json['runs']:
-                return
-            for v in json['runs']:
-                yield Run.from_dict(v)
+            if 'runs' in json:
+                for v in json['runs']:
+                    yield Run.from_dict(v)
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             body['page_token'] = json['next_page_token']
@@ -4903,10 +4898,9 @@ class ModelRegistryAPI:
 
         while True:
             json = self._api.do('GET', '/api/2.0/mlflow/registered-models/list', query=query, headers=headers)
-            if 'registered_models' not in json or not json['registered_models']:
-                return
-            for v in json['registered_models']:
-                yield Model.from_dict(v)
+            if 'registered_models' in json:
+                for v in json['registered_models']:
+                    yield Model.from_dict(v)
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']
@@ -4963,10 +4957,9 @@ class ModelRegistryAPI:
 
         while True:
             json = self._api.do('GET', '/api/2.0/mlflow/registry-webhooks/list', query=query, headers=headers)
-            if 'webhooks' not in json or not json['webhooks']:
-                return
-            for v in json['webhooks']:
-                yield RegistryWebhook.from_dict(v)
+            if 'webhooks' in json:
+                for v in json['webhooks']:
+                    yield RegistryWebhook.from_dict(v)
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']
@@ -5062,10 +5055,9 @@ class ModelRegistryAPI:
 
         while True:
             json = self._api.do('GET', '/api/2.0/mlflow/model-versions/search', query=query, headers=headers)
-            if 'model_versions' not in json or not json['model_versions']:
-                return
-            for v in json['model_versions']:
-                yield ModelVersion.from_dict(v)
+            if 'model_versions' in json:
+                for v in json['model_versions']:
+                    yield ModelVersion.from_dict(v)
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']
@@ -5108,10 +5100,9 @@ class ModelRegistryAPI:
                                 '/api/2.0/mlflow/registered-models/search',
                                 query=query,
                                 headers=headers)
-            if 'registered_models' not in json or not json['registered_models']:
-                return
-            for v in json['registered_models']:
-                yield Model.from_dict(v)
+            if 'registered_models' in json:
+                for v in json['registered_models']:
+                    yield Model.from_dict(v)
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']

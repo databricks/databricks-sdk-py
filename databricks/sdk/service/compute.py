@@ -65,14 +65,32 @@ class AddInstanceProfile:
 
 
 @dataclass
-class AutoScale:
-    min_workers: int
-    """The minimum number of workers to which the cluster can scale down when underutilized. It is also
-    the initial number of workers the cluster will have after creation."""
+class Adlsgen2Info:
+    destination: str
+    """abfss destination, e.g.
+    `abfss://<container-name>@<storage-account-name>.dfs.core.windows.net/<directory-name>`."""
 
-    max_workers: int
+    def as_dict(self) -> dict:
+        """Serializes the Adlsgen2Info into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.destination is not None: body['destination'] = self.destination
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> Adlsgen2Info:
+        """Deserializes the Adlsgen2Info from a dictionary."""
+        return cls(destination=d.get('destination', None))
+
+
+@dataclass
+class AutoScale:
+    max_workers: Optional[int] = None
     """The maximum number of workers to which the cluster can scale up when overloaded. Note that
     `max_workers` must be strictly greater than `min_workers`."""
+
+    min_workers: Optional[int] = None
+    """The minimum number of workers to which the cluster can scale down when underutilized. It is also
+    the initial number of workers the cluster will have after creation."""
 
     def as_dict(self) -> dict:
         """Serializes the AutoScale into a dictionary suitable for use as a JSON request body."""
@@ -2213,7 +2231,7 @@ class DataSecurityMode(Enum):
 
 @dataclass
 class DbfsStorageInfo:
-    destination: Optional[str] = None
+    destination: str
     """dbfs destination, e.g. `dbfs:/my/path`"""
 
     def as_dict(self) -> dict:
@@ -2957,6 +2975,18 @@ class GcpAttributes:
     
     [GCP documentation]: https://cloud.google.com/compute/docs/disks/local-ssd#choose_number_local_ssds"""
 
+    use_preemptible_executors: Optional[bool] = None
+    """This field determines whether the spark executors will be scheduled to run on preemptible VMs
+    (when set to true) versus standard compute engine VMs (when set to false; default). Note: Soon
+    to be deprecated, use the availability field instead."""
+
+    zone_id: Optional[str] = None
+    """Identifier for the availability zone in which the cluster resides. This can be one of the
+    following: - "HA" => High availability, spread nodes across availability zones for a Databricks
+    deployment region [default] - "AUTO" => Databricks picks an availability zone to schedule the
+    cluster on. - A GCP availability zone => Pick One of the available zones for (machine type +
+    region) from https://cloud.google.com/compute/docs/regions-zones."""
+
     def as_dict(self) -> dict:
         """Serializes the GcpAttributes into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -2965,6 +2995,9 @@ class GcpAttributes:
         if self.google_service_account is not None:
             body['google_service_account'] = self.google_service_account
         if self.local_ssd_count is not None: body['local_ssd_count'] = self.local_ssd_count
+        if self.use_preemptible_executors is not None:
+            body['use_preemptible_executors'] = self.use_preemptible_executors
+        if self.zone_id is not None: body['zone_id'] = self.zone_id
         return body
 
     @classmethod
@@ -2973,7 +3006,9 @@ class GcpAttributes:
         return cls(availability=_enum(d, 'availability', GcpAvailability),
                    boot_disk_size=d.get('boot_disk_size', None),
                    google_service_account=d.get('google_service_account', None),
-                   local_ssd_count=d.get('local_ssd_count', None))
+                   local_ssd_count=d.get('local_ssd_count', None),
+                   use_preemptible_executors=d.get('use_preemptible_executors', None),
+                   zone_id=d.get('zone_id', None))
 
 
 class GcpAvailability(Enum):
@@ -2983,6 +3018,23 @@ class GcpAvailability(Enum):
     ON_DEMAND_GCP = 'ON_DEMAND_GCP'
     PREEMPTIBLE_GCP = 'PREEMPTIBLE_GCP'
     PREEMPTIBLE_WITH_FALLBACK_GCP = 'PREEMPTIBLE_WITH_FALLBACK_GCP'
+
+
+@dataclass
+class GcsStorageInfo:
+    destination: str
+    """GCS destination/URI, e.g. `gs://my-bucket/some-prefix`"""
+
+    def as_dict(self) -> dict:
+        """Serializes the GcsStorageInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.destination is not None: body['destination'] = self.destination
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> GcsStorageInfo:
+        """Deserializes the GcsStorageInfo from a dictionary."""
+        return cls(destination=d.get('destination', None))
 
 
 @dataclass
@@ -3538,6 +3590,10 @@ class InitScriptExecutionDetailsStatus(Enum):
 
 @dataclass
 class InitScriptInfo:
+    abfss: Optional[Adlsgen2Info] = None
+    """destination needs to be provided. e.g. `{ "abfss" : { "destination" :
+    "abfss://<container-name>@<storage-account-name>.dfs.core.windows.net/<directory-name>" } }"""
+
     dbfs: Optional[DbfsStorageInfo] = None
     """destination needs to be provided. e.g. `{ "dbfs" : { "destination" : "dbfs:/home/cluster_log" }
     }`"""
@@ -3545,6 +3601,9 @@ class InitScriptInfo:
     file: Optional[LocalFileInfo] = None
     """destination needs to be provided. e.g. `{ "file" : { "destination" : "file:/my/local/file.sh" }
     }`"""
+
+    gcs: Optional[GcsStorageInfo] = None
+    """destination needs to be provided. e.g. `{ "gcs": { "destination": "gs://my-bucket/file.sh" } }`"""
 
     s3: Optional[S3StorageInfo] = None
     """destination and either the region or endpoint need to be provided. e.g. `{ "s3": { "destination"
@@ -3563,8 +3622,10 @@ class InitScriptInfo:
     def as_dict(self) -> dict:
         """Serializes the InitScriptInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.abfss: body['abfss'] = self.abfss.as_dict()
         if self.dbfs: body['dbfs'] = self.dbfs.as_dict()
         if self.file: body['file'] = self.file.as_dict()
+        if self.gcs: body['gcs'] = self.gcs.as_dict()
         if self.s3: body['s3'] = self.s3.as_dict()
         if self.volumes: body['volumes'] = self.volumes.as_dict()
         if self.workspace: body['workspace'] = self.workspace.as_dict()
@@ -3573,8 +3634,10 @@ class InitScriptInfo:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> InitScriptInfo:
         """Deserializes the InitScriptInfo from a dictionary."""
-        return cls(dbfs=_from_dict(d, 'dbfs', DbfsStorageInfo),
+        return cls(abfss=_from_dict(d, 'abfss', Adlsgen2Info),
+                   dbfs=_from_dict(d, 'dbfs', DbfsStorageInfo),
                    file=_from_dict(d, 'file', LocalFileInfo),
+                   gcs=_from_dict(d, 'gcs', GcsStorageInfo),
                    s3=_from_dict(d, 's3', S3StorageInfo),
                    volumes=_from_dict(d, 'volumes', VolumesStorageInfo),
                    workspace=_from_dict(d, 'workspace', WorkspaceStorageInfo))
@@ -4428,7 +4491,7 @@ class ListSortOrder(Enum):
 
 @dataclass
 class LocalFileInfo:
-    destination: Optional[str] = None
+    destination: str
     """local file destination, e.g. `file:/my/local/file.sh`"""
 
     def as_dict(self) -> dict:
@@ -5027,6 +5090,11 @@ class RuntimeEngine(Enum):
 
 @dataclass
 class S3StorageInfo:
+    destination: str
+    """S3 destination, e.g. `s3://my-bucket/some-prefix` Note that logs will be delivered using cluster
+    iam role, please make sure you set cluster iam role and the role has write access to the
+    destination. Please also note that you cannot use AWS keys to deliver logs."""
+
     canned_acl: Optional[str] = None
     """(Optional) Set canned access control list for the logs, e.g. `bucket-owner-full-control`. If
     `canned_cal` is set, please make sure the cluster iam role has `s3:PutObjectAcl` permission on
@@ -5035,11 +5103,6 @@ class S3StorageInfo:
     that by default only the object owner gets full controls. If you are using cross account role
     for writing data, you may want to set `bucket-owner-full-control` to make bucket owner able to
     read the logs."""
-
-    destination: Optional[str] = None
-    """S3 destination, e.g. `s3://my-bucket/some-prefix` Note that logs will be delivered using cluster
-    iam role, please make sure you set cluster iam role and the role has write access to the
-    destination. Please also note that you cannot use AWS keys to deliver logs."""
 
     enable_encryption: Optional[bool] = None
     """(Optional) Flag to enable server side encryption, `false` by default."""
@@ -5371,7 +5434,7 @@ class UnpinCluster:
 
 @dataclass
 class VolumesStorageInfo:
-    destination: Optional[str] = None
+    destination: str
     """Unity Catalog Volumes file destination, e.g. `/Volumes/my-init.sh`"""
 
     def as_dict(self) -> dict:
@@ -5388,7 +5451,7 @@ class VolumesStorageInfo:
 
 @dataclass
 class WorkloadType:
-    clients: Optional[ClientsTypes] = None
+    clients: ClientsTypes
     """defined what type of clients can use the cluster. E.g. Notebooks, Jobs"""
 
     def as_dict(self) -> dict:
@@ -5405,7 +5468,7 @@ class WorkloadType:
 
 @dataclass
 class WorkspaceStorageInfo:
-    destination: Optional[str] = None
+    destination: str
     """workspace files destination, e.g. `/Users/user1@databricks.com/my-init.sh`"""
 
     def as_dict(self) -> dict:
@@ -6405,10 +6468,9 @@ class ClustersAPI:
 
         while True:
             json = self._api.do('POST', '/api/2.0/clusters/events', body=body, headers=headers)
-            if 'events' not in json or not json['events']:
-                return
-            for v in json['events']:
-                yield ClusterEvent.from_dict(v)
+            if 'events' in json:
+                for v in json['events']:
+                    yield ClusterEvent.from_dict(v)
             if 'next_page' not in json or not json['next_page']:
                 return
             body = json['next_page']
@@ -7733,10 +7795,9 @@ class PolicyFamiliesAPI:
 
         while True:
             json = self._api.do('GET', '/api/2.0/policy-families', query=query, headers=headers)
-            if 'policy_families' not in json or not json['policy_families']:
-                return
-            for v in json['policy_families']:
-                yield PolicyFamily.from_dict(v)
+            if 'policy_families' in json:
+                for v in json['policy_families']:
+                    yield PolicyFamily.from_dict(v)
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']

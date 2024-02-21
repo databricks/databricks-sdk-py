@@ -72,7 +72,7 @@ class CreateVectorIndexRequest:
     `DIRECT_ACCESS`: An index that supports direct read and write of vectors and metadata through
     our REST and SDK APIs. With this model, the user manages index updates."""
 
-    delta_sync_vector_index_spec: Optional[DeltaSyncVectorIndexSpecRequest] = None
+    delta_sync_index_spec: Optional[DeltaSyncVectorIndexSpecRequest] = None
     """Specification for Delta Sync Index. Required if `index_type` is `DELTA_SYNC`."""
 
     direct_access_index_spec: Optional[DirectAccessVectorIndexSpec] = None
@@ -84,8 +84,7 @@ class CreateVectorIndexRequest:
     def as_dict(self) -> dict:
         """Serializes the CreateVectorIndexRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.delta_sync_vector_index_spec:
-            body['delta_sync_vector_index_spec'] = self.delta_sync_vector_index_spec.as_dict()
+        if self.delta_sync_index_spec: body['delta_sync_index_spec'] = self.delta_sync_index_spec.as_dict()
         if self.direct_access_index_spec:
             body['direct_access_index_spec'] = self.direct_access_index_spec.as_dict()
         if self.endpoint_name is not None: body['endpoint_name'] = self.endpoint_name
@@ -97,8 +96,8 @@ class CreateVectorIndexRequest:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateVectorIndexRequest:
         """Deserializes the CreateVectorIndexRequest from a dictionary."""
-        return cls(delta_sync_vector_index_spec=_from_dict(d, 'delta_sync_vector_index_spec',
-                                                           DeltaSyncVectorIndexSpecRequest),
+        return cls(delta_sync_index_spec=_from_dict(d, 'delta_sync_index_spec',
+                                                    DeltaSyncVectorIndexSpecRequest),
                    direct_access_index_spec=_from_dict(d, 'direct_access_index_spec',
                                                        DirectAccessVectorIndexSpec),
                    endpoint_name=d.get('endpoint_name', None),
@@ -978,10 +977,9 @@ class VectorSearchEndpointsAPI:
 
         while True:
             json = self._api.do('GET', '/api/2.0/vector-search/endpoints', query=query, headers=headers)
-            if 'endpoints' not in json or not json['endpoints']:
-                return
-            for v in json['endpoints']:
-                yield EndpointInfo.from_dict(v)
+            if 'endpoints' in json:
+                for v in json['endpoints']:
+                    yield EndpointInfo.from_dict(v)
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']
@@ -1004,7 +1002,7 @@ class VectorSearchIndexesAPI:
                      primary_key: str,
                      index_type: VectorIndexType,
                      *,
-                     delta_sync_vector_index_spec: Optional[DeltaSyncVectorIndexSpecRequest] = None,
+                     delta_sync_index_spec: Optional[DeltaSyncVectorIndexSpecRequest] = None,
                      direct_access_index_spec: Optional[DirectAccessVectorIndexSpec] = None,
                      endpoint_name: Optional[str] = None) -> CreateVectorIndexResponse:
         """Create an index.
@@ -1022,7 +1020,7 @@ class VectorSearchIndexesAPI:
           incrementally updating the index as the underlying data in the Delta Table changes. -
           `DIRECT_ACCESS`: An index that supports direct read and write of vectors and metadata through our
           REST and SDK APIs. With this model, the user manages index updates.
-        :param delta_sync_vector_index_spec: :class:`DeltaSyncVectorIndexSpecRequest` (optional)
+        :param delta_sync_index_spec: :class:`DeltaSyncVectorIndexSpecRequest` (optional)
           Specification for Delta Sync Index. Required if `index_type` is `DELTA_SYNC`.
         :param direct_access_index_spec: :class:`DirectAccessVectorIndexSpec` (optional)
           Specification for Direct Vector Access Index. Required if `index_type` is `DIRECT_ACCESS`.
@@ -1032,8 +1030,7 @@ class VectorSearchIndexesAPI:
         :returns: :class:`CreateVectorIndexResponse`
         """
         body = {}
-        if delta_sync_vector_index_spec is not None:
-            body['delta_sync_vector_index_spec'] = delta_sync_vector_index_spec.as_dict()
+        if delta_sync_index_spec is not None: body['delta_sync_index_spec'] = delta_sync_index_spec.as_dict()
         if direct_access_index_spec is not None:
             body['direct_access_index_spec'] = direct_access_index_spec.as_dict()
         if endpoint_name is not None: body['endpoint_name'] = endpoint_name
@@ -1117,10 +1114,9 @@ class VectorSearchIndexesAPI:
 
         while True:
             json = self._api.do('GET', '/api/2.0/vector-search/indexes', query=query, headers=headers)
-            if 'vector_indexes' not in json or not json['vector_indexes']:
-                return
-            for v in json['vector_indexes']:
-                yield MiniVectorIndex.from_dict(v)
+            if 'vector_indexes' in json:
+                for v in json['vector_indexes']:
+                    yield MiniVectorIndex.from_dict(v)
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']

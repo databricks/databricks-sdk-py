@@ -266,36 +266,40 @@ class DefaultNamespaceSetting:
 
 
 @dataclass
-class DeleteDefaultWorkspaceNamespaceResponse:
+class DeleteDefaultNamespaceSettingResponse:
+    """The etag is returned."""
+
     etag: str
     """etag used for versioning. The response is at least as fresh as the eTag provided. This is used
     for optimistic concurrency control as a way to help prevent simultaneous writes of a setting
     overwriting each other. It is strongly suggested that systems make use of the etag in the read
-    -> update pattern to perform setting updates in order to avoid race conditions. That is, get an
-    etag from a GET request, and pass it with the PATCH request to identify the setting version you
-    are updating."""
+    -> delete pattern to perform setting deletions in order to avoid race conditions. That is, get
+    an etag from a GET request, and pass it with the DELETE request to identify the rule set version
+    you are deleting."""
 
     def as_dict(self) -> dict:
-        """Serializes the DeleteDefaultWorkspaceNamespaceResponse into a dictionary suitable for use as a JSON request body."""
+        """Serializes the DeleteDefaultNamespaceSettingResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.etag is not None: body['etag'] = self.etag
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteDefaultWorkspaceNamespaceResponse:
-        """Deserializes the DeleteDefaultWorkspaceNamespaceResponse from a dictionary."""
+    def from_dict(cls, d: Dict[str, any]) -> DeleteDefaultNamespaceSettingResponse:
+        """Deserializes the DeleteDefaultNamespaceSettingResponse from a dictionary."""
         return cls(etag=d.get('etag', None))
 
 
 @dataclass
 class DeletePersonalComputeSettingResponse:
+    """The etag is returned."""
+
     etag: str
     """etag used for versioning. The response is at least as fresh as the eTag provided. This is used
     for optimistic concurrency control as a way to help prevent simultaneous writes of a setting
     overwriting each other. It is strongly suggested that systems make use of the etag in the read
-    -> update pattern to perform setting updates in order to avoid race conditions. That is, get an
-    etag from a GET request, and pass it with the PATCH request to identify the setting version you
-    are updating."""
+    -> delete pattern to perform setting deletions in order to avoid race conditions. That is, get
+    an etag from a GET request, and pass it with the DELETE request to identify the rule set version
+    you are deleting."""
 
     def as_dict(self) -> dict:
         """Serializes the DeletePersonalComputeSettingResponse into a dictionary suitable for use as a JSON request body."""
@@ -310,7 +314,33 @@ class DeletePersonalComputeSettingResponse:
 
 
 @dataclass
+class DeleteRestrictWorkspaceAdminsSettingResponse:
+    """The etag is returned."""
+
+    etag: str
+    """etag used for versioning. The response is at least as fresh as the eTag provided. This is used
+    for optimistic concurrency control as a way to help prevent simultaneous writes of a setting
+    overwriting each other. It is strongly suggested that systems make use of the etag in the read
+    -> delete pattern to perform setting deletions in order to avoid race conditions. That is, get
+    an etag from a GET request, and pass it with the DELETE request to identify the rule set version
+    you are deleting."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteRestrictWorkspaceAdminsSettingResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.etag is not None: body['etag'] = self.etag
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteRestrictWorkspaceAdminsSettingResponse:
+        """Deserializes the DeleteRestrictWorkspaceAdminsSettingResponse from a dictionary."""
+        return cls(etag=d.get('etag', None))
+
+
+@dataclass
 class ExchangeToken:
+    """The exchange token is the result of the token exchange with the IdP"""
+
     credential: Optional[str] = None
     """The requested token."""
 
@@ -324,7 +354,7 @@ class ExchangeToken:
     """The scopes of access granted in the token."""
 
     token_type: Optional[TokenType] = None
-    """The type of token request. As of now, only `AZURE_ACTIVE_DIRECTORY_TOKEN` is supported."""
+    """The type of this exchange token"""
 
     def as_dict(self) -> dict:
         """Serializes the ExchangeToken into a dictionary suitable for use as a JSON request body."""
@@ -348,9 +378,13 @@ class ExchangeToken:
 
 @dataclass
 class ExchangeTokenRequest:
+    """Exchange a token with the IdP"""
+
     partition_id: PartitionId
+    """The partition of Credentials store"""
 
     token_type: List[TokenType]
+    """A list of token types being requested"""
 
     scopes: List[str]
     """Array of scopes for the token request."""
@@ -373,6 +407,8 @@ class ExchangeTokenRequest:
 
 @dataclass
 class ExchangeTokenResponse:
+    """Exhanged tokens were successfully returned."""
+
     values: Optional[List[ExchangeToken]] = None
 
     def as_dict(self) -> dict:
@@ -911,6 +947,8 @@ class NetworkConnectivityConfiguration:
 
 @dataclass
 class PartitionId:
+    """Partition by workspace or account"""
+
     workspace_id: Optional[int] = None
     """The ID of the workspace."""
 
@@ -973,7 +1011,8 @@ class PersonalComputeSetting:
     setting_name: Optional[str] = None
     """Name of the corresponding setting. This field is populated in the response, but it will not be
     respected even if it's set in the request body. The setting name in the path parameter will be
-    respected instead."""
+    respected instead. Setting name is required to be 'default' if the setting only has one instance
+    per workspace."""
 
     def as_dict(self) -> dict:
         """Serializes the PersonalComputeSetting into a dictionary suitable for use as a JSON request body."""
@@ -1062,6 +1101,65 @@ class ReplaceIpAccessList:
                    ip_addresses=d.get('ip_addresses', None),
                    label=d.get('label', None),
                    list_type=_enum(d, 'list_type', ListType))
+
+
+@dataclass
+class RestrictWorkspaceAdminsMessage:
+    status: RestrictWorkspaceAdminsMessageStatus
+
+    def as_dict(self) -> dict:
+        """Serializes the RestrictWorkspaceAdminsMessage into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.status is not None: body['status'] = self.status.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> RestrictWorkspaceAdminsMessage:
+        """Deserializes the RestrictWorkspaceAdminsMessage from a dictionary."""
+        return cls(status=_enum(d, 'status', RestrictWorkspaceAdminsMessageStatus))
+
+
+class RestrictWorkspaceAdminsMessageStatus(Enum):
+
+    ALLOW_ALL = 'ALLOW_ALL'
+    RESTRICT_TOKENS_AND_JOB_RUN_AS = 'RESTRICT_TOKENS_AND_JOB_RUN_AS'
+    STATUS_UNSPECIFIED = 'STATUS_UNSPECIFIED'
+
+
+@dataclass
+class RestrictWorkspaceAdminsSetting:
+    restrict_workspace_admins: RestrictWorkspaceAdminsMessage
+
+    etag: Optional[str] = None
+    """etag used for versioning. The response is at least as fresh as the eTag provided. This is used
+    for optimistic concurrency control as a way to help prevent simultaneous writes of a setting
+    overwriting each other. It is strongly suggested that systems make use of the etag in the read
+    -> update pattern to perform setting updates in order to avoid race conditions. That is, get an
+    etag from a GET request, and pass it with the PATCH request to identify the setting version you
+    are updating."""
+
+    setting_name: Optional[str] = None
+    """Name of the corresponding setting. This field is populated in the response, but it will not be
+    respected even if it's set in the request body. The setting name in the path parameter will be
+    respected instead. Setting name is required to be 'default' if the setting only has one instance
+    per workspace."""
+
+    def as_dict(self) -> dict:
+        """Serializes the RestrictWorkspaceAdminsSetting into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.etag is not None: body['etag'] = self.etag
+        if self.restrict_workspace_admins:
+            body['restrict_workspace_admins'] = self.restrict_workspace_admins.as_dict()
+        if self.setting_name is not None: body['setting_name'] = self.setting_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> RestrictWorkspaceAdminsSetting:
+        """Deserializes the RestrictWorkspaceAdminsSetting from a dictionary."""
+        return cls(etag=d.get('etag', None),
+                   restrict_workspace_admins=_from_dict(d, 'restrict_workspace_admins',
+                                                        RestrictWorkspaceAdminsMessage),
+                   setting_name=d.get('setting_name', None))
 
 
 @dataclass
@@ -1317,6 +1415,43 @@ class TokenType(Enum):
 
 
 @dataclass
+class UpdateDefaultNamespaceSettingRequest:
+    """Details required to update a setting."""
+
+    allow_missing: bool
+    """This should always be set to true for Settings API. Added for AIP compliance."""
+
+    setting: DefaultNamespaceSetting
+    """This represents the setting configuration for the default namespace in the Databricks workspace.
+    Setting the default catalog for the workspace determines the catalog that is used when queries
+    do not reference a fully qualified 3 level name. For example, if the default catalog is set to
+    'retail_prod' then a query 'SELECT * FROM myTable' would reference the object
+    'retail_prod.default.myTable' (the schema 'default' is always assumed). This setting requires a
+    restart of clusters and SQL warehouses to take effect. Additionally, the default namespace only
+    applies when using Unity Catalog-enabled compute."""
+
+    field_mask: str
+    """Field mask is required to be passed into the PATCH request. Field mask specifies which fields of
+    the setting payload will be updated. The field mask needs to be supplied as single string. To
+    specify multiple fields in the field mask, use comma as the separator (no space)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateDefaultNamespaceSettingRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.allow_missing is not None: body['allow_missing'] = self.allow_missing
+        if self.field_mask is not None: body['field_mask'] = self.field_mask
+        if self.setting: body['setting'] = self.setting.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateDefaultNamespaceSettingRequest:
+        """Deserializes the UpdateDefaultNamespaceSettingRequest from a dictionary."""
+        return cls(allow_missing=d.get('allow_missing', None),
+                   field_mask=d.get('field_mask', None),
+                   setting=_from_dict(d, 'setting', DefaultNamespaceSetting))
+
+
+@dataclass
 class UpdateIpAccessList:
     """Details required to update an IP access list."""
 
@@ -1355,6 +1490,66 @@ class UpdateIpAccessList:
                    ip_addresses=d.get('ip_addresses', None),
                    label=d.get('label', None),
                    list_type=_enum(d, 'list_type', ListType))
+
+
+@dataclass
+class UpdatePersonalComputeSettingRequest:
+    """Details required to update a setting."""
+
+    allow_missing: bool
+    """This should always be set to true for Settings API. Added for AIP compliance."""
+
+    setting: PersonalComputeSetting
+
+    field_mask: str
+    """Field mask is required to be passed into the PATCH request. Field mask specifies which fields of
+    the setting payload will be updated. The field mask needs to be supplied as single string. To
+    specify multiple fields in the field mask, use comma as the separator (no space)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdatePersonalComputeSettingRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.allow_missing is not None: body['allow_missing'] = self.allow_missing
+        if self.field_mask is not None: body['field_mask'] = self.field_mask
+        if self.setting: body['setting'] = self.setting.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdatePersonalComputeSettingRequest:
+        """Deserializes the UpdatePersonalComputeSettingRequest from a dictionary."""
+        return cls(allow_missing=d.get('allow_missing', None),
+                   field_mask=d.get('field_mask', None),
+                   setting=_from_dict(d, 'setting', PersonalComputeSetting))
+
+
+@dataclass
+class UpdateRestrictWorkspaceAdminsSettingRequest:
+    """Details required to update a setting."""
+
+    allow_missing: bool
+    """This should always be set to true for Settings API. Added for AIP compliance."""
+
+    setting: RestrictWorkspaceAdminsSetting
+
+    field_mask: str
+    """Field mask is required to be passed into the PATCH request. Field mask specifies which fields of
+    the setting payload will be updated. The field mask needs to be supplied as single string. To
+    specify multiple fields in the field mask, use comma as the separator (no space)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateRestrictWorkspaceAdminsSettingRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.allow_missing is not None: body['allow_missing'] = self.allow_missing
+        if self.field_mask is not None: body['field_mask'] = self.field_mask
+        if self.setting: body['setting'] = self.setting.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateRestrictWorkspaceAdminsSettingRequest:
+        """Deserializes the UpdateRestrictWorkspaceAdminsSettingRequest from a dictionary."""
+        return cls(allow_missing=d.get('allow_missing', None),
+                   field_mask=d.get('field_mask', None),
+                   setting=_from_dict(d, 'setting', RestrictWorkspaceAdminsSetting))
 
 
 WorkspaceConf = Dict[str, str]
@@ -1581,12 +1776,14 @@ class AccountSettingsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def delete_personal_compute_setting(self, etag: str) -> DeletePersonalComputeSettingResponse:
+    def delete_personal_compute_setting(self,
+                                        *,
+                                        etag: Optional[str] = None) -> DeletePersonalComputeSettingResponse:
         """Delete Personal Compute setting.
         
         Reverts back the Personal Compute setting value to default (ON)
         
-        :param etag: str
+        :param etag: str (optional)
           etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
           optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
           each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
@@ -1606,12 +1803,12 @@ class AccountSettingsAPI:
             headers=headers)
         return DeletePersonalComputeSettingResponse.from_dict(res)
 
-    def read_personal_compute_setting(self, etag: str) -> PersonalComputeSetting:
+    def get_personal_compute_setting(self, *, etag: Optional[str] = None) -> PersonalComputeSetting:
         """Get Personal Compute setting.
         
         Gets the value of the Personal Compute setting.
         
-        :param etag: str
+        :param etag: str (optional)
           etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
           optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
           each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
@@ -1631,23 +1828,25 @@ class AccountSettingsAPI:
             headers=headers)
         return PersonalComputeSetting.from_dict(res)
 
-    def update_personal_compute_setting(
-            self,
-            *,
-            allow_missing: Optional[bool] = None,
-            setting: Optional[PersonalComputeSetting] = None) -> PersonalComputeSetting:
+    def update_personal_compute_setting(self, allow_missing: bool, setting: PersonalComputeSetting,
+                                        field_mask: str) -> PersonalComputeSetting:
         """Update Personal Compute setting.
         
         Updates the value of the Personal Compute setting.
         
-        :param allow_missing: bool (optional)
-          This should always be set to true for Settings RPCs. Added for AIP compliance.
-        :param setting: :class:`PersonalComputeSetting` (optional)
+        :param allow_missing: bool
+          This should always be set to true for Settings API. Added for AIP compliance.
+        :param setting: :class:`PersonalComputeSetting`
+        :param field_mask: str
+          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
+          setting payload will be updated. The field mask needs to be supplied as single string. To specify
+          multiple fields in the field mask, use comma as the separator (no space).
         
         :returns: :class:`PersonalComputeSetting`
         """
         body = {}
         if allow_missing is not None: body['allow_missing'] = allow_missing
+        if field_mask is not None: body['field_mask'] = field_mask
         if setting is not None: body['setting'] = setting.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         res = self._api.do(
@@ -1669,11 +1868,13 @@ class CredentialsManagerAPI:
                        scopes: List[str]) -> ExchangeTokenResponse:
         """Exchange token.
         
-        Exchange tokens with an Identity Provider to get a new access token. It allowes specifying scopes to
+        Exchange tokens with an Identity Provider to get a new access token. It allows specifying scopes to
         determine token permissions.
         
         :param partition_id: :class:`PartitionId`
+          The partition of Credentials store
         :param token_type: List[:class:`TokenType`]
+          A list of token types being requested
         :param scopes: List[str]
           Array of scopes for the token request.
         
@@ -2075,10 +2276,9 @@ class NetworkConnectivityAPI:
                                 f'/api/2.0/accounts/{self._api.account_id}/network-connectivity-configs',
                                 query=query,
                                 headers=headers)
-            if 'items' not in json or not json['items']:
-                return
-            for v in json['items']:
-                yield NetworkConnectivityConfiguration.from_dict(v)
+            if 'items' in json:
+                for v in json['items']:
+                    yield NetworkConnectivityConfiguration.from_dict(v)
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']
@@ -2110,10 +2310,9 @@ class NetworkConnectivityAPI:
                 f'/api/2.0/accounts/{self._api.account_id}/network-connectivity-configs/{network_connectivity_config_id}/private-endpoint-rules',
                 query=query,
                 headers=headers)
-            if 'items' not in json or not json['items']:
-                return
-            for v in json['items']:
-                yield NccAzurePrivateEndpointRule.from_dict(v)
+            if 'items' in json:
+                for v in json['items']:
+                    yield NccAzurePrivateEndpointRule.from_dict(v)
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']
@@ -2134,7 +2333,9 @@ class SettingsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def delete_default_workspace_namespace(self, etag: str) -> DeleteDefaultWorkspaceNamespaceResponse:
+    def delete_default_namespace_setting(self,
+                                         *,
+                                         etag: Optional[str] = None) -> DeleteDefaultNamespaceSettingResponse:
         """Delete the default namespace setting.
         
         Deletes the default namespace setting for the workspace. A fresh etag needs to be provided in DELETE
@@ -2142,14 +2343,14 @@ class SettingsAPI:
         request. If the setting is updated/deleted concurrently, DELETE will fail with 409 and the request
         will need to be retried by using the fresh etag in the 409 response.
         
-        :param etag: str
+        :param etag: str (optional)
           etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
           optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
           each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
           to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
           request, and pass it with the DELETE request to identify the rule set version you are deleting.
         
-        :returns: :class:`DeleteDefaultWorkspaceNamespaceResponse`
+        :returns: :class:`DeleteDefaultNamespaceSettingResponse`
         """
 
         query = {}
@@ -2159,14 +2360,44 @@ class SettingsAPI:
                            '/api/2.0/settings/types/default_namespace_ws/names/default',
                            query=query,
                            headers=headers)
-        return DeleteDefaultWorkspaceNamespaceResponse.from_dict(res)
+        return DeleteDefaultNamespaceSettingResponse.from_dict(res)
 
-    def read_default_workspace_namespace(self, etag: str) -> DefaultNamespaceSetting:
+    def delete_restrict_workspace_admins_setting(self,
+                                                 *,
+                                                 etag: Optional[str] = None
+                                                 ) -> DeleteRestrictWorkspaceAdminsSettingResponse:
+        """Delete the restrict workspace admins setting.
+        
+        Reverts the restrict workspace admins setting status for the workspace. A fresh etag needs to be
+        provided in DELETE requests (as a query parameter). The etag can be retrieved by making a GET request
+        before the DELETE request. If the setting is updated/deleted concurrently, DELETE will fail with 409
+        and the request will need to be retried by using the fresh etag in the 409 response.
+        
+        :param etag: str (optional)
+          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
+          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
+          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
+          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
+          request, and pass it with the DELETE request to identify the rule set version you are deleting.
+        
+        :returns: :class:`DeleteRestrictWorkspaceAdminsSettingResponse`
+        """
+
+        query = {}
+        if etag is not None: query['etag'] = etag
+        headers = {'Accept': 'application/json', }
+        res = self._api.do('DELETE',
+                           '/api/2.0/settings/types/restrict_workspace_admins/names/default',
+                           query=query,
+                           headers=headers)
+        return DeleteRestrictWorkspaceAdminsSettingResponse.from_dict(res)
+
+    def get_default_namespace_setting(self, *, etag: Optional[str] = None) -> DefaultNamespaceSetting:
         """Get the default namespace setting.
         
         Gets the default namespace setting.
         
-        :param etag: str
+        :param etag: str (optional)
           etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
           optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
           each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
@@ -2185,12 +2416,34 @@ class SettingsAPI:
                            headers=headers)
         return DefaultNamespaceSetting.from_dict(res)
 
-    def update_default_workspace_namespace(
-            self,
-            *,
-            allow_missing: Optional[bool] = None,
-            field_mask: Optional[str] = None,
-            setting: Optional[DefaultNamespaceSetting] = None) -> DefaultNamespaceSetting:
+    def get_restrict_workspace_admins_setting(self,
+                                              *,
+                                              etag: Optional[str] = None) -> RestrictWorkspaceAdminsSetting:
+        """Get the restrict workspace admins setting.
+        
+        Gets the restrict workspace admins setting.
+        
+        :param etag: str (optional)
+          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
+          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
+          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
+          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
+          request, and pass it with the DELETE request to identify the rule set version you are deleting.
+        
+        :returns: :class:`RestrictWorkspaceAdminsSetting`
+        """
+
+        query = {}
+        if etag is not None: query['etag'] = etag
+        headers = {'Accept': 'application/json', }
+        res = self._api.do('GET',
+                           '/api/2.0/settings/types/restrict_workspace_admins/names/default',
+                           query=query,
+                           headers=headers)
+        return RestrictWorkspaceAdminsSetting.from_dict(res)
+
+    def update_default_namespace_setting(self, allow_missing: bool, setting: DefaultNamespaceSetting,
+                                         field_mask: str) -> DefaultNamespaceSetting:
         """Update the default namespace setting.
         
         Updates the default namespace setting for the workspace. A fresh etag needs to be provided in PATCH
@@ -2200,16 +2453,9 @@ class SettingsAPI:
         updated concurrently, PATCH will fail with 409 and the request will need to be retried by using the
         fresh etag in the 409 response.
         
-        :param allow_missing: bool (optional)
+        :param allow_missing: bool
           This should always be set to true for Settings API. Added for AIP compliance.
-        :param field_mask: str (optional)
-          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
-          setting payload will be updated. For example, for Default Namespace setting, the field mask is
-          supposed to contain fields from the DefaultNamespaceSetting.namespace schema.
-          
-          The field mask needs to be supplied as single string. To specify multiple fields in the field mask,
-          use comma as the seperator (no space).
-        :param setting: :class:`DefaultNamespaceSetting` (optional)
+        :param setting: :class:`DefaultNamespaceSetting`
           This represents the setting configuration for the default namespace in the Databricks workspace.
           Setting the default catalog for the workspace determines the catalog that is used when queries do
           not reference a fully qualified 3 level name. For example, if the default catalog is set to
@@ -2217,6 +2463,10 @@ class SettingsAPI:
           'retail_prod.default.myTable' (the schema 'default' is always assumed). This setting requires a
           restart of clusters and SQL warehouses to take effect. Additionally, the default namespace only
           applies when using Unity Catalog-enabled compute.
+        :param field_mask: str
+          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
+          setting payload will be updated. The field mask needs to be supplied as single string. To specify
+          multiple fields in the field mask, use comma as the separator (no space).
         
         :returns: :class:`DefaultNamespaceSetting`
         """
@@ -2230,6 +2480,37 @@ class SettingsAPI:
                            body=body,
                            headers=headers)
         return DefaultNamespaceSetting.from_dict(res)
+
+    def update_restrict_workspace_admins_setting(self, allow_missing: bool,
+                                                 setting: RestrictWorkspaceAdminsSetting,
+                                                 field_mask: str) -> RestrictWorkspaceAdminsSetting:
+        """Update the restrict workspace admins setting.
+        
+        Updates the restrict workspace admins setting for the workspace. A fresh etag needs to be provided in
+        PATCH requests (as part of the setting field). The etag can be retrieved by making a GET request
+        before the PATCH request. If the setting is updated concurrently, PATCH will fail with 409 and the
+        request will need to be retried by using the fresh etag in the 409 response.
+        
+        :param allow_missing: bool
+          This should always be set to true for Settings API. Added for AIP compliance.
+        :param setting: :class:`RestrictWorkspaceAdminsSetting`
+        :param field_mask: str
+          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
+          setting payload will be updated. The field mask needs to be supplied as single string. To specify
+          multiple fields in the field mask, use comma as the separator (no space).
+        
+        :returns: :class:`RestrictWorkspaceAdminsSetting`
+        """
+        body = {}
+        if allow_missing is not None: body['allow_missing'] = allow_missing
+        if field_mask is not None: body['field_mask'] = field_mask
+        if setting is not None: body['setting'] = setting.as_dict()
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        res = self._api.do('PATCH',
+                           '/api/2.0/settings/types/restrict_workspace_admins/names/default',
+                           body=body,
+                           headers=headers)
+        return RestrictWorkspaceAdminsSetting.from_dict(res)
 
 
 class TokenManagementAPI:

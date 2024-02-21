@@ -7,6 +7,7 @@ from typing import Any, BinaryIO, Iterator, Type
 
 from requests.adapters import HTTPAdapter
 
+from .casing import Casing
 from .config import *
 # To preserve backwards compatibility (as these definitions were previously in this module)
 from .credentials_provider import *
@@ -115,7 +116,8 @@ class ApiClient:
            body: dict = None,
            raw: bool = False,
            files=None,
-           data=None) -> Union[dict, BinaryIO]:
+           data=None,
+           response_headers: List[str] = None) -> Union[dict, BinaryIO]:
         # Remove extra `/` from path for Files API
         # Once we've fixed the OpenAPI spec, we can remove this
         path = re.sub('^/api/2.0/fs/files//', '/api/2.0/fs/files/', path)
@@ -123,15 +125,29 @@ class ApiClient:
             headers = {}
         headers['User-Agent'] = self._user_agent_base
         retryable = retried(timeout=timedelta(seconds=self._retry_timeout_seconds),
-                            is_retryable=self._is_retryable)
-        return retryable(self._perform)(method,
-                                        path,
-                                        query=query,
-                                        headers=headers,
-                                        body=body,
-                                        raw=raw,
-                                        files=files,
-                                        data=data)
+                            is_retryable=self._is_retryable,
+                            clock=self._cfg.clock)
+        response = retryable(self._perform)(method,
+                                            path,
+                                            query=query,
+                                            headers=headers,
+                                            body=body,
+                                            raw=raw,
+                                            files=files,
+                                            data=data)
+        if raw:
+            return StreamingResponse(response)
+        resp = dict()
+        for header in response_headers if response_headers else []:
+            resp[header] = response.headers.get(Casing.to_header_case(header))
+        if not len(response.content):
+            return resp
+
+        json = response.json()
+        if isinstance(json, list):
+            return json
+
+        return {**resp, **json}
 
     @staticmethod
     def _is_retryable(err: BaseException) -> Optional[str]:
@@ -218,11 +234,7 @@ class ApiClient:
                 # See https://stackoverflow.com/a/58821552/277035
                 payload = response.json()
                 raise self._make_nicer_error(response=response, **payload) from None
-            if raw:
-                return StreamingResponse(response)
-            if not len(response.content):
-                return {}
-            return response.json()
+            return response
         except requests.exceptions.JSONDecodeError:
             message = self._make_sense_from_html(response.text)
             if not message:

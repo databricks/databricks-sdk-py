@@ -784,6 +784,7 @@ class ConnectionInfoSecurableKind(Enum):
 class ConnectionType(Enum):
     """The type of connection."""
 
+    BIGQUERY = 'BIGQUERY'
     DATABRICKS = 'DATABRICKS'
     MYSQL = 'MYSQL'
     POSTGRESQL = 'POSTGRESQL'
@@ -3137,6 +3138,53 @@ class MonitorNotificationsConfig:
 
 
 @dataclass
+class MonitorRefreshInfo:
+    end_time_ms: Optional[int] = None
+    """The time at which the refresh ended, in epoch milliseconds."""
+
+    message: Optional[str] = None
+    """An optional message to give insight into the current state of the job (e.g. FAILURE messages)."""
+
+    refresh_id: Optional[int] = None
+    """The ID of the refresh."""
+
+    start_time_ms: Optional[int] = None
+    """The time at which the refresh started, in epoch milliseconds."""
+
+    state: Optional[MonitorRefreshInfoState] = None
+    """The current state of the refresh."""
+
+    def as_dict(self) -> dict:
+        """Serializes the MonitorRefreshInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.end_time_ms is not None: body['end_time_ms'] = self.end_time_ms
+        if self.message is not None: body['message'] = self.message
+        if self.refresh_id is not None: body['refresh_id'] = self.refresh_id
+        if self.start_time_ms is not None: body['start_time_ms'] = self.start_time_ms
+        if self.state is not None: body['state'] = self.state.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> MonitorRefreshInfo:
+        """Deserializes the MonitorRefreshInfo from a dictionary."""
+        return cls(end_time_ms=d.get('end_time_ms', None),
+                   message=d.get('message', None),
+                   refresh_id=d.get('refresh_id', None),
+                   start_time_ms=d.get('start_time_ms', None),
+                   state=_enum(d, 'state', MonitorRefreshInfoState))
+
+
+class MonitorRefreshInfoState(Enum):
+    """The current state of the refresh."""
+
+    CANCELED = 'CANCELED'
+    FAILED = 'FAILED'
+    PENDING = 'PENDING'
+    RUNNING = 'RUNNING'
+    SUCCESS = 'SUCCESS'
+
+
+@dataclass
 class MonitorTimeSeriesProfileType:
     granularities: Optional[List[str]] = None
     """List of granularities to use when aggregating data into time windows based on their timestamp."""
@@ -4115,9 +4163,6 @@ class UpdateConnection:
     options: Dict[str, str]
     """A map of key-value properties attached to the securable."""
 
-    name: Optional[str] = None
-    """Name of the connection."""
-
     name_arg: Optional[str] = None
     """Name of the connection."""
 
@@ -4130,7 +4175,6 @@ class UpdateConnection:
     def as_dict(self) -> dict:
         """Serializes the UpdateConnection into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.name is not None: body['name'] = self.name
         if self.name_arg is not None: body['name_arg'] = self.name_arg
         if self.new_name is not None: body['new_name'] = self.new_name
         if self.options: body['options'] = self.options
@@ -4140,8 +4184,7 @@ class UpdateConnection:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> UpdateConnection:
         """Deserializes the UpdateConnection from a dictionary."""
-        return cls(name=d.get('name', None),
-                   name_arg=d.get('name_arg', None),
+        return cls(name_arg=d.get('name_arg', None),
                    new_name=d.get('new_name', None),
                    options=d.get('options', None),
                    owner=d.get('owner', None))
@@ -4251,9 +4294,6 @@ class UpdateMetastore:
     id: Optional[str] = None
     """Unique ID of the metastore."""
 
-    name: Optional[str] = None
-    """The user-specified name of the metastore."""
-
     new_name: Optional[str] = None
     """New name for the metastore."""
 
@@ -4276,7 +4316,6 @@ class UpdateMetastore:
                 'delta_sharing_recipient_token_lifetime_in_seconds'] = self.delta_sharing_recipient_token_lifetime_in_seconds
         if self.delta_sharing_scope is not None: body['delta_sharing_scope'] = self.delta_sharing_scope.value
         if self.id is not None: body['id'] = self.id
-        if self.name is not None: body['name'] = self.name
         if self.new_name is not None: body['new_name'] = self.new_name
         if self.owner is not None: body['owner'] = self.owner
         if self.privilege_model_version is not None:
@@ -4293,7 +4332,6 @@ class UpdateMetastore:
                        'delta_sharing_recipient_token_lifetime_in_seconds', None),
                    delta_sharing_scope=_enum(d, 'delta_sharing_scope', UpdateMetastoreDeltaSharingScope),
                    id=d.get('id', None),
-                   name=d.get('name', None),
                    new_name=d.get('new_name', None),
                    owner=d.get('owner', None),
                    privilege_model_version=d.get('privilege_model_version', None),
@@ -4475,9 +4513,6 @@ class UpdateRegisteredModelRequest:
     full_name: Optional[str] = None
     """The three-level (fully qualified) name of the registered model"""
 
-    name: Optional[str] = None
-    """The name of the registered model"""
-
     new_name: Optional[str] = None
     """New name for the registered model."""
 
@@ -4489,7 +4524,6 @@ class UpdateRegisteredModelRequest:
         body = {}
         if self.comment is not None: body['comment'] = self.comment
         if self.full_name is not None: body['full_name'] = self.full_name
-        if self.name is not None: body['name'] = self.name
         if self.new_name is not None: body['new_name'] = self.new_name
         if self.owner is not None: body['owner'] = self.owner
         return body
@@ -4499,7 +4533,6 @@ class UpdateRegisteredModelRequest:
         """Deserializes the UpdateRegisteredModelRequest from a dictionary."""
         return cls(comment=d.get('comment', None),
                    full_name=d.get('full_name', None),
-                   name=d.get('name', None),
                    new_name=d.get('new_name', None),
                    owner=d.get('owner', None))
 
@@ -4514,9 +4547,6 @@ class UpdateSchema:
 
     full_name: Optional[str] = None
     """Full name of the schema."""
-
-    name: Optional[str] = None
-    """Name of schema, relative to parent catalog."""
 
     new_name: Optional[str] = None
     """New name for the schema."""
@@ -4534,7 +4564,6 @@ class UpdateSchema:
         if self.enable_predictive_optimization is not None:
             body['enable_predictive_optimization'] = self.enable_predictive_optimization.value
         if self.full_name is not None: body['full_name'] = self.full_name
-        if self.name is not None: body['name'] = self.name
         if self.new_name is not None: body['new_name'] = self.new_name
         if self.owner is not None: body['owner'] = self.owner
         if self.properties: body['properties'] = self.properties
@@ -4547,7 +4576,6 @@ class UpdateSchema:
                    enable_predictive_optimization=_enum(d, 'enable_predictive_optimization',
                                                         EnablePredictiveOptimization),
                    full_name=d.get('full_name', None),
-                   name=d.get('name', None),
                    new_name=d.get('new_name', None),
                    owner=d.get('owner', None),
                    properties=d.get('properties', None))
@@ -4635,9 +4663,6 @@ class UpdateVolumeRequestContent:
     full_name_arg: Optional[str] = None
     """The three-level (fully qualified) name of the volume"""
 
-    name: Optional[str] = None
-    """The name of the volume"""
-
     new_name: Optional[str] = None
     """New name for the volume."""
 
@@ -4649,7 +4674,6 @@ class UpdateVolumeRequestContent:
         body = {}
         if self.comment is not None: body['comment'] = self.comment
         if self.full_name_arg is not None: body['full_name_arg'] = self.full_name_arg
-        if self.name is not None: body['name'] = self.name
         if self.new_name is not None: body['new_name'] = self.new_name
         if self.owner is not None: body['owner'] = self.owner
         return body
@@ -4659,7 +4683,6 @@ class UpdateVolumeRequestContent:
         """Deserializes the UpdateVolumeRequestContent from a dictionary."""
         return cls(comment=d.get('comment', None),
                    full_name_arg=d.get('full_name_arg', None),
-                   name=d.get('name', None),
                    new_name=d.get('new_name', None),
                    owner=d.get('owner', None))
 
@@ -5638,7 +5661,6 @@ class ConnectionsAPI:
                name_arg: str,
                options: Dict[str, str],
                *,
-               name: Optional[str] = None,
                new_name: Optional[str] = None,
                owner: Optional[str] = None) -> ConnectionInfo:
         """Update a connection.
@@ -5649,8 +5671,6 @@ class ConnectionsAPI:
           Name of the connection.
         :param options: Dict[str,str]
           A map of key-value properties attached to the securable.
-        :param name: str (optional)
-          Name of the connection.
         :param new_name: str (optional)
           New name for the connection.
         :param owner: str (optional)
@@ -5659,7 +5679,6 @@ class ConnectionsAPI:
         :returns: :class:`ConnectionInfo`
         """
         body = {}
-        if name is not None: body['name'] = name
         if new_name is not None: body['new_name'] = new_name
         if options is not None: body['options'] = options
         if owner is not None: body['owner'] = owner
@@ -5804,10 +5823,9 @@ class ExternalLocationsAPI:
                                 '/api/2.1/unity-catalog/external-locations',
                                 query=query,
                                 headers=headers)
-            if 'external_locations' not in json or not json['external_locations']:
-                return
-            for v in json['external_locations']:
-                yield ExternalLocationInfo.from_dict(v)
+            if 'external_locations' in json:
+                for v in json['external_locations']:
+                    yield ExternalLocationInfo.from_dict(v)
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']
@@ -5988,10 +6006,9 @@ class FunctionsAPI:
 
         while True:
             json = self._api.do('GET', '/api/2.1/unity-catalog/functions', query=query, headers=headers)
-            if 'functions' not in json or not json['functions']:
-                return
-            for v in json['functions']:
-                yield FunctionInfo.from_dict(v)
+            if 'functions' in json:
+                for v in json['functions']:
+                    yield FunctionInfo.from_dict(v)
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']
@@ -6131,6 +6148,31 @@ class LakehouseMonitorsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
+    def cancel_refresh(self, full_name: str, refresh_id: str):
+        """Cancel refresh.
+        
+        Cancel an active monitor refresh for the given refresh ID.
+        
+        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
+        table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
+        - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema - be an
+        owner of the table
+        
+        Additionally, the call must be made from the workspace where the monitor was created.
+        
+        :param full_name: str
+          Full name of the table.
+        :param refresh_id: str
+          ID of the refresh.
+        
+        
+        """
+
+        headers = {}
+        self._api.do('POST',
+                     f'/api/2.1/unity-catalog/tables/{full_name}/monitor/refreshes/{refresh_id}/cancel',
+                     headers=headers)
+
     def create(self,
                full_name: str,
                assets_dir: str,
@@ -6264,6 +6306,81 @@ class LakehouseMonitorsAPI:
         headers = {'Accept': 'application/json', }
         res = self._api.do('GET', f'/api/2.1/unity-catalog/tables/{full_name}/monitor', headers=headers)
         return MonitorInfo.from_dict(res)
+
+    def get_refresh(self, full_name: str, refresh_id: str) -> MonitorRefreshInfo:
+        """Get refresh.
+        
+        Gets info about a specific monitor refresh using the given refresh ID.
+        
+        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
+        table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
+        - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema -
+        **SELECT** privilege on the table.
+        
+        Additionally, the call must be made from the workspace where the monitor was created.
+        
+        :param full_name: str
+          Full name of the table.
+        :param refresh_id: str
+          ID of the refresh.
+        
+        :returns: :class:`MonitorRefreshInfo`
+        """
+
+        headers = {'Accept': 'application/json', }
+        res = self._api.do('GET',
+                           f'/api/2.1/unity-catalog/tables/{full_name}/monitor/refreshes/{refresh_id}',
+                           headers=headers)
+        return MonitorRefreshInfo.from_dict(res)
+
+    def list_refreshes(self, full_name: str) -> Iterator[MonitorRefreshInfo]:
+        """List refreshes.
+        
+        Gets an array containing the history of the most recent refreshes (up to 25) for this table.
+        
+        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
+        table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
+        - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema -
+        **SELECT** privilege on the table.
+        
+        Additionally, the call must be made from the workspace where the monitor was created.
+        
+        :param full_name: str
+          Full name of the table.
+        
+        :returns: Iterator over :class:`MonitorRefreshInfo`
+        """
+
+        headers = {'Accept': 'application/json', }
+        res = self._api.do('GET',
+                           f'/api/2.1/unity-catalog/tables/{full_name}/monitor/refreshes',
+                           headers=headers)
+        return [MonitorRefreshInfo.from_dict(v) for v in res]
+
+    def run_refresh(self, full_name: str) -> MonitorRefreshInfo:
+        """Queue a metric refresh for a monitor.
+        
+        Queues a metric refresh on the monitor for the specified table. The refresh will execute in the
+        background.
+        
+        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
+        table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
+        - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema - be an
+        owner of the table
+        
+        Additionally, the call must be made from the workspace where the monitor was created.
+        
+        :param full_name: str
+          Full name of the table.
+        
+        :returns: :class:`MonitorRefreshInfo`
+        """
+
+        headers = {'Accept': 'application/json', }
+        res = self._api.do('POST',
+                           f'/api/2.1/unity-catalog/tables/{full_name}/monitor/refreshes',
+                           headers=headers)
+        return MonitorRefreshInfo.from_dict(res)
 
     def update(self,
                full_name: str,
@@ -6516,7 +6633,6 @@ class MetastoresAPI:
                delta_sharing_organization_name: Optional[str] = None,
                delta_sharing_recipient_token_lifetime_in_seconds: Optional[int] = None,
                delta_sharing_scope: Optional[UpdateMetastoreDeltaSharingScope] = None,
-               name: Optional[str] = None,
                new_name: Optional[str] = None,
                owner: Optional[str] = None,
                privilege_model_version: Optional[str] = None,
@@ -6535,8 +6651,6 @@ class MetastoresAPI:
           The lifetime of delta sharing recipient token in seconds.
         :param delta_sharing_scope: :class:`UpdateMetastoreDeltaSharingScope` (optional)
           The scope of Delta Sharing enabled for the metastore.
-        :param name: str (optional)
-          The user-specified name of the metastore.
         :param new_name: str (optional)
           New name for the metastore.
         :param owner: str (optional)
@@ -6555,7 +6669,6 @@ class MetastoresAPI:
             body[
                 'delta_sharing_recipient_token_lifetime_in_seconds'] = delta_sharing_recipient_token_lifetime_in_seconds
         if delta_sharing_scope is not None: body['delta_sharing_scope'] = delta_sharing_scope.value
-        if name is not None: body['name'] = name
         if new_name is not None: body['new_name'] = new_name
         if owner is not None: body['owner'] = owner
         if privilege_model_version is not None: body['privilege_model_version'] = privilege_model_version
@@ -6718,10 +6831,9 @@ class ModelVersionsAPI:
                                 f'/api/2.1/unity-catalog/models/{full_name}/versions',
                                 query=query,
                                 headers=headers)
-            if 'model_versions' not in json or not json['model_versions']:
-                return
-            for v in json['model_versions']:
-                yield ModelVersionInfo.from_dict(v)
+            if 'model_versions' in json:
+                for v in json['model_versions']:
+                    yield ModelVersionInfo.from_dict(v)
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']
@@ -6928,10 +7040,9 @@ class RegisteredModelsAPI:
 
         while True:
             json = self._api.do('GET', '/api/2.1/unity-catalog/models', query=query, headers=headers)
-            if 'registered_models' not in json or not json['registered_models']:
-                return
-            for v in json['registered_models']:
-                yield RegisteredModelInfo.from_dict(v)
+            if 'registered_models' in json:
+                for v in json['registered_models']:
+                    yield RegisteredModelInfo.from_dict(v)
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']
@@ -6967,7 +7078,6 @@ class RegisteredModelsAPI:
                full_name: str,
                *,
                comment: Optional[str] = None,
-               name: Optional[str] = None,
                new_name: Optional[str] = None,
                owner: Optional[str] = None) -> RegisteredModelInfo:
         """Update a Registered Model.
@@ -6984,8 +7094,6 @@ class RegisteredModelsAPI:
           The three-level (fully qualified) name of the registered model
         :param comment: str (optional)
           The comment attached to the registered model
-        :param name: str (optional)
-          The name of the registered model
         :param new_name: str (optional)
           New name for the registered model.
         :param owner: str (optional)
@@ -6995,7 +7103,6 @@ class RegisteredModelsAPI:
         """
         body = {}
         if comment is not None: body['comment'] = comment
-        if name is not None: body['name'] = name
         if new_name is not None: body['new_name'] = new_name
         if owner is not None: body['owner'] = owner
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
@@ -7112,10 +7219,9 @@ class SchemasAPI:
 
         while True:
             json = self._api.do('GET', '/api/2.1/unity-catalog/schemas', query=query, headers=headers)
-            if 'schemas' not in json or not json['schemas']:
-                return
-            for v in json['schemas']:
-                yield SchemaInfo.from_dict(v)
+            if 'schemas' in json:
+                for v in json['schemas']:
+                    yield SchemaInfo.from_dict(v)
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']
@@ -7125,7 +7231,6 @@ class SchemasAPI:
                *,
                comment: Optional[str] = None,
                enable_predictive_optimization: Optional[EnablePredictiveOptimization] = None,
-               name: Optional[str] = None,
                new_name: Optional[str] = None,
                owner: Optional[str] = None,
                properties: Optional[Dict[str, str]] = None) -> SchemaInfo:
@@ -7142,8 +7247,6 @@ class SchemasAPI:
           User-provided free-form text description.
         :param enable_predictive_optimization: :class:`EnablePredictiveOptimization` (optional)
           Whether predictive optimization should be enabled for this object and objects under it.
-        :param name: str (optional)
-          Name of schema, relative to parent catalog.
         :param new_name: str (optional)
           New name for the schema.
         :param owner: str (optional)
@@ -7157,7 +7260,6 @@ class SchemasAPI:
         if comment is not None: body['comment'] = comment
         if enable_predictive_optimization is not None:
             body['enable_predictive_optimization'] = enable_predictive_optimization.value
-        if name is not None: body['name'] = name
         if new_name is not None: body['new_name'] = new_name
         if owner is not None: body['owner'] = owner
         if properties is not None: body['properties'] = properties
@@ -7306,10 +7408,9 @@ class StorageCredentialsAPI:
                                 '/api/2.1/unity-catalog/storage-credentials',
                                 query=query,
                                 headers=headers)
-            if 'storage_credentials' not in json or not json['storage_credentials']:
-                return
-            for v in json['storage_credentials']:
-                yield StorageCredentialInfo.from_dict(v)
+            if 'storage_credentials' in json:
+                for v in json['storage_credentials']:
+                    yield StorageCredentialInfo.from_dict(v)
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']
@@ -7709,10 +7810,9 @@ class TablesAPI:
 
         while True:
             json = self._api.do('GET', '/api/2.1/unity-catalog/tables', query=query, headers=headers)
-            if 'tables' not in json or not json['tables']:
-                return
-            for v in json['tables']:
-                yield TableInfo.from_dict(v)
+            if 'tables' in json:
+                for v in json['tables']:
+                    yield TableInfo.from_dict(v)
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']
@@ -7765,10 +7865,9 @@ class TablesAPI:
 
         while True:
             json = self._api.do('GET', '/api/2.1/unity-catalog/table-summaries', query=query, headers=headers)
-            if 'tables' not in json or not json['tables']:
-                return
-            for v in json['tables']:
-                yield TableSummary.from_dict(v)
+            if 'tables' in json:
+                for v in json['tables']:
+                    yield TableSummary.from_dict(v)
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']
@@ -7925,7 +8024,6 @@ class VolumesAPI:
                full_name_arg: str,
                *,
                comment: Optional[str] = None,
-               name: Optional[str] = None,
                new_name: Optional[str] = None,
                owner: Optional[str] = None) -> VolumeInfo:
         """Update a Volume.
@@ -7942,8 +8040,6 @@ class VolumesAPI:
           The three-level (fully qualified) name of the volume
         :param comment: str (optional)
           The comment attached to the volume
-        :param name: str (optional)
-          The name of the volume
         :param new_name: str (optional)
           New name for the volume.
         :param owner: str (optional)
@@ -7953,7 +8049,6 @@ class VolumesAPI:
         """
         body = {}
         if comment is not None: body['comment'] = comment
-        if name is not None: body['name'] = name
         if new_name is not None: body['new_name'] = new_name
         if owner is not None: body['owner'] = owner
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }

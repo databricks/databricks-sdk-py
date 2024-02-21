@@ -84,6 +84,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: PipelineClusterAutoscale
+   :members:
+   :undoc-members:
+
 .. autoclass:: PipelineEvent
    :members:
    :undoc-members:

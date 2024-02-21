@@ -8,6 +8,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: Adlsgen2Info
+   :members:
+   :undoc-members:
+
 .. autoclass:: AutoScale
    :members:
    :undoc-members:
@@ -221,6 +225,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: GcpAttributes
+   :members:
+   :undoc-members:
+
+.. autoclass:: GcsStorageInfo
    :members:
    :undoc-members:
 

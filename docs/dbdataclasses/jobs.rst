@@ -72,6 +72,22 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ForEachStats
+   :members:
+   :undoc-members:
+
+.. autoclass:: ForEachTask
+   :members:
+   :undoc-members:
+
+.. autoclass:: ForEachTaskErrorMessageStats
+   :members:
+   :undoc-members:
+
+.. autoclass:: ForEachTaskTaskRunStats
+   :members:
+   :undoc-members:
+
 .. autoclass:: GetJobPermissionLevelsResponse
    :members:
    :undoc-members:
@@ -245,6 +261,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: RunConditionTask
+   :members:
+   :undoc-members:
+
+.. autoclass:: RunForEachTask
    :members:
    :undoc-members:
 

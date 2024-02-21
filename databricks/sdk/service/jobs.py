@@ -676,12 +676,21 @@ class DbtTask:
     specified. If no warehouse_id is specified and this folder is unset, the root directory is used."""
 
     project_directory: Optional[str] = None
-    """Optional (relative) path to the project directory, if no value is provided, the root of the git
-    repository is used."""
+    """Path to the project directory. Optional for Git sourced tasks, in which case if no value is
+    provided, the root of the Git repository is used."""
 
     schema: Optional[str] = None
     """Optional schema to write to. This parameter is only used when a warehouse_id is also provided.
     If not provided, the `default` schema is used."""
+
+    source: Optional[Source] = None
+    """Optional location type of the project directory. When set to `WORKSPACE`, the project will be
+    retrieved from the local <Databricks> workspace. When set to `GIT`, the project will be
+    retrieved from a Git repository defined in `git_source`. If the value is empty, the task will
+    use `GIT` if `git_source` is defined and `WORKSPACE` otherwise.
+    
+    * `WORKSPACE`: Project is located in <Databricks> workspace. * `GIT`: Project is located in
+    cloud Git provider."""
 
     warehouse_id: Optional[str] = None
     """ID of the SQL warehouse to connect to. If provided, we automatically generate and provide the
@@ -696,6 +705,7 @@ class DbtTask:
         if self.profiles_directory is not None: body['profiles_directory'] = self.profiles_directory
         if self.project_directory is not None: body['project_directory'] = self.project_directory
         if self.schema is not None: body['schema'] = self.schema
+        if self.source is not None: body['source'] = self.source.value
         if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
         return body
 
@@ -707,6 +717,7 @@ class DbtTask:
                    profiles_directory=d.get('profiles_directory', None),
                    project_directory=d.get('project_directory', None),
                    schema=d.get('schema', None),
+                   source=_enum(d, 'source', Source),
                    warehouse_id=d.get('warehouse_id', None))
 
 
@@ -771,8 +782,8 @@ class FileArrivalTriggerConfiguration:
     time the trigger fired. The minimum allowed value is 60 seconds"""
 
     url: Optional[str] = None
-    """URL to be monitored for file arrivals. The path must point to the root or a subpath of the
-    external location."""
+    """The storage location to monitor for file arrivals. The value must point to the root or a subpath
+    of an external location URL or the root or subpath of a Unity Catalog volume."""
 
     wait_after_last_change_seconds: Optional[int] = None
     """If set, the trigger starts a run only after no file activity has occurred for the specified
@@ -795,6 +806,117 @@ class FileArrivalTriggerConfiguration:
         return cls(min_time_between_triggers_seconds=d.get('min_time_between_triggers_seconds', None),
                    url=d.get('url', None),
                    wait_after_last_change_seconds=d.get('wait_after_last_change_seconds', None))
+
+
+@dataclass
+class ForEachStats:
+    error_message_stats: Optional[ForEachTaskErrorMessageStats] = None
+    """Sample of 3 most common error messages occurred during the iteration."""
+
+    task_run_stats: Optional[ForEachTaskTaskRunStats] = None
+    """Describes stats of the iteration. Only latest retries are considered."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ForEachStats into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.error_message_stats: body['error_message_stats'] = self.error_message_stats.as_dict()
+        if self.task_run_stats: body['task_run_stats'] = self.task_run_stats.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ForEachStats:
+        """Deserializes the ForEachStats from a dictionary."""
+        return cls(error_message_stats=_from_dict(d, 'error_message_stats', ForEachTaskErrorMessageStats),
+                   task_run_stats=_from_dict(d, 'task_run_stats', ForEachTaskTaskRunStats))
+
+
+@dataclass
+class ForEachTask:
+    inputs: str
+    """Array for task to iterate on. This can be a JSON string or a reference to an array parameter."""
+
+    task: Task
+
+    concurrency: Optional[int] = None
+    """Controls the number of active iterations task runs. Default is 100 (maximal value)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ForEachTask into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.concurrency is not None: body['concurrency'] = self.concurrency
+        if self.inputs is not None: body['inputs'] = self.inputs
+        if self.task: body['task'] = self.task.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ForEachTask:
+        """Deserializes the ForEachTask from a dictionary."""
+        return cls(concurrency=d.get('concurrency', None),
+                   inputs=d.get('inputs', None),
+                   task=_from_dict(d, 'task', Task))
+
+
+@dataclass
+class ForEachTaskErrorMessageStats:
+    count: Optional[str] = None
+    """Describes the count of such error message encountered during the iterations."""
+
+    error_message: Optional[str] = None
+    """Describes the error message occured during the iterations."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ForEachTaskErrorMessageStats into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.count is not None: body['count'] = self.count
+        if self.error_message is not None: body['error_message'] = self.error_message
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ForEachTaskErrorMessageStats:
+        """Deserializes the ForEachTaskErrorMessageStats from a dictionary."""
+        return cls(count=d.get('count', None), error_message=d.get('error_message', None))
+
+
+@dataclass
+class ForEachTaskTaskRunStats:
+    active_iterations: Optional[int] = None
+    """Describes the iteration runs having an active lifecycle state or an active run sub state."""
+
+    completed_iterations: Optional[int] = None
+    """Describes the number of failed and succeeded iteration runs."""
+
+    failed_iterations: Optional[int] = None
+    """Describes the number of failed iteration runs."""
+
+    scheduled_iterations: Optional[int] = None
+    """Describes the number of iteration runs that have been scheduled."""
+
+    succeeded_iterations: Optional[int] = None
+    """Describes the number of succeeded iteration runs."""
+
+    total_iterations: Optional[int] = None
+    """Describes the length of the list of items to iterate over."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ForEachTaskTaskRunStats into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.active_iterations is not None: body['active_iterations'] = self.active_iterations
+        if self.completed_iterations is not None: body['completed_iterations'] = self.completed_iterations
+        if self.failed_iterations is not None: body['failed_iterations'] = self.failed_iterations
+        if self.scheduled_iterations is not None: body['scheduled_iterations'] = self.scheduled_iterations
+        if self.succeeded_iterations is not None: body['succeeded_iterations'] = self.succeeded_iterations
+        if self.total_iterations is not None: body['total_iterations'] = self.total_iterations
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ForEachTaskTaskRunStats:
+        """Deserializes the ForEachTaskTaskRunStats from a dictionary."""
+        return cls(active_iterations=d.get('active_iterations', None),
+                   completed_iterations=d.get('completed_iterations', None),
+                   failed_iterations=d.get('failed_iterations', None),
+                   scheduled_iterations=d.get('scheduled_iterations', None),
+                   succeeded_iterations=d.get('succeeded_iterations', None),
+                   total_iterations=d.get('total_iterations', None))
 
 
 class Format(Enum):
@@ -2531,6 +2653,36 @@ class RunConditionTaskOp(Enum):
     NOT_EQUAL = 'NOT_EQUAL'
 
 
+@dataclass
+class RunForEachTask:
+    concurrency: Optional[int] = None
+    """Controls the number of active iterations task runs. Default is 100 (maximal value)."""
+
+    inputs: Optional[str] = None
+    """Array for task to iterate on. This can be a JSON string or a reference to an array parameter."""
+
+    stats: Optional[ForEachStats] = None
+
+    task: Optional[Task] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the RunForEachTask into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.concurrency is not None: body['concurrency'] = self.concurrency
+        if self.inputs is not None: body['inputs'] = self.inputs
+        if self.stats: body['stats'] = self.stats.as_dict()
+        if self.task: body['task'] = self.task.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> RunForEachTask:
+        """Deserializes the RunForEachTask from a dictionary."""
+        return cls(concurrency=d.get('concurrency', None),
+                   inputs=d.get('inputs', None),
+                   stats=_from_dict(d, 'stats', ForEachStats),
+                   task=_from_dict(d, 'task', Task))
+
+
 class RunIf(Enum):
     """An optional value indicating the condition that determines whether the task should be run once
     its dependencies have been completed. When omitted, defaults to `ALL_SUCCESS`.
@@ -3056,6 +3208,9 @@ class RunTask:
     When running jobs on an existing cluster, you may need to manually restart the cluster if it
     stops responding. We suggest running jobs on new clusters for greater reliability."""
 
+    for_each_task: Optional[RunForEachTask] = None
+    """If for_each_task, indicates that this task must execute the nested task within it."""
+
     git_source: Optional[GitSource] = None
     """An optional specification for a remote Git repository containing the source code used by tasks.
     Version-controlled source code is supported by notebook, dbt, Python script, and SQL File tasks.
@@ -3159,6 +3314,7 @@ class RunTask:
         if self.end_time is not None: body['end_time'] = self.end_time
         if self.execution_duration is not None: body['execution_duration'] = self.execution_duration
         if self.existing_cluster_id is not None: body['existing_cluster_id'] = self.existing_cluster_id
+        if self.for_each_task: body['for_each_task'] = self.for_each_task.as_dict()
         if self.git_source: body['git_source'] = self.git_source.as_dict()
         if self.libraries: body['libraries'] = [v.as_dict() for v in self.libraries]
         if self.new_cluster: body['new_cluster'] = self.new_cluster.as_dict()
@@ -3193,6 +3349,7 @@ class RunTask:
                    end_time=d.get('end_time', None),
                    execution_duration=d.get('execution_duration', None),
                    existing_cluster_id=d.get('existing_cluster_id', None),
+                   for_each_task=_from_dict(d, 'for_each_task', RunForEachTask),
                    git_source=_from_dict(d, 'git_source', GitSource),
                    libraries=_repeated_dict(d, 'libraries', compute.Library),
                    new_cluster=_from_dict(d, 'new_cluster', compute.ClusterSpec),
@@ -3662,18 +3819,29 @@ class SqlTaskDashboard:
 @dataclass
 class SqlTaskFile:
     path: str
-    """Relative path of the SQL file in the remote Git repository."""
+    """Path of the SQL file. Must be relative if the source is a remote Git repository and absolute for
+    workspace paths."""
+
+    source: Optional[Source] = None
+    """Optional location type of the SQL file. When set to `WORKSPACE`, the SQL file will be retrieved
+    from the local <Databricks> workspace. When set to `GIT`, the SQL file will be retrieved from a
+    Git repository defined in `git_source`. If the value is empty, the task will use `GIT` if
+    `git_source` is defined and `WORKSPACE` otherwise.
+    
+    * `WORKSPACE`: SQL file is located in <Databricks> workspace. * `GIT`: SQL file is located in
+    cloud Git provider."""
 
     def as_dict(self) -> dict:
         """Serializes the SqlTaskFile into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.path is not None: body['path'] = self.path
+        if self.source is not None: body['source'] = self.source.value
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> SqlTaskFile:
         """Deserializes the SqlTaskFile from a dictionary."""
-        return cls(path=d.get('path', None))
+        return cls(path=d.get('path', None), source=_enum(d, 'source', Source))
 
 
 @dataclass
@@ -3847,6 +4015,10 @@ class SubmitTask:
     to manually restart the cluster if it stops responding. We suggest running jobs on new clusters
     for greater reliability."""
 
+    for_each_task: Optional[ForEachTask] = None
+    """If for_each_task, indicates that this must execute the nested task within it for the inputs
+    provided."""
+
     health: Optional[JobsHealthRules] = None
     """An optional set of health rules that can be defined for this job."""
 
@@ -3920,6 +4092,7 @@ class SubmitTask:
         if self.depends_on: body['depends_on'] = [v.as_dict() for v in self.depends_on]
         if self.email_notifications: body['email_notifications'] = self.email_notifications.as_dict()
         if self.existing_cluster_id is not None: body['existing_cluster_id'] = self.existing_cluster_id
+        if self.for_each_task: body['for_each_task'] = self.for_each_task.as_dict()
         if self.health: body['health'] = self.health.as_dict()
         if self.libraries: body['libraries'] = [v.as_dict() for v in self.libraries]
         if self.new_cluster: body['new_cluster'] = self.new_cluster.as_dict()
@@ -3945,6 +4118,7 @@ class SubmitTask:
                    depends_on=_repeated_dict(d, 'depends_on', TaskDependency),
                    email_notifications=_from_dict(d, 'email_notifications', JobEmailNotifications),
                    existing_cluster_id=d.get('existing_cluster_id', None),
+                   for_each_task=_from_dict(d, 'for_each_task', ForEachTask),
                    health=_from_dict(d, 'health', JobsHealthRules),
                    libraries=_repeated_dict(d, 'libraries', compute.Library),
                    new_cluster=_from_dict(d, 'new_cluster', compute.ClusterSpec),
@@ -4001,6 +4175,10 @@ class Task:
     Only all-purpose clusters are supported. When running tasks on an existing cluster, you may need
     to manually restart the cluster if it stops responding. We suggest running jobs on new clusters
     for greater reliability."""
+
+    for_each_task: Optional[ForEachTask] = None
+    """If for_each_task, indicates that this must execute the nested task within it for the inputs
+    provided."""
 
     health: Optional[JobsHealthRules] = None
     """An optional set of health rules that can be defined for this job."""
@@ -4098,6 +4276,7 @@ class Task:
         if self.description is not None: body['description'] = self.description
         if self.email_notifications: body['email_notifications'] = self.email_notifications.as_dict()
         if self.existing_cluster_id is not None: body['existing_cluster_id'] = self.existing_cluster_id
+        if self.for_each_task: body['for_each_task'] = self.for_each_task.as_dict()
         if self.health: body['health'] = self.health.as_dict()
         if self.job_cluster_key is not None: body['job_cluster_key'] = self.job_cluster_key
         if self.libraries: body['libraries'] = [v.as_dict() for v in self.libraries]
@@ -4131,6 +4310,7 @@ class Task:
                    description=d.get('description', None),
                    email_notifications=_from_dict(d, 'email_notifications', TaskEmailNotifications),
                    existing_cluster_id=d.get('existing_cluster_id', None),
+                   for_each_task=_from_dict(d, 'for_each_task', ForEachTask),
                    health=_from_dict(d, 'health', JobsHealthRules),
                    job_cluster_key=d.get('job_cluster_key', None),
                    libraries=_repeated_dict(d, 'libraries', compute.Library),
@@ -4945,10 +5125,9 @@ class JobsAPI:
 
         while True:
             json = self._api.do('GET', '/api/2.1/jobs/list', query=query, headers=headers)
-            if 'jobs' not in json or not json['jobs']:
-                return
-            for v in json['jobs']:
-                yield BaseJob.from_dict(v)
+            if 'jobs' in json:
+                for v in json['jobs']:
+                    yield BaseJob.from_dict(v)
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']
@@ -5017,10 +5196,9 @@ class JobsAPI:
 
         while True:
             json = self._api.do('GET', '/api/2.1/jobs/runs/list', query=query, headers=headers)
-            if 'runs' not in json or not json['runs']:
-                return
-            for v in json['runs']:
-                yield BaseRun.from_dict(v)
+            if 'runs' in json:
+                for v in json['runs']:
+                    yield BaseRun.from_dict(v)
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']

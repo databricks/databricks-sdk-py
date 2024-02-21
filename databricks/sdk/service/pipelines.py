@@ -791,7 +791,7 @@ class PipelineCluster:
     apply_policy_default_values: Optional[bool] = None
     """Note: This field won't be persisted. Only API users will check this field."""
 
-    autoscale: Optional[compute.AutoScale] = None
+    autoscale: Optional[PipelineClusterAutoscale] = None
     """Parameters needed in order to automatically scale clusters up and down based on load. Note:
     autoscaling works best with DB runtime versions 3.0 or later."""
 
@@ -914,7 +914,7 @@ class PipelineCluster:
     def from_dict(cls, d: Dict[str, any]) -> PipelineCluster:
         """Deserializes the PipelineCluster from a dictionary."""
         return cls(apply_policy_default_values=d.get('apply_policy_default_values', None),
-                   autoscale=_from_dict(d, 'autoscale', compute.AutoScale),
+                   autoscale=_from_dict(d, 'autoscale', PipelineClusterAutoscale),
                    aws_attributes=_from_dict(d, 'aws_attributes', compute.AwsAttributes),
                    azure_attributes=_from_dict(d, 'azure_attributes', compute.AzureAttributes),
                    cluster_log_conf=_from_dict(d, 'cluster_log_conf', compute.ClusterLogConf),
@@ -931,6 +931,48 @@ class PipelineCluster:
                    spark_conf=d.get('spark_conf', None),
                    spark_env_vars=d.get('spark_env_vars', None),
                    ssh_public_keys=d.get('ssh_public_keys', None))
+
+
+@dataclass
+class PipelineClusterAutoscale:
+    min_workers: int
+    """The minimum number of workers the cluster can scale down to when underutilized. It is also the
+    initial number of workers the cluster will have after creation."""
+
+    max_workers: int
+    """The maximum number of workers to which the cluster can scale up when overloaded. `max_workers`
+    must be strictly greater than `min_workers`."""
+
+    mode: Optional[PipelineClusterAutoscaleMode] = None
+    """Databricks Enhanced Autoscaling optimizes cluster utilization by automatically allocating
+    cluster resources based on workload volume, with minimal impact to the data processing latency
+    of your pipelines. Enhanced Autoscaling is available for `updates` clusters only. The legacy
+    autoscaling feature is used for `maintenance` clusters."""
+
+    def as_dict(self) -> dict:
+        """Serializes the PipelineClusterAutoscale into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.max_workers is not None: body['max_workers'] = self.max_workers
+        if self.min_workers is not None: body['min_workers'] = self.min_workers
+        if self.mode is not None: body['mode'] = self.mode.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> PipelineClusterAutoscale:
+        """Deserializes the PipelineClusterAutoscale from a dictionary."""
+        return cls(max_workers=d.get('max_workers', None),
+                   min_workers=d.get('min_workers', None),
+                   mode=_enum(d, 'mode', PipelineClusterAutoscaleMode))
+
+
+class PipelineClusterAutoscaleMode(Enum):
+    """Databricks Enhanced Autoscaling optimizes cluster utilization by automatically allocating
+    cluster resources based on workload volume, with minimal impact to the data processing latency
+    of your pipelines. Enhanced Autoscaling is available for `updates` clusters only. The legacy
+    autoscaling feature is used for `maintenance` clusters."""
+
+    ENHANCED = 'ENHANCED'
+    LEGACY = 'LEGACY'
 
 
 @dataclass
@@ -1891,10 +1933,9 @@ class PipelinesAPI:
                                 f'/api/2.0/pipelines/{pipeline_id}/events',
                                 query=query,
                                 headers=headers)
-            if 'events' not in json or not json['events']:
-                return
-            for v in json['events']:
-                yield PipelineEvent.from_dict(v)
+            if 'events' in json:
+                for v in json['events']:
+                    yield PipelineEvent.from_dict(v)
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']
@@ -1940,10 +1981,9 @@ class PipelinesAPI:
 
         while True:
             json = self._api.do('GET', '/api/2.0/pipelines', query=query, headers=headers)
-            if 'statuses' not in json or not json['statuses']:
-                return
-            for v in json['statuses']:
-                yield PipelineStateInfo.from_dict(v)
+            if 'statuses' in json:
+                for v in json['statuses']:
+                    yield PipelineStateInfo.from_dict(v)
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']
@@ -1977,25 +2017,6 @@ class PipelinesAPI:
         headers = {'Accept': 'application/json', }
         res = self._api.do('GET', f'/api/2.0/pipelines/{pipeline_id}/updates', query=query, headers=headers)
         return ListUpdatesResponse.from_dict(res)
-
-    def reset(self, pipeline_id: str) -> Wait[GetPipelineResponse]:
-        """Reset a pipeline.
-        
-        Resets a pipeline.
-        
-        :param pipeline_id: str
-        
-        :returns:
-          Long-running operation waiter for :class:`GetPipelineResponse`.
-          See :method:wait_get_pipeline_running for more details.
-        """
-
-        headers = {'Accept': 'application/json', }
-        self._api.do('POST', f'/api/2.0/pipelines/{pipeline_id}/reset', headers=headers)
-        return Wait(self.wait_get_pipeline_running, pipeline_id=pipeline_id)
-
-    def reset_and_wait(self, pipeline_id: str, timeout=timedelta(minutes=20)) -> GetPipelineResponse:
-        return self.reset(pipeline_id=pipeline_id).result(timeout=timeout)
 
     def set_permissions(
             self,

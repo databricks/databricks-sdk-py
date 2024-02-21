@@ -1644,10 +1644,9 @@ class CleanRoomsAPI:
 
         while True:
             json = self._api.do('GET', '/api/2.1/unity-catalog/clean-rooms', query=query, headers=headers)
-            if 'clean_rooms' not in json or not json['clean_rooms']:
-                return
-            for v in json['clean_rooms']:
-                yield CleanRoomInfo.from_dict(v)
+            if 'clean_rooms' in json:
+                for v in json['clean_rooms']:
+                    yield CleanRoomInfo.from_dict(v)
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']
