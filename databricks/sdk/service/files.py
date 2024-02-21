@@ -228,7 +228,7 @@ class GetMetadataResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> GetMetadataResponse:
         """Deserializes the GetMetadataResponse from a dictionary."""
-        return cls(content_length=int(d.get('content-length', None)),
+        return cls(content_length=d.get('content-length', None),
                    content_type=d.get('content-type', None),
                    last_modified=d.get('last-modified', None))
 
