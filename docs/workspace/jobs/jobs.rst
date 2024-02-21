@@ -233,9 +233,9 @@
         :param timeout_seconds: int (optional)
           An optional timeout applied to each run of this job. A value of `0` means no timeout.
         :param trigger: :class:`TriggerSettings` (optional)
-          Trigger settings for the job. Can be used to trigger a run when new files arrive in an external
-          location. The default behavior is that the job runs only when triggered by clicking “Run Now” in
-          the Jobs UI or sending an API request to `runNow`.
+          A configuration to trigger a run when certain conditions are met. The default behavior is that the
+          job runs only when triggered by clicking “Run Now” in the Jobs UI or sending an API request to
+          `runNow`.
         :param webhook_notifications: :class:`WebhookNotifications` (optional)
           A collection of system notification IDs to notify when runs of this job begin or complete.
         
@@ -658,8 +658,9 @@
           in conjunction with notebook_params. The JSON representation of this field (for example
           `{"jar_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
           
-          Use [Task parameter variables](/jobs.html"#parameter-variables") to set parameters containing
-          information about job runs.
+          Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
+          
+          [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html
         :param job_parameters: Dict[str,str] (optional)
           Job-level parameters used in the run. for example `"param": "overriding_val"`
         :param latest_repair_id: int (optional)
@@ -674,13 +675,13 @@
           
           notebook_params cannot be specified in conjunction with jar_params.
           
-          Use [Task parameter variables] to set parameters containing information about job runs.
+          Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
           
           The JSON representation of this field (for example `{"notebook_params":{"name":"john
           doe","age":"35"}}`) cannot exceed 10,000 bytes.
           
-          [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
           [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
+          [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html
         :param pipeline_params: :class:`PipelineParams` (optional)
         :param python_named_params: Dict[str,str] (optional)
           A map from keys to values for jobs with Python wheel task, for example `"python_named_params":
@@ -691,7 +692,7 @@
           would overwrite the parameters specified in job setting. The JSON representation of this field (for
           example `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
           
-          Use [Task parameter variables] to set parameters containing information about job runs.
+          Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
           
           Important
           
@@ -699,7 +700,7 @@
           returns an error. Examples of invalid, non-ASCII characters are Chinese, Japanese kanjis, and
           emojis.
           
-          [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
+          [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html
         :param rerun_all_failed_tasks: bool (optional)
           If true, repair all failed tasks. Only one of `rerun_tasks` or `rerun_all_failed_tasks` can be used.
         :param rerun_dependent_tasks: bool (optional)
@@ -714,7 +715,7 @@
           in job setting. The JSON representation of this field (for example `{"python_params":["john
           doe","35"]}`) cannot exceed 10,000 bytes.
           
-          Use [Task parameter variables] to set parameters containing information about job runs
+          Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
           
           Important
           
@@ -722,7 +723,7 @@
           returns an error. Examples of invalid, non-ASCII characters are Chinese, Japanese kanjis, and
           emojis.
           
-          [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
+          [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html
         :param sql_params: Dict[str,str] (optional)
           A map from keys to values for jobs with SQL task, for example `"sql_params": {"name": "john doe",
           "age": "35"}`. The SQL alert task does not support custom parameters.
@@ -852,8 +853,9 @@
           in conjunction with notebook_params. The JSON representation of this field (for example
           `{"jar_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
           
-          Use [Task parameter variables](/jobs.html"#parameter-variables") to set parameters containing
-          information about job runs.
+          Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
+          
+          [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html
         :param job_parameters: Dict[str,str] (optional)
           Job-level parameters used in the run. for example `"param": "overriding_val"`
         :param notebook_params: Dict[str,str] (optional)
@@ -865,13 +867,13 @@
           
           notebook_params cannot be specified in conjunction with jar_params.
           
-          Use [Task parameter variables] to set parameters containing information about job runs.
+          Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
           
           The JSON representation of this field (for example `{"notebook_params":{"name":"john
           doe","age":"35"}}`) cannot exceed 10,000 bytes.
           
-          [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
           [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
+          [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html
         :param pipeline_params: :class:`PipelineParams` (optional)
         :param python_named_params: Dict[str,str] (optional)
           A map from keys to values for jobs with Python wheel task, for example `"python_named_params":
@@ -882,7 +884,7 @@
           would overwrite the parameters specified in job setting. The JSON representation of this field (for
           example `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
           
-          Use [Task parameter variables] to set parameters containing information about job runs.
+          Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
           
           Important
           
@@ -890,7 +892,7 @@
           returns an error. Examples of invalid, non-ASCII characters are Chinese, Japanese kanjis, and
           emojis.
           
-          [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
+          [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html
         :param queue: :class:`QueueSettings` (optional)
           The queue settings of the run.
         :param spark_submit_params: List[str] (optional)
@@ -900,7 +902,7 @@
           in job setting. The JSON representation of this field (for example `{"python_params":["john
           doe","35"]}`) cannot exceed 10,000 bytes.
           
-          Use [Task parameter variables] to set parameters containing information about job runs
+          Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
           
           Important
           
@@ -908,7 +910,7 @@
           returns an error. Examples of invalid, non-ASCII characters are Chinese, Japanese kanjis, and
           emojis.
           
-          [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
+          [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html
         :param sql_params: Dict[str,str] (optional)
           A map from keys to values for jobs with SQL task, for example `"sql_params": {"name": "john doe",
           "age": "35"}`. The SQL alert task does not support custom parameters.

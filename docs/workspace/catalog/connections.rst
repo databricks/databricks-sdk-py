@@ -40,7 +40,7 @@
                                                })
             
             # cleanup
-            w.connections.delete(name_arg=conn_create.name)
+            w.connections.delete(name=conn_create.name)
 
         Create a connection.
         
@@ -65,19 +65,19 @@
         :returns: :class:`ConnectionInfo`
         
 
-    .. py:method:: delete(name_arg: str)
+    .. py:method:: delete(name: str)
 
         Delete a connection.
         
         Deletes the connection that matches the supplied name.
         
-        :param name_arg: str
+        :param name: str
           The name of the connection to be deleted.
         
         
         
 
-    .. py:method:: get(name_arg: str) -> ConnectionInfo
+    .. py:method:: get(name: str) -> ConnectionInfo
 
 
         Usage:
@@ -103,7 +103,7 @@
                                                    f'sdk-{time.time_ns()}',
                                                })
             
-            conn_update = w.connections.update(name_arg=conn_create.name,
+            conn_update = w.connections.update(name=conn_create.name,
                                                options={
                                                    "host":
                                                    "%s-fake-workspace.cloud.databricks.com" % (f'sdk-{time.time_ns()}'),
@@ -113,16 +113,16 @@
                                                    f'sdk-{time.time_ns()}',
                                                })
             
-            conn = w.connections.get(name_arg=conn_update.name)
+            conn = w.connections.get(name=conn_update.name)
             
             # cleanup
-            w.connections.delete(name_arg=conn_create.name)
+            w.connections.delete(name=conn_create.name)
 
         Get a connection.
         
         Gets a connection from it's name.
         
-        :param name_arg: str
+        :param name: str
           Name of the connection.
         
         :returns: :class:`ConnectionInfo`
@@ -148,7 +148,7 @@
         :returns: Iterator over :class:`ConnectionInfo`
         
 
-    .. py:method:: update(name_arg: str, options: Dict[str, str] [, new_name: Optional[str], owner: Optional[str]]) -> ConnectionInfo
+    .. py:method:: update(name: str, options: Dict[str, str] [, new_name: Optional[str], owner: Optional[str]]) -> ConnectionInfo
 
 
         Usage:
@@ -174,7 +174,7 @@
                                                    f'sdk-{time.time_ns()}',
                                                })
             
-            conn_update = w.connections.update(name_arg=conn_create.name,
+            conn_update = w.connections.update(name=conn_create.name,
                                                options={
                                                    "host":
                                                    "%s-fake-workspace.cloud.databricks.com" % (f'sdk-{time.time_ns()}'),
@@ -185,13 +185,13 @@
                                                })
             
             # cleanup
-            w.connections.delete(name_arg=conn_create.name)
+            w.connections.delete(name=conn_create.name)
 
         Update a connection.
         
         Updates the connection that matches the supplied name.
         
-        :param name_arg: str
+        :param name: str
           Name of the connection.
         :param options: Dict[str,str]
           A map of key-value properties attached to the securable.

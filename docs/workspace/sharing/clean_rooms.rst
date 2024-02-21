@@ -26,26 +26,26 @@
         :returns: :class:`CleanRoomInfo`
         
 
-    .. py:method:: delete(name_arg: str)
+    .. py:method:: delete(name: str)
 
         Delete a clean room.
         
         Deletes a data object clean room from the metastore. The caller must be an owner of the clean room.
         
-        :param name_arg: str
+        :param name: str
           The name of the clean room.
         
         
         
 
-    .. py:method:: get(name_arg: str [, include_remote_details: Optional[bool]]) -> CleanRoomInfo
+    .. py:method:: get(name: str [, include_remote_details: Optional[bool]]) -> CleanRoomInfo
 
         Get a clean room.
         
         Gets a data object clean room from the metastore. The caller must be a metastore admin or the owner of
         the clean room.
         
-        :param name_arg: str
+        :param name: str
           The name of the clean room.
         :param include_remote_details: bool (optional)
           Whether to include remote details (central) on the clean room.
@@ -72,7 +72,7 @@
         :returns: Iterator over :class:`CleanRoomInfo`
         
 
-    .. py:method:: update(name_arg: str [, catalog_updates: Optional[List[CleanRoomCatalogUpdate]], comment: Optional[str], owner: Optional[str]]) -> CleanRoomInfo
+    .. py:method:: update(name: str [, catalog_updates: Optional[List[CleanRoomCatalogUpdate]], comment: Optional[str], owner: Optional[str]]) -> CleanRoomInfo
 
         Update a clean room.
         
@@ -90,7 +90,7 @@
         
         Table removals through **update** do not require additional privileges.
         
-        :param name_arg: str
+        :param name: str
           The name of the clean room.
         :param catalog_updates: List[:class:`CleanRoomCatalogUpdate`] (optional)
           Array of shared data object updates.

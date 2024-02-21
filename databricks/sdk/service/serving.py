@@ -764,52 +764,29 @@ class ExternalModel:
     task: str
     """The task type of the external model."""
 
-    config: ExternalModelConfig
-    """The config for the external model, which must match the provider."""
+    ai21labs_config: Optional[Ai21LabsConfig] = None
+    """AI21Labs Config. Only required if the provider is 'ai21labs'."""
+
+    anthropic_config: Optional[AnthropicConfig] = None
+    """Anthropic Config. Only required if the provider is 'anthropic'."""
+
+    aws_bedrock_config: Optional[AwsBedrockConfig] = None
+    """AWS Bedrock Config. Only required if the provider is 'aws-bedrock'."""
+
+    cohere_config: Optional[CohereConfig] = None
+    """Cohere Config. Only required if the provider is 'cohere'."""
+
+    databricks_model_serving_config: Optional[DatabricksModelServingConfig] = None
+    """Databricks Model Serving Config. Only required if the provider is 'databricks-model-serving'."""
+
+    openai_config: Optional[OpenAiConfig] = None
+    """OpenAI Config. Only required if the provider is 'openai'."""
+
+    palm_config: Optional[PaLmConfig] = None
+    """PaLM Config. Only required if the provider is 'palm'."""
 
     def as_dict(self) -> dict:
         """Serializes the ExternalModel into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.config: body['config'] = self.config.as_dict()
-        if self.name is not None: body['name'] = self.name
-        if self.provider is not None: body['provider'] = self.provider.value
-        if self.task is not None: body['task'] = self.task
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ExternalModel:
-        """Deserializes the ExternalModel from a dictionary."""
-        return cls(config=_from_dict(d, 'config', ExternalModelConfig),
-                   name=d.get('name', None),
-                   provider=_enum(d, 'provider', ExternalModelProvider),
-                   task=d.get('task', None))
-
-
-@dataclass
-class ExternalModelConfig:
-    ai21labs_config: Optional[Ai21LabsConfig] = None
-    """AI21Labs Config"""
-
-    anthropic_config: Optional[AnthropicConfig] = None
-    """Anthropic Config"""
-
-    aws_bedrock_config: Optional[AwsBedrockConfig] = None
-    """AWS Bedrock Config"""
-
-    cohere_config: Optional[CohereConfig] = None
-    """Cohere Config"""
-
-    databricks_model_serving_config: Optional[DatabricksModelServingConfig] = None
-    """Databricks Model Serving Config"""
-
-    openai_config: Optional[OpenAiConfig] = None
-    """OpenAI Config"""
-
-    palm_config: Optional[PaLmConfig] = None
-    """PaLM Config"""
-
-    def as_dict(self) -> dict:
-        """Serializes the ExternalModelConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.ai21labs_config: body['ai21labs_config'] = self.ai21labs_config.as_dict()
         if self.anthropic_config: body['anthropic_config'] = self.anthropic_config.as_dict()
@@ -817,21 +794,27 @@ class ExternalModelConfig:
         if self.cohere_config: body['cohere_config'] = self.cohere_config.as_dict()
         if self.databricks_model_serving_config:
             body['databricks_model_serving_config'] = self.databricks_model_serving_config.as_dict()
+        if self.name is not None: body['name'] = self.name
         if self.openai_config: body['openai_config'] = self.openai_config.as_dict()
         if self.palm_config: body['palm_config'] = self.palm_config.as_dict()
+        if self.provider is not None: body['provider'] = self.provider.value
+        if self.task is not None: body['task'] = self.task
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ExternalModelConfig:
-        """Deserializes the ExternalModelConfig from a dictionary."""
+    def from_dict(cls, d: Dict[str, any]) -> ExternalModel:
+        """Deserializes the ExternalModel from a dictionary."""
         return cls(ai21labs_config=_from_dict(d, 'ai21labs_config', Ai21LabsConfig),
                    anthropic_config=_from_dict(d, 'anthropic_config', AnthropicConfig),
                    aws_bedrock_config=_from_dict(d, 'aws_bedrock_config', AwsBedrockConfig),
                    cohere_config=_from_dict(d, 'cohere_config', CohereConfig),
                    databricks_model_serving_config=_from_dict(d, 'databricks_model_serving_config',
                                                               DatabricksModelServingConfig),
+                   name=d.get('name', None),
                    openai_config=_from_dict(d, 'openai_config', OpenAiConfig),
-                   palm_config=_from_dict(d, 'palm_config', PaLmConfig))
+                   palm_config=_from_dict(d, 'palm_config', PaLmConfig),
+                   provider=_enum(d, 'provider', ExternalModelProvider),
+                   task=d.get('task', None))
 
 
 class ExternalModelProvider(Enum):
@@ -1272,6 +1255,10 @@ class QueryEndpointResponse:
     predictions: Optional[List[Any]] = None
     """The predictions returned by the serving endpoint."""
 
+    served_model_name: Optional[str] = None
+    """The name of the served model that served the request. This is useful when there are multiple
+    models behind the same endpoint with traffic split."""
+
     usage: Optional[ExternalModelUsageElement] = None
     """The usage object that may be returned by the __external/foundation model__ serving endpoint.
     This contains information about the number of tokens used in the prompt and response."""
@@ -1286,6 +1273,7 @@ class QueryEndpointResponse:
         if self.model is not None: body['model'] = self.model
         if self.object is not None: body['object'] = self.object.value
         if self.predictions: body['predictions'] = [v for v in self.predictions]
+        if self.served_model_name is not None: body['served-model-name'] = self.served_model_name
         if self.usage: body['usage'] = self.usage.as_dict()
         return body
 
@@ -1299,6 +1287,7 @@ class QueryEndpointResponse:
                    model=d.get('model', None),
                    object=_enum(d, 'object', QueryEndpointResponseObject),
                    predictions=d.get('predictions', None),
+                   served_model_name=d.get('served-model-name', None),
                    usage=_from_dict(d, 'usage', ExternalModelUsageElement))
 
 
@@ -1406,6 +1395,12 @@ class ServedEntityInput:
     instance_profile_arn: Optional[str] = None
     """ARN of the instance profile that the served entity uses to access AWS resources."""
 
+    max_provisioned_throughput: Optional[int] = None
+    """The maximum tokens per second that the endpoint can scale up to."""
+
+    min_provisioned_throughput: Optional[int] = None
+    """The minimum tokens per second that the endpoint can scale down to."""
+
     name: Optional[str] = None
     """The name of a served entity. It must be unique across an endpoint. A served entity name can
     consist of alphanumeric characters, dashes, and underscores. If not specified for an external
@@ -1439,6 +1434,10 @@ class ServedEntityInput:
         if self.environment_vars: body['environment_vars'] = self.environment_vars
         if self.external_model: body['external_model'] = self.external_model.as_dict()
         if self.instance_profile_arn is not None: body['instance_profile_arn'] = self.instance_profile_arn
+        if self.max_provisioned_throughput is not None:
+            body['max_provisioned_throughput'] = self.max_provisioned_throughput
+        if self.min_provisioned_throughput is not None:
+            body['min_provisioned_throughput'] = self.min_provisioned_throughput
         if self.name is not None: body['name'] = self.name
         if self.scale_to_zero_enabled is not None: body['scale_to_zero_enabled'] = self.scale_to_zero_enabled
         if self.workload_size is not None: body['workload_size'] = self.workload_size
@@ -1453,6 +1452,8 @@ class ServedEntityInput:
                    environment_vars=d.get('environment_vars', None),
                    external_model=_from_dict(d, 'external_model', ExternalModel),
                    instance_profile_arn=d.get('instance_profile_arn', None),
+                   max_provisioned_throughput=d.get('max_provisioned_throughput', None),
+                   min_provisioned_throughput=d.get('min_provisioned_throughput', None),
                    name=d.get('name', None),
                    scale_to_zero_enabled=d.get('scale_to_zero_enabled', None),
                    workload_size=d.get('workload_size', None),
@@ -1496,6 +1497,12 @@ class ServedEntityOutput:
     instance_profile_arn: Optional[str] = None
     """ARN of the instance profile that the served entity uses to access AWS resources."""
 
+    max_provisioned_throughput: Optional[int] = None
+    """The maximum tokens per second that the endpoint can scale up to."""
+
+    min_provisioned_throughput: Optional[int] = None
+    """The minimum tokens per second that the endpoint can scale down to."""
+
     name: Optional[str] = None
     """The name of the served entity."""
 
@@ -1532,6 +1539,10 @@ class ServedEntityOutput:
         if self.external_model: body['external_model'] = self.external_model.as_dict()
         if self.foundation_model: body['foundation_model'] = self.foundation_model.as_dict()
         if self.instance_profile_arn is not None: body['instance_profile_arn'] = self.instance_profile_arn
+        if self.max_provisioned_throughput is not None:
+            body['max_provisioned_throughput'] = self.max_provisioned_throughput
+        if self.min_provisioned_throughput is not None:
+            body['min_provisioned_throughput'] = self.min_provisioned_throughput
         if self.name is not None: body['name'] = self.name
         if self.scale_to_zero_enabled is not None: body['scale_to_zero_enabled'] = self.scale_to_zero_enabled
         if self.state: body['state'] = self.state.as_dict()
@@ -1550,6 +1561,8 @@ class ServedEntityOutput:
                    external_model=_from_dict(d, 'external_model', ExternalModel),
                    foundation_model=_from_dict(d, 'foundation_model', FoundationModel),
                    instance_profile_arn=d.get('instance_profile_arn', None),
+                   max_provisioned_throughput=d.get('max_provisioned_throughput', None),
+                   min_provisioned_throughput=d.get('min_provisioned_throughput', None),
                    name=d.get('name', None),
                    scale_to_zero_enabled=d.get('scale_to_zero_enabled', None),
                    state=_from_dict(d, 'state', ServedModelState),
@@ -2258,6 +2271,7 @@ class AppsAPI:
         if manifest is not None: body['manifest'] = manifest.as_dict()
         if resources is not None: body['resources'] = resources
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         res = self._api.do('POST', '/api/2.0/preview/apps/deployments', body=body, headers=headers)
         return DeploymentStatus.from_dict(res)
 
@@ -2273,6 +2287,7 @@ class AppsAPI:
         """
 
         headers = {'Accept': 'application/json', }
+
         res = self._api.do('DELETE', f'/api/2.0/preview/apps/instances/{name}', headers=headers)
         return DeleteAppResponse.from_dict(res)
 
@@ -2288,6 +2303,7 @@ class AppsAPI:
         """
 
         headers = {'Accept': 'application/json', }
+
         res = self._api.do('GET', f'/api/2.0/preview/apps/instances/{name}', headers=headers)
         return GetAppResponse.from_dict(res)
 
@@ -2310,6 +2326,7 @@ class AppsAPI:
         query = {}
         if include_app_log is not None: query['include_app_log'] = include_app_log
         headers = {'Accept': 'application/json', }
+
         res = self._api.do('GET',
                            f'/api/2.0/preview/apps/deployments/{deployment_id}',
                            query=query,
@@ -2325,6 +2342,7 @@ class AppsAPI:
         """
 
         headers = {'Accept': 'application/json', }
+
         res = self._api.do('GET', '/api/2.0/preview/apps/instances', headers=headers)
         return ListAppsResponse.from_dict(res)
 
@@ -2340,6 +2358,7 @@ class AppsAPI:
         """
 
         headers = {'Accept': 'application/json', }
+
         res = self._api.do('GET', f'/api/2.0/preview/apps/{name}/events', headers=headers)
         return ListAppEventsResponse.from_dict(res)
 
@@ -2405,6 +2424,7 @@ class ServingEndpointsAPI:
         """
 
         headers = {'Accept': 'application/json', }
+
         res = self._api.do('GET',
                            f'/api/2.0/serving-endpoints/{name}/served-models/{served_model_name}/build-logs',
                            headers=headers)
@@ -2439,6 +2459,7 @@ class ServingEndpointsAPI:
         if rate_limits is not None: body['rate_limits'] = [v.as_dict() for v in rate_limits]
         if tags is not None: body['tags'] = [v.as_dict() for v in tags]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         op_response = self._api.do('POST', '/api/2.0/serving-endpoints', body=body, headers=headers)
         return Wait(self.wait_get_serving_endpoint_not_updating,
                     response=ServingEndpointDetailed.from_dict(op_response),
@@ -2465,6 +2486,7 @@ class ServingEndpointsAPI:
         """
 
         headers = {'Accept': 'application/json', }
+
         self._api.do('DELETE', f'/api/2.0/serving-endpoints/{name}', headers=headers)
 
     def export_metrics(self, name: str):
@@ -2480,6 +2502,7 @@ class ServingEndpointsAPI:
         """
 
         headers = {}
+
         self._api.do('GET', f'/api/2.0/serving-endpoints/{name}/metrics', headers=headers)
 
     def get(self, name: str) -> ServingEndpointDetailed:
@@ -2494,6 +2517,7 @@ class ServingEndpointsAPI:
         """
 
         headers = {'Accept': 'application/json', }
+
         res = self._api.do('GET', f'/api/2.0/serving-endpoints/{name}', headers=headers)
         return ServingEndpointDetailed.from_dict(res)
 
@@ -2509,6 +2533,7 @@ class ServingEndpointsAPI:
         """
 
         headers = {'Accept': 'application/json', }
+
         res = self._api.do('GET',
                            f'/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}/permissionLevels',
                            headers=headers)
@@ -2527,6 +2552,7 @@ class ServingEndpointsAPI:
         """
 
         headers = {'Accept': 'application/json', }
+
         res = self._api.do('GET',
                            f'/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}',
                            headers=headers)
@@ -2539,6 +2565,7 @@ class ServingEndpointsAPI:
         """
 
         headers = {'Accept': 'application/json', }
+
         json = self._api.do('GET', '/api/2.0/serving-endpoints', headers=headers)
         parsed = ListEndpointsResponse.from_dict(json).endpoints
         return parsed if parsed is not None else []
@@ -2557,6 +2584,7 @@ class ServingEndpointsAPI:
         """
 
         headers = {'Accept': 'application/json', }
+
         res = self._api.do('GET',
                            f'/api/2.0/serving-endpoints/{name}/served-models/{served_model_name}/logs',
                            headers=headers)
@@ -2584,6 +2612,7 @@ class ServingEndpointsAPI:
         if add_tags is not None: body['add_tags'] = [v.as_dict() for v in add_tags]
         if delete_tags is not None: body['delete_tags'] = [v for v in delete_tags]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         res = self._api.do('PATCH', f'/api/2.0/serving-endpoints/{name}/tags', body=body, headers=headers)
         return [EndpointTag.from_dict(v) for v in res]
 
@@ -2603,6 +2632,7 @@ class ServingEndpointsAPI:
         body = {}
         if rate_limits is not None: body['rate_limits'] = [v.as_dict() for v in rate_limits]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         res = self._api.do('PUT',
                            f'/api/2.0/serving-endpoints/{name}/rate-limits',
                            body=body,
@@ -2688,7 +2718,12 @@ class ServingEndpointsAPI:
         if stream is not None: body['stream'] = stream
         if temperature is not None: body['temperature'] = temperature
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-        res = self._api.do('POST', f'/serving-endpoints/{name}/invocations', body=body, headers=headers)
+        response_headers = ['served-model-name', ]
+        res = self._api.do('POST',
+                           f'/serving-endpoints/{name}/invocations',
+                           body=body,
+                           headers=headers,
+                           response_headers=response_headers)
         return QueryEndpointResponse.from_dict(res)
 
     def set_permissions(
@@ -2712,6 +2747,7 @@ class ServingEndpointsAPI:
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         res = self._api.do('PUT',
                            f'/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}',
                            body=body,
@@ -2754,6 +2790,7 @@ class ServingEndpointsAPI:
         if served_models is not None: body['served_models'] = [v.as_dict() for v in served_models]
         if traffic_config is not None: body['traffic_config'] = traffic_config.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         op_response = self._api.do('PUT',
                                    f'/api/2.0/serving-endpoints/{name}/config',
                                    body=body,
@@ -2798,6 +2835,7 @@ class ServingEndpointsAPI:
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         res = self._api.do('PATCH',
                            f'/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}',
                            body=body,

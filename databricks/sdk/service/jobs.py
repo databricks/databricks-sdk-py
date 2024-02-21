@@ -170,9 +170,9 @@ class BaseRun:
     One time triggers that fire a single run. This occurs you triggered a single run on demand
     through the UI or the API. * `RETRY`: Indicates a run that is triggered as a retry of a
     previously failed run. This occurs when you request to re-run the job in case of failures. *
-    `RUN_JOB_TASK`: Indicates a run that is triggered using a Run Job task.
-    
-    * `FILE_ARRIVAL`: Indicates a run that is triggered by a file arrival."""
+    `RUN_JOB_TASK`: Indicates a run that is triggered using a Run Job task. * `FILE_ARRIVAL`:
+    Indicates a run that is triggered by a file arrival. * `TABLE`: Indicates a run that is
+    triggered by a table update."""
 
     trigger_info: Optional[TriggerInfo] = None
 
@@ -338,6 +338,12 @@ class ClusterSpec:
         return cls(existing_cluster_id=d.get('existing_cluster_id', None),
                    libraries=_repeated_dict(d, 'libraries', compute.Library),
                    new_cluster=_from_dict(d, 'new_cluster', compute.ClusterSpec))
+
+
+class Condition(Enum):
+
+    ALL_UPDATED = 'ALL_UPDATED'
+    ANY_UPDATED = 'ANY_UPDATED'
 
 
 @dataclass
@@ -512,9 +518,9 @@ class CreateJob:
     """An optional timeout applied to each run of this job. A value of `0` means no timeout."""
 
     trigger: Optional[TriggerSettings] = None
-    """Trigger settings for the job. Can be used to trigger a run when new files arrive in an external
-    location. The default behavior is that the job runs only when triggered by clicking “Run
-    Now” in the Jobs UI or sending an API request to `runNow`."""
+    """A configuration to trigger a run when certain conditions are met. The default behavior is that
+    the job runs only when triggered by clicking “Run Now” in the Jobs UI or sending an API
+    request to `runNow`."""
 
     webhook_notifications: Optional[WebhookNotifications] = None
     """A collection of system notification IDs to notify when runs of this job begin or complete."""
@@ -838,7 +844,7 @@ class ForEachTask:
     task: Task
 
     concurrency: Optional[int] = None
-    """Controls the number of active iterations task runs. Default is 100 (maximal value)."""
+    """Controls the number of active iterations task runs. Default is 20, maximum allowed is 100."""
 
     def as_dict(self) -> dict:
         """Serializes the ForEachTask into a dictionary suitable for use as a JSON request body."""
@@ -1061,9 +1067,6 @@ class Job:
     """Settings for this job and all of its runs. These settings can be updated using the `resetJob`
     method."""
 
-    trigger_history: Optional[TriggerHistory] = None
-    """History of the file arrival trigger associated with the job."""
-
     def as_dict(self) -> dict:
         """Serializes the Job into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1072,7 +1075,6 @@ class Job:
         if self.job_id is not None: body['job_id'] = self.job_id
         if self.run_as_user_name is not None: body['run_as_user_name'] = self.run_as_user_name
         if self.settings: body['settings'] = self.settings.as_dict()
-        if self.trigger_history: body['trigger_history'] = self.trigger_history.as_dict()
         return body
 
     @classmethod
@@ -1082,8 +1084,7 @@ class Job:
                    creator_user_name=d.get('creator_user_name', None),
                    job_id=d.get('job_id', None),
                    run_as_user_name=d.get('run_as_user_name', None),
-                   settings=_from_dict(d, 'settings', JobSettings),
-                   trigger_history=_from_dict(d, 'trigger_history', TriggerHistory))
+                   settings=_from_dict(d, 'settings', JobSettings))
 
 
 @dataclass
@@ -1591,9 +1592,9 @@ class JobSettings:
     """An optional timeout applied to each run of this job. A value of `0` means no timeout."""
 
     trigger: Optional[TriggerSettings] = None
-    """Trigger settings for the job. Can be used to trigger a run when new files arrive in an external
-    location. The default behavior is that the job runs only when triggered by clicking “Run
-    Now” in the Jobs UI or sending an API request to `runNow`."""
+    """A configuration to trigger a run when certain conditions are met. The default behavior is that
+    the job runs only when triggered by clicking “Run Now” in the Jobs UI or sending an API
+    request to `runNow`."""
 
     webhook_notifications: Optional[WebhookNotifications] = None
     """A collection of system notification IDs to notify when runs of this job begin or complete."""
@@ -1883,7 +1884,7 @@ class NotebookTask:
     :method:jobs/runNow with parameters specified, the two parameters maps are merged. If the same
     key is specified in `base_parameters` and in `run-now`, the value from `run-now` is used.
     
-    Use [Task parameter variables] to set parameters containing information about job runs.
+    Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
     
     If the notebook takes a parameter that is not specified in the job’s `base_parameters` or the
     `run-now` override parameters, the default value from the notebook is used.
@@ -1892,8 +1893,8 @@ class NotebookTask:
     
     The JSON representation of this field cannot exceed 1MB.
     
-    [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
-    [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-widgets"""
+    [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-widgets
+    [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html"""
 
     source: Optional[Source] = None
     """Optional location type of the notebook. When set to `WORKSPACE`, the notebook will be retrieved
@@ -2084,8 +2085,9 @@ class RepairRun:
     be specified in conjunction with notebook_params. The JSON representation of this field (for
     example `{"jar_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
     
-    Use [Task parameter variables](/jobs.html"#parameter-variables") to set parameters containing
-    information about job runs."""
+    Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
+    
+    [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html"""
 
     job_parameters: Optional[Dict[str, str]] = None
     """Job-level parameters used in the run. for example `"param": "overriding_val"`"""
@@ -2103,13 +2105,13 @@ class RepairRun:
     
     notebook_params cannot be specified in conjunction with jar_params.
     
-    Use [Task parameter variables] to set parameters containing information about job runs.
+    Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
     
     The JSON representation of this field (for example `{"notebook_params":{"name":"john
     doe","age":"35"}}`) cannot exceed 10,000 bytes.
     
-    [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
-    [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html"""
+    [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
+    [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html"""
 
     pipeline_params: Optional[PipelineParams] = None
 
@@ -2123,7 +2125,7 @@ class RepairRun:
     `run-now`, it would overwrite the parameters specified in job setting. The JSON representation
     of this field (for example `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
     
-    Use [Task parameter variables] to set parameters containing information about job runs.
+    Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
     
     Important
     
@@ -2131,7 +2133,7 @@ class RepairRun:
     returns an error. Examples of invalid, non-ASCII characters are Chinese, Japanese kanjis, and
     emojis.
     
-    [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables"""
+    [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html"""
 
     rerun_all_failed_tasks: Optional[bool] = None
     """If true, repair all failed tasks. Only one of `rerun_tasks` or `rerun_all_failed_tasks` can be
@@ -2151,7 +2153,7 @@ class RepairRun:
     parameters specified in job setting. The JSON representation of this field (for example
     `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
     
-    Use [Task parameter variables] to set parameters containing information about job runs
+    Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
     
     Important
     
@@ -2159,7 +2161,7 @@ class RepairRun:
     returns an error. Examples of invalid, non-ASCII characters are Chinese, Japanese kanjis, and
     emojis.
     
-    [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables"""
+    [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html"""
 
     sql_params: Optional[Dict[str, str]] = None
     """A map from keys to values for jobs with SQL task, for example `"sql_params": {"name": "john
@@ -2538,9 +2540,9 @@ class Run:
     One time triggers that fire a single run. This occurs you triggered a single run on demand
     through the UI or the API. * `RETRY`: Indicates a run that is triggered as a retry of a
     previously failed run. This occurs when you request to re-run the job in case of failures. *
-    `RUN_JOB_TASK`: Indicates a run that is triggered using a Run Job task.
-    
-    * `FILE_ARRIVAL`: Indicates a run that is triggered by a file arrival."""
+    `RUN_JOB_TASK`: Indicates a run that is triggered using a Run Job task. * `FILE_ARRIVAL`:
+    Indicates a run that is triggered by a file arrival. * `TABLE`: Indicates a run that is
+    triggered by a table update."""
 
     trigger_info: Optional[TriggerInfo] = None
 
@@ -2656,7 +2658,7 @@ class RunConditionTaskOp(Enum):
 @dataclass
 class RunForEachTask:
     concurrency: Optional[int] = None
-    """Controls the number of active iterations task runs. Default is 100 (maximal value)."""
+    """Controls the number of active iterations task runs. Default is 20, maximum allowed is 100."""
 
     inputs: Optional[str] = None
     """Array for task to iterate on. This can be a JSON string or a reference to an array parameter."""
@@ -2793,8 +2795,9 @@ class RunNow:
     be specified in conjunction with notebook_params. The JSON representation of this field (for
     example `{"jar_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
     
-    Use [Task parameter variables](/jobs.html"#parameter-variables") to set parameters containing
-    information about job runs."""
+    Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
+    
+    [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html"""
 
     job_parameters: Optional[Dict[str, str]] = None
     """Job-level parameters used in the run. for example `"param": "overriding_val"`"""
@@ -2808,13 +2811,13 @@ class RunNow:
     
     notebook_params cannot be specified in conjunction with jar_params.
     
-    Use [Task parameter variables] to set parameters containing information about job runs.
+    Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
     
     The JSON representation of this field (for example `{"notebook_params":{"name":"john
     doe","age":"35"}}`) cannot exceed 10,000 bytes.
     
-    [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
-    [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html"""
+    [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
+    [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html"""
 
     pipeline_params: Optional[PipelineParams] = None
 
@@ -2828,7 +2831,7 @@ class RunNow:
     `run-now`, it would overwrite the parameters specified in job setting. The JSON representation
     of this field (for example `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
     
-    Use [Task parameter variables] to set parameters containing information about job runs.
+    Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
     
     Important
     
@@ -2836,7 +2839,7 @@ class RunNow:
     returns an error. Examples of invalid, non-ASCII characters are Chinese, Japanese kanjis, and
     emojis.
     
-    [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables"""
+    [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html"""
 
     queue: Optional[QueueSettings] = None
     """The queue settings of the run."""
@@ -2848,7 +2851,7 @@ class RunNow:
     parameters specified in job setting. The JSON representation of this field (for example
     `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
     
-    Use [Task parameter variables] to set parameters containing information about job runs
+    Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
     
     Important
     
@@ -2856,7 +2859,7 @@ class RunNow:
     returns an error. Examples of invalid, non-ASCII characters are Chinese, Japanese kanjis, and
     emojis.
     
-    [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables"""
+    [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html"""
 
     sql_params: Optional[Dict[str, str]] = None
     """A map from keys to values for jobs with SQL task, for example `"sql_params": {"name": "john
@@ -2998,8 +3001,9 @@ class RunParameters:
     be specified in conjunction with notebook_params. The JSON representation of this field (for
     example `{"jar_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
     
-    Use [Task parameter variables](/jobs.html"#parameter-variables") to set parameters containing
-    information about job runs."""
+    Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
+    
+    [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html"""
 
     job_parameters: Optional[Dict[str, str]] = None
     """Job-level parameters used in the run. for example `"param": "overriding_val"`"""
@@ -3013,13 +3017,13 @@ class RunParameters:
     
     notebook_params cannot be specified in conjunction with jar_params.
     
-    Use [Task parameter variables] to set parameters containing information about job runs.
+    Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
     
     The JSON representation of this field (for example `{"notebook_params":{"name":"john
     doe","age":"35"}}`) cannot exceed 10,000 bytes.
     
-    [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
-    [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html"""
+    [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
+    [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html"""
 
     pipeline_params: Optional[PipelineParams] = None
 
@@ -3033,7 +3037,7 @@ class RunParameters:
     `run-now`, it would overwrite the parameters specified in job setting. The JSON representation
     of this field (for example `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
     
-    Use [Task parameter variables] to set parameters containing information about job runs.
+    Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
     
     Important
     
@@ -3041,7 +3045,7 @@ class RunParameters:
     returns an error. Examples of invalid, non-ASCII characters are Chinese, Japanese kanjis, and
     emojis.
     
-    [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables"""
+    [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html"""
 
     spark_submit_params: Optional[List[str]] = None
     """A list of parameters for jobs with spark submit task, for example `"spark_submit_params":
@@ -3050,7 +3054,7 @@ class RunParameters:
     parameters specified in job setting. The JSON representation of this field (for example
     `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
     
-    Use [Task parameter variables] to set parameters containing information about job runs
+    Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
     
     Important
     
@@ -3058,7 +3062,7 @@ class RunParameters:
     returns an error. Examples of invalid, non-ASCII characters are Chinese, Japanese kanjis, and
     emojis.
     
-    [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables"""
+    [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html"""
 
     sql_params: Optional[Dict[str, str]] = None
     """A map from keys to values for jobs with SQL task, for example `"sql_params": {"name": "john
@@ -3405,9 +3409,9 @@ class SparkJarTask:
     parameters: Optional[List[str]] = None
     """Parameters passed to the main method.
     
-    Use [Task parameter variables] to set parameters containing information about job runs.
+    Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
     
-    [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables"""
+    [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html"""
 
     def as_dict(self) -> dict:
         """Serializes the SparkJarTask into a dictionary suitable for use as a JSON request body."""
@@ -3436,9 +3440,9 @@ class SparkPythonTask:
     parameters: Optional[List[str]] = None
     """Command line parameters passed to the Python file.
     
-    Use [Task parameter variables] to set parameters containing information about job runs.
+    Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
     
-    [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables"""
+    [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html"""
 
     source: Optional[Source] = None
     """Optional location type of the Python file. When set to `WORKSPACE` or not specified, the file
@@ -3470,9 +3474,9 @@ class SparkSubmitTask:
     parameters: Optional[List[str]] = None
     """Command-line parameters passed to spark submit.
     
-    Use [Task parameter variables] to set parameters containing information about job runs.
+    Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
     
-    [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables"""
+    [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html"""
 
     def as_dict(self) -> dict:
         """Serializes the SparkSubmitTask into a dictionary suitable for use as a JSON request body."""
@@ -4138,6 +4142,44 @@ class SubmitTask:
 
 
 @dataclass
+class TableTriggerConfiguration:
+    condition: Optional[Condition] = None
+    """The table(s) condition based on which to trigger a job run."""
+
+    min_time_between_triggers_seconds: Optional[int] = None
+    """If set, the trigger starts a run only after the specified amount of time has passed since the
+    last time the trigger fired. The minimum allowed value is 60 seconds."""
+
+    table_names: Optional[List[str]] = None
+    """A list of Delta tables to monitor for changes. The table name must be in the format
+    `catalog_name.schema_name.table_name`."""
+
+    wait_after_last_change_seconds: Optional[int] = None
+    """If set, the trigger starts a run only after no table updates have occurred for the specified
+    time and can be used to wait for a series of table updates before triggering a run. The minimum
+    allowed value is 60 seconds."""
+
+    def as_dict(self) -> dict:
+        """Serializes the TableTriggerConfiguration into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.condition is not None: body['condition'] = self.condition.value
+        if self.min_time_between_triggers_seconds is not None:
+            body['min_time_between_triggers_seconds'] = self.min_time_between_triggers_seconds
+        if self.table_names: body['table_names'] = [v for v in self.table_names]
+        if self.wait_after_last_change_seconds is not None:
+            body['wait_after_last_change_seconds'] = self.wait_after_last_change_seconds
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> TableTriggerConfiguration:
+        """Deserializes the TableTriggerConfiguration from a dictionary."""
+        return cls(condition=_enum(d, 'condition', Condition),
+                   min_time_between_triggers_seconds=d.get('min_time_between_triggers_seconds', None),
+                   table_names=d.get('table_names', None),
+                   wait_after_last_change_seconds=d.get('wait_after_last_change_seconds', None))
+
+
+@dataclass
 class Task:
     task_key: str
     """A unique name for the task. This field is used to refer to this task from other tasks. This
@@ -4435,62 +4477,6 @@ class TaskNotificationSettings:
 
 
 @dataclass
-class TriggerEvaluation:
-    description: Optional[str] = None
-    """Human-readable description of the the trigger evaluation result. Explains why the trigger
-    evaluation triggered or did not trigger a run, or failed."""
-
-    run_id: Optional[int] = None
-    """The ID of the run that was triggered by the trigger evaluation. Only returned if a run was
-    triggered."""
-
-    timestamp: Optional[int] = None
-    """Timestamp at which the trigger was evaluated."""
-
-    def as_dict(self) -> dict:
-        """Serializes the TriggerEvaluation into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.description is not None: body['description'] = self.description
-        if self.run_id is not None: body['run_id'] = self.run_id
-        if self.timestamp is not None: body['timestamp'] = self.timestamp
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TriggerEvaluation:
-        """Deserializes the TriggerEvaluation from a dictionary."""
-        return cls(description=d.get('description', None),
-                   run_id=d.get('run_id', None),
-                   timestamp=d.get('timestamp', None))
-
-
-@dataclass
-class TriggerHistory:
-    last_failed: Optional[TriggerEvaluation] = None
-    """The last time the trigger failed to evaluate."""
-
-    last_not_triggered: Optional[TriggerEvaluation] = None
-    """The last time the trigger was evaluated but did not trigger a run."""
-
-    last_triggered: Optional[TriggerEvaluation] = None
-    """The last time the run was triggered due to a file arrival."""
-
-    def as_dict(self) -> dict:
-        """Serializes the TriggerHistory into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.last_failed: body['last_failed'] = self.last_failed.as_dict()
-        if self.last_not_triggered: body['last_not_triggered'] = self.last_not_triggered.as_dict()
-        if self.last_triggered: body['last_triggered'] = self.last_triggered.as_dict()
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TriggerHistory:
-        """Deserializes the TriggerHistory from a dictionary."""
-        return cls(last_failed=_from_dict(d, 'last_failed', TriggerEvaluation),
-                   last_not_triggered=_from_dict(d, 'last_not_triggered', TriggerEvaluation),
-                   last_triggered=_from_dict(d, 'last_triggered', TriggerEvaluation))
-
-
-@dataclass
 class TriggerInfo:
     run_id: Optional[int] = None
     """The run id of the Run Job task run"""
@@ -4515,18 +4501,23 @@ class TriggerSettings:
     pause_status: Optional[PauseStatus] = None
     """Whether this trigger is paused or not."""
 
+    table: Optional[TableTriggerConfiguration] = None
+    """Table trigger settings."""
+
     def as_dict(self) -> dict:
         """Serializes the TriggerSettings into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.file_arrival: body['file_arrival'] = self.file_arrival.as_dict()
         if self.pause_status is not None: body['pause_status'] = self.pause_status.value
+        if self.table: body['table'] = self.table.as_dict()
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> TriggerSettings:
         """Deserializes the TriggerSettings from a dictionary."""
         return cls(file_arrival=_from_dict(d, 'file_arrival', FileArrivalTriggerConfiguration),
-                   pause_status=_enum(d, 'pause_status', PauseStatus))
+                   pause_status=_enum(d, 'pause_status', PauseStatus),
+                   table=_from_dict(d, 'table', TableTriggerConfiguration))
 
 
 class TriggerType(Enum):
@@ -4536,15 +4527,16 @@ class TriggerType(Enum):
     One time triggers that fire a single run. This occurs you triggered a single run on demand
     through the UI or the API. * `RETRY`: Indicates a run that is triggered as a retry of a
     previously failed run. This occurs when you request to re-run the job in case of failures. *
-    `RUN_JOB_TASK`: Indicates a run that is triggered using a Run Job task.
-    
-    * `FILE_ARRIVAL`: Indicates a run that is triggered by a file arrival."""
+    `RUN_JOB_TASK`: Indicates a run that is triggered using a Run Job task. * `FILE_ARRIVAL`:
+    Indicates a run that is triggered by a file arrival. * `TABLE`: Indicates a run that is
+    triggered by a table update."""
 
     FILE_ARRIVAL = 'FILE_ARRIVAL'
     ONE_TIME = 'ONE_TIME'
     PERIODIC = 'PERIODIC'
     RETRY = 'RETRY'
     RUN_JOB_TASK = 'RUN_JOB_TASK'
+    TABLE = 'TABLE'
 
 
 @dataclass
@@ -4771,6 +4763,7 @@ class JobsAPI:
         if all_queued_runs is not None: body['all_queued_runs'] = all_queued_runs
         if job_id is not None: body['job_id'] = job_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         self._api.do('POST', '/api/2.1/jobs/runs/cancel-all', body=body, headers=headers)
 
     def cancel_run(self, run_id: int) -> Wait[Run]:
@@ -4789,6 +4782,7 @@ class JobsAPI:
         body = {}
         if run_id is not None: body['run_id'] = run_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         self._api.do('POST', '/api/2.1/jobs/runs/cancel', body=body, headers=headers)
         return Wait(self.wait_get_run_job_terminated_or_skipped, run_id=run_id)
 
@@ -4901,9 +4895,9 @@ class JobsAPI:
         :param timeout_seconds: int (optional)
           An optional timeout applied to each run of this job. A value of `0` means no timeout.
         :param trigger: :class:`TriggerSettings` (optional)
-          Trigger settings for the job. Can be used to trigger a run when new files arrive in an external
-          location. The default behavior is that the job runs only when triggered by clicking “Run Now” in
-          the Jobs UI or sending an API request to `runNow`.
+          A configuration to trigger a run when certain conditions are met. The default behavior is that the
+          job runs only when triggered by clicking “Run Now” in the Jobs UI or sending an API request to
+          `runNow`.
         :param webhook_notifications: :class:`WebhookNotifications` (optional)
           A collection of system notification IDs to notify when runs of this job begin or complete.
         
@@ -4935,6 +4929,7 @@ class JobsAPI:
         if trigger is not None: body['trigger'] = trigger.as_dict()
         if webhook_notifications is not None: body['webhook_notifications'] = webhook_notifications.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         res = self._api.do('POST', '/api/2.1/jobs/create', body=body, headers=headers)
         return CreateResponse.from_dict(res)
 
@@ -4951,6 +4946,7 @@ class JobsAPI:
         body = {}
         if job_id is not None: body['job_id'] = job_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         self._api.do('POST', '/api/2.1/jobs/delete', body=body, headers=headers)
 
     def delete_run(self, run_id: int):
@@ -4966,6 +4962,7 @@ class JobsAPI:
         body = {}
         if run_id is not None: body['run_id'] = run_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         self._api.do('POST', '/api/2.1/jobs/runs/delete', body=body, headers=headers)
 
     def export_run(self, run_id: int, *, views_to_export: Optional[ViewsToExport] = None) -> ExportRunOutput:
@@ -4985,6 +4982,7 @@ class JobsAPI:
         if run_id is not None: query['run_id'] = run_id
         if views_to_export is not None: query['views_to_export'] = views_to_export.value
         headers = {'Accept': 'application/json', }
+
         res = self._api.do('GET', '/api/2.1/jobs/runs/export', query=query, headers=headers)
         return ExportRunOutput.from_dict(res)
 
@@ -5002,6 +5000,7 @@ class JobsAPI:
         query = {}
         if job_id is not None: query['job_id'] = job_id
         headers = {'Accept': 'application/json', }
+
         res = self._api.do('GET', '/api/2.1/jobs/get', query=query, headers=headers)
         return Job.from_dict(res)
 
@@ -5017,6 +5016,7 @@ class JobsAPI:
         """
 
         headers = {'Accept': 'application/json', }
+
         res = self._api.do('GET', f'/api/2.0/permissions/jobs/{job_id}/permissionLevels', headers=headers)
         return GetJobPermissionLevelsResponse.from_dict(res)
 
@@ -5032,6 +5032,7 @@ class JobsAPI:
         """
 
         headers = {'Accept': 'application/json', }
+
         res = self._api.do('GET', f'/api/2.0/permissions/jobs/{job_id}', headers=headers)
         return JobPermissions.from_dict(res)
 
@@ -5059,6 +5060,7 @@ class JobsAPI:
         if include_resolved_values is not None: query['include_resolved_values'] = include_resolved_values
         if run_id is not None: query['run_id'] = run_id
         headers = {'Accept': 'application/json', }
+
         res = self._api.do('GET', '/api/2.1/jobs/runs/get', query=query, headers=headers)
         return Run.from_dict(res)
 
@@ -5083,6 +5085,7 @@ class JobsAPI:
         query = {}
         if run_id is not None: query['run_id'] = run_id
         headers = {'Accept': 'application/json', }
+
         res = self._api.do('GET', '/api/2.1/jobs/runs/get-output', query=query, headers=headers)
         return RunOutput.from_dict(res)
 
@@ -5236,8 +5239,9 @@ class JobsAPI:
           in conjunction with notebook_params. The JSON representation of this field (for example
           `{"jar_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
           
-          Use [Task parameter variables](/jobs.html"#parameter-variables") to set parameters containing
-          information about job runs.
+          Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
+          
+          [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html
         :param job_parameters: Dict[str,str] (optional)
           Job-level parameters used in the run. for example `"param": "overriding_val"`
         :param latest_repair_id: int (optional)
@@ -5252,13 +5256,13 @@ class JobsAPI:
           
           notebook_params cannot be specified in conjunction with jar_params.
           
-          Use [Task parameter variables] to set parameters containing information about job runs.
+          Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
           
           The JSON representation of this field (for example `{"notebook_params":{"name":"john
           doe","age":"35"}}`) cannot exceed 10,000 bytes.
           
-          [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
           [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
+          [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html
         :param pipeline_params: :class:`PipelineParams` (optional)
         :param python_named_params: Dict[str,str] (optional)
           A map from keys to values for jobs with Python wheel task, for example `"python_named_params":
@@ -5269,7 +5273,7 @@ class JobsAPI:
           would overwrite the parameters specified in job setting. The JSON representation of this field (for
           example `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
           
-          Use [Task parameter variables] to set parameters containing information about job runs.
+          Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
           
           Important
           
@@ -5277,7 +5281,7 @@ class JobsAPI:
           returns an error. Examples of invalid, non-ASCII characters are Chinese, Japanese kanjis, and
           emojis.
           
-          [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
+          [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html
         :param rerun_all_failed_tasks: bool (optional)
           If true, repair all failed tasks. Only one of `rerun_tasks` or `rerun_all_failed_tasks` can be used.
         :param rerun_dependent_tasks: bool (optional)
@@ -5292,7 +5296,7 @@ class JobsAPI:
           in job setting. The JSON representation of this field (for example `{"python_params":["john
           doe","35"]}`) cannot exceed 10,000 bytes.
           
-          Use [Task parameter variables] to set parameters containing information about job runs
+          Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
           
           Important
           
@@ -5300,7 +5304,7 @@ class JobsAPI:
           returns an error. Examples of invalid, non-ASCII characters are Chinese, Japanese kanjis, and
           emojis.
           
-          [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
+          [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html
         :param sql_params: Dict[str,str] (optional)
           A map from keys to values for jobs with SQL task, for example `"sql_params": {"name": "john doe",
           "age": "35"}`. The SQL alert task does not support custom parameters.
@@ -5325,6 +5329,7 @@ class JobsAPI:
         if spark_submit_params is not None: body['spark_submit_params'] = [v for v in spark_submit_params]
         if sql_params is not None: body['sql_params'] = sql_params
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         op_response = self._api.do('POST', '/api/2.1/jobs/runs/repair', body=body, headers=headers)
         return Wait(self.wait_get_run_job_terminated_or_skipped,
                     response=RepairRunResponse.from_dict(op_response),
@@ -5383,6 +5388,7 @@ class JobsAPI:
         if job_id is not None: body['job_id'] = job_id
         if new_settings is not None: body['new_settings'] = new_settings.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         self._api.do('POST', '/api/2.1/jobs/reset', body=body, headers=headers)
 
     def run_now(self,
@@ -5428,8 +5434,9 @@ class JobsAPI:
           in conjunction with notebook_params. The JSON representation of this field (for example
           `{"jar_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
           
-          Use [Task parameter variables](/jobs.html"#parameter-variables") to set parameters containing
-          information about job runs.
+          Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
+          
+          [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html
         :param job_parameters: Dict[str,str] (optional)
           Job-level parameters used in the run. for example `"param": "overriding_val"`
         :param notebook_params: Dict[str,str] (optional)
@@ -5441,13 +5448,13 @@ class JobsAPI:
           
           notebook_params cannot be specified in conjunction with jar_params.
           
-          Use [Task parameter variables] to set parameters containing information about job runs.
+          Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
           
           The JSON representation of this field (for example `{"notebook_params":{"name":"john
           doe","age":"35"}}`) cannot exceed 10,000 bytes.
           
-          [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
           [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
+          [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html
         :param pipeline_params: :class:`PipelineParams` (optional)
         :param python_named_params: Dict[str,str] (optional)
           A map from keys to values for jobs with Python wheel task, for example `"python_named_params":
@@ -5458,7 +5465,7 @@ class JobsAPI:
           would overwrite the parameters specified in job setting. The JSON representation of this field (for
           example `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
           
-          Use [Task parameter variables] to set parameters containing information about job runs.
+          Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
           
           Important
           
@@ -5466,7 +5473,7 @@ class JobsAPI:
           returns an error. Examples of invalid, non-ASCII characters are Chinese, Japanese kanjis, and
           emojis.
           
-          [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
+          [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html
         :param queue: :class:`QueueSettings` (optional)
           The queue settings of the run.
         :param spark_submit_params: List[str] (optional)
@@ -5476,7 +5483,7 @@ class JobsAPI:
           in job setting. The JSON representation of this field (for example `{"python_params":["john
           doe","35"]}`) cannot exceed 10,000 bytes.
           
-          Use [Task parameter variables] to set parameters containing information about job runs
+          Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
           
           Important
           
@@ -5484,7 +5491,7 @@ class JobsAPI:
           returns an error. Examples of invalid, non-ASCII characters are Chinese, Japanese kanjis, and
           emojis.
           
-          [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
+          [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html
         :param sql_params: Dict[str,str] (optional)
           A map from keys to values for jobs with SQL task, for example `"sql_params": {"name": "john doe",
           "age": "35"}`. The SQL alert task does not support custom parameters.
@@ -5507,6 +5514,7 @@ class JobsAPI:
         if spark_submit_params is not None: body['spark_submit_params'] = [v for v in spark_submit_params]
         if sql_params is not None: body['sql_params'] = sql_params
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         op_response = self._api.do('POST', '/api/2.1/jobs/run-now', body=body, headers=headers)
         return Wait(self.wait_get_run_job_terminated_or_skipped,
                     response=RunNowResponse.from_dict(op_response),
@@ -5559,6 +5567,7 @@ class JobsAPI:
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         res = self._api.do('PUT', f'/api/2.0/permissions/jobs/{job_id}', body=body, headers=headers)
         return JobPermissions.from_dict(res)
 
@@ -5640,6 +5649,7 @@ class JobsAPI:
         if timeout_seconds is not None: body['timeout_seconds'] = timeout_seconds
         if webhook_notifications is not None: body['webhook_notifications'] = webhook_notifications.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         op_response = self._api.do('POST', '/api/2.1/jobs/runs/submit', body=body, headers=headers)
         return Wait(self.wait_get_run_job_terminated_or_skipped,
                     response=SubmitRunResponse.from_dict(op_response),
@@ -5706,6 +5716,7 @@ class JobsAPI:
         if job_id is not None: body['job_id'] = job_id
         if new_settings is not None: body['new_settings'] = new_settings.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         self._api.do('POST', '/api/2.1/jobs/update', body=body, headers=headers)
 
     def update_permissions(
@@ -5727,5 +5738,6 @@ class JobsAPI:
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
         res = self._api.do('PATCH', f'/api/2.0/permissions/jobs/{job_id}', body=body, headers=headers)
         return JobPermissions.from_dict(res)
