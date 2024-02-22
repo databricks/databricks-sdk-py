@@ -1,10 +1,7 @@
 from __future__ import annotations
 
 import logging
-from types import FunctionType
-from typing import Callable, Dict, Union
-
-from databricks.sdk.service import sql
+from typing import Dict, Union
 
 logger = logging.getLogger('databricks.sdk')
 is_local_implementation = True
