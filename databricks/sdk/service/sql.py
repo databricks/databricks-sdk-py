@@ -304,6 +304,11 @@ class BaseChunkInfo:
 
 
 @dataclass
+class CancelExecutionResponse:
+    pass
+
+
+@dataclass
 class Channel:
     dbsql_version: Optional[str] = None
 
@@ -895,6 +900,16 @@ class DataSource:
                    warehouse_id=d.get('warehouse_id', None))
 
 
+@dataclass
+class DeleteResponse:
+    pass
+
+
+@dataclass
+class DeleteWarehouseResponse:
+    pass
+
+
 class Disposition(Enum):
     """The fetch disposition provides two modes of fetching results: `INLINE` and `EXTERNAL_LINKS`.
     
@@ -1078,6 +1093,11 @@ class EditWarehouseRequestWarehouseType(Enum):
     CLASSIC = 'CLASSIC'
     PRO = 'PRO'
     TYPE_UNSPECIFIED = 'TYPE_UNSPECIFIED'
+
+
+@dataclass
+class EditWarehouseResponse:
+    pass
 
 
 @dataclass
@@ -2844,6 +2864,11 @@ class RepeatedEndpointConfPairs:
 
 
 @dataclass
+class RestoreResponse:
+    pass
+
+
+@dataclass
 class ResultData:
     """Contains the result data of a single chunk when using `INLINE` disposition. When using
     `EXTERNAL_LINKS` disposition, the array `external_links` is used instead to provide presigned
@@ -3126,12 +3151,22 @@ class SetWorkspaceWarehouseConfigRequestSecurityPolicy(Enum):
     PASSTHROUGH = 'PASSTHROUGH'
 
 
+@dataclass
+class SetWorkspaceWarehouseConfigResponse:
+    pass
+
+
 class SpotInstancePolicy(Enum):
     """Configurations whether the warehouse should use spot instances."""
 
     COST_OPTIMIZED = 'COST_OPTIMIZED'
     POLICY_UNSPECIFIED = 'POLICY_UNSPECIFIED'
     RELIABILITY_OPTIMIZED = 'RELIABILITY_OPTIMIZED'
+
+
+@dataclass
+class StartWarehouseResponse:
+    pass
 
 
 class State(Enum):
@@ -3221,6 +3256,11 @@ class Status(Enum):
     FAILED = 'FAILED'
     HEALTHY = 'HEALTHY'
     STATUS_UNSPECIFIED = 'STATUS_UNSPECIFIED'
+
+
+@dataclass
+class StopWarehouseResponse:
+    pass
 
 
 @dataclass
@@ -3400,6 +3440,11 @@ class TransferOwnershipObjectId:
     def from_dict(cls, d: Dict[str, any]) -> TransferOwnershipObjectId:
         """Deserializes the TransferOwnershipObjectId from a dictionary."""
         return cls(new_owner=d.get('new_owner', None))
+
+
+@dataclass
+class UpdateResponse:
+    pass
 
 
 @dataclass
@@ -3803,51 +3848,6 @@ class WidgetPosition:
                    size_y=d.get('sizeY', None))
 
 
-@dataclass
-class CancelExecutionResponse:
-    pass
-
-
-@dataclass
-class DeleteResponse:
-    pass
-
-
-@dataclass
-class DeleteWarehouseResponse:
-    pass
-
-
-@dataclass
-class EditWarehouseResponse:
-    pass
-
-
-@dataclass
-class RestoreResponse:
-    pass
-
-
-@dataclass
-class SetWorkspaceWarehouseConfigResponse:
-    pass
-
-
-@dataclass
-class StartWarehouseResponse:
-    pass
-
-
-@dataclass
-class StopWarehouseResponse:
-    pass
-
-
-@dataclass
-class UpdateResponse:
-    pass
-
-
 class AlertsAPI:
     """The alerts API can be used to perform CRUD operations on alerts. An alert is a Databricks SQL object that
     periodically runs a query, evaluates a condition of its result, and notifies one or more users and/or
@@ -3902,7 +3902,7 @@ class AlertsAPI:
         
         :param alert_id: str
         
-        
+        :returns: :class:`DeleteResponse`
         """
 
         headers = {'Accept': 'application/json', }
@@ -3959,7 +3959,7 @@ class AlertsAPI:
           Number of seconds after being triggered before the alert rearms itself and can be triggered again.
           If `null`, alert will never be triggered again.
         
-        
+        :returns: :class:`UpdateResponse`
         """
         body = {}
         if name is not None: body['name'] = name
@@ -4017,7 +4017,7 @@ class DashboardWidgetsAPI:
         :param id: str
           Widget ID returned by :method:dashboardwidgets/create
         
-        
+        :returns: :class:`DeleteResponse`
         """
 
         headers = {'Accept': 'application/json', }
@@ -4117,7 +4117,7 @@ class DashboardsAPI:
         
         :param dashboard_id: str
         
-        
+        :returns: :class:`DeleteResponse`
         """
 
         headers = {'Accept': 'application/json', }
@@ -4194,7 +4194,7 @@ class DashboardsAPI:
         
         :param dashboard_id: str
         
-        
+        :returns: :class:`RestoreResponse`
         """
 
         headers = {'Accept': 'application/json', }
@@ -4428,7 +4428,7 @@ class QueriesAPI:
         
         :param query_id: str
         
-        
+        :returns: :class:`DeleteResponse`
         """
 
         headers = {'Accept': 'application/json', }
@@ -4519,7 +4519,7 @@ class QueriesAPI:
         
         :param query_id: str
         
-        
+        :returns: :class:`RestoreResponse`
         """
 
         headers = {'Accept': 'application/json', }
@@ -4672,7 +4672,7 @@ class QueryVisualizationsAPI:
         :param id: str
           Widget ID returned by :method:queryvizualisations/create
         
-        
+        :returns: :class:`DeleteResponse`
         """
 
         headers = {'Accept': 'application/json', }
@@ -4816,7 +4816,7 @@ class StatementExecutionAPI:
           The statement ID is returned upon successfully submitting a SQL statement, and is a required
           reference for all subsequent calls.
         
-        
+        :returns: :class:`CancelExecutionResponse`
         """
 
         headers = {}
@@ -5240,7 +5240,7 @@ class WarehousesAPI:
         :param id: str
           Required. Id of the SQL warehouse.
         
-        
+        :returns: :class:`DeleteWarehouseResponse`
         """
 
         headers = {'Accept': 'application/json', }
@@ -5346,8 +5346,10 @@ class WarehousesAPI:
         if warehouse_type is not None: body['warehouse_type'] = warehouse_type.value
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        self._api.do('POST', f'/api/2.0/sql/warehouses/{id}/edit', body=body, headers=headers)
-        return Wait(self.wait_get_warehouse_running, id=id)
+        op_response = self._api.do('POST', f'/api/2.0/sql/warehouses/{id}/edit', body=body, headers=headers)
+        return Wait(self.wait_get_warehouse_running,
+                    response=EditWarehouseResponse.from_dict(op_response),
+                    id=id)
 
     def edit_and_wait(
         self,
@@ -5532,7 +5534,7 @@ class WarehousesAPI:
         :param sql_configuration_parameters: :class:`RepeatedEndpointConfPairs` (optional)
           SQL configuration parameters
         
-        
+        :returns: :class:`SetWorkspaceWarehouseConfigResponse`
         """
         body = {}
         if channel is not None: body['channel'] = channel.as_dict()
@@ -5566,8 +5568,10 @@ class WarehousesAPI:
 
         headers = {'Accept': 'application/json', }
 
-        self._api.do('POST', f'/api/2.0/sql/warehouses/{id}/start', headers=headers)
-        return Wait(self.wait_get_warehouse_running, id=id)
+        op_response = self._api.do('POST', f'/api/2.0/sql/warehouses/{id}/start', headers=headers)
+        return Wait(self.wait_get_warehouse_running,
+                    response=StartWarehouseResponse.from_dict(op_response),
+                    id=id)
 
     def start_and_wait(self, id: str, timeout=timedelta(minutes=20)) -> GetWarehouseResponse:
         return self.start(id=id).result(timeout=timeout)
@@ -5587,8 +5591,10 @@ class WarehousesAPI:
 
         headers = {'Accept': 'application/json', }
 
-        self._api.do('POST', f'/api/2.0/sql/warehouses/{id}/stop', headers=headers)
-        return Wait(self.wait_get_warehouse_stopped, id=id)
+        op_response = self._api.do('POST', f'/api/2.0/sql/warehouses/{id}/stop', headers=headers)
+        return Wait(self.wait_get_warehouse_stopped,
+                    response=StopWarehouseResponse.from_dict(op_response),
+                    id=id)
 
     def stop_and_wait(self, id: str, timeout=timedelta(minutes=20)) -> GetWarehouseResponse:
         return self.stop(id=id).result(timeout=timeout)

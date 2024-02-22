@@ -61,7 +61,7 @@
         :param storage_configuration_id: str
           Databricks Account API storage configuration ID.
         
-        
+        :returns: :class:`DeleteResponse`
         
 
     .. py:method:: get(storage_configuration_id: str) -> StorageConfiguration

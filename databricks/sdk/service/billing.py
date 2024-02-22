@@ -315,6 +315,11 @@ class CreateLogDeliveryConfigurationParams:
                    workspace_ids_filter=d.get('workspace_ids_filter', None))
 
 
+@dataclass
+class DeleteResponse:
+    pass
+
+
 class DeliveryStatus(Enum):
     """The status string for log delivery. Possible values are: * `CREATED`: There were no log delivery
     attempts since the config was created. * `SUCCEEDED`: The latest attempt of log delivery has
@@ -558,6 +563,11 @@ class OutputFormat(Enum):
 
 
 @dataclass
+class PatchStatusResponse:
+    pass
+
+
+@dataclass
 class UpdateLogDeliveryConfigurationStatusRequest:
     status: LogDeliveryConfigStatus
     """Status of log delivery configuration. Set to `ENABLED` (enabled) or `DISABLED` (disabled).
@@ -581,6 +591,11 @@ class UpdateLogDeliveryConfigurationStatusRequest:
         """Deserializes the UpdateLogDeliveryConfigurationStatusRequest from a dictionary."""
         return cls(log_delivery_configuration_id=d.get('log_delivery_configuration_id', None),
                    status=_enum(d, 'status', LogDeliveryConfigStatus))
+
+
+@dataclass
+class UpdateResponse:
+    pass
 
 
 @dataclass
@@ -675,21 +690,6 @@ class WrappedLogDeliveryConfigurations:
                                                               LogDeliveryConfiguration))
 
 
-@dataclass
-class DeleteResponse:
-    pass
-
-
-@dataclass
-class PatchStatusResponse:
-    pass
-
-
-@dataclass
-class UpdateResponse:
-    pass
-
-
 class BillableUsageAPI:
     """This API allows you to download billable usage logs for the specified account and date range. This feature
     works with all account types."""
@@ -774,7 +774,7 @@ class BudgetsAPI:
         :param budget_id: str
           Budget ID
         
-        
+        :returns: :class:`DeleteResponse`
         """
 
         headers = {'Accept': 'application/json', }
@@ -827,7 +827,7 @@ class BudgetsAPI:
         :param budget: :class:`Budget`
           Budget configuration to be created.
         
-        
+        :returns: :class:`UpdateResponse`
         """
         body = {}
         if budget is not None: body['budget'] = budget.as_dict()
@@ -1000,7 +1000,7 @@ class LogDeliveryAPI:
           configuration](#operation/patch-log-delivery-config-status) later. Deletion of a configuration is
           not supported, so disable a log delivery configuration that is no longer needed.
         
-        
+        :returns: :class:`PatchStatusResponse`
         """
         body = {}
         if status is not None: body['status'] = status.value

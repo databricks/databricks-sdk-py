@@ -64,7 +64,7 @@
         :param credentials_id: str
           Databricks Account API credential configuration ID
         
-        
+        :returns: :class:`DeleteResponse`
         
 
     .. py:method:: get(credentials_id: str) -> Credential

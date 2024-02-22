@@ -597,6 +597,11 @@ class CustomerManagedKey:
                    use_cases=_repeated_enum(d, 'use_cases', KeyUseCase))
 
 
+@dataclass
+class DeleteResponse:
+    pass
+
+
 class EndpointUseCase(Enum):
     """This enumeration represents the type of Databricks VPC [endpoint service] that was used when
     creating this VPC endpoint.
@@ -1063,6 +1068,11 @@ class PrivateAccessSettings:
 
 
 @dataclass
+class ReplaceResponse:
+    pass
+
+
+@dataclass
 class RootBucketInfo:
     """Root S3 bucket information."""
 
@@ -1140,6 +1150,11 @@ class StsRole:
     def from_dict(cls, d: Dict[str, any]) -> StsRole:
         """Deserializes the StsRole from a dictionary."""
         return cls(external_id=d.get('external_id', None), role_arn=d.get('role_arn', None))
+
+
+@dataclass
+class UpdateResponse:
+    pass
 
 
 @dataclass
@@ -1546,21 +1561,6 @@ class WorkspaceStatus(Enum):
     RUNNING = 'RUNNING'
 
 
-@dataclass
-class DeleteResponse:
-    pass
-
-
-@dataclass
-class ReplaceResponse:
-    pass
-
-
-@dataclass
-class UpdateResponse:
-    pass
-
-
 class CredentialsAPI:
     """These APIs manage credential configurations for this workspace. Databricks needs access to a cross-account
     service IAM role in your AWS account so that Databricks can deploy clusters in the appropriate VPC for the
@@ -1612,7 +1612,7 @@ class CredentialsAPI:
         :param credentials_id: str
           Databricks Account API credential configuration ID
         
-        
+        :returns: :class:`DeleteResponse`
         """
 
         headers = {'Accept': 'application/json', }
@@ -1720,7 +1720,7 @@ class EncryptionKeysAPI:
         :param customer_managed_key_id: str
           Databricks encryption key configuration ID.
         
-        
+        :returns: :class:`DeleteResponse`
         """
 
         headers = {'Accept': 'application/json', }
@@ -1853,7 +1853,7 @@ class NetworksAPI:
         :param network_id: str
           Databricks Account API network configuration ID.
         
-        
+        :returns: :class:`DeleteResponse`
         """
 
         headers = {'Accept': 'application/json', }
@@ -1984,7 +1984,7 @@ class PrivateAccessAPI:
         :param private_access_settings_id: str
           Databricks Account API private access settings ID.
         
-        
+        :returns: :class:`DeleteResponse`
         """
 
         headers = {'Accept': 'application/json', }
@@ -2092,7 +2092,7 @@ class PrivateAccessAPI:
           can optionally specify `false`, but only if you implement both the front-end and the back-end
           PrivateLink connections. Otherwise, specify `true`, which means that public access is enabled.
         
-        
+        :returns: :class:`ReplaceResponse`
         """
         body = {}
         if allowed_vpc_endpoint_ids is not None:
@@ -2162,7 +2162,7 @@ class StorageAPI:
         :param storage_configuration_id: str
           Databricks Account API storage configuration ID.
         
-        
+        :returns: :class:`DeleteResponse`
         """
 
         headers = {'Accept': 'application/json', }
@@ -2273,7 +2273,7 @@ class VpcEndpointsAPI:
         :param vpc_endpoint_id: str
           Databricks VPC endpoint ID.
         
-        
+        :returns: :class:`DeleteResponse`
         """
 
         headers = {'Accept': 'application/json', }
@@ -2565,7 +2565,7 @@ class WorkspacesAPI:
         :param workspace_id: int
           Workspace ID.
         
-        
+        :returns: :class:`DeleteResponse`
         """
 
         headers = {'Accept': 'application/json', }
@@ -2771,11 +2771,13 @@ class WorkspacesAPI:
             body['storage_customer_managed_key_id'] = storage_customer_managed_key_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        self._api.do('PATCH',
-                     f'/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}',
-                     body=body,
-                     headers=headers)
-        return Wait(self.wait_get_workspace_running, workspace_id=workspace_id)
+        op_response = self._api.do('PATCH',
+                                   f'/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}',
+                                   body=body,
+                                   headers=headers)
+        return Wait(self.wait_get_workspace_running,
+                    response=UpdateResponse.from_dict(op_response),
+                    workspace_id=workspace_id)
 
     def update_and_wait(
         self,

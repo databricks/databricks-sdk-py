@@ -27,7 +27,7 @@
         :param version: int
           The integer version number of the model version
         
-        
+        :returns: :class:`DeleteResponse`
         
 
     .. py:method:: get(full_name: str, version: int) -> RegisteredModelInfo

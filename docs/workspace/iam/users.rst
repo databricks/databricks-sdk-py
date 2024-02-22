@@ -93,7 +93,7 @@
         :param id: str
           Unique ID for a user in the Databricks workspace.
         
-        
+        :returns: :class:`DeleteResponse`
         
 
     .. py:method:: get(id: str [, attributes: Optional[str], count: Optional[int], excluded_attributes: Optional[str], filter: Optional[str], sort_by: Optional[str], sort_order: Optional[GetSortOrder], start_index: Optional[int]]) -> User
@@ -238,7 +238,7 @@
         :param schemas: List[:class:`PatchSchema`] (optional)
           The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
         
-        
+        :returns: :class:`PatchResponse`
         
 
     .. py:method:: set_permissions( [, access_control_list: Optional[List[PasswordAccessControlRequest]]]) -> PasswordPermissions
@@ -301,7 +301,7 @@
         :param user_name: str (optional)
           Email address of the Databricks user.
         
-        
+        :returns: :class:`UpdateResponse`
         
 
     .. py:method:: update_permissions( [, access_control_list: Optional[List[PasswordAccessControlRequest]]]) -> PasswordPermissions

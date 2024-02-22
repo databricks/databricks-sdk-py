@@ -18,10 +18,12 @@ from databricks.sdk.service import {{.Package.Name}}{{end}}
 
 # all definitions in this file are in alphabetical order
 {{range .Types}}
-{{if .Fields -}}{{if not .IsRequest}}@dataclass
+{{if or .Fields .IsEmpty -}}{{if not .IsRequest}}@dataclass
 class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Description}}
     """{{.Comment "    " 100}}"""
-    {{end}}{{- range .RequiredFields}}
+    {{end}}
+    {{- if .IsEmpty }}pass{{ end -}}
+    {{- range .RequiredFields}}
     {{template "safe-snake-name" .}}: {{template "type" .Entity}}{{if .Description}}
     """{{.Comment "    " 100 | trimSuffix "\""}}"""{{end}}
     {{end}}
@@ -50,14 +52,6 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Descriptio
     {{range .Enum }}
     {{.ConstantName}} = '{{.Content}}'{{end}}{{end}}
 {{end}}
-{{ range .EmptyTypes }}
-@dataclass
-class {{.PascalName}}:
-    {{- if .Description}}
-    """{{.Comment "    " 100 | trimSuffix "\"" }}"""
-    {{- end}}
-    pass
-{{ end }}
 {{- define "from_dict_type" -}}
 	{{- if not .Entity }}None
 	{{- else if .Entity.ArrayValue }}
@@ -307,9 +301,9 @@ class {{.Name}}API:{{if .Description}}
 {{- end}}
 
 {{define "method-call-default" -}}
-        {{if .Response -}}
+        {{if and .Response (not .Response.IsEmpty) -}}
         res = {{end}}{{template "method-do" .}}
-        {{if .Response -}}
+        {{if and .Response (not .Response.IsEmpty) -}}
           {{- if .Response.ArrayValue -}}
             return [{{.Response.ArrayValue.PascalName}}.from_dict(v) for v in res]
           {{- else if .Response.MapValue -}}
@@ -340,7 +334,7 @@ self._api.do('{{.Verb}}',
 
 {{define "method-return-type" -}}
   {{if and .Wait (and (not .IsCrudRead) (not (eq .SnakeName "get_run"))) }} -> Wait[{{.Wait.Poll.Response.PascalName}}]
-  {{- else if .Response}} -> {{if .Response.ArrayValue -}}
+  {{- else if and .Response (not .Response.IsEmpty) }} -> {{if .Response.ArrayValue -}}
     Iterator[{{template "type" .Response.ArrayValue}}]
   {{- else if .Pagination -}}
     Iterator[{{template "type" .Pagination.Entity}}]

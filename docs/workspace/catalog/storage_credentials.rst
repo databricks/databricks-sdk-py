@@ -75,7 +75,7 @@
         :param force: bool (optional)
           Force deletion even if there are dependent external locations or external tables.
         
-        
+        :returns: :class:`DeleteResponse`
         
 
     .. py:method:: get(name: str) -> StorageCredentialInfo

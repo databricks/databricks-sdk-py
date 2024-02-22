@@ -42,7 +42,7 @@
         :param force: bool (optional)
           Force deletion even if the function is notempty.
         
-        
+        :returns: :class:`DeleteResponse`
         
 
     .. py:method:: get(name: str) -> FunctionInfo

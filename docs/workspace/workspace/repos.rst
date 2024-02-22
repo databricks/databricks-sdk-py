@@ -63,7 +63,7 @@
         :param repo_id: int
           The ID for the corresponding repo to access.
         
-        
+        :returns: :class:`DeleteResponse`
         
 
     .. py:method:: get(repo_id: int) -> RepoInfo
@@ -202,7 +202,7 @@
           in a detached HEAD state. Before committing new changes, you must update the repo to a branch
           instead of the detached HEAD.
         
-        
+        :returns: :class:`UpdateResponse`
         
 
     .. py:method:: update_permissions(repo_id: str [, access_control_list: Optional[List[RepoAccessControlRequest]]]) -> RepoPermissions

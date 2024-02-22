@@ -73,7 +73,7 @@
         :param name: str
           Name of the recipient.
         
-        
+        :returns: :class:`DeleteResponse`
         
 
     .. py:method:: get(name: str) -> RecipientInfo
@@ -243,5 +243,5 @@
           specified properties will override the existing properties. To add and remove properties, one would
           need to perform a read-modify-write.
         
-        
+        :returns: :class:`UpdateResponse`
         

@@ -81,7 +81,7 @@
         :param ip_access_list_id: str
           The ID for the corresponding IP access list
         
-        
+        :returns: :class:`DeleteResponse`
         
 
     .. py:method:: get(ip_access_list_id: str) -> GetIpAccessListResponse
@@ -189,7 +189,7 @@
           Specifies whether this IP access list is enabled.
         :param ip_addresses: List[str] (optional)
         
-        
+        :returns: :class:`ReplaceResponse`
         
 
     .. py:method:: update(ip_access_list_id: str [, enabled: Optional[bool], ip_addresses: Optional[List[str]], label: Optional[str], list_type: Optional[ListType]])
@@ -223,5 +223,5 @@
           * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
           range. IP addresses in the block list are excluded even if they are included in an allow list.
         
-        
+        :returns: :class:`UpdateResponse`
         

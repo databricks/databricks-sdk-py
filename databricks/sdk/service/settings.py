@@ -628,6 +628,11 @@ class DeleteDefaultNamespaceSettingResponse:
 
 
 @dataclass
+class DeleteNetworkConnectivityConfigurationResponse:
+    pass
+
+
+@dataclass
 class DeletePersonalComputeSettingResponse:
     """The etag is returned."""
 
@@ -649,6 +654,11 @@ class DeletePersonalComputeSettingResponse:
     def from_dict(cls, d: Dict[str, any]) -> DeletePersonalComputeSettingResponse:
         """Deserializes the DeletePersonalComputeSettingResponse from a dictionary."""
         return cls(etag=d.get('etag', None))
+
+
+@dataclass
+class DeleteResponse:
+    pass
 
 
 @dataclass
@@ -1551,6 +1561,11 @@ class ReplaceIpAccessList:
 
 
 @dataclass
+class ReplaceResponse:
+    pass
+
+
+@dataclass
 class RestrictWorkspaceAdminsMessage:
     status: RestrictWorkspaceAdminsMessageStatus
 
@@ -1624,6 +1639,16 @@ class RevokeTokenRequest:
     def from_dict(cls, d: Dict[str, any]) -> RevokeTokenRequest:
         """Deserializes the RevokeTokenRequest from a dictionary."""
         return cls(token_id=d.get('token_id', None))
+
+
+@dataclass
+class RevokeTokenResponse:
+    pass
+
+
+@dataclass
+class SetStatusResponse:
+    pass
 
 
 @dataclass
@@ -2120,6 +2145,11 @@ class UpdatePersonalComputeSettingRequest:
 
 
 @dataclass
+class UpdateResponse:
+    pass
+
+
+@dataclass
 class UpdateRestrictWorkspaceAdminsSettingRequest:
     """Details required to update a setting."""
 
@@ -2150,36 +2180,6 @@ class UpdateRestrictWorkspaceAdminsSettingRequest:
 
 
 WorkspaceConf = Dict[str, str]
-
-
-@dataclass
-class DeleteNetworkConnectivityConfigurationResponse:
-    pass
-
-
-@dataclass
-class DeleteResponse:
-    pass
-
-
-@dataclass
-class ReplaceResponse:
-    pass
-
-
-@dataclass
-class RevokeTokenResponse:
-    pass
-
-
-@dataclass
-class SetStatusResponse:
-    pass
-
-
-@dataclass
-class UpdateResponse:
-    pass
 
 
 class AccountIpAccessListsAPI:
@@ -2257,7 +2257,7 @@ class AccountIpAccessListsAPI:
         :param ip_access_list_id: str
           The ID for the corresponding IP access list
         
-        
+        :returns: :class:`DeleteResponse`
         """
 
         headers = {'Accept': 'application/json', }
@@ -2332,7 +2332,7 @@ class AccountIpAccessListsAPI:
           Specifies whether this IP access list is enabled.
         :param ip_addresses: List[str] (optional)
         
-        
+        :returns: :class:`ReplaceResponse`
         """
         body = {}
         if enabled is not None: body['enabled'] = enabled
@@ -2382,7 +2382,7 @@ class AccountIpAccessListsAPI:
           * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
           range. IP addresses in the block list are excluded even if they are included in an allow list.
         
-        
+        :returns: :class:`UpdateResponse`
         """
         body = {}
         if enabled is not None: body['enabled'] = enabled
@@ -2715,7 +2715,7 @@ class IpAccessListsAPI:
         :param ip_access_list_id: str
           The ID for the corresponding IP access list
         
-        
+        :returns: :class:`DeleteResponse`
         """
 
         headers = {'Accept': 'application/json', }
@@ -2785,7 +2785,7 @@ class IpAccessListsAPI:
           Specifies whether this IP access list is enabled.
         :param ip_addresses: List[str] (optional)
         
-        
+        :returns: :class:`ReplaceResponse`
         """
         body = {}
         if enabled is not None: body['enabled'] = enabled
@@ -2833,7 +2833,7 @@ class IpAccessListsAPI:
           * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
           range. IP addresses in the block list are excluded even if they are included in an allow list.
         
-        
+        :returns: :class:`UpdateResponse`
         """
         body = {}
         if enabled is not None: body['enabled'] = enabled
@@ -2939,7 +2939,7 @@ class NetworkConnectivityAPI:
         :param network_connectivity_config_id: str
           Your Network Connectvity Configuration ID.
         
-        
+        :returns: :class:`DeleteNetworkConnectivityConfigurationResponse`
         """
 
         headers = {'Accept': 'application/json', }
@@ -3498,7 +3498,7 @@ class TokenManagementAPI:
         :param token_id: str
           The ID of the token to get.
         
-        
+        :returns: :class:`DeleteResponse`
         """
 
         headers = {'Accept': 'application/json', }
@@ -3659,7 +3659,7 @@ class TokensAPI:
         :param token_id: str
           The ID of the token to be revoked.
         
-        
+        :returns: :class:`RevokeTokenResponse`
         """
         body = {}
         if token_id is not None: body['token_id'] = token_id
@@ -3711,7 +3711,7 @@ class WorkspaceConfAPI:
         Sets the configuration status for a workspace, including enabling or disabling it.
         
         
-        
+        :returns: :class:`SetStatusResponse`
         """
 
         headers = {'Content-Type': 'application/json', }

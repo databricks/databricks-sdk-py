@@ -195,6 +195,11 @@ class DataPlaneId:
 
 
 @dataclass
+class DeletePipelineResponse:
+    pass
+
+
+@dataclass
 class EditPipeline:
     allow_duplicate_names: Optional[bool] = None
     """If false, deployment will fail if name has changed and conflicts the name of another pipeline."""
@@ -311,6 +316,11 @@ class EditPipeline:
                    storage=d.get('storage', None),
                    target=d.get('target', None),
                    trigger=_from_dict(d, 'trigger', PipelineTrigger))
+
+
+@dataclass
+class EditPipelineResponse:
+    pass
 
 
 @dataclass
@@ -564,6 +574,11 @@ class ListUpdatesResponse:
         return cls(next_page_token=d.get('next_page_token', None),
                    prev_page_token=d.get('prev_page_token', None),
                    updates=_repeated_dict(d, 'updates', UpdateInfo))
+
+
+@dataclass
+class ManualTrigger:
+    pass
 
 
 class MaturityLevel(Enum):
@@ -1504,6 +1519,11 @@ class StartUpdateResponse:
 
 
 @dataclass
+class StopPipelineResponse:
+    pass
+
+
+@dataclass
 class UpdateInfo:
     cause: Optional[UpdateInfoCause] = None
     """What triggered this update."""
@@ -1641,26 +1661,6 @@ class UpdateStateInfoState(Enum):
     SETTING_UP_TABLES = 'SETTING_UP_TABLES'
     STOPPING = 'STOPPING'
     WAITING_FOR_RESOURCES = 'WAITING_FOR_RESOURCES'
-
-
-@dataclass
-class DeletePipelineResponse:
-    pass
-
-
-@dataclass
-class EditPipelineResponse:
-    pass
-
-
-@dataclass
-class ManualTrigger:
-    pass
-
-
-@dataclass
-class StopPipelineResponse:
-    pass
 
 
 class PipelinesAPI:
@@ -1841,7 +1841,7 @@ class PipelinesAPI:
         
         :param pipeline_id: str
         
-        
+        :returns: :class:`DeletePipelineResponse`
         """
 
         headers = {'Accept': 'application/json', }
@@ -2126,8 +2126,10 @@ class PipelinesAPI:
 
         headers = {'Accept': 'application/json', }
 
-        self._api.do('POST', f'/api/2.0/pipelines/{pipeline_id}/stop', headers=headers)
-        return Wait(self.wait_get_pipeline_idle, pipeline_id=pipeline_id)
+        op_response = self._api.do('POST', f'/api/2.0/pipelines/{pipeline_id}/stop', headers=headers)
+        return Wait(self.wait_get_pipeline_idle,
+                    response=StopPipelineResponse.from_dict(op_response),
+                    pipeline_id=pipeline_id)
 
     def stop_and_wait(self, pipeline_id: str, timeout=timedelta(minutes=20)) -> GetPipelineResponse:
         return self.stop(pipeline_id=pipeline_id).result(timeout=timeout)
@@ -2203,7 +2205,7 @@ class PipelinesAPI:
         :param trigger: :class:`PipelineTrigger` (optional)
           Which pipeline trigger to use. Deprecated: Use `continuous` instead.
         
-        
+        :returns: :class:`EditPipelineResponse`
         """
         body = {}
         if allow_duplicate_names is not None: body['allow_duplicate_names'] = allow_duplicate_names

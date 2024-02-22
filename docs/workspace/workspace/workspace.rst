@@ -27,7 +27,7 @@
           note this deleting directory is not atomic. If it fails in the middle, some of objects under this
           directory may be deleted and cannot be undone.
         
-        
+        :returns: :class:`DeleteResponse`
         
 
     .. py:method:: download(path: str [, format: ExportFormat]) -> BinaryIO
@@ -223,7 +223,7 @@
           The flag that specifies whether to overwrite existing object. It is `false` by default. For `DBC`
           format, `overwrite` is not supported since it may contain a directory.
         
-        
+        :returns: :class:`ImportResponse`
         
 
     .. py:method:: list(path: str [, notebooks_modified_after: int, recursive: bool = False]) -> ObjectInfo
@@ -265,7 +265,7 @@
           The absolute path of the directory. If the parent directories do not exist, it will also create
           them. If the directory already exists, this command will do nothing and succeed.
         
-        
+        :returns: :class:`MkdirsResponse`
         
 
     .. py:method:: set_permissions(workspace_object_type: str, workspace_object_id: str [, access_control_list: Optional[List[WorkspaceObjectAccessControlRequest]]]) -> WorkspaceObjectPermissions

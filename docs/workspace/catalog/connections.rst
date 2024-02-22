@@ -74,7 +74,7 @@
         :param name: str
           The name of the connection to be deleted.
         
-        
+        :returns: :class:`DeleteResponse`
         
 
     .. py:method:: get(name: str) -> ConnectionInfo

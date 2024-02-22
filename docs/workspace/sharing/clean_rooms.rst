@@ -35,7 +35,7 @@
         :param name: str
           The name of the clean room.
         
-        
+        :returns: :class:`DeleteResponse`
         
 
     .. py:method:: get(name: str [, include_remote_details: Optional[bool]]) -> CleanRoomInfo

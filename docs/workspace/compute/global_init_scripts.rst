@@ -67,7 +67,7 @@
         :param script_id: str
           The ID of the global init script.
         
-        
+        :returns: :class:`DeleteResponse`
         
 
     .. py:method:: get(script_id: str) -> GlobalInitScriptDetailsWithContent
@@ -176,5 +176,5 @@
           If an explicit position value conflicts with an existing script, your request succeeds, but the
           original script at that position and all later scripts have their positions incremented by 1.
         
-        
+        :returns: :class:`UpdateResponse`
         

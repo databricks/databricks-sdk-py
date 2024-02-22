@@ -32,7 +32,7 @@
         :param id: str
           Widget ID returned by :method:dashboardwidgets/create
         
-        
+        :returns: :class:`DeleteResponse`
         
 
     .. py:method:: update(id: str, dashboard_id: str, options: WidgetOptions, width: int [, text: Optional[str], visualization_id: Optional[str]]) -> Widget

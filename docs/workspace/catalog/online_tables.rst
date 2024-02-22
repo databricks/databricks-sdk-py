@@ -31,7 +31,7 @@
         :param name: str
           Full three-part (catalog, schema, table) name of the table.
         
-        
+        :returns: :class:`DeleteResponse`
         
 
     .. py:method:: get(name: str) -> OnlineTable

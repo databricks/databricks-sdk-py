@@ -19,7 +19,7 @@
         :param principal_id: int
           The ID of the user, service principal, or group.
         
-        
+        :returns: :class:`DeleteWorkspaceAssignments`
         
 
     .. py:method:: get(workspace_id: int) -> WorkspacePermissions
@@ -98,5 +98,5 @@
         :param permissions: List[:class:`WorkspacePermission`]
           Array of permissions assignments to update on the workspace.
         
-        
+        :returns: :class:`WorkspaceAssignmentsUpdated`
         

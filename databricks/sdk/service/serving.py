@@ -450,6 +450,11 @@ class DeleteAppResponse:
 
 
 @dataclass
+class DeleteResponse:
+    pass
+
+
+@dataclass
 class DeployAppRequest:
     manifest: AppManifest
     """Manifest that specifies the application requirements"""
@@ -749,6 +754,11 @@ class EndpointTag:
     def from_dict(cls, d: Dict[str, any]) -> EndpointTag:
         """Deserializes the EndpointTag from a dictionary."""
         return cls(key=d.get('key', None), value=d.get('value', None))
+
+
+@dataclass
+class ExportMetricsResponse:
+    pass
 
 
 @dataclass
@@ -2248,16 +2258,6 @@ class V1ResponseChoiceElement:
                    text=d.get('text', None))
 
 
-@dataclass
-class DeleteResponse:
-    pass
-
-
-@dataclass
-class ExportMetricsResponse:
-    pass
-
-
 class AppsAPI:
     """Lakehouse Apps run directly on a customer’s Databricks instance, integrate with their data, use and
     extend Databricks services, and enable users to interact through single sign-on."""
@@ -2492,7 +2492,7 @@ class ServingEndpointsAPI:
         :param name: str
           The name of the serving endpoint. This field is required.
         
-        
+        :returns: :class:`DeleteResponse`
         """
 
         headers = {'Accept': 'application/json', }
@@ -2508,7 +2508,7 @@ class ServingEndpointsAPI:
         :param name: str
           The name of the serving endpoint to retrieve metrics for. This field is required.
         
-        
+        :returns: :class:`ExportMetricsResponse`
         """
 
         headers = {}

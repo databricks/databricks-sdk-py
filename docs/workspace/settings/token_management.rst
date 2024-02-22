@@ -55,7 +55,7 @@
         :param token_id: str
           The ID of the token to get.
         
-        
+        :returns: :class:`DeleteResponse`
         
 
     .. py:method:: get(token_id: str) -> GetTokenResponse

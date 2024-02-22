@@ -65,7 +65,7 @@
         :param job_id: int (optional)
           The canonical identifier of the job to cancel all runs of.
         
-        
+        :returns: :class:`CancelAllRunsResponse`
         
 
     .. py:method:: cancel_run(run_id: int) -> Wait[Run]
@@ -251,7 +251,7 @@
         :param job_id: int
           The canonical identifier of the job to delete. This field is required.
         
-        
+        :returns: :class:`DeleteResponse`
         
 
     .. py:method:: delete_run(run_id: int)
@@ -263,7 +263,7 @@
         :param run_id: int
           The canonical identifier of the run for which to retrieve the metadata.
         
-        
+        :returns: :class:`DeleteRunResponse`
         
 
     .. py:method:: export_run(run_id: int [, views_to_export: Optional[ViewsToExport]]) -> ExportRunOutput
@@ -787,7 +787,7 @@
           Changes to the field `JobBaseSettings.timeout_seconds` are applied to active runs. Changes to other
           fields are applied to future runs only.
         
-        
+        :returns: :class:`ResetResponse`
         
 
     .. py:method:: run_now(job_id: int [, dbt_commands: Optional[List[str]], idempotency_token: Optional[str], jar_params: Optional[List[str]], job_parameters: Optional[Dict[str, str]], notebook_params: Optional[Dict[str, str]], pipeline_params: Optional[PipelineParams], python_named_params: Optional[Dict[str, str]], python_params: Optional[List[str]], queue: Optional[QueueSettings], spark_submit_params: Optional[List[str]], sql_params: Optional[Dict[str, str]]]) -> Wait[Run]
@@ -1079,7 +1079,7 @@
           Changes to the field `JobSettings.timeout_seconds` are applied to active runs. Changes to other
           fields are applied to future runs only.
         
-        
+        :returns: :class:`UpdateResponse`
         
 
     .. py:method:: update_permissions(job_id: str [, access_control_list: Optional[List[JobAccessControlRequest]]]) -> JobPermissions

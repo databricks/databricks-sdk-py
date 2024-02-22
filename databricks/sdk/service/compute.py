@@ -65,6 +65,11 @@ class AddInstanceProfile:
 
 
 @dataclass
+class AddResponse:
+    pass
+
+
+@dataclass
 class Adlsgen2Info:
     destination: str
     """abfss destination, e.g.
@@ -303,6 +308,11 @@ class CancelCommand:
 
 
 @dataclass
+class CancelResponse:
+    pass
+
+
+@dataclass
 class ChangeClusterOwner:
     cluster_id: str
     """<needs content added>"""
@@ -321,6 +331,11 @@ class ChangeClusterOwner:
     def from_dict(cls, d: Dict[str, any]) -> ChangeClusterOwner:
         """Deserializes the ChangeClusterOwner from a dictionary."""
         return cls(cluster_id=d.get('cluster_id', None), owner_username=d.get('owner_username', None))
+
+
+@dataclass
+class ChangeClusterOwnerResponse:
+    pass
 
 
 @dataclass
@@ -2264,6 +2279,11 @@ class DeleteCluster:
 
 
 @dataclass
+class DeleteClusterResponse:
+    pass
+
+
+@dataclass
 class DeleteInstancePool:
     instance_pool_id: str
     """The instance pool to be terminated."""
@@ -2278,6 +2298,11 @@ class DeleteInstancePool:
     def from_dict(cls, d: Dict[str, any]) -> DeleteInstancePool:
         """Deserializes the DeleteInstancePool from a dictionary."""
         return cls(instance_pool_id=d.get('instance_pool_id', None))
+
+
+@dataclass
+class DeleteInstancePoolResponse:
+    pass
 
 
 @dataclass
@@ -2298,6 +2323,16 @@ class DeletePolicy:
 
 
 @dataclass
+class DeletePolicyResponse:
+    pass
+
+
+@dataclass
+class DeleteResponse:
+    pass
+
+
+@dataclass
 class DestroyContext:
     cluster_id: str
 
@@ -2314,6 +2349,11 @@ class DestroyContext:
     def from_dict(cls, d: Dict[str, any]) -> DestroyContext:
         """Deserializes the DestroyContext from a dictionary."""
         return cls(cluster_id=d.get('clusterId', None), context_id=d.get('contextId', None))
+
+
+@dataclass
+class DestroyResponse:
+    pass
 
 
 @dataclass
@@ -2671,6 +2711,11 @@ class EditCluster:
 
 
 @dataclass
+class EditClusterResponse:
+    pass
+
+
+@dataclass
 class EditInstancePool:
     instance_pool_id: str
     """Instance pool ID"""
@@ -2729,6 +2774,11 @@ class EditInstancePool:
                    max_capacity=d.get('max_capacity', None),
                    min_idle_instances=d.get('min_idle_instances', None),
                    node_type_id=d.get('node_type_id', None))
+
+
+@dataclass
+class EditInstancePoolResponse:
+    pass
 
 
 @dataclass
@@ -2797,6 +2847,16 @@ class EditPolicy:
                    policy_family_definition_overrides=d.get('policy_family_definition_overrides', None),
                    policy_family_id=d.get('policy_family_id', None),
                    policy_id=d.get('policy_id', None))
+
+
+@dataclass
+class EditPolicyResponse:
+    pass
+
+
+@dataclass
+class EditResponse:
+    pass
 
 
 @dataclass
@@ -3684,6 +3744,11 @@ class InstallLibraries:
     def from_dict(cls, d: Dict[str, any]) -> InstallLibraries:
         """Deserializes the InstallLibraries from a dictionary."""
         return cls(cluster_id=d.get('cluster_id', None), libraries=_repeated_dict(d, 'libraries', Library))
+
+
+@dataclass
+class InstallLibrariesResponse:
+    pass
 
 
 @dataclass
@@ -4764,6 +4829,11 @@ class PermanentDeleteCluster:
 
 
 @dataclass
+class PermanentDeleteClusterResponse:
+    pass
+
+
+@dataclass
 class PinCluster:
     cluster_id: str
     """<needs content added>"""
@@ -4778,6 +4848,11 @@ class PinCluster:
     def from_dict(cls, d: Dict[str, any]) -> PinCluster:
         """Deserializes the PinCluster from a dictionary."""
         return cls(cluster_id=d.get('cluster_id', None))
+
+
+@dataclass
+class PinClusterResponse:
+    pass
 
 
 @dataclass
@@ -4956,6 +5031,11 @@ class RemoveInstanceProfile:
 
 
 @dataclass
+class RemoveResponse:
+    pass
+
+
+@dataclass
 class ResizeCluster:
     cluster_id: str
     """The cluster to be resized."""
@@ -4991,6 +5071,11 @@ class ResizeCluster:
 
 
 @dataclass
+class ResizeClusterResponse:
+    pass
+
+
+@dataclass
 class RestartCluster:
     cluster_id: str
     """The cluster to be started."""
@@ -5009,6 +5094,11 @@ class RestartCluster:
     def from_dict(cls, d: Dict[str, any]) -> RestartCluster:
         """Deserializes the RestartCluster from a dictionary."""
         return cls(cluster_id=d.get('cluster_id', None), restart_user=d.get('restart_user', None))
+
+
+@dataclass
+class RestartClusterResponse:
+    pass
 
 
 class ResultType(Enum):
@@ -5261,6 +5351,11 @@ class StartCluster:
         return cls(cluster_id=d.get('cluster_id', None))
 
 
+@dataclass
+class StartClusterResponse:
+    pass
+
+
 class State(Enum):
     """Current state of the cluster."""
 
@@ -5416,6 +5511,11 @@ class UninstallLibraries:
 
 
 @dataclass
+class UninstallLibrariesResponse:
+    pass
+
+
+@dataclass
 class UnpinCluster:
     cluster_id: str
     """<needs content added>"""
@@ -5430,6 +5530,16 @@ class UnpinCluster:
     def from_dict(cls, d: Dict[str, any]) -> UnpinCluster:
         """Deserializes the UnpinCluster from a dictionary."""
         return cls(cluster_id=d.get('cluster_id', None))
+
+
+@dataclass
+class UnpinClusterResponse:
+    pass
+
+
+@dataclass
+class UpdateResponse:
+    pass
 
 
 @dataclass
@@ -5481,116 +5591,6 @@ class WorkspaceStorageInfo:
     def from_dict(cls, d: Dict[str, any]) -> WorkspaceStorageInfo:
         """Deserializes the WorkspaceStorageInfo from a dictionary."""
         return cls(destination=d.get('destination', None))
-
-
-@dataclass
-class AddResponse:
-    pass
-
-
-@dataclass
-class CancelResponse:
-    pass
-
-
-@dataclass
-class ChangeClusterOwnerResponse:
-    pass
-
-
-@dataclass
-class DeleteClusterResponse:
-    pass
-
-
-@dataclass
-class DeleteInstancePoolResponse:
-    pass
-
-
-@dataclass
-class DeletePolicyResponse:
-    pass
-
-
-@dataclass
-class DeleteResponse:
-    pass
-
-
-@dataclass
-class DestroyResponse:
-    pass
-
-
-@dataclass
-class EditClusterResponse:
-    pass
-
-
-@dataclass
-class EditInstancePoolResponse:
-    pass
-
-
-@dataclass
-class EditPolicyResponse:
-    pass
-
-
-@dataclass
-class EditResponse:
-    pass
-
-
-@dataclass
-class InstallLibrariesResponse:
-    pass
-
-
-@dataclass
-class PermanentDeleteClusterResponse:
-    pass
-
-
-@dataclass
-class PinClusterResponse:
-    pass
-
-
-@dataclass
-class RemoveResponse:
-    pass
-
-
-@dataclass
-class ResizeClusterResponse:
-    pass
-
-
-@dataclass
-class RestartClusterResponse:
-    pass
-
-
-@dataclass
-class StartClusterResponse:
-    pass
-
-
-@dataclass
-class UninstallLibrariesResponse:
-    pass
-
-
-@dataclass
-class UnpinClusterResponse:
-    pass
-
-
-@dataclass
-class UpdateResponse:
-    pass
 
 
 class ClusterPoliciesAPI:
@@ -5682,7 +5682,7 @@ class ClusterPoliciesAPI:
         :param policy_id: str
           The ID of the policy to delete.
         
-        
+        :returns: :class:`DeletePolicyResponse`
         """
         body = {}
         if policy_id is not None: body['policy_id'] = policy_id
@@ -5737,7 +5737,7 @@ class ClusterPoliciesAPI:
           Cannot be used with `definition`. Use `policy_family_definition_overrides` instead to customize the
           policy definition.
         
-        
+        :returns: :class:`EditPolicyResponse`
         """
         body = {}
         if definition is not None: body['definition'] = definition
@@ -5991,7 +5991,7 @@ class ClustersAPI:
         :param owner_username: str
           New owner of the cluster_id after this RPC.
         
-        
+        :returns: :class:`ChangeClusterOwnerResponse`
         """
         body = {}
         if cluster_id is not None: body['cluster_id'] = cluster_id
@@ -6274,8 +6274,10 @@ class ClustersAPI:
         if cluster_id is not None: body['cluster_id'] = cluster_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        self._api.do('POST', '/api/2.0/clusters/delete', body=body, headers=headers)
-        return Wait(self.wait_get_cluster_terminated, cluster_id=cluster_id)
+        op_response = self._api.do('POST', '/api/2.0/clusters/delete', body=body, headers=headers)
+        return Wait(self.wait_get_cluster_terminated,
+                    response=DeleteClusterResponse.from_dict(op_response),
+                    cluster_id=cluster_id)
 
     def delete_and_wait(self, cluster_id: str, timeout=timedelta(minutes=20)) -> ClusterDetails:
         return self.delete(cluster_id=cluster_id).result(timeout=timeout)
@@ -6479,8 +6481,10 @@ class ClustersAPI:
         if workload_type is not None: body['workload_type'] = workload_type.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        self._api.do('POST', '/api/2.0/clusters/edit', body=body, headers=headers)
-        return Wait(self.wait_get_cluster_running, cluster_id=cluster_id)
+        op_response = self._api.do('POST', '/api/2.0/clusters/edit', body=body, headers=headers)
+        return Wait(self.wait_get_cluster_running,
+                    response=EditClusterResponse.from_dict(op_response),
+                    cluster_id=cluster_id)
 
     def edit_and_wait(
         self,
@@ -6718,7 +6722,7 @@ class ClustersAPI:
         :param cluster_id: str
           The cluster to be deleted.
         
-        
+        :returns: :class:`PermanentDeleteClusterResponse`
         """
         body = {}
         if cluster_id is not None: body['cluster_id'] = cluster_id
@@ -6735,7 +6739,7 @@ class ClustersAPI:
         :param cluster_id: str
           <needs content added>
         
-        
+        :returns: :class:`PinClusterResponse`
         """
         body = {}
         if cluster_id is not None: body['cluster_id'] = cluster_id
@@ -6778,8 +6782,10 @@ class ClustersAPI:
         if num_workers is not None: body['num_workers'] = num_workers
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        self._api.do('POST', '/api/2.0/clusters/resize', body=body, headers=headers)
-        return Wait(self.wait_get_cluster_running, cluster_id=cluster_id)
+        op_response = self._api.do('POST', '/api/2.0/clusters/resize', body=body, headers=headers)
+        return Wait(self.wait_get_cluster_running,
+                    response=ResizeClusterResponse.from_dict(op_response),
+                    cluster_id=cluster_id)
 
     def resize_and_wait(self,
                         cluster_id: str,
@@ -6810,8 +6816,10 @@ class ClustersAPI:
         if restart_user is not None: body['restart_user'] = restart_user
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        self._api.do('POST', '/api/2.0/clusters/restart', body=body, headers=headers)
-        return Wait(self.wait_get_cluster_running, cluster_id=cluster_id)
+        op_response = self._api.do('POST', '/api/2.0/clusters/restart', body=body, headers=headers)
+        return Wait(self.wait_get_cluster_running,
+                    response=RestartClusterResponse.from_dict(op_response),
+                    cluster_id=cluster_id)
 
     def restart_and_wait(self,
                          cluster_id: str,
@@ -6877,8 +6885,10 @@ class ClustersAPI:
         if cluster_id is not None: body['cluster_id'] = cluster_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        self._api.do('POST', '/api/2.0/clusters/start', body=body, headers=headers)
-        return Wait(self.wait_get_cluster_running, cluster_id=cluster_id)
+        op_response = self._api.do('POST', '/api/2.0/clusters/start', body=body, headers=headers)
+        return Wait(self.wait_get_cluster_running,
+                    response=StartClusterResponse.from_dict(op_response),
+                    cluster_id=cluster_id)
 
     def start_and_wait(self, cluster_id: str, timeout=timedelta(minutes=20)) -> ClusterDetails:
         return self.start(cluster_id=cluster_id).result(timeout=timeout)
@@ -6893,7 +6903,7 @@ class ClustersAPI:
         :param cluster_id: str
           <needs content added>
         
-        
+        :returns: :class:`UnpinClusterResponse`
         """
         body = {}
         if cluster_id is not None: body['cluster_id'] = cluster_id
@@ -7056,8 +7066,9 @@ class CommandExecutionAPI:
         if context_id is not None: body['contextId'] = context_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        self._api.do('POST', '/api/1.2/commands/cancel', body=body, headers=headers)
+        op_response = self._api.do('POST', '/api/1.2/commands/cancel', body=body, headers=headers)
         return Wait(self.wait_command_status_command_execution_cancelled,
+                    response=CancelResponse.from_dict(op_response),
                     cluster_id=cluster_id,
                     command_id=command_id,
                     context_id=context_id)
@@ -7159,7 +7170,7 @@ class CommandExecutionAPI:
         :param cluster_id: str
         :param context_id: str
         
-        
+        :returns: :class:`DestroyResponse`
         """
         body = {}
         if cluster_id is not None: body['clusterId'] = cluster_id
@@ -7277,7 +7288,7 @@ class GlobalInitScriptsAPI:
         :param script_id: str
           The ID of the global init script.
         
-        
+        :returns: :class:`DeleteResponse`
         """
 
         headers = {}
@@ -7347,7 +7358,7 @@ class GlobalInitScriptsAPI:
           If an explicit position value conflicts with an existing script, your request succeeds, but the
           original script at that position and all later scripts have their positions incremented by 1.
         
-        
+        :returns: :class:`UpdateResponse`
         """
         body = {}
         if enabled is not None: body['enabled'] = enabled
@@ -7476,7 +7487,7 @@ class InstancePoolsAPI:
         :param instance_pool_id: str
           The instance pool to be terminated.
         
-        
+        :returns: :class:`DeleteInstancePoolResponse`
         """
         body = {}
         if instance_pool_id is not None: body['instance_pool_id'] = instance_pool_id
@@ -7525,7 +7536,7 @@ class InstancePoolsAPI:
         :param min_idle_instances: int (optional)
           Minimum number of idle instances to keep in the instance pool
         
-        
+        :returns: :class:`EditInstancePoolResponse`
         """
         body = {}
         if custom_tags is not None: body['custom_tags'] = custom_tags
@@ -7706,7 +7717,7 @@ class InstanceProfilesAPI:
           requested instance type is not supported in your requested availability zone”), you can pass this
           flag to skip the validation and forcibly add the instance profile.
         
-        
+        :returns: :class:`AddResponse`
         """
         body = {}
         if iam_role_arn is not None: body['iam_role_arn'] = iam_role_arn
@@ -7753,7 +7764,7 @@ class InstanceProfilesAPI:
           wide range of roles. Therefore it should always be used with authorization. This field is optional,
           the default value is `false`.
         
-        
+        :returns: :class:`EditResponse`
         """
         body = {}
         if iam_role_arn is not None: body['iam_role_arn'] = iam_role_arn
@@ -7790,7 +7801,7 @@ class InstanceProfilesAPI:
         :param instance_profile_arn: str
           The ARN of the instance profile to remove. This field is required.
         
-        
+        :returns: :class:`RemoveResponse`
         """
         body = {}
         if instance_profile_arn is not None: body['instance_profile_arn'] = instance_profile_arn
@@ -7879,7 +7890,7 @@ class LibrariesAPI:
         :param libraries: List[:class:`Library`]
           The libraries to install.
         
-        
+        :returns: :class:`InstallLibrariesResponse`
         """
         body = {}
         if cluster_id is not None: body['cluster_id'] = cluster_id
@@ -7900,7 +7911,7 @@ class LibrariesAPI:
         :param libraries: List[:class:`Library`]
           The libraries to uninstall.
         
-        
+        :returns: :class:`UninstallLibrariesResponse`
         """
         body = {}
         if cluster_id is not None: body['cluster_id'] = cluster_id

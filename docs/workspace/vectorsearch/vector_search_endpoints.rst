@@ -34,7 +34,7 @@
         :param name: str
           Name of the endpoint to delete
         
-        
+        :returns: :class:`DeleteEndpointResponse`
         
 
     .. py:method:: get_endpoint(endpoint_name: str) -> EndpointInfo

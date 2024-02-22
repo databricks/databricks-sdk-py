@@ -51,7 +51,7 @@
         :param scope_backend_type: :class:`ScopeBackendType` (optional)
           The backend type the scope will be created with. If not specified, will default to `DATABRICKS`
         
-        
+        :returns: :class:`CreateScopeResponse`
         
 
     .. py:method:: delete_acl(scope: str, principal: str)
@@ -69,7 +69,7 @@
         :param principal: str
           The principal to remove an existing ACL from.
         
-        
+        :returns: :class:`DeleteAclResponse`
         
 
     .. py:method:: delete_scope(scope: str)
@@ -84,7 +84,7 @@
         :param scope: str
           Name of the scope to delete.
         
-        
+        :returns: :class:`DeleteScopeResponse`
         
 
     .. py:method:: delete_secret(scope: str, key: str)
@@ -102,7 +102,7 @@
         :param key: str
           Name of the secret to delete.
         
-        
+        :returns: :class:`DeleteSecretResponse`
         
 
     .. py:method:: get_acl(scope: str, principal: str) -> AclItem
@@ -308,7 +308,7 @@
         :param permission: :class:`AclPermission`
           The permission level applied to the principal.
         
-        
+        :returns: :class:`PutAclResponse`
         
 
     .. py:method:: put_secret(scope: str, key: str [, bytes_value: Optional[str], string_value: Optional[str]])
@@ -363,5 +363,5 @@
         :param string_value: str (optional)
           If specified, note that the value will be stored in UTF-8 (MB4) form.
         
-        
+        :returns: :class:`PutSecretResponse`
         

@@ -70,7 +70,7 @@
         :param full_name: str
           The three-level (fully qualified) name of the registered model
         
-        
+        :returns: :class:`DeleteResponse`
         
 
     .. py:method:: delete_alias(full_name: str, alias: str)
@@ -88,7 +88,7 @@
         :param alias: str
           The name of the alias
         
-        
+        :returns: :class:`DeleteAliasResponse`
         
 
     .. py:method:: get(full_name: str) -> RegisteredModelInfo

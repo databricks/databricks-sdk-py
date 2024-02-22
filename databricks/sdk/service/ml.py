@@ -717,6 +717,11 @@ class DatasetInput:
 
 
 @dataclass
+class DeleteCommentResponse:
+    pass
+
+
+@dataclass
 class DeleteExperiment:
     experiment_id: str
     """ID of the associated experiment."""
@@ -734,6 +739,31 @@ class DeleteExperiment:
 
 
 @dataclass
+class DeleteExperimentResponse:
+    pass
+
+
+@dataclass
+class DeleteModelResponse:
+    pass
+
+
+@dataclass
+class DeleteModelTagResponse:
+    pass
+
+
+@dataclass
+class DeleteModelVersionResponse:
+    pass
+
+
+@dataclass
+class DeleteModelVersionTagResponse:
+    pass
+
+
+@dataclass
 class DeleteRun:
     run_id: str
     """ID of the run to delete."""
@@ -748,6 +778,11 @@ class DeleteRun:
     def from_dict(cls, d: Dict[str, any]) -> DeleteRun:
         """Deserializes the DeleteRun from a dictionary."""
         return cls(run_id=d.get('run_id', None))
+
+
+@dataclass
+class DeleteRunResponse:
+    pass
 
 
 @dataclass
@@ -817,12 +852,27 @@ class DeleteTag:
         return cls(key=d.get('key', None), run_id=d.get('run_id', None))
 
 
+@dataclass
+class DeleteTagResponse:
+    pass
+
+
+@dataclass
+class DeleteTransitionRequestResponse:
+    pass
+
+
 class DeleteTransitionRequestStage(Enum):
 
     ARCHIVED = 'Archived'
     NONE = 'None'
     PRODUCTION = 'Production'
     STAGING = 'Staging'
+
+
+@dataclass
+class DeleteWebhookResponse:
+    pass
 
 
 @dataclass
@@ -1557,6 +1607,11 @@ class LogBatch:
 
 
 @dataclass
+class LogBatchResponse:
+    pass
+
+
+@dataclass
 class LogInputs:
     datasets: Optional[List[DatasetInput]] = None
     """Dataset inputs"""
@@ -1575,6 +1630,11 @@ class LogInputs:
     def from_dict(cls, d: Dict[str, any]) -> LogInputs:
         """Deserializes the LogInputs from a dictionary."""
         return cls(datasets=_repeated_dict(d, 'datasets', DatasetInput), run_id=d.get('run_id', None))
+
+
+@dataclass
+class LogInputsResponse:
+    pass
 
 
 @dataclass
@@ -1621,6 +1681,11 @@ class LogMetric:
 
 
 @dataclass
+class LogMetricResponse:
+    pass
+
+
+@dataclass
 class LogModel:
     model_json: Optional[str] = None
     """MLmodel file in json format."""
@@ -1639,6 +1704,11 @@ class LogModel:
     def from_dict(cls, d: Dict[str, any]) -> LogModel:
         """Deserializes the LogModel from a dictionary."""
         return cls(model_json=d.get('model_json', None), run_id=d.get('run_id', None))
+
+
+@dataclass
+class LogModelResponse:
+    pass
 
 
 @dataclass
@@ -1672,6 +1742,11 @@ class LogParam:
                    run_id=d.get('run_id', None),
                    run_uuid=d.get('run_uuid', None),
                    value=d.get('value', None))
+
+
+@dataclass
+class LogParamResponse:
+    pass
 
 
 @dataclass
@@ -2482,6 +2557,11 @@ class RestoreExperiment:
 
 
 @dataclass
+class RestoreExperimentResponse:
+    pass
+
+
+@dataclass
 class RestoreRun:
     run_id: str
     """ID of the run to restore."""
@@ -2496,6 +2576,11 @@ class RestoreRun:
     def from_dict(cls, d: Dict[str, any]) -> RestoreRun:
         """Deserializes the RestoreRun from a dictionary."""
         return cls(run_id=d.get('run_id', None))
+
+
+@dataclass
+class RestoreRunResponse:
+    pass
 
 
 @dataclass
@@ -2937,6 +3022,11 @@ class SetExperimentTag:
 
 
 @dataclass
+class SetExperimentTagResponse:
+    pass
+
+
+@dataclass
 class SetModelTagRequest:
     name: str
     """Unique name of the model."""
@@ -2962,6 +3052,11 @@ class SetModelTagRequest:
     def from_dict(cls, d: Dict[str, any]) -> SetModelTagRequest:
         """Deserializes the SetModelTagRequest from a dictionary."""
         return cls(key=d.get('key', None), name=d.get('name', None), value=d.get('value', None))
+
+
+@dataclass
+class SetModelTagResponse:
+    pass
 
 
 @dataclass
@@ -3000,6 +3095,11 @@ class SetModelVersionTagRequest:
 
 
 @dataclass
+class SetModelVersionTagResponse:
+    pass
+
+
+@dataclass
 class SetTag:
     key: str
     """Name of the tag. Maximum size depends on storage backend. All storage backends are guaranteed to
@@ -3032,6 +3132,11 @@ class SetTag:
                    run_id=d.get('run_id', None),
                    run_uuid=d.get('run_uuid', None),
                    value=d.get('value', None))
+
+
+@dataclass
+class SetTagResponse:
+    pass
 
 
 class Stage(Enum):
@@ -3295,6 +3400,11 @@ class UpdateExperiment:
 
 
 @dataclass
+class UpdateExperimentResponse:
+    pass
+
+
+@dataclass
 class UpdateModelRequest:
     name: str
     """Registered model unique name identifier."""
@@ -3313,6 +3423,11 @@ class UpdateModelRequest:
     def from_dict(cls, d: Dict[str, any]) -> UpdateModelRequest:
         """Deserializes the UpdateModelRequest from a dictionary."""
         return cls(description=d.get('description', None), name=d.get('name', None))
+
+
+@dataclass
+class UpdateModelResponse:
+    pass
 
 
 @dataclass
@@ -3340,6 +3455,11 @@ class UpdateModelVersionRequest:
         return cls(description=d.get('description', None),
                    name=d.get('name', None),
                    version=d.get('version', None))
+
+
+@dataclass
+class UpdateModelVersionResponse:
+    pass
 
 
 @dataclass
@@ -3476,126 +3596,6 @@ class UpdateRunStatus(Enum):
 
 
 @dataclass
-class DeleteCommentResponse:
-    pass
-
-
-@dataclass
-class DeleteExperimentResponse:
-    pass
-
-
-@dataclass
-class DeleteModelResponse:
-    pass
-
-
-@dataclass
-class DeleteModelTagResponse:
-    pass
-
-
-@dataclass
-class DeleteModelVersionResponse:
-    pass
-
-
-@dataclass
-class DeleteModelVersionTagResponse:
-    pass
-
-
-@dataclass
-class DeleteRunResponse:
-    pass
-
-
-@dataclass
-class DeleteTagResponse:
-    pass
-
-
-@dataclass
-class DeleteTransitionRequestResponse:
-    pass
-
-
-@dataclass
-class DeleteWebhookResponse:
-    pass
-
-
-@dataclass
-class LogBatchResponse:
-    pass
-
-
-@dataclass
-class LogInputsResponse:
-    pass
-
-
-@dataclass
-class LogMetricResponse:
-    pass
-
-
-@dataclass
-class LogModelResponse:
-    pass
-
-
-@dataclass
-class LogParamResponse:
-    pass
-
-
-@dataclass
-class RestoreExperimentResponse:
-    pass
-
-
-@dataclass
-class RestoreRunResponse:
-    pass
-
-
-@dataclass
-class SetExperimentTagResponse:
-    pass
-
-
-@dataclass
-class SetModelTagResponse:
-    pass
-
-
-@dataclass
-class SetModelVersionTagResponse:
-    pass
-
-
-@dataclass
-class SetTagResponse:
-    pass
-
-
-@dataclass
-class UpdateExperimentResponse:
-    pass
-
-
-@dataclass
-class UpdateModelResponse:
-    pass
-
-
-@dataclass
-class UpdateModelVersionResponse:
-    pass
-
-
-@dataclass
 class UpdateWebhookResponse:
     pass
 
@@ -3689,7 +3689,7 @@ class ExperimentsAPI:
         :param experiment_id: str
           ID of the associated experiment.
         
-        
+        :returns: :class:`DeleteExperimentResponse`
         """
         body = {}
         if experiment_id is not None: body['experiment_id'] = experiment_id
@@ -3705,7 +3705,7 @@ class ExperimentsAPI:
         :param run_id: str
           ID of the run to delete.
         
-        
+        :returns: :class:`DeleteRunResponse`
         """
         body = {}
         if run_id is not None: body['run_id'] = run_id
@@ -3755,7 +3755,7 @@ class ExperimentsAPI:
         :param key: str
           Name of the tag. Maximum size is 255 bytes. Must be provided.
         
-        
+        :returns: :class:`DeleteTagResponse`
         """
         body = {}
         if key is not None: body['key'] = key
@@ -4040,7 +4040,7 @@ class ExperimentsAPI:
           Tags to log. A single request can contain up to 100 tags, and up to 1000 metrics, params, and tags
           in total.
         
-        
+        :returns: :class:`LogBatchResponse`
         """
         body = {}
         if metrics is not None: body['metrics'] = [v.as_dict() for v in metrics]
@@ -4061,7 +4061,7 @@ class ExperimentsAPI:
         :param run_id: str (optional)
           ID of the run to log under
         
-        
+        :returns: :class:`LogInputsResponse`
         """
         body = {}
         if datasets is not None: body['datasets'] = [v.as_dict() for v in datasets]
@@ -4098,7 +4098,7 @@ class ExperimentsAPI:
         :param step: int (optional)
           Step at which to log the metric
         
-        
+        :returns: :class:`LogMetricResponse`
         """
         body = {}
         if key is not None: body['key'] = key
@@ -4121,7 +4121,7 @@ class ExperimentsAPI:
         :param run_id: str (optional)
           ID of the run to log under
         
-        
+        :returns: :class:`LogModelResponse`
         """
         body = {}
         if model_json is not None: body['model_json'] = model_json
@@ -4152,7 +4152,7 @@ class ExperimentsAPI:
           [Deprecated, use run_id instead] ID of the run under which to log the param. This field will be
           removed in a future MLflow version.
         
-        
+        :returns: :class:`LogParamResponse`
         """
         body = {}
         if key is not None: body['key'] = key
@@ -4175,7 +4175,7 @@ class ExperimentsAPI:
         :param experiment_id: str
           ID of the associated experiment.
         
-        
+        :returns: :class:`RestoreExperimentResponse`
         """
         body = {}
         if experiment_id is not None: body['experiment_id'] = experiment_id
@@ -4191,7 +4191,7 @@ class ExperimentsAPI:
         :param run_id: str
           ID of the run to restore.
         
-        
+        :returns: :class:`RestoreRunResponse`
         """
         body = {}
         if run_id is not None: body['run_id'] = run_id
@@ -4347,7 +4347,7 @@ class ExperimentsAPI:
           String value of the tag being logged. Maximum size depends on storage backend. All storage backends
           are guaranteed to support key values up to 5000 bytes in size.
         
-        
+        :returns: :class:`SetExperimentTagResponse`
         """
         body = {}
         if experiment_id is not None: body['experiment_id'] = experiment_id
@@ -4401,7 +4401,7 @@ class ExperimentsAPI:
           [Deprecated, use run_id instead] ID of the run under which to log the tag. This field will be
           removed in a future MLflow version.
         
-        
+        :returns: :class:`SetTagResponse`
         """
         body = {}
         if key is not None: body['key'] = key
@@ -4422,7 +4422,7 @@ class ExperimentsAPI:
         :param new_name: str (optional)
           If provided, the experiment's name is changed to the new name. The new name must be unique.
         
-        
+        :returns: :class:`UpdateExperimentResponse`
         """
         body = {}
         if experiment_id is not None: body['experiment_id'] = experiment_id
@@ -4759,7 +4759,7 @@ class ModelRegistryAPI:
         
         :param id: str
         
-        
+        :returns: :class:`DeleteCommentResponse`
         """
 
         query = {}
@@ -4776,7 +4776,7 @@ class ModelRegistryAPI:
         :param name: str
           Registered model unique name identifier.
         
-        
+        :returns: :class:`DeleteModelResponse`
         """
 
         query = {}
@@ -4796,7 +4796,7 @@ class ModelRegistryAPI:
           Name of the tag. The name must be an exact match; wild-card deletion is not supported. Maximum size
           is 250 bytes.
         
-        
+        :returns: :class:`DeleteModelTagResponse`
         """
 
         query = {}
@@ -4816,7 +4816,7 @@ class ModelRegistryAPI:
         :param version: str
           Model version number
         
-        
+        :returns: :class:`DeleteModelVersionResponse`
         """
 
         query = {}
@@ -4839,7 +4839,7 @@ class ModelRegistryAPI:
           Name of the tag. The name must be an exact match; wild-card deletion is not supported. Maximum size
           is 250 bytes.
         
-        
+        :returns: :class:`DeleteModelVersionTagResponse`
         """
 
         query = {}
@@ -4881,7 +4881,7 @@ class ModelRegistryAPI:
         :param comment: str (optional)
           User-provided comment on the action.
         
-        
+        :returns: :class:`DeleteTransitionRequestResponse`
         """
 
         query = {}
@@ -4904,7 +4904,7 @@ class ModelRegistryAPI:
         :param id: str (optional)
           Webhook ID required to delete a registry webhook.
         
-        
+        :returns: :class:`DeleteWebhookResponse`
         """
 
         query = {}
@@ -5294,7 +5294,7 @@ class ModelRegistryAPI:
           String value of the tag being logged. Maximum size depends on storage backend. All storage backends
           are guaranteed to support key values up to 5000 bytes in size.
         
-        
+        :returns: :class:`SetModelTagResponse`
         """
         body = {}
         if key is not None: body['key'] = key
@@ -5321,7 +5321,7 @@ class ModelRegistryAPI:
           String value of the tag being logged. Maximum size depends on storage backend. All storage backends
           are guaranteed to support key values up to 5000 bytes in size.
         
-        
+        :returns: :class:`SetModelVersionTagResponse`
         """
         body = {}
         if key is not None: body['key'] = key
@@ -5466,7 +5466,7 @@ class ModelRegistryAPI:
         :param description: str (optional)
           If provided, updates the description for this `registered_model`.
         
-        
+        :returns: :class:`UpdateModelResponse`
         """
         body = {}
         if description is not None: body['description'] = description
@@ -5487,7 +5487,7 @@ class ModelRegistryAPI:
         :param description: str (optional)
           If provided, updates the description for this `registered_model`.
         
-        
+        :returns: :class:`UpdateModelVersionResponse`
         """
         body = {}
         if description is not None: body['description'] = description
@@ -5583,7 +5583,7 @@ class ModelRegistryAPI:
           * `TEST_MODE`: Webhook can be triggered through the test endpoint, but is not triggered on a real
           event.
         
-        
+        :returns: :class:`UpdateWebhookResponse`
         """
         body = {}
         if description is not None: body['description'] = description

@@ -30,7 +30,7 @@
         :param directory_path: str
           The absolute path of a directory.
         
-        
+        :returns: :class:`CreateDirectoryResponse`
         
 
     .. py:method:: delete(file_path: str)
@@ -42,7 +42,7 @@
         :param file_path: str
           The absolute path of the file.
         
-        
+        :returns: :class:`DeleteResponse`
         
 
     .. py:method:: delete_directory(directory_path: str)
@@ -57,7 +57,7 @@
         :param directory_path: str
           The absolute path of a directory.
         
-        
+        :returns: :class:`DeleteDirectoryResponse`
         
 
     .. py:method:: download(file_path: str) -> DownloadResponse
@@ -88,7 +88,7 @@
         :param directory_path: str
           The absolute path of a directory.
         
-        
+        :returns: :class:`GetDirectoryMetadataResponse`
         
 
     .. py:method:: get_metadata(file_path: str) -> GetMetadataResponse
@@ -148,5 +148,5 @@
         :param overwrite: bool (optional)
           If true, an existing file will be overwritten.
         
-        
+        :returns: :class:`UploadResponse`
         

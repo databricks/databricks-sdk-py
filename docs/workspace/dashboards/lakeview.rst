@@ -21,5 +21,5 @@
         :param warehouse_id: str (optional)
           The ID of the warehouse that can be used to override the warehouse which was set in the draft.
         
-        
+        :returns: :class:`PublishResponse`
         

@@ -102,7 +102,7 @@
         :param instance_pool_id: str
           The instance pool to be terminated.
         
-        
+        :returns: :class:`DeleteInstancePoolResponse`
         
 
     .. py:method:: edit(instance_pool_id: str, instance_pool_name: str, node_type_id: str [, custom_tags: Optional[Dict[str, str]], idle_instance_autotermination_minutes: Optional[int], max_capacity: Optional[int], min_idle_instances: Optional[int]])
@@ -161,7 +161,7 @@
         :param min_idle_instances: int (optional)
           Minimum number of idle instances to keep in the instance pool
         
-        
+        :returns: :class:`EditInstancePoolResponse`
         
 
     .. py:method:: get(instance_pool_id: str) -> GetInstancePool

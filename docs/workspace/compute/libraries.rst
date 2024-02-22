@@ -70,7 +70,7 @@
         :param libraries: List[:class:`Library`]
           The libraries to install.
         
-        
+        :returns: :class:`InstallLibrariesResponse`
         
 
     .. py:method:: uninstall(cluster_id: str, libraries: List[Library])
@@ -86,5 +86,5 @@
         :param libraries: List[:class:`Library`]
           The libraries to uninstall.
         
-        
+        :returns: :class:`UninstallLibrariesResponse`
         

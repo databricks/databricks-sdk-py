@@ -262,6 +262,11 @@ class CancelAllRuns:
 
 
 @dataclass
+class CancelAllRunsResponse:
+    pass
+
+
+@dataclass
 class CancelRun:
     run_id: int
     """This field is required."""
@@ -276,6 +281,11 @@ class CancelRun:
     def from_dict(cls, d: Dict[str, any]) -> CancelRun:
         """Deserializes the CancelRun from a dictionary."""
         return cls(run_id=d.get('run_id', None))
+
+
+@dataclass
+class CancelRunResponse:
+    pass
 
 
 @dataclass
@@ -745,6 +755,11 @@ class DeleteJob:
 
 
 @dataclass
+class DeleteResponse:
+    pass
+
+
+@dataclass
 class DeleteRun:
     run_id: int
     """The canonical identifier of the run for which to retrieve the metadata."""
@@ -759,6 +774,11 @@ class DeleteRun:
     def from_dict(cls, d: Dict[str, any]) -> DeleteRun:
         """Deserializes the DeleteRun from a dictionary."""
         return cls(run_id=d.get('run_id', None))
+
+
+@dataclass
+class DeleteRunResponse:
+    pass
 
 
 @dataclass
@@ -2246,6 +2266,11 @@ class ResetJob:
     def from_dict(cls, d: Dict[str, any]) -> ResetJob:
         """Deserializes the ResetJob from a dictionary."""
         return cls(job_id=d.get('job_id', None), new_settings=_from_dict(d, 'new_settings', JobSettings))
+
+
+@dataclass
+class ResetResponse:
+    pass
 
 
 @dataclass
@@ -4577,6 +4602,11 @@ class UpdateJob:
 
 
 @dataclass
+class UpdateResponse:
+    pass
+
+
+@dataclass
 class ViewItem:
     content: Optional[str] = None
     """Content of the view."""
@@ -4693,36 +4723,6 @@ class WebhookNotificationsOnDurationWarningThresholdExceededItem:
         return cls(id=d.get('id', None))
 
 
-@dataclass
-class CancelAllRunsResponse:
-    pass
-
-
-@dataclass
-class CancelRunResponse:
-    pass
-
-
-@dataclass
-class DeleteResponse:
-    pass
-
-
-@dataclass
-class DeleteRunResponse:
-    pass
-
-
-@dataclass
-class ResetResponse:
-    pass
-
-
-@dataclass
-class UpdateResponse:
-    pass
-
-
 class JobsAPI:
     """The Jobs API allows you to create, edit, and delete jobs.
     
@@ -4787,7 +4787,7 @@ class JobsAPI:
         :param job_id: int (optional)
           The canonical identifier of the job to cancel all runs of.
         
-        
+        :returns: :class:`CancelAllRunsResponse`
         """
         body = {}
         if all_queued_runs is not None: body['all_queued_runs'] = all_queued_runs
@@ -4813,8 +4813,10 @@ class JobsAPI:
         if run_id is not None: body['run_id'] = run_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        self._api.do('POST', '/api/2.1/jobs/runs/cancel', body=body, headers=headers)
-        return Wait(self.wait_get_run_job_terminated_or_skipped, run_id=run_id)
+        op_response = self._api.do('POST', '/api/2.1/jobs/runs/cancel', body=body, headers=headers)
+        return Wait(self.wait_get_run_job_terminated_or_skipped,
+                    response=CancelRunResponse.from_dict(op_response),
+                    run_id=run_id)
 
     def cancel_run_and_wait(self, run_id: int, timeout=timedelta(minutes=20)) -> Run:
         return self.cancel_run(run_id=run_id).result(timeout=timeout)
@@ -4971,7 +4973,7 @@ class JobsAPI:
         :param job_id: int
           The canonical identifier of the job to delete. This field is required.
         
-        
+        :returns: :class:`DeleteResponse`
         """
         body = {}
         if job_id is not None: body['job_id'] = job_id
@@ -4987,7 +4989,7 @@ class JobsAPI:
         :param run_id: int
           The canonical identifier of the run for which to retrieve the metadata.
         
-        
+        :returns: :class:`DeleteRunResponse`
         """
         body = {}
         if run_id is not None: body['run_id'] = run_id
@@ -5412,7 +5414,7 @@ class JobsAPI:
           Changes to the field `JobBaseSettings.timeout_seconds` are applied to active runs. Changes to other
           fields are applied to future runs only.
         
-        
+        :returns: :class:`ResetResponse`
         """
         body = {}
         if job_id is not None: body['job_id'] = job_id
@@ -5739,7 +5741,7 @@ class JobsAPI:
           Changes to the field `JobSettings.timeout_seconds` are applied to active runs. Changes to other
           fields are applied to future runs only.
         
-        
+        :returns: :class:`UpdateResponse`
         """
         body = {}
         if fields_to_remove is not None: body['fields_to_remove'] = [v for v in fields_to_remove]

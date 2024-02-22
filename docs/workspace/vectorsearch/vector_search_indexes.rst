@@ -62,7 +62,7 @@
         :param index_name: str
           Name of the index
         
-        
+        :returns: :class:`DeleteIndexResponse`
         
 
     .. py:method:: get_index(index_name: str) -> VectorIndex
@@ -127,7 +127,7 @@
         :param index_name: str
           Name of the vector index to synchronize. Must be a Delta Sync Index.
         
-        
+        :returns: :class:`SyncIndexResponse`
         
 
     .. py:method:: upsert_data_vector_index(name: str, inputs_json: str) -> UpsertDataVectorIndexResponse

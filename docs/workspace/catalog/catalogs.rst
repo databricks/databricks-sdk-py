@@ -68,7 +68,7 @@
         :param force: bool (optional)
           Force deletion even if the catalog is not empty.
         
-        
+        :returns: :class:`DeleteResponse`
         
 
     .. py:method:: get(name: str) -> CatalogInfo

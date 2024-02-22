@@ -165,7 +165,7 @@
         :param workspace_id: int
           Workspace ID.
         
-        
+        :returns: :class:`DeleteResponse`
         
 
     .. py:method:: get(workspace_id: int) -> Workspace

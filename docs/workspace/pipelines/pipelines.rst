@@ -105,7 +105,7 @@
         
         :param pipeline_id: str
         
-        
+        :returns: :class:`DeletePipelineResponse`
         
 
     .. py:method:: get(pipeline_id: str) -> GetPipelineResponse
@@ -459,7 +459,7 @@
         :param trigger: :class:`PipelineTrigger` (optional)
           Which pipeline trigger to use. Deprecated: Use `continuous` instead.
         
-        
+        :returns: :class:`EditPipelineResponse`
         
 
     .. py:method:: update_permissions(pipeline_id: str [, access_control_list: Optional[List[PipelineAccessControlRequest]]]) -> PipelinePermissions

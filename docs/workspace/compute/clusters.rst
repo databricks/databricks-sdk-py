@@ -69,7 +69,7 @@
         :param owner_username: str
           New owner of the cluster_id after this RPC.
         
-        
+        :returns: :class:`ChangeClusterOwnerResponse`
         
 
     .. py:method:: create(spark_version: str [, apply_policy_default_values: Optional[bool], autoscale: Optional[AutoScale], autotermination_minutes: Optional[int], aws_attributes: Optional[AwsAttributes], azure_attributes: Optional[AzureAttributes], cluster_log_conf: Optional[ClusterLogConf], cluster_name: Optional[str], cluster_source: Optional[ClusterSource], custom_tags: Optional[Dict[str, str]], data_security_mode: Optional[DataSecurityMode], docker_image: Optional[DockerImage], driver_instance_pool_id: Optional[str], driver_node_type_id: Optional[str], enable_elastic_disk: Optional[bool], enable_local_disk_encryption: Optional[bool], gcp_attributes: Optional[GcpAttributes], init_scripts: Optional[List[InitScriptInfo]], instance_pool_id: Optional[str], node_type_id: Optional[str], num_workers: Optional[int], policy_id: Optional[str], runtime_engine: Optional[RuntimeEngine], single_user_name: Optional[str], spark_conf: Optional[Dict[str, str]], spark_env_vars: Optional[Dict[str, str]], ssh_public_keys: Optional[List[str]], workload_type: Optional[WorkloadType]]) -> Wait[ClusterDetails]
@@ -668,7 +668,7 @@
         :param cluster_id: str
           The cluster to be deleted.
         
-        
+        :returns: :class:`PermanentDeleteClusterResponse`
         
 
     .. py:method:: pin(cluster_id: str)
@@ -708,7 +708,7 @@
         :param cluster_id: str
           <needs content added>
         
-        
+        :returns: :class:`PinClusterResponse`
         
 
     .. py:method:: resize(cluster_id: str [, autoscale: Optional[AutoScale], num_workers: Optional[int]]) -> Wait[ClusterDetails]
@@ -982,7 +982,7 @@
         :param cluster_id: str
           <needs content added>
         
-        
+        :returns: :class:`UnpinClusterResponse`
         
 
     .. py:method:: update_permissions(cluster_id: str [, access_control_list: Optional[List[ClusterAccessControlRequest]]]) -> ClusterPermissions

@@ -93,7 +93,7 @@
         :param policy_id: str
           The ID of the policy to delete.
         
-        
+        :returns: :class:`DeletePolicyResponse`
         
 
     .. py:method:: edit(policy_id: str, name: str [, definition: Optional[str], description: Optional[str], libraries: Optional[List[Library]], max_clusters_per_user: Optional[int], policy_family_definition_overrides: Optional[str], policy_family_id: Optional[str]])
@@ -170,7 +170,7 @@
           Cannot be used with `definition`. Use `policy_family_definition_overrides` instead to customize the
           policy definition.
         
-        
+        :returns: :class:`EditPolicyResponse`
         
 
     .. py:method:: get(policy_id: str) -> Policy

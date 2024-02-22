@@ -261,6 +261,11 @@ class ArtifactType(Enum):
 
 
 @dataclass
+class AssignResponse:
+    pass
+
+
+@dataclass
 class AwsIamRole:
     role_arn: str
     """The Amazon Resource Name (ARN) of the AWS IAM role for S3 data access."""
@@ -345,6 +350,11 @@ class AzureServicePrincipal:
         return cls(application_id=d.get('application_id', None),
                    client_secret=d.get('client_secret', None),
                    directory_id=d.get('directory_id', None))
+
+
+@dataclass
+class CancelRefreshResponse:
+    pass
 
 
 @dataclass
@@ -1327,6 +1337,11 @@ class CreateRegisteredModelRequest:
 
 
 @dataclass
+class CreateResponse:
+    pass
+
+
+@dataclass
 class CreateSchema:
     name: str
     """Name of schema, relative to parent catalog."""
@@ -1526,6 +1541,11 @@ class DataSourceFormat(Enum):
 
 
 @dataclass
+class DatabricksGcpServiceAccountRequest:
+    pass
+
+
+@dataclass
 class DatabricksGcpServiceAccountResponse:
     credential_id: Optional[str] = None
     """The Databricks internal ID that represents this service account. This is an output-only field."""
@@ -1544,6 +1564,16 @@ class DatabricksGcpServiceAccountResponse:
     def from_dict(cls, d: Dict[str, any]) -> DatabricksGcpServiceAccountResponse:
         """Deserializes the DatabricksGcpServiceAccountResponse from a dictionary."""
         return cls(credential_id=d.get('credential_id', None), email=d.get('email', None))
+
+
+@dataclass
+class DeleteAliasResponse:
+    pass
+
+
+@dataclass
+class DeleteResponse:
+    pass
 
 
 @dataclass
@@ -1608,6 +1638,11 @@ class DependencyList:
     def from_dict(cls, d: Dict[str, any]) -> DependencyList:
         """Deserializes the DependencyList from a dictionary."""
         return cls(dependencies=_repeated_dict(d, 'dependencies', Dependency))
+
+
+@dataclass
+class DisableResponse:
+    pass
 
 
 class DisableSchemaName(Enum):
@@ -1732,6 +1767,11 @@ class EnablePredictiveOptimization(Enum):
     DISABLE = 'DISABLE'
     ENABLE = 'ENABLE'
     INHERIT = 'INHERIT'
+
+
+@dataclass
+class EnableResponse:
+    pass
 
 
 class EnableSchemaName(Enum):
@@ -3256,6 +3296,11 @@ class MonitorRefreshInfoState(Enum):
 
 
 @dataclass
+class MonitorSnapshotProfileType:
+    pass
+
+
+@dataclass
 class MonitorTimeSeriesProfileType:
     granularities: Optional[List[str]] = None
     """List of granularities to use when aggregating data into time windows based on their timestamp."""
@@ -3377,6 +3422,16 @@ class OnlineTableSpec:
                    run_triggered=d.get('run_triggered', None),
                    source_table_full_name=d.get('source_table_full_name', None),
                    timeseries_key=d.get('timeseries_key', None))
+
+
+@dataclass
+class OnlineTableSpecContinuousSchedulingPolicy:
+    pass
+
+
+@dataclass
+class OnlineTableSpecTriggeredSchedulingPolicy:
+    pass
 
 
 class OnlineTableState(Enum):
@@ -4433,6 +4488,16 @@ class TriggeredUpdateStatus:
 
 
 @dataclass
+class UnassignResponse:
+    pass
+
+
+@dataclass
+class UpdateAssignmentResponse:
+    pass
+
+
+@dataclass
 class UpdateCatalog:
     comment: Optional[str] = None
     """User-provided free-form text description."""
@@ -4853,6 +4918,11 @@ class UpdateRegisteredModelRequest:
                    full_name=d.get('full_name', None),
                    new_name=d.get('new_name', None),
                    owner=d.get('owner', None))
+
+
+@dataclass
+class UpdateResponse:
+    pass
 
 
 @dataclass
@@ -5353,76 +5423,6 @@ class WorkspaceBindingsResponse:
         return cls(bindings=_repeated_dict(d, 'bindings', WorkspaceBinding))
 
 
-@dataclass
-class AssignResponse:
-    pass
-
-
-@dataclass
-class CancelRefreshResponse:
-    pass
-
-
-@dataclass
-class CreateResponse:
-    pass
-
-
-@dataclass
-class DatabricksGcpServiceAccountRequest:
-    pass
-
-
-@dataclass
-class DeleteAliasResponse:
-    pass
-
-
-@dataclass
-class DeleteResponse:
-    pass
-
-
-@dataclass
-class DisableResponse:
-    pass
-
-
-@dataclass
-class EnableResponse:
-    pass
-
-
-@dataclass
-class MonitorSnapshotProfileType:
-    pass
-
-
-@dataclass
-class OnlineTableSpecContinuousSchedulingPolicy:
-    pass
-
-
-@dataclass
-class OnlineTableSpecTriggeredSchedulingPolicy:
-    pass
-
-
-@dataclass
-class UnassignResponse:
-    pass
-
-
-@dataclass
-class UpdateAssignmentResponse:
-    pass
-
-
-@dataclass
-class UpdateResponse:
-    pass
-
-
 class AccountMetastoreAssignmentsAPI:
     """These APIs manage metastore assignments to a workspace."""
 
@@ -5444,7 +5444,7 @@ class AccountMetastoreAssignmentsAPI:
           Unity Catalog metastore ID
         :param metastore_assignment: :class:`CreateMetastoreAssignment` (optional)
         
-        
+        :returns: :class:`CreateResponse`
         """
         body = {}
         if metastore_assignment is not None: body['metastore_assignment'] = metastore_assignment.as_dict()
@@ -5466,7 +5466,7 @@ class AccountMetastoreAssignmentsAPI:
         :param metastore_id: str
           Unity Catalog metastore ID
         
-        
+        :returns: :class:`DeleteResponse`
         """
 
         headers = {'Accept': 'application/json', }
@@ -5531,7 +5531,7 @@ class AccountMetastoreAssignmentsAPI:
           Unity Catalog metastore ID
         :param metastore_assignment: :class:`UpdateMetastoreAssignment` (optional)
         
-        
+        :returns: :class:`UpdateResponse`
         """
         body = {}
         if metastore_assignment is not None: body['metastore_assignment'] = metastore_assignment.as_dict()
@@ -5580,7 +5580,7 @@ class AccountMetastoresAPI:
         :param force: bool (optional)
           Force deletion even if the metastore is not empty. Default is false.
         
-        
+        :returns: :class:`DeleteResponse`
         """
 
         query = {}
@@ -5699,7 +5699,7 @@ class AccountStorageCredentialsAPI:
         :param force: bool (optional)
           Force deletion even if the Storage Credential is not empty. Default is false.
         
-        
+        :returns: :class:`DeleteResponse`
         """
 
         query = {}
@@ -5907,7 +5907,7 @@ class CatalogsAPI:
         :param force: bool (optional)
           Force deletion even if the catalog is not empty.
         
-        
+        :returns: :class:`DeleteResponse`
         """
 
         query = {}
@@ -6058,7 +6058,7 @@ class ConnectionsAPI:
         :param name: str
           The name of the connection to be deleted.
         
-        
+        :returns: :class:`DeleteResponse`
         """
 
         headers = {'Accept': 'application/json', }
@@ -6201,7 +6201,7 @@ class ExternalLocationsAPI:
         :param force: bool (optional)
           Force deletion even if there are dependent external tables or mounts.
         
-        
+        :returns: :class:`DeleteResponse`
         """
 
         query = {}
@@ -6379,7 +6379,7 @@ class FunctionsAPI:
         :param force: bool (optional)
           Force deletion even if the function is notempty.
         
-        
+        :returns: :class:`DeleteResponse`
         """
 
         query = {}
@@ -6612,7 +6612,7 @@ class LakehouseMonitorsAPI:
         :param refresh_id: str
           ID of the refresh.
         
-        
+        :returns: :class:`CancelRefreshResponse`
         """
 
         headers = {}
@@ -6726,7 +6726,7 @@ class LakehouseMonitorsAPI:
         :param full_name: str
           Full name of the table.
         
-        
+        :returns: :class:`DeleteResponse`
         """
 
         headers = {}
@@ -6943,7 +6943,7 @@ class MetastoresAPI:
         :param default_catalog_name: str
           The name of the default catalog in the metastore.
         
-        
+        :returns: :class:`AssignResponse`
         """
         body = {}
         if default_catalog_name is not None: body['default_catalog_name'] = default_catalog_name
@@ -7009,7 +7009,7 @@ class MetastoresAPI:
         :param force: bool (optional)
           Force deletion even if the metastore is not empty. Default is false.
         
-        
+        :returns: :class:`DeleteResponse`
         """
 
         query = {}
@@ -7074,7 +7074,7 @@ class MetastoresAPI:
         :param metastore_id: str
           Query for the ID of the metastore to delete.
         
-        
+        :returns: :class:`UnassignResponse`
         """
 
         query = {}
@@ -7157,7 +7157,7 @@ class MetastoresAPI:
         :param metastore_id: str (optional)
           The unique ID of the metastore.
         
-        
+        :returns: :class:`UpdateAssignmentResponse`
         """
         body = {}
         if default_catalog_name is not None: body['default_catalog_name'] = default_catalog_name
@@ -7196,7 +7196,7 @@ class ModelVersionsAPI:
         :param version: int
           The integer version number of the model version
         
-        
+        :returns: :class:`DeleteResponse`
         """
 
         headers = {}
@@ -7369,7 +7369,7 @@ class OnlineTablesAPI:
         :param name: str
           Full three-part (catalog, schema, table) name of the table.
         
-        
+        :returns: :class:`DeleteResponse`
         """
 
         headers = {'Accept': 'application/json', }
@@ -7477,7 +7477,7 @@ class RegisteredModelsAPI:
         :param full_name: str
           The three-level (fully qualified) name of the registered model
         
-        
+        :returns: :class:`DeleteResponse`
         """
 
         headers = {}
@@ -7498,7 +7498,7 @@ class RegisteredModelsAPI:
         :param alias: str
           The name of the alias
         
-        
+        :returns: :class:`DeleteAliasResponse`
         """
 
         headers = {}
@@ -7695,7 +7695,7 @@ class SchemasAPI:
         :param full_name: str
           Full name of the schema.
         
-        
+        :returns: :class:`DeleteResponse`
         """
 
         headers = {'Accept': 'application/json', }
@@ -7883,7 +7883,7 @@ class StorageCredentialsAPI:
         :param force: bool (optional)
           Force deletion even if there are dependent external locations or external tables.
         
-        
+        :returns: :class:`DeleteResponse`
         """
 
         query = {}
@@ -8105,7 +8105,7 @@ class SystemSchemasAPI:
         :param schema_name: :class:`DisableSchemaName`
           Full name of the system schema.
         
-        
+        :returns: :class:`DisableResponse`
         """
 
         headers = {'Accept': 'application/json', }
@@ -8125,7 +8125,7 @@ class SystemSchemasAPI:
         :param schema_name: :class:`EnableSchemaName`
           Full name of the system schema.
         
-        
+        :returns: :class:`EnableResponse`
         """
 
         headers = {'Accept': 'application/json', }
@@ -8218,7 +8218,7 @@ class TableConstraintsAPI:
           If true, try deleting all child constraints of the current constraint. If false, reject this
           operation if the current constraint has any child constraints.
         
-        
+        :returns: :class:`DeleteResponse`
         """
 
         query = {}
@@ -8256,7 +8256,7 @@ class TablesAPI:
         :param full_name: str
           Full name of the table.
         
-        
+        :returns: :class:`DeleteResponse`
         """
 
         headers = {'Accept': 'application/json', }
@@ -8432,7 +8432,7 @@ class TablesAPI:
           Full name of the table.
         :param owner: str (optional)
         
-        
+        :returns: :class:`UpdateResponse`
         """
         body = {}
         if owner is not None: body['owner'] = owner
@@ -8516,7 +8516,7 @@ class VolumesAPI:
         :param name: str
           The three-level (fully qualified) name of the volume
         
-        
+        :returns: :class:`DeleteResponse`
         """
 
         headers = {}

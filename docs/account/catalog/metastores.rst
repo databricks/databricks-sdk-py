@@ -48,7 +48,7 @@
         :param force: bool (optional)
           Force deletion even if the metastore is not empty. Default is false.
         
-        
+        :returns: :class:`DeleteResponse`
         
 
     .. py:method:: get(metastore_id: str) -> AccountsMetastoreInfo

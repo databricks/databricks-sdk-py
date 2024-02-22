@@ -202,6 +202,16 @@ class DeleteDataVectorIndexResponse:
 
 
 @dataclass
+class DeleteEndpointResponse:
+    pass
+
+
+@dataclass
+class DeleteIndexResponse:
+    pass
+
+
+@dataclass
 class DeltaSyncVectorIndexSpecRequest:
     embedding_source_columns: Optional[List[EmbeddingSourceColumn]] = None
     """The columns that contain the embedding source."""
@@ -673,6 +683,11 @@ class ResultManifest:
 
 
 @dataclass
+class SyncIndexResponse:
+    pass
+
+
+@dataclass
 class UpsertDataResult:
     """Result of the upsert or delete operation."""
 
@@ -852,21 +867,6 @@ class VectorIndexType(Enum):
     DIRECT_ACCESS = 'DIRECT_ACCESS'
 
 
-@dataclass
-class DeleteEndpointResponse:
-    pass
-
-
-@dataclass
-class DeleteIndexResponse:
-    pass
-
-
-@dataclass
-class SyncIndexResponse:
-    pass
-
-
 class VectorSearchEndpointsAPI:
     """**Endpoint**: Represents the compute resources to host vector search indexes."""
 
@@ -942,7 +942,7 @@ class VectorSearchEndpointsAPI:
         :param name: str
           Name of the endpoint to delete
         
-        
+        :returns: :class:`DeleteEndpointResponse`
         """
 
         headers = {}
@@ -1073,7 +1073,7 @@ class VectorSearchIndexesAPI:
         :param index_name: str
           Name of the index
         
-        
+        :returns: :class:`DeleteIndexResponse`
         """
 
         headers = {}
@@ -1180,7 +1180,7 @@ class VectorSearchIndexesAPI:
         :param index_name: str
           Name of the vector index to synchronize. Must be a Delta Sync Index.
         
-        
+        :returns: :class:`SyncIndexResponse`
         """
 
         headers = {}

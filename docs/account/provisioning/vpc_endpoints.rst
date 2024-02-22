@@ -70,7 +70,7 @@
         :param vpc_endpoint_id: str
           Databricks VPC endpoint ID.
         
-        
+        :returns: :class:`DeleteResponse`
         
 
     .. py:method:: get(vpc_endpoint_id: str) -> VpcEndpoint

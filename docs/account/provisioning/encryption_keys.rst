@@ -73,7 +73,7 @@
         :param customer_managed_key_id: str
           Databricks encryption key configuration ID.
         
-        
+        :returns: :class:`DeleteResponse`
         
 
     .. py:method:: get(customer_managed_key_id: str) -> CustomerManagedKey

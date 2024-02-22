@@ -18,7 +18,7 @@
           Unity Catalog metastore ID
         :param metastore_assignment: :class:`CreateMetastoreAssignment` (optional)
         
-        
+        :returns: :class:`CreateResponse`
         
 
     .. py:method:: delete(workspace_id: int, metastore_id: str)
@@ -32,7 +32,7 @@
         :param metastore_id: str
           Unity Catalog metastore ID
         
-        
+        :returns: :class:`DeleteResponse`
         
 
     .. py:method:: get(workspace_id: int) -> AccountsMetastoreAssignment
@@ -87,5 +87,5 @@
           Unity Catalog metastore ID
         :param metastore_assignment: :class:`UpdateMetastoreAssignment` (optional)
         
-        
+        :returns: :class:`UpdateResponse`
         

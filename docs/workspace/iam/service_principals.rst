@@ -68,7 +68,7 @@
         :param id: str
           Unique ID for a service principal in the Databricks workspace.
         
-        
+        :returns: :class:`DeleteResponse`
         
 
     .. py:method:: get(id: str) -> ServicePrincipal
@@ -185,7 +185,7 @@
         :param schemas: List[:class:`PatchSchema`] (optional)
           The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
         
-        
+        :returns: :class:`PatchResponse`
         
 
     .. py:method:: update(id: str [, active: Optional[bool], application_id: Optional[str], display_name: Optional[str], entitlements: Optional[List[ComplexValue]], external_id: Optional[str], groups: Optional[List[ComplexValue]], roles: Optional[List[ComplexValue]], schemas: Optional[List[ServicePrincipalSchema]]])
@@ -237,5 +237,5 @@
         :param schemas: List[:class:`ServicePrincipalSchema`] (optional)
           The schema of the List response.
         
-        
+        :returns: :class:`UpdateResponse`
         
