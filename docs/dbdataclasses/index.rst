@@ -5,20 +5,20 @@ Dataclasses
 .. toctree::
    :maxdepth: 1
    
-   workspace
-   compute
-   jobs
-   pipelines
-   files
-   ml
-   serving
-   iam
-   sql
-   catalog
-   sharing
-   settings
-   provisioning
    billing
-   oauth2
-   vectorsearch
+   catalog
+   compute
    dashboards
+   files
+   iam
+   jobs
+   ml
+   oauth2
+   pipelines
+   provisioning
+   serving
+   settings
+   sharing
+   sql
+   vectorsearch
+   workspace
