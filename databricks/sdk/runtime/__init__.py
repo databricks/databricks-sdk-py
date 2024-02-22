@@ -101,26 +101,26 @@ except ImportError:
     except Exception:
         pass
 
-    # The next few try-except blocks are for initialising globals in a best effort 
+    # The next few try-except blocks are for initialising globals in a best effort
     # mannaer. We separate them to try to get as many of them working as possible
     try:
-        from pyspark.sql.functions import udf # type: ignore
+        from pyspark.sql.functions import udf  # type: ignore
     except ImportError:
         pass
-    
+
     try:
-        from databricks.connect import DatabricksSession # type: ignore
+        from databricks.connect import DatabricksSession  # type: ignore
         spark = DatabricksSession.builder.getOrCreate()
         sc = spark.sparkContext
     except Exception:
         # We are ignoring all failures here because user might want to initialize
         # spark session themselves and we don't want to interfere with that
         pass
-    
-    try: 
+
+    try:
         from IPython import display as IPDisplay
 
-        def display(input=None, *args, **kwargs) -> None : # type: ignore
+        def display(input=None, *args, **kwargs) -> None: # type: ignore
             """
             Display plots or data.
             Display plot:
@@ -155,16 +155,17 @@ except ImportError:
             IPython.display.display_html
             """
             return IPDisplay.display_html(html, raw=True) # type: ignore
-        
+
     except ImportError:
         pass
-    
 
     # We want to propagate the error in initialising dbutils because this is a core
     # functionality of the sdk
-    from databricks.sdk.dbutils import RemoteDbUtils
-    from . import dbutils_stub
     from typing import cast
+
+    from databricks.sdk.dbutils import RemoteDbUtils
+
+    from . import dbutils_stub
     dbutils_type = Union[dbutils_stub.dbutils, RemoteDbUtils]
 
     dbutils = RemoteDbUtils()
