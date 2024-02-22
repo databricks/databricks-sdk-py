@@ -30,8 +30,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: CreatePrivateEndpointRuleRequestGroupId
 
-   The sub-resource type (group ID) of the target resource. Note that to connect to workspace root
-    storage (root DBFS), you need two endpoints, one for `blob` and one for `dfs`.
+   The sub-resource type (group ID) of the target resource. Note that to connect to workspace root storage (root DBFS), you need two endpoints, one for `blob` and one for `dfs`.
 
    .. py:attribute:: BLOB
       :value: "BLOB"
@@ -128,9 +127,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. py:class:: ListType
 
    Type of IP access list. Valid values are as follows and are case-sensitive:
-    
-    * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
-    range. IP addresses in the block list are excluded even if they are included in an allow list.
+   * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or range. IP addresses in the block list are excluded even if they are included in an allow list.
 
    .. py:attribute:: ALLOW
       :value: "ALLOW"
@@ -144,16 +141,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: NccAzurePrivateEndpointRuleConnectionState
 
-   The current status of this private endpoint. The private endpoint rules are effective only if
-    the connection state is `ESTABLISHED`. Remember that you must approve new endpoints on your
-    resources in the Azure portal before they take effect.
-    
-    The possible values are: - INIT: (deprecated) The endpoint has been created and pending
-    approval. - PENDING: The endpoint has been created and pending approval. - ESTABLISHED: The
-    endpoint has been approved and is ready to use in your serverless compute resources. - REJECTED:
-    Connection was rejected by the private link resource owner. - DISCONNECTED: Connection was
-    removed by the private link resource owner, the private endpoint becomes informative and should
-    be deleted for clean-up.
+   The current status of this private endpoint. The private endpoint rules are effective only if the connection state is `ESTABLISHED`. Remember that you must approve new endpoints on your resources in the Azure portal before they take effect.
+   The possible values are: - INIT: (deprecated) The endpoint has been created and pending approval. - PENDING: The endpoint has been created and pending approval. - ESTABLISHED: The endpoint has been approved and is ready to use in your serverless compute resources. - REJECTED: Connection was rejected by the private link resource owner. - DISCONNECTED: Connection was removed by the private link resource owner, the private endpoint becomes informative and should be deleted for clean-up.
 
    .. py:attribute:: DISCONNECTED
       :value: "DISCONNECTED"
@@ -172,8 +161,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: NccAzurePrivateEndpointRuleGroupId
 
-   The sub-resource type (group ID) of the target resource. Note that to connect to workspace root
-    storage (root DBFS), you need two endpoints, one for `blob` and one for `dfs`.
+   The sub-resource type (group ID) of the target resource. Note that to connect to workspace root storage (root DBFS), you need two endpoints, one for `blob` and one for `dfs`.
 
    .. py:attribute:: BLOB
       :value: "BLOB"
@@ -217,11 +205,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: PersonalComputeMessageEnum
 
-   ON: Grants all users in all workspaces access to the Personal Compute default policy, allowing
-    all users to create single-machine compute resources. DELEGATE: Moves access control for the
-    Personal Compute default policy to individual workspaces and requires a workspace’s users or
-    groups to be added to the ACLs of that workspace’s Personal Compute default policy before they
-    will be able to create compute resources through that policy.
+   ON: Grants all users in all workspaces access to the Personal Compute default policy, allowing all users to create single-machine compute resources. DELEGATE: Moves access control for the Personal Compute default policy to individual workspaces and requires a workspace’s users or groups to be added to the ACLs of that workspace’s Personal Compute default policy before they will be able to create compute resources through that policy.
 
    .. py:attribute:: DELEGATE
       :value: "DELEGATE"

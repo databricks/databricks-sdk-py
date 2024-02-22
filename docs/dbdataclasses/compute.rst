@@ -23,8 +23,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. py:class:: AwsAvailability
 
    Availability type used for all subsequent nodes past the `first_on_demand` ones.
-    
-    Note: If `first_on_demand` is zero, this availability type will be used for the entire cluster.
+   Note: If `first_on_demand` is zero, this availability type will be used for the entire cluster.
 
    .. py:attribute:: ON_DEMAND
       :value: "ON_DEMAND"
@@ -41,9 +40,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: AzureAvailability
 
-   Availability type used for all subsequent nodes past the `first_on_demand` ones. Note: If
-    `first_on_demand` is zero (which only happens on pool clusters), this availability type will be
-    used for the entire cluster.
+   Availability type used for all subsequent nodes past the `first_on_demand` ones. Note: If `first_on_demand` is zero (which only happens on pool clusters), this availability type will be used for the entire cluster.
 
    .. py:attribute:: ON_DEMAND_AZURE
       :value: "ON_DEMAND_AZURE"
@@ -172,8 +169,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ClusterSource
 
-   Determines whether the cluster was created by a user through the UI, created by the Databricks
-    Jobs Scheduler, or through an API request. This is the same as cluster_creator, but read only.
+   Determines whether the cluster was created by a user through the UI, created by the Databricks Jobs Scheduler, or through an API request. This is the same as cluster_creator, but read only.
 
    .. py:attribute:: API
       :value: "API"
@@ -307,18 +303,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. py:class:: DataSecurityMode
 
    Data security mode decides what data governance model to use when accessing data from a cluster.
-    
-    * `NONE`: No security isolation for multiple users sharing the cluster. Data governance features
-    are not available in this mode. * `SINGLE_USER`: A secure cluster that can only be exclusively
-    used by a single user specified in `single_user_name`. Most programming languages, cluster
-    features and data governance features are available in this mode. * `USER_ISOLATION`: A secure
-    cluster that can be shared by multiple users. Cluster users are fully isolated so that they
-    cannot see each other's data and credentials. Most data governance features are supported in
-    this mode. But programming languages and cluster features might be limited. *
-    `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *
-    `LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy Passthrough on high
-    concurrency clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
-    Passthrough on standard clusters.
+   * `NONE`: No security isolation for multiple users sharing the cluster. Data governance features are not available in this mode. * `SINGLE_USER`: A secure cluster that can only be exclusively used by a single user specified in `single_user_name`. Most programming languages, cluster features and data governance features are available in this mode. * `USER_ISOLATION`: A secure cluster that can be shared by multiple users. Cluster users are fully isolated so that they cannot see each other's data and credentials. Most data governance features are supported in this mode. But programming languages and cluster features might be limited. * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy Passthrough on high concurrency clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy Passthrough on standard clusters.
 
    .. py:attribute:: LEGACY_PASSTHROUGH
       :value: "LEGACY_PASSTHROUGH"
@@ -515,8 +500,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: GcpAvailability
 
-   This field determines whether the instance pool will contain preemptible VMs, on-demand VMs, or
-    preemptible VMs with a fallback to on-demand VMs if the former is unavailable.
+   This field determines whether the instance pool will contain preemptible VMs, on-demand VMs, or preemptible VMs with a fallback to on-demand VMs if the former is unavailable.
 
    .. py:attribute:: ON_DEMAND_GCP
       :value: "ON_DEMAND_GCP"
@@ -646,8 +630,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. py:class:: InstancePoolAwsAttributesAvailability
 
    Availability type used for the spot nodes.
-    
-    The default value is defined by InstancePoolConf.instancePoolDefaultAwsAvailability
+   The default value is defined by InstancePoolConf.instancePoolDefaultAwsAvailability
 
    .. py:attribute:: ON_DEMAND
       :value: "ON_DEMAND"
@@ -662,8 +645,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. py:class:: InstancePoolAzureAttributesAvailability
 
    Shows the Availability type used for the spot nodes.
-    
-    The default value is defined by InstancePoolConf.instancePoolDefaultAzureAvailability
+   The default value is defined by InstancePoolConf.instancePoolDefaultAzureAvailability
 
    .. py:attribute:: ON_DEMAND_AZURE
       :value: "ON_DEMAND_AZURE"
@@ -909,8 +891,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: RuntimeEngine
 
-   Decides which runtime engine to be use, e.g. Standard vs. Photon. If unspecified, the runtime
-    engine is inferred from spark_version.
+   Decides which runtime engine to be use, e.g. Standard vs. Photon. If unspecified, the runtime engine is inferred from spark_version.
 
    .. py:attribute:: NULL
       :value: "NULL"

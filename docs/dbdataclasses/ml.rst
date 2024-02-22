@@ -10,12 +10,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ActivityAction
 
-   An action that a user (with sufficient permissions) could take on an activity. Valid values are:
-    * `APPROVE_TRANSITION_REQUEST`: Approve a transition request
-    
-    * `REJECT_TRANSITION_REQUEST`: Reject a transition request
-    
-    * `CANCEL_TRANSITION_REQUEST`: Cancel (delete) a transition request
+   An action that a user (with sufficient permissions) could take on an activity. Valid values are: * `APPROVE_TRANSITION_REQUEST`: Approve a transition request
+   * `REJECT_TRANSITION_REQUEST`: Reject a transition request
+   * `CANCEL_TRANSITION_REQUEST`: Cancel (delete) a transition request
 
    .. py:attribute:: APPROVE_TRANSITION_REQUEST
       :value: "APPROVE_TRANSITION_REQUEST"
@@ -28,19 +25,12 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ActivityType
 
-   Type of activity. Valid values are: * `APPLIED_TRANSITION`: User applied the corresponding stage
-    transition.
-    
-    * `REQUESTED_TRANSITION`: User requested the corresponding stage transition.
-    
-    * `CANCELLED_REQUEST`: User cancelled an existing transition request.
-    
-    * `APPROVED_REQUEST`: User approved the corresponding stage transition.
-    
-    * `REJECTED_REQUEST`: User rejected the coressponding stage transition.
-    
-    * `SYSTEM_TRANSITION`: For events performed as a side effect, such as archiving existing model
-    versions in a stage.
+   Type of activity. Valid values are: * `APPLIED_TRANSITION`: User applied the corresponding stage transition.
+   * `REQUESTED_TRANSITION`: User requested the corresponding stage transition.
+   * `CANCELLED_REQUEST`: User cancelled an existing transition request.
+   * `APPROVED_REQUEST`: User approved the corresponding stage transition.
+   * `REJECTED_REQUEST`: User rejected the coressponding stage transition.
+   * `SYSTEM_TRANSITION`: For events performed as a side effect, such as archiving existing model versions in a stage.
 
    .. py:attribute:: APPLIED_TRANSITION
       :value: "APPLIED_TRANSITION"
@@ -73,10 +63,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: CommentActivityAction
 
-   An action that a user (with sufficient permissions) could take on a comment. Valid values are: *
-    `EDIT_COMMENT`: Edit the comment
-    
-    * `DELETE_COMMENT`: Delete the comment
+   An action that a user (with sufficient permissions) could take on a comment. Valid values are: * `EDIT_COMMENT`: Edit the comment
+   * `DELETE_COMMENT`: Delete the comment
 
    .. py:attribute:: DELETE_COMMENT
       :value: "DELETE_COMMENT"
@@ -382,8 +370,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: PermissionLevel
 
-   Permission level of the requesting user on the object. For what is allowed at each level, see
-    [MLflow Model permissions](..).
+   Permission level of the requesting user on the object. For what is allowed at each level, see [MLflow Model permissions](..).
 
    .. py:attribute:: CAN_EDIT
       :value: "CAN_EDIT"
@@ -487,13 +474,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: RegistryWebhookStatus
 
-   Enable or disable triggering the webhook, or put the webhook into test mode. The default is
-    `ACTIVE`: * `ACTIVE`: Webhook is triggered when an associated event happens.
-    
-    * `DISABLED`: Webhook is not triggered.
-    
-    * `TEST_MODE`: Webhook can be triggered through the test endpoint, but is not triggered on a
-    real event.
+   Enable or disable triggering the webhook, or put the webhook into test mode. The default is `ACTIVE`: * `ACTIVE`: Webhook is triggered when an associated event happens.
+   * `DISABLED`: Webhook is not triggered.
+   * `TEST_MODE`: Webhook can be triggered through the test endpoint, but is not triggered on a real event.
 
    .. py:attribute:: ACTIVE
       :value: "ACTIVE"
@@ -585,8 +568,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: SearchExperimentsViewType
 
-   Qualifier for type of experiments to be returned. If unspecified, return only active
-    experiments.
+   Qualifier for type of experiments to be returned. If unspecified, return only active experiments.
 
    .. py:attribute:: ACTIVE_ONLY
       :value: "ACTIVE_ONLY"
@@ -645,14 +627,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. py:class:: Stage
 
    Stage of the model version. Valid values are:
-    
-    * `None`: The initial stage of a model version.
-    
-    * `Staging`: Staging or pre-production stage.
-    
-    * `Production`: Production stage.
-    
-    * `Archived`: Archived stage.
+   * `None`: The initial stage of a model version.
+   * `Staging`: Staging or pre-production stage.
+   * `Production`: Production stage.
+   * `Archived`: Archived stage.
 
    .. py:attribute:: ARCHIVED
       :value: "ARCHIVED"
@@ -668,12 +646,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: Status
 
-   The status of the model version. Valid values are: * `PENDING_REGISTRATION`: Request to register
-    a new model version is pending as server performs background tasks.
-    
-    * `FAILED_REGISTRATION`: Request to register a new model version has failed.
-    
-    * `READY`: Model version is ready for use.
+   The status of the model version. Valid values are: * `PENDING_REGISTRATION`: Request to register a new model version is pending as server performs background tasks.
+   * `FAILED_REGISTRATION`: Request to register a new model version has failed.
+   * `READY`: Model version is ready for use.
 
    .. py:attribute:: FAILED_REGISTRATION
       :value: "FAILED_REGISTRATION"

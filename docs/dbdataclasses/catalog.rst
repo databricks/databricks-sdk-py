@@ -314,10 +314,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: CreateFunctionRoutineBody
 
-   Function language. When **EXTERNAL** is used, the language of the routine function should be
-    specified in the __external_language__ field, and the __return_params__ of the function cannot
-    be used (as **TABLE** return type is not supported), and the __sql_data_access__ field must be
-    **NO_SQL**.
+   Function language. When **EXTERNAL** is used, the language of the routine function should be specified in the __external_language__ field, and the __return_params__ of the function cannot be used (as **TABLE** return type is not supported), and the __sql_data_access__ field must be **NO_SQL**.
 
    .. py:attribute:: EXTERNAL
       :value: "EXTERNAL"
@@ -459,8 +456,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: EffectivePredictiveOptimizationFlagInheritedFromType
 
-   The type of the object from which the flag was inherited. If there was no inheritance, this
-    field is left blank.
+   The type of the object from which the flag was inherited. If there was no inheritance, this field is left blank.
 
    .. py:attribute:: CATALOG
       :value: "CATALOG"
@@ -536,10 +532,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: FunctionInfoRoutineBody
 
-   Function language. When **EXTERNAL** is used, the language of the routine function should be
-    specified in the __external_language__ field, and the __return_params__ of the function cannot
-    be used (as **TABLE** return type is not supported), and the __sql_data_access__ field must be
-    **NO_SQL**.
+   Function language. When **EXTERNAL** is used, the language of the routine function should be specified in the __external_language__ field, and the __return_params__ of the function cannot be used (as **TABLE** return type is not supported), and the __sql_data_access__ field must be **NO_SQL**.
 
    .. py:attribute:: EXTERNAL
       :value: "EXTERNAL"
@@ -703,9 +696,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ModelVersionInfoStatus
 
-   Current status of the model version. Newly created model versions start in PENDING_REGISTRATION
-    status, then move to READY status once the model version files are uploaded and the model
-    version is finalized. Only model versions in READY status can be loaded for inference or served.
+   Current status of the model version. Newly created model versions start in PENDING_REGISTRATION status, then move to READY status once the model version files are uploaded and the model version is finalized. Only model versions in READY status can be loaded for inference or served.
 
    .. py:attribute:: FAILED_REGISTRATION
       :value: "FAILED_REGISTRATION"
@@ -1142,8 +1133,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: SystemSchemaInfoState
 
-   The current state of enablement for the system schema. An empty string means the system schema
-    is available and ready for opt-in.
+   The current state of enablement for the system schema. An empty string means the system schema is available and ready for opt-in.
 
    .. py:attribute:: AVAILABLE
       :value: "AVAILABLE"

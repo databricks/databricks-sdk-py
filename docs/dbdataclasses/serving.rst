@@ -42,8 +42,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: AwsBedrockConfigBedrockProvider
 
-   The underlying provider in AWS Bedrock. Supported values (case insensitive) include: Anthropic,
-    Cohere, AI21Labs, Amazon.
+   The underlying provider in AWS Bedrock. Supported values (case insensitive) include: Anthropic, Cohere, AI21Labs, Amazon.
 
    .. py:attribute:: AI21LABS
       :value: "AI21LABS"
@@ -155,10 +154,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: EndpointStateConfigUpdate
 
-   The state of an endpoint's config update. This informs the user if the pending_config is in
-    progress, if the update failed, or if there is no update in progress. Note that if the
-    endpoint's config_update state value is IN_PROGRESS, another update can not be made until the
-    update completes or fails.
+   The state of an endpoint's config update. This informs the user if the pending_config is in progress, if the update failed, or if there is no update in progress. Note that if the endpoint's config_update state value is IN_PROGRESS, another update can not be made until the update completes or fails.
 
    .. py:attribute:: IN_PROGRESS
       :value: "IN_PROGRESS"
@@ -171,9 +167,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: EndpointStateReady
 
-   The state of an endpoint, indicating whether or not the endpoint is queryable. An endpoint is
-    READY if all of the served entities in its active configuration are ready. If any of the
-    actively served entities are in a non-ready state, the endpoint state will be NOT_READY.
+   The state of an endpoint, indicating whether or not the endpoint is queryable. An endpoint is READY if all of the served entities in its active configuration are ready. If any of the actively served entities are in a non-ready state, the endpoint state will be NOT_READY.
 
    .. py:attribute:: NOT_READY
       :value: "NOT_READY"
@@ -191,9 +185,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ExternalModelProvider
 
-   The name of the provider for the external model. Currently, the supported providers are
-    'ai21labs', 'anthropic', 'aws-bedrock', 'cohere', 'databricks-model-serving', 'openai', and
-    'palm'.",
+   The name of the provider for the external model. Currently, the supported providers are 'ai21labs', 'anthropic', 'aws-bedrock', 'cohere', 'databricks-model-serving', 'openai', and 'palm'.",
 
    .. py:attribute:: AI21LABS
       :value: "AI21LABS"
@@ -274,8 +266,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: QueryEndpointResponseObject
 
-   The type of object returned by the __external/foundation model__ serving endpoint, one of
-    [text_completion, chat.completion, list (of embeddings)].
+   The type of object returned by the __external/foundation model__ serving endpoint, one of [text_completion, chat.completion, list (of embeddings)].
 
    .. py:attribute:: CHAT_COMPLETION
       :value: "CHAT_COMPLETION"
@@ -292,8 +283,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: RateLimitKey
 
-   Key field for a serving endpoint rate limit. Currently, only 'user' and 'endpoint' are
-    supported, with 'endpoint' being the default if not specified.
+   Key field for a serving endpoint rate limit. Currently, only 'user' and 'endpoint' are supported, with 'endpoint' being the default if not specified.
 
    .. py:attribute:: ENDPOINT
       :value: "ENDPOINT"
@@ -330,12 +320,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ServedModelInputWorkloadSize
 
-   The workload size of the served model. The workload size corresponds to a range of provisioned
-    concurrency that the compute will autoscale between. A single unit of provisioned concurrency
-    can process one request at a time. Valid workload sizes are "Small" (4 - 4 provisioned
-    concurrency), "Medium" (8 - 16 provisioned concurrency), and "Large" (16 - 64 provisioned
-    concurrency). If scale-to-zero is enabled, the lower bound of the provisioned concurrency for
-    each workload size will be 0.
+   The workload size of the served model. The workload size corresponds to a range of provisioned concurrency that the compute will autoscale between. A single unit of provisioned concurrency can process one request at a time. Valid workload sizes are "Small" (4 - 4 provisioned concurrency), "Medium" (8 - 16 provisioned concurrency), and "Large" (16 - 64 provisioned concurrency). If scale-to-zero is enabled, the lower bound of the provisioned concurrency for each workload size will be 0.
 
    .. py:attribute:: LARGE
       :value: "LARGE"
@@ -348,12 +333,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ServedModelInputWorkloadType
 
-   The workload type of the served model. The workload type selects which type of compute to use in
-    the endpoint. The default value for this parameter is "CPU". For deep learning workloads, GPU
-    acceleration is available by selecting workload types like GPU_SMALL and others. See the
-    available [GPU types].
-    
-    [GPU types]: https://docs.databricks.com/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types
+   The workload type of the served model. The workload type selects which type of compute to use in the endpoint. The default value for this parameter is "CPU". For deep learning workloads, GPU acceleration is available by selecting workload types like GPU_SMALL and others. See the available [GPU types].
+   [GPU types]: https://docs.databricks.com/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types
 
    .. py:attribute:: CPU
       :value: "CPU"
@@ -384,15 +365,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ServedModelStateDeployment
 
-   The state of the served entity deployment. DEPLOYMENT_CREATING indicates that the served entity
-    is not ready yet because the deployment is still being created (i.e container image is building,
-    model server is deploying for the first time, etc.). DEPLOYMENT_RECOVERING indicates that the
-    served entity was previously in a ready state but no longer is and is attempting to recover.
-    DEPLOYMENT_READY indicates that the served entity is ready to receive traffic. DEPLOYMENT_FAILED
-    indicates that there was an error trying to bring up the served entity (e.g container image
-    build failed, the model server failed to start due to a model loading error, etc.)
-    DEPLOYMENT_ABORTED indicates that the deployment was terminated likely due to a failure in
-    bringing up another served entity under the same endpoint and config version.
+   The state of the served entity deployment. DEPLOYMENT_CREATING indicates that the served entity is not ready yet because the deployment is still being created (i.e container image is building, model server is deploying for the first time, etc.). DEPLOYMENT_RECOVERING indicates that the served entity was previously in a ready state but no longer is and is attempting to recover. DEPLOYMENT_READY indicates that the served entity is ready to receive traffic. DEPLOYMENT_FAILED indicates that there was an error trying to bring up the served entity (e.g container image build failed, the model server failed to start due to a model loading error, etc.) DEPLOYMENT_ABORTED indicates that the deployment was terminated likely due to a failure in bringing up another served entity under the same endpoint and config version.
 
    .. py:attribute:: ABORTED
       :value: "ABORTED"

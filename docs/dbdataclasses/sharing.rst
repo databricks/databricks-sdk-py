@@ -358,8 +358,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: SharedDataObjectHistoryDataSharingStatus
 
-   Whether to enable or disable sharing of data history. If not specified, the default is
-    **DISABLED**.
+   Whether to enable or disable sharing of data history. If not specified, the default is **DISABLED**.
 
    .. py:attribute:: DISABLED
       :value: "DISABLED"

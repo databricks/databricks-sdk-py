@@ -35,8 +35,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: AlertState
 
-   State of the alert. Possible values are: `unknown` (yet to be evaluated), `triggered` (evaluated
-    and fulfilled trigger conditions), or `ok` (evaluated and did not fulfill trigger conditions).
+   State of the alert. Possible values are: `unknown` (yet to be evaluated), `triggered` (evaluated and fulfilled trigger conditions), or `ok` (evaluated and did not fulfill trigger conditions).
 
    .. py:attribute:: OK
       :value: "OK"
@@ -82,8 +81,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ColumnInfoTypeName
 
-   The name of the base data type. This doesn't include details for complex types such as STRUCT,
-    MAP or ARRAY.
+   The name of the base data type. This doesn't include details for complex types such as STRUCT, MAP or ARRAY.
 
    .. py:attribute:: ARRAY
       :value: "ARRAY"
@@ -152,8 +150,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: CreateWarehouseRequestWarehouseType
 
-   Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute, you must set to `PRO`
-    and also set the field `enable_serverless_compute` to `true`.
+   Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute, you must set to `PRO` and also set the field `enable_serverless_compute` to `true`.
 
    .. py:attribute:: CLASSIC
       :value: "CLASSIC"
@@ -195,25 +192,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. py:class:: Disposition
 
    The fetch disposition provides two modes of fetching results: `INLINE` and `EXTERNAL_LINKS`.
-    
-    Statements executed with `INLINE` disposition will return result data inline, in `JSON_ARRAY`
-    format, in a series of chunks. If a given statement produces a result set with a size larger
-    than 25 MiB, that statement execution is aborted, and no result set will be available.
-    
-    **NOTE** Byte limits are computed based upon internal representations of the result set data,
-    and might not match the sizes visible in JSON responses.
-    
-    Statements executed with `EXTERNAL_LINKS` disposition will return result data as external links:
-    URLs that point to cloud storage internal to the workspace. Using `EXTERNAL_LINKS` disposition
-    allows statements to generate arbitrarily sized result sets for fetching up to 100 GiB. The
-    resulting links have two important properties:
-    
-    1. They point to resources _external_ to the Databricks compute; therefore any associated
-    authentication information (typically a personal access token, OAuth token, or similar) _must be
-    removed_ when fetching from these links.
-    
-    2. These are presigned URLs with a specific expiration, indicated in the response. The behavior
-    when attempting to use an expired link is cloud specific.
+   Statements executed with `INLINE` disposition will return result data inline, in `JSON_ARRAY` format, in a series of chunks. If a given statement produces a result set with a size larger than 25 MiB, that statement execution is aborted, and no result set will be available.
+   **NOTE** Byte limits are computed based upon internal representations of the result set data, and might not match the sizes visible in JSON responses.
+   Statements executed with `EXTERNAL_LINKS` disposition will return result data as external links: URLs that point to cloud storage internal to the workspace. Using `EXTERNAL_LINKS` disposition allows statements to generate arbitrarily sized result sets for fetching up to 100 GiB. The resulting links have two important properties:
+   1. They point to resources _external_ to the Databricks compute; therefore any associated authentication information (typically a personal access token, OAuth token, or similar) _must be removed_ when fetching from these links.
+   2. These are presigned URLs with a specific expiration, indicated in the response. The behavior when attempting to use an expired link is cloud specific.
 
    .. py:attribute:: EXTERNAL_LINKS
       :value: "EXTERNAL_LINKS"
@@ -231,8 +214,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: EditWarehouseRequestWarehouseType
 
-   Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute, you must set to `PRO`
-    and also set the field `enable_serverless_compute` to `true`.
+   Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute, you must set to `PRO` and also set the field `enable_serverless_compute` to `true`.
 
    .. py:attribute:: CLASSIC
       :value: "CLASSIC"
@@ -257,8 +239,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: EndpointInfoWarehouseType
 
-   Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute, you must set to `PRO`
-    and also set the field `enable_serverless_compute` to `true`.
+   Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute, you must set to `PRO` and also set the field `enable_serverless_compute` to `true`.
 
    .. py:attribute:: CLASSIC
       :value: "CLASSIC"
@@ -283,12 +264,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ExecuteStatementRequestOnWaitTimeout
 
-   When `wait_timeout > 0s`, the call will block up to the specified time. If the statement
-    execution doesn't finish within this time, `on_wait_timeout` determines whether the execution
-    should continue or be canceled. When set to `CONTINUE`, the statement execution continues
-    asynchronously and the call returns a statement ID which can be used for polling with
-    :method:statementexecution/getStatement. When set to `CANCEL`, the statement execution is
-    canceled and the call returns with a `CANCELED` state.
+   When `wait_timeout > 0s`, the call will block up to the specified time. If the statement execution doesn't finish within this time, `on_wait_timeout` determines whether the execution should continue or be canceled. When set to `CONTINUE`, the statement execution continues asynchronously and the call returns a statement ID which can be used for polling with :method:statementexecution/getStatement. When set to `CANCEL`, the statement execution is canceled and the call returns with a `CANCELED` state.
 
    .. py:attribute:: CANCEL
       :value: "CANCEL"
@@ -333,8 +309,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: GetWarehouseResponseWarehouseType
 
-   Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute, you must set to `PRO`
-    and also set the field `enable_serverless_compute` to `true`.
+   Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute, you must set to `PRO` and also set the field `enable_serverless_compute` to `true`.
 
    .. py:attribute:: CLASSIC
       :value: "CLASSIC"
@@ -460,8 +435,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: PermissionLevel
 
-   * `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_EDIT`: Can edit the query
-    * `CAN_MANAGE`: Can manage the query
+   * `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_EDIT`: Can edit the query * `CAN_MANAGE`: Can manage the query
 
    .. py:attribute:: CAN_EDIT
       :value: "CAN_EDIT"
@@ -601,9 +575,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: QueryStatus
 
-   Query status with one the following values: * `QUEUED`: Query has been received and queued. *
-    `RUNNING`: Query has started. * `CANCELED`: Query has been cancelled by the user. * `FAILED`:
-    Query has failed. * `FINISHED`: Query has completed.
+   Query status with one the following values: * `QUEUED`: Query has been received and queued. * `RUNNING`: Query has started. * `CANCELED`: Query has been cancelled by the user. * `FAILED`: Query has failed. * `FINISHED`: Query has completed.
 
    .. py:attribute:: CANCELED
       :value: "CANCELED"
@@ -638,8 +610,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: RunAsRole
 
-   Sets the **Run as** role for the object. Must be set to one of `"viewer"` (signifying "run as
-    viewer" behavior) or `"owner"` (signifying "run as owner" behavior)
+   Sets the **Run as** role for the object. Must be set to one of `"viewer"` (signifying "run as viewer" behavior) or `"owner"` (signifying "run as owner" behavior)
 
    .. py:attribute:: OWNER
       :value: "OWNER"
@@ -757,11 +728,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: StatementState
 
-   Statement execution state: - `PENDING`: waiting for warehouse - `RUNNING`: running -
-    `SUCCEEDED`: execution was successful, result data available for fetch - `FAILED`: execution
-    failed; reason for failure described in accomanying error message - `CANCELED`: user canceled;
-    can come from explicit cancel call, or timeout with `on_wait_timeout=CANCEL` - `CLOSED`:
-    execution successful, and statement closed; result no longer available for fetch
+   Statement execution state: - `PENDING`: waiting for warehouse - `RUNNING`: running - `SUCCEEDED`: execution was successful, result data available for fetch - `FAILED`: execution failed; reason for failure described in accomanying error message - `CANCELED`: user canceled; can come from explicit cancel call, or timeout with `on_wait_timeout=CANCEL` - `CLOSED`: execution successful, and statement closed; result no longer available for fetch
 
    .. py:attribute:: CANCELED
       :value: "CANCELED"

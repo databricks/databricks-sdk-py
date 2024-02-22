@@ -74,10 +74,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: EndpointUseCase
 
-   This enumeration represents the type of Databricks VPC [endpoint service] that was used when
-    creating this VPC endpoint.
-    
-    [endpoint service]: https://docs.aws.amazon.com/vpc/latest/privatelink/endpoint-service.html
+   This enumeration represents the type of Databricks VPC [endpoint service] that was used when creating this VPC endpoint.
+   [endpoint service]: https://docs.aws.amazon.com/vpc/latest/privatelink/endpoint-service.html
 
    .. py:attribute:: DATAPLANE_RELAY_ACCESS
       :value: "DATAPLANE_RELAY_ACCESS"
@@ -87,8 +85,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ErrorType
 
-   The AWS resource associated with this error: credentials, VPC, subnet, security group, or
-    network ACL.
+   The AWS resource associated with this error: credentials, VPC, subnet, security group, or network ACL.
 
    .. py:attribute:: CREDENTIALS
       :value: "CREDENTIALS"
@@ -128,12 +125,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. py:class:: GkeConfigConnectivityType
 
    Specifies the network connectivity types for the GKE nodes and the GKE master network.
-    
-    Set to `PRIVATE_NODE_PUBLIC_MASTER` for a private GKE cluster for the workspace. The GKE nodes
-    will not have public IPs.
-    
-    Set to `PUBLIC_NODE_PUBLIC_MASTER` for a public GKE cluster. The nodes of a public GKE cluster
-    have public IP addresses.
+   Set to `PRIVATE_NODE_PUBLIC_MASTER` for a private GKE cluster for the workspace. The GKE nodes will not have public IPs.
+   Set to `PUBLIC_NODE_PUBLIC_MASTER` for a public GKE cluster. The nodes of a public GKE cluster have public IP addresses.
 
    .. py:attribute:: PRIVATE_NODE_PUBLIC_MASTER
       :value: "PRIVATE_NODE_PUBLIC_MASTER"
@@ -143,9 +136,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: KeyUseCase
 
-   Possible values are: * `MANAGED_SERVICES`: Encrypts notebook and secret data in the control
-    plane * `STORAGE`: Encrypts the workspace's root S3 bucket (root DBFS and system data) and,
-    optionally, cluster EBS volumes.
+   Possible values are: * `MANAGED_SERVICES`: Encrypts notebook and secret data in the control plane * `STORAGE`: Encrypts the workspace's root S3 bucket (root DBFS and system data) and, optionally, cluster EBS volumes.
 
    .. py:attribute:: MANAGED_SERVICES
       :value: "MANAGED_SERVICES"
@@ -172,8 +163,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. py:class:: PricingTier
 
    The pricing tier of the workspace. For pricing tier information, see [AWS Pricing].
-    
-    [AWS Pricing]: https://databricks.com/product/aws-pricing
+   [AWS Pricing]: https://databricks.com/product/aws-pricing
 
    .. py:attribute:: COMMUNITY_EDITION
       :value: "COMMUNITY_EDITION"
@@ -195,11 +185,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: PrivateAccessLevel
 
-   The private access level controls which VPC endpoints can connect to the UI or API of any
-    workspace that attaches this private access settings object. * `ACCOUNT` level access (the
-    default) allows only VPC endpoints that are registered in your Databricks account connect to
-    your workspace. * `ENDPOINT` level access allows only specified VPC endpoints connect to your
-    workspace. For details, see `allowed_vpc_endpoint_ids`.
+   The private access level controls which VPC endpoints can connect to the UI or API of any workspace that attaches this private access settings object. * `ACCOUNT` level access (the default) allows only VPC endpoints that are registered in your Databricks account connect to your workspace. * `ENDPOINT` level access allows only specified VPC endpoints connect to your workspace. For details, see `allowed_vpc_endpoint_ids`.
 
    .. py:attribute:: ACCOUNT
       :value: "ACCOUNT"
@@ -237,8 +223,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: VpcStatus
 
-   The status of this network configuration object in terms of its use in a workspace: *
-    `UNATTACHED`: Unattached. * `VALID`: Valid. * `BROKEN`: Broken. * `WARNED`: Warned.
+   The status of this network configuration object in terms of its use in a workspace: * `UNATTACHED`: Unattached. * `VALID`: Valid. * `BROKEN`: Broken. * `WARNED`: Warned.
 
    .. py:attribute:: BROKEN
       :value: "BROKEN"
@@ -268,8 +253,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: WorkspaceStatus
 
-   The status of the workspace. For workspace creation, usually it is set to `PROVISIONING`
-    initially. Continue to check the status until the status is `RUNNING`.
+   The status of the workspace. For workspace creation, usually it is set to `PROVISIONING` initially. Continue to check the status until the status is `RUNNING`.
 
    .. py:attribute:: BANNED
       :value: "BANNED"

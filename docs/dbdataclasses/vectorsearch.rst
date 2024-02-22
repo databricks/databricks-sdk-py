@@ -112,12 +112,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. py:class:: PipelineType
 
    Pipeline execution mode.
-    
-    - `TRIGGERED`: If the pipeline uses the triggered execution mode, the system stops processing
-    after successfully refreshing the source table in the pipeline once, ensuring the table is
-    updated based on the data available when the update started. - `CONTINUOUS`: If the pipeline
-    uses continuous execution, the pipeline processes new data as it arrives in the source table to
-    keep vector index fresh.
+   - `TRIGGERED`: If the pipeline uses the triggered execution mode, the system stops processing after successfully refreshing the source table in the pipeline once, ensuring the table is updated based on the data available when the update started. - `CONTINUOUS`: If the pipeline uses continuous execution, the pipeline processes new data as it arrives in the source table to keep vector index fresh.
 
    .. py:attribute:: CONTINUOUS
       :value: "CONTINUOUS"
@@ -177,11 +172,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. py:class:: VectorIndexType
 
    There are 2 types of Vector Search indexes:
-    
-    - `DELTA_SYNC`: An index that automatically syncs with a source Delta Table, automatically and
-    incrementally updating the index as the underlying data in the Delta Table changes. -
-    `DIRECT_ACCESS`: An index that supports direct read and write of vectors and metadata through
-    our REST and SDK APIs. With this model, the user manages index updates.
+   - `DELTA_SYNC`: An index that automatically syncs with a source Delta Table, automatically and incrementally updating the index as the underlying data in the Delta Table changes. - `DIRECT_ACCESS`: An index that supports direct read and write of vectors and metadata through our REST and SDK APIs. With this model, the user manages index updates.
 
    .. py:attribute:: DELTA_SYNC
       :value: "DELTA_SYNC"
