@@ -84,10 +84,7 @@ class {{.PascalName}}:
 	{{- else if .IsExternal }}{{.Package.Name}}.{{.PascalName}}
 	{{- else if .IsObject }}{{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}
 	{{- else if .Enum }}{{.PascalName}}
-	{{- else}}{{template "type-nq" .}}{{- end -}}
-{{- end -}}
-{{- define "type-nq" -}}
-	{{- if .IsString}}str
+	{{- else if .IsString}}str
 	{{- else if .IsAny}}Any
 	{{- else if .IsEmpty}}{{.PascalName}}
 	{{- else if .IsBool}}bool
@@ -95,11 +92,6 @@ class {{.PascalName}}:
 	{{- else if .IsFloat64}}float
 	{{- else if .IsInt}}int
 	{{- else if .IsByteStream}}BinaryIO
-	{{- else if .ArrayValue }}List[{{template "type" .ArrayValue}}]
-	{{- else if .MapValue }}Dict[str,{{template "type" .MapValue}}]
-	{{- else if .IsExternal }}{{.Package.Name}}.{{.PascalName}}
-	{{- else if .IsObject }}{{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}
-	{{- else if .Enum }}{{.PascalName}}
 	{{- else}}any /* MISSING TYPE */
 	{{- end -}}
 {{- end -}}
