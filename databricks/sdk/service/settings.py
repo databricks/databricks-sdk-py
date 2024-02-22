@@ -1771,17 +1771,99 @@ class AccountIpAccessListsAPI:
 
 
 class AccountSettingsAPI:
-    """Wrapper for Account Settings services"""
+    """The Personal Compute enablement setting lets you control which users can use the Personal Compute default
+    policy to create compute resources. By default all users in all workspaces have access (ON), but you can
+    change the setting to instead let individual workspaces configure access control (DELEGATE).
+    
+    There is only one instance of this setting per account. Since this setting has a default value, this
+    setting is present on all accounts even though it's never set on a given account. Deletion reverts the
+    value of the setting back to the default value."""
 
     def __init__(self, api_client):
         self._api = api_client
 
-        self._personal_compute_enablement = PersonalComputeEnablementAPI(self._api)
+    def delete_personal_compute_setting(self,
+                                        *,
+                                        etag: Optional[str] = None) -> DeletePersonalComputeSettingResponse:
+        """Delete Personal Compute setting.
+        
+        Reverts back the Personal Compute setting value to default (ON)
+        
+        :param etag: str (optional)
+          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
+          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
+          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
+          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
+          request, and pass it with the DELETE request to identify the rule set version you are deleting.
+        
+        :returns: :class:`DeletePersonalComputeSettingResponse`
+        """
 
-    @property
-    def personal_compute_enablement(self) -> PersonalComputeEnablementAPI:
-        """The Personal Compute enablement setting lets you control which users can use the Personal Compute default policy to create compute resources."""
-        return self._personal_compute_enablement
+        query = {}
+        if etag is not None: query['etag'] = etag
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do(
+            'DELETE',
+            f'/api/2.0/accounts/{self._api.account_id}/settings/types/dcp_acct_enable/names/default',
+            query=query,
+            headers=headers)
+        return DeletePersonalComputeSettingResponse.from_dict(res)
+
+    def get_personal_compute_setting(self, *, etag: Optional[str] = None) -> PersonalComputeSetting:
+        """Get Personal Compute setting.
+        
+        Gets the value of the Personal Compute setting.
+        
+        :param etag: str (optional)
+          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
+          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
+          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
+          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
+          request, and pass it with the DELETE request to identify the rule set version you are deleting.
+        
+        :returns: :class:`PersonalComputeSetting`
+        """
+
+        query = {}
+        if etag is not None: query['etag'] = etag
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do(
+            'GET',
+            f'/api/2.0/accounts/{self._api.account_id}/settings/types/dcp_acct_enable/names/default',
+            query=query,
+            headers=headers)
+        return PersonalComputeSetting.from_dict(res)
+
+    def update_personal_compute_setting(self, allow_missing: bool, setting: PersonalComputeSetting,
+                                        field_mask: str) -> PersonalComputeSetting:
+        """Update Personal Compute setting.
+        
+        Updates the value of the Personal Compute setting.
+        
+        :param allow_missing: bool
+          This should always be set to true for Settings API. Added for AIP compliance.
+        :param setting: :class:`PersonalComputeSetting`
+        :param field_mask: str
+          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
+          setting payload will be updated. The field mask needs to be supplied as single string. To specify
+          multiple fields in the field mask, use comma as the separator (no space).
+        
+        :returns: :class:`PersonalComputeSetting`
+        """
+        body = {}
+        if allow_missing is not None: body['allow_missing'] = allow_missing
+        if field_mask is not None: body['field_mask'] = field_mask
+        if setting is not None: body['setting'] = setting.as_dict()
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do(
+            'PATCH',
+            f'/api/2.0/accounts/{self._api.account_id}/settings/types/dcp_acct_enable/names/default',
+            body=body,
+            headers=headers)
+        return PersonalComputeSetting.from_dict(res)
 
 
 class CredentialsManagerAPI:
@@ -1818,117 +1900,6 @@ class CredentialsManagerAPI:
                            body=body,
                            headers=headers)
         return ExchangeTokenResponse.from_dict(res)
-
-
-class DefaultNamespaceAPI:
-    """The default namespace setting API allows users to configure the default namespace for a Databricks
-    workspace.
-    
-    Through this API, users can retrieve, set, or modify the default namespace used when queries do not
-    reference a fully qualified three-level name. For example, if you use the API to set 'retail_prod' as the
-    default catalog, then a query 'SELECT * FROM myTable' would reference the object
-    'retail_prod.default.myTable' (the schema 'default' is always assumed).
-    
-    This setting requires a restart of clusters and SQL warehouses to take effect. Additionally, the default
-    namespace only applies when using Unity Catalog-enabled compute."""
-
-    def __init__(self, api_client):
-        self._api = api_client
-
-    def delete_default_namespace_setting(self,
-                                         *,
-                                         etag: Optional[str] = None) -> DeleteDefaultNamespaceSettingResponse:
-        """Delete the default namespace setting.
-        
-        Deletes the default namespace setting for the workspace. A fresh etag needs to be provided in DELETE
-        requests (as a query parameter). The etag can be retrieved by making a GET request before the DELETE
-        request. If the setting is updated/deleted concurrently, DELETE will fail with 409 and the request
-        will need to be retried by using the fresh etag in the 409 response.
-        
-        :param etag: str (optional)
-          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
-          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
-          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
-          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
-          request, and pass it with the DELETE request to identify the rule set version you are deleting.
-        
-        :returns: :class:`DeleteDefaultNamespaceSettingResponse`
-        """
-
-        query = {}
-        if etag is not None: query['etag'] = etag
-        headers = {'Accept': 'application/json', }
-
-        res = self._api.do('DELETE',
-                           '/api/2.0/settings/types/default_namespace_ws/names/default',
-                           query=query,
-                           headers=headers)
-        return DeleteDefaultNamespaceSettingResponse.from_dict(res)
-
-    def get_default_namespace_setting(self, *, etag: Optional[str] = None) -> DefaultNamespaceSetting:
-        """Get the default namespace setting.
-        
-        Gets the default namespace setting.
-        
-        :param etag: str (optional)
-          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
-          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
-          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
-          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
-          request, and pass it with the DELETE request to identify the rule set version you are deleting.
-        
-        :returns: :class:`DefaultNamespaceSetting`
-        """
-
-        query = {}
-        if etag is not None: query['etag'] = etag
-        headers = {'Accept': 'application/json', }
-
-        res = self._api.do('GET',
-                           '/api/2.0/settings/types/default_namespace_ws/names/default',
-                           query=query,
-                           headers=headers)
-        return DefaultNamespaceSetting.from_dict(res)
-
-    def update_default_namespace_setting(self, allow_missing: bool, setting: DefaultNamespaceSetting,
-                                         field_mask: str) -> DefaultNamespaceSetting:
-        """Update the default namespace setting.
-        
-        Updates the default namespace setting for the workspace. A fresh etag needs to be provided in PATCH
-        requests (as part of the setting field). The etag can be retrieved by making a GET request before the
-        PATCH request. Note that if the setting does not exist, GET will return a NOT_FOUND error and the etag
-        will be present in the error response, which should be set in the PATCH request. If the setting is
-        updated concurrently, PATCH will fail with 409 and the request will need to be retried by using the
-        fresh etag in the 409 response.
-        
-        :param allow_missing: bool
-          This should always be set to true for Settings API. Added for AIP compliance.
-        :param setting: :class:`DefaultNamespaceSetting`
-          This represents the setting configuration for the default namespace in the Databricks workspace.
-          Setting the default catalog for the workspace determines the catalog that is used when queries do
-          not reference a fully qualified 3 level name. For example, if the default catalog is set to
-          'retail_prod' then a query 'SELECT * FROM myTable' would reference the object
-          'retail_prod.default.myTable' (the schema 'default' is always assumed). This setting requires a
-          restart of clusters and SQL warehouses to take effect. Additionally, the default namespace only
-          applies when using Unity Catalog-enabled compute.
-        :param field_mask: str
-          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
-          setting payload will be updated. The field mask needs to be supplied as single string. To specify
-          multiple fields in the field mask, use comma as the separator (no space).
-        
-        :returns: :class:`DefaultNamespaceSetting`
-        """
-        body = {}
-        if allow_missing is not None: body['allow_missing'] = allow_missing
-        if field_mask is not None: body['field_mask'] = field_mask
-        if setting is not None: body['setting'] = setting.as_dict()
-        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
-        res = self._api.do('PATCH',
-                           '/api/2.0/settings/types/default_namespace_ws/names/default',
-                           body=body,
-                           headers=headers)
-        return DefaultNamespaceSetting.from_dict(res)
 
 
 class IpAccessListsAPI:
@@ -2369,24 +2340,30 @@ class NetworkConnectivityAPI:
             query['page_token'] = json['next_page_token']
 
 
-class PersonalComputeEnablementAPI:
-    """The Personal Compute enablement setting lets you control which users can use the Personal Compute default
-    policy to create compute resources. By default all users in all workspaces have access (ON), but you can
-    change the setting to instead let individual workspaces configure access control (DELEGATE).
+class SettingsAPI:
+    """The default namespace setting API allows users to configure the default namespace for a Databricks
+    workspace.
     
-    There is only one instance of this setting per account. Since this setting has a default value, this
-    setting is present on all accounts even though it's never set on a given account. Deletion reverts the
-    value of the setting back to the default value."""
+    Through this API, users can retrieve, set, or modify the default namespace used when queries do not
+    reference a fully qualified three-level name. For example, if you use the API to set 'retail_prod' as the
+    default catalog, then a query 'SELECT * FROM myTable' would reference the object
+    'retail_prod.default.myTable' (the schema 'default' is always assumed).
+    
+    This setting requires a restart of clusters and SQL warehouses to take effect. Additionally, the default
+    namespace only applies when using Unity Catalog-enabled compute."""
 
     def __init__(self, api_client):
         self._api = api_client
 
-    def delete_personal_compute_setting(self,
-                                        *,
-                                        etag: Optional[str] = None) -> DeletePersonalComputeSettingResponse:
-        """Delete Personal Compute setting.
+    def delete_default_namespace_setting(self,
+                                         *,
+                                         etag: Optional[str] = None) -> DeleteDefaultNamespaceSettingResponse:
+        """Delete the default namespace setting.
         
-        Reverts back the Personal Compute setting value to default (ON)
+        Deletes the default namespace setting for the workspace. A fresh etag needs to be provided in DELETE
+        requests (as a query parameter). The etag can be retrieved by making a GET request before the DELETE
+        request. If the setting is updated/deleted concurrently, DELETE will fail with 409 and the request
+        will need to be retried by using the fresh etag in the 409 response.
         
         :param etag: str (optional)
           etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
@@ -2395,88 +2372,18 @@ class PersonalComputeEnablementAPI:
           to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
           request, and pass it with the DELETE request to identify the rule set version you are deleting.
         
-        :returns: :class:`DeletePersonalComputeSettingResponse`
+        :returns: :class:`DeleteDefaultNamespaceSettingResponse`
         """
 
         query = {}
         if etag is not None: query['etag'] = etag
         headers = {'Accept': 'application/json', }
 
-        res = self._api.do(
-            'DELETE',
-            f'/api/2.0/accounts/{self._api.account_id}/settings/types/dcp_acct_enable/names/default',
-            query=query,
-            headers=headers)
-        return DeletePersonalComputeSettingResponse.from_dict(res)
-
-    def get_personal_compute_setting(self, *, etag: Optional[str] = None) -> PersonalComputeSetting:
-        """Get Personal Compute setting.
-        
-        Gets the value of the Personal Compute setting.
-        
-        :param etag: str (optional)
-          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
-          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
-          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
-          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
-          request, and pass it with the DELETE request to identify the rule set version you are deleting.
-        
-        :returns: :class:`PersonalComputeSetting`
-        """
-
-        query = {}
-        if etag is not None: query['etag'] = etag
-        headers = {'Accept': 'application/json', }
-
-        res = self._api.do(
-            'GET',
-            f'/api/2.0/accounts/{self._api.account_id}/settings/types/dcp_acct_enable/names/default',
-            query=query,
-            headers=headers)
-        return PersonalComputeSetting.from_dict(res)
-
-    def update_personal_compute_setting(self, allow_missing: bool, setting: PersonalComputeSetting,
-                                        field_mask: str) -> PersonalComputeSetting:
-        """Update Personal Compute setting.
-        
-        Updates the value of the Personal Compute setting.
-        
-        :param allow_missing: bool
-          This should always be set to true for Settings API. Added for AIP compliance.
-        :param setting: :class:`PersonalComputeSetting`
-        :param field_mask: str
-          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
-          setting payload will be updated. The field mask needs to be supplied as single string. To specify
-          multiple fields in the field mask, use comma as the separator (no space).
-        
-        :returns: :class:`PersonalComputeSetting`
-        """
-        body = {}
-        if allow_missing is not None: body['allow_missing'] = allow_missing
-        if field_mask is not None: body['field_mask'] = field_mask
-        if setting is not None: body['setting'] = setting.as_dict()
-        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
-        res = self._api.do(
-            'PATCH',
-            f'/api/2.0/accounts/{self._api.account_id}/settings/types/dcp_acct_enable/names/default',
-            body=body,
-            headers=headers)
-        return PersonalComputeSetting.from_dict(res)
-
-
-class RestrictWorkspaceAdminsAPI:
-    """The Restrict Workspace Admins setting lets you control the capabilities of workspace admins. With the
-    setting status set to ALLOW_ALL, workspace admins can create service principal personal access tokens on
-    behalf of any service principal in their workspace. Workspace admins can also change a job owner or the
-    job run_as setting to any user in their workspace or a service principal on which they have the Service
-    Principal User role. With the setting status set to RESTRICT_TOKENS_AND_JOB_RUN_AS, workspace admins can
-    only create personal access tokens on behalf of service principals they have the Service Principal User
-    role on. They can also only change a job owner or the job run_as setting to themselves or a service
-    principal on which they have the Service Principal User role."""
-
-    def __init__(self, api_client):
-        self._api = api_client
+        res = self._api.do('DELETE',
+                           '/api/2.0/settings/types/default_namespace_ws/names/default',
+                           query=query,
+                           headers=headers)
+        return DeleteDefaultNamespaceSettingResponse.from_dict(res)
 
     def delete_restrict_workspace_admins_setting(self,
                                                  *,
@@ -2509,6 +2416,31 @@ class RestrictWorkspaceAdminsAPI:
                            headers=headers)
         return DeleteRestrictWorkspaceAdminsSettingResponse.from_dict(res)
 
+    def get_default_namespace_setting(self, *, etag: Optional[str] = None) -> DefaultNamespaceSetting:
+        """Get the default namespace setting.
+        
+        Gets the default namespace setting.
+        
+        :param etag: str (optional)
+          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
+          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
+          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
+          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
+          request, and pass it with the DELETE request to identify the rule set version you are deleting.
+        
+        :returns: :class:`DefaultNamespaceSetting`
+        """
+
+        query = {}
+        if etag is not None: query['etag'] = etag
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do('GET',
+                           '/api/2.0/settings/types/default_namespace_ws/names/default',
+                           query=query,
+                           headers=headers)
+        return DefaultNamespaceSetting.from_dict(res)
+
     def get_restrict_workspace_admins_setting(self,
                                               *,
                                               etag: Optional[str] = None) -> RestrictWorkspaceAdminsSetting:
@@ -2535,6 +2467,46 @@ class RestrictWorkspaceAdminsAPI:
                            query=query,
                            headers=headers)
         return RestrictWorkspaceAdminsSetting.from_dict(res)
+
+    def update_default_namespace_setting(self, allow_missing: bool, setting: DefaultNamespaceSetting,
+                                         field_mask: str) -> DefaultNamespaceSetting:
+        """Update the default namespace setting.
+        
+        Updates the default namespace setting for the workspace. A fresh etag needs to be provided in PATCH
+        requests (as part of the setting field). The etag can be retrieved by making a GET request before the
+        PATCH request. Note that if the setting does not exist, GET will return a NOT_FOUND error and the etag
+        will be present in the error response, which should be set in the PATCH request. If the setting is
+        updated concurrently, PATCH will fail with 409 and the request will need to be retried by using the
+        fresh etag in the 409 response.
+        
+        :param allow_missing: bool
+          This should always be set to true for Settings API. Added for AIP compliance.
+        :param setting: :class:`DefaultNamespaceSetting`
+          This represents the setting configuration for the default namespace in the Databricks workspace.
+          Setting the default catalog for the workspace determines the catalog that is used when queries do
+          not reference a fully qualified 3 level name. For example, if the default catalog is set to
+          'retail_prod' then a query 'SELECT * FROM myTable' would reference the object
+          'retail_prod.default.myTable' (the schema 'default' is always assumed). This setting requires a
+          restart of clusters and SQL warehouses to take effect. Additionally, the default namespace only
+          applies when using Unity Catalog-enabled compute.
+        :param field_mask: str
+          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
+          setting payload will be updated. The field mask needs to be supplied as single string. To specify
+          multiple fields in the field mask, use comma as the separator (no space).
+        
+        :returns: :class:`DefaultNamespaceSetting`
+        """
+        body = {}
+        if allow_missing is not None: body['allow_missing'] = allow_missing
+        if field_mask is not None: body['field_mask'] = field_mask
+        if setting is not None: body['setting'] = setting.as_dict()
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do('PATCH',
+                           '/api/2.0/settings/types/default_namespace_ws/names/default',
+                           body=body,
+                           headers=headers)
+        return DefaultNamespaceSetting.from_dict(res)
 
     def update_restrict_workspace_admins_setting(self, allow_missing: bool,
                                                  setting: RestrictWorkspaceAdminsSetting,
@@ -2567,26 +2539,6 @@ class RestrictWorkspaceAdminsAPI:
                            body=body,
                            headers=headers)
         return RestrictWorkspaceAdminsSetting.from_dict(res)
-
-
-class SettingsAPI:
-    """Wrapper for Workspace Settings services"""
-
-    def __init__(self, api_client):
-        self._api = api_client
-
-        self._default_namespace = DefaultNamespaceAPI(self._api)
-        self._restrict_workspace_admins = RestrictWorkspaceAdminsAPI(self._api)
-
-    @property
-    def default_namespace(self) -> DefaultNamespaceAPI:
-        """The default namespace setting API allows users to configure the default namespace for a Databricks workspace."""
-        return self._default_namespace
-
-    @property
-    def restrict_workspace_admins(self) -> RestrictWorkspaceAdminsAPI:
-        """The Restrict Workspace Admins setting lets you control the capabilities of workspace admins."""
-        return self._restrict_workspace_admins
 
 
 class TokenManagementAPI:

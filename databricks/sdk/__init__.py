@@ -53,11 +53,8 @@ from databricks.sdk.service.serving import AppsAPI, ServingEndpointsAPI
 from databricks.sdk.service.settings import (AccountIpAccessListsAPI,
                                              AccountSettingsAPI,
                                              CredentialsManagerAPI,
-                                             DefaultNamespaceAPI,
                                              IpAccessListsAPI,
                                              NetworkConnectivityAPI,
-                                             PersonalComputeEnablementAPI,
-                                             RestrictWorkspaceAdminsAPI,
                                              SettingsAPI, TokenManagementAPI,
                                              TokensAPI, WorkspaceConfAPI)
 from databricks.sdk.service.sharing import (CleanRoomsAPI, ProvidersAPI,
@@ -487,7 +484,7 @@ class WorkspaceClient:
 
     @property
     def settings(self) -> SettingsAPI:
-        """Wrapper for Workspace Settings services."""
+        """The default namespace setting API allows users to configure the default namespace for a Databricks workspace."""
         return self._settings
 
     @property
@@ -764,7 +761,7 @@ class AccountClient:
 
     @property
     def settings(self) -> AccountSettingsAPI:
-        """Wrapper for Account Settings services."""
+        """The Personal Compute enablement setting lets you control which users can use the Personal Compute default policy to create compute resources."""
         return self._settings
 
     @property
