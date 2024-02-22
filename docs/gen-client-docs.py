@@ -330,7 +330,7 @@ class Generator:
             doc = DataclassesDoc(package=pkg, dataclasses=sorted(all_members))
             with open(f'{__dir__}/dbdataclasses/{pkg.name}.rst', 'w') as f:
                 f.write(doc.as_rst())
-        all = "\n   ".join([f'{p.name}' for p in self.packages])
+        all = "\n   ".join(sorted([p.name for p in self.packages]))
         with open(f'{__dir__}/dbdataclasses/index.rst', 'w') as f:
             f.write(f'''
 Dataclasses
@@ -374,7 +374,7 @@ Dataclasses
         """Writes out the top-level index for the APIs supported by a client."""
         self._make_folder_if_not_exists(f'{__dir__}/{folder}')
         with open(f'{__dir__}/{folder}/index.rst', 'w') as f:
-            all = "\n   ".join([f'{name}/index' for name in packages])
+            all = "\n   ".join([f'{name}/index' for name in sorted(packages)])
             f.write(f'''
 {label}
 {'=' * len(label)}
@@ -390,7 +390,7 @@ Dataclasses
         """Writes out the index for a single package supported by a client."""
         self._make_folder_if_not_exists(f'{__dir__}/{folder}/{pkg.name}')
         with open(f'{__dir__}/{folder}/{pkg.name}/index.rst', 'w') as f:
-            all = "\n   ".join(services)
+            all = "\n   ".join(sorted(services))
             f.write(f'''
 {pkg.label}
 {'=' * len(pkg.label)}
