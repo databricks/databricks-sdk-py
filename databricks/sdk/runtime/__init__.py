@@ -104,7 +104,6 @@ except ImportError:
         from pyspark.sql.functions import udf  # type: ignore
     except ImportError as e:
         logging.debug(f"Failed to initialise udf global: {e}")
-        
 
     try:
         from databricks.connect import DatabricksSession  # type: ignore
@@ -156,7 +155,6 @@ except ImportError:
 
     except ImportError as e:
         logging.debug(f"Failed to initialise display globals: {e}")
-        pass
 
     # We want to propagate the error in initialising dbutils because this is a core
     # functionality of the sdk
