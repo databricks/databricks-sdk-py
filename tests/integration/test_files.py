@@ -221,12 +221,8 @@ def test_files_api_upload_download(ucws, random):
             f = io.BytesIO(b"some text data")
             target_file = f'/Volumes/main/{schema}/{volume}/filesit-{random()}.txt'
             w.files.upload(target_file, f)
-            m = w.files.get_metadata(target_file)
-            assert m.content_type == 'application/octet-stream'
             with w.files.download(target_file).contents as f:
                 assert f.read() == b"some text data"
-
-            w.files.delete(target_file)
 
 
 def test_files_api_read_twice_from_one_download(ucws, random):
@@ -247,6 +243,80 @@ def test_files_api_read_twice_from_one_download(ucws, random):
             with pytest.raises(ValueError):
                 with res:
                     res.read()
+
+
+def test_files_api_delete_file(ucws, random):
+    w = ucws
+    schema = 'filesit-' + random()
+    volume = 'filesit-' + random()
+    with ResourceWithCleanup.create_schema(w, 'main', schema):
+        with ResourceWithCleanup.create_volume(w, 'main', schema, volume):
+            f = io.BytesIO(b"some text data")
+            target_file = f'/Volumes/main/{schema}/{volume}/filesit-{random()}.txt'
+            w.files.upload(target_file, f)
+            w.files.delete(target_file)
+
+
+def test_files_api_get_metadata(ucws, random):
+    w = ucws
+    schema = 'filesit-' + random()
+    volume = 'filesit-' + random()
+    with ResourceWithCleanup.create_schema(w, 'main', schema):
+        with ResourceWithCleanup.create_volume(w, 'main', schema, volume):
+            f = io.BytesIO(b"some text data")
+            target_file = f'/Volumes/main/{schema}/{volume}/filesit-{random()}.txt'
+            w.files.upload(target_file, f)
+            m = w.files.get_metadata(target_file)
+            assert m.content_type == 'application/octet-stream'
+            assert m.content_length == 14
+            assert m.last_modified is not None
+
+
+def test_files_api_create_directory(ucws, random):
+    w = ucws
+    schema = 'filesit-' + random()
+    volume = 'filesit-' + random()
+    with ResourceWithCleanup.create_schema(w, 'main', schema):
+        with ResourceWithCleanup.create_volume(w, 'main', schema, volume):
+            target_directory = f'/Volumes/main/{schema}/{volume}/filesit-{random()}/'
+            w.files.create_directory(target_directory)
+
+
+def test_files_api_list_directory_contents(ucws, random):
+    w = ucws
+    schema = 'filesit-' + random()
+    volume = 'filesit-' + random()
+    with ResourceWithCleanup.create_schema(w, 'main', schema):
+        with ResourceWithCleanup.create_volume(w, 'main', schema, volume):
+            target_directory = f'/Volumes/main/{schema}/{volume}/filesit-{random()}'
+            w.files.upload(target_directory + "/file1.txt", io.BytesIO(b"some text data"))
+            w.files.upload(target_directory + "/file2.txt", io.BytesIO(b"some text data"))
+            w.files.upload(target_directory + "/file3.txt", io.BytesIO(b"some text data"))
+
+            result = list(w.files.list_directory_contents(target_directory))
+            assert len(result) == 3
+
+
+def test_files_api_delete_directory(ucws, random):
+    w = ucws
+    schema = 'filesit-' + random()
+    volume = 'filesit-' + random()
+    with ResourceWithCleanup.create_schema(w, 'main', schema):
+        with ResourceWithCleanup.create_volume(w, 'main', schema, volume):
+            target_directory = f'/Volumes/main/{schema}/{volume}/filesit-{random()}/'
+            w.files.create_directory(target_directory)
+            w.files.delete_directory(target_directory)
+
+
+def test_files_api_get_directory_metadata(ucws, random):
+    w = ucws
+    schema = 'filesit-' + random()
+    volume = 'filesit-' + random()
+    with ResourceWithCleanup.create_schema(w, 'main', schema):
+        with ResourceWithCleanup.create_volume(w, 'main', schema, volume):
+            target_directory = f'/Volumes/main/{schema}/{volume}/filesit-{random()}/'
+            w.files.create_directory(target_directory)
+            w.files.get_directory_metadata(target_directory)
 
 
 @pytest.mark.benchmark
