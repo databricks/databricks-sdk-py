@@ -8,3 +8,4 @@ Manage files on Databricks in a filesystem-like interface
    :maxdepth: 1
 
    dbfs
+   files
