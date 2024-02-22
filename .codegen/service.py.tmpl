@@ -97,20 +97,13 @@ class {{.PascalName}}:
 {{- end -}}
 
 {{- define "type-doc" -}}
-	{{- if .IsString}}str
-	{{- else if .IsAny}}Any
-	{{- else if .IsEmpty}}:class:`{{.PascalName}}`
-	{{- else if .IsBool}}bool
-	{{- else if .IsInt64}}int
-	{{- else if .IsFloat64}}float
-	{{- else if .IsInt}}int
-	{{- else if .IsByteStream}}BinaryIO
+	{{- if .IsEmpty}}:class:`{{template "type" .}}`
 	{{- else if .ArrayValue }}List[{{template "type-doc" .ArrayValue}}]
 	{{- else if .MapValue }}Dict[str,{{template "type-doc" .MapValue}}]
 	{{- else if .IsExternal }}:class:`{{.PascalName}}`
 	{{- else if .IsObject }}:class:`{{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}`
 	{{- else if .Enum }}:class:`{{.PascalName}}`
-	{{- else}}any /* MISSING TYPE */
+	{{- else}}{{template "type" . }}
 	{{- end -}}
 {{- end -}}
 
