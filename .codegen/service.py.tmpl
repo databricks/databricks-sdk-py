@@ -106,8 +106,8 @@ class {{.PascalName}}:
 
 {{- define "type-doc" -}}
 	{{- if .IsString}}str
-	{{- else if .IsEmpty}}Any
 	{{- else if .IsAny}}Any
+	{{- else if .IsEmpty}}:class:`{{.PascalName}}`
 	{{- else if .IsBool}}bool
 	{{- else if .IsInt64}}int
 	{{- else if .IsFloat64}}float

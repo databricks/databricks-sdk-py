@@ -72,7 +72,7 @@
           List of column expressions to slice data with for targeted analysis. The data is grouped by each
           expression independently, resulting in a separate slice for each predicate and its complements. For
           high-cardinality columns, only the top 100 unique values by frequency will generate slices.
-        :param snapshot: Any (optional)
+        :param snapshot: :class:`MonitorSnapshotProfileType` (optional)
           Configuration for monitoring snapshot tables.
         :param time_series: :class:`MonitorTimeSeriesProfileType` (optional)
           Configuration for monitoring time series tables.
@@ -224,7 +224,7 @@
           List of column expressions to slice data with for targeted analysis. The data is grouped by each
           expression independently, resulting in a separate slice for each predicate and its complements. For
           high-cardinality columns, only the top 100 unique values by frequency will generate slices.
-        :param snapshot: Any (optional)
+        :param snapshot: :class:`MonitorSnapshotProfileType` (optional)
           Configuration for monitoring snapshot tables.
         :param time_series: :class:`MonitorTimeSeriesProfileType` (optional)
           Configuration for monitoring time series tables.

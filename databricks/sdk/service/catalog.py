@@ -6675,7 +6675,7 @@ class LakehouseMonitorsAPI:
           List of column expressions to slice data with for targeted analysis. The data is grouped by each
           expression independently, resulting in a separate slice for each predicate and its complements. For
           high-cardinality columns, only the top 100 unique values by frequency will generate slices.
-        :param snapshot: Any (optional)
+        :param snapshot: :class:`MonitorSnapshotProfileType` (optional)
           Configuration for monitoring snapshot tables.
         :param time_series: :class:`MonitorTimeSeriesProfileType` (optional)
           Configuration for monitoring time series tables.
@@ -6885,7 +6885,7 @@ class LakehouseMonitorsAPI:
           List of column expressions to slice data with for targeted analysis. The data is grouped by each
           expression independently, resulting in a separate slice for each predicate and its complements. For
           high-cardinality columns, only the top 100 unique values by frequency will generate slices.
-        :param snapshot: Any (optional)
+        :param snapshot: :class:`MonitorSnapshotProfileType` (optional)
           Configuration for monitoring snapshot tables.
         :param time_series: :class:`MonitorTimeSeriesProfileType` (optional)
           Configuration for monitoring time series tables.
@@ -7845,7 +7845,7 @@ class StorageCredentialsAPI:
           The Cloudflare API token configuration.
         :param comment: str (optional)
           Comment associated with the credential.
-        :param databricks_gcp_service_account: Any (optional)
+        :param databricks_gcp_service_account: :class:`DatabricksGcpServiceAccountRequest` (optional)
           The <Databricks> managed GCP service account configuration.
         :param read_only: bool (optional)
           Whether the storage credential is only usable for read operations.
@@ -7983,7 +7983,7 @@ class StorageCredentialsAPI:
           The Cloudflare API token configuration.
         :param comment: str (optional)
           Comment associated with the credential.
-        :param databricks_gcp_service_account: Any (optional)
+        :param databricks_gcp_service_account: :class:`DatabricksGcpServiceAccountRequest` (optional)
           The <Databricks> managed GCP service account configuration.
         :param force: bool (optional)
           Force update even if there are dependent external locations or external tables.
@@ -8052,7 +8052,7 @@ class StorageCredentialsAPI:
           The Azure service principal configuration.
         :param cloudflare_api_token: :class:`CloudflareApiToken` (optional)
           The Cloudflare API token configuration.
-        :param databricks_gcp_service_account: Any (optional)
+        :param databricks_gcp_service_account: :class:`DatabricksGcpServiceAccountRequest` (optional)
           The Databricks created GCP service account configuration.
         :param external_location_name: str (optional)
           The name of an existing external location to validate.
