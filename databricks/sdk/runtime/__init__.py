@@ -102,17 +102,18 @@ except ImportError:
     # mannaer. We separate them to try to get as many of them working as possible
     try:
         from pyspark.sql.functions import udf  # type: ignore
-    except ImportError:
-        pass
+    except ImportError as e:
+        logging.debug(f"Failed to initialise udf global: {e}")
+        
 
     try:
         from databricks.connect import DatabricksSession  # type: ignore
         spark = DatabricksSession.builder.getOrCreate()
         sc = spark.sparkContext
-    except Exception:
+    except Exception as e:
         # We are ignoring all failures here because user might want to initialize
         # spark session themselves and we don't want to interfere with that
-        pass
+        logging.debug(f"Failed to initialize spark session: {e}")
 
     try:
         from IPython import display as IPDisplay
@@ -153,7 +154,8 @@ except ImportError:
             """
             return IPDisplay.display_html(html, raw=True) # type: ignore
 
-    except ImportError:
+    except ImportError as e:
+        logging.debug(f"Failed to initialise display globals: {e}")
         pass
 
     # We want to propagate the error in initialising dbutils because this is a core
