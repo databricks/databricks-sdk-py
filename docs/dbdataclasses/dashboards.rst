@@ -7,3 +7,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: PublishRequest
    :members:
    :undoc-members:
+
+.. autoclass:: PublishResponse
+   :members:
+   :undoc-members:

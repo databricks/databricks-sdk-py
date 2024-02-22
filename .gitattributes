@@ -270,6 +270,7 @@ examples/volumes/update_volumes.py linguist-generated=true
 examples/vpc_endpoints/create_vpc_endpoints.py linguist-generated=true
 examples/vpc_endpoints/get_vpc_endpoints.py linguist-generated=true
 examples/vpc_endpoints/list_vpc_endpoints.py linguist-generated=true
+examples/w/current_workspace_id_workspace_client_current_workspace_id.py linguist-generated=true
 examples/warehouses/create_sql_warehouses.py linguist-generated=true
 examples/warehouses/edit_sql_warehouses.py linguist-generated=true
 examples/warehouses/get_sql_warehouses.py linguist-generated=true

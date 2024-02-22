@@ -39,6 +39,11 @@ class PublishRequest:
                    warehouse_id=d.get('warehouse_id', None))
 
 
+@dataclass
+class PublishResponse:
+    pass
+
+
 class LakeviewAPI:
     """These APIs provide specific management operations for Lakeview dashboards. Generic resource management can
     be done with Workspace API (import, export, get-status, list, delete)."""

@@ -1283,6 +1283,56 @@ class WorkspaceObjectPermissionsRequest:
                    workspace_object_type=d.get('workspace_object_type', None))
 
 
+@dataclass
+class CreateScopeResponse:
+    pass
+
+
+@dataclass
+class DeleteAclResponse:
+    pass
+
+
+@dataclass
+class DeleteResponse:
+    pass
+
+
+@dataclass
+class DeleteScopeResponse:
+    pass
+
+
+@dataclass
+class DeleteSecretResponse:
+    pass
+
+
+@dataclass
+class ImportResponse:
+    pass
+
+
+@dataclass
+class MkdirsResponse:
+    pass
+
+
+@dataclass
+class PutAclResponse:
+    pass
+
+
+@dataclass
+class PutSecretResponse:
+    pass
+
+
+@dataclass
+class UpdateResponse:
+    pass
+
+
 class GitCredentialsAPI:
     """Registers personal access token for Databricks to do operations on behalf of the user.
     

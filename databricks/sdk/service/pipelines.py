@@ -8,7 +8,7 @@ import time
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Any, Callable, Dict, Iterator, List, Optional
+from typing import Callable, Dict, Iterator, List, Optional
 
 from ..errors import OperationFailed
 from ._internal import Wait, _enum, _from_dict, _repeated_dict
@@ -178,14 +178,14 @@ class DataPlaneId:
     instance: Optional[str] = None
     """The instance name of the data plane emitting an event."""
 
-    seq_no: Optional[Any] = None
+    seq_no: Optional[int] = None
     """A sequence number, unique and increasing within the data plane instance."""
 
     def as_dict(self) -> dict:
         """Serializes the DataPlaneId into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.instance is not None: body['instance'] = self.instance
-        if self.seq_no: body['seq_no'] = self.seq_no
+        if self.seq_no is not None: body['seq_no'] = self.seq_no
         return body
 
     @classmethod
@@ -1335,7 +1335,7 @@ class PipelineStateInfo:
 class PipelineTrigger:
     cron: Optional[CronTrigger] = None
 
-    manual: Optional[Any] = None
+    manual: Optional[ManualTrigger] = None
 
     def as_dict(self) -> dict:
         """Serializes the PipelineTrigger into a dictionary suitable for use as a JSON request body."""
@@ -1641,6 +1641,26 @@ class UpdateStateInfoState(Enum):
     SETTING_UP_TABLES = 'SETTING_UP_TABLES'
     STOPPING = 'STOPPING'
     WAITING_FOR_RESOURCES = 'WAITING_FOR_RESOURCES'
+
+
+@dataclass
+class DeletePipelineResponse:
+    pass
+
+
+@dataclass
+class EditPipelineResponse:
+    pass
+
+
+@dataclass
+class ManualTrigger:
+    pass
+
+
+@dataclass
+class StopPipelineResponse:
+    pass
 
 
 class PipelinesAPI:

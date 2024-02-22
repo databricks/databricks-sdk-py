@@ -675,6 +675,21 @@ class WrappedLogDeliveryConfigurations:
                                                               LogDeliveryConfiguration))
 
 
+@dataclass
+class DeleteResponse:
+    pass
+
+
+@dataclass
+class PatchStatusResponse:
+    pass
+
+
+@dataclass
+class UpdateResponse:
+    pass
+
+
 class BillableUsageAPI:
     """This API allows you to download billable usage logs for the specified account and date range. This feature
     works with all account types."""

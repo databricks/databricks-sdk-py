@@ -1546,6 +1546,21 @@ class WorkspaceStatus(Enum):
     RUNNING = 'RUNNING'
 
 
+@dataclass
+class DeleteResponse:
+    pass
+
+
+@dataclass
+class ReplaceResponse:
+    pass
+
+
+@dataclass
+class UpdateResponse:
+    pass
+
+
 class CredentialsAPI:
     """These APIs manage credential configurations for this workspace. Databricks needs access to a cross-account
     service IAM role in your AWS account so that Databricks can deploy clusters in the appropriate VPC for the

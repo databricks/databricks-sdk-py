@@ -4693,6 +4693,36 @@ class WebhookNotificationsOnDurationWarningThresholdExceededItem:
         return cls(id=d.get('id', None))
 
 
+@dataclass
+class CancelAllRunsResponse:
+    pass
+
+
+@dataclass
+class CancelRunResponse:
+    pass
+
+
+@dataclass
+class DeleteResponse:
+    pass
+
+
+@dataclass
+class DeleteRunResponse:
+    pass
+
+
+@dataclass
+class ResetResponse:
+    pass
+
+
+@dataclass
+class UpdateResponse:
+    pass
+
+
 class JobsAPI:
     """The Jobs API allows you to create, edit, and delete jobs.
     

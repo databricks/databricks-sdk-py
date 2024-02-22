@@ -72,6 +72,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: DeleteResponse
+   :members:
+   :undoc-members:
+
 .. py:class:: EndpointUseCase
 
    This enumeration represents the type of Databricks VPC [endpoint service] that was used when creating this VPC endpoint.
@@ -197,6 +201,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ReplaceResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: RootBucketInfo
    :members:
    :undoc-members:
@@ -206,6 +214,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: StsRole
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateResponse
    :members:
    :undoc-members:
 

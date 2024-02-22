@@ -50,6 +50,14 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Descriptio
     {{range .Enum }}
     {{.ConstantName}} = '{{.Content}}'{{end}}{{end}}
 {{end}}
+{{ range .EmptyTypes }}
+@dataclass
+class {{.PascalName}}:
+    {{- if .Description}}
+    """{{.Comment "    " 100 | trimSuffix "\"" }}"""
+    {{- end}}
+    pass
+{{ end }}
 {{- define "from_dict_type" -}}
 	{{- if not .Entity }}None
 	{{- else if .Entity.ArrayValue }}
@@ -80,8 +88,8 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Descriptio
 {{- end -}}
 {{- define "type-nq" -}}
 	{{- if .IsString}}str
-	{{- else if .IsEmpty}}Any
 	{{- else if .IsAny}}Any
+	{{- else if .IsEmpty}}{{.PascalName}}
 	{{- else if .IsBool}}bool
 	{{- else if .IsInt64}}int
 	{{- else if .IsFloat64}}float

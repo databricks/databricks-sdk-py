@@ -5483,6 +5483,116 @@ class WorkspaceStorageInfo:
         return cls(destination=d.get('destination', None))
 
 
+@dataclass
+class AddResponse:
+    pass
+
+
+@dataclass
+class CancelResponse:
+    pass
+
+
+@dataclass
+class ChangeClusterOwnerResponse:
+    pass
+
+
+@dataclass
+class DeleteClusterResponse:
+    pass
+
+
+@dataclass
+class DeleteInstancePoolResponse:
+    pass
+
+
+@dataclass
+class DeletePolicyResponse:
+    pass
+
+
+@dataclass
+class DeleteResponse:
+    pass
+
+
+@dataclass
+class DestroyResponse:
+    pass
+
+
+@dataclass
+class EditClusterResponse:
+    pass
+
+
+@dataclass
+class EditInstancePoolResponse:
+    pass
+
+
+@dataclass
+class EditPolicyResponse:
+    pass
+
+
+@dataclass
+class EditResponse:
+    pass
+
+
+@dataclass
+class InstallLibrariesResponse:
+    pass
+
+
+@dataclass
+class PermanentDeleteClusterResponse:
+    pass
+
+
+@dataclass
+class PinClusterResponse:
+    pass
+
+
+@dataclass
+class RemoveResponse:
+    pass
+
+
+@dataclass
+class ResizeClusterResponse:
+    pass
+
+
+@dataclass
+class RestartClusterResponse:
+    pass
+
+
+@dataclass
+class StartClusterResponse:
+    pass
+
+
+@dataclass
+class UninstallLibrariesResponse:
+    pass
+
+
+@dataclass
+class UnpinClusterResponse:
+    pass
+
+
+@dataclass
+class UpdateResponse:
+    pass
+
+
 class ClusterPoliciesAPI:
     """You can use cluster policies to control users' ability to configure clusters based on a set of rules.
     These rules specify which attributes or attribute values can be used during cluster creation. Cluster

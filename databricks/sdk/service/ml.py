@@ -3475,6 +3475,131 @@ class UpdateRunStatus(Enum):
     SCHEDULED = 'SCHEDULED'
 
 
+@dataclass
+class DeleteCommentResponse:
+    pass
+
+
+@dataclass
+class DeleteExperimentResponse:
+    pass
+
+
+@dataclass
+class DeleteModelResponse:
+    pass
+
+
+@dataclass
+class DeleteModelTagResponse:
+    pass
+
+
+@dataclass
+class DeleteModelVersionResponse:
+    pass
+
+
+@dataclass
+class DeleteModelVersionTagResponse:
+    pass
+
+
+@dataclass
+class DeleteRunResponse:
+    pass
+
+
+@dataclass
+class DeleteTagResponse:
+    pass
+
+
+@dataclass
+class DeleteTransitionRequestResponse:
+    pass
+
+
+@dataclass
+class DeleteWebhookResponse:
+    pass
+
+
+@dataclass
+class LogBatchResponse:
+    pass
+
+
+@dataclass
+class LogInputsResponse:
+    pass
+
+
+@dataclass
+class LogMetricResponse:
+    pass
+
+
+@dataclass
+class LogModelResponse:
+    pass
+
+
+@dataclass
+class LogParamResponse:
+    pass
+
+
+@dataclass
+class RestoreExperimentResponse:
+    pass
+
+
+@dataclass
+class RestoreRunResponse:
+    pass
+
+
+@dataclass
+class SetExperimentTagResponse:
+    pass
+
+
+@dataclass
+class SetModelTagResponse:
+    pass
+
+
+@dataclass
+class SetModelVersionTagResponse:
+    pass
+
+
+@dataclass
+class SetTagResponse:
+    pass
+
+
+@dataclass
+class UpdateExperimentResponse:
+    pass
+
+
+@dataclass
+class UpdateModelResponse:
+    pass
+
+
+@dataclass
+class UpdateModelVersionResponse:
+    pass
+
+
+@dataclass
+class UpdateWebhookResponse:
+    pass
+
+
 class ExperimentsAPI:
     """Experiments are the primary unit of organization in MLflow; all MLflow runs belong to an experiment. Each
     experiment lets you visualize, search, and compare runs, as well as download run artifacts or metadata for

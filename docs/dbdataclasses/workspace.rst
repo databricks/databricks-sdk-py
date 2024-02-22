@@ -39,6 +39,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: CreateScopeResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: CredentialInfo
    :members:
    :undoc-members:
@@ -51,11 +55,27 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: DeleteAclResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: DeleteResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: DeleteScope
    :members:
    :undoc-members:
 
+.. autoclass:: DeleteScopeResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: DeleteSecret
+   :members:
+   :undoc-members:
+
+.. autoclass:: DeleteSecretResponse
    :members:
    :undoc-members:
 
@@ -127,6 +147,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: SOURCE
       :value: "SOURCE"
 
+.. autoclass:: ImportResponse
+   :members:
+   :undoc-members:
+
 .. py:class:: Language
 
    The language of the object. This value is set only if the object type is `NOTEBOOK`.
@@ -167,6 +191,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: MkdirsResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: ObjectInfo
    :members:
    :undoc-members:
@@ -198,7 +226,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: PutAclResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: PutSecret
+   :members:
+   :undoc-members:
+
+.. autoclass:: PutSecretResponse
    :members:
    :undoc-members:
 
@@ -275,6 +311,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: UpdateRepo
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateResponse
    :members:
    :undoc-members:
 

@@ -1154,6 +1154,31 @@ class WorkspacePermissions:
         return cls(permissions=_repeated_dict(d, 'permissions', PermissionOutput))
 
 
+@dataclass
+class DeleteResponse:
+    pass
+
+
+@dataclass
+class DeleteWorkspaceAssignments:
+    pass
+
+
+@dataclass
+class PatchResponse:
+    pass
+
+
+@dataclass
+class UpdateResponse:
+    pass
+
+
+@dataclass
+class WorkspaceAssignmentsUpdated:
+    pass
+
+
 class AccountAccessControlAPI:
     """These APIs manage access rules on resources in an account. Currently, only grant rules are supported. A
     grant rule specifies a role assigned to a set of principals. A list of rules attached to a resource is

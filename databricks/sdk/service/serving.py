@@ -2248,6 +2248,16 @@ class V1ResponseChoiceElement:
                    text=d.get('text', None))
 
 
+@dataclass
+class DeleteResponse:
+    pass
+
+
+@dataclass
+class ExportMetricsResponse:
+    pass
+
+
 class AppsAPI:
     """Lakehouse Apps run directly on a customer’s Databricks instance, integrate with their data, use and
     extend Databricks services, and enable users to interact through single sign-on."""

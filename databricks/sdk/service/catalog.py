@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, Iterator, List, Optional
+from typing import Dict, Iterator, List, Optional
 
 from ._internal import _enum, _from_dict, _repeated_dict, _repeated_enum
 
@@ -1238,7 +1238,7 @@ class CreateMonitor:
     expression independently, resulting in a separate slice for each predicate and its complements.
     For high-cardinality columns, only the top 100 unique values by frequency will generate slices."""
 
-    snapshot: Optional[Any] = None
+    snapshot: Optional[MonitorSnapshotProfileType] = None
     """Configuration for monitoring snapshot tables."""
 
     time_series: Optional[MonitorTimeSeriesProfileType] = None
@@ -1383,7 +1383,7 @@ class CreateStorageCredential:
     comment: Optional[str] = None
     """Comment associated with the credential."""
 
-    databricks_gcp_service_account: Optional[Any] = None
+    databricks_gcp_service_account: Optional[DatabricksGcpServiceAccountRequest] = None
     """The <Databricks> managed GCP service account configuration."""
 
     read_only: Optional[bool] = None
@@ -3118,7 +3118,7 @@ class MonitorInfo:
     expression independently, resulting in a separate slice for each predicate and its complements.
     For high-cardinality columns, only the top 100 unique values by frequency will generate slices."""
 
-    snapshot: Optional[Any] = None
+    snapshot: Optional[MonitorSnapshotProfileType] = None
     """Configuration for monitoring snapshot tables."""
 
     status: Optional[MonitorInfoStatus] = None
@@ -3341,10 +3341,10 @@ class OnlineTableSpec:
     primary_key_columns: Optional[List[str]] = None
     """Primary Key columns to be used for data insert/update in the destination."""
 
-    run_continuously: Optional[Any] = None
+    run_continuously: Optional[OnlineTableSpecContinuousSchedulingPolicy] = None
     """Pipeline runs continuously after generating the initial data."""
 
-    run_triggered: Optional[Any] = None
+    run_triggered: Optional[OnlineTableSpecTriggeredSchedulingPolicy] = None
     """Pipeline stops after generating the initial data and can be triggered later (manually, through a
     cron job or through data triggers)"""
 
@@ -4756,7 +4756,7 @@ class UpdateMonitor:
     expression independently, resulting in a separate slice for each predicate and its complements.
     For high-cardinality columns, only the top 100 unique values by frequency will generate slices."""
 
-    snapshot: Optional[Any] = None
+    snapshot: Optional[MonitorSnapshotProfileType] = None
     """Configuration for monitoring snapshot tables."""
 
     time_series: Optional[MonitorTimeSeriesProfileType] = None
@@ -4916,7 +4916,7 @@ class UpdateStorageCredential:
     comment: Optional[str] = None
     """Comment associated with the credential."""
 
-    databricks_gcp_service_account: Optional[Any] = None
+    databricks_gcp_service_account: Optional[DatabricksGcpServiceAccountRequest] = None
     """The <Databricks> managed GCP service account configuration."""
 
     force: Optional[bool] = None
@@ -5078,7 +5078,7 @@ class ValidateStorageCredential:
     cloudflare_api_token: Optional[CloudflareApiToken] = None
     """The Cloudflare API token configuration."""
 
-    databricks_gcp_service_account: Optional[Any] = None
+    databricks_gcp_service_account: Optional[DatabricksGcpServiceAccountRequest] = None
     """The Databricks created GCP service account configuration."""
 
     external_location_name: Optional[str] = None
@@ -5087,7 +5087,7 @@ class ValidateStorageCredential:
     read_only: Optional[bool] = None
     """Whether the storage credential is only usable for read operations."""
 
-    storage_credential_name: Optional[Any] = None
+    storage_credential_name: Optional[str] = None
     """The name of the storage credential to validate."""
 
     url: Optional[str] = None
@@ -5106,7 +5106,8 @@ class ValidateStorageCredential:
         if self.external_location_name is not None:
             body['external_location_name'] = self.external_location_name
         if self.read_only is not None: body['read_only'] = self.read_only
-        if self.storage_credential_name: body['storage_credential_name'] = self.storage_credential_name
+        if self.storage_credential_name is not None:
+            body['storage_credential_name'] = self.storage_credential_name
         if self.url is not None: body['url'] = self.url
         return body
 
@@ -5350,6 +5351,76 @@ class WorkspaceBindingsResponse:
     def from_dict(cls, d: Dict[str, any]) -> WorkspaceBindingsResponse:
         """Deserializes the WorkspaceBindingsResponse from a dictionary."""
         return cls(bindings=_repeated_dict(d, 'bindings', WorkspaceBinding))
+
+
+@dataclass
+class AssignResponse:
+    pass
+
+
+@dataclass
+class CancelRefreshResponse:
+    pass
+
+
+@dataclass
+class CreateResponse:
+    pass
+
+
+@dataclass
+class DatabricksGcpServiceAccountRequest:
+    pass
+
+
+@dataclass
+class DeleteAliasResponse:
+    pass
+
+
+@dataclass
+class DeleteResponse:
+    pass
+
+
+@dataclass
+class DisableResponse:
+    pass
+
+
+@dataclass
+class EnableResponse:
+    pass
+
+
+@dataclass
+class MonitorSnapshotProfileType:
+    pass
+
+
+@dataclass
+class OnlineTableSpecContinuousSchedulingPolicy:
+    pass
+
+
+@dataclass
+class OnlineTableSpecTriggeredSchedulingPolicy:
+    pass
+
+
+@dataclass
+class UnassignResponse:
+    pass
+
+
+@dataclass
+class UpdateAssignmentResponse:
+    pass
+
+
+@dataclass
+class UpdateResponse:
+    pass
 
 
 class AccountMetastoreAssignmentsAPI:
@@ -6563,7 +6634,7 @@ class LakehouseMonitorsAPI:
                schedule: Optional[MonitorCronSchedule] = None,
                skip_builtin_dashboard: Optional[bool] = None,
                slicing_exprs: Optional[List[str]] = None,
-               snapshot: Optional[Any] = None,
+               snapshot: Optional[MonitorSnapshotProfileType] = None,
                time_series: Optional[MonitorTimeSeriesProfileType] = None,
                warehouse_id: Optional[str] = None) -> MonitorInfo:
         """Create a table monitor.
@@ -6776,7 +6847,7 @@ class LakehouseMonitorsAPI:
                notifications: Optional[List[MonitorNotificationsConfig]] = None,
                schedule: Optional[MonitorCronSchedule] = None,
                slicing_exprs: Optional[List[str]] = None,
-               snapshot: Optional[Any] = None,
+               snapshot: Optional[MonitorSnapshotProfileType] = None,
                time_series: Optional[MonitorTimeSeriesProfileType] = None) -> MonitorInfo:
         """Update a table monitor.
         
@@ -7755,7 +7826,7 @@ class StorageCredentialsAPI:
                azure_service_principal: Optional[AzureServicePrincipal] = None,
                cloudflare_api_token: Optional[CloudflareApiToken] = None,
                comment: Optional[str] = None,
-               databricks_gcp_service_account: Optional[Any] = None,
+               databricks_gcp_service_account: Optional[DatabricksGcpServiceAccountRequest] = None,
                read_only: Optional[bool] = None,
                skip_validation: Optional[bool] = None) -> StorageCredentialInfo:
         """Create a storage credential.
@@ -7890,7 +7961,7 @@ class StorageCredentialsAPI:
                azure_service_principal: Optional[AzureServicePrincipal] = None,
                cloudflare_api_token: Optional[CloudflareApiToken] = None,
                comment: Optional[str] = None,
-               databricks_gcp_service_account: Optional[Any] = None,
+               databricks_gcp_service_account: Optional[DatabricksGcpServiceAccountRequest] = None,
                force: Optional[bool] = None,
                new_name: Optional[str] = None,
                owner: Optional[str] = None,
@@ -7956,10 +8027,10 @@ class StorageCredentialsAPI:
                  azure_managed_identity: Optional[AzureManagedIdentity] = None,
                  azure_service_principal: Optional[AzureServicePrincipal] = None,
                  cloudflare_api_token: Optional[CloudflareApiToken] = None,
-                 databricks_gcp_service_account: Optional[Any] = None,
+                 databricks_gcp_service_account: Optional[DatabricksGcpServiceAccountRequest] = None,
                  external_location_name: Optional[str] = None,
                  read_only: Optional[bool] = None,
-                 storage_credential_name: Optional[Any] = None,
+                 storage_credential_name: Optional[str] = None,
                  url: Optional[str] = None) -> ValidateStorageCredentialResponse:
         """Validate a storage credential.
         
@@ -7987,7 +8058,7 @@ class StorageCredentialsAPI:
           The name of an existing external location to validate.
         :param read_only: bool (optional)
           Whether the storage credential is only usable for read operations.
-        :param storage_credential_name: Any (optional)
+        :param storage_credential_name: str (optional)
           The name of the storage credential to validate.
         :param url: str (optional)
           The external location url to validate.

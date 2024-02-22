@@ -20,7 +20,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: DeletePipelineResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: EditPipeline
+   :members:
+   :undoc-members:
+
+.. autoclass:: EditPipelineResponse
    :members:
    :undoc-members:
 
@@ -83,6 +91,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ListUpdatesResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ManualTrigger
    :members:
    :undoc-members:
 
@@ -257,6 +269,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "USER_ACTION"
 
 .. autoclass:: StartUpdateResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: StopPipelineResponse
    :members:
    :undoc-members:
 

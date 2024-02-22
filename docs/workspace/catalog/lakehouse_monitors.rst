@@ -32,7 +32,7 @@
         
         
 
-    .. py:method:: create(full_name: str, assets_dir: str, output_schema_name: str [, baseline_table_name: Optional[str], custom_metrics: Optional[List[MonitorCustomMetric]], data_classification_config: Optional[MonitorDataClassificationConfig], inference_log: Optional[MonitorInferenceLogProfileType], notifications: Optional[List[MonitorNotificationsConfig]], schedule: Optional[MonitorCronSchedule], skip_builtin_dashboard: Optional[bool], slicing_exprs: Optional[List[str]], snapshot: Optional[Any], time_series: Optional[MonitorTimeSeriesProfileType], warehouse_id: Optional[str]]) -> MonitorInfo
+    .. py:method:: create(full_name: str, assets_dir: str, output_schema_name: str [, baseline_table_name: Optional[str], custom_metrics: Optional[List[MonitorCustomMetric]], data_classification_config: Optional[MonitorDataClassificationConfig], inference_log: Optional[MonitorInferenceLogProfileType], notifications: Optional[List[MonitorNotificationsConfig]], schedule: Optional[MonitorCronSchedule], skip_builtin_dashboard: Optional[bool], slicing_exprs: Optional[List[str]], snapshot: Optional[MonitorSnapshotProfileType], time_series: Optional[MonitorTimeSeriesProfileType], warehouse_id: Optional[str]]) -> MonitorInfo
 
         Create a table monitor.
         
@@ -186,7 +186,7 @@
         :returns: :class:`MonitorRefreshInfo`
         
 
-    .. py:method:: update(full_name: str, output_schema_name: str [, baseline_table_name: Optional[str], custom_metrics: Optional[List[MonitorCustomMetric]], data_classification_config: Optional[MonitorDataClassificationConfig], inference_log: Optional[MonitorInferenceLogProfileType], notifications: Optional[List[MonitorNotificationsConfig]], schedule: Optional[MonitorCronSchedule], slicing_exprs: Optional[List[str]], snapshot: Optional[Any], time_series: Optional[MonitorTimeSeriesProfileType]]) -> MonitorInfo
+    .. py:method:: update(full_name: str, output_schema_name: str [, baseline_table_name: Optional[str], custom_metrics: Optional[List[MonitorCustomMetric]], data_classification_config: Optional[MonitorDataClassificationConfig], inference_log: Optional[MonitorInferenceLogProfileType], notifications: Optional[List[MonitorNotificationsConfig]], schedule: Optional[MonitorCronSchedule], slicing_exprs: Optional[List[str]], snapshot: Optional[MonitorSnapshotProfileType], time_series: Optional[MonitorTimeSeriesProfileType]]) -> MonitorInfo
 
         Update a table monitor.
         

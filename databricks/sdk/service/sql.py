@@ -346,6 +346,7 @@ class ChannelInfo:
 
 
 class ChannelName(Enum):
+    """Name of the channel"""
 
     CHANNEL_NAME_CURRENT = 'CHANNEL_NAME_CURRENT'
     CHANNEL_NAME_CUSTOM = 'CHANNEL_NAME_CUSTOM'
@@ -2584,9 +2585,6 @@ class QueryMetrics:
     photon_total_time_ms: Optional[int] = None
     """Total execution time for all individual Photon query engine tasks in the query, in milliseconds."""
 
-    planning_phases: Optional[List[Any]] = None
-    """Reserved for internal use."""
-
     planning_time_ms: Optional[int] = None
     """Reserved for internal use."""
 
@@ -2656,7 +2654,6 @@ class QueryMetrics:
         if self.overloading_queue_start_timestamp is not None:
             body['overloading_queue_start_timestamp'] = self.overloading_queue_start_timestamp
         if self.photon_total_time_ms is not None: body['photon_total_time_ms'] = self.photon_total_time_ms
-        if self.planning_phases: body['planning_phases'] = [v for v in self.planning_phases]
         if self.planning_time_ms is not None: body['planning_time_ms'] = self.planning_time_ms
         if self.provisioning_queue_start_timestamp is not None:
             body['provisioning_queue_start_timestamp'] = self.provisioning_queue_start_timestamp
@@ -2690,7 +2687,6 @@ class QueryMetrics:
                    network_sent_bytes=d.get('network_sent_bytes', None),
                    overloading_queue_start_timestamp=d.get('overloading_queue_start_timestamp', None),
                    photon_total_time_ms=d.get('photon_total_time_ms', None),
-                   planning_phases=d.get('planning_phases', None),
                    planning_time_ms=d.get('planning_time_ms', None),
                    provisioning_queue_start_timestamp=d.get('provisioning_queue_start_timestamp', None),
                    pruned_bytes=d.get('pruned_bytes', None),
@@ -3806,6 +3802,51 @@ class WidgetPosition:
                    row=d.get('row', None),
                    size_x=d.get('sizeX', None),
                    size_y=d.get('sizeY', None))
+
+
+@dataclass
+class CancelExecutionResponse:
+    pass
+
+
+@dataclass
+class DeleteResponse:
+    pass
+
+
+@dataclass
+class DeleteWarehouseResponse:
+    pass
+
+
+@dataclass
+class EditWarehouseResponse:
+    pass
+
+
+@dataclass
+class RestoreResponse:
+    pass
+
+
+@dataclass
+class SetWorkspaceWarehouseConfigResponse:
+    pass
+
+
+@dataclass
+class StartWarehouseResponse:
+    pass
+
+
+@dataclass
+class StopWarehouseResponse:
+    pass
+
+
+@dataclass
+class UpdateResponse:
+    pass
 
 
 class AlertsAPI:

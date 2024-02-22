@@ -467,6 +467,31 @@ class UpdatePublishedAppIntegration:
                    token_access_policy=_from_dict(d, 'token_access_policy', TokenAccessPolicy))
 
 
+@dataclass
+class DeleteCustomAppIntegrationOutput:
+    pass
+
+
+@dataclass
+class DeletePublishedAppIntegrationOutput:
+    pass
+
+
+@dataclass
+class DeleteResponse:
+    pass
+
+
+@dataclass
+class UpdateCustomAppIntegrationOutput:
+    pass
+
+
+@dataclass
+class UpdatePublishedAppIntegrationOutput:
+    pass
+
+
 class CustomAppIntegrationAPI:
     """These APIs enable administrators to manage custom oauth app integrations, which is required for
     adding/using Custom OAuth App Integration like Tableau Cloud for Databricks in AWS cloud."""

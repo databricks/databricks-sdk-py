@@ -1543,6 +1543,26 @@ class UpdateSharePermissions:
         return cls(changes=_repeated_dict(d, 'changes', catalog.PermissionsChange), name=d.get('name', None))
 
 
+@dataclass
+class DeleteResponse:
+    pass
+
+
+@dataclass
+class GetActivationUrlInfoResponse:
+    pass
+
+
+@dataclass
+class UpdatePermissionsResponse:
+    pass
+
+
+@dataclass
+class UpdateResponse:
+    pass
+
+
 class CleanRoomsAPI:
     """A clean room is a secure, privacy-protecting environment where two or more parties can share sensitive
     enterprise data, including customer data, for measurements, insights, activation and other use cases.
