@@ -28,9 +28,40 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: Condition
+
+   .. py:attribute:: ALL_UPDATED
+      :value: "ALL_UPDATED"
+
+   .. py:attribute:: ANY_UPDATED
+      :value: "ANY_UPDATED"
+
 .. autoclass:: ConditionTask
    :members:
    :undoc-members:
+
+.. py:class:: ConditionTaskOp
+
+   * `EQUAL_TO`, `NOT_EQUAL` operators perform string comparison of their operands. This means that `“12.0” == “12”` will evaluate to `false`. * `GREATER_THAN`, `GREATER_THAN_OR_EQUAL`, `LESS_THAN`, `LESS_THAN_OR_EQUAL` operators perform numeric comparison of their operands. `“12.0” >= “12”` will evaluate to `true`, `“10.0” >= “12”` will evaluate to `false`.
+   The boolean comparison to task values can be implemented with operators `EQUAL_TO`, `NOT_EQUAL`. If a task value was set to a boolean value, it will be serialized to `“true”` or `“false”` for the comparison.
+
+   .. py:attribute:: EQUAL_TO
+      :value: "EQUAL_TO"
+
+   .. py:attribute:: GREATER_THAN
+      :value: "GREATER_THAN"
+
+   .. py:attribute:: GREATER_THAN_OR_EQUAL
+      :value: "GREATER_THAN_OR_EQUAL"
+
+   .. py:attribute:: LESS_THAN
+      :value: "LESS_THAN"
+
+   .. py:attribute:: LESS_THAN_OR_EQUAL
+      :value: "LESS_THAN_OR_EQUAL"
+
+   .. py:attribute:: NOT_EQUAL
+      :value: "NOT_EQUAL"
 
 .. autoclass:: Continuous
    :members:
@@ -39,6 +70,17 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: CreateJob
    :members:
    :undoc-members:
+
+.. py:class:: CreateJobEditMode
+
+   Edit mode of the job.
+   * `UI_LOCKED`: The job is in a locked UI state and cannot be modified. * `EDITABLE`: The job is in an editable state and can be modified.
+
+   .. py:attribute:: EDITABLE
+      :value: "EDITABLE"
+
+   .. py:attribute:: UI_LOCKED
+      :value: "UI_LOCKED"
 
 .. autoclass:: CreateResponse
    :members:
@@ -88,9 +130,43 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: Format
+
+   .. py:attribute:: MULTI_TASK
+      :value: "MULTI_TASK"
+
+   .. py:attribute:: SINGLE_TASK
+      :value: "SINGLE_TASK"
+
 .. autoclass:: GetJobPermissionLevelsResponse
    :members:
    :undoc-members:
+
+.. py:class:: GitProvider
+
+   .. py:attribute:: AWS_CODE_COMMIT
+      :value: "AWS_CODE_COMMIT"
+
+   .. py:attribute:: AZURE_DEV_OPS_SERVICES
+      :value: "AZURE_DEV_OPS_SERVICES"
+
+   .. py:attribute:: BITBUCKET_CLOUD
+      :value: "BITBUCKET_CLOUD"
+
+   .. py:attribute:: BITBUCKET_SERVER
+      :value: "BITBUCKET_SERVER"
+
+   .. py:attribute:: GIT_HUB
+      :value: "GIT_HUB"
+
+   .. py:attribute:: GIT_HUB_ENTERPRISE
+      :value: "GIT_HUB_ENTERPRISE"
+
+   .. py:attribute:: GIT_LAB
+      :value: "GIT_LAB"
+
+   .. py:attribute:: GIT_LAB_ENTERPRISE_EDITION
+      :value: "GIT_LAB_ENTERPRISE_EDITION"
 
 .. autoclass:: GitSnapshot
    :members:
@@ -124,6 +200,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: JobDeploymentKind
+
+   The kind of deployment that manages the job.
+   * `BUNDLE`: The job is managed by Databricks Asset Bundle.
+
+   .. py:attribute:: BUNDLE
+      :value: "BUNDLE"
+
 .. autoclass:: JobEmailNotifications
    :members:
    :undoc-members:
@@ -143,6 +227,22 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: JobPermission
    :members:
    :undoc-members:
+
+.. py:class:: JobPermissionLevel
+
+   Permission level
+
+   .. py:attribute:: CAN_MANAGE
+      :value: "CAN_MANAGE"
+
+   .. py:attribute:: CAN_MANAGE_RUN
+      :value: "CAN_MANAGE_RUN"
+
+   .. py:attribute:: CAN_VIEW
+      :value: "CAN_VIEW"
+
+   .. py:attribute:: IS_OWNER
+      :value: "IS_OWNER"
 
 .. autoclass:: JobPermissions
    :members:
@@ -164,9 +264,45 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: JobSettingsEditMode
+
+   Edit mode of the job.
+   * `UI_LOCKED`: The job is in a locked UI state and cannot be modified. * `EDITABLE`: The job is in an editable state and can be modified.
+
+   .. py:attribute:: EDITABLE
+      :value: "EDITABLE"
+
+   .. py:attribute:: UI_LOCKED
+      :value: "UI_LOCKED"
+
 .. autoclass:: JobSource
    :members:
    :undoc-members:
+
+.. py:class:: JobSourceDirtyState
+
+   Dirty state indicates the job is not fully synced with the job specification in the remote repository.
+   Possible values are: * `NOT_SYNCED`: The job is not yet synced with the remote job specification. Import the remote job specification from UI to make the job fully synced. * `DISCONNECTED`: The job is temporary disconnected from the remote job specification and is allowed for live edit. Import the remote job specification again from UI to make the job fully synced.
+
+   .. py:attribute:: DISCONNECTED
+      :value: "DISCONNECTED"
+
+   .. py:attribute:: NOT_SYNCED
+      :value: "NOT_SYNCED"
+
+.. py:class:: JobsHealthMetric
+
+   Specifies the health metric that is being evaluated for a particular health rule.
+
+   .. py:attribute:: RUN_DURATION_SECONDS
+      :value: "RUN_DURATION_SECONDS"
+
+.. py:class:: JobsHealthOperator
+
+   Specifies the operator used to compare the health metric value with the specified threshold.
+
+   .. py:attribute:: GREATER_THAN
+      :value: "GREATER_THAN"
 
 .. autoclass:: JobsHealthRule
    :members:
@@ -184,6 +320,20 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: ListRunsRunType
+
+   * `JOB_RUN`: Normal job run. A run created with :method:jobs/runNow. * `WORKFLOW_RUN`: Workflow run. A run created with [dbutils.notebook.run]. * `SUBMIT_RUN`: Submit run. A run created with :method:jobs/submit.
+   [dbutils.notebook.run]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-workflow
+
+   .. py:attribute:: JOB_RUN
+      :value: "JOB_RUN"
+
+   .. py:attribute:: SUBMIT_RUN
+      :value: "SUBMIT_RUN"
+
+   .. py:attribute:: WORKFLOW_RUN
+      :value: "WORKFLOW_RUN"
+
 .. autoclass:: NotebookOutput
    :members:
    :undoc-members:
@@ -191,6 +341,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: NotebookTask
    :members:
    :undoc-members:
+
+.. py:class:: PauseStatus
+
+   .. py:attribute:: PAUSED
+      :value: "PAUSED"
+
+   .. py:attribute:: UNPAUSED
+      :value: "UNPAUSED"
 
 .. autoclass:: PipelineParams
    :members:
@@ -211,6 +369,16 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: RepairHistoryItem
    :members:
    :undoc-members:
+
+.. py:class:: RepairHistoryItemType
+
+   The repair history item type. Indicates whether a run is the original run or a repair run.
+
+   .. py:attribute:: ORIGINAL
+      :value: "ORIGINAL"
+
+   .. py:attribute:: REPAIR
+      :value: "REPAIR"
 
 .. autoclass:: RepairRun
    :members:
@@ -264,9 +432,54 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: RunConditionTaskOp
+
+   The condtion task operator.
+
+   .. py:attribute:: EQUAL_TO
+      :value: "EQUAL_TO"
+
+   .. py:attribute:: GREATER_THAN
+      :value: "GREATER_THAN"
+
+   .. py:attribute:: GREATER_THAN_OR_EQUAL
+      :value: "GREATER_THAN_OR_EQUAL"
+
+   .. py:attribute:: LESS_THAN
+      :value: "LESS_THAN"
+
+   .. py:attribute:: LESS_THAN_OR_EQUAL
+      :value: "LESS_THAN_OR_EQUAL"
+
+   .. py:attribute:: NOT_EQUAL
+      :value: "NOT_EQUAL"
+
 .. autoclass:: RunForEachTask
    :members:
    :undoc-members:
+
+.. py:class:: RunIf
+
+   An optional value indicating the condition that determines whether the task should be run once its dependencies have been completed. When omitted, defaults to `ALL_SUCCESS`.
+   Possible values are: * `ALL_SUCCESS`: All dependencies have executed and succeeded * `AT_LEAST_ONE_SUCCESS`: At least one dependency has succeeded * `NONE_FAILED`: None of the dependencies have failed and at least one was executed * `ALL_DONE`: All dependencies have been completed * `AT_LEAST_ONE_FAILED`: At least one dependency failed * `ALL_FAILED`: ALl dependencies have failed
+
+   .. py:attribute:: ALL_DONE
+      :value: "ALL_DONE"
+
+   .. py:attribute:: ALL_FAILED
+      :value: "ALL_FAILED"
+
+   .. py:attribute:: ALL_SUCCESS
+      :value: "ALL_SUCCESS"
+
+   .. py:attribute:: AT_LEAST_ONE_FAILED
+      :value: "AT_LEAST_ONE_FAILED"
+
+   .. py:attribute:: AT_LEAST_ONE_SUCCESS
+      :value: "AT_LEAST_ONE_SUCCESS"
+
+   .. py:attribute:: NONE_FAILED
+      :value: "NONE_FAILED"
 
 .. autoclass:: RunJobOutput
    :members:
@@ -275,6 +488,37 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: RunJobTask
    :members:
    :undoc-members:
+
+.. py:class:: RunLifeCycleState
+
+   A value indicating the run's lifecycle state. The possible values are: * `QUEUED`: The run is queued. * `PENDING`: The run is waiting to be executed while the cluster and execution context are being prepared. * `RUNNING`: The task of this run is being executed. * `TERMINATING`: The task of this run has completed, and the cluster and execution context are being cleaned up. * `TERMINATED`: The task of this run has completed, and the cluster and execution context have been cleaned up. This state is terminal. * `SKIPPED`: This run was aborted because a previous run of the same job was already active. This state is terminal. * `INTERNAL_ERROR`: An exceptional state that indicates a failure in the Jobs service, such as network failure over a long period. If a run on a new cluster ends in the `INTERNAL_ERROR` state, the Jobs service terminates the cluster as soon as possible. This state is terminal. * `BLOCKED`: The run is blocked on an upstream dependency. * `WAITING_FOR_RETRY`: The run is waiting for a retry.
+
+   .. py:attribute:: BLOCKED
+      :value: "BLOCKED"
+
+   .. py:attribute:: INTERNAL_ERROR
+      :value: "INTERNAL_ERROR"
+
+   .. py:attribute:: PENDING
+      :value: "PENDING"
+
+   .. py:attribute:: QUEUED
+      :value: "QUEUED"
+
+   .. py:attribute:: RUNNING
+      :value: "RUNNING"
+
+   .. py:attribute:: SKIPPED
+      :value: "SKIPPED"
+
+   .. py:attribute:: TERMINATED
+      :value: "TERMINATED"
+
+   .. py:attribute:: TERMINATING
+      :value: "TERMINATING"
+
+   .. py:attribute:: WAITING_FOR_RETRY
+      :value: "WAITING_FOR_RETRY"
 
 .. autoclass:: RunNow
    :members:
@@ -292,6 +536,37 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: RunResultState
+
+   A value indicating the run's result. The possible values are: * `SUCCESS`: The task completed successfully. * `FAILED`: The task completed with an error. * `TIMEDOUT`: The run was stopped after reaching the timeout. * `CANCELED`: The run was canceled at user request. * `MAXIMUM_CONCURRENT_RUNS_REACHED`: The run was skipped because the maximum concurrent runs were reached. * `EXCLUDED`: The run was skipped because the necessary conditions were not met. * `SUCCESS_WITH_FAILURES`: The job run completed successfully with some failures; leaf tasks were successful. * `UPSTREAM_FAILED`: The run was skipped because of an upstream failure. * `UPSTREAM_CANCELED`: The run was skipped because an upstream task was canceled.
+
+   .. py:attribute:: CANCELED
+      :value: "CANCELED"
+
+   .. py:attribute:: EXCLUDED
+      :value: "EXCLUDED"
+
+   .. py:attribute:: FAILED
+      :value: "FAILED"
+
+   .. py:attribute:: MAXIMUM_CONCURRENT_RUNS_REACHED
+      :value: "MAXIMUM_CONCURRENT_RUNS_REACHED"
+
+   .. py:attribute:: SUCCESS
+      :value: "SUCCESS"
+
+   .. py:attribute:: SUCCESS_WITH_FAILURES
+      :value: "SUCCESS_WITH_FAILURES"
+
+   .. py:attribute:: TIMEDOUT
+      :value: "TIMEDOUT"
+
+   .. py:attribute:: UPSTREAM_CANCELED
+      :value: "UPSTREAM_CANCELED"
+
+   .. py:attribute:: UPSTREAM_FAILED
+      :value: "UPSTREAM_FAILED"
+
 .. autoclass:: RunState
    :members:
    :undoc-members:
@@ -299,6 +574,28 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: RunTask
    :members:
    :undoc-members:
+
+.. py:class:: RunType
+
+   * `JOB_RUN`: Normal job run. A run created with :method:jobs/runNow. * `WORKFLOW_RUN`: Workflow run. A run created with [dbutils.notebook.run]. * `SUBMIT_RUN`: Submit run. A run created with :method:jobs/submit.
+   [dbutils.notebook.run]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-workflow
+
+   .. py:attribute:: JOB_RUN
+      :value: "JOB_RUN"
+
+   .. py:attribute:: SUBMIT_RUN
+      :value: "SUBMIT_RUN"
+
+   .. py:attribute:: WORKFLOW_RUN
+      :value: "WORKFLOW_RUN"
+
+.. py:class:: Source
+
+   .. py:attribute:: GIT
+      :value: "GIT"
+
+   .. py:attribute:: WORKSPACE
+      :value: "WORKSPACE"
 
 .. autoclass:: SparkJarTask
    :members:
@@ -316,6 +613,20 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: SqlAlertState
+
+   The state of the SQL alert.
+   * UNKNOWN: alert yet to be evaluated * OK: alert evaluated and did not fulfill trigger conditions * TRIGGERED: alert evaluated and fulfilled trigger conditions
+
+   .. py:attribute:: OK
+      :value: "OK"
+
+   .. py:attribute:: TRIGGERED
+      :value: "TRIGGERED"
+
+   .. py:attribute:: UNKNOWN
+      :value: "UNKNOWN"
+
 .. autoclass:: SqlDashboardOutput
    :members:
    :undoc-members:
@@ -323,6 +634,25 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: SqlDashboardWidgetOutput
    :members:
    :undoc-members:
+
+.. py:class:: SqlDashboardWidgetOutputStatus
+
+   The execution status of the SQL widget.
+
+   .. py:attribute:: CANCELLED
+      :value: "CANCELLED"
+
+   .. py:attribute:: FAILED
+      :value: "FAILED"
+
+   .. py:attribute:: PENDING
+      :value: "PENDING"
+
+   .. py:attribute:: RUNNING
+      :value: "RUNNING"
+
+   .. py:attribute:: SUCCESS
+      :value: "SUCCESS"
 
 .. autoclass:: SqlOutput
    :members:
@@ -404,6 +734,29 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: TriggerType
+
+   The type of trigger that fired this run.
+   * `PERIODIC`: Schedules that periodically trigger runs, such as a cron scheduler. * `ONE_TIME`: One time triggers that fire a single run. This occurs you triggered a single run on demand through the UI or the API. * `RETRY`: Indicates a run that is triggered as a retry of a previously failed run. This occurs when you request to re-run the job in case of failures. * `RUN_JOB_TASK`: Indicates a run that is triggered using a Run Job task. * `FILE_ARRIVAL`: Indicates a run that is triggered by a file arrival. * `TABLE`: Indicates a run that is triggered by a table update.
+
+   .. py:attribute:: FILE_ARRIVAL
+      :value: "FILE_ARRIVAL"
+
+   .. py:attribute:: ONE_TIME
+      :value: "ONE_TIME"
+
+   .. py:attribute:: PERIODIC
+      :value: "PERIODIC"
+
+   .. py:attribute:: RETRY
+      :value: "RETRY"
+
+   .. py:attribute:: RUN_JOB_TASK
+      :value: "RUN_JOB_TASK"
+
+   .. py:attribute:: TABLE
+      :value: "TABLE"
+
 .. autoclass:: UpdateJob
    :members:
    :undoc-members:
@@ -411,6 +764,29 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: ViewItem
    :members:
    :undoc-members:
+
+.. py:class:: ViewType
+
+   * `NOTEBOOK`: Notebook view item. * `DASHBOARD`: Dashboard view item.
+
+   .. py:attribute:: DASHBOARD
+      :value: "DASHBOARD"
+
+   .. py:attribute:: NOTEBOOK
+      :value: "NOTEBOOK"
+
+.. py:class:: ViewsToExport
+
+   * `CODE`: Code view of the notebook. * `DASHBOARDS`: All dashboard views of the notebook. * `ALL`: All views of the notebook.
+
+   .. py:attribute:: ALL
+      :value: "ALL"
+
+   .. py:attribute:: CODE
+      :value: "CODE"
+
+   .. py:attribute:: DASHBOARDS
+      :value: "DASHBOARDS"
 
 .. autoclass:: Webhook
    :members:

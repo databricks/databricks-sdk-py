@@ -1,9 +1,10 @@
 #!env python3
 import collections
-import dbdataclasses
+import enum
 import inspect
 import json
 import os.path
+import re
 import subprocess
 import importlib
 from dataclasses import dataclass, is_dataclass
@@ -16,7 +17,6 @@ from databricks.sdk.core import credentials_provider
 
 __dir__ = os.path.dirname(__file__)
 __examples__ = Path(f'{__dir__}/../examples').absolute()
-
 
 @dataclass
 class Package:
@@ -158,7 +158,7 @@ class DataclassesDoc:
                 '',
             ]
             if clss.__doc__ is not None:
-                out.append(f'   {clss.__doc__}')
+                out.append(f'   {self._get_enum_doc(clss)}')
                 out.append('')
             for v in clss.__members__.keys():
                 out.append(f'   .. py:attribute:: {v}')
@@ -173,6 +173,23 @@ class DataclassesDoc:
             ]
         return "\n".join(out)
 
+    @staticmethod
+    def _get_enum_doc(cls) -> str:
+        stripped = []
+        for line in cls.__doc__.split('\n'):
+            stripped.append(line.strip())
+        result = []
+        current = []
+        for line in stripped:
+            if line == '':
+                if len(current) > 0:
+                    result.append(' '.join(current))
+                    current = []
+            else:
+                current.append(line)
+        if len(current) > 0:
+            result.append(' '.join(current))
+        return '\n   '.join(result)
 
 class Generator:
     packages = [
@@ -298,7 +315,7 @@ class Generator:
 
     @staticmethod
     def _should_document(obj):
-        return is_dataclass(obj) or (type(obj) == type and issubclass(obj, Enum))
+        return is_dataclass(obj) or (type(obj) == enum.EnumType and obj != Enum)
 
     @staticmethod
     def _make_folder_if_not_exists(folder):

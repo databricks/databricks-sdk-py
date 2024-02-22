@@ -8,6 +8,17 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: AclPermission
+
+   .. py:attribute:: MANAGE
+      :value: "MANAGE"
+
+   .. py:attribute:: READ
+      :value: "READ"
+
+   .. py:attribute:: WRITE
+      :value: "WRITE"
+
 .. autoclass:: AzureKeyVaultSecretScopeMetadata
    :members:
    :undoc-members:
@@ -48,6 +59,26 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: ExportFormat
+
+   .. py:attribute:: AUTO
+      :value: "AUTO"
+
+   .. py:attribute:: DBC
+      :value: "DBC"
+
+   .. py:attribute:: HTML
+      :value: "HTML"
+
+   .. py:attribute:: JUPYTER
+      :value: "JUPYTER"
+
+   .. py:attribute:: R_MARKDOWN
+      :value: "R_MARKDOWN"
+
+   .. py:attribute:: SOURCE
+      :value: "SOURCE"
+
 .. autoclass:: ExportResponse
    :members:
    :undoc-members:
@@ -71,6 +102,46 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: Import
    :members:
    :undoc-members:
+
+.. py:class:: ImportFormat
+
+   This specifies the format of the file to be imported.
+   The value is case sensitive.
+   - `AUTO`: The item is imported depending on an analysis of the item's extension and the header content provided in the request. If the item is imported as a notebook, then the item's extension is automatically removed. - `SOURCE`: The notebook or directory is imported as source code. - `HTML`: The notebook is imported as an HTML file. - `JUPYTER`: The notebook is imported as a Jupyter/IPython Notebook file. - `DBC`: The notebook is imported in Databricks archive format. Required for directories. - `R_MARKDOWN`: The notebook is imported from R Markdown format.
+
+   .. py:attribute:: AUTO
+      :value: "AUTO"
+
+   .. py:attribute:: DBC
+      :value: "DBC"
+
+   .. py:attribute:: HTML
+      :value: "HTML"
+
+   .. py:attribute:: JUPYTER
+      :value: "JUPYTER"
+
+   .. py:attribute:: R_MARKDOWN
+      :value: "R_MARKDOWN"
+
+   .. py:attribute:: SOURCE
+      :value: "SOURCE"
+
+.. py:class:: Language
+
+   The language of the object. This value is set only if the object type is `NOTEBOOK`.
+
+   .. py:attribute:: PYTHON
+      :value: "PYTHON"
+
+   .. py:attribute:: R
+      :value: "R"
+
+   .. py:attribute:: SCALA
+      :value: "SCALA"
+
+   .. py:attribute:: SQL
+      :value: "SQL"
 
 .. autoclass:: ListAclsResponse
    :members:
@@ -100,6 +171,29 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: ObjectType
+
+   The type of the object in workspace.
+   - `NOTEBOOK`: document that contains runnable code, visualizations, and explanatory text. - `DIRECTORY`: directory - `LIBRARY`: library - `FILE`: file - `REPO`: repository - `DASHBOARD`: Lakeview dashboard
+
+   .. py:attribute:: DASHBOARD
+      :value: "DASHBOARD"
+
+   .. py:attribute:: DIRECTORY
+      :value: "DIRECTORY"
+
+   .. py:attribute:: FILE
+      :value: "FILE"
+
+   .. py:attribute:: LIBRARY
+      :value: "LIBRARY"
+
+   .. py:attribute:: NOTEBOOK
+      :value: "NOTEBOOK"
+
+   .. py:attribute:: REPO
+      :value: "REPO"
+
 .. autoclass:: PutAcl
    :members:
    :undoc-members:
@@ -124,6 +218,22 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: RepoPermissionLevel
+
+   Permission level
+
+   .. py:attribute:: CAN_EDIT
+      :value: "CAN_EDIT"
+
+   .. py:attribute:: CAN_MANAGE
+      :value: "CAN_MANAGE"
+
+   .. py:attribute:: CAN_READ
+      :value: "CAN_READ"
+
+   .. py:attribute:: CAN_RUN
+      :value: "CAN_RUN"
+
 .. autoclass:: RepoPermissions
    :members:
    :undoc-members:
@@ -135,6 +245,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: RepoPermissionsRequest
    :members:
    :undoc-members:
+
+.. py:class:: ScopeBackendType
+
+   .. py:attribute:: AZURE_KEYVAULT
+      :value: "AZURE_KEYVAULT"
+
+   .. py:attribute:: DATABRICKS
+      :value: "DATABRICKS"
 
 .. autoclass:: SecretMetadata
    :members:
@@ -171,6 +289,22 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: WorkspaceObjectPermission
    :members:
    :undoc-members:
+
+.. py:class:: WorkspaceObjectPermissionLevel
+
+   Permission level
+
+   .. py:attribute:: CAN_EDIT
+      :value: "CAN_EDIT"
+
+   .. py:attribute:: CAN_MANAGE
+      :value: "CAN_MANAGE"
+
+   .. py:attribute:: CAN_READ
+      :value: "CAN_READ"
+
+   .. py:attribute:: CAN_RUN
+      :value: "CAN_RUN"
 
 .. autoclass:: WorkspaceObjectPermissions
    :members:
