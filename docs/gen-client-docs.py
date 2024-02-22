@@ -1,6 +1,6 @@
 #!env python3
 import collections
-import dbdataclasses
+import enum
 import inspect
 import json
 import os.path
@@ -298,7 +298,7 @@ class Generator:
 
     @staticmethod
     def _should_document(obj):
-        return is_dataclass(obj) or (type(obj) == type and issubclass(obj, Enum))
+        return is_dataclass(obj) or (type(obj) == enum.EnumType and obj != Enum)
 
     @staticmethod
     def _make_folder_if_not_exists(folder):

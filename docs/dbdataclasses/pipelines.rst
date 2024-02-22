@@ -28,6 +28,22 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: EventLevel
+
+   The severity level of the event.
+
+   .. py:attribute:: ERROR
+      :value: "ERROR"
+
+   .. py:attribute:: INFO
+      :value: "INFO"
+
+   .. py:attribute:: METRICS
+      :value: "METRICS"
+
+   .. py:attribute:: WARN
+      :value: "WARN"
+
 .. autoclass:: FileLibrary
    :members:
    :undoc-members:
@@ -44,6 +60,16 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: GetPipelineResponseHealth
+
+   The health of a pipeline.
+
+   .. py:attribute:: HEALTHY
+      :value: "HEALTHY"
+
+   .. py:attribute:: UNHEALTHY
+      :value: "UNHEALTHY"
+
 .. autoclass:: GetUpdateResponse
    :members:
    :undoc-members:
@@ -59,6 +85,19 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: ListUpdatesResponse
    :members:
    :undoc-members:
+
+.. py:class:: MaturityLevel
+
+   Maturity level for EventDetails.
+
+   .. py:attribute:: DEPRECATED
+      :value: "DEPRECATED"
+
+   .. py:attribute:: EVOLVING
+      :value: "EVOLVING"
+
+   .. py:attribute:: STABLE
+      :value: "STABLE"
 
 .. autoclass:: NotebookLibrary
    :members:
@@ -88,6 +127,19 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: PipelineClusterAutoscaleMode
+
+   Databricks Enhanced Autoscaling optimizes cluster utilization by automatically allocating
+    cluster resources based on workload volume, with minimal impact to the data processing latency
+    of your pipelines. Enhanced Autoscaling is available for `updates` clusters only. The legacy
+    autoscaling feature is used for `maintenance` clusters.
+
+   .. py:attribute:: ENHANCED
+      :value: "ENHANCED"
+
+   .. py:attribute:: LEGACY
+      :value: "LEGACY"
+
 .. autoclass:: PipelineEvent
    :members:
    :undoc-members:
@@ -99,6 +151,22 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: PipelinePermission
    :members:
    :undoc-members:
+
+.. py:class:: PipelinePermissionLevel
+
+   Permission level
+
+   .. py:attribute:: CAN_MANAGE
+      :value: "CAN_MANAGE"
+
+   .. py:attribute:: CAN_RUN
+      :value: "CAN_RUN"
+
+   .. py:attribute:: CAN_VIEW
+      :value: "CAN_VIEW"
+
+   .. py:attribute:: IS_OWNER
+      :value: "IS_OWNER"
 
 .. autoclass:: PipelinePermissions
    :members:
@@ -115,6 +183,37 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: PipelineSpec
    :members:
    :undoc-members:
+
+.. py:class:: PipelineState
+
+   The pipeline state.
+
+   .. py:attribute:: DELETED
+      :value: "DELETED"
+
+   .. py:attribute:: DEPLOYING
+      :value: "DEPLOYING"
+
+   .. py:attribute:: FAILED
+      :value: "FAILED"
+
+   .. py:attribute:: IDLE
+      :value: "IDLE"
+
+   .. py:attribute:: RECOVERING
+      :value: "RECOVERING"
+
+   .. py:attribute:: RESETTING
+      :value: "RESETTING"
+
+   .. py:attribute:: RUNNING
+      :value: "RUNNING"
+
+   .. py:attribute:: STARTING
+      :value: "STARTING"
+
+   .. py:attribute:: STOPPING
+      :value: "STOPPING"
 
 .. autoclass:: PipelineStateInfo
    :members:
@@ -140,6 +239,26 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: StartUpdateCause
+
+   .. py:attribute:: API_CALL
+      :value: "API_CALL"
+
+   .. py:attribute:: JOB_TASK
+      :value: "JOB_TASK"
+
+   .. py:attribute:: RETRY_ON_FAILURE
+      :value: "RETRY_ON_FAILURE"
+
+   .. py:attribute:: SCHEMA_CHANGE
+      :value: "SCHEMA_CHANGE"
+
+   .. py:attribute:: SERVICE_UPGRADE
+      :value: "SERVICE_UPGRADE"
+
+   .. py:attribute:: USER_ACTION
+      :value: "USER_ACTION"
+
 .. autoclass:: StartUpdateResponse
    :members:
    :undoc-members:
@@ -148,6 +267,100 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: UpdateInfoCause
+
+   What triggered this update.
+
+   .. py:attribute:: API_CALL
+      :value: "API_CALL"
+
+   .. py:attribute:: JOB_TASK
+      :value: "JOB_TASK"
+
+   .. py:attribute:: RETRY_ON_FAILURE
+      :value: "RETRY_ON_FAILURE"
+
+   .. py:attribute:: SCHEMA_CHANGE
+      :value: "SCHEMA_CHANGE"
+
+   .. py:attribute:: SERVICE_UPGRADE
+      :value: "SERVICE_UPGRADE"
+
+   .. py:attribute:: USER_ACTION
+      :value: "USER_ACTION"
+
+.. py:class:: UpdateInfoState
+
+   The update state.
+
+   .. py:attribute:: CANCELED
+      :value: "CANCELED"
+
+   .. py:attribute:: COMPLETED
+      :value: "COMPLETED"
+
+   .. py:attribute:: CREATED
+      :value: "CREATED"
+
+   .. py:attribute:: FAILED
+      :value: "FAILED"
+
+   .. py:attribute:: INITIALIZING
+      :value: "INITIALIZING"
+
+   .. py:attribute:: QUEUED
+      :value: "QUEUED"
+
+   .. py:attribute:: RESETTING
+      :value: "RESETTING"
+
+   .. py:attribute:: RUNNING
+      :value: "RUNNING"
+
+   .. py:attribute:: SETTING_UP_TABLES
+      :value: "SETTING_UP_TABLES"
+
+   .. py:attribute:: STOPPING
+      :value: "STOPPING"
+
+   .. py:attribute:: WAITING_FOR_RESOURCES
+      :value: "WAITING_FOR_RESOURCES"
+
 .. autoclass:: UpdateStateInfo
    :members:
    :undoc-members:
+
+.. py:class:: UpdateStateInfoState
+
+   .. py:attribute:: CANCELED
+      :value: "CANCELED"
+
+   .. py:attribute:: COMPLETED
+      :value: "COMPLETED"
+
+   .. py:attribute:: CREATED
+      :value: "CREATED"
+
+   .. py:attribute:: FAILED
+      :value: "FAILED"
+
+   .. py:attribute:: INITIALIZING
+      :value: "INITIALIZING"
+
+   .. py:attribute:: QUEUED
+      :value: "QUEUED"
+
+   .. py:attribute:: RESETTING
+      :value: "RESETTING"
+
+   .. py:attribute:: RUNNING
+      :value: "RUNNING"
+
+   .. py:attribute:: SETTING_UP_TABLES
+      :value: "SETTING_UP_TABLES"
+
+   .. py:attribute:: STOPPING
+      :value: "STOPPING"
+
+   .. py:attribute:: WAITING_FOR_RESOURCES
+      :value: "WAITING_FOR_RESOURCES"
