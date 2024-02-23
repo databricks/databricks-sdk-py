@@ -341,6 +341,7 @@ class Generator:
                 continue
             class_doc = service_inst.__doc__
             class_name = service_inst.__class__.__name__
+            print(f'Processing service {client_prefix}.{service_name}')
             all += self.service_docs(service_inst, client_prefix + "." + service_name)
 
             all.append(

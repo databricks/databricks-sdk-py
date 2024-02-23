@@ -10,4 +10,3 @@ Manage security settings for Accounts and Workspaces
    ip_access_lists
    network_connectivity
    settings
-   personal_compute_enablement
