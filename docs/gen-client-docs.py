@@ -310,7 +310,7 @@ class Generator:
             property_docs.append(
                 PropertyDoc(name=name,
                             doc=instance_attr.__doc__,
-                            tpe=instance_attr.__class__.__name__ if instance_attr.__class__ != property else None))
+                            tpe=instance_attr.__class__.__name__))
         return property_docs
 
     def class_methods(self, inst) -> list[MethodDoc]:
