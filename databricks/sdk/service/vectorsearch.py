@@ -942,7 +942,7 @@ class VectorSearchEndpointsAPI:
         :param name: str
           Name of the endpoint to delete
         
-        :returns: :class:`DeleteEndpointResponse`
+        
         """
 
         headers = {}
@@ -1073,7 +1073,7 @@ class VectorSearchIndexesAPI:
         :param index_name: str
           Name of the index
         
-        :returns: :class:`DeleteIndexResponse`
+        
         """
 
         headers = {}
@@ -1180,7 +1180,7 @@ class VectorSearchIndexesAPI:
         :param index_name: str
           Name of the vector index to synchronize. Must be a Delta Sync Index.
         
-        :returns: :class:`SyncIndexResponse`
+        
         """
 
         headers = {}

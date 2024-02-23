@@ -73,9 +73,9 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Descriptio
 {{- end -}}
 {{- define "type" -}}
 	{{- if not . }}any # ERROR: No Type
+	{{- else if .IsExternal }}{{.Package.Name}}.{{.PascalName}}
 	{{- else if .ArrayValue }}List[{{template "type" .ArrayValue}}]
 	{{- else if .MapValue }}Dict[str,{{template "type" .MapValue}}]
-	{{- else if .IsExternal }}{{.Package.Name}}.{{.PascalName}}
 	{{- else if .IsObject }}{{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}
 	{{- else if .Enum }}{{.PascalName}}
 	{{- else if .IsString}}str
@@ -91,10 +91,10 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Descriptio
 {{- end -}}
 
 {{- define "type-doc" -}}
-	{{- if .IsEmpty}}:class:`{{template "type" .}}`
+	{{- if .IsExternal }}:class:`{{.PascalName}}`
+	{{- else if .IsEmpty}}:class:`{{template "type" .}}`
 	{{- else if .ArrayValue }}List[{{template "type-doc" .ArrayValue}}]
 	{{- else if .MapValue }}Dict[str,{{template "type-doc" .MapValue}}]
-	{{- else if .IsExternal }}:class:`{{.PascalName}}`
 	{{- else if .IsObject }}:class:`{{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}`
 	{{- else if .Enum }}:class:`{{.PascalName}}`
 	{{- else}}{{template "type" . }}
@@ -163,7 +163,7 @@ class {{.Name}}API:{{if .Description}}
         :returns:
           Long-running operation waiter for {{template "type-doc" .Wait.Poll.Response}}.
           See :method:{{template "safe-snake-name" .Wait}} for more details.
-        {{- else if .Response}}:returns: {{if .Response.ArrayValue -}}
+        {{- else if not .Response.IsEmpty }}:returns: {{if .Response.ArrayValue -}}
           Iterator over {{template "type-doc" .Response.ArrayValue}}
         {{- else if .Pagination -}}
           Iterator over {{template "type-doc" .Pagination.Entity}}
@@ -175,7 +175,7 @@ class {{.Name}}API:{{if .Description}}
         {{template "method-serialize" .}}
         {{- end}}
         {{template "method-headers" . }}
-        {{if and .Response .Response.HasHeaderField -}}
+        {{if .Response.HasHeaderField -}}
         {{template "method-response-headers" . }}
         {{- end}}
         {{template "method-call" .}}
@@ -301,9 +301,9 @@ class {{.Name}}API:{{if .Description}}
 {{- end}}
 
 {{define "method-call-default" -}}
-        {{if and .Response (not .Response.IsEmpty) -}}
+        {{if not .Response.IsEmpty -}}
         res = {{end}}{{template "method-do" .}}
-        {{if and .Response (not .Response.IsEmpty) -}}
+        {{if not .Response.IsEmpty -}}
           {{- if .Response.ArrayValue -}}
             return [{{.Response.ArrayValue.PascalName}}.from_dict(v) for v in res]
           {{- else if .Response.MapValue -}}
@@ -325,7 +325,7 @@ self._api.do('{{.Verb}}',
       {{- else if .Request.HasJsonField}}, body=body{{end}}
   {{end}}
   , headers=headers
-  {{if and .Response .Response.HasHeaderField -}}
+  {{if .Response.HasHeaderField -}}
   , response_headers=response_headers
   {{- end}}
   {{- if and .IsRequestByteStream .RequestBodyField }}, data={{template "safe-snake-name" .RequestBodyField}}{{ end }}
@@ -334,7 +334,7 @@ self._api.do('{{.Verb}}',
 
 {{define "method-return-type" -}}
   {{if and .Wait (and (not .IsCrudRead) (not (eq .SnakeName "get_run"))) }} -> Wait[{{.Wait.Poll.Response.PascalName}}]
-  {{- else if and .Response (not .Response.IsEmpty) }} -> {{if .Response.ArrayValue -}}
+  {{- else if not .Response.IsEmpty }} -> {{if .Response.ArrayValue -}}
     Iterator[{{template "type" .Response.ArrayValue}}]
   {{- else if .Pagination -}}
     Iterator[{{template "type" .Pagination.Entity}}]

@@ -5682,7 +5682,7 @@ class ClusterPoliciesAPI:
         :param policy_id: str
           The ID of the policy to delete.
         
-        :returns: :class:`DeletePolicyResponse`
+        
         """
         body = {}
         if policy_id is not None: body['policy_id'] = policy_id
@@ -5737,7 +5737,7 @@ class ClusterPoliciesAPI:
           Cannot be used with `definition`. Use `policy_family_definition_overrides` instead to customize the
           policy definition.
         
-        :returns: :class:`EditPolicyResponse`
+        
         """
         body = {}
         if definition is not None: body['definition'] = definition
@@ -5991,7 +5991,7 @@ class ClustersAPI:
         :param owner_username: str
           New owner of the cluster_id after this RPC.
         
-        :returns: :class:`ChangeClusterOwnerResponse`
+        
         """
         body = {}
         if cluster_id is not None: body['cluster_id'] = cluster_id
@@ -6722,7 +6722,7 @@ class ClustersAPI:
         :param cluster_id: str
           The cluster to be deleted.
         
-        :returns: :class:`PermanentDeleteClusterResponse`
+        
         """
         body = {}
         if cluster_id is not None: body['cluster_id'] = cluster_id
@@ -6739,7 +6739,7 @@ class ClustersAPI:
         :param cluster_id: str
           <needs content added>
         
-        :returns: :class:`PinClusterResponse`
+        
         """
         body = {}
         if cluster_id is not None: body['cluster_id'] = cluster_id
@@ -6903,7 +6903,7 @@ class ClustersAPI:
         :param cluster_id: str
           <needs content added>
         
-        :returns: :class:`UnpinClusterResponse`
+        
         """
         body = {}
         if cluster_id is not None: body['cluster_id'] = cluster_id
@@ -7170,7 +7170,7 @@ class CommandExecutionAPI:
         :param cluster_id: str
         :param context_id: str
         
-        :returns: :class:`DestroyResponse`
+        
         """
         body = {}
         if cluster_id is not None: body['clusterId'] = cluster_id
@@ -7288,7 +7288,7 @@ class GlobalInitScriptsAPI:
         :param script_id: str
           The ID of the global init script.
         
-        :returns: :class:`DeleteResponse`
+        
         """
 
         headers = {}
@@ -7358,7 +7358,7 @@ class GlobalInitScriptsAPI:
           If an explicit position value conflicts with an existing script, your request succeeds, but the
           original script at that position and all later scripts have their positions incremented by 1.
         
-        :returns: :class:`UpdateResponse`
+        
         """
         body = {}
         if enabled is not None: body['enabled'] = enabled
@@ -7487,7 +7487,7 @@ class InstancePoolsAPI:
         :param instance_pool_id: str
           The instance pool to be terminated.
         
-        :returns: :class:`DeleteInstancePoolResponse`
+        
         """
         body = {}
         if instance_pool_id is not None: body['instance_pool_id'] = instance_pool_id
@@ -7536,7 +7536,7 @@ class InstancePoolsAPI:
         :param min_idle_instances: int (optional)
           Minimum number of idle instances to keep in the instance pool
         
-        :returns: :class:`EditInstancePoolResponse`
+        
         """
         body = {}
         if custom_tags is not None: body['custom_tags'] = custom_tags
@@ -7717,7 +7717,7 @@ class InstanceProfilesAPI:
           requested instance type is not supported in your requested availability zone”), you can pass this
           flag to skip the validation and forcibly add the instance profile.
         
-        :returns: :class:`AddResponse`
+        
         """
         body = {}
         if iam_role_arn is not None: body['iam_role_arn'] = iam_role_arn
@@ -7764,7 +7764,7 @@ class InstanceProfilesAPI:
           wide range of roles. Therefore it should always be used with authorization. This field is optional,
           the default value is `false`.
         
-        :returns: :class:`EditResponse`
+        
         """
         body = {}
         if iam_role_arn is not None: body['iam_role_arn'] = iam_role_arn
@@ -7801,7 +7801,7 @@ class InstanceProfilesAPI:
         :param instance_profile_arn: str
           The ARN of the instance profile to remove. This field is required.
         
-        :returns: :class:`RemoveResponse`
+        
         """
         body = {}
         if instance_profile_arn is not None: body['instance_profile_arn'] = instance_profile_arn
@@ -7890,7 +7890,7 @@ class LibrariesAPI:
         :param libraries: List[:class:`Library`]
           The libraries to install.
         
-        :returns: :class:`InstallLibrariesResponse`
+        
         """
         body = {}
         if cluster_id is not None: body['cluster_id'] = cluster_id
@@ -7911,7 +7911,7 @@ class LibrariesAPI:
         :param libraries: List[:class:`Library`]
           The libraries to uninstall.
         
-        :returns: :class:`UninstallLibrariesResponse`
+        
         """
         body = {}
         if cluster_id is not None: body['cluster_id'] = cluster_id

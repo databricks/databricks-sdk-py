@@ -3689,7 +3689,7 @@ class ExperimentsAPI:
         :param experiment_id: str
           ID of the associated experiment.
         
-        :returns: :class:`DeleteExperimentResponse`
+        
         """
         body = {}
         if experiment_id is not None: body['experiment_id'] = experiment_id
@@ -3705,7 +3705,7 @@ class ExperimentsAPI:
         :param run_id: str
           ID of the run to delete.
         
-        :returns: :class:`DeleteRunResponse`
+        
         """
         body = {}
         if run_id is not None: body['run_id'] = run_id
@@ -3755,7 +3755,7 @@ class ExperimentsAPI:
         :param key: str
           Name of the tag. Maximum size is 255 bytes. Must be provided.
         
-        :returns: :class:`DeleteTagResponse`
+        
         """
         body = {}
         if key is not None: body['key'] = key
@@ -4040,7 +4040,7 @@ class ExperimentsAPI:
           Tags to log. A single request can contain up to 100 tags, and up to 1000 metrics, params, and tags
           in total.
         
-        :returns: :class:`LogBatchResponse`
+        
         """
         body = {}
         if metrics is not None: body['metrics'] = [v.as_dict() for v in metrics]
@@ -4061,7 +4061,7 @@ class ExperimentsAPI:
         :param run_id: str (optional)
           ID of the run to log under
         
-        :returns: :class:`LogInputsResponse`
+        
         """
         body = {}
         if datasets is not None: body['datasets'] = [v.as_dict() for v in datasets]
@@ -4098,7 +4098,7 @@ class ExperimentsAPI:
         :param step: int (optional)
           Step at which to log the metric
         
-        :returns: :class:`LogMetricResponse`
+        
         """
         body = {}
         if key is not None: body['key'] = key
@@ -4121,7 +4121,7 @@ class ExperimentsAPI:
         :param run_id: str (optional)
           ID of the run to log under
         
-        :returns: :class:`LogModelResponse`
+        
         """
         body = {}
         if model_json is not None: body['model_json'] = model_json
@@ -4152,7 +4152,7 @@ class ExperimentsAPI:
           [Deprecated, use run_id instead] ID of the run under which to log the param. This field will be
           removed in a future MLflow version.
         
-        :returns: :class:`LogParamResponse`
+        
         """
         body = {}
         if key is not None: body['key'] = key
@@ -4175,7 +4175,7 @@ class ExperimentsAPI:
         :param experiment_id: str
           ID of the associated experiment.
         
-        :returns: :class:`RestoreExperimentResponse`
+        
         """
         body = {}
         if experiment_id is not None: body['experiment_id'] = experiment_id
@@ -4191,7 +4191,7 @@ class ExperimentsAPI:
         :param run_id: str
           ID of the run to restore.
         
-        :returns: :class:`RestoreRunResponse`
+        
         """
         body = {}
         if run_id is not None: body['run_id'] = run_id
@@ -4347,7 +4347,7 @@ class ExperimentsAPI:
           String value of the tag being logged. Maximum size depends on storage backend. All storage backends
           are guaranteed to support key values up to 5000 bytes in size.
         
-        :returns: :class:`SetExperimentTagResponse`
+        
         """
         body = {}
         if experiment_id is not None: body['experiment_id'] = experiment_id
@@ -4401,7 +4401,7 @@ class ExperimentsAPI:
           [Deprecated, use run_id instead] ID of the run under which to log the tag. This field will be
           removed in a future MLflow version.
         
-        :returns: :class:`SetTagResponse`
+        
         """
         body = {}
         if key is not None: body['key'] = key
@@ -4422,7 +4422,7 @@ class ExperimentsAPI:
         :param new_name: str (optional)
           If provided, the experiment's name is changed to the new name. The new name must be unique.
         
-        :returns: :class:`UpdateExperimentResponse`
+        
         """
         body = {}
         if experiment_id is not None: body['experiment_id'] = experiment_id
@@ -4759,7 +4759,7 @@ class ModelRegistryAPI:
         
         :param id: str
         
-        :returns: :class:`DeleteCommentResponse`
+        
         """
 
         query = {}
@@ -4776,7 +4776,7 @@ class ModelRegistryAPI:
         :param name: str
           Registered model unique name identifier.
         
-        :returns: :class:`DeleteModelResponse`
+        
         """
 
         query = {}
@@ -4796,7 +4796,7 @@ class ModelRegistryAPI:
           Name of the tag. The name must be an exact match; wild-card deletion is not supported. Maximum size
           is 250 bytes.
         
-        :returns: :class:`DeleteModelTagResponse`
+        
         """
 
         query = {}
@@ -4816,7 +4816,7 @@ class ModelRegistryAPI:
         :param version: str
           Model version number
         
-        :returns: :class:`DeleteModelVersionResponse`
+        
         """
 
         query = {}
@@ -4839,7 +4839,7 @@ class ModelRegistryAPI:
           Name of the tag. The name must be an exact match; wild-card deletion is not supported. Maximum size
           is 250 bytes.
         
-        :returns: :class:`DeleteModelVersionTagResponse`
+        
         """
 
         query = {}
@@ -4881,7 +4881,7 @@ class ModelRegistryAPI:
         :param comment: str (optional)
           User-provided comment on the action.
         
-        :returns: :class:`DeleteTransitionRequestResponse`
+        
         """
 
         query = {}
@@ -4904,7 +4904,7 @@ class ModelRegistryAPI:
         :param id: str (optional)
           Webhook ID required to delete a registry webhook.
         
-        :returns: :class:`DeleteWebhookResponse`
+        
         """
 
         query = {}
@@ -5294,7 +5294,7 @@ class ModelRegistryAPI:
           String value of the tag being logged. Maximum size depends on storage backend. All storage backends
           are guaranteed to support key values up to 5000 bytes in size.
         
-        :returns: :class:`SetModelTagResponse`
+        
         """
         body = {}
         if key is not None: body['key'] = key
@@ -5321,7 +5321,7 @@ class ModelRegistryAPI:
           String value of the tag being logged. Maximum size depends on storage backend. All storage backends
           are guaranteed to support key values up to 5000 bytes in size.
         
-        :returns: :class:`SetModelVersionTagResponse`
+        
         """
         body = {}
         if key is not None: body['key'] = key
@@ -5466,7 +5466,7 @@ class ModelRegistryAPI:
         :param description: str (optional)
           If provided, updates the description for this `registered_model`.
         
-        :returns: :class:`UpdateModelResponse`
+        
         """
         body = {}
         if description is not None: body['description'] = description
@@ -5487,7 +5487,7 @@ class ModelRegistryAPI:
         :param description: str (optional)
           If provided, updates the description for this `registered_model`.
         
-        :returns: :class:`UpdateModelVersionResponse`
+        
         """
         body = {}
         if description is not None: body['description'] = description
@@ -5583,7 +5583,7 @@ class ModelRegistryAPI:
           * `TEST_MODE`: Webhook can be triggered through the test endpoint, but is not triggered on a real
           event.
         
-        :returns: :class:`UpdateWebhookResponse`
+        
         """
         body = {}
         if description is not None: body['description'] = description

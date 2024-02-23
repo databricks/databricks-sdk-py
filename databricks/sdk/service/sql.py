@@ -3902,7 +3902,7 @@ class AlertsAPI:
         
         :param alert_id: str
         
-        :returns: :class:`DeleteResponse`
+        
         """
 
         headers = {'Accept': 'application/json', }
@@ -3959,7 +3959,7 @@ class AlertsAPI:
           Number of seconds after being triggered before the alert rearms itself and can be triggered again.
           If `null`, alert will never be triggered again.
         
-        :returns: :class:`UpdateResponse`
+        
         """
         body = {}
         if name is not None: body['name'] = name
@@ -4017,7 +4017,7 @@ class DashboardWidgetsAPI:
         :param id: str
           Widget ID returned by :method:dashboardwidgets/create
         
-        :returns: :class:`DeleteResponse`
+        
         """
 
         headers = {'Accept': 'application/json', }
@@ -4117,7 +4117,7 @@ class DashboardsAPI:
         
         :param dashboard_id: str
         
-        :returns: :class:`DeleteResponse`
+        
         """
 
         headers = {'Accept': 'application/json', }
@@ -4194,7 +4194,7 @@ class DashboardsAPI:
         
         :param dashboard_id: str
         
-        :returns: :class:`RestoreResponse`
+        
         """
 
         headers = {'Accept': 'application/json', }
@@ -4428,7 +4428,7 @@ class QueriesAPI:
         
         :param query_id: str
         
-        :returns: :class:`DeleteResponse`
+        
         """
 
         headers = {'Accept': 'application/json', }
@@ -4519,7 +4519,7 @@ class QueriesAPI:
         
         :param query_id: str
         
-        :returns: :class:`RestoreResponse`
+        
         """
 
         headers = {'Accept': 'application/json', }
@@ -4672,7 +4672,7 @@ class QueryVisualizationsAPI:
         :param id: str
           Widget ID returned by :method:queryvizualisations/create
         
-        :returns: :class:`DeleteResponse`
+        
         """
 
         headers = {'Accept': 'application/json', }
@@ -4816,7 +4816,7 @@ class StatementExecutionAPI:
           The statement ID is returned upon successfully submitting a SQL statement, and is a required
           reference for all subsequent calls.
         
-        :returns: :class:`CancelExecutionResponse`
+        
         """
 
         headers = {}
@@ -5240,7 +5240,7 @@ class WarehousesAPI:
         :param id: str
           Required. Id of the SQL warehouse.
         
-        :returns: :class:`DeleteWarehouseResponse`
+        
         """
 
         headers = {'Accept': 'application/json', }
@@ -5534,7 +5534,7 @@ class WarehousesAPI:
         :param sql_configuration_parameters: :class:`RepeatedEndpointConfPairs` (optional)
           SQL configuration parameters
         
-        :returns: :class:`SetWorkspaceWarehouseConfigResponse`
+        
         """
         body = {}
         if channel is not None: body['channel'] = channel.as_dict()

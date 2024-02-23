@@ -1608,7 +1608,7 @@ class CleanRoomsAPI:
         :param name: str
           The name of the clean room.
         
-        :returns: :class:`DeleteResponse`
+        
         """
 
         headers = {'Accept': 'application/json', }
@@ -1762,7 +1762,7 @@ class ProvidersAPI:
         :param name: str
           Name of the provider.
         
-        :returns: :class:`DeleteResponse`
+        
         """
 
         headers = {'Accept': 'application/json', }
@@ -1885,7 +1885,7 @@ class RecipientActivationAPI:
         :param activation_url: str
           The one time activation url. It also accepts activation token.
         
-        :returns: :class:`GetActivationUrlInfoResponse`
+        
         """
 
         headers = {'Accept': 'application/json', }
@@ -1991,7 +1991,7 @@ class RecipientsAPI:
         :param name: str
           Name of the recipient.
         
-        :returns: :class:`DeleteResponse`
+        
         """
 
         headers = {'Accept': 'application/json', }
@@ -2114,7 +2114,7 @@ class RecipientsAPI:
           specified properties will override the existing properties. To add and remove properties, one would
           need to perform a read-modify-write.
         
-        :returns: :class:`UpdateResponse`
+        
         """
         body = {}
         if comment is not None: body['comment'] = comment
@@ -2165,7 +2165,7 @@ class SharesAPI:
         :param name: str
           The name of the share.
         
-        :returns: :class:`DeleteResponse`
+        
         """
 
         headers = {'Accept': 'application/json', }
@@ -2285,7 +2285,7 @@ class SharesAPI:
         :param changes: List[:class:`PermissionsChange`] (optional)
           Array of permission changes.
         
-        :returns: :class:`UpdatePermissionsResponse`
+        
         """
         body = {}
         if changes is not None: body['changes'] = [v.as_dict() for v in changes]

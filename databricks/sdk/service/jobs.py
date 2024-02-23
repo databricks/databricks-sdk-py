@@ -4787,7 +4787,7 @@ class JobsAPI:
         :param job_id: int (optional)
           The canonical identifier of the job to cancel all runs of.
         
-        :returns: :class:`CancelAllRunsResponse`
+        
         """
         body = {}
         if all_queued_runs is not None: body['all_queued_runs'] = all_queued_runs
@@ -4973,7 +4973,7 @@ class JobsAPI:
         :param job_id: int
           The canonical identifier of the job to delete. This field is required.
         
-        :returns: :class:`DeleteResponse`
+        
         """
         body = {}
         if job_id is not None: body['job_id'] = job_id
@@ -4989,7 +4989,7 @@ class JobsAPI:
         :param run_id: int
           The canonical identifier of the run for which to retrieve the metadata.
         
-        :returns: :class:`DeleteRunResponse`
+        
         """
         body = {}
         if run_id is not None: body['run_id'] = run_id
@@ -5414,7 +5414,7 @@ class JobsAPI:
           Changes to the field `JobBaseSettings.timeout_seconds` are applied to active runs. Changes to other
           fields are applied to future runs only.
         
-        :returns: :class:`ResetResponse`
+        
         """
         body = {}
         if job_id is not None: body['job_id'] = job_id
@@ -5741,7 +5741,7 @@ class JobsAPI:
           Changes to the field `JobSettings.timeout_seconds` are applied to active runs. Changes to other
           fields are applied to future runs only.
         
-        :returns: :class:`UpdateResponse`
+        
         """
         body = {}
         if fields_to_remove is not None: body['fields_to_remove'] = [v for v in fields_to_remove]

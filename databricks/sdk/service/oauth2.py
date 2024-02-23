@@ -549,7 +549,7 @@ class CustomAppIntegrationAPI:
         :param integration_id: str
           The oauth app integration ID.
         
-        :returns: :class:`DeleteCustomAppIntegrationOutput`
+        
         """
 
         headers = {'Accept': 'application/json', }
@@ -611,7 +611,7 @@ class CustomAppIntegrationAPI:
         :param token_access_policy: :class:`TokenAccessPolicy` (optional)
           Token access policy to be updated in the custom oauth app integration
         
-        :returns: :class:`UpdateCustomAppIntegrationOutput`
+        
         """
         body = {}
         if redirect_urls is not None: body['redirect_urls'] = [v for v in redirect_urls]
@@ -712,7 +712,7 @@ class PublishedAppIntegrationAPI:
         :param integration_id: str
           The oauth app integration ID.
         
-        :returns: :class:`DeletePublishedAppIntegrationOutput`
+        
         """
 
         headers = {'Accept': 'application/json', }
@@ -768,7 +768,7 @@ class PublishedAppIntegrationAPI:
         :param token_access_policy: :class:`TokenAccessPolicy` (optional)
           Token access policy to be updated in the published oauth app integration
         
-        :returns: :class:`UpdatePublishedAppIntegrationOutput`
+        
         """
         body = {}
         if token_access_policy is not None: body['token_access_policy'] = token_access_policy.as_dict()
@@ -826,7 +826,7 @@ class ServicePrincipalSecretsAPI:
         :param secret_id: str
           The secret ID.
         
-        :returns: :class:`DeleteResponse`
+        
         """
 
         headers = {}

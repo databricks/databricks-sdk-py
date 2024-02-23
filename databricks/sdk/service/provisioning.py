@@ -1612,7 +1612,7 @@ class CredentialsAPI:
         :param credentials_id: str
           Databricks Account API credential configuration ID
         
-        :returns: :class:`DeleteResponse`
+        
         """
 
         headers = {'Accept': 'application/json', }
@@ -1720,7 +1720,7 @@ class EncryptionKeysAPI:
         :param customer_managed_key_id: str
           Databricks encryption key configuration ID.
         
-        :returns: :class:`DeleteResponse`
+        
         """
 
         headers = {'Accept': 'application/json', }
@@ -1853,7 +1853,7 @@ class NetworksAPI:
         :param network_id: str
           Databricks Account API network configuration ID.
         
-        :returns: :class:`DeleteResponse`
+        
         """
 
         headers = {'Accept': 'application/json', }
@@ -1984,7 +1984,7 @@ class PrivateAccessAPI:
         :param private_access_settings_id: str
           Databricks Account API private access settings ID.
         
-        :returns: :class:`DeleteResponse`
+        
         """
 
         headers = {'Accept': 'application/json', }
@@ -2092,7 +2092,7 @@ class PrivateAccessAPI:
           can optionally specify `false`, but only if you implement both the front-end and the back-end
           PrivateLink connections. Otherwise, specify `true`, which means that public access is enabled.
         
-        :returns: :class:`ReplaceResponse`
+        
         """
         body = {}
         if allowed_vpc_endpoint_ids is not None:
@@ -2162,7 +2162,7 @@ class StorageAPI:
         :param storage_configuration_id: str
           Databricks Account API storage configuration ID.
         
-        :returns: :class:`DeleteResponse`
+        
         """
 
         headers = {'Accept': 'application/json', }
@@ -2273,7 +2273,7 @@ class VpcEndpointsAPI:
         :param vpc_endpoint_id: str
           Databricks VPC endpoint ID.
         
-        :returns: :class:`DeleteResponse`
+        
         """
 
         headers = {'Accept': 'application/json', }
@@ -2565,7 +2565,7 @@ class WorkspacesAPI:
         :param workspace_id: int
           Workspace ID.
         
-        :returns: :class:`DeleteResponse`
+        
         """
 
         headers = {'Accept': 'application/json', }

@@ -1421,7 +1421,7 @@ class AccountGroupsAPI:
         :param id: str
           Unique ID for a group in the Databricks account.
         
-        :returns: :class:`DeleteResponse`
+        
         """
 
         headers = {}
@@ -1529,7 +1529,7 @@ class AccountGroupsAPI:
         :param schemas: List[:class:`PatchSchema`] (optional)
           The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
         
-        :returns: :class:`PatchResponse`
+        
         """
         body = {}
         if operations is not None: body['Operations'] = [v.as_dict() for v in operations]
@@ -1575,7 +1575,7 @@ class AccountGroupsAPI:
         :param schemas: List[:class:`GroupSchema`] (optional)
           The schema of the group.
         
-        :returns: :class:`UpdateResponse`
+        
         """
         body = {}
         if display_name is not None: body['displayName'] = display_name
@@ -1667,7 +1667,7 @@ class AccountServicePrincipalsAPI:
         :param id: str
           Unique ID for a service principal in the Databricks account.
         
-        :returns: :class:`DeleteResponse`
+        
         """
 
         headers = {}
@@ -1775,7 +1775,7 @@ class AccountServicePrincipalsAPI:
         :param schemas: List[:class:`PatchSchema`] (optional)
           The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
         
-        :returns: :class:`PatchResponse`
+        
         """
         body = {}
         if operations is not None: body['Operations'] = [v.as_dict() for v in operations]
@@ -1824,7 +1824,7 @@ class AccountServicePrincipalsAPI:
         :param schemas: List[:class:`ServicePrincipalSchema`] (optional)
           The schema of the List response.
         
-        :returns: :class:`UpdateResponse`
+        
         """
         body = {}
         if active is not None: body['active'] = active
@@ -1934,7 +1934,7 @@ class AccountUsersAPI:
         :param id: str
           Unique ID for a user in the Databricks account.
         
-        :returns: :class:`DeleteResponse`
+        
         """
 
         headers = {}
@@ -2081,7 +2081,7 @@ class AccountUsersAPI:
         :param schemas: List[:class:`PatchSchema`] (optional)
           The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
         
-        :returns: :class:`PatchResponse`
+        
         """
         body = {}
         if operations is not None: body['Operations'] = [v.as_dict() for v in operations]
@@ -2138,7 +2138,7 @@ class AccountUsersAPI:
         :param user_name: str (optional)
           Email address of the Databricks user.
         
-        :returns: :class:`UpdateResponse`
+        
         """
         body = {}
         if active is not None: body['active'] = active
@@ -2249,7 +2249,7 @@ class GroupsAPI:
         :param id: str
           Unique ID for a group in the Databricks workspace.
         
-        :returns: :class:`DeleteResponse`
+        
         """
 
         headers = {}
@@ -2350,7 +2350,7 @@ class GroupsAPI:
         :param schemas: List[:class:`PatchSchema`] (optional)
           The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
         
-        :returns: :class:`PatchResponse`
+        
         """
         body = {}
         if operations is not None: body['Operations'] = [v.as_dict() for v in operations]
@@ -2393,7 +2393,7 @@ class GroupsAPI:
         :param schemas: List[:class:`GroupSchema`] (optional)
           The schema of the group.
         
-        :returns: :class:`UpdateResponse`
+        
         """
         body = {}
         if display_name is not None: body['displayName'] = display_name
@@ -2635,7 +2635,7 @@ class ServicePrincipalsAPI:
         :param id: str
           Unique ID for a service principal in the Databricks workspace.
         
-        :returns: :class:`DeleteResponse`
+        
         """
 
         headers = {}
@@ -2739,7 +2739,7 @@ class ServicePrincipalsAPI:
         :param schemas: List[:class:`PatchSchema`] (optional)
           The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
         
-        :returns: :class:`PatchResponse`
+        
         """
         body = {}
         if operations is not None: body['Operations'] = [v.as_dict() for v in operations]
@@ -2785,7 +2785,7 @@ class ServicePrincipalsAPI:
         :param schemas: List[:class:`ServicePrincipalSchema`] (optional)
           The schema of the List response.
         
-        :returns: :class:`UpdateResponse`
+        
         """
         body = {}
         if active is not None: body['active'] = active
@@ -2889,7 +2889,7 @@ class UsersAPI:
         :param id: str
           Unique ID for a user in the Databricks workspace.
         
-        :returns: :class:`DeleteResponse`
+        
         """
 
         headers = {}
@@ -3056,7 +3056,7 @@ class UsersAPI:
         :param schemas: List[:class:`PatchSchema`] (optional)
           The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
         
-        :returns: :class:`PatchResponse`
+        
         """
         body = {}
         if operations is not None: body['Operations'] = [v.as_dict() for v in operations]
@@ -3130,7 +3130,7 @@ class UsersAPI:
         :param user_name: str (optional)
           Email address of the Databricks user.
         
-        :returns: :class:`UpdateResponse`
+        
         """
         body = {}
         if active is not None: body['active'] = active
@@ -3189,7 +3189,7 @@ class WorkspaceAssignmentAPI:
         :param principal_id: int
           The ID of the user, service principal, or group.
         
-        :returns: :class:`DeleteWorkspaceAssignments`
+        
         """
 
         headers = {'Accept': 'application/json', }
@@ -3251,7 +3251,7 @@ class WorkspaceAssignmentAPI:
         :param permissions: List[:class:`WorkspacePermission`]
           Array of permissions assignments to update on the workspace.
         
-        :returns: :class:`WorkspaceAssignmentsUpdated`
+        
         """
         body = {}
         if permissions is not None: body['permissions'] = [v.value for v in permissions]

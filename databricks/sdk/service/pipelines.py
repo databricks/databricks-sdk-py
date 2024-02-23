@@ -1841,7 +1841,7 @@ class PipelinesAPI:
         
         :param pipeline_id: str
         
-        :returns: :class:`DeletePipelineResponse`
+        
         """
 
         headers = {'Accept': 'application/json', }
@@ -2205,7 +2205,7 @@ class PipelinesAPI:
         :param trigger: :class:`PipelineTrigger` (optional)
           Which pipeline trigger to use. Deprecated: Use `continuous` instead.
         
-        :returns: :class:`EditPipelineResponse`
+        
         """
         body = {}
         if allow_duplicate_names is not None: body['allow_duplicate_names'] = allow_duplicate_names

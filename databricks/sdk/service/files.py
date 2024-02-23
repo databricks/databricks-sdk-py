@@ -429,7 +429,7 @@ class DbfsAPI:
         :param data: str
           The base64-encoded data to append to the stream. This has a limit of 1 MB.
         
-        :returns: :class:`AddBlockResponse`
+        
         """
         body = {}
         if data is not None: body['data'] = data
@@ -447,7 +447,7 @@ class DbfsAPI:
         :param handle: int
           The handle on an open stream.
         
-        :returns: :class:`CloseResponse`
+        
         """
         body = {}
         if handle is not None: body['handle'] = handle
@@ -506,7 +506,7 @@ class DbfsAPI:
           Whether or not to recursively delete the directory's contents. Deleting empty directories can be
           done without providing the recursive flag.
         
-        :returns: :class:`DeleteResponse`
+        
         """
         body = {}
         if path is not None: body['path'] = path
@@ -572,7 +572,7 @@ class DbfsAPI:
         :param path: str
           The path of the new directory. The path should be the absolute DBFS path.
         
-        :returns: :class:`MkDirsResponse`
+        
         """
         body = {}
         if path is not None: body['path'] = path
@@ -593,7 +593,7 @@ class DbfsAPI:
         :param destination_path: str
           The destination path of the file or directory. The path should be the absolute DBFS path.
         
-        :returns: :class:`MoveResponse`
+        
         """
         body = {}
         if destination_path is not None: body['destination_path'] = destination_path
@@ -623,7 +623,7 @@ class DbfsAPI:
         :param overwrite: bool (optional)
           The flag that specifies whether to overwrite existing file/files.
         
-        :returns: :class:`PutResponse`
+        
         """
         body = {}
         if contents is not None: body['contents'] = contents
@@ -694,7 +694,7 @@ class FilesAPI:
         :param directory_path: str
           The absolute path of a directory.
         
-        :returns: :class:`CreateDirectoryResponse`
+        
         """
 
         headers = {}
@@ -709,7 +709,7 @@ class FilesAPI:
         :param file_path: str
           The absolute path of the file.
         
-        :returns: :class:`DeleteResponse`
+        
         """
 
         headers = {}
@@ -727,7 +727,7 @@ class FilesAPI:
         :param directory_path: str
           The absolute path of a directory.
         
-        :returns: :class:`DeleteDirectoryResponse`
+        
         """
 
         headers = {}
@@ -769,7 +769,7 @@ class FilesAPI:
         :param directory_path: str
           The absolute path of a directory.
         
-        :returns: :class:`GetDirectoryMetadataResponse`
+        
         """
 
         headers = {}
@@ -859,7 +859,7 @@ class FilesAPI:
         :param overwrite: bool (optional)
           If true, an existing file will be overwritten.
         
-        :returns: :class:`UploadResponse`
+        
         """
 
         query = {}

@@ -2492,7 +2492,7 @@ class ServingEndpointsAPI:
         :param name: str
           The name of the serving endpoint. This field is required.
         
-        :returns: :class:`DeleteResponse`
+        
         """
 
         headers = {'Accept': 'application/json', }
@@ -2508,7 +2508,7 @@ class ServingEndpointsAPI:
         :param name: str
           The name of the serving endpoint to retrieve metrics for. This field is required.
         
-        :returns: :class:`ExportMetricsResponse`
+        
         """
 
         headers = {}

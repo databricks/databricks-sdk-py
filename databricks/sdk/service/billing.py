@@ -774,7 +774,7 @@ class BudgetsAPI:
         :param budget_id: str
           Budget ID
         
-        :returns: :class:`DeleteResponse`
+        
         """
 
         headers = {'Accept': 'application/json', }
@@ -827,7 +827,7 @@ class BudgetsAPI:
         :param budget: :class:`Budget`
           Budget configuration to be created.
         
-        :returns: :class:`UpdateResponse`
+        
         """
         body = {}
         if budget is not None: body['budget'] = budget.as_dict()
@@ -1000,7 +1000,7 @@ class LogDeliveryAPI:
           configuration](#operation/patch-log-delivery-config-status) later. Deletion of a configuration is
           not supported, so disable a log delivery configuration that is no longer needed.
         
-        :returns: :class:`PatchStatusResponse`
+        
         """
         body = {}
         if status is not None: body['status'] = status.value

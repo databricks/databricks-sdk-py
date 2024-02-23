@@ -1382,7 +1382,7 @@ class GitCredentialsAPI:
         :param credential_id: int
           The ID for the corresponding credential to access.
         
-        :returns: :class:`DeleteResponse`
+        
         """
 
         headers = {}
@@ -1440,7 +1440,7 @@ class GitCredentialsAPI:
         :param personal_access_token: str (optional)
           The personal access token used to authenticate to the corresponding Git provider.
         
-        :returns: :class:`UpdateResponse`
+        
         """
         body = {}
         if git_provider is not None: body['git_provider'] = git_provider
@@ -1508,7 +1508,7 @@ class ReposAPI:
         :param repo_id: int
           The ID for the corresponding repo to access.
         
-        :returns: :class:`DeleteResponse`
+        
         """
 
         headers = {}
@@ -1641,7 +1641,7 @@ class ReposAPI:
           in a detached HEAD state. Before committing new changes, you must update the repo to a branch
           instead of the detached HEAD.
         
-        :returns: :class:`UpdateResponse`
+        
         """
         body = {}
         if branch is not None: body['branch'] = branch
@@ -1709,7 +1709,7 @@ class SecretsAPI:
         :param scope_backend_type: :class:`ScopeBackendType` (optional)
           The backend type the scope will be created with. If not specified, will default to `DATABRICKS`
         
-        :returns: :class:`CreateScopeResponse`
+        
         """
         body = {}
         if backend_azure_keyvault is not None:
@@ -1735,7 +1735,7 @@ class SecretsAPI:
         :param principal: str
           The principal to remove an existing ACL from.
         
-        :returns: :class:`DeleteAclResponse`
+        
         """
         body = {}
         if principal is not None: body['principal'] = principal
@@ -1755,7 +1755,7 @@ class SecretsAPI:
         :param scope: str
           Name of the scope to delete.
         
-        :returns: :class:`DeleteScopeResponse`
+        
         """
         body = {}
         if scope is not None: body['scope'] = scope
@@ -1777,7 +1777,7 @@ class SecretsAPI:
         :param key: str
           Name of the secret to delete.
         
-        :returns: :class:`DeleteSecretResponse`
+        
         """
         body = {}
         if key is not None: body['key'] = key
@@ -1937,7 +1937,7 @@ class SecretsAPI:
         :param permission: :class:`AclPermission`
           The permission level applied to the principal.
         
-        :returns: :class:`PutAclResponse`
+        
         """
         body = {}
         if permission is not None: body['permission'] = permission.value
@@ -1980,7 +1980,7 @@ class SecretsAPI:
         :param string_value: str (optional)
           If specified, note that the value will be stored in UTF-8 (MB4) form.
         
-        :returns: :class:`PutSecretResponse`
+        
         """
         body = {}
         if bytes_value is not None: body['bytes_value'] = bytes_value
@@ -2018,7 +2018,7 @@ class WorkspaceAPI:
           note this deleting directory is not atomic. If it fails in the middle, some of objects under this
           directory may be deleted and cannot be undone.
         
-        :returns: :class:`DeleteResponse`
+        
         """
         body = {}
         if path is not None: body['path'] = path
@@ -2166,7 +2166,7 @@ class WorkspaceAPI:
           The flag that specifies whether to overwrite existing object. It is `false` by default. For `DBC`
           format, `overwrite` is not supported since it may contain a directory.
         
-        :returns: :class:`ImportResponse`
+        
         """
         body = {}
         if content is not None: body['content'] = content
@@ -2215,7 +2215,7 @@ class WorkspaceAPI:
           The absolute path of the directory. If the parent directories do not exist, it will also create
           them. If the directory already exists, this command will do nothing and succeed.
         
-        :returns: :class:`MkdirsResponse`
+        
         """
         body = {}
         if path is not None: body['path'] = path
