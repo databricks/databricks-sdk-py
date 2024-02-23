@@ -60,6 +60,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ChannelName
 
+   Name of the channel
+
    .. py:attribute:: CHANNEL_NAME_CURRENT
       :value: "CHANNEL_NAME_CURRENT"
 
