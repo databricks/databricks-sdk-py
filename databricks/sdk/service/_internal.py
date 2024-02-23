@@ -3,7 +3,7 @@ from typing import Callable, Dict, Generic, Optional, Type, TypeVar
 
 
 def _from_dict(d: Dict[str, any], field: str, cls: Type) -> any:
-    if field not in d:
+    if field not in d or d[field] is None:
         return None
     return getattr(cls, 'from_dict')(d[field])
 
