@@ -106,6 +106,16 @@ class {{.Name}}API:{{if .Description}}
     {{end}}
     def __init__(self, api_client):
         self._api = api_client
+        {{range .Subservices}}
+        self._{{.SnakeName}} = {{.PascalName}}API(self._api){{end}}
+
+    {{range .Subservices}}
+    @property
+    def {{.SnakeName}}(self) -> {{.PascalName}}API:
+        {{if .Description}}"""{{.Summary}}"""{{end}}
+        return self._{{.SnakeName}}
+    {{end}}
+
     {{range .Waits}}
     def {{template "safe-snake-name" .}}(self{{range .Binding}}, {{template "safe-snake-name" .PollField}}: {{template "type" .PollField.Entity}}{{end}},
       timeout=timedelta(minutes={{.Timeout}}), callback: Optional[Callable[[{{.Poll.Response.PascalName}}], None]] = None) -> {{.Poll.Response.PascalName}}:

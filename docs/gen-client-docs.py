@@ -55,6 +55,23 @@ class TypedArgument:
 
 
 @dataclass
+class PropertyDoc:
+    name: str
+    doc: Optional[str]
+    tpe: Optional[str]
+
+    def as_rst(self) -> str:
+        out = ['', f'    .. py:property:: {self.name}']
+        if self.tpe is not None:
+            out.append(f'        :type: {self.tpe}')
+        if self.doc is not None:
+            # This is a class doc, which comes with 4 indentation spaces. 
+            # Here we are using the doc as property doc, which needs 8 indentation spaces.
+            formatted_doc = re.sub(r'\n', '\n    ', self.doc)
+            out.append(f'\n        {formatted_doc}')
+        return "\n".join(out)
+
+@dataclass
 class MethodDoc:
     method_name: str
     doc: Optional[str]
@@ -85,6 +102,7 @@ class ServiceDoc:
     service_name: str
     class_name: str
     methods: list[MethodDoc]
+    property: list[PropertyDoc]
     doc: str
     tag: Tag
 
@@ -103,6 +121,9 @@ class ServiceDoc:
             if not rst:
                 continue
             out.append(rst)
+
+        for p in self.property:
+            out.append(p.as_rst())
 
         return "\n".join(out)
 
@@ -275,6 +296,23 @@ class Generator:
             out.append(TypedArgument(name=arg, tpe=tpe, default=defaults.get(arg)))
         return out
 
+    def class_properties(self, inst) -> list[PropertyDoc]:
+        property_docs = []
+        for name in dir(inst):
+            if name[0] == '_':
+                # private members
+                continue
+            instance_attr = getattr(inst, name)
+            if name.startswith('_'):
+                continue
+            if inspect.ismethod(instance_attr):
+                continue
+            property_docs.append(
+                PropertyDoc(name=name,
+                            doc=instance_attr.__doc__,
+                            tpe=instance_attr.__class__.__name__))
+        return property_docs
+
     def class_methods(self, inst) -> list[MethodDoc]:
         method_docs = []
         for name in dir(inst):
@@ -293,24 +331,27 @@ class Generator:
                           return_type=Generator._get_type_from_annotations(args.annotations, 'return')))
         return method_docs
 
-    def service_docs(self, client_inst) -> list[ServiceDoc]:
-        client_prefix = 'w' if isinstance(client_inst, WorkspaceClient) else 'a'
+    def service_docs(self, client_inst, client_prefix: str) -> list[ServiceDoc]:
         ignore_client_fields = ('config', 'dbutils', 'api_client', 'get_workspace_client', 'get_workspace_id')
         all = []
-        for service_name, service_inst in inspect.getmembers(client_inst):
+        for service_name, service_inst in inspect.getmembers(client_inst, lambda o: not inspect.ismethod(o)):
             if service_name.startswith('_'):
                 continue
             if service_name in ignore_client_fields:
                 continue
             class_doc = service_inst.__doc__
             class_name = service_inst.__class__.__name__
+            print(f'Processing service {client_prefix}.{service_name}')
+            all += self.service_docs(service_inst, client_prefix + "." + service_name)
+
             all.append(
                 ServiceDoc(client_prefix=client_prefix,
                            service_name=service_name,
                            class_name=class_name,
                            doc=class_doc,
                            tag=self._get_tag_name(service_inst.__class__.__name__, service_name),
-                           methods=self.class_methods(service_inst)))
+                           methods=self.class_methods(service_inst),
+                           property=self.class_properties(service_inst)))
         return all
 
     @staticmethod
@@ -354,11 +395,12 @@ Dataclasses
     def load_client(self, client, folder, label, description):
         client_services = []
         package_to_services = collections.defaultdict(list)
-        service_docs = self.service_docs(client)
+        client_prefix = 'w' if isinstance(client, WorkspaceClient) else 'a'
+        service_docs = self.service_docs(client, client_prefix)
         for svc in service_docs:
             client_services.append(svc.service_name)
             package = svc.tag.package.name
-            package_to_services[package].append(svc.service_name)
+            package_to_services[package].append((svc.service_name, svc.client_prefix + "." + svc.service_name))
             self._make_folder_if_not_exists(f'{__dir__}/{folder}/{package}')
             with open(f'{__dir__}/{folder}/{package}/{svc.service_name}.rst', 'w') as f:
                 f.write(svc.as_rst())
@@ -367,7 +409,10 @@ Dataclasses
             if pkg.name not in package_to_services:
                 continue
             ordered_packages.append(pkg.name)
-            self._write_client_package_doc(folder, pkg, package_to_services[pkg.name])
+            # Order services inside the package by full path to have subservices grouped together
+            package_to_services[pkg.name].sort(key=lambda x: x[1])
+            ordered_services_names = [x[0] for x in package_to_services[pkg.name]]
+            self._write_client_package_doc(folder, pkg, ordered_services_names)
         self._write_client_packages(folder, label, description, ordered_packages)
 
     def _write_client_packages(self, folder: str, label: str, description: str, packages: list[str]):
@@ -390,7 +435,7 @@ Dataclasses
         """Writes out the index for a single package supported by a client."""
         self._make_folder_if_not_exists(f'{__dir__}/{folder}/{pkg.name}')
         with open(f'{__dir__}/{folder}/{pkg.name}/index.rst', 'w') as f:
-            all = "\n   ".join(sorted(services))
+            all = "\n   ".join(services)
             f.write(f'''
 {pkg.label}
 {'=' * len(pkg.label)}
