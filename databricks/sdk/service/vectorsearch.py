@@ -203,12 +203,30 @@ class DeleteDataVectorIndexResponse:
 
 @dataclass
 class DeleteEndpointResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteEndpointResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteEndpointResponse:
+        """Deserializes the DeleteEndpointResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
 class DeleteIndexResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteIndexResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteIndexResponse:
+        """Deserializes the DeleteIndexResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -684,7 +702,16 @@ class ResultManifest:
 
 @dataclass
 class SyncIndexResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the SyncIndexResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> SyncIndexResponse:
+        """Deserializes the SyncIndexResponse from a dictionary."""
+        return cls()
 
 
 @dataclass

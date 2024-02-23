@@ -19,7 +19,7 @@
         :param schema_name: :class:`DisableSchemaName`
           Full name of the system schema.
         
-        :returns: :class:`DisableResponse`
+        
         
 
     .. py:method:: enable(metastore_id: str, schema_name: EnableSchemaName)
@@ -34,7 +34,7 @@
         :param schema_name: :class:`EnableSchemaName`
           Full name of the system schema.
         
-        :returns: :class:`EnableResponse`
+        
         
 
     .. py:method:: list(metastore_id: str) -> Iterator[SystemSchemaInfo]

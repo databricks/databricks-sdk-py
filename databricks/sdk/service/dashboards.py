@@ -41,7 +41,16 @@ class PublishRequest:
 
 @dataclass
 class PublishResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the PublishResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> PublishResponse:
+        """Deserializes the PublishResponse from a dictionary."""
+        return cls()
 
 
 class LakeviewAPI:

@@ -1,3 +1,5 @@
+from databricks.sdk.service import catalog
+
 # https://github.com/databricks/databricks-sdk-py/issues/135
 def test_issue_135():
     from databricks.sdk.service.compute import Library, PythonPyPiLibrary
@@ -32,3 +34,15 @@ def test_issue_103():
             'spark_version': '11.3.x-scala2.12'
         }
     }
+
+
+def test_serde_with_empty_dataclass():
+    inst = catalog.OnlineTableSpec(
+        pipeline_id = "123",
+        run_continuously=catalog.OnlineTableSpecContinuousSchedulingPolicy(),
+    )
+    assert inst.as_dict() == {
+        'pipeline_id': '123',
+        'run_continuously': {}
+    }
+    assert inst == catalog.OnlineTableSpec.from_dict(inst.as_dict())

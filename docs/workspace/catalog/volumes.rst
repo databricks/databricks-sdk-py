@@ -100,7 +100,7 @@
         :param name: str
           The three-level (fully qualified) name of the volume
         
-        :returns: :class:`DeleteResponse`
+        
         
 
     .. py:method:: list(catalog_name: str, schema_name: str [, max_results: Optional[int], page_token: Optional[str]]) -> Iterator[VolumeInfo]

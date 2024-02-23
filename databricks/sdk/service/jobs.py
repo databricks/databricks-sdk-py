@@ -263,7 +263,16 @@ class CancelAllRuns:
 
 @dataclass
 class CancelAllRunsResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the CancelAllRunsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> CancelAllRunsResponse:
+        """Deserializes the CancelAllRunsResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -285,7 +294,16 @@ class CancelRun:
 
 @dataclass
 class CancelRunResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the CancelRunResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> CancelRunResponse:
+        """Deserializes the CancelRunResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -756,7 +774,16 @@ class DeleteJob:
 
 @dataclass
 class DeleteResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteResponse:
+        """Deserializes the DeleteResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -778,7 +805,16 @@ class DeleteRun:
 
 @dataclass
 class DeleteRunResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteRunResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteRunResponse:
+        """Deserializes the DeleteRunResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -2270,7 +2306,16 @@ class ResetJob:
 
 @dataclass
 class ResetResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the ResetResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ResetResponse:
+        """Deserializes the ResetResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -4603,7 +4648,16 @@ class UpdateJob:
 
 @dataclass
 class UpdateResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateResponse:
+        """Deserializes the UpdateResponse from a dictionary."""
+        return cls()
 
 
 @dataclass

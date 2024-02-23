@@ -451,7 +451,16 @@ class DeleteAppResponse:
 
 @dataclass
 class DeleteResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteResponse:
+        """Deserializes the DeleteResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -758,7 +767,16 @@ class EndpointTag:
 
 @dataclass
 class ExportMetricsResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the ExportMetricsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ExportMetricsResponse:
+        """Deserializes the ExportMetricsResponse from a dictionary."""
+        return cls()
 
 
 @dataclass

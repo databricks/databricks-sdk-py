@@ -546,12 +546,30 @@ class CreateShare:
 
 @dataclass
 class DeleteResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteResponse:
+        """Deserializes the DeleteResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
 class GetActivationUrlInfoResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the GetActivationUrlInfoResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> GetActivationUrlInfoResponse:
+        """Deserializes the GetActivationUrlInfoResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -1416,7 +1434,16 @@ class UpdateCleanRoom:
 
 @dataclass
 class UpdatePermissionsResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdatePermissionsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdatePermissionsResponse:
+        """Deserializes the UpdatePermissionsResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -1502,7 +1529,16 @@ class UpdateRecipient:
 
 @dataclass
 class UpdateResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateResponse:
+        """Deserializes the UpdateResponse from a dictionary."""
+        return cls()
 
 
 @dataclass

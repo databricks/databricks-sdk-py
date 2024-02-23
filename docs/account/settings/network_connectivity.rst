@@ -73,7 +73,7 @@
         :param network_connectivity_config_id: str
           Your Network Connectvity Configuration ID.
         
-        :returns: :class:`DeleteNetworkConnectivityConfigurationResponse`
+        
         
 
     .. py:method:: delete_private_endpoint_rule(network_connectivity_config_id: str, private_endpoint_rule_id: str) -> NccAzurePrivateEndpointRule

@@ -317,7 +317,16 @@ class CreateLogDeliveryConfigurationParams:
 
 @dataclass
 class DeleteResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteResponse:
+        """Deserializes the DeleteResponse from a dictionary."""
+        return cls()
 
 
 class DeliveryStatus(Enum):
@@ -564,7 +573,16 @@ class OutputFormat(Enum):
 
 @dataclass
 class PatchStatusResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the PatchStatusResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> PatchStatusResponse:
+        """Deserializes the PatchStatusResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -595,7 +613,16 @@ class UpdateLogDeliveryConfigurationStatusRequest:
 
 @dataclass
 class UpdateResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateResponse:
+        """Deserializes the UpdateResponse from a dictionary."""
+        return cls()
 
 
 @dataclass

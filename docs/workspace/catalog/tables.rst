@@ -25,7 +25,7 @@
         :param full_name: str
           Full name of the table.
         
-        :returns: :class:`DeleteResponse`
+        
         
 
     .. py:method:: exists(full_name: str) -> TableExistsResponse
@@ -215,5 +215,5 @@
           Full name of the table.
         :param owner: str (optional)
         
-        :returns: :class:`UpdateResponse`
+        
         

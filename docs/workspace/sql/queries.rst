@@ -75,7 +75,7 @@
         
         :param query_id: str
         
-        :returns: :class:`DeleteResponse`
+        
         
 
     .. py:method:: get(query_id: str) -> Query
@@ -155,7 +155,7 @@
         
         :param query_id: str
         
-        :returns: :class:`RestoreResponse`
+        
         
 
     .. py:method:: update(query_id: str [, data_source_id: Optional[str], description: Optional[str], name: Optional[str], options: Optional[Any], query: Optional[str], run_as_role: Optional[RunAsRole]]) -> Query

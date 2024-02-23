@@ -35,5 +35,5 @@
         Sets the configuration status for a workspace, including enabling or disabling it.
         
         
-        :returns: :class:`SetStatusResponse`
+        
         

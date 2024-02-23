@@ -257,7 +257,7 @@
         
         :param id: str
         
-        :returns: :class:`DeleteCommentResponse`
+        
         
 
     .. py:method:: delete_model(name: str)
@@ -269,7 +269,7 @@
         :param name: str
           Registered model unique name identifier.
         
-        :returns: :class:`DeleteModelResponse`
+        
         
 
     .. py:method:: delete_model_tag(name: str, key: str)
@@ -284,7 +284,7 @@
           Name of the tag. The name must be an exact match; wild-card deletion is not supported. Maximum size
           is 250 bytes.
         
-        :returns: :class:`DeleteModelTagResponse`
+        
         
 
     .. py:method:: delete_model_version(name: str, version: str)
@@ -298,7 +298,7 @@
         :param version: str
           Model version number
         
-        :returns: :class:`DeleteModelVersionResponse`
+        
         
 
     .. py:method:: delete_model_version_tag(name: str, version: str, key: str)
@@ -315,7 +315,7 @@
           Name of the tag. The name must be an exact match; wild-card deletion is not supported. Maximum size
           is 250 bytes.
         
-        :returns: :class:`DeleteModelVersionTagResponse`
+        
         
 
     .. py:method:: delete_transition_request(name: str, version: str, stage: DeleteTransitionRequestStage, creator: str [, comment: Optional[str]])
@@ -344,7 +344,7 @@
         :param comment: str (optional)
           User-provided comment on the action.
         
-        :returns: :class:`DeleteTransitionRequestResponse`
+        
         
 
     .. py:method:: delete_webhook( [, id: Optional[str]])
@@ -358,7 +358,7 @@
         :param id: str (optional)
           Webhook ID required to delete a registry webhook.
         
-        :returns: :class:`DeleteWebhookResponse`
+        
         
 
     .. py:method:: get_latest_versions(name: str [, stages: Optional[List[str]]]) -> Iterator[ModelVersion]
@@ -630,7 +630,7 @@
           String value of the tag being logged. Maximum size depends on storage backend. All storage backends
           are guaranteed to support key values up to 5000 bytes in size.
         
-        :returns: :class:`SetModelTagResponse`
+        
         
 
     .. py:method:: set_model_version_tag(name: str, version: str, key: str, value: str)
@@ -651,7 +651,7 @@
           String value of the tag being logged. Maximum size depends on storage backend. All storage backends
           are guaranteed to support key values up to 5000 bytes in size.
         
-        :returns: :class:`SetModelVersionTagResponse`
+        
         
 
     .. py:method:: set_permissions(registered_model_id: str [, access_control_list: Optional[List[RegisteredModelAccessControlRequest]]]) -> RegisteredModelPermissions
@@ -784,7 +784,7 @@
         :param description: str (optional)
           If provided, updates the description for this `registered_model`.
         
-        :returns: :class:`UpdateModelResponse`
+        
         
 
     .. py:method:: update_model_version(name: str, version: str [, description: Optional[str]])
@@ -819,7 +819,7 @@
         :param description: str (optional)
           If provided, updates the description for this `registered_model`.
         
-        :returns: :class:`UpdateModelVersionResponse`
+        
         
 
     .. py:method:: update_permissions(registered_model_id: str [, access_control_list: Optional[List[RegisteredModelAccessControlRequest]]]) -> RegisteredModelPermissions
@@ -909,5 +909,5 @@
           * `TEST_MODE`: Webhook can be triggered through the test endpoint, but is not triggered on a real
           event.
         
-        :returns: :class:`UpdateWebhookResponse`
+        
         

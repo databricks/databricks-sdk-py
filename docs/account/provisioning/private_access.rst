@@ -87,7 +87,7 @@
         :param private_access_settings_id: str
           Databricks Account API private access settings ID.
         
-        :returns: :class:`DeleteResponse`
+        
         
 
     .. py:method:: get(private_access_settings_id: str) -> PrivateAccessSettings
@@ -222,5 +222,5 @@
           can optionally specify `false`, but only if you implement both the front-end and the back-end
           PrivateLink connections. Otherwise, specify `true`, which means that public access is enabled.
         
-        :returns: :class:`ReplaceResponse`
+        
         

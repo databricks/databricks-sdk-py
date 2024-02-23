@@ -60,7 +60,7 @@
         :param name: str
           The name of the serving endpoint. This field is required.
         
-        :returns: :class:`DeleteResponse`
+        
         
 
     .. py:method:: export_metrics(name: str)
@@ -73,7 +73,7 @@
         :param name: str
           The name of the serving endpoint to retrieve metrics for. This field is required.
         
-        :returns: :class:`ExportMetricsResponse`
+        
         
 
     .. py:method:: get(name: str) -> ServingEndpointDetailed

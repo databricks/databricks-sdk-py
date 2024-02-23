@@ -104,7 +104,7 @@
         :param id: str
           Required. Id of the SQL warehouse.
         
-        :returns: :class:`DeleteWarehouseResponse`
+        
         
 
     .. py:method:: edit(id: str [, auto_stop_mins: Optional[int], channel: Optional[Channel], cluster_size: Optional[str], creator_name: Optional[str], enable_photon: Optional[bool], enable_serverless_compute: Optional[bool], instance_profile_arn: Optional[str], max_num_clusters: Optional[int], min_num_clusters: Optional[int], name: Optional[str], spot_instance_policy: Optional[SpotInstancePolicy], tags: Optional[EndpointTags], warehouse_type: Optional[EditWarehouseRequestWarehouseType]]) -> Wait[GetWarehouseResponse]
@@ -337,7 +337,7 @@
         :param sql_configuration_parameters: :class:`RepeatedEndpointConfPairs` (optional)
           SQL configuration parameters
         
-        :returns: :class:`SetWorkspaceWarehouseConfigResponse`
+        
         
 
     .. py:method:: start(id: str) -> Wait[GetWarehouseResponse]

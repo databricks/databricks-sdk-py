@@ -208,5 +208,5 @@
           configuration](#operation/patch-log-delivery-config-status) later. Deletion of a configuration is
           not supported, so disable a log delivery configuration that is no longer needed.
         
-        :returns: :class:`PatchStatusResponse`
+        
         

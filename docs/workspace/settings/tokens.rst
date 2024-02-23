@@ -52,7 +52,7 @@
         :param token_id: str
           The ID of the token to be revoked.
         
-        :returns: :class:`RevokeTokenResponse`
+        
         
 
     .. py:method:: list() -> Iterator[PublicTokenInfo]

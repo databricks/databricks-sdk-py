@@ -49,7 +49,7 @@
         :param name: str
           The name of the share.
         
-        :returns: :class:`DeleteResponse`
+        
         
 
     .. py:method:: get(name: str [, include_shared_data: Optional[bool]]) -> ShareInfo
@@ -207,5 +207,5 @@
         :param changes: List[:class:`PermissionsChange`] (optional)
           Array of permission changes.
         
-        :returns: :class:`UpdatePermissionsResponse`
+        
         

@@ -59,7 +59,7 @@
         :param full_name: str
           Full name of the schema.
         
-        :returns: :class:`DeleteResponse`
+        
         
 
     .. py:method:: get(full_name: str) -> SchemaInfo

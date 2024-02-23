@@ -22,7 +22,6 @@ from databricks.sdk.service import {{.Package.Name}}{{end}}
 class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Description}}
     """{{.Comment "    " 100}}"""
     {{end}}
-    {{- if .IsEmpty }}pass{{ end -}}
     {{- range .RequiredFields}}
     {{template "safe-snake-name" .}}: {{template "type" .Entity}}{{if .Description}}
     """{{.Comment "    " 100 | trimSuffix "\""}}"""{{end}}
@@ -31,7 +30,7 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Descriptio
     {{template "safe-snake-name" .}}: Optional[{{template "type" .Entity}}] = None{{if .Description}}
     """{{.Comment "    " 100 | trimSuffix "\""}}"""{{end}}
     {{end}}
-    {{if or .HasJsonField .HasHeaderField .HasByteStreamField -}}
+    {{if or .IsEmpty .HasJsonField .HasHeaderField .HasByteStreamField -}}
     def as_dict(self) -> dict:
         """Serializes the {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}} into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -58,7 +57,7 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Descriptio
 		{{- if (or .Entity.ArrayValue.IsObject .Entity.ArrayValue.IsExternal) }}_repeated_dict(d, '{{.Name}}', {{template "type" .Entity.ArrayValue}})
 		{{- else if .Entity.ArrayValue.Enum }}_repeated_enum(d, '{{.Name}}', {{template "type" .Entity.ArrayValue}})
 		{{- else}}d.get('{{.Name}}', None){{- end -}}
-	{{- else if (or .Entity.IsObject .Entity.IsExternal) }}_from_dict(d, '{{.Name}}', {{template "type" .Entity}})
+	{{- else if or .Entity.IsObject .Entity.IsExternal .Entity.IsEmpty }}_from_dict(d, '{{.Name}}', {{template "type" .Entity}})
 	{{- else if .Entity.Enum }}_enum(d, '{{.Name}}', {{template "type" .Entity}})
 	{{- else if and .IsHeader (or .Entity.IsInt64 .Entity.IsInt) }} int(d.get('{{.Name}}', None))
 	{{- else}}d.get('{{.Name}}', None){{- end -}}
@@ -67,7 +66,7 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Descriptio
 	{{- if not .Entity }}None # ERROR: No Type
 	{{- /* This should be done recursively, but recursion in text templates is not supported. */ -}}
 	{{- else if .Entity.ArrayValue }}[{{if or .Entity.ArrayValue.IsObject .Entity.ArrayValue.IsExternal}}v.as_dict(){{ else if .Entity.ArrayValue.Enum }}v.value{{else}}v{{end}} for v in self.{{template "safe-snake-name" .}}]
-	{{- else if or .Entity.IsObject .Entity.IsExternal }}self.{{template "safe-snake-name" .}}.as_dict()
+	{{- else if or .Entity.IsObject .Entity.IsExternal .Entity.IsEmpty }}self.{{template "safe-snake-name" .}}.as_dict()
 	{{- else if .Entity.Enum }}self.{{template "safe-snake-name" .}}.value
 	{{- else}}self.{{template "safe-snake-name" .}}{{- end -}}
 {{- end -}}

@@ -54,7 +54,7 @@
         :param default_catalog_name: str
           The name of the default catalog in the metastore.
         
-        :returns: :class:`AssignResponse`
+        
         
 
     .. py:method:: create(name: str [, region: Optional[str], storage_root: Optional[str]]) -> MetastoreInfo
@@ -127,7 +127,7 @@
         :param force: bool (optional)
           Force deletion even if the metastore is not empty. Default is false.
         
-        :returns: :class:`DeleteResponse`
+        
         
 
     .. py:method:: get(id: str) -> MetastoreInfo
@@ -240,7 +240,7 @@
         :param metastore_id: str
           Query for the ID of the metastore to delete.
         
-        :returns: :class:`UnassignResponse`
+        
         
 
     .. py:method:: update(id: str [, delta_sharing_organization_name: Optional[str], delta_sharing_recipient_token_lifetime_in_seconds: Optional[int], delta_sharing_scope: Optional[UpdateMetastoreDeltaSharingScope], new_name: Optional[str], owner: Optional[str], privilege_model_version: Optional[str], storage_root_credential_id: Optional[str]]) -> MetastoreInfo
@@ -308,5 +308,5 @@
         :param metastore_id: str (optional)
           The unique ID of the metastore.
         
-        :returns: :class:`UpdateAssignmentResponse`
+        
         

@@ -66,7 +66,16 @@ class AddInstanceProfile:
 
 @dataclass
 class AddResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the AddResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> AddResponse:
+        """Deserializes the AddResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -309,7 +318,16 @@ class CancelCommand:
 
 @dataclass
 class CancelResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the CancelResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> CancelResponse:
+        """Deserializes the CancelResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -335,7 +353,16 @@ class ChangeClusterOwner:
 
 @dataclass
 class ChangeClusterOwnerResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the ChangeClusterOwnerResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ChangeClusterOwnerResponse:
+        """Deserializes the ChangeClusterOwnerResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -2280,7 +2307,16 @@ class DeleteCluster:
 
 @dataclass
 class DeleteClusterResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteClusterResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteClusterResponse:
+        """Deserializes the DeleteClusterResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -2302,7 +2338,16 @@ class DeleteInstancePool:
 
 @dataclass
 class DeleteInstancePoolResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteInstancePoolResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteInstancePoolResponse:
+        """Deserializes the DeleteInstancePoolResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -2324,12 +2369,30 @@ class DeletePolicy:
 
 @dataclass
 class DeletePolicyResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the DeletePolicyResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeletePolicyResponse:
+        """Deserializes the DeletePolicyResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
 class DeleteResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteResponse:
+        """Deserializes the DeleteResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -2353,7 +2416,16 @@ class DestroyContext:
 
 @dataclass
 class DestroyResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the DestroyResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DestroyResponse:
+        """Deserializes the DestroyResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -2712,7 +2784,16 @@ class EditCluster:
 
 @dataclass
 class EditClusterResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the EditClusterResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> EditClusterResponse:
+        """Deserializes the EditClusterResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -2778,7 +2859,16 @@ class EditInstancePool:
 
 @dataclass
 class EditInstancePoolResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the EditInstancePoolResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> EditInstancePoolResponse:
+        """Deserializes the EditInstancePoolResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -2851,12 +2941,30 @@ class EditPolicy:
 
 @dataclass
 class EditPolicyResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the EditPolicyResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> EditPolicyResponse:
+        """Deserializes the EditPolicyResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
 class EditResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the EditResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> EditResponse:
+        """Deserializes the EditResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -3748,7 +3856,16 @@ class InstallLibraries:
 
 @dataclass
 class InstallLibrariesResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the InstallLibrariesResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> InstallLibrariesResponse:
+        """Deserializes the InstallLibrariesResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -4830,7 +4947,16 @@ class PermanentDeleteCluster:
 
 @dataclass
 class PermanentDeleteClusterResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the PermanentDeleteClusterResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> PermanentDeleteClusterResponse:
+        """Deserializes the PermanentDeleteClusterResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -4852,7 +4978,16 @@ class PinCluster:
 
 @dataclass
 class PinClusterResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the PinClusterResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> PinClusterResponse:
+        """Deserializes the PinClusterResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -5032,7 +5167,16 @@ class RemoveInstanceProfile:
 
 @dataclass
 class RemoveResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the RemoveResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> RemoveResponse:
+        """Deserializes the RemoveResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -5072,7 +5216,16 @@ class ResizeCluster:
 
 @dataclass
 class ResizeClusterResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the ResizeClusterResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ResizeClusterResponse:
+        """Deserializes the ResizeClusterResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -5098,7 +5251,16 @@ class RestartCluster:
 
 @dataclass
 class RestartClusterResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the RestartClusterResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> RestartClusterResponse:
+        """Deserializes the RestartClusterResponse from a dictionary."""
+        return cls()
 
 
 class ResultType(Enum):
@@ -5353,7 +5515,16 @@ class StartCluster:
 
 @dataclass
 class StartClusterResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the StartClusterResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> StartClusterResponse:
+        """Deserializes the StartClusterResponse from a dictionary."""
+        return cls()
 
 
 class State(Enum):
@@ -5512,7 +5683,16 @@ class UninstallLibraries:
 
 @dataclass
 class UninstallLibrariesResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the UninstallLibrariesResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UninstallLibrariesResponse:
+        """Deserializes the UninstallLibrariesResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -5534,12 +5714,30 @@ class UnpinCluster:
 
 @dataclass
 class UnpinClusterResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the UnpinClusterResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UnpinClusterResponse:
+        """Deserializes the UnpinClusterResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
 class UpdateResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateResponse:
+        """Deserializes the UpdateResponse from a dictionary."""
+        return cls()
 
 
 @dataclass

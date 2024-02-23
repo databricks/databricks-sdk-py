@@ -33,7 +33,7 @@
         :param id: str
           Widget ID returned by :method:queryvizualisations/create
         
-        :returns: :class:`DeleteResponse`
+        
         
 
     .. py:method:: update(id: str [, created_at: Optional[str], description: Optional[str], name: Optional[str], options: Optional[Any], type: Optional[str], updated_at: Optional[str]]) -> Visualization

@@ -305,7 +305,16 @@ class BaseChunkInfo:
 
 @dataclass
 class CancelExecutionResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the CancelExecutionResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> CancelExecutionResponse:
+        """Deserializes the CancelExecutionResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -902,12 +911,30 @@ class DataSource:
 
 @dataclass
 class DeleteResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteResponse:
+        """Deserializes the DeleteResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
 class DeleteWarehouseResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteWarehouseResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteWarehouseResponse:
+        """Deserializes the DeleteWarehouseResponse from a dictionary."""
+        return cls()
 
 
 class Disposition(Enum):
@@ -1097,7 +1124,16 @@ class EditWarehouseRequestWarehouseType(Enum):
 
 @dataclass
 class EditWarehouseResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the EditWarehouseResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> EditWarehouseResponse:
+        """Deserializes the EditWarehouseResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -2865,7 +2901,16 @@ class RepeatedEndpointConfPairs:
 
 @dataclass
 class RestoreResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the RestoreResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> RestoreResponse:
+        """Deserializes the RestoreResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -3153,7 +3198,16 @@ class SetWorkspaceWarehouseConfigRequestSecurityPolicy(Enum):
 
 @dataclass
 class SetWorkspaceWarehouseConfigResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the SetWorkspaceWarehouseConfigResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> SetWorkspaceWarehouseConfigResponse:
+        """Deserializes the SetWorkspaceWarehouseConfigResponse from a dictionary."""
+        return cls()
 
 
 class SpotInstancePolicy(Enum):
@@ -3166,7 +3220,16 @@ class SpotInstancePolicy(Enum):
 
 @dataclass
 class StartWarehouseResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the StartWarehouseResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> StartWarehouseResponse:
+        """Deserializes the StartWarehouseResponse from a dictionary."""
+        return cls()
 
 
 class State(Enum):
@@ -3260,7 +3323,16 @@ class Status(Enum):
 
 @dataclass
 class StopWarehouseResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the StopWarehouseResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> StopWarehouseResponse:
+        """Deserializes the StopWarehouseResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -3444,7 +3516,16 @@ class TransferOwnershipObjectId:
 
 @dataclass
 class UpdateResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateResponse:
+        """Deserializes the UpdateResponse from a dictionary."""
+        return cls()
 
 
 @dataclass

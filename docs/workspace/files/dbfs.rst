@@ -21,7 +21,7 @@
         :param data: str
           The base64-encoded data to append to the stream. This has a limit of 1 MB.
         
-        :returns: :class:`AddBlockResponse`
+        
         
 
     .. py:method:: close(handle: int)
@@ -34,7 +34,7 @@
         :param handle: int
           The handle on an open stream.
         
-        :returns: :class:`CloseResponse`
+        
         
 
     .. py:method:: copy(src: str, dst: str [, recursive: bool = False, overwrite: bool = False])
@@ -87,7 +87,7 @@
           Whether or not to recursively delete the directory's contents. Deleting empty directories can be
           done without providing the recursive flag.
         
-        :returns: :class:`DeleteResponse`
+        
         
 
     .. py:method:: download(path: str) -> BinaryIO
@@ -158,7 +158,7 @@
         :param path: str
           The path of the new directory. The path should be the absolute DBFS path.
         
-        :returns: :class:`MkDirsResponse`
+        
         
 
     .. py:method:: move(source_path: str, destination_path: str)
@@ -175,7 +175,7 @@
         :param destination_path: str
           The destination path of the file or directory. The path should be the absolute DBFS path.
         
-        :returns: :class:`MoveResponse`
+        
         
 
     .. py:method:: move_(src: str, dst: str [, recursive: bool = False, overwrite: bool = False])
@@ -207,7 +207,7 @@
         :param overwrite: bool (optional)
           The flag that specifies whether to overwrite existing file/files.
         
-        :returns: :class:`PutResponse`
+        
         
 
     .. py:method:: read(path: str [, length: Optional[int], offset: Optional[int]]) -> ReadResponse

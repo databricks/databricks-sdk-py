@@ -51,7 +51,7 @@
         :param budget_id: str
           Budget ID
         
-        :returns: :class:`DeleteResponse`
+        
         
 
     .. py:method:: get(budget_id: str) -> WrappedBudgetWithStatus
@@ -158,5 +158,5 @@
         :param budget: :class:`Budget`
           Budget configuration to be created.
         
-        :returns: :class:`UpdateResponse`
+        
         

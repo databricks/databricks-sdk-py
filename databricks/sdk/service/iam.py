@@ -119,12 +119,30 @@ class ComplexValue:
 
 @dataclass
 class DeleteResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteResponse:
+        """Deserializes the DeleteResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
 class DeleteWorkspaceAssignments:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteWorkspaceAssignments into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteWorkspaceAssignments:
+        """Deserializes the DeleteWorkspaceAssignments from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -661,7 +679,16 @@ class PatchOp(Enum):
 
 @dataclass
 class PatchResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the PatchResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> PatchResponse:
+        """Deserializes the PatchResponse from a dictionary."""
+        return cls()
 
 
 class PatchSchema(Enum):
@@ -1021,7 +1048,16 @@ class ServicePrincipalSchema(Enum):
 
 @dataclass
 class UpdateResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateResponse:
+        """Deserializes the UpdateResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -1152,7 +1188,16 @@ class UserSchema(Enum):
 
 @dataclass
 class WorkspaceAssignmentsUpdated:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the WorkspaceAssignmentsUpdated into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> WorkspaceAssignmentsUpdated:
+        """Deserializes the WorkspaceAssignmentsUpdated from a dictionary."""
+        return cls()
 
 
 class WorkspacePermission(Enum):

@@ -629,7 +629,16 @@ class DeleteDefaultNamespaceSettingResponse:
 
 @dataclass
 class DeleteNetworkConnectivityConfigurationResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteNetworkConnectivityConfigurationResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteNetworkConnectivityConfigurationResponse:
+        """Deserializes the DeleteNetworkConnectivityConfigurationResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -658,7 +667,16 @@ class DeletePersonalComputeSettingResponse:
 
 @dataclass
 class DeleteResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteResponse:
+        """Deserializes the DeleteResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -1562,7 +1580,16 @@ class ReplaceIpAccessList:
 
 @dataclass
 class ReplaceResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the ReplaceResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ReplaceResponse:
+        """Deserializes the ReplaceResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -1643,12 +1670,30 @@ class RevokeTokenRequest:
 
 @dataclass
 class RevokeTokenResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the RevokeTokenResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> RevokeTokenResponse:
+        """Deserializes the RevokeTokenResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
 class SetStatusResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the SetStatusResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> SetStatusResponse:
+        """Deserializes the SetStatusResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -2146,7 +2191,16 @@ class UpdatePersonalComputeSettingRequest:
 
 @dataclass
 class UpdateResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateResponse:
+        """Deserializes the UpdateResponse from a dictionary."""
+        return cls()
 
 
 @dataclass

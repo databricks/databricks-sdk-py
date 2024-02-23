@@ -103,7 +103,7 @@
         :param experiment_id: str
           ID of the associated experiment.
         
-        :returns: :class:`DeleteExperimentResponse`
+        
         
 
     .. py:method:: delete_run(run_id: str)
@@ -115,7 +115,7 @@
         :param run_id: str
           ID of the run to delete.
         
-        :returns: :class:`DeleteRunResponse`
+        
         
 
     .. py:method:: delete_runs(experiment_id: str, max_timestamp_millis: int [, max_runs: Optional[int]]) -> DeleteRunsResponse
@@ -150,7 +150,7 @@
         :param key: str
           Name of the tag. Maximum size is 255 bytes. Must be provided.
         
-        :returns: :class:`DeleteTagResponse`
+        
         
 
     .. py:method:: get_by_name(experiment_name: str) -> GetExperimentResponse
@@ -366,7 +366,7 @@
           Tags to log. A single request can contain up to 100 tags, and up to 1000 metrics, params, and tags
           in total.
         
-        :returns: :class:`LogBatchResponse`
+        
         
 
     .. py:method:: log_inputs( [, datasets: Optional[List[DatasetInput]], run_id: Optional[str]])
@@ -380,7 +380,7 @@
         :param run_id: str (optional)
           ID of the run to log under
         
-        :returns: :class:`LogInputsResponse`
+        
         
 
     .. py:method:: log_metric(key: str, value: float, timestamp: int [, run_id: Optional[str], run_uuid: Optional[str], step: Optional[int]])
@@ -405,7 +405,7 @@
         :param step: int (optional)
           Step at which to log the metric
         
-        :returns: :class:`LogMetricResponse`
+        
         
 
     .. py:method:: log_model( [, model_json: Optional[str], run_id: Optional[str]])
@@ -419,7 +419,7 @@
         :param run_id: str (optional)
           ID of the run to log under
         
-        :returns: :class:`LogModelResponse`
+        
         
 
     .. py:method:: log_param(key: str, value: str [, run_id: Optional[str], run_uuid: Optional[str]])
@@ -440,7 +440,7 @@
           [Deprecated, use run_id instead] ID of the run under which to log the param. This field will be
           removed in a future MLflow version.
         
-        :returns: :class:`LogParamResponse`
+        
         
 
     .. py:method:: restore_experiment(experiment_id: str)
@@ -456,7 +456,7 @@
         :param experiment_id: str
           ID of the associated experiment.
         
-        :returns: :class:`RestoreExperimentResponse`
+        
         
 
     .. py:method:: restore_run(run_id: str)
@@ -468,7 +468,7 @@
         :param run_id: str
           ID of the run to restore.
         
-        :returns: :class:`RestoreRunResponse`
+        
         
 
     .. py:method:: restore_runs(experiment_id: str, min_timestamp_millis: int [, max_runs: Optional[int]]) -> RestoreRunsResponse
@@ -565,7 +565,7 @@
           String value of the tag being logged. Maximum size depends on storage backend. All storage backends
           are guaranteed to support key values up to 5000 bytes in size.
         
-        :returns: :class:`SetExperimentTagResponse`
+        
         
 
     .. py:method:: set_permissions(experiment_id: str [, access_control_list: Optional[List[ExperimentAccessControlRequest]]]) -> ExperimentPermissions
@@ -599,7 +599,7 @@
           [Deprecated, use run_id instead] ID of the run under which to log the tag. This field will be
           removed in a future MLflow version.
         
-        :returns: :class:`SetTagResponse`
+        
         
 
     .. py:method:: update_experiment(experiment_id: str [, new_name: Optional[str]])
@@ -631,7 +631,7 @@
         :param new_name: str (optional)
           If provided, the experiment's name is changed to the new name. The new name must be unique.
         
-        :returns: :class:`UpdateExperimentResponse`
+        
         
 
     .. py:method:: update_permissions(experiment_id: str [, access_control_list: Optional[List[ExperimentAccessControlRequest]]]) -> ExperimentPermissions

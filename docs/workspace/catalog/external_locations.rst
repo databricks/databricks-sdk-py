@@ -83,7 +83,7 @@
         :param force: bool (optional)
           Force deletion even if there are dependent external tables or mounts.
         
-        :returns: :class:`DeleteResponse`
+        
         
 
     .. py:method:: get(name: str) -> ExternalLocationInfo

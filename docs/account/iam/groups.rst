@@ -79,7 +79,7 @@
         :param id: str
           Unique ID for a group in the Databricks account.
         
-        :returns: :class:`DeleteResponse`
+        
         
 
     .. py:method:: get(id: str) -> Group
@@ -153,7 +153,7 @@
         :param schemas: List[:class:`PatchSchema`] (optional)
           The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
         
-        :returns: :class:`PatchResponse`
+        
         
 
     .. py:method:: update(id: str [, display_name: Optional[str], entitlements: Optional[List[ComplexValue]], external_id: Optional[str], groups: Optional[List[ComplexValue]], members: Optional[List[ComplexValue]], meta: Optional[ResourceMeta], roles: Optional[List[ComplexValue]], schemas: Optional[List[GroupSchema]]])
@@ -181,5 +181,5 @@
         :param schemas: List[:class:`GroupSchema`] (optional)
           The schema of the group.
         
-        :returns: :class:`UpdateResponse`
+        
         

@@ -53,7 +53,7 @@
         :param credential_id: int
           The ID for the corresponding credential to access.
         
-        :returns: :class:`DeleteResponse`
+        
         
 
     .. py:method:: get(credential_id: int) -> CredentialInfo
@@ -142,5 +142,5 @@
         :param personal_access_token: str (optional)
           The personal access token used to authenticate to the corresponding Git provider.
         
-        :returns: :class:`UpdateResponse`
+        
         

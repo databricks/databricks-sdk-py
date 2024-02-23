@@ -66,7 +66,7 @@
         :param network_id: str
           Databricks Account API network configuration ID.
         
-        :returns: :class:`DeleteResponse`
+        
         
 
     .. py:method:: get(network_id: str) -> Network

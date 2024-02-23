@@ -192,7 +192,16 @@ class CreateScope:
 
 @dataclass
 class CreateScopeResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the CreateScopeResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> CreateScopeResponse:
+        """Deserializes the CreateScopeResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -270,12 +279,30 @@ class DeleteAcl:
 
 @dataclass
 class DeleteAclResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteAclResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteAclResponse:
+        """Deserializes the DeleteAclResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
 class DeleteResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteResponse:
+        """Deserializes the DeleteResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -297,7 +324,16 @@ class DeleteScope:
 
 @dataclass
 class DeleteScopeResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteScopeResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteScopeResponse:
+        """Deserializes the DeleteScopeResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -323,7 +359,16 @@ class DeleteSecret:
 
 @dataclass
 class DeleteSecretResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteSecretResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteSecretResponse:
+        """Deserializes the DeleteSecretResponse from a dictionary."""
+        return cls()
 
 
 class ExportFormat(Enum):
@@ -505,7 +550,16 @@ class ImportFormat(Enum):
 
 @dataclass
 class ImportResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the ImportResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ImportResponse:
+        """Deserializes the ImportResponse from a dictionary."""
+        return cls()
 
 
 class Language(Enum):
@@ -626,7 +680,16 @@ class Mkdirs:
 
 @dataclass
 class MkdirsResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the MkdirsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> MkdirsResponse:
+        """Deserializes the MkdirsResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -729,7 +792,16 @@ class PutAcl:
 
 @dataclass
 class PutAclResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the PutAclResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> PutAclResponse:
+        """Deserializes the PutAclResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -766,7 +838,16 @@ class PutSecret:
 
 @dataclass
 class PutSecretResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the PutSecretResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> PutSecretResponse:
+        """Deserializes the PutSecretResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -1150,7 +1231,16 @@ class UpdateRepo:
 
 @dataclass
 class UpdateResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateResponse:
+        """Deserializes the UpdateResponse from a dictionary."""
+        return cls()
 
 
 @dataclass

@@ -29,7 +29,7 @@
         :param refresh_id: str
           ID of the refresh.
         
-        :returns: :class:`CancelRefreshResponse`
+        
         
 
     .. py:method:: create(full_name: str, assets_dir: str, output_schema_name: str [, baseline_table_name: Optional[str], custom_metrics: Optional[List[MonitorCustomMetric]], data_classification_config: Optional[MonitorDataClassificationConfig], inference_log: Optional[MonitorInferenceLogProfileType], notifications: Optional[List[MonitorNotificationsConfig]], schedule: Optional[MonitorCronSchedule], skip_builtin_dashboard: Optional[bool], slicing_exprs: Optional[List[str]], snapshot: Optional[MonitorSnapshotProfileType], time_series: Optional[MonitorTimeSeriesProfileType], warehouse_id: Optional[str]]) -> MonitorInfo
@@ -102,7 +102,7 @@
         :param full_name: str
           Full name of the table.
         
-        :returns: :class:`DeleteResponse`
+        
         
 
     .. py:method:: get(full_name: str) -> MonitorInfo

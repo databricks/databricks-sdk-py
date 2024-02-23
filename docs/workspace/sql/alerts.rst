@@ -67,7 +67,7 @@
         
         :param alert_id: str
         
-        :returns: :class:`DeleteResponse`
+        
         
 
     .. py:method:: get(alert_id: str) -> Alert
@@ -179,5 +179,5 @@
           Number of seconds after being triggered before the alert rearms itself and can be triggered again.
           If `null`, alert will never be triggered again.
         
-        :returns: :class:`UpdateResponse`
+        
         

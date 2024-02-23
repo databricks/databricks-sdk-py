@@ -59,7 +59,7 @@
         :param name: str
           Name of the provider.
         
-        :returns: :class:`DeleteResponse`
+        
         
 
     .. py:method:: get(name: str) -> ProviderInfo

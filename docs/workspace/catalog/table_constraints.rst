@@ -58,5 +58,5 @@
           If true, try deleting all child constraints of the current constraint. If false, reject this
           operation if the current constraint has any child constraints.
         
-        :returns: :class:`DeleteResponse`
+        
         

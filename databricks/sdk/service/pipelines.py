@@ -196,7 +196,16 @@ class DataPlaneId:
 
 @dataclass
 class DeletePipelineResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the DeletePipelineResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeletePipelineResponse:
+        """Deserializes the DeletePipelineResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -320,7 +329,16 @@ class EditPipeline:
 
 @dataclass
 class EditPipelineResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the EditPipelineResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> EditPipelineResponse:
+        """Deserializes the EditPipelineResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -578,7 +596,16 @@ class ListUpdatesResponse:
 
 @dataclass
 class ManualTrigger:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the ManualTrigger into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ManualTrigger:
+        """Deserializes the ManualTrigger from a dictionary."""
+        return cls()
 
 
 class MaturityLevel(Enum):
@@ -1356,13 +1383,13 @@ class PipelineTrigger:
         """Serializes the PipelineTrigger into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.cron: body['cron'] = self.cron.as_dict()
-        if self.manual: body['manual'] = self.manual
+        if self.manual: body['manual'] = self.manual.as_dict()
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> PipelineTrigger:
         """Deserializes the PipelineTrigger from a dictionary."""
-        return cls(cron=_from_dict(d, 'cron', CronTrigger), manual=d.get('manual', None))
+        return cls(cron=_from_dict(d, 'cron', CronTrigger), manual=_from_dict(d, 'manual', ManualTrigger))
 
 
 @dataclass
@@ -1520,7 +1547,16 @@ class StartUpdateResponse:
 
 @dataclass
 class StopPipelineResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the StopPipelineResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> StopPipelineResponse:
+        """Deserializes the StopPipelineResponse from a dictionary."""
+        return cls()
 
 
 @dataclass

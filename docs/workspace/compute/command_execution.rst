@@ -101,7 +101,7 @@
         :param cluster_id: str
         :param context_id: str
         
-        :returns: :class:`DestroyResponse`
+        
         
 
     .. py:method:: execute( [, cluster_id: Optional[str], command: Optional[str], context_id: Optional[str], language: Optional[Language]]) -> Wait[CommandStatusResponse]

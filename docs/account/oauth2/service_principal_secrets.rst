@@ -39,7 +39,7 @@
         :param secret_id: str
           The secret ID.
         
-        :returns: :class:`DeleteResponse`
+        
         
 
     .. py:method:: list(service_principal_id: int) -> Iterator[SecretInfo]

@@ -98,7 +98,7 @@
           The statement ID is returned upon successfully submitting a SQL statement, and is a required
           reference for all subsequent calls.
         
-        :returns: :class:`CancelExecutionResponse`
+        
         
 
     .. py:method:: execute_statement(statement: str, warehouse_id: str [, byte_limit: Optional[int], catalog: Optional[str], disposition: Optional[Disposition], format: Optional[Format], on_wait_timeout: Optional[ExecuteStatementRequestOnWaitTimeout], parameters: Optional[List[StatementParameterListItem]], row_limit: Optional[int], schema: Optional[str], wait_timeout: Optional[str]]) -> ExecuteStatementResponse

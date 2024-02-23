@@ -40,7 +40,7 @@
         :param integration_id: str
           The oauth app integration ID.
         
-        :returns: :class:`DeleteCustomAppIntegrationOutput`
+        
         
 
     .. py:method:: get(integration_id: str) -> GetCustomAppIntegrationOutput
@@ -78,5 +78,5 @@
         :param token_access_policy: :class:`TokenAccessPolicy` (optional)
           Token access policy to be updated in the custom oauth app integration
         
-        :returns: :class:`UpdateCustomAppIntegrationOutput`
+        
         

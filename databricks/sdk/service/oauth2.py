@@ -162,17 +162,44 @@ class CreateServicePrincipalSecretResponse:
 
 @dataclass
 class DeleteCustomAppIntegrationOutput:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteCustomAppIntegrationOutput into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteCustomAppIntegrationOutput:
+        """Deserializes the DeleteCustomAppIntegrationOutput from a dictionary."""
+        return cls()
 
 
 @dataclass
 class DeletePublishedAppIntegrationOutput:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the DeletePublishedAppIntegrationOutput into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeletePublishedAppIntegrationOutput:
+        """Deserializes the DeletePublishedAppIntegrationOutput from a dictionary."""
+        return cls()
 
 
 @dataclass
 class DeleteResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteResponse:
+        """Deserializes the DeleteResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -462,7 +489,16 @@ class UpdateCustomAppIntegration:
 
 @dataclass
 class UpdateCustomAppIntegrationOutput:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateCustomAppIntegrationOutput into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateCustomAppIntegrationOutput:
+        """Deserializes the UpdateCustomAppIntegrationOutput from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -489,7 +525,16 @@ class UpdatePublishedAppIntegration:
 
 @dataclass
 class UpdatePublishedAppIntegrationOutput:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdatePublishedAppIntegrationOutput into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdatePublishedAppIntegrationOutput:
+        """Deserializes the UpdatePublishedAppIntegrationOutput from a dictionary."""
+        return cls()
 
 
 class CustomAppIntegrationAPI:

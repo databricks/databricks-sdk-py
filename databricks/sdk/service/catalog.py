@@ -262,7 +262,16 @@ class ArtifactType(Enum):
 
 @dataclass
 class AssignResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the AssignResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> AssignResponse:
+        """Deserializes the AssignResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -354,7 +363,16 @@ class AzureServicePrincipal:
 
 @dataclass
 class CancelRefreshResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the CancelRefreshResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> CancelRefreshResponse:
+        """Deserializes the CancelRefreshResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -1274,7 +1292,7 @@ class CreateMonitor:
         if self.skip_builtin_dashboard is not None:
             body['skip_builtin_dashboard'] = self.skip_builtin_dashboard
         if self.slicing_exprs: body['slicing_exprs'] = [v for v in self.slicing_exprs]
-        if self.snapshot: body['snapshot'] = self.snapshot
+        if self.snapshot: body['snapshot'] = self.snapshot.as_dict()
         if self.time_series: body['time_series'] = self.time_series.as_dict()
         if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
         return body
@@ -1294,7 +1312,7 @@ class CreateMonitor:
                    schedule=_from_dict(d, 'schedule', MonitorCronSchedule),
                    skip_builtin_dashboard=d.get('skip_builtin_dashboard', None),
                    slicing_exprs=d.get('slicing_exprs', None),
-                   snapshot=d.get('snapshot', None),
+                   snapshot=_from_dict(d, 'snapshot', MonitorSnapshotProfileType),
                    time_series=_from_dict(d, 'time_series', MonitorTimeSeriesProfileType),
                    warehouse_id=d.get('warehouse_id', None))
 
@@ -1338,7 +1356,16 @@ class CreateRegisteredModelRequest:
 
 @dataclass
 class CreateResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the CreateResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> CreateResponse:
+        """Deserializes the CreateResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -1417,7 +1444,7 @@ class CreateStorageCredential:
         if self.cloudflare_api_token: body['cloudflare_api_token'] = self.cloudflare_api_token.as_dict()
         if self.comment is not None: body['comment'] = self.comment
         if self.databricks_gcp_service_account:
-            body['databricks_gcp_service_account'] = self.databricks_gcp_service_account
+            body['databricks_gcp_service_account'] = self.databricks_gcp_service_account.as_dict()
         if self.name is not None: body['name'] = self.name
         if self.read_only is not None: body['read_only'] = self.read_only
         if self.skip_validation is not None: body['skip_validation'] = self.skip_validation
@@ -1431,7 +1458,8 @@ class CreateStorageCredential:
                    azure_service_principal=_from_dict(d, 'azure_service_principal', AzureServicePrincipal),
                    cloudflare_api_token=_from_dict(d, 'cloudflare_api_token', CloudflareApiToken),
                    comment=d.get('comment', None),
-                   databricks_gcp_service_account=d.get('databricks_gcp_service_account', None),
+                   databricks_gcp_service_account=_from_dict(d, 'databricks_gcp_service_account',
+                                                             DatabricksGcpServiceAccountRequest),
                    name=d.get('name', None),
                    read_only=d.get('read_only', None),
                    skip_validation=d.get('skip_validation', None))
@@ -1542,7 +1570,16 @@ class DataSourceFormat(Enum):
 
 @dataclass
 class DatabricksGcpServiceAccountRequest:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the DatabricksGcpServiceAccountRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DatabricksGcpServiceAccountRequest:
+        """Deserializes the DatabricksGcpServiceAccountRequest from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -1568,12 +1605,30 @@ class DatabricksGcpServiceAccountResponse:
 
 @dataclass
 class DeleteAliasResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteAliasResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteAliasResponse:
+        """Deserializes the DeleteAliasResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
 class DeleteResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteResponse:
+        """Deserializes the DeleteResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -1642,7 +1697,16 @@ class DependencyList:
 
 @dataclass
 class DisableResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the DisableResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DisableResponse:
+        """Deserializes the DisableResponse from a dictionary."""
+        return cls()
 
 
 class DisableSchemaName(Enum):
@@ -1771,7 +1835,16 @@ class EnablePredictiveOptimization(Enum):
 
 @dataclass
 class EnableResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the EnableResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> EnableResponse:
+        """Deserializes the EnableResponse from a dictionary."""
+        return cls()
 
 
 class EnableSchemaName(Enum):
@@ -3191,7 +3264,7 @@ class MonitorInfo:
             body['profile_metrics_table_name'] = self.profile_metrics_table_name
         if self.schedule: body['schedule'] = self.schedule.as_dict()
         if self.slicing_exprs: body['slicing_exprs'] = [v for v in self.slicing_exprs]
-        if self.snapshot: body['snapshot'] = self.snapshot
+        if self.snapshot: body['snapshot'] = self.snapshot.as_dict()
         if self.status is not None: body['status'] = self.status.value
         if self.table_name is not None: body['table_name'] = self.table_name
         if self.time_series: body['time_series'] = self.time_series.as_dict()
@@ -3215,7 +3288,7 @@ class MonitorInfo:
                    profile_metrics_table_name=d.get('profile_metrics_table_name', None),
                    schedule=_from_dict(d, 'schedule', MonitorCronSchedule),
                    slicing_exprs=d.get('slicing_exprs', None),
-                   snapshot=d.get('snapshot', None),
+                   snapshot=_from_dict(d, 'snapshot', MonitorSnapshotProfileType),
                    status=_enum(d, 'status', MonitorInfoStatus),
                    table_name=d.get('table_name', None),
                    time_series=_from_dict(d, 'time_series', MonitorTimeSeriesProfileType))
@@ -3297,7 +3370,16 @@ class MonitorRefreshInfoState(Enum):
 
 @dataclass
 class MonitorSnapshotProfileType:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the MonitorSnapshotProfileType into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> MonitorSnapshotProfileType:
+        """Deserializes the MonitorSnapshotProfileType from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -3405,8 +3487,8 @@ class OnlineTableSpec:
         if self.perform_full_copy is not None: body['perform_full_copy'] = self.perform_full_copy
         if self.pipeline_id is not None: body['pipeline_id'] = self.pipeline_id
         if self.primary_key_columns: body['primary_key_columns'] = [v for v in self.primary_key_columns]
-        if self.run_continuously: body['run_continuously'] = self.run_continuously
-        if self.run_triggered: body['run_triggered'] = self.run_triggered
+        if self.run_continuously: body['run_continuously'] = self.run_continuously.as_dict()
+        if self.run_triggered: body['run_triggered'] = self.run_triggered.as_dict()
         if self.source_table_full_name is not None:
             body['source_table_full_name'] = self.source_table_full_name
         if self.timeseries_key is not None: body['timeseries_key'] = self.timeseries_key
@@ -3418,20 +3500,39 @@ class OnlineTableSpec:
         return cls(perform_full_copy=d.get('perform_full_copy', None),
                    pipeline_id=d.get('pipeline_id', None),
                    primary_key_columns=d.get('primary_key_columns', None),
-                   run_continuously=d.get('run_continuously', None),
-                   run_triggered=d.get('run_triggered', None),
+                   run_continuously=_from_dict(d, 'run_continuously',
+                                               OnlineTableSpecContinuousSchedulingPolicy),
+                   run_triggered=_from_dict(d, 'run_triggered', OnlineTableSpecTriggeredSchedulingPolicy),
                    source_table_full_name=d.get('source_table_full_name', None),
                    timeseries_key=d.get('timeseries_key', None))
 
 
 @dataclass
 class OnlineTableSpecContinuousSchedulingPolicy:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the OnlineTableSpecContinuousSchedulingPolicy into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> OnlineTableSpecContinuousSchedulingPolicy:
+        """Deserializes the OnlineTableSpecContinuousSchedulingPolicy from a dictionary."""
+        return cls()
 
 
 @dataclass
 class OnlineTableSpecTriggeredSchedulingPolicy:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the OnlineTableSpecTriggeredSchedulingPolicy into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> OnlineTableSpecTriggeredSchedulingPolicy:
+        """Deserializes the OnlineTableSpecTriggeredSchedulingPolicy from a dictionary."""
+        return cls()
 
 
 class OnlineTableState(Enum):
@@ -4489,12 +4590,30 @@ class TriggeredUpdateStatus:
 
 @dataclass
 class UnassignResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the UnassignResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UnassignResponse:
+        """Deserializes the UnassignResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
 class UpdateAssignmentResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateAssignmentResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateAssignmentResponse:
+        """Deserializes the UpdateAssignmentResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -4840,7 +4959,7 @@ class UpdateMonitor:
         if self.output_schema_name is not None: body['output_schema_name'] = self.output_schema_name
         if self.schedule: body['schedule'] = self.schedule.as_dict()
         if self.slicing_exprs: body['slicing_exprs'] = [v for v in self.slicing_exprs]
-        if self.snapshot: body['snapshot'] = self.snapshot
+        if self.snapshot: body['snapshot'] = self.snapshot.as_dict()
         if self.time_series: body['time_series'] = self.time_series.as_dict()
         return body
 
@@ -4857,7 +4976,7 @@ class UpdateMonitor:
                    output_schema_name=d.get('output_schema_name', None),
                    schedule=_from_dict(d, 'schedule', MonitorCronSchedule),
                    slicing_exprs=d.get('slicing_exprs', None),
-                   snapshot=d.get('snapshot', None),
+                   snapshot=_from_dict(d, 'snapshot', MonitorSnapshotProfileType),
                    time_series=_from_dict(d, 'time_series', MonitorTimeSeriesProfileType))
 
 
@@ -4922,7 +5041,16 @@ class UpdateRegisteredModelRequest:
 
 @dataclass
 class UpdateResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateResponse:
+        """Deserializes the UpdateResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -5017,7 +5145,7 @@ class UpdateStorageCredential:
         if self.cloudflare_api_token: body['cloudflare_api_token'] = self.cloudflare_api_token.as_dict()
         if self.comment is not None: body['comment'] = self.comment
         if self.databricks_gcp_service_account:
-            body['databricks_gcp_service_account'] = self.databricks_gcp_service_account
+            body['databricks_gcp_service_account'] = self.databricks_gcp_service_account.as_dict()
         if self.force is not None: body['force'] = self.force
         if self.name is not None: body['name'] = self.name
         if self.new_name is not None: body['new_name'] = self.new_name
@@ -5034,7 +5162,8 @@ class UpdateStorageCredential:
                    azure_service_principal=_from_dict(d, 'azure_service_principal', AzureServicePrincipal),
                    cloudflare_api_token=_from_dict(d, 'cloudflare_api_token', CloudflareApiToken),
                    comment=d.get('comment', None),
-                   databricks_gcp_service_account=d.get('databricks_gcp_service_account', None),
+                   databricks_gcp_service_account=_from_dict(d, 'databricks_gcp_service_account',
+                                                             DatabricksGcpServiceAccountRequest),
                    force=d.get('force', None),
                    name=d.get('name', None),
                    new_name=d.get('new_name', None),
@@ -5172,7 +5301,7 @@ class ValidateStorageCredential:
             body['azure_service_principal'] = self.azure_service_principal.as_dict()
         if self.cloudflare_api_token: body['cloudflare_api_token'] = self.cloudflare_api_token.as_dict()
         if self.databricks_gcp_service_account:
-            body['databricks_gcp_service_account'] = self.databricks_gcp_service_account
+            body['databricks_gcp_service_account'] = self.databricks_gcp_service_account.as_dict()
         if self.external_location_name is not None:
             body['external_location_name'] = self.external_location_name
         if self.read_only is not None: body['read_only'] = self.read_only
@@ -5188,7 +5317,8 @@ class ValidateStorageCredential:
                    azure_managed_identity=_from_dict(d, 'azure_managed_identity', AzureManagedIdentity),
                    azure_service_principal=_from_dict(d, 'azure_service_principal', AzureServicePrincipal),
                    cloudflare_api_token=_from_dict(d, 'cloudflare_api_token', CloudflareApiToken),
-                   databricks_gcp_service_account=d.get('databricks_gcp_service_account', None),
+                   databricks_gcp_service_account=_from_dict(d, 'databricks_gcp_service_account',
+                                                             DatabricksGcpServiceAccountRequest),
                    external_location_name=d.get('external_location_name', None),
                    read_only=d.get('read_only', None),
                    storage_credential_name=d.get('storage_credential_name', None),

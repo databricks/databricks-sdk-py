@@ -73,7 +73,7 @@
         
         :param dashboard_id: str
         
-        :returns: :class:`DeleteResponse`
+        
         
 
     .. py:method:: get(dashboard_id: str) -> Dashboard
@@ -164,7 +164,7 @@
         
         :param dashboard_id: str
         
-        :returns: :class:`RestoreResponse`
+        
         
 
     .. py:method:: update(dashboard_id: str [, name: Optional[str], run_as_role: Optional[RunAsRole]]) -> Dashboard

@@ -599,7 +599,16 @@ class CustomerManagedKey:
 
 @dataclass
 class DeleteResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteResponse:
+        """Deserializes the DeleteResponse from a dictionary."""
+        return cls()
 
 
 class EndpointUseCase(Enum):
@@ -1069,7 +1078,16 @@ class PrivateAccessSettings:
 
 @dataclass
 class ReplaceResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the ReplaceResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ReplaceResponse:
+        """Deserializes the ReplaceResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -1154,7 +1172,16 @@ class StsRole:
 
 @dataclass
 class UpdateResponse:
-    pass
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateResponse:
+        """Deserializes the UpdateResponse from a dictionary."""
+        return cls()
 
 
 @dataclass

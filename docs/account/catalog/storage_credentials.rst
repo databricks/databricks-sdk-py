@@ -59,7 +59,7 @@
         :param force: bool (optional)
           Force deletion even if the Storage Credential is not empty. Default is false.
         
-        :returns: :class:`DeleteResponse`
+        
         
 
     .. py:method:: get(metastore_id: str, storage_credential_name: str) -> AccountsStorageCredentialInfo
