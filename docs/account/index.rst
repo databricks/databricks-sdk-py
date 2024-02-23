@@ -7,9 +7,9 @@ These APIs are available from AccountClient
 .. toctree::
    :maxdepth: 1
 
-   iam/index
-   catalog/index
-   settings/index
-   provisioning/index
    billing/index
+   catalog/index
+   iam/index
    oauth2/index
+   provisioning/index
+   settings/index

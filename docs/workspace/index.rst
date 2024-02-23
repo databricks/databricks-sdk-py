@@ -7,17 +7,17 @@ These APIs are available from WorkspaceClient
 .. toctree::
    :maxdepth: 1
 
-   workspace/index
-   compute/index
-   jobs/index
-   pipelines/index
-   files/index
-   ml/index
-   serving/index
-   iam/index
-   sql/index
    catalog/index
-   sharing/index
-   settings/index
-   vectorsearch/index
+   compute/index
    dashboards/index
+   files/index
+   iam/index
+   jobs/index
+   ml/index
+   pipelines/index
+   serving/index
+   settings/index
+   sharing/index
+   sql/index
+   vectorsearch/index
+   workspace/index
