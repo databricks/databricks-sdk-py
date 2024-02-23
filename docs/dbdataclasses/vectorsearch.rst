@@ -45,6 +45,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: DeleteEndpointResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: DeleteIndexResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: DeltaSyncVectorIndexSpecRequest
    :members:
    :undoc-members:
@@ -54,10 +62,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: DirectAccessVectorIndexSpec
-   :members:
-   :undoc-members:
-
-.. autoclass:: EmbeddingConfig
    :members:
    :undoc-members:
 
@@ -133,6 +137,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ResultManifest
+   :members:
+   :undoc-members:
+
+.. autoclass:: SyncIndexResponse
    :members:
    :undoc-members:
 

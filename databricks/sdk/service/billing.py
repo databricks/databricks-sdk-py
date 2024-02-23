@@ -315,6 +315,20 @@ class CreateLogDeliveryConfigurationParams:
                    workspace_ids_filter=d.get('workspace_ids_filter', None))
 
 
+@dataclass
+class DeleteResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteResponse:
+        """Deserializes the DeleteResponse from a dictionary."""
+        return cls()
+
+
 class DeliveryStatus(Enum):
     """The status string for log delivery. Possible values are: * `CREATED`: There were no log delivery
     attempts since the config was created. * `SUCCEEDED`: The latest attempt of log delivery has
@@ -558,6 +572,20 @@ class OutputFormat(Enum):
 
 
 @dataclass
+class PatchStatusResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the PatchStatusResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> PatchStatusResponse:
+        """Deserializes the PatchStatusResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class UpdateLogDeliveryConfigurationStatusRequest:
     status: LogDeliveryConfigStatus
     """Status of log delivery configuration. Set to `ENABLED` (enabled) or `DISABLED` (disabled).
@@ -581,6 +609,20 @@ class UpdateLogDeliveryConfigurationStatusRequest:
         """Deserializes the UpdateLogDeliveryConfigurationStatusRequest from a dictionary."""
         return cls(log_delivery_configuration_id=d.get('log_delivery_configuration_id', None),
                    status=_enum(d, 'status', LogDeliveryConfigStatus))
+
+
+@dataclass
+class UpdateResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateResponse:
+        """Deserializes the UpdateResponse from a dictionary."""
+        return cls()
 
 
 @dataclass

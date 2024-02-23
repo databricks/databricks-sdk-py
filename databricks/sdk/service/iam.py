@@ -118,6 +118,34 @@ class ComplexValue:
 
 
 @dataclass
+class DeleteResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteResponse:
+        """Deserializes the DeleteResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
+class DeleteWorkspaceAssignments:
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteWorkspaceAssignments into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteWorkspaceAssignments:
+        """Deserializes the DeleteWorkspaceAssignments from a dictionary."""
+        return cls()
+
+
+@dataclass
 class GetAssignableRolesForResourceResponse:
     roles: Optional[List[Role]] = None
 
@@ -649,6 +677,20 @@ class PatchOp(Enum):
     REPLACE = 'replace'
 
 
+@dataclass
+class PatchResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the PatchResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> PatchResponse:
+        """Deserializes the PatchResponse from a dictionary."""
+        return cls()
+
+
 class PatchSchema(Enum):
 
     URN_IETF_PARAMS_SCIM_API_MESSAGES_2_0_PATCH_OP = 'urn:ietf:params:scim:api:messages:2.0:PatchOp'
@@ -1005,6 +1047,20 @@ class ServicePrincipalSchema(Enum):
 
 
 @dataclass
+class UpdateResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateResponse:
+        """Deserializes the UpdateResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class UpdateRuleSetRequest:
     name: str
     """Name of the rule set."""
@@ -1128,6 +1184,20 @@ class UserSchema(Enum):
 
     URN_IETF_PARAMS_SCIM_SCHEMAS_CORE_2_0_USER = 'urn:ietf:params:scim:schemas:core:2.0:User'
     URN_IETF_PARAMS_SCIM_SCHEMAS_EXTENSION_WORKSPACE_2_0_USER = 'urn:ietf:params:scim:schemas:extension:workspace:2.0:User'
+
+
+@dataclass
+class WorkspaceAssignmentsUpdated:
+
+    def as_dict(self) -> dict:
+        """Serializes the WorkspaceAssignmentsUpdated into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> WorkspaceAssignmentsUpdated:
+        """Deserializes the WorkspaceAssignmentsUpdated from a dictionary."""
+        return cls()
 
 
 class WorkspacePermission(Enum):

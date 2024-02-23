@@ -304,6 +304,20 @@ class BaseChunkInfo:
 
 
 @dataclass
+class CancelExecutionResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the CancelExecutionResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> CancelExecutionResponse:
+        """Deserializes the CancelExecutionResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class Channel:
     dbsql_version: Optional[str] = None
 
@@ -895,6 +909,34 @@ class DataSource:
                    warehouse_id=d.get('warehouse_id', None))
 
 
+@dataclass
+class DeleteResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteResponse:
+        """Deserializes the DeleteResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
+class DeleteWarehouseResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteWarehouseResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteWarehouseResponse:
+        """Deserializes the DeleteWarehouseResponse from a dictionary."""
+        return cls()
+
+
 class Disposition(Enum):
     """The fetch disposition provides two modes of fetching results: `INLINE` and `EXTERNAL_LINKS`.
     
@@ -1078,6 +1120,20 @@ class EditWarehouseRequestWarehouseType(Enum):
     CLASSIC = 'CLASSIC'
     PRO = 'PRO'
     TYPE_UNSPECIFIED = 'TYPE_UNSPECIFIED'
+
+
+@dataclass
+class EditWarehouseResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the EditWarehouseResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> EditWarehouseResponse:
+        """Deserializes the EditWarehouseResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -2584,9 +2640,6 @@ class QueryMetrics:
     photon_total_time_ms: Optional[int] = None
     """Total execution time for all individual Photon query engine tasks in the query, in milliseconds."""
 
-    planning_phases: Optional[List[Any]] = None
-    """Reserved for internal use."""
-
     planning_time_ms: Optional[int] = None
     """Reserved for internal use."""
 
@@ -2656,7 +2709,6 @@ class QueryMetrics:
         if self.overloading_queue_start_timestamp is not None:
             body['overloading_queue_start_timestamp'] = self.overloading_queue_start_timestamp
         if self.photon_total_time_ms is not None: body['photon_total_time_ms'] = self.photon_total_time_ms
-        if self.planning_phases: body['planning_phases'] = [v for v in self.planning_phases]
         if self.planning_time_ms is not None: body['planning_time_ms'] = self.planning_time_ms
         if self.provisioning_queue_start_timestamp is not None:
             body['provisioning_queue_start_timestamp'] = self.provisioning_queue_start_timestamp
@@ -2690,7 +2742,6 @@ class QueryMetrics:
                    network_sent_bytes=d.get('network_sent_bytes', None),
                    overloading_queue_start_timestamp=d.get('overloading_queue_start_timestamp', None),
                    photon_total_time_ms=d.get('photon_total_time_ms', None),
-                   planning_phases=d.get('planning_phases', None),
                    planning_time_ms=d.get('planning_time_ms', None),
                    provisioning_queue_start_timestamp=d.get('provisioning_queue_start_timestamp', None),
                    pruned_bytes=d.get('pruned_bytes', None),
@@ -2846,6 +2897,20 @@ class RepeatedEndpointConfPairs:
         """Deserializes the RepeatedEndpointConfPairs from a dictionary."""
         return cls(config_pair=_repeated_dict(d, 'config_pair', EndpointConfPair),
                    configuration_pairs=_repeated_dict(d, 'configuration_pairs', EndpointConfPair))
+
+
+@dataclass
+class RestoreResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the RestoreResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> RestoreResponse:
+        """Deserializes the RestoreResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -3131,12 +3196,40 @@ class SetWorkspaceWarehouseConfigRequestSecurityPolicy(Enum):
     PASSTHROUGH = 'PASSTHROUGH'
 
 
+@dataclass
+class SetWorkspaceWarehouseConfigResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the SetWorkspaceWarehouseConfigResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> SetWorkspaceWarehouseConfigResponse:
+        """Deserializes the SetWorkspaceWarehouseConfigResponse from a dictionary."""
+        return cls()
+
+
 class SpotInstancePolicy(Enum):
     """Configurations whether the warehouse should use spot instances."""
 
     COST_OPTIMIZED = 'COST_OPTIMIZED'
     POLICY_UNSPECIFIED = 'POLICY_UNSPECIFIED'
     RELIABILITY_OPTIMIZED = 'RELIABILITY_OPTIMIZED'
+
+
+@dataclass
+class StartWarehouseResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the StartWarehouseResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> StartWarehouseResponse:
+        """Deserializes the StartWarehouseResponse from a dictionary."""
+        return cls()
 
 
 class State(Enum):
@@ -3226,6 +3319,20 @@ class Status(Enum):
     FAILED = 'FAILED'
     HEALTHY = 'HEALTHY'
     STATUS_UNSPECIFIED = 'STATUS_UNSPECIFIED'
+
+
+@dataclass
+class StopWarehouseResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the StopWarehouseResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> StopWarehouseResponse:
+        """Deserializes the StopWarehouseResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -3405,6 +3512,20 @@ class TransferOwnershipObjectId:
     def from_dict(cls, d: Dict[str, any]) -> TransferOwnershipObjectId:
         """Deserializes the TransferOwnershipObjectId from a dictionary."""
         return cls(new_owner=d.get('new_owner', None))
+
+
+@dataclass
+class UpdateResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateResponse:
+        """Deserializes the UpdateResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -5306,8 +5427,10 @@ class WarehousesAPI:
         if warehouse_type is not None: body['warehouse_type'] = warehouse_type.value
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        self._api.do('POST', f'/api/2.0/sql/warehouses/{id}/edit', body=body, headers=headers)
-        return Wait(self.wait_get_warehouse_running, id=id)
+        op_response = self._api.do('POST', f'/api/2.0/sql/warehouses/{id}/edit', body=body, headers=headers)
+        return Wait(self.wait_get_warehouse_running,
+                    response=EditWarehouseResponse.from_dict(op_response),
+                    id=id)
 
     def edit_and_wait(
         self,
@@ -5526,8 +5649,10 @@ class WarehousesAPI:
 
         headers = {'Accept': 'application/json', }
 
-        self._api.do('POST', f'/api/2.0/sql/warehouses/{id}/start', headers=headers)
-        return Wait(self.wait_get_warehouse_running, id=id)
+        op_response = self._api.do('POST', f'/api/2.0/sql/warehouses/{id}/start', headers=headers)
+        return Wait(self.wait_get_warehouse_running,
+                    response=StartWarehouseResponse.from_dict(op_response),
+                    id=id)
 
     def start_and_wait(self, id: str, timeout=timedelta(minutes=20)) -> GetWarehouseResponse:
         return self.start(id=id).result(timeout=timeout)
@@ -5547,8 +5672,10 @@ class WarehousesAPI:
 
         headers = {'Accept': 'application/json', }
 
-        self._api.do('POST', f'/api/2.0/sql/warehouses/{id}/stop', headers=headers)
-        return Wait(self.wait_get_warehouse_stopped, id=id)
+        op_response = self._api.do('POST', f'/api/2.0/sql/warehouses/{id}/stop', headers=headers)
+        return Wait(self.wait_get_warehouse_stopped,
+                    response=StopWarehouseResponse.from_dict(op_response),
+                    id=id)
 
     def stop_and_wait(self, id: str, timeout=timedelta(minutes=20)) -> GetWarehouseResponse:
         return self.stop(id=id).result(timeout=timeout)

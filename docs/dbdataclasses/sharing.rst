@@ -137,6 +137,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: DeleteResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: GetActivationUrlInfoResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: GetRecipientSharePermissionsResponse
    :members:
    :undoc-members:
@@ -397,11 +405,19 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: UpdatePermissionsResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: UpdateProvider
    :members:
    :undoc-members:
 
 .. autoclass:: UpdateRecipient
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateResponse
    :members:
    :undoc-members:
 

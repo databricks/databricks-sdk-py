@@ -140,11 +140,39 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: DeleteCommentResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: DeleteExperiment
    :members:
    :undoc-members:
 
+.. autoclass:: DeleteExperimentResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: DeleteModelResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: DeleteModelTagResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: DeleteModelVersionResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: DeleteModelVersionTagResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: DeleteRun
+   :members:
+   :undoc-members:
+
+.. autoclass:: DeleteRunResponse
    :members:
    :undoc-members:
 
@@ -157,6 +185,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: DeleteTag
+   :members:
+   :undoc-members:
+
+.. autoclass:: DeleteTagResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: DeleteTransitionRequestResponse
    :members:
    :undoc-members:
 
@@ -173,6 +209,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: STAGING
       :value: "STAGING"
+
+.. autoclass:: DeleteWebhookResponse
+   :members:
+   :undoc-members:
 
 .. autoclass:: Experiment
    :members:
@@ -307,7 +347,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: LogBatchResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: LogInputs
+   :members:
+   :undoc-members:
+
+.. autoclass:: LogInputsResponse
    :members:
    :undoc-members:
 
@@ -315,11 +363,23 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: LogMetricResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: LogModel
    :members:
    :undoc-members:
 
+.. autoclass:: LogModelResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: LogParam
+   :members:
+   :undoc-members:
+
+.. autoclass:: LogParamResponse
    :members:
    :undoc-members:
 
@@ -507,7 +567,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: RestoreExperimentResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: RestoreRun
+   :members:
+   :undoc-members:
+
+.. autoclass:: RestoreRunResponse
    :members:
    :undoc-members:
 
@@ -612,7 +680,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: SetExperimentTagResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: SetModelTagRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: SetModelTagResponse
    :members:
    :undoc-members:
 
@@ -620,7 +696,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: SetModelVersionTagResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: SetTag
+   :members:
+   :undoc-members:
+
+.. autoclass:: SetTagResponse
    :members:
    :undoc-members:
 
@@ -695,11 +779,23 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: UpdateExperimentResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: UpdateModelRequest
    :members:
    :undoc-members:
 
+.. autoclass:: UpdateModelResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: UpdateModelVersionRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateModelVersionResponse
    :members:
    :undoc-members:
 
@@ -733,3 +829,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: SCHEDULED
       :value: "SCHEDULED"
+
+.. autoclass:: UpdateWebhookResponse
+   :members:
+   :undoc-members:

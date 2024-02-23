@@ -19,10 +19,10 @@
 
         Delete the default namespace setting.
         
-        Deletes the default namespace setting for the workspace. A fresh etag needs to be provided in DELETE
-        requests (as a query parameter). The etag can be retrieved by making a GET request before the DELETE
-        request. If the setting is updated/deleted concurrently, DELETE will fail with 409 and the request
-        will need to be retried by using the fresh etag in the 409 response.
+        Deletes the default namespace setting for the workspace. A fresh etag needs to be provided in `DELETE`
+        requests (as a query parameter). The etag can be retrieved by making a `GET` request before the
+        `DELETE` request. If the setting is updated/deleted concurrently, `DELETE` fails with 409 and the
+        request must be retried by using the fresh etag in the 409 response.
         
         :param etag: str (optional)
           etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
@@ -39,9 +39,9 @@
         Delete the restrict workspace admins setting.
         
         Reverts the restrict workspace admins setting status for the workspace. A fresh etag needs to be
-        provided in DELETE requests (as a query parameter). The etag can be retrieved by making a GET request
-        before the DELETE request. If the setting is updated/deleted concurrently, DELETE will fail with 409
-        and the request will need to be retried by using the fresh etag in the 409 response.
+        provided in `DELETE` requests (as a query parameter). The etag can be retrieved by making a `GET`
+        request before the DELETE request. If the setting is updated/deleted concurrently, `DELETE` fails with
+        409 and the request must be retried by using the fresh etag in the 409 response.
         
         :param etag: str (optional)
           etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
@@ -51,6 +51,38 @@
           request, and pass it with the DELETE request to identify the rule set version you are deleting.
         
         :returns: :class:`DeleteRestrictWorkspaceAdminsSettingResponse`
+        
+
+    .. py:method:: get_automatic_cluster_update_setting( [, etag: Optional[str]]) -> AutomaticClusterUpdateSetting
+
+        Get the automatic cluster update setting.
+        
+        Gets the automatic cluster update setting.
+        
+        :param etag: str (optional)
+          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
+          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
+          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
+          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
+          request, and pass it with the DELETE request to identify the rule set version you are deleting.
+        
+        :returns: :class:`AutomaticClusterUpdateSetting`
+        
+
+    .. py:method:: get_csp_enablement_setting( [, etag: Optional[str]]) -> CspEnablementSetting
+
+        Get the compliance security profile setting.
+        
+        Gets the compliance security profile setting.
+        
+        :param etag: str (optional)
+          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
+          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
+          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
+          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
+          request, and pass it with the DELETE request to identify the rule set version you are deleting.
+        
+        :returns: :class:`CspEnablementSetting`
         
 
     .. py:method:: get_default_namespace_setting( [, etag: Optional[str]]) -> DefaultNamespaceSetting
@@ -69,6 +101,22 @@
         :returns: :class:`DefaultNamespaceSetting`
         
 
+    .. py:method:: get_esm_enablement_setting( [, etag: Optional[str]]) -> EsmEnablementSetting
+
+        Get the enhanced security monitoring setting.
+        
+        Gets the enhanced security monitoring setting.
+        
+        :param etag: str (optional)
+          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
+          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
+          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
+          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
+          request, and pass it with the DELETE request to identify the rule set version you are deleting.
+        
+        :returns: :class:`EsmEnablementSetting`
+        
+
     .. py:method:: get_restrict_workspace_admins_setting( [, etag: Optional[str]]) -> RestrictWorkspaceAdminsSetting
 
         Get the restrict workspace admins setting.
@@ -85,16 +133,56 @@
         :returns: :class:`RestrictWorkspaceAdminsSetting`
         
 
+    .. py:method:: update_automatic_cluster_update_setting(allow_missing: bool, setting: AutomaticClusterUpdateSetting, field_mask: str) -> AutomaticClusterUpdateSetting
+
+        Update the automatic cluster update setting.
+        
+        Updates the automatic cluster update setting for the workspace. A fresh etag needs to be provided in
+        `PATCH` requests (as part of the setting field). The etag can be retrieved by making a `GET` request
+        before the `PATCH` request. If the setting is updated concurrently, `PATCH` fails with 409 and the
+        request must be retried by using the fresh etag in the 409 response.
+        
+        :param allow_missing: bool
+          This should always be set to true for Settings API. Added for AIP compliance.
+        :param setting: :class:`AutomaticClusterUpdateSetting`
+        :param field_mask: str
+          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
+          setting payload will be updated. The field mask needs to be supplied as single string. To specify
+          multiple fields in the field mask, use comma as the separator (no space).
+        
+        :returns: :class:`AutomaticClusterUpdateSetting`
+        
+
+    .. py:method:: update_csp_enablement_setting(allow_missing: bool, setting: CspEnablementSetting, field_mask: str) -> CspEnablementSetting
+
+        Update the compliance security profile setting.
+        
+        Updates the compliance security profile setting for the workspace. A fresh etag needs to be provided
+        in `PATCH` requests (as part of the setting field). The etag can be retrieved by making a `GET`
+        request before the `PATCH` request. If the setting is updated concurrently, `PATCH` fails with 409 and
+        the request must be retried by using the fresh etag in the 409 response.
+        
+        :param allow_missing: bool
+          This should always be set to true for Settings API. Added for AIP compliance.
+        :param setting: :class:`CspEnablementSetting`
+        :param field_mask: str
+          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
+          setting payload will be updated. The field mask needs to be supplied as single string. To specify
+          multiple fields in the field mask, use comma as the separator (no space).
+        
+        :returns: :class:`CspEnablementSetting`
+        
+
     .. py:method:: update_default_namespace_setting(allow_missing: bool, setting: DefaultNamespaceSetting, field_mask: str) -> DefaultNamespaceSetting
 
         Update the default namespace setting.
         
-        Updates the default namespace setting for the workspace. A fresh etag needs to be provided in PATCH
-        requests (as part of the setting field). The etag can be retrieved by making a GET request before the
-        PATCH request. Note that if the setting does not exist, GET will return a NOT_FOUND error and the etag
-        will be present in the error response, which should be set in the PATCH request. If the setting is
-        updated concurrently, PATCH will fail with 409 and the request will need to be retried by using the
-        fresh etag in the 409 response.
+        Updates the default namespace setting for the workspace. A fresh etag needs to be provided in `PATCH`
+        requests (as part of the setting field). The etag can be retrieved by making a `GET` request before
+        the `PATCH` request. Note that if the setting does not exist, `GET` returns a NOT_FOUND error and the
+        etag is present in the error response, which should be set in the `PATCH` request. If the setting is
+        updated concurrently, `PATCH` fails with 409 and the request must be retried by using the fresh etag
+        in the 409 response.
         
         :param allow_missing: bool
           This should always be set to true for Settings API. Added for AIP compliance.
@@ -114,14 +202,34 @@
         :returns: :class:`DefaultNamespaceSetting`
         
 
+    .. py:method:: update_esm_enablement_setting(allow_missing: bool, setting: EsmEnablementSetting, field_mask: str) -> EsmEnablementSetting
+
+        Update the enhanced security monitoring setting.
+        
+        Updates the enhanced security monitoring setting for the workspace. A fresh etag needs to be provided
+        in `PATCH` requests (as part of the setting field). The etag can be retrieved by making a `GET`
+        request before the `PATCH` request. If the setting is updated concurrently, `PATCH` fails with 409 and
+        the request must be retried by using the fresh etag in the 409 response.
+        
+        :param allow_missing: bool
+          This should always be set to true for Settings API. Added for AIP compliance.
+        :param setting: :class:`EsmEnablementSetting`
+        :param field_mask: str
+          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
+          setting payload will be updated. The field mask needs to be supplied as single string. To specify
+          multiple fields in the field mask, use comma as the separator (no space).
+        
+        :returns: :class:`EsmEnablementSetting`
+        
+
     .. py:method:: update_restrict_workspace_admins_setting(allow_missing: bool, setting: RestrictWorkspaceAdminsSetting, field_mask: str) -> RestrictWorkspaceAdminsSetting
 
         Update the restrict workspace admins setting.
         
         Updates the restrict workspace admins setting for the workspace. A fresh etag needs to be provided in
-        PATCH requests (as part of the setting field). The etag can be retrieved by making a GET request
-        before the PATCH request. If the setting is updated concurrently, PATCH will fail with 409 and the
-        request will need to be retried by using the fresh etag in the 409 response.
+        `PATCH` requests (as part of the setting field). The etag can be retrieved by making a GET request
+        before the `PATCH` request. If the setting is updated concurrently, `PATCH` fails with 409 and the
+        request must be retried by using the fresh etag in the 409 response.
         
         :param allow_missing: bool
           This should always be set to true for Settings API. Added for AIP compliance.

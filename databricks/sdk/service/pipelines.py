@@ -8,7 +8,7 @@ import time
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Any, Callable, Dict, Iterator, List, Optional
+from typing import Callable, Dict, Iterator, List, Optional
 
 from ..errors import OperationFailed
 from ._internal import Wait, _enum, _from_dict, _repeated_dict
@@ -178,20 +178,34 @@ class DataPlaneId:
     instance: Optional[str] = None
     """The instance name of the data plane emitting an event."""
 
-    seq_no: Optional[Any] = None
+    seq_no: Optional[int] = None
     """A sequence number, unique and increasing within the data plane instance."""
 
     def as_dict(self) -> dict:
         """Serializes the DataPlaneId into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.instance is not None: body['instance'] = self.instance
-        if self.seq_no: body['seq_no'] = self.seq_no
+        if self.seq_no is not None: body['seq_no'] = self.seq_no
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> DataPlaneId:
         """Deserializes the DataPlaneId from a dictionary."""
         return cls(instance=d.get('instance', None), seq_no=d.get('seq_no', None))
+
+
+@dataclass
+class DeletePipelineResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the DeletePipelineResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeletePipelineResponse:
+        """Deserializes the DeletePipelineResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -311,6 +325,20 @@ class EditPipeline:
                    storage=d.get('storage', None),
                    target=d.get('target', None),
                    trigger=_from_dict(d, 'trigger', PipelineTrigger))
+
+
+@dataclass
+class EditPipelineResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the EditPipelineResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> EditPipelineResponse:
+        """Deserializes the EditPipelineResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -564,6 +592,20 @@ class ListUpdatesResponse:
         return cls(next_page_token=d.get('next_page_token', None),
                    prev_page_token=d.get('prev_page_token', None),
                    updates=_repeated_dict(d, 'updates', UpdateInfo))
+
+
+@dataclass
+class ManualTrigger:
+
+    def as_dict(self) -> dict:
+        """Serializes the ManualTrigger into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ManualTrigger:
+        """Deserializes the ManualTrigger from a dictionary."""
+        return cls()
 
 
 class MaturityLevel(Enum):
@@ -1335,19 +1377,19 @@ class PipelineStateInfo:
 class PipelineTrigger:
     cron: Optional[CronTrigger] = None
 
-    manual: Optional[Any] = None
+    manual: Optional[ManualTrigger] = None
 
     def as_dict(self) -> dict:
         """Serializes the PipelineTrigger into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.cron: body['cron'] = self.cron.as_dict()
-        if self.manual: body['manual'] = self.manual
+        if self.manual: body['manual'] = self.manual.as_dict()
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> PipelineTrigger:
         """Deserializes the PipelineTrigger from a dictionary."""
-        return cls(cron=_from_dict(d, 'cron', CronTrigger), manual=d.get('manual', None))
+        return cls(cron=_from_dict(d, 'cron', CronTrigger), manual=_from_dict(d, 'manual', ManualTrigger))
 
 
 @dataclass
@@ -1501,6 +1543,20 @@ class StartUpdateResponse:
     def from_dict(cls, d: Dict[str, any]) -> StartUpdateResponse:
         """Deserializes the StartUpdateResponse from a dictionary."""
         return cls(update_id=d.get('update_id', None))
+
+
+@dataclass
+class StopPipelineResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the StopPipelineResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> StopPipelineResponse:
+        """Deserializes the StopPipelineResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -2106,8 +2162,10 @@ class PipelinesAPI:
 
         headers = {'Accept': 'application/json', }
 
-        self._api.do('POST', f'/api/2.0/pipelines/{pipeline_id}/stop', headers=headers)
-        return Wait(self.wait_get_pipeline_idle, pipeline_id=pipeline_id)
+        op_response = self._api.do('POST', f'/api/2.0/pipelines/{pipeline_id}/stop', headers=headers)
+        return Wait(self.wait_get_pipeline_idle,
+                    response=StopPipelineResponse.from_dict(op_response),
+                    pipeline_id=pipeline_id)
 
     def stop_and_wait(self, pipeline_id: str, timeout=timedelta(minutes=20)) -> GetPipelineResponse:
         return self.stop(pipeline_id=pipeline_id).result(timeout=timeout)

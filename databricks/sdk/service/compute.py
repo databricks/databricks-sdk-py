@@ -65,6 +65,20 @@ class AddInstanceProfile:
 
 
 @dataclass
+class AddResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the AddResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> AddResponse:
+        """Deserializes the AddResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class Adlsgen2Info:
     destination: str
     """abfss destination, e.g.
@@ -303,6 +317,20 @@ class CancelCommand:
 
 
 @dataclass
+class CancelResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the CancelResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> CancelResponse:
+        """Deserializes the CancelResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class ChangeClusterOwner:
     cluster_id: str
     """<needs content added>"""
@@ -321,6 +349,20 @@ class ChangeClusterOwner:
     def from_dict(cls, d: Dict[str, any]) -> ChangeClusterOwner:
         """Deserializes the ChangeClusterOwner from a dictionary."""
         return cls(cluster_id=d.get('cluster_id', None), owner_username=d.get('owner_username', None))
+
+
+@dataclass
+class ChangeClusterOwnerResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the ChangeClusterOwnerResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ChangeClusterOwnerResponse:
+        """Deserializes the ChangeClusterOwnerResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -2264,6 +2306,20 @@ class DeleteCluster:
 
 
 @dataclass
+class DeleteClusterResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteClusterResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteClusterResponse:
+        """Deserializes the DeleteClusterResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class DeleteInstancePool:
     instance_pool_id: str
     """The instance pool to be terminated."""
@@ -2278,6 +2334,20 @@ class DeleteInstancePool:
     def from_dict(cls, d: Dict[str, any]) -> DeleteInstancePool:
         """Deserializes the DeleteInstancePool from a dictionary."""
         return cls(instance_pool_id=d.get('instance_pool_id', None))
+
+
+@dataclass
+class DeleteInstancePoolResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteInstancePoolResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteInstancePoolResponse:
+        """Deserializes the DeleteInstancePoolResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -2298,6 +2368,34 @@ class DeletePolicy:
 
 
 @dataclass
+class DeletePolicyResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the DeletePolicyResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeletePolicyResponse:
+        """Deserializes the DeletePolicyResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
+class DeleteResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteResponse:
+        """Deserializes the DeleteResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class DestroyContext:
     cluster_id: str
 
@@ -2314,6 +2412,20 @@ class DestroyContext:
     def from_dict(cls, d: Dict[str, any]) -> DestroyContext:
         """Deserializes the DestroyContext from a dictionary."""
         return cls(cluster_id=d.get('clusterId', None), context_id=d.get('contextId', None))
+
+
+@dataclass
+class DestroyResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the DestroyResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DestroyResponse:
+        """Deserializes the DestroyResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -2671,6 +2783,20 @@ class EditCluster:
 
 
 @dataclass
+class EditClusterResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the EditClusterResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> EditClusterResponse:
+        """Deserializes the EditClusterResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class EditInstancePool:
     instance_pool_id: str
     """Instance pool ID"""
@@ -2729,6 +2855,20 @@ class EditInstancePool:
                    max_capacity=d.get('max_capacity', None),
                    min_idle_instances=d.get('min_idle_instances', None),
                    node_type_id=d.get('node_type_id', None))
+
+
+@dataclass
+class EditInstancePoolResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the EditInstancePoolResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> EditInstancePoolResponse:
+        """Deserializes the EditInstancePoolResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -2797,6 +2937,34 @@ class EditPolicy:
                    policy_family_definition_overrides=d.get('policy_family_definition_overrides', None),
                    policy_family_id=d.get('policy_family_id', None),
                    policy_id=d.get('policy_id', None))
+
+
+@dataclass
+class EditPolicyResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the EditPolicyResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> EditPolicyResponse:
+        """Deserializes the EditPolicyResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
+class EditResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the EditResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> EditResponse:
+        """Deserializes the EditResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -3684,6 +3852,20 @@ class InstallLibraries:
     def from_dict(cls, d: Dict[str, any]) -> InstallLibraries:
         """Deserializes the InstallLibraries from a dictionary."""
         return cls(cluster_id=d.get('cluster_id', None), libraries=_repeated_dict(d, 'libraries', Library))
+
+
+@dataclass
+class InstallLibrariesResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the InstallLibrariesResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> InstallLibrariesResponse:
+        """Deserializes the InstallLibrariesResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -4764,6 +4946,20 @@ class PermanentDeleteCluster:
 
 
 @dataclass
+class PermanentDeleteClusterResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the PermanentDeleteClusterResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> PermanentDeleteClusterResponse:
+        """Deserializes the PermanentDeleteClusterResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class PinCluster:
     cluster_id: str
     """<needs content added>"""
@@ -4778,6 +4974,20 @@ class PinCluster:
     def from_dict(cls, d: Dict[str, any]) -> PinCluster:
         """Deserializes the PinCluster from a dictionary."""
         return cls(cluster_id=d.get('cluster_id', None))
+
+
+@dataclass
+class PinClusterResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the PinClusterResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> PinClusterResponse:
+        """Deserializes the PinClusterResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -4956,6 +5166,20 @@ class RemoveInstanceProfile:
 
 
 @dataclass
+class RemoveResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the RemoveResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> RemoveResponse:
+        """Deserializes the RemoveResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class ResizeCluster:
     cluster_id: str
     """The cluster to be resized."""
@@ -4991,6 +5215,20 @@ class ResizeCluster:
 
 
 @dataclass
+class ResizeClusterResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the ResizeClusterResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ResizeClusterResponse:
+        """Deserializes the ResizeClusterResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class RestartCluster:
     cluster_id: str
     """The cluster to be started."""
@@ -5009,6 +5247,20 @@ class RestartCluster:
     def from_dict(cls, d: Dict[str, any]) -> RestartCluster:
         """Deserializes the RestartCluster from a dictionary."""
         return cls(cluster_id=d.get('cluster_id', None), restart_user=d.get('restart_user', None))
+
+
+@dataclass
+class RestartClusterResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the RestartClusterResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> RestartClusterResponse:
+        """Deserializes the RestartClusterResponse from a dictionary."""
+        return cls()
 
 
 class ResultType(Enum):
@@ -5261,6 +5513,20 @@ class StartCluster:
         return cls(cluster_id=d.get('cluster_id', None))
 
 
+@dataclass
+class StartClusterResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the StartClusterResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> StartClusterResponse:
+        """Deserializes the StartClusterResponse from a dictionary."""
+        return cls()
+
+
 class State(Enum):
     """Current state of the cluster."""
 
@@ -5416,6 +5682,20 @@ class UninstallLibraries:
 
 
 @dataclass
+class UninstallLibrariesResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the UninstallLibrariesResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UninstallLibrariesResponse:
+        """Deserializes the UninstallLibrariesResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class UnpinCluster:
     cluster_id: str
     """<needs content added>"""
@@ -5430,6 +5710,34 @@ class UnpinCluster:
     def from_dict(cls, d: Dict[str, any]) -> UnpinCluster:
         """Deserializes the UnpinCluster from a dictionary."""
         return cls(cluster_id=d.get('cluster_id', None))
+
+
+@dataclass
+class UnpinClusterResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the UnpinClusterResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UnpinClusterResponse:
+        """Deserializes the UnpinClusterResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
+class UpdateResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateResponse:
+        """Deserializes the UpdateResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -6164,8 +6472,10 @@ class ClustersAPI:
         if cluster_id is not None: body['cluster_id'] = cluster_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        self._api.do('POST', '/api/2.0/clusters/delete', body=body, headers=headers)
-        return Wait(self.wait_get_cluster_terminated, cluster_id=cluster_id)
+        op_response = self._api.do('POST', '/api/2.0/clusters/delete', body=body, headers=headers)
+        return Wait(self.wait_get_cluster_terminated,
+                    response=DeleteClusterResponse.from_dict(op_response),
+                    cluster_id=cluster_id)
 
     def delete_and_wait(self, cluster_id: str, timeout=timedelta(minutes=20)) -> ClusterDetails:
         return self.delete(cluster_id=cluster_id).result(timeout=timeout)
@@ -6369,8 +6679,10 @@ class ClustersAPI:
         if workload_type is not None: body['workload_type'] = workload_type.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        self._api.do('POST', '/api/2.0/clusters/edit', body=body, headers=headers)
-        return Wait(self.wait_get_cluster_running, cluster_id=cluster_id)
+        op_response = self._api.do('POST', '/api/2.0/clusters/edit', body=body, headers=headers)
+        return Wait(self.wait_get_cluster_running,
+                    response=EditClusterResponse.from_dict(op_response),
+                    cluster_id=cluster_id)
 
     def edit_and_wait(
         self,
@@ -6668,8 +6980,10 @@ class ClustersAPI:
         if num_workers is not None: body['num_workers'] = num_workers
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        self._api.do('POST', '/api/2.0/clusters/resize', body=body, headers=headers)
-        return Wait(self.wait_get_cluster_running, cluster_id=cluster_id)
+        op_response = self._api.do('POST', '/api/2.0/clusters/resize', body=body, headers=headers)
+        return Wait(self.wait_get_cluster_running,
+                    response=ResizeClusterResponse.from_dict(op_response),
+                    cluster_id=cluster_id)
 
     def resize_and_wait(self,
                         cluster_id: str,
@@ -6700,8 +7014,10 @@ class ClustersAPI:
         if restart_user is not None: body['restart_user'] = restart_user
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        self._api.do('POST', '/api/2.0/clusters/restart', body=body, headers=headers)
-        return Wait(self.wait_get_cluster_running, cluster_id=cluster_id)
+        op_response = self._api.do('POST', '/api/2.0/clusters/restart', body=body, headers=headers)
+        return Wait(self.wait_get_cluster_running,
+                    response=RestartClusterResponse.from_dict(op_response),
+                    cluster_id=cluster_id)
 
     def restart_and_wait(self,
                          cluster_id: str,
@@ -6767,8 +7083,10 @@ class ClustersAPI:
         if cluster_id is not None: body['cluster_id'] = cluster_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        self._api.do('POST', '/api/2.0/clusters/start', body=body, headers=headers)
-        return Wait(self.wait_get_cluster_running, cluster_id=cluster_id)
+        op_response = self._api.do('POST', '/api/2.0/clusters/start', body=body, headers=headers)
+        return Wait(self.wait_get_cluster_running,
+                    response=StartClusterResponse.from_dict(op_response),
+                    cluster_id=cluster_id)
 
     def start_and_wait(self, cluster_id: str, timeout=timedelta(minutes=20)) -> ClusterDetails:
         return self.start(cluster_id=cluster_id).result(timeout=timeout)
@@ -6946,8 +7264,9 @@ class CommandExecutionAPI:
         if context_id is not None: body['contextId'] = context_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        self._api.do('POST', '/api/1.2/commands/cancel', body=body, headers=headers)
+        op_response = self._api.do('POST', '/api/1.2/commands/cancel', body=body, headers=headers)
         return Wait(self.wait_command_status_command_execution_cancelled,
+                    response=CancelResponse.from_dict(op_response),
                     cluster_id=cluster_id,
                     command_id=command_id,
                     context_id=context_id)

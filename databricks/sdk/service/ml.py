@@ -717,6 +717,20 @@ class DatasetInput:
 
 
 @dataclass
+class DeleteCommentResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteCommentResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteCommentResponse:
+        """Deserializes the DeleteCommentResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class DeleteExperiment:
     experiment_id: str
     """ID of the associated experiment."""
@@ -734,6 +748,76 @@ class DeleteExperiment:
 
 
 @dataclass
+class DeleteExperimentResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteExperimentResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteExperimentResponse:
+        """Deserializes the DeleteExperimentResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
+class DeleteModelResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteModelResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteModelResponse:
+        """Deserializes the DeleteModelResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
+class DeleteModelTagResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteModelTagResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteModelTagResponse:
+        """Deserializes the DeleteModelTagResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
+class DeleteModelVersionResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteModelVersionResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteModelVersionResponse:
+        """Deserializes the DeleteModelVersionResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
+class DeleteModelVersionTagResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteModelVersionTagResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteModelVersionTagResponse:
+        """Deserializes the DeleteModelVersionTagResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class DeleteRun:
     run_id: str
     """ID of the run to delete."""
@@ -748,6 +832,20 @@ class DeleteRun:
     def from_dict(cls, d: Dict[str, any]) -> DeleteRun:
         """Deserializes the DeleteRun from a dictionary."""
         return cls(run_id=d.get('run_id', None))
+
+
+@dataclass
+class DeleteRunResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteRunResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteRunResponse:
+        """Deserializes the DeleteRunResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -817,12 +915,54 @@ class DeleteTag:
         return cls(key=d.get('key', None), run_id=d.get('run_id', None))
 
 
+@dataclass
+class DeleteTagResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteTagResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteTagResponse:
+        """Deserializes the DeleteTagResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
+class DeleteTransitionRequestResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteTransitionRequestResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteTransitionRequestResponse:
+        """Deserializes the DeleteTransitionRequestResponse from a dictionary."""
+        return cls()
+
+
 class DeleteTransitionRequestStage(Enum):
 
     ARCHIVED = 'Archived'
     NONE = 'None'
     PRODUCTION = 'Production'
     STAGING = 'Staging'
+
+
+@dataclass
+class DeleteWebhookResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteWebhookResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteWebhookResponse:
+        """Deserializes the DeleteWebhookResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -1557,6 +1697,20 @@ class LogBatch:
 
 
 @dataclass
+class LogBatchResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the LogBatchResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> LogBatchResponse:
+        """Deserializes the LogBatchResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class LogInputs:
     datasets: Optional[List[DatasetInput]] = None
     """Dataset inputs"""
@@ -1575,6 +1729,20 @@ class LogInputs:
     def from_dict(cls, d: Dict[str, any]) -> LogInputs:
         """Deserializes the LogInputs from a dictionary."""
         return cls(datasets=_repeated_dict(d, 'datasets', DatasetInput), run_id=d.get('run_id', None))
+
+
+@dataclass
+class LogInputsResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the LogInputsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> LogInputsResponse:
+        """Deserializes the LogInputsResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -1621,6 +1789,20 @@ class LogMetric:
 
 
 @dataclass
+class LogMetricResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the LogMetricResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> LogMetricResponse:
+        """Deserializes the LogMetricResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class LogModel:
     model_json: Optional[str] = None
     """MLmodel file in json format."""
@@ -1639,6 +1821,20 @@ class LogModel:
     def from_dict(cls, d: Dict[str, any]) -> LogModel:
         """Deserializes the LogModel from a dictionary."""
         return cls(model_json=d.get('model_json', None), run_id=d.get('run_id', None))
+
+
+@dataclass
+class LogModelResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the LogModelResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> LogModelResponse:
+        """Deserializes the LogModelResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -1672,6 +1868,20 @@ class LogParam:
                    run_id=d.get('run_id', None),
                    run_uuid=d.get('run_uuid', None),
                    value=d.get('value', None))
+
+
+@dataclass
+class LogParamResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the LogParamResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> LogParamResponse:
+        """Deserializes the LogParamResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -2482,6 +2692,20 @@ class RestoreExperiment:
 
 
 @dataclass
+class RestoreExperimentResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the RestoreExperimentResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> RestoreExperimentResponse:
+        """Deserializes the RestoreExperimentResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class RestoreRun:
     run_id: str
     """ID of the run to restore."""
@@ -2496,6 +2720,20 @@ class RestoreRun:
     def from_dict(cls, d: Dict[str, any]) -> RestoreRun:
         """Deserializes the RestoreRun from a dictionary."""
         return cls(run_id=d.get('run_id', None))
+
+
+@dataclass
+class RestoreRunResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the RestoreRunResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> RestoreRunResponse:
+        """Deserializes the RestoreRunResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -2937,6 +3175,20 @@ class SetExperimentTag:
 
 
 @dataclass
+class SetExperimentTagResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the SetExperimentTagResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> SetExperimentTagResponse:
+        """Deserializes the SetExperimentTagResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class SetModelTagRequest:
     name: str
     """Unique name of the model."""
@@ -2962,6 +3214,20 @@ class SetModelTagRequest:
     def from_dict(cls, d: Dict[str, any]) -> SetModelTagRequest:
         """Deserializes the SetModelTagRequest from a dictionary."""
         return cls(key=d.get('key', None), name=d.get('name', None), value=d.get('value', None))
+
+
+@dataclass
+class SetModelTagResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the SetModelTagResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> SetModelTagResponse:
+        """Deserializes the SetModelTagResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -3000,6 +3266,20 @@ class SetModelVersionTagRequest:
 
 
 @dataclass
+class SetModelVersionTagResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the SetModelVersionTagResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> SetModelVersionTagResponse:
+        """Deserializes the SetModelVersionTagResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class SetTag:
     key: str
     """Name of the tag. Maximum size depends on storage backend. All storage backends are guaranteed to
@@ -3032,6 +3312,20 @@ class SetTag:
                    run_id=d.get('run_id', None),
                    run_uuid=d.get('run_uuid', None),
                    value=d.get('value', None))
+
+
+@dataclass
+class SetTagResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the SetTagResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> SetTagResponse:
+        """Deserializes the SetTagResponse from a dictionary."""
+        return cls()
 
 
 class Stage(Enum):
@@ -3295,6 +3589,20 @@ class UpdateExperiment:
 
 
 @dataclass
+class UpdateExperimentResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateExperimentResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateExperimentResponse:
+        """Deserializes the UpdateExperimentResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class UpdateModelRequest:
     name: str
     """Registered model unique name identifier."""
@@ -3313,6 +3621,20 @@ class UpdateModelRequest:
     def from_dict(cls, d: Dict[str, any]) -> UpdateModelRequest:
         """Deserializes the UpdateModelRequest from a dictionary."""
         return cls(description=d.get('description', None), name=d.get('name', None))
+
+
+@dataclass
+class UpdateModelResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateModelResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateModelResponse:
+        """Deserializes the UpdateModelResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -3340,6 +3662,20 @@ class UpdateModelVersionRequest:
         return cls(description=d.get('description', None),
                    name=d.get('name', None),
                    version=d.get('version', None))
+
+
+@dataclass
+class UpdateModelVersionResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateModelVersionResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateModelVersionResponse:
+        """Deserializes the UpdateModelVersionResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -3473,6 +3809,20 @@ class UpdateRunStatus(Enum):
     KILLED = 'KILLED'
     RUNNING = 'RUNNING'
     SCHEDULED = 'SCHEDULED'
+
+
+@dataclass
+class UpdateWebhookResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateWebhookResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateWebhookResponse:
+        """Deserializes the UpdateWebhookResponse from a dictionary."""
+        return cls()
 
 
 class ExperimentsAPI:

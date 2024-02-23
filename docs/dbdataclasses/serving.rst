@@ -97,6 +97,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: DeleteResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: DeployAppRequest
    :members:
    :undoc-members:
@@ -176,6 +180,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "READY"
 
 .. autoclass:: EndpointTag
+   :members:
+   :undoc-members:
+
+.. autoclass:: ExportMetricsResponse
    :members:
    :undoc-members:
 

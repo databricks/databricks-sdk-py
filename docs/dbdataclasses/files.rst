@@ -8,11 +8,23 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: AddBlockResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: Close
    :members:
    :undoc-members:
 
+.. autoclass:: CloseResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: Create
+   :members:
+   :undoc-members:
+
+.. autoclass:: CreateDirectoryResponse
    :members:
    :undoc-members:
 
@@ -21,6 +33,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: Delete
+   :members:
+   :undoc-members:
+
+.. autoclass:: DeleteDirectoryResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: DeleteResponse
    :members:
    :undoc-members:
 
@@ -33,6 +53,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: FileInfo
+   :members:
+   :undoc-members:
+
+.. autoclass:: GetDirectoryMetadataResponse
    :members:
    :undoc-members:
 
@@ -52,7 +76,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: MkDirsResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: Move
+   :members:
+   :undoc-members:
+
+.. autoclass:: MoveResponse
    :members:
    :undoc-members:
 
@@ -60,6 +92,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: PutResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: ReadResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: UploadResponse
    :members:
    :undoc-members:

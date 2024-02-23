@@ -16,7 +16,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: CancelAllRunsResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: CancelRun
+   :members:
+   :undoc-members:
+
+.. autoclass:: CancelRunResponse
    :members:
    :undoc-members:
 
@@ -102,7 +110,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: DeleteResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: DeleteRun
+   :members:
+   :undoc-members:
+
+.. autoclass:: DeleteRunResponse
    :members:
    :undoc-members:
 
@@ -389,6 +405,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ResetJob
+   :members:
+   :undoc-members:
+
+.. autoclass:: ResetResponse
    :members:
    :undoc-members:
 
@@ -758,6 +778,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "TABLE"
 
 .. autoclass:: UpdateJob
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateResponse
    :members:
    :undoc-members:
 

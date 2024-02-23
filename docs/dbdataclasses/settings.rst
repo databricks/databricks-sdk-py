@@ -4,6 +4,113 @@ Settings
 These dataclasses are used in the SDK to represent API requests and responses for services in the ``databricks.sdk.service.settings`` module.
 
 .. py:currentmodule:: databricks.sdk.service.settings
+.. autoclass:: AutomaticClusterUpdateSetting
+   :members:
+   :undoc-members:
+
+.. autoclass:: ClusterAutoRestartMessage
+   :members:
+   :undoc-members:
+
+.. autoclass:: ClusterAutoRestartMessageEnablementDetails
+   :members:
+   :undoc-members:
+
+.. autoclass:: ClusterAutoRestartMessageMaintenanceWindow
+   :members:
+   :undoc-members:
+
+.. py:class:: ClusterAutoRestartMessageMaintenanceWindowDayOfWeek
+
+   .. py:attribute:: DAY_OF_WEEK_UNSPECIFIED
+      :value: "DAY_OF_WEEK_UNSPECIFIED"
+
+   .. py:attribute:: FRIDAY
+      :value: "FRIDAY"
+
+   .. py:attribute:: MONDAY
+      :value: "MONDAY"
+
+   .. py:attribute:: SATURDAY
+      :value: "SATURDAY"
+
+   .. py:attribute:: SUNDAY
+      :value: "SUNDAY"
+
+   .. py:attribute:: THURSDAY
+      :value: "THURSDAY"
+
+   .. py:attribute:: TUESDAY
+      :value: "TUESDAY"
+
+   .. py:attribute:: WEDNESDAY
+      :value: "WEDNESDAY"
+
+.. autoclass:: ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule
+   :members:
+   :undoc-members:
+
+.. py:class:: ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency
+
+   .. py:attribute:: EVERY_WEEK
+      :value: "EVERY_WEEK"
+
+   .. py:attribute:: FIRST_AND_THIRD_OF_MONTH
+      :value: "FIRST_AND_THIRD_OF_MONTH"
+
+   .. py:attribute:: FIRST_OF_MONTH
+      :value: "FIRST_OF_MONTH"
+
+   .. py:attribute:: FOURTH_OF_MONTH
+      :value: "FOURTH_OF_MONTH"
+
+   .. py:attribute:: SECOND_AND_FOURTH_OF_MONTH
+      :value: "SECOND_AND_FOURTH_OF_MONTH"
+
+   .. py:attribute:: SECOND_OF_MONTH
+      :value: "SECOND_OF_MONTH"
+
+   .. py:attribute:: THIRD_OF_MONTH
+      :value: "THIRD_OF_MONTH"
+
+   .. py:attribute:: WEEK_DAY_FREQUENCY_UNSPECIFIED
+      :value: "WEEK_DAY_FREQUENCY_UNSPECIFIED"
+
+.. autoclass:: ClusterAutoRestartMessageMaintenanceWindowWindowStartTime
+   :members:
+   :undoc-members:
+
+.. py:class:: ComplianceStandard
+
+   Compliance stardard for SHIELD customers
+
+   .. py:attribute:: COMPLIANCE_STANDARD_UNSPECIFIED
+      :value: "COMPLIANCE_STANDARD_UNSPECIFIED"
+
+   .. py:attribute:: FEDRAMP_HIGH
+      :value: "FEDRAMP_HIGH"
+
+   .. py:attribute:: FEDRAMP_IL5
+      :value: "FEDRAMP_IL5"
+
+   .. py:attribute:: FEDRAMP_MODERATE
+      :value: "FEDRAMP_MODERATE"
+
+   .. py:attribute:: HIPAA
+      :value: "HIPAA"
+
+   .. py:attribute:: IRAP_PROTECTED
+      :value: "IRAP_PROTECTED"
+
+   .. py:attribute:: ITAR_EAR
+      :value: "ITAR_EAR"
+
+   .. py:attribute:: NONE
+      :value: "NONE"
+
+   .. py:attribute:: PCI_DSS
+      :value: "PCI_DSS"
+
 .. autoclass:: CreateIpAccessList
    :members:
    :undoc-members:
@@ -52,6 +159,22 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: CspEnablement
+   :members:
+   :undoc-members:
+
+.. autoclass:: CspEnablementAccount
+   :members:
+   :undoc-members:
+
+.. autoclass:: CspEnablementAccountSetting
+   :members:
+   :undoc-members:
+
+.. autoclass:: CspEnablementSetting
+   :members:
+   :undoc-members:
+
 .. autoclass:: DefaultNamespaceSetting
    :members:
    :undoc-members:
@@ -60,11 +183,35 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: DeleteNetworkConnectivityConfigurationResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: DeletePersonalComputeSettingResponse
    :members:
    :undoc-members:
 
+.. autoclass:: DeleteResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: DeleteRestrictWorkspaceAdminsSettingResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: EsmEnablement
+   :members:
+   :undoc-members:
+
+.. autoclass:: EsmEnablementAccount
+   :members:
+   :undoc-members:
+
+.. autoclass:: EsmEnablementAccountSetting
+   :members:
+   :undoc-members:
+
+.. autoclass:: EsmEnablementSetting
    :members:
    :undoc-members:
 
@@ -225,6 +372,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ReplaceResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: RestrictWorkspaceAdminsMessage
    :members:
    :undoc-members:
@@ -245,6 +396,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: RevokeTokenRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: RevokeTokenResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: SetStatusResponse
    :members:
    :undoc-members:
 
@@ -294,7 +453,27 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: AZURE_ACTIVE_DIRECTORY_TOKEN
       :value: "AZURE_ACTIVE_DIRECTORY_TOKEN"
 
+.. autoclass:: UpdateAutomaticClusterUpdateSettingRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateCspEnablementAccountSettingRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateCspEnablementSettingRequest
+   :members:
+   :undoc-members:
+
 .. autoclass:: UpdateDefaultNamespaceSettingRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateEsmEnablementAccountSettingRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateEsmEnablementSettingRequest
    :members:
    :undoc-members:
 
@@ -303,6 +482,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: UpdatePersonalComputeSettingRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateResponse
    :members:
    :undoc-members:
 

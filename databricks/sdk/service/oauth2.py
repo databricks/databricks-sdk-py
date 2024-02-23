@@ -161,6 +161,48 @@ class CreateServicePrincipalSecretResponse:
 
 
 @dataclass
+class DeleteCustomAppIntegrationOutput:
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteCustomAppIntegrationOutput into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteCustomAppIntegrationOutput:
+        """Deserializes the DeleteCustomAppIntegrationOutput from a dictionary."""
+        return cls()
+
+
+@dataclass
+class DeletePublishedAppIntegrationOutput:
+
+    def as_dict(self) -> dict:
+        """Serializes the DeletePublishedAppIntegrationOutput into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeletePublishedAppIntegrationOutput:
+        """Deserializes the DeletePublishedAppIntegrationOutput from a dictionary."""
+        return cls()
+
+
+@dataclass
+class DeleteResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteResponse:
+        """Deserializes the DeleteResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class GetCustomAppIntegrationOutput:
     client_id: Optional[str] = None
     """oauth client id of the custom oauth app"""
@@ -446,6 +488,20 @@ class UpdateCustomAppIntegration:
 
 
 @dataclass
+class UpdateCustomAppIntegrationOutput:
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateCustomAppIntegrationOutput into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateCustomAppIntegrationOutput:
+        """Deserializes the UpdateCustomAppIntegrationOutput from a dictionary."""
+        return cls()
+
+
+@dataclass
 class UpdatePublishedAppIntegration:
     integration_id: Optional[str] = None
     """The oauth app integration ID."""
@@ -465,6 +521,20 @@ class UpdatePublishedAppIntegration:
         """Deserializes the UpdatePublishedAppIntegration from a dictionary."""
         return cls(integration_id=d.get('integration_id', None),
                    token_access_policy=_from_dict(d, 'token_access_policy', TokenAccessPolicy))
+
+
+@dataclass
+class UpdatePublishedAppIntegrationOutput:
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdatePublishedAppIntegrationOutput into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdatePublishedAppIntegrationOutput:
+        """Deserializes the UpdatePublishedAppIntegrationOutput from a dictionary."""
+        return cls()
 
 
 class CustomAppIntegrationAPI:

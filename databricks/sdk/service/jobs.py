@@ -262,6 +262,20 @@ class CancelAllRuns:
 
 
 @dataclass
+class CancelAllRunsResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the CancelAllRunsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> CancelAllRunsResponse:
+        """Deserializes the CancelAllRunsResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class CancelRun:
     run_id: int
     """This field is required."""
@@ -276,6 +290,20 @@ class CancelRun:
     def from_dict(cls, d: Dict[str, any]) -> CancelRun:
         """Deserializes the CancelRun from a dictionary."""
         return cls(run_id=d.get('run_id', None))
+
+
+@dataclass
+class CancelRunResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the CancelRunResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> CancelRunResponse:
+        """Deserializes the CancelRunResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -745,6 +773,20 @@ class DeleteJob:
 
 
 @dataclass
+class DeleteResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteResponse:
+        """Deserializes the DeleteResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class DeleteRun:
     run_id: int
     """The canonical identifier of the run for which to retrieve the metadata."""
@@ -759,6 +801,20 @@ class DeleteRun:
     def from_dict(cls, d: Dict[str, any]) -> DeleteRun:
         """Deserializes the DeleteRun from a dictionary."""
         return cls(run_id=d.get('run_id', None))
+
+
+@dataclass
+class DeleteRunResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteRunResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteRunResponse:
+        """Deserializes the DeleteRunResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -2246,6 +2302,20 @@ class ResetJob:
     def from_dict(cls, d: Dict[str, any]) -> ResetJob:
         """Deserializes the ResetJob from a dictionary."""
         return cls(job_id=d.get('job_id', None), new_settings=_from_dict(d, 'new_settings', JobSettings))
+
+
+@dataclass
+class ResetResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the ResetResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ResetResponse:
+        """Deserializes the ResetResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -4577,6 +4647,20 @@ class UpdateJob:
 
 
 @dataclass
+class UpdateResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateResponse:
+        """Deserializes the UpdateResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class ViewItem:
     content: Optional[str] = None
     """Content of the view."""
@@ -4783,8 +4867,10 @@ class JobsAPI:
         if run_id is not None: body['run_id'] = run_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        self._api.do('POST', '/api/2.1/jobs/runs/cancel', body=body, headers=headers)
-        return Wait(self.wait_get_run_job_terminated_or_skipped, run_id=run_id)
+        op_response = self._api.do('POST', '/api/2.1/jobs/runs/cancel', body=body, headers=headers)
+        return Wait(self.wait_get_run_job_terminated_or_skipped,
+                    response=CancelRunResponse.from_dict(op_response),
+                    run_id=run_id)
 
     def cancel_run_and_wait(self, run_id: int, timeout=timedelta(minutes=20)) -> Run:
         return self.cancel_run(run_id=run_id).result(timeout=timeout)

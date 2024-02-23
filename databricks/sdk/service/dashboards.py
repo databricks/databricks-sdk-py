@@ -39,6 +39,20 @@ class PublishRequest:
                    warehouse_id=d.get('warehouse_id', None))
 
 
+@dataclass
+class PublishResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the PublishResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> PublishResponse:
+        """Deserializes the PublishResponse from a dictionary."""
+        return cls()
+
+
 class LakeviewAPI:
     """These APIs provide specific management operations for Lakeview dashboards. Generic resource management can
     be done with Workspace API (import, export, get-status, list, delete)."""

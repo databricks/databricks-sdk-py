@@ -50,6 +50,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: CancelExecutionResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: Channel
    :members:
    :undoc-members:
@@ -189,6 +193,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: DeleteResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: DeleteWarehouseResponse
+   :members:
+   :undoc-members:
+
 .. py:class:: Disposition
 
    The fetch disposition provides two modes of fetching results: `INLINE` and `EXTERNAL_LINKS`.
@@ -224,6 +236,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: TYPE_UNSPECIFIED
       :value: "TYPE_UNSPECIFIED"
+
+.. autoclass:: EditWarehouseResponse
+   :members:
+   :undoc-members:
 
 .. autoclass:: EndpointConfPair
    :members:
@@ -596,6 +612,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: RestoreResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: ResultData
    :members:
    :undoc-members:
@@ -687,6 +707,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: PASSTHROUGH
       :value: "PASSTHROUGH"
 
+.. autoclass:: SetWorkspaceWarehouseConfigResponse
+   :members:
+   :undoc-members:
+
 .. py:class:: SpotInstancePolicy
 
    Configurations whether the warehouse should use spot instances.
@@ -699,6 +723,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: RELIABILITY_OPTIMIZED
       :value: "RELIABILITY_OPTIMIZED"
+
+.. autoclass:: StartWarehouseResponse
+   :members:
+   :undoc-members:
 
 .. py:class:: State
 
@@ -767,6 +795,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: STATUS_UNSPECIFIED
       :value: "STATUS_UNSPECIFIED"
+
+.. autoclass:: StopWarehouseResponse
+   :members:
+   :undoc-members:
 
 .. autoclass:: Success
    :members:
@@ -1043,6 +1075,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: TransferOwnershipObjectId
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateResponse
    :members:
    :undoc-members:
 

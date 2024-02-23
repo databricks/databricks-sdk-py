@@ -324,7 +324,7 @@ class WorkspaceClient:
 
     @property
     def files(self) -> FilesAPI:
-        """The Files API allows you to read, write, list, and delete files and directories."""
+        """The Files API is a standard HTTP API that allows you to read, write, list, and delete files and directories by referring to their URI."""
         return self._files
 
     @property

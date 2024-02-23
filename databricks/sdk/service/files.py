@@ -35,6 +35,20 @@ class AddBlock:
 
 
 @dataclass
+class AddBlockResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the AddBlockResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> AddBlockResponse:
+        """Deserializes the AddBlockResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class Close:
     handle: int
     """The handle on an open stream."""
@@ -49,6 +63,20 @@ class Close:
     def from_dict(cls, d: Dict[str, any]) -> Close:
         """Deserializes the Close from a dictionary."""
         return cls(handle=d.get('handle', None))
+
+
+@dataclass
+class CloseResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the CloseResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> CloseResponse:
+        """Deserializes the CloseResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -70,6 +98,20 @@ class Create:
     def from_dict(cls, d: Dict[str, any]) -> Create:
         """Deserializes the Create from a dictionary."""
         return cls(overwrite=d.get('overwrite', None), path=d.get('path', None))
+
+
+@dataclass
+class CreateDirectoryResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the CreateDirectoryResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> CreateDirectoryResponse:
+        """Deserializes the CreateDirectoryResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -110,6 +152,34 @@ class Delete:
     def from_dict(cls, d: Dict[str, any]) -> Delete:
         """Deserializes the Delete from a dictionary."""
         return cls(path=d.get('path', None), recursive=d.get('recursive', None))
+
+
+@dataclass
+class DeleteDirectoryResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteDirectoryResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteDirectoryResponse:
+        """Deserializes the DeleteDirectoryResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
+class DeleteResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteResponse:
+        """Deserializes the DeleteResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -210,6 +280,20 @@ class FileInfo:
 
 
 @dataclass
+class GetDirectoryMetadataResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the GetDirectoryMetadataResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> GetDirectoryMetadataResponse:
+        """Deserializes the GetDirectoryMetadataResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class GetMetadataResponse:
     content_length: Optional[int] = None
 
@@ -290,6 +374,20 @@ class MkDirs:
 
 
 @dataclass
+class MkDirsResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the MkDirsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> MkDirsResponse:
+        """Deserializes the MkDirsResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class Move:
     source_path: str
     """The source path of the file or directory. The path should be the absolute DBFS path."""
@@ -308,6 +406,20 @@ class Move:
     def from_dict(cls, d: Dict[str, any]) -> Move:
         """Deserializes the Move from a dictionary."""
         return cls(destination_path=d.get('destination_path', None), source_path=d.get('source_path', None))
+
+
+@dataclass
+class MoveResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the MoveResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> MoveResponse:
+        """Deserializes the MoveResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -338,6 +450,20 @@ class Put:
 
 
 @dataclass
+class PutResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the PutResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> PutResponse:
+        """Deserializes the PutResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class ReadResponse:
     bytes_read: Optional[int] = None
     """The number of bytes read (could be less than ``length`` if we hit end of file). This refers to
@@ -357,6 +483,20 @@ class ReadResponse:
     def from_dict(cls, d: Dict[str, any]) -> ReadResponse:
         """Deserializes the ReadResponse from a dictionary."""
         return cls(bytes_read=d.get('bytes_read', None), data=d.get('data', None))
+
+
+@dataclass
+class UploadResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the UploadResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UploadResponse:
+        """Deserializes the UploadResponse from a dictionary."""
+        return cls()
 
 
 class DbfsAPI:
@@ -616,18 +756,20 @@ class DbfsAPI:
 
 
 class FilesAPI:
-    """The Files API allows you to read, write, list, and delete files and directories. We support Unity Catalog
-    volumes with paths starting with "/Volumes/<catalog>/<schema>/<volume>".
+    """The Files API is a standard HTTP API that allows you to read, write, list, and delete files and
+    directories by referring to their URI. The API makes working with file content as raw bytes easier and
+    more efficient.
     
-    The Files API is designed like a standard HTTP API, rather than as a JSON RPC API. This is intended to
-    make it easier and more efficient to work with file contents as raw bytes.
+    The API supports [Unity Catalog volumes], where files and directories to operate on are specified using
+    their volume URI path, which follows the format
+    /Volumes/&lt;catalog_name&gt;/&lt;schema_name&gt;/&lt;volume_name&gt;/&lt;path_to_file&gt;.
     
-    Because the Files API is a standard HTTP API, the URI path is used to specify the file or directory to
-    operate on. The path is always absolute.
+    The Files API has two distinct endpoints, one for working with files (`/fs/files`) and another one for
+    working with directories (`/fs/directories`). Both endpoints, use the standard HTTP methods GET, HEAD,
+    PUT, and DELETE to manage files and directories specified using their URI path. The path is always
+    absolute.
     
-    The Files API has separate endpoints for working with files, `/fs/files`, and working with directories,
-    `/fs/directories`. The standard HTTP methods `GET`, `HEAD`, `PUT`, and `DELETE` work as expected on these
-    endpoints."""
+    [Unity Catalog volumes]: https://docs.databricks.com/en/connect/unity-catalog/volumes.html"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -637,7 +779,7 @@ class FilesAPI:
         
         Creates an empty directory. If necessary, also creates any parent directories of the new, empty
         directory (like the shell command `mkdir -p`). If called on an existing directory, returns a success
-        response; this method is idempotent.
+        response; this method is idempotent (it will succeed if the directory already exists).
         
         :param directory_path: str
           The absolute path of a directory.

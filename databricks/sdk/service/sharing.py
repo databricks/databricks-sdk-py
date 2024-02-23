@@ -545,6 +545,34 @@ class CreateShare:
 
 
 @dataclass
+class DeleteResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteResponse:
+        """Deserializes the DeleteResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
+class GetActivationUrlInfoResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the GetActivationUrlInfoResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> GetActivationUrlInfoResponse:
+        """Deserializes the GetActivationUrlInfoResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class GetRecipientSharePermissionsResponse:
     permissions_out: Optional[List[ShareToPrivilegeAssignment]] = None
     """An array of data share permissions for a recipient."""
@@ -1405,6 +1433,20 @@ class UpdateCleanRoom:
 
 
 @dataclass
+class UpdatePermissionsResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdatePermissionsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdatePermissionsResponse:
+        """Deserializes the UpdatePermissionsResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class UpdateProvider:
     comment: Optional[str] = None
     """Description about the provider."""
@@ -1483,6 +1525,20 @@ class UpdateRecipient:
                    new_name=d.get('new_name', None),
                    owner=d.get('owner', None),
                    properties_kvpairs=_from_dict(d, 'properties_kvpairs', SecurablePropertiesKvPairs))
+
+
+@dataclass
+class UpdateResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateResponse:
+        """Deserializes the UpdateResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
