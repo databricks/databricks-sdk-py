@@ -28,12 +28,12 @@ def setup_dbconnect_test(request, env_or_skip, restorable_env):
     
     import sys
     import subprocess
-    lib = f"databricks-dbconnect=={DBCONNECT_DBR_CLIENT[dbr]}"
-    subprocess.check_call([sys.executable, "-m", "pip", "install", lib])
+    lib = f"databricks-connect=={DBCONNECT_DBR_CLIENT[dbr]}"
+    subprocess.check_call([sys.executable, "-m", "pip", "install", lib], stdout=sys.stdout, stderr=sys.stderr)
 
     yield
 
-    subprocess.check_call([sys.executable, "-m", "pip", "uninstall", "-y", lib])
+    subprocess.check_call([sys.executable, "-m", "pip", "uninstall", "-y", lib], stdout=sys.stdout, stderr=sys.stderr)
     
 
 def test_dbconnect_initialisation(w, setup_dbconnect_test):
