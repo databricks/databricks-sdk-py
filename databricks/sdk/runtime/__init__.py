@@ -154,7 +154,7 @@ except ImportError:
             return IPDisplay.display_html(html, raw=True) # type: ignore
 
     except ImportError as e:
-        logging.debug(f"Failed to initialise display globals: {e}")
+        logging.debug(f"Failed to initialise globals 'display' and 'displayHTML', continuing. Cause: {e}")
 
     # We want to propagate the error in initialising dbutils because this is a core
     # functionality of the sdk
