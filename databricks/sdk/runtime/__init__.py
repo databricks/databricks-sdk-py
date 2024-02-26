@@ -112,7 +112,7 @@ except ImportError:
     except Exception as e:
         # We are ignoring all failures here because user might want to initialize
         # spark session themselves and we don't want to interfere with that
-        logging.debug(f"Failed to initialize spark session: {e}")
+        logging.debug(f"Failed to initialize globals 'spark' and 'sc', continuing. Cause: {e}")
 
     try:
         def display(input=None, *args, **kwargs) -> None: # type: ignore
@@ -156,7 +156,7 @@ except ImportError:
             return IPDisplay.display_html(html, raw=True) # type: ignore
 
     except ImportError as e:
-        logging.debug(f"Failed to initialise display globals: {e}")
+        logging.debug(f"Failed to initialise globals 'display' and 'displayHTML', continuing. Cause: {e}")
 
     # We want to propagate the error in initialising dbutils because this is a core
     # functionality of the sdk
