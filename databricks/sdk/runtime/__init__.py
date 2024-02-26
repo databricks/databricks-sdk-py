@@ -159,10 +159,9 @@ except ImportError:
         from IPython import display as IPDisplay
         return IPDisplay.display_html(html, raw=True) # type: ignore
 
-
     # We want to propagate the error in initialising dbutils because this is a core
     # functionality of the sdk
-    from typing import cast, Optional
+    from typing import Optional, cast
 
     from databricks.sdk.dbutils import RemoteDbUtils
 
@@ -177,5 +176,6 @@ except ImportError:
     # which has ipywidget support.
     def getArgument(name: str, defaultValue: Optional[str] = None):
         return dbutils.widgets.getArgument(name, defaultValue)
+
 
 __all__ = dbruntime_objects
