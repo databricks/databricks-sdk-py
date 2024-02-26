@@ -93,7 +93,6 @@ except ImportError:
         # We expect this to fail and only do this for providing types
         from pyspark.sql.context import SQLContext
         sqlContext: SQLContext = None # type: ignore
-        sql = sqlContext.sql
         table = sqlContext.table
     except Exception:
         pass
@@ -108,6 +107,7 @@ except ImportError:
     try:
         from databricks.connect import DatabricksSession  # type: ignore
         spark = DatabricksSession.builder.getOrCreate()
+        sql = spark.sql # type: ignore
         sc = spark.sparkContext
     except Exception as e:
         # We are ignoring all failures here because user might want to initialize
