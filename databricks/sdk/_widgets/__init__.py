@@ -13,11 +13,11 @@ class WidgetUtils(ABC):
     def _get(self, name: str) -> str:
         pass
 
-    def getArgument(self, name: str, default_value: typing.Optional[str] = None):
+    def getArgument(self, name: str, defaultValue: typing.Optional[str] = None):
         try:
             return self.get(name)
         except Exception:
-            return default_value
+            return defaultValue
 
     def remove(self, name: str):
         self._remove(name)

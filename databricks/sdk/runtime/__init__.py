@@ -115,8 +115,6 @@ except ImportError:
         logging.debug(f"Failed to initialize spark session: {e}")
 
     try:
-        from IPython import display as IPDisplay
-
         def display(input=None, *args, **kwargs) -> None: # type: ignore
             """
             Display plots or data.
@@ -137,6 +135,8 @@ except ImportError:
                             - display(DataFrame, streamName='optional', trigger=optional interval like '1 second',
                                                             checkpointLocation='optional')
             """
+            # Import inside the function so that imports are only triggered on usage.
+            from IPython import display as IPDisplay
             return IPDisplay.display(input, *args, **kwargs) # type: ignore
 
         def displayHTML(html) -> None: # type: ignore
@@ -151,6 +151,8 @@ except ImportError:
             IPython.display.HTML
             IPython.display.display_html
             """
+            # Import inside the function so that imports are only triggered on usage.
+            from IPython import display as IPDisplay
             return IPDisplay.display_html(html, raw=True) # type: ignore
 
     except ImportError as e:
@@ -158,7 +160,7 @@ except ImportError:
 
     # We want to propagate the error in initialising dbutils because this is a core
     # functionality of the sdk
-    from typing import cast
+    from typing import cast, Optional
 
     from databricks.sdk.dbutils import RemoteDbUtils
 
@@ -167,6 +169,11 @@ except ImportError:
 
     dbutils = RemoteDbUtils()
     dbutils = cast(dbutils_type, dbutils)
-    getArgument = dbutils.widgets.getArgument
+
+    # We do this to prevent importing widgets implementation prematurely
+    # The widget import should prompt users to use the implementation
+    # which has ipywidget support.
+    def getArgument(name: str, defaultValue: Optional[str] = None):
+        return dbutils.widgets.getArgument(name, defaultValue)
 
 __all__ = dbruntime_objects
