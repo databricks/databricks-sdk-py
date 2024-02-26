@@ -1,5 +1,4 @@
 from contextlib import contextmanager
-
 import pytest
 
 DBCONNECT_DBR_CLIENT = {
@@ -29,18 +28,20 @@ def setup_dbconnect_test(request, env_or_skip, restorable_env):
     import sys
     import subprocess
     lib = f"databricks-connect=={DBCONNECT_DBR_CLIENT[dbr]}"
-    subprocess.check_call([sys.executable, "-m", "pip", "install", lib], stdout=sys.stdout, stderr=sys.stderr)
+    subprocess.check_call([sys.executable, "-m", "pip", "install", lib])
 
     yield
 
-    subprocess.check_call([sys.executable, "-m", "pip", "uninstall", "-y", lib], stdout=sys.stdout, stderr=sys.stderr)
+    subprocess.check_call([sys.executable, "-m", "pip", "uninstall", "-y", "databricks-connect"])
     
 
+@pytest.mark.xdist_group(name="databricks-connect")
 def test_dbconnect_initialisation(w, setup_dbconnect_test):
     from databricks.connect import DatabricksSession
     spark = DatabricksSession.builder.getOrCreate()
     assert spark.sql("SELECT 1").collect()[0][0] == 1
 
+@pytest.mark.xdist_group(name="databricks-connect")
 def test_dbconnect_runtime_import(w, setup_dbconnect_test):
     from databricks.sdk.runtime import spark
     assert spark.sql("SELECT 1").collect()[0][0] == 1
