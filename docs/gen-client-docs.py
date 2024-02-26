@@ -65,7 +65,7 @@ class PropertyDoc:
         if self.tpe is not None:
             out.append(f'        :type: {self.tpe}')
         if self.doc is not None:
-            # This is a class doc, which comes with 4 indentation spaces. 
+            # This is a class doc, which comes with 4 indentation spaces.
             # Here we are using the doc as property doc, which needs 8 indentation spaces.
             formatted_doc = re.sub(r'\n', '\n    ', self.doc)
             out.append(f'\n        {formatted_doc}')
@@ -379,7 +379,7 @@ Dataclasses
 
 .. toctree::
    :maxdepth: 1
-   
+
    {all}''')
 
     def _get_tag_name(self, class_name, service_name) -> Tag:
@@ -451,7 +451,7 @@ Dataclasses
 if __name__ == '__main__':
 
     @credentials_provider('noop', [])
-    def noop_credentials(_: any):
+    def noop_credentials(_: Any):
         return lambda: {}
 
     gen = Generator()

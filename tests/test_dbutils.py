@@ -1,3 +1,5 @@
+from typing import Any
+
 import pytest as pytest
 
 from .conftest import raises
@@ -112,7 +114,7 @@ def dbutils_proxy(mocker):
     context_create = mocker.patch('databricks.sdk.service.compute.CommandExecutionAPI.create',
                                   return_value=Wait(lambda **kwargs: Created('y')))
 
-    def inner(results_data: any, expect_command: str):
+    def inner(results_data: Any, expect_command: str):
         import json
         command_execute = mocker.patch(
             'databricks.sdk.service.compute.CommandExecutionAPI.execute',

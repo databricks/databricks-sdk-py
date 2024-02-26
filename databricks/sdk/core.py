@@ -3,7 +3,7 @@ import urllib.parse
 from datetime import timedelta
 from json import JSONDecodeError
 from types import TracebackType
-from typing import Any, BinaryIO, Iterator, Type
+from typing import Any, BinaryIO, Iterator, Optional, Type
 
 from requests.adapters import HTTPAdapter
 
@@ -23,7 +23,7 @@ class ApiClient:
     _cfg: Config
     _RETRY_AFTER_DEFAULT: int = 1
 
-    def __init__(self, cfg: Config = None):
+    def __init__(self, cfg: Optional[Config] = None):
 
         if cfg is None:
             cfg = Config()
@@ -111,13 +111,13 @@ class ApiClient:
     def do(self,
            method: str,
            path: str,
-           query: dict = None,
-           headers: dict = None,
-           body: dict = None,
+           query: Optional[dict] = None,
+           headers: Optional[dict] = None,
+           body: Optional[dict] = None,
            raw: bool = False,
            files=None,
            data=None,
-           response_headers: List[str] = None) -> Union[dict, BinaryIO]:
+           response_headers: Optional[List[str]] = None) -> Union[dict, BinaryIO]:
         # Remove extra `/` from path for Files API
         # Once we've fixed the OpenAPI spec, we can remove this
         path = re.sub('^/api/2.0/fs/files//', '/api/2.0/fs/files/', path)
@@ -214,9 +214,9 @@ class ApiClient:
     def _perform(self,
                  method: str,
                  path: str,
-                 query: dict = None,
-                 headers: dict = None,
-                 body: dict = None,
+                 query: Optional[dict] = None,
+                 headers: Optional[dict] = None,
+                 body: Optional[dict] = None,
                  raw: bool = False,
                  files=None,
                  data=None):
@@ -291,13 +291,13 @@ class ApiClient:
         logger.debug("\n".join(sb))
 
     @staticmethod
-    def _mask(m: Dict[str, any]):
+    def _mask(m: Dict[str, Any]):
         for k in m:
             if k in {'bytes_value', 'string_value', 'token_value', 'value', 'content'}:
                 m[k] = "**REDACTED**"
 
     @staticmethod
-    def _map_keys(m: Dict[str, any]) -> List[str]:
+    def _map_keys(m: Dict[str, Any]) -> List[str]:
         keys = list(m.keys())
         keys.sort()
         return keys
@@ -329,7 +329,7 @@ class ApiClient:
             budget -= len(str(raw))
         return out
 
-    def _recursive_marshal(self, v: any, budget: int) -> any:
+    def _recursive_marshal(self, v: Any, budget: int) -> Any:
         if isinstance(v, dict):
             return self._recursive_marshal_dict(v, budget)
         elif isinstance(v, list):
@@ -358,8 +358,8 @@ class ApiClient:
 class StreamingResponse(BinaryIO):
     _response: requests.Response
     _buffer: bytes
-    _content: Union[Iterator[bytes], None]
-    _chunk_size: Union[int, None]
+    _content: Optional[Iterator[bytes]]
+    _chunk_size: Optional[int]
     _closed: bool = False
 
     def fileno(self) -> int:
@@ -368,7 +368,7 @@ class StreamingResponse(BinaryIO):
     def flush(self) -> int:
         pass
 
-    def __init__(self, response: requests.Response, chunk_size: Union[int, None] = None):
+    def __init__(self, response: requests.Response, chunk_size: Optional[int] = None):
         self._response = response
         self._buffer = b''
         self._content = None

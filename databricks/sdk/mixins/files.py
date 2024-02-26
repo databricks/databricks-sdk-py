@@ -6,7 +6,8 @@ import shutil
 import sys
 from abc import ABC, abstractmethod
 from types import TracebackType
-from typing import TYPE_CHECKING, AnyStr, BinaryIO, Iterable, Iterator, Type
+from typing import (TYPE_CHECKING, AnyStr, BinaryIO, Iterable, Iterator,
+                    Optional, Type)
 
 from databricks.sdk.core import DatabricksError
 
@@ -19,8 +20,8 @@ if TYPE_CHECKING:
 class _DbfsIO(BinaryIO):
     MAX_CHUNK_SIZE = 1024 * 1024
 
-    _status: files.FileInfo = None
-    _created: files.CreateResponse = None
+    _status: Optional[files.FileInfo] = None
+    _created: Optional[files.CreateResponse] = None
     _offset = 0
     _closed = False
 

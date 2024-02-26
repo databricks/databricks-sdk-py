@@ -81,9 +81,9 @@ class _FsUtil:
     def mount(self,
               source: str,
               mount_point: str,
-              encryption_type: str = None,
-              owner: str = None,
-              extra_configs: 'typing.Dict[str, str]' = None) -> bool:
+              encryption_type: typing.Optional[str] = None,
+              owner: typing.Optional[str] = None,
+              extra_configs: typing.Optional[typing.Dict[str, str]] = None) -> bool:
         """Mounts the given source directory into DBFS at the given mount point"""
         fs = self._proxy_factory('fs')
         kwargs = {}
@@ -103,9 +103,9 @@ class _FsUtil:
     def updateMount(self,
                     source: str,
                     mount_point: str,
-                    encryption_type: str = None,
-                    owner: str = None,
-                    extra_configs: 'typing.Dict[str, str]' = None) -> bool:
+                    encryption_type: typing.Optional[str] = None,
+                    owner: typing.Optional[str] = None,
+                    extra_configs: typing.Optional[typing.Dict[str, str]] = None) -> bool:
         """ Similar to mount(), but updates an existing mount point (if present) instead of creating a new one """
         fs = self._proxy_factory('fs')
         kwargs = {}
@@ -169,7 +169,11 @@ class _JobsUtil:
     class _TaskValuesUtil:
         """Remote equivalent of task values util"""
 
-        def get(self, taskKey: str, key: str, default: any = None, debugValue: any = None) -> None:
+        def get(self,
+                taskKey: str,
+                key: str,
+                default: typing.Optional[typing.Any] = None,
+                debugValue: typing.Optional[typing.Any] = None) -> None:
             """
             Returns `debugValue` if present, throws an error otherwise as this implementation is always run outside of a job run
             """
@@ -179,7 +183,7 @@ class _JobsUtil:
                 )
             return debugValue
 
-        def set(self, key: str, value: any) -> None:
+        def set(self, key: str, value: typing.Any) -> None:
             """
             Sets a task value on the current task run
             """
@@ -190,7 +194,7 @@ class _JobsUtil:
 
 class RemoteDbUtils:
 
-    def __init__(self, config: 'Config' = None):
+    def __init__(self, config: typing.Optional['Config'] = None):
         self._config = Config() if not config else config
         self._client = ApiClient(self._config)
         self._clusters = compute_ext.ClustersExt(self._client)

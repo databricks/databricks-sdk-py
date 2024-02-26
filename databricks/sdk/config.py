@@ -6,7 +6,7 @@ import pathlib
 import platform
 import sys
 import urllib.parse
-from typing import Dict, Iterable, Optional
+from typing import Any, Dict, Iterable, Optional
 
 import requests
 
@@ -25,10 +25,10 @@ class ConfigAttribute:
     """ Configuration attribute metadata and descriptor protocols. """
 
     # name and transform are discovered from Config.__new__
-    name: str = None
+    name: Optional[str] = None
     transform: type = str
 
-    def __init__(self, env: str = None, auth: str = None, sensitive: bool = False):
+    def __init__(self, env: Optional[str] = None, auth: Optional[str] = None, sensitive: bool = False):
         self.env = env
         self.auth = auth
         self.sensitive = sensitive
@@ -38,7 +38,7 @@ class ConfigAttribute:
             return None
         return cfg._inner.get(self.name, None)
 
-    def __set__(self, cfg: 'Config', value: any):
+    def __set__(self, cfg: 'Config', value: Any):
         cfg._inner[self.name] = self.transform(value)
 
     def __repr__(self) -> str:
@@ -82,10 +82,10 @@ class Config:
 
     def __init__(self,
                  *,
-                 credentials_provider: CredentialsProvider = None,
+                 credentials_provider: Optional[CredentialsProvider] = None,
                  product="unknown",
                  product_version="0.0.0",
-                 clock: Clock = None,
+                 clock: Optional[Clock] = None,
                  **kwargs):
         self._header_factory = None
         self._inner = {}
@@ -295,7 +295,7 @@ class Config:
             buf.append(f'Env: {", ".join(envs_used)}')
         return '. '.join(buf)
 
-    def to_dict(self) -> Dict[str, any]:
+    def to_dict(self) -> Dict[str, Any]:
         return self._inner
 
     @property
@@ -359,7 +359,7 @@ class Config:
         else:
             self.host = f"{o.scheme}://{o.netloc}"
 
-    def _set_inner_config(self, keyword_args: Dict[str, any]):
+    def _set_inner_config(self, keyword_args: Dict[str, Any]):
         for attr in self.attributes():
             if attr.name not in keyword_args:
                 continue

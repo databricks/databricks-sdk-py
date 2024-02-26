@@ -39,7 +39,7 @@ class AccessControlRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AccessControlRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> AccessControlRequest:
         """Deserializes the AccessControlRequest from a dictionary."""
         return cls(group_name=d.get('group_name', None),
                    permission_level=_enum(d, 'permission_level', PermissionLevel),
@@ -76,7 +76,7 @@ class AccessControlResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AccessControlResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> AccessControlResponse:
         """Deserializes the AccessControlResponse from a dictionary."""
         return cls(all_permissions=_repeated_dict(d, 'all_permissions', Permission),
                    display_name=d.get('display_name', None),
@@ -108,7 +108,7 @@ class ComplexValue:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ComplexValue:
+    def from_dict(cls, d: Dict[str, Any]) -> ComplexValue:
         """Deserializes the ComplexValue from a dictionary."""
         return cls(display=d.get('display', None),
                    primary=d.get('primary', None),
@@ -126,7 +126,7 @@ class DeleteResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteResponse:
         """Deserializes the DeleteResponse from a dictionary."""
         return cls()
 
@@ -140,7 +140,7 @@ class DeleteWorkspaceAssignments:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteWorkspaceAssignments:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteWorkspaceAssignments:
         """Deserializes the DeleteWorkspaceAssignments from a dictionary."""
         return cls()
 
@@ -156,7 +156,7 @@ class GetAssignableRolesForResourceResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetAssignableRolesForResourceResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetAssignableRolesForResourceResponse:
         """Deserializes the GetAssignableRolesForResourceResponse from a dictionary."""
         return cls(roles=_repeated_dict(d, 'roles', Role))
 
@@ -173,7 +173,7 @@ class GetPasswordPermissionLevelsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetPasswordPermissionLevelsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetPasswordPermissionLevelsResponse:
         """Deserializes the GetPasswordPermissionLevelsResponse from a dictionary."""
         return cls(permission_levels=_repeated_dict(d, 'permission_levels', PasswordPermissionsDescription))
 
@@ -190,7 +190,7 @@ class GetPermissionLevelsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetPermissionLevelsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetPermissionLevelsResponse:
         """Deserializes the GetPermissionLevelsResponse from a dictionary."""
         return cls(permission_levels=_repeated_dict(d, 'permission_levels', PermissionsDescription))
 
@@ -217,7 +217,7 @@ class GrantRule:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GrantRule:
+    def from_dict(cls, d: Dict[str, Any]) -> GrantRule:
         """Deserializes the GrantRule from a dictionary."""
         return cls(principals=d.get('principals', None), role=d.get('role', None))
 
@@ -230,7 +230,7 @@ class Group:
     entitlements: Optional[List[ComplexValue]] = None
     """Entitlements assigned to the group. See [assigning entitlements] for a full list of supported
     values.
-    
+
     [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements"""
 
     external_id: Optional[str] = None
@@ -266,7 +266,7 @@ class Group:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Group:
+    def from_dict(cls, d: Dict[str, Any]) -> Group:
         """Deserializes the Group from a dictionary."""
         return cls(display_name=d.get('displayName', None),
                    entitlements=_repeated_dict(d, 'entitlements', ComplexValue),
@@ -312,7 +312,7 @@ class ListGroupsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListGroupsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListGroupsResponse:
         """Deserializes the ListGroupsResponse from a dictionary."""
         return cls(items_per_page=d.get('itemsPerPage', None),
                    resources=_repeated_dict(d, 'Resources', Group),
@@ -354,7 +354,7 @@ class ListServicePrincipalResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListServicePrincipalResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListServicePrincipalResponse:
         """Deserializes the ListServicePrincipalResponse from a dictionary."""
         return cls(items_per_page=d.get('itemsPerPage', None),
                    resources=_repeated_dict(d, 'Resources', ServicePrincipal),
@@ -397,7 +397,7 @@ class ListUsersResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListUsersResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListUsersResponse:
         """Deserializes the ListUsersResponse from a dictionary."""
         return cls(items_per_page=d.get('itemsPerPage', None),
                    resources=_repeated_dict(d, 'Resources', User),
@@ -422,7 +422,7 @@ class Name:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Name:
+    def from_dict(cls, d: Dict[str, Any]) -> Name:
         """Deserializes the Name from a dictionary."""
         return cls(family_name=d.get('familyName', None), given_name=d.get('givenName', None))
 
@@ -445,7 +445,7 @@ class ObjectPermissions:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ObjectPermissions:
+    def from_dict(cls, d: Dict[str, Any]) -> ObjectPermissions:
         """Deserializes the ObjectPermissions from a dictionary."""
         return cls(access_control_list=_repeated_dict(d, 'access_control_list', AccessControlResponse),
                    object_id=d.get('object_id', None),
@@ -471,7 +471,7 @@ class PartialUpdate:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PartialUpdate:
+    def from_dict(cls, d: Dict[str, Any]) -> PartialUpdate:
         """Deserializes the PartialUpdate from a dictionary."""
         return cls(id=d.get('id', None),
                    operations=_repeated_dict(d, 'Operations', Patch),
@@ -503,7 +503,7 @@ class PasswordAccessControlRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PasswordAccessControlRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> PasswordAccessControlRequest:
         """Deserializes the PasswordAccessControlRequest from a dictionary."""
         return cls(group_name=d.get('group_name', None),
                    permission_level=_enum(d, 'permission_level', PasswordPermissionLevel),
@@ -540,7 +540,7 @@ class PasswordAccessControlResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PasswordAccessControlResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> PasswordAccessControlResponse:
         """Deserializes the PasswordAccessControlResponse from a dictionary."""
         return cls(all_permissions=_repeated_dict(d, 'all_permissions', PasswordPermission),
                    display_name=d.get('display_name', None),
@@ -567,7 +567,7 @@ class PasswordPermission:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PasswordPermission:
+    def from_dict(cls, d: Dict[str, Any]) -> PasswordPermission:
         """Deserializes the PasswordPermission from a dictionary."""
         return cls(inherited=d.get('inherited', None),
                    inherited_from_object=d.get('inherited_from_object', None),
@@ -598,7 +598,7 @@ class PasswordPermissions:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PasswordPermissions:
+    def from_dict(cls, d: Dict[str, Any]) -> PasswordPermissions:
         """Deserializes the PasswordPermissions from a dictionary."""
         return cls(access_control_list=_repeated_dict(d, 'access_control_list',
                                                       PasswordAccessControlResponse),
@@ -621,7 +621,7 @@ class PasswordPermissionsDescription:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PasswordPermissionsDescription:
+    def from_dict(cls, d: Dict[str, Any]) -> PasswordPermissionsDescription:
         """Deserializes the PasswordPermissionsDescription from a dictionary."""
         return cls(description=d.get('description', None),
                    permission_level=_enum(d, 'permission_level', PasswordPermissionLevel))
@@ -639,7 +639,7 @@ class PasswordPermissionsRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PasswordPermissionsRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> PasswordPermissionsRequest:
         """Deserializes the PasswordPermissionsRequest from a dictionary."""
         return cls(access_control_list=_repeated_dict(d, 'access_control_list', PasswordAccessControlRequest))
 
@@ -664,7 +664,7 @@ class Patch:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Patch:
+    def from_dict(cls, d: Dict[str, Any]) -> Patch:
         """Deserializes the Patch from a dictionary."""
         return cls(op=_enum(d, 'op', PatchOp), path=d.get('path', None), value=d.get('value', None))
 
@@ -686,7 +686,7 @@ class PatchResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PatchResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> PatchResponse:
         """Deserializes the PatchResponse from a dictionary."""
         return cls()
 
@@ -714,7 +714,7 @@ class Permission:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Permission:
+    def from_dict(cls, d: Dict[str, Any]) -> Permission:
         """Deserializes the Permission from a dictionary."""
         return cls(inherited=d.get('inherited', None),
                    inherited_from_object=d.get('inherited_from_object', None),
@@ -741,7 +741,7 @@ class PermissionAssignment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PermissionAssignment:
+    def from_dict(cls, d: Dict[str, Any]) -> PermissionAssignment:
         """Deserializes the PermissionAssignment from a dictionary."""
         return cls(error=d.get('error', None),
                    permissions=_repeated_enum(d, 'permissions', WorkspacePermission),
@@ -761,7 +761,7 @@ class PermissionAssignments:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PermissionAssignments:
+    def from_dict(cls, d: Dict[str, Any]) -> PermissionAssignments:
         """Deserializes the PermissionAssignments from a dictionary."""
         return cls(permission_assignments=_repeated_dict(d, 'permission_assignments', PermissionAssignment))
 
@@ -801,7 +801,7 @@ class PermissionOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PermissionOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> PermissionOutput:
         """Deserializes the PermissionOutput from a dictionary."""
         return cls(description=d.get('description', None),
                    permission_level=_enum(d, 'permission_level', WorkspacePermission))
@@ -822,7 +822,7 @@ class PermissionsDescription:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PermissionsDescription:
+    def from_dict(cls, d: Dict[str, Any]) -> PermissionsDescription:
         """Deserializes the PermissionsDescription from a dictionary."""
         return cls(description=d.get('description', None),
                    permission_level=_enum(d, 'permission_level', PermissionLevel))
@@ -850,7 +850,7 @@ class PermissionsRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PermissionsRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> PermissionsRequest:
         """Deserializes the PermissionsRequest from a dictionary."""
         return cls(access_control_list=_repeated_dict(d, 'access_control_list', AccessControlRequest),
                    request_object_id=d.get('request_object_id', None),
@@ -886,7 +886,7 @@ class PrincipalOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PrincipalOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> PrincipalOutput:
         """Deserializes the PrincipalOutput from a dictionary."""
         return cls(display_name=d.get('display_name', None),
                    group_name=d.get('group_name', None),
@@ -908,7 +908,7 @@ class ResourceMeta:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ResourceMeta:
+    def from_dict(cls, d: Dict[str, Any]) -> ResourceMeta:
         """Deserializes the ResourceMeta from a dictionary."""
         return cls(resource_type=d.get('resourceType', None))
 
@@ -925,7 +925,7 @@ class Role:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Role:
+    def from_dict(cls, d: Dict[str, Any]) -> Role:
         """Deserializes the Role from a dictionary."""
         return cls(name=d.get('name', None))
 
@@ -949,7 +949,7 @@ class RuleSetResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RuleSetResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> RuleSetResponse:
         """Deserializes the RuleSetResponse from a dictionary."""
         return cls(etag=d.get('etag', None),
                    grant_rules=_repeated_dict(d, 'grant_rules', GrantRule),
@@ -976,7 +976,7 @@ class RuleSetUpdateRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RuleSetUpdateRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> RuleSetUpdateRequest:
         """Deserializes the RuleSetUpdateRequest from a dictionary."""
         return cls(etag=d.get('etag', None),
                    grant_rules=_repeated_dict(d, 'grant_rules', GrantRule),
@@ -997,7 +997,7 @@ class ServicePrincipal:
     entitlements: Optional[List[ComplexValue]] = None
     """Entitlements assigned to the service principal. See [assigning entitlements] for a full list of
     supported values.
-    
+
     [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements"""
 
     external_id: Optional[str] = None
@@ -1028,7 +1028,7 @@ class ServicePrincipal:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ServicePrincipal:
+    def from_dict(cls, d: Dict[str, Any]) -> ServicePrincipal:
         """Deserializes the ServicePrincipal from a dictionary."""
         return cls(active=d.get('active', None),
                    application_id=d.get('applicationId', None),
@@ -1055,7 +1055,7 @@ class UpdateResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateResponse:
         """Deserializes the UpdateResponse from a dictionary."""
         return cls()
 
@@ -1075,7 +1075,7 @@ class UpdateRuleSetRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateRuleSetRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateRuleSetRequest:
         """Deserializes the UpdateRuleSetRequest from a dictionary."""
         return cls(name=d.get('name', None), rule_set=_from_dict(d, 'rule_set', RuleSetUpdateRequest))
 
@@ -1100,7 +1100,7 @@ class UpdateWorkspaceAssignments:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateWorkspaceAssignments:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateWorkspaceAssignments:
         """Deserializes the UpdateWorkspaceAssignments from a dictionary."""
         return cls(permissions=_repeated_enum(d, 'permissions', WorkspacePermission),
                    principal_id=d.get('principal_id', None),
@@ -1116,7 +1116,7 @@ class User:
     """String that represents a concatenation of given and family names. For example `John Smith`. This
     field cannot be updated through the Workspace SCIM APIs when [identity federation is enabled].
     Use Account SCIM APIs to update `displayName`.
-    
+
     [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation"""
 
     emails: Optional[List[ComplexValue]] = None
@@ -1125,7 +1125,7 @@ class User:
     entitlements: Optional[List[ComplexValue]] = None
     """Entitlements assigned to the user. See [assigning entitlements] for a full list of supported
     values.
-    
+
     [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements"""
 
     external_id: Optional[str] = None
@@ -1165,7 +1165,7 @@ class User:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> User:
+    def from_dict(cls, d: Dict[str, Any]) -> User:
         """Deserializes the User from a dictionary."""
         return cls(active=d.get('active', None),
                    display_name=d.get('displayName', None),
@@ -1195,7 +1195,7 @@ class WorkspaceAssignmentsUpdated:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> WorkspaceAssignmentsUpdated:
+    def from_dict(cls, d: Dict[str, Any]) -> WorkspaceAssignmentsUpdated:
         """Deserializes the WorkspaceAssignmentsUpdated from a dictionary."""
         return cls()
 
@@ -1219,7 +1219,7 @@ class WorkspacePermissions:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> WorkspacePermissions:
+    def from_dict(cls, d: Dict[str, Any]) -> WorkspacePermissions:
         """Deserializes the WorkspacePermissions from a dictionary."""
         return cls(permissions=_repeated_dict(d, 'permissions', PermissionOutput))
 
@@ -1234,13 +1234,13 @@ class AccountAccessControlAPI:
 
     def get_assignable_roles_for_resource(self, resource: str) -> GetAssignableRolesForResourceResponse:
         """Get assignable roles for a resource.
-        
+
         Gets all the roles that can be granted on an account level resource. A role is grantable if the rule
         set on the resource can contain an access rule of the role.
-        
+
         :param resource: str
           The resource name for which assignable roles will be listed.
-        
+
         :returns: :class:`GetAssignableRolesForResourceResponse`
         """
 
@@ -1257,10 +1257,10 @@ class AccountAccessControlAPI:
 
     def get_rule_set(self, name: str, etag: str) -> RuleSetResponse:
         """Get a rule set.
-        
+
         Get a rule set by its name. A rule set is always attached to a resource and contains a list of access
         rules on the said resource. Currently only a default rule set for each resource is supported.
-        
+
         :param name: str
           The ruleset name associated with the request.
         :param etag: str
@@ -1270,7 +1270,7 @@ class AccountAccessControlAPI:
           modify -> write pattern to perform rule set updates in order to avoid race conditions that is get an
           etag from a GET rule set request, and pass it with the PUT update request to identify the rule set
           version you are updating.
-        
+
         :returns: :class:`RuleSetResponse`
         """
 
@@ -1287,14 +1287,14 @@ class AccountAccessControlAPI:
 
     def update_rule_set(self, name: str, rule_set: RuleSetUpdateRequest) -> RuleSetResponse:
         """Update a rule set.
-        
+
         Replace the rules of a rule set. First, use get to read the current version of the rule set before
         modifying it. This pattern helps prevent conflicts between concurrent updates.
-        
+
         :param name: str
           Name of the rule set.
         :param rule_set: :class:`RuleSetUpdateRequest`
-        
+
         :returns: :class:`RuleSetResponse`
         """
         body = {}
@@ -1319,13 +1319,13 @@ class AccountAccessControlProxyAPI:
 
     def get_assignable_roles_for_resource(self, resource: str) -> GetAssignableRolesForResourceResponse:
         """Get assignable roles for a resource.
-        
+
         Gets all the roles that can be granted on an account-level resource. A role is grantable if the rule
         set on the resource can contain an access rule of the role.
-        
+
         :param resource: str
           The resource name for which assignable roles will be listed.
-        
+
         :returns: :class:`GetAssignableRolesForResourceResponse`
         """
 
@@ -1341,10 +1341,10 @@ class AccountAccessControlProxyAPI:
 
     def get_rule_set(self, name: str, etag: str) -> RuleSetResponse:
         """Get a rule set.
-        
+
         Get a rule set by its name. A rule set is always attached to a resource and contains a list of access
         rules on the said resource. Currently only a default rule set for each resource is supported.
-        
+
         :param name: str
           The ruleset name associated with the request.
         :param etag: str
@@ -1354,7 +1354,7 @@ class AccountAccessControlProxyAPI:
           modify -> write pattern to perform rule set updates in order to avoid race conditions that is get an
           etag from a GET rule set request, and pass it with the PUT update request to identify the rule set
           version you are updating.
-        
+
         :returns: :class:`RuleSetResponse`
         """
 
@@ -1371,14 +1371,14 @@ class AccountAccessControlProxyAPI:
 
     def update_rule_set(self, name: str, rule_set: RuleSetUpdateRequest) -> RuleSetResponse:
         """Update a rule set.
-        
+
         Replace the rules of a rule set. First, use a GET rule set request to read the current version of the
         rule set before modifying it. This pattern helps prevent conflicts between concurrent updates.
-        
+
         :param name: str
           Name of the rule set.
         :param rule_set: :class:`RuleSetUpdateRequest`
-        
+
         :returns: :class:`RuleSetResponse`
         """
         body = {}
@@ -1396,7 +1396,7 @@ class AccountAccessControlProxyAPI:
 class AccountGroupsAPI:
     """Groups simplify identity management, making it easier to assign access to Databricks account, data, and
     other securable objects.
-    
+
     It is best practice to assign access to workspaces and access-control policies in Unity Catalog to groups,
     instead of to users individually. All Databricks account identities can be assigned as members of groups,
     and members inherit permissions that are assigned to their group."""
@@ -1416,15 +1416,15 @@ class AccountGroupsAPI:
                roles: Optional[List[ComplexValue]] = None,
                schemas: Optional[List[GroupSchema]] = None) -> Group:
         """Create a new group.
-        
+
         Creates a group in the Databricks account with a unique name, using the supplied group details.
-        
+
         :param display_name: str (optional)
           String that represents a human-readable group name
         :param entitlements: List[:class:`ComplexValue`] (optional)
           Entitlements assigned to the group. See [assigning entitlements] for a full list of supported
           values.
-          
+
           [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
         :param groups: List[:class:`ComplexValue`] (optional)
@@ -1437,7 +1437,7 @@ class AccountGroupsAPI:
           Corresponds to AWS instance profile/arn role.
         :param schemas: List[:class:`GroupSchema`] (optional)
           The schema of the group.
-        
+
         :returns: :class:`Group`
         """
         body = {}
@@ -1460,13 +1460,13 @@ class AccountGroupsAPI:
 
     def delete(self, id: str):
         """Delete a group.
-        
+
         Deletes a group from the Databricks account.
-        
+
         :param id: str
           Unique ID for a group in the Databricks account.
-        
-        
+
+
         """
 
         headers = {}
@@ -1477,12 +1477,12 @@ class AccountGroupsAPI:
 
     def get(self, id: str) -> Group:
         """Get group details.
-        
+
         Gets the information for a specific group in the Databricks account.
-        
+
         :param id: str
           Unique ID for a group in the Databricks account.
-        
+
         :returns: :class:`Group`
         """
 
@@ -1503,9 +1503,9 @@ class AccountGroupsAPI:
              sort_order: Optional[ListSortOrder] = None,
              start_index: Optional[int] = None) -> Iterator[Group]:
         """List group details.
-        
+
         Gets all details of the groups associated with the Databricks account.
-        
+
         :param attributes: str (optional)
           Comma-separated list of attributes to return in response.
         :param count: int (optional)
@@ -1517,7 +1517,7 @@ class AccountGroupsAPI:
           contains(`co`), starts with(`sw`) and not equals(`ne`). Additionally, simple expressions can be
           formed using logical operators - `and` and `or`. The [SCIM RFC] has more details but we currently
           only support simple expressions.
-          
+
           [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
         :param sort_by: str (optional)
           Attribute to sort the results.
@@ -1525,7 +1525,7 @@ class AccountGroupsAPI:
           The order to sort the results.
         :param start_index: int (optional)
           Specifies the index of the first result. First item is number 1.
-        
+
         :returns: Iterator over :class:`Group`
         """
 
@@ -1565,16 +1565,16 @@ class AccountGroupsAPI:
               operations: Optional[List[Patch]] = None,
               schemas: Optional[List[PatchSchema]] = None):
         """Update group details.
-        
+
         Partially updates the details of a group.
-        
+
         :param id: str
           Unique ID for a group in the Databricks account.
         :param operations: List[:class:`Patch`] (optional)
         :param schemas: List[:class:`PatchSchema`] (optional)
           The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
-        
-        
+
+
         """
         body = {}
         if operations is not None: body['Operations'] = [v.as_dict() for v in operations]
@@ -1598,9 +1598,9 @@ class AccountGroupsAPI:
                roles: Optional[List[ComplexValue]] = None,
                schemas: Optional[List[GroupSchema]] = None):
         """Replace a group.
-        
+
         Updates the details of a group by replacing the entire group entity.
-        
+
         :param id: str
           Databricks group ID
         :param display_name: str (optional)
@@ -1608,7 +1608,7 @@ class AccountGroupsAPI:
         :param entitlements: List[:class:`ComplexValue`] (optional)
           Entitlements assigned to the group. See [assigning entitlements] for a full list of supported
           values.
-          
+
           [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
         :param groups: List[:class:`ComplexValue`] (optional)
@@ -1619,8 +1619,8 @@ class AccountGroupsAPI:
           Corresponds to AWS instance profile/arn role.
         :param schemas: List[:class:`GroupSchema`] (optional)
           The schema of the group.
-        
-        
+
+
         """
         body = {}
         if display_name is not None: body['displayName'] = display_name
@@ -1661,9 +1661,9 @@ class AccountServicePrincipalsAPI:
                roles: Optional[List[ComplexValue]] = None,
                schemas: Optional[List[ServicePrincipalSchema]] = None) -> ServicePrincipal:
         """Create a service principal.
-        
+
         Creates a new service principal in the Databricks account.
-        
+
         :param active: bool (optional)
           If this user is active
         :param application_id: str (optional)
@@ -1673,7 +1673,7 @@ class AccountServicePrincipalsAPI:
         :param entitlements: List[:class:`ComplexValue`] (optional)
           Entitlements assigned to the service principal. See [assigning entitlements] for a full list of
           supported values.
-          
+
           [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
         :param groups: List[:class:`ComplexValue`] (optional)
@@ -1683,7 +1683,7 @@ class AccountServicePrincipalsAPI:
           Corresponds to AWS instance profile/arn role.
         :param schemas: List[:class:`ServicePrincipalSchema`] (optional)
           The schema of the List response.
-        
+
         :returns: :class:`ServicePrincipal`
         """
         body = {}
@@ -1706,13 +1706,13 @@ class AccountServicePrincipalsAPI:
 
     def delete(self, id: str):
         """Delete a service principal.
-        
+
         Delete a single service principal in the Databricks account.
-        
+
         :param id: str
           Unique ID for a service principal in the Databricks account.
-        
-        
+
+
         """
 
         headers = {}
@@ -1723,12 +1723,12 @@ class AccountServicePrincipalsAPI:
 
     def get(self, id: str) -> ServicePrincipal:
         """Get service principal details.
-        
+
         Gets the details for a single service principal define in the Databricks account.
-        
+
         :param id: str
           Unique ID for a service principal in the Databricks account.
-        
+
         :returns: :class:`ServicePrincipal`
         """
 
@@ -1749,9 +1749,9 @@ class AccountServicePrincipalsAPI:
              sort_order: Optional[ListSortOrder] = None,
              start_index: Optional[int] = None) -> Iterator[ServicePrincipal]:
         """List service principals.
-        
+
         Gets the set of service principals associated with a Databricks account.
-        
+
         :param attributes: str (optional)
           Comma-separated list of attributes to return in response.
         :param count: int (optional)
@@ -1763,7 +1763,7 @@ class AccountServicePrincipalsAPI:
           contains(`co`), starts with(`sw`) and not equals(`ne`). Additionally, simple expressions can be
           formed using logical operators - `and` and `or`. The [SCIM RFC] has more details but we currently
           only support simple expressions.
-          
+
           [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
         :param sort_by: str (optional)
           Attribute to sort the results.
@@ -1771,7 +1771,7 @@ class AccountServicePrincipalsAPI:
           The order to sort the results.
         :param start_index: int (optional)
           Specifies the index of the first result. First item is number 1.
-        
+
         :returns: Iterator over :class:`ServicePrincipal`
         """
 
@@ -1811,16 +1811,16 @@ class AccountServicePrincipalsAPI:
               operations: Optional[List[Patch]] = None,
               schemas: Optional[List[PatchSchema]] = None):
         """Update service principal details.
-        
+
         Partially updates the details of a single service principal in the Databricks account.
-        
+
         :param id: str
           Unique ID for a service principal in the Databricks account.
         :param operations: List[:class:`Patch`] (optional)
         :param schemas: List[:class:`PatchSchema`] (optional)
           The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
-        
-        
+
+
         """
         body = {}
         if operations is not None: body['Operations'] = [v.as_dict() for v in operations]
@@ -1844,11 +1844,11 @@ class AccountServicePrincipalsAPI:
                roles: Optional[List[ComplexValue]] = None,
                schemas: Optional[List[ServicePrincipalSchema]] = None):
         """Replace service principal.
-        
+
         Updates the details of a single service principal.
-        
+
         This action replaces the existing service principal with the same name.
-        
+
         :param id: str
           Databricks service principal ID.
         :param active: bool (optional)
@@ -1860,7 +1860,7 @@ class AccountServicePrincipalsAPI:
         :param entitlements: List[:class:`ComplexValue`] (optional)
           Entitlements assigned to the service principal. See [assigning entitlements] for a full list of
           supported values.
-          
+
           [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
         :param groups: List[:class:`ComplexValue`] (optional)
@@ -1868,8 +1868,8 @@ class AccountServicePrincipalsAPI:
           Corresponds to AWS instance profile/arn role.
         :param schemas: List[:class:`ServicePrincipalSchema`] (optional)
           The schema of the List response.
-        
-        
+
+
         """
         body = {}
         if active is not None: body['active'] = active
@@ -1890,7 +1890,7 @@ class AccountServicePrincipalsAPI:
 
 class AccountUsersAPI:
     """User identities recognized by Databricks and represented by email addresses.
-    
+
     Databricks recommends using SCIM provisioning to sync users and groups automatically from your identity
     provider to your Databricks account. SCIM streamlines onboarding a new employee or team by using your
     identity provider to create users and groups in Databricks account and give them the proper level of
@@ -1916,23 +1916,23 @@ class AccountUsersAPI:
                schemas: Optional[List[UserSchema]] = None,
                user_name: Optional[str] = None) -> User:
         """Create a new user.
-        
+
         Creates a new user in the Databricks account. This new user will also be added to the Databricks
         account.
-        
+
         :param active: bool (optional)
           If this user is active
         :param display_name: str (optional)
           String that represents a concatenation of given and family names. For example `John Smith`. This
           field cannot be updated through the Workspace SCIM APIs when [identity federation is enabled]. Use
           Account SCIM APIs to update `displayName`.
-          
+
           [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation
         :param emails: List[:class:`ComplexValue`] (optional)
           All the emails associated with the Databricks user.
         :param entitlements: List[:class:`ComplexValue`] (optional)
           Entitlements assigned to the user. See [assigning entitlements] for a full list of supported values.
-          
+
           [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
           External ID is not currently supported. It is reserved for future use.
@@ -1947,7 +1947,7 @@ class AccountUsersAPI:
           The schema of the user.
         :param user_name: str (optional)
           Email address of the Databricks user.
-        
+
         :returns: :class:`User`
         """
         body = {}
@@ -1972,14 +1972,14 @@ class AccountUsersAPI:
 
     def delete(self, id: str):
         """Delete a user.
-        
+
         Deletes a user. Deleting a user from a Databricks account also removes objects associated with the
         user.
-        
+
         :param id: str
           Unique ID for a user in the Databricks account.
-        
-        
+
+
         """
 
         headers = {}
@@ -1999,9 +1999,9 @@ class AccountUsersAPI:
             sort_order: Optional[GetSortOrder] = None,
             start_index: Optional[int] = None) -> User:
         """Get user details.
-        
+
         Gets information for a specific user in Databricks account.
-        
+
         :param id: str
           Unique ID for a user in the Databricks account.
         :param attributes: str (optional)
@@ -2015,7 +2015,7 @@ class AccountUsersAPI:
           contains(`co`), starts with(`sw`) and not equals(`ne`). Additionally, simple expressions can be
           formed using logical operators - `and` and `or`. The [SCIM RFC] has more details but we currently
           only support simple expressions.
-          
+
           [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
         :param sort_by: str (optional)
           Attribute to sort the results. Multi-part paths are supported. For example, `userName`,
@@ -2024,7 +2024,7 @@ class AccountUsersAPI:
           The order to sort the results.
         :param start_index: int (optional)
           Specifies the index of the first result. First item is number 1.
-        
+
         :returns: :class:`User`
         """
 
@@ -2054,9 +2054,9 @@ class AccountUsersAPI:
              sort_order: Optional[ListSortOrder] = None,
              start_index: Optional[int] = None) -> Iterator[User]:
         """List users.
-        
+
         Gets details for all the users associated with a Databricks account.
-        
+
         :param attributes: str (optional)
           Comma-separated list of attributes to return in response.
         :param count: int (optional)
@@ -2068,7 +2068,7 @@ class AccountUsersAPI:
           contains(`co`), starts with(`sw`) and not equals(`ne`). Additionally, simple expressions can be
           formed using logical operators - `and` and `or`. The [SCIM RFC] has more details but we currently
           only support simple expressions.
-          
+
           [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
         :param sort_by: str (optional)
           Attribute to sort the results. Multi-part paths are supported. For example, `userName`,
@@ -2077,7 +2077,7 @@ class AccountUsersAPI:
           The order to sort the results.
         :param start_index: int (optional)
           Specifies the index of the first result. First item is number 1.
-        
+
         :returns: Iterator over :class:`User`
         """
 
@@ -2117,16 +2117,16 @@ class AccountUsersAPI:
               operations: Optional[List[Patch]] = None,
               schemas: Optional[List[PatchSchema]] = None):
         """Update user details.
-        
+
         Partially updates a user resource by applying the supplied operations on specific user attributes.
-        
+
         :param id: str
           Unique ID for a user in the Databricks account.
         :param operations: List[:class:`Patch`] (optional)
         :param schemas: List[:class:`PatchSchema`] (optional)
           The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
-        
-        
+
+
         """
         body = {}
         if operations is not None: body['Operations'] = [v.as_dict() for v in operations]
@@ -2152,9 +2152,9 @@ class AccountUsersAPI:
                schemas: Optional[List[UserSchema]] = None,
                user_name: Optional[str] = None):
         """Replace a user.
-        
+
         Replaces a user's information with the data supplied in request.
-        
+
         :param id: str
           Databricks user ID. This is automatically set by Databricks. Any value provided by the client will
           be ignored.
@@ -2164,13 +2164,13 @@ class AccountUsersAPI:
           String that represents a concatenation of given and family names. For example `John Smith`. This
           field cannot be updated through the Workspace SCIM APIs when [identity federation is enabled]. Use
           Account SCIM APIs to update `displayName`.
-          
+
           [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation
         :param emails: List[:class:`ComplexValue`] (optional)
           All the emails associated with the Databricks user.
         :param entitlements: List[:class:`ComplexValue`] (optional)
           Entitlements assigned to the user. See [assigning entitlements] for a full list of supported values.
-          
+
           [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
           External ID is not currently supported. It is reserved for future use.
@@ -2182,8 +2182,8 @@ class AccountUsersAPI:
           The schema of the user.
         :param user_name: str (optional)
           Email address of the Databricks user.
-        
-        
+
+
         """
         body = {}
         if active is not None: body['active'] = active
@@ -2212,9 +2212,9 @@ class CurrentUserAPI:
 
     def me(self) -> User:
         """Get current user info.
-        
+
         Get details about the current method caller's identity.
-        
+
         :returns: :class:`User`
         """
 
@@ -2227,7 +2227,7 @@ class CurrentUserAPI:
 class GroupsAPI:
     """Groups simplify identity management, making it easier to assign access to Databricks workspace, data, and
     other securable objects.
-    
+
     It is best practice to assign access to workspaces and access-control policies in Unity Catalog to groups,
     instead of to users individually. All Databricks workspace identities can be assigned as members of
     groups, and members inherit permissions that are assigned to their group."""
@@ -2247,15 +2247,15 @@ class GroupsAPI:
                roles: Optional[List[ComplexValue]] = None,
                schemas: Optional[List[GroupSchema]] = None) -> Group:
         """Create a new group.
-        
+
         Creates a group in the Databricks workspace with a unique name, using the supplied group details.
-        
+
         :param display_name: str (optional)
           String that represents a human-readable group name
         :param entitlements: List[:class:`ComplexValue`] (optional)
           Entitlements assigned to the group. See [assigning entitlements] for a full list of supported
           values.
-          
+
           [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
         :param groups: List[:class:`ComplexValue`] (optional)
@@ -2268,7 +2268,7 @@ class GroupsAPI:
           Corresponds to AWS instance profile/arn role.
         :param schemas: List[:class:`GroupSchema`] (optional)
           The schema of the group.
-        
+
         :returns: :class:`Group`
         """
         body = {}
@@ -2288,13 +2288,13 @@ class GroupsAPI:
 
     def delete(self, id: str):
         """Delete a group.
-        
+
         Deletes a group from the Databricks workspace.
-        
+
         :param id: str
           Unique ID for a group in the Databricks workspace.
-        
-        
+
+
         """
 
         headers = {}
@@ -2303,12 +2303,12 @@ class GroupsAPI:
 
     def get(self, id: str) -> Group:
         """Get group details.
-        
+
         Gets the information for a specific group in the Databricks workspace.
-        
+
         :param id: str
           Unique ID for a group in the Databricks workspace.
-        
+
         :returns: :class:`Group`
         """
 
@@ -2327,9 +2327,9 @@ class GroupsAPI:
              sort_order: Optional[ListSortOrder] = None,
              start_index: Optional[int] = None) -> Iterator[Group]:
         """List group details.
-        
+
         Gets all details of the groups associated with the Databricks workspace.
-        
+
         :param attributes: str (optional)
           Comma-separated list of attributes to return in response.
         :param count: int (optional)
@@ -2341,7 +2341,7 @@ class GroupsAPI:
           contains(`co`), starts with(`sw`) and not equals(`ne`). Additionally, simple expressions can be
           formed using logical operators - `and` and `or`. The [SCIM RFC] has more details but we currently
           only support simple expressions.
-          
+
           [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
         :param sort_by: str (optional)
           Attribute to sort the results.
@@ -2349,7 +2349,7 @@ class GroupsAPI:
           The order to sort the results.
         :param start_index: int (optional)
           Specifies the index of the first result. First item is number 1.
-        
+
         :returns: Iterator over :class:`Group`
         """
 
@@ -2386,16 +2386,16 @@ class GroupsAPI:
               operations: Optional[List[Patch]] = None,
               schemas: Optional[List[PatchSchema]] = None):
         """Update group details.
-        
+
         Partially updates the details of a group.
-        
+
         :param id: str
           Unique ID for a group in the Databricks workspace.
         :param operations: List[:class:`Patch`] (optional)
         :param schemas: List[:class:`PatchSchema`] (optional)
           The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
-        
-        
+
+
         """
         body = {}
         if operations is not None: body['Operations'] = [v.as_dict() for v in operations]
@@ -2416,9 +2416,9 @@ class GroupsAPI:
                roles: Optional[List[ComplexValue]] = None,
                schemas: Optional[List[GroupSchema]] = None):
         """Replace a group.
-        
+
         Updates the details of a group by replacing the entire group entity.
-        
+
         :param id: str
           Databricks group ID
         :param display_name: str (optional)
@@ -2426,7 +2426,7 @@ class GroupsAPI:
         :param entitlements: List[:class:`ComplexValue`] (optional)
           Entitlements assigned to the group. See [assigning entitlements] for a full list of supported
           values.
-          
+
           [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
         :param groups: List[:class:`ComplexValue`] (optional)
@@ -2437,8 +2437,8 @@ class GroupsAPI:
           Corresponds to AWS instance profile/arn role.
         :param schemas: List[:class:`GroupSchema`] (optional)
           The schema of the group.
-        
-        
+
+
         """
         body = {}
         if display_name is not None: body['displayName'] = display_name
@@ -2457,47 +2457,47 @@ class GroupsAPI:
 class PermissionsAPI:
     """Permissions API are used to create read, write, edit, update and manage access for various users on
     different objects and endpoints.
-    
+
     * **[Cluster permissions](:service:clusters)** — Manage which users can manage, restart, or attach to
     clusters.
-    
+
     * **[Cluster policy permissions](:service:clusterpolicies)** — Manage which users can use cluster
     policies.
-    
+
     * **[Delta Live Tables pipeline permissions](:service:pipelines)** — Manage which users can view,
     manage, run, cancel, or own a Delta Live Tables pipeline.
-    
+
     * **[Job permissions](:service:jobs)** — Manage which users can view, manage, trigger, cancel, or own a
     job.
-    
+
     * **[MLflow experiment permissions](:service:experiments)** — Manage which users can read, edit, or
     manage MLflow experiments.
-    
+
     * **[MLflow registered model permissions](:service:modelregistry)** — Manage which users can read, edit,
     or manage MLflow registered models.
-    
+
     * **[Password permissions](:service:users)** — Manage which users can use password login when SSO is
     enabled.
-    
+
     * **[Instance Pool permissions](:service:instancepools)** — Manage which users can manage or attach to
     pools.
-    
+
     * **[Repo permissions](repos)** — Manage which users can read, run, edit, or manage a repo.
-    
+
     * **[Serving endpoint permissions](:service:servingendpoints)** — Manage which users can view, query, or
     manage a serving endpoint.
-    
+
     * **[SQL warehouse permissions](:service:warehouses)** — Manage which users can use or manage SQL
     warehouses.
-    
+
     * **[Token permissions](:service:tokenmanagement)** — Manage which users can create or use tokens.
-    
+
     * **[Workspace object permissions](:service:workspace)** — Manage which users can read, run, edit, or
     manage directories, files, and notebooks.
-    
+
     For the mapping of the required permissions for specific actions or abilities and other important
     information, see [Access Control].
-    
+
     [Access Control]: https://docs.databricks.com/security/auth-authz/access-control/index.html"""
 
     def __init__(self, api_client):
@@ -2505,17 +2505,17 @@ class PermissionsAPI:
 
     def get(self, request_object_type: str, request_object_id: str) -> ObjectPermissions:
         """Get object permissions.
-        
+
         Gets the permissions of an object. Objects can inherit permissions from their parent objects or root
         object.
-        
+
         :param request_object_type: str
           The type of the request object. Can be one of the following: authorization, clusters,
           cluster-policies, directories, experiments, files, instance-pools, jobs, notebooks, pipelines,
           registered-models, repos, serving-endpoints, or sql-warehouses.
         :param request_object_id: str
           The id of the request object.
-        
+
         :returns: :class:`ObjectPermissions`
         """
 
@@ -2529,14 +2529,14 @@ class PermissionsAPI:
     def get_permission_levels(self, request_object_type: str,
                               request_object_id: str) -> GetPermissionLevelsResponse:
         """Get object permission levels.
-        
+
         Gets the permission levels that a user can have on an object.
-        
+
         :param request_object_type: str
           <needs content>
         :param request_object_id: str
           <needs content>
-        
+
         :returns: :class:`GetPermissionLevelsResponse`
         """
 
@@ -2553,10 +2553,10 @@ class PermissionsAPI:
             *,
             access_control_list: Optional[List[AccessControlRequest]] = None) -> ObjectPermissions:
         """Set object permissions.
-        
+
         Sets permissions on an object. Objects can inherit permissions from their parent objects or root
         object.
-        
+
         :param request_object_type: str
           The type of the request object. Can be one of the following: authorization, clusters,
           cluster-policies, directories, experiments, files, instance-pools, jobs, notebooks, pipelines,
@@ -2564,7 +2564,7 @@ class PermissionsAPI:
         :param request_object_id: str
           The id of the request object.
         :param access_control_list: List[:class:`AccessControlRequest`] (optional)
-        
+
         :returns: :class:`ObjectPermissions`
         """
         body = {}
@@ -2584,10 +2584,10 @@ class PermissionsAPI:
                *,
                access_control_list: Optional[List[AccessControlRequest]] = None) -> ObjectPermissions:
         """Update object permissions.
-        
+
         Updates the permissions on an object. Objects can inherit permissions from their parent objects or
         root object.
-        
+
         :param request_object_type: str
           The type of the request object. Can be one of the following: authorization, clusters,
           cluster-policies, directories, experiments, files, instance-pools, jobs, notebooks, pipelines,
@@ -2595,7 +2595,7 @@ class PermissionsAPI:
         :param request_object_id: str
           The id of the request object.
         :param access_control_list: List[:class:`AccessControlRequest`] (optional)
-        
+
         :returns: :class:`ObjectPermissions`
         """
         body = {}
@@ -2632,9 +2632,9 @@ class ServicePrincipalsAPI:
                roles: Optional[List[ComplexValue]] = None,
                schemas: Optional[List[ServicePrincipalSchema]] = None) -> ServicePrincipal:
         """Create a service principal.
-        
+
         Creates a new service principal in the Databricks workspace.
-        
+
         :param active: bool (optional)
           If this user is active
         :param application_id: str (optional)
@@ -2644,7 +2644,7 @@ class ServicePrincipalsAPI:
         :param entitlements: List[:class:`ComplexValue`] (optional)
           Entitlements assigned to the service principal. See [assigning entitlements] for a full list of
           supported values.
-          
+
           [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
         :param groups: List[:class:`ComplexValue`] (optional)
@@ -2654,7 +2654,7 @@ class ServicePrincipalsAPI:
           Corresponds to AWS instance profile/arn role.
         :param schemas: List[:class:`ServicePrincipalSchema`] (optional)
           The schema of the List response.
-        
+
         :returns: :class:`ServicePrincipal`
         """
         body = {}
@@ -2674,13 +2674,13 @@ class ServicePrincipalsAPI:
 
     def delete(self, id: str):
         """Delete a service principal.
-        
+
         Delete a single service principal in the Databricks workspace.
-        
+
         :param id: str
           Unique ID for a service principal in the Databricks workspace.
-        
-        
+
+
         """
 
         headers = {}
@@ -2689,12 +2689,12 @@ class ServicePrincipalsAPI:
 
     def get(self, id: str) -> ServicePrincipal:
         """Get service principal details.
-        
+
         Gets the details for a single service principal define in the Databricks workspace.
-        
+
         :param id: str
           Unique ID for a service principal in the Databricks workspace.
-        
+
         :returns: :class:`ServicePrincipal`
         """
 
@@ -2713,9 +2713,9 @@ class ServicePrincipalsAPI:
              sort_order: Optional[ListSortOrder] = None,
              start_index: Optional[int] = None) -> Iterator[ServicePrincipal]:
         """List service principals.
-        
+
         Gets the set of service principals associated with a Databricks workspace.
-        
+
         :param attributes: str (optional)
           Comma-separated list of attributes to return in response.
         :param count: int (optional)
@@ -2727,7 +2727,7 @@ class ServicePrincipalsAPI:
           contains(`co`), starts with(`sw`) and not equals(`ne`). Additionally, simple expressions can be
           formed using logical operators - `and` and `or`. The [SCIM RFC] has more details but we currently
           only support simple expressions.
-          
+
           [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
         :param sort_by: str (optional)
           Attribute to sort the results.
@@ -2735,7 +2735,7 @@ class ServicePrincipalsAPI:
           The order to sort the results.
         :param start_index: int (optional)
           Specifies the index of the first result. First item is number 1.
-        
+
         :returns: Iterator over :class:`ServicePrincipal`
         """
 
@@ -2775,16 +2775,16 @@ class ServicePrincipalsAPI:
               operations: Optional[List[Patch]] = None,
               schemas: Optional[List[PatchSchema]] = None):
         """Update service principal details.
-        
+
         Partially updates the details of a single service principal in the Databricks workspace.
-        
+
         :param id: str
           Unique ID for a service principal in the Databricks workspace.
         :param operations: List[:class:`Patch`] (optional)
         :param schemas: List[:class:`PatchSchema`] (optional)
           The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
-        
-        
+
+
         """
         body = {}
         if operations is not None: body['Operations'] = [v.as_dict() for v in operations]
@@ -2805,11 +2805,11 @@ class ServicePrincipalsAPI:
                roles: Optional[List[ComplexValue]] = None,
                schemas: Optional[List[ServicePrincipalSchema]] = None):
         """Replace service principal.
-        
+
         Updates the details of a single service principal.
-        
+
         This action replaces the existing service principal with the same name.
-        
+
         :param id: str
           Databricks service principal ID.
         :param active: bool (optional)
@@ -2821,7 +2821,7 @@ class ServicePrincipalsAPI:
         :param entitlements: List[:class:`ComplexValue`] (optional)
           Entitlements assigned to the service principal. See [assigning entitlements] for a full list of
           supported values.
-          
+
           [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
         :param groups: List[:class:`ComplexValue`] (optional)
@@ -2829,8 +2829,8 @@ class ServicePrincipalsAPI:
           Corresponds to AWS instance profile/arn role.
         :param schemas: List[:class:`ServicePrincipalSchema`] (optional)
           The schema of the List response.
-        
-        
+
+
         """
         body = {}
         if active is not None: body['active'] = active
@@ -2848,7 +2848,7 @@ class ServicePrincipalsAPI:
 
 class UsersAPI:
     """User identities recognized by Databricks and represented by email addresses.
-    
+
     Databricks recommends using SCIM provisioning to sync users and groups automatically from your identity
     provider to your Databricks workspace. SCIM streamlines onboarding a new employee or team by using your
     identity provider to create users and groups in Databricks workspace and give them the proper level of
@@ -2874,23 +2874,23 @@ class UsersAPI:
                schemas: Optional[List[UserSchema]] = None,
                user_name: Optional[str] = None) -> User:
         """Create a new user.
-        
+
         Creates a new user in the Databricks workspace. This new user will also be added to the Databricks
         account.
-        
+
         :param active: bool (optional)
           If this user is active
         :param display_name: str (optional)
           String that represents a concatenation of given and family names. For example `John Smith`. This
           field cannot be updated through the Workspace SCIM APIs when [identity federation is enabled]. Use
           Account SCIM APIs to update `displayName`.
-          
+
           [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation
         :param emails: List[:class:`ComplexValue`] (optional)
           All the emails associated with the Databricks user.
         :param entitlements: List[:class:`ComplexValue`] (optional)
           Entitlements assigned to the user. See [assigning entitlements] for a full list of supported values.
-          
+
           [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
           External ID is not currently supported. It is reserved for future use.
@@ -2905,7 +2905,7 @@ class UsersAPI:
           The schema of the user.
         :param user_name: str (optional)
           Email address of the Databricks user.
-        
+
         :returns: :class:`User`
         """
         body = {}
@@ -2927,14 +2927,14 @@ class UsersAPI:
 
     def delete(self, id: str):
         """Delete a user.
-        
+
         Deletes a user. Deleting a user from a Databricks workspace also removes objects associated with the
         user.
-        
+
         :param id: str
           Unique ID for a user in the Databricks workspace.
-        
-        
+
+
         """
 
         headers = {}
@@ -2952,9 +2952,9 @@ class UsersAPI:
             sort_order: Optional[GetSortOrder] = None,
             start_index: Optional[int] = None) -> User:
         """Get user details.
-        
+
         Gets information for a specific user in Databricks workspace.
-        
+
         :param id: str
           Unique ID for a user in the Databricks workspace.
         :param attributes: str (optional)
@@ -2968,7 +2968,7 @@ class UsersAPI:
           contains(`co`), starts with(`sw`) and not equals(`ne`). Additionally, simple expressions can be
           formed using logical operators - `and` and `or`. The [SCIM RFC] has more details but we currently
           only support simple expressions.
-          
+
           [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
         :param sort_by: str (optional)
           Attribute to sort the results. Multi-part paths are supported. For example, `userName`,
@@ -2977,7 +2977,7 @@ class UsersAPI:
           The order to sort the results.
         :param start_index: int (optional)
           Specifies the index of the first result. First item is number 1.
-        
+
         :returns: :class:`User`
         """
 
@@ -2996,9 +2996,9 @@ class UsersAPI:
 
     def get_permission_levels(self) -> GetPasswordPermissionLevelsResponse:
         """Get password permission levels.
-        
+
         Gets the permission levels that a user can have on an object.
-        
+
         :returns: :class:`GetPasswordPermissionLevelsResponse`
         """
 
@@ -3011,9 +3011,9 @@ class UsersAPI:
 
     def get_permissions(self) -> PasswordPermissions:
         """Get password permissions.
-        
+
         Gets the permissions of all passwords. Passwords can inherit permissions from their root object.
-        
+
         :returns: :class:`PasswordPermissions`
         """
 
@@ -3032,9 +3032,9 @@ class UsersAPI:
              sort_order: Optional[ListSortOrder] = None,
              start_index: Optional[int] = None) -> Iterator[User]:
         """List users.
-        
+
         Gets details for all the users associated with a Databricks workspace.
-        
+
         :param attributes: str (optional)
           Comma-separated list of attributes to return in response.
         :param count: int (optional)
@@ -3046,7 +3046,7 @@ class UsersAPI:
           contains(`co`), starts with(`sw`) and not equals(`ne`). Additionally, simple expressions can be
           formed using logical operators - `and` and `or`. The [SCIM RFC] has more details but we currently
           only support simple expressions.
-          
+
           [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2
         :param sort_by: str (optional)
           Attribute to sort the results. Multi-part paths are supported. For example, `userName`,
@@ -3055,7 +3055,7 @@ class UsersAPI:
           The order to sort the results.
         :param start_index: int (optional)
           Specifies the index of the first result. First item is number 1.
-        
+
         :returns: Iterator over :class:`User`
         """
 
@@ -3092,16 +3092,16 @@ class UsersAPI:
               operations: Optional[List[Patch]] = None,
               schemas: Optional[List[PatchSchema]] = None):
         """Update user details.
-        
+
         Partially updates a user resource by applying the supplied operations on specific user attributes.
-        
+
         :param id: str
           Unique ID for a user in the Databricks workspace.
         :param operations: List[:class:`Patch`] (optional)
         :param schemas: List[:class:`PatchSchema`] (optional)
           The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
-        
-        
+
+
         """
         body = {}
         if operations is not None: body['Operations'] = [v.as_dict() for v in operations]
@@ -3115,11 +3115,11 @@ class UsersAPI:
             *,
             access_control_list: Optional[List[PasswordAccessControlRequest]] = None) -> PasswordPermissions:
         """Set password permissions.
-        
+
         Sets permissions on all passwords. Passwords can inherit permissions from their root object.
-        
+
         :param access_control_list: List[:class:`PasswordAccessControlRequest`] (optional)
-        
+
         :returns: :class:`PasswordPermissions`
         """
         body = {}
@@ -3144,9 +3144,9 @@ class UsersAPI:
                schemas: Optional[List[UserSchema]] = None,
                user_name: Optional[str] = None):
         """Replace a user.
-        
+
         Replaces a user's information with the data supplied in request.
-        
+
         :param id: str
           Databricks user ID. This is automatically set by Databricks. Any value provided by the client will
           be ignored.
@@ -3156,13 +3156,13 @@ class UsersAPI:
           String that represents a concatenation of given and family names. For example `John Smith`. This
           field cannot be updated through the Workspace SCIM APIs when [identity federation is enabled]. Use
           Account SCIM APIs to update `displayName`.
-          
+
           [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation
         :param emails: List[:class:`ComplexValue`] (optional)
           All the emails associated with the Databricks user.
         :param entitlements: List[:class:`ComplexValue`] (optional)
           Entitlements assigned to the user. See [assigning entitlements] for a full list of supported values.
-          
+
           [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
           External ID is not currently supported. It is reserved for future use.
@@ -3174,8 +3174,8 @@ class UsersAPI:
           The schema of the user.
         :param user_name: str (optional)
           Email address of the Databricks user.
-        
-        
+
+
         """
         body = {}
         if active is not None: body['active'] = active
@@ -3197,11 +3197,11 @@ class UsersAPI:
             *,
             access_control_list: Optional[List[PasswordAccessControlRequest]] = None) -> PasswordPermissions:
         """Update password permissions.
-        
+
         Updates the permissions on all passwords. Passwords can inherit permissions from their root object.
-        
+
         :param access_control_list: List[:class:`PasswordAccessControlRequest`] (optional)
-        
+
         :returns: :class:`PasswordPermissions`
         """
         body = {}
@@ -3225,16 +3225,16 @@ class WorkspaceAssignmentAPI:
 
     def delete(self, workspace_id: int, principal_id: int):
         """Delete permissions assignment.
-        
+
         Deletes the workspace permissions assignment in a given account and workspace for the specified
         principal.
-        
+
         :param workspace_id: int
           The workspace ID.
         :param principal_id: int
           The ID of the user, service principal, or group.
-        
-        
+
+
         """
 
         headers = {'Accept': 'application/json', }
@@ -3246,12 +3246,12 @@ class WorkspaceAssignmentAPI:
 
     def get(self, workspace_id: int) -> WorkspacePermissions:
         """List workspace permissions.
-        
+
         Get an array of workspace permissions for the specified account and workspace.
-        
+
         :param workspace_id: int
           The workspace ID.
-        
+
         :returns: :class:`WorkspacePermissions`
         """
 
@@ -3265,12 +3265,12 @@ class WorkspaceAssignmentAPI:
 
     def list(self, workspace_id: int) -> Iterator[PermissionAssignment]:
         """Get permission assignments.
-        
+
         Get the permission assignments for the specified Databricks account and Databricks workspace.
-        
+
         :param workspace_id: int
           The workspace ID for the account.
-        
+
         :returns: Iterator over :class:`PermissionAssignment`
         """
 
@@ -3285,18 +3285,18 @@ class WorkspaceAssignmentAPI:
 
     def update(self, workspace_id: int, principal_id: int, permissions: List[WorkspacePermission]):
         """Create or update permissions assignment.
-        
+
         Creates or updates the workspace permissions assignment in a given account and workspace for the
         specified principal.
-        
+
         :param workspace_id: int
           The workspace ID.
         :param principal_id: int
           The ID of the user, service principal, or group.
         :param permissions: List[:class:`WorkspacePermission`]
           Array of permissions assignments to update on the workspace.
-        
-        
+
+
         """
         body = {}
         if permissions is not None: body['permissions'] = [v.value for v in permissions]

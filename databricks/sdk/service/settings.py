@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, Iterator, List, Optional
+from typing import Any, Dict, Iterator, List, Optional
 
 from ._internal import _enum, _from_dict, _repeated_dict, _repeated_enum
 
@@ -42,7 +42,7 @@ class AutomaticClusterUpdateSetting:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AutomaticClusterUpdateSetting:
+    def from_dict(cls, d: Dict[str, Any]) -> AutomaticClusterUpdateSetting:
         """Deserializes the AutomaticClusterUpdateSetting from a dictionary."""
         return cls(automatic_cluster_update_workspace=_from_dict(d, 'automatic_cluster_update_workspace',
                                                                  ClusterAutoRestartMessage),
@@ -79,7 +79,7 @@ class ClusterAutoRestartMessage:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ClusterAutoRestartMessage:
+    def from_dict(cls, d: Dict[str, Any]) -> ClusterAutoRestartMessage:
         """Deserializes the ClusterAutoRestartMessage from a dictionary."""
         return cls(can_toggle=d.get('can_toggle', None),
                    enabled=d.get('enabled', None),
@@ -120,7 +120,7 @@ class ClusterAutoRestartMessageEnablementDetails:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ClusterAutoRestartMessageEnablementDetails:
+    def from_dict(cls, d: Dict[str, Any]) -> ClusterAutoRestartMessageEnablementDetails:
         """Deserializes the ClusterAutoRestartMessageEnablementDetails from a dictionary."""
         return cls(forced_for_compliance_mode=d.get('forced_for_compliance_mode', None),
                    unavailable_for_disabled_entitlement=d.get('unavailable_for_disabled_entitlement', None),
@@ -139,7 +139,7 @@ class ClusterAutoRestartMessageMaintenanceWindow:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ClusterAutoRestartMessageMaintenanceWindow:
+    def from_dict(cls, d: Dict[str, Any]) -> ClusterAutoRestartMessageMaintenanceWindow:
         """Deserializes the ClusterAutoRestartMessageMaintenanceWindow from a dictionary."""
         return cls(week_day_based_schedule=_from_dict(
             d, 'week_day_based_schedule', ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule))
@@ -174,7 +174,7 @@ class ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule:
+    def from_dict(cls, d: Dict[str, Any]) -> ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule:
         """Deserializes the ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule from a dictionary."""
         return cls(day_of_week=_enum(d, 'day_of_week', ClusterAutoRestartMessageMaintenanceWindowDayOfWeek),
                    frequency=_enum(d, 'frequency',
@@ -209,7 +209,7 @@ class ClusterAutoRestartMessageMaintenanceWindowWindowStartTime:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ClusterAutoRestartMessageMaintenanceWindowWindowStartTime:
+    def from_dict(cls, d: Dict[str, Any]) -> ClusterAutoRestartMessageMaintenanceWindowWindowStartTime:
         """Deserializes the ClusterAutoRestartMessageMaintenanceWindowWindowStartTime from a dictionary."""
         return cls(hours=d.get('hours', None), minutes=d.get('minutes', None))
 
@@ -237,7 +237,7 @@ class CreateIpAccessList:
 
     list_type: ListType
     """Type of IP access list. Valid values are as follows and are case-sensitive:
-    
+
     * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
     range. IP addresses in the block list are excluded even if they are included in an allow list."""
 
@@ -252,7 +252,7 @@ class CreateIpAccessList:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateIpAccessList:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateIpAccessList:
         """Deserializes the CreateIpAccessList from a dictionary."""
         return cls(ip_addresses=d.get('ip_addresses', None),
                    label=d.get('label', None),
@@ -273,7 +273,7 @@ class CreateIpAccessListResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateIpAccessListResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateIpAccessListResponse:
         """Deserializes the CreateIpAccessListResponse from a dictionary."""
         return cls(ip_access_list=_from_dict(d, 'ip_access_list', IpAccessListInfo))
 
@@ -297,7 +297,7 @@ class CreateNetworkConnectivityConfigRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateNetworkConnectivityConfigRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateNetworkConnectivityConfigRequest:
         """Deserializes the CreateNetworkConnectivityConfigRequest from a dictionary."""
         return cls(name=d.get('name', None), region=d.get('region', None))
 
@@ -324,7 +324,7 @@ class CreateOboTokenRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateOboTokenRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateOboTokenRequest:
         """Deserializes the CreateOboTokenRequest from a dictionary."""
         return cls(application_id=d.get('application_id', None),
                    comment=d.get('comment', None),
@@ -348,7 +348,7 @@ class CreateOboTokenResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateOboTokenResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateOboTokenResponse:
         """Deserializes the CreateOboTokenResponse from a dictionary."""
         return cls(token_info=_from_dict(d, 'token_info', TokenInfo), token_value=d.get('token_value', None))
 
@@ -375,7 +375,7 @@ class CreatePrivateEndpointRuleRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreatePrivateEndpointRuleRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> CreatePrivateEndpointRuleRequest:
         """Deserializes the CreatePrivateEndpointRuleRequest from a dictionary."""
         return cls(group_id=_enum(d, 'group_id', CreatePrivateEndpointRuleRequestGroupId),
                    network_connectivity_config_id=d.get('network_connectivity_config_id', None),
@@ -399,7 +399,7 @@ class CreateTokenRequest:
 
     lifetime_seconds: Optional[int] = None
     """The lifetime of the token, in seconds.
-    
+
     If the lifetime is not specified, this token remains valid indefinitely."""
 
     def as_dict(self) -> dict:
@@ -410,7 +410,7 @@ class CreateTokenRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateTokenRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateTokenRequest:
         """Deserializes the CreateTokenRequest from a dictionary."""
         return cls(comment=d.get('comment', None), lifetime_seconds=d.get('lifetime_seconds', None))
 
@@ -431,7 +431,7 @@ class CreateTokenResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateTokenResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateTokenResponse:
         """Deserializes the CreateTokenResponse from a dictionary."""
         return cls(token_info=_from_dict(d, 'token_info', PublicTokenInfo),
                    token_value=d.get('token_value', None))
@@ -457,7 +457,7 @@ class CspEnablement:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CspEnablement:
+    def from_dict(cls, d: Dict[str, Any]) -> CspEnablement:
         """Deserializes the CspEnablement from a dictionary."""
         return cls(compliance_standards=_repeated_enum(d, 'compliance_standards', ComplianceStandard),
                    is_enabled=d.get('is_enabled', None))
@@ -483,7 +483,7 @@ class CspEnablementAccount:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CspEnablementAccount:
+    def from_dict(cls, d: Dict[str, Any]) -> CspEnablementAccount:
         """Deserializes the CspEnablementAccount from a dictionary."""
         return cls(compliance_standards=_repeated_enum(d, 'compliance_standards', ComplianceStandard),
                    is_enforced=d.get('is_enforced', None))
@@ -517,7 +517,7 @@ class CspEnablementAccountSetting:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CspEnablementAccountSetting:
+    def from_dict(cls, d: Dict[str, Any]) -> CspEnablementAccountSetting:
         """Deserializes the CspEnablementAccountSetting from a dictionary."""
         return cls(csp_enablement_account=_from_dict(d, 'csp_enablement_account', CspEnablementAccount),
                    etag=d.get('etag', None),
@@ -554,7 +554,7 @@ class CspEnablementSetting:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CspEnablementSetting:
+    def from_dict(cls, d: Dict[str, Any]) -> CspEnablementSetting:
         """Deserializes the CspEnablementSetting from a dictionary."""
         return cls(csp_enablement_workspace=_from_dict(d, 'csp_enablement_workspace', CspEnablement),
                    etag=d.get('etag', None),
@@ -596,7 +596,7 @@ class DefaultNamespaceSetting:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DefaultNamespaceSetting:
+    def from_dict(cls, d: Dict[str, Any]) -> DefaultNamespaceSetting:
         """Deserializes the DefaultNamespaceSetting from a dictionary."""
         return cls(etag=d.get('etag', None),
                    namespace=_from_dict(d, 'namespace', StringMessage),
@@ -622,7 +622,7 @@ class DeleteDefaultNamespaceSettingResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteDefaultNamespaceSettingResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteDefaultNamespaceSettingResponse:
         """Deserializes the DeleteDefaultNamespaceSettingResponse from a dictionary."""
         return cls(etag=d.get('etag', None))
 
@@ -636,7 +636,7 @@ class DeleteNetworkConnectivityConfigurationResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteNetworkConnectivityConfigurationResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteNetworkConnectivityConfigurationResponse:
         """Deserializes the DeleteNetworkConnectivityConfigurationResponse from a dictionary."""
         return cls()
 
@@ -660,7 +660,7 @@ class DeletePersonalComputeSettingResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeletePersonalComputeSettingResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeletePersonalComputeSettingResponse:
         """Deserializes the DeletePersonalComputeSettingResponse from a dictionary."""
         return cls(etag=d.get('etag', None))
 
@@ -674,7 +674,7 @@ class DeleteResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteResponse:
         """Deserializes the DeleteResponse from a dictionary."""
         return cls()
 
@@ -698,7 +698,7 @@ class DeleteRestrictWorkspaceAdminsSettingResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteRestrictWorkspaceAdminsSettingResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteRestrictWorkspaceAdminsSettingResponse:
         """Deserializes the DeleteRestrictWorkspaceAdminsSettingResponse from a dictionary."""
         return cls(etag=d.get('etag', None))
 
@@ -717,7 +717,7 @@ class EsmEnablement:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EsmEnablement:
+    def from_dict(cls, d: Dict[str, Any]) -> EsmEnablement:
         """Deserializes the EsmEnablement from a dictionary."""
         return cls(is_enabled=d.get('is_enabled', None))
 
@@ -735,7 +735,7 @@ class EsmEnablementAccount:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EsmEnablementAccount:
+    def from_dict(cls, d: Dict[str, Any]) -> EsmEnablementAccount:
         """Deserializes the EsmEnablementAccount from a dictionary."""
         return cls(is_enforced=d.get('is_enforced', None))
 
@@ -768,7 +768,7 @@ class EsmEnablementAccountSetting:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EsmEnablementAccountSetting:
+    def from_dict(cls, d: Dict[str, Any]) -> EsmEnablementAccountSetting:
         """Deserializes the EsmEnablementAccountSetting from a dictionary."""
         return cls(esm_enablement_account=_from_dict(d, 'esm_enablement_account', EsmEnablementAccount),
                    etag=d.get('etag', None),
@@ -805,7 +805,7 @@ class EsmEnablementSetting:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EsmEnablementSetting:
+    def from_dict(cls, d: Dict[str, Any]) -> EsmEnablementSetting:
         """Deserializes the EsmEnablementSetting from a dictionary."""
         return cls(esm_enablement_workspace=_from_dict(d, 'esm_enablement_workspace', EsmEnablement),
                    etag=d.get('etag', None),
@@ -842,7 +842,7 @@ class ExchangeToken:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ExchangeToken:
+    def from_dict(cls, d: Dict[str, Any]) -> ExchangeToken:
         """Deserializes the ExchangeToken from a dictionary."""
         return cls(credential=d.get('credential', None),
                    credential_eol_time=d.get('credentialEolTime', None),
@@ -873,7 +873,7 @@ class ExchangeTokenRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ExchangeTokenRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> ExchangeTokenRequest:
         """Deserializes the ExchangeTokenRequest from a dictionary."""
         return cls(partition_id=_from_dict(d, 'partitionId', PartitionId),
                    scopes=d.get('scopes', None),
@@ -893,7 +893,7 @@ class ExchangeTokenResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ExchangeTokenResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ExchangeTokenResponse:
         """Deserializes the ExchangeTokenResponse from a dictionary."""
         return cls(values=_repeated_dict(d, 'values', ExchangeToken))
 
@@ -912,7 +912,7 @@ class FetchIpAccessListResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> FetchIpAccessListResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> FetchIpAccessListResponse:
         """Deserializes the FetchIpAccessListResponse from a dictionary."""
         return cls(ip_access_list=_from_dict(d, 'ip_access_list', IpAccessListInfo))
 
@@ -929,7 +929,7 @@ class GetIpAccessListResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetIpAccessListResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetIpAccessListResponse:
         """Deserializes the GetIpAccessListResponse from a dictionary."""
         return cls(ip_access_list=_from_dict(d, 'ip_access_list', IpAccessListInfo))
 
@@ -947,7 +947,7 @@ class GetIpAccessListsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetIpAccessListsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetIpAccessListsResponse:
         """Deserializes the GetIpAccessListsResponse from a dictionary."""
         return cls(ip_access_lists=_repeated_dict(d, 'ip_access_lists', IpAccessListInfo))
 
@@ -964,7 +964,7 @@ class GetTokenPermissionLevelsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetTokenPermissionLevelsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetTokenPermissionLevelsResponse:
         """Deserializes the GetTokenPermissionLevelsResponse from a dictionary."""
         return cls(permission_levels=_repeated_dict(d, 'permission_levels', TokenPermissionsDescription))
 
@@ -982,7 +982,7 @@ class GetTokenResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetTokenResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetTokenResponse:
         """Deserializes the GetTokenResponse from a dictionary."""
         return cls(token_info=_from_dict(d, 'token_info', TokenInfo))
 
@@ -1013,7 +1013,7 @@ class IpAccessListInfo:
 
     list_type: Optional[ListType] = None
     """Type of IP access list. Valid values are as follows and are case-sensitive:
-    
+
     * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
     range. IP addresses in the block list are excluded even if they are included in an allow list."""
 
@@ -1039,7 +1039,7 @@ class IpAccessListInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> IpAccessListInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> IpAccessListInfo:
         """Deserializes the IpAccessListInfo from a dictionary."""
         return cls(address_count=d.get('address_count', None),
                    created_at=d.get('created_at', None),
@@ -1066,7 +1066,7 @@ class ListIpAccessListResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListIpAccessListResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListIpAccessListResponse:
         """Deserializes the ListIpAccessListResponse from a dictionary."""
         return cls(ip_access_lists=_repeated_dict(d, 'ip_access_lists', IpAccessListInfo))
 
@@ -1087,7 +1087,7 @@ class ListNccAzurePrivateEndpointRulesResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListNccAzurePrivateEndpointRulesResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListNccAzurePrivateEndpointRulesResponse:
         """Deserializes the ListNccAzurePrivateEndpointRulesResponse from a dictionary."""
         return cls(items=_repeated_dict(d, 'items', NccAzurePrivateEndpointRule),
                    next_page_token=d.get('next_page_token', None))
@@ -1109,7 +1109,7 @@ class ListNetworkConnectivityConfigurationsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListNetworkConnectivityConfigurationsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListNetworkConnectivityConfigurationsResponse:
         """Deserializes the ListNetworkConnectivityConfigurationsResponse from a dictionary."""
         return cls(items=_repeated_dict(d, 'items', NetworkConnectivityConfiguration),
                    next_page_token=d.get('next_page_token', None))
@@ -1127,7 +1127,7 @@ class ListPublicTokensResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListPublicTokensResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListPublicTokensResponse:
         """Deserializes the ListPublicTokensResponse from a dictionary."""
         return cls(token_infos=_repeated_dict(d, 'token_infos', PublicTokenInfo))
 
@@ -1146,14 +1146,14 @@ class ListTokensResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListTokensResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListTokensResponse:
         """Deserializes the ListTokensResponse from a dictionary."""
         return cls(token_infos=_repeated_dict(d, 'token_infos', TokenInfo))
 
 
 class ListType(Enum):
     """Type of IP access list. Valid values are as follows and are case-sensitive:
-    
+
     * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
     range. IP addresses in the block list are excluded even if they are included in an allow list."""
 
@@ -1167,7 +1167,7 @@ class NccAzurePrivateEndpointRule:
     """The current status of this private endpoint. The private endpoint rules are effective only if
     the connection state is `ESTABLISHED`. Remember that you must approve new endpoints on your
     resources in the Azure portal before they take effect.
-    
+
     The possible values are: - INIT: (deprecated) The endpoint has been created and pending
     approval. - PENDING: The endpoint has been created and pending approval. - ESTABLISHED: The
     endpoint has been approved and is ready to use in your serverless compute resources. - REJECTED:
@@ -1221,7 +1221,7 @@ class NccAzurePrivateEndpointRule:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> NccAzurePrivateEndpointRule:
+    def from_dict(cls, d: Dict[str, Any]) -> NccAzurePrivateEndpointRule:
         """Deserializes the NccAzurePrivateEndpointRule from a dictionary."""
         return cls(connection_state=_enum(d, 'connection_state', NccAzurePrivateEndpointRuleConnectionState),
                    creation_time=d.get('creation_time', None),
@@ -1239,7 +1239,7 @@ class NccAzurePrivateEndpointRuleConnectionState(Enum):
     """The current status of this private endpoint. The private endpoint rules are effective only if
     the connection state is `ESTABLISHED`. Remember that you must approve new endpoints on your
     resources in the Azure portal before they take effect.
-    
+
     The possible values are: - INIT: (deprecated) The endpoint has been created and pending
     approval. - PENDING: The endpoint has been created and pending approval. - ESTABLISHED: The
     endpoint has been approved and is ready to use in your serverless compute resources. - REJECTED:
@@ -1288,7 +1288,7 @@ class NccAzureServiceEndpointRule:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> NccAzureServiceEndpointRule:
+    def from_dict(cls, d: Dict[str, Any]) -> NccAzureServiceEndpointRule:
         """Deserializes the NccAzureServiceEndpointRule from a dictionary."""
         return cls(subnets=d.get('subnets', None),
                    target_region=d.get('target_region', None),
@@ -1317,7 +1317,7 @@ class NccEgressConfig:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> NccEgressConfig:
+    def from_dict(cls, d: Dict[str, Any]) -> NccEgressConfig:
         """Deserializes the NccEgressConfig from a dictionary."""
         return cls(default_rules=_from_dict(d, 'default_rules', NccEgressDefaultRules),
                    target_rules=_from_dict(d, 'target_rules', NccEgressTargetRules))
@@ -1341,7 +1341,7 @@ class NccEgressDefaultRules:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> NccEgressDefaultRules:
+    def from_dict(cls, d: Dict[str, Any]) -> NccEgressDefaultRules:
         """Deserializes the NccEgressDefaultRules from a dictionary."""
         return cls(azure_service_endpoint_rule=_from_dict(d, 'azure_service_endpoint_rule',
                                                           NccAzureServiceEndpointRule))
@@ -1362,7 +1362,7 @@ class NccEgressTargetRules:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> NccEgressTargetRules:
+    def from_dict(cls, d: Dict[str, Any]) -> NccEgressTargetRules:
         """Deserializes the NccEgressTargetRules from a dictionary."""
         return cls(azure_private_endpoint_rules=_repeated_dict(d, 'azure_private_endpoint_rules',
                                                                NccAzurePrivateEndpointRule))
@@ -1409,7 +1409,7 @@ class NetworkConnectivityConfiguration:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> NetworkConnectivityConfiguration:
+    def from_dict(cls, d: Dict[str, Any]) -> NetworkConnectivityConfiguration:
         """Deserializes the NetworkConnectivityConfiguration from a dictionary."""
         return cls(account_id=d.get('account_id', None),
                    creation_time=d.get('creation_time', None),
@@ -1434,7 +1434,7 @@ class PartitionId:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PartitionId:
+    def from_dict(cls, d: Dict[str, Any]) -> PartitionId:
         """Deserializes the PartitionId from a dictionary."""
         return cls(workspace_id=d.get('workspaceId', None))
 
@@ -1455,7 +1455,7 @@ class PersonalComputeMessage:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PersonalComputeMessage:
+    def from_dict(cls, d: Dict[str, Any]) -> PersonalComputeMessage:
         """Deserializes the PersonalComputeMessage from a dictionary."""
         return cls(value=_enum(d, 'value', PersonalComputeMessageEnum))
 
@@ -1498,7 +1498,7 @@ class PersonalComputeSetting:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PersonalComputeSetting:
+    def from_dict(cls, d: Dict[str, Any]) -> PersonalComputeSetting:
         """Deserializes the PersonalComputeSetting from a dictionary."""
         return cls(etag=d.get('etag', None),
                    personal_compute=_from_dict(d, 'personal_compute', PersonalComputeMessage),
@@ -1529,7 +1529,7 @@ class PublicTokenInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PublicTokenInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> PublicTokenInfo:
         """Deserializes the PublicTokenInfo from a dictionary."""
         return cls(comment=d.get('comment', None),
                    creation_time=d.get('creation_time', None),
@@ -1546,7 +1546,7 @@ class ReplaceIpAccessList:
 
     list_type: ListType
     """Type of IP access list. Valid values are as follows and are case-sensitive:
-    
+
     * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
     range. IP addresses in the block list are excluded even if they are included in an allow list."""
 
@@ -1569,7 +1569,7 @@ class ReplaceIpAccessList:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ReplaceIpAccessList:
+    def from_dict(cls, d: Dict[str, Any]) -> ReplaceIpAccessList:
         """Deserializes the ReplaceIpAccessList from a dictionary."""
         return cls(enabled=d.get('enabled', None),
                    ip_access_list_id=d.get('ip_access_list_id', None),
@@ -1587,7 +1587,7 @@ class ReplaceResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ReplaceResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ReplaceResponse:
         """Deserializes the ReplaceResponse from a dictionary."""
         return cls()
 
@@ -1603,7 +1603,7 @@ class RestrictWorkspaceAdminsMessage:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RestrictWorkspaceAdminsMessage:
+    def from_dict(cls, d: Dict[str, Any]) -> RestrictWorkspaceAdminsMessage:
         """Deserializes the RestrictWorkspaceAdminsMessage from a dictionary."""
         return cls(status=_enum(d, 'status', RestrictWorkspaceAdminsMessageStatus))
 
@@ -1643,7 +1643,7 @@ class RestrictWorkspaceAdminsSetting:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RestrictWorkspaceAdminsSetting:
+    def from_dict(cls, d: Dict[str, Any]) -> RestrictWorkspaceAdminsSetting:
         """Deserializes the RestrictWorkspaceAdminsSetting from a dictionary."""
         return cls(etag=d.get('etag', None),
                    restrict_workspace_admins=_from_dict(d, 'restrict_workspace_admins',
@@ -1663,7 +1663,7 @@ class RevokeTokenRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RevokeTokenRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> RevokeTokenRequest:
         """Deserializes the RevokeTokenRequest from a dictionary."""
         return cls(token_id=d.get('token_id', None))
 
@@ -1677,7 +1677,7 @@ class RevokeTokenResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RevokeTokenResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> RevokeTokenResponse:
         """Deserializes the RevokeTokenResponse from a dictionary."""
         return cls()
 
@@ -1691,7 +1691,7 @@ class SetStatusResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SetStatusResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> SetStatusResponse:
         """Deserializes the SetStatusResponse from a dictionary."""
         return cls()
 
@@ -1708,7 +1708,7 @@ class StringMessage:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> StringMessage:
+    def from_dict(cls, d: Dict[str, Any]) -> StringMessage:
         """Deserializes the StringMessage from a dictionary."""
         return cls(value=d.get('value', None))
 
@@ -1738,7 +1738,7 @@ class TokenAccessControlRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TokenAccessControlRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> TokenAccessControlRequest:
         """Deserializes the TokenAccessControlRequest from a dictionary."""
         return cls(group_name=d.get('group_name', None),
                    permission_level=_enum(d, 'permission_level', TokenPermissionLevel),
@@ -1775,7 +1775,7 @@ class TokenAccessControlResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TokenAccessControlResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> TokenAccessControlResponse:
         """Deserializes the TokenAccessControlResponse from a dictionary."""
         return cls(all_permissions=_repeated_dict(d, 'all_permissions', TokenPermission),
                    display_name=d.get('display_name', None),
@@ -1820,7 +1820,7 @@ class TokenInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TokenInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> TokenInfo:
         """Deserializes the TokenInfo from a dictionary."""
         return cls(comment=d.get('comment', None),
                    created_by_id=d.get('created_by_id', None),
@@ -1849,7 +1849,7 @@ class TokenPermission:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TokenPermission:
+    def from_dict(cls, d: Dict[str, Any]) -> TokenPermission:
         """Deserializes the TokenPermission from a dictionary."""
         return cls(inherited=d.get('inherited', None),
                    inherited_from_object=d.get('inherited_from_object', None),
@@ -1880,7 +1880,7 @@ class TokenPermissions:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TokenPermissions:
+    def from_dict(cls, d: Dict[str, Any]) -> TokenPermissions:
         """Deserializes the TokenPermissions from a dictionary."""
         return cls(access_control_list=_repeated_dict(d, 'access_control_list', TokenAccessControlResponse),
                    object_id=d.get('object_id', None),
@@ -1902,7 +1902,7 @@ class TokenPermissionsDescription:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TokenPermissionsDescription:
+    def from_dict(cls, d: Dict[str, Any]) -> TokenPermissionsDescription:
         """Deserializes the TokenPermissionsDescription from a dictionary."""
         return cls(description=d.get('description', None),
                    permission_level=_enum(d, 'permission_level', TokenPermissionLevel))
@@ -1920,7 +1920,7 @@ class TokenPermissionsRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TokenPermissionsRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> TokenPermissionsRequest:
         """Deserializes the TokenPermissionsRequest from a dictionary."""
         return cls(access_control_list=_repeated_dict(d, 'access_control_list', TokenAccessControlRequest))
 
@@ -1954,7 +1954,7 @@ class UpdateAutomaticClusterUpdateSettingRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateAutomaticClusterUpdateSettingRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateAutomaticClusterUpdateSettingRequest:
         """Deserializes the UpdateAutomaticClusterUpdateSettingRequest from a dictionary."""
         return cls(allow_missing=d.get('allow_missing', None),
                    field_mask=d.get('field_mask', None),
@@ -1984,7 +1984,7 @@ class UpdateCspEnablementAccountSettingRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateCspEnablementAccountSettingRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateCspEnablementAccountSettingRequest:
         """Deserializes the UpdateCspEnablementAccountSettingRequest from a dictionary."""
         return cls(allow_missing=d.get('allow_missing', None),
                    field_mask=d.get('field_mask', None),
@@ -2014,7 +2014,7 @@ class UpdateCspEnablementSettingRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateCspEnablementSettingRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateCspEnablementSettingRequest:
         """Deserializes the UpdateCspEnablementSettingRequest from a dictionary."""
         return cls(allow_missing=d.get('allow_missing', None),
                    field_mask=d.get('field_mask', None),
@@ -2051,7 +2051,7 @@ class UpdateDefaultNamespaceSettingRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateDefaultNamespaceSettingRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateDefaultNamespaceSettingRequest:
         """Deserializes the UpdateDefaultNamespaceSettingRequest from a dictionary."""
         return cls(allow_missing=d.get('allow_missing', None),
                    field_mask=d.get('field_mask', None),
@@ -2081,7 +2081,7 @@ class UpdateEsmEnablementAccountSettingRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateEsmEnablementAccountSettingRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateEsmEnablementAccountSettingRequest:
         """Deserializes the UpdateEsmEnablementAccountSettingRequest from a dictionary."""
         return cls(allow_missing=d.get('allow_missing', None),
                    field_mask=d.get('field_mask', None),
@@ -2111,7 +2111,7 @@ class UpdateEsmEnablementSettingRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateEsmEnablementSettingRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateEsmEnablementSettingRequest:
         """Deserializes the UpdateEsmEnablementSettingRequest from a dictionary."""
         return cls(allow_missing=d.get('allow_missing', None),
                    field_mask=d.get('field_mask', None),
@@ -2135,7 +2135,7 @@ class UpdateIpAccessList:
 
     list_type: Optional[ListType] = None
     """Type of IP access list. Valid values are as follows and are case-sensitive:
-    
+
     * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
     range. IP addresses in the block list are excluded even if they are included in an allow list."""
 
@@ -2150,7 +2150,7 @@ class UpdateIpAccessList:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateIpAccessList:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateIpAccessList:
         """Deserializes the UpdateIpAccessList from a dictionary."""
         return cls(enabled=d.get('enabled', None),
                    ip_access_list_id=d.get('ip_access_list_id', None),
@@ -2182,7 +2182,7 @@ class UpdatePersonalComputeSettingRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdatePersonalComputeSettingRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdatePersonalComputeSettingRequest:
         """Deserializes the UpdatePersonalComputeSettingRequest from a dictionary."""
         return cls(allow_missing=d.get('allow_missing', None),
                    field_mask=d.get('field_mask', None),
@@ -2198,7 +2198,7 @@ class UpdateResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateResponse:
         """Deserializes the UpdateResponse from a dictionary."""
         return cls()
 
@@ -2226,7 +2226,7 @@ class UpdateRestrictWorkspaceAdminsSettingRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateRestrictWorkspaceAdminsSettingRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateRestrictWorkspaceAdminsSettingRequest:
         """Deserializes the UpdateRestrictWorkspaceAdminsSettingRequest from a dictionary."""
         return cls(allow_missing=d.get('allow_missing', None),
                    field_mask=d.get('field_mask', None),
@@ -2239,21 +2239,21 @@ WorkspaceConf = Dict[str, str]
 class AccountIpAccessListsAPI:
     """The Accounts IP Access List API enables account admins to configure IP access lists for access to the
     account console.
-    
+
     Account IP Access Lists affect web application access and REST API access to the account console and
     account APIs. If the feature is disabled for the account, all access is allowed for this account. There is
     support for allow lists (inclusion) and block lists (exclusion).
-    
+
     When a connection is attempted: 1. **First, all block lists are checked.** If the connection IP address
     matches any block list, the connection is rejected. 2. **If the connection was not rejected by block
     lists**, the IP address is compared with the allow lists.
-    
+
     If there is at least one allow list for the account, the connection is allowed only if the IP address
     matches an allow list. If there are no allow lists for the account, all IP addresses are allowed.
-    
+
     For all allow lists and block lists combined, the account supports a maximum of 1000 IP/CIDR values, where
     one CIDR counts as a single value.
-    
+
     After changes to the account-level IP access lists, it can take a few minutes for changes to take effect."""
 
     def __init__(self, api_client):
@@ -2265,30 +2265,30 @@ class AccountIpAccessListsAPI:
                *,
                ip_addresses: Optional[List[str]] = None) -> CreateIpAccessListResponse:
         """Create access list.
-        
+
         Creates an IP access list for the account.
-        
+
         A list can be an allow list or a block list. See the top of this file for a description of how the
         server treats allow lists and block lists at runtime.
-        
+
         When creating or updating an IP access list:
-        
+
         * For all allow lists and block lists combined, the API supports a maximum of 1000 IP/CIDR values,
         where one CIDR counts as a single value. Attempts to exceed that number return error 400 with
         `error_code` value `QUOTA_EXCEEDED`. * If the new list would block the calling user's current IP,
         error 400 is returned with `error_code` value `INVALID_STATE`.
-        
+
         It can take a few minutes for the changes to take effect.
-        
+
         :param label: str
           Label for the IP access list. This **cannot** be empty.
         :param list_type: :class:`ListType`
           Type of IP access list. Valid values are as follows and are case-sensitive:
-          
+
           * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
           range. IP addresses in the block list are excluded even if they are included in an allow list.
         :param ip_addresses: List[str] (optional)
-        
+
         :returns: :class:`CreateIpAccessListResponse`
         """
         body = {}
@@ -2305,13 +2305,13 @@ class AccountIpAccessListsAPI:
 
     def delete(self, ip_access_list_id: str):
         """Delete access list.
-        
+
         Deletes an IP access list, specified by its list ID.
-        
+
         :param ip_access_list_id: str
           The ID for the corresponding IP access list
-        
-        
+
+
         """
 
         headers = {'Accept': 'application/json', }
@@ -2322,12 +2322,12 @@ class AccountIpAccessListsAPI:
 
     def get(self, ip_access_list_id: str) -> GetIpAccessListResponse:
         """Get IP access list.
-        
+
         Gets an IP access list, specified by its list ID.
-        
+
         :param ip_access_list_id: str
           The ID for the corresponding IP access list
-        
+
         :returns: :class:`GetIpAccessListResponse`
         """
 
@@ -2340,9 +2340,9 @@ class AccountIpAccessListsAPI:
 
     def list(self) -> Iterator[IpAccessListInfo]:
         """Get access lists.
-        
+
         Gets all IP access lists for the specified account.
-        
+
         :returns: Iterator over :class:`IpAccessListInfo`
         """
 
@@ -2362,9 +2362,9 @@ class AccountIpAccessListsAPI:
                 *,
                 ip_addresses: Optional[List[str]] = None):
         """Replace access list.
-        
+
         Replaces an IP access list, specified by its ID.
-        
+
         A list can include allow lists and block lists. See the top of this file for a description of how the
         server treats allow lists and block lists at run time. When replacing an IP access list: * For all
         allow lists and block lists combined, the API supports a maximum of 1000 IP/CIDR values, where one
@@ -2372,21 +2372,21 @@ class AccountIpAccessListsAPI:
         `QUOTA_EXCEEDED`. * If the resulting list would block the calling user's current IP, error 400 is
         returned with `error_code` value `INVALID_STATE`. It can take a few minutes for the changes to take
         effect.
-        
+
         :param ip_access_list_id: str
           The ID for the corresponding IP access list
         :param label: str
           Label for the IP access list. This **cannot** be empty.
         :param list_type: :class:`ListType`
           Type of IP access list. Valid values are as follows and are case-sensitive:
-          
+
           * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
           range. IP addresses in the block list are excluded even if they are included in an allow list.
         :param enabled: bool
           Specifies whether this IP access list is enabled.
         :param ip_addresses: List[str] (optional)
-        
-        
+
+
         """
         body = {}
         if enabled is not None: body['enabled'] = enabled
@@ -2408,21 +2408,21 @@ class AccountIpAccessListsAPI:
                label: Optional[str] = None,
                list_type: Optional[ListType] = None):
         """Update access list.
-        
+
         Updates an existing IP access list, specified by its ID.
-        
+
         A list can include allow lists and block lists. See the top of this file for a description of how the
         server treats allow lists and block lists at run time.
-        
+
         When updating an IP access list:
-        
+
         * For all allow lists and block lists combined, the API supports a maximum of 1000 IP/CIDR values,
         where one CIDR counts as a single value. Attempts to exceed that number return error 400 with
         `error_code` value `QUOTA_EXCEEDED`. * If the updated list would block the calling user's current IP,
         error 400 is returned with `error_code` value `INVALID_STATE`.
-        
+
         It can take a few minutes for the changes to take effect.
-        
+
         :param ip_access_list_id: str
           The ID for the corresponding IP access list
         :param enabled: bool (optional)
@@ -2432,11 +2432,11 @@ class AccountIpAccessListsAPI:
           Label for the IP access list. This **cannot** be empty.
         :param list_type: :class:`ListType` (optional)
           Type of IP access list. Valid values are as follows and are case-sensitive:
-          
+
           * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
           range. IP addresses in the block list are excluded even if they are included in an allow list.
-        
-        
+
+
         """
         body = {}
         if enabled is not None: body['enabled'] = enabled
@@ -2455,7 +2455,7 @@ class AccountSettingsAPI:
     """The Personal Compute enablement setting lets you control which users can use the Personal Compute default
     policy to create compute resources. By default all users in all workspaces have access (ON), but you can
     change the setting to instead let individual workspaces configure access control (DELEGATE).
-    
+
     There is only one instance of this setting per account. Since this setting has a default value, this
     setting is present on all accounts even though it's never set on a given account. Deletion reverts the
     value of the setting back to the default value."""
@@ -2467,16 +2467,16 @@ class AccountSettingsAPI:
                                         *,
                                         etag: Optional[str] = None) -> DeletePersonalComputeSettingResponse:
         """Delete Personal Compute setting.
-        
+
         Reverts back the Personal Compute setting value to default (ON)
-        
+
         :param etag: str (optional)
           etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
           optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
           each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
           to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
           request, and pass it with the DELETE request to identify the rule set version you are deleting.
-        
+
         :returns: :class:`DeletePersonalComputeSettingResponse`
         """
 
@@ -2495,16 +2495,16 @@ class AccountSettingsAPI:
                                            *,
                                            etag: Optional[str] = None) -> CspEnablementAccountSetting:
         """Get the compliance security profile setting for new workspaces.
-        
+
         Gets the compliance security profile setting for new workspaces.
-        
+
         :param etag: str (optional)
           etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
           optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
           each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
           to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
           request, and pass it with the DELETE request to identify the rule set version you are deleting.
-        
+
         :returns: :class:`CspEnablementAccountSetting`
         """
 
@@ -2523,16 +2523,16 @@ class AccountSettingsAPI:
                                            *,
                                            etag: Optional[str] = None) -> EsmEnablementAccountSetting:
         """Get the enhanced security monitoring setting for new workspaces.
-        
+
         Gets the enhanced security monitoring setting for new workspaces.
-        
+
         :param etag: str (optional)
           etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
           optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
           each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
           to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
           request, and pass it with the DELETE request to identify the rule set version you are deleting.
-        
+
         :returns: :class:`EsmEnablementAccountSetting`
         """
 
@@ -2549,16 +2549,16 @@ class AccountSettingsAPI:
 
     def get_personal_compute_setting(self, *, etag: Optional[str] = None) -> PersonalComputeSetting:
         """Get Personal Compute setting.
-        
+
         Gets the value of the Personal Compute setting.
-        
+
         :param etag: str (optional)
           etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
           optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
           each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
           to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
           request, and pass it with the DELETE request to identify the rule set version you are deleting.
-        
+
         :returns: :class:`PersonalComputeSetting`
         """
 
@@ -2576,9 +2576,9 @@ class AccountSettingsAPI:
     def update_csp_enablement_account_setting(self, allow_missing: bool, setting: CspEnablementAccountSetting,
                                               field_mask: str) -> CspEnablementAccountSetting:
         """Update the compliance security profile setting for new workspaces.
-        
+
         Updates the value of the compliance security profile setting for new workspaces.
-        
+
         :param allow_missing: bool
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`CspEnablementAccountSetting`
@@ -2586,7 +2586,7 @@ class AccountSettingsAPI:
           Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
           setting payload will be updated. The field mask needs to be supplied as single string. To specify
           multiple fields in the field mask, use comma as the separator (no space).
-        
+
         :returns: :class:`CspEnablementAccountSetting`
         """
         body = {}
@@ -2605,9 +2605,9 @@ class AccountSettingsAPI:
     def update_esm_enablement_account_setting(self, allow_missing: bool, setting: EsmEnablementAccountSetting,
                                               field_mask: str) -> EsmEnablementAccountSetting:
         """Update the enhanced security monitoring setting for new workspaces.
-        
+
         Updates the value of the enhanced security monitoring setting for new workspaces.
-        
+
         :param allow_missing: bool
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`EsmEnablementAccountSetting`
@@ -2615,7 +2615,7 @@ class AccountSettingsAPI:
           Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
           setting payload will be updated. The field mask needs to be supplied as single string. To specify
           multiple fields in the field mask, use comma as the separator (no space).
-        
+
         :returns: :class:`EsmEnablementAccountSetting`
         """
         body = {}
@@ -2634,9 +2634,9 @@ class AccountSettingsAPI:
     def update_personal_compute_setting(self, allow_missing: bool, setting: PersonalComputeSetting,
                                         field_mask: str) -> PersonalComputeSetting:
         """Update Personal Compute setting.
-        
+
         Updates the value of the Personal Compute setting.
-        
+
         :param allow_missing: bool
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`PersonalComputeSetting`
@@ -2644,7 +2644,7 @@ class AccountSettingsAPI:
           Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
           setting payload will be updated. The field mask needs to be supplied as single string. To specify
           multiple fields in the field mask, use comma as the separator (no space).
-        
+
         :returns: :class:`PersonalComputeSetting`
         """
         body = {}
@@ -2671,17 +2671,17 @@ class CredentialsManagerAPI:
     def exchange_token(self, partition_id: PartitionId, token_type: List[TokenType],
                        scopes: List[str]) -> ExchangeTokenResponse:
         """Exchange token.
-        
+
         Exchange tokens with an Identity Provider to get a new access token. It allows specifying scopes to
         determine token permissions.
-        
+
         :param partition_id: :class:`PartitionId`
           The partition of Credentials store
         :param token_type: List[:class:`TokenType`]
           A list of token types being requested
         :param scopes: List[str]
           Array of scopes for the token request.
-        
+
         :returns: :class:`ExchangeTokenResponse`
         """
         body = {}
@@ -2699,21 +2699,21 @@ class CredentialsManagerAPI:
 
 class IpAccessListsAPI:
     """IP Access List enables admins to configure IP access lists.
-    
+
     IP access lists affect web application access and REST API access to this workspace only. If the feature
     is disabled for a workspace, all access is allowed for this workspace. There is support for allow lists
     (inclusion) and block lists (exclusion).
-    
+
     When a connection is attempted: 1. **First, all block lists are checked.** If the connection IP address
     matches any block list, the connection is rejected. 2. **If the connection was not rejected by block
     lists**, the IP address is compared with the allow lists.
-    
+
     If there is at least one allow list for the workspace, the connection is allowed only if the IP address
     matches an allow list. If there are no allow lists for the workspace, all IP addresses are allowed.
-    
+
     For all allow lists and block lists combined, the workspace supports a maximum of 1000 IP/CIDR values,
     where one CIDR counts as a single value.
-    
+
     After changes to the IP access list feature, it can take a few minutes for changes to take effect."""
 
     def __init__(self, api_client):
@@ -2725,31 +2725,31 @@ class IpAccessListsAPI:
                *,
                ip_addresses: Optional[List[str]] = None) -> CreateIpAccessListResponse:
         """Create access list.
-        
+
         Creates an IP access list for this workspace.
-        
+
         A list can be an allow list or a block list. See the top of this file for a description of how the
         server treats allow lists and block lists at runtime.
-        
+
         When creating or updating an IP access list:
-        
+
         * For all allow lists and block lists combined, the API supports a maximum of 1000 IP/CIDR values,
         where one CIDR counts as a single value. Attempts to exceed that number return error 400 with
         `error_code` value `QUOTA_EXCEEDED`. * If the new list would block the calling user's current IP,
         error 400 is returned with `error_code` value `INVALID_STATE`.
-        
+
         It can take a few minutes for the changes to take effect. **Note**: Your new IP access list has no
         effect until you enable the feature. See :method:workspaceconf/setStatus
-        
+
         :param label: str
           Label for the IP access list. This **cannot** be empty.
         :param list_type: :class:`ListType`
           Type of IP access list. Valid values are as follows and are case-sensitive:
-          
+
           * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
           range. IP addresses in the block list are excluded even if they are included in an allow list.
         :param ip_addresses: List[str] (optional)
-        
+
         :returns: :class:`CreateIpAccessListResponse`
         """
         body = {}
@@ -2763,13 +2763,13 @@ class IpAccessListsAPI:
 
     def delete(self, ip_access_list_id: str):
         """Delete access list.
-        
+
         Deletes an IP access list, specified by its list ID.
-        
+
         :param ip_access_list_id: str
           The ID for the corresponding IP access list
-        
-        
+
+
         """
 
         headers = {'Accept': 'application/json', }
@@ -2778,12 +2778,12 @@ class IpAccessListsAPI:
 
     def get(self, ip_access_list_id: str) -> FetchIpAccessListResponse:
         """Get access list.
-        
+
         Gets an IP access list, specified by its list ID.
-        
+
         :param ip_access_list_id: str
           The ID for the corresponding IP access list
-        
+
         :returns: :class:`FetchIpAccessListResponse`
         """
 
@@ -2794,9 +2794,9 @@ class IpAccessListsAPI:
 
     def list(self) -> Iterator[IpAccessListInfo]:
         """Get access lists.
-        
+
         Gets all IP access lists for the specified workspace.
-        
+
         :returns: Iterator over :class:`IpAccessListInfo`
         """
 
@@ -2814,9 +2814,9 @@ class IpAccessListsAPI:
                 *,
                 ip_addresses: Optional[List[str]] = None):
         """Replace access list.
-        
+
         Replaces an IP access list, specified by its ID.
-        
+
         A list can include allow lists and block lists. See the top of this file for a description of how the
         server treats allow lists and block lists at run time. When replacing an IP access list: * For all
         allow lists and block lists combined, the API supports a maximum of 1000 IP/CIDR values, where one
@@ -2825,21 +2825,21 @@ class IpAccessListsAPI:
         returned with `error_code` value `INVALID_STATE`. It can take a few minutes for the changes to take
         effect. Note that your resulting IP access list has no effect until you enable the feature. See
         :method:workspaceconf/setStatus.
-        
+
         :param ip_access_list_id: str
           The ID for the corresponding IP access list
         :param label: str
           Label for the IP access list. This **cannot** be empty.
         :param list_type: :class:`ListType`
           Type of IP access list. Valid values are as follows and are case-sensitive:
-          
+
           * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
           range. IP addresses in the block list are excluded even if they are included in an allow list.
         :param enabled: bool
           Specifies whether this IP access list is enabled.
         :param ip_addresses: List[str] (optional)
-        
-        
+
+
         """
         body = {}
         if enabled is not None: body['enabled'] = enabled
@@ -2858,22 +2858,22 @@ class IpAccessListsAPI:
                label: Optional[str] = None,
                list_type: Optional[ListType] = None):
         """Update access list.
-        
+
         Updates an existing IP access list, specified by its ID.
-        
+
         A list can include allow lists and block lists. See the top of this file for a description of how the
         server treats allow lists and block lists at run time.
-        
+
         When updating an IP access list:
-        
+
         * For all allow lists and block lists combined, the API supports a maximum of 1000 IP/CIDR values,
         where one CIDR counts as a single value. Attempts to exceed that number return error 400 with
         `error_code` value `QUOTA_EXCEEDED`. * If the updated list would block the calling user's current IP,
         error 400 is returned with `error_code` value `INVALID_STATE`.
-        
+
         It can take a few minutes for the changes to take effect. Note that your resulting IP access list has
         no effect until you enable the feature. See :method:workspaceconf/setStatus.
-        
+
         :param ip_access_list_id: str
           The ID for the corresponding IP access list
         :param enabled: bool (optional)
@@ -2883,11 +2883,11 @@ class IpAccessListsAPI:
           Label for the IP access list. This **cannot** be empty.
         :param list_type: :class:`ListType` (optional)
           Type of IP access list. Valid values are as follows and are case-sensitive:
-          
+
           * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or
           range. IP addresses in the block list are excluded even if they are included in an allow list.
-        
-        
+
+
         """
         body = {}
         if enabled is not None: body['enabled'] = enabled
@@ -2905,7 +2905,7 @@ class NetworkConnectivityAPI:
     your Azure Storage accounts to allow access from Databricks. You can also use the API to provision private
     endpoints for Databricks to privately connect serverless compute resources to your Azure resources using
     Azure Private Link. See [configure serverless secure connectivity].
-    
+
     [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security"""
 
     def __init__(self, api_client):
@@ -2914,19 +2914,19 @@ class NetworkConnectivityAPI:
     def create_network_connectivity_configuration(self, name: str,
                                                   region: str) -> NetworkConnectivityConfiguration:
         """Create a network connectivity configuration.
-        
+
         Creates a network connectivity configuration (NCC), which provides stable Azure service subnets when
         accessing your Azure Storage accounts. You can also use a network connectivity configuration to create
         Databricks-managed private endpoints so that Databricks serverless compute resources privately access
         your resources.
-        
+
         **IMPORTANT**: After you create the network connectivity configuration, you must assign one or more
         workspaces to the new network connectivity configuration. You can share one network connectivity
         configuration with multiple workspaces from the same Azure region within the same Databricks account.
         See [configure serverless secure connectivity].
-        
+
         [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security
-        
+
         :param name: str
           The name of the network connectivity configuration. The name can contain alphanumeric characters,
           hyphens, and underscores. The length must be between 3 and 30 characters. The name must match the
@@ -2934,7 +2934,7 @@ class NetworkConnectivityAPI:
         :param region: str
           The Azure region for this network connectivity configuration. Only workspaces in the same Azure
           region can be attached to this network connectivity configuration.
-        
+
         :returns: :class:`NetworkConnectivityConfiguration`
         """
         body = {}
@@ -2952,17 +2952,17 @@ class NetworkConnectivityAPI:
             self, network_connectivity_config_id: str, resource_id: str,
             group_id: CreatePrivateEndpointRuleRequestGroupId) -> NccAzurePrivateEndpointRule:
         """Create a private endpoint rule.
-        
+
         Create a private endpoint rule for the specified network connectivity config object. Once the object
         is created, Databricks asynchronously provisions a new Azure private endpoint to your specified Azure
         resource.
-        
+
         **IMPORTANT**: You must use Azure portal or other Azure tools to approve the private endpoint to
         complete the connection. To get the information of the private endpoint created, make a `GET` request
         on the new private endpoint rule. See [serverless private link].
-        
+
         [serverless private link]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security/serverless-private-link
-        
+
         :param network_connectivity_config_id: str
           Your Network Connectvity Configuration ID.
         :param resource_id: str
@@ -2970,7 +2970,7 @@ class NetworkConnectivityAPI:
         :param group_id: :class:`CreatePrivateEndpointRuleRequestGroupId`
           The sub-resource type (group ID) of the target resource. Note that to connect to workspace root
           storage (root DBFS), you need two endpoints, one for `blob` and one for `dfs`.
-        
+
         :returns: :class:`NccAzurePrivateEndpointRule`
         """
         body = {}
@@ -2987,13 +2987,13 @@ class NetworkConnectivityAPI:
 
     def delete_network_connectivity_configuration(self, network_connectivity_config_id: str):
         """Delete a network connectivity configuration.
-        
+
         Deletes a network connectivity configuration.
-        
+
         :param network_connectivity_config_id: str
           Your Network Connectvity Configuration ID.
-        
-        
+
+
         """
 
         headers = {'Accept': 'application/json', }
@@ -3006,17 +3006,17 @@ class NetworkConnectivityAPI:
     def delete_private_endpoint_rule(self, network_connectivity_config_id: str,
                                      private_endpoint_rule_id: str) -> NccAzurePrivateEndpointRule:
         """Delete a private endpoint rule.
-        
+
         Initiates deleting a private endpoint rule. The private endpoint will be deactivated and will be
         purged after seven days of deactivation. When a private endpoint is in deactivated state,
         `deactivated` field is set to `true` and the private endpoint is not available to your serverless
         compute resources.
-        
+
         :param network_connectivity_config_id: str
           Your Network Connectvity Configuration ID.
         :param private_endpoint_rule_id: str
           Your private endpoint rule ID.
-        
+
         :returns: :class:`NccAzurePrivateEndpointRule`
         """
 
@@ -3031,12 +3031,12 @@ class NetworkConnectivityAPI:
     def get_network_connectivity_configuration(
             self, network_connectivity_config_id: str) -> NetworkConnectivityConfiguration:
         """Get a network connectivity configuration.
-        
+
         Gets a network connectivity configuration.
-        
+
         :param network_connectivity_config_id: str
           Your Network Connectvity Configuration ID.
-        
+
         :returns: :class:`NetworkConnectivityConfiguration`
         """
 
@@ -3051,14 +3051,14 @@ class NetworkConnectivityAPI:
     def get_private_endpoint_rule(self, network_connectivity_config_id: str,
                                   private_endpoint_rule_id: str) -> NccAzurePrivateEndpointRule:
         """Get a private endpoint rule.
-        
+
         Gets the private endpoint rule.
-        
+
         :param network_connectivity_config_id: str
           Your Network Connectvity Configuration ID.
         :param private_endpoint_rule_id: str
           Your private endpoint rule ID.
-        
+
         :returns: :class:`NccAzurePrivateEndpointRule`
         """
 
@@ -3075,12 +3075,12 @@ class NetworkConnectivityAPI:
                                                  page_token: Optional[str] = None
                                                  ) -> Iterator[NetworkConnectivityConfiguration]:
         """List network connectivity configurations.
-        
+
         Gets an array of network connectivity configurations.
-        
+
         :param page_token: str (optional)
           Pagination token to go to next page based on previous query.
-        
+
         :returns: Iterator over :class:`NetworkConnectivityConfiguration`
         """
 
@@ -3106,14 +3106,14 @@ class NetworkConnectivityAPI:
             *,
             page_token: Optional[str] = None) -> Iterator[NccAzurePrivateEndpointRule]:
         """List private endpoint rules.
-        
+
         Gets an array of private endpoint rules.
-        
+
         :param network_connectivity_config_id: str
           Your Network Connectvity Configuration ID.
         :param page_token: str (optional)
           Pagination token to go to next page based on previous query.
-        
+
         :returns: Iterator over :class:`NccAzurePrivateEndpointRule`
         """
 
@@ -3138,12 +3138,12 @@ class NetworkConnectivityAPI:
 class SettingsAPI:
     """The default namespace setting API allows users to configure the default namespace for a Databricks
     workspace.
-    
+
     Through this API, users can retrieve, set, or modify the default namespace used when queries do not
     reference a fully qualified three-level name. For example, if you use the API to set 'retail_prod' as the
     default catalog, then a query 'SELECT * FROM myTable' would reference the object
     'retail_prod.default.myTable' (the schema 'default' is always assumed).
-    
+
     This setting requires a restart of clusters and SQL warehouses to take effect. Additionally, the default
     namespace only applies when using Unity Catalog-enabled compute."""
 
@@ -3154,19 +3154,19 @@ class SettingsAPI:
                                          *,
                                          etag: Optional[str] = None) -> DeleteDefaultNamespaceSettingResponse:
         """Delete the default namespace setting.
-        
+
         Deletes the default namespace setting for the workspace. A fresh etag needs to be provided in `DELETE`
         requests (as a query parameter). The etag can be retrieved by making a `GET` request before the
         `DELETE` request. If the setting is updated/deleted concurrently, `DELETE` fails with 409 and the
         request must be retried by using the fresh etag in the 409 response.
-        
+
         :param etag: str (optional)
           etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
           optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
           each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
           to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
           request, and pass it with the DELETE request to identify the rule set version you are deleting.
-        
+
         :returns: :class:`DeleteDefaultNamespaceSettingResponse`
         """
 
@@ -3185,19 +3185,19 @@ class SettingsAPI:
                                                  etag: Optional[str] = None
                                                  ) -> DeleteRestrictWorkspaceAdminsSettingResponse:
         """Delete the restrict workspace admins setting.
-        
+
         Reverts the restrict workspace admins setting status for the workspace. A fresh etag needs to be
         provided in `DELETE` requests (as a query parameter). The etag can be retrieved by making a `GET`
         request before the DELETE request. If the setting is updated/deleted concurrently, `DELETE` fails with
         409 and the request must be retried by using the fresh etag in the 409 response.
-        
+
         :param etag: str (optional)
           etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
           optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
           each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
           to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
           request, and pass it with the DELETE request to identify the rule set version you are deleting.
-        
+
         :returns: :class:`DeleteRestrictWorkspaceAdminsSettingResponse`
         """
 
@@ -3215,16 +3215,16 @@ class SettingsAPI:
                                              *,
                                              etag: Optional[str] = None) -> AutomaticClusterUpdateSetting:
         """Get the automatic cluster update setting.
-        
+
         Gets the automatic cluster update setting.
-        
+
         :param etag: str (optional)
           etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
           optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
           each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
           to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
           request, and pass it with the DELETE request to identify the rule set version you are deleting.
-        
+
         :returns: :class:`AutomaticClusterUpdateSetting`
         """
 
@@ -3240,16 +3240,16 @@ class SettingsAPI:
 
     def get_csp_enablement_setting(self, *, etag: Optional[str] = None) -> CspEnablementSetting:
         """Get the compliance security profile setting.
-        
+
         Gets the compliance security profile setting.
-        
+
         :param etag: str (optional)
           etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
           optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
           each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
           to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
           request, and pass it with the DELETE request to identify the rule set version you are deleting.
-        
+
         :returns: :class:`CspEnablementSetting`
         """
 
@@ -3265,16 +3265,16 @@ class SettingsAPI:
 
     def get_default_namespace_setting(self, *, etag: Optional[str] = None) -> DefaultNamespaceSetting:
         """Get the default namespace setting.
-        
+
         Gets the default namespace setting.
-        
+
         :param etag: str (optional)
           etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
           optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
           each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
           to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
           request, and pass it with the DELETE request to identify the rule set version you are deleting.
-        
+
         :returns: :class:`DefaultNamespaceSetting`
         """
 
@@ -3290,16 +3290,16 @@ class SettingsAPI:
 
     def get_esm_enablement_setting(self, *, etag: Optional[str] = None) -> EsmEnablementSetting:
         """Get the enhanced security monitoring setting.
-        
+
         Gets the enhanced security monitoring setting.
-        
+
         :param etag: str (optional)
           etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
           optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
           each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
           to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
           request, and pass it with the DELETE request to identify the rule set version you are deleting.
-        
+
         :returns: :class:`EsmEnablementSetting`
         """
 
@@ -3317,16 +3317,16 @@ class SettingsAPI:
                                               *,
                                               etag: Optional[str] = None) -> RestrictWorkspaceAdminsSetting:
         """Get the restrict workspace admins setting.
-        
+
         Gets the restrict workspace admins setting.
-        
+
         :param etag: str (optional)
           etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
           optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
           each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
           to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
           request, and pass it with the DELETE request to identify the rule set version you are deleting.
-        
+
         :returns: :class:`RestrictWorkspaceAdminsSetting`
         """
 
@@ -3344,12 +3344,12 @@ class SettingsAPI:
                                                 setting: AutomaticClusterUpdateSetting,
                                                 field_mask: str) -> AutomaticClusterUpdateSetting:
         """Update the automatic cluster update setting.
-        
+
         Updates the automatic cluster update setting for the workspace. A fresh etag needs to be provided in
         `PATCH` requests (as part of the setting field). The etag can be retrieved by making a `GET` request
         before the `PATCH` request. If the setting is updated concurrently, `PATCH` fails with 409 and the
         request must be retried by using the fresh etag in the 409 response.
-        
+
         :param allow_missing: bool
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`AutomaticClusterUpdateSetting`
@@ -3357,7 +3357,7 @@ class SettingsAPI:
           Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
           setting payload will be updated. The field mask needs to be supplied as single string. To specify
           multiple fields in the field mask, use comma as the separator (no space).
-        
+
         :returns: :class:`AutomaticClusterUpdateSetting`
         """
         body = {}
@@ -3375,12 +3375,12 @@ class SettingsAPI:
     def update_csp_enablement_setting(self, allow_missing: bool, setting: CspEnablementSetting,
                                       field_mask: str) -> CspEnablementSetting:
         """Update the compliance security profile setting.
-        
+
         Updates the compliance security profile setting for the workspace. A fresh etag needs to be provided
         in `PATCH` requests (as part of the setting field). The etag can be retrieved by making a `GET`
         request before the `PATCH` request. If the setting is updated concurrently, `PATCH` fails with 409 and
         the request must be retried by using the fresh etag in the 409 response.
-        
+
         :param allow_missing: bool
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`CspEnablementSetting`
@@ -3388,7 +3388,7 @@ class SettingsAPI:
           Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
           setting payload will be updated. The field mask needs to be supplied as single string. To specify
           multiple fields in the field mask, use comma as the separator (no space).
-        
+
         :returns: :class:`CspEnablementSetting`
         """
         body = {}
@@ -3406,14 +3406,14 @@ class SettingsAPI:
     def update_default_namespace_setting(self, allow_missing: bool, setting: DefaultNamespaceSetting,
                                          field_mask: str) -> DefaultNamespaceSetting:
         """Update the default namespace setting.
-        
+
         Updates the default namespace setting for the workspace. A fresh etag needs to be provided in `PATCH`
         requests (as part of the setting field). The etag can be retrieved by making a `GET` request before
         the `PATCH` request. Note that if the setting does not exist, `GET` returns a NOT_FOUND error and the
         etag is present in the error response, which should be set in the `PATCH` request. If the setting is
         updated concurrently, `PATCH` fails with 409 and the request must be retried by using the fresh etag
         in the 409 response.
-        
+
         :param allow_missing: bool
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`DefaultNamespaceSetting`
@@ -3428,7 +3428,7 @@ class SettingsAPI:
           Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
           setting payload will be updated. The field mask needs to be supplied as single string. To specify
           multiple fields in the field mask, use comma as the separator (no space).
-        
+
         :returns: :class:`DefaultNamespaceSetting`
         """
         body = {}
@@ -3446,12 +3446,12 @@ class SettingsAPI:
     def update_esm_enablement_setting(self, allow_missing: bool, setting: EsmEnablementSetting,
                                       field_mask: str) -> EsmEnablementSetting:
         """Update the enhanced security monitoring setting.
-        
+
         Updates the enhanced security monitoring setting for the workspace. A fresh etag needs to be provided
         in `PATCH` requests (as part of the setting field). The etag can be retrieved by making a `GET`
         request before the `PATCH` request. If the setting is updated concurrently, `PATCH` fails with 409 and
         the request must be retried by using the fresh etag in the 409 response.
-        
+
         :param allow_missing: bool
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`EsmEnablementSetting`
@@ -3459,7 +3459,7 @@ class SettingsAPI:
           Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
           setting payload will be updated. The field mask needs to be supplied as single string. To specify
           multiple fields in the field mask, use comma as the separator (no space).
-        
+
         :returns: :class:`EsmEnablementSetting`
         """
         body = {}
@@ -3478,12 +3478,12 @@ class SettingsAPI:
                                                  setting: RestrictWorkspaceAdminsSetting,
                                                  field_mask: str) -> RestrictWorkspaceAdminsSetting:
         """Update the restrict workspace admins setting.
-        
+
         Updates the restrict workspace admins setting for the workspace. A fresh etag needs to be provided in
         `PATCH` requests (as part of the setting field). The etag can be retrieved by making a GET request
         before the `PATCH` request. If the setting is updated concurrently, `PATCH` fails with 409 and the
         request must be retried by using the fresh etag in the 409 response.
-        
+
         :param allow_missing: bool
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`RestrictWorkspaceAdminsSetting`
@@ -3491,7 +3491,7 @@ class SettingsAPI:
           Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
           setting payload will be updated. The field mask needs to be supplied as single string. To specify
           multiple fields in the field mask, use comma as the separator (no space).
-        
+
         :returns: :class:`RestrictWorkspaceAdminsSetting`
         """
         body = {}
@@ -3520,16 +3520,16 @@ class TokenManagementAPI:
                          comment: Optional[str] = None,
                          lifetime_seconds: Optional[int] = None) -> CreateOboTokenResponse:
         """Create on-behalf token.
-        
+
         Creates a token on behalf of a service principal.
-        
+
         :param application_id: str
           Application ID of the service principal.
         :param comment: str (optional)
           Comment that describes the purpose of the token.
         :param lifetime_seconds: int (optional)
           The number of seconds before the token expires.
-        
+
         :returns: :class:`CreateOboTokenResponse`
         """
         body = {}
@@ -3546,13 +3546,13 @@ class TokenManagementAPI:
 
     def delete(self, token_id: str):
         """Delete a token.
-        
+
         Deletes a token, specified by its ID.
-        
+
         :param token_id: str
           The ID of the token to get.
-        
-        
+
+
         """
 
         headers = {'Accept': 'application/json', }
@@ -3561,12 +3561,12 @@ class TokenManagementAPI:
 
     def get(self, token_id: str) -> GetTokenResponse:
         """Get token info.
-        
+
         Gets information about a token, specified by its ID.
-        
+
         :param token_id: str
           The ID of the token to get.
-        
+
         :returns: :class:`GetTokenResponse`
         """
 
@@ -3577,9 +3577,9 @@ class TokenManagementAPI:
 
     def get_permission_levels(self) -> GetTokenPermissionLevelsResponse:
         """Get token permission levels.
-        
+
         Gets the permission levels that a user can have on an object.
-        
+
         :returns: :class:`GetTokenPermissionLevelsResponse`
         """
 
@@ -3592,9 +3592,9 @@ class TokenManagementAPI:
 
     def get_permissions(self) -> TokenPermissions:
         """Get token permissions.
-        
+
         Gets the permissions of all tokens. Tokens can inherit permissions from their root object.
-        
+
         :returns: :class:`TokenPermissions`
         """
 
@@ -3608,14 +3608,14 @@ class TokenManagementAPI:
              created_by_id: Optional[int] = None,
              created_by_username: Optional[str] = None) -> Iterator[TokenInfo]:
         """List all tokens.
-        
+
         Lists all tokens associated with the specified workspace or user.
-        
+
         :param created_by_id: int (optional)
           User ID of the user that created the token.
         :param created_by_username: str (optional)
           Username of the user that created the token.
-        
+
         :returns: Iterator over :class:`TokenInfo`
         """
 
@@ -3633,11 +3633,11 @@ class TokenManagementAPI:
             *,
             access_control_list: Optional[List[TokenAccessControlRequest]] = None) -> TokenPermissions:
         """Set token permissions.
-        
+
         Sets permissions on all tokens. Tokens can inherit permissions from their root object.
-        
+
         :param access_control_list: List[:class:`TokenAccessControlRequest`] (optional)
-        
+
         :returns: :class:`TokenPermissions`
         """
         body = {}
@@ -3653,11 +3653,11 @@ class TokenManagementAPI:
             *,
             access_control_list: Optional[List[TokenAccessControlRequest]] = None) -> TokenPermissions:
         """Update token permissions.
-        
+
         Updates the permissions on all tokens. Tokens can inherit permissions from their root object.
-        
+
         :param access_control_list: List[:class:`TokenAccessControlRequest`] (optional)
-        
+
         :returns: :class:`TokenPermissions`
         """
         body = {}
@@ -3681,18 +3681,18 @@ class TokensAPI:
                comment: Optional[str] = None,
                lifetime_seconds: Optional[int] = None) -> CreateTokenResponse:
         """Create a user token.
-        
+
         Creates and returns a token for a user. If this call is made through token authentication, it creates
         a token with the same client ID as the authenticated token. If the user's token quota is exceeded,
         this call returns an error **QUOTA_EXCEEDED**.
-        
+
         :param comment: str (optional)
           Optional description to attach to the token.
         :param lifetime_seconds: int (optional)
           The lifetime of the token, in seconds.
-          
+
           If the lifetime is not specified, this token remains valid indefinitely.
-        
+
         :returns: :class:`CreateTokenResponse`
         """
         body = {}
@@ -3705,15 +3705,15 @@ class TokensAPI:
 
     def delete(self, token_id: str):
         """Revoke token.
-        
+
         Revokes an access token.
-        
+
         If a token with the specified ID is not valid, this call returns an error **RESOURCE_DOES_NOT_EXIST**.
-        
+
         :param token_id: str
           The ID of the token to be revoked.
-        
-        
+
+
         """
         body = {}
         if token_id is not None: body['token_id'] = token_id
@@ -3723,9 +3723,9 @@ class TokensAPI:
 
     def list(self) -> Iterator[PublicTokenInfo]:
         """List tokens.
-        
+
         Lists all the valid tokens for a user-workspace pair.
-        
+
         :returns: Iterator over :class:`PublicTokenInfo`
         """
 
@@ -3744,11 +3744,11 @@ class WorkspaceConfAPI:
 
     def get_status(self, keys: str) -> WorkspaceConf:
         """Check configuration status.
-        
+
         Gets the configuration status for a workspace.
-        
+
         :param keys: str
-        
+
         :returns: Dict[str,str]
         """
 
@@ -3761,11 +3761,11 @@ class WorkspaceConfAPI:
 
     def set_status(self, contents: Dict[str, str]):
         """Enable/disable features.
-        
+
         Sets the configuration status for a workspace, including enabling or disabling it.
-        
-        
-        
+
+
+
         """
 
         headers = {'Content-Type': 'application/json', }

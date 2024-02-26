@@ -1,11 +1,11 @@
-from typing import BinaryIO, Iterator, Optional, Union
+from typing import Any, BinaryIO, Iterator, Optional, Union
 
 from ..core import DatabricksError
 from ..service.workspace import (ExportFormat, ImportFormat, Language,
                                  ObjectInfo, ObjectType, WorkspaceAPI)
 
 
-def _fqcn(x: any) -> str:
+def _fqcn(x: Any) -> str:
     return f'{x.__module__}.{x.__name__}'
 
 

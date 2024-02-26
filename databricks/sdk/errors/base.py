@@ -1,13 +1,13 @@
-from typing import Dict, List
+from typing import Any, Dict, List, Optional
 
 
 class ErrorDetail:
 
     def __init__(self,
-                 type: str = None,
-                 reason: str = None,
-                 domain: str = None,
-                 metadata: dict = None,
+                 type: Optional[str] = None,
+                 reason: Optional[str] = None,
+                 domain: Optional[str] = None,
+                 metadata: Optional[dict] = None,
                  **kwargs):
         self.type = type
         self.reason = reason
@@ -15,7 +15,7 @@ class ErrorDetail:
         self.metadata = metadata
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ErrorDetail':
+    def from_dict(cls, d: Dict[str, Any]) -> 'ErrorDetail':
         if '@type' in d:
             d['type'] = d['@type']
         return cls(**d)
@@ -27,15 +27,15 @@ class DatabricksError(IOError):
     _error_info_type = "type.googleapis.com/google.rpc.ErrorInfo"
 
     def __init__(self,
-                 message: str = None,
+                 message: Optional[str] = None,
                  *,
-                 error_code: str = None,
-                 detail: str = None,
-                 status: str = None,
-                 scimType: str = None,
-                 error: str = None,
-                 retry_after_secs: int = None,
-                 details: List[Dict[str, any]] = None,
+                 error_code: Optional[str] = None,
+                 detail: Optional[str] = None,
+                 status: Optional[str] = None,
+                 scimType: Optional[str] = None,
+                 error: Optional[str] = None,
+                 retry_after_secs: Optional[int] = None,
+                 details: Optional[List[Dict[str, Any]]] = None,
                  **kwargs):
         if error:
             # API 1.2 has different response format, let's adapt

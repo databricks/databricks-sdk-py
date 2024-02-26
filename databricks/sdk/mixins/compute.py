@@ -77,7 +77,7 @@ class ClustersExt(compute.ClustersAPI):
                              genomics: bool = False,
                              gpu: bool = False,
                              scala: str = "2.12",
-                             spark_version: str = None,
+                             spark_version: Optional[str] = None,
                              photon: bool = False,
                              graviton: bool = False) -> str:
         """Selects the latest Databricks Runtime Version.
@@ -142,19 +142,19 @@ class ClustersExt(compute.ClustersAPI):
         return False
 
     def select_node_type(self,
-                         min_memory_gb: int = None,
-                         gb_per_core: int = None,
-                         min_cores: int = None,
-                         min_gpus: int = None,
-                         local_disk: bool = None,
-                         local_disk_min_size: int = None,
-                         category: str = None,
-                         photon_worker_capable: bool = None,
-                         photon_driver_capable: bool = None,
-                         graviton: bool = None,
-                         is_io_cache_enabled: bool = None,
-                         support_port_forwarding: bool = None,
-                         fleet: str = None) -> str:
+                         min_memory_gb: Optional[int] = None,
+                         gb_per_core: Optional[int] = None,
+                         min_cores: Optional[int] = None,
+                         min_gpus: Optional[int] = None,
+                         local_disk: Optional[bool] = None,
+                         local_disk_min_size: Optional[int] = None,
+                         category: Optional[str] = None,
+                         photon_worker_capable: Optional[bool] = None,
+                         photon_driver_capable: Optional[bool] = None,
+                         graviton: Optional[bool] = None,
+                         is_io_cache_enabled: Optional[bool] = None,
+                         support_port_forwarding: Optional[bool] = None,
+                         fleet: Optional[str] = None) -> str:
         """Selects smallest available node type given the conditions.
 
         :param min_memory_gb: int

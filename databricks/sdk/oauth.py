@@ -49,9 +49,9 @@ class OidcEndpoints:
 @dataclass
 class Token:
     access_token: str
-    token_type: str = None
-    refresh_token: str = None
-    expiry: datetime = None
+    token_type: Optional[str] = None
+    refresh_token: Optional[str] = None
+    expiry: Optional[datetime] = None
 
     @property
     def expired(self):
@@ -262,7 +262,11 @@ class SessionCredentials(Refreshable):
 
 class Consent:
 
-    def __init__(self, client: 'OAuthClient', state: str, verifier: str, auth_url: str = None) -> None:
+    def __init__(self,
+                 client: 'OAuthClient',
+                 state: str,
+                 verifier: str,
+                 auth_url: Optional[str] = None) -> None:
         self.auth_url = auth_url
 
         self._verifier = verifier
@@ -354,14 +358,14 @@ class OAuthClient:
                  client_id: str,
                  redirect_url: str,
                  *,
-                 scopes: List[str] = None,
-                 client_secret: str = None):
+                 scopes: Optional[List[str]] = None,
+                 client_secret: Optional[str] = None):
         # TODO: is it a circular dependency?..
         from .core import Config
         from .credentials_provider import credentials_provider
 
         @credentials_provider('noop', [])
-        def noop_credentials(_: any):
+        def noop_credentials(_: Any):
             return lambda: {}
 
         config = Config(host=host, credentials_provider=noop_credentials)
@@ -423,8 +427,8 @@ class ClientCredentials(Refreshable):
     client_id: str
     client_secret: str
     token_url: str
-    endpoint_params: dict = None
-    scopes: List[str] = None
+    endpoint_params: Optional[dict] = None
+    scopes: Optional[List[str]] = None
     use_params: bool = False
     use_header: bool = False
 

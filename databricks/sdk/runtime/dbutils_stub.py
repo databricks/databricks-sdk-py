@@ -58,7 +58,7 @@ class dbutils:
         """
 
         @staticmethod
-        def summarize(df: any, precise: bool = False) -> None:
+        def summarize(df: typing.Any, precise: bool = False) -> None:
             """Summarize a Spark/pandas/Koalas DataFrame and visualize the statistics to get quick insights.
 
             Example: dbutils.data.summarize(df)
@@ -200,14 +200,17 @@ class dbutils:
             """
 
             @staticmethod
-            def get(taskKey: str, key: str, default: any = None, debugValue: any = None) -> None:
+            def get(taskKey: str,
+                    key: str,
+                    default: typing.Optional[typing.Any] = None,
+                    debugValue: typing.Optional[typing.Any] = None) -> None:
                 """
                 Returns the latest task value that belongs to the current job run
                 """
                 ...
 
             @staticmethod
-            def set(key: str, value: any) -> None:
+            def set(key: str, value: typing.Any) -> None:
                 """
                 Sets a task value on the current task run
                 """
@@ -297,7 +300,7 @@ class dbutils:
             ...
 
         @staticmethod
-        def text(name: str, defaultValue: str, label: str = None):
+        def text(name: str, defaultValue: str, label: typing.Optional[str] = None):
             """Creates a text input widget with given name, default value and optional label for
             display
             :param name: Name of argument associated with the new input widget
@@ -307,7 +310,10 @@ class dbutils:
             ...
 
         @staticmethod
-        def dropdown(name: str, defaultValue: str, choices: typing.List[str], label: str = None):
+        def dropdown(name: str,
+                     defaultValue: str,
+                     choices: typing.List[str],
+                     label: typing.Optional[str] = None):
             """Creates a dropdown input widget with given specification.
             :param name: Name of argument associated with the new input widget
             :param defaultValue: Default value of the input widget (must be one of choices)

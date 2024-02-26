@@ -30,7 +30,7 @@ class Ai21LabsConfig:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Ai21LabsConfig:
+    def from_dict(cls, d: Dict[str, Any]) -> Ai21LabsConfig:
         """Deserializes the Ai21LabsConfig from a dictionary."""
         return cls(ai21labs_api_key=d.get('ai21labs_api_key', None))
 
@@ -47,7 +47,7 @@ class AnthropicConfig:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AnthropicConfig:
+    def from_dict(cls, d: Dict[str, Any]) -> AnthropicConfig:
         """Deserializes the AnthropicConfig from a dictionary."""
         return cls(anthropic_api_key=d.get('anthropic_api_key', None))
 
@@ -75,7 +75,7 @@ class AppEvents:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AppEvents:
+    def from_dict(cls, d: Dict[str, Any]) -> AppEvents:
         """Deserializes the AppEvents from a dictionary."""
         return cls(event_name=d.get('event_name', None),
                    event_time=d.get('event_time', None),
@@ -120,7 +120,7 @@ class AppManifest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AppManifest:
+    def from_dict(cls, d: Dict[str, Any]) -> AppManifest:
         """Deserializes the AppManifest from a dictionary."""
         return cls(dependencies=d.get('dependencies', None),
                    description=d.get('description', None),
@@ -148,7 +148,7 @@ class AppServiceStatus:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AppServiceStatus:
+    def from_dict(cls, d: Dict[str, Any]) -> AppServiceStatus:
         """Deserializes the AppServiceStatus from a dictionary."""
         return cls(deployment=d.get('deployment', None),
                    name=d.get('name', None),
@@ -183,7 +183,7 @@ class AutoCaptureConfigInput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AutoCaptureConfigInput:
+    def from_dict(cls, d: Dict[str, Any]) -> AutoCaptureConfigInput:
         """Deserializes the AutoCaptureConfigInput from a dictionary."""
         return cls(catalog_name=d.get('catalog_name', None),
                    enabled=d.get('enabled', None),
@@ -218,7 +218,7 @@ class AutoCaptureConfigOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AutoCaptureConfigOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> AutoCaptureConfigOutput:
         """Deserializes the AutoCaptureConfigOutput from a dictionary."""
         return cls(catalog_name=d.get('catalog_name', None),
                    enabled=d.get('enabled', None),
@@ -238,7 +238,7 @@ class AutoCaptureState:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AutoCaptureState:
+    def from_dict(cls, d: Dict[str, Any]) -> AutoCaptureState:
         """Deserializes the AutoCaptureState from a dictionary."""
         return cls(payload_table=_from_dict(d, 'payload_table', PayloadTable))
 
@@ -270,7 +270,7 @@ class AwsBedrockConfig:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AwsBedrockConfig:
+    def from_dict(cls, d: Dict[str, Any]) -> AwsBedrockConfig:
         """Deserializes the AwsBedrockConfig from a dictionary."""
         return cls(aws_access_key_id=d.get('aws_access_key_id', None),
                    aws_region=d.get('aws_region', None),
@@ -300,7 +300,7 @@ class BuildLogsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> BuildLogsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> BuildLogsResponse:
         """Deserializes the BuildLogsResponse from a dictionary."""
         return cls(logs=d.get('logs', None))
 
@@ -321,7 +321,7 @@ class ChatMessage:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ChatMessage:
+    def from_dict(cls, d: Dict[str, Any]) -> ChatMessage:
         """Deserializes the ChatMessage from a dictionary."""
         return cls(content=d.get('content', None), role=_enum(d, 'role', ChatMessageRole))
 
@@ -346,7 +346,7 @@ class CohereConfig:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CohereConfig:
+    def from_dict(cls, d: Dict[str, Any]) -> CohereConfig:
         """Deserializes the CohereConfig from a dictionary."""
         return cls(cohere_api_key=d.get('cohere_api_key', None))
 
@@ -377,7 +377,7 @@ class CreateServingEndpoint:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateServingEndpoint:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateServingEndpoint:
         """Deserializes the CreateServingEndpoint from a dictionary."""
         return cls(config=_from_dict(d, 'config', EndpointCoreConfigInput),
                    name=d.get('name', None),
@@ -405,7 +405,7 @@ class DatabricksModelServingConfig:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DatabricksModelServingConfig:
+    def from_dict(cls, d: Dict[str, Any]) -> DatabricksModelServingConfig:
         """Deserializes the DatabricksModelServingConfig from a dictionary."""
         return cls(databricks_api_token=d.get('databricks_api_token', None),
                    databricks_workspace_url=d.get('databricks_workspace_url', None))
@@ -428,7 +428,7 @@ class DataframeSplitInput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DataframeSplitInput:
+    def from_dict(cls, d: Dict[str, Any]) -> DataframeSplitInput:
         """Deserializes the DataframeSplitInput from a dictionary."""
         return cls(columns=d.get('columns', None), data=d.get('data', None), index=d.get('index', None))
 
@@ -444,7 +444,7 @@ class DeleteAppResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteAppResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteAppResponse:
         """Deserializes the DeleteAppResponse from a dictionary."""
         return cls(name=d.get('name', None))
 
@@ -458,7 +458,7 @@ class DeleteResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteResponse:
         """Deserializes the DeleteResponse from a dictionary."""
         return cls()
 
@@ -479,7 +479,7 @@ class DeployAppRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeployAppRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> DeployAppRequest:
         """Deserializes the DeployAppRequest from a dictionary."""
         return cls(manifest=_from_dict(d, 'manifest', AppManifest), resources=d.get('resources', None))
 
@@ -508,7 +508,7 @@ class DeploymentStatus:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeploymentStatus:
+    def from_dict(cls, d: Dict[str, Any]) -> DeploymentStatus:
         """Deserializes the DeploymentStatus from a dictionary."""
         return cls(container_logs=d.get('container_logs', None),
                    deployment_id=d.get('deployment_id', None),
@@ -544,7 +544,7 @@ class EmbeddingsV1ResponseEmbeddingElement:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EmbeddingsV1ResponseEmbeddingElement:
+    def from_dict(cls, d: Dict[str, Any]) -> EmbeddingsV1ResponseEmbeddingElement:
         """Deserializes the EmbeddingsV1ResponseEmbeddingElement from a dictionary."""
         return cls(embedding=d.get('embedding', None),
                    index=d.get('index', None),
@@ -588,7 +588,7 @@ class EndpointCoreConfigInput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EndpointCoreConfigInput:
+    def from_dict(cls, d: Dict[str, Any]) -> EndpointCoreConfigInput:
         """Deserializes the EndpointCoreConfigInput from a dictionary."""
         return cls(auto_capture_config=_from_dict(d, 'auto_capture_config', AutoCaptureConfigInput),
                    name=d.get('name', None),
@@ -627,7 +627,7 @@ class EndpointCoreConfigOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EndpointCoreConfigOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> EndpointCoreConfigOutput:
         """Deserializes the EndpointCoreConfigOutput from a dictionary."""
         return cls(auto_capture_config=_from_dict(d, 'auto_capture_config', AutoCaptureConfigOutput),
                    config_version=d.get('config_version', None),
@@ -653,7 +653,7 @@ class EndpointCoreConfigSummary:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EndpointCoreConfigSummary:
+    def from_dict(cls, d: Dict[str, Any]) -> EndpointCoreConfigSummary:
         """Deserializes the EndpointCoreConfigSummary from a dictionary."""
         return cls(served_entities=_repeated_dict(d, 'served_entities', ServedEntitySpec),
                    served_models=_repeated_dict(d, 'served_models', ServedModelSpec))
@@ -688,7 +688,7 @@ class EndpointPendingConfig:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EndpointPendingConfig:
+    def from_dict(cls, d: Dict[str, Any]) -> EndpointPendingConfig:
         """Deserializes the EndpointPendingConfig from a dictionary."""
         return cls(config_version=d.get('config_version', None),
                    served_entities=_repeated_dict(d, 'served_entities', ServedEntityOutput),
@@ -718,7 +718,7 @@ class EndpointState:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EndpointState:
+    def from_dict(cls, d: Dict[str, Any]) -> EndpointState:
         """Deserializes the EndpointState from a dictionary."""
         return cls(config_update=_enum(d, 'config_update', EndpointStateConfigUpdate),
                    ready=_enum(d, 'ready', EndpointStateReady))
@@ -760,7 +760,7 @@ class EndpointTag:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EndpointTag:
+    def from_dict(cls, d: Dict[str, Any]) -> EndpointTag:
         """Deserializes the EndpointTag from a dictionary."""
         return cls(key=d.get('key', None), value=d.get('value', None))
 
@@ -774,7 +774,7 @@ class ExportMetricsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ExportMetricsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ExportMetricsResponse:
         """Deserializes the ExportMetricsResponse from a dictionary."""
         return cls()
 
@@ -830,7 +830,7 @@ class ExternalModel:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ExternalModel:
+    def from_dict(cls, d: Dict[str, Any]) -> ExternalModel:
         """Deserializes the ExternalModel from a dictionary."""
         return cls(ai21labs_config=_from_dict(d, 'ai21labs_config', Ai21LabsConfig),
                    anthropic_config=_from_dict(d, 'anthropic_config', AnthropicConfig),
@@ -879,7 +879,7 @@ class ExternalModelUsageElement:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ExternalModelUsageElement:
+    def from_dict(cls, d: Dict[str, Any]) -> ExternalModelUsageElement:
         """Deserializes the ExternalModelUsageElement from a dictionary."""
         return cls(completion_tokens=d.get('completion_tokens', None),
                    prompt_tokens=d.get('prompt_tokens', None),
@@ -910,7 +910,7 @@ class FoundationModel:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> FoundationModel:
+    def from_dict(cls, d: Dict[str, Any]) -> FoundationModel:
         """Deserializes the FoundationModel from a dictionary."""
         return cls(description=d.get('description', None),
                    display_name=d.get('display_name', None),
@@ -938,7 +938,7 @@ class GetAppResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetAppResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetAppResponse:
         """Deserializes the GetAppResponse from a dictionary."""
         return cls(current_services=_repeated_dict(d, 'current_services', AppServiceStatus),
                    name=d.get('name', None),
@@ -958,7 +958,7 @@ class GetServingEndpointPermissionLevelsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetServingEndpointPermissionLevelsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetServingEndpointPermissionLevelsResponse:
         """Deserializes the GetServingEndpointPermissionLevelsResponse from a dictionary."""
         return cls(
             permission_levels=_repeated_dict(d, 'permission_levels', ServingEndpointPermissionsDescription))
@@ -976,7 +976,7 @@ class ListAppEventsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListAppEventsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListAppEventsResponse:
         """Deserializes the ListAppEventsResponse from a dictionary."""
         return cls(events=_repeated_dict(d, 'events', AppEvents))
 
@@ -996,7 +996,7 @@ class ListAppsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListAppsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListAppsResponse:
         """Deserializes the ListAppsResponse from a dictionary."""
         return cls(apps=d.get('apps', None), next_page_token=d.get('next_page_token', None))
 
@@ -1013,7 +1013,7 @@ class ListEndpointsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListEndpointsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListEndpointsResponse:
         """Deserializes the ListEndpointsResponse from a dictionary."""
         return cls(endpoints=_repeated_dict(d, 'endpoints', ServingEndpoint))
 
@@ -1058,7 +1058,7 @@ class OpenAiConfig:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> OpenAiConfig:
+    def from_dict(cls, d: Dict[str, Any]) -> OpenAiConfig:
         """Deserializes the OpenAiConfig from a dictionary."""
         return cls(openai_api_base=d.get('openai_api_base', None),
                    openai_api_key=d.get('openai_api_key', None),
@@ -1080,7 +1080,7 @@ class PaLmConfig:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PaLmConfig:
+    def from_dict(cls, d: Dict[str, Any]) -> PaLmConfig:
         """Deserializes the PaLmConfig from a dictionary."""
         return cls(palm_api_key=d.get('palm_api_key', None))
 
@@ -1105,7 +1105,7 @@ class PatchServingEndpointTags:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PatchServingEndpointTags:
+    def from_dict(cls, d: Dict[str, Any]) -> PatchServingEndpointTags:
         """Deserializes the PatchServingEndpointTags from a dictionary."""
         return cls(add_tags=_repeated_dict(d, 'add_tags', EndpointTag),
                    delete_tags=d.get('delete_tags', None),
@@ -1132,7 +1132,7 @@ class PayloadTable:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PayloadTable:
+    def from_dict(cls, d: Dict[str, Any]) -> PayloadTable:
         """Deserializes the PayloadTable from a dictionary."""
         return cls(name=d.get('name', None),
                    status=d.get('status', None),
@@ -1151,7 +1151,7 @@ class PutResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PutResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> PutResponse:
         """Deserializes the PutResponse from a dictionary."""
         return cls(rate_limits=_repeated_dict(d, 'rate_limits', RateLimit))
 
@@ -1236,7 +1236,7 @@ class QueryEndpointInput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> QueryEndpointInput:
+    def from_dict(cls, d: Dict[str, Any]) -> QueryEndpointInput:
         """Deserializes the QueryEndpointInput from a dictionary."""
         return cls(dataframe_records=d.get('dataframe_records', None),
                    dataframe_split=_from_dict(d, 'dataframe_split', DataframeSplitInput),
@@ -1306,7 +1306,7 @@ class QueryEndpointResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> QueryEndpointResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> QueryEndpointResponse:
         """Deserializes the QueryEndpointResponse from a dictionary."""
         return cls(choices=_repeated_dict(d, 'choices', V1ResponseChoiceElement),
                    created=d.get('created', None),
@@ -1349,7 +1349,7 @@ class RateLimit:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RateLimit:
+    def from_dict(cls, d: Dict[str, Any]) -> RateLimit:
         """Deserializes the RateLimit from a dictionary."""
         return cls(calls=d.get('calls', None),
                    key=_enum(d, 'key', RateLimitKey),
@@ -1387,7 +1387,7 @@ class Route:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Route:
+    def from_dict(cls, d: Dict[str, Any]) -> Route:
         """Deserializes the Route from a dictionary."""
         return cls(served_model_name=d.get('served_model_name', None),
                    traffic_percentage=d.get('traffic_percentage', None))
@@ -1451,7 +1451,7 @@ class ServedEntityInput:
     in the endpoint. The default value for this parameter is "CPU". For deep learning workloads, GPU
     acceleration is available by selecting workload types like GPU_SMALL and others. See the
     available [GPU types].
-    
+
     [GPU types]: https://docs.databricks.com/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types"""
 
     def as_dict(self) -> dict:
@@ -1473,7 +1473,7 @@ class ServedEntityInput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ServedEntityInput:
+    def from_dict(cls, d: Dict[str, Any]) -> ServedEntityInput:
         """Deserializes the ServedEntityInput from a dictionary."""
         return cls(entity_name=d.get('entity_name', None),
                    entity_version=d.get('entity_version', None),
@@ -1553,7 +1553,7 @@ class ServedEntityOutput:
     in the endpoint. The default value for this parameter is "CPU". For deep learning workloads, GPU
     acceleration is available by selecting workload types like GPU_SMALL and others. See the
     available [GPU types].
-    
+
     [GPU types]: https://docs.databricks.com/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types"""
 
     def as_dict(self) -> dict:
@@ -1579,7 +1579,7 @@ class ServedEntityOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ServedEntityOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> ServedEntityOutput:
         """Deserializes the ServedEntityOutput from a dictionary."""
         return cls(creation_timestamp=d.get('creation_timestamp', None),
                    creator=d.get('creator', None),
@@ -1632,7 +1632,7 @@ class ServedEntitySpec:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ServedEntitySpec:
+    def from_dict(cls, d: Dict[str, Any]) -> ServedEntitySpec:
         """Deserializes the ServedEntitySpec from a dictionary."""
         return cls(entity_name=d.get('entity_name', None),
                    entity_version=d.get('entity_version', None),
@@ -1680,7 +1680,7 @@ class ServedModelInput:
     the endpoint. The default value for this parameter is "CPU". For deep learning workloads, GPU
     acceleration is available by selecting workload types like GPU_SMALL and others. See the
     available [GPU types].
-    
+
     [GPU types]: https://docs.databricks.com/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types"""
 
     def as_dict(self) -> dict:
@@ -1697,7 +1697,7 @@ class ServedModelInput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ServedModelInput:
+    def from_dict(cls, d: Dict[str, Any]) -> ServedModelInput:
         """Deserializes the ServedModelInput from a dictionary."""
         return cls(environment_vars=d.get('environment_vars', None),
                    instance_profile_arn=d.get('instance_profile_arn', None),
@@ -1727,7 +1727,7 @@ class ServedModelInputWorkloadType(Enum):
     the endpoint. The default value for this parameter is "CPU". For deep learning workloads, GPU
     acceleration is available by selecting workload types like GPU_SMALL and others. See the
     available [GPU types].
-    
+
     [GPU types]: https://docs.databricks.com/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types"""
 
     CPU = 'CPU'
@@ -1783,7 +1783,7 @@ class ServedModelOutput:
     the endpoint. The default value for this parameter is "CPU". For deep learning workloads, GPU
     acceleration is available by selecting workload types like GPU_SMALL and others. See the
     available [GPU types].
-    
+
     [GPU types]: https://docs.databricks.com/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types"""
 
     def as_dict(self) -> dict:
@@ -1803,7 +1803,7 @@ class ServedModelOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ServedModelOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> ServedModelOutput:
         """Deserializes the ServedModelOutput from a dictionary."""
         return cls(creation_timestamp=d.get('creation_timestamp', None),
                    creator=d.get('creator', None),
@@ -1839,7 +1839,7 @@ class ServedModelSpec:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ServedModelSpec:
+    def from_dict(cls, d: Dict[str, Any]) -> ServedModelSpec:
         """Deserializes the ServedModelSpec from a dictionary."""
         return cls(model_name=d.get('model_name', None),
                    model_version=d.get('model_version', None),
@@ -1871,7 +1871,7 @@ class ServedModelState:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ServedModelState:
+    def from_dict(cls, d: Dict[str, Any]) -> ServedModelState:
         """Deserializes the ServedModelState from a dictionary."""
         return cls(deployment=_enum(d, 'deployment', ServedModelStateDeployment),
                    deployment_state_message=d.get('deployment_state_message', None))
@@ -1907,7 +1907,7 @@ class ServerLogsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ServerLogsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ServerLogsResponse:
         """Deserializes the ServerLogsResponse from a dictionary."""
         return cls(logs=d.get('logs', None))
 
@@ -1958,7 +1958,7 @@ class ServingEndpoint:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ServingEndpoint:
+    def from_dict(cls, d: Dict[str, Any]) -> ServingEndpoint:
         """Deserializes the ServingEndpoint from a dictionary."""
         return cls(config=_from_dict(d, 'config', EndpointCoreConfigSummary),
                    creation_timestamp=d.get('creation_timestamp', None),
@@ -1996,7 +1996,7 @@ class ServingEndpointAccessControlRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ServingEndpointAccessControlRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> ServingEndpointAccessControlRequest:
         """Deserializes the ServingEndpointAccessControlRequest from a dictionary."""
         return cls(group_name=d.get('group_name', None),
                    permission_level=_enum(d, 'permission_level', ServingEndpointPermissionLevel),
@@ -2033,7 +2033,7 @@ class ServingEndpointAccessControlResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ServingEndpointAccessControlResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ServingEndpointAccessControlResponse:
         """Deserializes the ServingEndpointAccessControlResponse from a dictionary."""
         return cls(all_permissions=_repeated_dict(d, 'all_permissions', ServingEndpointPermission),
                    display_name=d.get('display_name', None),
@@ -2096,7 +2096,7 @@ class ServingEndpointDetailed:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ServingEndpointDetailed:
+    def from_dict(cls, d: Dict[str, Any]) -> ServingEndpointDetailed:
         """Deserializes the ServingEndpointDetailed from a dictionary."""
         return cls(config=_from_dict(d, 'config', EndpointCoreConfigOutput),
                    creation_timestamp=d.get('creation_timestamp', None),
@@ -2137,7 +2137,7 @@ class ServingEndpointPermission:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ServingEndpointPermission:
+    def from_dict(cls, d: Dict[str, Any]) -> ServingEndpointPermission:
         """Deserializes the ServingEndpointPermission from a dictionary."""
         return cls(inherited=d.get('inherited', None),
                    inherited_from_object=d.get('inherited_from_object', None),
@@ -2170,7 +2170,7 @@ class ServingEndpointPermissions:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ServingEndpointPermissions:
+    def from_dict(cls, d: Dict[str, Any]) -> ServingEndpointPermissions:
         """Deserializes the ServingEndpointPermissions from a dictionary."""
         return cls(access_control_list=_repeated_dict(d, 'access_control_list',
                                                       ServingEndpointAccessControlResponse),
@@ -2193,7 +2193,7 @@ class ServingEndpointPermissionsDescription:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ServingEndpointPermissionsDescription:
+    def from_dict(cls, d: Dict[str, Any]) -> ServingEndpointPermissionsDescription:
         """Deserializes the ServingEndpointPermissionsDescription from a dictionary."""
         return cls(description=d.get('description', None),
                    permission_level=_enum(d, 'permission_level', ServingEndpointPermissionLevel))
@@ -2215,7 +2215,7 @@ class ServingEndpointPermissionsRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ServingEndpointPermissionsRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> ServingEndpointPermissionsRequest:
         """Deserializes the ServingEndpointPermissionsRequest from a dictionary."""
         return cls(access_control_list=_repeated_dict(d, 'access_control_list',
                                                       ServingEndpointAccessControlRequest),
@@ -2234,7 +2234,7 @@ class TrafficConfig:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TrafficConfig:
+    def from_dict(cls, d: Dict[str, Any]) -> TrafficConfig:
         """Deserializes the TrafficConfig from a dictionary."""
         return cls(routes=_repeated_dict(d, 'routes', Route))
 
@@ -2267,7 +2267,7 @@ class V1ResponseChoiceElement:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> V1ResponseChoiceElement:
+    def from_dict(cls, d: Dict[str, Any]) -> V1ResponseChoiceElement:
         """Deserializes the V1ResponseChoiceElement from a dictionary."""
         return cls(finish_reason=d.get('finishReason', None),
                    index=d.get('index', None),
@@ -2285,14 +2285,14 @@ class AppsAPI:
 
     def create(self, manifest: AppManifest, *, resources: Optional[Any] = None) -> DeploymentStatus:
         """Create and deploy an application.
-        
+
         Creates and deploys an application.
-        
+
         :param manifest: :class:`AppManifest`
           Manifest that specifies the application requirements
         :param resources: Any (optional)
           Information passed at app deployment time to fulfill app dependencies
-        
+
         :returns: :class:`DeploymentStatus`
         """
         body = {}
@@ -2305,12 +2305,12 @@ class AppsAPI:
 
     def delete_app(self, name: str) -> DeleteAppResponse:
         """Delete an application.
-        
+
         Delete an application definition
-        
+
         :param name: str
           The name of an application. This field is required.
-        
+
         :returns: :class:`DeleteAppResponse`
         """
 
@@ -2321,12 +2321,12 @@ class AppsAPI:
 
     def get_app(self, name: str) -> GetAppResponse:
         """Get definition for an application.
-        
+
         Get an application definition
-        
+
         :param name: str
           The name of an application. This field is required.
-        
+
         :returns: :class:`GetAppResponse`
         """
 
@@ -2340,14 +2340,14 @@ class AppsAPI:
                                   *,
                                   include_app_log: Optional[str] = None) -> DeploymentStatus:
         """Get deployment status for an application.
-        
+
         Get deployment status for an application
-        
+
         :param deployment_id: str
           The deployment id for an application. This field is required.
         :param include_app_log: str (optional)
           Boolean flag to include application logs
-        
+
         :returns: :class:`DeploymentStatus`
         """
 
@@ -2363,9 +2363,9 @@ class AppsAPI:
 
     def get_apps(self) -> ListAppsResponse:
         """List all applications.
-        
+
         List all available applications
-        
+
         :returns: :class:`ListAppsResponse`
         """
 
@@ -2376,12 +2376,12 @@ class AppsAPI:
 
     def get_events(self, name: str) -> ListAppEventsResponse:
         """Get deployment events for an application.
-        
+
         Get deployment events for an application
-        
+
         :param name: str
           The name of an application. This field is required.
-        
+
         :returns: :class:`ListAppEventsResponse`
         """
 
@@ -2393,7 +2393,7 @@ class AppsAPI:
 
 class ServingEndpointsAPI:
     """The Serving Endpoints API allows you to create, update, and delete model serving endpoints.
-    
+
     You can use a serving endpoint to serve models from the Databricks Model Registry or from Unity Catalog.
     Endpoints expose the underlying models as scalable REST API endpoints using serverless compute. This means
     the endpoints and associated compute resources are fully managed by Databricks and will not appear in your
@@ -2440,14 +2440,14 @@ class ServingEndpointsAPI:
     def build_logs(self, name: str, served_model_name: str) -> BuildLogsResponse:
         """Retrieve the logs associated with building the model's environment for a given serving endpoint's
         served model.
-        
+
         Retrieves the build logs associated with the provided served model.
-        
+
         :param name: str
           The name of the serving endpoint that the served model belongs to. This field is required.
         :param served_model_name: str
           The name of the served model that build logs will be retrieved for. This field is required.
-        
+
         :returns: :class:`BuildLogsResponse`
         """
 
@@ -2465,7 +2465,7 @@ class ServingEndpointsAPI:
                rate_limits: Optional[List[RateLimit]] = None,
                tags: Optional[List[EndpointTag]] = None) -> Wait[ServingEndpointDetailed]:
         """Create a new serving endpoint.
-        
+
         :param name: str
           The name of the serving endpoint. This field is required and must be unique across a Databricks
           workspace. An endpoint name can consist of alphanumeric characters, dashes, and underscores.
@@ -2476,7 +2476,7 @@ class ServingEndpointsAPI:
           endpoints are supported as of now.
         :param tags: List[:class:`EndpointTag`] (optional)
           Tags to be attached to the serving endpoint and automatically propagated to billing logs.
-        
+
         :returns:
           Long-running operation waiter for :class:`ServingEndpointDetailed`.
           See :method:wait_get_serving_endpoint_not_updating for more details.
@@ -2506,11 +2506,11 @@ class ServingEndpointsAPI:
 
     def delete(self, name: str):
         """Delete a serving endpoint.
-        
+
         :param name: str
           The name of the serving endpoint. This field is required.
-        
-        
+
+
         """
 
         headers = {'Accept': 'application/json', }
@@ -2519,14 +2519,14 @@ class ServingEndpointsAPI:
 
     def export_metrics(self, name: str):
         """Retrieve the metrics associated with a serving endpoint.
-        
+
         Retrieves the metrics associated with the provided serving endpoint in either Prometheus or
         OpenMetrics exposition format.
-        
+
         :param name: str
           The name of the serving endpoint to retrieve metrics for. This field is required.
-        
-        
+
+
         """
 
         headers = {}
@@ -2535,12 +2535,12 @@ class ServingEndpointsAPI:
 
     def get(self, name: str) -> ServingEndpointDetailed:
         """Get a single serving endpoint.
-        
+
         Retrieves the details for a single serving endpoint.
-        
+
         :param name: str
           The name of the serving endpoint. This field is required.
-        
+
         :returns: :class:`ServingEndpointDetailed`
         """
 
@@ -2551,12 +2551,12 @@ class ServingEndpointsAPI:
 
     def get_permission_levels(self, serving_endpoint_id: str) -> GetServingEndpointPermissionLevelsResponse:
         """Get serving endpoint permission levels.
-        
+
         Gets the permission levels that a user can have on an object.
-        
+
         :param serving_endpoint_id: str
           The serving endpoint for which to get or manage permissions.
-        
+
         :returns: :class:`GetServingEndpointPermissionLevelsResponse`
         """
 
@@ -2569,13 +2569,13 @@ class ServingEndpointsAPI:
 
     def get_permissions(self, serving_endpoint_id: str) -> ServingEndpointPermissions:
         """Get serving endpoint permissions.
-        
+
         Gets the permissions of a serving endpoint. Serving endpoints can inherit permissions from their root
         object.
-        
+
         :param serving_endpoint_id: str
           The serving endpoint for which to get or manage permissions.
-        
+
         :returns: :class:`ServingEndpointPermissions`
         """
 
@@ -2588,7 +2588,7 @@ class ServingEndpointsAPI:
 
     def list(self) -> Iterator[ServingEndpoint]:
         """Retrieve all serving endpoints.
-        
+
         :returns: Iterator over :class:`ServingEndpoint`
         """
 
@@ -2600,14 +2600,14 @@ class ServingEndpointsAPI:
 
     def logs(self, name: str, served_model_name: str) -> ServerLogsResponse:
         """Retrieve the most recent log lines associated with a given serving endpoint's served model.
-        
+
         Retrieves the service logs associated with the provided served model.
-        
+
         :param name: str
           The name of the serving endpoint that the served model belongs to. This field is required.
         :param served_model_name: str
           The name of the served model that logs will be retrieved for. This field is required.
-        
+
         :returns: :class:`ServerLogsResponse`
         """
 
@@ -2624,16 +2624,16 @@ class ServingEndpointsAPI:
               add_tags: Optional[List[EndpointTag]] = None,
               delete_tags: Optional[List[str]] = None) -> Iterator[EndpointTag]:
         """Patch the tags of a serving endpoint.
-        
+
         Used to batch add and delete tags from a serving endpoint with a single API call.
-        
+
         :param name: str
           The name of the serving endpoint who's tags to patch. This field is required.
         :param add_tags: List[:class:`EndpointTag`] (optional)
           List of endpoint tags to add
         :param delete_tags: List[str] (optional)
           List of tag keys to delete
-        
+
         :returns: Iterator over :class:`EndpointTag`
         """
         body = {}
@@ -2646,15 +2646,15 @@ class ServingEndpointsAPI:
 
     def put(self, name: str, *, rate_limits: Optional[List[RateLimit]] = None) -> PutResponse:
         """Update the rate limits of a serving endpoint.
-        
+
         Used to update the rate limits of a serving endpoint. NOTE: only external and foundation model
         endpoints are supported as of now.
-        
+
         :param name: str
           The name of the serving endpoint whose rate limits are being updated. This field is required.
         :param rate_limits: List[:class:`RateLimit`] (optional)
           The list of endpoint rate limits.
-        
+
         :returns: :class:`PutResponse`
         """
         body = {}
@@ -2684,7 +2684,7 @@ class ServingEndpointsAPI:
               stream: Optional[bool] = None,
               temperature: Optional[float] = None) -> QueryEndpointResponse:
         """Query a serving endpoint with provided model input.
-        
+
         :param name: str
           The name of the serving endpoint. This field is required.
         :param dataframe_records: List[Any] (optional)
@@ -2728,7 +2728,7 @@ class ServingEndpointsAPI:
           The temperature field used ONLY for __completions__ and __chat external & foundation model__ serving
           endpoints. This is a float between 0.0 and 2.0 with a default of 1.0 and should only be used with
           other chat/completions query fields.
-        
+
         :returns: :class:`QueryEndpointResponse`
         """
         body = {}
@@ -2761,14 +2761,14 @@ class ServingEndpointsAPI:
         access_control_list: Optional[List[ServingEndpointAccessControlRequest]] = None
     ) -> ServingEndpointPermissions:
         """Set serving endpoint permissions.
-        
+
         Sets permissions on a serving endpoint. Serving endpoints can inherit permissions from their root
         object.
-        
+
         :param serving_endpoint_id: str
           The serving endpoint for which to get or manage permissions.
         :param access_control_list: List[:class:`ServingEndpointAccessControlRequest`] (optional)
-        
+
         :returns: :class:`ServingEndpointPermissions`
         """
         body = {}
@@ -2790,11 +2790,11 @@ class ServingEndpointsAPI:
                       served_models: Optional[List[ServedModelInput]] = None,
                       traffic_config: Optional[TrafficConfig] = None) -> Wait[ServingEndpointDetailed]:
         """Update a serving endpoint with a new config.
-        
+
         Updates any combination of the serving endpoint's served entities, the compute configuration of those
         served entities, and the endpoint's traffic config. An endpoint that already has an update in progress
         can not be updated until the current update completes or fails.
-        
+
         :param name: str
           The name of the serving endpoint to update. This field is required.
         :param auto_capture_config: :class:`AutoCaptureConfigInput` (optional)
@@ -2807,7 +2807,7 @@ class ServingEndpointsAPI:
           serving endpoint can have up to 10 served models.
         :param traffic_config: :class:`TrafficConfig` (optional)
           The traffic config defining how invocations to the serving endpoint should be routed.
-        
+
         :returns:
           Long-running operation waiter for :class:`ServingEndpointDetailed`.
           See :method:wait_get_serving_endpoint_not_updating for more details.
@@ -2849,14 +2849,14 @@ class ServingEndpointsAPI:
         access_control_list: Optional[List[ServingEndpointAccessControlRequest]] = None
     ) -> ServingEndpointPermissions:
         """Update serving endpoint permissions.
-        
+
         Updates the permissions on a serving endpoint. Serving endpoints can inherit permissions from their
         root object.
-        
+
         :param serving_endpoint_id: str
           The serving endpoint for which to get or manage permissions.
         :param access_control_list: List[:class:`ServingEndpointAccessControlRequest`] (optional)
-        
+
         :returns: :class:`ServingEndpointPermissions`
         """
         body = {}

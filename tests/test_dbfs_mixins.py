@@ -1,3 +1,6 @@
+from typing import Optional
+
+
 def test_moving_dbfs_file_to_local_dir(config, tmp_path, mocker):
     from databricks.sdk import WorkspaceClient
     from databricks.sdk.service.files import FileInfo, ReadResponse
@@ -5,7 +8,7 @@ def test_moving_dbfs_file_to_local_dir(config, tmp_path, mocker):
     get_status = mocker.patch('databricks.sdk.service.files.DbfsAPI.get_status',
                               return_value=FileInfo(path='a', is_dir=False, file_size=4))
 
-    def fake_read(path: str, *, length: int = None, offset: int = None):
+    def fake_read(path: str, *, length: Optional[int] = None, offset: Optional[int] = None):
         assert path == 'a'
         assert length == 1048576
         if not offset:
