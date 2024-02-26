@@ -89,6 +89,9 @@ except ImportError:
     # OSS implementation
     is_local_implementation = True
 
+    for var in dbruntime_objects:
+        globals()[var] = None
+
     # The next few try-except blocks are for initialising globals in a best effort
     # mannaer. We separate them to try to get as many of them working as possible
     try:
