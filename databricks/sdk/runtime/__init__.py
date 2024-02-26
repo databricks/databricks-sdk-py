@@ -112,7 +112,7 @@ except ImportError:
     except Exception as e:
         # We are ignoring all failures here because user might want to initialize
         # spark session themselves and we don't want to interfere with that
-        logging.debug(f"Failed to initialize spark session: {e}")
+        logging.debug(f"Failed to initialize globals 'spark' and 'sc', continuing. Cause: {e}")
 
     try:
         from IPython import display as IPDisplay
