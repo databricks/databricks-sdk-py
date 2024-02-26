@@ -18,8 +18,9 @@ def restorable_env():
         elif v != current_env[k]:
             os.environ[k] = current_env[k] 
 
-@pytest.fixture()
-def setup_dbconnect_test(dbr: str, env_or_skip, restorable_env):
+@pytest.fixture(params=list(DBCONNECT_DBR_CLIENT.keys()))
+def setup_dbconnect_test(request, env_or_skip, restorable_env):
+    dbr = request.param
     assert dbr in DBCONNECT_DBR_CLIENT, f"Unsupported Databricks Runtime version {dbr}. Please update DBCONNECT_DBR_CLIENT."
 
     import os
@@ -35,13 +36,11 @@ def setup_dbconnect_test(dbr: str, env_or_skip, restorable_env):
     subprocess.check_call([sys.executable, "-m", "pip", "uninstall", "-y", lib])
     
 
-@pytest.mark.parametrize("dbr", DBCONNECT_DBR_CLIENT.keys(), indirect=True)
 def test_dbconnect_initialisation(w, setup_dbconnect_test):
     from databricks.connect import DatabricksSession
     spark = DatabricksSession.builder.getOrCreate()
     assert spark.sql("SELECT 1").collect()[0][0] == 1
 
-@pytest.mark.parametrize("dbr", DBCONNECT_DBR_CLIENT.keys(), indirect=True)
 def test_dbconnect_runtime_import(w, setup_dbconnect_test):
     from databricks.sdk.runtime import spark
     assert spark.sql("SELECT 1").collect()[0][0] == 1
