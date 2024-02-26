@@ -43,6 +43,6 @@ def test_dbconnect_initialisation(w, setup_dbconnect_test):
 
 @pytest.mark.parametrize("dbr", DBCONNECT_DBR_CLIENT.keys(), indirect=True)
 def test_dbconnect_runtime_import(w, setup_dbconnect_test):
-    from databricks.sdk.runtime import *
+    from databricks.sdk.runtime import spark
     assert spark.sql("SELECT 1").collect()[0][0] == 1
 
