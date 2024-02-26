@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import logging
-from typing import Dict, Union
+from typing import Dict, Union, Optional, cast
 
 logger = logging.getLogger('databricks.sdk')
 is_local_implementation = True
@@ -161,8 +161,6 @@ except ImportError:
 
     # We want to propagate the error in initialising dbutils because this is a core
     # functionality of the sdk
-    from typing import Optional, cast
-
     from databricks.sdk.dbutils import RemoteDbUtils
 
     from . import dbutils_stub
