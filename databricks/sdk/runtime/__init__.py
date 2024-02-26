@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import logging
-from typing import Dict, Union, Optional, cast
+from typing import Dict, Optional, Union, cast
 
 logger = logging.getLogger('databricks.sdk')
 is_local_implementation = True
