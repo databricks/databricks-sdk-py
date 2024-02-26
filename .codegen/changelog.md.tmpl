@@ -39,10 +39,10 @@ Dependency updates:
 {{- end -}}
 
 {{- define "entity" -}}
-    {{- if not . }}any /* ERROR */
-	{{- else if .IsEmpty}}`any`
+    {{- if not . }}Any /* ERROR */
+	{{- else if .IsEmpty}}`Any`
 	{{- else if .PascalName}}`databricks.sdk.service.{{.Package.Name}}.{{.PascalName}}`
-	{{- else if .IsAny}}`any`
+	{{- else if .IsAny}}`Any`
 	{{- else if .IsString}}`str`
 	{{- else if .IsBool}}`bool`
 	{{- else if .IsInt64}}`int`
