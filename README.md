@@ -5,6 +5,7 @@
 [![databricks-sdk](https://snyk.io/advisor/python/databricks-sdk/badge.svg)](https://snyk.io/advisor/python/databricks-sdk)
 ![PyPI](https://img.shields.io/pypi/v/databricks-sdk)
 [![codecov](https://codecov.io/gh/databricks/databricks-sdk-py/branch/main/graph/badge.svg?token=GU63K7WDBE)](https://codecov.io/gh/databricks/databricks-sdk-py)
+[![lines of code](https://tokei.rs/b1/github/databricks/databricks-sdk-py)]([https://codecov.io/github/databricks/databricks-sdk-py](https://github.com/databricks/databricks-sdk-py))
 
 [Beta](https://docs.databricks.com/release-notes/release-types.html): This SDK is supported for production use cases, 
 but we do expect future releases to have some interface changes; see [Interface stability](#interface-stability). 
