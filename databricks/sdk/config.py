@@ -251,6 +251,11 @@ class Config:
         self._user_agent_other_info.append(f"{key}/{value}")
         return self
 
+    def with_library(self, product: str, version: str) -> 'Config':
+        config_copy = self.copy()
+        config_copy.with_user_agent_extra(product, version)
+        return config_copy
+
     @property
     def oidc_endpoints(self) -> Optional[OidcEndpoints]:
         self._fix_host_if_needed()

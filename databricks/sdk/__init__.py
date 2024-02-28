@@ -215,6 +215,11 @@ class WorkspaceClient:
         self._workspace_bindings = WorkspaceBindingsAPI(self._api_client)
         self._workspace_conf = WorkspaceConfAPI(self._api_client)
 
+    def with_library(self, product: str, version: str) -> 'WorkspaceClient':
+        config = self._config.with_library(product, version)
+        # TODO: same for AccountClient & codegen
+        return WorkspaceClient(config=config)
+
     @property
     def config(self) -> client.Config:
         return self._config
