@@ -450,6 +450,20 @@ class DeleteAppResponse:
 
 
 @dataclass
+class DeleteResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteResponse:
+        """Deserializes the DeleteResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class DeployAppRequest:
     manifest: AppManifest
     """Manifest that specifies the application requirements"""
@@ -749,6 +763,20 @@ class EndpointTag:
     def from_dict(cls, d: Dict[str, any]) -> EndpointTag:
         """Deserializes the EndpointTag from a dictionary."""
         return cls(key=d.get('key', None), value=d.get('value', None))
+
+
+@dataclass
+class ExportMetricsResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the ExportMetricsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ExportMetricsResponse:
+        """Deserializes the ExportMetricsResponse from a dictionary."""
+        return cls()
 
 
 @dataclass

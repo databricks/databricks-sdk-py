@@ -8,6 +8,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: AddResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: Adlsgen2Info
    :members:
    :undoc-members:
@@ -55,7 +59,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: CancelResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: ChangeClusterOwner
+   :members:
+   :undoc-members:
+
+.. autoclass:: ChangeClusterOwnerResponse
    :members:
    :undoc-members:
 
@@ -331,7 +343,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: DeleteClusterResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: DeleteInstancePool
+   :members:
+   :undoc-members:
+
+.. autoclass:: DeleteInstancePoolResponse
    :members:
    :undoc-members:
 
@@ -339,7 +359,19 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: DeletePolicyResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: DeleteResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: DestroyContext
+   :members:
+   :undoc-members:
+
+.. autoclass:: DestroyResponse
    :members:
    :undoc-members:
 
@@ -389,11 +421,27 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: EditClusterResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: EditInstancePool
    :members:
    :undoc-members:
 
+.. autoclass:: EditInstancePoolResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: EditPolicy
+   :members:
+   :undoc-members:
+
+.. autoclass:: EditPolicyResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: EditResponse
    :members:
    :undoc-members:
 
@@ -608,6 +656,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: InstallLibraries
+   :members:
+   :undoc-members:
+
+.. autoclass:: InstallLibrariesResponse
    :members:
    :undoc-members:
 
@@ -836,7 +888,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: PermanentDeleteClusterResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: PinCluster
+   :members:
+   :undoc-members:
+
+.. autoclass:: PinClusterResponse
    :members:
    :undoc-members:
 
@@ -860,11 +920,23 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: RemoveResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: ResizeCluster
    :members:
    :undoc-members:
 
+.. autoclass:: ResizeClusterResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: RestartCluster
+   :members:
+   :undoc-members:
+
+.. autoclass:: RestartClusterResponse
    :members:
    :undoc-members:
 
@@ -919,6 +991,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: StartCluster
+   :members:
+   :undoc-members:
+
+.. autoclass:: StartClusterResponse
    :members:
    :undoc-members:
 
@@ -1215,7 +1291,19 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: UninstallLibrariesResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: UnpinCluster
+   :members:
+   :undoc-members:
+
+.. autoclass:: UnpinClusterResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateResponse
    :members:
    :undoc-members:
 

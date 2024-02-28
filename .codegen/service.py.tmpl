@@ -18,10 +18,11 @@ from databricks.sdk.service import {{.Package.Name}}{{end}}
 
 # all definitions in this file are in alphabetical order
 {{range .Types}}
-{{if .Fields -}}{{if not .IsRequest}}@dataclass
+{{if or .Fields .IsEmpty -}}{{if not .IsRequest}}@dataclass
 class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Description}}
     """{{.Comment "    " 100}}"""
-    {{end}}{{- range .RequiredFields}}
+    {{end}}
+    {{- range .RequiredFields}}
     {{template "safe-snake-name" .}}: {{template "type" .Entity}}{{if .Description}}
     """{{.Comment "    " 100 | trimSuffix "\""}}"""{{end}}
     {{end}}
@@ -29,7 +30,7 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Descriptio
     {{template "safe-snake-name" .}}: Optional[{{template "type" .Entity}}] = None{{if .Description}}
     """{{.Comment "    " 100 | trimSuffix "\""}}"""{{end}}
     {{end}}
-    {{if or .HasJsonField .HasHeaderField .HasByteStreamField -}}
+    {{if or .IsEmpty .HasJsonField .HasHeaderField .HasByteStreamField -}}
     def as_dict(self) -> dict:
         """Serializes the {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}} into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -44,7 +45,7 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Descriptio
     {{end}}
 {{end}}
 {{else if .ArrayValue}}type {{.PascalName}} []{{template "type" .ArrayValue}}
-{{else if .MapValue}}{{.PascalName}} = {{template "type-nq" .}}
+{{else if .MapValue}}{{.PascalName}} = {{template "type" .}}
 {{else if .Enum}}class {{.PascalName}}(Enum):
     {{if .Description}}"""{{.Comment "    " 100 | trimSuffix "\"" }}"""{{end}}
     {{range .Enum }}
@@ -53,11 +54,11 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Descriptio
 {{- define "from_dict_type" -}}
 	{{- if not .Entity }}None
 	{{- else if .Entity.ArrayValue }}
-		{{- if (or .Entity.ArrayValue.IsObject .Entity.ArrayValue.IsExternal) }}_repeated_dict(d, '{{.Name}}', {{template "type-nq" .Entity.ArrayValue}})
-		{{- else if .Entity.ArrayValue.Enum }}_repeated_enum(d, '{{.Name}}', {{template "type-nq" .Entity.ArrayValue}})
+		{{- if (or .Entity.ArrayValue.IsObject .Entity.ArrayValue.IsExternal) }}_repeated_dict(d, '{{.Name}}', {{template "type" .Entity.ArrayValue}})
+		{{- else if .Entity.ArrayValue.Enum }}_repeated_enum(d, '{{.Name}}', {{template "type" .Entity.ArrayValue}})
 		{{- else}}d.get('{{.Name}}', None){{- end -}}
-	{{- else if (or .Entity.IsObject .Entity.IsExternal) }}_from_dict(d, '{{.Name}}', {{template "type-nq" .Entity}})
-	{{- else if .Entity.Enum }}_enum(d, '{{.Name}}', {{template "type-nq" .Entity}})
+	{{- else if or .Entity.IsObject .Entity.IsExternal .Entity.IsEmpty }}_from_dict(d, '{{.Name}}', {{template "type" .Entity}})
+	{{- else if .Entity.Enum }}_enum(d, '{{.Name}}', {{template "type" .Entity}})
 	{{- else if and .IsHeader (or .Entity.IsInt64 .Entity.IsInt) }} int(d.get('{{.Name}}', None))
 	{{- else}}d.get('{{.Name}}', None){{- end -}}
 {{- end -}}
@@ -65,52 +66,37 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Descriptio
 	{{- if not .Entity }}None # ERROR: No Type
 	{{- /* This should be done recursively, but recursion in text templates is not supported. */ -}}
 	{{- else if .Entity.ArrayValue }}[{{if or .Entity.ArrayValue.IsObject .Entity.ArrayValue.IsExternal}}v.as_dict(){{ else if .Entity.ArrayValue.Enum }}v.value{{else}}v{{end}} for v in self.{{template "safe-snake-name" .}}]
-	{{- else if or .Entity.IsObject .Entity.IsExternal }}self.{{template "safe-snake-name" .}}.as_dict()
+	{{- else if or .Entity.IsObject .Entity.IsExternal .Entity.IsEmpty }}self.{{template "safe-snake-name" .}}.as_dict()
 	{{- else if .Entity.Enum }}self.{{template "safe-snake-name" .}}.value
 	{{- else}}self.{{template "safe-snake-name" .}}{{- end -}}
 {{- end -}}
 {{- define "type" -}}
 	{{- if not . }}any # ERROR: No Type
-	{{- else if .ArrayValue }}List[{{template "type-nq" .ArrayValue}}]
-	{{- else if .MapValue }}Dict[str,{{template "type-nq" .MapValue}}]
 	{{- else if .IsExternal }}{{.Package.Name}}.{{.PascalName}}
+	{{- else if .ArrayValue }}List[{{template "type" .ArrayValue}}]
+	{{- else if .MapValue }}Dict[str,{{template "type" .MapValue}}]
 	{{- else if .IsObject }}{{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}
 	{{- else if .Enum }}{{.PascalName}}
-	{{- else}}{{template "type-nq" .}}{{- end -}}
-{{- end -}}
-{{- define "type-nq" -}}
-	{{- if .IsString}}str
-	{{- else if .IsEmpty}}Any
+	{{- else if .IsString}}str
 	{{- else if .IsAny}}Any
+	{{- else if .IsEmpty}}{{.PascalName}}
 	{{- else if .IsBool}}bool
 	{{- else if .IsInt64}}int
 	{{- else if .IsFloat64}}float
 	{{- else if .IsInt}}int
 	{{- else if .IsByteStream}}BinaryIO
-	{{- else if .ArrayValue }}List[{{template "type-nq" .ArrayValue}}]
-	{{- else if .MapValue }}Dict[str,{{template "type-nq" .MapValue}}]
-	{{- else if .IsExternal }}{{.Package.Name}}.{{.PascalName}}
-	{{- else if .IsObject }}{{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}
-	{{- else if .Enum }}{{.PascalName}}
 	{{- else}}any /* MISSING TYPE */
 	{{- end -}}
 {{- end -}}
 
 {{- define "type-doc" -}}
-	{{- if .IsString}}str
-	{{- else if .IsEmpty}}Any
-	{{- else if .IsAny}}Any
-	{{- else if .IsBool}}bool
-	{{- else if .IsInt64}}int
-	{{- else if .IsFloat64}}float
-	{{- else if .IsInt}}int
-	{{- else if .IsByteStream}}BinaryIO
+	{{- if .IsExternal }}:class:`{{.PascalName}}`
+	{{- else if .IsEmpty}}:class:`{{template "type" .}}`
 	{{- else if .ArrayValue }}List[{{template "type-doc" .ArrayValue}}]
 	{{- else if .MapValue }}Dict[str,{{template "type-doc" .MapValue}}]
-	{{- else if .IsExternal }}:class:`{{.PascalName}}`
 	{{- else if .IsObject }}:class:`{{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}`
 	{{- else if .Enum }}:class:`{{.PascalName}}`
-	{{- else}}any /* MISSING TYPE */
+	{{- else}}{{template "type" . }}
 	{{- end -}}
 {{- end -}}
 
@@ -120,8 +106,18 @@ class {{.Name}}API:{{if .Description}}
     {{end}}
     def __init__(self, api_client):
         self._api = api_client
+        {{range .Subservices}}
+        self._{{.SnakeName}} = {{.PascalName}}API(self._api){{end}}
+
+    {{range .Subservices}}
+    @property
+    def {{.SnakeName}}(self) -> {{.PascalName}}API:
+        {{if .Description}}"""{{.Summary}}"""{{end}}
+        return self._{{.SnakeName}}
+    {{end}}
+
     {{range .Waits}}
-    def {{template "safe-snake-name" .}}(self{{range .Binding}}, {{template "safe-snake-name" .PollField}}: {{template "type-nq" .PollField.Entity}}{{end}},
+    def {{template "safe-snake-name" .}}(self{{range .Binding}}, {{template "safe-snake-name" .PollField}}: {{template "type" .PollField.Entity}}{{end}},
       timeout=timedelta(minutes={{.Timeout}}), callback: Optional[Callable[[{{.Poll.Response.PascalName}}], None]] = None) -> {{.Poll.Response.PascalName}}:
       deadline = time.time() + timeout.total_seconds()
       target_states = ({{range .Success}}{{.Entity.PascalName}}.{{.ConstantName}}, {{end}}){{if .Failure}}
@@ -176,7 +172,7 @@ class {{.Name}}API:{{if .Description}}
         :returns:
           Long-running operation waiter for {{template "type-doc" .Wait.Poll.Response}}.
           See :method:{{template "safe-snake-name" .Wait}} for more details.
-        {{- else if .Response}}:returns: {{if .Response.ArrayValue -}}
+        {{- else if not .Response.IsEmpty }}:returns: {{if .Response.ArrayValue -}}
           Iterator over {{template "type-doc" .Response.ArrayValue}}
         {{- else if .Pagination -}}
           Iterator over {{template "type-doc" .Pagination.Entity}}
@@ -188,7 +184,7 @@ class {{.Name}}API:{{if .Description}}
         {{template "method-serialize" .}}
         {{- end}}
         {{template "method-headers" . }}
-        {{if and .Response .Response.HasHeaderField -}}
+        {{if .Response.HasHeaderField -}}
         {{template "method-response-headers" . }}
         {{- end}}
         {{template "method-call" .}}
@@ -203,10 +199,10 @@ class {{.Name}}API:{{if .Description}}
 
 {{define "method-parameters" -}}
   self{{if .Request}}
-       {{- if .Request.MapValue }}, contents: {{template "type-nq" .Request }}{{ end }}
-       {{range .Request.RequiredFields}}, {{template "safe-snake-name" .}}: {{template "type-nq" .Entity}}{{end}}
+       {{- if .Request.MapValue }}, contents: {{template "type" .Request }}{{ end }}
+       {{range .Request.RequiredFields}}, {{template "safe-snake-name" .}}: {{template "type" .Entity}}{{end}}
        {{if .Request.NonRequiredFields}}, *
-         {{range .Request.NonRequiredFields}}, {{template "safe-snake-name" .}}: Optional[{{template "type-nq" .Entity}}] = None{{end}}
+         {{range .Request.NonRequiredFields}}, {{template "safe-snake-name" .}}: Optional[{{template "type" .Entity}}] = None{{end}}
        {{- end}}
      {{- end}}
 {{- end}}
@@ -314,9 +310,9 @@ class {{.Name}}API:{{if .Description}}
 {{- end}}
 
 {{define "method-call-default" -}}
-        {{if .Response -}}
+        {{if not .Response.IsEmpty -}}
         res = {{end}}{{template "method-do" .}}
-        {{if .Response -}}
+        {{if not .Response.IsEmpty -}}
           {{- if .Response.ArrayValue -}}
             return [{{.Response.ArrayValue.PascalName}}.from_dict(v) for v in res]
           {{- else if .Response.MapValue -}}
@@ -338,7 +334,7 @@ self._api.do('{{.Verb}}',
       {{- else if .Request.HasJsonField}}, body=body{{end}}
   {{end}}
   , headers=headers
-  {{if and .Response .Response.HasHeaderField -}}
+  {{if .Response.HasHeaderField -}}
   , response_headers=response_headers
   {{- end}}
   {{- if and .IsRequestByteStream .RequestBodyField }}, data={{template "safe-snake-name" .RequestBodyField}}{{ end }}
@@ -347,7 +343,7 @@ self._api.do('{{.Verb}}',
 
 {{define "method-return-type" -}}
   {{if and .Wait (and (not .IsCrudRead) (not (eq .SnakeName "get_run"))) }} -> Wait[{{.Wait.Poll.Response.PascalName}}]
-  {{- else if .Response}} -> {{if .Response.ArrayValue -}}
+  {{- else if not .Response.IsEmpty }} -> {{if .Response.ArrayValue -}}
     Iterator[{{template "type" .Response.ArrayValue}}]
   {{- else if .Pagination -}}
     Iterator[{{template "type" .Pagination.Entity}}]

@@ -15,7 +15,7 @@
     To create storage credentials, you must be a Databricks account admin. The account admin who creates the
     storage credential can delegate ownership to another user or group to manage permissions on it.
 
-    .. py:method:: create(name: str [, aws_iam_role: Optional[AwsIamRole], azure_managed_identity: Optional[AzureManagedIdentity], azure_service_principal: Optional[AzureServicePrincipal], cloudflare_api_token: Optional[CloudflareApiToken], comment: Optional[str], databricks_gcp_service_account: Optional[Any], read_only: Optional[bool], skip_validation: Optional[bool]]) -> StorageCredentialInfo
+    .. py:method:: create(name: str [, aws_iam_role: Optional[AwsIamRole], azure_managed_identity: Optional[AzureManagedIdentity], azure_service_principal: Optional[AzureServicePrincipal], cloudflare_api_token: Optional[CloudflareApiToken], comment: Optional[str], databricks_gcp_service_account: Optional[DatabricksGcpServiceAccountRequest], read_only: Optional[bool], skip_validation: Optional[bool]]) -> StorageCredentialInfo
 
 
         Usage:
@@ -53,7 +53,7 @@
           The Cloudflare API token configuration.
         :param comment: str (optional)
           Comment associated with the credential.
-        :param databricks_gcp_service_account: Any (optional)
+        :param databricks_gcp_service_account: :class:`DatabricksGcpServiceAccountRequest` (optional)
           The <Databricks> managed GCP service account configuration.
         :param read_only: bool (optional)
           Whether the storage credential is only usable for read operations.
@@ -146,7 +146,7 @@
         :returns: Iterator over :class:`StorageCredentialInfo`
         
 
-    .. py:method:: update(name: str [, aws_iam_role: Optional[AwsIamRole], azure_managed_identity: Optional[AzureManagedIdentity], azure_service_principal: Optional[AzureServicePrincipal], cloudflare_api_token: Optional[CloudflareApiToken], comment: Optional[str], databricks_gcp_service_account: Optional[Any], force: Optional[bool], new_name: Optional[str], owner: Optional[str], read_only: Optional[bool], skip_validation: Optional[bool]]) -> StorageCredentialInfo
+    .. py:method:: update(name: str [, aws_iam_role: Optional[AwsIamRole], azure_managed_identity: Optional[AzureManagedIdentity], azure_service_principal: Optional[AzureServicePrincipal], cloudflare_api_token: Optional[CloudflareApiToken], comment: Optional[str], databricks_gcp_service_account: Optional[DatabricksGcpServiceAccountRequest], force: Optional[bool], new_name: Optional[str], owner: Optional[str], read_only: Optional[bool], skip_validation: Optional[bool]]) -> StorageCredentialInfo
 
 
         Usage:
@@ -189,7 +189,7 @@
           The Cloudflare API token configuration.
         :param comment: str (optional)
           Comment associated with the credential.
-        :param databricks_gcp_service_account: Any (optional)
+        :param databricks_gcp_service_account: :class:`DatabricksGcpServiceAccountRequest` (optional)
           The <Databricks> managed GCP service account configuration.
         :param force: bool (optional)
           Force update even if there are dependent external locations or external tables.
@@ -205,7 +205,7 @@
         :returns: :class:`StorageCredentialInfo`
         
 
-    .. py:method:: validate( [, aws_iam_role: Optional[AwsIamRole], azure_managed_identity: Optional[AzureManagedIdentity], azure_service_principal: Optional[AzureServicePrincipal], cloudflare_api_token: Optional[CloudflareApiToken], databricks_gcp_service_account: Optional[Any], external_location_name: Optional[str], read_only: Optional[bool], storage_credential_name: Optional[Any], url: Optional[str]]) -> ValidateStorageCredentialResponse
+    .. py:method:: validate( [, aws_iam_role: Optional[AwsIamRole], azure_managed_identity: Optional[AzureManagedIdentity], azure_service_principal: Optional[AzureServicePrincipal], cloudflare_api_token: Optional[CloudflareApiToken], databricks_gcp_service_account: Optional[DatabricksGcpServiceAccountRequest], external_location_name: Optional[str], read_only: Optional[bool], storage_credential_name: Optional[str], url: Optional[str]]) -> ValidateStorageCredentialResponse
 
         Validate a storage credential.
         
@@ -227,13 +227,13 @@
           The Azure service principal configuration.
         :param cloudflare_api_token: :class:`CloudflareApiToken` (optional)
           The Cloudflare API token configuration.
-        :param databricks_gcp_service_account: Any (optional)
+        :param databricks_gcp_service_account: :class:`DatabricksGcpServiceAccountRequest` (optional)
           The Databricks created GCP service account configuration.
         :param external_location_name: str (optional)
           The name of an existing external location to validate.
         :param read_only: bool (optional)
           Whether the storage credential is only usable for read operations.
-        :param storage_credential_name: Any (optional)
+        :param storage_credential_name: str (optional)
           The name of the storage credential to validate.
         :param url: str (optional)
           The external location url to validate.

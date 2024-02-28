@@ -24,6 +24,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: DeleteCustomAppIntegrationOutput
+   :members:
+   :undoc-members:
+
+.. autoclass:: DeletePublishedAppIntegrationOutput
+   :members:
+   :undoc-members:
+
+.. autoclass:: DeleteResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: GetCustomAppIntegrationOutput
    :members:
    :undoc-members:
@@ -64,6 +76,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: UpdateCustomAppIntegrationOutput
+   :members:
+   :undoc-members:
+
 .. autoclass:: UpdatePublishedAppIntegration
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdatePublishedAppIntegrationOutput
    :members:
    :undoc-members:

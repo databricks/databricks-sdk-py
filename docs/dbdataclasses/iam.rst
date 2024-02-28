@@ -16,6 +16,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: DeleteResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: DeleteWorkspaceAssignments
+   :members:
+   :undoc-members:
+
 .. autoclass:: GetAssignableRolesForResourceResponse
    :members:
    :undoc-members:
@@ -134,6 +142,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: REPLACE
       :value: "REPLACE"
 
+.. autoclass:: PatchResponse
+   :members:
+   :undoc-members:
+
 .. py:class:: PatchSchema
 
    .. py:attribute:: URN_IETF_PARAMS_SCIM_API_MESSAGES_2_0_PATCH_OP
@@ -241,6 +253,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: URN_IETF_PARAMS_SCIM_SCHEMAS_CORE_2_0_SERVICE_PRINCIPAL
       :value: "URN_IETF_PARAMS_SCIM_SCHEMAS_CORE_2_0_SERVICE_PRINCIPAL"
 
+.. autoclass:: UpdateResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: UpdateRuleSetRequest
    :members:
    :undoc-members:
@@ -260,6 +276,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: URN_IETF_PARAMS_SCIM_SCHEMAS_EXTENSION_WORKSPACE_2_0_USER
       :value: "URN_IETF_PARAMS_SCIM_SCHEMAS_EXTENSION_WORKSPACE_2_0_USER"
+
+.. autoclass:: WorkspaceAssignmentsUpdated
+   :members:
+   :undoc-members:
 
 .. py:class:: WorkspacePermission
 

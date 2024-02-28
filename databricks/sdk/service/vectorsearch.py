@@ -202,6 +202,34 @@ class DeleteDataVectorIndexResponse:
 
 
 @dataclass
+class DeleteEndpointResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteEndpointResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteEndpointResponse:
+        """Deserializes the DeleteEndpointResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
+class DeleteIndexResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteIndexResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteIndexResponse:
+        """Deserializes the DeleteIndexResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class DeltaSyncVectorIndexSpecRequest:
     embedding_source_columns: Optional[List[EmbeddingSourceColumn]] = None
     """The columns that contain the embedding source."""
@@ -319,26 +347,9 @@ class DirectAccessVectorIndexSpec:
 
 
 @dataclass
-class EmbeddingConfig:
+class EmbeddingSourceColumn:
     embedding_model_endpoint_name: Optional[str] = None
     """Name of the embedding model endpoint"""
-
-    def as_dict(self) -> dict:
-        """Serializes the EmbeddingConfig into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.embedding_model_endpoint_name is not None:
-            body['embedding_model_endpoint_name'] = self.embedding_model_endpoint_name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EmbeddingConfig:
-        """Deserializes the EmbeddingConfig from a dictionary."""
-        return cls(embedding_model_endpoint_name=d.get('embedding_model_endpoint_name', None))
-
-
-@dataclass
-class EmbeddingSourceColumn:
-    embedding_config: Optional[EmbeddingConfig] = None
 
     name: Optional[str] = None
     """Name of the column"""
@@ -346,14 +357,15 @@ class EmbeddingSourceColumn:
     def as_dict(self) -> dict:
         """Serializes the EmbeddingSourceColumn into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.embedding_config: body['embedding_config'] = self.embedding_config.as_dict()
+        if self.embedding_model_endpoint_name is not None:
+            body['embedding_model_endpoint_name'] = self.embedding_model_endpoint_name
         if self.name is not None: body['name'] = self.name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> EmbeddingSourceColumn:
         """Deserializes the EmbeddingSourceColumn from a dictionary."""
-        return cls(embedding_config=_from_dict(d, 'embedding_config', EmbeddingConfig),
+        return cls(embedding_model_endpoint_name=d.get('embedding_model_endpoint_name', None),
                    name=d.get('name', None))
 
 
@@ -689,6 +701,20 @@ class ResultManifest:
 
 
 @dataclass
+class SyncIndexResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the SyncIndexResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> SyncIndexResponse:
+        """Deserializes the SyncIndexResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class UpsertDataResult:
     """Result of the upsert or delete operation."""
 
@@ -772,9 +798,9 @@ class VectorIndex:
     creator: Optional[str] = None
     """The user who created the index."""
 
-    delta_sync_vector_index_spec: Optional[DeltaSyncVectorIndexSpecResponse] = None
+    delta_sync_index_spec: Optional[DeltaSyncVectorIndexSpecResponse] = None
 
-    direct_access_vector_index_spec: Optional[DirectAccessVectorIndexSpec] = None
+    direct_access_index_spec: Optional[DirectAccessVectorIndexSpec] = None
 
     endpoint_name: Optional[str] = None
     """Name of the endpoint associated with the index"""
@@ -799,10 +825,9 @@ class VectorIndex:
         """Serializes the VectorIndex into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.creator is not None: body['creator'] = self.creator
-        if self.delta_sync_vector_index_spec:
-            body['delta_sync_vector_index_spec'] = self.delta_sync_vector_index_spec.as_dict()
-        if self.direct_access_vector_index_spec:
-            body['direct_access_vector_index_spec'] = self.direct_access_vector_index_spec.as_dict()
+        if self.delta_sync_index_spec: body['delta_sync_index_spec'] = self.delta_sync_index_spec.as_dict()
+        if self.direct_access_index_spec:
+            body['direct_access_index_spec'] = self.direct_access_index_spec.as_dict()
         if self.endpoint_name is not None: body['endpoint_name'] = self.endpoint_name
         if self.index_type is not None: body['index_type'] = self.index_type.value
         if self.name is not None: body['name'] = self.name
@@ -814,10 +839,10 @@ class VectorIndex:
     def from_dict(cls, d: Dict[str, any]) -> VectorIndex:
         """Deserializes the VectorIndex from a dictionary."""
         return cls(creator=d.get('creator', None),
-                   delta_sync_vector_index_spec=_from_dict(d, 'delta_sync_vector_index_spec',
-                                                           DeltaSyncVectorIndexSpecResponse),
-                   direct_access_vector_index_spec=_from_dict(d, 'direct_access_vector_index_spec',
-                                                              DirectAccessVectorIndexSpec),
+                   delta_sync_index_spec=_from_dict(d, 'delta_sync_index_spec',
+                                                    DeltaSyncVectorIndexSpecResponse),
+                   direct_access_index_spec=_from_dict(d, 'direct_access_index_spec',
+                                                       DirectAccessVectorIndexSpec),
                    endpoint_name=d.get('endpoint_name', None),
                    index_type=_enum(d, 'index_type', VectorIndexType),
                    name=d.get('name', None),

@@ -191,6 +191,20 @@ class CreateScope:
 
 
 @dataclass
+class CreateScopeResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the CreateScopeResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> CreateScopeResponse:
+        """Deserializes the CreateScopeResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class CredentialInfo:
     credential_id: Optional[int] = None
     """ID of the credential object in the workspace."""
@@ -264,6 +278,34 @@ class DeleteAcl:
 
 
 @dataclass
+class DeleteAclResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteAclResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteAclResponse:
+        """Deserializes the DeleteAclResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
+class DeleteResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteResponse:
+        """Deserializes the DeleteResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class DeleteScope:
     scope: str
     """Name of the scope to delete."""
@@ -278,6 +320,20 @@ class DeleteScope:
     def from_dict(cls, d: Dict[str, any]) -> DeleteScope:
         """Deserializes the DeleteScope from a dictionary."""
         return cls(scope=d.get('scope', None))
+
+
+@dataclass
+class DeleteScopeResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteScopeResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteScopeResponse:
+        """Deserializes the DeleteScopeResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -299,6 +355,20 @@ class DeleteSecret:
     def from_dict(cls, d: Dict[str, any]) -> DeleteSecret:
         """Deserializes the DeleteSecret from a dictionary."""
         return cls(key=d.get('key', None), scope=d.get('scope', None))
+
+
+@dataclass
+class DeleteSecretResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteSecretResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteSecretResponse:
+        """Deserializes the DeleteSecretResponse from a dictionary."""
+        return cls()
 
 
 class ExportFormat(Enum):
@@ -478,6 +548,20 @@ class ImportFormat(Enum):
     SOURCE = 'SOURCE'
 
 
+@dataclass
+class ImportResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the ImportResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ImportResponse:
+        """Deserializes the ImportResponse from a dictionary."""
+        return cls()
+
+
 class Language(Enum):
     """The language of the object. This value is set only if the object type is `NOTEBOOK`."""
 
@@ -595,6 +679,20 @@ class Mkdirs:
 
 
 @dataclass
+class MkdirsResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the MkdirsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> MkdirsResponse:
+        """Deserializes the MkdirsResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class ObjectInfo:
     created_at: Optional[int] = None
     """Only applicable to files. The creation UTC timestamp."""
@@ -693,6 +791,20 @@ class PutAcl:
 
 
 @dataclass
+class PutAclResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the PutAclResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> PutAclResponse:
+        """Deserializes the PutAclResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class PutSecret:
     scope: str
     """The name of the scope to which the secret will be associated with."""
@@ -722,6 +834,20 @@ class PutSecret:
                    key=d.get('key', None),
                    scope=d.get('scope', None),
                    string_value=d.get('string_value', None))
+
+
+@dataclass
+class PutSecretResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the PutSecretResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> PutSecretResponse:
+        """Deserializes the PutSecretResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -1101,6 +1227,20 @@ class UpdateRepo:
                    repo_id=d.get('repo_id', None),
                    sparse_checkout=_from_dict(d, 'sparse_checkout', SparseCheckoutUpdate),
                    tag=d.get('tag', None))
+
+
+@dataclass
+class UpdateResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateResponse:
+        """Deserializes the UpdateResponse from a dictionary."""
+        return cls()
 
 
 @dataclass

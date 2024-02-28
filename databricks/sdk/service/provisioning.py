@@ -597,6 +597,20 @@ class CustomerManagedKey:
                    use_cases=_repeated_enum(d, 'use_cases', KeyUseCase))
 
 
+@dataclass
+class DeleteResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteResponse:
+        """Deserializes the DeleteResponse from a dictionary."""
+        return cls()
+
+
 class EndpointUseCase(Enum):
     """This enumeration represents the type of Databricks VPC [endpoint service] that was used when
     creating this VPC endpoint.
@@ -1063,6 +1077,20 @@ class PrivateAccessSettings:
 
 
 @dataclass
+class ReplaceResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the ReplaceResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ReplaceResponse:
+        """Deserializes the ReplaceResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class RootBucketInfo:
     """Root S3 bucket information."""
 
@@ -1140,6 +1168,20 @@ class StsRole:
     def from_dict(cls, d: Dict[str, any]) -> StsRole:
         """Deserializes the StsRole from a dictionary."""
         return cls(external_id=d.get('external_id', None), role_arn=d.get('role_arn', None))
+
+
+@dataclass
+class UpdateResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateResponse:
+        """Deserializes the UpdateResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -2756,11 +2798,13 @@ class WorkspacesAPI:
             body['storage_customer_managed_key_id'] = storage_customer_managed_key_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        self._api.do('PATCH',
-                     f'/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}',
-                     body=body,
-                     headers=headers)
-        return Wait(self.wait_get_workspace_running, workspace_id=workspace_id)
+        op_response = self._api.do('PATCH',
+                                   f'/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}',
+                                   body=body,
+                                   headers=headers)
+        return Wait(self.wait_get_workspace_running,
+                    response=UpdateResponse.from_dict(op_response),
+                    workspace_id=workspace_id)
 
     def update_and_wait(
         self,

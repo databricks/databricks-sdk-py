@@ -61,6 +61,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: LIBRARY_MAVEN
       :value: "LIBRARY_MAVEN"
 
+.. autoclass:: AssignResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: AwsIamRole
    :members:
    :undoc-members:
@@ -70,6 +74,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: AzureServicePrincipal
+   :members:
+   :undoc-members:
+
+.. autoclass:: CancelRefreshResponse
    :members:
    :undoc-members:
 
@@ -358,6 +366,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: CreateResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: CreateSchema
    :members:
    :undoc-members:
@@ -416,7 +428,19 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: UNITY_CATALOG
       :value: "UNITY_CATALOG"
 
+.. autoclass:: DatabricksGcpServiceAccountRequest
+   :members:
+   :undoc-members:
+
 .. autoclass:: DatabricksGcpServiceAccountResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: DeleteAliasResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: DeleteResponse
    :members:
    :undoc-members:
 
@@ -429,6 +453,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: DependencyList
+   :members:
+   :undoc-members:
+
+.. autoclass:: DisableResponse
    :members:
    :undoc-members:
 
@@ -484,6 +512,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: INHERIT
       :value: "INHERIT"
+
+.. autoclass:: EnableResponse
+   :members:
+   :undoc-members:
 
 .. py:class:: EnableSchemaName
 
@@ -816,6 +848,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: SUCCESS
       :value: "SUCCESS"
 
+.. autoclass:: MonitorSnapshotProfileType
+   :members:
+   :undoc-members:
+
 .. autoclass:: MonitorTimeSeriesProfileType
    :members:
    :undoc-members:
@@ -829,6 +865,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: OnlineTableSpec
+   :members:
+   :undoc-members:
+
+.. autoclass:: OnlineTableSpecContinuousSchedulingPolicy
+   :members:
+   :undoc-members:
+
+.. autoclass:: OnlineTableSpecTriggeredSchedulingPolicy
    :members:
    :undoc-members:
 
@@ -1195,6 +1239,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: UnassignResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateAssignmentResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: UpdateCatalog
    :members:
    :undoc-members:
@@ -1242,6 +1294,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: UpdateRegisteredModelRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateResponse
    :members:
    :undoc-members:
 
