@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import logging
-from typing import Dict, Union
+from typing import Dict, Optional, Union, cast
 
 logger = logging.getLogger('databricks.sdk')
 is_local_implementation = True
@@ -86,23 +86,97 @@ try:
         _globals[var] = userNamespaceGlobals[var]
     is_local_implementation = False
 except ImportError:
-    from typing import cast
-
     # OSS implementation
     is_local_implementation = True
 
+    for var in dbruntime_objects:
+        globals()[var] = None
+
+    # The next few try-except blocks are for initialising globals in a best effort
+    # mannaer. We separate them to try to get as many of them working as possible
+    try:
+        # We expect this to fail and only do this for providing types
+        from pyspark.sql.context import SQLContext
+        sqlContext: SQLContext = None # type: ignore
+        table = sqlContext.table
+    except Exception as e:
+        logging.debug(f"Failed to initialize globals 'sqlContext' and 'table', continuing. Cause: {e}")
+
+    try:
+        from pyspark.sql.functions import udf  # type: ignore
+    except ImportError as e:
+        logging.debug(f"Failed to initialise udf global: {e}")
+
+    try:
+        from databricks.connect import DatabricksSession  # type: ignore
+        spark = DatabricksSession.builder.getOrCreate()
+        sql = spark.sql # type: ignore
+    except Exception as e:
+        # We are ignoring all failures here because user might want to initialize
+        # spark session themselves and we don't want to interfere with that
+        logging.debug(f"Failed to initialize globals 'spark' and 'sql', continuing. Cause: {e}")
+
+    try:
+        # We expect this to fail locally since dbconnect does not support sparkcontext. This is just for typing
+        sc = spark.sparkContext
+    except Exception as e:
+        logging.debug(f"Failed to initialize global 'sc', continuing. Cause: {e}")
+
+    def display(input=None, *args, **kwargs) -> None: # type: ignore
+        """
+        Display plots or data.
+        Display plot:
+                        - display() # no-op
+                        - display(matplotlib.figure.Figure)
+        Display dataset:
+                        - display(spark.DataFrame)
+                        - display(list) # if list can be converted to DataFrame, e.g., list of named tuples
+                        - display(pandas.DataFrame)
+                        - display(koalas.DataFrame)
+                        - display(pyspark.pandas.DataFrame)
+        Display any other value that has a _repr_html_() method
+        For Spark 2.0 and 2.1:
+                        - display(DataFrame, streamName='optional', trigger=optional pyspark.sql.streaming.Trigger,
+                                                        checkpointLocation='optional')
+        For Spark 2.2+:
+                        - display(DataFrame, streamName='optional', trigger=optional interval like '1 second',
+                                                        checkpointLocation='optional')
+        """
+        # Import inside the function so that imports are only triggered on usage.
+        from IPython import display as IPDisplay
+        return IPDisplay.display(input, *args, **kwargs) # type: ignore
+
+    def displayHTML(html) -> None: # type: ignore
+        """
+        Display HTML data.
+        Parameters
+        ----------
+        data : URL or HTML string
+                        If data is a URL, display the resource at that URL, the resource is loaded dynamically by the browser.
+                        Otherwise data should be the HTML to be displayed.
+        See also:
+        IPython.display.HTML
+        IPython.display.display_html
+        """
+        # Import inside the function so that imports are only triggered on usage.
+        from IPython import display as IPDisplay
+        return IPDisplay.display_html(html, raw=True) # type: ignore
+
+    # We want to propagate the error in initialising dbutils because this is a core
+    # functionality of the sdk
     from databricks.sdk.dbutils import RemoteDbUtils
 
     from . import dbutils_stub
-
     dbutils_type = Union[dbutils_stub.dbutils, RemoteDbUtils]
 
-    try:
-        from .stub import *
-    except (ImportError, NameError):
-        # this assumes that all environment variables are set
-        dbutils = RemoteDbUtils()
-
+    dbutils = RemoteDbUtils()
     dbutils = cast(dbutils_type, dbutils)
 
-__all__ = ['dbutils'] if is_local_implementation else dbruntime_objects
+    # We do this to prevent importing widgets implementation prematurely
+    # The widget import should prompt users to use the implementation
+    # which has ipywidget support.
+    def getArgument(name: str, defaultValue: Optional[str] = None):
+        return dbutils.widgets.getArgument(name, defaultValue)
+
+
+__all__ = dbruntime_objects
