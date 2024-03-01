@@ -4702,7 +4702,7 @@ class QueryHistoryAPI:
             if 'res' in json:
                 for v in json['res']:
                     yield QueryInfo.from_dict(v)
-            if 'next_page_token' not in json or not json['next_page_token']:
+            if 'next_page_token' not in json or not json['next_page_token'] or json['next_page_token'] == query.get('page_token'):
                 return
             query['page_token'] = json['next_page_token']
 
