@@ -42,6 +42,10 @@ class _FsUtil:
         """Copies a file or directory, possibly across FileSystems """
         self._dbfs.copy(from_, to, recursive=recurse)
         return True
+    
+    def exists(self, dir: str) -> bool:
+        """Check if a databricks path exists in DBFS"""
+        return self._dbfs.exists(dir)
 
     def head(self, file: str, maxBytes: int = 65536) -> str:
         """Returns up to the first 'maxBytes' bytes of the given file as a String encoded in UTF-8 """
