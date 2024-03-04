@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from typing import Dict, Iterator, List, Optional
+from typing import Any, Dict, Iterator, List, Optional
 
 from ._internal import _from_dict, _repeated_dict
 
@@ -42,7 +42,7 @@ class CreateCustomAppIntegration:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateCustomAppIntegration:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateCustomAppIntegration:
         """Deserializes the CreateCustomAppIntegration from a dictionary."""
         return cls(confidential=d.get('confidential', None),
                    name=d.get('name', None),
@@ -72,7 +72,7 @@ class CreateCustomAppIntegrationOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateCustomAppIntegrationOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateCustomAppIntegrationOutput:
         """Deserializes the CreateCustomAppIntegrationOutput from a dictionary."""
         return cls(client_id=d.get('client_id', None),
                    client_secret=d.get('client_secret', None),
@@ -95,7 +95,7 @@ class CreatePublishedAppIntegration:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreatePublishedAppIntegration:
+    def from_dict(cls, d: Dict[str, Any]) -> CreatePublishedAppIntegration:
         """Deserializes the CreatePublishedAppIntegration from a dictionary."""
         return cls(app_id=d.get('app_id', None),
                    token_access_policy=_from_dict(d, 'token_access_policy', TokenAccessPolicy))
@@ -113,7 +113,7 @@ class CreatePublishedAppIntegrationOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreatePublishedAppIntegrationOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> CreatePublishedAppIntegrationOutput:
         """Deserializes the CreatePublishedAppIntegrationOutput from a dictionary."""
         return cls(integration_id=d.get('integration_id', None))
 
@@ -150,7 +150,7 @@ class CreateServicePrincipalSecretResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateServicePrincipalSecretResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateServicePrincipalSecretResponse:
         """Deserializes the CreateServicePrincipalSecretResponse from a dictionary."""
         return cls(create_time=d.get('create_time', None),
                    id=d.get('id', None),
@@ -169,7 +169,7 @@ class DeleteCustomAppIntegrationOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteCustomAppIntegrationOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteCustomAppIntegrationOutput:
         """Deserializes the DeleteCustomAppIntegrationOutput from a dictionary."""
         return cls()
 
@@ -183,7 +183,7 @@ class DeletePublishedAppIntegrationOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeletePublishedAppIntegrationOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> DeletePublishedAppIntegrationOutput:
         """Deserializes the DeletePublishedAppIntegrationOutput from a dictionary."""
         return cls()
 
@@ -197,7 +197,7 @@ class DeleteResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteResponse:
         """Deserializes the DeleteResponse from a dictionary."""
         return cls()
 
@@ -234,7 +234,7 @@ class GetCustomAppIntegrationOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetCustomAppIntegrationOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> GetCustomAppIntegrationOutput:
         """Deserializes the GetCustomAppIntegrationOutput from a dictionary."""
         return cls(client_id=d.get('client_id', None),
                    confidential=d.get('confidential', None),
@@ -256,7 +256,7 @@ class GetCustomAppIntegrationsOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetCustomAppIntegrationsOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> GetCustomAppIntegrationsOutput:
         """Deserializes the GetCustomAppIntegrationsOutput from a dictionary."""
         return cls(apps=_repeated_dict(d, 'apps', GetCustomAppIntegrationOutput))
 
@@ -285,7 +285,7 @@ class GetPublishedAppIntegrationOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetPublishedAppIntegrationOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> GetPublishedAppIntegrationOutput:
         """Deserializes the GetPublishedAppIntegrationOutput from a dictionary."""
         return cls(app_id=d.get('app_id', None),
                    integration_id=d.get('integration_id', None),
@@ -305,7 +305,7 @@ class GetPublishedAppIntegrationsOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetPublishedAppIntegrationsOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> GetPublishedAppIntegrationsOutput:
         """Deserializes the GetPublishedAppIntegrationsOutput from a dictionary."""
         return cls(apps=_repeated_dict(d, 'apps', GetPublishedAppIntegrationOutput))
 
@@ -327,7 +327,7 @@ class GetPublishedAppsOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetPublishedAppsOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> GetPublishedAppsOutput:
         """Deserializes the GetPublishedAppsOutput from a dictionary."""
         return cls(apps=_repeated_dict(d, 'apps', PublishedAppOutput),
                    next_page_token=d.get('next_page_token', None))
@@ -345,7 +345,7 @@ class ListServicePrincipalSecretsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListServicePrincipalSecretsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListServicePrincipalSecretsResponse:
         """Deserializes the ListServicePrincipalSecretsResponse from a dictionary."""
         return cls(secrets=_repeated_dict(d, 'secrets', SecretInfo))
 
@@ -388,7 +388,7 @@ class PublishedAppOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PublishedAppOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> PublishedAppOutput:
         """Deserializes the PublishedAppOutput from a dictionary."""
         return cls(app_id=d.get('app_id', None),
                    client_id=d.get('client_id', None),
@@ -427,7 +427,7 @@ class SecretInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SecretInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> SecretInfo:
         """Deserializes the SecretInfo from a dictionary."""
         return cls(create_time=d.get('create_time', None),
                    id=d.get('id', None),
@@ -454,7 +454,7 @@ class TokenAccessPolicy:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TokenAccessPolicy:
+    def from_dict(cls, d: Dict[str, Any]) -> TokenAccessPolicy:
         """Deserializes the TokenAccessPolicy from a dictionary."""
         return cls(access_token_ttl_in_minutes=d.get('access_token_ttl_in_minutes', None),
                    refresh_token_ttl_in_minutes=d.get('refresh_token_ttl_in_minutes', None))
@@ -480,7 +480,7 @@ class UpdateCustomAppIntegration:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateCustomAppIntegration:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateCustomAppIntegration:
         """Deserializes the UpdateCustomAppIntegration from a dictionary."""
         return cls(integration_id=d.get('integration_id', None),
                    redirect_urls=d.get('redirect_urls', None),
@@ -496,7 +496,7 @@ class UpdateCustomAppIntegrationOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateCustomAppIntegrationOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateCustomAppIntegrationOutput:
         """Deserializes the UpdateCustomAppIntegrationOutput from a dictionary."""
         return cls()
 
@@ -517,7 +517,7 @@ class UpdatePublishedAppIntegration:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdatePublishedAppIntegration:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdatePublishedAppIntegration:
         """Deserializes the UpdatePublishedAppIntegration from a dictionary."""
         return cls(integration_id=d.get('integration_id', None),
                    token_access_policy=_from_dict(d, 'token_access_policy', TokenAccessPolicy))
@@ -532,7 +532,7 @@ class UpdatePublishedAppIntegrationOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdatePublishedAppIntegrationOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdatePublishedAppIntegrationOutput:
         """Deserializes the UpdatePublishedAppIntegrationOutput from a dictionary."""
         return cls()
 
@@ -552,11 +552,11 @@ class CustomAppIntegrationAPI:
                scopes: Optional[List[str]] = None,
                token_access_policy: Optional[TokenAccessPolicy] = None) -> CreateCustomAppIntegrationOutput:
         """Create Custom OAuth App Integration.
-        
+
         Create Custom OAuth App Integration.
-        
+
         You can retrieve the custom oauth app integration via :method:CustomAppIntegration/get.
-        
+
         :param name: str
           name of the custom oauth app
         :param redirect_urls: List[str]
@@ -568,7 +568,7 @@ class CustomAppIntegrationAPI:
           profile, email.
         :param token_access_policy: :class:`TokenAccessPolicy` (optional)
           Token access policy
-        
+
         :returns: :class:`CreateCustomAppIntegrationOutput`
         """
         body = {}
@@ -587,14 +587,14 @@ class CustomAppIntegrationAPI:
 
     def delete(self, integration_id: str):
         """Delete Custom OAuth App Integration.
-        
+
         Delete an existing Custom OAuth App Integration. You can retrieve the custom oauth app integration via
         :method:CustomAppIntegration/get.
-        
+
         :param integration_id: str
           The oauth app integration ID.
-        
-        
+
+
         """
 
         headers = {'Accept': 'application/json', }
@@ -606,12 +606,12 @@ class CustomAppIntegrationAPI:
 
     def get(self, integration_id: str) -> GetCustomAppIntegrationOutput:
         """Get OAuth Custom App Integration.
-        
+
         Gets the Custom OAuth App Integration for the given integration id.
-        
+
         :param integration_id: str
           The oauth app integration ID.
-        
+
         :returns: :class:`GetCustomAppIntegrationOutput`
         """
 
@@ -625,9 +625,9 @@ class CustomAppIntegrationAPI:
 
     def list(self) -> Iterator[GetCustomAppIntegrationOutput]:
         """Get custom oauth app integrations.
-        
+
         Get the list of custom oauth app integrations for the specified Databricks account
-        
+
         :returns: Iterator over :class:`GetCustomAppIntegrationOutput`
         """
 
@@ -645,18 +645,18 @@ class CustomAppIntegrationAPI:
                redirect_urls: Optional[List[str]] = None,
                token_access_policy: Optional[TokenAccessPolicy] = None):
         """Updates Custom OAuth App Integration.
-        
+
         Updates an existing custom OAuth App Integration. You can retrieve the custom oauth app integration
         via :method:CustomAppIntegration/get.
-        
+
         :param integration_id: str
           The oauth app integration ID.
         :param redirect_urls: List[str] (optional)
           List of oauth redirect urls to be updated in the custom oauth app integration
         :param token_access_policy: :class:`TokenAccessPolicy` (optional)
           Token access policy to be updated in the custom oauth app integration
-        
-        
+
+
         """
         body = {}
         if redirect_urls is not None: body['redirect_urls'] = [v for v in redirect_urls]
@@ -683,14 +683,14 @@ class OAuthPublishedAppsAPI:
              page_size: Optional[int] = None,
              page_token: Optional[str] = None) -> Iterator[PublishedAppOutput]:
         """Get all the published OAuth apps.
-        
+
         Get all the available published OAuth apps in Databricks.
-        
+
         :param page_size: int (optional)
           The max number of OAuth published apps to return.
         :param page_token: str (optional)
           A token that can be used to get the next page of results.
-        
+
         :returns: Iterator over :class:`PublishedAppOutput`
         """
 
@@ -725,16 +725,16 @@ class PublishedAppIntegrationAPI:
             app_id: Optional[str] = None,
             token_access_policy: Optional[TokenAccessPolicy] = None) -> CreatePublishedAppIntegrationOutput:
         """Create Published OAuth App Integration.
-        
+
         Create Published OAuth App Integration.
-        
+
         You can retrieve the published oauth app integration via :method:PublishedAppIntegration/get.
-        
+
         :param app_id: str (optional)
           app_id of the oauth published app integration. For example power-bi, tableau-deskop
         :param token_access_policy: :class:`TokenAccessPolicy` (optional)
           Token access policy
-        
+
         :returns: :class:`CreatePublishedAppIntegrationOutput`
         """
         body = {}
@@ -750,14 +750,14 @@ class PublishedAppIntegrationAPI:
 
     def delete(self, integration_id: str):
         """Delete Published OAuth App Integration.
-        
+
         Delete an existing Published OAuth App Integration. You can retrieve the published oauth app
         integration via :method:PublishedAppIntegration/get.
-        
+
         :param integration_id: str
           The oauth app integration ID.
-        
-        
+
+
         """
 
         headers = {'Accept': 'application/json', }
@@ -769,12 +769,12 @@ class PublishedAppIntegrationAPI:
 
     def get(self, integration_id: str) -> GetPublishedAppIntegrationOutput:
         """Get OAuth Published App Integration.
-        
+
         Gets the Published OAuth App Integration for the given integration id.
-        
+
         :param integration_id: str
           The oauth app integration ID.
-        
+
         :returns: :class:`GetPublishedAppIntegrationOutput`
         """
 
@@ -788,9 +788,9 @@ class PublishedAppIntegrationAPI:
 
     def list(self) -> Iterator[GetPublishedAppIntegrationOutput]:
         """Get published oauth app integrations.
-        
+
         Get the list of published oauth app integrations for the specified Databricks account
-        
+
         :returns: Iterator over :class:`GetPublishedAppIntegrationOutput`
         """
 
@@ -804,16 +804,16 @@ class PublishedAppIntegrationAPI:
 
     def update(self, integration_id: str, *, token_access_policy: Optional[TokenAccessPolicy] = None):
         """Updates Published OAuth App Integration.
-        
+
         Updates an existing published OAuth App Integration. You can retrieve the published oauth app
         integration via :method:PublishedAppIntegration/get.
-        
+
         :param integration_id: str
           The oauth app integration ID.
         :param token_access_policy: :class:`TokenAccessPolicy` (optional)
           Token access policy to be updated in the published oauth app integration
-        
-        
+
+
         """
         body = {}
         if token_access_policy is not None: body['token_access_policy'] = token_access_policy.as_dict()
@@ -828,14 +828,14 @@ class PublishedAppIntegrationAPI:
 
 class ServicePrincipalSecretsAPI:
     """These APIs enable administrators to manage service principal secrets.
-    
+
     You can use the generated secrets to obtain OAuth access tokens for a service principal, which can then be
     used to access Databricks Accounts and Workspace APIs. For more information, see [Authentication using
     OAuth tokens for service principals],
-    
+
     In addition, the generated secrets can be used to configure the Databricks Terraform Provider to
     authenticate with the service principal. For more information, see [Databricks Terraform Provider].
-    
+
     [Authentication using OAuth tokens for service principals]: https://docs.databricks.com/dev-tools/authentication-oauth.html
     [Databricks Terraform Provider]: https://github.com/databricks/terraform-provider-databricks/blob/master/docs/index.md#authenticating-with-service-principal"""
 
@@ -844,12 +844,12 @@ class ServicePrincipalSecretsAPI:
 
     def create(self, service_principal_id: int) -> CreateServicePrincipalSecretResponse:
         """Create service principal secret.
-        
+
         Create a secret for the given service principal.
-        
+
         :param service_principal_id: int
           The service principal ID.
-        
+
         :returns: :class:`CreateServicePrincipalSecretResponse`
         """
 
@@ -863,15 +863,15 @@ class ServicePrincipalSecretsAPI:
 
     def delete(self, service_principal_id: int, secret_id: str):
         """Delete service principal secret.
-        
+
         Delete a secret from the given service principal.
-        
+
         :param service_principal_id: int
           The service principal ID.
         :param secret_id: str
           The secret ID.
-        
-        
+
+
         """
 
         headers = {}
@@ -883,13 +883,13 @@ class ServicePrincipalSecretsAPI:
 
     def list(self, service_principal_id: int) -> Iterator[SecretInfo]:
         """List service principal secrets.
-        
+
         List all secrets associated with the given service principal. This operation only returns information
         about the secrets themselves and does not include the secret values.
-        
+
         :param service_principal_id: int
           The service principal ID.
-        
+
         :returns: Iterator over :class:`SecretInfo`
         """
 

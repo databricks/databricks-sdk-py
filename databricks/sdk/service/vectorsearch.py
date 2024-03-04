@@ -8,7 +8,7 @@ import time
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Callable, Dict, Iterator, List, Optional
+from typing import Any, Callable, Dict, Iterator, List, Optional
 
 from ..errors import OperationFailed
 from ._internal import Wait, _enum, _from_dict, _repeated_dict
@@ -30,7 +30,7 @@ class ColumnInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ColumnInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> ColumnInfo:
         """Deserializes the ColumnInfo from a dictionary."""
         return cls(name=d.get('name', None))
 
@@ -51,7 +51,7 @@ class CreateEndpoint:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateEndpoint:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateEndpoint:
         """Deserializes the CreateEndpoint from a dictionary."""
         return cls(endpoint_type=_enum(d, 'endpoint_type', EndpointType), name=d.get('name', None))
 
@@ -66,7 +66,7 @@ class CreateVectorIndexRequest:
 
     index_type: VectorIndexType
     """There are 2 types of Vector Search indexes:
-    
+
     - `DELTA_SYNC`: An index that automatically syncs with a source Delta Table, automatically and
     incrementally updating the index as the underlying data in the Delta Table changes. -
     `DIRECT_ACCESS`: An index that supports direct read and write of vectors and metadata through
@@ -94,7 +94,7 @@ class CreateVectorIndexRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateVectorIndexRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateVectorIndexRequest:
         """Deserializes the CreateVectorIndexRequest from a dictionary."""
         return cls(delta_sync_index_spec=_from_dict(d, 'delta_sync_index_spec',
                                                     DeltaSyncVectorIndexSpecRequest),
@@ -117,7 +117,7 @@ class CreateVectorIndexResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateVectorIndexResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateVectorIndexResponse:
         """Deserializes the CreateVectorIndexResponse from a dictionary."""
         return cls(vector_index=_from_dict(d, 'vector_index', VectorIndex))
 
@@ -140,7 +140,7 @@ class DeleteDataResult:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteDataResult:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteDataResult:
         """Deserializes the DeleteDataResult from a dictionary."""
         return cls(failed_primary_keys=d.get('failed_primary_keys', None),
                    success_row_count=d.get('success_row_count', None))
@@ -172,7 +172,7 @@ class DeleteDataVectorIndexRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteDataVectorIndexRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteDataVectorIndexRequest:
         """Deserializes the DeleteDataVectorIndexRequest from a dictionary."""
         return cls(name=d.get('name', None), primary_keys=d.get('primary_keys', None))
 
@@ -195,7 +195,7 @@ class DeleteDataVectorIndexResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteDataVectorIndexResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteDataVectorIndexResponse:
         """Deserializes the DeleteDataVectorIndexResponse from a dictionary."""
         return cls(result=_from_dict(d, 'result', DeleteDataResult),
                    status=_enum(d, 'status', DeleteDataStatus))
@@ -210,7 +210,7 @@ class DeleteEndpointResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteEndpointResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteEndpointResponse:
         """Deserializes the DeleteEndpointResponse from a dictionary."""
         return cls()
 
@@ -224,7 +224,7 @@ class DeleteIndexResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteIndexResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteIndexResponse:
         """Deserializes the DeleteIndexResponse from a dictionary."""
         return cls()
 
@@ -239,7 +239,7 @@ class DeltaSyncVectorIndexSpecRequest:
 
     pipeline_type: Optional[PipelineType] = None
     """Pipeline execution mode.
-    
+
     - `TRIGGERED`: If the pipeline uses the triggered execution mode, the system stops processing
     after successfully refreshing the source table in the pipeline once, ensuring the table is
     updated based on the data available when the update started. - `CONTINUOUS`: If the pipeline
@@ -261,7 +261,7 @@ class DeltaSyncVectorIndexSpecRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeltaSyncVectorIndexSpecRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> DeltaSyncVectorIndexSpecRequest:
         """Deserializes the DeltaSyncVectorIndexSpecRequest from a dictionary."""
         return cls(embedding_source_columns=_repeated_dict(d, 'embedding_source_columns',
                                                            EmbeddingSourceColumn),
@@ -284,7 +284,7 @@ class DeltaSyncVectorIndexSpecResponse:
 
     pipeline_type: Optional[PipelineType] = None
     """Pipeline execution mode.
-    
+
     - `TRIGGERED`: If the pipeline uses the triggered execution mode, the system stops processing
     after successfully refreshing the source table in the pipeline once, ensuring the table is
     updated based on the data available when the update started. - `CONTINUOUS`: If the pipeline
@@ -307,7 +307,7 @@ class DeltaSyncVectorIndexSpecResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeltaSyncVectorIndexSpecResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeltaSyncVectorIndexSpecResponse:
         """Deserializes the DeltaSyncVectorIndexSpecResponse from a dictionary."""
         return cls(embedding_source_columns=_repeated_dict(d, 'embedding_source_columns',
                                                            EmbeddingSourceColumn),
@@ -324,10 +324,10 @@ class DirectAccessVectorIndexSpec:
 
     schema_json: Optional[str] = None
     """The schema of the index in JSON format.
-    
+
     Supported types are `integer`, `long`, `float`, `double`, `boolean`, `string`, `date`,
     `timestamp`.
-    
+
     Supported types for vector column: `array<float>`, `array<double>`,`."""
 
     def as_dict(self) -> dict:
@@ -339,7 +339,7 @@ class DirectAccessVectorIndexSpec:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DirectAccessVectorIndexSpec:
+    def from_dict(cls, d: Dict[str, Any]) -> DirectAccessVectorIndexSpec:
         """Deserializes the DirectAccessVectorIndexSpec from a dictionary."""
         return cls(embedding_vector_columns=_repeated_dict(d, 'embedding_vector_columns',
                                                            EmbeddingVectorColumn),
@@ -363,7 +363,7 @@ class EmbeddingSourceColumn:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EmbeddingSourceColumn:
+    def from_dict(cls, d: Dict[str, Any]) -> EmbeddingSourceColumn:
         """Deserializes the EmbeddingSourceColumn from a dictionary."""
         return cls(embedding_model_endpoint_name=d.get('embedding_model_endpoint_name', None),
                    name=d.get('name', None))
@@ -385,7 +385,7 @@ class EmbeddingVectorColumn:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EmbeddingVectorColumn:
+    def from_dict(cls, d: Dict[str, Any]) -> EmbeddingVectorColumn:
         """Deserializes the EmbeddingVectorColumn from a dictionary."""
         return cls(embedding_dimension=d.get('embedding_dimension', None), name=d.get('name', None))
 
@@ -435,7 +435,7 @@ class EndpointInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EndpointInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> EndpointInfo:
         """Deserializes the EndpointInfo from a dictionary."""
         return cls(creation_timestamp=d.get('creation_timestamp', None),
                    creator=d.get('creator', None),
@@ -466,7 +466,7 @@ class EndpointStatus:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EndpointStatus:
+    def from_dict(cls, d: Dict[str, Any]) -> EndpointStatus:
         """Deserializes the EndpointStatus from a dictionary."""
         return cls(message=d.get('message', None), state=_enum(d, 'state', EndpointStatusState))
 
@@ -502,7 +502,7 @@ class ListEndpointResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListEndpointResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListEndpointResponse:
         """Deserializes the ListEndpointResponse from a dictionary."""
         return cls(endpoints=_repeated_dict(d, 'endpoints', EndpointInfo),
                    next_page_token=d.get('next_page_token', None))
@@ -524,7 +524,7 @@ class ListVectorIndexesResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListVectorIndexesResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListVectorIndexesResponse:
         """Deserializes the ListVectorIndexesResponse from a dictionary."""
         return cls(next_page_token=d.get('next_page_token', None),
                    vector_indexes=_repeated_dict(d, 'vector_indexes', MiniVectorIndex))
@@ -540,7 +540,7 @@ class MiniVectorIndex:
 
     index_type: Optional[VectorIndexType] = None
     """There are 2 types of Vector Search indexes:
-    
+
     - `DELTA_SYNC`: An index that automatically syncs with a source Delta Table, automatically and
     incrementally updating the index as the underlying data in the Delta Table changes. -
     `DIRECT_ACCESS`: An index that supports direct read and write of vectors and metadata through
@@ -563,7 +563,7 @@ class MiniVectorIndex:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> MiniVectorIndex:
+    def from_dict(cls, d: Dict[str, Any]) -> MiniVectorIndex:
         """Deserializes the MiniVectorIndex from a dictionary."""
         return cls(creator=d.get('creator', None),
                    endpoint_name=d.get('endpoint_name', None),
@@ -574,7 +574,7 @@ class MiniVectorIndex:
 
 class PipelineType(Enum):
     """Pipeline execution mode.
-    
+
     - `TRIGGERED`: If the pipeline uses the triggered execution mode, the system stops processing
     after successfully refreshing the source table in the pipeline once, ensuring the table is
     updated based on the data available when the update started. - `CONTINUOUS`: If the pipeline
@@ -592,7 +592,7 @@ class QueryVectorIndexRequest:
 
     filters_json: Optional[str] = None
     """JSON string representing query filters.
-    
+
     Example filters: - `{"id <": 5}`: Filter for id less than 5. - `{"id >": 5}`: Filter for id
     greater than 5. - `{"id <=": 5}`: Filter for id less than equal to 5. - `{"id >=": 5}`: Filter
     for id greater than equal to 5. - `{"id": 5}`: Filter for id equal to 5."""
@@ -622,7 +622,7 @@ class QueryVectorIndexRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> QueryVectorIndexRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> QueryVectorIndexRequest:
         """Deserializes the QueryVectorIndexRequest from a dictionary."""
         return cls(columns=d.get('columns', None),
                    filters_json=d.get('filters_json', None),
@@ -648,7 +648,7 @@ class QueryVectorIndexResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> QueryVectorIndexResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> QueryVectorIndexResponse:
         """Deserializes the QueryVectorIndexResponse from a dictionary."""
         return cls(manifest=_from_dict(d, 'manifest', ResultManifest),
                    result=_from_dict(d, 'result', ResultData))
@@ -672,7 +672,7 @@ class ResultData:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ResultData:
+    def from_dict(cls, d: Dict[str, Any]) -> ResultData:
         """Deserializes the ResultData from a dictionary."""
         return cls(data_array=d.get('data_array', None), row_count=d.get('row_count', None))
 
@@ -695,7 +695,7 @@ class ResultManifest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ResultManifest:
+    def from_dict(cls, d: Dict[str, Any]) -> ResultManifest:
         """Deserializes the ResultManifest from a dictionary."""
         return cls(column_count=d.get('column_count', None), columns=_repeated_dict(d, 'columns', ColumnInfo))
 
@@ -709,7 +709,7 @@ class SyncIndexResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SyncIndexResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> SyncIndexResponse:
         """Deserializes the SyncIndexResponse from a dictionary."""
         return cls()
 
@@ -732,7 +732,7 @@ class UpsertDataResult:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpsertDataResult:
+    def from_dict(cls, d: Dict[str, Any]) -> UpsertDataResult:
         """Deserializes the UpsertDataResult from a dictionary."""
         return cls(failed_primary_keys=d.get('failed_primary_keys', None),
                    success_row_count=d.get('success_row_count', None))
@@ -764,7 +764,7 @@ class UpsertDataVectorIndexRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpsertDataVectorIndexRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> UpsertDataVectorIndexRequest:
         """Deserializes the UpsertDataVectorIndexRequest from a dictionary."""
         return cls(inputs_json=d.get('inputs_json', None), name=d.get('name', None))
 
@@ -787,7 +787,7 @@ class UpsertDataVectorIndexResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpsertDataVectorIndexResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UpsertDataVectorIndexResponse:
         """Deserializes the UpsertDataVectorIndexResponse from a dictionary."""
         return cls(result=_from_dict(d, 'result', UpsertDataResult),
                    status=_enum(d, 'status', UpsertDataStatus))
@@ -807,7 +807,7 @@ class VectorIndex:
 
     index_type: Optional[VectorIndexType] = None
     """There are 2 types of Vector Search indexes:
-    
+
     - `DELTA_SYNC`: An index that automatically syncs with a source Delta Table, automatically and
     incrementally updating the index as the underlying data in the Delta Table changes. -
     `DIRECT_ACCESS`: An index that supports direct read and write of vectors and metadata through
@@ -836,7 +836,7 @@ class VectorIndex:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> VectorIndex:
+    def from_dict(cls, d: Dict[str, Any]) -> VectorIndex:
         """Deserializes the VectorIndex from a dictionary."""
         return cls(creator=d.get('creator', None),
                    delta_sync_index_spec=_from_dict(d, 'delta_sync_index_spec',
@@ -874,7 +874,7 @@ class VectorIndexStatus:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> VectorIndexStatus:
+    def from_dict(cls, d: Dict[str, Any]) -> VectorIndexStatus:
         """Deserializes the VectorIndexStatus from a dictionary."""
         return cls(index_url=d.get('index_url', None),
                    indexed_row_count=d.get('indexed_row_count', None),
@@ -884,7 +884,7 @@ class VectorIndexStatus:
 
 class VectorIndexType(Enum):
     """There are 2 types of Vector Search indexes:
-    
+
     - `DELTA_SYNC`: An index that automatically syncs with a source Delta Table, automatically and
     incrementally updating the index as the underlying data in the Delta Table changes. -
     `DIRECT_ACCESS`: An index that supports direct read and write of vectors and metadata through
@@ -935,14 +935,14 @@ class VectorSearchEndpointsAPI:
 
     def create_endpoint(self, name: str, endpoint_type: EndpointType) -> Wait[EndpointInfo]:
         """Create an endpoint.
-        
+
         Create a new endpoint.
-        
+
         :param name: str
           Name of endpoint
         :param endpoint_type: :class:`EndpointType`
           Type of endpoint.
-        
+
         :returns:
           Long-running operation waiter for :class:`EndpointInfo`.
           See :method:wait_get_endpoint_vector_search_endpoint_online for more details.
@@ -963,13 +963,13 @@ class VectorSearchEndpointsAPI:
 
     def delete_endpoint(self, endpoint_name: str, name: str):
         """Delete an endpoint.
-        
+
         :param endpoint_name: str
           Name of the endpoint
         :param name: str
           Name of the endpoint to delete
-        
-        
+
+
         """
 
         headers = {}
@@ -978,10 +978,10 @@ class VectorSearchEndpointsAPI:
 
     def get_endpoint(self, endpoint_name: str) -> EndpointInfo:
         """Get an endpoint.
-        
+
         :param endpoint_name: str
           Name of the endpoint
-        
+
         :returns: :class:`EndpointInfo`
         """
 
@@ -992,10 +992,10 @@ class VectorSearchEndpointsAPI:
 
     def list_endpoints(self, *, page_token: Optional[str] = None) -> Iterator[EndpointInfo]:
         """List all endpoints.
-        
+
         :param page_token: str (optional)
           Token for pagination
-        
+
         :returns: Iterator over :class:`EndpointInfo`
         """
 
@@ -1016,7 +1016,7 @@ class VectorSearchEndpointsAPI:
 class VectorSearchIndexesAPI:
     """**Index**: An efficient representation of your embedding vectors that supports real-time and efficient
     approximate nearest neighbor (ANN) search queries.
-    
+
     There are 2 types of Vector Search indexes: * **Delta Sync Index**: An index that automatically syncs with
     a source Delta Table, automatically and incrementally updating the index as the underlying data in the
     Delta Table changes. * **Direct Vector Access Index**: An index that supports direct read and write of
@@ -1034,16 +1034,16 @@ class VectorSearchIndexesAPI:
                      direct_access_index_spec: Optional[DirectAccessVectorIndexSpec] = None,
                      endpoint_name: Optional[str] = None) -> CreateVectorIndexResponse:
         """Create an index.
-        
+
         Create a new index.
-        
+
         :param name: str
           Name of the index
         :param primary_key: str
           Primary key of the index
         :param index_type: :class:`VectorIndexType`
           There are 2 types of Vector Search indexes:
-          
+
           - `DELTA_SYNC`: An index that automatically syncs with a source Delta Table, automatically and
           incrementally updating the index as the underlying data in the Delta Table changes. -
           `DIRECT_ACCESS`: An index that supports direct read and write of vectors and metadata through our
@@ -1054,7 +1054,7 @@ class VectorSearchIndexesAPI:
           Specification for Direct Vector Access Index. Required if `index_type` is `DIRECT_ACCESS`.
         :param endpoint_name: str (optional)
           Name of the endpoint to be used for serving the index
-        
+
         :returns: :class:`CreateVectorIndexResponse`
         """
         body = {}
@@ -1072,14 +1072,14 @@ class VectorSearchIndexesAPI:
 
     def delete_data_vector_index(self, name: str, primary_keys: List[str]) -> DeleteDataVectorIndexResponse:
         """Delete data from index.
-        
+
         Handles the deletion of data from a specified vector index.
-        
+
         :param name: str
           Name of the vector index where data is to be deleted. Must be a Direct Vector Access Index.
         :param primary_keys: List[str]
           List of primary keys for the data to be deleted.
-        
+
         :returns: :class:`DeleteDataVectorIndexResponse`
         """
         body = {}
@@ -1094,13 +1094,13 @@ class VectorSearchIndexesAPI:
 
     def delete_index(self, index_name: str):
         """Delete an index.
-        
+
         Delete an index.
-        
+
         :param index_name: str
           Name of the index
-        
-        
+
+
         """
 
         headers = {}
@@ -1109,12 +1109,12 @@ class VectorSearchIndexesAPI:
 
     def get_index(self, index_name: str) -> VectorIndex:
         """Get an index.
-        
+
         Get an index.
-        
+
         :param index_name: str
           Name of the index
-        
+
         :returns: :class:`VectorIndex`
         """
 
@@ -1128,14 +1128,14 @@ class VectorSearchIndexesAPI:
                      *,
                      page_token: Optional[str] = None) -> Iterator[MiniVectorIndex]:
         """List indexes.
-        
+
         List all indexes in the given endpoint.
-        
+
         :param endpoint_name: str
           Name of the endpoint
         :param page_token: str (optional)
           Token for pagination
-        
+
         :returns: Iterator over :class:`MiniVectorIndex`
         """
 
@@ -1162,16 +1162,16 @@ class VectorSearchIndexesAPI:
                     query_text: Optional[str] = None,
                     query_vector: Optional[List[float]] = None) -> QueryVectorIndexResponse:
         """Query an index.
-        
+
         Query the specified vector index.
-        
+
         :param index_name: str
           Name of the vector index to query.
         :param columns: List[str]
           List of column names to include in the response.
         :param filters_json: str (optional)
           JSON string representing query filters.
-          
+
           Example filters: - `{"id <": 5}`: Filter for id less than 5. - `{"id >": 5}`: Filter for id greater
           than 5. - `{"id <=": 5}`: Filter for id less than equal to 5. - `{"id >=": 5}`: Filter for id
           greater than equal to 5. - `{"id": 5}`: Filter for id equal to 5.
@@ -1182,7 +1182,7 @@ class VectorSearchIndexesAPI:
         :param query_vector: List[float] (optional)
           Query vector. Required for Direct Vector Access Index and Delta Sync Index using self-managed
           vectors.
-        
+
         :returns: :class:`QueryVectorIndexResponse`
         """
         body = {}
@@ -1201,13 +1201,13 @@ class VectorSearchIndexesAPI:
 
     def sync_index(self, index_name: str):
         """Synchronize an index.
-        
+
         Triggers a synchronization process for a specified vector index.
-        
+
         :param index_name: str
           Name of the vector index to synchronize. Must be a Delta Sync Index.
-        
-        
+
+
         """
 
         headers = {}
@@ -1216,14 +1216,14 @@ class VectorSearchIndexesAPI:
 
     def upsert_data_vector_index(self, name: str, inputs_json: str) -> UpsertDataVectorIndexResponse:
         """Upsert data into an index.
-        
+
         Handles the upserting of data into a specified vector index.
-        
+
         :param name: str
           Name of the vector index where data is to be upserted. Must be a Direct Vector Access Index.
         :param inputs_json: str
           JSON string representing the data to be upserted.
-        
+
         :returns: :class:`UpsertDataVectorIndexResponse`
         """
         body = {}

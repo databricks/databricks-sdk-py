@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, Iterator, List, Optional
+from typing import Any, Dict, Iterator, List, Optional
 
 from ._internal import _enum, _from_dict, _repeated_dict
 
@@ -30,7 +30,7 @@ class AclItem:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AclItem:
+    def from_dict(cls, d: Dict[str, Any]) -> AclItem:
         """Deserializes the AclItem from a dictionary."""
         return cls(permission=_enum(d, 'permission', AclPermission), principal=d.get('principal', None))
 
@@ -58,7 +58,7 @@ class AzureKeyVaultSecretScopeMetadata:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AzureKeyVaultSecretScopeMetadata:
+    def from_dict(cls, d: Dict[str, Any]) -> AzureKeyVaultSecretScopeMetadata:
         """Deserializes the AzureKeyVaultSecretScopeMetadata from a dictionary."""
         return cls(dns_name=d.get('dns_name', None), resource_id=d.get('resource_id', None))
 
@@ -85,7 +85,7 @@ class CreateCredentials:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateCredentials:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateCredentials:
         """Deserializes the CreateCredentials from a dictionary."""
         return cls(git_provider=d.get('git_provider', None),
                    git_username=d.get('git_username', None),
@@ -114,7 +114,7 @@ class CreateCredentialsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateCredentialsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateCredentialsResponse:
         """Deserializes the CreateCredentialsResponse from a dictionary."""
         return cls(credential_id=d.get('credential_id', None),
                    git_provider=d.get('git_provider', None),
@@ -148,7 +148,7 @@ class CreateRepo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateRepo:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateRepo:
         """Deserializes the CreateRepo from a dictionary."""
         return cls(path=d.get('path', None),
                    provider=d.get('provider', None),
@@ -181,7 +181,7 @@ class CreateScope:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateScope:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateScope:
         """Deserializes the CreateScope from a dictionary."""
         return cls(backend_azure_keyvault=_from_dict(d, 'backend_azure_keyvault',
                                                      AzureKeyVaultSecretScopeMetadata),
@@ -199,7 +199,7 @@ class CreateScopeResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateScopeResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateScopeResponse:
         """Deserializes the CreateScopeResponse from a dictionary."""
         return cls()
 
@@ -226,7 +226,7 @@ class CredentialInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CredentialInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> CredentialInfo:
         """Deserializes the CredentialInfo from a dictionary."""
         return cls(credential_id=d.get('credential_id', None),
                    git_provider=d.get('git_provider', None),
@@ -251,7 +251,7 @@ class Delete:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Delete:
+    def from_dict(cls, d: Dict[str, Any]) -> Delete:
         """Deserializes the Delete from a dictionary."""
         return cls(path=d.get('path', None), recursive=d.get('recursive', None))
 
@@ -272,7 +272,7 @@ class DeleteAcl:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteAcl:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteAcl:
         """Deserializes the DeleteAcl from a dictionary."""
         return cls(principal=d.get('principal', None), scope=d.get('scope', None))
 
@@ -286,7 +286,7 @@ class DeleteAclResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteAclResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteAclResponse:
         """Deserializes the DeleteAclResponse from a dictionary."""
         return cls()
 
@@ -300,7 +300,7 @@ class DeleteResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteResponse:
         """Deserializes the DeleteResponse from a dictionary."""
         return cls()
 
@@ -317,7 +317,7 @@ class DeleteScope:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteScope:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteScope:
         """Deserializes the DeleteScope from a dictionary."""
         return cls(scope=d.get('scope', None))
 
@@ -331,7 +331,7 @@ class DeleteScopeResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteScopeResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteScopeResponse:
         """Deserializes the DeleteScopeResponse from a dictionary."""
         return cls()
 
@@ -352,7 +352,7 @@ class DeleteSecret:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteSecret:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteSecret:
         """Deserializes the DeleteSecret from a dictionary."""
         return cls(key=d.get('key', None), scope=d.get('scope', None))
 
@@ -366,7 +366,7 @@ class DeleteSecretResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteSecretResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteSecretResponse:
         """Deserializes the DeleteSecretResponse from a dictionary."""
         return cls()
 
@@ -398,7 +398,7 @@ class ExportResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ExportResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ExportResponse:
         """Deserializes the ExportResponse from a dictionary."""
         return cls(content=d.get('content', None), file_type=d.get('file_type', None))
 
@@ -414,7 +414,7 @@ class GetCredentialsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetCredentialsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetCredentialsResponse:
         """Deserializes the GetCredentialsResponse from a dictionary."""
         return cls(credentials=_repeated_dict(d, 'credentials', CredentialInfo))
 
@@ -431,7 +431,7 @@ class GetRepoPermissionLevelsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetRepoPermissionLevelsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetRepoPermissionLevelsResponse:
         """Deserializes the GetRepoPermissionLevelsResponse from a dictionary."""
         return cls(permission_levels=_repeated_dict(d, 'permission_levels', RepoPermissionsDescription))
 
@@ -452,7 +452,7 @@ class GetSecretResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetSecretResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetSecretResponse:
         """Deserializes the GetSecretResponse from a dictionary."""
         return cls(key=d.get('key', None), value=d.get('value', None))
 
@@ -469,7 +469,7 @@ class GetWorkspaceObjectPermissionLevelsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetWorkspaceObjectPermissionLevelsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetWorkspaceObjectPermissionLevelsResponse:
         """Deserializes the GetWorkspaceObjectPermissionLevelsResponse from a dictionary."""
         return cls(
             permission_levels=_repeated_dict(d, 'permission_levels', WorkspaceObjectPermissionsDescription))
@@ -483,15 +483,15 @@ class Import:
 
     content: Optional[str] = None
     """The base64-encoded content. This has a limit of 10 MB.
-    
+
     If the limit (10MB) is exceeded, exception with error code **MAX_NOTEBOOK_SIZE_EXCEEDED** is
     thrown. This parameter might be absent, and instead a posted file is used."""
 
     format: Optional[ImportFormat] = None
     """This specifies the format of the file to be imported.
-    
+
     The value is case sensitive.
-    
+
     - `AUTO`: The item is imported depending on an analysis of the item's extension and the header
     content provided in the request. If the item is imported as a notebook, then the item's
     extension is automatically removed. - `SOURCE`: The notebook or directory is imported as source
@@ -518,7 +518,7 @@ class Import:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Import:
+    def from_dict(cls, d: Dict[str, Any]) -> Import:
         """Deserializes the Import from a dictionary."""
         return cls(content=d.get('content', None),
                    format=_enum(d, 'format', ImportFormat),
@@ -529,9 +529,9 @@ class Import:
 
 class ImportFormat(Enum):
     """This specifies the format of the file to be imported.
-    
+
     The value is case sensitive.
-    
+
     - `AUTO`: The item is imported depending on an analysis of the item's extension and the header
     content provided in the request. If the item is imported as a notebook, then the item's
     extension is automatically removed. - `SOURCE`: The notebook or directory is imported as source
@@ -557,7 +557,7 @@ class ImportResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ImportResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ImportResponse:
         """Deserializes the ImportResponse from a dictionary."""
         return cls()
 
@@ -583,7 +583,7 @@ class ListAclsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListAclsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListAclsResponse:
         """Deserializes the ListAclsResponse from a dictionary."""
         return cls(items=_repeated_dict(d, 'items', AclItem))
 
@@ -604,7 +604,7 @@ class ListReposResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListReposResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListReposResponse:
         """Deserializes the ListReposResponse from a dictionary."""
         return cls(next_page_token=d.get('next_page_token', None), repos=_repeated_dict(d, 'repos', RepoInfo))
 
@@ -621,7 +621,7 @@ class ListResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListResponse:
         """Deserializes the ListResponse from a dictionary."""
         return cls(objects=_repeated_dict(d, 'objects', ObjectInfo))
 
@@ -638,7 +638,7 @@ class ListScopesResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListScopesResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListScopesResponse:
         """Deserializes the ListScopesResponse from a dictionary."""
         return cls(scopes=_repeated_dict(d, 'scopes', SecretScope))
 
@@ -655,7 +655,7 @@ class ListSecretsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListSecretsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListSecretsResponse:
         """Deserializes the ListSecretsResponse from a dictionary."""
         return cls(secrets=_repeated_dict(d, 'secrets', SecretMetadata))
 
@@ -673,7 +673,7 @@ class Mkdirs:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Mkdirs:
+    def from_dict(cls, d: Dict[str, Any]) -> Mkdirs:
         """Deserializes the Mkdirs from a dictionary."""
         return cls(path=d.get('path', None))
 
@@ -687,7 +687,7 @@ class MkdirsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> MkdirsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> MkdirsResponse:
         """Deserializes the MkdirsResponse from a dictionary."""
         return cls()
 
@@ -708,7 +708,7 @@ class ObjectInfo:
 
     object_type: Optional[ObjectType] = None
     """The type of the object in workspace.
-    
+
     - `NOTEBOOK`: document that contains runnable code, visualizations, and explanatory text. -
     `DIRECTORY`: directory - `LIBRARY`: library - `FILE`: file - `REPO`: repository - `DASHBOARD`:
     Lakeview dashboard"""
@@ -736,7 +736,7 @@ class ObjectInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ObjectInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> ObjectInfo:
         """Deserializes the ObjectInfo from a dictionary."""
         return cls(created_at=d.get('created_at', None),
                    language=_enum(d, 'language', Language),
@@ -750,7 +750,7 @@ class ObjectInfo:
 
 class ObjectType(Enum):
     """The type of the object in workspace.
-    
+
     - `NOTEBOOK`: document that contains runnable code, visualizations, and explanatory text. -
     `DIRECTORY`: directory - `LIBRARY`: library - `FILE`: file - `REPO`: repository - `DASHBOARD`:
     Lakeview dashboard"""
@@ -783,7 +783,7 @@ class PutAcl:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PutAcl:
+    def from_dict(cls, d: Dict[str, Any]) -> PutAcl:
         """Deserializes the PutAcl from a dictionary."""
         return cls(permission=_enum(d, 'permission', AclPermission),
                    principal=d.get('principal', None),
@@ -799,7 +799,7 @@ class PutAclResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PutAclResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> PutAclResponse:
         """Deserializes the PutAclResponse from a dictionary."""
         return cls()
 
@@ -828,7 +828,7 @@ class PutSecret:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PutSecret:
+    def from_dict(cls, d: Dict[str, Any]) -> PutSecret:
         """Deserializes the PutSecret from a dictionary."""
         return cls(bytes_value=d.get('bytes_value', None),
                    key=d.get('key', None),
@@ -845,7 +845,7 @@ class PutSecretResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PutSecretResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> PutSecretResponse:
         """Deserializes the PutSecretResponse from a dictionary."""
         return cls()
 
@@ -875,7 +875,7 @@ class RepoAccessControlRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RepoAccessControlRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> RepoAccessControlRequest:
         """Deserializes the RepoAccessControlRequest from a dictionary."""
         return cls(group_name=d.get('group_name', None),
                    permission_level=_enum(d, 'permission_level', RepoPermissionLevel),
@@ -912,7 +912,7 @@ class RepoAccessControlResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RepoAccessControlResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> RepoAccessControlResponse:
         """Deserializes the RepoAccessControlResponse from a dictionary."""
         return cls(all_permissions=_repeated_dict(d, 'all_permissions', RepoPermission),
                    display_name=d.get('display_name', None),
@@ -958,7 +958,7 @@ class RepoInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RepoInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> RepoInfo:
         """Deserializes the RepoInfo from a dictionary."""
         return cls(branch=d.get('branch', None),
                    head_commit_id=d.get('head_commit_id', None),
@@ -987,7 +987,7 @@ class RepoPermission:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RepoPermission:
+    def from_dict(cls, d: Dict[str, Any]) -> RepoPermission:
         """Deserializes the RepoPermission from a dictionary."""
         return cls(inherited=d.get('inherited', None),
                    inherited_from_object=d.get('inherited_from_object', None),
@@ -1021,7 +1021,7 @@ class RepoPermissions:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RepoPermissions:
+    def from_dict(cls, d: Dict[str, Any]) -> RepoPermissions:
         """Deserializes the RepoPermissions from a dictionary."""
         return cls(access_control_list=_repeated_dict(d, 'access_control_list', RepoAccessControlResponse),
                    object_id=d.get('object_id', None),
@@ -1043,7 +1043,7 @@ class RepoPermissionsDescription:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RepoPermissionsDescription:
+    def from_dict(cls, d: Dict[str, Any]) -> RepoPermissionsDescription:
         """Deserializes the RepoPermissionsDescription from a dictionary."""
         return cls(description=d.get('description', None),
                    permission_level=_enum(d, 'permission_level', RepoPermissionLevel))
@@ -1065,7 +1065,7 @@ class RepoPermissionsRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RepoPermissionsRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> RepoPermissionsRequest:
         """Deserializes the RepoPermissionsRequest from a dictionary."""
         return cls(access_control_list=_repeated_dict(d, 'access_control_list', RepoAccessControlRequest),
                    repo_id=d.get('repo_id', None))
@@ -1094,7 +1094,7 @@ class SecretMetadata:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SecretMetadata:
+    def from_dict(cls, d: Dict[str, Any]) -> SecretMetadata:
         """Deserializes the SecretMetadata from a dictionary."""
         return cls(key=d.get('key', None), last_updated_timestamp=d.get('last_updated_timestamp', None))
 
@@ -1119,7 +1119,7 @@ class SecretScope:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SecretScope:
+    def from_dict(cls, d: Dict[str, Any]) -> SecretScope:
         """Deserializes the SecretScope from a dictionary."""
         return cls(backend_type=_enum(d, 'backend_type', ScopeBackendType),
                    keyvault_metadata=_from_dict(d, 'keyvault_metadata', AzureKeyVaultSecretScopeMetadata),
@@ -1138,7 +1138,7 @@ class SparseCheckout:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SparseCheckout:
+    def from_dict(cls, d: Dict[str, Any]) -> SparseCheckout:
         """Deserializes the SparseCheckout from a dictionary."""
         return cls(patterns=d.get('patterns', None))
 
@@ -1155,7 +1155,7 @@ class SparseCheckoutUpdate:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SparseCheckoutUpdate:
+    def from_dict(cls, d: Dict[str, Any]) -> SparseCheckoutUpdate:
         """Deserializes the SparseCheckoutUpdate from a dictionary."""
         return cls(patterns=d.get('patterns', None))
 
@@ -1186,7 +1186,7 @@ class UpdateCredentials:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateCredentials:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateCredentials:
         """Deserializes the UpdateCredentials from a dictionary."""
         return cls(credential_id=d.get('credential_id', None),
                    git_provider=d.get('git_provider', None),
@@ -1221,7 +1221,7 @@ class UpdateRepo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateRepo:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateRepo:
         """Deserializes the UpdateRepo from a dictionary."""
         return cls(branch=d.get('branch', None),
                    repo_id=d.get('repo_id', None),
@@ -1238,7 +1238,7 @@ class UpdateResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateResponse:
         """Deserializes the UpdateResponse from a dictionary."""
         return cls()
 
@@ -1268,7 +1268,7 @@ class WorkspaceObjectAccessControlRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> WorkspaceObjectAccessControlRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> WorkspaceObjectAccessControlRequest:
         """Deserializes the WorkspaceObjectAccessControlRequest from a dictionary."""
         return cls(group_name=d.get('group_name', None),
                    permission_level=_enum(d, 'permission_level', WorkspaceObjectPermissionLevel),
@@ -1305,7 +1305,7 @@ class WorkspaceObjectAccessControlResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> WorkspaceObjectAccessControlResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> WorkspaceObjectAccessControlResponse:
         """Deserializes the WorkspaceObjectAccessControlResponse from a dictionary."""
         return cls(all_permissions=_repeated_dict(d, 'all_permissions', WorkspaceObjectPermission),
                    display_name=d.get('display_name', None),
@@ -1332,7 +1332,7 @@ class WorkspaceObjectPermission:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> WorkspaceObjectPermission:
+    def from_dict(cls, d: Dict[str, Any]) -> WorkspaceObjectPermission:
         """Deserializes the WorkspaceObjectPermission from a dictionary."""
         return cls(inherited=d.get('inherited', None),
                    inherited_from_object=d.get('inherited_from_object', None),
@@ -1366,7 +1366,7 @@ class WorkspaceObjectPermissions:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> WorkspaceObjectPermissions:
+    def from_dict(cls, d: Dict[str, Any]) -> WorkspaceObjectPermissions:
         """Deserializes the WorkspaceObjectPermissions from a dictionary."""
         return cls(access_control_list=_repeated_dict(d, 'access_control_list',
                                                       WorkspaceObjectAccessControlResponse),
@@ -1389,7 +1389,7 @@ class WorkspaceObjectPermissionsDescription:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> WorkspaceObjectPermissionsDescription:
+    def from_dict(cls, d: Dict[str, Any]) -> WorkspaceObjectPermissionsDescription:
         """Deserializes the WorkspaceObjectPermissionsDescription from a dictionary."""
         return cls(description=d.get('description', None),
                    permission_level=_enum(d, 'permission_level', WorkspaceObjectPermissionLevel))
@@ -1415,7 +1415,7 @@ class WorkspaceObjectPermissionsRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> WorkspaceObjectPermissionsRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> WorkspaceObjectPermissionsRequest:
         """Deserializes the WorkspaceObjectPermissionsRequest from a dictionary."""
         return cls(access_control_list=_repeated_dict(d, 'access_control_list',
                                                       WorkspaceObjectAccessControlRequest),
@@ -1425,9 +1425,9 @@ class WorkspaceObjectPermissionsRequest:
 
 class GitCredentialsAPI:
     """Registers personal access token for Databricks to do operations on behalf of the user.
-    
+
     See [more info].
-    
+
     [more info]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html"""
 
     def __init__(self, api_client):
@@ -1439,11 +1439,11 @@ class GitCredentialsAPI:
                git_username: Optional[str] = None,
                personal_access_token: Optional[str] = None) -> CreateCredentialsResponse:
         """Create a credential entry.
-        
+
         Creates a Git credential entry for the user. Only one Git credential per user is supported, so any
         attempts to create credentials if an entry already exists will fail. Use the PATCH endpoint to update
         existing credentials, or the DELETE endpoint to delete existing credentials.
-        
+
         :param git_provider: str
           Git provider. This field is case-insensitive. The available Git providers are gitHub,
           bitbucketCloud, gitLab, azureDevOpsServices, gitHubEnterprise, bitbucketServer,
@@ -1452,7 +1452,7 @@ class GitCredentialsAPI:
           Git username.
         :param personal_access_token: str (optional)
           The personal access token used to authenticate to the corresponding Git provider.
-        
+
         :returns: :class:`CreateCredentialsResponse`
         """
         body = {}
@@ -1466,13 +1466,13 @@ class GitCredentialsAPI:
 
     def delete(self, credential_id: int):
         """Delete a credential.
-        
+
         Deletes the specified Git credential.
-        
+
         :param credential_id: int
           The ID for the corresponding credential to access.
-        
-        
+
+
         """
 
         headers = {}
@@ -1481,12 +1481,12 @@ class GitCredentialsAPI:
 
     def get(self, credential_id: int) -> CredentialInfo:
         """Get a credential entry.
-        
+
         Gets the Git credential with the specified credential ID.
-        
+
         :param credential_id: int
           The ID for the corresponding credential to access.
-        
+
         :returns: :class:`CredentialInfo`
         """
 
@@ -1497,9 +1497,9 @@ class GitCredentialsAPI:
 
     def list(self) -> Iterator[CredentialInfo]:
         """Get Git credentials.
-        
+
         Lists the calling user's Git credentials. One credential per user is supported.
-        
+
         :returns: Iterator over :class:`CredentialInfo`
         """
 
@@ -1516,9 +1516,9 @@ class GitCredentialsAPI:
                git_username: Optional[str] = None,
                personal_access_token: Optional[str] = None):
         """Update a credential.
-        
+
         Updates the specified Git credential.
-        
+
         :param credential_id: int
           The ID for the corresponding credential to access.
         :param git_provider: str (optional)
@@ -1529,8 +1529,8 @@ class GitCredentialsAPI:
           Git username.
         :param personal_access_token: str (optional)
           The personal access token used to authenticate to the corresponding Git provider.
-        
-        
+
+
         """
         body = {}
         if git_provider is not None: body['git_provider'] = git_provider
@@ -1544,11 +1544,11 @@ class GitCredentialsAPI:
 class ReposAPI:
     """The Repos API allows users to manage their git repos. Users can use the API to access all repos that they
     have manage permissions on.
-    
+
     Databricks Repos is a visual Git client in Databricks. It supports common Git operations such a cloning a
     repository, committing and pushing, pulling, branch management, and visual comparison of diffs when
     committing.
-    
+
     Within Repos you can develop code in notebooks or other files and follow data science and engineering code
     development best practices using Git for version control, collaboration, and CI/CD."""
 
@@ -1562,10 +1562,10 @@ class ReposAPI:
                path: Optional[str] = None,
                sparse_checkout: Optional[SparseCheckout] = None) -> RepoInfo:
         """Create a repo.
-        
+
         Creates a repo in the workspace and links it to the remote Git repo specified. Note that repos created
         programmatically must be linked to a remote Git repo, unlike repos created in the browser.
-        
+
         :param url: str
           URL of the Git repository to be linked.
         :param provider: str
@@ -1577,7 +1577,7 @@ class ReposAPI:
         :param sparse_checkout: :class:`SparseCheckout` (optional)
           If specified, the repo will be created with sparse checkout enabled. You cannot enable/disable
           sparse checkout after the repo is created.
-        
+
         :returns: :class:`RepoInfo`
         """
         body = {}
@@ -1592,13 +1592,13 @@ class ReposAPI:
 
     def delete(self, repo_id: int):
         """Delete a repo.
-        
+
         Deletes the specified repo.
-        
+
         :param repo_id: int
           The ID for the corresponding repo to access.
-        
-        
+
+
         """
 
         headers = {}
@@ -1607,12 +1607,12 @@ class ReposAPI:
 
     def get(self, repo_id: int) -> RepoInfo:
         """Get a repo.
-        
+
         Returns the repo with the given repo ID.
-        
+
         :param repo_id: int
           The ID for the corresponding repo to access.
-        
+
         :returns: :class:`RepoInfo`
         """
 
@@ -1623,12 +1623,12 @@ class ReposAPI:
 
     def get_permission_levels(self, repo_id: str) -> GetRepoPermissionLevelsResponse:
         """Get repo permission levels.
-        
+
         Gets the permission levels that a user can have on an object.
-        
+
         :param repo_id: str
           The repo for which to get or manage permissions.
-        
+
         :returns: :class:`GetRepoPermissionLevelsResponse`
         """
 
@@ -1639,12 +1639,12 @@ class ReposAPI:
 
     def get_permissions(self, repo_id: str) -> RepoPermissions:
         """Get repo permissions.
-        
+
         Gets the permissions of a repo. Repos can inherit permissions from their root object.
-        
+
         :param repo_id: str
           The repo for which to get or manage permissions.
-        
+
         :returns: :class:`RepoPermissions`
         """
 
@@ -1658,16 +1658,16 @@ class ReposAPI:
              next_page_token: Optional[str] = None,
              path_prefix: Optional[str] = None) -> Iterator[RepoInfo]:
         """Get repos.
-        
+
         Returns repos that the calling user has Manage permissions on. Results are paginated with each page
         containing twenty repos.
-        
+
         :param next_page_token: str (optional)
           Token used to get the next page of results. If not specified, returns the first page of results as
           well as a next page token if there are more results.
         :param path_prefix: str (optional)
           Filters repos that have paths starting with the given path prefix.
-        
+
         :returns: Iterator over :class:`RepoInfo`
         """
 
@@ -1691,13 +1691,13 @@ class ReposAPI:
             *,
             access_control_list: Optional[List[RepoAccessControlRequest]] = None) -> RepoPermissions:
         """Set repo permissions.
-        
+
         Sets permissions on a repo. Repos can inherit permissions from their root object.
-        
+
         :param repo_id: str
           The repo for which to get or manage permissions.
         :param access_control_list: List[:class:`RepoAccessControlRequest`] (optional)
-        
+
         :returns: :class:`RepoPermissions`
         """
         body = {}
@@ -1715,10 +1715,10 @@ class ReposAPI:
                sparse_checkout: Optional[SparseCheckoutUpdate] = None,
                tag: Optional[str] = None):
         """Update a repo.
-        
+
         Updates the repo to a different branch or tag, or updates the repo to the latest commit on the same
         branch.
-        
+
         :param repo_id: int
           The ID for the corresponding repo to access.
         :param branch: str (optional)
@@ -1730,8 +1730,8 @@ class ReposAPI:
           Tag that the local version of the repo is checked out to. Updating the repo to a tag puts the repo
           in a detached HEAD state. Before committing new changes, you must update the repo to a branch
           instead of the detached HEAD.
-        
-        
+
+
         """
         body = {}
         if branch is not None: body['branch'] = branch
@@ -1747,13 +1747,13 @@ class ReposAPI:
             *,
             access_control_list: Optional[List[RepoAccessControlRequest]] = None) -> RepoPermissions:
         """Update repo permissions.
-        
+
         Updates the permissions on a repo. Repos can inherit permissions from their root object.
-        
+
         :param repo_id: str
           The repo for which to get or manage permissions.
         :param access_control_list: List[:class:`RepoAccessControlRequest`] (optional)
-        
+
         :returns: :class:`RepoPermissions`
         """
         body = {}
@@ -1767,11 +1767,11 @@ class ReposAPI:
 
 class SecretsAPI:
     """The Secrets API allows you to manage secrets, secret scopes, and access permissions.
-    
+
     Sometimes accessing data requires that you authenticate to external data sources through JDBC. Instead of
     directly entering your credentials into a notebook, use Databricks secrets to store your credentials and
     reference them in notebooks and jobs.
-    
+
     Administrators, secret creators, and users granted permission can read Databricks secrets. While
     Databricks makes an effort to redact secret values that might be displayed in notebooks, it is not
     possible to prevent such users from reading secrets."""
@@ -1786,10 +1786,10 @@ class SecretsAPI:
                      initial_manage_principal: Optional[str] = None,
                      scope_backend_type: Optional[ScopeBackendType] = None):
         """Create a new secret scope.
-        
+
         The scope name must consist of alphanumeric characters, dashes, underscores, and periods, and may not
         exceed 128 characters. The maximum number of scopes in a workspace is 100.
-        
+
         :param scope: str
           Scope name requested by the user. Scope names are unique.
         :param backend_azure_keyvault: :class:`AzureKeyVaultSecretScopeMetadata` (optional)
@@ -1798,8 +1798,8 @@ class SecretsAPI:
           The principal that is initially granted `MANAGE` permission to the created scope.
         :param scope_backend_type: :class:`ScopeBackendType` (optional)
           The backend type the scope will be created with. If not specified, will default to `DATABRICKS`
-        
-        
+
+
         """
         body = {}
         if backend_azure_keyvault is not None:
@@ -1813,19 +1813,19 @@ class SecretsAPI:
 
     def delete_acl(self, scope: str, principal: str):
         """Delete an ACL.
-        
+
         Deletes the given ACL on the given scope.
-        
+
         Users must have the `MANAGE` permission to invoke this API. Throws `RESOURCE_DOES_NOT_EXIST` if no
         such secret scope, principal, or ACL exists. Throws `PERMISSION_DENIED` if the user does not have
         permission to make this API call.
-        
+
         :param scope: str
           The name of the scope to remove permissions from.
         :param principal: str
           The principal to remove an existing ACL from.
-        
-        
+
+
         """
         body = {}
         if principal is not None: body['principal'] = principal
@@ -1836,16 +1836,16 @@ class SecretsAPI:
 
     def delete_scope(self, scope: str):
         """Delete a secret scope.
-        
+
         Deletes a secret scope.
-        
+
         Throws `RESOURCE_DOES_NOT_EXIST` if the scope does not exist. Throws `PERMISSION_DENIED` if the user
         does not have permission to make this API call.
-        
+
         :param scope: str
           Name of the scope to delete.
-        
-        
+
+
         """
         body = {}
         if scope is not None: body['scope'] = scope
@@ -1855,19 +1855,19 @@ class SecretsAPI:
 
     def delete_secret(self, scope: str, key: str):
         """Delete a secret.
-        
+
         Deletes the secret stored in this secret scope. You must have `WRITE` or `MANAGE` permission on the
         secret scope.
-        
+
         Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope or secret exists. Throws `PERMISSION_DENIED`
         if the user does not have permission to make this API call.
-        
+
         :param scope: str
           The name of the scope that contains the secret to delete.
         :param key: str
           Name of the secret to delete.
-        
-        
+
+
         """
         body = {}
         if key is not None: body['key'] = key
@@ -1878,18 +1878,18 @@ class SecretsAPI:
 
     def get_acl(self, scope: str, principal: str) -> AclItem:
         """Get secret ACL details.
-        
+
         Gets the details about the given ACL, such as the group and permission. Users must have the `MANAGE`
         permission to invoke this API.
-        
+
         Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws `PERMISSION_DENIED` if the
         user does not have permission to make this API call.
-        
+
         :param scope: str
           The name of the scope to fetch ACL information from.
         :param principal: str
           The principal to fetch ACL information for.
-        
+
         :returns: :class:`AclItem`
         """
 
@@ -1903,22 +1903,22 @@ class SecretsAPI:
 
     def get_secret(self, scope: str, key: str) -> GetSecretResponse:
         """Get a secret.
-        
+
         Gets the bytes representation of a secret value for the specified scope and key.
-        
+
         Users need the READ permission to make this call.
-        
+
         Note that the secret value returned is in bytes. The interpretation of the bytes is determined by the
         caller in DBUtils and the type the data is decoded into.
-        
+
         Throws ``PERMISSION_DENIED`` if the user does not have permission to make this API call. Throws
         ``RESOURCE_DOES_NOT_EXIST`` if no such secret or secret scope exists.
-        
+
         :param scope: str
           The name of the scope to fetch secret information from.
         :param key: str
           The key to fetch secret for.
-        
+
         :returns: :class:`GetSecretResponse`
         """
 
@@ -1932,15 +1932,15 @@ class SecretsAPI:
 
     def list_acls(self, scope: str) -> Iterator[AclItem]:
         """Lists ACLs.
-        
+
         List the ACLs for a given secret scope. Users must have the `MANAGE` permission to invoke this API.
-        
+
         Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws `PERMISSION_DENIED` if the
         user does not have permission to make this API call.
-        
+
         :param scope: str
           The name of the scope to fetch ACL information from.
-        
+
         :returns: Iterator over :class:`AclItem`
         """
 
@@ -1954,11 +1954,11 @@ class SecretsAPI:
 
     def list_scopes(self) -> Iterator[SecretScope]:
         """List all scopes.
-        
+
         Lists all secret scopes available in the workspace.
-        
+
         Throws `PERMISSION_DENIED` if the user does not have permission to make this API call.
-        
+
         :returns: Iterator over :class:`SecretScope`
         """
 
@@ -1970,17 +1970,17 @@ class SecretsAPI:
 
     def list_secrets(self, scope: str) -> Iterator[SecretMetadata]:
         """List secret keys.
-        
+
         Lists the secret keys that are stored at this scope. This is a metadata-only operation; secret data
         cannot be retrieved using this API. Users need the READ permission to make this call.
-        
+
         The lastUpdatedTimestamp returned is in milliseconds since epoch. Throws `RESOURCE_DOES_NOT_EXIST` if
         no such secret scope exists. Throws `PERMISSION_DENIED` if the user does not have permission to make
         this API call.
-        
+
         :param scope: str
           The name of the scope to list secrets within.
-        
+
         :returns: Iterator over :class:`SecretMetadata`
         """
 
@@ -1994,40 +1994,40 @@ class SecretsAPI:
 
     def put_acl(self, scope: str, principal: str, permission: AclPermission):
         """Create/update an ACL.
-        
+
         Creates or overwrites the Access Control List (ACL) associated with the given principal (user or
         group) on the specified scope point.
-        
+
         In general, a user or group will use the most powerful permission available to them, and permissions
         are ordered as follows:
-        
+
         * `MANAGE` - Allowed to change ACLs, and read and write to this secret scope. * `WRITE` - Allowed to
         read and write to this secret scope. * `READ` - Allowed to read this secret scope and list what
         secrets are available.
-        
+
         Note that in general, secret values can only be read from within a command on a cluster (for example,
         through a notebook). There is no API to read the actual secret value material outside of a cluster.
         However, the user's permission will be applied based on who is executing the command, and they must
         have at least READ permission.
-        
+
         Users must have the `MANAGE` permission to invoke this API.
-        
+
         The principal is a user or group name corresponding to an existing Databricks principal to be granted
         or revoked access.
-        
+
         Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws `RESOURCE_ALREADY_EXISTS` if a
         permission for the principal already exists. Throws `INVALID_PARAMETER_VALUE` if the permission or
         principal is invalid. Throws `PERMISSION_DENIED` if the user does not have permission to make this API
         call.
-        
+
         :param scope: str
           The name of the scope to apply permissions to.
         :param principal: str
           The principal in which the permission is applied.
         :param permission: :class:`AclPermission`
           The permission level applied to the principal.
-        
-        
+
+
         """
         body = {}
         if permission is not None: body['permission'] = permission.value
@@ -2044,23 +2044,23 @@ class SecretsAPI:
                    bytes_value: Optional[str] = None,
                    string_value: Optional[str] = None):
         """Add a secret.
-        
+
         Inserts a secret under the provided scope with the given name. If a secret already exists with the
         same name, this command overwrites the existing secret's value. The server encrypts the secret using
         the secret scope's encryption settings before storing it.
-        
+
         You must have `WRITE` or `MANAGE` permission on the secret scope. The secret key must consist of
         alphanumeric characters, dashes, underscores, and periods, and cannot exceed 128 characters. The
         maximum allowed secret value size is 128 KB. The maximum number of secrets in a given scope is 1000.
-        
+
         The input fields "string_value" or "bytes_value" specify the type of the secret, which will determine
         the value returned when the secret value is requested. Exactly one must be specified.
-        
+
         Throws `RESOURCE_DOES_NOT_EXIST` if no such secret scope exists. Throws `RESOURCE_LIMIT_EXCEEDED` if
         maximum number of secrets in scope is exceeded. Throws `INVALID_PARAMETER_VALUE` if the key name or
         value length is invalid. Throws `PERMISSION_DENIED` if the user does not have permission to make this
         API call.
-        
+
         :param scope: str
           The name of the scope to which the secret will be associated with.
         :param key: str
@@ -2069,8 +2069,8 @@ class SecretsAPI:
           If specified, value will be stored as bytes.
         :param string_value: str (optional)
           If specified, note that the value will be stored in UTF-8 (MB4) form.
-        
-        
+
+
         """
         body = {}
         if bytes_value is not None: body['bytes_value'] = bytes_value
@@ -2084,7 +2084,7 @@ class SecretsAPI:
 
 class WorkspaceAPI:
     """The Workspace API allows you to list, import, export, and delete notebooks and folders.
-    
+
     A notebook is a web-based interface to a document that contains runnable code, visualizations, and
     explanatory text."""
 
@@ -2093,22 +2093,22 @@ class WorkspaceAPI:
 
     def delete(self, path: str, *, recursive: Optional[bool] = None):
         """Delete a workspace object.
-        
+
         Deletes an object or a directory (and optionally recursively deletes all objects in the directory). *
         If `path` does not exist, this call returns an error `RESOURCE_DOES_NOT_EXIST`. * If `path` is a
         non-empty directory and `recursive` is set to `false`, this call returns an error
         `DIRECTORY_NOT_EMPTY`.
-        
+
         Object deletion cannot be undone and deleting a directory recursively is not atomic.
-        
+
         :param path: str
           The absolute path of the notebook or directory.
         :param recursive: bool (optional)
           The flag that specifies whether to delete the object recursively. It is `false` by default. Please
           note this deleting directory is not atomic. If it fails in the middle, some of objects under this
           directory may be deleted and cannot be undone.
-        
-        
+
+
         """
         body = {}
         if path is not None: body['path'] = path
@@ -2119,29 +2119,29 @@ class WorkspaceAPI:
 
     def export(self, path: str, *, format: Optional[ExportFormat] = None) -> ExportResponse:
         """Export a workspace object.
-        
+
         Exports an object or the contents of an entire directory.
-        
+
         If `path` does not exist, this call returns an error `RESOURCE_DOES_NOT_EXIST`.
-        
+
         If the exported data would exceed size limit, this call returns `MAX_NOTEBOOK_SIZE_EXCEEDED`.
         Currently, this API does not support exporting a library.
-        
+
         :param path: str
           The absolute path of the object or directory. Exporting a directory is only supported for the `DBC`,
           `SOURCE`, and `AUTO` format.
         :param format: :class:`ExportFormat` (optional)
           This specifies the format of the exported file. By default, this is `SOURCE`.
-          
+
           The value is case sensitive.
-          
+
           - `SOURCE`: The notebook is exported as source code. Directory exports will not include non-notebook
           entries. - `HTML`: The notebook is exported as an HTML file. - `JUPYTER`: The notebook is exported
           as a Jupyter/IPython Notebook file. - `DBC`: The notebook is exported in Databricks archive format.
           Directory exports will not include non-notebook entries. - `R_MARKDOWN`: The notebook is exported to
           R Markdown format. - `AUTO`: The object or directory is exported depending on the objects type.
           Directory exports will include notebooks and workspace files.
-        
+
         :returns: :class:`ExportResponse`
         """
 
@@ -2156,14 +2156,14 @@ class WorkspaceAPI:
     def get_permission_levels(self, workspace_object_type: str,
                               workspace_object_id: str) -> GetWorkspaceObjectPermissionLevelsResponse:
         """Get workspace object permission levels.
-        
+
         Gets the permission levels that a user can have on an object.
-        
+
         :param workspace_object_type: str
           The workspace object type for which to get or manage permissions.
         :param workspace_object_id: str
           The workspace object for which to get or manage permissions.
-        
+
         :returns: :class:`GetWorkspaceObjectPermissionLevelsResponse`
         """
 
@@ -2178,15 +2178,15 @@ class WorkspaceAPI:
     def get_permissions(self, workspace_object_type: str,
                         workspace_object_id: str) -> WorkspaceObjectPermissions:
         """Get workspace object permissions.
-        
+
         Gets the permissions of a workspace object. Workspace objects can inherit permissions from their
         parent objects or root object.
-        
+
         :param workspace_object_type: str
           The workspace object type for which to get or manage permissions.
         :param workspace_object_id: str
           The workspace object for which to get or manage permissions.
-        
+
         :returns: :class:`WorkspaceObjectPermissions`
         """
 
@@ -2199,13 +2199,13 @@ class WorkspaceAPI:
 
     def get_status(self, path: str) -> ObjectInfo:
         """Get status.
-        
+
         Gets the status of an object or a directory. If `path` does not exist, this call returns an error
         `RESOURCE_DOES_NOT_EXIST`.
-        
+
         :param path: str
           The absolute path of the notebook or directory.
-        
+
         :returns: :class:`ObjectInfo`
         """
 
@@ -2224,26 +2224,26 @@ class WorkspaceAPI:
                 language: Optional[Language] = None,
                 overwrite: Optional[bool] = None):
         """Import a workspace object.
-        
+
         Imports a workspace object (for example, a notebook or file) or the contents of an entire directory.
         If `path` already exists and `overwrite` is set to `false`, this call returns an error
         `RESOURCE_ALREADY_EXISTS`. To import a directory, you can use either the `DBC` format or the `SOURCE`
         format with the `language` field unset. To import a single file as `SOURCE`, you must set the
         `language` field.
-        
+
         :param path: str
           The absolute path of the object or directory. Importing a directory is only supported for the `DBC`
           and `SOURCE` formats.
         :param content: str (optional)
           The base64-encoded content. This has a limit of 10 MB.
-          
+
           If the limit (10MB) is exceeded, exception with error code **MAX_NOTEBOOK_SIZE_EXCEEDED** is thrown.
           This parameter might be absent, and instead a posted file is used.
         :param format: :class:`ImportFormat` (optional)
           This specifies the format of the file to be imported.
-          
+
           The value is case sensitive.
-          
+
           - `AUTO`: The item is imported depending on an analysis of the item's extension and the header
           content provided in the request. If the item is imported as a notebook, then the item's extension is
           automatically removed. - `SOURCE`: The notebook or directory is imported as source code. - `HTML`:
@@ -2255,8 +2255,8 @@ class WorkspaceAPI:
         :param overwrite: bool (optional)
           The flag that specifies whether to overwrite existing object. It is `false` by default. For `DBC`
           format, `overwrite` is not supported since it may contain a directory.
-        
-        
+
+
         """
         body = {}
         if content is not None: body['content'] = content
@@ -2270,15 +2270,15 @@ class WorkspaceAPI:
 
     def list(self, path: str, *, notebooks_modified_after: Optional[int] = None) -> Iterator[ObjectInfo]:
         """List contents.
-        
+
         Lists the contents of a directory, or the object if it is not a directory. If the input path does not
         exist, this call returns an error `RESOURCE_DOES_NOT_EXIST`.
-        
+
         :param path: str
           The absolute path of the notebook or directory.
         :param notebooks_modified_after: int (optional)
           UTC timestamp in milliseconds
-        
+
         :returns: Iterator over :class:`ObjectInfo`
         """
 
@@ -2293,19 +2293,19 @@ class WorkspaceAPI:
 
     def mkdirs(self, path: str):
         """Create a directory.
-        
+
         Creates the specified directory (and necessary parent directories if they do not exist). If there is
         an object (not a directory) at any prefix of the input path, this call returns an error
         `RESOURCE_ALREADY_EXISTS`.
-        
+
         Note that if this operation fails it may have succeeded in creating some of the necessary parent
         directories.
-        
+
         :param path: str
           The absolute path of the directory. If the parent directories do not exist, it will also create
           them. If the directory already exists, this command will do nothing and succeed.
-        
-        
+
+
         """
         body = {}
         if path is not None: body['path'] = path
@@ -2321,16 +2321,16 @@ class WorkspaceAPI:
         access_control_list: Optional[List[WorkspaceObjectAccessControlRequest]] = None
     ) -> WorkspaceObjectPermissions:
         """Set workspace object permissions.
-        
+
         Sets permissions on a workspace object. Workspace objects can inherit permissions from their parent
         objects or root object.
-        
+
         :param workspace_object_type: str
           The workspace object type for which to get or manage permissions.
         :param workspace_object_id: str
           The workspace object for which to get or manage permissions.
         :param access_control_list: List[:class:`WorkspaceObjectAccessControlRequest`] (optional)
-        
+
         :returns: :class:`WorkspaceObjectPermissions`
         """
         body = {}
@@ -2352,16 +2352,16 @@ class WorkspaceAPI:
         access_control_list: Optional[List[WorkspaceObjectAccessControlRequest]] = None
     ) -> WorkspaceObjectPermissions:
         """Update workspace object permissions.
-        
+
         Updates the permissions on a workspace object. Workspace objects can inherit permissions from their
         parent objects or root object.
-        
+
         :param workspace_object_type: str
           The workspace object type for which to get or manage permissions.
         :param workspace_object_id: str
           The workspace object for which to get or manage permissions.
         :param access_control_list: List[:class:`WorkspaceObjectAccessControlRequest`] (optional)
-        
+
         :returns: :class:`WorkspaceObjectPermissions`
         """
         body = {}

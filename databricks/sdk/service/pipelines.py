@@ -8,7 +8,7 @@ import time
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Callable, Dict, Iterator, List, Optional
+from typing import Any, Callable, Dict, Iterator, List, Optional
 
 from ..errors import OperationFailed
 from ._internal import Wait, _enum, _from_dict, _repeated_dict
@@ -108,7 +108,7 @@ class CreatePipeline:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreatePipeline:
+    def from_dict(cls, d: Dict[str, Any]) -> CreatePipeline:
         """Deserializes the CreatePipeline from a dictionary."""
         return cls(allow_duplicate_names=d.get('allow_duplicate_names', None),
                    catalog=d.get('catalog', None),
@@ -147,7 +147,7 @@ class CreatePipelineResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreatePipelineResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreatePipelineResponse:
         """Deserializes the CreatePipelineResponse from a dictionary."""
         return cls(effective_settings=_from_dict(d, 'effective_settings', PipelineSpec),
                    pipeline_id=d.get('pipeline_id', None))
@@ -167,7 +167,7 @@ class CronTrigger:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CronTrigger:
+    def from_dict(cls, d: Dict[str, Any]) -> CronTrigger:
         """Deserializes the CronTrigger from a dictionary."""
         return cls(quartz_cron_schedule=d.get('quartz_cron_schedule', None),
                    timezone_id=d.get('timezone_id', None))
@@ -189,7 +189,7 @@ class DataPlaneId:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DataPlaneId:
+    def from_dict(cls, d: Dict[str, Any]) -> DataPlaneId:
         """Deserializes the DataPlaneId from a dictionary."""
         return cls(instance=d.get('instance', None), seq_no=d.get('seq_no', None))
 
@@ -203,7 +203,7 @@ class DeletePipelineResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeletePipelineResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeletePipelineResponse:
         """Deserializes the DeletePipelineResponse from a dictionary."""
         return cls()
 
@@ -303,7 +303,7 @@ class EditPipeline:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EditPipeline:
+    def from_dict(cls, d: Dict[str, Any]) -> EditPipeline:
         """Deserializes the EditPipeline from a dictionary."""
         return cls(allow_duplicate_names=d.get('allow_duplicate_names', None),
                    catalog=d.get('catalog', None),
@@ -336,7 +336,7 @@ class EditPipelineResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EditPipelineResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> EditPipelineResponse:
         """Deserializes the EditPipelineResponse from a dictionary."""
         return cls()
 
@@ -357,7 +357,7 @@ class ErrorDetail:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ErrorDetail:
+    def from_dict(cls, d: Dict[str, Any]) -> ErrorDetail:
         """Deserializes the ErrorDetail from a dictionary."""
         return cls(exceptions=_repeated_dict(d, 'exceptions', SerializedException),
                    fatal=d.get('fatal', None))
@@ -384,7 +384,7 @@ class FileLibrary:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> FileLibrary:
+    def from_dict(cls, d: Dict[str, Any]) -> FileLibrary:
         """Deserializes the FileLibrary from a dictionary."""
         return cls(path=d.get('path', None))
 
@@ -405,7 +405,7 @@ class Filters:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Filters:
+    def from_dict(cls, d: Dict[str, Any]) -> Filters:
         """Deserializes the Filters from a dictionary."""
         return cls(exclude=d.get('exclude', None), include=d.get('include', None))
 
@@ -422,7 +422,7 @@ class GetPipelinePermissionLevelsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetPipelinePermissionLevelsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetPipelinePermissionLevelsResponse:
         """Deserializes the GetPipelinePermissionLevelsResponse from a dictionary."""
         return cls(permission_levels=_repeated_dict(d, 'permission_levels', PipelinePermissionsDescription))
 
@@ -479,7 +479,7 @@ class GetPipelineResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetPipelineResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetPipelineResponse:
         """Deserializes the GetPipelineResponse from a dictionary."""
         return cls(cause=d.get('cause', None),
                    cluster_id=d.get('cluster_id', None),
@@ -513,7 +513,7 @@ class GetUpdateResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetUpdateResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetUpdateResponse:
         """Deserializes the GetUpdateResponse from a dictionary."""
         return cls(update=_from_dict(d, 'update', UpdateInfo))
 
@@ -538,7 +538,7 @@ class ListPipelineEventsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListPipelineEventsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListPipelineEventsResponse:
         """Deserializes the ListPipelineEventsResponse from a dictionary."""
         return cls(events=_repeated_dict(d, 'events', PipelineEvent),
                    next_page_token=d.get('next_page_token', None),
@@ -561,7 +561,7 @@ class ListPipelinesResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListPipelinesResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListPipelinesResponse:
         """Deserializes the ListPipelinesResponse from a dictionary."""
         return cls(next_page_token=d.get('next_page_token', None),
                    statuses=_repeated_dict(d, 'statuses', PipelineStateInfo))
@@ -587,7 +587,7 @@ class ListUpdatesResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListUpdatesResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListUpdatesResponse:
         """Deserializes the ListUpdatesResponse from a dictionary."""
         return cls(next_page_token=d.get('next_page_token', None),
                    prev_page_token=d.get('prev_page_token', None),
@@ -603,7 +603,7 @@ class ManualTrigger:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ManualTrigger:
+    def from_dict(cls, d: Dict[str, Any]) -> ManualTrigger:
         """Deserializes the ManualTrigger from a dictionary."""
         return cls()
 
@@ -628,7 +628,7 @@ class NotebookLibrary:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> NotebookLibrary:
+    def from_dict(cls, d: Dict[str, Any]) -> NotebookLibrary:
         """Deserializes the NotebookLibrary from a dictionary."""
         return cls(path=d.get('path', None))
 
@@ -638,7 +638,7 @@ class Notifications:
     alerts: Optional[List[str]] = None
     """A list of alerts that trigger the sending of notifications to the configured destinations. The
     supported alerts are:
-    
+
     * `on-update-success`: A pipeline update completes successfully. * `on-update-failure`: Each
     time a pipeline update fails. * `on-update-fatal-failure`: A pipeline update fails with a
     non-retryable (fatal) error. * `on-flow-failure`: A single data flow fails."""
@@ -654,7 +654,7 @@ class Notifications:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Notifications:
+    def from_dict(cls, d: Dict[str, Any]) -> Notifications:
         """Deserializes the Notifications from a dictionary."""
         return cls(alerts=d.get('alerts', None), email_recipients=d.get('email_recipients', None))
 
@@ -736,7 +736,7 @@ class Origin:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Origin:
+    def from_dict(cls, d: Dict[str, Any]) -> Origin:
         """Deserializes the Origin from a dictionary."""
         return cls(batch_id=d.get('batch_id', None),
                    cloud=d.get('cloud', None),
@@ -782,7 +782,7 @@ class PipelineAccessControlRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PipelineAccessControlRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> PipelineAccessControlRequest:
         """Deserializes the PipelineAccessControlRequest from a dictionary."""
         return cls(group_name=d.get('group_name', None),
                    permission_level=_enum(d, 'permission_level', PipelinePermissionLevel),
@@ -819,7 +819,7 @@ class PipelineAccessControlResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PipelineAccessControlResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> PipelineAccessControlResponse:
         """Deserializes the PipelineAccessControlResponse from a dictionary."""
         return cls(all_permissions=_repeated_dict(d, 'all_permissions', PipelinePermission),
                    display_name=d.get('display_name', None),
@@ -855,9 +855,9 @@ class PipelineCluster:
     custom_tags: Optional[Dict[str, str]] = None
     """Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
     instances and EBS volumes) with these tags in addition to `default_tags`. Notes:
-    
+
     - Currently, Databricks allows at most 45 custom tags
-    
+
     - Clusters can only reuse cloud resources if the resources' tags are a subset of the cluster
     tags"""
 
@@ -895,7 +895,7 @@ class PipelineCluster:
     num_workers: Optional[int] = None
     """Number of worker nodes that this cluster should have. A cluster has one Spark Driver and
     `num_workers` Executors for a total of `num_workers` + 1 Spark nodes.
-    
+
     Note: When reading the properties of a cluster, this field reflects the desired number of
     workers rather than the actual current number of workers. For instance, if a cluster is resized
     from 5 to 10 workers, this field will immediately be updated to reflect the target size of 10
@@ -913,11 +913,11 @@ class PipelineCluster:
     """An object containing a set of optional, user-specified environment variable key-value pairs.
     Please note that key-value pair of the form (X,Y) will be exported as is (i.e., `export X='Y'`)
     while launching the driver and workers.
-    
+
     In order to specify an additional set of `SPARK_DAEMON_JAVA_OPTS`, we recommend appending them
     to `$SPARK_DAEMON_JAVA_OPTS` as shown in the example below. This ensures that all default
     databricks managed environmental variables are included as well.
-    
+
     Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m", "SPARK_LOCAL_DIRS":
     "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS": "$SPARK_DAEMON_JAVA_OPTS
     -Dspark.shuffle.service.enabled=true"}`"""
@@ -953,7 +953,7 @@ class PipelineCluster:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PipelineCluster:
+    def from_dict(cls, d: Dict[str, Any]) -> PipelineCluster:
         """Deserializes the PipelineCluster from a dictionary."""
         return cls(apply_policy_default_values=d.get('apply_policy_default_values', None),
                    autoscale=_from_dict(d, 'autoscale', PipelineClusterAutoscale),
@@ -1000,7 +1000,7 @@ class PipelineClusterAutoscale:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PipelineClusterAutoscale:
+    def from_dict(cls, d: Dict[str, Any]) -> PipelineClusterAutoscale:
         """Deserializes the PipelineClusterAutoscale from a dictionary."""
         return cls(max_workers=d.get('max_workers', None),
                    min_workers=d.get('min_workers', None),
@@ -1061,7 +1061,7 @@ class PipelineEvent:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PipelineEvent:
+    def from_dict(cls, d: Dict[str, Any]) -> PipelineEvent:
         """Deserializes the PipelineEvent from a dictionary."""
         return cls(error=_from_dict(d, 'error', ErrorDetail),
                    event_type=d.get('event_type', None),
@@ -1098,7 +1098,7 @@ class PipelineLibrary:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PipelineLibrary:
+    def from_dict(cls, d: Dict[str, Any]) -> PipelineLibrary:
         """Deserializes the PipelineLibrary from a dictionary."""
         return cls(file=_from_dict(d, 'file', FileLibrary),
                    jar=d.get('jar', None),
@@ -1124,7 +1124,7 @@ class PipelinePermission:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PipelinePermission:
+    def from_dict(cls, d: Dict[str, Any]) -> PipelinePermission:
         """Deserializes the PipelinePermission from a dictionary."""
         return cls(inherited=d.get('inherited', None),
                    inherited_from_object=d.get('inherited_from_object', None),
@@ -1158,7 +1158,7 @@ class PipelinePermissions:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PipelinePermissions:
+    def from_dict(cls, d: Dict[str, Any]) -> PipelinePermissions:
         """Deserializes the PipelinePermissions from a dictionary."""
         return cls(access_control_list=_repeated_dict(d, 'access_control_list',
                                                       PipelineAccessControlResponse),
@@ -1181,7 +1181,7 @@ class PipelinePermissionsDescription:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PipelinePermissionsDescription:
+    def from_dict(cls, d: Dict[str, Any]) -> PipelinePermissionsDescription:
         """Deserializes the PipelinePermissionsDescription from a dictionary."""
         return cls(description=d.get('description', None),
                    permission_level=_enum(d, 'permission_level', PipelinePermissionLevel))
@@ -1203,7 +1203,7 @@ class PipelinePermissionsRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PipelinePermissionsRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> PipelinePermissionsRequest:
         """Deserializes the PipelinePermissionsRequest from a dictionary."""
         return cls(access_control_list=_repeated_dict(d, 'access_control_list', PipelineAccessControlRequest),
                    pipeline_id=d.get('pipeline_id', None))
@@ -1290,7 +1290,7 @@ class PipelineSpec:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PipelineSpec:
+    def from_dict(cls, d: Dict[str, Any]) -> PipelineSpec:
         """Deserializes the PipelineSpec from a dictionary."""
         return cls(catalog=d.get('catalog', None),
                    channel=d.get('channel', None),
@@ -1362,7 +1362,7 @@ class PipelineStateInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PipelineStateInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> PipelineStateInfo:
         """Deserializes the PipelineStateInfo from a dictionary."""
         return cls(cluster_id=d.get('cluster_id', None),
                    creator_user_name=d.get('creator_user_name', None),
@@ -1387,7 +1387,7 @@ class PipelineTrigger:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PipelineTrigger:
+    def from_dict(cls, d: Dict[str, Any]) -> PipelineTrigger:
         """Deserializes the PipelineTrigger from a dictionary."""
         return cls(cron=_from_dict(d, 'cron', CronTrigger), manual=_from_dict(d, 'manual', ManualTrigger))
 
@@ -1408,7 +1408,7 @@ class Sequencing:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Sequencing:
+    def from_dict(cls, d: Dict[str, Any]) -> Sequencing:
         """Deserializes the Sequencing from a dictionary."""
         return cls(control_plane_seq_no=d.get('control_plane_seq_no', None),
                    data_plane_id=_from_dict(d, 'data_plane_id', DataPlaneId))
@@ -1434,7 +1434,7 @@ class SerializedException:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SerializedException:
+    def from_dict(cls, d: Dict[str, Any]) -> SerializedException:
         """Deserializes the SerializedException from a dictionary."""
         return cls(class_name=d.get('class_name', None),
                    message=d.get('message', None),
@@ -1465,7 +1465,7 @@ class StackFrame:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> StackFrame:
+    def from_dict(cls, d: Dict[str, Any]) -> StackFrame:
         """Deserializes the StackFrame from a dictionary."""
         return cls(declaring_class=d.get('declaring_class', None),
                    file_name=d.get('file_name', None),
@@ -1509,7 +1509,7 @@ class StartUpdate:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> StartUpdate:
+    def from_dict(cls, d: Dict[str, Any]) -> StartUpdate:
         """Deserializes the StartUpdate from a dictionary."""
         return cls(cause=_enum(d, 'cause', StartUpdateCause),
                    full_refresh=d.get('full_refresh', None),
@@ -1540,7 +1540,7 @@ class StartUpdateResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> StartUpdateResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> StartUpdateResponse:
         """Deserializes the StartUpdateResponse from a dictionary."""
         return cls(update_id=d.get('update_id', None))
 
@@ -1554,7 +1554,7 @@ class StopPipelineResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> StopPipelineResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> StopPipelineResponse:
         """Deserializes the StopPipelineResponse from a dictionary."""
         return cls()
 
@@ -1618,7 +1618,7 @@ class UpdateInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateInfo:
         """Deserializes the UpdateInfo from a dictionary."""
         return cls(cause=_enum(d, 'cause', UpdateInfoCause),
                    cluster_id=d.get('cluster_id', None),
@@ -1677,7 +1677,7 @@ class UpdateStateInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateStateInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateStateInfo:
         """Deserializes the UpdateStateInfo from a dictionary."""
         return cls(creation_time=d.get('creation_time', None),
                    state=_enum(d, 'state', UpdateStateInfoState),
@@ -1701,11 +1701,11 @@ class UpdateStateInfoState(Enum):
 
 class PipelinesAPI:
     """The Delta Live Tables API allows you to create, edit, delete, start, and view details about pipelines.
-    
+
     Delta Live Tables is a framework for building reliable, maintainable, and testable data processing
     pipelines. You define the transformations to perform on your data, and Delta Live Tables manages task
     orchestration, cluster management, monitoring, data quality, and error handling.
-    
+
     Instead of defining your data pipelines using a series of separate Apache Spark tasks, Delta Live Tables
     manages how your data is transformed based on a target schema you define for each processing step. You can
     also enforce data quality with Delta Live Tables expectations. Expectations allow you to define expected
@@ -1798,10 +1798,10 @@ class PipelinesAPI:
                target: Optional[str] = None,
                trigger: Optional[PipelineTrigger] = None) -> CreatePipelineResponse:
         """Create a pipeline.
-        
+
         Creates a new data processing pipeline based on the requested configuration. If successful, this
         method returns the ID of the new pipeline.
-        
+
         :param allow_duplicate_names: bool (optional)
           If false, deployment will fail if name conflicts with that of another pipeline.
         :param catalog: str (optional)
@@ -1842,7 +1842,7 @@ class PipelinesAPI:
           to the Hive metastore or Unity Catalog. To publish to Unity Catalog, also specify `catalog`.
         :param trigger: :class:`PipelineTrigger` (optional)
           Which pipeline trigger to use. Deprecated: Use `continuous` instead.
-        
+
         :returns: :class:`CreatePipelineResponse`
         """
         body = {}
@@ -1872,12 +1872,12 @@ class PipelinesAPI:
 
     def delete(self, pipeline_id: str):
         """Delete a pipeline.
-        
+
         Deletes a pipeline.
-        
+
         :param pipeline_id: str
-        
-        
+
+
         """
 
         headers = {'Accept': 'application/json', }
@@ -1886,9 +1886,9 @@ class PipelinesAPI:
 
     def get(self, pipeline_id: str) -> GetPipelineResponse:
         """Get a pipeline.
-        
+
         :param pipeline_id: str
-        
+
         :returns: :class:`GetPipelineResponse`
         """
 
@@ -1899,12 +1899,12 @@ class PipelinesAPI:
 
     def get_permission_levels(self, pipeline_id: str) -> GetPipelinePermissionLevelsResponse:
         """Get pipeline permission levels.
-        
+
         Gets the permission levels that a user can have on an object.
-        
+
         :param pipeline_id: str
           The pipeline for which to get or manage permissions.
-        
+
         :returns: :class:`GetPipelinePermissionLevelsResponse`
         """
 
@@ -1917,12 +1917,12 @@ class PipelinesAPI:
 
     def get_permissions(self, pipeline_id: str) -> PipelinePermissions:
         """Get pipeline permissions.
-        
+
         Gets the permissions of a pipeline. Pipelines can inherit permissions from their root object.
-        
+
         :param pipeline_id: str
           The pipeline for which to get or manage permissions.
-        
+
         :returns: :class:`PipelinePermissions`
         """
 
@@ -1933,14 +1933,14 @@ class PipelinesAPI:
 
     def get_update(self, pipeline_id: str, update_id: str) -> GetUpdateResponse:
         """Get a pipeline update.
-        
+
         Gets an update from an active pipeline.
-        
+
         :param pipeline_id: str
           The ID of the pipeline.
         :param update_id: str
           The ID of the update.
-        
+
         :returns: :class:`GetUpdateResponse`
         """
 
@@ -1957,15 +1957,15 @@ class PipelinesAPI:
                              order_by: Optional[List[str]] = None,
                              page_token: Optional[str] = None) -> Iterator[PipelineEvent]:
         """List pipeline events.
-        
+
         Retrieves events for a pipeline.
-        
+
         :param pipeline_id: str
         :param filter: str (optional)
           Criteria to select a subset of results, expressed using a SQL-like syntax. The supported filters
           are: 1. level='INFO' (or WARN or ERROR) 2. level in ('INFO', 'WARN') 3. id='[event-id]' 4. timestamp
           > 'TIMESTAMP' (or >=,<,<=,=)
-          
+
           Composite expressions are supported, for example: level in ('ERROR', 'WARN') AND timestamp>
           '2021-07-22T06:37:33.083Z'
         :param max_results: int (optional)
@@ -1979,7 +1979,7 @@ class PipelinesAPI:
           Page token returned by previous call. This field is mutually exclusive with all fields in this
           request except max_results. An error is returned if any fields other than max_results are set when
           this field is set.
-        
+
         :returns: Iterator over :class:`PipelineEvent`
         """
 
@@ -2009,16 +2009,16 @@ class PipelinesAPI:
                        order_by: Optional[List[str]] = None,
                        page_token: Optional[str] = None) -> Iterator[PipelineStateInfo]:
         """List pipelines.
-        
+
         Lists pipelines defined in the Delta Live Tables system.
-        
+
         :param filter: str (optional)
           Select a subset of results based on the specified criteria. The supported filters are:
-          
+
           * `notebook='<path>'` to select pipelines that reference the provided notebook path. * `name LIKE
           '[pattern]'` to select pipelines with a name that matches pattern. Wildcards are supported, for
           example: `name LIKE '%shopping%'`
-          
+
           Composite filters are not supported. This field is optional.
         :param max_results: int (optional)
           The maximum number of entries to return in a single page. The system may return fewer than
@@ -2030,7 +2030,7 @@ class PipelinesAPI:
           default is id asc. This field is optional.
         :param page_token: str (optional)
           Page token returned by previous call
-        
+
         :returns: Iterator over :class:`PipelineStateInfo`
         """
 
@@ -2057,9 +2057,9 @@ class PipelinesAPI:
                      page_token: Optional[str] = None,
                      until_update_id: Optional[str] = None) -> ListUpdatesResponse:
         """List pipeline updates.
-        
+
         List updates for an active pipeline.
-        
+
         :param pipeline_id: str
           The pipeline to return updates for.
         :param max_results: int (optional)
@@ -2068,7 +2068,7 @@ class PipelinesAPI:
           Page token returned by previous call
         :param until_update_id: str (optional)
           If present, returns updates until and including this update_id.
-        
+
         :returns: :class:`ListUpdatesResponse`
         """
 
@@ -2087,13 +2087,13 @@ class PipelinesAPI:
             *,
             access_control_list: Optional[List[PipelineAccessControlRequest]] = None) -> PipelinePermissions:
         """Set pipeline permissions.
-        
+
         Sets permissions on a pipeline. Pipelines can inherit permissions from their root object.
-        
+
         :param pipeline_id: str
           The pipeline for which to get or manage permissions.
         :param access_control_list: List[:class:`PipelineAccessControlRequest`] (optional)
-        
+
         :returns: :class:`PipelinePermissions`
         """
         body = {}
@@ -2113,10 +2113,10 @@ class PipelinesAPI:
                      refresh_selection: Optional[List[str]] = None,
                      validate_only: Optional[bool] = None) -> StartUpdateResponse:
         """Start a pipeline.
-        
+
         Starts a new update for the pipeline. If there is already an active update for the pipeline, the
         request will fail and the active update will remain running.
-        
+
         :param pipeline_id: str
         :param cause: :class:`StartUpdateCause` (optional)
         :param full_refresh: bool (optional)
@@ -2132,7 +2132,7 @@ class PipelinesAPI:
         :param validate_only: bool (optional)
           If true, this update only validates the correctness of pipeline source code but does not materialize
           or publish any datasets.
-        
+
         :returns: :class:`StartUpdateResponse`
         """
         body = {}
@@ -2149,12 +2149,12 @@ class PipelinesAPI:
 
     def stop(self, pipeline_id: str) -> Wait[GetPipelineResponse]:
         """Stop a pipeline.
-        
+
         Stops the pipeline by canceling the active update. If there is no active update for the pipeline, this
         request is a no-op.
-        
+
         :param pipeline_id: str
-        
+
         :returns:
           Long-running operation waiter for :class:`GetPipelineResponse`.
           See :method:wait_get_pipeline_idle for more details.
@@ -2193,9 +2193,9 @@ class PipelinesAPI:
                target: Optional[str] = None,
                trigger: Optional[PipelineTrigger] = None):
         """Edit a pipeline.
-        
+
         Updates a pipeline with the supplied configuration.
-        
+
         :param pipeline_id: str
           Unique identifier for this pipeline.
         :param allow_duplicate_names: bool (optional)
@@ -2240,8 +2240,8 @@ class PipelinesAPI:
           to the Hive metastore or Unity Catalog. To publish to Unity Catalog, also specify `catalog`.
         :param trigger: :class:`PipelineTrigger` (optional)
           Which pipeline trigger to use. Deprecated: Use `continuous` instead.
-        
-        
+
+
         """
         body = {}
         if allow_duplicate_names is not None: body['allow_duplicate_names'] = allow_duplicate_names
@@ -2273,13 +2273,13 @@ class PipelinesAPI:
             *,
             access_control_list: Optional[List[PipelineAccessControlRequest]] = None) -> PipelinePermissions:
         """Update pipeline permissions.
-        
+
         Updates the permissions on a pipeline. Pipelines can inherit permissions from their root object.
-        
+
         :param pipeline_id: str
           The pipeline for which to get or manage permissions.
         :param access_control_list: List[:class:`PipelineAccessControlRequest`] (optional)
-        
+
         :returns: :class:`PipelinePermissions`
         """
         body = {}

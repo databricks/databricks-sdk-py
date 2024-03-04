@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, Iterator, List, Optional
+from typing import Any, Dict, Iterator, List, Optional
 
 from ._internal import _enum, _from_dict, _repeated_dict, _repeated_enum
 
@@ -21,15 +21,15 @@ class Activity:
     activity_type: Optional[ActivityType] = None
     """Type of activity. Valid values are: * `APPLIED_TRANSITION`: User applied the corresponding stage
     transition.
-    
+
     * `REQUESTED_TRANSITION`: User requested the corresponding stage transition.
-    
+
     * `CANCELLED_REQUEST`: User cancelled an existing transition request.
-    
+
     * `APPROVED_REQUEST`: User approved the corresponding stage transition.
-    
+
     * `REJECTED_REQUEST`: User rejected the coressponding stage transition.
-    
+
     * `SYSTEM_TRANSITION`: For events performed as a side effect, such as archiving existing model
     versions in a stage."""
 
@@ -41,13 +41,13 @@ class Activity:
 
     from_stage: Optional[Stage] = None
     """Source stage of the transition (if the activity is stage transition related). Valid values are:
-    
+
     * `None`: The initial stage of a model version.
-    
+
     * `Staging`: Staging or pre-production stage.
-    
+
     * `Production`: Production stage.
-    
+
     * `Archived`: Archived stage."""
 
     id: Optional[str] = None
@@ -63,13 +63,13 @@ class Activity:
 
     to_stage: Optional[Stage] = None
     """Target stage of the transition (if the activity is stage transition related). Valid values are:
-    
+
     * `None`: The initial stage of a model version.
-    
+
     * `Staging`: Staging or pre-production stage.
-    
+
     * `Production`: Production stage.
-    
+
     * `Archived`: Archived stage."""
 
     user_id: Optional[str] = None
@@ -91,7 +91,7 @@ class Activity:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Activity:
+    def from_dict(cls, d: Dict[str, Any]) -> Activity:
         """Deserializes the Activity from a dictionary."""
         return cls(activity_type=_enum(d, 'activity_type', ActivityType),
                    comment=d.get('comment', None),
@@ -107,9 +107,9 @@ class Activity:
 class ActivityAction(Enum):
     """An action that a user (with sufficient permissions) could take on an activity. Valid values are:
     * `APPROVE_TRANSITION_REQUEST`: Approve a transition request
-    
+
     * `REJECT_TRANSITION_REQUEST`: Reject a transition request
-    
+
     * `CANCEL_TRANSITION_REQUEST`: Cancel (delete) a transition request"""
 
     APPROVE_TRANSITION_REQUEST = 'APPROVE_TRANSITION_REQUEST'
@@ -120,15 +120,15 @@ class ActivityAction(Enum):
 class ActivityType(Enum):
     """Type of activity. Valid values are: * `APPLIED_TRANSITION`: User applied the corresponding stage
     transition.
-    
+
     * `REQUESTED_TRANSITION`: User requested the corresponding stage transition.
-    
+
     * `CANCELLED_REQUEST`: User cancelled an existing transition request.
-    
+
     * `APPROVED_REQUEST`: User approved the corresponding stage transition.
-    
+
     * `REJECTED_REQUEST`: User rejected the coressponding stage transition.
-    
+
     * `SYSTEM_TRANSITION`: For events performed as a side effect, such as archiving existing model
     versions in a stage."""
 
@@ -151,13 +151,13 @@ class ApproveTransitionRequest:
 
     stage: Stage
     """Target stage of the transition. Valid values are:
-    
+
     * `None`: The initial stage of a model version.
-    
+
     * `Staging`: Staging or pre-production stage.
-    
+
     * `Production`: Production stage.
-    
+
     * `Archived`: Archived stage."""
 
     archive_existing_versions: bool
@@ -178,7 +178,7 @@ class ApproveTransitionRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ApproveTransitionRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> ApproveTransitionRequest:
         """Deserializes the ApproveTransitionRequest from a dictionary."""
         return cls(archive_existing_versions=d.get('archive_existing_versions', None),
                    comment=d.get('comment', None),
@@ -199,7 +199,7 @@ class ApproveTransitionRequestResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ApproveTransitionRequestResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ApproveTransitionRequestResponse:
         """Deserializes the ApproveTransitionRequestResponse from a dictionary."""
         return cls(activity=_from_dict(d, 'activity', Activity))
 
@@ -207,7 +207,7 @@ class ApproveTransitionRequestResponse:
 class CommentActivityAction(Enum):
     """An action that a user (with sufficient permissions) could take on a comment. Valid values are: *
     `EDIT_COMMENT`: Edit the comment
-    
+
     * `DELETE_COMMENT`: Delete the comment"""
 
     DELETE_COMMENT = 'DELETE_COMMENT'
@@ -249,7 +249,7 @@ class CommentObject:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CommentObject:
+    def from_dict(cls, d: Dict[str, Any]) -> CommentObject:
         """Deserializes the CommentObject from a dictionary."""
         return cls(available_actions=_repeated_enum(d, 'available_actions', CommentActivityAction),
                    comment=d.get('comment', None),
@@ -279,7 +279,7 @@ class CreateComment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateComment:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateComment:
         """Deserializes the CreateComment from a dictionary."""
         return cls(comment=d.get('comment', None), name=d.get('name', None), version=d.get('version', None))
 
@@ -296,7 +296,7 @@ class CreateCommentResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateCommentResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateCommentResponse:
         """Deserializes the CreateCommentResponse from a dictionary."""
         return cls(comment=_from_dict(d, 'comment', CommentObject))
 
@@ -325,7 +325,7 @@ class CreateExperiment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateExperiment:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateExperiment:
         """Deserializes the CreateExperiment from a dictionary."""
         return cls(artifact_location=d.get('artifact_location', None),
                    name=d.get('name', None),
@@ -344,7 +344,7 @@ class CreateExperimentResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateExperimentResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateExperimentResponse:
         """Deserializes the CreateExperimentResponse from a dictionary."""
         return cls(experiment_id=d.get('experiment_id', None))
 
@@ -369,7 +369,7 @@ class CreateModelRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateModelRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateModelRequest:
         """Deserializes the CreateModelRequest from a dictionary."""
         return cls(description=d.get('description', None),
                    name=d.get('name', None),
@@ -387,7 +387,7 @@ class CreateModelResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateModelResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateModelResponse:
         """Deserializes the CreateModelResponse from a dictionary."""
         return cls(registered_model=_from_dict(d, 'registered_model', Model))
 
@@ -426,7 +426,7 @@ class CreateModelVersionRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateModelVersionRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateModelVersionRequest:
         """Deserializes the CreateModelVersionRequest from a dictionary."""
         return cls(description=d.get('description', None),
                    name=d.get('name', None),
@@ -448,7 +448,7 @@ class CreateModelVersionResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateModelVersionResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateModelVersionResponse:
         """Deserializes the CreateModelVersionResponse from a dictionary."""
         return cls(model_version=_from_dict(d, 'model_version', ModelVersion))
 
@@ -458,31 +458,31 @@ class CreateRegistryWebhook:
     events: List[RegistryWebhookEvent]
     """Events that can trigger a registry webhook: * `MODEL_VERSION_CREATED`: A new model version was
     created for the associated model.
-    
+
     * `MODEL_VERSION_TRANSITIONED_STAGE`: A model version’s stage was changed.
-    
+
     * `TRANSITION_REQUEST_CREATED`: A user requested a model version’s stage be transitioned.
-    
+
     * `COMMENT_CREATED`: A user wrote a comment on a registered model.
-    
+
     * `REGISTERED_MODEL_CREATED`: A new registered model was created. This event type can only be
     specified for a registry-wide webhook, which can be created by not specifying a model name in
     the create request.
-    
+
     * `MODEL_VERSION_TAG_SET`: A user set a tag on the model version.
-    
+
     * `MODEL_VERSION_TRANSITIONED_TO_STAGING`: A model version was transitioned to staging.
-    
+
     * `MODEL_VERSION_TRANSITIONED_TO_PRODUCTION`: A model version was transitioned to production.
-    
+
     * `MODEL_VERSION_TRANSITIONED_TO_ARCHIVED`: A model version was archived.
-    
+
     * `TRANSITION_REQUEST_TO_STAGING_CREATED`: A user requested a model version be transitioned to
     staging.
-    
+
     * `TRANSITION_REQUEST_TO_PRODUCTION_CREATED`: A user requested a model version be transitioned
     to production.
-    
+
     * `TRANSITION_REQUEST_TO_ARCHIVED_CREATED`: A user requested a model version be archived."""
 
     description: Optional[str] = None
@@ -498,9 +498,9 @@ class CreateRegistryWebhook:
     status: Optional[RegistryWebhookStatus] = None
     """Enable or disable triggering the webhook, or put the webhook into test mode. The default is
     `ACTIVE`: * `ACTIVE`: Webhook is triggered when an associated event happens.
-    
+
     * `DISABLED`: Webhook is not triggered.
-    
+
     * `TEST_MODE`: Webhook can be triggered through the test endpoint, but is not triggered on a
     real event."""
 
@@ -516,7 +516,7 @@ class CreateRegistryWebhook:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateRegistryWebhook:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateRegistryWebhook:
         """Deserializes the CreateRegistryWebhook from a dictionary."""
         return cls(description=d.get('description', None),
                    events=_repeated_enum(d, 'events', RegistryWebhookEvent),
@@ -551,7 +551,7 @@ class CreateRun:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateRun:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateRun:
         """Deserializes the CreateRun from a dictionary."""
         return cls(experiment_id=d.get('experiment_id', None),
                    start_time=d.get('start_time', None),
@@ -571,7 +571,7 @@ class CreateRunResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateRunResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateRunResponse:
         """Deserializes the CreateRunResponse from a dictionary."""
         return cls(run=_from_dict(d, 'run', Run))
 
@@ -586,13 +586,13 @@ class CreateTransitionRequest:
 
     stage: Stage
     """Target stage of the transition. Valid values are:
-    
+
     * `None`: The initial stage of a model version.
-    
+
     * `Staging`: Staging or pre-production stage.
-    
+
     * `Production`: Production stage.
-    
+
     * `Archived`: Archived stage."""
 
     comment: Optional[str] = None
@@ -608,7 +608,7 @@ class CreateTransitionRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateTransitionRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateTransitionRequest:
         """Deserializes the CreateTransitionRequest from a dictionary."""
         return cls(comment=d.get('comment', None),
                    name=d.get('name', None),
@@ -628,7 +628,7 @@ class CreateTransitionRequestResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateTransitionRequestResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateTransitionRequestResponse:
         """Deserializes the CreateTransitionRequestResponse from a dictionary."""
         return cls(request=_from_dict(d, 'request', TransitionRequest))
 
@@ -644,7 +644,7 @@ class CreateWebhookResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateWebhookResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateWebhookResponse:
         """Deserializes the CreateWebhookResponse from a dictionary."""
         return cls(webhook=_from_dict(d, 'webhook', RegistryWebhook))
 
@@ -685,7 +685,7 @@ class Dataset:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Dataset:
+    def from_dict(cls, d: Dict[str, Any]) -> Dataset:
         """Deserializes the Dataset from a dictionary."""
         return cls(digest=d.get('digest', None),
                    name=d.get('name', None),
@@ -711,7 +711,7 @@ class DatasetInput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DatasetInput:
+    def from_dict(cls, d: Dict[str, Any]) -> DatasetInput:
         """Deserializes the DatasetInput from a dictionary."""
         return cls(dataset=_from_dict(d, 'dataset', Dataset), tags=_repeated_dict(d, 'tags', InputTag))
 
@@ -725,7 +725,7 @@ class DeleteCommentResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteCommentResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteCommentResponse:
         """Deserializes the DeleteCommentResponse from a dictionary."""
         return cls()
 
@@ -742,7 +742,7 @@ class DeleteExperiment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteExperiment:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteExperiment:
         """Deserializes the DeleteExperiment from a dictionary."""
         return cls(experiment_id=d.get('experiment_id', None))
 
@@ -756,7 +756,7 @@ class DeleteExperimentResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteExperimentResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteExperimentResponse:
         """Deserializes the DeleteExperimentResponse from a dictionary."""
         return cls()
 
@@ -770,7 +770,7 @@ class DeleteModelResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteModelResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteModelResponse:
         """Deserializes the DeleteModelResponse from a dictionary."""
         return cls()
 
@@ -784,7 +784,7 @@ class DeleteModelTagResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteModelTagResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteModelTagResponse:
         """Deserializes the DeleteModelTagResponse from a dictionary."""
         return cls()
 
@@ -798,7 +798,7 @@ class DeleteModelVersionResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteModelVersionResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteModelVersionResponse:
         """Deserializes the DeleteModelVersionResponse from a dictionary."""
         return cls()
 
@@ -812,7 +812,7 @@ class DeleteModelVersionTagResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteModelVersionTagResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteModelVersionTagResponse:
         """Deserializes the DeleteModelVersionTagResponse from a dictionary."""
         return cls()
 
@@ -829,7 +829,7 @@ class DeleteRun:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteRun:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteRun:
         """Deserializes the DeleteRun from a dictionary."""
         return cls(run_id=d.get('run_id', None))
 
@@ -843,7 +843,7 @@ class DeleteRunResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteRunResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteRunResponse:
         """Deserializes the DeleteRunResponse from a dictionary."""
         return cls()
 
@@ -870,7 +870,7 @@ class DeleteRuns:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteRuns:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteRuns:
         """Deserializes the DeleteRuns from a dictionary."""
         return cls(experiment_id=d.get('experiment_id', None),
                    max_runs=d.get('max_runs', None),
@@ -889,7 +889,7 @@ class DeleteRunsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteRunsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteRunsResponse:
         """Deserializes the DeleteRunsResponse from a dictionary."""
         return cls(runs_deleted=d.get('runs_deleted', None))
 
@@ -910,7 +910,7 @@ class DeleteTag:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteTag:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteTag:
         """Deserializes the DeleteTag from a dictionary."""
         return cls(key=d.get('key', None), run_id=d.get('run_id', None))
 
@@ -924,7 +924,7 @@ class DeleteTagResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteTagResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteTagResponse:
         """Deserializes the DeleteTagResponse from a dictionary."""
         return cls()
 
@@ -938,7 +938,7 @@ class DeleteTransitionRequestResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteTransitionRequestResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteTransitionRequestResponse:
         """Deserializes the DeleteTransitionRequestResponse from a dictionary."""
         return cls()
 
@@ -960,7 +960,7 @@ class DeleteWebhookResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteWebhookResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteWebhookResponse:
         """Deserializes the DeleteWebhookResponse from a dictionary."""
         return cls()
 
@@ -1002,7 +1002,7 @@ class Experiment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Experiment:
+    def from_dict(cls, d: Dict[str, Any]) -> Experiment:
         """Deserializes the Experiment from a dictionary."""
         return cls(artifact_location=d.get('artifact_location', None),
                    creation_time=d.get('creation_time', None),
@@ -1038,7 +1038,7 @@ class ExperimentAccessControlRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ExperimentAccessControlRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> ExperimentAccessControlRequest:
         """Deserializes the ExperimentAccessControlRequest from a dictionary."""
         return cls(group_name=d.get('group_name', None),
                    permission_level=_enum(d, 'permission_level', ExperimentPermissionLevel),
@@ -1075,7 +1075,7 @@ class ExperimentAccessControlResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ExperimentAccessControlResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ExperimentAccessControlResponse:
         """Deserializes the ExperimentAccessControlResponse from a dictionary."""
         return cls(all_permissions=_repeated_dict(d, 'all_permissions', ExperimentPermission),
                    display_name=d.get('display_name', None),
@@ -1102,7 +1102,7 @@ class ExperimentPermission:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ExperimentPermission:
+    def from_dict(cls, d: Dict[str, Any]) -> ExperimentPermission:
         """Deserializes the ExperimentPermission from a dictionary."""
         return cls(inherited=d.get('inherited', None),
                    inherited_from_object=d.get('inherited_from_object', None),
@@ -1135,7 +1135,7 @@ class ExperimentPermissions:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ExperimentPermissions:
+    def from_dict(cls, d: Dict[str, Any]) -> ExperimentPermissions:
         """Deserializes the ExperimentPermissions from a dictionary."""
         return cls(access_control_list=_repeated_dict(d, 'access_control_list',
                                                       ExperimentAccessControlResponse),
@@ -1158,7 +1158,7 @@ class ExperimentPermissionsDescription:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ExperimentPermissionsDescription:
+    def from_dict(cls, d: Dict[str, Any]) -> ExperimentPermissionsDescription:
         """Deserializes the ExperimentPermissionsDescription from a dictionary."""
         return cls(description=d.get('description', None),
                    permission_level=_enum(d, 'permission_level', ExperimentPermissionLevel))
@@ -1180,7 +1180,7 @@ class ExperimentPermissionsRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ExperimentPermissionsRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> ExperimentPermissionsRequest:
         """Deserializes the ExperimentPermissionsRequest from a dictionary."""
         return cls(access_control_list=_repeated_dict(d, 'access_control_list',
                                                       ExperimentAccessControlRequest),
@@ -1203,7 +1203,7 @@ class ExperimentTag:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ExperimentTag:
+    def from_dict(cls, d: Dict[str, Any]) -> ExperimentTag:
         """Deserializes the ExperimentTag from a dictionary."""
         return cls(key=d.get('key', None), value=d.get('value', None))
 
@@ -1228,7 +1228,7 @@ class FileInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> FileInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> FileInfo:
         """Deserializes the FileInfo from a dictionary."""
         return cls(file_size=d.get('file_size', None), is_dir=d.get('is_dir', None), path=d.get('path', None))
 
@@ -1245,7 +1245,7 @@ class GetExperimentPermissionLevelsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetExperimentPermissionLevelsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetExperimentPermissionLevelsResponse:
         """Deserializes the GetExperimentPermissionLevelsResponse from a dictionary."""
         return cls(permission_levels=_repeated_dict(d, 'permission_levels', ExperimentPermissionsDescription))
 
@@ -1262,7 +1262,7 @@ class GetExperimentResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetExperimentResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetExperimentResponse:
         """Deserializes the GetExperimentResponse from a dictionary."""
         return cls(experiment=_from_dict(d, 'experiment', Experiment))
 
@@ -1283,7 +1283,7 @@ class GetLatestVersionsRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetLatestVersionsRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> GetLatestVersionsRequest:
         """Deserializes the GetLatestVersionsRequest from a dictionary."""
         return cls(name=d.get('name', None), stages=d.get('stages', None))
 
@@ -1301,7 +1301,7 @@ class GetLatestVersionsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetLatestVersionsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetLatestVersionsResponse:
         """Deserializes the GetLatestVersionsResponse from a dictionary."""
         return cls(model_versions=_repeated_dict(d, 'model_versions', ModelVersion))
 
@@ -1322,7 +1322,7 @@ class GetMetricHistoryResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetMetricHistoryResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetMetricHistoryResponse:
         """Deserializes the GetMetricHistoryResponse from a dictionary."""
         return cls(metrics=_repeated_dict(d, 'metrics', Metric),
                    next_page_token=d.get('next_page_token', None))
@@ -1340,7 +1340,7 @@ class GetModelResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetModelResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetModelResponse:
         """Deserializes the GetModelResponse from a dictionary."""
         return cls(registered_model_databricks=_from_dict(d, 'registered_model_databricks', ModelDatabricks))
 
@@ -1357,7 +1357,7 @@ class GetModelVersionDownloadUriResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetModelVersionDownloadUriResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetModelVersionDownloadUriResponse:
         """Deserializes the GetModelVersionDownloadUriResponse from a dictionary."""
         return cls(artifact_uri=d.get('artifact_uri', None))
 
@@ -1373,7 +1373,7 @@ class GetModelVersionResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetModelVersionResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetModelVersionResponse:
         """Deserializes the GetModelVersionResponse from a dictionary."""
         return cls(model_version=_from_dict(d, 'model_version', ModelVersion))
 
@@ -1390,7 +1390,7 @@ class GetRegisteredModelPermissionLevelsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetRegisteredModelPermissionLevelsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetRegisteredModelPermissionLevelsResponse:
         """Deserializes the GetRegisteredModelPermissionLevelsResponse from a dictionary."""
         return cls(
             permission_levels=_repeated_dict(d, 'permission_levels', RegisteredModelPermissionsDescription))
@@ -1408,7 +1408,7 @@ class GetRunResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetRunResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetRunResponse:
         """Deserializes the GetRunResponse from a dictionary."""
         return cls(run=_from_dict(d, 'run', Run))
 
@@ -1445,7 +1445,7 @@ class HttpUrlSpec:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> HttpUrlSpec:
+    def from_dict(cls, d: Dict[str, Any]) -> HttpUrlSpec:
         """Deserializes the HttpUrlSpec from a dictionary."""
         return cls(authorization=d.get('authorization', None),
                    enable_ssl_verification=d.get('enable_ssl_verification', None),
@@ -1474,7 +1474,7 @@ class HttpUrlSpecWithoutSecret:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> HttpUrlSpecWithoutSecret:
+    def from_dict(cls, d: Dict[str, Any]) -> HttpUrlSpecWithoutSecret:
         """Deserializes the HttpUrlSpecWithoutSecret from a dictionary."""
         return cls(enable_ssl_verification=d.get('enable_ssl_verification', None), url=d.get('url', None))
 
@@ -1495,7 +1495,7 @@ class InputTag:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> InputTag:
+    def from_dict(cls, d: Dict[str, Any]) -> InputTag:
         """Deserializes the InputTag from a dictionary."""
         return cls(key=d.get('key', None), value=d.get('value', None))
 
@@ -1521,7 +1521,7 @@ class JobSpec:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> JobSpec:
+    def from_dict(cls, d: Dict[str, Any]) -> JobSpec:
         """Deserializes the JobSpec from a dictionary."""
         return cls(access_token=d.get('access_token', None),
                    job_id=d.get('job_id', None),
@@ -1546,7 +1546,7 @@ class JobSpecWithoutSecret:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> JobSpecWithoutSecret:
+    def from_dict(cls, d: Dict[str, Any]) -> JobSpecWithoutSecret:
         """Deserializes the JobSpecWithoutSecret from a dictionary."""
         return cls(job_id=d.get('job_id', None), workspace_url=d.get('workspace_url', None))
 
@@ -1571,7 +1571,7 @@ class ListArtifactsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListArtifactsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListArtifactsResponse:
         """Deserializes the ListArtifactsResponse from a dictionary."""
         return cls(files=_repeated_dict(d, 'files', FileInfo),
                    next_page_token=d.get('next_page_token', None),
@@ -1595,7 +1595,7 @@ class ListExperimentsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListExperimentsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListExperimentsResponse:
         """Deserializes the ListExperimentsResponse from a dictionary."""
         return cls(experiments=_repeated_dict(d, 'experiments', Experiment),
                    next_page_token=d.get('next_page_token', None))
@@ -1616,7 +1616,7 @@ class ListModelsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListModelsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListModelsResponse:
         """Deserializes the ListModelsResponse from a dictionary."""
         return cls(next_page_token=d.get('next_page_token', None),
                    registered_models=_repeated_dict(d, 'registered_models', Model))
@@ -1638,7 +1638,7 @@ class ListRegistryWebhooks:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListRegistryWebhooks:
+    def from_dict(cls, d: Dict[str, Any]) -> ListRegistryWebhooks:
         """Deserializes the ListRegistryWebhooks from a dictionary."""
         return cls(next_page_token=d.get('next_page_token', None),
                    webhooks=_repeated_dict(d, 'webhooks', RegistryWebhook))
@@ -1656,7 +1656,7 @@ class ListTransitionRequestsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListTransitionRequestsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListTransitionRequestsResponse:
         """Deserializes the ListTransitionRequestsResponse from a dictionary."""
         return cls(requests=_repeated_dict(d, 'requests', Activity))
 
@@ -1688,7 +1688,7 @@ class LogBatch:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> LogBatch:
+    def from_dict(cls, d: Dict[str, Any]) -> LogBatch:
         """Deserializes the LogBatch from a dictionary."""
         return cls(metrics=_repeated_dict(d, 'metrics', Metric),
                    params=_repeated_dict(d, 'params', Param),
@@ -1705,7 +1705,7 @@ class LogBatchResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> LogBatchResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> LogBatchResponse:
         """Deserializes the LogBatchResponse from a dictionary."""
         return cls()
 
@@ -1726,7 +1726,7 @@ class LogInputs:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> LogInputs:
+    def from_dict(cls, d: Dict[str, Any]) -> LogInputs:
         """Deserializes the LogInputs from a dictionary."""
         return cls(datasets=_repeated_dict(d, 'datasets', DatasetInput), run_id=d.get('run_id', None))
 
@@ -1740,7 +1740,7 @@ class LogInputsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> LogInputsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> LogInputsResponse:
         """Deserializes the LogInputsResponse from a dictionary."""
         return cls()
 
@@ -1778,7 +1778,7 @@ class LogMetric:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> LogMetric:
+    def from_dict(cls, d: Dict[str, Any]) -> LogMetric:
         """Deserializes the LogMetric from a dictionary."""
         return cls(key=d.get('key', None),
                    run_id=d.get('run_id', None),
@@ -1797,7 +1797,7 @@ class LogMetricResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> LogMetricResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> LogMetricResponse:
         """Deserializes the LogMetricResponse from a dictionary."""
         return cls()
 
@@ -1818,7 +1818,7 @@ class LogModel:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> LogModel:
+    def from_dict(cls, d: Dict[str, Any]) -> LogModel:
         """Deserializes the LogModel from a dictionary."""
         return cls(model_json=d.get('model_json', None), run_id=d.get('run_id', None))
 
@@ -1832,7 +1832,7 @@ class LogModelResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> LogModelResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> LogModelResponse:
         """Deserializes the LogModelResponse from a dictionary."""
         return cls()
 
@@ -1862,7 +1862,7 @@ class LogParam:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> LogParam:
+    def from_dict(cls, d: Dict[str, Any]) -> LogParam:
         """Deserializes the LogParam from a dictionary."""
         return cls(key=d.get('key', None),
                    run_id=d.get('run_id', None),
@@ -1879,7 +1879,7 @@ class LogParamResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> LogParamResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> LogParamResponse:
         """Deserializes the LogParamResponse from a dictionary."""
         return cls()
 
@@ -1908,7 +1908,7 @@ class Metric:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Metric:
+    def from_dict(cls, d: Dict[str, Any]) -> Metric:
         """Deserializes the Metric from a dictionary."""
         return cls(key=d.get('key', None),
                    step=d.get('step', None),
@@ -1954,7 +1954,7 @@ class Model:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Model:
+    def from_dict(cls, d: Dict[str, Any]) -> Model:
         """Deserializes the Model from a dictionary."""
         return cls(creation_timestamp=d.get('creation_timestamp', None),
                    description=d.get('description', None),
@@ -2011,7 +2011,7 @@ class ModelDatabricks:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ModelDatabricks:
+    def from_dict(cls, d: Dict[str, Any]) -> ModelDatabricks:
         """Deserializes the ModelDatabricks from a dictionary."""
         return cls(creation_timestamp=d.get('creation_timestamp', None),
                    description=d.get('description', None),
@@ -2040,7 +2040,7 @@ class ModelTag:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ModelTag:
+    def from_dict(cls, d: Dict[str, Any]) -> ModelTag:
         """Deserializes the ModelTag from a dictionary."""
         return cls(key=d.get('key', None), value=d.get('value', None))
 
@@ -2107,7 +2107,7 @@ class ModelVersion:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ModelVersion:
+    def from_dict(cls, d: Dict[str, Any]) -> ModelVersion:
         """Deserializes the ModelVersion from a dictionary."""
         return cls(creation_timestamp=d.get('creation_timestamp', None),
                    current_stage=d.get('current_stage', None),
@@ -2131,13 +2131,13 @@ class ModelVersionDatabricks:
 
     current_stage: Optional[Stage] = None
     """Stage of the model version. Valid values are:
-    
+
     * `None`: The initial stage of a model version.
-    
+
     * `Staging`: Staging or pre-production stage.
-    
+
     * `Production`: Production stage.
-    
+
     * `Archived`: Archived stage."""
 
     description: Optional[str] = None
@@ -2168,9 +2168,9 @@ class ModelVersionDatabricks:
     status: Optional[Status] = None
     """The status of the model version. Valid values are: * `PENDING_REGISTRATION`: Request to register
     a new model version is pending as server performs background tasks.
-    
+
     * `FAILED_REGISTRATION`: Request to register a new model version has failed.
-    
+
     * `READY`: Model version is ready for use."""
 
     status_message: Optional[str] = None
@@ -2206,7 +2206,7 @@ class ModelVersionDatabricks:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ModelVersionDatabricks:
+    def from_dict(cls, d: Dict[str, Any]) -> ModelVersionDatabricks:
         """Deserializes the ModelVersionDatabricks from a dictionary."""
         return cls(creation_timestamp=d.get('creation_timestamp', None),
                    current_stage=_enum(d, 'current_stage', Stage),
@@ -2248,7 +2248,7 @@ class ModelVersionTag:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ModelVersionTag:
+    def from_dict(cls, d: Dict[str, Any]) -> ModelVersionTag:
         """Deserializes the ModelVersionTag from a dictionary."""
         return cls(key=d.get('key', None), value=d.get('value', None))
 
@@ -2269,7 +2269,7 @@ class Param:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Param:
+    def from_dict(cls, d: Dict[str, Any]) -> Param:
         """Deserializes the Param from a dictionary."""
         return cls(key=d.get('key', None), value=d.get('value', None))
 
@@ -2310,7 +2310,7 @@ class RegisteredModelAccessControlRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RegisteredModelAccessControlRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> RegisteredModelAccessControlRequest:
         """Deserializes the RegisteredModelAccessControlRequest from a dictionary."""
         return cls(group_name=d.get('group_name', None),
                    permission_level=_enum(d, 'permission_level', RegisteredModelPermissionLevel),
@@ -2347,7 +2347,7 @@ class RegisteredModelAccessControlResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RegisteredModelAccessControlResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> RegisteredModelAccessControlResponse:
         """Deserializes the RegisteredModelAccessControlResponse from a dictionary."""
         return cls(all_permissions=_repeated_dict(d, 'all_permissions', RegisteredModelPermission),
                    display_name=d.get('display_name', None),
@@ -2374,7 +2374,7 @@ class RegisteredModelPermission:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RegisteredModelPermission:
+    def from_dict(cls, d: Dict[str, Any]) -> RegisteredModelPermission:
         """Deserializes the RegisteredModelPermission from a dictionary."""
         return cls(inherited=d.get('inherited', None),
                    inherited_from_object=d.get('inherited_from_object', None),
@@ -2409,7 +2409,7 @@ class RegisteredModelPermissions:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RegisteredModelPermissions:
+    def from_dict(cls, d: Dict[str, Any]) -> RegisteredModelPermissions:
         """Deserializes the RegisteredModelPermissions from a dictionary."""
         return cls(access_control_list=_repeated_dict(d, 'access_control_list',
                                                       RegisteredModelAccessControlResponse),
@@ -2432,7 +2432,7 @@ class RegisteredModelPermissionsDescription:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RegisteredModelPermissionsDescription:
+    def from_dict(cls, d: Dict[str, Any]) -> RegisteredModelPermissionsDescription:
         """Deserializes the RegisteredModelPermissionsDescription from a dictionary."""
         return cls(description=d.get('description', None),
                    permission_level=_enum(d, 'permission_level', RegisteredModelPermissionLevel))
@@ -2454,7 +2454,7 @@ class RegisteredModelPermissionsRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RegisteredModelPermissionsRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> RegisteredModelPermissionsRequest:
         """Deserializes the RegisteredModelPermissionsRequest from a dictionary."""
         return cls(access_control_list=_repeated_dict(d, 'access_control_list',
                                                       RegisteredModelAccessControlRequest),
@@ -2472,31 +2472,31 @@ class RegistryWebhook:
     events: Optional[List[RegistryWebhookEvent]] = None
     """Events that can trigger a registry webhook: * `MODEL_VERSION_CREATED`: A new model version was
     created for the associated model.
-    
+
     * `MODEL_VERSION_TRANSITIONED_STAGE`: A model version’s stage was changed.
-    
+
     * `TRANSITION_REQUEST_CREATED`: A user requested a model version’s stage be transitioned.
-    
+
     * `COMMENT_CREATED`: A user wrote a comment on a registered model.
-    
+
     * `REGISTERED_MODEL_CREATED`: A new registered model was created. This event type can only be
     specified for a registry-wide webhook, which can be created by not specifying a model name in
     the create request.
-    
+
     * `MODEL_VERSION_TAG_SET`: A user set a tag on the model version.
-    
+
     * `MODEL_VERSION_TRANSITIONED_TO_STAGING`: A model version was transitioned to staging.
-    
+
     * `MODEL_VERSION_TRANSITIONED_TO_PRODUCTION`: A model version was transitioned to production.
-    
+
     * `MODEL_VERSION_TRANSITIONED_TO_ARCHIVED`: A model version was archived.
-    
+
     * `TRANSITION_REQUEST_TO_STAGING_CREATED`: A user requested a model version be transitioned to
     staging.
-    
+
     * `TRANSITION_REQUEST_TO_PRODUCTION_CREATED`: A user requested a model version be transitioned
     to production.
-    
+
     * `TRANSITION_REQUEST_TO_ARCHIVED_CREATED`: A user requested a model version be archived."""
 
     http_url_spec: Optional[HttpUrlSpecWithoutSecret] = None
@@ -2515,9 +2515,9 @@ class RegistryWebhook:
     status: Optional[RegistryWebhookStatus] = None
     """Enable or disable triggering the webhook, or put the webhook into test mode. The default is
     `ACTIVE`: * `ACTIVE`: Webhook is triggered when an associated event happens.
-    
+
     * `DISABLED`: Webhook is not triggered.
-    
+
     * `TEST_MODE`: Webhook can be triggered through the test endpoint, but is not triggered on a
     real event."""
 
@@ -2537,7 +2537,7 @@ class RegistryWebhook:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RegistryWebhook:
+    def from_dict(cls, d: Dict[str, Any]) -> RegistryWebhook:
         """Deserializes the RegistryWebhook from a dictionary."""
         return cls(creation_timestamp=d.get('creation_timestamp', None),
                    description=d.get('description', None),
@@ -2569,9 +2569,9 @@ class RegistryWebhookEvent(Enum):
 class RegistryWebhookStatus(Enum):
     """Enable or disable triggering the webhook, or put the webhook into test mode. The default is
     `ACTIVE`: * `ACTIVE`: Webhook is triggered when an associated event happens.
-    
+
     * `DISABLED`: Webhook is not triggered.
-    
+
     * `TEST_MODE`: Webhook can be triggered through the test endpoint, but is not triggered on a
     real event."""
 
@@ -2590,13 +2590,13 @@ class RejectTransitionRequest:
 
     stage: Stage
     """Target stage of the transition. Valid values are:
-    
+
     * `None`: The initial stage of a model version.
-    
+
     * `Staging`: Staging or pre-production stage.
-    
+
     * `Production`: Production stage.
-    
+
     * `Archived`: Archived stage."""
 
     comment: Optional[str] = None
@@ -2612,7 +2612,7 @@ class RejectTransitionRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RejectTransitionRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> RejectTransitionRequest:
         """Deserializes the RejectTransitionRequest from a dictionary."""
         return cls(comment=d.get('comment', None),
                    name=d.get('name', None),
@@ -2632,7 +2632,7 @@ class RejectTransitionRequestResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RejectTransitionRequestResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> RejectTransitionRequestResponse:
         """Deserializes the RejectTransitionRequestResponse from a dictionary."""
         return cls(activity=_from_dict(d, 'activity', Activity))
 
@@ -2653,7 +2653,7 @@ class RenameModelRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RenameModelRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> RenameModelRequest:
         """Deserializes the RenameModelRequest from a dictionary."""
         return cls(name=d.get('name', None), new_name=d.get('new_name', None))
 
@@ -2669,7 +2669,7 @@ class RenameModelResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RenameModelResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> RenameModelResponse:
         """Deserializes the RenameModelResponse from a dictionary."""
         return cls(registered_model=_from_dict(d, 'registered_model', Model))
 
@@ -2686,7 +2686,7 @@ class RestoreExperiment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RestoreExperiment:
+    def from_dict(cls, d: Dict[str, Any]) -> RestoreExperiment:
         """Deserializes the RestoreExperiment from a dictionary."""
         return cls(experiment_id=d.get('experiment_id', None))
 
@@ -2700,7 +2700,7 @@ class RestoreExperimentResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RestoreExperimentResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> RestoreExperimentResponse:
         """Deserializes the RestoreExperimentResponse from a dictionary."""
         return cls()
 
@@ -2717,7 +2717,7 @@ class RestoreRun:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RestoreRun:
+    def from_dict(cls, d: Dict[str, Any]) -> RestoreRun:
         """Deserializes the RestoreRun from a dictionary."""
         return cls(run_id=d.get('run_id', None))
 
@@ -2731,7 +2731,7 @@ class RestoreRunResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RestoreRunResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> RestoreRunResponse:
         """Deserializes the RestoreRunResponse from a dictionary."""
         return cls()
 
@@ -2758,7 +2758,7 @@ class RestoreRuns:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RestoreRuns:
+    def from_dict(cls, d: Dict[str, Any]) -> RestoreRuns:
         """Deserializes the RestoreRuns from a dictionary."""
         return cls(experiment_id=d.get('experiment_id', None),
                    max_runs=d.get('max_runs', None),
@@ -2777,7 +2777,7 @@ class RestoreRunsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RestoreRunsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> RestoreRunsResponse:
         """Deserializes the RestoreRunsResponse from a dictionary."""
         return cls(runs_restored=d.get('runs_restored', None))
 
@@ -2802,7 +2802,7 @@ class Run:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Run:
+    def from_dict(cls, d: Dict[str, Any]) -> Run:
         """Deserializes the Run from a dictionary."""
         return cls(data=_from_dict(d, 'data', RunData),
                    info=_from_dict(d, 'info', RunInfo),
@@ -2829,7 +2829,7 @@ class RunData:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RunData:
+    def from_dict(cls, d: Dict[str, Any]) -> RunData:
         """Deserializes the RunData from a dictionary."""
         return cls(metrics=_repeated_dict(d, 'metrics', Metric),
                    params=_repeated_dict(d, 'params', Param),
@@ -2884,7 +2884,7 @@ class RunInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RunInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> RunInfo:
         """Deserializes the RunInfo from a dictionary."""
         return cls(artifact_uri=d.get('artifact_uri', None),
                    end_time=d.get('end_time', None),
@@ -2919,7 +2919,7 @@ class RunInputs:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RunInputs:
+    def from_dict(cls, d: Dict[str, Any]) -> RunInputs:
         """Deserializes the RunInputs from a dictionary."""
         return cls(dataset_inputs=_repeated_dict(d, 'dataset_inputs', DatasetInput))
 
@@ -2940,7 +2940,7 @@ class RunTag:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RunTag:
+    def from_dict(cls, d: Dict[str, Any]) -> RunTag:
         """Deserializes the RunTag from a dictionary."""
         return cls(key=d.get('key', None), value=d.get('value', None))
 
@@ -2976,7 +2976,7 @@ class SearchExperiments:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SearchExperiments:
+    def from_dict(cls, d: Dict[str, Any]) -> SearchExperiments:
         """Deserializes the SearchExperiments from a dictionary."""
         return cls(filter=d.get('filter', None),
                    max_results=d.get('max_results', None),
@@ -3002,7 +3002,7 @@ class SearchExperimentsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SearchExperimentsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> SearchExperimentsResponse:
         """Deserializes the SearchExperimentsResponse from a dictionary."""
         return cls(experiments=_repeated_dict(d, 'experiments', Experiment),
                    next_page_token=d.get('next_page_token', None))
@@ -3033,7 +3033,7 @@ class SearchModelVersionsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SearchModelVersionsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> SearchModelVersionsResponse:
         """Deserializes the SearchModelVersionsResponse from a dictionary."""
         return cls(model_versions=_repeated_dict(d, 'model_versions', ModelVersion),
                    next_page_token=d.get('next_page_token', None))
@@ -3055,7 +3055,7 @@ class SearchModelsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SearchModelsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> SearchModelsResponse:
         """Deserializes the SearchModelsResponse from a dictionary."""
         return cls(next_page_token=d.get('next_page_token', None),
                    registered_models=_repeated_dict(d, 'registered_models', Model))
@@ -3070,12 +3070,12 @@ class SearchRuns:
     """A filter expression over params, metrics, and tags, that allows returning a subset of runs. The
     syntax is a subset of SQL that supports ANDing together binary operations between a param,
     metric, or tag and a constant.
-    
+
     Example: `metrics.rmse < 1 and params.model_class = 'LogisticRegression'`
-    
+
     You can select columns with special characters (hyphen, space, period, etc.) by using double
     quotes: `metrics."model class" = 'LinearRegression' and tags."user-name" = 'Tomas'`
-    
+
     Supported operators are `=`, `!=`, `>`, `>=`, `<`, and `<=`."""
 
     max_results: Optional[int] = None
@@ -3106,7 +3106,7 @@ class SearchRuns:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SearchRuns:
+    def from_dict(cls, d: Dict[str, Any]) -> SearchRuns:
         """Deserializes the SearchRuns from a dictionary."""
         return cls(experiment_ids=d.get('experiment_ids', None),
                    filter=d.get('filter', None),
@@ -3132,7 +3132,7 @@ class SearchRunsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SearchRunsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> SearchRunsResponse:
         """Deserializes the SearchRunsResponse from a dictionary."""
         return cls(next_page_token=d.get('next_page_token', None), runs=_repeated_dict(d, 'runs', Run))
 
@@ -3167,7 +3167,7 @@ class SetExperimentTag:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SetExperimentTag:
+    def from_dict(cls, d: Dict[str, Any]) -> SetExperimentTag:
         """Deserializes the SetExperimentTag from a dictionary."""
         return cls(experiment_id=d.get('experiment_id', None),
                    key=d.get('key', None),
@@ -3183,7 +3183,7 @@ class SetExperimentTagResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SetExperimentTagResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> SetExperimentTagResponse:
         """Deserializes the SetExperimentTagResponse from a dictionary."""
         return cls()
 
@@ -3211,7 +3211,7 @@ class SetModelTagRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SetModelTagRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> SetModelTagRequest:
         """Deserializes the SetModelTagRequest from a dictionary."""
         return cls(key=d.get('key', None), name=d.get('name', None), value=d.get('value', None))
 
@@ -3225,7 +3225,7 @@ class SetModelTagResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SetModelTagResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> SetModelTagResponse:
         """Deserializes the SetModelTagResponse from a dictionary."""
         return cls()
 
@@ -3257,7 +3257,7 @@ class SetModelVersionTagRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SetModelVersionTagRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> SetModelVersionTagRequest:
         """Deserializes the SetModelVersionTagRequest from a dictionary."""
         return cls(key=d.get('key', None),
                    name=d.get('name', None),
@@ -3274,7 +3274,7 @@ class SetModelVersionTagResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SetModelVersionTagResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> SetModelVersionTagResponse:
         """Deserializes the SetModelVersionTagResponse from a dictionary."""
         return cls()
 
@@ -3306,7 +3306,7 @@ class SetTag:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SetTag:
+    def from_dict(cls, d: Dict[str, Any]) -> SetTag:
         """Deserializes the SetTag from a dictionary."""
         return cls(key=d.get('key', None),
                    run_id=d.get('run_id', None),
@@ -3323,20 +3323,20 @@ class SetTagResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SetTagResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> SetTagResponse:
         """Deserializes the SetTagResponse from a dictionary."""
         return cls()
 
 
 class Stage(Enum):
     """Stage of the model version. Valid values are:
-    
+
     * `None`: The initial stage of a model version.
-    
+
     * `Staging`: Staging or pre-production stage.
-    
+
     * `Production`: Production stage.
-    
+
     * `Archived`: Archived stage."""
 
     ARCHIVED = 'Archived'
@@ -3348,9 +3348,9 @@ class Stage(Enum):
 class Status(Enum):
     """The status of the model version. Valid values are: * `PENDING_REGISTRATION`: Request to register
     a new model version is pending as server performs background tasks.
-    
+
     * `FAILED_REGISTRATION`: Request to register a new model version has failed.
-    
+
     * `READY`: Model version is ready for use."""
 
     FAILED_REGISTRATION = 'FAILED_REGISTRATION'
@@ -3376,7 +3376,7 @@ class TestRegistryWebhook:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TestRegistryWebhook:
+    def from_dict(cls, d: Dict[str, Any]) -> TestRegistryWebhook:
         """Deserializes the TestRegistryWebhook from a dictionary."""
         return cls(body=d.get('body', None), status_code=d.get('status_code', None))
 
@@ -3398,7 +3398,7 @@ class TestRegistryWebhookRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TestRegistryWebhookRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> TestRegistryWebhookRequest:
         """Deserializes the TestRegistryWebhookRequest from a dictionary."""
         return cls(event=_enum(d, 'event', RegistryWebhookEvent), id=d.get('id', None))
 
@@ -3415,7 +3415,7 @@ class TestRegistryWebhookResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TestRegistryWebhookResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> TestRegistryWebhookResponse:
         """Deserializes the TestRegistryWebhookResponse from a dictionary."""
         return cls(webhook=_from_dict(d, 'webhook', TestRegistryWebhook))
 
@@ -3430,13 +3430,13 @@ class TransitionModelVersionStageDatabricks:
 
     stage: Stage
     """Target stage of the transition. Valid values are:
-    
+
     * `None`: The initial stage of a model version.
-    
+
     * `Staging`: Staging or pre-production stage.
-    
+
     * `Production`: Production stage.
-    
+
     * `Archived`: Archived stage."""
 
     archive_existing_versions: bool
@@ -3457,7 +3457,7 @@ class TransitionModelVersionStageDatabricks:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TransitionModelVersionStageDatabricks:
+    def from_dict(cls, d: Dict[str, Any]) -> TransitionModelVersionStageDatabricks:
         """Deserializes the TransitionModelVersionStageDatabricks from a dictionary."""
         return cls(archive_existing_versions=d.get('archive_existing_versions', None),
                    comment=d.get('comment', None),
@@ -3481,13 +3481,13 @@ class TransitionRequest:
 
     to_stage: Optional[Stage] = None
     """Target stage of the transition (if the activity is stage transition related). Valid values are:
-    
+
     * `None`: The initial stage of a model version.
-    
+
     * `Staging`: Staging or pre-production stage.
-    
+
     * `Production`: Production stage.
-    
+
     * `Archived`: Archived stage."""
 
     user_id: Optional[str] = None
@@ -3504,7 +3504,7 @@ class TransitionRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TransitionRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> TransitionRequest:
         """Deserializes the TransitionRequest from a dictionary."""
         return cls(available_actions=_repeated_enum(d, 'available_actions', ActivityAction),
                    comment=d.get('comment', None),
@@ -3524,7 +3524,7 @@ class TransitionStageResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TransitionStageResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> TransitionStageResponse:
         """Deserializes the TransitionStageResponse from a dictionary."""
         return cls(model_version=_from_dict(d, 'model_version', ModelVersionDatabricks))
 
@@ -3545,7 +3545,7 @@ class UpdateComment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateComment:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateComment:
         """Deserializes the UpdateComment from a dictionary."""
         return cls(comment=d.get('comment', None), id=d.get('id', None))
 
@@ -3562,7 +3562,7 @@ class UpdateCommentResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateCommentResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateCommentResponse:
         """Deserializes the UpdateCommentResponse from a dictionary."""
         return cls(comment=_from_dict(d, 'comment', CommentObject))
 
@@ -3583,7 +3583,7 @@ class UpdateExperiment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateExperiment:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateExperiment:
         """Deserializes the UpdateExperiment from a dictionary."""
         return cls(experiment_id=d.get('experiment_id', None), new_name=d.get('new_name', None))
 
@@ -3597,7 +3597,7 @@ class UpdateExperimentResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateExperimentResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateExperimentResponse:
         """Deserializes the UpdateExperimentResponse from a dictionary."""
         return cls()
 
@@ -3618,7 +3618,7 @@ class UpdateModelRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateModelRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateModelRequest:
         """Deserializes the UpdateModelRequest from a dictionary."""
         return cls(description=d.get('description', None), name=d.get('name', None))
 
@@ -3632,7 +3632,7 @@ class UpdateModelResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateModelResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateModelResponse:
         """Deserializes the UpdateModelResponse from a dictionary."""
         return cls()
 
@@ -3657,7 +3657,7 @@ class UpdateModelVersionRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateModelVersionRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateModelVersionRequest:
         """Deserializes the UpdateModelVersionRequest from a dictionary."""
         return cls(description=d.get('description', None),
                    name=d.get('name', None),
@@ -3673,7 +3673,7 @@ class UpdateModelVersionResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateModelVersionResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateModelVersionResponse:
         """Deserializes the UpdateModelVersionResponse from a dictionary."""
         return cls()
 
@@ -3689,31 +3689,31 @@ class UpdateRegistryWebhook:
     events: Optional[List[RegistryWebhookEvent]] = None
     """Events that can trigger a registry webhook: * `MODEL_VERSION_CREATED`: A new model version was
     created for the associated model.
-    
+
     * `MODEL_VERSION_TRANSITIONED_STAGE`: A model version’s stage was changed.
-    
+
     * `TRANSITION_REQUEST_CREATED`: A user requested a model version’s stage be transitioned.
-    
+
     * `COMMENT_CREATED`: A user wrote a comment on a registered model.
-    
+
     * `REGISTERED_MODEL_CREATED`: A new registered model was created. This event type can only be
     specified for a registry-wide webhook, which can be created by not specifying a model name in
     the create request.
-    
+
     * `MODEL_VERSION_TAG_SET`: A user set a tag on the model version.
-    
+
     * `MODEL_VERSION_TRANSITIONED_TO_STAGING`: A model version was transitioned to staging.
-    
+
     * `MODEL_VERSION_TRANSITIONED_TO_PRODUCTION`: A model version was transitioned to production.
-    
+
     * `MODEL_VERSION_TRANSITIONED_TO_ARCHIVED`: A model version was archived.
-    
+
     * `TRANSITION_REQUEST_TO_STAGING_CREATED`: A user requested a model version be transitioned to
     staging.
-    
+
     * `TRANSITION_REQUEST_TO_PRODUCTION_CREATED`: A user requested a model version be transitioned
     to production.
-    
+
     * `TRANSITION_REQUEST_TO_ARCHIVED_CREATED`: A user requested a model version be archived."""
 
     http_url_spec: Optional[HttpUrlSpec] = None
@@ -3723,9 +3723,9 @@ class UpdateRegistryWebhook:
     status: Optional[RegistryWebhookStatus] = None
     """Enable or disable triggering the webhook, or put the webhook into test mode. The default is
     `ACTIVE`: * `ACTIVE`: Webhook is triggered when an associated event happens.
-    
+
     * `DISABLED`: Webhook is not triggered.
-    
+
     * `TEST_MODE`: Webhook can be triggered through the test endpoint, but is not triggered on a
     real event."""
 
@@ -3741,7 +3741,7 @@ class UpdateRegistryWebhook:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateRegistryWebhook:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateRegistryWebhook:
         """Deserializes the UpdateRegistryWebhook from a dictionary."""
         return cls(description=d.get('description', None),
                    events=_repeated_enum(d, 'events', RegistryWebhookEvent),
@@ -3776,7 +3776,7 @@ class UpdateRun:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateRun:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateRun:
         """Deserializes the UpdateRun from a dictionary."""
         return cls(end_time=d.get('end_time', None),
                    run_id=d.get('run_id', None),
@@ -3796,7 +3796,7 @@ class UpdateRunResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateRunResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateRunResponse:
         """Deserializes the UpdateRunResponse from a dictionary."""
         return cls(run_info=_from_dict(d, 'run_info', RunInfo))
 
@@ -3820,7 +3820,7 @@ class UpdateWebhookResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateWebhookResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateWebhookResponse:
         """Deserializes the UpdateWebhookResponse from a dictionary."""
         return cls()
 
@@ -3829,7 +3829,7 @@ class ExperimentsAPI:
     """Experiments are the primary unit of organization in MLflow; all MLflow runs belong to an experiment. Each
     experiment lets you visualize, search, and compare runs, as well as download run artifacts or metadata for
     analysis in other tools. Experiments are maintained in a Databricks hosted MLflow tracking server.
-    
+
     Experiments are located in the workspace file tree. You manage experiments using the same tools you use to
     manage other workspace objects such as folders, notebooks, and libraries."""
 
@@ -3842,13 +3842,13 @@ class ExperimentsAPI:
                           artifact_location: Optional[str] = None,
                           tags: Optional[List[ExperimentTag]] = None) -> CreateExperimentResponse:
         """Create experiment.
-        
+
         Creates an experiment with a name. Returns the ID of the newly created experiment. Validates that
         another experiment with the same name does not already exist and fails if another experiment with the
         same name already exists.
-        
+
         Throws `RESOURCE_ALREADY_EXISTS` if a experiment with the given name exists.
-        
+
         :param name: str
           Experiment name.
         :param artifact_location: str (optional)
@@ -3859,7 +3859,7 @@ class ExperimentsAPI:
           depends on the storage backend. All storage backends are guaranteed to support tag keys up to 250
           bytes in size and tag values up to 5000 bytes in size. All storage backends are also guaranteed to
           support up to 20 tags per request.
-        
+
         :returns: :class:`CreateExperimentResponse`
         """
         body = {}
@@ -3878,11 +3878,11 @@ class ExperimentsAPI:
                    tags: Optional[List[RunTag]] = None,
                    user_id: Optional[str] = None) -> CreateRunResponse:
         """Create a run.
-        
+
         Creates a new run within an experiment. A run is usually a single execution of a machine learning or
         data ETL pipeline. MLflow uses runs to track the `mlflowParam`, `mlflowMetric` and `mlflowRunTag`
         associated with a single execution.
-        
+
         :param experiment_id: str (optional)
           ID of the associated experiment.
         :param start_time: int (optional)
@@ -3892,7 +3892,7 @@ class ExperimentsAPI:
         :param user_id: str (optional)
           ID of the user executing the run. This field is deprecated as of MLflow 1.0, and will be removed in
           a future MLflow release. Use 'mlflow.user' tag instead.
-        
+
         :returns: :class:`CreateRunResponse`
         """
         body = {}
@@ -3907,14 +3907,14 @@ class ExperimentsAPI:
 
     def delete_experiment(self, experiment_id: str):
         """Delete an experiment.
-        
+
         Marks an experiment and associated metadata, runs, metrics, params, and tags for deletion. If the
         experiment uses FileStore, artifacts associated with experiment are also deleted.
-        
+
         :param experiment_id: str
           ID of the associated experiment.
-        
-        
+
+
         """
         body = {}
         if experiment_id is not None: body['experiment_id'] = experiment_id
@@ -3924,13 +3924,13 @@ class ExperimentsAPI:
 
     def delete_run(self, run_id: str):
         """Delete a run.
-        
+
         Marks a run for deletion.
-        
+
         :param run_id: str
           ID of the run to delete.
-        
-        
+
+
         """
         body = {}
         if run_id is not None: body['run_id'] = run_id
@@ -3944,11 +3944,11 @@ class ExperimentsAPI:
                     *,
                     max_runs: Optional[int] = None) -> DeleteRunsResponse:
         """Delete runs by creation time.
-        
+
         Bulk delete runs in an experiment that were created prior to or at the specified timestamp. Deletes at
         most max_runs per request. To call this API from a Databricks Notebook in Python, you can use the
         client code snippet on https://learn.microsoft.com/en-us/azure/databricks/mlflow/runs#bulk-delete.
-        
+
         :param experiment_id: str
           The ID of the experiment containing the runs to delete.
         :param max_timestamp_millis: int
@@ -3957,7 +3957,7 @@ class ExperimentsAPI:
         :param max_runs: int (optional)
           An optional positive integer indicating the maximum number of runs to delete. The maximum allowed
           value for max_runs is 10000.
-        
+
         :returns: :class:`DeleteRunsResponse`
         """
         body = {}
@@ -3971,16 +3971,16 @@ class ExperimentsAPI:
 
     def delete_tag(self, run_id: str, key: str):
         """Delete a tag.
-        
+
         Deletes a tag on a run. Tags are run metadata that can be updated during a run and after a run
         completes.
-        
+
         :param run_id: str
           ID of the run that the tag was logged under. Must be provided.
         :param key: str
           Name of the tag. Maximum size is 255 bytes. Must be provided.
-        
-        
+
+
         """
         body = {}
         if key is not None: body['key'] = key
@@ -3991,18 +3991,18 @@ class ExperimentsAPI:
 
     def get_by_name(self, experiment_name: str) -> GetExperimentResponse:
         """Get metadata.
-        
+
         Gets metadata for an experiment.
-        
+
         This endpoint will return deleted experiments, but prefers the active experiment if an active and
         deleted experiment share the same name. If multiple deleted experiments share the same name, the API
         will return one of them.
-        
+
         Throws `RESOURCE_DOES_NOT_EXIST` if no experiment with the specified name exists.
-        
+
         :param experiment_name: str
           Name of the associated experiment.
-        
+
         :returns: :class:`GetExperimentResponse`
         """
 
@@ -4015,12 +4015,12 @@ class ExperimentsAPI:
 
     def get_experiment(self, experiment_id: str) -> GetExperimentResponse:
         """Get an experiment.
-        
+
         Gets metadata for an experiment. This method works on deleted experiments.
-        
+
         :param experiment_id: str
           ID of the associated experiment.
-        
+
         :returns: :class:`GetExperimentResponse`
         """
 
@@ -4039,9 +4039,9 @@ class ExperimentsAPI:
                     run_id: Optional[str] = None,
                     run_uuid: Optional[str] = None) -> Iterator[Metric]:
         """Get history of a given metric within a run.
-        
+
         Gets a list of all values for the specified metric for a given run.
-        
+
         :param metric_key: str
           Name of the metric.
         :param max_results: int (optional)
@@ -4054,7 +4054,7 @@ class ExperimentsAPI:
         :param run_uuid: str (optional)
           [Deprecated, use run_id instead] ID of the run from which to fetch metric values. This field will be
           removed in a future MLflow version.
-        
+
         :returns: Iterator over :class:`Metric`
         """
 
@@ -4077,12 +4077,12 @@ class ExperimentsAPI:
 
     def get_permission_levels(self, experiment_id: str) -> GetExperimentPermissionLevelsResponse:
         """Get experiment permission levels.
-        
+
         Gets the permission levels that a user can have on an object.
-        
+
         :param experiment_id: str
           The experiment for which to get or manage permissions.
-        
+
         :returns: :class:`GetExperimentPermissionLevelsResponse`
         """
 
@@ -4095,12 +4095,12 @@ class ExperimentsAPI:
 
     def get_permissions(self, experiment_id: str) -> ExperimentPermissions:
         """Get experiment permissions.
-        
+
         Gets the permissions of an experiment. Experiments can inherit permissions from their root object.
-        
+
         :param experiment_id: str
           The experiment for which to get or manage permissions.
-        
+
         :returns: :class:`ExperimentPermissions`
         """
 
@@ -4111,18 +4111,18 @@ class ExperimentsAPI:
 
     def get_run(self, run_id: str, *, run_uuid: Optional[str] = None) -> GetRunResponse:
         """Get a run.
-        
+
         Gets the metadata, metrics, params, and tags for a run. In the case where multiple metrics with the
         same key are logged for a run, return only the value with the latest timestamp.
-        
+
         If there are multiple values with the latest timestamp, return the maximum of these values.
-        
+
         :param run_id: str
           ID of the run to fetch. Must be provided.
         :param run_uuid: str (optional)
           [Deprecated, use run_id instead] ID of the run to fetch. This field will be removed in a future
           MLflow version.
-        
+
         :returns: :class:`GetRunResponse`
         """
 
@@ -4141,10 +4141,10 @@ class ExperimentsAPI:
                        run_id: Optional[str] = None,
                        run_uuid: Optional[str] = None) -> Iterator[FileInfo]:
         """Get all artifacts.
-        
+
         List artifacts for a run. Takes an optional `artifact_path` prefix. If it is specified, the response
         contains only artifacts with the specified prefix.",
-        
+
         :param page_token: str (optional)
           Token indicating the page of artifact results to fetch
         :param path: str (optional)
@@ -4154,7 +4154,7 @@ class ExperimentsAPI:
         :param run_uuid: str (optional)
           [Deprecated, use run_id instead] ID of the run whose artifacts to list. This field will be removed
           in a future MLflow version.
-        
+
         :returns: Iterator over :class:`FileInfo`
         """
 
@@ -4180,9 +4180,9 @@ class ExperimentsAPI:
                          page_token: Optional[str] = None,
                          view_type: Optional[str] = None) -> Iterator[Experiment]:
         """List experiments.
-        
+
         Gets a list of all experiments.
-        
+
         :param max_results: int (optional)
           Maximum number of experiments desired. If `max_results` is unspecified, return all experiments. If
           `max_results` is too large, it'll be automatically capped at 1000. Callers of this endpoint are
@@ -4191,7 +4191,7 @@ class ExperimentsAPI:
           Token indicating the page of experiments to fetch
         :param view_type: str (optional)
           Qualifier for type of experiments to be returned. If unspecified, return only active experiments.
-        
+
         :returns: Iterator over :class:`Experiment`
         """
 
@@ -4217,42 +4217,42 @@ class ExperimentsAPI:
                   run_id: Optional[str] = None,
                   tags: Optional[List[RunTag]] = None):
         """Log a batch.
-        
+
         Logs a batch of metrics, params, and tags for a run. If any data failed to be persisted, the server
         will respond with an error (non-200 status code).
-        
+
         In case of error (due to internal server error or an invalid request), partial data may be written.
-        
+
         You can write metrics, params, and tags in interleaving fashion, but within a given entity type are
         guaranteed to follow the order specified in the request body.
-        
+
         The overwrite behavior for metrics, params, and tags is as follows:
-        
+
         * Metrics: metric values are never overwritten. Logging a metric (key, value, timestamp) appends to
         the set of values for the metric with the provided key.
-        
+
         * Tags: tag values can be overwritten by successive writes to the same tag key. That is, if multiple
         tag values with the same key are provided in the same API request, the last-provided tag value is
         written. Logging the same tag (key, value) is permitted. Specifically, logging a tag is idempotent.
-        
+
         * Parameters: once written, param values cannot be changed (attempting to overwrite a param value will
         result in an error). However, logging the same param (key, value) is permitted. Specifically, logging
         a param is idempotent.
-        
+
         Request Limits ------------------------------- A single JSON-serialized API request may be up to 1 MB
         in size and contain:
-        
+
         * No more than 1000 metrics, params, and tags in total * Up to 1000 metrics * Up to 100 params * Up to
         100 tags
-        
+
         For example, a valid request might contain 900 metrics, 50 params, and 50 tags, but logging 900
         metrics, 50 params, and 51 tags is invalid.
-        
+
         The following limits also apply to metric, param, and tag keys and values:
-        
+
         * Metric keys, param keys, and tag keys can be up to 250 characters in length * Parameter and tag
         values can be up to 250 characters in length
-        
+
         :param metrics: List[:class:`Metric`] (optional)
           Metrics to log. A single request can contain up to 1000 metrics, and up to 1000 metrics, params, and
           tags in total.
@@ -4264,8 +4264,8 @@ class ExperimentsAPI:
         :param tags: List[:class:`RunTag`] (optional)
           Tags to log. A single request can contain up to 100 tags, and up to 1000 metrics, params, and tags
           in total.
-        
-        
+
+
         """
         body = {}
         if metrics is not None: body['metrics'] = [v.as_dict() for v in metrics]
@@ -4278,15 +4278,15 @@ class ExperimentsAPI:
 
     def log_inputs(self, *, datasets: Optional[List[DatasetInput]] = None, run_id: Optional[str] = None):
         """Log inputs to a run.
-        
+
         **NOTE:** Experimental: This API may change or be removed in a future release without warning.
-        
+
         :param datasets: List[:class:`DatasetInput`] (optional)
           Dataset inputs
         :param run_id: str (optional)
           ID of the run to log under
-        
-        
+
+
         """
         body = {}
         if datasets is not None: body['datasets'] = [v.as_dict() for v in datasets]
@@ -4304,11 +4304,11 @@ class ExperimentsAPI:
                    run_uuid: Optional[str] = None,
                    step: Optional[int] = None):
         """Log a metric.
-        
+
         Logs a metric for a run. A metric is a key-value pair (string key, float value) with an associated
         timestamp. Examples include the various metrics that represent ML model accuracy. A metric can be
         logged multiple times.
-        
+
         :param key: str
           Name of the metric.
         :param value: float
@@ -4322,8 +4322,8 @@ class ExperimentsAPI:
           removed in a future MLflow version.
         :param step: int (optional)
           Step at which to log the metric
-        
-        
+
+
         """
         body = {}
         if key is not None: body['key'] = key
@@ -4338,15 +4338,15 @@ class ExperimentsAPI:
 
     def log_model(self, *, model_json: Optional[str] = None, run_id: Optional[str] = None):
         """Log a model.
-        
+
         **NOTE:** Experimental: This API may change or be removed in a future release without warning.
-        
+
         :param model_json: str (optional)
           MLmodel file in json format.
         :param run_id: str (optional)
           ID of the run to log under
-        
-        
+
+
         """
         body = {}
         if model_json is not None: body['model_json'] = model_json
@@ -4362,11 +4362,11 @@ class ExperimentsAPI:
                   run_id: Optional[str] = None,
                   run_uuid: Optional[str] = None):
         """Log a param.
-        
+
         Logs a param used for a run. A param is a key-value pair (string key, string value). Examples include
         hyperparameters used for ML model training and constant dates and values used in an ETL pipeline. A
         param can be logged only once for a run.
-        
+
         :param key: str
           Name of the param. Maximum size is 255 bytes.
         :param value: str
@@ -4376,8 +4376,8 @@ class ExperimentsAPI:
         :param run_uuid: str (optional)
           [Deprecated, use run_id instead] ID of the run under which to log the param. This field will be
           removed in a future MLflow version.
-        
-        
+
+
         """
         body = {}
         if key is not None: body['key'] = key
@@ -4390,17 +4390,17 @@ class ExperimentsAPI:
 
     def restore_experiment(self, experiment_id: str):
         """Restores an experiment.
-        
+
         Restore an experiment marked for deletion. This also restores associated metadata, runs, metrics,
         params, and tags. If experiment uses FileStore, underlying artifacts associated with experiment are
         also restored.
-        
+
         Throws `RESOURCE_DOES_NOT_EXIST` if experiment was never created or was permanently deleted.
-        
+
         :param experiment_id: str
           ID of the associated experiment.
-        
-        
+
+
         """
         body = {}
         if experiment_id is not None: body['experiment_id'] = experiment_id
@@ -4410,13 +4410,13 @@ class ExperimentsAPI:
 
     def restore_run(self, run_id: str):
         """Restore a run.
-        
+
         Restores a deleted run.
-        
+
         :param run_id: str
           ID of the run to restore.
-        
-        
+
+
         """
         body = {}
         if run_id is not None: body['run_id'] = run_id
@@ -4430,11 +4430,11 @@ class ExperimentsAPI:
                      *,
                      max_runs: Optional[int] = None) -> RestoreRunsResponse:
         """Restore runs by deletion time.
-        
+
         Bulk restore runs in an experiment that were deleted no earlier than the specified timestamp. Restores
         at most max_runs per request. To call this API from a Databricks Notebook in Python, you can use the
         client code snippet on https://learn.microsoft.com/en-us/azure/databricks/mlflow/runs#bulk-restore.
-        
+
         :param experiment_id: str
           The ID of the experiment containing the runs to restore.
         :param min_timestamp_millis: int
@@ -4443,7 +4443,7 @@ class ExperimentsAPI:
         :param max_runs: int (optional)
           An optional positive integer indicating the maximum number of runs to restore. The maximum allowed
           value for max_runs is 10000.
-        
+
         :returns: :class:`RestoreRunsResponse`
         """
         body = {}
@@ -4463,9 +4463,9 @@ class ExperimentsAPI:
                            page_token: Optional[str] = None,
                            view_type: Optional[SearchExperimentsViewType] = None) -> Iterator[Experiment]:
         """Search experiments.
-        
+
         Searches for experiments that satisfy specified search criteria.
-        
+
         :param filter: str (optional)
           String representing a SQL filter condition (e.g. "name ILIKE 'my-experiment%'")
         :param max_results: int (optional)
@@ -4478,7 +4478,7 @@ class ExperimentsAPI:
           Token indicating the page of experiments to fetch
         :param view_type: :class:`SearchExperimentsViewType` (optional)
           Qualifier for type of experiments to be returned. If unspecified, return only active experiments.
-        
+
         :returns: Iterator over :class:`Experiment`
         """
         body = {}
@@ -4507,23 +4507,23 @@ class ExperimentsAPI:
                     page_token: Optional[str] = None,
                     run_view_type: Optional[SearchRunsRunViewType] = None) -> Iterator[Run]:
         """Search for runs.
-        
+
         Searches for runs that satisfy expressions.
-        
+
         Search expressions can use `mlflowMetric` and `mlflowParam` keys.",
-        
+
         :param experiment_ids: List[str] (optional)
           List of experiment IDs to search over.
         :param filter: str (optional)
           A filter expression over params, metrics, and tags, that allows returning a subset of runs. The
           syntax is a subset of SQL that supports ANDing together binary operations between a param, metric,
           or tag and a constant.
-          
+
           Example: `metrics.rmse < 1 and params.model_class = 'LogisticRegression'`
-          
+
           You can select columns with special characters (hyphen, space, period, etc.) by using double quotes:
           `metrics."model class" = 'LinearRegression' and tags."user-name" = 'Tomas'`
-          
+
           Supported operators are `=`, `!=`, `>`, `>=`, `<`, and `<=`.
         :param max_results: int (optional)
           Maximum number of runs desired. Max threshold is 50000
@@ -4537,7 +4537,7 @@ class ExperimentsAPI:
           Token for the current page of runs.
         :param run_view_type: :class:`SearchRunsRunViewType` (optional)
           Whether to display only active, only deleted, or all runs. Defaults to only active runs.
-        
+
         :returns: Iterator over :class:`Run`
         """
         body = {}
@@ -4560,9 +4560,9 @@ class ExperimentsAPI:
 
     def set_experiment_tag(self, experiment_id: str, key: str, value: str):
         """Set a tag.
-        
+
         Sets a tag on an experiment. Experiment tags are metadata that can be updated.
-        
+
         :param experiment_id: str
           ID of the experiment under which to log the tag. Must be provided.
         :param key: str
@@ -4571,8 +4571,8 @@ class ExperimentsAPI:
         :param value: str
           String value of the tag being logged. Maximum size depends on storage backend. All storage backends
           are guaranteed to support key values up to 5000 bytes in size.
-        
-        
+
+
         """
         body = {}
         if experiment_id is not None: body['experiment_id'] = experiment_id
@@ -4589,13 +4589,13 @@ class ExperimentsAPI:
             access_control_list: Optional[List[ExperimentAccessControlRequest]] = None
     ) -> ExperimentPermissions:
         """Set experiment permissions.
-        
+
         Sets permissions on an experiment. Experiments can inherit permissions from their root object.
-        
+
         :param experiment_id: str
           The experiment for which to get or manage permissions.
         :param access_control_list: List[:class:`ExperimentAccessControlRequest`] (optional)
-        
+
         :returns: :class:`ExperimentPermissions`
         """
         body = {}
@@ -4611,9 +4611,9 @@ class ExperimentsAPI:
 
     def set_tag(self, key: str, value: str, *, run_id: Optional[str] = None, run_uuid: Optional[str] = None):
         """Set a tag.
-        
+
         Sets a tag on a run. Tags are run metadata that can be updated during a run and after a run completes.
-        
+
         :param key: str
           Name of the tag. Maximum size depends on storage backend. All storage backends are guaranteed to
           support key values up to 250 bytes in size.
@@ -4625,8 +4625,8 @@ class ExperimentsAPI:
         :param run_uuid: str (optional)
           [Deprecated, use run_id instead] ID of the run under which to log the tag. This field will be
           removed in a future MLflow version.
-        
-        
+
+
         """
         body = {}
         if key is not None: body['key'] = key
@@ -4639,15 +4639,15 @@ class ExperimentsAPI:
 
     def update_experiment(self, experiment_id: str, *, new_name: Optional[str] = None):
         """Update an experiment.
-        
+
         Updates experiment metadata.
-        
+
         :param experiment_id: str
           ID of the associated experiment.
         :param new_name: str (optional)
           If provided, the experiment's name is changed to the new name. The new name must be unique.
-        
-        
+
+
         """
         body = {}
         if experiment_id is not None: body['experiment_id'] = experiment_id
@@ -4663,13 +4663,13 @@ class ExperimentsAPI:
             access_control_list: Optional[List[ExperimentAccessControlRequest]] = None
     ) -> ExperimentPermissions:
         """Update experiment permissions.
-        
+
         Updates the permissions on an experiment. Experiments can inherit permissions from their root object.
-        
+
         :param experiment_id: str
           The experiment for which to get or manage permissions.
         :param access_control_list: List[:class:`ExperimentAccessControlRequest`] (optional)
-        
+
         :returns: :class:`ExperimentPermissions`
         """
         body = {}
@@ -4690,9 +4690,9 @@ class ExperimentsAPI:
                    run_uuid: Optional[str] = None,
                    status: Optional[UpdateRunStatus] = None) -> UpdateRunResponse:
         """Update a run.
-        
+
         Updates run metadata.
-        
+
         :param end_time: int (optional)
           Unix timestamp in milliseconds of when the run ended.
         :param run_id: str (optional)
@@ -4702,7 +4702,7 @@ class ExperimentsAPI:
           MLflow version.
         :param status: :class:`UpdateRunStatus` (optional)
           Updated status of the run.
-        
+
         :returns: :class:`UpdateRunResponse`
         """
         body = {}
@@ -4721,7 +4721,7 @@ class ModelRegistryAPI:
     [Models in Unity Catalog](/api/workspace/registeredmodels) instead. Models in Unity Catalog provides
     centralized model governance, cross-workspace access, lineage, and deployment. Workspace Model Registry
     will be deprecated in the future.
-    
+
     The Workspace Model Registry is a centralized model repository and a UI and set of APIs that enable you to
     manage the full lifecycle of MLflow Models."""
 
@@ -4736,28 +4736,28 @@ class ModelRegistryAPI:
                                    *,
                                    comment: Optional[str] = None) -> ApproveTransitionRequestResponse:
         """Approve transition request.
-        
+
         Approves a model version stage transition request.
-        
+
         :param name: str
           Name of the model.
         :param version: str
           Version of the model.
         :param stage: :class:`Stage`
           Target stage of the transition. Valid values are:
-          
+
           * `None`: The initial stage of a model version.
-          
+
           * `Staging`: Staging or pre-production stage.
-          
+
           * `Production`: Production stage.
-          
+
           * `Archived`: Archived stage.
         :param archive_existing_versions: bool
           Specifies whether to archive all current model versions in the target stage.
         :param comment: str (optional)
           User-provided comment on the action.
-        
+
         :returns: :class:`ApproveTransitionRequestResponse`
         """
         body = {}
@@ -4774,17 +4774,17 @@ class ModelRegistryAPI:
 
     def create_comment(self, name: str, version: str, comment: str) -> CreateCommentResponse:
         """Post a comment.
-        
+
         Posts a comment on a model version. A comment can be submitted either by a user or programmatically to
         display relevant information about the model. For example, test results or deployment errors.
-        
+
         :param name: str
           Name of the model.
         :param version: str
           Version of the model.
         :param comment: str
           User-provided comment on the action.
-        
+
         :returns: :class:`CreateCommentResponse`
         """
         body = {}
@@ -4802,18 +4802,18 @@ class ModelRegistryAPI:
                      description: Optional[str] = None,
                      tags: Optional[List[ModelTag]] = None) -> CreateModelResponse:
         """Create a model.
-        
+
         Creates a new registered model with the name specified in the request body.
-        
+
         Throws `RESOURCE_ALREADY_EXISTS` if a registered model with the given name exists.
-        
+
         :param name: str
           Register models under this name
         :param description: str (optional)
           Optional description for registered model.
         :param tags: List[:class:`ModelTag`] (optional)
           Additional metadata for registered model.
-        
+
         :returns: :class:`CreateModelResponse`
         """
         body = {}
@@ -4834,9 +4834,9 @@ class ModelRegistryAPI:
                              run_link: Optional[str] = None,
                              tags: Optional[List[ModelVersionTag]] = None) -> CreateModelVersionResponse:
         """Create a model version.
-        
+
         Creates a model version.
-        
+
         :param name: str
           Register model under this name
         :param source: str
@@ -4851,7 +4851,7 @@ class ModelRegistryAPI:
           hosted at another instance of MLflow.
         :param tags: List[:class:`ModelVersionTag`] (optional)
           Additional metadata for model version.
-        
+
         :returns: :class:`CreateModelVersionResponse`
         """
         body = {}
@@ -4873,26 +4873,26 @@ class ModelRegistryAPI:
                                   *,
                                   comment: Optional[str] = None) -> CreateTransitionRequestResponse:
         """Make a transition request.
-        
+
         Creates a model version stage transition request.
-        
+
         :param name: str
           Name of the model.
         :param version: str
           Version of the model.
         :param stage: :class:`Stage`
           Target stage of the transition. Valid values are:
-          
+
           * `None`: The initial stage of a model version.
-          
+
           * `Staging`: Staging or pre-production stage.
-          
+
           * `Production`: Production stage.
-          
+
           * `Archived`: Archived stage.
         :param comment: str (optional)
           User-provided comment on the action.
-        
+
         :returns: :class:`CreateTransitionRequestResponse`
         """
         body = {}
@@ -4914,39 +4914,39 @@ class ModelRegistryAPI:
                        model_name: Optional[str] = None,
                        status: Optional[RegistryWebhookStatus] = None) -> CreateWebhookResponse:
         """Create a webhook.
-        
+
         **NOTE**: This endpoint is in Public Preview.
-        
+
         Creates a registry webhook.
-        
+
         :param events: List[:class:`RegistryWebhookEvent`]
           Events that can trigger a registry webhook: * `MODEL_VERSION_CREATED`: A new model version was
           created for the associated model.
-          
+
           * `MODEL_VERSION_TRANSITIONED_STAGE`: A model version’s stage was changed.
-          
+
           * `TRANSITION_REQUEST_CREATED`: A user requested a model version’s stage be transitioned.
-          
+
           * `COMMENT_CREATED`: A user wrote a comment on a registered model.
-          
+
           * `REGISTERED_MODEL_CREATED`: A new registered model was created. This event type can only be
           specified for a registry-wide webhook, which can be created by not specifying a model name in the
           create request.
-          
+
           * `MODEL_VERSION_TAG_SET`: A user set a tag on the model version.
-          
+
           * `MODEL_VERSION_TRANSITIONED_TO_STAGING`: A model version was transitioned to staging.
-          
+
           * `MODEL_VERSION_TRANSITIONED_TO_PRODUCTION`: A model version was transitioned to production.
-          
+
           * `MODEL_VERSION_TRANSITIONED_TO_ARCHIVED`: A model version was archived.
-          
+
           * `TRANSITION_REQUEST_TO_STAGING_CREATED`: A user requested a model version be transitioned to
           staging.
-          
+
           * `TRANSITION_REQUEST_TO_PRODUCTION_CREATED`: A user requested a model version be transitioned to
           production.
-          
+
           * `TRANSITION_REQUEST_TO_ARCHIVED_CREATED`: A user requested a model version be archived.
         :param description: str (optional)
           User-specified description for the webhook.
@@ -4957,12 +4957,12 @@ class ModelRegistryAPI:
         :param status: :class:`RegistryWebhookStatus` (optional)
           Enable or disable triggering the webhook, or put the webhook into test mode. The default is
           `ACTIVE`: * `ACTIVE`: Webhook is triggered when an associated event happens.
-          
+
           * `DISABLED`: Webhook is not triggered.
-          
+
           * `TEST_MODE`: Webhook can be triggered through the test endpoint, but is not triggered on a real
           event.
-        
+
         :returns: :class:`CreateWebhookResponse`
         """
         body = {}
@@ -4979,12 +4979,12 @@ class ModelRegistryAPI:
 
     def delete_comment(self, id: str):
         """Delete a comment.
-        
+
         Deletes a comment on a model version.
-        
+
         :param id: str
-        
-        
+
+
         """
 
         query = {}
@@ -4995,13 +4995,13 @@ class ModelRegistryAPI:
 
     def delete_model(self, name: str):
         """Delete a model.
-        
+
         Deletes a registered model.
-        
+
         :param name: str
           Registered model unique name identifier.
-        
-        
+
+
         """
 
         query = {}
@@ -5012,16 +5012,16 @@ class ModelRegistryAPI:
 
     def delete_model_tag(self, name: str, key: str):
         """Delete a model tag.
-        
+
         Deletes the tag for a registered model.
-        
+
         :param name: str
           Name of the registered model that the tag was logged under.
         :param key: str
           Name of the tag. The name must be an exact match; wild-card deletion is not supported. Maximum size
           is 250 bytes.
-        
-        
+
+
         """
 
         query = {}
@@ -5033,15 +5033,15 @@ class ModelRegistryAPI:
 
     def delete_model_version(self, name: str, version: str):
         """Delete a model version.
-        
+
         Deletes a model version.
-        
+
         :param name: str
           Name of the registered model
         :param version: str
           Model version number
-        
-        
+
+
         """
 
         query = {}
@@ -5053,9 +5053,9 @@ class ModelRegistryAPI:
 
     def delete_model_version_tag(self, name: str, version: str, key: str):
         """Delete a model version tag.
-        
+
         Deletes a model version tag.
-        
+
         :param name: str
           Name of the registered model that the tag was logged under.
         :param version: str
@@ -5063,8 +5063,8 @@ class ModelRegistryAPI:
         :param key: str
           Name of the tag. The name must be an exact match; wild-card deletion is not supported. Maximum size
           is 250 bytes.
-        
-        
+
+
         """
 
         query = {}
@@ -5083,30 +5083,30 @@ class ModelRegistryAPI:
                                   *,
                                   comment: Optional[str] = None):
         """Delete a transition request.
-        
+
         Cancels a model version stage transition request.
-        
+
         :param name: str
           Name of the model.
         :param version: str
           Version of the model.
         :param stage: :class:`DeleteTransitionRequestStage`
           Target stage of the transition request. Valid values are:
-          
+
           * `None`: The initial stage of a model version.
-          
+
           * `Staging`: Staging or pre-production stage.
-          
+
           * `Production`: Production stage.
-          
+
           * `Archived`: Archived stage.
         :param creator: str
           Username of the user who created this request. Of the transition requests matching the specified
           details, only the one transition created by this user will be deleted.
         :param comment: str (optional)
           User-provided comment on the action.
-        
-        
+
+
         """
 
         query = {}
@@ -5121,15 +5121,15 @@ class ModelRegistryAPI:
 
     def delete_webhook(self, *, id: Optional[str] = None):
         """Delete a webhook.
-        
+
         **NOTE:** This endpoint is in Public Preview.
-        
+
         Deletes a registry webhook.
-        
+
         :param id: str (optional)
           Webhook ID required to delete a registry webhook.
-        
-        
+
+
         """
 
         query = {}
@@ -5140,14 +5140,14 @@ class ModelRegistryAPI:
 
     def get_latest_versions(self, name: str, *, stages: Optional[List[str]] = None) -> Iterator[ModelVersion]:
         """Get the latest version.
-        
+
         Gets the latest version of a registered model.
-        
+
         :param name: str
           Registered model unique name identifier.
         :param stages: List[str] (optional)
           List of stages.
-        
+
         :returns: Iterator over :class:`ModelVersion`
         """
         body = {}
@@ -5164,16 +5164,16 @@ class ModelRegistryAPI:
 
     def get_model(self, name: str) -> GetModelResponse:
         """Get model.
-        
+
         Get the details of a model. This is a Databricks workspace version of the [MLflow endpoint] that also
         returns the model's Databricks workspace ID and the permission level of the requesting user on the
         model.
-        
+
         [MLflow endpoint]: https://www.mlflow.org/docs/latest/rest-api.html#get-registeredmodel
-        
+
         :param name: str
           Registered model unique name identifier.
-        
+
         :returns: :class:`GetModelResponse`
         """
 
@@ -5189,14 +5189,14 @@ class ModelRegistryAPI:
 
     def get_model_version(self, name: str, version: str) -> GetModelVersionResponse:
         """Get a model version.
-        
+
         Get a model version.
-        
+
         :param name: str
           Name of the registered model
         :param version: str
           Model version number
-        
+
         :returns: :class:`GetModelVersionResponse`
         """
 
@@ -5210,14 +5210,14 @@ class ModelRegistryAPI:
 
     def get_model_version_download_uri(self, name: str, version: str) -> GetModelVersionDownloadUriResponse:
         """Get a model version URI.
-        
+
         Gets a URI to download the model version.
-        
+
         :param name: str
           Name of the registered model
         :param version: str
           Model version number
-        
+
         :returns: :class:`GetModelVersionDownloadUriResponse`
         """
 
@@ -5234,12 +5234,12 @@ class ModelRegistryAPI:
 
     def get_permission_levels(self, registered_model_id: str) -> GetRegisteredModelPermissionLevelsResponse:
         """Get registered model permission levels.
-        
+
         Gets the permission levels that a user can have on an object.
-        
+
         :param registered_model_id: str
           The registered model for which to get or manage permissions.
-        
+
         :returns: :class:`GetRegisteredModelPermissionLevelsResponse`
         """
 
@@ -5252,13 +5252,13 @@ class ModelRegistryAPI:
 
     def get_permissions(self, registered_model_id: str) -> RegisteredModelPermissions:
         """Get registered model permissions.
-        
+
         Gets the permissions of a registered model. Registered models can inherit permissions from their root
         object.
-        
+
         :param registered_model_id: str
           The registered model for which to get or manage permissions.
-        
+
         :returns: :class:`RegisteredModelPermissions`
         """
 
@@ -5274,14 +5274,14 @@ class ModelRegistryAPI:
                     max_results: Optional[int] = None,
                     page_token: Optional[str] = None) -> Iterator[Model]:
         """List models.
-        
+
         Lists all available registered models, up to the limit specified in __max_results__.
-        
+
         :param max_results: int (optional)
           Maximum number of registered models desired. Max threshold is 1000.
         :param page_token: str (optional)
           Pagination token to go to the next page based on a previous query.
-        
+
         :returns: Iterator over :class:`Model`
         """
 
@@ -5301,14 +5301,14 @@ class ModelRegistryAPI:
 
     def list_transition_requests(self, name: str, version: str) -> Iterator[Activity]:
         """List transition requests.
-        
+
         Gets a list of all open stage transition requests for the model version.
-        
+
         :param name: str
           Name of the model.
         :param version: str
           Version of the model.
-        
+
         :returns: Iterator over :class:`Activity`
         """
 
@@ -5327,11 +5327,11 @@ class ModelRegistryAPI:
                       model_name: Optional[str] = None,
                       page_token: Optional[str] = None) -> Iterator[RegistryWebhook]:
         """List registry webhooks.
-        
+
         **NOTE:** This endpoint is in Public Preview.
-        
+
         Lists all registry webhooks.
-        
+
         :param events: List[:class:`RegistryWebhookEvent`] (optional)
           If `events` is specified, any webhook with one or more of the specified trigger events is included
           in the output. If `events` is not specified, webhooks of all event types are included in the output.
@@ -5340,7 +5340,7 @@ class ModelRegistryAPI:
           associated model.
         :param page_token: str (optional)
           Token indicating the page of artifact results to fetch
-        
+
         :returns: Iterator over :class:`RegistryWebhook`
         """
 
@@ -5366,26 +5366,26 @@ class ModelRegistryAPI:
                                   *,
                                   comment: Optional[str] = None) -> RejectTransitionRequestResponse:
         """Reject a transition request.
-        
+
         Rejects a model version stage transition request.
-        
+
         :param name: str
           Name of the model.
         :param version: str
           Version of the model.
         :param stage: :class:`Stage`
           Target stage of the transition. Valid values are:
-          
+
           * `None`: The initial stage of a model version.
-          
+
           * `Staging`: Staging or pre-production stage.
-          
+
           * `Production`: Production stage.
-          
+
           * `Archived`: Archived stage.
         :param comment: str (optional)
           User-provided comment on the action.
-        
+
         :returns: :class:`RejectTransitionRequestResponse`
         """
         body = {}
@@ -5400,14 +5400,14 @@ class ModelRegistryAPI:
 
     def rename_model(self, name: str, *, new_name: Optional[str] = None) -> RenameModelResponse:
         """Rename a model.
-        
+
         Renames a registered model.
-        
+
         :param name: str
           Registered model unique name identifier.
         :param new_name: str (optional)
           If provided, updates the name for this `registered_model`.
-        
+
         :returns: :class:`RenameModelResponse`
         """
         body = {}
@@ -5425,9 +5425,9 @@ class ModelRegistryAPI:
                               order_by: Optional[List[str]] = None,
                               page_token: Optional[str] = None) -> Iterator[ModelVersion]:
         """Searches model versions.
-        
+
         Searches for specific model versions based on the supplied __filter__.
-        
+
         :param filter: str (optional)
           String filter condition, like "name='my-model-name'". Must be a single boolean condition, with
           string values wrapped in single quotes.
@@ -5439,7 +5439,7 @@ class ModelRegistryAPI:
           timestamp, followed by name ASC, followed by version DESC.
         :param page_token: str (optional)
           Pagination token to go to next page based on previous search query.
-        
+
         :returns: Iterator over :class:`ModelVersion`
         """
 
@@ -5466,9 +5466,9 @@ class ModelRegistryAPI:
                       order_by: Optional[List[str]] = None,
                       page_token: Optional[str] = None) -> Iterator[Model]:
         """Search models.
-        
+
         Search for registered models based on the specified __filter__.
-        
+
         :param filter: str (optional)
           String filter condition, like "name LIKE 'my-model-name'". Interpreted in the backend automatically
           as "name LIKE '%my-model-name%'". Single boolean condition, with string values wrapped in single
@@ -5481,7 +5481,7 @@ class ModelRegistryAPI:
           name ASC.
         :param page_token: str (optional)
           Pagination token to go to the next page based on a previous search query.
-        
+
         :returns: Iterator over :class:`Model`
         """
 
@@ -5506,9 +5506,9 @@ class ModelRegistryAPI:
 
     def set_model_tag(self, name: str, key: str, value: str):
         """Set a tag.
-        
+
         Sets a tag on a registered model.
-        
+
         :param name: str
           Unique name of the model.
         :param key: str
@@ -5518,8 +5518,8 @@ class ModelRegistryAPI:
         :param value: str
           String value of the tag being logged. Maximum size depends on storage backend. All storage backends
           are guaranteed to support key values up to 5000 bytes in size.
-        
-        
+
+
         """
         body = {}
         if key is not None: body['key'] = key
@@ -5531,9 +5531,9 @@ class ModelRegistryAPI:
 
     def set_model_version_tag(self, name: str, version: str, key: str, value: str):
         """Set a version tag.
-        
+
         Sets a model version tag.
-        
+
         :param name: str
           Unique name of the model.
         :param version: str
@@ -5545,8 +5545,8 @@ class ModelRegistryAPI:
         :param value: str
           String value of the tag being logged. Maximum size depends on storage backend. All storage backends
           are guaranteed to support key values up to 5000 bytes in size.
-        
-        
+
+
         """
         body = {}
         if key is not None: body['key'] = key
@@ -5564,14 +5564,14 @@ class ModelRegistryAPI:
         access_control_list: Optional[List[RegisteredModelAccessControlRequest]] = None
     ) -> RegisteredModelPermissions:
         """Set registered model permissions.
-        
+
         Sets permissions on a registered model. Registered models can inherit permissions from their root
         object.
-        
+
         :param registered_model_id: str
           The registered model for which to get or manage permissions.
         :param access_control_list: List[:class:`RegisteredModelAccessControlRequest`] (optional)
-        
+
         :returns: :class:`RegisteredModelPermissions`
         """
         body = {}
@@ -5590,17 +5590,17 @@ class ModelRegistryAPI:
                               *,
                               event: Optional[RegistryWebhookEvent] = None) -> TestRegistryWebhookResponse:
         """Test a webhook.
-        
+
         **NOTE:** This endpoint is in Public Preview.
-        
+
         Tests a registry webhook.
-        
+
         :param id: str
           Webhook ID
         :param event: :class:`RegistryWebhookEvent` (optional)
           If `event` is specified, the test trigger uses the specified event. If `event` is not specified, the
           test trigger uses a randomly chosen event associated with the webhook.
-        
+
         :returns: :class:`TestRegistryWebhookResponse`
         """
         body = {}
@@ -5619,31 +5619,31 @@ class ModelRegistryAPI:
                          *,
                          comment: Optional[str] = None) -> TransitionStageResponse:
         """Transition a stage.
-        
+
         Transition a model version's stage. This is a Databricks workspace version of the [MLflow endpoint]
         that also accepts a comment associated with the transition to be recorded.",
-        
+
         [MLflow endpoint]: https://www.mlflow.org/docs/latest/rest-api.html#transition-modelversion-stage
-        
+
         :param name: str
           Name of the model.
         :param version: str
           Version of the model.
         :param stage: :class:`Stage`
           Target stage of the transition. Valid values are:
-          
+
           * `None`: The initial stage of a model version.
-          
+
           * `Staging`: Staging or pre-production stage.
-          
+
           * `Production`: Production stage.
-          
+
           * `Archived`: Archived stage.
         :param archive_existing_versions: bool
           Specifies whether to archive all current model versions in the target stage.
         :param comment: str (optional)
           User-provided comment on the action.
-        
+
         :returns: :class:`TransitionStageResponse`
         """
         body = {}
@@ -5663,14 +5663,14 @@ class ModelRegistryAPI:
 
     def update_comment(self, id: str, comment: str) -> UpdateCommentResponse:
         """Update a comment.
-        
+
         Post an edit to a comment on a model version.
-        
+
         :param id: str
           Unique identifier of an activity
         :param comment: str
           User-provided comment on the action.
-        
+
         :returns: :class:`UpdateCommentResponse`
         """
         body = {}
@@ -5683,15 +5683,15 @@ class ModelRegistryAPI:
 
     def update_model(self, name: str, *, description: Optional[str] = None):
         """Update model.
-        
+
         Updates a registered model.
-        
+
         :param name: str
           Registered model unique name identifier.
         :param description: str (optional)
           If provided, updates the description for this `registered_model`.
-        
-        
+
+
         """
         body = {}
         if description is not None: body['description'] = description
@@ -5702,17 +5702,17 @@ class ModelRegistryAPI:
 
     def update_model_version(self, name: str, version: str, *, description: Optional[str] = None):
         """Update model version.
-        
+
         Updates the model version.
-        
+
         :param name: str
           Name of the registered model
         :param version: str
           Model version number
         :param description: str (optional)
           If provided, updates the description for this `registered_model`.
-        
-        
+
+
         """
         body = {}
         if description is not None: body['description'] = description
@@ -5729,14 +5729,14 @@ class ModelRegistryAPI:
         access_control_list: Optional[List[RegisteredModelAccessControlRequest]] = None
     ) -> RegisteredModelPermissions:
         """Update registered model permissions.
-        
+
         Updates the permissions on a registered model. Registered models can inherit permissions from their
         root object.
-        
+
         :param registered_model_id: str
           The registered model for which to get or manage permissions.
         :param access_control_list: List[:class:`RegisteredModelAccessControlRequest`] (optional)
-        
+
         :returns: :class:`RegisteredModelPermissions`
         """
         body = {}
@@ -5759,11 +5759,11 @@ class ModelRegistryAPI:
                        job_spec: Optional[JobSpec] = None,
                        status: Optional[RegistryWebhookStatus] = None):
         """Update a webhook.
-        
+
         **NOTE:** This endpoint is in Public Preview.
-        
+
         Updates a registry webhook.
-        
+
         :param id: str
           Webhook ID
         :param description: str (optional)
@@ -5771,44 +5771,44 @@ class ModelRegistryAPI:
         :param events: List[:class:`RegistryWebhookEvent`] (optional)
           Events that can trigger a registry webhook: * `MODEL_VERSION_CREATED`: A new model version was
           created for the associated model.
-          
+
           * `MODEL_VERSION_TRANSITIONED_STAGE`: A model version’s stage was changed.
-          
+
           * `TRANSITION_REQUEST_CREATED`: A user requested a model version’s stage be transitioned.
-          
+
           * `COMMENT_CREATED`: A user wrote a comment on a registered model.
-          
+
           * `REGISTERED_MODEL_CREATED`: A new registered model was created. This event type can only be
           specified for a registry-wide webhook, which can be created by not specifying a model name in the
           create request.
-          
+
           * `MODEL_VERSION_TAG_SET`: A user set a tag on the model version.
-          
+
           * `MODEL_VERSION_TRANSITIONED_TO_STAGING`: A model version was transitioned to staging.
-          
+
           * `MODEL_VERSION_TRANSITIONED_TO_PRODUCTION`: A model version was transitioned to production.
-          
+
           * `MODEL_VERSION_TRANSITIONED_TO_ARCHIVED`: A model version was archived.
-          
+
           * `TRANSITION_REQUEST_TO_STAGING_CREATED`: A user requested a model version be transitioned to
           staging.
-          
+
           * `TRANSITION_REQUEST_TO_PRODUCTION_CREATED`: A user requested a model version be transitioned to
           production.
-          
+
           * `TRANSITION_REQUEST_TO_ARCHIVED_CREATED`: A user requested a model version be archived.
         :param http_url_spec: :class:`HttpUrlSpec` (optional)
         :param job_spec: :class:`JobSpec` (optional)
         :param status: :class:`RegistryWebhookStatus` (optional)
           Enable or disable triggering the webhook, or put the webhook into test mode. The default is
           `ACTIVE`: * `ACTIVE`: Webhook is triggered when an associated event happens.
-          
+
           * `DISABLED`: Webhook is not triggered.
-          
+
           * `TEST_MODE`: Webhook can be triggered through the test endpoint, but is not triggered on a real
           event.
-        
-        
+
+
         """
         body = {}
         if description is not None: body['description'] = description

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from typing import BinaryIO, Dict, Iterator, List, Optional
+from typing import Any, BinaryIO, Dict, Iterator, List, Optional
 
 from ._internal import _repeated_dict
 
@@ -29,7 +29,7 @@ class AddBlock:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AddBlock:
+    def from_dict(cls, d: Dict[str, Any]) -> AddBlock:
         """Deserializes the AddBlock from a dictionary."""
         return cls(data=d.get('data', None), handle=d.get('handle', None))
 
@@ -43,7 +43,7 @@ class AddBlockResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AddBlockResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> AddBlockResponse:
         """Deserializes the AddBlockResponse from a dictionary."""
         return cls()
 
@@ -60,7 +60,7 @@ class Close:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Close:
+    def from_dict(cls, d: Dict[str, Any]) -> Close:
         """Deserializes the Close from a dictionary."""
         return cls(handle=d.get('handle', None))
 
@@ -74,7 +74,7 @@ class CloseResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CloseResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CloseResponse:
         """Deserializes the CloseResponse from a dictionary."""
         return cls()
 
@@ -95,7 +95,7 @@ class Create:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Create:
+    def from_dict(cls, d: Dict[str, Any]) -> Create:
         """Deserializes the Create from a dictionary."""
         return cls(overwrite=d.get('overwrite', None), path=d.get('path', None))
 
@@ -109,7 +109,7 @@ class CreateDirectoryResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateDirectoryResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateDirectoryResponse:
         """Deserializes the CreateDirectoryResponse from a dictionary."""
         return cls()
 
@@ -127,7 +127,7 @@ class CreateResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateResponse:
         """Deserializes the CreateResponse from a dictionary."""
         return cls(handle=d.get('handle', None))
 
@@ -149,7 +149,7 @@ class Delete:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Delete:
+    def from_dict(cls, d: Dict[str, Any]) -> Delete:
         """Deserializes the Delete from a dictionary."""
         return cls(path=d.get('path', None), recursive=d.get('recursive', None))
 
@@ -163,7 +163,7 @@ class DeleteDirectoryResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteDirectoryResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteDirectoryResponse:
         """Deserializes the DeleteDirectoryResponse from a dictionary."""
         return cls()
 
@@ -177,7 +177,7 @@ class DeleteResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteResponse:
         """Deserializes the DeleteResponse from a dictionary."""
         return cls()
 
@@ -210,7 +210,7 @@ class DirectoryEntry:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DirectoryEntry:
+    def from_dict(cls, d: Dict[str, Any]) -> DirectoryEntry:
         """Deserializes the DirectoryEntry from a dictionary."""
         return cls(file_size=d.get('file_size', None),
                    is_directory=d.get('is_directory', None),
@@ -239,7 +239,7 @@ class DownloadResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DownloadResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DownloadResponse:
         """Deserializes the DownloadResponse from a dictionary."""
         return cls(content_length=int(d.get('content-length', None)),
                    content_type=d.get('content-type', None),
@@ -271,7 +271,7 @@ class FileInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> FileInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> FileInfo:
         """Deserializes the FileInfo from a dictionary."""
         return cls(file_size=d.get('file_size', None),
                    is_dir=d.get('is_dir', None),
@@ -288,7 +288,7 @@ class GetDirectoryMetadataResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetDirectoryMetadataResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetDirectoryMetadataResponse:
         """Deserializes the GetDirectoryMetadataResponse from a dictionary."""
         return cls()
 
@@ -310,7 +310,7 @@ class GetMetadataResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetMetadataResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetMetadataResponse:
         """Deserializes the GetMetadataResponse from a dictionary."""
         return cls(content_length=int(d.get('content-length', None)),
                    content_type=d.get('content-type', None),
@@ -333,7 +333,7 @@ class ListDirectoryResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListDirectoryResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListDirectoryResponse:
         """Deserializes the ListDirectoryResponse from a dictionary."""
         return cls(contents=_repeated_dict(d, 'contents', DirectoryEntry),
                    next_page_token=d.get('next_page_token', None))
@@ -351,7 +351,7 @@ class ListStatusResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListStatusResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListStatusResponse:
         """Deserializes the ListStatusResponse from a dictionary."""
         return cls(files=_repeated_dict(d, 'files', FileInfo))
 
@@ -368,7 +368,7 @@ class MkDirs:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> MkDirs:
+    def from_dict(cls, d: Dict[str, Any]) -> MkDirs:
         """Deserializes the MkDirs from a dictionary."""
         return cls(path=d.get('path', None))
 
@@ -382,7 +382,7 @@ class MkDirsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> MkDirsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> MkDirsResponse:
         """Deserializes the MkDirsResponse from a dictionary."""
         return cls()
 
@@ -403,7 +403,7 @@ class Move:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Move:
+    def from_dict(cls, d: Dict[str, Any]) -> Move:
         """Deserializes the Move from a dictionary."""
         return cls(destination_path=d.get('destination_path', None), source_path=d.get('source_path', None))
 
@@ -417,7 +417,7 @@ class MoveResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> MoveResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> MoveResponse:
         """Deserializes the MoveResponse from a dictionary."""
         return cls()
 
@@ -442,7 +442,7 @@ class Put:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Put:
+    def from_dict(cls, d: Dict[str, Any]) -> Put:
         """Deserializes the Put from a dictionary."""
         return cls(contents=d.get('contents', None),
                    overwrite=d.get('overwrite', None),
@@ -458,7 +458,7 @@ class PutResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PutResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> PutResponse:
         """Deserializes the PutResponse from a dictionary."""
         return cls()
 
@@ -480,7 +480,7 @@ class ReadResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ReadResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ReadResponse:
         """Deserializes the ReadResponse from a dictionary."""
         return cls(bytes_read=d.get('bytes_read', None), data=d.get('data', None))
 
@@ -494,7 +494,7 @@ class UploadResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UploadResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UploadResponse:
         """Deserializes the UploadResponse from a dictionary."""
         return cls()
 
@@ -508,18 +508,18 @@ class DbfsAPI:
 
     def add_block(self, handle: int, data: str):
         """Append data block.
-        
+
         Appends a block of data to the stream specified by the input handle. If the handle does not exist,
         this call will throw an exception with ``RESOURCE_DOES_NOT_EXIST``.
-        
+
         If the block of data exceeds 1 MB, this call will throw an exception with ``MAX_BLOCK_SIZE_EXCEEDED``.
-        
+
         :param handle: int
           The handle on an open stream.
         :param data: str
           The base64-encoded data to append to the stream. This has a limit of 1 MB.
-        
-        
+
+
         """
         body = {}
         if data is not None: body['data'] = data
@@ -530,14 +530,14 @@ class DbfsAPI:
 
     def close(self, handle: int):
         """Close the stream.
-        
+
         Closes the stream specified by the input handle. If the handle does not exist, this call throws an
         exception with ``RESOURCE_DOES_NOT_EXIST``.
-        
+
         :param handle: int
           The handle on an open stream.
-        
-        
+
+
         """
         body = {}
         if handle is not None: body['handle'] = handle
@@ -547,21 +547,21 @@ class DbfsAPI:
 
     def create(self, path: str, *, overwrite: Optional[bool] = None) -> CreateResponse:
         """Open a stream.
-        
+
         Opens a stream to write to a file and returns a handle to this stream. There is a 10 minute idle
         timeout on this handle. If a file or directory already exists on the given path and __overwrite__ is
         set to false, this call will throw an exception with ``RESOURCE_ALREADY_EXISTS``.
-        
+
         A typical workflow for file upload would be:
-        
+
         1. Issue a ``create`` call and get a handle. 2. Issue one or more ``add-block`` calls with the handle
         you have. 3. Issue a ``close`` call with the handle you have.
-        
+
         :param path: str
           The path of the new file. The path should be the absolute DBFS path.
         :param overwrite: bool (optional)
           The flag that specifies whether to overwrite existing file/files.
-        
+
         :returns: :class:`CreateResponse`
         """
         body = {}
@@ -574,29 +574,29 @@ class DbfsAPI:
 
     def delete(self, path: str, *, recursive: Optional[bool] = None):
         """Delete a file/directory.
-        
+
         Delete the file or directory (optionally recursively delete all files in the directory). This call
         throws an exception with `IO_ERROR` if the path is a non-empty directory and `recursive` is set to
         `false` or on other similar errors.
-        
+
         When you delete a large number of files, the delete operation is done in increments. The call returns
         a response after approximately 45 seconds with an error message (503 Service Unavailable) asking you
         to re-invoke the delete operation until the directory structure is fully deleted.
-        
+
         For operations that delete more than 10K files, we discourage using the DBFS REST API, but advise you
         to perform such operations in the context of a cluster, using the [File system utility
         (dbutils.fs)](/dev-tools/databricks-utils.html#dbutils-fs). `dbutils.fs` covers the functional scope
         of the DBFS REST API, but from notebooks. Running such operations using notebooks provides better
         control and manageability, such as selective deletes, and the possibility to automate periodic delete
         jobs.
-        
+
         :param path: str
           The path of the file or directory to delete. The path should be the absolute DBFS path.
         :param recursive: bool (optional)
           Whether or not to recursively delete the directory's contents. Deleting empty directories can be
           done without providing the recursive flag.
-        
-        
+
+
         """
         body = {}
         if path is not None: body['path'] = path
@@ -607,13 +607,13 @@ class DbfsAPI:
 
     def get_status(self, path: str) -> FileInfo:
         """Get the information of a file or directory.
-        
+
         Gets the file information for a file or directory. If the file or directory does not exist, this call
         throws an exception with `RESOURCE_DOES_NOT_EXIST`.
-        
+
         :param path: str
           The path of the file or directory. The path should be the absolute DBFS path.
-        
+
         :returns: :class:`FileInfo`
         """
 
@@ -626,20 +626,20 @@ class DbfsAPI:
 
     def list(self, path: str) -> Iterator[FileInfo]:
         """List directory contents or file details.
-        
+
         List the contents of a directory, or details of the file. If the file or directory does not exist,
         this call throws an exception with `RESOURCE_DOES_NOT_EXIST`.
-        
+
         When calling list on a large directory, the list operation will time out after approximately 60
         seconds. We strongly recommend using list only on directories containing less than 10K files and
         discourage using the DBFS REST API for operations that list more than 10K files. Instead, we recommend
         that you perform such operations in the context of a cluster, using the [File system utility
         (dbutils.fs)](/dev-tools/databricks-utils.html#dbutils-fs), which provides the same functionality
         without timing out.
-        
+
         :param path: str
           The path of the file or directory. The path should be the absolute DBFS path.
-        
+
         :returns: Iterator over :class:`FileInfo`
         """
 
@@ -653,16 +653,16 @@ class DbfsAPI:
 
     def mkdirs(self, path: str):
         """Create a directory.
-        
+
         Creates the given directory and necessary parent directories if they do not exist. If a file (not a
         directory) exists at any prefix of the input path, this call throws an exception with
         `RESOURCE_ALREADY_EXISTS`. **Note**: If this operation fails, it might have succeeded in creating some
         of the necessary parent directories.
-        
+
         :param path: str
           The path of the new directory. The path should be the absolute DBFS path.
-        
-        
+
+
         """
         body = {}
         if path is not None: body['path'] = path
@@ -672,18 +672,18 @@ class DbfsAPI:
 
     def move(self, source_path: str, destination_path: str):
         """Move a file.
-        
+
         Moves a file from one location to another location within DBFS. If the source file does not exist,
         this call throws an exception with `RESOURCE_DOES_NOT_EXIST`. If a file already exists in the
         destination path, this call throws an exception with `RESOURCE_ALREADY_EXISTS`. If the given source
         path is a directory, this call always recursively moves all files.
-        
+
         :param source_path: str
           The source path of the file or directory. The path should be the absolute DBFS path.
         :param destination_path: str
           The destination path of the file or directory. The path should be the absolute DBFS path.
-        
-        
+
+
         """
         body = {}
         if destination_path is not None: body['destination_path'] = destination_path
@@ -694,26 +694,26 @@ class DbfsAPI:
 
     def put(self, path: str, *, contents: Optional[str] = None, overwrite: Optional[bool] = None):
         """Upload a file.
-        
+
         Uploads a file through the use of multipart form post. It is mainly used for streaming uploads, but
         can also be used as a convenient single call for data upload.
-        
+
         Alternatively you can pass contents as base64 string.
-        
+
         The amount of data that can be passed (when not streaming) using the __contents__ parameter is limited
         to 1 MB. `MAX_BLOCK_SIZE_EXCEEDED` will be thrown if this limit is exceeded.
-        
+
         If you want to upload large files, use the streaming upload. For details, see :method:dbfs/create,
         :method:dbfs/addBlock, :method:dbfs/close.
-        
+
         :param path: str
           The path of the new file. The path should be the absolute DBFS path.
         :param contents: str (optional)
           This parameter might be absent, and instead a posted file will be used.
         :param overwrite: bool (optional)
           The flag that specifies whether to overwrite existing file/files.
-        
-        
+
+
         """
         body = {}
         if contents is not None: body['contents'] = contents
@@ -725,15 +725,15 @@ class DbfsAPI:
 
     def read(self, path: str, *, length: Optional[int] = None, offset: Optional[int] = None) -> ReadResponse:
         """Get the contents of a file.
-        
+
         Returns the contents of a file. If the file does not exist, this call throws an exception with
         `RESOURCE_DOES_NOT_EXIST`. If the path is a directory, the read length is negative, or if the offset
         is negative, this call throws an exception with `INVALID_PARAMETER_VALUE`. If the read length exceeds
         1 MB, this call throws an exception with `MAX_READ_SIZE_EXCEEDED`.
-        
+
         If `offset + length` exceeds the number of bytes in a file, it reads the contents until the end of
         file.
-        
+
         :param path: str
           The path of the file to read. The path should be the absolute DBFS path.
         :param length: int (optional)
@@ -741,7 +741,7 @@ class DbfsAPI:
           of 0.5 MB.
         :param offset: int (optional)
           The offset to read from in bytes.
-        
+
         :returns: :class:`ReadResponse`
         """
 
@@ -759,16 +759,16 @@ class FilesAPI:
     """The Files API is a standard HTTP API that allows you to read, write, list, and delete files and
     directories by referring to their URI. The API makes working with file content as raw bytes easier and
     more efficient.
-    
+
     The API supports [Unity Catalog volumes], where files and directories to operate on are specified using
     their volume URI path, which follows the format
     /Volumes/&lt;catalog_name&gt;/&lt;schema_name&gt;/&lt;volume_name&gt;/&lt;path_to_file&gt;.
-    
+
     The Files API has two distinct endpoints, one for working with files (`/fs/files`) and another one for
     working with directories (`/fs/directories`). Both endpoints, use the standard HTTP methods GET, HEAD,
     PUT, and DELETE to manage files and directories specified using their URI path. The path is always
     absolute.
-    
+
     [Unity Catalog volumes]: https://docs.databricks.com/en/connect/unity-catalog/volumes.html"""
 
     def __init__(self, api_client):
@@ -776,15 +776,15 @@ class FilesAPI:
 
     def create_directory(self, directory_path: str):
         """Create a directory.
-        
+
         Creates an empty directory. If necessary, also creates any parent directories of the new, empty
         directory (like the shell command `mkdir -p`). If called on an existing directory, returns a success
         response; this method is idempotent (it will succeed if the directory already exists).
-        
+
         :param directory_path: str
           The absolute path of a directory.
-        
-        
+
+
         """
 
         headers = {}
@@ -793,13 +793,13 @@ class FilesAPI:
 
     def delete(self, file_path: str):
         """Delete a file.
-        
+
         Deletes a file. If the request is successful, there is no response body.
-        
+
         :param file_path: str
           The absolute path of the file.
-        
-        
+
+
         """
 
         headers = {}
@@ -808,16 +808,16 @@ class FilesAPI:
 
     def delete_directory(self, directory_path: str):
         """Delete a directory.
-        
+
         Deletes an empty directory.
-        
+
         To delete a non-empty directory, first delete all of its contents. This can be done by listing the
         directory contents and deleting each file and subdirectory recursively.
-        
+
         :param directory_path: str
           The absolute path of a directory.
-        
-        
+
+
         """
 
         headers = {}
@@ -826,13 +826,13 @@ class FilesAPI:
 
     def download(self, file_path: str) -> DownloadResponse:
         """Download a file.
-        
+
         Downloads a file of up to 5 GiB. The file contents are the response body. This is a standard HTTP file
         download, not a JSON RPC.
-        
+
         :param file_path: str
           The absolute path of the file.
-        
+
         :returns: :class:`DownloadResponse`
         """
 
@@ -847,19 +847,19 @@ class FilesAPI:
 
     def get_directory_metadata(self, directory_path: str):
         """Get directory metadata.
-        
+
         Get the metadata of a directory. The response HTTP headers contain the metadata. There is no response
         body.
-        
+
         This method is useful to check if a directory exists and the caller has access to it.
-        
+
         If you wish to ensure the directory exists, you can instead use `PUT`, which will create the directory
         if it does not exist, and is idempotent (it will succeed if the directory already exists).
-        
+
         :param directory_path: str
           The absolute path of a directory.
-        
-        
+
+
         """
 
         headers = {}
@@ -868,12 +868,12 @@ class FilesAPI:
 
     def get_metadata(self, file_path: str) -> GetMetadataResponse:
         """Get file metadata.
-        
+
         Get the metadata of a file. The response HTTP headers contain the metadata. There is no response body.
-        
+
         :param file_path: str
           The absolute path of the file.
-        
+
         :returns: :class:`GetMetadataResponse`
         """
 
@@ -891,20 +891,20 @@ class FilesAPI:
                                 page_size: Optional[int] = None,
                                 page_token: Optional[str] = None) -> Iterator[DirectoryEntry]:
         """List directory contents.
-        
+
         Returns the contents of a directory. If there is no directory at the specified path, the API returns a
         HTTP 404 error.
-        
+
         :param directory_path: str
           The absolute path of a directory.
         :param page_size: int (optional)
           The maximum number of directory entries to return. The response may contain fewer entries. If the
           response contains a `next_page_token`, there may be more entries, even if fewer than `page_size`
           entries are in the response.
-          
+
           We recommend not to set this value unless you are intentionally listing less than the complete
           directory contents.
-          
+
           If unspecified, at most 1000 directory entries will be returned. The maximum value is 1000. Values
           above 1000 will be coerced to 1000.
         :param page_token: str (optional)
@@ -914,7 +914,7 @@ class FilesAPI:
           request. To list all of the entries in a directory, it is necessary to continue requesting pages of
           entries until the response contains no `next_page_token`. Note that the number of entries returned
           must not be used to determine when the listing is complete.
-        
+
         :returns: Iterator over :class:`DirectoryEntry`
         """
 
@@ -937,19 +937,19 @@ class FilesAPI:
 
     def upload(self, file_path: str, contents: BinaryIO, *, overwrite: Optional[bool] = None):
         """Upload a file.
-        
+
         Uploads a file of up to 5 GiB. The file contents should be sent as the request body as raw bytes (an
         octet stream); do not encode or otherwise modify the bytes before sending. The contents of the
         resulting file will be exactly the bytes sent in the request body. If the request is successful, there
         is no response body.
-        
+
         :param file_path: str
           The absolute path of the file.
         :param contents: BinaryIO
         :param overwrite: bool (optional)
           If true, an existing file will be overwritten.
-        
-        
+
+
         """
 
         query = {}

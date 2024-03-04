@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from typing import Dict, Optional
+from typing import Any, Dict, Optional
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -32,7 +32,7 @@ class PublishRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PublishRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> PublishRequest:
         """Deserializes the PublishRequest from a dictionary."""
         return cls(dashboard_id=d.get('dashboard_id', None),
                    embed_credentials=d.get('embed_credentials', None),
@@ -48,7 +48,7 @@ class PublishResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PublishResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> PublishResponse:
         """Deserializes the PublishResponse from a dictionary."""
         return cls()
 
@@ -66,9 +66,9 @@ class LakeviewAPI:
                 embed_credentials: Optional[bool] = None,
                 warehouse_id: Optional[str] = None):
         """Publish dashboard.
-        
+
         Publish the current draft dashboard.
-        
+
         :param dashboard_id: str
           UUID identifying the dashboard to be published.
         :param embed_credentials: bool (optional)
@@ -76,8 +76,8 @@ class LakeviewAPI:
           embedded credentials will be used to execute the published dashboard's queries.
         :param warehouse_id: str (optional)
           The ID of the warehouse that can be used to override the warehouse which was set in the draft.
-        
-        
+
+
         """
         body = {}
         if embed_credentials is not None: body['embed_credentials'] = embed_credentials

@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, Iterator, List, Optional
+from typing import Any, Dict, Iterator, List, Optional
 
 from ._internal import _enum, _from_dict, _repeated_dict, _repeated_enum
 
@@ -52,7 +52,7 @@ class CentralCleanRoomInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CentralCleanRoomInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> CentralCleanRoomInfo:
         """Deserializes the CentralCleanRoomInfo from a dictionary."""
         return cls(clean_room_assets=_repeated_dict(d, 'clean_room_assets', CleanRoomAssetInfo),
                    collaborators=_repeated_dict(d, 'collaborators', CleanRoomCollaboratorInfo),
@@ -89,7 +89,7 @@ class CleanRoomAssetInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CleanRoomAssetInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> CleanRoomAssetInfo:
         """Deserializes the CleanRoomAssetInfo from a dictionary."""
         return cls(added_at=d.get('added_at', None),
                    notebook_info=_from_dict(d, 'notebook_info', CleanRoomNotebookInfo),
@@ -118,7 +118,7 @@ class CleanRoomCatalog:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CleanRoomCatalog:
+    def from_dict(cls, d: Dict[str, Any]) -> CleanRoomCatalog:
         """Deserializes the CleanRoomCatalog from a dictionary."""
         return cls(catalog_name=d.get('catalog_name', None),
                    notebook_files=_repeated_dict(d, 'notebook_files', SharedDataObject),
@@ -141,7 +141,7 @@ class CleanRoomCatalogUpdate:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CleanRoomCatalogUpdate:
+    def from_dict(cls, d: Dict[str, Any]) -> CleanRoomCatalogUpdate:
         """Deserializes the CleanRoomCatalogUpdate from a dictionary."""
         return cls(catalog_name=d.get('catalog_name', None),
                    updates=_from_dict(d, 'updates', SharedDataObjectUpdate))
@@ -165,7 +165,7 @@ class CleanRoomCollaboratorInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CleanRoomCollaboratorInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> CleanRoomCollaboratorInfo:
         """Deserializes the CleanRoomCollaboratorInfo from a dictionary."""
         return cls(global_metastore_id=d.get('global_metastore_id', None),
                    organization_name=d.get('organization_name', None))
@@ -215,7 +215,7 @@ class CleanRoomInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CleanRoomInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> CleanRoomInfo:
         """Deserializes the CleanRoomInfo from a dictionary."""
         return cls(comment=d.get('comment', None),
                    created_at=d.get('created_at', None),
@@ -244,7 +244,7 @@ class CleanRoomNotebookInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CleanRoomNotebookInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> CleanRoomNotebookInfo:
         """Deserializes the CleanRoomNotebookInfo from a dictionary."""
         return cls(notebook_content=d.get('notebook_content', None),
                    notebook_name=d.get('notebook_name', None))
@@ -278,7 +278,7 @@ class CleanRoomTableInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CleanRoomTableInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> CleanRoomTableInfo:
         """Deserializes the CleanRoomTableInfo from a dictionary."""
         return cls(catalog_name=d.get('catalog_name', None),
                    columns=_repeated_dict(d, 'columns', ColumnInfo),
@@ -342,7 +342,7 @@ class ColumnInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ColumnInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> ColumnInfo:
         """Deserializes the ColumnInfo from a dictionary."""
         return cls(comment=d.get('comment', None),
                    mask=_from_dict(d, 'mask', ColumnMask),
@@ -376,7 +376,7 @@ class ColumnMask:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ColumnMask:
+    def from_dict(cls, d: Dict[str, Any]) -> ColumnMask:
         """Deserializes the ColumnMask from a dictionary."""
         return cls(function_name=d.get('function_name', None),
                    using_column_names=d.get('using_column_names', None))
@@ -428,7 +428,7 @@ class CreateCleanRoom:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateCleanRoom:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateCleanRoom:
         """Deserializes the CreateCleanRoom from a dictionary."""
         return cls(comment=d.get('comment', None),
                    name=d.get('name', None),
@@ -459,7 +459,7 @@ class CreateProvider:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateProvider:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateProvider:
         """Deserializes the CreateProvider from a dictionary."""
         return cls(authentication_type=_enum(d, 'authentication_type', AuthenticationType),
                    comment=d.get('comment', None),
@@ -511,7 +511,7 @@ class CreateRecipient:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateRecipient:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateRecipient:
         """Deserializes the CreateRecipient from a dictionary."""
         return cls(authentication_type=_enum(d, 'authentication_type', AuthenticationType),
                    comment=d.get('comment', None),
@@ -539,7 +539,7 @@ class CreateShare:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateShare:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateShare:
         """Deserializes the CreateShare from a dictionary."""
         return cls(comment=d.get('comment', None), name=d.get('name', None))
 
@@ -553,7 +553,7 @@ class DeleteResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteResponse:
         """Deserializes the DeleteResponse from a dictionary."""
         return cls()
 
@@ -567,7 +567,7 @@ class GetActivationUrlInfoResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetActivationUrlInfoResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetActivationUrlInfoResponse:
         """Deserializes the GetActivationUrlInfoResponse from a dictionary."""
         return cls()
 
@@ -584,7 +584,7 @@ class GetRecipientSharePermissionsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetRecipientSharePermissionsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetRecipientSharePermissionsResponse:
         """Deserializes the GetRecipientSharePermissionsResponse from a dictionary."""
         return cls(permissions_out=_repeated_dict(d, 'permissions_out', ShareToPrivilegeAssignment))
 
@@ -601,7 +601,7 @@ class IpAccessList:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> IpAccessList:
+    def from_dict(cls, d: Dict[str, Any]) -> IpAccessList:
         """Deserializes the IpAccessList from a dictionary."""
         return cls(allowed_ip_addresses=d.get('allowed_ip_addresses', None))
 
@@ -623,7 +623,7 @@ class ListCleanRoomsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListCleanRoomsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListCleanRoomsResponse:
         """Deserializes the ListCleanRoomsResponse from a dictionary."""
         return cls(clean_rooms=_repeated_dict(d, 'clean_rooms', CleanRoomInfo),
                    next_page_token=d.get('next_page_token', None))
@@ -641,7 +641,7 @@ class ListProviderSharesResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListProviderSharesResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListProviderSharesResponse:
         """Deserializes the ListProviderSharesResponse from a dictionary."""
         return cls(shares=_repeated_dict(d, 'shares', ProviderShare))
 
@@ -658,7 +658,7 @@ class ListProvidersResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListProvidersResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListProvidersResponse:
         """Deserializes the ListProvidersResponse from a dictionary."""
         return cls(providers=_repeated_dict(d, 'providers', ProviderInfo))
 
@@ -675,7 +675,7 @@ class ListRecipientsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListRecipientsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListRecipientsResponse:
         """Deserializes the ListRecipientsResponse from a dictionary."""
         return cls(recipients=_repeated_dict(d, 'recipients', RecipientInfo))
 
@@ -692,7 +692,7 @@ class ListSharesResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListSharesResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListSharesResponse:
         """Deserializes the ListSharesResponse from a dictionary."""
         return cls(shares=_repeated_dict(d, 'shares', ShareInfo))
 
@@ -709,7 +709,7 @@ class Partition:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Partition:
+    def from_dict(cls, d: Dict[str, Any]) -> Partition:
         """Deserializes the Partition from a dictionary."""
         return cls(values=_repeated_dict(d, 'values', PartitionValue))
 
@@ -741,7 +741,7 @@ class PartitionValue:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PartitionValue:
+    def from_dict(cls, d: Dict[str, Any]) -> PartitionValue:
         """Deserializes the PartitionValue from a dictionary."""
         return cls(name=d.get('name', None),
                    op=_enum(d, 'op', PartitionValueOp),
@@ -817,7 +817,7 @@ class PrivilegeAssignment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PrivilegeAssignment:
+    def from_dict(cls, d: Dict[str, Any]) -> PrivilegeAssignment:
         """Deserializes the PrivilegeAssignment from a dictionary."""
         return cls(principal=d.get('principal', None), privileges=_repeated_enum(d, 'privileges', Privilege))
 
@@ -892,7 +892,7 @@ class ProviderInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ProviderInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> ProviderInfo:
         """Deserializes the ProviderInfo from a dictionary."""
         return cls(authentication_type=_enum(d, 'authentication_type', AuthenticationType),
                    cloud=d.get('cloud', None),
@@ -922,7 +922,7 @@ class ProviderShare:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ProviderShare:
+    def from_dict(cls, d: Dict[str, Any]) -> ProviderShare:
         """Deserializes the ProviderShare from a dictionary."""
         return cls(name=d.get('name', None))
 
@@ -1015,7 +1015,7 @@ class RecipientInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RecipientInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> RecipientInfo:
         """Deserializes the RecipientInfo from a dictionary."""
         return cls(activated=d.get('activated', None),
                    activation_url=d.get('activation_url', None),
@@ -1058,7 +1058,7 @@ class RecipientProfile:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RecipientProfile:
+    def from_dict(cls, d: Dict[str, Any]) -> RecipientProfile:
         """Deserializes the RecipientProfile from a dictionary."""
         return cls(bearer_token=d.get('bearer_token', None),
                    endpoint=d.get('endpoint', None),
@@ -1102,7 +1102,7 @@ class RecipientTokenInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RecipientTokenInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> RecipientTokenInfo:
         """Deserializes the RecipientTokenInfo from a dictionary."""
         return cls(activation_url=d.get('activation_url', None),
                    created_at=d.get('created_at', None),
@@ -1138,7 +1138,7 @@ class RetrieveTokenResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RetrieveTokenResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> RetrieveTokenResponse:
         """Deserializes the RetrieveTokenResponse from a dictionary."""
         return cls(bearer_token=d.get('bearerToken', None),
                    endpoint=d.get('endpoint', None),
@@ -1165,7 +1165,7 @@ class RotateRecipientToken:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RotateRecipientToken:
+    def from_dict(cls, d: Dict[str, Any]) -> RotateRecipientToken:
         """Deserializes the RotateRecipientToken from a dictionary."""
         return cls(existing_token_expire_in_seconds=d.get('existing_token_expire_in_seconds', None),
                    name=d.get('name', None))
@@ -1185,7 +1185,7 @@ class SecurablePropertiesKvPairs:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SecurablePropertiesKvPairs:
+    def from_dict(cls, d: Dict[str, Any]) -> SecurablePropertiesKvPairs:
         """Deserializes the SecurablePropertiesKvPairs from a dictionary."""
         return cls(properties=d.get('properties', None))
 
@@ -1233,7 +1233,7 @@ class ShareInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ShareInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> ShareInfo:
         """Deserializes the ShareInfo from a dictionary."""
         return cls(comment=d.get('comment', None),
                    created_at=d.get('created_at', None),
@@ -1262,7 +1262,7 @@ class ShareToPrivilegeAssignment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ShareToPrivilegeAssignment:
+    def from_dict(cls, d: Dict[str, Any]) -> ShareToPrivilegeAssignment:
         """Deserializes the ShareToPrivilegeAssignment from a dictionary."""
         return cls(privilege_assignments=_repeated_dict(d, 'privilege_assignments', PrivilegeAssignment),
                    share_name=d.get('share_name', None))
@@ -1272,7 +1272,7 @@ class ShareToPrivilegeAssignment:
 class SharedDataObject:
     name: str
     """A fully qualified name that uniquely identifies a data object.
-    
+
     For example, a table's fully qualified name is in the format of `<catalog>.<schema>.<table>`."""
 
     added_at: Optional[int] = None
@@ -1307,7 +1307,7 @@ class SharedDataObject:
     object version that is accessible by clients. If specified, clients can query snapshots or
     changes for versions >= start_version. If not specified, clients can only query starting from
     the version of the object at the time it was added to the share.
-    
+
     NOTE: The start_version should be <= the `current` version of the object."""
 
     status: Optional[SharedDataObjectStatus] = None
@@ -1338,7 +1338,7 @@ class SharedDataObject:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SharedDataObject:
+    def from_dict(cls, d: Dict[str, Any]) -> SharedDataObject:
         """Deserializes the SharedDataObject from a dictionary."""
         return cls(added_at=d.get('added_at', None),
                    added_by=d.get('added_by', None),
@@ -1386,7 +1386,7 @@ class SharedDataObjectUpdate:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SharedDataObjectUpdate:
+    def from_dict(cls, d: Dict[str, Any]) -> SharedDataObjectUpdate:
         """Deserializes the SharedDataObjectUpdate from a dictionary."""
         return cls(action=_enum(d, 'action', SharedDataObjectUpdateAction),
                    data_object=_from_dict(d, 'data_object', SharedDataObject))
@@ -1424,7 +1424,7 @@ class UpdateCleanRoom:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateCleanRoom:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateCleanRoom:
         """Deserializes the UpdateCleanRoom from a dictionary."""
         return cls(catalog_updates=_repeated_dict(d, 'catalog_updates', CleanRoomCatalogUpdate),
                    comment=d.get('comment', None),
@@ -1441,7 +1441,7 @@ class UpdatePermissionsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdatePermissionsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdatePermissionsResponse:
         """Deserializes the UpdatePermissionsResponse from a dictionary."""
         return cls()
 
@@ -1474,7 +1474,7 @@ class UpdateProvider:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateProvider:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateProvider:
         """Deserializes the UpdateProvider from a dictionary."""
         return cls(comment=d.get('comment', None),
                    name=d.get('name', None),
@@ -1517,7 +1517,7 @@ class UpdateRecipient:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateRecipient:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateRecipient:
         """Deserializes the UpdateRecipient from a dictionary."""
         return cls(comment=d.get('comment', None),
                    ip_access_list=_from_dict(d, 'ip_access_list', IpAccessList),
@@ -1536,7 +1536,7 @@ class UpdateResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateResponse:
         """Deserializes the UpdateResponse from a dictionary."""
         return cls()
 
@@ -1569,7 +1569,7 @@ class UpdateShare:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateShare:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateShare:
         """Deserializes the UpdateShare from a dictionary."""
         return cls(comment=d.get('comment', None),
                    name=d.get('name', None),
@@ -1594,7 +1594,7 @@ class UpdateSharePermissions:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateSharePermissions:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateSharePermissions:
         """Deserializes the UpdateSharePermissions from a dictionary."""
         return cls(changes=_repeated_dict(d, 'changes', catalog.PermissionsChange), name=d.get('name', None))
 
@@ -1602,7 +1602,7 @@ class UpdateSharePermissions:
 class CleanRoomsAPI:
     """A clean room is a secure, privacy-protecting environment where two or more parties can share sensitive
     enterprise data, including customer data, for measurements, insights, activation and other use cases.
-    
+
     To create clean rooms, you must be a metastore admin or a user with the **CREATE_CLEAN_ROOM** privilege."""
 
     def __init__(self, api_client):
@@ -1614,17 +1614,17 @@ class CleanRoomsAPI:
                *,
                comment: Optional[str] = None) -> CleanRoomInfo:
         """Create a clean room.
-        
+
         Creates a new clean room with specified colaborators. The caller must be a metastore admin or have the
         **CREATE_CLEAN_ROOM** privilege on the metastore.
-        
+
         :param name: str
           Name of the clean room.
         :param remote_detailed_info: :class:`CentralCleanRoomInfo`
           Central clean room details.
         :param comment: str (optional)
           User-provided free-form text description.
-        
+
         :returns: :class:`CleanRoomInfo`
         """
         body = {}
@@ -1638,13 +1638,13 @@ class CleanRoomsAPI:
 
     def delete(self, name: str):
         """Delete a clean room.
-        
+
         Deletes a data object clean room from the metastore. The caller must be an owner of the clean room.
-        
+
         :param name: str
           The name of the clean room.
-        
-        
+
+
         """
 
         headers = {'Accept': 'application/json', }
@@ -1653,15 +1653,15 @@ class CleanRoomsAPI:
 
     def get(self, name: str, *, include_remote_details: Optional[bool] = None) -> CleanRoomInfo:
         """Get a clean room.
-        
+
         Gets a data object clean room from the metastore. The caller must be a metastore admin or the owner of
         the clean room.
-        
+
         :param name: str
           The name of the clean room.
         :param include_remote_details: bool (optional)
           Whether to include remote details (central) on the clean room.
-        
+
         :returns: :class:`CleanRoomInfo`
         """
 
@@ -1677,11 +1677,11 @@ class CleanRoomsAPI:
              max_results: Optional[int] = None,
              page_token: Optional[str] = None) -> Iterator[CleanRoomInfo]:
         """List clean rooms.
-        
+
         Gets an array of data object clean rooms from the metastore. The caller must be a metastore admin or
         the owner of the clean room. There is no guarantee of a specific ordering of the elements in the
         array.
-        
+
         :param max_results: int (optional)
           Maximum number of clean rooms to return. If not set, all the clean rooms are returned (not
           recommended). - when set to a value greater than 0, the page length is the minimum of this value and
@@ -1689,7 +1689,7 @@ class CleanRoomsAPI:
           (recommended); - when set to a value less than 0, an invalid parameter error is returned;
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
-        
+
         :returns: Iterator over :class:`CleanRoomInfo`
         """
 
@@ -1714,21 +1714,21 @@ class CleanRoomsAPI:
                comment: Optional[str] = None,
                owner: Optional[str] = None) -> CleanRoomInfo:
         """Update a clean room.
-        
+
         Updates the clean room with the changes and data objects in the request. The caller must be the owner
         of the clean room or a metastore admin.
-        
+
         When the caller is a metastore admin, only the __owner__ field can be updated.
-        
+
         In the case that the clean room name is changed **updateCleanRoom** requires that the caller is both
         the clean room owner and a metastore admin.
-        
+
         For each table that is added through this method, the clean room owner must also have **SELECT**
         privilege on the table. The privilege must be maintained indefinitely for recipients to be able to
         access the table. Typically, you should use a group as the clean room owner.
-        
+
         Table removals through **update** do not require additional privileges.
-        
+
         :param name: str
           The name of the clean room.
         :param catalog_updates: List[:class:`CleanRoomCatalogUpdate`] (optional)
@@ -1737,7 +1737,7 @@ class CleanRoomsAPI:
           User-provided free-form text description.
         :param owner: str (optional)
           Username of current owner of clean room.
-        
+
         :returns: :class:`CleanRoomInfo`
         """
         body = {}
@@ -1764,10 +1764,10 @@ class ProvidersAPI:
                comment: Optional[str] = None,
                recipient_profile_str: Optional[str] = None) -> ProviderInfo:
         """Create an auth provider.
-        
+
         Creates a new authentication provider minimally based on a name and authentication type. The caller
         must be an admin on the metastore.
-        
+
         :param name: str
           The name of the Provider.
         :param authentication_type: :class:`AuthenticationType`
@@ -1776,7 +1776,7 @@ class ProvidersAPI:
           Description about the provider.
         :param recipient_profile_str: str (optional)
           This field is required when the __authentication_type__ is **TOKEN** or not provided.
-        
+
         :returns: :class:`ProviderInfo`
         """
         body = {}
@@ -1791,14 +1791,14 @@ class ProvidersAPI:
 
     def delete(self, name: str):
         """Delete a provider.
-        
+
         Deletes an authentication provider, if the caller is a metastore admin or is the owner of the
         provider.
-        
+
         :param name: str
           Name of the provider.
-        
-        
+
+
         """
 
         headers = {'Accept': 'application/json', }
@@ -1807,13 +1807,13 @@ class ProvidersAPI:
 
     def get(self, name: str) -> ProviderInfo:
         """Get a provider.
-        
+
         Gets a specific authentication provider. The caller must supply the name of the provider, and must
         either be a metastore admin or the owner of the provider.
-        
+
         :param name: str
           Name of the provider.
-        
+
         :returns: :class:`ProviderInfo`
         """
 
@@ -1824,15 +1824,15 @@ class ProvidersAPI:
 
     def list(self, *, data_provider_global_metastore_id: Optional[str] = None) -> Iterator[ProviderInfo]:
         """List providers.
-        
+
         Gets an array of available authentication providers. The caller must either be a metastore admin or
         the owner of the providers. Providers not owned by the caller are not included in the response. There
         is no guarantee of a specific ordering of the elements in the array.
-        
+
         :param data_provider_global_metastore_id: str (optional)
           If not provided, all providers will be returned. If no providers exist with this ID, no results will
           be returned.
-        
+
         :returns: Iterator over :class:`ProviderInfo`
         """
 
@@ -1847,14 +1847,14 @@ class ProvidersAPI:
 
     def list_shares(self, name: str) -> Iterator[ProviderShare]:
         """List shares by Provider.
-        
+
         Gets an array of a specified provider's shares within the metastore where:
-        
+
         * the caller is a metastore admin, or * the caller is the owner.
-        
+
         :param name: str
           Name of the provider in which to list shares.
-        
+
         :returns: Iterator over :class:`ProviderShare`
         """
 
@@ -1872,11 +1872,11 @@ class ProvidersAPI:
                owner: Optional[str] = None,
                recipient_profile_str: Optional[str] = None) -> ProviderInfo:
         """Update a provider.
-        
+
         Updates the information for an authentication provider, if the caller is a metastore admin or is the
         owner of the provider. If the update changes the provider name, the caller must be both a metastore
         admin and the owner of the provider.
-        
+
         :param name: str
           Name of the provider.
         :param comment: str (optional)
@@ -1887,7 +1887,7 @@ class ProvidersAPI:
           Username of Provider owner.
         :param recipient_profile_str: str (optional)
           This field is required when the __authentication_type__ is **TOKEN** or not provided.
-        
+
         :returns: :class:`ProviderInfo`
         """
         body = {}
@@ -1906,7 +1906,7 @@ class RecipientActivationAPI:
     the authentication type of `TOKEN`. The data recipient follows the activation link shared by the data
     provider to download the credential file that includes the access token. The recipient will then use the
     credential file to establish a secure connection with the provider to receive the shared data.
-    
+
     Note that you can download the credential file only once. Recipients should treat the downloaded
     credential as a secret and must not share it outside of their organization."""
 
@@ -1915,13 +1915,13 @@ class RecipientActivationAPI:
 
     def get_activation_url_info(self, activation_url: str):
         """Get a share activation URL.
-        
+
         Gets an activation URL for a share.
-        
+
         :param activation_url: str
           The one time activation url. It also accepts activation token.
-        
-        
+
+
         """
 
         headers = {'Accept': 'application/json', }
@@ -1932,12 +1932,12 @@ class RecipientActivationAPI:
 
     def retrieve_token(self, activation_url: str) -> RetrieveTokenResponse:
         """Get an access token.
-        
+
         Retrieve access token with an activation url. This is a public API without any authentication.
-        
+
         :param activation_url: str
           The one time activation url. It also accepts activation token.
-        
+
         :returns: :class:`RetrieveTokenResponse`
         """
 
@@ -1953,12 +1953,12 @@ class RecipientsAPI:
     """A recipient is an object you create using :method:recipients/create to represent an organization which you
     want to allow access shares. The way how sharing works differs depending on whether or not your recipient
     has access to a Databricks workspace that is enabled for Unity Catalog:
-    
+
     - For recipients with access to a Databricks workspace that is enabled for Unity Catalog, you can create a
     recipient object along with a unique sharing identifier you get from the recipient. The sharing identifier
     is the key identifier that enables the secure connection. This sharing mode is called
     **Databricks-to-Databricks sharing**.
-    
+
     - For recipients without access to a Databricks workspace that is enabled for Unity Catalog, when you
     create a recipient object, Databricks generates an activation link you can send to the recipient. The
     recipient follows the activation link to download the credential file, and then uses the credential file
@@ -1978,10 +1978,10 @@ class RecipientsAPI:
                properties_kvpairs: Optional[SecurablePropertiesKvPairs] = None,
                sharing_code: Optional[str] = None) -> RecipientInfo:
         """Create a share recipient.
-        
+
         Creates a new recipient with the delta sharing authentication type in the metastore. The caller must
         be a metastore admin or has the **CREATE_RECIPIENT** privilege on the metastore.
-        
+
         :param name: str
           Name of Recipient.
         :param authentication_type: :class:`AuthenticationType`
@@ -2001,7 +2001,7 @@ class RecipientsAPI:
         :param sharing_code: str (optional)
           The one-time sharing code provided by the data recipient. This field is required when the
           __authentication_type__ is **DATABRICKS**.
-        
+
         :returns: :class:`RecipientInfo`
         """
         body = {}
@@ -2021,13 +2021,13 @@ class RecipientsAPI:
 
     def delete(self, name: str):
         """Delete a share recipient.
-        
+
         Deletes the specified recipient from the metastore. The caller must be the owner of the recipient.
-        
+
         :param name: str
           Name of the recipient.
-        
-        
+
+
         """
 
         headers = {'Accept': 'application/json', }
@@ -2036,14 +2036,14 @@ class RecipientsAPI:
 
     def get(self, name: str) -> RecipientInfo:
         """Get a share recipient.
-        
+
         Gets a share recipient from the metastore if:
-        
+
         * the caller is the owner of the share recipient, or: * is a metastore admin
-        
+
         :param name: str
           Name of the recipient.
-        
+
         :returns: :class:`RecipientInfo`
         """
 
@@ -2054,16 +2054,16 @@ class RecipientsAPI:
 
     def list(self, *, data_recipient_global_metastore_id: Optional[str] = None) -> Iterator[RecipientInfo]:
         """List share recipients.
-        
+
         Gets an array of all share recipients within the current metastore where:
-        
+
         * the caller is a metastore admin, or * the caller is the owner. There is no guarantee of a specific
         ordering of the elements in the array.
-        
+
         :param data_recipient_global_metastore_id: str (optional)
           If not provided, all recipients will be returned. If no recipients exist with this ID, no results
           will be returned.
-        
+
         :returns: Iterator over :class:`RecipientInfo`
         """
 
@@ -2078,17 +2078,17 @@ class RecipientsAPI:
 
     def rotate_token(self, name: str, existing_token_expire_in_seconds: int) -> RecipientInfo:
         """Rotate a token.
-        
+
         Refreshes the specified recipient's delta sharing authentication token with the provided token info.
         The caller must be the owner of the recipient.
-        
+
         :param name: str
           The name of the recipient.
         :param existing_token_expire_in_seconds: int
           The expiration time of the bearer token in ISO 8601 format. This will set the expiration_time of
           existing token only to a smaller timestamp, it cannot extend the expiration_time. Use 0 to expire
           the existing token immediately, negative number will return an error.
-        
+
         :returns: :class:`RecipientInfo`
         """
         body = {}
@@ -2104,13 +2104,13 @@ class RecipientsAPI:
 
     def share_permissions(self, name: str) -> GetRecipientSharePermissionsResponse:
         """Get recipient share permissions.
-        
+
         Gets the share permissions for the specified Recipient. The caller must be a metastore admin or the
         owner of the Recipient.
-        
+
         :param name: str
           The name of the Recipient.
-        
+
         :returns: :class:`GetRecipientSharePermissionsResponse`
         """
 
@@ -2130,11 +2130,11 @@ class RecipientsAPI:
                owner: Optional[str] = None,
                properties_kvpairs: Optional[SecurablePropertiesKvPairs] = None):
         """Update a share recipient.
-        
+
         Updates an existing recipient in the metastore. The caller must be a metastore admin or the owner of
         the recipient. If the recipient name will be updated, the user must be both a metastore admin and the
         owner of the recipient.
-        
+
         :param name: str
           Name of the recipient.
         :param comment: str (optional)
@@ -2149,8 +2149,8 @@ class RecipientsAPI:
           Recipient properties as map of string key-value pairs. When provided in update request, the
           specified properties will override the existing properties. To add and remove properties, one would
           need to perform a read-modify-write.
-        
-        
+
+
         """
         body = {}
         if comment is not None: body['comment'] = comment
@@ -2174,15 +2174,15 @@ class SharesAPI:
 
     def create(self, name: str, *, comment: Optional[str] = None) -> ShareInfo:
         """Create a share.
-        
+
         Creates a new share for data objects. Data objects can be added after creation with **update**. The
         caller must be a metastore admin or have the **CREATE_SHARE** privilege on the metastore.
-        
+
         :param name: str
           Name of the share.
         :param comment: str (optional)
           User-provided free-form text description.
-        
+
         :returns: :class:`ShareInfo`
         """
         body = {}
@@ -2195,13 +2195,13 @@ class SharesAPI:
 
     def delete(self, name: str):
         """Delete a share.
-        
+
         Deletes a data object share from the metastore. The caller must be an owner of the share.
-        
+
         :param name: str
           The name of the share.
-        
-        
+
+
         """
 
         headers = {'Accept': 'application/json', }
@@ -2210,15 +2210,15 @@ class SharesAPI:
 
     def get(self, name: str, *, include_shared_data: Optional[bool] = None) -> ShareInfo:
         """Get a share.
-        
+
         Gets a data object share from the metastore. The caller must be a metastore admin or the owner of the
         share.
-        
+
         :param name: str
           The name of the share.
         :param include_shared_data: bool (optional)
           Query for data to include in the share.
-        
+
         :returns: :class:`ShareInfo`
         """
 
@@ -2231,10 +2231,10 @@ class SharesAPI:
 
     def list(self) -> Iterator[ShareInfo]:
         """List shares.
-        
+
         Gets an array of data object shares from the metastore. The caller must be a metastore admin or the
         owner of the share. There is no guarantee of a specific ordering of the elements in the array.
-        
+
         :returns: Iterator over :class:`ShareInfo`
         """
 
@@ -2246,13 +2246,13 @@ class SharesAPI:
 
     def share_permissions(self, name: str) -> catalog.PermissionsList:
         """Get permissions.
-        
+
         Gets the permissions for a data share from the metastore. The caller must be a metastore admin or the
         owner of the share.
-        
+
         :param name: str
           The name of the share.
-        
+
         :returns: :class:`PermissionsList`
         """
 
@@ -2269,21 +2269,21 @@ class SharesAPI:
                owner: Optional[str] = None,
                updates: Optional[List[SharedDataObjectUpdate]] = None) -> ShareInfo:
         """Update a share.
-        
+
         Updates the share with the changes and data objects in the request. The caller must be the owner of
         the share or a metastore admin.
-        
+
         When the caller is a metastore admin, only the __owner__ field can be updated.
-        
+
         In the case that the share name is changed, **updateShare** requires that the caller is both the share
         owner and a metastore admin.
-        
+
         For each table that is added through this method, the share owner must also have **SELECT** privilege
         on the table. This privilege must be maintained indefinitely for recipients to be able to access the
         table. Typically, you should use a group as the share owner.
-        
+
         Table removals through **update** do not require additional privileges.
-        
+
         :param name: str
           The name of the share.
         :param comment: str (optional)
@@ -2294,7 +2294,7 @@ class SharesAPI:
           Username of current owner of share.
         :param updates: List[:class:`SharedDataObjectUpdate`] (optional)
           Array of shared data object updates.
-        
+
         :returns: :class:`ShareInfo`
         """
         body = {}
@@ -2309,19 +2309,19 @@ class SharesAPI:
 
     def update_permissions(self, name: str, *, changes: Optional[List[catalog.PermissionsChange]] = None):
         """Update permissions.
-        
+
         Updates the permissions for a data share in the metastore. The caller must be a metastore admin or an
         owner of the share.
-        
+
         For new recipient grants, the user must also be the owner of the recipients. recipient revocations do
         not require additional privileges.
-        
+
         :param name: str
           The name of the share.
         :param changes: List[:class:`PermissionsChange`] (optional)
           Array of permission changes.
-        
-        
+
+
         """
         body = {}
         if changes is not None: body['changes'] = [v.as_dict() for v in changes]

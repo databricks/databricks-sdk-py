@@ -46,7 +46,7 @@ class BaseJob:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> BaseJob:
+    def from_dict(cls, d: Dict[str, Any]) -> BaseJob:
         """Deserializes the BaseJob from a dictionary."""
         return cls(created_time=d.get('created_time', None),
                    creator_user_name=d.get('creator_user_name', None),
@@ -94,10 +94,10 @@ class BaseRun:
     git_source: Optional[GitSource] = None
     """An optional specification for a remote Git repository containing the source code used by tasks.
     Version-controlled source code is supported by notebook, dbt, Python script, and SQL File tasks.
-    
+
     If `git_source` is set, these tasks retrieve the file from the remote repository by default.
     However, this behavior can be overridden by setting `source` to `WORKSPACE` on the task.
-    
+
     Note: dbt and SQL File tasks support only version-controlled sources. If dbt or SQL File tasks
     are used, `git_source` must be defined on the job."""
 
@@ -138,7 +138,7 @@ class BaseRun:
     """* `JOB_RUN`: Normal job run. A run created with :method:jobs/runNow. * `WORKFLOW_RUN`: Workflow
     run. A run created with [dbutils.notebook.run]. * `SUBMIT_RUN`: Submit run. A run created with
     :method:jobs/submit.
-    
+
     [dbutils.notebook.run]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-workflow"""
 
     schedule: Optional[CronSchedule] = None
@@ -165,7 +165,7 @@ class BaseRun:
 
     trigger: Optional[TriggerType] = None
     """The type of trigger that fired this run.
-    
+
     * `PERIODIC`: Schedules that periodically trigger runs, such as a cron scheduler. * `ONE_TIME`:
     One time triggers that fire a single run. This occurs you triggered a single run on demand
     through the UI or the API. * `RETRY`: Indicates a run that is triggered as a retry of a
@@ -209,7 +209,7 @@ class BaseRun:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> BaseRun:
+    def from_dict(cls, d: Dict[str, Any]) -> BaseRun:
         """Deserializes the BaseRun from a dictionary."""
         return cls(attempt_number=d.get('attempt_number', None),
                    cleanup_duration=d.get('cleanup_duration', None),
@@ -256,7 +256,7 @@ class CancelAllRuns:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CancelAllRuns:
+    def from_dict(cls, d: Dict[str, Any]) -> CancelAllRuns:
         """Deserializes the CancelAllRuns from a dictionary."""
         return cls(all_queued_runs=d.get('all_queued_runs', None), job_id=d.get('job_id', None))
 
@@ -270,7 +270,7 @@ class CancelAllRunsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CancelAllRunsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CancelAllRunsResponse:
         """Deserializes the CancelAllRunsResponse from a dictionary."""
         return cls()
 
@@ -287,7 +287,7 @@ class CancelRun:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CancelRun:
+    def from_dict(cls, d: Dict[str, Any]) -> CancelRun:
         """Deserializes the CancelRun from a dictionary."""
         return cls(run_id=d.get('run_id', None))
 
@@ -301,7 +301,7 @@ class CancelRunResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CancelRunResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CancelRunResponse:
         """Deserializes the CancelRunResponse from a dictionary."""
         return cls()
 
@@ -314,7 +314,7 @@ class ClusterInstance:
     created. This value can be used to view logs by browsing to
     `/#setting/sparkui/$cluster_id/driver-logs`. The logs continue to be available after the run
     completes.
-    
+
     The response won’t include this field if the identifier is not available yet."""
 
     spark_context_id: Optional[str] = None
@@ -322,7 +322,7 @@ class ClusterInstance:
     run begins execution. This value can be used to view the Spark UI by browsing to
     `/#setting/sparkui/$cluster_id/$spark_context_id`. The Spark UI continues to be available after
     the run has completed.
-    
+
     The response won’t include this field if the identifier is not available yet."""
 
     def as_dict(self) -> dict:
@@ -333,7 +333,7 @@ class ClusterInstance:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ClusterInstance:
+    def from_dict(cls, d: Dict[str, Any]) -> ClusterInstance:
         """Deserializes the ClusterInstance from a dictionary."""
         return cls(cluster_id=d.get('cluster_id', None), spark_context_id=d.get('spark_context_id', None))
 
@@ -361,7 +361,7 @@ class ClusterSpec:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ClusterSpec:
+    def from_dict(cls, d: Dict[str, Any]) -> ClusterSpec:
         """Deserializes the ClusterSpec from a dictionary."""
         return cls(existing_cluster_id=d.get('existing_cluster_id', None),
                    libraries=_repeated_dict(d, 'libraries', compute.Library),
@@ -386,7 +386,7 @@ class ConditionTask:
     `LESS_THAN`, `LESS_THAN_OR_EQUAL` operators perform numeric comparison of their operands.
     `“12.0” >= “12”` will evaluate to `true`, `“10.0” >= “12”` will evaluate to
     `false`.
-    
+
     The boolean comparison to task values can be implemented with operators `EQUAL_TO`, `NOT_EQUAL`.
     If a task value was set to a boolean value, it will be serialized to `“true”` or
     `“false”` for the comparison."""
@@ -404,7 +404,7 @@ class ConditionTask:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ConditionTask:
+    def from_dict(cls, d: Dict[str, Any]) -> ConditionTask:
         """Deserializes the ConditionTask from a dictionary."""
         return cls(left=d.get('left', None), op=_enum(d, 'op', ConditionTaskOp), right=d.get('right', None))
 
@@ -415,7 +415,7 @@ class ConditionTaskOp(Enum):
     `LESS_THAN`, `LESS_THAN_OR_EQUAL` operators perform numeric comparison of their operands.
     `“12.0” >= “12”` will evaluate to `true`, `“10.0” >= “12”` will evaluate to
     `false`.
-    
+
     The boolean comparison to task values can be implemented with operators `EQUAL_TO`, `NOT_EQUAL`.
     If a task value was set to a boolean value, it will be serialized to `“true”` or
     `“false”` for the comparison."""
@@ -440,7 +440,7 @@ class Continuous:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Continuous:
+    def from_dict(cls, d: Dict[str, Any]) -> Continuous:
         """Deserializes the Continuous from a dictionary."""
         return cls(pause_status=_enum(d, 'pause_status', PauseStatus))
 
@@ -465,7 +465,7 @@ class CreateJob:
 
     edit_mode: Optional[CreateJobEditMode] = None
     """Edit mode of the job.
-    
+
     * `UI_LOCKED`: The job is in a locked UI state and cannot be modified. * `EDITABLE`: The job is
     in an editable state and can be modified."""
 
@@ -480,10 +480,10 @@ class CreateJob:
     git_source: Optional[GitSource] = None
     """An optional specification for a remote Git repository containing the source code used by tasks.
     Version-controlled source code is supported by notebook, dbt, Python script, and SQL File tasks.
-    
+
     If `git_source` is set, these tasks retrieve the file from the remote repository by default.
     However, this behavior can be overridden by setting `source` to `WORKSPACE` on the task.
-    
+
     Note: dbt and SQL File tasks support only version-controlled sources. If dbt or SQL File tasks
     are used, `git_source` must be defined on the job."""
 
@@ -497,16 +497,16 @@ class CreateJob:
 
     max_concurrent_runs: Optional[int] = None
     """An optional maximum allowed number of concurrent runs of the job.
-    
+
     Set this value if you want to be able to execute multiple runs of the same job concurrently.
     This is useful for example if you trigger your job on a frequent schedule and want to allow
     consecutive runs to overlap with each other, or if you want to trigger multiple runs which
     differ by their input parameters.
-    
+
     This setting affects only new runs. For example, suppose the job’s concurrency is 4 and there
     are 4 concurrent active runs. Then setting the concurrency to 3 won’t kill any of the active
     runs. However, from then on, new runs are skipped unless there are fewer than 3 active runs.
-    
+
     This value cannot exceed 1000. Setting this value to `0` causes all new runs to be skipped."""
 
     name: Optional[str] = None
@@ -526,7 +526,7 @@ class CreateJob:
     """Write-only setting, available only in Create/Update/Reset and Submit calls. Specifies the user
     or service principal that the job runs as. If not specified, the job runs as the user who
     created the job.
-    
+
     Only `user_name` or `service_principal_name` can be specified. If both are specified, an error
     is thrown."""
 
@@ -583,7 +583,7 @@ class CreateJob:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateJob:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateJob:
         """Deserializes the CreateJob from a dictionary."""
         return cls(access_control_list=_repeated_dict(d, 'access_control_list', iam.AccessControlRequest),
                    compute=_repeated_dict(d, 'compute', JobCompute),
@@ -612,7 +612,7 @@ class CreateJob:
 
 class CreateJobEditMode(Enum):
     """Edit mode of the job.
-    
+
     * `UI_LOCKED`: The job is in a locked UI state and cannot be modified. * `EDITABLE`: The job is
     in an editable state and can be modified."""
 
@@ -632,7 +632,7 @@ class CreateResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateResponse:
         """Deserializes the CreateResponse from a dictionary."""
         return cls(job_id=d.get('job_id', None))
 
@@ -642,13 +642,13 @@ class CronSchedule:
     quartz_cron_expression: str
     """A Cron expression using Quartz syntax that describes the schedule for a job. See [Cron Trigger]
     for details. This field is required."
-    
+
     [Cron Trigger]: http://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html"""
 
     timezone_id: str
     """A Java timezone ID. The schedule for a job is resolved with respect to this timezone. See [Java
     TimeZone] for details. This field is required.
-    
+
     [Java TimeZone]: https://docs.oracle.com/javase/7/docs/api/java/util/TimeZone.html"""
 
     pause_status: Optional[PauseStatus] = None
@@ -664,7 +664,7 @@ class CronSchedule:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CronSchedule:
+    def from_dict(cls, d: Dict[str, Any]) -> CronSchedule:
         """Deserializes the CronSchedule from a dictionary."""
         return cls(pause_status=_enum(d, 'pause_status', PauseStatus),
                    quartz_cron_expression=d.get('quartz_cron_expression', None),
@@ -688,7 +688,7 @@ class DbtOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DbtOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> DbtOutput:
         """Deserializes the DbtOutput from a dictionary."""
         return cls(artifacts_headers=d.get('artifacts_headers', None),
                    artifacts_link=d.get('artifacts_link', None))
@@ -722,7 +722,7 @@ class DbtTask:
     retrieved from the local <Databricks> workspace. When set to `GIT`, the project will be
     retrieved from a Git repository defined in `git_source`. If the value is empty, the task will
     use `GIT` if `git_source` is defined and `WORKSPACE` otherwise.
-    
+
     * `WORKSPACE`: Project is located in <Databricks> workspace. * `GIT`: Project is located in
     cloud Git provider."""
 
@@ -744,7 +744,7 @@ class DbtTask:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DbtTask:
+    def from_dict(cls, d: Dict[str, Any]) -> DbtTask:
         """Deserializes the DbtTask from a dictionary."""
         return cls(catalog=d.get('catalog', None),
                    commands=d.get('commands', None),
@@ -767,7 +767,7 @@ class DeleteJob:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteJob:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteJob:
         """Deserializes the DeleteJob from a dictionary."""
         return cls(job_id=d.get('job_id', None))
 
@@ -781,7 +781,7 @@ class DeleteResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteResponse:
         """Deserializes the DeleteResponse from a dictionary."""
         return cls()
 
@@ -798,7 +798,7 @@ class DeleteRun:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteRun:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteRun:
         """Deserializes the DeleteRun from a dictionary."""
         return cls(run_id=d.get('run_id', None))
 
@@ -812,7 +812,7 @@ class DeleteRunResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteRunResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteRunResponse:
         """Deserializes the DeleteRunResponse from a dictionary."""
         return cls()
 
@@ -822,7 +822,7 @@ class ExportRunOutput:
     views: Optional[List[ViewItem]] = None
     """The exported content in HTML format (one for every view item). To extract the HTML notebook from
     the JSON response, download and run this [Python script].
-    
+
     [Python script]: https://docs.databricks.com/en/_static/examples/extract.py"""
 
     def as_dict(self) -> dict:
@@ -832,7 +832,7 @@ class ExportRunOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ExportRunOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> ExportRunOutput:
         """Deserializes the ExportRunOutput from a dictionary."""
         return cls(views=_repeated_dict(d, 'views', ViewItem))
 
@@ -863,7 +863,7 @@ class FileArrivalTriggerConfiguration:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> FileArrivalTriggerConfiguration:
+    def from_dict(cls, d: Dict[str, Any]) -> FileArrivalTriggerConfiguration:
         """Deserializes the FileArrivalTriggerConfiguration from a dictionary."""
         return cls(min_time_between_triggers_seconds=d.get('min_time_between_triggers_seconds', None),
                    url=d.get('url', None),
@@ -886,7 +886,7 @@ class ForEachStats:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ForEachStats:
+    def from_dict(cls, d: Dict[str, Any]) -> ForEachStats:
         """Deserializes the ForEachStats from a dictionary."""
         return cls(error_message_stats=_from_dict(d, 'error_message_stats', ForEachTaskErrorMessageStats),
                    task_run_stats=_from_dict(d, 'task_run_stats', ForEachTaskTaskRunStats))
@@ -911,7 +911,7 @@ class ForEachTask:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ForEachTask:
+    def from_dict(cls, d: Dict[str, Any]) -> ForEachTask:
         """Deserializes the ForEachTask from a dictionary."""
         return cls(concurrency=d.get('concurrency', None),
                    inputs=d.get('inputs', None),
@@ -934,7 +934,7 @@ class ForEachTaskErrorMessageStats:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ForEachTaskErrorMessageStats:
+    def from_dict(cls, d: Dict[str, Any]) -> ForEachTaskErrorMessageStats:
         """Deserializes the ForEachTaskErrorMessageStats from a dictionary."""
         return cls(count=d.get('count', None), error_message=d.get('error_message', None))
 
@@ -971,7 +971,7 @@ class ForEachTaskTaskRunStats:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ForEachTaskTaskRunStats:
+    def from_dict(cls, d: Dict[str, Any]) -> ForEachTaskTaskRunStats:
         """Deserializes the ForEachTaskTaskRunStats from a dictionary."""
         return cls(active_iterations=d.get('active_iterations', None),
                    completed_iterations=d.get('completed_iterations', None),
@@ -999,7 +999,7 @@ class GetJobPermissionLevelsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetJobPermissionLevelsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetJobPermissionLevelsResponse:
         """Deserializes the GetJobPermissionLevelsResponse from a dictionary."""
         return cls(permission_levels=_repeated_dict(d, 'permission_levels', JobPermissionsDescription))
 
@@ -1033,7 +1033,7 @@ class GitSnapshot:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GitSnapshot:
+    def from_dict(cls, d: Dict[str, Any]) -> GitSnapshot:
         """Deserializes the GitSnapshot from a dictionary."""
         return cls(used_commit=d.get('used_commit', None))
 
@@ -1042,10 +1042,10 @@ class GitSnapshot:
 class GitSource:
     """An optional specification for a remote Git repository containing the source code used by tasks.
     Version-controlled source code is supported by notebook, dbt, Python script, and SQL File tasks.
-    
+
     If `git_source` is set, these tasks retrieve the file from the remote repository by default.
     However, this behavior can be overridden by setting `source` to `WORKSPACE` on the task.
-    
+
     Note: dbt and SQL File tasks support only version-controlled sources. If dbt or SQL File tasks
     are used, `git_source` must be defined on the job."""
 
@@ -1087,7 +1087,7 @@ class GitSource:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GitSource:
+    def from_dict(cls, d: Dict[str, Any]) -> GitSource:
         """Deserializes the GitSource from a dictionary."""
         return cls(git_branch=d.get('git_branch', None),
                    git_commit=d.get('git_commit', None),
@@ -1114,7 +1114,7 @@ class Job:
     """The email of an active workspace user or the application ID of a service principal that the job
     runs as. This value can be changed by setting the `run_as` field when creating or updating a
     job.
-    
+
     By default, `run_as_user_name` is based on the current job settings and is set to the creator of
     the job if job access control is disabled or to the user with the `is_owner` permission if job
     access control is enabled."""
@@ -1134,7 +1134,7 @@ class Job:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Job:
+    def from_dict(cls, d: Dict[str, Any]) -> Job:
         """Deserializes the Job from a dictionary."""
         return cls(created_time=d.get('created_time', None),
                    creator_user_name=d.get('creator_user_name', None),
@@ -1168,7 +1168,7 @@ class JobAccessControlRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> JobAccessControlRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> JobAccessControlRequest:
         """Deserializes the JobAccessControlRequest from a dictionary."""
         return cls(group_name=d.get('group_name', None),
                    permission_level=_enum(d, 'permission_level', JobPermissionLevel),
@@ -1205,7 +1205,7 @@ class JobAccessControlResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> JobAccessControlResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> JobAccessControlResponse:
         """Deserializes the JobAccessControlResponse from a dictionary."""
         return cls(all_permissions=_repeated_dict(d, 'all_permissions', JobPermission),
                    display_name=d.get('display_name', None),
@@ -1232,7 +1232,7 @@ class JobCluster:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> JobCluster:
+    def from_dict(cls, d: Dict[str, Any]) -> JobCluster:
         """Deserializes the JobCluster from a dictionary."""
         return cls(job_cluster_key=d.get('job_cluster_key', None),
                    new_cluster=_from_dict(d, 'new_cluster', compute.ClusterSpec))
@@ -1255,7 +1255,7 @@ class JobCompute:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> JobCompute:
+    def from_dict(cls, d: Dict[str, Any]) -> JobCompute:
         """Deserializes the JobCompute from a dictionary."""
         return cls(compute_key=d.get('compute_key', None), spec=_from_dict(d, 'spec', compute.ComputeSpec))
 
@@ -1264,7 +1264,7 @@ class JobCompute:
 class JobDeployment:
     kind: JobDeploymentKind
     """The kind of deployment that manages the job.
-    
+
     * `BUNDLE`: The job is managed by Databricks Asset Bundle."""
 
     metadata_file_path: Optional[str] = None
@@ -1278,7 +1278,7 @@ class JobDeployment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> JobDeployment:
+    def from_dict(cls, d: Dict[str, Any]) -> JobDeployment:
         """Deserializes the JobDeployment from a dictionary."""
         return cls(kind=_enum(d, 'kind', JobDeploymentKind),
                    metadata_file_path=d.get('metadata_file_path', None))
@@ -1286,7 +1286,7 @@ class JobDeployment:
 
 class JobDeploymentKind(Enum):
     """The kind of deployment that manages the job.
-    
+
     * `BUNDLE`: The job is managed by Databricks Asset Bundle."""
 
     BUNDLE = 'BUNDLE'
@@ -1334,7 +1334,7 @@ class JobEmailNotifications:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> JobEmailNotifications:
+    def from_dict(cls, d: Dict[str, Any]) -> JobEmailNotifications:
         """Deserializes the JobEmailNotifications from a dictionary."""
         return cls(no_alert_for_skipped_runs=d.get('no_alert_for_skipped_runs', None),
                    on_duration_warning_threshold_exceeded=d.get('on_duration_warning_threshold_exceeded',
@@ -1364,7 +1364,7 @@ class JobNotificationSettings:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> JobNotificationSettings:
+    def from_dict(cls, d: Dict[str, Any]) -> JobNotificationSettings:
         """Deserializes the JobNotificationSettings from a dictionary."""
         return cls(no_alert_for_canceled_runs=d.get('no_alert_for_canceled_runs', None),
                    no_alert_for_skipped_runs=d.get('no_alert_for_skipped_runs', None))
@@ -1390,7 +1390,7 @@ class JobParameter:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> JobParameter:
+    def from_dict(cls, d: Dict[str, Any]) -> JobParameter:
         """Deserializes the JobParameter from a dictionary."""
         return cls(default=d.get('default', None), name=d.get('name', None), value=d.get('value', None))
 
@@ -1411,7 +1411,7 @@ class JobParameterDefinition:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> JobParameterDefinition:
+    def from_dict(cls, d: Dict[str, Any]) -> JobParameterDefinition:
         """Deserializes the JobParameterDefinition from a dictionary."""
         return cls(default=d.get('default', None), name=d.get('name', None))
 
@@ -1434,7 +1434,7 @@ class JobPermission:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> JobPermission:
+    def from_dict(cls, d: Dict[str, Any]) -> JobPermission:
         """Deserializes the JobPermission from a dictionary."""
         return cls(inherited=d.get('inherited', None),
                    inherited_from_object=d.get('inherited_from_object', None),
@@ -1468,7 +1468,7 @@ class JobPermissions:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> JobPermissions:
+    def from_dict(cls, d: Dict[str, Any]) -> JobPermissions:
         """Deserializes the JobPermissions from a dictionary."""
         return cls(access_control_list=_repeated_dict(d, 'access_control_list', JobAccessControlResponse),
                    object_id=d.get('object_id', None),
@@ -1490,7 +1490,7 @@ class JobPermissionsDescription:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> JobPermissionsDescription:
+    def from_dict(cls, d: Dict[str, Any]) -> JobPermissionsDescription:
         """Deserializes the JobPermissionsDescription from a dictionary."""
         return cls(description=d.get('description', None),
                    permission_level=_enum(d, 'permission_level', JobPermissionLevel))
@@ -1512,7 +1512,7 @@ class JobPermissionsRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> JobPermissionsRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> JobPermissionsRequest:
         """Deserializes the JobPermissionsRequest from a dictionary."""
         return cls(access_control_list=_repeated_dict(d, 'access_control_list', JobAccessControlRequest),
                    job_id=d.get('job_id', None))
@@ -1523,7 +1523,7 @@ class JobRunAs:
     """Write-only setting, available only in Create/Update/Reset and Submit calls. Specifies the user
     or service principal that the job runs as. If not specified, the job runs as the user who
     created the job.
-    
+
     Only `user_name` or `service_principal_name` can be specified. If both are specified, an error
     is thrown."""
 
@@ -1544,7 +1544,7 @@ class JobRunAs:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> JobRunAs:
+    def from_dict(cls, d: Dict[str, Any]) -> JobRunAs:
         """Deserializes the JobRunAs from a dictionary."""
         return cls(service_principal_name=d.get('service_principal_name', None),
                    user_name=d.get('user_name', None))
@@ -1567,7 +1567,7 @@ class JobSettings:
 
     edit_mode: Optional[JobSettingsEditMode] = None
     """Edit mode of the job.
-    
+
     * `UI_LOCKED`: The job is in a locked UI state and cannot be modified. * `EDITABLE`: The job is
     in an editable state and can be modified."""
 
@@ -1582,10 +1582,10 @@ class JobSettings:
     git_source: Optional[GitSource] = None
     """An optional specification for a remote Git repository containing the source code used by tasks.
     Version-controlled source code is supported by notebook, dbt, Python script, and SQL File tasks.
-    
+
     If `git_source` is set, these tasks retrieve the file from the remote repository by default.
     However, this behavior can be overridden by setting `source` to `WORKSPACE` on the task.
-    
+
     Note: dbt and SQL File tasks support only version-controlled sources. If dbt or SQL File tasks
     are used, `git_source` must be defined on the job."""
 
@@ -1599,16 +1599,16 @@ class JobSettings:
 
     max_concurrent_runs: Optional[int] = None
     """An optional maximum allowed number of concurrent runs of the job.
-    
+
     Set this value if you want to be able to execute multiple runs of the same job concurrently.
     This is useful for example if you trigger your job on a frequent schedule and want to allow
     consecutive runs to overlap with each other, or if you want to trigger multiple runs which
     differ by their input parameters.
-    
+
     This setting affects only new runs. For example, suppose the job’s concurrency is 4 and there
     are 4 concurrent active runs. Then setting the concurrency to 3 won’t kill any of the active
     runs. However, from then on, new runs are skipped unless there are fewer than 3 active runs.
-    
+
     This value cannot exceed 1000. Setting this value to `0` causes all new runs to be skipped."""
 
     name: Optional[str] = None
@@ -1628,7 +1628,7 @@ class JobSettings:
     """Write-only setting, available only in Create/Update/Reset and Submit calls. Specifies the user
     or service principal that the job runs as. If not specified, the job runs as the user who
     created the job.
-    
+
     Only `user_name` or `service_principal_name` can be specified. If both are specified, an error
     is thrown."""
 
@@ -1683,7 +1683,7 @@ class JobSettings:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> JobSettings:
+    def from_dict(cls, d: Dict[str, Any]) -> JobSettings:
         """Deserializes the JobSettings from a dictionary."""
         return cls(compute=_repeated_dict(d, 'compute', JobCompute),
                    continuous=_from_dict(d, 'continuous', Continuous),
@@ -1711,7 +1711,7 @@ class JobSettings:
 
 class JobSettingsEditMode(Enum):
     """Edit mode of the job.
-    
+
     * `UI_LOCKED`: The job is in a locked UI state and cannot be modified. * `EDITABLE`: The job is
     in an editable state and can be modified."""
 
@@ -1732,7 +1732,7 @@ class JobSource:
     dirty_state: Optional[JobSourceDirtyState] = None
     """Dirty state indicates the job is not fully synced with the job specification in the remote
     repository.
-    
+
     Possible values are: * `NOT_SYNCED`: The job is not yet synced with the remote job
     specification. Import the remote job specification from UI to make the job fully synced. *
     `DISCONNECTED`: The job is temporary disconnected from the remote job specification and is
@@ -1749,7 +1749,7 @@ class JobSource:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> JobSource:
+    def from_dict(cls, d: Dict[str, Any]) -> JobSource:
         """Deserializes the JobSource from a dictionary."""
         return cls(dirty_state=_enum(d, 'dirty_state', JobSourceDirtyState),
                    import_from_git_branch=d.get('import_from_git_branch', None),
@@ -1759,7 +1759,7 @@ class JobSource:
 class JobSourceDirtyState(Enum):
     """Dirty state indicates the job is not fully synced with the job specification in the remote
     repository.
-    
+
     Possible values are: * `NOT_SYNCED`: The job is not yet synced with the remote job
     specification. Import the remote job specification from UI to make the job fully synced. *
     `DISCONNECTED`: The job is temporary disconnected from the remote job specification and is
@@ -1802,7 +1802,7 @@ class JobsHealthRule:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> JobsHealthRule:
+    def from_dict(cls, d: Dict[str, Any]) -> JobsHealthRule:
         """Deserializes the JobsHealthRule from a dictionary."""
         return cls(metric=_enum(d, 'metric', JobsHealthMetric),
                    op=_enum(d, 'op', JobsHealthOperator),
@@ -1822,7 +1822,7 @@ class JobsHealthRules:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> JobsHealthRules:
+    def from_dict(cls, d: Dict[str, Any]) -> JobsHealthRules:
         """Deserializes the JobsHealthRules from a dictionary."""
         return cls(rules=_repeated_dict(d, 'rules', JobsHealthRule))
 
@@ -1851,7 +1851,7 @@ class ListJobsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListJobsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListJobsResponse:
         """Deserializes the ListJobsResponse from a dictionary."""
         return cls(has_more=d.get('has_more', None),
                    jobs=_repeated_dict(d, 'jobs', BaseJob),
@@ -1883,7 +1883,7 @@ class ListRunsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListRunsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListRunsResponse:
         """Deserializes the ListRunsResponse from a dictionary."""
         return cls(has_more=d.get('has_more', None),
                    next_page_token=d.get('next_page_token', None),
@@ -1895,7 +1895,7 @@ class ListRunsRunType(Enum):
     """* `JOB_RUN`: Normal job run. A run created with :method:jobs/runNow. * `WORKFLOW_RUN`: Workflow
     run. A run created with [dbutils.notebook.run]. * `SUBMIT_RUN`: Submit run. A run created with
     :method:jobs/submit.
-    
+
     [dbutils.notebook.run]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-workflow"""
 
     JOB_RUN = 'JOB_RUN'
@@ -1923,7 +1923,7 @@ class NotebookOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> NotebookOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> NotebookOutput:
         """Deserializes the NotebookOutput from a dictionary."""
         return cls(result=d.get('result', None), truncated=d.get('truncated', None))
 
@@ -1939,16 +1939,16 @@ class NotebookTask:
     """Base parameters to be used for each run of this job. If the run is initiated by a call to
     :method:jobs/runNow with parameters specified, the two parameters maps are merged. If the same
     key is specified in `base_parameters` and in `run-now`, the value from `run-now` is used.
-    
+
     Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
-    
+
     If the notebook takes a parameter that is not specified in the job’s `base_parameters` or the
     `run-now` override parameters, the default value from the notebook is used.
-    
+
     Retrieve these parameters in a notebook using [dbutils.widgets.get].
-    
+
     The JSON representation of this field cannot exceed 1MB.
-    
+
     [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-widgets
     [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html"""
 
@@ -1957,7 +1957,7 @@ class NotebookTask:
     from the local <Databricks> workspace. When set to `GIT`, the notebook will be retrieved from a
     Git repository defined in `git_source`. If the value is empty, the task will use `GIT` if
     `git_source` is defined and `WORKSPACE` otherwise.
-    
+
     * `WORKSPACE`: Notebook is located in <Databricks> workspace. * `GIT`: Notebook is located in
     cloud Git provider."""
 
@@ -1970,7 +1970,7 @@ class NotebookTask:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> NotebookTask:
+    def from_dict(cls, d: Dict[str, Any]) -> NotebookTask:
         """Deserializes the NotebookTask from a dictionary."""
         return cls(base_parameters=d.get('base_parameters', None),
                    notebook_path=d.get('notebook_path', None),
@@ -1998,7 +1998,7 @@ class PipelineParams:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PipelineParams:
+    def from_dict(cls, d: Dict[str, Any]) -> PipelineParams:
         """Deserializes the PipelineParams from a dictionary."""
         return cls(full_refresh=d.get('full_refresh', None))
 
@@ -2019,7 +2019,7 @@ class PipelineTask:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PipelineTask:
+    def from_dict(cls, d: Dict[str, Any]) -> PipelineTask:
         """Deserializes the PipelineTask from a dictionary."""
         return cls(full_refresh=d.get('full_refresh', None), pipeline_id=d.get('pipeline_id', None))
 
@@ -2051,7 +2051,7 @@ class PythonWheelTask:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PythonWheelTask:
+    def from_dict(cls, d: Dict[str, Any]) -> PythonWheelTask:
         """Deserializes the PythonWheelTask from a dictionary."""
         return cls(entry_point=d.get('entry_point', None),
                    named_parameters=d.get('named_parameters', None),
@@ -2071,7 +2071,7 @@ class QueueSettings:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> QueueSettings:
+    def from_dict(cls, d: Dict[str, Any]) -> QueueSettings:
         """Deserializes the QueueSettings from a dictionary."""
         return cls(enabled=d.get('enabled', None))
 
@@ -2108,7 +2108,7 @@ class RepairHistoryItem:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RepairHistoryItem:
+    def from_dict(cls, d: Dict[str, Any]) -> RepairHistoryItem:
         """Deserializes the RepairHistoryItem from a dictionary."""
         return cls(end_time=d.get('end_time', None),
                    id=d.get('id', None),
@@ -2140,9 +2140,9 @@ class RepairRun:
     Spark JAR task. If not specified upon `run-now`, it defaults to an empty list. jar_params cannot
     be specified in conjunction with notebook_params. The JSON representation of this field (for
     example `{"jar_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
-    
+
     Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
-    
+
     [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html"""
 
     job_parameters: Optional[Dict[str, str]] = None
@@ -2156,16 +2156,16 @@ class RepairRun:
     """A map from keys to values for jobs with notebook task, for example `"notebook_params": {"name":
     "john doe", "age": "35"}`. The map is passed to the notebook and is accessible through the
     [dbutils.widgets.get] function.
-    
+
     If not specified upon `run-now`, the triggered run uses the job’s base parameters.
-    
+
     notebook_params cannot be specified in conjunction with jar_params.
-    
+
     Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
-    
+
     The JSON representation of this field (for example `{"notebook_params":{"name":"john
     doe","age":"35"}}`) cannot exceed 10,000 bytes.
-    
+
     [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
     [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html"""
 
@@ -2180,15 +2180,15 @@ class RepairRun:
     "35"]`. The parameters are passed to Python file as command-line parameters. If specified upon
     `run-now`, it would overwrite the parameters specified in job setting. The JSON representation
     of this field (for example `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
-    
+
     Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
-    
+
     Important
-    
+
     These parameters accept only Latin characters (ASCII character set). Using non-ASCII characters
     returns an error. Examples of invalid, non-ASCII characters are Chinese, Japanese kanjis, and
     emojis.
-    
+
     [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html"""
 
     rerun_all_failed_tasks: Optional[bool] = None
@@ -2208,15 +2208,15 @@ class RepairRun:
     script as command-line parameters. If specified upon `run-now`, it would overwrite the
     parameters specified in job setting. The JSON representation of this field (for example
     `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
-    
+
     Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
-    
+
     Important
-    
+
     These parameters accept only Latin characters (ASCII character set). Using non-ASCII characters
     returns an error. Examples of invalid, non-ASCII characters are Chinese, Japanese kanjis, and
     emojis.
-    
+
     [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html"""
 
     sql_params: Optional[Dict[str, str]] = None
@@ -2244,7 +2244,7 @@ class RepairRun:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RepairRun:
+    def from_dict(cls, d: Dict[str, Any]) -> RepairRun:
         """Deserializes the RepairRun from a dictionary."""
         return cls(dbt_commands=d.get('dbt_commands', None),
                    jar_params=d.get('jar_params', None),
@@ -2275,7 +2275,7 @@ class RepairRunResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RepairRunResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> RepairRunResponse:
         """Deserializes the RepairRunResponse from a dictionary."""
         return cls(repair_id=d.get('repair_id', None))
 
@@ -2287,7 +2287,7 @@ class ResetJob:
 
     new_settings: JobSettings
     """The new settings of the job. These settings completely replace the old settings.
-    
+
     Changes to the field `JobBaseSettings.timeout_seconds` are applied to active runs. Changes to
     other fields are applied to future runs only."""
 
@@ -2299,7 +2299,7 @@ class ResetJob:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ResetJob:
+    def from_dict(cls, d: Dict[str, Any]) -> ResetJob:
         """Deserializes the ResetJob from a dictionary."""
         return cls(job_id=d.get('job_id', None), new_settings=_from_dict(d, 'new_settings', JobSettings))
 
@@ -2313,7 +2313,7 @@ class ResetResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ResetResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ResetResponse:
         """Deserializes the ResetResponse from a dictionary."""
         return cls()
 
@@ -2332,7 +2332,7 @@ class ResolvedConditionTaskValues:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ResolvedConditionTaskValues:
+    def from_dict(cls, d: Dict[str, Any]) -> ResolvedConditionTaskValues:
         """Deserializes the ResolvedConditionTaskValues from a dictionary."""
         return cls(left=d.get('left', None), right=d.get('right', None))
 
@@ -2348,7 +2348,7 @@ class ResolvedDbtTaskValues:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ResolvedDbtTaskValues:
+    def from_dict(cls, d: Dict[str, Any]) -> ResolvedDbtTaskValues:
         """Deserializes the ResolvedDbtTaskValues from a dictionary."""
         return cls(commands=d.get('commands', None))
 
@@ -2364,7 +2364,7 @@ class ResolvedNotebookTaskValues:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ResolvedNotebookTaskValues:
+    def from_dict(cls, d: Dict[str, Any]) -> ResolvedNotebookTaskValues:
         """Deserializes the ResolvedNotebookTaskValues from a dictionary."""
         return cls(base_parameters=d.get('base_parameters', None))
 
@@ -2380,7 +2380,7 @@ class ResolvedParamPairValues:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ResolvedParamPairValues:
+    def from_dict(cls, d: Dict[str, Any]) -> ResolvedParamPairValues:
         """Deserializes the ResolvedParamPairValues from a dictionary."""
         return cls(parameters=d.get('parameters', None))
 
@@ -2399,7 +2399,7 @@ class ResolvedPythonWheelTaskValues:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ResolvedPythonWheelTaskValues:
+    def from_dict(cls, d: Dict[str, Any]) -> ResolvedPythonWheelTaskValues:
         """Deserializes the ResolvedPythonWheelTaskValues from a dictionary."""
         return cls(named_parameters=d.get('named_parameters', None), parameters=d.get('parameters', None))
 
@@ -2418,7 +2418,7 @@ class ResolvedRunJobTaskValues:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ResolvedRunJobTaskValues:
+    def from_dict(cls, d: Dict[str, Any]) -> ResolvedRunJobTaskValues:
         """Deserializes the ResolvedRunJobTaskValues from a dictionary."""
         return cls(named_parameters=d.get('named_parameters', None), parameters=d.get('parameters', None))
 
@@ -2434,7 +2434,7 @@ class ResolvedStringParamsValues:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ResolvedStringParamsValues:
+    def from_dict(cls, d: Dict[str, Any]) -> ResolvedStringParamsValues:
         """Deserializes the ResolvedStringParamsValues from a dictionary."""
         return cls(parameters=d.get('parameters', None))
 
@@ -2477,7 +2477,7 @@ class ResolvedValues:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ResolvedValues:
+    def from_dict(cls, d: Dict[str, Any]) -> ResolvedValues:
         """Deserializes the ResolvedValues from a dictionary."""
         return cls(condition_task=_from_dict(d, 'condition_task', ResolvedConditionTaskValues),
                    dbt_task=_from_dict(d, 'dbt_task', ResolvedDbtTaskValues),
@@ -2531,10 +2531,10 @@ class Run:
     git_source: Optional[GitSource] = None
     """An optional specification for a remote Git repository containing the source code used by tasks.
     Version-controlled source code is supported by notebook, dbt, Python script, and SQL File tasks.
-    
+
     If `git_source` is set, these tasks retrieve the file from the remote repository by default.
     However, this behavior can be overridden by setting `source` to `WORKSPACE` on the task.
-    
+
     Note: dbt and SQL File tasks support only version-controlled sources. If dbt or SQL File tasks
     are used, `git_source` must be defined on the job."""
 
@@ -2578,7 +2578,7 @@ class Run:
     """* `JOB_RUN`: Normal job run. A run created with :method:jobs/runNow. * `WORKFLOW_RUN`: Workflow
     run. A run created with [dbutils.notebook.run]. * `SUBMIT_RUN`: Submit run. A run created with
     :method:jobs/submit.
-    
+
     [dbutils.notebook.run]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-workflow"""
 
     schedule: Optional[CronSchedule] = None
@@ -2605,7 +2605,7 @@ class Run:
 
     trigger: Optional[TriggerType] = None
     """The type of trigger that fired this run.
-    
+
     * `PERIODIC`: Schedules that periodically trigger runs, such as a cron scheduler. * `ONE_TIME`:
     One time triggers that fire a single run. This occurs you triggered a single run on demand
     through the UI or the API. * `RETRY`: Indicates a run that is triggered as a retry of a
@@ -2650,7 +2650,7 @@ class Run:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Run:
+    def from_dict(cls, d: Dict[str, Any]) -> Run:
         """Deserializes the Run from a dictionary."""
         return cls(attempt_number=d.get('attempt_number', None),
                    cleanup_duration=d.get('cleanup_duration', None),
@@ -2706,7 +2706,7 @@ class RunConditionTask:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RunConditionTask:
+    def from_dict(cls, d: Dict[str, Any]) -> RunConditionTask:
         """Deserializes the RunConditionTask from a dictionary."""
         return cls(left=d.get('left', None),
                    op=_enum(d, 'op', RunConditionTaskOp),
@@ -2747,7 +2747,7 @@ class RunForEachTask:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RunForEachTask:
+    def from_dict(cls, d: Dict[str, Any]) -> RunForEachTask:
         """Deserializes the RunForEachTask from a dictionary."""
         return cls(concurrency=d.get('concurrency', None),
                    inputs=d.get('inputs', None),
@@ -2758,7 +2758,7 @@ class RunForEachTask:
 class RunIf(Enum):
     """An optional value indicating the condition that determines whether the task should be run once
     its dependencies have been completed. When omitted, defaults to `ALL_SUCCESS`.
-    
+
     Possible values are: * `ALL_SUCCESS`: All dependencies have executed and succeeded *
     `AT_LEAST_ONE_SUCCESS`: At least one dependency has succeeded * `NONE_FAILED`: None of the
     dependencies have failed and at least one was executed * `ALL_DONE`: All dependencies have been
@@ -2785,7 +2785,7 @@ class RunJobOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RunJobOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> RunJobOutput:
         """Deserializes the RunJobOutput from a dictionary."""
         return cls(run_id=d.get('run_id', None))
 
@@ -2806,7 +2806,7 @@ class RunJobTask:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RunJobTask:
+    def from_dict(cls, d: Dict[str, Any]) -> RunJobTask:
         """Deserializes the RunJobTask from a dictionary."""
         return cls(job_id=d.get('job_id', None), job_parameters=d.get('job_parameters', None))
 
@@ -2848,14 +2848,14 @@ class RunNow:
     """An optional token to guarantee the idempotency of job run requests. If a run with the provided
     token already exists, the request does not create a new run but returns the ID of the existing
     run instead. If a run with the provided token is deleted, an error is returned.
-    
+
     If you specify the idempotency token, upon failure you can retry until the request succeeds.
     Databricks guarantees that exactly one run is launched with that idempotency token.
-    
+
     This token must have at most 64 characters.
-    
+
     For more information, see [How to ensure idempotency for jobs].
-    
+
     [How to ensure idempotency for jobs]: https://kb.databricks.com/jobs/jobs-idempotency.html"""
 
     jar_params: Optional[List[str]] = None
@@ -2864,9 +2864,9 @@ class RunNow:
     Spark JAR task. If not specified upon `run-now`, it defaults to an empty list. jar_params cannot
     be specified in conjunction with notebook_params. The JSON representation of this field (for
     example `{"jar_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
-    
+
     Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
-    
+
     [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html"""
 
     job_parameters: Optional[Dict[str, str]] = None
@@ -2876,16 +2876,16 @@ class RunNow:
     """A map from keys to values for jobs with notebook task, for example `"notebook_params": {"name":
     "john doe", "age": "35"}`. The map is passed to the notebook and is accessible through the
     [dbutils.widgets.get] function.
-    
+
     If not specified upon `run-now`, the triggered run uses the job’s base parameters.
-    
+
     notebook_params cannot be specified in conjunction with jar_params.
-    
+
     Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
-    
+
     The JSON representation of this field (for example `{"notebook_params":{"name":"john
     doe","age":"35"}}`) cannot exceed 10,000 bytes.
-    
+
     [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
     [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html"""
 
@@ -2900,15 +2900,15 @@ class RunNow:
     "35"]`. The parameters are passed to Python file as command-line parameters. If specified upon
     `run-now`, it would overwrite the parameters specified in job setting. The JSON representation
     of this field (for example `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
-    
+
     Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
-    
+
     Important
-    
+
     These parameters accept only Latin characters (ASCII character set). Using non-ASCII characters
     returns an error. Examples of invalid, non-ASCII characters are Chinese, Japanese kanjis, and
     emojis.
-    
+
     [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html"""
 
     queue: Optional[QueueSettings] = None
@@ -2920,15 +2920,15 @@ class RunNow:
     script as command-line parameters. If specified upon `run-now`, it would overwrite the
     parameters specified in job setting. The JSON representation of this field (for example
     `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
-    
+
     Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
-    
+
     Important
-    
+
     These parameters accept only Latin characters (ASCII character set). Using non-ASCII characters
     returns an error. Examples of invalid, non-ASCII characters are Chinese, Japanese kanjis, and
     emojis.
-    
+
     [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html"""
 
     sql_params: Optional[Dict[str, str]] = None
@@ -2953,7 +2953,7 @@ class RunNow:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RunNow:
+    def from_dict(cls, d: Dict[str, Any]) -> RunNow:
         """Deserializes the RunNow from a dictionary."""
         return cls(dbt_commands=d.get('dbt_commands', None),
                    idempotency_token=d.get('idempotency_token', None),
@@ -2985,7 +2985,7 @@ class RunNowResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RunNowResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> RunNowResponse:
         """Deserializes the RunNowResponse from a dictionary."""
         return cls(number_in_job=d.get('number_in_job', None), run_id=d.get('run_id', None))
 
@@ -3005,9 +3005,9 @@ class RunOutput:
     logs: Optional[str] = None
     """The output from tasks that write to standard streams (stdout/stderr) such as spark_jar_task,
     spark_python_task, python_wheel_task.
-    
+
     It's not supported for the notebook_task, pipeline_task or spark_submit_task.
-    
+
     Databricks restricts this API to return the last 5 MB of these logs."""
 
     logs_truncated: Optional[bool] = None
@@ -3045,7 +3045,7 @@ class RunOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RunOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> RunOutput:
         """Deserializes the RunOutput from a dictionary."""
         return cls(dbt_output=_from_dict(d, 'dbt_output', DbtOutput),
                    error=d.get('error', None),
@@ -3070,9 +3070,9 @@ class RunParameters:
     Spark JAR task. If not specified upon `run-now`, it defaults to an empty list. jar_params cannot
     be specified in conjunction with notebook_params. The JSON representation of this field (for
     example `{"jar_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
-    
+
     Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
-    
+
     [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html"""
 
     job_parameters: Optional[Dict[str, str]] = None
@@ -3082,16 +3082,16 @@ class RunParameters:
     """A map from keys to values for jobs with notebook task, for example `"notebook_params": {"name":
     "john doe", "age": "35"}`. The map is passed to the notebook and is accessible through the
     [dbutils.widgets.get] function.
-    
+
     If not specified upon `run-now`, the triggered run uses the job’s base parameters.
-    
+
     notebook_params cannot be specified in conjunction with jar_params.
-    
+
     Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
-    
+
     The JSON representation of this field (for example `{"notebook_params":{"name":"john
     doe","age":"35"}}`) cannot exceed 10,000 bytes.
-    
+
     [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
     [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html"""
 
@@ -3106,15 +3106,15 @@ class RunParameters:
     "35"]`. The parameters are passed to Python file as command-line parameters. If specified upon
     `run-now`, it would overwrite the parameters specified in job setting. The JSON representation
     of this field (for example `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
-    
+
     Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
-    
+
     Important
-    
+
     These parameters accept only Latin characters (ASCII character set). Using non-ASCII characters
     returns an error. Examples of invalid, non-ASCII characters are Chinese, Japanese kanjis, and
     emojis.
-    
+
     [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html"""
 
     spark_submit_params: Optional[List[str]] = None
@@ -3123,15 +3123,15 @@ class RunParameters:
     script as command-line parameters. If specified upon `run-now`, it would overwrite the
     parameters specified in job setting. The JSON representation of this field (for example
     `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
-    
+
     Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
-    
+
     Important
-    
+
     These parameters accept only Latin characters (ASCII character set). Using non-ASCII characters
     returns an error. Examples of invalid, non-ASCII characters are Chinese, Japanese kanjis, and
     emojis.
-    
+
     [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html"""
 
     sql_params: Optional[Dict[str, str]] = None
@@ -3153,7 +3153,7 @@ class RunParameters:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RunParameters:
+    def from_dict(cls, d: Dict[str, Any]) -> RunParameters:
         """Deserializes the RunParameters from a dictionary."""
         return cls(dbt_commands=d.get('dbt_commands', None),
                    jar_params=d.get('jar_params', None),
@@ -3221,7 +3221,7 @@ class RunState:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RunState:
+    def from_dict(cls, d: Dict[str, Any]) -> RunState:
         """Deserializes the RunState from a dictionary."""
         return cls(life_cycle_state=_enum(d, 'life_cycle_state', RunLifeCycleState),
                    queue_reason=d.get('queue_reason', None),
@@ -3288,10 +3288,10 @@ class RunTask:
     git_source: Optional[GitSource] = None
     """An optional specification for a remote Git repository containing the source code used by tasks.
     Version-controlled source code is supported by notebook, dbt, Python script, and SQL File tasks.
-    
+
     If `git_source` is set, these tasks retrieve the file from the remote repository by default.
     However, this behavior can be overridden by setting `source` to `WORKSPACE` on the task.
-    
+
     Note: dbt and SQL File tasks support only version-controlled sources. If dbt or SQL File tasks
     are used, `git_source` must be defined on the job."""
 
@@ -3345,18 +3345,18 @@ class RunTask:
     spark_submit_task: Optional[SparkSubmitTask] = None
     """If `spark_submit_task`, indicates that this task must be launched by the spark submit script.
     This task can run only on new clusters.
-    
+
     In the `new_cluster` specification, `libraries` and `spark_conf` are not supported. Instead, use
     `--jars` and `--py-files` to add Java and Python libraries and `--conf` to set the Spark
     configurations.
-    
+
     `master`, `deploy-mode`, and `executor-cores` are automatically configured by Databricks; you
     _cannot_ specify them in parameters.
-    
+
     By default, the Spark submit job uses all available memory (excluding reserved memory for
     Databricks services). You can set `--driver-memory`, and `--executor-memory` to a smaller value
     to leave some room for off-heap usage.
-    
+
     The `--jars`, `--py-files`, `--files` arguments support DBFS and S3 paths."""
 
     sql_task: Optional[SqlTask] = None
@@ -3411,7 +3411,7 @@ class RunTask:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RunTask:
+    def from_dict(cls, d: Dict[str, Any]) -> RunTask:
         """Deserializes the RunTask from a dictionary."""
         return cls(attempt_number=d.get('attempt_number', None),
                    cleanup_duration=d.get('cleanup_duration', None),
@@ -3449,7 +3449,7 @@ class RunType(Enum):
     """* `JOB_RUN`: Normal job run. A run created with :method:jobs/runNow. * `WORKFLOW_RUN`: Workflow
     run. A run created with [dbutils.notebook.run]. * `SUBMIT_RUN`: Submit run. A run created with
     :method:jobs/submit.
-    
+
     [dbutils.notebook.run]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-workflow"""
 
     JOB_RUN = 'JOB_RUN'
@@ -3472,15 +3472,15 @@ class SparkJarTask:
     main_class_name: Optional[str] = None
     """The full name of the class containing the main method to be executed. This class must be
     contained in a JAR provided as a library.
-    
+
     The code must use `SparkContext.getOrCreate` to obtain a Spark context; otherwise, runs of the
     job fail."""
 
     parameters: Optional[List[str]] = None
     """Parameters passed to the main method.
-    
+
     Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
-    
+
     [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html"""
 
     def as_dict(self) -> dict:
@@ -3492,7 +3492,7 @@ class SparkJarTask:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SparkJarTask:
+    def from_dict(cls, d: Dict[str, Any]) -> SparkJarTask:
         """Deserializes the SparkJarTask from a dictionary."""
         return cls(jar_uri=d.get('jar_uri', None),
                    main_class_name=d.get('main_class_name', None),
@@ -3509,9 +3509,9 @@ class SparkPythonTask:
 
     parameters: Optional[List[str]] = None
     """Command line parameters passed to the Python file.
-    
+
     Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
-    
+
     [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html"""
 
     source: Optional[Source] = None
@@ -3519,7 +3519,7 @@ class SparkPythonTask:
     will be retrieved from the local <Databricks> workspace or cloud location (if the `python_file`
     has a URI format). When set to `GIT`, the Python file will be retrieved from a Git repository
     defined in `git_source`.
-    
+
     * `WORKSPACE`: The Python file is located in a <Databricks> workspace or at a cloud filesystem
     URI. * `GIT`: The Python file is located in a remote Git repository."""
 
@@ -3532,7 +3532,7 @@ class SparkPythonTask:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SparkPythonTask:
+    def from_dict(cls, d: Dict[str, Any]) -> SparkPythonTask:
         """Deserializes the SparkPythonTask from a dictionary."""
         return cls(parameters=d.get('parameters', None),
                    python_file=d.get('python_file', None),
@@ -3543,9 +3543,9 @@ class SparkPythonTask:
 class SparkSubmitTask:
     parameters: Optional[List[str]] = None
     """Command-line parameters passed to spark submit.
-    
+
     Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
-    
+
     [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html"""
 
     def as_dict(self) -> dict:
@@ -3555,7 +3555,7 @@ class SparkSubmitTask:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SparkSubmitTask:
+    def from_dict(cls, d: Dict[str, Any]) -> SparkSubmitTask:
         """Deserializes the SparkSubmitTask from a dictionary."""
         return cls(parameters=d.get('parameters', None))
 
@@ -3564,7 +3564,7 @@ class SparkSubmitTask:
 class SqlAlertOutput:
     alert_state: Optional[SqlAlertState] = None
     """The state of the SQL alert.
-    
+
     * UNKNOWN: alert yet to be evaluated * OK: alert evaluated and did not fulfill trigger
     conditions * TRIGGERED: alert evaluated and fulfilled trigger conditions"""
 
@@ -3592,7 +3592,7 @@ class SqlAlertOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SqlAlertOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> SqlAlertOutput:
         """Deserializes the SqlAlertOutput from a dictionary."""
         return cls(alert_state=_enum(d, 'alert_state', SqlAlertState),
                    output_link=d.get('output_link', None),
@@ -3603,7 +3603,7 @@ class SqlAlertOutput:
 
 class SqlAlertState(Enum):
     """The state of the SQL alert.
-    
+
     * UNKNOWN: alert yet to be evaluated * OK: alert evaluated and did not fulfill trigger
     conditions * TRIGGERED: alert evaluated and fulfilled trigger conditions"""
 
@@ -3628,7 +3628,7 @@ class SqlDashboardOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SqlDashboardOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> SqlDashboardOutput:
         """Deserializes the SqlDashboardOutput from a dictionary."""
         return cls(warehouse_id=d.get('warehouse_id', None),
                    widgets=_repeated_dict(d, 'widgets', SqlDashboardWidgetOutput))
@@ -3670,7 +3670,7 @@ class SqlDashboardWidgetOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SqlDashboardWidgetOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> SqlDashboardWidgetOutput:
         """Deserializes the SqlDashboardWidgetOutput from a dictionary."""
         return cls(end_time=d.get('end_time', None),
                    error=_from_dict(d, 'error', SqlOutputError),
@@ -3711,7 +3711,7 @@ class SqlOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SqlOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> SqlOutput:
         """Deserializes the SqlOutput from a dictionary."""
         return cls(alert_output=_from_dict(d, 'alert_output', SqlAlertOutput),
                    dashboard_output=_from_dict(d, 'dashboard_output', SqlDashboardOutput),
@@ -3730,7 +3730,7 @@ class SqlOutputError:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SqlOutputError:
+    def from_dict(cls, d: Dict[str, Any]) -> SqlOutputError:
         """Deserializes the SqlOutputError from a dictionary."""
         return cls(message=d.get('message', None))
 
@@ -3759,7 +3759,7 @@ class SqlQueryOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SqlQueryOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> SqlQueryOutput:
         """Deserializes the SqlQueryOutput from a dictionary."""
         return cls(output_link=d.get('output_link', None),
                    query_text=d.get('query_text', None),
@@ -3779,7 +3779,7 @@ class SqlStatementOutput:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SqlStatementOutput:
+    def from_dict(cls, d: Dict[str, Any]) -> SqlStatementOutput:
         """Deserializes the SqlStatementOutput from a dictionary."""
         return cls(lookup_key=d.get('lookup_key', None))
 
@@ -3821,7 +3821,7 @@ class SqlTask:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SqlTask:
+    def from_dict(cls, d: Dict[str, Any]) -> SqlTask:
         """Deserializes the SqlTask from a dictionary."""
         return cls(alert=_from_dict(d, 'alert', SqlTaskAlert),
                    dashboard=_from_dict(d, 'dashboard', SqlTaskDashboard),
@@ -3851,7 +3851,7 @@ class SqlTaskAlert:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SqlTaskAlert:
+    def from_dict(cls, d: Dict[str, Any]) -> SqlTaskAlert:
         """Deserializes the SqlTaskAlert from a dictionary."""
         return cls(alert_id=d.get('alert_id', None),
                    pause_subscriptions=d.get('pause_subscriptions', None),
@@ -3882,7 +3882,7 @@ class SqlTaskDashboard:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SqlTaskDashboard:
+    def from_dict(cls, d: Dict[str, Any]) -> SqlTaskDashboard:
         """Deserializes the SqlTaskDashboard from a dictionary."""
         return cls(custom_subject=d.get('custom_subject', None),
                    dashboard_id=d.get('dashboard_id', None),
@@ -3901,7 +3901,7 @@ class SqlTaskFile:
     from the local <Databricks> workspace. When set to `GIT`, the SQL file will be retrieved from a
     Git repository defined in `git_source`. If the value is empty, the task will use `GIT` if
     `git_source` is defined and `WORKSPACE` otherwise.
-    
+
     * `WORKSPACE`: SQL file is located in <Databricks> workspace. * `GIT`: SQL file is located in
     cloud Git provider."""
 
@@ -3913,7 +3913,7 @@ class SqlTaskFile:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SqlTaskFile:
+    def from_dict(cls, d: Dict[str, Any]) -> SqlTaskFile:
         """Deserializes the SqlTaskFile from a dictionary."""
         return cls(path=d.get('path', None), source=_enum(d, 'source', Source))
 
@@ -3930,7 +3930,7 @@ class SqlTaskQuery:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SqlTaskQuery:
+    def from_dict(cls, d: Dict[str, Any]) -> SqlTaskQuery:
         """Deserializes the SqlTaskQuery from a dictionary."""
         return cls(query_id=d.get('query_id', None))
 
@@ -3954,7 +3954,7 @@ class SqlTaskSubscription:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SqlTaskSubscription:
+    def from_dict(cls, d: Dict[str, Any]) -> SqlTaskSubscription:
         """Deserializes the SqlTaskSubscription from a dictionary."""
         return cls(destination_id=d.get('destination_id', None), user_name=d.get('user_name', None))
 
@@ -3970,10 +3970,10 @@ class SubmitRun:
     git_source: Optional[GitSource] = None
     """An optional specification for a remote Git repository containing the source code used by tasks.
     Version-controlled source code is supported by notebook, dbt, Python script, and SQL File tasks.
-    
+
     If `git_source` is set, these tasks retrieve the file from the remote repository by default.
     However, this behavior can be overridden by setting `source` to `WORKSPACE` on the task.
-    
+
     Note: dbt and SQL File tasks support only version-controlled sources. If dbt or SQL File tasks
     are used, `git_source` must be defined on the job."""
 
@@ -3984,14 +3984,14 @@ class SubmitRun:
     """An optional token that can be used to guarantee the idempotency of job run requests. If a run
     with the provided token already exists, the request does not create a new run but returns the ID
     of the existing run instead. If a run with the provided token is deleted, an error is returned.
-    
+
     If you specify the idempotency token, upon failure you can retry until the request succeeds.
     Databricks guarantees that exactly one run is launched with that idempotency token.
-    
+
     This token must have at most 64 characters.
-    
+
     For more information, see [How to ensure idempotency for jobs].
-    
+
     [How to ensure idempotency for jobs]: https://kb.databricks.com/jobs/jobs-idempotency.html"""
 
     notification_settings: Optional[JobNotificationSettings] = None
@@ -4030,7 +4030,7 @@ class SubmitRun:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SubmitRun:
+    def from_dict(cls, d: Dict[str, Any]) -> SubmitRun:
         """Deserializes the SubmitRun from a dictionary."""
         return cls(access_control_list=_repeated_dict(d, 'access_control_list', iam.AccessControlRequest),
                    email_notifications=_from_dict(d, 'email_notifications', JobEmailNotifications),
@@ -4057,7 +4057,7 @@ class SubmitRunResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SubmitRunResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> SubmitRunResponse:
         """Deserializes the SubmitRunResponse from a dictionary."""
         return cls(run_id=d.get('run_id', None))
 
@@ -4134,18 +4134,18 @@ class SubmitTask:
     spark_submit_task: Optional[SparkSubmitTask] = None
     """If `spark_submit_task`, indicates that this task must be launched by the spark submit script.
     This task can run only on new clusters.
-    
+
     In the `new_cluster` specification, `libraries` and `spark_conf` are not supported. Instead, use
     `--jars` and `--py-files` to add Java and Python libraries and `--conf` to set the Spark
     configurations.
-    
+
     `master`, `deploy-mode`, and `executor-cores` are automatically configured by Databricks; you
     _cannot_ specify them in parameters.
-    
+
     By default, the Spark submit job uses all available memory (excluding reserved memory for
     Databricks services). You can set `--driver-memory`, and `--executor-memory` to a smaller value
     to leave some room for off-heap usage.
-    
+
     The `--jars`, `--py-files`, `--files` arguments support DBFS and S3 paths."""
 
     sql_task: Optional[SqlTask] = None
@@ -4186,7 +4186,7 @@ class SubmitTask:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SubmitTask:
+    def from_dict(cls, d: Dict[str, Any]) -> SubmitTask:
         """Deserializes the SubmitTask from a dictionary."""
         return cls(condition_task=_from_dict(d, 'condition_task', ConditionTask),
                    depends_on=_repeated_dict(d, 'depends_on', TaskDependency),
@@ -4241,7 +4241,7 @@ class TableTriggerConfiguration:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TableTriggerConfiguration:
+    def from_dict(cls, d: Dict[str, Any]) -> TableTriggerConfiguration:
         """Deserializes the TableTriggerConfiguration from a dictionary."""
         return cls(condition=_enum(d, 'condition', Condition),
                    min_time_between_triggers_seconds=d.get('min_time_between_triggers_seconds', None),
@@ -4336,7 +4336,7 @@ class Task:
     run_if: Optional[RunIf] = None
     """An optional value specifying the condition determining whether the task is run once its
     dependencies have been completed.
-    
+
     * `ALL_SUCCESS`: All dependencies have executed and succeeded * `AT_LEAST_ONE_SUCCESS`: At least
     one dependency has succeeded * `NONE_FAILED`: None of the dependencies have failed and at least
     one was executed * `ALL_DONE`: All dependencies have been completed * `AT_LEAST_ONE_FAILED`: At
@@ -4354,18 +4354,18 @@ class Task:
     spark_submit_task: Optional[SparkSubmitTask] = None
     """If `spark_submit_task`, indicates that this task must be launched by the spark submit script.
     This task can run only on new clusters.
-    
+
     In the `new_cluster` specification, `libraries` and `spark_conf` are not supported. Instead, use
     `--jars` and `--py-files` to add Java and Python libraries and `--conf` to set the Spark
     configurations.
-    
+
     `master`, `deploy-mode`, and `executor-cores` are automatically configured by Databricks; you
     _cannot_ specify them in parameters.
-    
+
     By default, the Spark submit job uses all available memory (excluding reserved memory for
     Databricks services). You can set `--driver-memory`, and `--executor-memory` to a smaller value
     to leave some room for off-heap usage.
-    
+
     The `--jars`, `--py-files`, `--files` arguments support DBFS and S3 paths."""
 
     sql_task: Optional[SqlTask] = None
@@ -4413,7 +4413,7 @@ class Task:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Task:
+    def from_dict(cls, d: Dict[str, Any]) -> Task:
         """Deserializes the Task from a dictionary."""
         return cls(compute_key=d.get('compute_key', None),
                    condition_task=_from_dict(d, 'condition_task', ConditionTask),
@@ -4462,7 +4462,7 @@ class TaskDependency:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TaskDependency:
+    def from_dict(cls, d: Dict[str, Any]) -> TaskDependency:
         """Deserializes the TaskDependency from a dictionary."""
         return cls(outcome=d.get('outcome', None), task_key=d.get('task_key', None))
 
@@ -4504,7 +4504,7 @@ class TaskEmailNotifications:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TaskEmailNotifications:
+    def from_dict(cls, d: Dict[str, Any]) -> TaskEmailNotifications:
         """Deserializes the TaskEmailNotifications from a dictionary."""
         return cls(on_duration_warning_threshold_exceeded=d.get('on_duration_warning_threshold_exceeded',
                                                                 None),
@@ -4539,7 +4539,7 @@ class TaskNotificationSettings:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TaskNotificationSettings:
+    def from_dict(cls, d: Dict[str, Any]) -> TaskNotificationSettings:
         """Deserializes the TaskNotificationSettings from a dictionary."""
         return cls(alert_on_last_attempt=d.get('alert_on_last_attempt', None),
                    no_alert_for_canceled_runs=d.get('no_alert_for_canceled_runs', None),
@@ -4558,7 +4558,7 @@ class TriggerInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TriggerInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> TriggerInfo:
         """Deserializes the TriggerInfo from a dictionary."""
         return cls(run_id=d.get('run_id', None))
 
@@ -4583,7 +4583,7 @@ class TriggerSettings:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TriggerSettings:
+    def from_dict(cls, d: Dict[str, Any]) -> TriggerSettings:
         """Deserializes the TriggerSettings from a dictionary."""
         return cls(file_arrival=_from_dict(d, 'file_arrival', FileArrivalTriggerConfiguration),
                    pause_status=_enum(d, 'pause_status', PauseStatus),
@@ -4592,7 +4592,7 @@ class TriggerSettings:
 
 class TriggerType(Enum):
     """The type of trigger that fired this run.
-    
+
     * `PERIODIC`: Schedules that periodically trigger runs, such as a cron scheduler. * `ONE_TIME`:
     One time triggers that fire a single run. This occurs you triggered a single run on demand
     through the UI or the API. * `RETRY`: Indicates a run that is triggered as a retry of a
@@ -4620,13 +4620,13 @@ class UpdateJob:
 
     new_settings: Optional[JobSettings] = None
     """The new settings for the job.
-    
+
     Top-level fields specified in `new_settings` are completely replaced, except for arrays which
     are merged. That is, new and existing entries are completely replaced based on the respective
     key fields, i.e. `task_key` or `job_cluster_key`, while previous entries are kept.
-    
+
     Partially updating nested fields is not supported.
-    
+
     Changes to the field `JobSettings.timeout_seconds` are applied to active runs. Changes to other
     fields are applied to future runs only."""
 
@@ -4639,7 +4639,7 @@ class UpdateJob:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateJob:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateJob:
         """Deserializes the UpdateJob from a dictionary."""
         return cls(fields_to_remove=d.get('fields_to_remove', None),
                    job_id=d.get('job_id', None),
@@ -4655,7 +4655,7 @@ class UpdateResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateResponse:
         """Deserializes the UpdateResponse from a dictionary."""
         return cls()
 
@@ -4681,7 +4681,7 @@ class ViewItem:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ViewItem:
+    def from_dict(cls, d: Dict[str, Any]) -> ViewItem:
         """Deserializes the ViewItem from a dictionary."""
         return cls(content=d.get('content', None), name=d.get('name', None), type=_enum(d, 'type', ViewType))
 
@@ -4713,7 +4713,7 @@ class Webhook:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Webhook:
+    def from_dict(cls, d: Dict[str, Any]) -> Webhook:
         """Deserializes the Webhook from a dictionary."""
         return cls(id=d.get('id', None))
 
@@ -4751,7 +4751,7 @@ class WebhookNotifications:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> WebhookNotifications:
+    def from_dict(cls, d: Dict[str, Any]) -> WebhookNotifications:
         """Deserializes the WebhookNotifications from a dictionary."""
         return cls(on_duration_warning_threshold_exceeded=_repeated_dict(
             d, 'on_duration_warning_threshold_exceeded',
@@ -4772,24 +4772,24 @@ class WebhookNotificationsOnDurationWarningThresholdExceededItem:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> WebhookNotificationsOnDurationWarningThresholdExceededItem:
+    def from_dict(cls, d: Dict[str, Any]) -> WebhookNotificationsOnDurationWarningThresholdExceededItem:
         """Deserializes the WebhookNotificationsOnDurationWarningThresholdExceededItem from a dictionary."""
         return cls(id=d.get('id', None))
 
 
 class JobsAPI:
     """The Jobs API allows you to create, edit, and delete jobs.
-    
+
     You can use a Databricks job to run a data processing or data analysis task in a Databricks cluster with
     scalable resources. Your job can consist of a single task or can be a large, multi-task workflow with
     complex dependencies. Databricks manages the task orchestration, cluster management, monitoring, and error
     reporting for all of your jobs. You can run your jobs immediately or periodically through an easy-to-use
     scheduling system. You can implement job tasks using notebooks, JARS, Delta Live Tables pipelines, or
     Python, Scala, Spark submit, and Java applications.
-    
+
     You should never hard code secrets or store them in plain text. Use the [Secrets CLI] to manage secrets in
     the [Databricks CLI]. Use the [Secrets utility] to reference secrets in notebooks and jobs.
-    
+
     [Databricks CLI]: https://docs.databricks.com/dev-tools/cli/index.html
     [Secrets CLI]: https://docs.databricks.com/dev-tools/cli/secrets-cli.html
     [Secrets utility]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-secrets"""
@@ -4831,17 +4831,17 @@ class JobsAPI:
 
     def cancel_all_runs(self, *, all_queued_runs: Optional[bool] = None, job_id: Optional[int] = None):
         """Cancel all runs of a job.
-        
+
         Cancels all active runs of a job. The runs are canceled asynchronously, so it doesn't prevent new runs
         from being started.
-        
+
         :param all_queued_runs: bool (optional)
           Optional boolean parameter to cancel all queued runs. If no job_id is provided, all queued runs in
           the workspace are canceled.
         :param job_id: int (optional)
           The canonical identifier of the job to cancel all runs of.
-        
-        
+
+
         """
         body = {}
         if all_queued_runs is not None: body['all_queued_runs'] = all_queued_runs
@@ -4852,13 +4852,13 @@ class JobsAPI:
 
     def cancel_run(self, run_id: int) -> Wait[Run]:
         """Cancel a run.
-        
+
         Cancels a job run or a task run. The run is canceled asynchronously, so it may still be running when
         this request completes.
-        
+
         :param run_id: int
           This field is required.
-        
+
         :returns:
           Long-running operation waiter for :class:`Run`.
           See :method:wait_get_run_job_terminated_or_skipped for more details.
@@ -4901,9 +4901,9 @@ class JobsAPI:
                trigger: Optional[TriggerSettings] = None,
                webhook_notifications: Optional[WebhookNotifications] = None) -> CreateResponse:
         """Create a new job.
-        
+
         Create a new job.
-        
+
         :param access_control_list: List[:class:`AccessControlRequest`] (optional)
           List of permissions to set on the job.
         :param compute: List[:class:`JobCompute`] (optional)
@@ -4917,7 +4917,7 @@ class JobsAPI:
           An optional description for the job. The maximum length is 1024 characters in UTF-8 encoding.
         :param edit_mode: :class:`CreateJobEditMode` (optional)
           Edit mode of the job.
-          
+
           * `UI_LOCKED`: The job is in a locked UI state and cannot be modified. * `EDITABLE`: The job is in
           an editable state and can be modified.
         :param email_notifications: :class:`JobEmailNotifications` (optional)
@@ -4929,10 +4929,10 @@ class JobsAPI:
         :param git_source: :class:`GitSource` (optional)
           An optional specification for a remote Git repository containing the source code used by tasks.
           Version-controlled source code is supported by notebook, dbt, Python script, and SQL File tasks.
-          
+
           If `git_source` is set, these tasks retrieve the file from the remote repository by default.
           However, this behavior can be overridden by setting `source` to `WORKSPACE` on the task.
-          
+
           Note: dbt and SQL File tasks support only version-controlled sources. If dbt or SQL File tasks are
           used, `git_source` must be defined on the job.
         :param health: :class:`JobsHealthRules` (optional)
@@ -4942,16 +4942,16 @@ class JobsAPI:
           cannot be declared in a shared job cluster. You must declare dependent libraries in task settings.
         :param max_concurrent_runs: int (optional)
           An optional maximum allowed number of concurrent runs of the job.
-          
+
           Set this value if you want to be able to execute multiple runs of the same job concurrently. This is
           useful for example if you trigger your job on a frequent schedule and want to allow consecutive runs
           to overlap with each other, or if you want to trigger multiple runs which differ by their input
           parameters.
-          
+
           This setting affects only new runs. For example, suppose the job’s concurrency is 4 and there are
           4 concurrent active runs. Then setting the concurrency to 3 won’t kill any of the active runs.
           However, from then on, new runs are skipped unless there are fewer than 3 active runs.
-          
+
           This value cannot exceed 1000. Setting this value to `0` causes all new runs to be skipped.
         :param name: str (optional)
           An optional name for the job. The maximum length is 4096 bytes in UTF-8 encoding.
@@ -4966,7 +4966,7 @@ class JobsAPI:
           Write-only setting, available only in Create/Update/Reset and Submit calls. Specifies the user or
           service principal that the job runs as. If not specified, the job runs as the user who created the
           job.
-          
+
           Only `user_name` or `service_principal_name` can be specified. If both are specified, an error is
           thrown.
         :param schedule: :class:`CronSchedule` (optional)
@@ -4986,7 +4986,7 @@ class JobsAPI:
           `runNow`.
         :param webhook_notifications: :class:`WebhookNotifications` (optional)
           A collection of system notification IDs to notify when runs of this job begin or complete.
-        
+
         :returns: :class:`CreateResponse`
         """
         body = {}
@@ -5021,13 +5021,13 @@ class JobsAPI:
 
     def delete(self, job_id: int):
         """Delete a job.
-        
+
         Deletes a job.
-        
+
         :param job_id: int
           The canonical identifier of the job to delete. This field is required.
-        
-        
+
+
         """
         body = {}
         if job_id is not None: body['job_id'] = job_id
@@ -5037,13 +5037,13 @@ class JobsAPI:
 
     def delete_run(self, run_id: int):
         """Delete a job run.
-        
+
         Deletes a non-active run. Returns an error if the run is active.
-        
+
         :param run_id: int
           The canonical identifier of the run for which to retrieve the metadata.
-        
-        
+
+
         """
         body = {}
         if run_id is not None: body['run_id'] = run_id
@@ -5053,14 +5053,14 @@ class JobsAPI:
 
     def export_run(self, run_id: int, *, views_to_export: Optional[ViewsToExport] = None) -> ExportRunOutput:
         """Export and retrieve a job run.
-        
+
         Export and retrieve the job run task.
-        
+
         :param run_id: int
           The canonical identifier for the run. This field is required.
         :param views_to_export: :class:`ViewsToExport` (optional)
           Which views to export (CODE, DASHBOARDS, or ALL). Defaults to CODE.
-        
+
         :returns: :class:`ExportRunOutput`
         """
 
@@ -5074,12 +5074,12 @@ class JobsAPI:
 
     def get(self, job_id: int) -> Job:
         """Get a single job.
-        
+
         Retrieves the details for a single job.
-        
+
         :param job_id: int
           The canonical identifier of the job to retrieve information about. This field is required.
-        
+
         :returns: :class:`Job`
         """
 
@@ -5092,12 +5092,12 @@ class JobsAPI:
 
     def get_permission_levels(self, job_id: str) -> GetJobPermissionLevelsResponse:
         """Get job permission levels.
-        
+
         Gets the permission levels that a user can have on an object.
-        
+
         :param job_id: str
           The job for which to get or manage permissions.
-        
+
         :returns: :class:`GetJobPermissionLevelsResponse`
         """
 
@@ -5108,12 +5108,12 @@ class JobsAPI:
 
     def get_permissions(self, job_id: str) -> JobPermissions:
         """Get job permissions.
-        
+
         Gets the permissions of a job. Jobs can inherit permissions from their root object.
-        
+
         :param job_id: str
           The job for which to get or manage permissions.
-        
+
         :returns: :class:`JobPermissions`
         """
 
@@ -5128,16 +5128,16 @@ class JobsAPI:
                 include_history: Optional[bool] = None,
                 include_resolved_values: Optional[bool] = None) -> Run:
         """Get a single job run.
-        
+
         Retrieve the metadata of a run.
-        
+
         :param run_id: int
           The canonical identifier of the run for which to retrieve the metadata. This field is required.
         :param include_history: bool (optional)
           Whether to include the repair history in the response.
         :param include_resolved_values: bool (optional)
           Whether to include resolved parameter values in the response.
-        
+
         :returns: :class:`Run`
         """
 
@@ -5152,19 +5152,19 @@ class JobsAPI:
 
     def get_run_output(self, run_id: int) -> RunOutput:
         """Get the output for a single run.
-        
+
         Retrieve the output and metadata of a single task run. When a notebook task returns a value through
         the `dbutils.notebook.exit()` call, you can use this endpoint to retrieve that value. Databricks
         restricts this API to returning the first 5 MB of the output. To return a larger result, you can store
         job results in a cloud storage service.
-        
+
         This endpoint validates that the __run_id__ parameter is valid and returns an HTTP status code 400 if
         the __run_id__ parameter is invalid. Runs are automatically removed after 60 days. If you to want to
         reference them beyond 60 days, you must save old run results before they expire.
-        
+
         :param run_id: int
           The canonical identifier for the run. This field is required.
-        
+
         :returns: :class:`RunOutput`
         """
 
@@ -5183,9 +5183,9 @@ class JobsAPI:
              offset: Optional[int] = None,
              page_token: Optional[str] = None) -> Iterator[BaseJob]:
         """List jobs.
-        
+
         Retrieves a list of jobs.
-        
+
         :param expand_tasks: bool (optional)
           Whether to include task and cluster details in the response.
         :param limit: int (optional)
@@ -5195,12 +5195,12 @@ class JobsAPI:
           A filter on the list based on the exact (case insensitive) job name.
         :param offset: int (optional)
           The offset of the first job to return, relative to the most recently created job.
-          
+
           Deprecated since June 2023. Use `page_token` to iterate through the pages instead.
         :param page_token: str (optional)
           Use `next_page_token` or `prev_page_token` returned from the previous request to list the next or
           previous page of jobs respectively.
-        
+
         :returns: Iterator over :class:`BaseJob`
         """
 
@@ -5234,9 +5234,9 @@ class JobsAPI:
                   start_time_from: Optional[int] = None,
                   start_time_to: Optional[int] = None) -> Iterator[BaseRun]:
         """List job runs.
-        
+
         List runs in descending order by start time.
-        
+
         :param active_only: bool (optional)
           If active_only is `true`, only active runs are included in the results; otherwise, lists both active
           and completed runs. An active run is a run in the `QUEUED`, `PENDING`, `RUNNING`, or `TERMINATING`.
@@ -5253,7 +5253,7 @@ class JobsAPI:
           is 20. If a request specifies a limit of 0, the service instead uses the maximum limit.
         :param offset: int (optional)
           The offset of the first run to return, relative to the most recent run.
-          
+
           Deprecated since June 2023. Use `page_token` to iterate through the pages instead.
         :param page_token: str (optional)
           Use `next_page_token` or `prev_page_token` returned from the previous request to list the next or
@@ -5266,7 +5266,7 @@ class JobsAPI:
         :param start_time_to: int (optional)
           Show runs that started _at or before_ this value. The value must be a UTC timestamp in milliseconds.
           Can be combined with _start_time_from_ to filter by a time range.
-        
+
         :returns: Iterator over :class:`BaseRun`
         """
 
@@ -5309,10 +5309,10 @@ class JobsAPI:
                    spark_submit_params: Optional[List[str]] = None,
                    sql_params: Optional[Dict[str, str]] = None) -> Wait[Run]:
         """Repair a job run.
-        
+
         Re-run one or more tasks. Tasks are re-run as part of the original job run. They use the current job
         and task settings, and can be viewed in the history for the original job run.
-        
+
         :param run_id: int
           The job run ID of the run to repair. The run must not be in progress.
         :param dbt_commands: List[str] (optional)
@@ -5324,9 +5324,9 @@ class JobsAPI:
           task. If not specified upon `run-now`, it defaults to an empty list. jar_params cannot be specified
           in conjunction with notebook_params. The JSON representation of this field (for example
           `{"jar_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
-          
+
           Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
-          
+
           [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html
         :param job_parameters: Dict[str,str] (optional)
           Job-level parameters used in the run. for example `"param": "overriding_val"`
@@ -5337,16 +5337,16 @@ class JobsAPI:
           A map from keys to values for jobs with notebook task, for example `"notebook_params": {"name":
           "john doe", "age": "35"}`. The map is passed to the notebook and is accessible through the
           [dbutils.widgets.get] function.
-          
+
           If not specified upon `run-now`, the triggered run uses the job’s base parameters.
-          
+
           notebook_params cannot be specified in conjunction with jar_params.
-          
+
           Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
-          
+
           The JSON representation of this field (for example `{"notebook_params":{"name":"john
           doe","age":"35"}}`) cannot exceed 10,000 bytes.
-          
+
           [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
           [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html
         :param pipeline_params: :class:`PipelineParams` (optional)
@@ -5358,15 +5358,15 @@ class JobsAPI:
           The parameters are passed to Python file as command-line parameters. If specified upon `run-now`, it
           would overwrite the parameters specified in job setting. The JSON representation of this field (for
           example `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
-          
+
           Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
-          
+
           Important
-          
+
           These parameters accept only Latin characters (ASCII character set). Using non-ASCII characters
           returns an error. Examples of invalid, non-ASCII characters are Chinese, Japanese kanjis, and
           emojis.
-          
+
           [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html
         :param rerun_all_failed_tasks: bool (optional)
           If true, repair all failed tasks. Only one of `rerun_tasks` or `rerun_all_failed_tasks` can be used.
@@ -5381,20 +5381,20 @@ class JobsAPI:
           as command-line parameters. If specified upon `run-now`, it would overwrite the parameters specified
           in job setting. The JSON representation of this field (for example `{"python_params":["john
           doe","35"]}`) cannot exceed 10,000 bytes.
-          
+
           Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
-          
+
           Important
-          
+
           These parameters accept only Latin characters (ASCII character set). Using non-ASCII characters
           returns an error. Examples of invalid, non-ASCII characters are Chinese, Japanese kanjis, and
           emojis.
-          
+
           [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html
         :param sql_params: Dict[str,str] (optional)
           A map from keys to values for jobs with SQL task, for example `"sql_params": {"name": "john doe",
           "age": "35"}`. The SQL alert task does not support custom parameters.
-        
+
         :returns:
           Long-running operation waiter for :class:`Run`.
           See :method:wait_get_run_job_terminated_or_skipped for more details.
@@ -5456,19 +5456,19 @@ class JobsAPI:
 
     def reset(self, job_id: int, new_settings: JobSettings):
         """Update all job settings (reset).
-        
+
         Overwrite all settings for the given job. Use the [_Update_ endpoint](:method:jobs/update) to update
         job settings partially.
-        
+
         :param job_id: int
           The canonical identifier of the job to reset. This field is required.
         :param new_settings: :class:`JobSettings`
           The new settings of the job. These settings completely replace the old settings.
-          
+
           Changes to the field `JobBaseSettings.timeout_seconds` are applied to active runs. Changes to other
           fields are applied to future runs only.
-        
-        
+
+
         """
         body = {}
         if job_id is not None: body['job_id'] = job_id
@@ -5492,9 +5492,9 @@ class JobsAPI:
                 spark_submit_params: Optional[List[str]] = None,
                 sql_params: Optional[Dict[str, str]] = None) -> Wait[Run]:
         """Trigger a new job run.
-        
+
         Run a job and return the `run_id` of the triggered run.
-        
+
         :param job_id: int
           The ID of the job to be executed
         :param dbt_commands: List[str] (optional)
@@ -5504,14 +5504,14 @@ class JobsAPI:
           An optional token to guarantee the idempotency of job run requests. If a run with the provided token
           already exists, the request does not create a new run but returns the ID of the existing run
           instead. If a run with the provided token is deleted, an error is returned.
-          
+
           If you specify the idempotency token, upon failure you can retry until the request succeeds.
           Databricks guarantees that exactly one run is launched with that idempotency token.
-          
+
           This token must have at most 64 characters.
-          
+
           For more information, see [How to ensure idempotency for jobs].
-          
+
           [How to ensure idempotency for jobs]: https://kb.databricks.com/jobs/jobs-idempotency.html
         :param jar_params: List[str] (optional)
           A list of parameters for jobs with Spark JAR tasks, for example `"jar_params": ["john doe", "35"]`.
@@ -5519,9 +5519,9 @@ class JobsAPI:
           task. If not specified upon `run-now`, it defaults to an empty list. jar_params cannot be specified
           in conjunction with notebook_params. The JSON representation of this field (for example
           `{"jar_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
-          
+
           Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
-          
+
           [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html
         :param job_parameters: Dict[str,str] (optional)
           Job-level parameters used in the run. for example `"param": "overriding_val"`
@@ -5529,16 +5529,16 @@ class JobsAPI:
           A map from keys to values for jobs with notebook task, for example `"notebook_params": {"name":
           "john doe", "age": "35"}`. The map is passed to the notebook and is accessible through the
           [dbutils.widgets.get] function.
-          
+
           If not specified upon `run-now`, the triggered run uses the job’s base parameters.
-          
+
           notebook_params cannot be specified in conjunction with jar_params.
-          
+
           Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
-          
+
           The JSON representation of this field (for example `{"notebook_params":{"name":"john
           doe","age":"35"}}`) cannot exceed 10,000 bytes.
-          
+
           [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
           [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html
         :param pipeline_params: :class:`PipelineParams` (optional)
@@ -5550,15 +5550,15 @@ class JobsAPI:
           The parameters are passed to Python file as command-line parameters. If specified upon `run-now`, it
           would overwrite the parameters specified in job setting. The JSON representation of this field (for
           example `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
-          
+
           Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
-          
+
           Important
-          
+
           These parameters accept only Latin characters (ASCII character set). Using non-ASCII characters
           returns an error. Examples of invalid, non-ASCII characters are Chinese, Japanese kanjis, and
           emojis.
-          
+
           [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html
         :param queue: :class:`QueueSettings` (optional)
           The queue settings of the run.
@@ -5568,20 +5568,20 @@ class JobsAPI:
           as command-line parameters. If specified upon `run-now`, it would overwrite the parameters specified
           in job setting. The JSON representation of this field (for example `{"python_params":["john
           doe","35"]}`) cannot exceed 10,000 bytes.
-          
+
           Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
-          
+
           Important
-          
+
           These parameters accept only Latin characters (ASCII character set). Using non-ASCII characters
           returns an error. Examples of invalid, non-ASCII characters are Chinese, Japanese kanjis, and
           emojis.
-          
+
           [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html
         :param sql_params: Dict[str,str] (optional)
           A map from keys to values for jobs with SQL task, for example `"sql_params": {"name": "john doe",
           "age": "35"}`. The SQL alert task does not support custom parameters.
-        
+
         :returns:
           Long-running operation waiter for :class:`Run`.
           See :method:wait_get_run_job_terminated_or_skipped for more details.
@@ -5640,13 +5640,13 @@ class JobsAPI:
             *,
             access_control_list: Optional[List[JobAccessControlRequest]] = None) -> JobPermissions:
         """Set job permissions.
-        
+
         Sets permissions on a job. Jobs can inherit permissions from their root object.
-        
+
         :param job_id: str
           The job for which to get or manage permissions.
         :param access_control_list: List[:class:`JobAccessControlRequest`] (optional)
-        
+
         :returns: :class:`JobPermissions`
         """
         body = {}
@@ -5671,11 +5671,11 @@ class JobsAPI:
                timeout_seconds: Optional[int] = None,
                webhook_notifications: Optional[WebhookNotifications] = None) -> Wait[Run]:
         """Create and trigger a one-time run.
-        
+
         Submit a one-time run. This endpoint allows you to submit a workload directly without creating a job.
         Runs submitted using this endpoint don’t display in the UI. Use the `jobs/runs/get` API to check the
         run state after the job is submitted.
-        
+
         :param access_control_list: List[:class:`AccessControlRequest`] (optional)
           List of permissions to set on the job.
         :param email_notifications: :class:`JobEmailNotifications` (optional)
@@ -5683,10 +5683,10 @@ class JobsAPI:
         :param git_source: :class:`GitSource` (optional)
           An optional specification for a remote Git repository containing the source code used by tasks.
           Version-controlled source code is supported by notebook, dbt, Python script, and SQL File tasks.
-          
+
           If `git_source` is set, these tasks retrieve the file from the remote repository by default.
           However, this behavior can be overridden by setting `source` to `WORKSPACE` on the task.
-          
+
           Note: dbt and SQL File tasks support only version-controlled sources. If dbt or SQL File tasks are
           used, `git_source` must be defined on the job.
         :param health: :class:`JobsHealthRules` (optional)
@@ -5695,14 +5695,14 @@ class JobsAPI:
           An optional token that can be used to guarantee the idempotency of job run requests. If a run with
           the provided token already exists, the request does not create a new run but returns the ID of the
           existing run instead. If a run with the provided token is deleted, an error is returned.
-          
+
           If you specify the idempotency token, upon failure you can retry until the request succeeds.
           Databricks guarantees that exactly one run is launched with that idempotency token.
-          
+
           This token must have at most 64 characters.
-          
+
           For more information, see [How to ensure idempotency for jobs].
-          
+
           [How to ensure idempotency for jobs]: https://kb.databricks.com/jobs/jobs-idempotency.html
         :param notification_settings: :class:`JobNotificationSettings` (optional)
           Optional notification settings that are used when sending notifications to each of the
@@ -5716,7 +5716,7 @@ class JobsAPI:
           An optional timeout applied to each run of this job. A value of `0` means no timeout.
         :param webhook_notifications: :class:`WebhookNotifications` (optional)
           A collection of system notification IDs to notify when the run begins or completes.
-        
+
         :returns:
           Long-running operation waiter for :class:`Run`.
           See :method:wait_get_run_job_terminated_or_skipped for more details.
@@ -5774,10 +5774,10 @@ class JobsAPI:
                fields_to_remove: Optional[List[str]] = None,
                new_settings: Optional[JobSettings] = None):
         """Update job settings partially.
-        
+
         Add, update, or remove specific settings of an existing job. Use the [_Reset_
         endpoint](:method:jobs/reset) to overwrite all job settings.
-        
+
         :param job_id: int
           The canonical identifier of the job to update. This field is required.
         :param fields_to_remove: List[str] (optional)
@@ -5785,17 +5785,17 @@ class JobsAPI:
           tasks and job clusters (`tasks/task_1`). This field is optional.
         :param new_settings: :class:`JobSettings` (optional)
           The new settings for the job.
-          
+
           Top-level fields specified in `new_settings` are completely replaced, except for arrays which are
           merged. That is, new and existing entries are completely replaced based on the respective key
           fields, i.e. `task_key` or `job_cluster_key`, while previous entries are kept.
-          
+
           Partially updating nested fields is not supported.
-          
+
           Changes to the field `JobSettings.timeout_seconds` are applied to active runs. Changes to other
           fields are applied to future runs only.
-        
-        
+
+
         """
         body = {}
         if fields_to_remove is not None: body['fields_to_remove'] = [v for v in fields_to_remove]
@@ -5811,13 +5811,13 @@ class JobsAPI:
             *,
             access_control_list: Optional[List[JobAccessControlRequest]] = None) -> JobPermissions:
         """Update job permissions.
-        
+
         Updates the permissions on a job. Jobs can inherit permissions from their root object.
-        
+
         :param job_id: str
           The job for which to get or manage permissions.
         :param access_control_list: List[:class:`JobAccessControlRequest`] (optional)
-        
+
         :returns: :class:`JobPermissions`
         """
         body = {}

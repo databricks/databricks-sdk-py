@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, Iterator, List, Optional
+from typing import Any, Dict, Iterator, List, Optional
 
 from ._internal import _enum, _from_dict, _repeated_dict, _repeated_enum
 
@@ -25,7 +25,7 @@ class AccountsCreateMetastore:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AccountsCreateMetastore:
+    def from_dict(cls, d: Dict[str, Any]) -> AccountsCreateMetastore:
         """Deserializes the AccountsCreateMetastore from a dictionary."""
         return cls(metastore_info=_from_dict(d, 'metastore_info', CreateMetastore))
 
@@ -49,7 +49,7 @@ class AccountsCreateMetastoreAssignment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AccountsCreateMetastoreAssignment:
+    def from_dict(cls, d: Dict[str, Any]) -> AccountsCreateMetastoreAssignment:
         """Deserializes the AccountsCreateMetastoreAssignment from a dictionary."""
         return cls(metastore_assignment=_from_dict(d, 'metastore_assignment', CreateMetastoreAssignment),
                    metastore_id=d.get('metastore_id', None),
@@ -71,7 +71,7 @@ class AccountsCreateStorageCredential:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AccountsCreateStorageCredential:
+    def from_dict(cls, d: Dict[str, Any]) -> AccountsCreateStorageCredential:
         """Deserializes the AccountsCreateStorageCredential from a dictionary."""
         return cls(credential_info=_from_dict(d, 'credential_info', CreateStorageCredential),
                    metastore_id=d.get('metastore_id', None))
@@ -88,7 +88,7 @@ class AccountsMetastoreAssignment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AccountsMetastoreAssignment:
+    def from_dict(cls, d: Dict[str, Any]) -> AccountsMetastoreAssignment:
         """Deserializes the AccountsMetastoreAssignment from a dictionary."""
         return cls(metastore_assignment=_from_dict(d, 'metastore_assignment', MetastoreAssignment))
 
@@ -104,7 +104,7 @@ class AccountsMetastoreInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AccountsMetastoreInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> AccountsMetastoreInfo:
         """Deserializes the AccountsMetastoreInfo from a dictionary."""
         return cls(metastore_info=_from_dict(d, 'metastore_info', MetastoreInfo))
 
@@ -120,7 +120,7 @@ class AccountsStorageCredentialInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AccountsStorageCredentialInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> AccountsStorageCredentialInfo:
         """Deserializes the AccountsStorageCredentialInfo from a dictionary."""
         return cls(credential_info=_from_dict(d, 'credential_info', StorageCredentialInfo))
 
@@ -140,7 +140,7 @@ class AccountsUpdateMetastore:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AccountsUpdateMetastore:
+    def from_dict(cls, d: Dict[str, Any]) -> AccountsUpdateMetastore:
         """Deserializes the AccountsUpdateMetastore from a dictionary."""
         return cls(metastore_id=d.get('metastore_id', None),
                    metastore_info=_from_dict(d, 'metastore_info', UpdateMetastore))
@@ -165,7 +165,7 @@ class AccountsUpdateMetastoreAssignment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AccountsUpdateMetastoreAssignment:
+    def from_dict(cls, d: Dict[str, Any]) -> AccountsUpdateMetastoreAssignment:
         """Deserializes the AccountsUpdateMetastoreAssignment from a dictionary."""
         return cls(metastore_assignment=_from_dict(d, 'metastore_assignment', UpdateMetastoreAssignment),
                    metastore_id=d.get('metastore_id', None),
@@ -192,7 +192,7 @@ class AccountsUpdateStorageCredential:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AccountsUpdateStorageCredential:
+    def from_dict(cls, d: Dict[str, Any]) -> AccountsUpdateStorageCredential:
         """Deserializes the AccountsUpdateStorageCredential from a dictionary."""
         return cls(credential_info=_from_dict(d, 'credential_info', UpdateStorageCredential),
                    metastore_id=d.get('metastore_id', None),
@@ -223,7 +223,7 @@ class ArtifactAllowlistInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ArtifactAllowlistInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> ArtifactAllowlistInfo:
         """Deserializes the ArtifactAllowlistInfo from a dictionary."""
         return cls(artifact_matchers=_repeated_dict(d, 'artifact_matchers', ArtifactMatcher),
                    created_at=d.get('created_at', None),
@@ -247,7 +247,7 @@ class ArtifactMatcher:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ArtifactMatcher:
+    def from_dict(cls, d: Dict[str, Any]) -> ArtifactMatcher:
         """Deserializes the ArtifactMatcher from a dictionary."""
         return cls(artifact=d.get('artifact', None), match_type=_enum(d, 'match_type', MatchType))
 
@@ -269,7 +269,7 @@ class AssignResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AssignResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> AssignResponse:
         """Deserializes the AssignResponse from a dictionary."""
         return cls()
 
@@ -295,7 +295,7 @@ class AwsIamRole:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AwsIamRole:
+    def from_dict(cls, d: Dict[str, Any]) -> AwsIamRole:
         """Deserializes the AwsIamRole from a dictionary."""
         return cls(external_id=d.get('external_id', None),
                    role_arn=d.get('role_arn', None),
@@ -327,7 +327,7 @@ class AzureManagedIdentity:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AzureManagedIdentity:
+    def from_dict(cls, d: Dict[str, Any]) -> AzureManagedIdentity:
         """Deserializes the AzureManagedIdentity from a dictionary."""
         return cls(access_connector_id=d.get('access_connector_id', None),
                    credential_id=d.get('credential_id', None),
@@ -354,7 +354,7 @@ class AzureServicePrincipal:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AzureServicePrincipal:
+    def from_dict(cls, d: Dict[str, Any]) -> AzureServicePrincipal:
         """Deserializes the AzureServicePrincipal from a dictionary."""
         return cls(application_id=d.get('application_id', None),
                    client_secret=d.get('client_secret', None),
@@ -370,7 +370,7 @@ class CancelRefreshResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CancelRefreshResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CancelRefreshResponse:
         """Deserializes the CancelRefreshResponse from a dictionary."""
         return cls()
 
@@ -423,7 +423,7 @@ class CatalogInfo:
 
     provider_name: Optional[str] = None
     """The name of delta sharing provider.
-    
+
     A Delta Sharing catalog is a catalog that is based on a Delta share on a remote sharing server."""
 
     provisioning_info: Optional[ProvisioningInfo] = None
@@ -483,7 +483,7 @@ class CatalogInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CatalogInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> CatalogInfo:
         """Deserializes the CatalogInfo from a dictionary."""
         return cls(browse_only=d.get('browse_only', None),
                    catalog_type=_enum(d, 'catalog_type', CatalogType),
@@ -561,7 +561,7 @@ class CloudflareApiToken:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CloudflareApiToken:
+    def from_dict(cls, d: Dict[str, Any]) -> CloudflareApiToken:
         """Deserializes the CloudflareApiToken from a dictionary."""
         return cls(access_key_id=d.get('access_key_id', None),
                    account_id=d.get('account_id', None),
@@ -623,7 +623,7 @@ class ColumnInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ColumnInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> ColumnInfo:
         """Deserializes the ColumnInfo from a dictionary."""
         return cls(comment=d.get('comment', None),
                    mask=_from_dict(d, 'mask', ColumnMask),
@@ -657,7 +657,7 @@ class ColumnMask:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ColumnMask:
+    def from_dict(cls, d: Dict[str, Any]) -> ColumnMask:
         """Deserializes the ColumnMask from a dictionary."""
         return cls(function_name=d.get('function_name', None),
                    using_column_names=d.get('using_column_names', None))
@@ -772,7 +772,7 @@ class ConnectionInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ConnectionInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> ConnectionInfo:
         """Deserializes the ConnectionInfo from a dictionary."""
         return cls(comment=d.get('comment', None),
                    connection_id=d.get('connection_id', None),
@@ -849,7 +849,7 @@ class ContinuousUpdateStatus:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ContinuousUpdateStatus:
+    def from_dict(cls, d: Dict[str, Any]) -> ContinuousUpdateStatus:
         """Deserializes the ContinuousUpdateStatus from a dictionary."""
         return cls(initial_pipeline_sync_progress=_from_dict(d, 'initial_pipeline_sync_progress',
                                                              PipelineProgress),
@@ -876,7 +876,7 @@ class CreateCatalog:
 
     provider_name: Optional[str] = None
     """The name of delta sharing provider.
-    
+
     A Delta Sharing catalog is a catalog that is based on a Delta share on a remote sharing server."""
 
     share_name: Optional[str] = None
@@ -899,7 +899,7 @@ class CreateCatalog:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateCatalog:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateCatalog:
         """Deserializes the CreateCatalog from a dictionary."""
         return cls(comment=d.get('comment', None),
                    connection_name=d.get('connection_name', None),
@@ -943,7 +943,7 @@ class CreateConnection:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateConnection:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateConnection:
         """Deserializes the CreateConnection from a dictionary."""
         return cls(comment=d.get('comment', None),
                    connection_type=_enum(d, 'connection_type', ConnectionType),
@@ -993,7 +993,7 @@ class CreateExternalLocation:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateExternalLocation:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateExternalLocation:
         """Deserializes the CreateExternalLocation from a dictionary."""
         return cls(access_point=d.get('access_point', None),
                    comment=d.get('comment', None),
@@ -1099,7 +1099,7 @@ class CreateFunction:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateFunction:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateFunction:
         """Deserializes the CreateFunction from a dictionary."""
         return cls(catalog_name=d.get('catalog_name', None),
                    comment=d.get('comment', None),
@@ -1142,7 +1142,7 @@ class CreateFunctionRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateFunctionRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateFunctionRequest:
         """Deserializes the CreateFunctionRequest from a dictionary."""
         return cls(function_info=_from_dict(d, 'function_info', CreateFunction))
 
@@ -1192,7 +1192,7 @@ class CreateMetastore:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateMetastore:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateMetastore:
         """Deserializes the CreateMetastore from a dictionary."""
         return cls(name=d.get('name', None),
                    region=d.get('region', None),
@@ -1219,7 +1219,7 @@ class CreateMetastoreAssignment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateMetastoreAssignment:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateMetastoreAssignment:
         """Deserializes the CreateMetastoreAssignment from a dictionary."""
         return cls(default_catalog_name=d.get('default_catalog_name', None),
                    metastore_id=d.get('metastore_id', None),
@@ -1298,7 +1298,7 @@ class CreateMonitor:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateMonitor:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateMonitor:
         """Deserializes the CreateMonitor from a dictionary."""
         return cls(assets_dir=d.get('assets_dir', None),
                    baseline_table_name=d.get('baseline_table_name', None),
@@ -1345,7 +1345,7 @@ class CreateRegisteredModelRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateRegisteredModelRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateRegisteredModelRequest:
         """Deserializes the CreateRegisteredModelRequest from a dictionary."""
         return cls(catalog_name=d.get('catalog_name', None),
                    comment=d.get('comment', None),
@@ -1363,7 +1363,7 @@ class CreateResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateResponse:
         """Deserializes the CreateResponse from a dictionary."""
         return cls()
 
@@ -1396,7 +1396,7 @@ class CreateSchema:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateSchema:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateSchema:
         """Deserializes the CreateSchema from a dictionary."""
         return cls(catalog_name=d.get('catalog_name', None),
                    comment=d.get('comment', None),
@@ -1451,7 +1451,7 @@ class CreateStorageCredential:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateStorageCredential:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateStorageCredential:
         """Deserializes the CreateStorageCredential from a dictionary."""
         return cls(aws_iam_role=_from_dict(d, 'aws_iam_role', AwsIamRole),
                    azure_managed_identity=_from_dict(d, 'azure_managed_identity', AzureManagedIdentity),
@@ -1482,7 +1482,7 @@ class CreateTableConstraint:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateTableConstraint:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateTableConstraint:
         """Deserializes the CreateTableConstraint from a dictionary."""
         return cls(constraint=_from_dict(d, 'constraint', TableConstraint),
                    full_name_arg=d.get('full_name_arg', None))
@@ -1519,7 +1519,7 @@ class CreateVolumeRequestContent:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateVolumeRequestContent:
+    def from_dict(cls, d: Dict[str, Any]) -> CreateVolumeRequestContent:
         """Deserializes the CreateVolumeRequestContent from a dictionary."""
         return cls(catalog_name=d.get('catalog_name', None),
                    comment=d.get('comment', None),
@@ -1549,7 +1549,7 @@ class CurrentWorkspaceBindings:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CurrentWorkspaceBindings:
+    def from_dict(cls, d: Dict[str, Any]) -> CurrentWorkspaceBindings:
         """Deserializes the CurrentWorkspaceBindings from a dictionary."""
         return cls(workspaces=d.get('workspaces', None))
 
@@ -1577,7 +1577,7 @@ class DatabricksGcpServiceAccountRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DatabricksGcpServiceAccountRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> DatabricksGcpServiceAccountRequest:
         """Deserializes the DatabricksGcpServiceAccountRequest from a dictionary."""
         return cls()
 
@@ -1598,7 +1598,7 @@ class DatabricksGcpServiceAccountResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DatabricksGcpServiceAccountResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DatabricksGcpServiceAccountResponse:
         """Deserializes the DatabricksGcpServiceAccountResponse from a dictionary."""
         return cls(credential_id=d.get('credential_id', None), email=d.get('email', None))
 
@@ -1612,7 +1612,7 @@ class DeleteAliasResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteAliasResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteAliasResponse:
         """Deserializes the DeleteAliasResponse from a dictionary."""
         return cls()
 
@@ -1626,7 +1626,7 @@ class DeleteResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DeleteResponse:
         """Deserializes the DeleteResponse from a dictionary."""
         return cls()
 
@@ -1646,7 +1646,7 @@ class DeltaRuntimePropertiesKvPairs:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeltaRuntimePropertiesKvPairs:
+    def from_dict(cls, d: Dict[str, Any]) -> DeltaRuntimePropertiesKvPairs:
         """Deserializes the DeltaRuntimePropertiesKvPairs from a dictionary."""
         return cls(delta_runtime_properties=d.get('delta_runtime_properties', None))
 
@@ -1670,7 +1670,7 @@ class Dependency:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Dependency:
+    def from_dict(cls, d: Dict[str, Any]) -> Dependency:
         """Deserializes the Dependency from a dictionary."""
         return cls(function=_from_dict(d, 'function', FunctionDependency),
                    table=_from_dict(d, 'table', TableDependency))
@@ -1690,7 +1690,7 @@ class DependencyList:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DependencyList:
+    def from_dict(cls, d: Dict[str, Any]) -> DependencyList:
         """Deserializes the DependencyList from a dictionary."""
         return cls(dependencies=_repeated_dict(d, 'dependencies', Dependency))
 
@@ -1704,7 +1704,7 @@ class DisableResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DisableResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> DisableResponse:
         """Deserializes the DisableResponse from a dictionary."""
         return cls()
 
@@ -1730,7 +1730,7 @@ class EffectivePermissionsList:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EffectivePermissionsList:
+    def from_dict(cls, d: Dict[str, Any]) -> EffectivePermissionsList:
         """Deserializes the EffectivePermissionsList from a dictionary."""
         return cls(
             privilege_assignments=_repeated_dict(d, 'privilege_assignments', EffectivePrivilegeAssignment))
@@ -1758,7 +1758,7 @@ class EffectivePredictiveOptimizationFlag:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EffectivePredictiveOptimizationFlag:
+    def from_dict(cls, d: Dict[str, Any]) -> EffectivePredictiveOptimizationFlag:
         """Deserializes the EffectivePredictiveOptimizationFlag from a dictionary."""
         return cls(inherited_from_name=d.get('inherited_from_name', None),
                    inherited_from_type=_enum(d, 'inherited_from_type',
@@ -1796,7 +1796,7 @@ class EffectivePrivilege:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EffectivePrivilege:
+    def from_dict(cls, d: Dict[str, Any]) -> EffectivePrivilege:
         """Deserializes the EffectivePrivilege from a dictionary."""
         return cls(inherited_from_name=d.get('inherited_from_name', None),
                    inherited_from_type=_enum(d, 'inherited_from_type', SecurableType),
@@ -1819,7 +1819,7 @@ class EffectivePrivilegeAssignment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EffectivePrivilegeAssignment:
+    def from_dict(cls, d: Dict[str, Any]) -> EffectivePrivilegeAssignment:
         """Deserializes the EffectivePrivilegeAssignment from a dictionary."""
         return cls(principal=d.get('principal', None),
                    privileges=_repeated_dict(d, 'privileges', EffectivePrivilege))
@@ -1842,7 +1842,7 @@ class EnableResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EnableResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> EnableResponse:
         """Deserializes the EnableResponse from a dictionary."""
         return cls()
 
@@ -1869,7 +1869,7 @@ class EncryptionDetails:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EncryptionDetails:
+    def from_dict(cls, d: Dict[str, Any]) -> EncryptionDetails:
         """Deserializes the EncryptionDetails from a dictionary."""
         return cls(sse_encryption_details=_from_dict(d, 'sse_encryption_details', SseEncryptionDetails))
 
@@ -1938,7 +1938,7 @@ class ExternalLocationInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ExternalLocationInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> ExternalLocationInfo:
         """Deserializes the ExternalLocationInfo from a dictionary."""
         return cls(access_point=d.get('access_point', None),
                    comment=d.get('comment', None),
@@ -1979,7 +1979,7 @@ class FailedStatus:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> FailedStatus:
+    def from_dict(cls, d: Dict[str, Any]) -> FailedStatus:
         """Deserializes the FailedStatus from a dictionary."""
         return cls(last_processed_commit_version=d.get('last_processed_commit_version', None),
                    timestamp=d.get('timestamp', None))
@@ -2009,7 +2009,7 @@ class ForeignKeyConstraint:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ForeignKeyConstraint:
+    def from_dict(cls, d: Dict[str, Any]) -> ForeignKeyConstraint:
         """Deserializes the ForeignKeyConstraint from a dictionary."""
         return cls(child_columns=d.get('child_columns', None),
                    name=d.get('name', None),
@@ -2032,7 +2032,7 @@ class FunctionDependency:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> FunctionDependency:
+    def from_dict(cls, d: Dict[str, Any]) -> FunctionDependency:
         """Deserializes the FunctionDependency from a dictionary."""
         return cls(function_full_name=d.get('function_full_name', None))
 
@@ -2163,7 +2163,7 @@ class FunctionInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> FunctionInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> FunctionInfo:
         """Deserializes the FunctionInfo from a dictionary."""
         return cls(catalog_name=d.get('catalog_name', None),
                    comment=d.get('comment', None),
@@ -2282,7 +2282,7 @@ class FunctionParameterInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> FunctionParameterInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> FunctionParameterInfo:
         """Deserializes the FunctionParameterInfo from a dictionary."""
         return cls(comment=d.get('comment', None),
                    name=d.get('name', None),
@@ -2310,7 +2310,7 @@ class FunctionParameterInfos:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> FunctionParameterInfos:
+    def from_dict(cls, d: Dict[str, Any]) -> FunctionParameterInfos:
         """Deserializes the FunctionParameterInfos from a dictionary."""
         return cls(parameters=_repeated_dict(d, 'parameters', FunctionParameterInfo))
 
@@ -2416,7 +2416,7 @@ class GetMetastoreSummaryResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetMetastoreSummaryResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> GetMetastoreSummaryResponse:
         """Deserializes the GetMetastoreSummaryResponse from a dictionary."""
         return cls(cloud=d.get('cloud', None),
                    created_at=d.get('created_at', None),
@@ -2467,7 +2467,7 @@ class ListAccountMetastoreAssignmentsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListAccountMetastoreAssignmentsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListAccountMetastoreAssignmentsResponse:
         """Deserializes the ListAccountMetastoreAssignmentsResponse from a dictionary."""
         return cls(workspace_ids=d.get('workspace_ids', None))
 
@@ -2484,7 +2484,7 @@ class ListCatalogsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListCatalogsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListCatalogsResponse:
         """Deserializes the ListCatalogsResponse from a dictionary."""
         return cls(catalogs=_repeated_dict(d, 'catalogs', CatalogInfo))
 
@@ -2501,7 +2501,7 @@ class ListConnectionsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListConnectionsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListConnectionsResponse:
         """Deserializes the ListConnectionsResponse from a dictionary."""
         return cls(connections=_repeated_dict(d, 'connections', ConnectionInfo))
 
@@ -2524,7 +2524,7 @@ class ListExternalLocationsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListExternalLocationsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListExternalLocationsResponse:
         """Deserializes the ListExternalLocationsResponse from a dictionary."""
         return cls(external_locations=_repeated_dict(d, 'external_locations', ExternalLocationInfo),
                    next_page_token=d.get('next_page_token', None))
@@ -2547,7 +2547,7 @@ class ListFunctionsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListFunctionsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListFunctionsResponse:
         """Deserializes the ListFunctionsResponse from a dictionary."""
         return cls(functions=_repeated_dict(d, 'functions', FunctionInfo),
                    next_page_token=d.get('next_page_token', None))
@@ -2565,7 +2565,7 @@ class ListMetastoresResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListMetastoresResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListMetastoresResponse:
         """Deserializes the ListMetastoresResponse from a dictionary."""
         return cls(metastores=_repeated_dict(d, 'metastores', MetastoreInfo))
 
@@ -2586,7 +2586,7 @@ class ListModelVersionsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListModelVersionsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListModelVersionsResponse:
         """Deserializes the ListModelVersionsResponse from a dictionary."""
         return cls(model_versions=_repeated_dict(d, 'model_versions', ModelVersionInfo),
                    next_page_token=d.get('next_page_token', None))
@@ -2608,7 +2608,7 @@ class ListRegisteredModelsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListRegisteredModelsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListRegisteredModelsResponse:
         """Deserializes the ListRegisteredModelsResponse from a dictionary."""
         return cls(next_page_token=d.get('next_page_token', None),
                    registered_models=_repeated_dict(d, 'registered_models', RegisteredModelInfo))
@@ -2631,7 +2631,7 @@ class ListSchemasResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListSchemasResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListSchemasResponse:
         """Deserializes the ListSchemasResponse from a dictionary."""
         return cls(next_page_token=d.get('next_page_token', None),
                    schemas=_repeated_dict(d, 'schemas', SchemaInfo))
@@ -2654,7 +2654,7 @@ class ListStorageCredentialsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListStorageCredentialsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListStorageCredentialsResponse:
         """Deserializes the ListStorageCredentialsResponse from a dictionary."""
         return cls(next_page_token=d.get('next_page_token', None),
                    storage_credentials=_repeated_dict(d, 'storage_credentials', StorageCredentialInfo))
@@ -2672,7 +2672,7 @@ class ListSystemSchemasResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListSystemSchemasResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListSystemSchemasResponse:
         """Deserializes the ListSystemSchemasResponse from a dictionary."""
         return cls(schemas=_repeated_dict(d, 'schemas', SystemSchemaInfo))
 
@@ -2694,7 +2694,7 @@ class ListTableSummariesResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListTableSummariesResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListTableSummariesResponse:
         """Deserializes the ListTableSummariesResponse from a dictionary."""
         return cls(next_page_token=d.get('next_page_token', None),
                    tables=_repeated_dict(d, 'tables', TableSummary))
@@ -2717,7 +2717,7 @@ class ListTablesResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListTablesResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ListTablesResponse:
         """Deserializes the ListTablesResponse from a dictionary."""
         return cls(next_page_token=d.get('next_page_token', None),
                    tables=_repeated_dict(d, 'tables', TableInfo))
@@ -2740,7 +2740,7 @@ class ListVolumesResponseContent:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListVolumesResponseContent:
+    def from_dict(cls, d: Dict[str, Any]) -> ListVolumesResponseContent:
         """Deserializes the ListVolumesResponseContent from a dictionary."""
         return cls(next_page_token=d.get('next_page_token', None),
                    volumes=_repeated_dict(d, 'volumes', VolumeInfo))
@@ -2772,7 +2772,7 @@ class MetastoreAssignment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> MetastoreAssignment:
+    def from_dict(cls, d: Dict[str, Any]) -> MetastoreAssignment:
         """Deserializes the MetastoreAssignment from a dictionary."""
         return cls(default_catalog_name=d.get('default_catalog_name', None),
                    metastore_id=d.get('metastore_id', None),
@@ -2867,7 +2867,7 @@ class MetastoreInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> MetastoreInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> MetastoreInfo:
         """Deserializes the MetastoreInfo from a dictionary."""
         return cls(cloud=d.get('cloud', None),
                    created_at=d.get('created_at', None),
@@ -2976,7 +2976,7 @@ class ModelVersionInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ModelVersionInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> ModelVersionInfo:
         """Deserializes the ModelVersionInfo from a dictionary."""
         return cls(catalog_name=d.get('catalog_name', None),
                    comment=d.get('comment', None),
@@ -3028,7 +3028,7 @@ class MonitorCronSchedule:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> MonitorCronSchedule:
+    def from_dict(cls, d: Dict[str, Any]) -> MonitorCronSchedule:
         """Deserializes the MonitorCronSchedule from a dictionary."""
         return cls(pause_status=_enum(d, 'pause_status', MonitorCronSchedulePauseStatus),
                    quartz_cron_expression=d.get('quartz_cron_expression', None),
@@ -3047,7 +3047,7 @@ class MonitorCustomMetric:
     definition: Optional[str] = None
     """Jinja template for a SQL expression that specifies how to compute the metric. See [create metric
     definition].
-    
+
     [create metric definition]: https://docs.databricks.com/en/lakehouse-monitoring/custom-metrics.html#create-definition"""
 
     input_columns: Optional[List[str]] = None
@@ -3073,7 +3073,7 @@ class MonitorCustomMetric:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> MonitorCustomMetric:
+    def from_dict(cls, d: Dict[str, Any]) -> MonitorCustomMetric:
         """Deserializes the MonitorCustomMetric from a dictionary."""
         return cls(definition=d.get('definition', None),
                    input_columns=d.get('input_columns', None),
@@ -3104,7 +3104,7 @@ class MonitorDataClassificationConfig:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> MonitorDataClassificationConfig:
+    def from_dict(cls, d: Dict[str, Any]) -> MonitorDataClassificationConfig:
         """Deserializes the MonitorDataClassificationConfig from a dictionary."""
         return cls(enabled=d.get('enabled', None))
 
@@ -3121,7 +3121,7 @@ class MonitorDestinations:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> MonitorDestinations:
+    def from_dict(cls, d: Dict[str, Any]) -> MonitorDestinations:
         """Deserializes the MonitorDestinations from a dictionary."""
         return cls(email_addresses=d.get('email_addresses', None))
 
@@ -3162,7 +3162,7 @@ class MonitorInferenceLogProfileType:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> MonitorInferenceLogProfileType:
+    def from_dict(cls, d: Dict[str, Any]) -> MonitorInferenceLogProfileType:
         """Deserializes the MonitorInferenceLogProfileType from a dictionary."""
         return cls(granularities=d.get('granularities', None),
                    label_col=d.get('label_col', None),
@@ -3271,7 +3271,7 @@ class MonitorInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> MonitorInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> MonitorInfo:
         """Deserializes the MonitorInfo from a dictionary."""
         return cls(assets_dir=d.get('assets_dir', None),
                    baseline_table_name=d.get('baseline_table_name', None),
@@ -3316,7 +3316,7 @@ class MonitorNotificationsConfig:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> MonitorNotificationsConfig:
+    def from_dict(cls, d: Dict[str, Any]) -> MonitorNotificationsConfig:
         """Deserializes the MonitorNotificationsConfig from a dictionary."""
         return cls(on_failure=_from_dict(d, 'on_failure', MonitorDestinations))
 
@@ -3349,7 +3349,7 @@ class MonitorRefreshInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> MonitorRefreshInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> MonitorRefreshInfo:
         """Deserializes the MonitorRefreshInfo from a dictionary."""
         return cls(end_time_ms=d.get('end_time_ms', None),
                    message=d.get('message', None),
@@ -3377,7 +3377,7 @@ class MonitorSnapshotProfileType:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> MonitorSnapshotProfileType:
+    def from_dict(cls, d: Dict[str, Any]) -> MonitorSnapshotProfileType:
         """Deserializes the MonitorSnapshotProfileType from a dictionary."""
         return cls()
 
@@ -3399,7 +3399,7 @@ class MonitorTimeSeriesProfileType:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> MonitorTimeSeriesProfileType:
+    def from_dict(cls, d: Dict[str, Any]) -> MonitorTimeSeriesProfileType:
         """Deserializes the MonitorTimeSeriesProfileType from a dictionary."""
         return cls(granularities=d.get('granularities', None), timestamp_col=d.get('timestamp_col', None))
 
@@ -3416,7 +3416,7 @@ class NamedTableConstraint:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> NamedTableConstraint:
+    def from_dict(cls, d: Dict[str, Any]) -> NamedTableConstraint:
         """Deserializes the NamedTableConstraint from a dictionary."""
         return cls(name=d.get('name', None))
 
@@ -3443,7 +3443,7 @@ class OnlineTable:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> OnlineTable:
+    def from_dict(cls, d: Dict[str, Any]) -> OnlineTable:
         """Deserializes the OnlineTable from a dictionary."""
         return cls(name=d.get('name', None),
                    spec=_from_dict(d, 'spec', OnlineTableSpec),
@@ -3495,7 +3495,7 @@ class OnlineTableSpec:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> OnlineTableSpec:
+    def from_dict(cls, d: Dict[str, Any]) -> OnlineTableSpec:
         """Deserializes the OnlineTableSpec from a dictionary."""
         return cls(perform_full_copy=d.get('perform_full_copy', None),
                    pipeline_id=d.get('pipeline_id', None),
@@ -3516,7 +3516,7 @@ class OnlineTableSpecContinuousSchedulingPolicy:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> OnlineTableSpecContinuousSchedulingPolicy:
+    def from_dict(cls, d: Dict[str, Any]) -> OnlineTableSpecContinuousSchedulingPolicy:
         """Deserializes the OnlineTableSpecContinuousSchedulingPolicy from a dictionary."""
         return cls()
 
@@ -3530,7 +3530,7 @@ class OnlineTableSpecTriggeredSchedulingPolicy:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> OnlineTableSpecTriggeredSchedulingPolicy:
+    def from_dict(cls, d: Dict[str, Any]) -> OnlineTableSpecTriggeredSchedulingPolicy:
         """Deserializes the OnlineTableSpecTriggeredSchedulingPolicy from a dictionary."""
         return cls()
 
@@ -3592,7 +3592,7 @@ class OnlineTableStatus:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> OnlineTableStatus:
+    def from_dict(cls, d: Dict[str, Any]) -> OnlineTableStatus:
         """Deserializes the OnlineTableStatus from a dictionary."""
         return cls(continuous_update_status=_from_dict(d, 'continuous_update_status', ContinuousUpdateStatus),
                    detailed_state=_enum(d, 'detailed_state', OnlineTableState),
@@ -3622,7 +3622,7 @@ class PermissionsChange:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PermissionsChange:
+    def from_dict(cls, d: Dict[str, Any]) -> PermissionsChange:
         """Deserializes the PermissionsChange from a dictionary."""
         return cls(add=_repeated_enum(d, 'add', Privilege),
                    principal=d.get('principal', None),
@@ -3642,7 +3642,7 @@ class PermissionsList:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PermissionsList:
+    def from_dict(cls, d: Dict[str, Any]) -> PermissionsList:
         """Deserializes the PermissionsList from a dictionary."""
         return cls(privilege_assignments=_repeated_dict(d, 'privilege_assignments', PrivilegeAssignment))
 
@@ -3681,7 +3681,7 @@ class PipelineProgress:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PipelineProgress:
+    def from_dict(cls, d: Dict[str, Any]) -> PipelineProgress:
         """Deserializes the PipelineProgress from a dictionary."""
         return cls(estimated_completion_time_seconds=d.get('estimated_completion_time_seconds', None),
                    latest_version_currently_processing=d.get('latest_version_currently_processing', None),
@@ -3706,7 +3706,7 @@ class PrimaryKeyConstraint:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PrimaryKeyConstraint:
+    def from_dict(cls, d: Dict[str, Any]) -> PrimaryKeyConstraint:
         """Deserializes the PrimaryKeyConstraint from a dictionary."""
         return cls(child_columns=d.get('child_columns', None), name=d.get('name', None))
 
@@ -3772,7 +3772,7 @@ class PrivilegeAssignment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PrivilegeAssignment:
+    def from_dict(cls, d: Dict[str, Any]) -> PrivilegeAssignment:
         """Deserializes the PrivilegeAssignment from a dictionary."""
         return cls(principal=d.get('principal', None), privileges=_repeated_enum(d, 'privileges', Privilege))
 
@@ -3793,7 +3793,7 @@ class ProvisioningInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ProvisioningInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> ProvisioningInfo:
         """Deserializes the ProvisioningInfo from a dictionary."""
         return cls(state=_enum(d, 'state', ProvisioningInfoState))
 
@@ -3824,7 +3824,7 @@ class ProvisioningStatus:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ProvisioningStatus:
+    def from_dict(cls, d: Dict[str, Any]) -> ProvisioningStatus:
         """Deserializes the ProvisioningStatus from a dictionary."""
         return cls(
             initial_pipeline_sync_progress=_from_dict(d, 'initial_pipeline_sync_progress', PipelineProgress))
@@ -3848,7 +3848,7 @@ class RegisteredModelAlias:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RegisteredModelAlias:
+    def from_dict(cls, d: Dict[str, Any]) -> RegisteredModelAlias:
         """Deserializes the RegisteredModelAlias from a dictionary."""
         return cls(alias_name=d.get('alias_name', None), version_num=d.get('version_num', None))
 
@@ -3913,7 +3913,7 @@ class RegisteredModelInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> RegisteredModelInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> RegisteredModelInfo:
         """Deserializes the RegisteredModelInfo from a dictionary."""
         return cls(aliases=_repeated_dict(d, 'aliases', RegisteredModelAlias),
                    catalog_name=d.get('catalog_name', None),
@@ -4005,7 +4005,7 @@ class SchemaInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SchemaInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> SchemaInfo:
         """Deserializes the SchemaInfo from a dictionary."""
         return cls(catalog_name=d.get('catalog_name', None),
                    catalog_type=d.get('catalog_type', None),
@@ -4066,7 +4066,7 @@ class SetArtifactAllowlist:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SetArtifactAllowlist:
+    def from_dict(cls, d: Dict[str, Any]) -> SetArtifactAllowlist:
         """Deserializes the SetArtifactAllowlist from a dictionary."""
         return cls(artifact_matchers=_repeated_dict(d, 'artifact_matchers', ArtifactMatcher),
                    artifact_type=_enum(d, 'artifact_type', ArtifactType))
@@ -4092,7 +4092,7 @@ class SetRegisteredModelAliasRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SetRegisteredModelAliasRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> SetRegisteredModelAliasRequest:
         """Deserializes the SetRegisteredModelAliasRequest from a dictionary."""
         return cls(alias=d.get('alias', None),
                    full_name=d.get('full_name', None),
@@ -4117,7 +4117,7 @@ class SseEncryptionDetails:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SseEncryptionDetails:
+    def from_dict(cls, d: Dict[str, Any]) -> SseEncryptionDetails:
         """Deserializes the SseEncryptionDetails from a dictionary."""
         return cls(algorithm=_enum(d, 'algorithm', SseEncryptionDetailsAlgorithm),
                    aws_kms_key_arn=d.get('aws_kms_key_arn', None))
@@ -4205,7 +4205,7 @@ class StorageCredentialInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> StorageCredentialInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> StorageCredentialInfo:
         """Deserializes the StorageCredentialInfo from a dictionary."""
         return cls(aws_iam_role=_from_dict(d, 'aws_iam_role', AwsIamRole),
                    azure_managed_identity=_from_dict(d, 'azure_managed_identity', AzureManagedIdentity),
@@ -4243,7 +4243,7 @@ class SystemSchemaInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SystemSchemaInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> SystemSchemaInfo:
         """Deserializes the SystemSchemaInfo from a dictionary."""
         return cls(schema=d.get('schema', None), state=_enum(d, 'state', SystemSchemaInfoState))
 
@@ -4279,7 +4279,7 @@ class TableConstraint:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TableConstraint:
+    def from_dict(cls, d: Dict[str, Any]) -> TableConstraint:
         """Deserializes the TableConstraint from a dictionary."""
         return cls(foreign_key_constraint=_from_dict(d, 'foreign_key_constraint', ForeignKeyConstraint),
                    named_table_constraint=_from_dict(d, 'named_table_constraint', NamedTableConstraint),
@@ -4301,7 +4301,7 @@ class TableDependency:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TableDependency:
+    def from_dict(cls, d: Dict[str, Any]) -> TableDependency:
         """Deserializes the TableDependency from a dictionary."""
         return cls(table_full_name=d.get('table_full_name', None))
 
@@ -4318,7 +4318,7 @@ class TableExistsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TableExistsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> TableExistsResponse:
         """Deserializes the TableExistsResponse from a dictionary."""
         return cls(table_exists=d.get('table_exists', None))
 
@@ -4465,7 +4465,7 @@ class TableInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TableInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> TableInfo:
         """Deserializes the TableInfo from a dictionary."""
         return cls(access_point=d.get('access_point', None),
                    catalog_name=d.get('catalog_name', None),
@@ -4520,7 +4520,7 @@ class TableRowFilter:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TableRowFilter:
+    def from_dict(cls, d: Dict[str, Any]) -> TableRowFilter:
         """Deserializes the TableRowFilter from a dictionary."""
         return cls(input_column_names=d.get('input_column_names', None), name=d.get('name', None))
 
@@ -4540,7 +4540,7 @@ class TableSummary:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TableSummary:
+    def from_dict(cls, d: Dict[str, Any]) -> TableSummary:
         """Deserializes the TableSummary from a dictionary."""
         return cls(full_name=d.get('full_name', None), table_type=_enum(d, 'table_type', TableType))
 
@@ -4581,7 +4581,7 @@ class TriggeredUpdateStatus:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TriggeredUpdateStatus:
+    def from_dict(cls, d: Dict[str, Any]) -> TriggeredUpdateStatus:
         """Deserializes the TriggeredUpdateStatus from a dictionary."""
         return cls(last_processed_commit_version=d.get('last_processed_commit_version', None),
                    timestamp=d.get('timestamp', None),
@@ -4597,7 +4597,7 @@ class UnassignResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UnassignResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UnassignResponse:
         """Deserializes the UnassignResponse from a dictionary."""
         return cls()
 
@@ -4611,7 +4611,7 @@ class UpdateAssignmentResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateAssignmentResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateAssignmentResponse:
         """Deserializes the UpdateAssignmentResponse from a dictionary."""
         return cls()
 
@@ -4653,7 +4653,7 @@ class UpdateCatalog:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateCatalog:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateCatalog:
         """Deserializes the UpdateCatalog from a dictionary."""
         return cls(comment=d.get('comment', None),
                    enable_predictive_optimization=_enum(d, 'enable_predictive_optimization',
@@ -4689,7 +4689,7 @@ class UpdateConnection:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateConnection:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateConnection:
         """Deserializes the UpdateConnection from a dictionary."""
         return cls(name=d.get('name', None),
                    new_name=d.get('new_name', None),
@@ -4749,7 +4749,7 @@ class UpdateExternalLocation:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateExternalLocation:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateExternalLocation:
         """Deserializes the UpdateExternalLocation from a dictionary."""
         return cls(access_point=d.get('access_point', None),
                    comment=d.get('comment', None),
@@ -4781,7 +4781,7 @@ class UpdateFunction:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateFunction:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateFunction:
         """Deserializes the UpdateFunction from a dictionary."""
         return cls(name=d.get('name', None), owner=d.get('owner', None))
 
@@ -4832,7 +4832,7 @@ class UpdateMetastore:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateMetastore:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateMetastore:
         """Deserializes the UpdateMetastore from a dictionary."""
         return cls(delta_sharing_organization_name=d.get('delta_sharing_organization_name', None),
                    delta_sharing_recipient_token_lifetime_in_seconds=d.get(
@@ -4865,7 +4865,7 @@ class UpdateMetastoreAssignment:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateMetastoreAssignment:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateMetastoreAssignment:
         """Deserializes the UpdateMetastoreAssignment from a dictionary."""
         return cls(default_catalog_name=d.get('default_catalog_name', None),
                    metastore_id=d.get('metastore_id', None),
@@ -4899,7 +4899,7 @@ class UpdateModelVersionRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateModelVersionRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateModelVersionRequest:
         """Deserializes the UpdateModelVersionRequest from a dictionary."""
         return cls(comment=d.get('comment', None),
                    full_name=d.get('full_name', None),
@@ -4964,7 +4964,7 @@ class UpdateMonitor:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateMonitor:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateMonitor:
         """Deserializes the UpdateMonitor from a dictionary."""
         return cls(baseline_table_name=d.get('baseline_table_name', None),
                    custom_metrics=_repeated_dict(d, 'custom_metrics', MonitorCustomMetric),
@@ -5000,7 +5000,7 @@ class UpdatePermissions:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdatePermissions:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdatePermissions:
         """Deserializes the UpdatePermissions from a dictionary."""
         return cls(changes=_repeated_dict(d, 'changes', PermissionsChange),
                    full_name=d.get('full_name', None),
@@ -5031,7 +5031,7 @@ class UpdateRegisteredModelRequest:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateRegisteredModelRequest:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateRegisteredModelRequest:
         """Deserializes the UpdateRegisteredModelRequest from a dictionary."""
         return cls(comment=d.get('comment', None),
                    full_name=d.get('full_name', None),
@@ -5048,7 +5048,7 @@ class UpdateResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateResponse:
         """Deserializes the UpdateResponse from a dictionary."""
         return cls()
 
@@ -5086,7 +5086,7 @@ class UpdateSchema:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateSchema:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateSchema:
         """Deserializes the UpdateSchema from a dictionary."""
         return cls(comment=d.get('comment', None),
                    enable_predictive_optimization=_enum(d, 'enable_predictive_optimization',
@@ -5155,7 +5155,7 @@ class UpdateStorageCredential:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateStorageCredential:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateStorageCredential:
         """Deserializes the UpdateStorageCredential from a dictionary."""
         return cls(aws_iam_role=_from_dict(d, 'aws_iam_role', AwsIamRole),
                    azure_managed_identity=_from_dict(d, 'azure_managed_identity', AzureManagedIdentity),
@@ -5196,7 +5196,7 @@ class UpdateVolumeRequestContent:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateVolumeRequestContent:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateVolumeRequestContent:
         """Deserializes the UpdateVolumeRequestContent from a dictionary."""
         return cls(comment=d.get('comment', None),
                    name=d.get('name', None),
@@ -5224,7 +5224,7 @@ class UpdateWorkspaceBindings:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateWorkspaceBindings:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateWorkspaceBindings:
         """Deserializes the UpdateWorkspaceBindings from a dictionary."""
         return cls(assign_workspaces=d.get('assign_workspaces', None),
                    name=d.get('name', None),
@@ -5255,7 +5255,7 @@ class UpdateWorkspaceBindingsParameters:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateWorkspaceBindingsParameters:
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateWorkspaceBindingsParameters:
         """Deserializes the UpdateWorkspaceBindingsParameters from a dictionary."""
         return cls(add=_repeated_dict(d, 'add', WorkspaceBinding),
                    remove=_repeated_dict(d, 'remove', WorkspaceBinding),
@@ -5311,7 +5311,7 @@ class ValidateStorageCredential:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ValidateStorageCredential:
+    def from_dict(cls, d: Dict[str, Any]) -> ValidateStorageCredential:
         """Deserializes the ValidateStorageCredential from a dictionary."""
         return cls(aws_iam_role=_from_dict(d, 'aws_iam_role', AwsIamRole),
                    azure_managed_identity=_from_dict(d, 'azure_managed_identity', AzureManagedIdentity),
@@ -5341,7 +5341,7 @@ class ValidateStorageCredentialResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ValidateStorageCredentialResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> ValidateStorageCredentialResponse:
         """Deserializes the ValidateStorageCredentialResponse from a dictionary."""
         return cls(is_dir=d.get('isDir', None), results=_repeated_dict(d, 'results', ValidationResult))
 
@@ -5366,7 +5366,7 @@ class ValidationResult:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ValidationResult:
+    def from_dict(cls, d: Dict[str, Any]) -> ValidationResult:
         """Deserializes the ValidationResult from a dictionary."""
         return cls(message=d.get('message', None),
                    operation=_enum(d, 'operation', ValidationResultOperation),
@@ -5408,7 +5408,7 @@ class ViewData:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ViewData:
+    def from_dict(cls, d: Dict[str, Any]) -> ViewData:
         """Deserializes the ViewData from a dictionary."""
         return cls(name=d.get('name', None), spec=_from_dict(d, 'spec', OnlineTableSpec))
 
@@ -5482,7 +5482,7 @@ class VolumeInfo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> VolumeInfo:
+    def from_dict(cls, d: Dict[str, Any]) -> VolumeInfo:
         """Deserializes the VolumeInfo from a dictionary."""
         return cls(access_point=d.get('access_point', None),
                    catalog_name=d.get('catalog_name', None),
@@ -5522,7 +5522,7 @@ class WorkspaceBinding:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> WorkspaceBinding:
+    def from_dict(cls, d: Dict[str, Any]) -> WorkspaceBinding:
         """Deserializes the WorkspaceBinding from a dictionary."""
         return cls(binding_type=_enum(d, 'binding_type', WorkspaceBindingBindingType),
                    workspace_id=d.get('workspace_id', None))
@@ -5548,7 +5548,7 @@ class WorkspaceBindingsResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> WorkspaceBindingsResponse:
+    def from_dict(cls, d: Dict[str, Any]) -> WorkspaceBindingsResponse:
         """Deserializes the WorkspaceBindingsResponse from a dictionary."""
         return cls(bindings=_repeated_dict(d, 'bindings', WorkspaceBinding))
 
@@ -5565,16 +5565,16 @@ class AccountMetastoreAssignmentsAPI:
                *,
                metastore_assignment: Optional[CreateMetastoreAssignment] = None):
         """Assigns a workspace to a metastore.
-        
+
         Creates an assignment to a metastore for a workspace
-        
+
         :param workspace_id: int
           Workspace ID.
         :param metastore_id: str
           Unity Catalog metastore ID
         :param metastore_assignment: :class:`CreateMetastoreAssignment` (optional)
-        
-        
+
+
         """
         body = {}
         if metastore_assignment is not None: body['metastore_assignment'] = metastore_assignment.as_dict()
@@ -5588,15 +5588,15 @@ class AccountMetastoreAssignmentsAPI:
 
     def delete(self, workspace_id: int, metastore_id: str):
         """Delete a metastore assignment.
-        
+
         Deletes a metastore assignment to a workspace, leaving the workspace with no metastore.
-        
+
         :param workspace_id: int
           Workspace ID.
         :param metastore_id: str
           Unity Catalog metastore ID
-        
-        
+
+
         """
 
         headers = {'Accept': 'application/json', }
@@ -5608,14 +5608,14 @@ class AccountMetastoreAssignmentsAPI:
 
     def get(self, workspace_id: int) -> AccountsMetastoreAssignment:
         """Gets the metastore assignment for a workspace.
-        
+
         Gets the metastore assignment, if any, for the workspace specified by ID. If the workspace is assigned
         a metastore, the mappig will be returned. If no metastore is assigned to the workspace, the assignment
         will not be found and a 404 returned.
-        
+
         :param workspace_id: int
           Workspace ID.
-        
+
         :returns: :class:`AccountsMetastoreAssignment`
         """
 
@@ -5628,12 +5628,12 @@ class AccountMetastoreAssignmentsAPI:
 
     def list(self, metastore_id: str) -> Iterator[int]:
         """Get all workspaces assigned to a metastore.
-        
+
         Gets a list of all Databricks workspace IDs that have been assigned to given metastore.
-        
+
         :param metastore_id: str
           Unity Catalog metastore ID
-        
+
         :returns: Iterator over int
         """
 
@@ -5651,17 +5651,17 @@ class AccountMetastoreAssignmentsAPI:
                *,
                metastore_assignment: Optional[UpdateMetastoreAssignment] = None):
         """Updates a metastore assignment to a workspaces.
-        
+
         Updates an assignment to a metastore for a workspace. Currently, only the default catalog may be
         updated.
-        
+
         :param workspace_id: int
           Workspace ID.
         :param metastore_id: str
           Unity Catalog metastore ID
         :param metastore_assignment: :class:`UpdateMetastoreAssignment` (optional)
-        
-        
+
+
         """
         body = {}
         if metastore_assignment is not None: body['metastore_assignment'] = metastore_assignment.as_dict()
@@ -5683,11 +5683,11 @@ class AccountMetastoresAPI:
 
     def create(self, *, metastore_info: Optional[CreateMetastore] = None) -> AccountsMetastoreInfo:
         """Create metastore.
-        
+
         Creates a Unity Catalog metastore.
-        
+
         :param metastore_info: :class:`CreateMetastore` (optional)
-        
+
         :returns: :class:`AccountsMetastoreInfo`
         """
         body = {}
@@ -5702,15 +5702,15 @@ class AccountMetastoresAPI:
 
     def delete(self, metastore_id: str, *, force: Optional[bool] = None):
         """Delete a metastore.
-        
+
         Deletes a Unity Catalog metastore for an account, both specified by ID.
-        
+
         :param metastore_id: str
           Unity Catalog metastore ID
         :param force: bool (optional)
           Force deletion even if the metastore is not empty. Default is false.
-        
-        
+
+
         """
 
         query = {}
@@ -5724,12 +5724,12 @@ class AccountMetastoresAPI:
 
     def get(self, metastore_id: str) -> AccountsMetastoreInfo:
         """Get a metastore.
-        
+
         Gets a Unity Catalog metastore from an account, both specified by ID.
-        
+
         :param metastore_id: str
           Unity Catalog metastore ID
-        
+
         :returns: :class:`AccountsMetastoreInfo`
         """
 
@@ -5742,9 +5742,9 @@ class AccountMetastoresAPI:
 
     def list(self) -> Iterator[MetastoreInfo]:
         """Get all metastores associated with an account.
-        
+
         Gets all Unity Catalog metastores associated with an account specified by ID.
-        
+
         :returns: Iterator over :class:`MetastoreInfo`
         """
 
@@ -5759,13 +5759,13 @@ class AccountMetastoresAPI:
                *,
                metastore_info: Optional[UpdateMetastore] = None) -> AccountsMetastoreInfo:
         """Update a metastore.
-        
+
         Updates an existing Unity Catalog metastore.
-        
+
         :param metastore_id: str
           Unity Catalog metastore ID
         :param metastore_info: :class:`UpdateMetastore` (optional)
-        
+
         :returns: :class:`AccountsMetastoreInfo`
         """
         body = {}
@@ -5790,19 +5790,19 @@ class AccountStorageCredentialsAPI:
                *,
                credential_info: Optional[CreateStorageCredential] = None) -> AccountsStorageCredentialInfo:
         """Create a storage credential.
-        
+
         Creates a new storage credential. The request object is specific to the cloud:
-        
+
         * **AwsIamRole** for AWS credentials * **AzureServicePrincipal** for Azure credentials *
         **GcpServiceAcountKey** for GCP credentials.
-        
+
         The caller must be a metastore admin and have the **CREATE_STORAGE_CREDENTIAL** privilege on the
         metastore.
-        
+
         :param metastore_id: str
           Unity Catalog metastore ID
         :param credential_info: :class:`CreateStorageCredential` (optional)
-        
+
         :returns: :class:`AccountsStorageCredentialInfo`
         """
         body = {}
@@ -5818,18 +5818,18 @@ class AccountStorageCredentialsAPI:
 
     def delete(self, metastore_id: str, storage_credential_name: str, *, force: Optional[bool] = None):
         """Delete a storage credential.
-        
+
         Deletes a storage credential from the metastore. The caller must be an owner of the storage
         credential.
-        
+
         :param metastore_id: str
           Unity Catalog metastore ID
         :param storage_credential_name: str
           Name of the storage credential.
         :param force: bool (optional)
           Force deletion even if the Storage Credential is not empty. Default is false.
-        
-        
+
+
         """
 
         query = {}
@@ -5844,15 +5844,15 @@ class AccountStorageCredentialsAPI:
 
     def get(self, metastore_id: str, storage_credential_name: str) -> AccountsStorageCredentialInfo:
         """Gets the named storage credential.
-        
+
         Gets a storage credential from the metastore. The caller must be a metastore admin, the owner of the
         storage credential, or have a level of privilege on the storage credential.
-        
+
         :param metastore_id: str
           Unity Catalog metastore ID
         :param storage_credential_name: str
           Name of the storage credential.
-        
+
         :returns: :class:`AccountsStorageCredentialInfo`
         """
 
@@ -5866,12 +5866,12 @@ class AccountStorageCredentialsAPI:
 
     def list(self, metastore_id: str) -> Iterator[StorageCredentialInfo]:
         """Get all storage credentials assigned to a metastore.
-        
+
         Gets a list of all storage credentials that have been assigned to given metastore.
-        
+
         :param metastore_id: str
           Unity Catalog metastore ID
-        
+
         :returns: Iterator over :class:`StorageCredentialInfo`
         """
 
@@ -5889,16 +5889,16 @@ class AccountStorageCredentialsAPI:
                *,
                credential_info: Optional[UpdateStorageCredential] = None) -> AccountsStorageCredentialInfo:
         """Updates a storage credential.
-        
+
         Updates a storage credential on the metastore. The caller must be the owner of the storage credential.
         If the caller is a metastore admin, only the __owner__ credential can be changed.
-        
+
         :param metastore_id: str
           Unity Catalog metastore ID
         :param storage_credential_name: str
           Name of the storage credential.
         :param credential_info: :class:`UpdateStorageCredential` (optional)
-        
+
         :returns: :class:`AccountsStorageCredentialInfo`
         """
         body = {}
@@ -5922,13 +5922,13 @@ class ArtifactAllowlistsAPI:
 
     def get(self, artifact_type: ArtifactType) -> ArtifactAllowlistInfo:
         """Get an artifact allowlist.
-        
+
         Get the artifact allowlist of a certain artifact type. The caller must be a metastore admin or have
         the **MANAGE ALLOWLIST** privilege on the metastore.
-        
+
         :param artifact_type: :class:`ArtifactType`
           The artifact type of the allowlist.
-        
+
         :returns: :class:`ArtifactAllowlistInfo`
         """
 
@@ -5942,16 +5942,16 @@ class ArtifactAllowlistsAPI:
     def update(self, artifact_type: ArtifactType,
                artifact_matchers: List[ArtifactMatcher]) -> ArtifactAllowlistInfo:
         """Set an artifact allowlist.
-        
+
         Set the artifact allowlist of a certain artifact type. The whole artifact allowlist is replaced with
         the new allowlist. The caller must be a metastore admin or have the **MANAGE ALLOWLIST** privilege on
         the metastore.
-        
+
         :param artifact_type: :class:`ArtifactType`
           The artifact type of the allowlist.
         :param artifact_matchers: List[:class:`ArtifactMatcher`]
           A list of allowed artifact match patterns.
-        
+
         :returns: :class:`ArtifactAllowlistInfo`
         """
         body = {}
@@ -5968,7 +5968,7 @@ class ArtifactAllowlistsAPI:
 class CatalogsAPI:
     """A catalog is the first layer of Unity Catalog’s three-level namespace. It’s used to organize your data
     assets. Users can see all catalogs on which they have been assigned the USE_CATALOG data permission.
-    
+
     In Unity Catalog, admins and data stewards manage users and their access to data centrally across all of
     the workspaces in a Databricks account. Users in different workspaces can share access to the same data,
     depending on privileges granted centrally in Unity Catalog."""
@@ -5987,10 +5987,10 @@ class CatalogsAPI:
                share_name: Optional[str] = None,
                storage_root: Optional[str] = None) -> CatalogInfo:
         """Create a catalog.
-        
+
         Creates a new catalog instance in the parent metastore if the caller is a metastore admin or has the
         **CREATE_CATALOG** privilege.
-        
+
         :param name: str
           Name of catalog.
         :param comment: str (optional)
@@ -6003,13 +6003,13 @@ class CatalogsAPI:
           A map of key-value properties attached to the securable.
         :param provider_name: str (optional)
           The name of delta sharing provider.
-          
+
           A Delta Sharing catalog is a catalog that is based on a Delta share on a remote sharing server.
         :param share_name: str (optional)
           The name of the share under the share provider.
         :param storage_root: str (optional)
           Storage root URL for managed tables within catalog.
-        
+
         :returns: :class:`CatalogInfo`
         """
         body = {}
@@ -6028,16 +6028,16 @@ class CatalogsAPI:
 
     def delete(self, name: str, *, force: Optional[bool] = None):
         """Delete a catalog.
-        
+
         Deletes the catalog that matches the supplied name. The caller must be a metastore admin or the owner
         of the catalog.
-        
+
         :param name: str
           The name of the catalog.
         :param force: bool (optional)
           Force deletion even if the catalog is not empty.
-        
-        
+
+
         """
 
         query = {}
@@ -6048,13 +6048,13 @@ class CatalogsAPI:
 
     def get(self, name: str) -> CatalogInfo:
         """Get a catalog.
-        
+
         Gets the specified catalog in a metastore. The caller must be a metastore admin, the owner of the
         catalog, or a user that has the **USE_CATALOG** privilege set for their account.
-        
+
         :param name: str
           The name of the catalog.
-        
+
         :returns: :class:`CatalogInfo`
         """
 
@@ -6065,12 +6065,12 @@ class CatalogsAPI:
 
     def list(self) -> Iterator[CatalogInfo]:
         """List catalogs.
-        
+
         Gets an array of catalogs in the metastore. If the caller is the metastore admin, all catalogs will be
         retrieved. Otherwise, only catalogs owned by the caller (or for which the caller has the
         **USE_CATALOG** privilege) will be retrieved. There is no guarantee of a specific ordering of the
         elements in the array.
-        
+
         :returns: Iterator over :class:`CatalogInfo`
         """
 
@@ -6090,10 +6090,10 @@ class CatalogsAPI:
                owner: Optional[str] = None,
                properties: Optional[Dict[str, str]] = None) -> CatalogInfo:
         """Update a catalog.
-        
+
         Updates the catalog that matches the supplied name. The caller must be either the owner of the
         catalog, or a metastore admin (when changing the owner field of the catalog).
-        
+
         :param name: str
           The name of the catalog.
         :param comment: str (optional)
@@ -6108,7 +6108,7 @@ class CatalogsAPI:
           Username of current owner of catalog.
         :param properties: Dict[str,str] (optional)
           A map of key-value properties attached to the securable.
-        
+
         :returns: :class:`CatalogInfo`
         """
         body = {}
@@ -6127,7 +6127,7 @@ class CatalogsAPI:
 
 class ConnectionsAPI:
     """Connections allow for creating a connection to an external data source.
-    
+
     A connection is an abstraction of an external data source that can be connected from Databricks Compute.
     Creating a connection object is the first step to managing external data sources within Unity Catalog,
     with the second step being creating a data object (catalog, schema, or table) using the connection. Data
@@ -6147,12 +6147,12 @@ class ConnectionsAPI:
                properties: Optional[Dict[str, str]] = None,
                read_only: Optional[bool] = None) -> ConnectionInfo:
         """Create a connection.
-        
+
         Creates a new connection
-        
+
         Creates a new connection to an external data source. It allows users to specify connection details and
         configurations for interaction with the external server.
-        
+
         :param name: str
           Name of the connection.
         :param connection_type: :class:`ConnectionType`
@@ -6165,7 +6165,7 @@ class ConnectionsAPI:
           An object containing map of key-value properties attached to the connection.
         :param read_only: bool (optional)
           If the connection is read only.
-        
+
         :returns: :class:`ConnectionInfo`
         """
         body = {}
@@ -6182,13 +6182,13 @@ class ConnectionsAPI:
 
     def delete(self, name: str):
         """Delete a connection.
-        
+
         Deletes the connection that matches the supplied name.
-        
+
         :param name: str
           The name of the connection to be deleted.
-        
-        
+
+
         """
 
         headers = {'Accept': 'application/json', }
@@ -6197,12 +6197,12 @@ class ConnectionsAPI:
 
     def get(self, name: str) -> ConnectionInfo:
         """Get a connection.
-        
+
         Gets a connection from it's name.
-        
+
         :param name: str
           Name of the connection.
-        
+
         :returns: :class:`ConnectionInfo`
         """
 
@@ -6213,9 +6213,9 @@ class ConnectionsAPI:
 
     def list(self) -> Iterator[ConnectionInfo]:
         """List connections.
-        
+
         List all connections.
-        
+
         :returns: Iterator over :class:`ConnectionInfo`
         """
 
@@ -6232,9 +6232,9 @@ class ConnectionsAPI:
                new_name: Optional[str] = None,
                owner: Optional[str] = None) -> ConnectionInfo:
         """Update a connection.
-        
+
         Updates the connection that matches the supplied name.
-        
+
         :param name: str
           Name of the connection.
         :param options: Dict[str,str]
@@ -6243,7 +6243,7 @@ class ConnectionsAPI:
           New name for the connection.
         :param owner: str (optional)
           Username of current owner of the connection.
-        
+
         :returns: :class:`ConnectionInfo`
         """
         body = {}
@@ -6262,9 +6262,9 @@ class ExternalLocationsAPI:
     access-control policies that control which users and groups can access the credential. If a user does not
     have access to an external location in Unity Catalog, the request fails and Unity Catalog does not attempt
     to authenticate to your cloud tenant on the user’s behalf.
-    
+
     Databricks recommends using external locations rather than using storage credentials directly.
-    
+
     To create external locations, you must be a metastore admin or a user with the
     **CREATE_EXTERNAL_LOCATION** privilege."""
 
@@ -6282,11 +6282,11 @@ class ExternalLocationsAPI:
                read_only: Optional[bool] = None,
                skip_validation: Optional[bool] = None) -> ExternalLocationInfo:
         """Create an external location.
-        
+
         Creates a new external location entry in the metastore. The caller must be a metastore admin or have
         the **CREATE_EXTERNAL_LOCATION** privilege on both the metastore and the associated storage
         credential.
-        
+
         :param name: str
           Name of the external location.
         :param url: str
@@ -6303,7 +6303,7 @@ class ExternalLocationsAPI:
           Indicates whether the external location is read-only.
         :param skip_validation: bool (optional)
           Skips validation of the storage credential associated with the external location.
-        
+
         :returns: :class:`ExternalLocationInfo`
         """
         body = {}
@@ -6322,16 +6322,16 @@ class ExternalLocationsAPI:
 
     def delete(self, name: str, *, force: Optional[bool] = None):
         """Delete an external location.
-        
+
         Deletes the specified external location from the metastore. The caller must be the owner of the
         external location.
-        
+
         :param name: str
           Name of the external location.
         :param force: bool (optional)
           Force deletion even if there are dependent external tables or mounts.
-        
-        
+
+
         """
 
         query = {}
@@ -6345,13 +6345,13 @@ class ExternalLocationsAPI:
 
     def get(self, name: str) -> ExternalLocationInfo:
         """Get an external location.
-        
+
         Gets an external location from the metastore. The caller must be either a metastore admin, the owner
         of the external location, or a user that has some privilege on the external location.
-        
+
         :param name: str
           Name of the external location.
-        
+
         :returns: :class:`ExternalLocationInfo`
         """
 
@@ -6365,12 +6365,12 @@ class ExternalLocationsAPI:
              max_results: Optional[int] = None,
              page_token: Optional[str] = None) -> Iterator[ExternalLocationInfo]:
         """List external locations.
-        
+
         Gets an array of external locations (__ExternalLocationInfo__ objects) from the metastore. The caller
         must be a metastore admin, the owner of the external location, or a user that has some privilege on
         the external location. For unpaginated request, there is no guarantee of a specific ordering of the
         elements in the array. For paginated request, elements are ordered by their name.
-        
+
         :param max_results: int (optional)
           Maximum number of external locations to return. If not set, all the external locations are returned
           (not recommended). - when set to a value greater than 0, the page length is the minimum of this
@@ -6378,7 +6378,7 @@ class ExternalLocationsAPI:
           value (recommended); - when set to a value less than 0, an invalid parameter error is returned;
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
-        
+
         :returns: Iterator over :class:`ExternalLocationInfo`
         """
 
@@ -6413,11 +6413,11 @@ class ExternalLocationsAPI:
                skip_validation: Optional[bool] = None,
                url: Optional[str] = None) -> ExternalLocationInfo:
         """Update an external location.
-        
+
         Updates an external location in the metastore. The caller must be the owner of the external location,
         or be a metastore admin. In the second case, the admin can only update the name of the external
         location.
-        
+
         :param name: str
           Name of the external location.
         :param access_point: str (optional)
@@ -6440,7 +6440,7 @@ class ExternalLocationsAPI:
           Skips validation of the storage credential associated with the external location.
         :param url: str (optional)
           Path URL of the external location.
-        
+
         :returns: :class:`ExternalLocationInfo`
         """
         body = {}
@@ -6465,7 +6465,7 @@ class ExternalLocationsAPI:
 
 class FunctionsAPI:
     """Functions implement User-Defined Functions (UDFs) in Unity Catalog.
-    
+
     The function implementation can be any SQL expression or Query, and it can be invoked wherever a table
     reference is allowed in a query. In Unity Catalog, a function resides at the same level as a table, so it
     can be referenced with the form __catalog_name__.__schema_name__.__function_name__."""
@@ -6475,16 +6475,16 @@ class FunctionsAPI:
 
     def create(self, function_info: CreateFunction) -> FunctionInfo:
         """Create a function.
-        
+
         Creates a new function
-        
+
         The user must have the following permissions in order for the function to be created: -
         **USE_CATALOG** on the function's parent catalog - **USE_SCHEMA** and **CREATE_FUNCTION** on the
         function's parent schema
-        
+
         :param function_info: :class:`CreateFunction`
           Partial __FunctionInfo__ specifying the function to be created.
-        
+
         :returns: :class:`FunctionInfo`
         """
         body = {}
@@ -6496,20 +6496,20 @@ class FunctionsAPI:
 
     def delete(self, name: str, *, force: Optional[bool] = None):
         """Delete a function.
-        
+
         Deletes the function that matches the supplied name. For the deletion to succeed, the user must
         satisfy one of the following conditions: - Is the owner of the function's parent catalog - Is the
         owner of the function's parent schema and have the **USE_CATALOG** privilege on its parent catalog -
         Is the owner of the function itself and have both the **USE_CATALOG** privilege on its parent catalog
         and the **USE_SCHEMA** privilege on its parent schema
-        
+
         :param name: str
           The fully-qualified name of the function (of the form
           __catalog_name__.__schema_name__.__function__name__).
         :param force: bool (optional)
           Force deletion even if the function is notempty.
-        
-        
+
+
         """
 
         query = {}
@@ -6520,18 +6520,18 @@ class FunctionsAPI:
 
     def get(self, name: str) -> FunctionInfo:
         """Get a function.
-        
+
         Gets a function from within a parent catalog and schema. For the fetch to succeed, the user must
         satisfy one of the following requirements: - Is a metastore admin - Is an owner of the function's
         parent catalog - Have the **USE_CATALOG** privilege on the function's parent catalog and be the owner
         of the function - Have the **USE_CATALOG** privilege on the function's parent catalog, the
         **USE_SCHEMA** privilege on the function's parent schema, and the **EXECUTE** privilege on the
         function itself
-        
+
         :param name: str
           The fully-qualified name of the function (of the form
           __catalog_name__.__schema_name__.__function__name__).
-        
+
         :returns: :class:`FunctionInfo`
         """
 
@@ -6547,14 +6547,14 @@ class FunctionsAPI:
              max_results: Optional[int] = None,
              page_token: Optional[str] = None) -> Iterator[FunctionInfo]:
         """List functions.
-        
+
         List functions within the specified parent catalog and schema. If the user is a metastore admin, all
         functions are returned in the output list. Otherwise, the user must have the **USE_CATALOG** privilege
         on the catalog and the **USE_SCHEMA** privilege on the schema, and the output list contains only
         functions for which either the user has the **EXECUTE** privilege or the user is the owner. For
         unpaginated request, there is no guarantee of a specific ordering of the elements in the array. For
         paginated request, elements are ordered by their name.
-        
+
         :param catalog_name: str
           Name of parent catalog for functions of interest.
         :param schema_name: str
@@ -6566,7 +6566,7 @@ class FunctionsAPI:
           (recommended); - when set to a value less than 0, an invalid parameter error is returned;
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
-        
+
         :returns: Iterator over :class:`FunctionInfo`
         """
 
@@ -6588,20 +6588,20 @@ class FunctionsAPI:
 
     def update(self, name: str, *, owner: Optional[str] = None) -> FunctionInfo:
         """Update a function.
-        
+
         Updates the function that matches the supplied name. Only the owner of the function can be updated. If
         the user is not a metastore admin, the user must be a member of the group that is the new function
         owner. - Is a metastore admin - Is the owner of the function's parent catalog - Is the owner of the
         function's parent schema and has the **USE_CATALOG** privilege on its parent catalog - Is the owner of
         the function itself and has the **USE_CATALOG** privilege on its parent catalog as well as the
         **USE_SCHEMA** privilege on the function's parent schema.
-        
+
         :param name: str
           The fully-qualified name of the function (of the form
           __catalog_name__.__schema_name__.__function__name__).
         :param owner: str (optional)
           Username of current owner of function.
-        
+
         :returns: :class:`FunctionInfo`
         """
         body = {}
@@ -6617,7 +6617,7 @@ class GrantsAPI:
     Access can be granted by either a metastore admin, the owner of an object, or the owner of the catalog or
     schema that contains the object. Securable objects in Unity Catalog are hierarchical and privileges are
     inherited downward.
-    
+
     Securable objects in Unity Catalog are hierarchical and privileges are inherited downward. This means that
     granting a privilege on the catalog automatically grants the privilege to all current and future objects
     within the catalog. Similarly, privileges granted on a schema are inherited by all current and future
@@ -6632,16 +6632,16 @@ class GrantsAPI:
             *,
             principal: Optional[str] = None) -> PermissionsList:
         """Get permissions.
-        
+
         Gets the permissions for a securable.
-        
+
         :param securable_type: :class:`SecurableType`
           Type of securable.
         :param full_name: str
           Full name of securable.
         :param principal: str (optional)
           If provided, only the permissions for the specified principal (user or group) are returned.
-        
+
         :returns: :class:`PermissionsList`
         """
 
@@ -6661,9 +6661,9 @@ class GrantsAPI:
                       *,
                       principal: Optional[str] = None) -> EffectivePermissionsList:
         """Get effective permissions.
-        
+
         Gets the effective permissions for a securable.
-        
+
         :param securable_type: :class:`SecurableType`
           Type of securable.
         :param full_name: str
@@ -6671,7 +6671,7 @@ class GrantsAPI:
         :param principal: str (optional)
           If provided, only the effective permissions for the specified principal (user or group) are
           returned.
-        
+
         :returns: :class:`EffectivePermissionsList`
         """
 
@@ -6691,16 +6691,16 @@ class GrantsAPI:
                *,
                changes: Optional[List[PermissionsChange]] = None) -> PermissionsList:
         """Update permissions.
-        
+
         Updates the permissions for a securable.
-        
+
         :param securable_type: :class:`SecurableType`
           Type of securable.
         :param full_name: str
           Full name of securable.
         :param changes: List[:class:`PermissionsChange`] (optional)
           Array of permissions change objects.
-        
+
         :returns: :class:`PermissionsList`
         """
         body = {}
@@ -6717,7 +6717,7 @@ class GrantsAPI:
 class LakehouseMonitorsAPI:
     """A monitor computes and monitors data or model quality metrics for a table over time. It generates metrics
     tables and a dashboard that you can use to monitor table health and set alerts.
-    
+
     Most write operations require the user to be the owner of the table (or its parent schema or parent
     catalog). Viewing the dashboard, computed metrics, or monitor configuration only requires the user to have
     **SELECT** privileges on the table (along with **USE_SCHEMA** and **USE_CATALOG**)."""
@@ -6727,22 +6727,22 @@ class LakehouseMonitorsAPI:
 
     def cancel_refresh(self, full_name: str, refresh_id: str):
         """Cancel refresh.
-        
+
         Cancel an active monitor refresh for the given refresh ID.
-        
+
         The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
         table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
         - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema - be an
         owner of the table
-        
+
         Additionally, the call must be made from the workspace where the monitor was created.
-        
+
         :param full_name: str
           Full name of the table.
         :param refresh_id: str
           ID of the refresh.
-        
-        
+
+
         """
 
         headers = {}
@@ -6768,17 +6768,17 @@ class LakehouseMonitorsAPI:
                time_series: Optional[MonitorTimeSeriesProfileType] = None,
                warehouse_id: Optional[str] = None) -> MonitorInfo:
         """Create a table monitor.
-        
+
         Creates a new monitor for the specified table.
-        
+
         The caller must either: 1. be an owner of the table's parent catalog, have **USE_SCHEMA** on the
         table's parent schema, and have **SELECT** access on the table 2. have **USE_CATALOG** on the table's
         parent catalog, be an owner of the table's parent schema, and have **SELECT** access on the table. 3.
         have the following permissions: - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on
         the table's parent schema - be an owner of the table.
-        
+
         Workspace assets, such as the dashboard, will be created in the workspace where this call was made.
-        
+
         :param full_name: str
           Full name of the table.
         :param assets_dir: str
@@ -6812,7 +6812,7 @@ class LakehouseMonitorsAPI:
         :param warehouse_id: str (optional)
           Optional argument to specify the warehouse for dashboard creation. If not specified, the first
           running warehouse will be used.
-        
+
         :returns: :class:`MonitorInfo`
         """
         body = {}
@@ -6840,23 +6840,23 @@ class LakehouseMonitorsAPI:
 
     def delete(self, full_name: str):
         """Delete a table monitor.
-        
+
         Deletes a monitor for the specified table.
-        
+
         The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
         table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
         - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema - be an
         owner of the table.
-        
+
         Additionally, the call must be made from the workspace where the monitor was created.
-        
+
         Note that the metric tables and dashboard will not be deleted as part of this call; those assets must
         be manually cleaned up (if desired).
-        
+
         :param full_name: str
           Full name of the table.
-        
-        
+
+
         """
 
         headers = {}
@@ -6865,21 +6865,21 @@ class LakehouseMonitorsAPI:
 
     def get(self, full_name: str) -> MonitorInfo:
         """Get a table monitor.
-        
+
         Gets a monitor for the specified table.
-        
+
         The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
         table's parent catalog and be an owner of the table's parent schema. 3. have the following
         permissions: - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent
         schema - **SELECT** privilege on the table.
-        
+
         The returned information includes configuration values, as well as information on assets created by
         the monitor. Some information (e.g., dashboard) may be filtered out if the caller is in a different
         workspace than where the monitor was created.
-        
+
         :param full_name: str
           Full name of the table.
-        
+
         :returns: :class:`MonitorInfo`
         """
 
@@ -6890,21 +6890,21 @@ class LakehouseMonitorsAPI:
 
     def get_refresh(self, full_name: str, refresh_id: str) -> MonitorRefreshInfo:
         """Get refresh.
-        
+
         Gets info about a specific monitor refresh using the given refresh ID.
-        
+
         The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
         table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
         - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema -
         **SELECT** privilege on the table.
-        
+
         Additionally, the call must be made from the workspace where the monitor was created.
-        
+
         :param full_name: str
           Full name of the table.
         :param refresh_id: str
           ID of the refresh.
-        
+
         :returns: :class:`MonitorRefreshInfo`
         """
 
@@ -6917,19 +6917,19 @@ class LakehouseMonitorsAPI:
 
     def list_refreshes(self, full_name: str) -> Iterator[MonitorRefreshInfo]:
         """List refreshes.
-        
+
         Gets an array containing the history of the most recent refreshes (up to 25) for this table.
-        
+
         The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
         table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
         - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema -
         **SELECT** privilege on the table.
-        
+
         Additionally, the call must be made from the workspace where the monitor was created.
-        
+
         :param full_name: str
           Full name of the table.
-        
+
         :returns: Iterator over :class:`MonitorRefreshInfo`
         """
 
@@ -6942,20 +6942,20 @@ class LakehouseMonitorsAPI:
 
     def run_refresh(self, full_name: str) -> MonitorRefreshInfo:
         """Queue a metric refresh for a monitor.
-        
+
         Queues a metric refresh on the monitor for the specified table. The refresh will execute in the
         background.
-        
+
         The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
         table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
         - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema - be an
         owner of the table
-        
+
         Additionally, the call must be made from the workspace where the monitor was created.
-        
+
         :param full_name: str
           Full name of the table.
-        
+
         :returns: :class:`MonitorRefreshInfo`
         """
 
@@ -6980,19 +6980,19 @@ class LakehouseMonitorsAPI:
                snapshot: Optional[MonitorSnapshotProfileType] = None,
                time_series: Optional[MonitorTimeSeriesProfileType] = None) -> MonitorInfo:
         """Update a table monitor.
-        
+
         Updates a monitor for the specified table.
-        
+
         The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
         table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
         - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema - be an
         owner of the table.
-        
+
         Additionally, the call must be made from the workspace where the monitor was created, and the caller
         must be the original creator of the monitor.
-        
+
         Certain configuration fields, such as output asset identifiers, cannot be updated.
-        
+
         :param full_name: str
           Full name of the table.
         :param output_schema_name: str
@@ -7019,7 +7019,7 @@ class LakehouseMonitorsAPI:
           Configuration for monitoring snapshot tables.
         :param time_series: :class:`MonitorTimeSeriesProfileType` (optional)
           Configuration for monitoring time series tables.
-        
+
         :returns: :class:`MonitorInfo`
         """
         body = {}
@@ -7048,10 +7048,10 @@ class MetastoresAPI:
     views) and the permissions that govern access to them. Databricks account admins can create metastores and
     assign them to Databricks workspaces to control which workloads use each metastore. For a workspace to use
     Unity Catalog, it must have a Unity Catalog metastore attached.
-    
+
     Each metastore is configured with a root storage location in a cloud storage account. This storage
     location is used for metadata and managed tables data.
-    
+
     NOTE: This metastore is distinct from the metastore included in Databricks workspaces created before Unity
     Catalog was released. If your workspace includes a legacy Hive metastore, the data in that metastore is
     available in a catalog named hive_metastore."""
@@ -7061,19 +7061,19 @@ class MetastoresAPI:
 
     def assign(self, workspace_id: int, metastore_id: str, default_catalog_name: str):
         """Create an assignment.
-        
+
         Creates a new metastore assignment. If an assignment for the same __workspace_id__ exists, it will be
         overwritten by the new __metastore_id__ and __default_catalog_name__. The caller must be an account
         admin.
-        
+
         :param workspace_id: int
           A workspace ID.
         :param metastore_id: str
           The unique ID of the metastore.
         :param default_catalog_name: str
           The name of the default catalog in the metastore.
-        
-        
+
+
         """
         body = {}
         if default_catalog_name is not None: body['default_catalog_name'] = default_catalog_name
@@ -7091,12 +7091,12 @@ class MetastoresAPI:
                region: Optional[str] = None,
                storage_root: Optional[str] = None) -> MetastoreInfo:
         """Create a metastore.
-        
+
         Creates a new metastore based on a provided name and optional storage root path. By default (if the
         __owner__ field is not set), the owner of the new metastore is the user calling the
         __createMetastore__ API. If the __owner__ field is set to the empty string (**""**), the ownership is
         assigned to the System User instead.
-        
+
         :param name: str
           The user-specified name of the metastore.
         :param region: str (optional)
@@ -7104,7 +7104,7 @@ class MetastoresAPI:
           region of the workspace receiving the request will be used.
         :param storage_root: str (optional)
           The storage root URL for metastore
-        
+
         :returns: :class:`MetastoreInfo`
         """
         body = {}
@@ -7118,9 +7118,9 @@ class MetastoresAPI:
 
     def current(self) -> MetastoreAssignment:
         """Get metastore assignment for workspace.
-        
+
         Gets the metastore assignment for the workspace being accessed.
-        
+
         :returns: :class:`MetastoreAssignment`
         """
 
@@ -7131,15 +7131,15 @@ class MetastoresAPI:
 
     def delete(self, id: str, *, force: Optional[bool] = None):
         """Delete a metastore.
-        
+
         Deletes a metastore. The caller must be a metastore admin.
-        
+
         :param id: str
           Unique ID of the metastore.
         :param force: bool (optional)
           Force deletion even if the metastore is not empty. Default is false.
-        
-        
+
+
         """
 
         query = {}
@@ -7150,13 +7150,13 @@ class MetastoresAPI:
 
     def get(self, id: str) -> MetastoreInfo:
         """Get a metastore.
-        
+
         Gets a metastore that matches the supplied ID. The caller must be a metastore admin to retrieve this
         info.
-        
+
         :param id: str
           Unique ID of the metastore.
-        
+
         :returns: :class:`MetastoreInfo`
         """
 
@@ -7167,10 +7167,10 @@ class MetastoresAPI:
 
     def list(self) -> Iterator[MetastoreInfo]:
         """List metastores.
-        
+
         Gets an array of the available metastores (as __MetastoreInfo__ objects). The caller must be an admin
         to retrieve this info. There is no guarantee of a specific ordering of the elements in the array.
-        
+
         :returns: Iterator over :class:`MetastoreInfo`
         """
 
@@ -7182,10 +7182,10 @@ class MetastoresAPI:
 
     def summary(self) -> GetMetastoreSummaryResponse:
         """Get a metastore summary.
-        
+
         Gets information about a metastore. This summary includes the storage credential, the cloud vendor,
         the cloud region, and the global metastore ID.
-        
+
         :returns: :class:`GetMetastoreSummaryResponse`
         """
 
@@ -7196,15 +7196,15 @@ class MetastoresAPI:
 
     def unassign(self, workspace_id: int, metastore_id: str):
         """Delete an assignment.
-        
+
         Deletes a metastore assignment. The caller must be an account administrator.
-        
+
         :param workspace_id: int
           A workspace ID.
         :param metastore_id: str
           Query for the ID of the metastore to delete.
-        
-        
+
+
         """
 
         query = {}
@@ -7227,10 +7227,10 @@ class MetastoresAPI:
                privilege_model_version: Optional[str] = None,
                storage_root_credential_id: Optional[str] = None) -> MetastoreInfo:
         """Update a metastore.
-        
+
         Updates information for a specific metastore. The caller must be a metastore admin. If the __owner__
         field is set to the empty string (**""**), the ownership is updated to the System User.
-        
+
         :param id: str
           Unique ID of the metastore.
         :param delta_sharing_organization_name: str (optional)
@@ -7248,7 +7248,7 @@ class MetastoresAPI:
           Privilege model version of the metastore, of the form `major.minor` (e.g., `1.0`).
         :param storage_root_credential_id: str (optional)
           UUID of storage credential to access the metastore storage_root.
-        
+
         :returns: :class:`MetastoreInfo`
         """
         body = {}
@@ -7274,20 +7274,20 @@ class MetastoresAPI:
                           default_catalog_name: Optional[str] = None,
                           metastore_id: Optional[str] = None):
         """Update an assignment.
-        
+
         Updates a metastore assignment. This operation can be used to update __metastore_id__ or
         __default_catalog_name__ for a specified Workspace, if the Workspace is already assigned a metastore.
         The caller must be an account admin to update __metastore_id__; otherwise, the caller can be a
         Workspace admin.
-        
+
         :param workspace_id: int
           A workspace ID.
         :param default_catalog_name: str (optional)
           The name of the default catalog for the metastore.
         :param metastore_id: str (optional)
           The unique ID of the metastore.
-        
-        
+
+
         """
         body = {}
         if default_catalog_name is not None: body['default_catalog_name'] = default_catalog_name
@@ -7304,7 +7304,7 @@ class ModelVersionsAPI:
     """Databricks provides a hosted version of MLflow Model Registry in Unity Catalog. Models in Unity Catalog
     provide centralized access control, auditing, lineage, and discovery of ML models across Databricks
     workspaces.
-    
+
     This API reference documents the REST endpoints for managing model versions in Unity Catalog. For more
     details, see the [registered models API docs](/api/workspace/registeredmodels)."""
 
@@ -7313,20 +7313,20 @@ class ModelVersionsAPI:
 
     def delete(self, full_name: str, version: int):
         """Delete a Model Version.
-        
+
         Deletes a model version from the specified registered model. Any aliases assigned to the model version
         will also be deleted.
-        
+
         The caller must be a metastore admin or an owner of the parent registered model. For the latter case,
         the caller must also be the owner or have the **USE_CATALOG** privilege on the parent catalog and the
         **USE_SCHEMA** privilege on the parent schema.
-        
+
         :param full_name: str
           The three-level (fully qualified) name of the model version
         :param version: int
           The integer version number of the model version
-        
-        
+
+
         """
 
         headers = {}
@@ -7337,18 +7337,18 @@ class ModelVersionsAPI:
 
     def get(self, full_name: str, version: int) -> RegisteredModelInfo:
         """Get a Model Version.
-        
+
         Get a model version.
-        
+
         The caller must be a metastore admin or an owner of (or have the **EXECUTE** privilege on) the parent
         registered model. For the latter case, the caller must also be the owner or have the **USE_CATALOG**
         privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema.
-        
+
         :param full_name: str
           The three-level (fully qualified) name of the model version
         :param version: int
           The integer version number of the model version
-        
+
         :returns: :class:`RegisteredModelInfo`
         """
 
@@ -7361,18 +7361,18 @@ class ModelVersionsAPI:
 
     def get_by_alias(self, full_name: str, alias: str) -> ModelVersionInfo:
         """Get Model Version By Alias.
-        
+
         Get a model version by alias.
-        
+
         The caller must be a metastore admin or an owner of (or have the **EXECUTE** privilege on) the
         registered model. For the latter case, the caller must also be the owner or have the **USE_CATALOG**
         privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema.
-        
+
         :param full_name: str
           The three-level (fully qualified) name of the registered model
         :param alias: str
           The name of the alias
-        
+
         :returns: :class:`ModelVersionInfo`
         """
 
@@ -7389,18 +7389,18 @@ class ModelVersionsAPI:
              max_results: Optional[int] = None,
              page_token: Optional[str] = None) -> Iterator[ModelVersionInfo]:
         """List Model Versions.
-        
+
         List model versions. You can list model versions under a particular schema, or list all model versions
         in the current metastore.
-        
+
         The returned models are filtered based on the privileges of the calling user. For example, the
         metastore admin is able to list all the model versions. A regular user needs to be the owner or have
         the **EXECUTE** privilege on the parent registered model to recieve the model versions in the
         response. For the latter case, the caller must also be the owner or have the **USE_CATALOG** privilege
         on the parent catalog and the **USE_SCHEMA** privilege on the parent schema.
-        
+
         There is no guarantee of a specific ordering of the elements in the response.
-        
+
         :param full_name: str
           The full three-level name of the registered model under which to list model versions
         :param max_results: int (optional)
@@ -7411,7 +7411,7 @@ class ModelVersionsAPI:
           value less than 0, an invalid parameter error is returned;
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
-        
+
         :returns: Iterator over :class:`ModelVersionInfo`
         """
 
@@ -7434,22 +7434,22 @@ class ModelVersionsAPI:
 
     def update(self, full_name: str, version: int, *, comment: Optional[str] = None) -> ModelVersionInfo:
         """Update a Model Version.
-        
+
         Updates the specified model version.
-        
+
         The caller must be a metastore admin or an owner of the parent registered model. For the latter case,
         the caller must also be the owner or have the **USE_CATALOG** privilege on the parent catalog and the
         **USE_SCHEMA** privilege on the parent schema.
-        
+
         Currently only the comment of the model version can be updated.
-        
+
         :param full_name: str
           The three-level (fully qualified) name of the model version
         :param version: int
           The integer version number of the model version
         :param comment: str (optional)
           The comment attached to the model version
-        
+
         :returns: :class:`ModelVersionInfo`
         """
         body = {}
@@ -7471,14 +7471,14 @@ class OnlineTablesAPI:
 
     def create(self, *, name: Optional[str] = None, spec: Optional[OnlineTableSpec] = None) -> OnlineTable:
         """Create an Online Table.
-        
+
         Create a new Online Table.
-        
+
         :param name: str (optional)
           Full three-part (catalog, schema, table) name of the table.
         :param spec: :class:`OnlineTableSpec` (optional)
           Specification of the online table.
-        
+
         :returns: :class:`OnlineTable`
         """
         body = {}
@@ -7491,15 +7491,15 @@ class OnlineTablesAPI:
 
     def delete(self, name: str):
         """Delete an Online Table.
-        
+
         Delete an online table. Warning: This will delete all the data in the online table. If the source
         Delta table was deleted or modified since this Online Table was created, this will lose the data
         forever!
-        
+
         :param name: str
           Full three-part (catalog, schema, table) name of the table.
-        
-        
+
+
         """
 
         headers = {'Accept': 'application/json', }
@@ -7508,12 +7508,12 @@ class OnlineTablesAPI:
 
     def get(self, name: str) -> OnlineTable:
         """Get an Online Table.
-        
+
         Get information about an existing online table and its status.
-        
+
         :param name: str
           Full three-part (catalog, schema, table) name of the table.
-        
+
         :returns: :class:`OnlineTable`
         """
 
@@ -7527,17 +7527,17 @@ class RegisteredModelsAPI:
     """Databricks provides a hosted version of MLflow Model Registry in Unity Catalog. Models in Unity Catalog
     provide centralized access control, auditing, lineage, and discovery of ML models across Databricks
     workspaces.
-    
+
     An MLflow registered model resides in the third layer of Unity Catalog’s three-level namespace.
     Registered models contain model versions, which correspond to actual ML models (MLflow models). Creating
     new model versions currently requires use of the MLflow Python client. Once model versions are created,
     you can load them for batch inference using MLflow Python client APIs, or deploy them for real-time
     serving using Databricks Model Serving.
-    
+
     All operations on registered models and model versions require USE_CATALOG permissions on the enclosing
     catalog and USE_SCHEMA permissions on the enclosing schema. In addition, the following additional
     privileges are required for various operations:
-    
+
     * To create a registered model, users must additionally have the CREATE_MODEL permission on the target
     schema. * To view registered model or model version metadata, model version data files, or invoke a model
     version, users must additionally have the EXECUTE permission on the registered model * To update
@@ -7545,7 +7545,7 @@ class RegisteredModelsAPI:
     registered model * To update other registered model or model version metadata (comments, aliases) create a
     new model version, or update permissions on the registered model, users must be owners of the registered
     model.
-    
+
     Note: The securable type for models is "FUNCTION". When using REST APIs (e.g. tagging, grants) that
     specify a securable type, use "FUNCTION" as the securable type."""
 
@@ -7560,17 +7560,17 @@ class RegisteredModelsAPI:
                comment: Optional[str] = None,
                storage_location: Optional[str] = None) -> RegisteredModelInfo:
         """Create a Registered Model.
-        
+
         Creates a new registered model in Unity Catalog.
-        
+
         File storage for model versions in the registered model will be located in the default location which
         is specified by the parent schema, or the parent catalog, or the Metastore.
-        
+
         For registered model creation to succeed, the user must satisfy the following conditions: - The caller
         must be a metastore admin, or be the owner of the parent catalog and schema, or have the
         **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema.
         - The caller must have the **CREATE MODEL** or **CREATE FUNCTION** privilege on the parent schema.
-        
+
         :param catalog_name: str
           The name of the catalog where the schema and the registered model reside
         :param schema_name: str
@@ -7581,7 +7581,7 @@ class RegisteredModelsAPI:
           The comment attached to the registered model
         :param storage_location: str (optional)
           The storage location on the cloud under which model version data files are stored
-        
+
         :returns: :class:`RegisteredModelInfo`
         """
         body = {}
@@ -7597,17 +7597,17 @@ class RegisteredModelsAPI:
 
     def delete(self, full_name: str):
         """Delete a Registered Model.
-        
+
         Deletes a registered model and all its model versions from the specified parent catalog and schema.
-        
+
         The caller must be a metastore admin or an owner of the registered model. For the latter case, the
         caller must also be the owner or have the **USE_CATALOG** privilege on the parent catalog and the
         **USE_SCHEMA** privilege on the parent schema.
-        
+
         :param full_name: str
           The three-level (fully qualified) name of the registered model
-        
-        
+
+
         """
 
         headers = {}
@@ -7616,19 +7616,19 @@ class RegisteredModelsAPI:
 
     def delete_alias(self, full_name: str, alias: str):
         """Delete a Registered Model Alias.
-        
+
         Deletes a registered model alias.
-        
+
         The caller must be a metastore admin or an owner of the registered model. For the latter case, the
         caller must also be the owner or have the **USE_CATALOG** privilege on the parent catalog and the
         **USE_SCHEMA** privilege on the parent schema.
-        
+
         :param full_name: str
           The three-level (fully qualified) name of the registered model
         :param alias: str
           The name of the alias
-        
-        
+
+
         """
 
         headers = {}
@@ -7637,16 +7637,16 @@ class RegisteredModelsAPI:
 
     def get(self, full_name: str) -> RegisteredModelInfo:
         """Get a Registered Model.
-        
+
         Get a registered model.
-        
+
         The caller must be a metastore admin or an owner of (or have the **EXECUTE** privilege on) the
         registered model. For the latter case, the caller must also be the owner or have the **USE_CATALOG**
         privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema.
-        
+
         :param full_name: str
           The three-level (fully qualified) name of the registered model
-        
+
         :returns: :class:`RegisteredModelInfo`
         """
 
@@ -7662,18 +7662,18 @@ class RegisteredModelsAPI:
              page_token: Optional[str] = None,
              schema_name: Optional[str] = None) -> Iterator[RegisteredModelInfo]:
         """List Registered Models.
-        
+
         List registered models. You can list registered models under a particular schema, or list all
         registered models in the current metastore.
-        
+
         The returned models are filtered based on the privileges of the calling user. For example, the
         metastore admin is able to list all the registered models. A regular user needs to be the owner or
         have the **EXECUTE** privilege on the registered model to recieve the registered models in the
         response. For the latter case, the caller must also be the owner or have the **USE_CATALOG** privilege
         on the parent catalog and the **USE_SCHEMA** privilege on the parent schema.
-        
+
         There is no guarantee of a specific ordering of the elements in the response.
-        
+
         :param catalog_name: str (optional)
           The identifier of the catalog under which to list registered models. If specified, schema_name must
           be specified.
@@ -7686,7 +7686,7 @@ class RegisteredModelsAPI:
         :param schema_name: str (optional)
           The identifier of the schema under which to list registered models. If specified, catalog_name must
           be specified.
-        
+
         :returns: Iterator over :class:`RegisteredModelInfo`
         """
 
@@ -7708,20 +7708,20 @@ class RegisteredModelsAPI:
 
     def set_alias(self, full_name: str, alias: str, version_num: int) -> RegisteredModelAlias:
         """Set a Registered Model Alias.
-        
+
         Set an alias on the specified registered model.
-        
+
         The caller must be a metastore admin or an owner of the registered model. For the latter case, the
         caller must also be the owner or have the **USE_CATALOG** privilege on the parent catalog and the
         **USE_SCHEMA** privilege on the parent schema.
-        
+
         :param full_name: str
           Full name of the registered model
         :param alias: str
           The name of the alias
         :param version_num: int
           The version number of the model version to which the alias points
-        
+
         :returns: :class:`RegisteredModelAlias`
         """
         body = {}
@@ -7741,15 +7741,15 @@ class RegisteredModelsAPI:
                new_name: Optional[str] = None,
                owner: Optional[str] = None) -> RegisteredModelInfo:
         """Update a Registered Model.
-        
+
         Updates the specified registered model.
-        
+
         The caller must be a metastore admin or an owner of the registered model. For the latter case, the
         caller must also be the owner or have the **USE_CATALOG** privilege on the parent catalog and the
         **USE_SCHEMA** privilege on the parent schema.
-        
+
         Currently only the name, the owner or the comment of the registered model can be updated.
-        
+
         :param full_name: str
           The three-level (fully qualified) name of the registered model
         :param comment: str (optional)
@@ -7758,7 +7758,7 @@ class RegisteredModelsAPI:
           New name for the registered model.
         :param owner: str (optional)
           The identifier of the user who owns the registered model
-        
+
         :returns: :class:`RegisteredModelInfo`
         """
         body = {}
@@ -7788,10 +7788,10 @@ class SchemasAPI:
                properties: Optional[Dict[str, str]] = None,
                storage_root: Optional[str] = None) -> SchemaInfo:
         """Create a schema.
-        
+
         Creates a new schema for catalog in the Metatastore. The caller must be a metastore admin, or have the
         **CREATE_SCHEMA** privilege in the parent catalog.
-        
+
         :param name: str
           Name of schema, relative to parent catalog.
         :param catalog_name: str
@@ -7802,7 +7802,7 @@ class SchemasAPI:
           A map of key-value properties attached to the securable.
         :param storage_root: str (optional)
           Storage root URL for managed tables within schema.
-        
+
         :returns: :class:`SchemaInfo`
         """
         body = {}
@@ -7818,14 +7818,14 @@ class SchemasAPI:
 
     def delete(self, full_name: str):
         """Delete a schema.
-        
+
         Deletes the specified schema from the parent catalog. The caller must be the owner of the schema or an
         owner of the parent catalog.
-        
+
         :param full_name: str
           Full name of the schema.
-        
-        
+
+
         """
 
         headers = {'Accept': 'application/json', }
@@ -7834,13 +7834,13 @@ class SchemasAPI:
 
     def get(self, full_name: str) -> SchemaInfo:
         """Get a schema.
-        
+
         Gets the specified schema within the metastore. The caller must be a metastore admin, the owner of the
         schema, or a user that has the **USE_SCHEMA** privilege on the schema.
-        
+
         :param full_name: str
           Full name of the schema.
-        
+
         :returns: :class:`SchemaInfo`
         """
 
@@ -7855,13 +7855,13 @@ class SchemasAPI:
              max_results: Optional[int] = None,
              page_token: Optional[str] = None) -> Iterator[SchemaInfo]:
         """List schemas.
-        
+
         Gets an array of schemas for a catalog in the metastore. If the caller is the metastore admin or the
         owner of the parent catalog, all schemas for the catalog will be retrieved. Otherwise, only schemas
         owned by the caller (or for which the caller has the **USE_SCHEMA** privilege) will be retrieved. For
         unpaginated request, there is no guarantee of a specific ordering of the elements in the array. For
         paginated request, elements are ordered by their name.
-        
+
         :param catalog_name: str
           Parent catalog for schemas of interest.
         :param max_results: int (optional)
@@ -7871,7 +7871,7 @@ class SchemasAPI:
           (recommended); - when set to a value less than 0, an invalid parameter error is returned;
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
-        
+
         :returns: Iterator over :class:`SchemaInfo`
         """
 
@@ -7899,12 +7899,12 @@ class SchemasAPI:
                owner: Optional[str] = None,
                properties: Optional[Dict[str, str]] = None) -> SchemaInfo:
         """Update a schema.
-        
+
         Updates a schema for a catalog. The caller must be the owner of the schema or a metastore admin. If
         the caller is a metastore admin, only the __owner__ field can be changed in the update. If the
         __name__ field must be updated, the caller must be a metastore admin or have the **CREATE_SCHEMA**
         privilege on the parent catalog.
-        
+
         :param full_name: str
           Full name of the schema.
         :param comment: str (optional)
@@ -7917,7 +7917,7 @@ class SchemasAPI:
           Username of current owner of schema.
         :param properties: Dict[str,str] (optional)
           A map of key-value properties attached to the securable.
-        
+
         :returns: :class:`SchemaInfo`
         """
         body = {}
@@ -7939,9 +7939,9 @@ class StorageCredentialsAPI:
     control which users and groups can access the credential. If a user does not have access to a storage
     credential in Unity Catalog, the request fails and Unity Catalog does not attempt to authenticate to your
     cloud tenant on the user’s behalf.
-    
+
     Databricks recommends using external locations rather than using storage credentials directly.
-    
+
     To create storage credentials, you must be a Databricks account admin. The account admin who creates the
     storage credential can delegate ownership to another user or group to manage permissions on it."""
 
@@ -7960,9 +7960,9 @@ class StorageCredentialsAPI:
                read_only: Optional[bool] = None,
                skip_validation: Optional[bool] = None) -> StorageCredentialInfo:
         """Create a storage credential.
-        
+
         Creates a new storage credential.
-        
+
         :param name: str
           The credential name. The name must be unique within the metastore.
         :param aws_iam_role: :class:`AwsIamRole` (optional)
@@ -7981,7 +7981,7 @@ class StorageCredentialsAPI:
           Whether the storage credential is only usable for read operations.
         :param skip_validation: bool (optional)
           Supplying true to this argument skips validation of the created credential.
-        
+
         :returns: :class:`StorageCredentialInfo`
         """
         body = {}
@@ -8004,16 +8004,16 @@ class StorageCredentialsAPI:
 
     def delete(self, name: str, *, force: Optional[bool] = None):
         """Delete a credential.
-        
+
         Deletes a storage credential from the metastore. The caller must be an owner of the storage
         credential.
-        
+
         :param name: str
           Name of the storage credential.
         :param force: bool (optional)
           Force deletion even if there are dependent external locations or external tables.
-        
-        
+
+
         """
 
         query = {}
@@ -8027,13 +8027,13 @@ class StorageCredentialsAPI:
 
     def get(self, name: str) -> StorageCredentialInfo:
         """Get a credential.
-        
+
         Gets a storage credential from the metastore. The caller must be a metastore admin, the owner of the
         storage credential, or have some permission on the storage credential.
-        
+
         :param name: str
           Name of the storage credential.
-        
+
         :returns: :class:`StorageCredentialInfo`
         """
 
@@ -8047,13 +8047,13 @@ class StorageCredentialsAPI:
              max_results: Optional[int] = None,
              page_token: Optional[str] = None) -> Iterator[StorageCredentialInfo]:
         """List credentials.
-        
+
         Gets an array of storage credentials (as __StorageCredentialInfo__ objects). The array is limited to
         only those storage credentials the caller has permission to access. If the caller is a metastore
         admin, retrieval of credentials is unrestricted. For unpaginated request, there is no guarantee of a
         specific ordering of the elements in the array. For paginated request, elements are ordered by their
         name.
-        
+
         :param max_results: int (optional)
           Maximum number of storage credentials to return. If not set, all the storage credentials are
           returned (not recommended). - when set to a value greater than 0, the page length is the minimum of
@@ -8062,7 +8062,7 @@ class StorageCredentialsAPI:
           returned;
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
-        
+
         :returns: Iterator over :class:`StorageCredentialInfo`
         """
 
@@ -8098,9 +8098,9 @@ class StorageCredentialsAPI:
                read_only: Optional[bool] = None,
                skip_validation: Optional[bool] = None) -> StorageCredentialInfo:
         """Update a credential.
-        
+
         Updates a storage credential on the metastore.
-        
+
         :param name: str
           Name of the storage credential.
         :param aws_iam_role: :class:`AwsIamRole` (optional)
@@ -8125,7 +8125,7 @@ class StorageCredentialsAPI:
           Whether the storage credential is only usable for read operations.
         :param skip_validation: bool (optional)
           Supplying true to this argument skips validation of the updated credential.
-        
+
         :returns: :class:`StorageCredentialInfo`
         """
         body = {}
@@ -8163,17 +8163,17 @@ class StorageCredentialsAPI:
                  storage_credential_name: Optional[str] = None,
                  url: Optional[str] = None) -> ValidateStorageCredentialResponse:
         """Validate a storage credential.
-        
+
         Validates a storage credential. At least one of __external_location_name__ and __url__ need to be
         provided. If only one of them is provided, it will be used for validation. And if both are provided,
         the __url__ will be used for validation, and __external_location_name__ will be ignored when checking
         overlapping urls.
-        
+
         Either the __storage_credential_name__ or the cloud-specific credential must be provided.
-        
+
         The caller must be a metastore admin or the storage credential owner or have the
         **CREATE_EXTERNAL_LOCATION** privilege on the metastore and the storage credential.
-        
+
         :param aws_iam_role: :class:`AwsIamRole` (optional)
           The AWS IAM role configuration.
         :param azure_managed_identity: :class:`AzureManagedIdentity` (optional)
@@ -8192,7 +8192,7 @@ class StorageCredentialsAPI:
           The name of the storage credential to validate.
         :param url: str (optional)
           The external location url to validate.
-        
+
         :returns: :class:`ValidateStorageCredentialResponse`
         """
         body = {}
@@ -8226,16 +8226,16 @@ class SystemSchemasAPI:
 
     def disable(self, metastore_id: str, schema_name: DisableSchemaName):
         """Disable a system schema.
-        
+
         Disables the system schema and removes it from the system catalog. The caller must be an account admin
         or a metastore admin.
-        
+
         :param metastore_id: str
           The metastore ID under which the system schema lives.
         :param schema_name: :class:`DisableSchemaName`
           Full name of the system schema.
-        
-        
+
+
         """
 
         headers = {'Accept': 'application/json', }
@@ -8246,16 +8246,16 @@ class SystemSchemasAPI:
 
     def enable(self, metastore_id: str, schema_name: EnableSchemaName):
         """Enable a system schema.
-        
+
         Enables the system schema and adds it to the system catalog. The caller must be an account admin or a
         metastore admin.
-        
+
         :param metastore_id: str
           The metastore ID under which the system schema lives.
         :param schema_name: :class:`EnableSchemaName`
           Full name of the system schema.
-        
-        
+
+
         """
 
         headers = {'Accept': 'application/json', }
@@ -8266,13 +8266,13 @@ class SystemSchemasAPI:
 
     def list(self, metastore_id: str) -> Iterator[SystemSchemaInfo]:
         """List system schemas.
-        
+
         Gets an array of system schemas for a metastore. The caller must be an account admin or a metastore
         admin.
-        
+
         :param metastore_id: str
           The ID for the metastore in which the system schema resides.
-        
+
         :returns: Iterator over :class:`SystemSchemaInfo`
         """
 
@@ -8287,13 +8287,13 @@ class SystemSchemasAPI:
 
 class TableConstraintsAPI:
     """Primary key and foreign key constraints encode relationships between fields in tables.
-    
+
     Primary and foreign keys are informational only and are not enforced. Foreign keys must reference a
     primary key in another table. This primary key is the parent constraint of the foreign key and the table
     this primary key is on is the parent table of the foreign key. Similarly, the foreign key is the child
     constraint of its referenced primary key; the table of the foreign key is the child table of the primary
     key.
-    
+
     You can declare primary keys and foreign keys as part of the table specification during table creation.
     You can also add or drop constraints on existing tables."""
 
@@ -8302,22 +8302,22 @@ class TableConstraintsAPI:
 
     def create(self, full_name_arg: str, constraint: TableConstraint) -> TableConstraint:
         """Create a table constraint.
-        
+
         Creates a new table constraint.
-        
+
         For the table constraint creation to succeed, the user must satisfy both of these conditions: - the
         user must have the **USE_CATALOG** privilege on the table's parent catalog, the **USE_SCHEMA**
         privilege on the table's parent schema, and be the owner of the table. - if the new constraint is a
         __ForeignKeyConstraint__, the user must have the **USE_CATALOG** privilege on the referenced parent
         table's catalog, the **USE_SCHEMA** privilege on the referenced parent table's schema, and be the
         owner of the referenced parent table.
-        
+
         :param full_name_arg: str
           The full name of the table referenced by the constraint.
         :param constraint: :class:`TableConstraint`
           A table constraint, as defined by *one* of the following fields being set:
           __primary_key_constraint__, __foreign_key_constraint__, __named_table_constraint__.
-        
+
         :returns: :class:`TableConstraint`
         """
         body = {}
@@ -8330,16 +8330,16 @@ class TableConstraintsAPI:
 
     def delete(self, full_name: str, constraint_name: str, cascade: bool):
         """Delete a table constraint.
-        
+
         Deletes a table constraint.
-        
+
         For the table constraint deletion to succeed, the user must satisfy both of these conditions: - the
         user must have the **USE_CATALOG** privilege on the table's parent catalog, the **USE_SCHEMA**
         privilege on the table's parent schema, and be the owner of the table. - if __cascade__ argument is
         **true**, the user must have the following permissions on all of the child tables: the **USE_CATALOG**
         privilege on the table's catalog, the **USE_SCHEMA** privilege on the table's schema, and be the owner
         of the table.
-        
+
         :param full_name: str
           Full name of the table referenced by the constraint.
         :param constraint_name: str
@@ -8347,8 +8347,8 @@ class TableConstraintsAPI:
         :param cascade: bool
           If true, try deleting all child constraints of the current constraint. If false, reject this
           operation if the current constraint has any child constraints.
-        
-        
+
+
         """
 
         query = {}
@@ -8368,7 +8368,7 @@ class TablesAPI:
     have the USE_CATALOG permission on its parent catalog. To query a table, users must have the SELECT
     permission on the table, and they must have the USE_CATALOG permission on its parent catalog and the
     USE_SCHEMA permission on its parent schema.
-    
+
     A table can be managed or external. From an API perspective, a __VIEW__ is a particular kind of table
     (rather than a managed or external table)."""
 
@@ -8377,16 +8377,16 @@ class TablesAPI:
 
     def delete(self, full_name: str):
         """Delete a table.
-        
+
         Deletes a table from the specified parent catalog and schema. The caller must be the owner of the
         parent catalog, have the **USE_CATALOG** privilege on the parent catalog and be the owner of the
         parent schema, or be the owner of the table and have the **USE_CATALOG** privilege on the parent
         catalog and the **USE_SCHEMA** privilege on the parent schema.
-        
+
         :param full_name: str
           Full name of the table.
-        
-        
+
+
         """
 
         headers = {'Accept': 'application/json', }
@@ -8395,17 +8395,17 @@ class TablesAPI:
 
     def exists(self, full_name: str) -> TableExistsResponse:
         """Get boolean reflecting if table exists.
-        
+
         Gets if a table exists in the metastore for a specific catalog and schema. The caller must satisfy one
         of the following requirements: * Be a metastore admin * Be the owner of the parent catalog * Be the
         owner of the parent schema and have the USE_CATALOG privilege on the parent catalog * Have the
         **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema,
         and either be the table owner or have the SELECT privilege on the table. * Have BROWSE privilege on
         the parent catalog * Have BROWSE privilege on the parent schema.
-        
+
         :param full_name: str
           Full name of the table.
-        
+
         :returns: :class:`TableExistsResponse`
         """
 
@@ -8416,18 +8416,18 @@ class TablesAPI:
 
     def get(self, full_name: str, *, include_delta_metadata: Optional[bool] = None) -> TableInfo:
         """Get a table.
-        
+
         Gets a table from the metastore for a specific catalog and schema. The caller must satisfy one of the
         following requirements: * Be a metastore admin * Be the owner of the parent catalog * Be the owner of
         the parent schema and have the USE_CATALOG privilege on the parent catalog * Have the **USE_CATALOG**
         privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema, and either be
         the table owner or have the SELECT privilege on the table.
-        
+
         :param full_name: str
           Full name of the table.
         :param include_delta_metadata: bool (optional)
           Whether delta metadata should be included in the response.
-        
+
         :returns: :class:`TableInfo`
         """
 
@@ -8448,13 +8448,13 @@ class TablesAPI:
              omit_properties: Optional[bool] = None,
              page_token: Optional[str] = None) -> Iterator[TableInfo]:
         """List tables.
-        
+
         Gets an array of all tables for the current metastore under the parent catalog and schema. The caller
         must be a metastore admin or an owner of (or have the **SELECT** privilege on) the table. For the
         latter case, the caller must also be the owner or have the **USE_CATALOG** privilege on the parent
         catalog and the **USE_SCHEMA** privilege on the parent schema. There is no guarantee of a specific
         ordering of the elements in the array.
-        
+
         :param catalog_name: str
           Name of parent catalog for tables of interest.
         :param schema_name: str
@@ -8472,7 +8472,7 @@ class TablesAPI:
           Whether to omit the properties of the table from the response or not.
         :param page_token: str (optional)
           Opaque token to send for the next page of results (pagination).
-        
+
         :returns: Iterator over :class:`TableInfo`
         """
 
@@ -8503,18 +8503,18 @@ class TablesAPI:
                        schema_name_pattern: Optional[str] = None,
                        table_name_pattern: Optional[str] = None) -> Iterator[TableSummary]:
         """List table summaries.
-        
+
         Gets an array of summaries for tables for a schema and catalog within the metastore. The table
         summaries returned are either:
-        
+
         * summaries for tables (within the current metastore and parent catalog and schema), when the user is
         a metastore admin, or: * summaries for tables and schemas (within the current metastore and parent
         catalog) for which the user has ownership or the **SELECT** privilege on the table and ownership or
         **USE_SCHEMA** privilege on the schema, provided that the user also has ownership or the
         **USE_CATALOG** privilege on the parent catalog.
-        
+
         There is no guarantee of a specific ordering of the elements in the array.
-        
+
         :param catalog_name: str
           Name of parent catalog for tables of interest.
         :param max_results: int (optional)
@@ -8529,7 +8529,7 @@ class TablesAPI:
           A sql LIKE pattern (% and _) for schema names. All schemas will be returned if not set or empty.
         :param table_name_pattern: str (optional)
           A sql LIKE pattern (% and _) for table names. All tables will be returned if not set or empty.
-        
+
         :returns: Iterator over :class:`TableSummary`
         """
 
@@ -8552,17 +8552,17 @@ class TablesAPI:
 
     def update(self, full_name: str, *, owner: Optional[str] = None):
         """Update a table owner.
-        
+
         Change the owner of the table. The caller must be the owner of the parent catalog, have the
         **USE_CATALOG** privilege on the parent catalog and be the owner of the parent schema, or be the owner
         of the table and have the **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
         privilege on the parent schema.
-        
+
         :param full_name: str
           Full name of the table.
         :param owner: str (optional)
-        
-        
+
+
         """
         body = {}
         if owner is not None: body['owner'] = owner
@@ -8591,23 +8591,23 @@ class VolumesAPI:
                comment: Optional[str] = None,
                storage_location: Optional[str] = None) -> VolumeInfo:
         """Create a Volume.
-        
+
         Creates a new volume.
-        
+
         The user could create either an external volume or a managed volume. An external volume will be
         created in the specified external location, while a managed volume will be located in the default
         location which is specified by the parent schema, or the parent catalog, or the Metastore.
-        
+
         For the volume creation to succeed, the user must satisfy following conditions: - The caller must be a
         metastore admin, or be the owner of the parent catalog and schema, or have the **USE_CATALOG**
         privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema. - The caller
         must have **CREATE VOLUME** privilege on the parent schema.
-        
+
         For an external volume, following conditions also need to satisfy - The caller must have **CREATE
         EXTERNAL VOLUME** privilege on the external location. - There are no other tables, nor volumes
         existing in the specified storage location. - The specified storage location is not under the location
         of other tables, nor volumes, or catalogs or schemas.
-        
+
         :param catalog_name: str
           The name of the catalog where the schema and the volume are
         :param schema_name: str
@@ -8619,7 +8619,7 @@ class VolumesAPI:
           The comment attached to the volume
         :param storage_location: str (optional)
           The storage location on the cloud
-        
+
         :returns: :class:`VolumeInfo`
         """
         body = {}
@@ -8636,17 +8636,17 @@ class VolumesAPI:
 
     def delete(self, name: str):
         """Delete a Volume.
-        
+
         Deletes a volume from the specified parent catalog and schema.
-        
+
         The caller must be a metastore admin or an owner of the volume. For the latter case, the caller must
         also be the owner or have the **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
         privilege on the parent schema.
-        
+
         :param name: str
           The three-level (fully qualified) name of the volume
-        
-        
+
+
         """
 
         headers = {}
@@ -8660,37 +8660,37 @@ class VolumesAPI:
              max_results: Optional[int] = None,
              page_token: Optional[str] = None) -> Iterator[VolumeInfo]:
         """List Volumes.
-        
+
         Gets an array of volumes for the current metastore under the parent catalog and schema.
-        
+
         The returned volumes are filtered based on the privileges of the calling user. For example, the
         metastore admin is able to list all the volumes. A regular user needs to be the owner or have the
         **READ VOLUME** privilege on the volume to recieve the volumes in the response. For the latter case,
         the caller must also be the owner or have the **USE_CATALOG** privilege on the parent catalog and the
         **USE_SCHEMA** privilege on the parent schema.
-        
+
         There is no guarantee of a specific ordering of the elements in the array.
-        
+
         :param catalog_name: str
           The identifier of the catalog
         :param schema_name: str
           The identifier of the schema
         :param max_results: int (optional)
           Maximum number of volumes to return (page length).
-          
+
           If not set, the page length is set to a server configured value (10000, as of 1/29/2024). - when set
           to a value greater than 0, the page length is the minimum of this value and a server configured
           value (10000, as of 1/29/2024); - when set to 0, the page length is set to a server configured value
           (10000, as of 1/29/2024) (recommended); - when set to a value less than 0, an invalid parameter
           error is returned;
-          
+
           Note: this parameter controls only the maximum number of volumes to return. The actual number of
           volumes returned in a page may be smaller than this value, including 0, even if there are more
           pages.
         :param page_token: str (optional)
           Opaque token returned by a previous request. It must be included in the request to retrieve the next
           page of results (pagination).
-        
+
         :returns: Iterator over :class:`VolumeInfo`
         """
 
@@ -8712,16 +8712,16 @@ class VolumesAPI:
 
     def read(self, name: str) -> VolumeInfo:
         """Get a Volume.
-        
+
         Gets a volume from the metastore for a specific catalog and schema.
-        
+
         The caller must be a metastore admin or an owner of (or have the **READ VOLUME** privilege on) the
         volume. For the latter case, the caller must also be the owner or have the **USE_CATALOG** privilege
         on the parent catalog and the **USE_SCHEMA** privilege on the parent schema.
-        
+
         :param name: str
           The three-level (fully qualified) name of the volume
-        
+
         :returns: :class:`VolumeInfo`
         """
 
@@ -8737,15 +8737,15 @@ class VolumesAPI:
                new_name: Optional[str] = None,
                owner: Optional[str] = None) -> VolumeInfo:
         """Update a Volume.
-        
+
         Updates the specified volume under the specified parent catalog and schema.
-        
+
         The caller must be a metastore admin or an owner of the volume. For the latter case, the caller must
         also be the owner or have the **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**
         privilege on the parent schema.
-        
+
         Currently only the name, the owner or the comment of the volume could be updated.
-        
+
         :param name: str
           The three-level (fully qualified) name of the volume
         :param comment: str (optional)
@@ -8754,7 +8754,7 @@ class VolumesAPI:
           New name for the volume.
         :param owner: str (optional)
           The identifier of the user who owns the volume
-        
+
         :returns: :class:`VolumeInfo`
         """
         body = {}
@@ -8771,16 +8771,16 @@ class WorkspaceBindingsAPI:
     """A securable in Databricks can be configured as __OPEN__ or __ISOLATED__. An __OPEN__ securable can be
     accessed from any workspace, while an __ISOLATED__ securable can only be accessed from a configured list
     of workspaces. This API allows you to configure (bind) securables to workspaces.
-    
+
     NOTE: The __isolation_mode__ is configured for the securable itself (using its Update method) and the
     workspace bindings are only consulted when the securable's __isolation_mode__ is set to __ISOLATED__.
-    
+
     A securable's workspace bindings can be configured by a metastore admin or the owner of the securable.
-    
+
     The original path (/api/2.1/unity-catalog/workspace-bindings/catalogs/{name}) is deprecated. Please use
     the new path (/api/2.1/unity-catalog/bindings/{securable_type}/{securable_name}) which introduces the
     ability to bind a securable in READ_ONLY mode (catalogs only).
-    
+
     Securables that support binding: - catalog"""
 
     def __init__(self, api_client):
@@ -8788,13 +8788,13 @@ class WorkspaceBindingsAPI:
 
     def get(self, name: str) -> CurrentWorkspaceBindings:
         """Get catalog workspace bindings.
-        
+
         Gets workspace bindings of the catalog. The caller must be a metastore admin or an owner of the
         catalog.
-        
+
         :param name: str
           The name of the catalog.
-        
+
         :returns: :class:`CurrentWorkspaceBindings`
         """
 
@@ -8807,15 +8807,15 @@ class WorkspaceBindingsAPI:
 
     def get_bindings(self, securable_type: str, securable_name: str) -> WorkspaceBindingsResponse:
         """Get securable workspace bindings.
-        
+
         Gets workspace bindings of the securable. The caller must be a metastore admin or an owner of the
         securable.
-        
+
         :param securable_type: str
           The type of the securable.
         :param securable_name: str
           The name of the securable.
-        
+
         :returns: :class:`WorkspaceBindingsResponse`
         """
 
@@ -8832,17 +8832,17 @@ class WorkspaceBindingsAPI:
                assign_workspaces: Optional[List[int]] = None,
                unassign_workspaces: Optional[List[int]] = None) -> CurrentWorkspaceBindings:
         """Update catalog workspace bindings.
-        
+
         Updates workspace bindings of the catalog. The caller must be a metastore admin or an owner of the
         catalog.
-        
+
         :param name: str
           The name of the catalog.
         :param assign_workspaces: List[int] (optional)
           A list of workspace IDs.
         :param unassign_workspaces: List[int] (optional)
           A list of workspace IDs.
-        
+
         :returns: :class:`CurrentWorkspaceBindings`
         """
         body = {}
@@ -8863,10 +8863,10 @@ class WorkspaceBindingsAPI:
                         add: Optional[List[WorkspaceBinding]] = None,
                         remove: Optional[List[WorkspaceBinding]] = None) -> WorkspaceBindingsResponse:
         """Update securable workspace bindings.
-        
+
         Updates workspace bindings of the securable. The caller must be a metastore admin or an owner of the
         securable.
-        
+
         :param securable_type: str
           The type of the securable.
         :param securable_name: str
@@ -8875,7 +8875,7 @@ class WorkspaceBindingsAPI:
           List of workspace bindings
         :param remove: List[:class:`WorkspaceBinding`] (optional)
           List of workspace bindings
-        
+
         :returns: :class:`WorkspaceBindingsResponse`
         """
         body = {}

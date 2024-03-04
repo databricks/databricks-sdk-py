@@ -39,7 +39,7 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Descriptio
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:
+    def from_dict(cls, d: Dict[str, Any]) -> {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:
         """Deserializes the {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}} from a dictionary."""
         return cls({{range $i, $f := .Fields}}{{if $i}}, {{end}}{{template "safe-snake-name" $f}}={{template "from_dict_type" $f}}{{end}})
     {{end}}
@@ -71,7 +71,7 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Descriptio
 	{{- else}}self.{{template "safe-snake-name" .}}{{- end -}}
 {{- end -}}
 {{- define "type" -}}
-	{{- if not . }}any # ERROR: No Type
+	{{- if not . }}Any # ERROR: No Type
 	{{- else if .IsExternal }}{{.Package.Name}}.{{.PascalName}}
 	{{- else if .ArrayValue }}List[{{template "type" .ArrayValue}}]
 	{{- else if .MapValue }}Dict[str,{{template "type" .MapValue}}]
@@ -85,7 +85,7 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Descriptio
 	{{- else if .IsFloat64}}float
 	{{- else if .IsInt}}int
 	{{- else if .IsByteStream}}BinaryIO
-	{{- else}}any /* MISSING TYPE */
+	{{- else}}Any /* MISSING TYPE */
 	{{- end -}}
 {{- end -}}
 
