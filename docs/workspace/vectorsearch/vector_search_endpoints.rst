@@ -25,14 +25,12 @@
     .. py:method:: create_endpoint_and_wait(name: str, endpoint_type: EndpointType, timeout: datetime.timedelta = 0:20:00) -> EndpointInfo
 
 
-    .. py:method:: delete_endpoint(endpoint_name: str, name: str)
+    .. py:method:: delete_endpoint(endpoint_name: str)
 
         Delete an endpoint.
         
         :param endpoint_name: str
           Name of the endpoint
-        :param name: str
-          Name of the endpoint to delete
         
         
         

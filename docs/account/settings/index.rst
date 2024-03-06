@@ -10,3 +10,6 @@ Manage security settings for Accounts and Workspaces
    ip_access_lists
    network_connectivity
    settings
+   csp_enablement_account
+   esm_enablement_account
+   personal_compute

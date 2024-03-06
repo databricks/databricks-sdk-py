@@ -5,36 +5,19 @@
 .. py:class:: NetworkConnectivityAPI
 
     These APIs provide configurations for the network connectivity of your workspaces for serverless compute
-    resources. This API provides stable subnets for your workspace so that you can configure your firewalls on
-    your Azure Storage accounts to allow access from Databricks. You can also use the API to provision private
-    endpoints for Databricks to privately connect serverless compute resources to your Azure resources using
-    Azure Private Link. See [configure serverless secure connectivity].
-    
-    [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security
+    resources.
 
     .. py:method:: create_network_connectivity_configuration(name: str, region: str) -> NetworkConnectivityConfiguration
 
         Create a network connectivity configuration.
-        
-        Creates a network connectivity configuration (NCC), which provides stable Azure service subnets when
-        accessing your Azure Storage accounts. You can also use a network connectivity configuration to create
-        Databricks-managed private endpoints so that Databricks serverless compute resources privately access
-        your resources.
-        
-        **IMPORTANT**: After you create the network connectivity configuration, you must assign one or more
-        workspaces to the new network connectivity configuration. You can share one network connectivity
-        configuration with multiple workspaces from the same Azure region within the same Databricks account.
-        See [configure serverless secure connectivity].
-        
-        [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security
         
         :param name: str
           The name of the network connectivity configuration. The name can contain alphanumeric characters,
           hyphens, and underscores. The length must be between 3 and 30 characters. The name must match the
           regular expression `^[0-9a-zA-Z-_]{3,30}$`.
         :param region: str
-          The Azure region for this network connectivity configuration. Only workspaces in the same Azure
-          region can be attached to this network connectivity configuration.
+          The region for the network connectivity configuration. Only workspaces in the same region can be
+          attached to the network connectivity configuration.
         
         :returns: :class:`NetworkConnectivityConfiguration`
         

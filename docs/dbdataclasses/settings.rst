@@ -282,6 +282,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: BLOCK
       :value: "BLOCK"
 
+.. autoclass:: NccAwsStableIpRule
+   :members:
+   :undoc-members:
+
 .. autoclass:: NccAzurePrivateEndpointRule
    :members:
    :undoc-members:

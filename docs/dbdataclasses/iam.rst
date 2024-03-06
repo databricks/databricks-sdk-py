@@ -212,6 +212,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: IS_OWNER
       :value: "IS_OWNER"
 
+.. autoclass:: PermissionMigrationRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: PermissionMigrationResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: PermissionOutput
    :members:
    :undoc-members:

@@ -6827,7 +6827,7 @@ class LakehouseMonitorsAPI:
         if schedule is not None: body['schedule'] = schedule.as_dict()
         if skip_builtin_dashboard is not None: body['skip_builtin_dashboard'] = skip_builtin_dashboard
         if slicing_exprs is not None: body['slicing_exprs'] = [v for v in slicing_exprs]
-        if snapshot is not None: body['snapshot'] = snapshot
+        if snapshot is not None: body['snapshot'] = snapshot.as_dict()
         if time_series is not None: body['time_series'] = time_series.as_dict()
         if warehouse_id is not None: body['warehouse_id'] = warehouse_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
@@ -7032,7 +7032,7 @@ class LakehouseMonitorsAPI:
         if output_schema_name is not None: body['output_schema_name'] = output_schema_name
         if schedule is not None: body['schedule'] = schedule.as_dict()
         if slicing_exprs is not None: body['slicing_exprs'] = [v for v in slicing_exprs]
-        if snapshot is not None: body['snapshot'] = snapshot
+        if snapshot is not None: body['snapshot'] = snapshot.as_dict()
         if time_series is not None: body['time_series'] = time_series.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
@@ -7993,7 +7993,7 @@ class StorageCredentialsAPI:
         if cloudflare_api_token is not None: body['cloudflare_api_token'] = cloudflare_api_token.as_dict()
         if comment is not None: body['comment'] = comment
         if databricks_gcp_service_account is not None:
-            body['databricks_gcp_service_account'] = databricks_gcp_service_account
+            body['databricks_gcp_service_account'] = databricks_gcp_service_account.as_dict()
         if name is not None: body['name'] = name
         if read_only is not None: body['read_only'] = read_only
         if skip_validation is not None: body['skip_validation'] = skip_validation
@@ -8137,7 +8137,7 @@ class StorageCredentialsAPI:
         if cloudflare_api_token is not None: body['cloudflare_api_token'] = cloudflare_api_token.as_dict()
         if comment is not None: body['comment'] = comment
         if databricks_gcp_service_account is not None:
-            body['databricks_gcp_service_account'] = databricks_gcp_service_account
+            body['databricks_gcp_service_account'] = databricks_gcp_service_account.as_dict()
         if force is not None: body['force'] = force
         if new_name is not None: body['new_name'] = new_name
         if owner is not None: body['owner'] = owner
@@ -8203,7 +8203,7 @@ class StorageCredentialsAPI:
             body['azure_service_principal'] = azure_service_principal.as_dict()
         if cloudflare_api_token is not None: body['cloudflare_api_token'] = cloudflare_api_token.as_dict()
         if databricks_gcp_service_account is not None:
-            body['databricks_gcp_service_account'] = databricks_gcp_service_account
+            body['databricks_gcp_service_account'] = databricks_gcp_service_account.as_dict()
         if external_location_name is not None: body['external_location_name'] = external_location_name
         if read_only is not None: body['read_only'] = read_only
         if storage_credential_name is not None: body['storage_credential_name'] = storage_credential_name
