@@ -81,7 +81,7 @@ def ucws(env_or_skip) -> WorkspaceClient:
 @pytest.fixture(scope='session')
 def env_or_skip():
 
-    def inner(var: str) -> str:
+    def inner(var) -> str:
         if var not in os.environ:
             pytest.skip(f'Environment variable {var} is missing')
         return os.environ[var]
