@@ -3,30 +3,30 @@
 ## 0.21.0
 
 ### New Features and Improvements
-* Fix get_workspace_client in GCP ([#532](https://github.com/databricks/databricks-sdk-py/pull/532)).
+* Fixed get_workspace_client in GCP ([#532](https://github.com/databricks/databricks-sdk-py/pull/532)).
 * Use all-apis scope with external-browser ([#563](https://github.com/databricks/databricks-sdk-py/pull/563)).
 * Make a best effort attempt to initialise all Databricks globals ([#562](https://github.com/databricks/databricks-sdk-py/pull/562)).
 * Fixed type issue with widgets.getArgument ([#581](https://github.com/databricks/databricks-sdk-py/pull/581))
 * Note: Backwards incompatible changes - Settings are now nested, please see the API changes below.
 
 ### Documentation
-* Add Files API docs to the SDK Documentation ([#556](https://github.com/databricks/databricks-sdk-py/pull/556)).
-* New example to list compute resource for SUBMIT_RUN job runs ([#572](https://github.com/databricks/databricks-sdk-py/pull/572)).
-* Sort index pages by name in docs ([#560](https://github.com/databricks/databricks-sdk-py/pull/560)).
-* Add back enums to docs ([#557](https://github.com/databricks/databricks-sdk-py/pull/557)).
+* Added Files API docs to the SDK Documentation ([#556](https://github.com/databricks/databricks-sdk-py/pull/556)).
+* Added new example to list compute resource for SUBMIT_RUN job runs ([#572](https://github.com/databricks/databricks-sdk-py/pull/572)).
+* Sorted index pages by name in docs ([#560](https://github.com/databricks/databricks-sdk-py/pull/560)).
+* Added back enums to docs ([#557](https://github.com/databricks/databricks-sdk-py/pull/557)).
 
 ### API Changes
 #### Added
 Services:
 - [w.permission_migration](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/permission_migration.html) workspace-level service.
-- [w.automatic_cluster_update](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/automatic_cluster_update.html) workspace-level service.
-- [w.csp_enablement](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/csp_enablement.html) workspace-level service.
-- [a.csp_enablement_account](https://databricks-sdk-py.readthedocs.io/en/latest/account/csp_enablement_account.html) account-level service.
-- [w.default_namespace](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/default_namespace.html) workspace-level service.
-- [w.esm_enablement](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/esm_enablement.html) workspace-level service.
-- [a.esm_enablement_account](https://databricks-sdk-py.readthedocs.io/en/latest/account/esm_enablement_account.html) account-level service.
-- [a.personal_compute](https://databricks-sdk-py.readthedocs.io/en/latest/account/personal_compute.html) account-level service.
-- [w.restrict_workspace_admins](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/restrict_workspace_admins.html) workspace-level service.
+- [w.settings.automatic_cluster_update](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings/automatic_cluster_update.html) workspace-level service.
+- [w.settings.csp_enablement](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings/csp_enablement.html) workspace-level service.
+- [a.settings.csp_enablement_account](https://databricks-sdk-py.readthedocs.io/en/latest/account/settings/csp_enablement_account.html) account-level service.
+- [w.settings.default_namespace](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings/default_namespace.html) workspace-level service.
+- [w.settings.esm_enablement](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings/esm_enablement.html) workspace-level service.
+- [a.settings.esm_enablement_account](https://databricks-sdk-py.readthedocs.io/en/latest/account/settings/esm_enablement_account.html) account-level service.
+- [a.settings.personal_compute](https://databricks-sdk-py.readthedocs.io/en/latest/account/settings/personal_compute.html) account-level service.
+- [w.settings.restrict_workspace_admins](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings/restrict_workspace_admins.html) workspace-level service.
 
 Dataclasses:
 - `databricks.sdk.service.settings.AutomaticClusterUpdateSetting`
