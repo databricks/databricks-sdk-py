@@ -1,243 +1,58 @@
-``w.settings``: Default Namespace
-=================================
+``w.settings``: Settings
+========================
 .. currentmodule:: databricks.sdk.service.settings
 
 .. py:class:: SettingsAPI
 
-    The default namespace setting API allows users to configure the default namespace for a Databricks
-    workspace.
-    
-    Through this API, users can retrieve, set, or modify the default namespace used when queries do not
-    reference a fully qualified three-level name. For example, if you use the API to set 'retail_prod' as the
-    default catalog, then a query 'SELECT * FROM myTable' would reference the object
-    'retail_prod.default.myTable' (the schema 'default' is always assumed).
-    
-    This setting requires a restart of clusters and SQL warehouses to take effect. Additionally, the default
-    namespace only applies when using Unity Catalog-enabled compute.
+    Workspace Settings API allows users to manage settings at the workspace level.
 
-    .. py:method:: delete_default_namespace_setting( [, etag: Optional[str]]) -> DeleteDefaultNamespaceSettingResponse
+    .. py:property:: automatic_cluster_update
+        :type: AutomaticClusterUpdateAPI
 
-        Delete the default namespace setting.
-        
-        Deletes the default namespace setting for the workspace. A fresh etag needs to be provided in `DELETE`
-        requests (as a query parameter). The etag can be retrieved by making a `GET` request before the
-        `DELETE` request. If the setting is updated/deleted concurrently, `DELETE` fails with 409 and the
-        request must be retried by using the fresh etag in the 409 response.
-        
-        :param etag: str (optional)
-          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
-          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
-          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
-          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
-          request, and pass it with the DELETE request to identify the rule set version you are deleting.
-        
-        :returns: :class:`DeleteDefaultNamespaceSettingResponse`
-        
+        Controls whether automatic cluster update is enabled for the current workspace. By default, it is turned
+        off.
 
-    .. py:method:: delete_restrict_workspace_admins_setting( [, etag: Optional[str]]) -> DeleteRestrictWorkspaceAdminsSettingResponse
+    .. py:property:: csp_enablement
+        :type: CspEnablementAPI
 
-        Delete the restrict workspace admins setting.
+        Controls whether to enable the compliance security profile for the current workspace. Enabling it on a
+        workspace is permanent. By default, it is turned off.
         
-        Reverts the restrict workspace admins setting status for the workspace. A fresh etag needs to be
-        provided in `DELETE` requests (as a query parameter). The etag can be retrieved by making a `GET`
-        request before the DELETE request. If the setting is updated/deleted concurrently, `DELETE` fails with
-        409 and the request must be retried by using the fresh etag in the 409 response.
-        
-        :param etag: str (optional)
-          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
-          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
-          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
-          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
-          request, and pass it with the DELETE request to identify the rule set version you are deleting.
-        
-        :returns: :class:`DeleteRestrictWorkspaceAdminsSettingResponse`
-        
+        This settings can NOT be disabled once it is enabled.
 
-    .. py:method:: get_automatic_cluster_update_setting( [, etag: Optional[str]]) -> AutomaticClusterUpdateSetting
+    .. py:property:: default_namespace
+        :type: DefaultNamespaceAPI
 
-        Get the automatic cluster update setting.
+        The default namespace setting API allows users to configure the default namespace for a Databricks
+        workspace.
         
-        Gets the automatic cluster update setting.
+        Through this API, users can retrieve, set, or modify the default namespace used when queries do not
+        reference a fully qualified three-level name. For example, if you use the API to set 'retail_prod' as the
+        default catalog, then a query 'SELECT * FROM myTable' would reference the object
+        'retail_prod.default.myTable' (the schema 'default' is always assumed).
         
-        :param etag: str (optional)
-          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
-          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
-          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
-          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
-          request, and pass it with the DELETE request to identify the rule set version you are deleting.
-        
-        :returns: :class:`AutomaticClusterUpdateSetting`
-        
+        This setting requires a restart of clusters and SQL warehouses to take effect. Additionally, the default
+        namespace only applies when using Unity Catalog-enabled compute.
 
-    .. py:method:: get_csp_enablement_setting( [, etag: Optional[str]]) -> CspEnablementSetting
+    .. py:property:: esm_enablement
+        :type: EsmEnablementAPI
 
-        Get the compliance security profile setting.
+        Controls whether enhanced security monitoring is enabled for the current workspace. If the compliance
+        security profile is enabled, this is automatically enabled. By default, it is disabled. However, if the
+        compliance security profile is enabled, this is automatically enabled.
         
-        Gets the compliance security profile setting.
-        
-        :param etag: str (optional)
-          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
-          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
-          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
-          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
-          request, and pass it with the DELETE request to identify the rule set version you are deleting.
-        
-        :returns: :class:`CspEnablementSetting`
-        
+        If the compliance security profile is disabled, you can enable or disable this setting and it is not
+        permanent.
 
-    .. py:method:: get_default_namespace_setting( [, etag: Optional[str]]) -> DefaultNamespaceSetting
+    .. py:property:: restrict_workspace_admins
+        :type: RestrictWorkspaceAdminsAPI
 
-        Get the default namespace setting.
-        
-        Gets the default namespace setting.
-        
-        :param etag: str (optional)
-          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
-          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
-          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
-          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
-          request, and pass it with the DELETE request to identify the rule set version you are deleting.
-        
-        :returns: :class:`DefaultNamespaceSetting`
-        
-
-    .. py:method:: get_esm_enablement_setting( [, etag: Optional[str]]) -> EsmEnablementSetting
-
-        Get the enhanced security monitoring setting.
-        
-        Gets the enhanced security monitoring setting.
-        
-        :param etag: str (optional)
-          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
-          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
-          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
-          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
-          request, and pass it with the DELETE request to identify the rule set version you are deleting.
-        
-        :returns: :class:`EsmEnablementSetting`
-        
-
-    .. py:method:: get_restrict_workspace_admins_setting( [, etag: Optional[str]]) -> RestrictWorkspaceAdminsSetting
-
-        Get the restrict workspace admins setting.
-        
-        Gets the restrict workspace admins setting.
-        
-        :param etag: str (optional)
-          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
-          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
-          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
-          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
-          request, and pass it with the DELETE request to identify the rule set version you are deleting.
-        
-        :returns: :class:`RestrictWorkspaceAdminsSetting`
-        
-
-    .. py:method:: update_automatic_cluster_update_setting(allow_missing: bool, setting: AutomaticClusterUpdateSetting, field_mask: str) -> AutomaticClusterUpdateSetting
-
-        Update the automatic cluster update setting.
-        
-        Updates the automatic cluster update setting for the workspace. A fresh etag needs to be provided in
-        `PATCH` requests (as part of the setting field). The etag can be retrieved by making a `GET` request
-        before the `PATCH` request. If the setting is updated concurrently, `PATCH` fails with 409 and the
-        request must be retried by using the fresh etag in the 409 response.
-        
-        :param allow_missing: bool
-          This should always be set to true for Settings API. Added for AIP compliance.
-        :param setting: :class:`AutomaticClusterUpdateSetting`
-        :param field_mask: str
-          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
-          setting payload will be updated. The field mask needs to be supplied as single string. To specify
-          multiple fields in the field mask, use comma as the separator (no space).
-        
-        :returns: :class:`AutomaticClusterUpdateSetting`
-        
-
-    .. py:method:: update_csp_enablement_setting(allow_missing: bool, setting: CspEnablementSetting, field_mask: str) -> CspEnablementSetting
-
-        Update the compliance security profile setting.
-        
-        Updates the compliance security profile setting for the workspace. A fresh etag needs to be provided
-        in `PATCH` requests (as part of the setting field). The etag can be retrieved by making a `GET`
-        request before the `PATCH` request. If the setting is updated concurrently, `PATCH` fails with 409 and
-        the request must be retried by using the fresh etag in the 409 response.
-        
-        :param allow_missing: bool
-          This should always be set to true for Settings API. Added for AIP compliance.
-        :param setting: :class:`CspEnablementSetting`
-        :param field_mask: str
-          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
-          setting payload will be updated. The field mask needs to be supplied as single string. To specify
-          multiple fields in the field mask, use comma as the separator (no space).
-        
-        :returns: :class:`CspEnablementSetting`
-        
-
-    .. py:method:: update_default_namespace_setting(allow_missing: bool, setting: DefaultNamespaceSetting, field_mask: str) -> DefaultNamespaceSetting
-
-        Update the default namespace setting.
-        
-        Updates the default namespace setting for the workspace. A fresh etag needs to be provided in `PATCH`
-        requests (as part of the setting field). The etag can be retrieved by making a `GET` request before
-        the `PATCH` request. Note that if the setting does not exist, `GET` returns a NOT_FOUND error and the
-        etag is present in the error response, which should be set in the `PATCH` request. If the setting is
-        updated concurrently, `PATCH` fails with 409 and the request must be retried by using the fresh etag
-        in the 409 response.
-        
-        :param allow_missing: bool
-          This should always be set to true for Settings API. Added for AIP compliance.
-        :param setting: :class:`DefaultNamespaceSetting`
-          This represents the setting configuration for the default namespace in the Databricks workspace.
-          Setting the default catalog for the workspace determines the catalog that is used when queries do
-          not reference a fully qualified 3 level name. For example, if the default catalog is set to
-          'retail_prod' then a query 'SELECT * FROM myTable' would reference the object
-          'retail_prod.default.myTable' (the schema 'default' is always assumed). This setting requires a
-          restart of clusters and SQL warehouses to take effect. Additionally, the default namespace only
-          applies when using Unity Catalog-enabled compute.
-        :param field_mask: str
-          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
-          setting payload will be updated. The field mask needs to be supplied as single string. To specify
-          multiple fields in the field mask, use comma as the separator (no space).
-        
-        :returns: :class:`DefaultNamespaceSetting`
-        
-
-    .. py:method:: update_esm_enablement_setting(allow_missing: bool, setting: EsmEnablementSetting, field_mask: str) -> EsmEnablementSetting
-
-        Update the enhanced security monitoring setting.
-        
-        Updates the enhanced security monitoring setting for the workspace. A fresh etag needs to be provided
-        in `PATCH` requests (as part of the setting field). The etag can be retrieved by making a `GET`
-        request before the `PATCH` request. If the setting is updated concurrently, `PATCH` fails with 409 and
-        the request must be retried by using the fresh etag in the 409 response.
-        
-        :param allow_missing: bool
-          This should always be set to true for Settings API. Added for AIP compliance.
-        :param setting: :class:`EsmEnablementSetting`
-        :param field_mask: str
-          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
-          setting payload will be updated. The field mask needs to be supplied as single string. To specify
-          multiple fields in the field mask, use comma as the separator (no space).
-        
-        :returns: :class:`EsmEnablementSetting`
-        
-
-    .. py:method:: update_restrict_workspace_admins_setting(allow_missing: bool, setting: RestrictWorkspaceAdminsSetting, field_mask: str) -> RestrictWorkspaceAdminsSetting
-
-        Update the restrict workspace admins setting.
-        
-        Updates the restrict workspace admins setting for the workspace. A fresh etag needs to be provided in
-        `PATCH` requests (as part of the setting field). The etag can be retrieved by making a GET request
-        before the `PATCH` request. If the setting is updated concurrently, `PATCH` fails with 409 and the
-        request must be retried by using the fresh etag in the 409 response.
-        
-        :param allow_missing: bool
-          This should always be set to true for Settings API. Added for AIP compliance.
-        :param setting: :class:`RestrictWorkspaceAdminsSetting`
-        :param field_mask: str
-          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
-          setting payload will be updated. The field mask needs to be supplied as single string. To specify
-          multiple fields in the field mask, use comma as the separator (no space).
-        
-        :returns: :class:`RestrictWorkspaceAdminsSetting`
-        
+        The Restrict Workspace Admins setting lets you control the capabilities of workspace admins. With the
+        setting status set to ALLOW_ALL, workspace admins can create service principal personal access tokens on
+        behalf of any service principal in their workspace. Workspace admins can also change a job owner to any
+        user in their workspace. And they can change the job run_as setting to any user in their workspace or to a
+        service principal on which they have the Service Principal User role. With the setting status set to
+        RESTRICT_TOKENS_AND_JOB_RUN_AS, workspace admins can only create personal access tokens on behalf of
+        service principals they have the Service Principal User role on. They can also only change a job owner to
+        themselves. And they can change the job run_as setting to themselves or to a service principal on which
+        they have the Service Principal User role.

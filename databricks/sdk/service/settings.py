@@ -286,8 +286,8 @@ class CreateNetworkConnectivityConfigRequest:
     must match the regular expression `^[0-9a-zA-Z-_]{3,30}$`."""
 
     region: str
-    """The Azure region for this network connectivity configuration. Only workspaces in the same Azure
-    region can be attached to this network connectivity configuration."""
+    """The region for the network connectivity configuration. Only workspaces in the same region can be
+    attached to the network connectivity configuration."""
 
     def as_dict(self) -> dict:
         """Serializes the CreateNetworkConnectivityConfigRequest into a dictionary suitable for use as a JSON request body."""
@@ -1162,6 +1162,27 @@ class ListType(Enum):
 
 
 @dataclass
+class NccAwsStableIpRule:
+    """The stable AWS IP CIDR blocks. You can use these to configure the firewall of your resources to
+    allow traffic from your Databricks workspace."""
+
+    cidr_blocks: Optional[List[str]] = None
+    """The list of stable IP CIDR blocks from which Databricks network traffic originates when
+    accessing your resources."""
+
+    def as_dict(self) -> dict:
+        """Serializes the NccAwsStableIpRule into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.cidr_blocks: body['cidr_blocks'] = [v for v in self.cidr_blocks]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> NccAwsStableIpRule:
+        """Deserializes the NccAwsStableIpRule from a dictionary."""
+        return cls(cidr_blocks=d.get('cidr_blocks', None))
+
+
+@dataclass
 class NccAzurePrivateEndpointRule:
     connection_state: Optional[NccAzurePrivateEndpointRuleConnectionState] = None
     """The current status of this private endpoint. The private endpoint rules are effective only if
@@ -1329,6 +1350,10 @@ class NccEgressDefaultRules:
     configurations. You can find the stable network information of your serverless compute resources
     here."""
 
+    aws_stable_ip_rule: Optional[NccAwsStableIpRule] = None
+    """The stable AWS IP CIDR blocks. You can use these to configure the firewall of your resources to
+    allow traffic from your Databricks workspace."""
+
     azure_service_endpoint_rule: Optional[NccAzureServiceEndpointRule] = None
     """The stable Azure service endpoints. You can configure the firewall of your Azure resources to
     allow traffic from your Databricks serverless compute resources."""
@@ -1336,6 +1361,7 @@ class NccEgressDefaultRules:
     def as_dict(self) -> dict:
         """Serializes the NccEgressDefaultRules into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.aws_stable_ip_rule: body['aws_stable_ip_rule'] = self.aws_stable_ip_rule.as_dict()
         if self.azure_service_endpoint_rule:
             body['azure_service_endpoint_rule'] = self.azure_service_endpoint_rule.as_dict()
         return body
@@ -1343,7 +1369,8 @@ class NccEgressDefaultRules:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> NccEgressDefaultRules:
         """Deserializes the NccEgressDefaultRules from a dictionary."""
-        return cls(azure_service_endpoint_rule=_from_dict(d, 'azure_service_endpoint_rule',
+        return cls(aws_stable_ip_rule=_from_dict(d, 'aws_stable_ip_rule', NccAwsStableIpRule),
+                   azure_service_endpoint_rule=_from_dict(d, 'azure_service_endpoint_rule',
                                                           NccAzureServiceEndpointRule))
 
 
@@ -1389,8 +1416,8 @@ class NetworkConnectivityConfiguration:
     """Databricks network connectivity configuration ID."""
 
     region: Optional[str] = None
-    """The Azure region for this network connectivity configuration. Only workspaces in the same Azure
-    region can be attached to this network connectivity configuration."""
+    """The region for the network connectivity configuration. Only workspaces in the same region can be
+    attached to the network connectivity configuration."""
 
     updated_time: Optional[int] = None
     """Time in epoch milliseconds when this object was updated."""
@@ -2452,23 +2479,42 @@ class AccountIpAccessListsAPI:
 
 
 class AccountSettingsAPI:
-    """The Personal Compute enablement setting lets you control which users can use the Personal Compute default
-    policy to create compute resources. By default all users in all workspaces have access (ON), but you can
-    change the setting to instead let individual workspaces configure access control (DELEGATE).
-    
-    There is only one instance of this setting per account. Since this setting has a default value, this
-    setting is present on all accounts even though it's never set on a given account. Deletion reverts the
-    value of the setting back to the default value."""
+    """Accounts Settings API allows users to manage settings at the account level."""
 
     def __init__(self, api_client):
         self._api = api_client
 
-    def delete_personal_compute_setting(self,
-                                        *,
-                                        etag: Optional[str] = None) -> DeletePersonalComputeSettingResponse:
-        """Delete Personal Compute setting.
+        self._csp_enablement_account = CspEnablementAccountAPI(self._api)
+        self._esm_enablement_account = EsmEnablementAccountAPI(self._api)
+        self._personal_compute = PersonalComputeAPI(self._api)
+
+    @property
+    def csp_enablement_account(self) -> CspEnablementAccountAPI:
+        """The compliance security profile settings at the account level control whether to enable it for new workspaces."""
+        return self._csp_enablement_account
+
+    @property
+    def esm_enablement_account(self) -> EsmEnablementAccountAPI:
+        """The enhanced security monitoring setting at the account level controls whether to enable the feature on new workspaces."""
+        return self._esm_enablement_account
+
+    @property
+    def personal_compute(self) -> PersonalComputeAPI:
+        """The Personal Compute enablement setting lets you control which users can use the Personal Compute default policy to create compute resources."""
+        return self._personal_compute
+
+
+class AutomaticClusterUpdateAPI:
+    """Controls whether automatic cluster update is enabled for the current workspace. By default, it is turned
+    off."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def get(self, *, etag: Optional[str] = None) -> AutomaticClusterUpdateSetting:
+        """Get the automatic cluster update setting.
         
-        Reverts back the Personal Compute setting value to default (ON)
+        Gets the automatic cluster update setting.
         
         :param etag: str (optional)
           etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
@@ -2477,117 +2523,37 @@ class AccountSettingsAPI:
           to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
           request, and pass it with the DELETE request to identify the rule set version you are deleting.
         
-        :returns: :class:`DeletePersonalComputeSettingResponse`
+        :returns: :class:`AutomaticClusterUpdateSetting`
         """
 
         query = {}
         if etag is not None: query['etag'] = etag
         headers = {'Accept': 'application/json', }
 
-        res = self._api.do(
-            'DELETE',
-            f'/api/2.0/accounts/{self._api.account_id}/settings/types/dcp_acct_enable/names/default',
-            query=query,
-            headers=headers)
-        return DeletePersonalComputeSettingResponse.from_dict(res)
+        res = self._api.do('GET',
+                           '/api/2.0/settings/types/automatic_cluster_update/names/default',
+                           query=query,
+                           headers=headers)
+        return AutomaticClusterUpdateSetting.from_dict(res)
 
-    def get_csp_enablement_account_setting(self,
-                                           *,
-                                           etag: Optional[str] = None) -> CspEnablementAccountSetting:
-        """Get the compliance security profile setting for new workspaces.
+    def update(self, allow_missing: bool, setting: AutomaticClusterUpdateSetting,
+               field_mask: str) -> AutomaticClusterUpdateSetting:
+        """Update the automatic cluster update setting.
         
-        Gets the compliance security profile setting for new workspaces.
-        
-        :param etag: str (optional)
-          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
-          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
-          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
-          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
-          request, and pass it with the DELETE request to identify the rule set version you are deleting.
-        
-        :returns: :class:`CspEnablementAccountSetting`
-        """
-
-        query = {}
-        if etag is not None: query['etag'] = etag
-        headers = {'Accept': 'application/json', }
-
-        res = self._api.do(
-            'GET',
-            f'/api/2.0/accounts/{self._api.account_id}/settings/types/shield_csp_enablement_ac/names/default',
-            query=query,
-            headers=headers)
-        return CspEnablementAccountSetting.from_dict(res)
-
-    def get_esm_enablement_account_setting(self,
-                                           *,
-                                           etag: Optional[str] = None) -> EsmEnablementAccountSetting:
-        """Get the enhanced security monitoring setting for new workspaces.
-        
-        Gets the enhanced security monitoring setting for new workspaces.
-        
-        :param etag: str (optional)
-          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
-          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
-          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
-          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
-          request, and pass it with the DELETE request to identify the rule set version you are deleting.
-        
-        :returns: :class:`EsmEnablementAccountSetting`
-        """
-
-        query = {}
-        if etag is not None: query['etag'] = etag
-        headers = {'Accept': 'application/json', }
-
-        res = self._api.do(
-            'GET',
-            f'/api/2.0/accounts/{self._api.account_id}/settings/types/shield_esm_enablement_ac/names/default',
-            query=query,
-            headers=headers)
-        return EsmEnablementAccountSetting.from_dict(res)
-
-    def get_personal_compute_setting(self, *, etag: Optional[str] = None) -> PersonalComputeSetting:
-        """Get Personal Compute setting.
-        
-        Gets the value of the Personal Compute setting.
-        
-        :param etag: str (optional)
-          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
-          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
-          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
-          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
-          request, and pass it with the DELETE request to identify the rule set version you are deleting.
-        
-        :returns: :class:`PersonalComputeSetting`
-        """
-
-        query = {}
-        if etag is not None: query['etag'] = etag
-        headers = {'Accept': 'application/json', }
-
-        res = self._api.do(
-            'GET',
-            f'/api/2.0/accounts/{self._api.account_id}/settings/types/dcp_acct_enable/names/default',
-            query=query,
-            headers=headers)
-        return PersonalComputeSetting.from_dict(res)
-
-    def update_csp_enablement_account_setting(self, allow_missing: bool, setting: CspEnablementAccountSetting,
-                                              field_mask: str) -> CspEnablementAccountSetting:
-        """Update the compliance security profile setting for new workspaces.
-        
-        Updates the value of the compliance security profile setting for new workspaces.
+        Updates the automatic cluster update setting for the workspace. A fresh etag needs to be provided in
+        `PATCH` requests (as part of the setting field). The etag can be retrieved by making a `GET` request
+        before the `PATCH` request. If the setting is updated concurrently, `PATCH` fails with 409 and the
+        request must be retried by using the fresh etag in the 409 response.
         
         :param allow_missing: bool
           This should always be set to true for Settings API. Added for AIP compliance.
-        :param setting: :class:`CspEnablementAccountSetting`
+        :param setting: :class:`AutomaticClusterUpdateSetting`
         :param field_mask: str
           Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
           setting payload will be updated. The field mask needs to be supplied as single string. To specify
           multiple fields in the field mask, use comma as the separator (no space).
         
-        :returns: :class:`CspEnablementAccountSetting`
+        :returns: :class:`AutomaticClusterUpdateSetting`
         """
         body = {}
         if allow_missing is not None: body['allow_missing'] = allow_missing
@@ -2595,70 +2561,11 @@ class AccountSettingsAPI:
         if setting is not None: body['setting'] = setting.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        res = self._api.do(
-            'PATCH',
-            f'/api/2.0/accounts/{self._api.account_id}/settings/types/shield_csp_enablement_ac/names/default',
-            body=body,
-            headers=headers)
-        return CspEnablementAccountSetting.from_dict(res)
-
-    def update_esm_enablement_account_setting(self, allow_missing: bool, setting: EsmEnablementAccountSetting,
-                                              field_mask: str) -> EsmEnablementAccountSetting:
-        """Update the enhanced security monitoring setting for new workspaces.
-        
-        Updates the value of the enhanced security monitoring setting for new workspaces.
-        
-        :param allow_missing: bool
-          This should always be set to true for Settings API. Added for AIP compliance.
-        :param setting: :class:`EsmEnablementAccountSetting`
-        :param field_mask: str
-          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
-          setting payload will be updated. The field mask needs to be supplied as single string. To specify
-          multiple fields in the field mask, use comma as the separator (no space).
-        
-        :returns: :class:`EsmEnablementAccountSetting`
-        """
-        body = {}
-        if allow_missing is not None: body['allow_missing'] = allow_missing
-        if field_mask is not None: body['field_mask'] = field_mask
-        if setting is not None: body['setting'] = setting.as_dict()
-        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
-        res = self._api.do(
-            'PATCH',
-            f'/api/2.0/accounts/{self._api.account_id}/settings/types/shield_esm_enablement_ac/names/default',
-            body=body,
-            headers=headers)
-        return EsmEnablementAccountSetting.from_dict(res)
-
-    def update_personal_compute_setting(self, allow_missing: bool, setting: PersonalComputeSetting,
-                                        field_mask: str) -> PersonalComputeSetting:
-        """Update Personal Compute setting.
-        
-        Updates the value of the Personal Compute setting.
-        
-        :param allow_missing: bool
-          This should always be set to true for Settings API. Added for AIP compliance.
-        :param setting: :class:`PersonalComputeSetting`
-        :param field_mask: str
-          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
-          setting payload will be updated. The field mask needs to be supplied as single string. To specify
-          multiple fields in the field mask, use comma as the separator (no space).
-        
-        :returns: :class:`PersonalComputeSetting`
-        """
-        body = {}
-        if allow_missing is not None: body['allow_missing'] = allow_missing
-        if field_mask is not None: body['field_mask'] = field_mask
-        if setting is not None: body['setting'] = setting.as_dict()
-        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
-        res = self._api.do(
-            'PATCH',
-            f'/api/2.0/accounts/{self._api.account_id}/settings/types/dcp_acct_enable/names/default',
-            body=body,
-            headers=headers)
-        return PersonalComputeSetting.from_dict(res)
+        res = self._api.do('PATCH',
+                           '/api/2.0/settings/types/automatic_cluster_update/names/default',
+                           body=body,
+                           headers=headers)
+        return AutomaticClusterUpdateSetting.from_dict(res)
 
 
 class CredentialsManagerAPI:
@@ -2695,6 +2602,380 @@ class CredentialsManagerAPI:
                            body=body,
                            headers=headers)
         return ExchangeTokenResponse.from_dict(res)
+
+
+class CspEnablementAPI:
+    """Controls whether to enable the compliance security profile for the current workspace. Enabling it on a
+    workspace is permanent. By default, it is turned off.
+    
+    This settings can NOT be disabled once it is enabled."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def get(self, *, etag: Optional[str] = None) -> CspEnablementSetting:
+        """Get the compliance security profile setting.
+        
+        Gets the compliance security profile setting.
+        
+        :param etag: str (optional)
+          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
+          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
+          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
+          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
+          request, and pass it with the DELETE request to identify the rule set version you are deleting.
+        
+        :returns: :class:`CspEnablementSetting`
+        """
+
+        query = {}
+        if etag is not None: query['etag'] = etag
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do('GET',
+                           '/api/2.0/settings/types/shield_csp_enablement_ws_db/names/default',
+                           query=query,
+                           headers=headers)
+        return CspEnablementSetting.from_dict(res)
+
+    def update(self, allow_missing: bool, setting: CspEnablementSetting,
+               field_mask: str) -> CspEnablementSetting:
+        """Update the compliance security profile setting.
+        
+        Updates the compliance security profile setting for the workspace. A fresh etag needs to be provided
+        in `PATCH` requests (as part of the setting field). The etag can be retrieved by making a `GET`
+        request before the `PATCH` request. If the setting is updated concurrently, `PATCH` fails with 409 and
+        the request must be retried by using the fresh etag in the 409 response.
+        
+        :param allow_missing: bool
+          This should always be set to true for Settings API. Added for AIP compliance.
+        :param setting: :class:`CspEnablementSetting`
+        :param field_mask: str
+          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
+          setting payload will be updated. The field mask needs to be supplied as single string. To specify
+          multiple fields in the field mask, use comma as the separator (no space).
+        
+        :returns: :class:`CspEnablementSetting`
+        """
+        body = {}
+        if allow_missing is not None: body['allow_missing'] = allow_missing
+        if field_mask is not None: body['field_mask'] = field_mask
+        if setting is not None: body['setting'] = setting.as_dict()
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do('PATCH',
+                           '/api/2.0/settings/types/shield_csp_enablement_ws_db/names/default',
+                           body=body,
+                           headers=headers)
+        return CspEnablementSetting.from_dict(res)
+
+
+class CspEnablementAccountAPI:
+    """The compliance security profile settings at the account level control whether to enable it for new
+    workspaces. By default, this account-level setting is disabled for new workspaces. After workspace
+    creation, account admins can enable the compliance security profile individually for each workspace.
+    
+    This settings can be disabled so that new workspaces do not have compliance security profile enabled by
+    default."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def get(self, *, etag: Optional[str] = None) -> CspEnablementAccountSetting:
+        """Get the compliance security profile setting for new workspaces.
+        
+        Gets the compliance security profile setting for new workspaces.
+        
+        :param etag: str (optional)
+          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
+          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
+          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
+          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
+          request, and pass it with the DELETE request to identify the rule set version you are deleting.
+        
+        :returns: :class:`CspEnablementAccountSetting`
+        """
+
+        query = {}
+        if etag is not None: query['etag'] = etag
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do(
+            'GET',
+            f'/api/2.0/accounts/{self._api.account_id}/settings/types/shield_csp_enablement_ac/names/default',
+            query=query,
+            headers=headers)
+        return CspEnablementAccountSetting.from_dict(res)
+
+    def update(self, allow_missing: bool, setting: CspEnablementAccountSetting,
+               field_mask: str) -> CspEnablementAccountSetting:
+        """Update the compliance security profile setting for new workspaces.
+        
+        Updates the value of the compliance security profile setting for new workspaces.
+        
+        :param allow_missing: bool
+          This should always be set to true for Settings API. Added for AIP compliance.
+        :param setting: :class:`CspEnablementAccountSetting`
+        :param field_mask: str
+          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
+          setting payload will be updated. The field mask needs to be supplied as single string. To specify
+          multiple fields in the field mask, use comma as the separator (no space).
+        
+        :returns: :class:`CspEnablementAccountSetting`
+        """
+        body = {}
+        if allow_missing is not None: body['allow_missing'] = allow_missing
+        if field_mask is not None: body['field_mask'] = field_mask
+        if setting is not None: body['setting'] = setting.as_dict()
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do(
+            'PATCH',
+            f'/api/2.0/accounts/{self._api.account_id}/settings/types/shield_csp_enablement_ac/names/default',
+            body=body,
+            headers=headers)
+        return CspEnablementAccountSetting.from_dict(res)
+
+
+class DefaultNamespaceAPI:
+    """The default namespace setting API allows users to configure the default namespace for a Databricks
+    workspace.
+    
+    Through this API, users can retrieve, set, or modify the default namespace used when queries do not
+    reference a fully qualified three-level name. For example, if you use the API to set 'retail_prod' as the
+    default catalog, then a query 'SELECT * FROM myTable' would reference the object
+    'retail_prod.default.myTable' (the schema 'default' is always assumed).
+    
+    This setting requires a restart of clusters and SQL warehouses to take effect. Additionally, the default
+    namespace only applies when using Unity Catalog-enabled compute."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def delete(self, *, etag: Optional[str] = None) -> DeleteDefaultNamespaceSettingResponse:
+        """Delete the default namespace setting.
+        
+        Deletes the default namespace setting for the workspace. A fresh etag needs to be provided in `DELETE`
+        requests (as a query parameter). The etag can be retrieved by making a `GET` request before the
+        `DELETE` request. If the setting is updated/deleted concurrently, `DELETE` fails with 409 and the
+        request must be retried by using the fresh etag in the 409 response.
+        
+        :param etag: str (optional)
+          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
+          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
+          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
+          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
+          request, and pass it with the DELETE request to identify the rule set version you are deleting.
+        
+        :returns: :class:`DeleteDefaultNamespaceSettingResponse`
+        """
+
+        query = {}
+        if etag is not None: query['etag'] = etag
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do('DELETE',
+                           '/api/2.0/settings/types/default_namespace_ws/names/default',
+                           query=query,
+                           headers=headers)
+        return DeleteDefaultNamespaceSettingResponse.from_dict(res)
+
+    def get(self, *, etag: Optional[str] = None) -> DefaultNamespaceSetting:
+        """Get the default namespace setting.
+        
+        Gets the default namespace setting.
+        
+        :param etag: str (optional)
+          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
+          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
+          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
+          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
+          request, and pass it with the DELETE request to identify the rule set version you are deleting.
+        
+        :returns: :class:`DefaultNamespaceSetting`
+        """
+
+        query = {}
+        if etag is not None: query['etag'] = etag
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do('GET',
+                           '/api/2.0/settings/types/default_namespace_ws/names/default',
+                           query=query,
+                           headers=headers)
+        return DefaultNamespaceSetting.from_dict(res)
+
+    def update(self, allow_missing: bool, setting: DefaultNamespaceSetting,
+               field_mask: str) -> DefaultNamespaceSetting:
+        """Update the default namespace setting.
+        
+        Updates the default namespace setting for the workspace. A fresh etag needs to be provided in `PATCH`
+        requests (as part of the setting field). The etag can be retrieved by making a `GET` request before
+        the `PATCH` request. Note that if the setting does not exist, `GET` returns a NOT_FOUND error and the
+        etag is present in the error response, which should be set in the `PATCH` request. If the setting is
+        updated concurrently, `PATCH` fails with 409 and the request must be retried by using the fresh etag
+        in the 409 response.
+        
+        :param allow_missing: bool
+          This should always be set to true for Settings API. Added for AIP compliance.
+        :param setting: :class:`DefaultNamespaceSetting`
+          This represents the setting configuration for the default namespace in the Databricks workspace.
+          Setting the default catalog for the workspace determines the catalog that is used when queries do
+          not reference a fully qualified 3 level name. For example, if the default catalog is set to
+          'retail_prod' then a query 'SELECT * FROM myTable' would reference the object
+          'retail_prod.default.myTable' (the schema 'default' is always assumed). This setting requires a
+          restart of clusters and SQL warehouses to take effect. Additionally, the default namespace only
+          applies when using Unity Catalog-enabled compute.
+        :param field_mask: str
+          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
+          setting payload will be updated. The field mask needs to be supplied as single string. To specify
+          multiple fields in the field mask, use comma as the separator (no space).
+        
+        :returns: :class:`DefaultNamespaceSetting`
+        """
+        body = {}
+        if allow_missing is not None: body['allow_missing'] = allow_missing
+        if field_mask is not None: body['field_mask'] = field_mask
+        if setting is not None: body['setting'] = setting.as_dict()
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do('PATCH',
+                           '/api/2.0/settings/types/default_namespace_ws/names/default',
+                           body=body,
+                           headers=headers)
+        return DefaultNamespaceSetting.from_dict(res)
+
+
+class EsmEnablementAPI:
+    """Controls whether enhanced security monitoring is enabled for the current workspace. If the compliance
+    security profile is enabled, this is automatically enabled. By default, it is disabled. However, if the
+    compliance security profile is enabled, this is automatically enabled.
+    
+    If the compliance security profile is disabled, you can enable or disable this setting and it is not
+    permanent."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def get(self, *, etag: Optional[str] = None) -> EsmEnablementSetting:
+        """Get the enhanced security monitoring setting.
+        
+        Gets the enhanced security monitoring setting.
+        
+        :param etag: str (optional)
+          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
+          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
+          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
+          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
+          request, and pass it with the DELETE request to identify the rule set version you are deleting.
+        
+        :returns: :class:`EsmEnablementSetting`
+        """
+
+        query = {}
+        if etag is not None: query['etag'] = etag
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do('GET',
+                           '/api/2.0/settings/types/shield_esm_enablement_ws_db/names/default',
+                           query=query,
+                           headers=headers)
+        return EsmEnablementSetting.from_dict(res)
+
+    def update(self, allow_missing: bool, setting: EsmEnablementSetting,
+               field_mask: str) -> EsmEnablementSetting:
+        """Update the enhanced security monitoring setting.
+        
+        Updates the enhanced security monitoring setting for the workspace. A fresh etag needs to be provided
+        in `PATCH` requests (as part of the setting field). The etag can be retrieved by making a `GET`
+        request before the `PATCH` request. If the setting is updated concurrently, `PATCH` fails with 409 and
+        the request must be retried by using the fresh etag in the 409 response.
+        
+        :param allow_missing: bool
+          This should always be set to true for Settings API. Added for AIP compliance.
+        :param setting: :class:`EsmEnablementSetting`
+        :param field_mask: str
+          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
+          setting payload will be updated. The field mask needs to be supplied as single string. To specify
+          multiple fields in the field mask, use comma as the separator (no space).
+        
+        :returns: :class:`EsmEnablementSetting`
+        """
+        body = {}
+        if allow_missing is not None: body['allow_missing'] = allow_missing
+        if field_mask is not None: body['field_mask'] = field_mask
+        if setting is not None: body['setting'] = setting.as_dict()
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do('PATCH',
+                           '/api/2.0/settings/types/shield_esm_enablement_ws_db/names/default',
+                           body=body,
+                           headers=headers)
+        return EsmEnablementSetting.from_dict(res)
+
+
+class EsmEnablementAccountAPI:
+    """The enhanced security monitoring setting at the account level controls whether to enable the feature on
+    new workspaces. By default, this account-level setting is disabled for new workspaces. After workspace
+    creation, account admins can enable enhanced security monitoring individually for each workspace."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def get(self, *, etag: Optional[str] = None) -> EsmEnablementAccountSetting:
+        """Get the enhanced security monitoring setting for new workspaces.
+        
+        Gets the enhanced security monitoring setting for new workspaces.
+        
+        :param etag: str (optional)
+          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
+          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
+          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
+          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
+          request, and pass it with the DELETE request to identify the rule set version you are deleting.
+        
+        :returns: :class:`EsmEnablementAccountSetting`
+        """
+
+        query = {}
+        if etag is not None: query['etag'] = etag
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do(
+            'GET',
+            f'/api/2.0/accounts/{self._api.account_id}/settings/types/shield_esm_enablement_ac/names/default',
+            query=query,
+            headers=headers)
+        return EsmEnablementAccountSetting.from_dict(res)
+
+    def update(self, allow_missing: bool, setting: EsmEnablementAccountSetting,
+               field_mask: str) -> EsmEnablementAccountSetting:
+        """Update the enhanced security monitoring setting for new workspaces.
+        
+        Updates the value of the enhanced security monitoring setting for new workspaces.
+        
+        :param allow_missing: bool
+          This should always be set to true for Settings API. Added for AIP compliance.
+        :param setting: :class:`EsmEnablementAccountSetting`
+        :param field_mask: str
+          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
+          setting payload will be updated. The field mask needs to be supplied as single string. To specify
+          multiple fields in the field mask, use comma as the separator (no space).
+        
+        :returns: :class:`EsmEnablementAccountSetting`
+        """
+        body = {}
+        if allow_missing is not None: body['allow_missing'] = allow_missing
+        if field_mask is not None: body['field_mask'] = field_mask
+        if setting is not None: body['setting'] = setting.as_dict()
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do(
+            'PATCH',
+            f'/api/2.0/accounts/{self._api.account_id}/settings/types/shield_esm_enablement_ac/names/default',
+            body=body,
+            headers=headers)
+        return EsmEnablementAccountSetting.from_dict(res)
 
 
 class IpAccessListsAPI:
@@ -2901,12 +3182,7 @@ class IpAccessListsAPI:
 
 class NetworkConnectivityAPI:
     """These APIs provide configurations for the network connectivity of your workspaces for serverless compute
-    resources. This API provides stable subnets for your workspace so that you can configure your firewalls on
-    your Azure Storage accounts to allow access from Databricks. You can also use the API to provision private
-    endpoints for Databricks to privately connect serverless compute resources to your Azure resources using
-    Azure Private Link. See [configure serverless secure connectivity].
-    
-    [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security"""
+    resources."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -2915,25 +3191,13 @@ class NetworkConnectivityAPI:
                                                   region: str) -> NetworkConnectivityConfiguration:
         """Create a network connectivity configuration.
         
-        Creates a network connectivity configuration (NCC), which provides stable Azure service subnets when
-        accessing your Azure Storage accounts. You can also use a network connectivity configuration to create
-        Databricks-managed private endpoints so that Databricks serverless compute resources privately access
-        your resources.
-        
-        **IMPORTANT**: After you create the network connectivity configuration, you must assign one or more
-        workspaces to the new network connectivity configuration. You can share one network connectivity
-        configuration with multiple workspaces from the same Azure region within the same Databricks account.
-        See [configure serverless secure connectivity].
-        
-        [configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security
-        
         :param name: str
           The name of the network connectivity configuration. The name can contain alphanumeric characters,
           hyphens, and underscores. The length must be between 3 and 30 characters. The name must match the
           regular expression `^[0-9a-zA-Z-_]{3,30}$`.
         :param region: str
-          The Azure region for this network connectivity configuration. Only workspaces in the same Azure
-          region can be attached to this network connectivity configuration.
+          The region for the network connectivity configuration. Only workspaces in the same region can be
+          attached to the network connectivity configuration.
         
         :returns: :class:`NetworkConnectivityConfiguration`
         """
@@ -3135,30 +3399,22 @@ class NetworkConnectivityAPI:
             query['page_token'] = json['next_page_token']
 
 
-class SettingsAPI:
-    """The default namespace setting API allows users to configure the default namespace for a Databricks
-    workspace.
+class PersonalComputeAPI:
+    """The Personal Compute enablement setting lets you control which users can use the Personal Compute default
+    policy to create compute resources. By default all users in all workspaces have access (ON), but you can
+    change the setting to instead let individual workspaces configure access control (DELEGATE).
     
-    Through this API, users can retrieve, set, or modify the default namespace used when queries do not
-    reference a fully qualified three-level name. For example, if you use the API to set 'retail_prod' as the
-    default catalog, then a query 'SELECT * FROM myTable' would reference the object
-    'retail_prod.default.myTable' (the schema 'default' is always assumed).
-    
-    This setting requires a restart of clusters and SQL warehouses to take effect. Additionally, the default
-    namespace only applies when using Unity Catalog-enabled compute."""
+    There is only one instance of this setting per account. Since this setting has a default value, this
+    setting is present on all accounts even though it's never set on a given account. Deletion reverts the
+    value of the setting back to the default value."""
 
     def __init__(self, api_client):
         self._api = api_client
 
-    def delete_default_namespace_setting(self,
-                                         *,
-                                         etag: Optional[str] = None) -> DeleteDefaultNamespaceSettingResponse:
-        """Delete the default namespace setting.
+    def delete(self, *, etag: Optional[str] = None) -> DeletePersonalComputeSettingResponse:
+        """Delete Personal Compute setting.
         
-        Deletes the default namespace setting for the workspace. A fresh etag needs to be provided in `DELETE`
-        requests (as a query parameter). The etag can be retrieved by making a `GET` request before the
-        `DELETE` request. If the setting is updated/deleted concurrently, `DELETE` fails with 409 and the
-        request must be retried by using the fresh etag in the 409 response.
+        Reverts back the Personal Compute setting value to default (ON)
         
         :param etag: str (optional)
           etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
@@ -3167,23 +3423,91 @@ class SettingsAPI:
           to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
           request, and pass it with the DELETE request to identify the rule set version you are deleting.
         
-        :returns: :class:`DeleteDefaultNamespaceSettingResponse`
+        :returns: :class:`DeletePersonalComputeSettingResponse`
         """
 
         query = {}
         if etag is not None: query['etag'] = etag
         headers = {'Accept': 'application/json', }
 
-        res = self._api.do('DELETE',
-                           '/api/2.0/settings/types/default_namespace_ws/names/default',
-                           query=query,
-                           headers=headers)
-        return DeleteDefaultNamespaceSettingResponse.from_dict(res)
+        res = self._api.do(
+            'DELETE',
+            f'/api/2.0/accounts/{self._api.account_id}/settings/types/dcp_acct_enable/names/default',
+            query=query,
+            headers=headers)
+        return DeletePersonalComputeSettingResponse.from_dict(res)
 
-    def delete_restrict_workspace_admins_setting(self,
-                                                 *,
-                                                 etag: Optional[str] = None
-                                                 ) -> DeleteRestrictWorkspaceAdminsSettingResponse:
+    def get(self, *, etag: Optional[str] = None) -> PersonalComputeSetting:
+        """Get Personal Compute setting.
+        
+        Gets the value of the Personal Compute setting.
+        
+        :param etag: str (optional)
+          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
+          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
+          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
+          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
+          request, and pass it with the DELETE request to identify the rule set version you are deleting.
+        
+        :returns: :class:`PersonalComputeSetting`
+        """
+
+        query = {}
+        if etag is not None: query['etag'] = etag
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do(
+            'GET',
+            f'/api/2.0/accounts/{self._api.account_id}/settings/types/dcp_acct_enable/names/default',
+            query=query,
+            headers=headers)
+        return PersonalComputeSetting.from_dict(res)
+
+    def update(self, allow_missing: bool, setting: PersonalComputeSetting,
+               field_mask: str) -> PersonalComputeSetting:
+        """Update Personal Compute setting.
+        
+        Updates the value of the Personal Compute setting.
+        
+        :param allow_missing: bool
+          This should always be set to true for Settings API. Added for AIP compliance.
+        :param setting: :class:`PersonalComputeSetting`
+        :param field_mask: str
+          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
+          setting payload will be updated. The field mask needs to be supplied as single string. To specify
+          multiple fields in the field mask, use comma as the separator (no space).
+        
+        :returns: :class:`PersonalComputeSetting`
+        """
+        body = {}
+        if allow_missing is not None: body['allow_missing'] = allow_missing
+        if field_mask is not None: body['field_mask'] = field_mask
+        if setting is not None: body['setting'] = setting.as_dict()
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do(
+            'PATCH',
+            f'/api/2.0/accounts/{self._api.account_id}/settings/types/dcp_acct_enable/names/default',
+            body=body,
+            headers=headers)
+        return PersonalComputeSetting.from_dict(res)
+
+
+class RestrictWorkspaceAdminsAPI:
+    """The Restrict Workspace Admins setting lets you control the capabilities of workspace admins. With the
+    setting status set to ALLOW_ALL, workspace admins can create service principal personal access tokens on
+    behalf of any service principal in their workspace. Workspace admins can also change a job owner to any
+    user in their workspace. And they can change the job run_as setting to any user in their workspace or to a
+    service principal on which they have the Service Principal User role. With the setting status set to
+    RESTRICT_TOKENS_AND_JOB_RUN_AS, workspace admins can only create personal access tokens on behalf of
+    service principals they have the Service Principal User role on. They can also only change a job owner to
+    themselves. And they can change the job run_as setting to themselves or to a service principal on which
+    they have the Service Principal User role."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def delete(self, *, etag: Optional[str] = None) -> DeleteRestrictWorkspaceAdminsSettingResponse:
         """Delete the restrict workspace admins setting.
         
         Reverts the restrict workspace admins setting status for the workspace. A fresh etag needs to be
@@ -3211,111 +3535,7 @@ class SettingsAPI:
                            headers=headers)
         return DeleteRestrictWorkspaceAdminsSettingResponse.from_dict(res)
 
-    def get_automatic_cluster_update_setting(self,
-                                             *,
-                                             etag: Optional[str] = None) -> AutomaticClusterUpdateSetting:
-        """Get the automatic cluster update setting.
-        
-        Gets the automatic cluster update setting.
-        
-        :param etag: str (optional)
-          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
-          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
-          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
-          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
-          request, and pass it with the DELETE request to identify the rule set version you are deleting.
-        
-        :returns: :class:`AutomaticClusterUpdateSetting`
-        """
-
-        query = {}
-        if etag is not None: query['etag'] = etag
-        headers = {'Accept': 'application/json', }
-
-        res = self._api.do('GET',
-                           '/api/2.0/settings/types/automatic_cluster_update/names/default',
-                           query=query,
-                           headers=headers)
-        return AutomaticClusterUpdateSetting.from_dict(res)
-
-    def get_csp_enablement_setting(self, *, etag: Optional[str] = None) -> CspEnablementSetting:
-        """Get the compliance security profile setting.
-        
-        Gets the compliance security profile setting.
-        
-        :param etag: str (optional)
-          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
-          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
-          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
-          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
-          request, and pass it with the DELETE request to identify the rule set version you are deleting.
-        
-        :returns: :class:`CspEnablementSetting`
-        """
-
-        query = {}
-        if etag is not None: query['etag'] = etag
-        headers = {'Accept': 'application/json', }
-
-        res = self._api.do('GET',
-                           '/api/2.0/settings/types/shield_csp_enablement_ws_db/names/default',
-                           query=query,
-                           headers=headers)
-        return CspEnablementSetting.from_dict(res)
-
-    def get_default_namespace_setting(self, *, etag: Optional[str] = None) -> DefaultNamespaceSetting:
-        """Get the default namespace setting.
-        
-        Gets the default namespace setting.
-        
-        :param etag: str (optional)
-          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
-          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
-          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
-          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
-          request, and pass it with the DELETE request to identify the rule set version you are deleting.
-        
-        :returns: :class:`DefaultNamespaceSetting`
-        """
-
-        query = {}
-        if etag is not None: query['etag'] = etag
-        headers = {'Accept': 'application/json', }
-
-        res = self._api.do('GET',
-                           '/api/2.0/settings/types/default_namespace_ws/names/default',
-                           query=query,
-                           headers=headers)
-        return DefaultNamespaceSetting.from_dict(res)
-
-    def get_esm_enablement_setting(self, *, etag: Optional[str] = None) -> EsmEnablementSetting:
-        """Get the enhanced security monitoring setting.
-        
-        Gets the enhanced security monitoring setting.
-        
-        :param etag: str (optional)
-          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
-          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
-          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
-          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
-          request, and pass it with the DELETE request to identify the rule set version you are deleting.
-        
-        :returns: :class:`EsmEnablementSetting`
-        """
-
-        query = {}
-        if etag is not None: query['etag'] = etag
-        headers = {'Accept': 'application/json', }
-
-        res = self._api.do('GET',
-                           '/api/2.0/settings/types/shield_esm_enablement_ws_db/names/default',
-                           query=query,
-                           headers=headers)
-        return EsmEnablementSetting.from_dict(res)
-
-    def get_restrict_workspace_admins_setting(self,
-                                              *,
-                                              etag: Optional[str] = None) -> RestrictWorkspaceAdminsSetting:
+    def get(self, *, etag: Optional[str] = None) -> RestrictWorkspaceAdminsSetting:
         """Get the restrict workspace admins setting.
         
         Gets the restrict workspace admins setting.
@@ -3340,143 +3560,8 @@ class SettingsAPI:
                            headers=headers)
         return RestrictWorkspaceAdminsSetting.from_dict(res)
 
-    def update_automatic_cluster_update_setting(self, allow_missing: bool,
-                                                setting: AutomaticClusterUpdateSetting,
-                                                field_mask: str) -> AutomaticClusterUpdateSetting:
-        """Update the automatic cluster update setting.
-        
-        Updates the automatic cluster update setting for the workspace. A fresh etag needs to be provided in
-        `PATCH` requests (as part of the setting field). The etag can be retrieved by making a `GET` request
-        before the `PATCH` request. If the setting is updated concurrently, `PATCH` fails with 409 and the
-        request must be retried by using the fresh etag in the 409 response.
-        
-        :param allow_missing: bool
-          This should always be set to true for Settings API. Added for AIP compliance.
-        :param setting: :class:`AutomaticClusterUpdateSetting`
-        :param field_mask: str
-          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
-          setting payload will be updated. The field mask needs to be supplied as single string. To specify
-          multiple fields in the field mask, use comma as the separator (no space).
-        
-        :returns: :class:`AutomaticClusterUpdateSetting`
-        """
-        body = {}
-        if allow_missing is not None: body['allow_missing'] = allow_missing
-        if field_mask is not None: body['field_mask'] = field_mask
-        if setting is not None: body['setting'] = setting.as_dict()
-        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
-        res = self._api.do('PATCH',
-                           '/api/2.0/settings/types/automatic_cluster_update/names/default',
-                           body=body,
-                           headers=headers)
-        return AutomaticClusterUpdateSetting.from_dict(res)
-
-    def update_csp_enablement_setting(self, allow_missing: bool, setting: CspEnablementSetting,
-                                      field_mask: str) -> CspEnablementSetting:
-        """Update the compliance security profile setting.
-        
-        Updates the compliance security profile setting for the workspace. A fresh etag needs to be provided
-        in `PATCH` requests (as part of the setting field). The etag can be retrieved by making a `GET`
-        request before the `PATCH` request. If the setting is updated concurrently, `PATCH` fails with 409 and
-        the request must be retried by using the fresh etag in the 409 response.
-        
-        :param allow_missing: bool
-          This should always be set to true for Settings API. Added for AIP compliance.
-        :param setting: :class:`CspEnablementSetting`
-        :param field_mask: str
-          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
-          setting payload will be updated. The field mask needs to be supplied as single string. To specify
-          multiple fields in the field mask, use comma as the separator (no space).
-        
-        :returns: :class:`CspEnablementSetting`
-        """
-        body = {}
-        if allow_missing is not None: body['allow_missing'] = allow_missing
-        if field_mask is not None: body['field_mask'] = field_mask
-        if setting is not None: body['setting'] = setting.as_dict()
-        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
-        res = self._api.do('PATCH',
-                           '/api/2.0/settings/types/shield_csp_enablement_ws_db/names/default',
-                           body=body,
-                           headers=headers)
-        return CspEnablementSetting.from_dict(res)
-
-    def update_default_namespace_setting(self, allow_missing: bool, setting: DefaultNamespaceSetting,
-                                         field_mask: str) -> DefaultNamespaceSetting:
-        """Update the default namespace setting.
-        
-        Updates the default namespace setting for the workspace. A fresh etag needs to be provided in `PATCH`
-        requests (as part of the setting field). The etag can be retrieved by making a `GET` request before
-        the `PATCH` request. Note that if the setting does not exist, `GET` returns a NOT_FOUND error and the
-        etag is present in the error response, which should be set in the `PATCH` request. If the setting is
-        updated concurrently, `PATCH` fails with 409 and the request must be retried by using the fresh etag
-        in the 409 response.
-        
-        :param allow_missing: bool
-          This should always be set to true for Settings API. Added for AIP compliance.
-        :param setting: :class:`DefaultNamespaceSetting`
-          This represents the setting configuration for the default namespace in the Databricks workspace.
-          Setting the default catalog for the workspace determines the catalog that is used when queries do
-          not reference a fully qualified 3 level name. For example, if the default catalog is set to
-          'retail_prod' then a query 'SELECT * FROM myTable' would reference the object
-          'retail_prod.default.myTable' (the schema 'default' is always assumed). This setting requires a
-          restart of clusters and SQL warehouses to take effect. Additionally, the default namespace only
-          applies when using Unity Catalog-enabled compute.
-        :param field_mask: str
-          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
-          setting payload will be updated. The field mask needs to be supplied as single string. To specify
-          multiple fields in the field mask, use comma as the separator (no space).
-        
-        :returns: :class:`DefaultNamespaceSetting`
-        """
-        body = {}
-        if allow_missing is not None: body['allow_missing'] = allow_missing
-        if field_mask is not None: body['field_mask'] = field_mask
-        if setting is not None: body['setting'] = setting.as_dict()
-        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
-        res = self._api.do('PATCH',
-                           '/api/2.0/settings/types/default_namespace_ws/names/default',
-                           body=body,
-                           headers=headers)
-        return DefaultNamespaceSetting.from_dict(res)
-
-    def update_esm_enablement_setting(self, allow_missing: bool, setting: EsmEnablementSetting,
-                                      field_mask: str) -> EsmEnablementSetting:
-        """Update the enhanced security monitoring setting.
-        
-        Updates the enhanced security monitoring setting for the workspace. A fresh etag needs to be provided
-        in `PATCH` requests (as part of the setting field). The etag can be retrieved by making a `GET`
-        request before the `PATCH` request. If the setting is updated concurrently, `PATCH` fails with 409 and
-        the request must be retried by using the fresh etag in the 409 response.
-        
-        :param allow_missing: bool
-          This should always be set to true for Settings API. Added for AIP compliance.
-        :param setting: :class:`EsmEnablementSetting`
-        :param field_mask: str
-          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
-          setting payload will be updated. The field mask needs to be supplied as single string. To specify
-          multiple fields in the field mask, use comma as the separator (no space).
-        
-        :returns: :class:`EsmEnablementSetting`
-        """
-        body = {}
-        if allow_missing is not None: body['allow_missing'] = allow_missing
-        if field_mask is not None: body['field_mask'] = field_mask
-        if setting is not None: body['setting'] = setting.as_dict()
-        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
-        res = self._api.do('PATCH',
-                           '/api/2.0/settings/types/shield_esm_enablement_ws_db/names/default',
-                           body=body,
-                           headers=headers)
-        return EsmEnablementSetting.from_dict(res)
-
-    def update_restrict_workspace_admins_setting(self, allow_missing: bool,
-                                                 setting: RestrictWorkspaceAdminsSetting,
-                                                 field_mask: str) -> RestrictWorkspaceAdminsSetting:
+    def update(self, allow_missing: bool, setting: RestrictWorkspaceAdminsSetting,
+               field_mask: str) -> RestrictWorkspaceAdminsSetting:
         """Update the restrict workspace admins setting.
         
         Updates the restrict workspace admins setting for the workspace. A fresh etag needs to be provided in
@@ -3505,6 +3590,44 @@ class SettingsAPI:
                            body=body,
                            headers=headers)
         return RestrictWorkspaceAdminsSetting.from_dict(res)
+
+
+class SettingsAPI:
+    """Workspace Settings API allows users to manage settings at the workspace level."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+        self._automatic_cluster_update = AutomaticClusterUpdateAPI(self._api)
+        self._csp_enablement = CspEnablementAPI(self._api)
+        self._default_namespace = DefaultNamespaceAPI(self._api)
+        self._esm_enablement = EsmEnablementAPI(self._api)
+        self._restrict_workspace_admins = RestrictWorkspaceAdminsAPI(self._api)
+
+    @property
+    def automatic_cluster_update(self) -> AutomaticClusterUpdateAPI:
+        """Controls whether automatic cluster update is enabled for the current workspace."""
+        return self._automatic_cluster_update
+
+    @property
+    def csp_enablement(self) -> CspEnablementAPI:
+        """Controls whether to enable the compliance security profile for the current workspace."""
+        return self._csp_enablement
+
+    @property
+    def default_namespace(self) -> DefaultNamespaceAPI:
+        """The default namespace setting API allows users to configure the default namespace for a Databricks workspace."""
+        return self._default_namespace
+
+    @property
+    def esm_enablement(self) -> EsmEnablementAPI:
+        """Controls whether enhanced security monitoring is enabled for the current workspace."""
+        return self._esm_enablement
+
+    @property
+    def restrict_workspace_admins(self) -> RestrictWorkspaceAdminsAPI:
+        """The Restrict Workspace Admins setting lets you control the capabilities of workspace admins."""
+        return self._restrict_workspace_admins
 
 
 class TokenManagementAPI:

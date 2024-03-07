@@ -101,7 +101,7 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Descriptio
 {{- end -}}
 
 {{range .Services}}
-class {{.Name}}API:{{if .Description}}
+class {{.PascalName}}API:{{if .Description}}
     """{{.Comment "    " 110}}"""
     {{end}}
     def __init__(self, api_client):
