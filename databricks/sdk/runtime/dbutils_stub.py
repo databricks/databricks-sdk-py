@@ -288,7 +288,7 @@ class dbutils:
             ...
 
         @staticmethod
-        def getArgument(name: str, defaultValue: typing.Optional[str] = None) -> str | None:
+        def getArgument(name: str, defaultValue: typing.Optional[str] = None) -> typing.Optional[str]:
             """Returns the current value of a widget with give name.
             :param name: Name of the argument to be accessed
             :param defaultValue: (Deprecated) default value
