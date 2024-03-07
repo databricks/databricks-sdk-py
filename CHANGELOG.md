@@ -4,20 +4,15 @@
 
 ### New Features and Improvements
 * Fix get_workspace_client in GCP ([#532](https://github.com/databricks/databricks-sdk-py/pull/532)).
-* Add Files API docs to the SDK Documentation ([#556](https://github.com/databricks/databricks-sdk-py/pull/556)).
-* Add back enums to docs ([#557](https://github.com/databricks/databricks-sdk-py/pull/557)).
-* Sort index pages by name in docs ([#560](https://github.com/databricks/databricks-sdk-py/pull/560)).
-* Distinguish between empty types and fields that can take any value ([#561](https://github.com/databricks/databricks-sdk-py/pull/561)).
-* Support subservices ([#559](https://github.com/databricks/databricks-sdk-py/pull/559)).
 * Use all-apis scope with external-browser ([#563](https://github.com/databricks/databricks-sdk-py/pull/563)).
 * Make a best effort attempt to initialise all Databricks globals ([#562](https://github.com/databricks/databricks-sdk-py/pull/562)).
-* New example to list compute resource for SUBMIT_RUN job runs ([#572](https://github.com/databricks/databricks-sdk-py/pull/572)).
+* Note: Backwards incompatible changes - Settings are now nested, please see the API changes below.
 
-### Internal Changes
-* Added tokei.rs badge ([#567](https://github.com/databricks/databricks-sdk-py/pull/567)).
-* Update SDK to latest OpenAPI spec ([#576](https://github.com/databricks/databricks-sdk-py/pull/576)).
-* Add integration tests for Files API ([#552](https://github.com/databricks/databricks-sdk-py/pull/552)).
-* Fix integer deserialization for headers ([#553](https://github.com/databricks/databricks-sdk-py/pull/553)).
+### Documentation
+* Add Files API docs to the SDK Documentation ([#556](https://github.com/databricks/databricks-sdk-py/pull/556)).
+* New example to list compute resource for SUBMIT_RUN job runs ([#572](https://github.com/databricks/databricks-sdk-py/pull/572)).
+* Sort index pages by name in docs ([#560](https://github.com/databricks/databricks-sdk-py/pull/560)).
+* Add back enums to docs ([#557](https://github.com/databricks/databricks-sdk-py/pull/557)).
 
 ### API Changes
 #### Added
@@ -132,6 +127,14 @@ Dataclasses:
 - `planning_phases` field for `databricks.sdk.service.sql.QueryMetrics`.
 - `delta_sync_vector_index_spec` field for `databricks.sdk.service.vectorsearch.VectorIndex`.
 - `direct_access_vector_index_spec` field for `databricks.sdk.service.vectorsearch.VectorIndex`.
+
+### Internal Changes
+* Added tokei.rs badge ([#567](https://github.com/databricks/databricks-sdk-py/pull/567)).
+* Update SDK to latest OpenAPI spec ([#576](https://github.com/databricks/databricks-sdk-py/pull/576)).
+* Add integration tests for Files API ([#552](https://github.com/databricks/databricks-sdk-py/pull/552)).
+* Fix integer deserialization for headers ([#553](https://github.com/databricks/databricks-sdk-py/pull/553)).
+* Support subservices ([#559](https://github.com/databricks/databricks-sdk-py/pull/559)).
+* Distinguish between empty types and fields that can take any value ([#561](https://github.com/databricks/databricks-sdk-py/pull/561)).
 
 OpenAPI SHA: 1026b998b14fba1b8317528f47778240dc4e9a5d, Date: 2024-03-06
 
