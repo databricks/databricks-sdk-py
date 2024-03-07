@@ -6,6 +6,7 @@
 * Fix get_workspace_client in GCP ([#532](https://github.com/databricks/databricks-sdk-py/pull/532)).
 * Use all-apis scope with external-browser ([#563](https://github.com/databricks/databricks-sdk-py/pull/563)).
 * Make a best effort attempt to initialise all Databricks globals ([#562](https://github.com/databricks/databricks-sdk-py/pull/562)).
+* Fixed type issue with widgets.getArgument ([#581](https://github.com/databricks/databricks-sdk-py/pull/581))
 * Note: Backwards incompatible changes - Settings are now nested, please see the API changes below.
 
 ### Documentation
