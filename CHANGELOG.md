@@ -1,5 +1,145 @@
 # Version changelog
 
+## 0.21.0
+
+### New Features and Improvements
+* Fixed get_workspace_client in GCP ([#532](https://github.com/databricks/databricks-sdk-py/pull/532)).
+* Use all-apis scope with external-browser ([#563](https://github.com/databricks/databricks-sdk-py/pull/563)).
+* Make a best effort attempt to initialise all Databricks globals ([#562](https://github.com/databricks/databricks-sdk-py/pull/562)).
+* Fixed type issue with widgets.getArgument ([#581](https://github.com/databricks/databricks-sdk-py/pull/581))
+* Note: Backwards incompatible changes - Settings are now nested, please see the API changes below.
+
+### Documentation
+* Added Files API docs to the SDK Documentation ([#556](https://github.com/databricks/databricks-sdk-py/pull/556)).
+* Added new example to list compute resource for SUBMIT_RUN job runs ([#572](https://github.com/databricks/databricks-sdk-py/pull/572)).
+* Sorted index pages by name in docs ([#560](https://github.com/databricks/databricks-sdk-py/pull/560)).
+* Added back enums to docs ([#557](https://github.com/databricks/databricks-sdk-py/pull/557)).
+
+### API Changes
+#### Added
+Services:
+- [w.permission_migration](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/permission_migration.html) workspace-level service.
+- [w.settings.automatic_cluster_update](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings/automatic_cluster_update.html) workspace-level service.
+- [w.settings.csp_enablement](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings/csp_enablement.html) workspace-level service.
+- [a.settings.csp_enablement_account](https://databricks-sdk-py.readthedocs.io/en/latest/account/settings/csp_enablement_account.html) account-level service.
+- [w.settings.default_namespace](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings/default_namespace.html) workspace-level service.
+- [w.settings.esm_enablement](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings/esm_enablement.html) workspace-level service.
+- [a.settings.esm_enablement_account](https://databricks-sdk-py.readthedocs.io/en/latest/account/settings/esm_enablement_account.html) account-level service.
+- [a.settings.personal_compute](https://databricks-sdk-py.readthedocs.io/en/latest/account/settings/personal_compute.html) account-level service.
+- [w.settings.restrict_workspace_admins](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings/restrict_workspace_admins.html) workspace-level service.
+
+Dataclasses:
+- `databricks.sdk.service.settings.AutomaticClusterUpdateSetting`
+- `databricks.sdk.service.settings.ClusterAutoRestartMessage`
+- `databricks.sdk.service.settings.ClusterAutoRestartMessageEnablementDetails`
+- `databricks.sdk.service.settings.ClusterAutoRestartMessageMaintenanceWindow`
+- `databricks.sdk.service.settings.ClusterAutoRestartMessageMaintenanceWindowDayOfWeek`
+- `databricks.sdk.service.settings.ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule`
+- `databricks.sdk.service.settings.ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency`
+- `databricks.sdk.service.settings.ClusterAutoRestartMessageMaintenanceWindowWindowStartTime`
+- `databricks.sdk.service.settings.ComplianceStandard`
+- `databricks.sdk.service.settings.CspEnablement`
+- `databricks.sdk.service.settings.CspEnablementAccount`
+- `databricks.sdk.service.settings.CspEnablementAccountSetting`
+- `databricks.sdk.service.settings.CspEnablementSetting`
+- `databricks.sdk.service.settings.DeleteDefaultNamespaceRequest`
+- `databricks.sdk.service.settings.DeletePersonalComputeRequest`
+- `databricks.sdk.service.settings.DeleteRestrictWorkspaceAdminRequest`
+- `databricks.sdk.service.settings.EsmEnablement`
+- `databricks.sdk.service.settings.EsmEnablementAccount`
+- `databricks.sdk.service.settings.EsmEnablementAccountSetting`
+- `databricks.sdk.service.settings.EsmEnablementSetting`
+- `databricks.sdk.service.settings.GetAutomaticClusterUpdateRequest`
+- `databricks.sdk.service.settings.GetCspEnablementAccountRequest`
+- `databricks.sdk.service.settings.GetCspEnablementRequest`
+- `databricks.sdk.service.settings.GetDefaultNamespaceRequest`
+- `databricks.sdk.service.settings.GetEsmEnablementAccountRequest`
+- `databricks.sdk.service.settings.GetEsmEnablementRequest`
+- `databricks.sdk.service.settings.GetPersonalComputeRequest`
+- `databricks.sdk.service.settings.GetRestrictWorkspaceAdminRequest`
+- `databricks.sdk.service.settings.NccAwsStableIpRule`
+- `databricks.sdk.service.settings.UpdateAutomaticClusterUpdateSettingRequest`
+- `databricks.sdk.service.settings.UpdateCspEnablementAccountSettingRequest`
+- `databricks.sdk.service.settings.UpdateCspEnablementSettingRequest`
+- `databricks.sdk.service.settings.UpdateEsmEnablementAccountSettingRequest`
+- `databricks.sdk.service.settings.UpdateEsmEnablementSettingRequest`
+- `databricks.sdk.service.vectorsearch.ClusterAutoRestartMessageMaintenanceWindow`
+- `databricks.sdk.service.vectorsearch.ClusterAutoRestartMessageMaintenanceWindowDayOfWeek`
+- `databricks.sdk.service.vectorsearch.ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule`
+- `databricks.sdk.service.vectorsearch.ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency`
+- `databricks.sdk.service.vectorsearch.ClusterAutoRestartMessageMaintenanceWindowWindowStartTime`
+- `databricks.sdk.service.vectorsearch.ComplianceStandard`
+- `databricks.sdk.service.vectorsearch.CspEnablement`
+- `databricks.sdk.service.vectorsearch.CspEnablementAccount`
+- `databricks.sdk.service.vectorsearch.CspEnablementAccountSetting`
+- `databricks.sdk.service.vectorsearch.CspEnablementSetting`
+- `databricks.sdk.service.vectorsearch.DeleteDefaultNamespaceRequest`
+- `databricks.sdk.service.vectorsearch.DeletePersonalComputeRequest`
+- `databricks.sdk.service.vectorsearch.DeleteRestrictWorkspaceAdminRequest`
+- `databricks.sdk.service.vectorsearch.EsmEnablement`
+- `databricks.sdk.service.vectorsearch.EsmEnablementAccount`
+- `databricks.sdk.service.vectorsearch.EsmEnablementAccountSetting`
+- `databricks.sdk.service.vectorsearch.EsmEnablementSetting`
+- `databricks.sdk.service.vectorsearch.GetAutomaticClusterUpdateRequest`
+- `databricks.sdk.service.vectorsearch.GetCspEnablementAccountRequest`
+- `databricks.sdk.service.vectorsearch.GetCspEnablementRequest`
+- `databricks.sdk.service.vectorsearch.GetDefaultNamespaceRequest`
+- `databricks.sdk.service.vectorsearch.GetEsmEnablementAccountRequest`
+- `databricks.sdk.service.vectorsearch.GetEsmEnablementRequest`
+- `databricks.sdk.service.vectorsearch.GetPersonalComputeRequest`
+- `databricks.sdk.service.vectorsearch.GetRestrictWorkspaceAdminRequest`
+- `databricks.sdk.service.vectorsearch.NccAwsStableIpRule`
+- `databricks.sdk.service.vectorsearch.UpdateAutomaticClusterUpdateSettingRequest`
+- `databricks.sdk.service.vectorsearch.UpdateCspEnablementAccountSettingRequest`
+- `databricks.sdk.service.vectorsearch.UpdateCspEnablementSettingRequest`
+- `databricks.sdk.service.vectorsearch.UpdateEsmEnablementAccountSettingRequest`
+- `databricks.sdk.service.vectorsearch.UpdateEsmEnablementSettingRequest`
+- `databricks.sdk.service.iam.PermissionMigrationRequest`
+- `databricks.sdk.service.iam.PermissionMigrationResponse` 
+
+#### Changed
+- `version` field for `databricks.sdk.service.serving.AppManifest` to `databricks.sdk.service.serving.AnyValue` dataclass.
+- `delete_endpoint()` method for [w.vector_search_endpoints](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/vector_search_endpoints.html) workspace-level service with new required argument order.
+- `create_index()` method for [w.vector_search_indexes](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/vector_search_indexes.html) workspace-level service with new required argument order.
+- `delete_data_vector_index()` method for [w.vector_search_indexes](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/vector_search_indexes.html) workspace-level service with new required argument order.
+- `upsert_data_vector_index()` method for [w.vector_search_indexes](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/vector_search_indexes.html) workspace-level service with new required argument order.
+- `endpoint_name` field for `databricks.sdk.service.vectorsearch.CreateVectorIndexRequest` to be required.
+
+#### Removed
+- `delete_personal_compute_setting()` method for [a.account_settings](https://databricks-sdk-py.readthedocs.io/en/latest/account/account_settings.html) account-level service.
+- `get_personal_compute_setting()` method for [a.account_settings](https://databricks-sdk-py.readthedocs.io/en/latest/account/account_settings.html) account-level service.
+- `update_personal_compute_setting()` method for [a.account_settings](https://databricks-sdk-py.readthedocs.io/en/latest/account/account_settings.html) account-level service.
+- `delete_default_namespace_setting()` method for [w.settings](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings.html) workspace-level service.
+- `delete_restrict_workspace_admins_setting()` method for [w.settings](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings.html) workspace-level service.
+- `get_default_namespace_setting()` method for [w.settings](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings.html) workspace-level service.
+- `get_restrict_workspace_admins_setting()` method for [w.settings](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings.html) workspace-level service.
+- `update_default_namespace_setting()` method for [w.settings](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings.html) workspace-level service.
+- `update_restrict_workspace_admins_setting()` method for [w.settings](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings.html) workspace-level service.
+- `databricks.sdk.service.settings.DeleteDefaultNamespaceSettingRequest` dataclass.
+- `databricks.sdk.service.settings.DeletePersonalComputeSettingRequest` dataclass.
+- `databricks.sdk.service.settings.DeleteRestrictWorkspaceAdminsSettingRequest` dataclass.
+- `databricks.sdk.service.settings.GetDefaultNamespaceSettingRequest` dataclass.
+- `databricks.sdk.service.settings.GetPersonalComputeSettingRequest` dataclass.
+- `databricks.sdk.service.settings.GetRestrictWorkspaceAdminsSettingRequest` dataclass.
+- `databricks.sdk.service.vectorsearch.EmbeddingConfig` dataclass.
+- `embedding_config` field for `databricks.sdk.service.vectorsearch.EmbeddingSourceColumn`.
+- `name` field for `databricks.sdk.service.vectorsearch.DeleteDataVectorIndexRequest`.
+- `name` field for `databricks.sdk.service.vectorsearch.DeleteEndpointRequest`.
+- `planning_phases` field for `databricks.sdk.service.sql.QueryMetrics`.
+- `delta_sync_vector_index_spec` field for `databricks.sdk.service.vectorsearch.VectorIndex`.
+- `direct_access_vector_index_spec` field for `databricks.sdk.service.vectorsearch.VectorIndex`.
+
+### Internal Changes
+* Added tokei.rs badge ([#567](https://github.com/databricks/databricks-sdk-py/pull/567)).
+* Update SDK to latest OpenAPI spec ([#576](https://github.com/databricks/databricks-sdk-py/pull/576)).
+* Add integration tests for Files API ([#552](https://github.com/databricks/databricks-sdk-py/pull/552)).
+* Fix integer deserialization for headers ([#553](https://github.com/databricks/databricks-sdk-py/pull/553)).
+* Support subservices ([#559](https://github.com/databricks/databricks-sdk-py/pull/559)).
+* Distinguish between empty types and fields that can take any value ([#561](https://github.com/databricks/databricks-sdk-py/pull/561)).
+
+OpenAPI SHA: 1026b998b14fba1b8317528f47778240dc4e9a5d, Date: 2024-03-06
+
+
 ## 0.20.0
 
 Major Changes:
