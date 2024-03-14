@@ -1,11 +1,10 @@
 import base64
 import json
 import logging
-import threading
 import typing
 from collections import namedtuple
 
-from .core import ApiClient, Config, DatabricksError
+from .core import ApiClient, Config
 from .mixins import compute as compute_ext
 from .mixins import files as dbfs_ext
 from .service import compute, workspace
@@ -191,13 +190,24 @@ class _JobsUtil:
 class RemoteDbUtils:
 
     def __init__(self, config: 'Config' = None):
-        self._config = Config() if not config else config
-        self._client = ApiClient(self._config)
-        self._clusters = compute_ext.ClustersExt(self._client)
-        self._commands = compute.CommandExecutionAPI(self._client)
-        self._lock = threading.Lock()
-        self._ctx = None
+        config = Config() if not config else config
+        api_client = ApiClient(config)
+        clusters = compute_ext.ClustersExt(api_client)
+        command_execution = compute.CommandExecutionAPI(api_client)
 
+        def cluster_id_from_config() -> str:
+            # WorkspaceClient.dbutils is initialized in the constructor,
+            # hence we don't eagerly check for cluster ID. It is completely
+            # normal for WorkspaceClient instances not to use the command
+            # execution proxied calls through a cluster.
+            #
+            # inner function is used not to leak Config as a property and
+            # keep it confined to constructor scope.
+            if not config.cluster_id:
+                raise ValueError(config.wrap_debug_info('cluster_id is required in the configuration'))
+            return config.cluster_id
+
+        self._executor = compute_ext.CommandExecutor(clusters, command_execution, cluster_id_from_config)
         self.fs = _FsUtil(dbfs_ext.DbfsExt(self._client), self.__getattr__)
         self.secrets = _SecretsUtil(workspace.SecretsAPI(self._client))
         self.jobs = _JobsUtil()
@@ -215,111 +225,27 @@ class RemoteDbUtils:
 
         return self._widgets
 
-    @property
-    def _cluster_id(self) -> str:
-        cluster_id = self._config.cluster_id
-        if not cluster_id:
-            message = 'cluster_id is required in the configuration'
-            raise ValueError(self._config.wrap_debug_info(message))
-        return cluster_id
-
-    def _running_command_context(self) -> compute.ContextStatusResponse:
-        if self._ctx:
-            return self._ctx
-        with self._lock:
-            if self._ctx:
-                return self._ctx
-            self._clusters.ensure_cluster_is_running(self._cluster_id)
-            self._ctx = self._commands.create(cluster_id=self._cluster_id,
-                                              language=compute.Language.PYTHON).result()
-        return self._ctx
-
     def __getattr__(self, util) -> '_ProxyUtil':
-        return _ProxyUtil(command_execution=self._commands,
-                          context_factory=self._running_command_context,
-                          cluster_id=self._cluster_id,
-                          name=util)
+        return _ProxyUtil(self._executor, util)
 
 
 class _ProxyUtil:
     """Enables temporary workaround to call remote in-REPL dbutils without having to re-implement them"""
 
-    def __init__(self, *, command_execution: compute.CommandExecutionAPI,
-                 context_factory: typing.Callable[[],
-                                                  compute.ContextStatusResponse], cluster_id: str, name: str):
-        self._commands = command_execution
-        self._cluster_id = cluster_id
-        self._context_factory = context_factory
+    def __init__(self, executor: compute_ext.CommandExecutor, name: str):
+        self._executor = executor
         self._name = name
 
     def __getattr__(self, method: str) -> '_ProxyCall':
-        return _ProxyCall(command_execution=self._commands,
-                          cluster_id=self._cluster_id,
-                          context_factory=self._context_factory,
-                          util=self._name,
-                          method=method)
-
-
-import html
-import re
+        return _ProxyCall(self._executor, self._name, method)
 
 
 class _ProxyCall:
 
-    def __init__(self, *, command_execution: compute.CommandExecutionAPI,
-                 context_factory: typing.Callable[[], compute.ContextStatusResponse], cluster_id: str,
-                 util: str, method: str):
-        self._commands = command_execution
-        self._cluster_id = cluster_id
-        self._context_factory = context_factory
+    def __init__(self, executor: compute_ext.CommandExecutor, util: str, method: str):
+        self._executor = executor
         self._util = util
         self._method = method
-
-    _out_re = re.compile(r'Out\[[\d\s]+]:\s')
-    _tag_re = re.compile(r'<[^>]*>')
-    _exception_re = re.compile(r'.*Exception:\s+(.*)')
-    _execution_error_re = re.compile(
-        r'ExecutionError: ([\s\S]*)\n(StatusCode=[0-9]*)\n(StatusDescription=.*)\n')
-    _error_message_re = re.compile(r'ErrorMessage=(.+)\n')
-    _ascii_escape_re = re.compile(r'(\x9B|\x1B\[)[0-?]*[ -/]*[@-~]')
-
-    def _is_failed(self, results: compute.Results) -> bool:
-        return results.result_type == compute.ResultType.ERROR
-
-    def _text(self, results: compute.Results) -> str:
-        if results.result_type != compute.ResultType.TEXT:
-            return ''
-        return self._out_re.sub("", str(results.data))
-
-    def _raise_if_failed(self, results: compute.Results):
-        if not self._is_failed(results):
-            return
-        raise DatabricksError(self._error_from_results(results))
-
-    def _error_from_results(self, results: compute.Results):
-        if not self._is_failed(results):
-            return
-        if results.cause:
-            _LOG.debug(f'{self._ascii_escape_re.sub("", results.cause)}')
-
-        summary = self._tag_re.sub("", results.summary)
-        summary = html.unescape(summary)
-
-        exception_matches = self._exception_re.findall(summary)
-        if len(exception_matches) == 1:
-            summary = exception_matches[0].replace("; nested exception is:", "")
-            summary = summary.rstrip(" ")
-            return summary
-
-        execution_error_matches = self._execution_error_re.findall(results.cause)
-        if len(execution_error_matches) == 1:
-            return "\n".join(execution_error_matches[0])
-
-        error_message_matches = self._error_message_re.findall(results.cause)
-        if len(error_message_matches) == 1:
-            return error_message_matches[0]
-
-        return summary
 
     def __call__(self, *args, **kwargs):
         raw = json.dumps((args, kwargs))
@@ -327,16 +253,6 @@ class _ProxyCall:
         import json
         (args, kwargs) = json.loads('{raw}')
         result = dbutils.{self._util}.{self._method}(*args, **kwargs)
-        dbutils.notebook.exit(json.dumps(result))
+        print(json.dumps(result))
         '''
-        ctx = self._context_factory()
-        result = self._commands.execute(cluster_id=self._cluster_id,
-                                        language=compute.Language.PYTHON,
-                                        context_id=ctx.id,
-                                        command=code).result()
-        if result.status == compute.CommandStatus.FINISHED:
-            self._raise_if_failed(result.results)
-            raw = result.results.data
-            return json.loads(raw)
-        else:
-            raise Exception(result.results.summary)
+        return self._executor.run(code, result_as_json=True, detect_return=False)

@@ -103,7 +103,8 @@ def dbutils_proxy(mocker):
     from databricks.sdk.service._internal import Wait
     from databricks.sdk.service.compute import (ClusterDetails, CommandStatus,
                                                 CommandStatusResponse, Created,
-                                                Language, Results, State)
+                                                Language, Results, ResultType,
+                                                State)
 
     from .conftest import noop_credentials
 
@@ -114,10 +115,10 @@ def dbutils_proxy(mocker):
 
     def inner(results_data: any, expect_command: str):
         import json
-        command_execute = mocker.patch(
-            'databricks.sdk.service.compute.CommandExecutionAPI.execute',
-            return_value=Wait(lambda **kwargs: CommandStatusResponse(
-                results=Results(data=json.dumps(results_data)), status=CommandStatus.FINISHED)))
+        results = Results(data=json.dumps(results_data), result_type=ResultType.TEXT)
+        command_status_response = CommandStatusResponse(results=results, status=CommandStatus.FINISHED)
+        command_execute = mocker.patch('databricks.sdk.service.compute.CommandExecutionAPI.execute',
+                                       return_value=Wait(lambda **kwargs: command_status_response))
 
         def assertions():
             cluster_get.assert_called_with('x')
@@ -135,12 +136,10 @@ def dbutils_proxy(mocker):
 
 
 def test_fs_mount(dbutils_proxy):
-    command = ('\n'
-               '        import json\n'
-               '        (args, kwargs) = json.loads(\'[["s3://foo", "bar"], {}]\')\n'
-               '        result = dbutils.fs.mount(*args, **kwargs)\n'
-               '        dbutils.notebook.exit(json.dumps(result))\n'
-               '        ')
+    command = ('import json\n'
+               '(args, kwargs) = json.loads(\'[["s3://foo", "bar"], {}]\')\n'
+               'result = dbutils.fs.mount(*args, **kwargs)\n'
+               'print(json.dumps(result))')
     dbutils, assertions = dbutils_proxy({}, command)
 
     dbutils.fs.mount('s3://foo', 'bar')
@@ -149,12 +148,10 @@ def test_fs_mount(dbutils_proxy):
 
 
 def test_fs_update_mount(dbutils_proxy):
-    command = ('\n'
-               '        import json\n'
-               '        (args, kwargs) = json.loads(\'[["s3://foo2", "bar"], {}]\')\n'
-               '        result = dbutils.fs.updateMount(*args, **kwargs)\n'
-               '        dbutils.notebook.exit(json.dumps(result))\n'
-               '        ')
+    command = ('import json\n'
+               '(args, kwargs) = json.loads(\'[["s3://foo2", "bar"], {}]\')\n'
+               'result = dbutils.fs.updateMount(*args, **kwargs)\n'
+               'print(json.dumps(result))')
     dbutils, assertions = dbutils_proxy({}, command)
 
     dbutils.fs.updateMount('s3://foo2', 'bar')
@@ -163,12 +160,10 @@ def test_fs_update_mount(dbutils_proxy):
 
 
 def test_fs_mounts(dbutils_proxy):
-    command = ('\n'
-               '        import json\n'
-               "        (args, kwargs) = json.loads('[[], {}]')\n"
-               '        result = dbutils.fs.mounts(*args, **kwargs)\n'
-               '        dbutils.notebook.exit(json.dumps(result))\n'
-               '        ')
+    command = ('import json\n'
+               "(args, kwargs) = json.loads('[[], {}]')\n"
+               'result = dbutils.fs.mounts(*args, **kwargs)\n'
+               'print(json.dumps(result))')
     dbutils, assertions = dbutils_proxy([('a', 'b', 'c'), ('d', 'e', 'f'), ], command)
 
     mounts = dbutils.fs.mounts()
@@ -181,12 +176,10 @@ def test_fs_mounts(dbutils_proxy):
 
 
 def test_any_proxy(dbutils_proxy):
-    command = ('\n'
-               '        import json\n'
-               '        (args, kwargs) = json.loads(\'[["a"], {}]\')\n'
-               '        result = dbutils.notebook.exit(*args, **kwargs)\n'
-               '        dbutils.notebook.exit(json.dumps(result))\n'
-               '        ')
+    command = ('import json\n'
+               '(args, kwargs) = json.loads(\'[["a"], {}]\')\n'
+               'result = dbutils.notebook.exit(*args, **kwargs)\n'
+               'print(json.dumps(result))')
     dbutils, assertions = dbutils_proxy('a', command)
 
     param = dbutils.notebook.exit("a")
