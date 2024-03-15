@@ -1,5 +1,20 @@
 # Version changelog
 
+## 0.22.0
+
+* Fix typos in doc string for select_spark_version ([#575](https://github.com/databricks/databricks-sdk-py/pull/575)).
+
+API Changes:
+
+ * Changed `notifications` field for `databricks.sdk.service.catalog.CreateMonitor`, `databricks.sdk.service.catalog.MonitorInfo`, and `databricks.sdk.service.catalog.UpdateMonitor` to `databricks.sdk.service.catalog.MonitorNotificationsConfig` dataclass.
+ * Added `browse_only` field for `databricks.sdk.service.catalog.ExternalLocationInfo`, `databricks.sdk.service.catalog.FunctionInfo`, `databricks.sdk.service.catalog.ModelVersionInfo`, `databricks.sdk.service.catalog.RegisteredModelInfo`, `databricks.sdk.service.catalog.SchemaInfo`, `databricks.sdk.service.catalog.TableInfo`, and `databricks.sdk.service.catalog.VolumeInfo`.
+ * Added `include_browse` field for `databricks.sdk.service.catalog.GetCatalogRequest`,  `databricks.sdk.service.catalog.GetExternalLocationRequest`,  `databricks.sdk.service.catalog.GetFunctionRequest`,  `databricks.sdk.service.catalog.GetModelVersionRequest`,  `databricks.sdk.service.catalog.GetRegisteredModelRequest`,  `databricks.sdk.service.catalog.GetSchemaRequest`,  `databricks.sdk.service.catalog.GetTableRequest`,  `databricks.sdk.service.catalog.ListExternalLocationsRequest`,  `databricks.sdk.service.catalog.ListFunctionsRequest`,  `databricks.sdk.service.catalog.ListModelVersionsRequest`,  `databricks.sdk.service.catalog.ListRegisteredModelsRequest`,  `databricks.sdk.service.catalog.ListSchemasRequest`,  `databricks.sdk.service.catalog.ListTablesRequest`, `databricks.sdk.service.catalog.ListVolumesRequest`, and `databricks.sdk.service.catalog.ReadVolumeRequest`.
+ * Changed `publish()` method for [w.lakeview](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/lakeview.html) workspace-level service to return `databricks.sdk.service.dashboards.PublishedDashboard` dataclass.
+ * Added `create()`, `get()`, `get_published()`, `trash()`, and `update()` methods for [w.lakeview](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/lakeview.html) workspace-level service.
+ * Added `databricks.sdk.service.dashboards.CreateDashboardRequest`, `databricks.sdk.service.dashboards.Dashboard`, `databricks.sdk.service.dashboards.GetLakeviewRequest`, `databricks.sdk.service.dashboards.GetPublishedRequest`, `databricks.sdk.service.dashboards.LifecycleState`, `databricks.sdk.service.dashboards.PublishedDashboard`, `databricks.sdk.service.dashboards.TrashRequest`, and `databricks.sdk.service.dashboards.UpdateDashboardRequest` dataclasses.
+
+OpenAPI SHA: c84caf9e5ef531cc0b1ddd0a76970d9a8b664e32, Date: 2024-03-15
+
 ## 0.21.0
 
 ### New Features and Improvements
