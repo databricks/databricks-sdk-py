@@ -220,7 +220,7 @@ class AlertQuery:
     """The timestamp at which this query was last updated."""
 
     user_id: Optional[int] = None
-    """The ID of the user who created this query."""
+    """The ID of the user who owns the query."""
 
     def as_dict(self) -> dict:
         """Serializes the AlertQuery into a dictionary suitable for use as a JSON request body."""
@@ -709,7 +709,7 @@ class Dashboard:
     user: Optional[User] = None
 
     user_id: Optional[int] = None
-    """The ID of the user that created and owns this dashboard."""
+    """The ID of the user who owns the dashboard."""
 
     widgets: Optional[List[Widget]] = None
 
@@ -2304,7 +2304,7 @@ class Query:
     user: Optional[User] = None
 
     user_id: Optional[int] = None
-    """The ID of the user who created this query."""
+    """The ID of the user who owns the query."""
 
     visualizations: Optional[List[Visualization]] = None
 

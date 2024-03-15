@@ -191,6 +191,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: CAN_MANAGE_STAGING_VERSIONS
       :value: "CAN_MANAGE_STAGING_VERSIONS"
 
+   .. py:attribute:: CAN_QUERY
+      :value: "CAN_QUERY"
+
    .. py:attribute:: CAN_READ
       :value: "CAN_READ"
 

@@ -3271,10 +3271,10 @@ class NetworkConnectivityAPI:
                                      private_endpoint_rule_id: str) -> NccAzurePrivateEndpointRule:
         """Delete a private endpoint rule.
         
-        Initiates deleting a private endpoint rule. The private endpoint will be deactivated and will be
-        purged after seven days of deactivation. When a private endpoint is in deactivated state,
-        `deactivated` field is set to `true` and the private endpoint is not available to your serverless
-        compute resources.
+        Initiates deleting a private endpoint rule. If the connection state is PENDING or EXPIRED, the private
+        endpoint is immediately deleted. Otherwise, the private endpoint is deactivated and will be deleted
+        after seven days of deactivation. When a private endpoint is deactivated, the `deactivated` field is
+        set to `true` and the private endpoint is not available to your serverless compute resources.
         
         :param network_connectivity_config_id: str
           Your Network Connectvity Configuration ID.

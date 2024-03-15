@@ -130,9 +130,8 @@
         
         Gets an array of storage credentials (as __StorageCredentialInfo__ objects). The array is limited to
         only those storage credentials the caller has permission to access. If the caller is a metastore
-        admin, retrieval of credentials is unrestricted. For unpaginated request, there is no guarantee of a
-        specific ordering of the elements in the array. For paginated request, elements are ordered by their
-        name.
+        admin, retrieval of credentials is unrestricted. There is no guarantee of a specific ordering of the
+        elements in the array.
         
         :param max_results: int (optional)
           Maximum number of storage credentials to return. If not set, all the storage credentials are

@@ -865,8 +865,8 @@
         :param latest: bool
         :param ml: bool
         :param gpu: bool
-        :param scala: bool
-        :param spark_version: bool
+        :param scala: str
+        :param spark_version: str
         :param photon: bool
         :param graviton: bool
 
