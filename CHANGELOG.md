@@ -1,5 +1,26 @@
 # Version changelog
 
+## 0.23.0
+
+* Add CONTRIBUTING.md ([#585](https://github.com/databricks/databricks-sdk-py/pull/585)).
+
+API Changes:
+
+ * Added `databricks.sdk.service.catalog.AwsIamRoleResponse` dataclass.
+ * Added `databricks.sdk.service.catalog.AwsIamRoleRequest` dataclass.
+ * Removed `databricks.sdk.service.catalog.AwsIamRole` dataclass.
+ * Changed `aws_iam_role` field for `databricks.sdk.service.catalog.CreateStorageCredential` to `databricks.sdk.service.catalog.AwsIamRoleRequest` dataclass.
+ * Changed `aws_iam_role` field for `databricks.sdk.service.catalog.StorageCredentialInfo` to `databricks.sdk.service.catalog.AwsIamRoleResponse` dataclass.
+ * Changed `aws_iam_role` field for `databricks.sdk.service.catalog.UpdateStorageCredential` to `databricks.sdk.service.catalog.AwsIamRoleRequest` dataclass.
+ * Changed `aws_iam_role` field for `databricks.sdk.service.catalog.ValidateStorageCredential` to `databricks.sdk.service.catalog.AwsIamRoleRequest` dataclass.
+ * Added `auto_capture_config` field for `databricks.sdk.service.serving.EndpointPendingConfig`.
+ * Added `databricks.sdk.service.sharing.SharedDataObjectDataObjectType` dataclass.
+ * Changed `data_object_type` field for `databricks.sdk.service.sharing.SharedDataObject` to `databricks.sdk.service.sharing.SharedDataObjectDataObjectType` dataclass.
+ * Added `content` field for `databricks.sdk.service.sharing.SharedDataObject`.
+ * Added `embedding_source_columns` field for `databricks.sdk.service.vectorsearch.DirectAccessVectorIndexSpec`.
+
+OpenAPI SHA: 93763b0d7ae908520c229c786fff28b8fd623261, Date: 2024-03-20
+
 ## 0.22.0
 
 * Fix typos in doc string for select_spark_version ([#575](https://github.com/databricks/databricks-sdk-py/pull/575)).

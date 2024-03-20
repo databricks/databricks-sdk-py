@@ -661,6 +661,10 @@ class EndpointCoreConfigSummary:
 
 @dataclass
 class EndpointPendingConfig:
+    auto_capture_config: Optional[AutoCaptureConfigOutput] = None
+    """Configuration for Inference Tables which automatically logs requests and responses to Unity
+    Catalog."""
+
     config_version: Optional[int] = None
     """The config version that the serving endpoint is currently serving."""
 
@@ -680,6 +684,7 @@ class EndpointPendingConfig:
     def as_dict(self) -> dict:
         """Serializes the EndpointPendingConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.auto_capture_config: body['auto_capture_config'] = self.auto_capture_config.as_dict()
         if self.config_version is not None: body['config_version'] = self.config_version
         if self.served_entities: body['served_entities'] = [v.as_dict() for v in self.served_entities]
         if self.served_models: body['served_models'] = [v.as_dict() for v in self.served_models]
@@ -690,7 +695,8 @@ class EndpointPendingConfig:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> EndpointPendingConfig:
         """Deserializes the EndpointPendingConfig from a dictionary."""
-        return cls(config_version=d.get('config_version', None),
+        return cls(auto_capture_config=_from_dict(d, 'auto_capture_config', AutoCaptureConfigOutput),
+                   config_version=d.get('config_version', None),
                    served_entities=_repeated_dict(d, 'served_entities', ServedEntityOutput),
                    served_models=_repeated_dict(d, 'served_models', ServedModelOutput),
                    start_time=d.get('start_time', None),

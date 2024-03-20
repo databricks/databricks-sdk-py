@@ -364,6 +364,31 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: SharedDataObjectDataObjectType
+
+   The type of the data object.
+
+   .. py:attribute:: MATERIALIZED_VIEW
+      :value: "MATERIALIZED_VIEW"
+
+   .. py:attribute:: MODEL
+      :value: "MODEL"
+
+   .. py:attribute:: NOTEBOOK_FILE
+      :value: "NOTEBOOK_FILE"
+
+   .. py:attribute:: SCHEMA
+      :value: "SCHEMA"
+
+   .. py:attribute:: STREAMING_TABLE
+      :value: "STREAMING_TABLE"
+
+   .. py:attribute:: TABLE
+      :value: "TABLE"
+
+   .. py:attribute:: VIEW
+      :value: "VIEW"
+
 .. py:class:: SharedDataObjectHistoryDataSharingStatus
 
    Whether to enable or disable sharing of data history. If not specified, the default is **DISABLED**.

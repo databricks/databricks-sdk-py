@@ -7,7 +7,7 @@
 {{end}}{{- if .ApiChanges}}
 API Changes:
 {{range .ApiChanges}}
- * {{.Action}} {{template "what" .}}{{if .Extra}} {{.Extra}}{{with .Other}} {{template "what" .}}{{end}}{{end}}.
+ * {{.Action}} {{template "what" .}}{{if .Extra}} {{.Extra}}{{with .Other}} {{template "whats" .}}{{end}}{{end}}.
 {{- end}}
 
 OpenAPI SHA: {{.Sha}}, Date: {{.Changed}}
@@ -19,6 +19,20 @@ Dependency updates:
 {{end}}
 
 ## {{.PrevVersion}}
+
+{{- define "whats" -}}
+{{- $length := len . -}}
+{{- if gt $length 1 -}}
+    {{- range $i, $v := . -}}
+        {{- if lt $i (sub $length 1) -}}
+            {{- if gt $i 0 -}}, {{- end -}}{{ template "what" $v }}
+        {{- else -}}
+            {{- " and " -}}
+        {{- end -}}
+    {{- end -}}
+{{- end -}}
+{{- template "what" (index . (sub $length 1)) -}}
+{{- end -}}
 
 {{- define "what" -}}
     {{if eq .X "package" -}}
@@ -35,7 +49,7 @@ Dependency updates:
 {{- end -}}
 
 {{- define "service" -}}
-    [{{if .IsAccounts}}a{{else}}w{{end}}.{{.SnakeName}}](https://databricks-sdk-py.readthedocs.io/en/latest/{{if .IsAccounts}}account{{else}}workspace{{end}}/{{.SnakeName}}.html) {{if .IsAccounts}}account{{else}}workspace{{end}}-level service
+    [{{if .IsAccounts}}a{{else}}w{{end}}.{{.SnakeName}}](https://databricks-sdk-py.readthedocs.io/en/latest/{{if .IsAccounts}}account{{else}}workspace{{end}}{{with .ParentService}}/{{.SnakeName}}{{end}}/{{.SnakeName}}.html) {{if .IsAccounts}}account{{else}}workspace{{end}}-level service
 {{- end -}}
 
 {{- define "entity" -}}
