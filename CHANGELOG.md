@@ -6,6 +6,93 @@
 
 API Changes:
 
+ * Added `databricks.sdk.service.catalog.AwsIamRoleResponse` dataclass.
+ * Added `databricks.sdk.service.catalog.AwsIamRoleRequest` dataclass.
+ * Removed `databricks.sdk.service.catalog.AwsIamRole` dataclass.
+ * Changed `aws_iam_role` field for `databricks.sdk.service.catalog.CreateStorageCredential` to `databricks.sdk.service.catalog.AwsIamRoleRequest` dataclass.
+ * Changed `aws_iam_role` field for `databricks.sdk.service.catalog.StorageCredentialInfo` to `databricks.sdk.service.catalog.AwsIamRoleResponse` dataclass.
+ * Changed `aws_iam_role` field for `databricks.sdk.service.catalog.UpdateStorageCredential` to `databricks.sdk.service.catalog.AwsIamRoleRequest` dataclass.
+ * Changed `aws_iam_role` field for `databricks.sdk.service.catalog.ValidateStorageCredential` to `databricks.sdk.service.catalog.AwsIamRoleRequest` dataclass.
+ * Added `auto_capture_config` field for `databricks.sdk.service.serving.EndpointPendingConfig`.
+ * Added `databricks.sdk.service.sharing.SharedDataObjectDataObjectType` dataclass.
+ * Changed `data_object_type` field for `databricks.sdk.service.sharing.SharedDataObject` to `databricks.sdk.service.sharing.SharedDataObjectDataObjectType` dataclass.
+ * Added `content` field for `databricks.sdk.service.sharing.SharedDataObject`.
+ * Added `embedding_source_columns` field for `databricks.sdk.service.vectorsearch.DirectAccessVectorIndexSpec`.
+
+OpenAPI SHA: 93763b0d7ae908520c229c786fff28b8fd623261, Date: 2024-03-20
+
+## 0.23.0
+
+* Add CONTRIBUTING.md ([#585](https://github.com/databricks/databricks-sdk-py/pull/585)).
+
+API Changes:
+
+ * Changed `aws_iam_role` field for `databricks.sdk.service.catalog.UpdateStorageCredential` to [~] catalog.AwsIamRoleRequest entity.
+ * Changed `aws_iam_role` field for `databricks.sdk.service.catalog.ValidateStorageCredential` to [~] catalog.AwsIamRoleRequest entity.
+ * Added `databricks.sdk.service.catalog.AwsIamRoleRequest` dataclass.
+ * Added `databricks.sdk.service.catalog.AwsIamRoleResponse` dataclass.
+ * Removed `databricks.sdk.service.catalog.AwsIamRole` dataclass.
+ * Changed `aws_iam_role` field for `databricks.sdk.service.catalog.CreateStorageCredential` to [~] catalog.AwsIamRoleRequest entity.
+ * Changed `aws_iam_role` field for `databricks.sdk.service.catalog.StorageCredentialInfo` to [~] catalog.AwsIamRoleResponse entity.
+ * Changed `get_published()` method for [w.lakeview](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/lakeview.html) workspace-level service . New request type is [~] dashboards.GetPublishedDashboardRequest entity.
+ * Changed `trash()` method for [w.lakeview](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/lakeview.html) workspace-level service . New request type is [~] dashboards.TrashDashboardRequest entity.
+ * Removed `databricks.sdk.service.dashboards.GetLakeviewRequest` dataclass.
+ * Added `databricks.sdk.service.dashboards.TrashDashboardRequest` dataclass.
+ * Added `databricks.sdk.service.dashboards.GetPublishedDashboardRequest` dataclass.
+ * Changed `get()` method for [w.lakeview](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/lakeview.html) workspace-level service . New request type is [~] dashboards.GetDashboardRequest entity.
+ * Removed `databricks.sdk.service.dashboards.GetPublishedRequest` dataclass.
+ * Removed `databricks.sdk.service.dashboards.TrashRequest` dataclass.
+ * Added `databricks.sdk.service.dashboards.GetDashboardRequest` dataclass.
+ * Added `auto_capture_config` field for `databricks.sdk.service.serving.EndpointPendingConfig`.
+ * Removed `databricks.sdk.service.settings.GetRestrictWorkspaceAdminRequest` dataclass.
+ * Added `databricks.sdk.service.settings.DeleteRestrictWorkspaceAdminsSettingRequest` dataclass.
+ * Added `databricks.sdk.service.settings.GetCspEnablementSettingRequest` dataclass.
+ * Added `databricks.sdk.service.settings.GetRestrictWorkspaceAdminsSettingRequest` dataclass.
+ * Changed `get()` method for [w.esm_enablement](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings/esm_enablement.html) workspace-level service . New request type is [~] settings.GetEsmEnablementSettingRequest entity.
+ * Removed `databricks.sdk.service.settings.DeleteRestrictWorkspaceAdminRequest` dataclass.
+ * Removed `databricks.sdk.service.settings.GetAutomaticClusterUpdateRequest` dataclass.
+ * Added `databricks.sdk.service.settings.GetCspEnablementAccountSettingRequest` dataclass.
+ * Changed `get()` method for [w.csp_enablement](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings/csp_enablement.html) workspace-level service . New request type is [~] settings.GetCspEnablementSettingRequest entity.
+ * Changed `get()` method for [w.ip_access_lists](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/ip_access_lists.html) workspace-level service . New request type is [~] settings.GetIpAccessList entity.
+ * Changed `get()` method for [w.restrict_workspace_admins](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings/restrict_workspace_admins.html) workspace-level service . New request type is [~] settings.GetRestrictWorkspaceAdminsSettingRequest entity.
+ * Removed `databricks.sdk.service.settings.GetEsmEnablementRequest` dataclass.
+ * Added `databricks.sdk.service.settings.DeletePersonalComputeSettingRequest` dataclass.
+ * Added `databricks.sdk.service.settings.GetEsmEnablementSettingRequest` dataclass.
+ * Changed `get()` method for [a.esm_enablement_account](https://databricks-sdk-py.readthedocs.io/en/latest/account/account_settings/esm_enablement_account.html) account-level service . New request type is [~] settings.GetEsmEnablementAccountSettingRequest entity.
+ * Removed `databricks.sdk.service.settings.GetCspEnablementAccountRequest` dataclass.
+ * Removed `databricks.sdk.service.settings.GetIpAccessListRequest` dataclass.
+ * Added `databricks.sdk.service.settings.DeleteDefaultNamespaceSettingRequest` dataclass.
+ * Changed `get()` method for [a.csp_enablement_account](https://databricks-sdk-py.readthedocs.io/en/latest/account/account_settings/csp_enablement_account.html) account-level service . New request type is [~] settings.GetCspEnablementAccountSettingRequest entity.
+ * Changed `delete()` method for [w.restrict_workspace_admins](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings/restrict_workspace_admins.html) workspace-level service . New request type is [~] settings.DeleteRestrictWorkspaceAdminsSettingRequest entity.
+ * Removed `databricks.sdk.service.settings.DeleteDefaultNamespaceRequest` dataclass.
+ * Removed `databricks.sdk.service.settings.DeletePersonalComputeRequest` dataclass.
+ * Removed `databricks.sdk.service.settings.GetCspEnablementRequest` dataclass.
+ * Removed `databricks.sdk.service.settings.GetEsmEnablementAccountRequest` dataclass.
+ * Added `databricks.sdk.service.settings.GetDefaultNamespaceSettingRequest` dataclass.
+ * Changed `get()` method for [w.automatic_cluster_update](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings/automatic_cluster_update.html) workspace-level service . New request type is [~] settings.GetAutomaticClusterUpdateSettingRequest entity.
+ * Changed `delete()` method for [w.default_namespace](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings/default_namespace.html) workspace-level service . New request type is [~] settings.DeleteDefaultNamespaceSettingRequest entity.
+ * Added `databricks.sdk.service.settings.GetIpAccessList` dataclass.
+ * Changed `delete()` method for [a.personal_compute](https://databricks-sdk-py.readthedocs.io/en/latest/account/account_settings/personal_compute.html) account-level service . New request type is [~] settings.DeletePersonalComputeSettingRequest entity.
+ * Changed `get()` method for [a.personal_compute](https://databricks-sdk-py.readthedocs.io/en/latest/account/account_settings/personal_compute.html) account-level service . New request type is [~] settings.GetPersonalComputeSettingRequest entity.
+ * Removed `databricks.sdk.service.settings.GetDefaultNamespaceRequest` dataclass.
+ * Removed `databricks.sdk.service.settings.GetPersonalComputeRequest` dataclass.
+ * Added `databricks.sdk.service.settings.GetAutomaticClusterUpdateSettingRequest` dataclass.
+ * Added `databricks.sdk.service.settings.GetEsmEnablementAccountSettingRequest` dataclass.
+ * Changed `get()` method for [w.default_namespace](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings/default_namespace.html) workspace-level service . New request type is [~] settings.GetDefaultNamespaceSettingRequest entity.
+ * Added `databricks.sdk.service.settings.GetPersonalComputeSettingRequest` dataclass.
+ * Changed `data_object_type` field for `databricks.sdk.service.sharing.SharedDataObject` to [~] SharedDataObjectDataObjectType entity.
+ * Added `content` field for `databricks.sdk.service.sharing.SharedDataObject`.
+ * Added `databricks.sdk.service.sharing.SharedDataObjectDataObjectType` dataclass.
+ * Added `embedding_source_columns` field for `databricks.sdk.service.vectorsearch.DirectAccessVectorIndexSpec`.
+
+OpenAPI SHA: 93763b0d7ae908520c229c786fff28b8fd623261, Date: 2024-03-20
+
+## 0.23.0
+
+* Add CONTRIBUTING.md ([#585](https://github.com/databricks/databricks-sdk-py/pull/585)).
+
+API Changes:
+
  * Added `databricks.sdk.service.catalog.AwsIamRoleRequest` dataclass.
  * Added `databricks.sdk.service.catalog.AwsIamRoleResponse` dataclass.
  * Removed `databricks.sdk.service.catalog.AwsIamRole` dataclass.
