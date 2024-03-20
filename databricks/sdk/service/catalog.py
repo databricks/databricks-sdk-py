@@ -275,7 +275,24 @@ class AssignResponse:
 
 
 @dataclass
-class AwsIamRole:
+class AwsIamRoleRequest:
+    role_arn: str
+    """The Amazon Resource Name (ARN) of the AWS IAM role for S3 data access."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AwsIamRoleRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.role_arn is not None: body['role_arn'] = self.role_arn
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> AwsIamRoleRequest:
+        """Deserializes the AwsIamRoleRequest from a dictionary."""
+        return cls(role_arn=d.get('role_arn', None))
+
+
+@dataclass
+class AwsIamRoleResponse:
     role_arn: str
     """The Amazon Resource Name (ARN) of the AWS IAM role for S3 data access."""
 
@@ -287,7 +304,7 @@ class AwsIamRole:
     that is going to assume the AWS IAM role."""
 
     def as_dict(self) -> dict:
-        """Serializes the AwsIamRole into a dictionary suitable for use as a JSON request body."""
+        """Serializes the AwsIamRoleResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.external_id is not None: body['external_id'] = self.external_id
         if self.role_arn is not None: body['role_arn'] = self.role_arn
@@ -295,8 +312,8 @@ class AwsIamRole:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AwsIamRole:
-        """Deserializes the AwsIamRole from a dictionary."""
+    def from_dict(cls, d: Dict[str, any]) -> AwsIamRoleResponse:
+        """Deserializes the AwsIamRoleResponse from a dictionary."""
         return cls(external_id=d.get('external_id', None),
                    role_arn=d.get('role_arn', None),
                    unity_catalog_iam_arn=d.get('unity_catalog_iam_arn', None))
@@ -1434,7 +1451,7 @@ class CreateStorageCredential:
     name: str
     """The credential name. The name must be unique within the metastore."""
 
-    aws_iam_role: Optional[AwsIamRole] = None
+    aws_iam_role: Optional[AwsIamRoleRequest] = None
     """The AWS IAM role configuration."""
 
     azure_managed_identity: Optional[AzureManagedIdentity] = None
@@ -1477,7 +1494,7 @@ class CreateStorageCredential:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateStorageCredential:
         """Deserializes the CreateStorageCredential from a dictionary."""
-        return cls(aws_iam_role=_from_dict(d, 'aws_iam_role', AwsIamRole),
+        return cls(aws_iam_role=_from_dict(d, 'aws_iam_role', AwsIamRoleRequest),
                    azure_managed_identity=_from_dict(d, 'azure_managed_identity', AzureManagedIdentity),
                    azure_service_principal=_from_dict(d, 'azure_service_principal', AzureServicePrincipal),
                    cloudflare_api_token=_from_dict(d, 'cloudflare_api_token', CloudflareApiToken),
@@ -4187,7 +4204,7 @@ class SseEncryptionDetailsAlgorithm(Enum):
 
 @dataclass
 class StorageCredentialInfo:
-    aws_iam_role: Optional[AwsIamRole] = None
+    aws_iam_role: Optional[AwsIamRoleResponse] = None
     """The AWS IAM role configuration."""
 
     azure_managed_identity: Optional[AzureManagedIdentity] = None
@@ -4262,7 +4279,7 @@ class StorageCredentialInfo:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> StorageCredentialInfo:
         """Deserializes the StorageCredentialInfo from a dictionary."""
-        return cls(aws_iam_role=_from_dict(d, 'aws_iam_role', AwsIamRole),
+        return cls(aws_iam_role=_from_dict(d, 'aws_iam_role', AwsIamRoleResponse),
                    azure_managed_identity=_from_dict(d, 'azure_managed_identity', AzureManagedIdentity),
                    azure_service_principal=_from_dict(d, 'azure_service_principal', AzureServicePrincipal),
                    cloudflare_api_token=_from_dict(d, 'cloudflare_api_token', CloudflareApiToken),
@@ -5160,7 +5177,7 @@ class UpdateSchema:
 
 @dataclass
 class UpdateStorageCredential:
-    aws_iam_role: Optional[AwsIamRole] = None
+    aws_iam_role: Optional[AwsIamRoleRequest] = None
     """The AWS IAM role configuration."""
 
     azure_managed_identity: Optional[AzureManagedIdentity] = None
@@ -5218,7 +5235,7 @@ class UpdateStorageCredential:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> UpdateStorageCredential:
         """Deserializes the UpdateStorageCredential from a dictionary."""
-        return cls(aws_iam_role=_from_dict(d, 'aws_iam_role', AwsIamRole),
+        return cls(aws_iam_role=_from_dict(d, 'aws_iam_role', AwsIamRoleRequest),
                    azure_managed_identity=_from_dict(d, 'azure_managed_identity', AzureManagedIdentity),
                    azure_service_principal=_from_dict(d, 'azure_service_principal', AzureServicePrincipal),
                    cloudflare_api_token=_from_dict(d, 'cloudflare_api_token', CloudflareApiToken),
@@ -5326,7 +5343,7 @@ class UpdateWorkspaceBindingsParameters:
 
 @dataclass
 class ValidateStorageCredential:
-    aws_iam_role: Optional[AwsIamRole] = None
+    aws_iam_role: Optional[AwsIamRoleRequest] = None
     """The AWS IAM role configuration."""
 
     azure_managed_identity: Optional[AzureManagedIdentity] = None
@@ -5374,7 +5391,7 @@ class ValidateStorageCredential:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ValidateStorageCredential:
         """Deserializes the ValidateStorageCredential from a dictionary."""
-        return cls(aws_iam_role=_from_dict(d, 'aws_iam_role', AwsIamRole),
+        return cls(aws_iam_role=_from_dict(d, 'aws_iam_role', AwsIamRoleRequest),
                    azure_managed_identity=_from_dict(d, 'azure_managed_identity', AzureManagedIdentity),
                    azure_service_principal=_from_dict(d, 'azure_service_principal', AzureServicePrincipal),
                    cloudflare_api_token=_from_dict(d, 'cloudflare_api_token', CloudflareApiToken),
@@ -6903,7 +6920,7 @@ class LakehouseMonitorsAPI:
         if schedule is not None: body['schedule'] = schedule.as_dict()
         if skip_builtin_dashboard is not None: body['skip_builtin_dashboard'] = skip_builtin_dashboard
         if slicing_exprs is not None: body['slicing_exprs'] = [v for v in slicing_exprs]
-        if snapshot is not None: body['snapshot'] = snapshot
+        if snapshot is not None: body['snapshot'] = snapshot.as_dict()
         if time_series is not None: body['time_series'] = time_series.as_dict()
         if warehouse_id is not None: body['warehouse_id'] = warehouse_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
@@ -7108,7 +7125,7 @@ class LakehouseMonitorsAPI:
         if output_schema_name is not None: body['output_schema_name'] = output_schema_name
         if schedule is not None: body['schedule'] = schedule.as_dict()
         if slicing_exprs is not None: body['slicing_exprs'] = [v for v in slicing_exprs]
-        if snapshot is not None: body['snapshot'] = snapshot
+        if snapshot is not None: body['snapshot'] = snapshot.as_dict()
         if time_series is not None: body['time_series'] = time_series.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
@@ -8061,7 +8078,7 @@ class StorageCredentialsAPI:
     def create(self,
                name: str,
                *,
-               aws_iam_role: Optional[AwsIamRole] = None,
+               aws_iam_role: Optional[AwsIamRoleRequest] = None,
                azure_managed_identity: Optional[AzureManagedIdentity] = None,
                azure_service_principal: Optional[AzureServicePrincipal] = None,
                cloudflare_api_token: Optional[CloudflareApiToken] = None,
@@ -8075,7 +8092,7 @@ class StorageCredentialsAPI:
         
         :param name: str
           The credential name. The name must be unique within the metastore.
-        :param aws_iam_role: :class:`AwsIamRole` (optional)
+        :param aws_iam_role: :class:`AwsIamRoleRequest` (optional)
           The AWS IAM role configuration.
         :param azure_managed_identity: :class:`AzureManagedIdentity` (optional)
           The Azure managed identity configuration.
@@ -8103,7 +8120,7 @@ class StorageCredentialsAPI:
         if cloudflare_api_token is not None: body['cloudflare_api_token'] = cloudflare_api_token.as_dict()
         if comment is not None: body['comment'] = comment
         if databricks_gcp_service_account is not None:
-            body['databricks_gcp_service_account'] = databricks_gcp_service_account
+            body['databricks_gcp_service_account'] = databricks_gcp_service_account.as_dict()
         if name is not None: body['name'] = name
         if read_only is not None: body['read_only'] = read_only
         if skip_validation is not None: body['skip_validation'] = skip_validation
@@ -8195,7 +8212,7 @@ class StorageCredentialsAPI:
     def update(self,
                name: str,
                *,
-               aws_iam_role: Optional[AwsIamRole] = None,
+               aws_iam_role: Optional[AwsIamRoleRequest] = None,
                azure_managed_identity: Optional[AzureManagedIdentity] = None,
                azure_service_principal: Optional[AzureServicePrincipal] = None,
                cloudflare_api_token: Optional[CloudflareApiToken] = None,
@@ -8212,7 +8229,7 @@ class StorageCredentialsAPI:
         
         :param name: str
           Name of the storage credential.
-        :param aws_iam_role: :class:`AwsIamRole` (optional)
+        :param aws_iam_role: :class:`AwsIamRoleRequest` (optional)
           The AWS IAM role configuration.
         :param azure_managed_identity: :class:`AzureManagedIdentity` (optional)
           The Azure managed identity configuration.
@@ -8246,7 +8263,7 @@ class StorageCredentialsAPI:
         if cloudflare_api_token is not None: body['cloudflare_api_token'] = cloudflare_api_token.as_dict()
         if comment is not None: body['comment'] = comment
         if databricks_gcp_service_account is not None:
-            body['databricks_gcp_service_account'] = databricks_gcp_service_account
+            body['databricks_gcp_service_account'] = databricks_gcp_service_account.as_dict()
         if force is not None: body['force'] = force
         if new_name is not None: body['new_name'] = new_name
         if owner is not None: body['owner'] = owner
@@ -8262,7 +8279,7 @@ class StorageCredentialsAPI:
 
     def validate(self,
                  *,
-                 aws_iam_role: Optional[AwsIamRole] = None,
+                 aws_iam_role: Optional[AwsIamRoleRequest] = None,
                  azure_managed_identity: Optional[AzureManagedIdentity] = None,
                  azure_service_principal: Optional[AzureServicePrincipal] = None,
                  cloudflare_api_token: Optional[CloudflareApiToken] = None,
@@ -8283,7 +8300,7 @@ class StorageCredentialsAPI:
         The caller must be a metastore admin or the storage credential owner or have the
         **CREATE_EXTERNAL_LOCATION** privilege on the metastore and the storage credential.
         
-        :param aws_iam_role: :class:`AwsIamRole` (optional)
+        :param aws_iam_role: :class:`AwsIamRoleRequest` (optional)
           The AWS IAM role configuration.
         :param azure_managed_identity: :class:`AzureManagedIdentity` (optional)
           The Azure managed identity configuration.
@@ -8312,7 +8329,7 @@ class StorageCredentialsAPI:
             body['azure_service_principal'] = azure_service_principal.as_dict()
         if cloudflare_api_token is not None: body['cloudflare_api_token'] = cloudflare_api_token.as_dict()
         if databricks_gcp_service_account is not None:
-            body['databricks_gcp_service_account'] = databricks_gcp_service_account
+            body['databricks_gcp_service_account'] = databricks_gcp_service_account.as_dict()
         if external_location_name is not None: body['external_location_name'] = external_location_name
         if read_only is not None: body['read_only'] = read_only
         if storage_credential_name is not None: body['storage_credential_name'] = storage_credential_name
