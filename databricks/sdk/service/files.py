@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import urllib.parse
 from dataclasses import dataclass
 from typing import BinaryIO, Dict, Iterator, List, Optional
 
@@ -755,6 +756,19 @@ class DbfsAPI:
         return ReadResponse.from_dict(res)
 
 
+def _slash_safe_url_encode(file_path: str) -> str:
+    # Split the filename into parts using the '/' character
+    parts = file_path.split('/')
+
+    # URL encode each part individually
+    encoded_parts = [urllib.parse.quote(part, safe='') for part in parts]
+
+    # Join the encoded parts back together with the '/' character
+    encoded_filename = '/'.join(encoded_parts)
+
+    return encoded_filename
+
+
 class FilesAPI:
     """The Files API is a standard HTTP API that allows you to read, write, list, and delete files and
     directories by referring to their URI. The API makes working with file content as raw bytes easier and
@@ -839,7 +853,7 @@ class FilesAPI:
         headers = {'Accept': 'application/octet-stream', }
         response_headers = ['content-length', 'content-type', 'last-modified', ]
         res = self._api.do('GET',
-                           f'/api/2.0/fs/files{file_path}',
+                           f'/api/2.0/fs/files{_slash_safe_url_encode(file_path)}',
                            headers=headers,
                            response_headers=response_headers,
                            raw=True)
@@ -956,4 +970,8 @@ class FilesAPI:
         if overwrite is not None: query['overwrite'] = overwrite
         headers = {'Content-Type': 'application/octet-stream', }
 
-        self._api.do('PUT', f'/api/2.0/fs/files{file_path}', query=query, headers=headers, data=contents)
+        self._api.do('PUT',
+                     f'/api/2.0/fs/files{_slash_safe_url_encode(file_path)}',
+                     query=query,
+                     headers=headers,
+                     data=contents)
