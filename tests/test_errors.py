@@ -3,24 +3,29 @@ import requests
 
 from databricks.sdk import errors
 
+def fake_response(status_code: int) -> requests.Response:
+    resp = requests.Response()
+    resp.status_code = status_code
+    resp.request = requests.Request('GET', 'https://databricks.com/api/2.0/service').prepare()
+    return resp
 
 def test_error_code_has_precedence_over_http_status():
-    err = errors.error_mapper(400, {'error_code': 'INVALID_PARAMETER_VALUE', 'message': 'nope'})
+    err = errors.error_mapper(fake_response(400), {'error_code': 'INVALID_PARAMETER_VALUE', 'message': 'nope'})
     assert errors.InvalidParameterValue == type(err)
 
 
 def test_http_status_code_maps_fine():
-    err = errors.error_mapper(400, {'error_code': 'MALFORMED_REQUEST', 'message': 'nope'})
+    err = errors.error_mapper(fake_response(400), {'error_code': 'MALFORMED_REQUEST', 'message': 'nope'})
     assert errors.BadRequest == type(err)
 
 
 def test_other_errors_also_map_fine():
-    err = errors.error_mapper(417, {'error_code': 'WHOOPS', 'message': 'nope'})
+    err = errors.error_mapper(fake_response(417), {'error_code': 'WHOOPS', 'message': 'nope'})
     assert errors.DatabricksError == type(err)
 
 
 def test_missing_error_code():
-    err = errors.error_mapper(522, {'message': 'nope'})
+    err = errors.error_mapper(fake_response(522), {'message': 'nope'})
     assert errors.DatabricksError == type(err)
 
 
@@ -49,9 +54,7 @@ def test_missing_error_code():
                           (444, ..., errors.DatabricksError), (444, ..., IOError), ])
 def test_subclasses(status_code, error_code, klass):
     try:
-        resp = requests.Response()
-        resp.status_code = status_code
-        raise errors.error_mapper(resp, {'error_code': error_code, 'message': 'nope'})
+        raise errors.error_mapper(fake_response(status_code), {'error_code': error_code, 'message': 'nope'})
     except klass:
         return
 
