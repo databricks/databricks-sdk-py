@@ -1,4 +1,5 @@
 import pytest
+import requests
 
 from databricks.sdk import errors
 
@@ -48,6 +49,23 @@ def test_missing_error_code():
                           (444, ..., errors.DatabricksError), (444, ..., IOError), ])
 def test_subclasses(status_code, error_code, klass):
     try:
-        raise errors.error_mapper(status_code, {'error_code': error_code, 'message': 'nope'})
+        resp = requests.Response()
+        resp.status_code = status_code
+        raise errors.error_mapper(resp, {'error_code': error_code, 'message': 'nope'})
     except klass:
         return
+
+@pytest.mark.parametrize(
+    'verb, path, status_code, error_code, message, expected_error',
+    [
+        ['GET', '/api/2.0/clusters/get', 400, 'INVALID_PARAMETER_VALUE', 'Cluster abcde does not exist', errors.ResourceDoesNotExist],
+        ['GET', '/api/2.0/jobs/get', 400, 'INVALID_PARAMETER_VALUE', 'Job abcde does not exist', errors.ResourceDoesNotExist],
+        ['GET', '/api/2.1/jobs/get', 400, 'INVALID_PARAMETER_VALUE', 'Job abcde does not exist', errors.ResourceDoesNotExist],
+        ['GET', '/api/2.1/jobs/get', 400, 'INVALID_PARAMETER_VALUE', 'Invalid spark version', errors.InvalidParameterValue],
+    ])
+def test_error_overrides(verb, path, status_code, error_code, message, expected_error):
+    resp = requests.Response()
+    resp.status_code = status_code
+    resp.request = requests.Request(verb, f'https://databricks.com{path}').prepare()
+    with pytest.raises(expected_error):
+        raise errors.error_mapper(resp, {'error_code': error_code, 'message': message})

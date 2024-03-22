@@ -22,6 +22,7 @@ from databricks.sdk.credentials_provider import (CliTokenSource,
                                                  DatabricksCliTokenSource,
                                                  HeaderFactory, databricks_cli)
 from databricks.sdk.environments import Cloud, DatabricksEnvironment
+from databricks.sdk.errors import ResourceDoesNotExist
 from databricks.sdk.service.catalog import PermissionsChange
 from databricks.sdk.service.iam import AccessControlRequest
 from databricks.sdk.version import __version__
