@@ -1287,7 +1287,12 @@ class SharedDataObject:
     comment: Optional[str] = None
     """A user-provided comment when adding the data object to the share. [Update:OPT]"""
 
-    data_object_type: Optional[str] = None
+    content: Optional[str] = None
+    """The content of the notebook file when the data object type is NOTEBOOK_FILE. This should be
+    base64 encoded. Required for adding a NOTEBOOK_FILE, optional for updating, ignored for other
+    types."""
+
+    data_object_type: Optional[SharedDataObjectDataObjectType] = None
     """The type of the data object."""
 
     history_data_sharing_status: Optional[SharedDataObjectHistoryDataSharingStatus] = None
@@ -1326,7 +1331,8 @@ class SharedDataObject:
         if self.added_by is not None: body['added_by'] = self.added_by
         if self.cdf_enabled is not None: body['cdf_enabled'] = self.cdf_enabled
         if self.comment is not None: body['comment'] = self.comment
-        if self.data_object_type is not None: body['data_object_type'] = self.data_object_type
+        if self.content is not None: body['content'] = self.content
+        if self.data_object_type is not None: body['data_object_type'] = self.data_object_type.value
         if self.history_data_sharing_status is not None:
             body['history_data_sharing_status'] = self.history_data_sharing_status.value
         if self.name is not None: body['name'] = self.name
@@ -1344,7 +1350,8 @@ class SharedDataObject:
                    added_by=d.get('added_by', None),
                    cdf_enabled=d.get('cdf_enabled', None),
                    comment=d.get('comment', None),
-                   data_object_type=d.get('data_object_type', None),
+                   content=d.get('content', None),
+                   data_object_type=_enum(d, 'data_object_type', SharedDataObjectDataObjectType),
                    history_data_sharing_status=_enum(d, 'history_data_sharing_status',
                                                      SharedDataObjectHistoryDataSharingStatus),
                    name=d.get('name', None),
@@ -1353,6 +1360,18 @@ class SharedDataObject:
                    start_version=d.get('start_version', None),
                    status=_enum(d, 'status', SharedDataObjectStatus),
                    string_shared_as=d.get('string_shared_as', None))
+
+
+class SharedDataObjectDataObjectType(Enum):
+    """The type of the data object."""
+
+    MATERIALIZED_VIEW = 'MATERIALIZED_VIEW'
+    MODEL = 'MODEL'
+    NOTEBOOK_FILE = 'NOTEBOOK_FILE'
+    SCHEMA = 'SCHEMA'
+    STREAMING_TABLE = 'STREAMING_TABLE'
+    TABLE = 'TABLE'
+    VIEW = 'VIEW'
 
 
 class SharedDataObjectHistoryDataSharingStatus(Enum):

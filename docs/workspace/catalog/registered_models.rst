@@ -91,7 +91,7 @@
         
         
 
-    .. py:method:: get(full_name: str) -> RegisteredModelInfo
+    .. py:method:: get(full_name: str [, include_browse: Optional[bool]]) -> RegisteredModelInfo
 
         Get a Registered Model.
         
@@ -103,11 +103,14 @@
         
         :param full_name: str
           The three-level (fully qualified) name of the registered model
+        :param include_browse: bool (optional)
+          Whether to include registered models in the response for which the principal can only access
+          selective metadata for
         
         :returns: :class:`RegisteredModelInfo`
         
 
-    .. py:method:: list( [, catalog_name: Optional[str], max_results: Optional[int], page_token: Optional[str], schema_name: Optional[str]]) -> Iterator[RegisteredModelInfo]
+    .. py:method:: list( [, catalog_name: Optional[str], include_browse: Optional[bool], max_results: Optional[int], page_token: Optional[str], schema_name: Optional[str]]) -> Iterator[RegisteredModelInfo]
 
         List Registered Models.
         
@@ -125,6 +128,9 @@
         :param catalog_name: str (optional)
           The identifier of the catalog under which to list registered models. If specified, schema_name must
           be specified.
+        :param include_browse: bool (optional)
+          Whether to include registered models in the response for which the principal can only access
+          selective metadata for
         :param max_results: int (optional)
           Max number of registered models to return. If catalog and schema are unspecified, max_results must
           be specified. If max_results is unspecified, we return all results, starting from the page specified

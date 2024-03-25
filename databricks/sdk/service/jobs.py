@@ -1833,13 +1833,13 @@ class ListJobsResponse:
     """If true, additional jobs matching the provided filter are available for listing."""
 
     jobs: Optional[List[BaseJob]] = None
-    """The list of jobs."""
+    """The list of jobs. Only included in the response if there are jobs to list."""
 
     next_page_token: Optional[str] = None
-    """A token that can be used to list the next page of jobs."""
+    """A token that can be used to list the next page of jobs (if applicable)."""
 
     prev_page_token: Optional[str] = None
-    """A token that can be used to list the previous page of jobs."""
+    """A token that can be used to list the previous page of jobs (if applicable)."""
 
     def as_dict(self) -> dict:
         """Serializes the ListJobsResponse into a dictionary suitable for use as a JSON request body."""
@@ -1865,13 +1865,14 @@ class ListRunsResponse:
     """If true, additional runs matching the provided filter are available for listing."""
 
     next_page_token: Optional[str] = None
-    """A token that can be used to list the next page of runs."""
+    """A token that can be used to list the next page of runs (if applicable)."""
 
     prev_page_token: Optional[str] = None
-    """A token that can be used to list the previous page of runs."""
+    """A token that can be used to list the previous page of runs (if applicable)."""
 
     runs: Optional[List[BaseRun]] = None
-    """A list of runs, from most recently started to least."""
+    """A list of runs, from most recently started to least. Only included in the response if there are
+    runs to list."""
 
     def as_dict(self) -> dict:
         """Serializes the ListRunsResponse into a dictionary suitable for use as a JSON request body."""

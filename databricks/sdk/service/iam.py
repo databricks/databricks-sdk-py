@@ -777,6 +777,7 @@ class PermissionLevel(Enum):
     CAN_MANAGE_PRODUCTION_VERSIONS = 'CAN_MANAGE_PRODUCTION_VERSIONS'
     CAN_MANAGE_RUN = 'CAN_MANAGE_RUN'
     CAN_MANAGE_STAGING_VERSIONS = 'CAN_MANAGE_STAGING_VERSIONS'
+    CAN_QUERY = 'CAN_QUERY'
     CAN_READ = 'CAN_READ'
     CAN_RESTART = 'CAN_RESTART'
     CAN_RUN = 'CAN_RUN'
@@ -784,6 +785,57 @@ class PermissionLevel(Enum):
     CAN_VIEW = 'CAN_VIEW'
     CAN_VIEW_METADATA = 'CAN_VIEW_METADATA'
     IS_OWNER = 'IS_OWNER'
+
+
+@dataclass
+class PermissionMigrationRequest:
+    workspace_id: int
+    """WorkspaceId of the associated workspace where the permission migration will occur. Both
+    workspace group and account group must be in this workspace."""
+
+    from_workspace_group_name: str
+    """The name of the workspace group that permissions will be migrated from."""
+
+    to_account_group_name: str
+    """The name of the account group that permissions will be migrated to."""
+
+    size: Optional[int] = None
+    """The maximum number of permissions that will be migrated."""
+
+    def as_dict(self) -> dict:
+        """Serializes the PermissionMigrationRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.from_workspace_group_name is not None:
+            body['from_workspace_group_name'] = self.from_workspace_group_name
+        if self.size is not None: body['size'] = self.size
+        if self.to_account_group_name is not None: body['to_account_group_name'] = self.to_account_group_name
+        if self.workspace_id is not None: body['workspace_id'] = self.workspace_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> PermissionMigrationRequest:
+        """Deserializes the PermissionMigrationRequest from a dictionary."""
+        return cls(from_workspace_group_name=d.get('from_workspace_group_name', None),
+                   size=d.get('size', None),
+                   to_account_group_name=d.get('to_account_group_name', None),
+                   workspace_id=d.get('workspace_id', None))
+
+
+@dataclass
+class PermissionMigrationResponse:
+    permissions_migrated: Optional[int] = None
+    """Number of permissions migrated."""
+
+    def as_dict(self) -> dict:
+        """Serializes the PermissionMigrationResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.permissions_migrated is not None: body['permissions_migrated'] = self.permissions_migrated
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> PermissionMigrationResponse:
+        """Deserializes the PermissionMigrationResponse from a dictionary."""
+        return cls(permissions_migrated=d.get('permissions_migrated', None))
 
 
 @dataclass
@@ -2452,6 +2504,46 @@ class GroupsAPI:
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         self._api.do('PUT', f'/api/2.0/preview/scim/v2/Groups/{id}', body=body, headers=headers)
+
+
+class PermissionMigrationAPI:
+    """This spec contains undocumented permission migration APIs used in https://github.com/databrickslabs/ucx."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def migrate_permissions(self,
+                            workspace_id: int,
+                            from_workspace_group_name: str,
+                            to_account_group_name: str,
+                            *,
+                            size: Optional[int] = None) -> PermissionMigrationResponse:
+        """Migrate Permissions.
+        
+        Migrate a batch of permissions from a workspace local group to an account group.
+        
+        :param workspace_id: int
+          WorkspaceId of the associated workspace where the permission migration will occur. Both workspace
+          group and account group must be in this workspace.
+        :param from_workspace_group_name: str
+          The name of the workspace group that permissions will be migrated from.
+        :param to_account_group_name: str
+          The name of the account group that permissions will be migrated to.
+        :param size: int (optional)
+          The maximum number of permissions that will be migrated.
+        
+        :returns: :class:`PermissionMigrationResponse`
+        """
+        body = {}
+        if from_workspace_group_name is not None:
+            body['from_workspace_group_name'] = from_workspace_group_name
+        if size is not None: body['size'] = size
+        if to_account_group_name is not None: body['to_account_group_name'] = to_account_group_name
+        if workspace_id is not None: body['workspace_id'] = workspace_id
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do('POST', '/api/2.0/permissionmigration', body=body, headers=headers)
+        return PermissionMigrationResponse.from_dict(res)
 
 
 class PermissionsAPI:

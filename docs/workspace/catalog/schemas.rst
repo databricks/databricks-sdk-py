@@ -62,7 +62,7 @@
         
         
 
-    .. py:method:: get(full_name: str) -> SchemaInfo
+    .. py:method:: get(full_name: str [, include_browse: Optional[bool]]) -> SchemaInfo
 
 
         Usage:
@@ -92,11 +92,14 @@
         
         :param full_name: str
           Full name of the schema.
+        :param include_browse: bool (optional)
+          Whether to include schemas in the response for which the principal can only access selective
+          metadata for
         
         :returns: :class:`SchemaInfo`
         
 
-    .. py:method:: list(catalog_name: str [, max_results: Optional[int], page_token: Optional[str]]) -> Iterator[SchemaInfo]
+    .. py:method:: list(catalog_name: str [, include_browse: Optional[bool], max_results: Optional[int], page_token: Optional[str]]) -> Iterator[SchemaInfo]
 
 
         Usage:
@@ -120,12 +123,14 @@
         
         Gets an array of schemas for a catalog in the metastore. If the caller is the metastore admin or the
         owner of the parent catalog, all schemas for the catalog will be retrieved. Otherwise, only schemas
-        owned by the caller (or for which the caller has the **USE_SCHEMA** privilege) will be retrieved. For
-        unpaginated request, there is no guarantee of a specific ordering of the elements in the array. For
-        paginated request, elements are ordered by their name.
+        owned by the caller (or for which the caller has the **USE_SCHEMA** privilege) will be retrieved.
+        There is no guarantee of a specific ordering of the elements in the array.
         
         :param catalog_name: str
           Parent catalog for schemas of interest.
+        :param include_browse: bool (optional)
+          Whether to include schemas in the response for which the principal can only access selective
+          metadata for
         :param max_results: int (optional)
           Maximum number of schemas to return. If not set, all the schemas are returned (not recommended). -
           when set to a value greater than 0, the page length is the minimum of this value and a server

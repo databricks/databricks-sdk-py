@@ -144,7 +144,8 @@ class AwsAttributes:
     will be overridden."""
 
     ebs_volume_iops: Optional[int] = None
-    """<needs content added>"""
+    """If using gp3 volumes, what IOPS to use for the disk. If this is not set, the maximum performance
+    of a gp2 volume with the same volume size will be used."""
 
     ebs_volume_size: Optional[int] = None
     """The size of each EBS volume (in GiB) launched for each instance. For general purpose SSD, this
@@ -152,7 +153,8 @@ class AwsAttributes:
     within the range 500 - 4096."""
 
     ebs_volume_throughput: Optional[int] = None
-    """<needs content added>"""
+    """If using gp3 volumes, what throughput to use for the disk. If this is not set, the maximum
+    performance of a gp2 volume with the same volume size will be used."""
 
     ebs_volume_type: Optional[EbsVolumeType] = None
     """The type of EBS volumes that will be launched with this cluster."""

@@ -61,6 +61,9 @@ class CreateVectorIndexRequest:
     name: str
     """Name of the index"""
 
+    endpoint_name: str
+    """Name of the endpoint to be used for serving the index"""
+
     primary_key: str
     """Primary key of the index"""
 
@@ -77,9 +80,6 @@ class CreateVectorIndexRequest:
 
     direct_access_index_spec: Optional[DirectAccessVectorIndexSpec] = None
     """Specification for Direct Vector Access Index. Required if `index_type` is `DIRECT_ACCESS`."""
-
-    endpoint_name: Optional[str] = None
-    """Name of the endpoint to be used for serving the index"""
 
     def as_dict(self) -> dict:
         """Serializes the CreateVectorIndexRequest into a dictionary suitable for use as a JSON request body."""
@@ -161,20 +161,20 @@ class DeleteDataVectorIndexRequest:
     primary_keys: List[str]
     """List of primary keys for the data to be deleted."""
 
-    name: Optional[str] = None
+    index_name: Optional[str] = None
     """Name of the vector index where data is to be deleted. Must be a Direct Vector Access Index."""
 
     def as_dict(self) -> dict:
         """Serializes the DeleteDataVectorIndexRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.name is not None: body['name'] = self.name
+        if self.index_name is not None: body['index_name'] = self.index_name
         if self.primary_keys: body['primary_keys'] = [v for v in self.primary_keys]
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> DeleteDataVectorIndexRequest:
         """Deserializes the DeleteDataVectorIndexRequest from a dictionary."""
-        return cls(name=d.get('name', None), primary_keys=d.get('primary_keys', None))
+        return cls(index_name=d.get('index_name', None), primary_keys=d.get('primary_keys', None))
 
 
 @dataclass
@@ -320,6 +320,9 @@ class DeltaSyncVectorIndexSpecResponse:
 
 @dataclass
 class DirectAccessVectorIndexSpec:
+    embedding_source_columns: Optional[List[EmbeddingSourceColumn]] = None
+    """Contains the optional model endpoint to use during query time."""
+
     embedding_vector_columns: Optional[List[EmbeddingVectorColumn]] = None
 
     schema_json: Optional[str] = None
@@ -333,6 +336,8 @@ class DirectAccessVectorIndexSpec:
     def as_dict(self) -> dict:
         """Serializes the DirectAccessVectorIndexSpec into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.embedding_source_columns:
+            body['embedding_source_columns'] = [v.as_dict() for v in self.embedding_source_columns]
         if self.embedding_vector_columns:
             body['embedding_vector_columns'] = [v.as_dict() for v in self.embedding_vector_columns]
         if self.schema_json is not None: body['schema_json'] = self.schema_json
@@ -341,7 +346,9 @@ class DirectAccessVectorIndexSpec:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> DirectAccessVectorIndexSpec:
         """Deserializes the DirectAccessVectorIndexSpec from a dictionary."""
-        return cls(embedding_vector_columns=_repeated_dict(d, 'embedding_vector_columns',
+        return cls(embedding_source_columns=_repeated_dict(d, 'embedding_source_columns',
+                                                           EmbeddingSourceColumn),
+                   embedding_vector_columns=_repeated_dict(d, 'embedding_vector_columns',
                                                            EmbeddingVectorColumn),
                    schema_json=d.get('schema_json', None))
 
@@ -610,6 +617,9 @@ class QueryVectorIndexRequest:
     """Query vector. Required for Direct Vector Access Index and Delta Sync Index using self-managed
     vectors."""
 
+    score_threshold: Optional[float] = None
+    """Threshold for the approximate nearest neighbor search. Defaults to 0.0."""
+
     def as_dict(self) -> dict:
         """Serializes the QueryVectorIndexRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -619,6 +629,7 @@ class QueryVectorIndexRequest:
         if self.num_results is not None: body['num_results'] = self.num_results
         if self.query_text is not None: body['query_text'] = self.query_text
         if self.query_vector: body['query_vector'] = [v for v in self.query_vector]
+        if self.score_threshold is not None: body['score_threshold'] = self.score_threshold
         return body
 
     @classmethod
@@ -629,7 +640,8 @@ class QueryVectorIndexRequest:
                    index_name=d.get('index_name', None),
                    num_results=d.get('num_results', None),
                    query_text=d.get('query_text', None),
-                   query_vector=d.get('query_vector', None))
+                   query_vector=d.get('query_vector', None),
+                   score_threshold=d.get('score_threshold', None))
 
 
 @dataclass
@@ -753,20 +765,20 @@ class UpsertDataVectorIndexRequest:
     inputs_json: str
     """JSON string representing the data to be upserted."""
 
-    name: Optional[str] = None
+    index_name: Optional[str] = None
     """Name of the vector index where data is to be upserted. Must be a Direct Vector Access Index."""
 
     def as_dict(self) -> dict:
         """Serializes the UpsertDataVectorIndexRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.index_name is not None: body['index_name'] = self.index_name
         if self.inputs_json is not None: body['inputs_json'] = self.inputs_json
-        if self.name is not None: body['name'] = self.name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> UpsertDataVectorIndexRequest:
         """Deserializes the UpsertDataVectorIndexRequest from a dictionary."""
-        return cls(inputs_json=d.get('inputs_json', None), name=d.get('name', None))
+        return cls(index_name=d.get('index_name', None), inputs_json=d.get('inputs_json', None))
 
 
 @dataclass
@@ -961,13 +973,11 @@ class VectorSearchEndpointsAPI:
                                  timeout=timedelta(minutes=20)) -> EndpointInfo:
         return self.create_endpoint(endpoint_type=endpoint_type, name=name).result(timeout=timeout)
 
-    def delete_endpoint(self, endpoint_name: str, name: str):
+    def delete_endpoint(self, endpoint_name: str):
         """Delete an endpoint.
         
         :param endpoint_name: str
           Name of the endpoint
-        :param name: str
-          Name of the endpoint to delete
         
         
         """
@@ -1025,20 +1035,24 @@ class VectorSearchIndexesAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create_index(self,
-                     name: str,
-                     primary_key: str,
-                     index_type: VectorIndexType,
-                     *,
-                     delta_sync_index_spec: Optional[DeltaSyncVectorIndexSpecRequest] = None,
-                     direct_access_index_spec: Optional[DirectAccessVectorIndexSpec] = None,
-                     endpoint_name: Optional[str] = None) -> CreateVectorIndexResponse:
+    def create_index(
+            self,
+            name: str,
+            endpoint_name: str,
+            primary_key: str,
+            index_type: VectorIndexType,
+            *,
+            delta_sync_index_spec: Optional[DeltaSyncVectorIndexSpecRequest] = None,
+            direct_access_index_spec: Optional[DirectAccessVectorIndexSpec] = None
+    ) -> CreateVectorIndexResponse:
         """Create an index.
         
         Create a new index.
         
         :param name: str
           Name of the index
+        :param endpoint_name: str
+          Name of the endpoint to be used for serving the index
         :param primary_key: str
           Primary key of the index
         :param index_type: :class:`VectorIndexType`
@@ -1052,8 +1066,6 @@ class VectorSearchIndexesAPI:
           Specification for Delta Sync Index. Required if `index_type` is `DELTA_SYNC`.
         :param direct_access_index_spec: :class:`DirectAccessVectorIndexSpec` (optional)
           Specification for Direct Vector Access Index. Required if `index_type` is `DIRECT_ACCESS`.
-        :param endpoint_name: str (optional)
-          Name of the endpoint to be used for serving the index
         
         :returns: :class:`CreateVectorIndexResponse`
         """
@@ -1070,12 +1082,13 @@ class VectorSearchIndexesAPI:
         res = self._api.do('POST', '/api/2.0/vector-search/indexes', body=body, headers=headers)
         return CreateVectorIndexResponse.from_dict(res)
 
-    def delete_data_vector_index(self, name: str, primary_keys: List[str]) -> DeleteDataVectorIndexResponse:
+    def delete_data_vector_index(self, index_name: str,
+                                 primary_keys: List[str]) -> DeleteDataVectorIndexResponse:
         """Delete data from index.
         
         Handles the deletion of data from a specified vector index.
         
-        :param name: str
+        :param index_name: str
           Name of the vector index where data is to be deleted. Must be a Direct Vector Access Index.
         :param primary_keys: List[str]
           List of primary keys for the data to be deleted.
@@ -1087,7 +1100,7 @@ class VectorSearchIndexesAPI:
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         res = self._api.do('POST',
-                           f'/api/2.0/vector-search/indexes/{name}/delete-data',
+                           f'/api/2.0/vector-search/indexes/{index_name}/delete-data',
                            body=body,
                            headers=headers)
         return DeleteDataVectorIndexResponse.from_dict(res)
@@ -1160,7 +1173,8 @@ class VectorSearchIndexesAPI:
                     filters_json: Optional[str] = None,
                     num_results: Optional[int] = None,
                     query_text: Optional[str] = None,
-                    query_vector: Optional[List[float]] = None) -> QueryVectorIndexResponse:
+                    query_vector: Optional[List[float]] = None,
+                    score_threshold: Optional[float] = None) -> QueryVectorIndexResponse:
         """Query an index.
         
         Query the specified vector index.
@@ -1182,6 +1196,8 @@ class VectorSearchIndexesAPI:
         :param query_vector: List[float] (optional)
           Query vector. Required for Direct Vector Access Index and Delta Sync Index using self-managed
           vectors.
+        :param score_threshold: float (optional)
+          Threshold for the approximate nearest neighbor search. Defaults to 0.0.
         
         :returns: :class:`QueryVectorIndexResponse`
         """
@@ -1191,6 +1207,7 @@ class VectorSearchIndexesAPI:
         if num_results is not None: body['num_results'] = num_results
         if query_text is not None: body['query_text'] = query_text
         if query_vector is not None: body['query_vector'] = [v for v in query_vector]
+        if score_threshold is not None: body['score_threshold'] = score_threshold
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         res = self._api.do('POST',
@@ -1214,12 +1231,12 @@ class VectorSearchIndexesAPI:
 
         self._api.do('POST', f'/api/2.0/vector-search/indexes/{index_name}/sync', headers=headers)
 
-    def upsert_data_vector_index(self, name: str, inputs_json: str) -> UpsertDataVectorIndexResponse:
+    def upsert_data_vector_index(self, index_name: str, inputs_json: str) -> UpsertDataVectorIndexResponse:
         """Upsert data into an index.
         
         Handles the upserting of data into a specified vector index.
         
-        :param name: str
+        :param index_name: str
           Name of the vector index where data is to be upserted. Must be a Direct Vector Access Index.
         :param inputs_json: str
           JSON string representing the data to be upserted.
@@ -1231,7 +1248,7 @@ class VectorSearchIndexesAPI:
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         res = self._api.do('POST',
-                           f'/api/2.0/vector-search/indexes/{name}/upsert-data',
+                           f'/api/2.0/vector-search/indexes/{index_name}/upsert-data',
                            body=body,
                            headers=headers)
         return UpsertDataVectorIndexResponse.from_dict(res)

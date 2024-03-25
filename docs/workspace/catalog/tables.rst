@@ -45,7 +45,7 @@
         :returns: :class:`TableExistsResponse`
         
 
-    .. py:method:: get(full_name: str [, include_delta_metadata: Optional[bool]]) -> TableInfo
+    .. py:method:: get(full_name: str [, include_browse: Optional[bool], include_delta_metadata: Optional[bool]]) -> TableInfo
 
 
         Usage:
@@ -89,13 +89,16 @@
         
         :param full_name: str
           Full name of the table.
+        :param include_browse: bool (optional)
+          Whether to include tables in the response for which the principal can only access selective metadata
+          for
         :param include_delta_metadata: bool (optional)
           Whether delta metadata should be included in the response.
         
         :returns: :class:`TableInfo`
         
 
-    .. py:method:: list(catalog_name: str, schema_name: str [, include_delta_metadata: Optional[bool], max_results: Optional[int], omit_columns: Optional[bool], omit_properties: Optional[bool], page_token: Optional[str]]) -> Iterator[TableInfo]
+    .. py:method:: list(catalog_name: str, schema_name: str [, include_browse: Optional[bool], include_delta_metadata: Optional[bool], max_results: Optional[int], omit_columns: Optional[bool], omit_properties: Optional[bool], page_token: Optional[str]]) -> Iterator[TableInfo]
 
 
         Usage:
@@ -130,6 +133,9 @@
           Name of parent catalog for tables of interest.
         :param schema_name: str
           Parent schema of tables.
+        :param include_browse: bool (optional)
+          Whether to include tables in the response for which the principal can only access selective metadata
+          for
         :param include_delta_metadata: bool (optional)
           Whether delta metadata should be included in the response.
         :param max_results: int (optional)

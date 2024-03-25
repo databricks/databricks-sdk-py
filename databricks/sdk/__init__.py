@@ -34,9 +34,9 @@ from databricks.sdk.service.iam import (AccountAccessControlAPI,
                                         AccountGroupsAPI,
                                         AccountServicePrincipalsAPI,
                                         AccountUsersAPI, CurrentUserAPI,
-                                        GroupsAPI, PermissionsAPI,
-                                        ServicePrincipalsAPI, UsersAPI,
-                                        WorkspaceAssignmentAPI)
+                                        GroupsAPI, PermissionMigrationAPI,
+                                        PermissionsAPI, ServicePrincipalsAPI,
+                                        UsersAPI, WorkspaceAssignmentAPI)
 from databricks.sdk.service.jobs import JobsAPI
 from databricks.sdk.service.ml import ExperimentsAPI, ModelRegistryAPI
 from databricks.sdk.service.oauth2 import (CustomAppIntegrationAPI,
@@ -52,9 +52,17 @@ from databricks.sdk.service.provisioning import (CredentialsAPI,
 from databricks.sdk.service.serving import AppsAPI, ServingEndpointsAPI
 from databricks.sdk.service.settings import (AccountIpAccessListsAPI,
                                              AccountSettingsAPI,
+                                             AutomaticClusterUpdateAPI,
                                              CredentialsManagerAPI,
+                                             CspEnablementAccountAPI,
+                                             CspEnablementAPI,
+                                             DefaultNamespaceAPI,
+                                             EsmEnablementAccountAPI,
+                                             EsmEnablementAPI,
                                              IpAccessListsAPI,
                                              NetworkConnectivityAPI,
+                                             PersonalComputeAPI,
+                                             RestrictWorkspaceAdminsAPI,
                                              SettingsAPI, TokenManagementAPI,
                                              TokensAPI, WorkspaceConfAPI)
 from databricks.sdk.service.sharing import (CleanRoomsAPI, ProvidersAPI,
@@ -182,6 +190,7 @@ class WorkspaceClient:
         self._model_registry = ModelRegistryAPI(self._api_client)
         self._model_versions = ModelVersionsAPI(self._api_client)
         self._online_tables = OnlineTablesAPI(self._api_client)
+        self._permission_migration = PermissionMigrationAPI(self._api_client)
         self._permissions = PermissionsAPI(self._api_client)
         self._pipelines = PipelinesAPI(self._api_client)
         self._policy_families = PolicyFamiliesAPI(self._api_client)
@@ -408,6 +417,11 @@ class WorkspaceClient:
         return self._online_tables
 
     @property
+    def permission_migration(self) -> PermissionMigrationAPI:
+        """This spec contains undocumented permission migration APIs used in https://github.com/databrickslabs/ucx."""
+        return self._permission_migration
+
+    @property
     def permissions(self) -> PermissionsAPI:
         """Permissions API are used to create read, write, edit, update and manage access for various users on different objects and endpoints."""
         return self._permissions
@@ -484,7 +498,7 @@ class WorkspaceClient:
 
     @property
     def settings(self) -> SettingsAPI:
-        """The default namespace setting API allows users to configure the default namespace for a Databricks workspace."""
+        """Workspace Settings API allows users to manage settings at the workspace level."""
         return self._settings
 
     @property
@@ -761,7 +775,7 @@ class AccountClient:
 
     @property
     def settings(self) -> AccountSettingsAPI:
-        """The Personal Compute enablement setting lets you control which users can use the Personal Compute default policy to create compute resources."""
+        """Accounts Settings API allows users to manage settings at the account level."""
         return self._settings
 
     @property

@@ -388,7 +388,7 @@ Dataclasses
             class_name = class_name.replace('Ext', 'API')
         class_name = class_name[:-3]
         for tag_name, t in self.mapping.items():
-            if t.service == class_name:
+            if t.service.lower() == str(class_name).lower():
                 return t
         raise KeyError(f'Cannot find {class_name} / {service_name} tag')
 

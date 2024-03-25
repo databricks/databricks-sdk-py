@@ -567,12 +567,12 @@ class EndpointCoreConfigInput:
     """The name of the serving endpoint to update. This field is required."""
 
     served_entities: Optional[List[ServedEntityInput]] = None
-    """A list of served entities for the endpoint to serve. A serving endpoint can have up to 10 served
+    """A list of served entities for the endpoint to serve. A serving endpoint can have up to 15 served
     entities."""
 
     served_models: Optional[List[ServedModelInput]] = None
     """(Deprecated, use served_entities instead) A list of served models for the endpoint to serve. A
-    serving endpoint can have up to 10 served models."""
+    serving endpoint can have up to 15 served models."""
 
     traffic_config: Optional[TrafficConfig] = None
     """The traffic config defining how invocations to the serving endpoint should be routed."""
@@ -661,6 +661,10 @@ class EndpointCoreConfigSummary:
 
 @dataclass
 class EndpointPendingConfig:
+    auto_capture_config: Optional[AutoCaptureConfigOutput] = None
+    """Configuration for Inference Tables which automatically logs requests and responses to Unity
+    Catalog."""
+
     config_version: Optional[int] = None
     """The config version that the serving endpoint is currently serving."""
 
@@ -680,6 +684,7 @@ class EndpointPendingConfig:
     def as_dict(self) -> dict:
         """Serializes the EndpointPendingConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.auto_capture_config: body['auto_capture_config'] = self.auto_capture_config.as_dict()
         if self.config_version is not None: body['config_version'] = self.config_version
         if self.served_entities: body['served_entities'] = [v.as_dict() for v in self.served_entities]
         if self.served_models: body['served_models'] = [v.as_dict() for v in self.served_models]
@@ -690,7 +695,8 @@ class EndpointPendingConfig:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> EndpointPendingConfig:
         """Deserializes the EndpointPendingConfig from a dictionary."""
-        return cls(config_version=d.get('config_version', None),
+        return cls(auto_capture_config=_from_dict(d, 'auto_capture_config', AutoCaptureConfigOutput),
+                   config_version=d.get('config_version', None),
                    served_entities=_repeated_dict(d, 'served_entities', ServedEntityOutput),
                    served_models=_repeated_dict(d, 'served_models', ServedModelOutput),
                    start_time=d.get('start_time', None),
@@ -2438,8 +2444,7 @@ class ServingEndpointsAPI:
         raise TimeoutError(f'timed out after {timeout}: {status_message}')
 
     def build_logs(self, name: str, served_model_name: str) -> BuildLogsResponse:
-        """Retrieve the logs associated with building the model's environment for a given serving endpoint's
-        served model.
+        """Get build logs for a served model.
         
         Retrieves the build logs associated with the provided served model.
         
@@ -2518,7 +2523,7 @@ class ServingEndpointsAPI:
         self._api.do('DELETE', f'/api/2.0/serving-endpoints/{name}', headers=headers)
 
     def export_metrics(self, name: str):
-        """Retrieve the metrics associated with a serving endpoint.
+        """Get metrics of a serving endpoint.
         
         Retrieves the metrics associated with the provided serving endpoint in either Prometheus or
         OpenMetrics exposition format.
@@ -2587,7 +2592,7 @@ class ServingEndpointsAPI:
         return ServingEndpointPermissions.from_dict(res)
 
     def list(self) -> Iterator[ServingEndpoint]:
-        """Retrieve all serving endpoints.
+        """Get all serving endpoints.
         
         :returns: Iterator over :class:`ServingEndpoint`
         """
@@ -2599,7 +2604,7 @@ class ServingEndpointsAPI:
         return parsed if parsed is not None else []
 
     def logs(self, name: str, served_model_name: str) -> ServerLogsResponse:
-        """Retrieve the most recent log lines associated with a given serving endpoint's served model.
+        """Get the latest logs for a served model.
         
         Retrieves the service logs associated with the provided served model.
         
@@ -2623,7 +2628,7 @@ class ServingEndpointsAPI:
               *,
               add_tags: Optional[List[EndpointTag]] = None,
               delete_tags: Optional[List[str]] = None) -> Iterator[EndpointTag]:
-        """Patch the tags of a serving endpoint.
+        """Update tags of a serving endpoint.
         
         Used to batch add and delete tags from a serving endpoint with a single API call.
         
@@ -2645,7 +2650,7 @@ class ServingEndpointsAPI:
         return [EndpointTag.from_dict(v) for v in res]
 
     def put(self, name: str, *, rate_limits: Optional[List[RateLimit]] = None) -> PutResponse:
-        """Update the rate limits of a serving endpoint.
+        """Update rate limits of a serving endpoint.
         
         Used to update the rate limits of a serving endpoint. NOTE: only external and foundation model
         endpoints are supported as of now.
@@ -2683,7 +2688,7 @@ class ServingEndpointsAPI:
               stop: Optional[List[str]] = None,
               stream: Optional[bool] = None,
               temperature: Optional[float] = None) -> QueryEndpointResponse:
-        """Query a serving endpoint with provided model input.
+        """Query a serving endpoint.
         
         :param name: str
           The name of the serving endpoint. This field is required.
@@ -2789,7 +2794,7 @@ class ServingEndpointsAPI:
                       served_entities: Optional[List[ServedEntityInput]] = None,
                       served_models: Optional[List[ServedModelInput]] = None,
                       traffic_config: Optional[TrafficConfig] = None) -> Wait[ServingEndpointDetailed]:
-        """Update a serving endpoint with a new config.
+        """Update config of a serving endpoint.
         
         Updates any combination of the serving endpoint's served entities, the compute configuration of those
         served entities, and the endpoint's traffic config. An endpoint that already has an update in progress
@@ -2800,11 +2805,11 @@ class ServingEndpointsAPI:
         :param auto_capture_config: :class:`AutoCaptureConfigInput` (optional)
           Configuration for Inference Tables which automatically logs requests and responses to Unity Catalog.
         :param served_entities: List[:class:`ServedEntityInput`] (optional)
-          A list of served entities for the endpoint to serve. A serving endpoint can have up to 10 served
+          A list of served entities for the endpoint to serve. A serving endpoint can have up to 15 served
           entities.
         :param served_models: List[:class:`ServedModelInput`] (optional)
           (Deprecated, use served_entities instead) A list of served models for the endpoint to serve. A
-          serving endpoint can have up to 10 served models.
+          serving endpoint can have up to 15 served models.
         :param traffic_config: :class:`TrafficConfig` (optional)
           The traffic config defining how invocations to the serving endpoint should be routed.
         

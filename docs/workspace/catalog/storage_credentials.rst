@@ -15,7 +15,7 @@
     To create storage credentials, you must be a Databricks account admin. The account admin who creates the
     storage credential can delegate ownership to another user or group to manage permissions on it.
 
-    .. py:method:: create(name: str [, aws_iam_role: Optional[AwsIamRole], azure_managed_identity: Optional[AzureManagedIdentity], azure_service_principal: Optional[AzureServicePrincipal], cloudflare_api_token: Optional[CloudflareApiToken], comment: Optional[str], databricks_gcp_service_account: Optional[DatabricksGcpServiceAccountRequest], read_only: Optional[bool], skip_validation: Optional[bool]]) -> StorageCredentialInfo
+    .. py:method:: create(name: str [, aws_iam_role: Optional[AwsIamRoleRequest], azure_managed_identity: Optional[AzureManagedIdentity], azure_service_principal: Optional[AzureServicePrincipal], cloudflare_api_token: Optional[CloudflareApiToken], comment: Optional[str], databricks_gcp_service_account: Optional[DatabricksGcpServiceAccountRequest], read_only: Optional[bool], skip_validation: Optional[bool]]) -> StorageCredentialInfo
 
 
         Usage:
@@ -43,7 +43,7 @@
         
         :param name: str
           The credential name. The name must be unique within the metastore.
-        :param aws_iam_role: :class:`AwsIamRole` (optional)
+        :param aws_iam_role: :class:`AwsIamRoleRequest` (optional)
           The AWS IAM role configuration.
         :param azure_managed_identity: :class:`AzureManagedIdentity` (optional)
           The Azure managed identity configuration.
@@ -95,7 +95,7 @@
             
             created = w.storage_credentials.create(
                 name=f'sdk-{time.time_ns()}',
-                aws_iam_role=catalog.AwsIamRole(role_arn=os.environ["TEST_METASTORE_DATA_ACCESS_ARN"]))
+                aws_iam_role=catalog.AwsIamRoleRequest(role_arn=os.environ["TEST_METASTORE_DATA_ACCESS_ARN"]))
             
             by_name = w.storage_credentials.get(name=created.name)
             
@@ -130,9 +130,8 @@
         
         Gets an array of storage credentials (as __StorageCredentialInfo__ objects). The array is limited to
         only those storage credentials the caller has permission to access. If the caller is a metastore
-        admin, retrieval of credentials is unrestricted. For unpaginated request, there is no guarantee of a
-        specific ordering of the elements in the array. For paginated request, elements are ordered by their
-        name.
+        admin, retrieval of credentials is unrestricted. There is no guarantee of a specific ordering of the
+        elements in the array.
         
         :param max_results: int (optional)
           Maximum number of storage credentials to return. If not set, all the storage credentials are
@@ -146,7 +145,7 @@
         :returns: Iterator over :class:`StorageCredentialInfo`
         
 
-    .. py:method:: update(name: str [, aws_iam_role: Optional[AwsIamRole], azure_managed_identity: Optional[AzureManagedIdentity], azure_service_principal: Optional[AzureServicePrincipal], cloudflare_api_token: Optional[CloudflareApiToken], comment: Optional[str], databricks_gcp_service_account: Optional[DatabricksGcpServiceAccountRequest], force: Optional[bool], new_name: Optional[str], owner: Optional[str], read_only: Optional[bool], skip_validation: Optional[bool]]) -> StorageCredentialInfo
+    .. py:method:: update(name: str [, aws_iam_role: Optional[AwsIamRoleRequest], azure_managed_identity: Optional[AzureManagedIdentity], azure_service_principal: Optional[AzureServicePrincipal], cloudflare_api_token: Optional[CloudflareApiToken], comment: Optional[str], databricks_gcp_service_account: Optional[DatabricksGcpServiceAccountRequest], force: Optional[bool], new_name: Optional[str], owner: Optional[str], read_only: Optional[bool], skip_validation: Optional[bool]]) -> StorageCredentialInfo
 
 
         Usage:
@@ -179,7 +178,7 @@
         
         :param name: str
           Name of the storage credential.
-        :param aws_iam_role: :class:`AwsIamRole` (optional)
+        :param aws_iam_role: :class:`AwsIamRoleRequest` (optional)
           The AWS IAM role configuration.
         :param azure_managed_identity: :class:`AzureManagedIdentity` (optional)
           The Azure managed identity configuration.
@@ -205,7 +204,7 @@
         :returns: :class:`StorageCredentialInfo`
         
 
-    .. py:method:: validate( [, aws_iam_role: Optional[AwsIamRole], azure_managed_identity: Optional[AzureManagedIdentity], azure_service_principal: Optional[AzureServicePrincipal], cloudflare_api_token: Optional[CloudflareApiToken], databricks_gcp_service_account: Optional[DatabricksGcpServiceAccountRequest], external_location_name: Optional[str], read_only: Optional[bool], storage_credential_name: Optional[str], url: Optional[str]]) -> ValidateStorageCredentialResponse
+    .. py:method:: validate( [, aws_iam_role: Optional[AwsIamRoleRequest], azure_managed_identity: Optional[AzureManagedIdentity], azure_service_principal: Optional[AzureServicePrincipal], cloudflare_api_token: Optional[CloudflareApiToken], databricks_gcp_service_account: Optional[DatabricksGcpServiceAccountRequest], external_location_name: Optional[str], read_only: Optional[bool], storage_credential_name: Optional[str], url: Optional[str]]) -> ValidateStorageCredentialResponse
 
         Validate a storage credential.
         
@@ -219,7 +218,7 @@
         The caller must be a metastore admin or the storage credential owner or have the
         **CREATE_EXTERNAL_LOCATION** privilege on the metastore and the storage credential.
         
-        :param aws_iam_role: :class:`AwsIamRole` (optional)
+        :param aws_iam_role: :class:`AwsIamRoleRequest` (optional)
           The AWS IAM role configuration.
         :param azure_managed_identity: :class:`AzureManagedIdentity` (optional)
           The Azure managed identity configuration.

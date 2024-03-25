@@ -12,7 +12,7 @@
     Delta Table changes. * **Direct Vector Access Index**: An index that supports direct read and write of
     vectors and metadata through our REST and SDK APIs. With this model, the user manages index updates.
 
-    .. py:method:: create_index(name: str, primary_key: str, index_type: VectorIndexType [, delta_sync_index_spec: Optional[DeltaSyncVectorIndexSpecRequest], direct_access_index_spec: Optional[DirectAccessVectorIndexSpec], endpoint_name: Optional[str]]) -> CreateVectorIndexResponse
+    .. py:method:: create_index(name: str, endpoint_name: str, primary_key: str, index_type: VectorIndexType [, delta_sync_index_spec: Optional[DeltaSyncVectorIndexSpecRequest], direct_access_index_spec: Optional[DirectAccessVectorIndexSpec]]) -> CreateVectorIndexResponse
 
         Create an index.
         
@@ -20,6 +20,8 @@
         
         :param name: str
           Name of the index
+        :param endpoint_name: str
+          Name of the endpoint to be used for serving the index
         :param primary_key: str
           Primary key of the index
         :param index_type: :class:`VectorIndexType`
@@ -33,19 +35,17 @@
           Specification for Delta Sync Index. Required if `index_type` is `DELTA_SYNC`.
         :param direct_access_index_spec: :class:`DirectAccessVectorIndexSpec` (optional)
           Specification for Direct Vector Access Index. Required if `index_type` is `DIRECT_ACCESS`.
-        :param endpoint_name: str (optional)
-          Name of the endpoint to be used for serving the index
         
         :returns: :class:`CreateVectorIndexResponse`
         
 
-    .. py:method:: delete_data_vector_index(name: str, primary_keys: List[str]) -> DeleteDataVectorIndexResponse
+    .. py:method:: delete_data_vector_index(index_name: str, primary_keys: List[str]) -> DeleteDataVectorIndexResponse
 
         Delete data from index.
         
         Handles the deletion of data from a specified vector index.
         
-        :param name: str
+        :param index_name: str
           Name of the vector index where data is to be deleted. Must be a Direct Vector Access Index.
         :param primary_keys: List[str]
           List of primary keys for the data to be deleted.
@@ -91,7 +91,7 @@
         :returns: Iterator over :class:`MiniVectorIndex`
         
 
-    .. py:method:: query_index(index_name: str, columns: List[str] [, filters_json: Optional[str], num_results: Optional[int], query_text: Optional[str], query_vector: Optional[List[float]]]) -> QueryVectorIndexResponse
+    .. py:method:: query_index(index_name: str, columns: List[str] [, filters_json: Optional[str], num_results: Optional[int], query_text: Optional[str], query_vector: Optional[List[float]], score_threshold: Optional[float]]) -> QueryVectorIndexResponse
 
         Query an index.
         
@@ -114,6 +114,8 @@
         :param query_vector: List[float] (optional)
           Query vector. Required for Direct Vector Access Index and Delta Sync Index using self-managed
           vectors.
+        :param score_threshold: float (optional)
+          Threshold for the approximate nearest neighbor search. Defaults to 0.0.
         
         :returns: :class:`QueryVectorIndexResponse`
         
@@ -130,13 +132,13 @@
         
         
 
-    .. py:method:: upsert_data_vector_index(name: str, inputs_json: str) -> UpsertDataVectorIndexResponse
+    .. py:method:: upsert_data_vector_index(index_name: str, inputs_json: str) -> UpsertDataVectorIndexResponse
 
         Upsert data into an index.
         
         Handles the upserting of data into a specified vector index.
         
-        :param name: str
+        :param index_name: str
           Name of the vector index where data is to be upserted. Must be a Direct Vector Access Index.
         :param inputs_json: str
           JSON string representing the data to be upserted.

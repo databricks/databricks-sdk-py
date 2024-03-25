@@ -65,7 +65,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: AwsIamRole
+.. autoclass:: AwsIamRoleRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: AwsIamRoleResponse
    :members:
    :undoc-members:
 
@@ -359,6 +363,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: CreateMonitor
+   :members:
+   :undoc-members:
+
+.. autoclass:: CreateOnlineTableRequest
    :members:
    :undoc-members:
 
@@ -1361,10 +1369,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: SKIP
       :value: "SKIP"
-
-.. autoclass:: ViewData
-   :members:
-   :undoc-members:
 
 .. autoclass:: VolumeInfo
    :members:
