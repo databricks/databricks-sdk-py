@@ -1,5 +1,6 @@
 import datetime
 from typing import Callable, Dict, Generic, Optional, Type, TypeVar
+import urllib.parse
 
 
 def _from_dict(d: Dict[str, any], field: str, cls: Type) -> any:
@@ -36,6 +37,10 @@ def _repeated_enum(d: Dict[str, any], field: str, cls: Type) -> any:
         if val:
             res.append(val)
     return res
+
+
+def _escape_multi_segment_path_parameter(param: str) -> str:
+    return urllib.parse.quote(param)
 
 
 ReturnType = TypeVar('ReturnType')
