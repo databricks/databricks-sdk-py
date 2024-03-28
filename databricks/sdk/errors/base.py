@@ -1,4 +1,8 @@
-from typing import Dict, List
+import re
+from dataclasses import dataclass
+from typing import Dict, List, Optional
+
+import requests
 
 
 class ErrorDetail:
@@ -63,3 +67,42 @@ class DatabricksError(IOError):
         if self.details == None:
             return []
         return [detail for detail in self.details if detail.type == error_type]
+
+@dataclass
+class _ErrorOverride:
+    # The name of the override. Used for logging purposes.
+    debug_name: str
+
+    # A regex that must match the path of the request for this override to be applied.
+    path_regex: re.Pattern
+
+    # The HTTP method of the request for the override to apply
+    verb: str
+
+    # The custom error class to use for this override.
+    custom_error: type
+
+    # A regular expression that must match the error code for this override to be applied. If None,
+    # this field is ignored.
+    status_code_matcher: Optional[re.Pattern] = None
+
+    # A regular expression that must match the error code for this override to be applied. If None,
+    # this field is ignored.
+    error_code_matcher: Optional[re.Pattern] = None
+
+    # A regular expression that must match the message for this override to be applied. If None,
+    # this field is ignored.
+    message_matcher: Optional[re.Pattern] = None
+
+    def matches(self, response: requests.Response, raw_error: dict):
+        if response.request.method != self.verb:
+            return False
+        if not self.path_regex.match(response.request.path_url):
+            return False
+        if self.status_code_matcher and not self.status_code_matcher.match(str(response.status_code)):
+            return False
+        if self.error_code_matcher and not self.error_code_matcher.match(raw_error.get('error_code', '')):
+            return False
+        if self.message_matcher and not self.message_matcher.match(raw_error.get('message', '')):
+            return False
+        return True
