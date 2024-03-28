@@ -1,6 +1,6 @@
 import datetime
-from typing import Callable, Dict, Generic, Optional, Type, TypeVar
 import urllib.parse
+from typing import Callable, Dict, Generic, Optional, Type, TypeVar
 
 
 def _from_dict(d: Dict[str, any], field: str, cls: Type) -> any:
