@@ -2,10 +2,13 @@
 
 ## 0.24.0
 
-* Revert changelog template changes for better diffs ([#590](https://github.com/databricks/databricks-sdk-py/pull/590)).
+### Improvements and Bug Fixes
 * Properly escape multi-segment path parameters ([#596](https://github.com/databricks/databricks-sdk-py/pull/596)).
 
-API Changes:
+### Internal Changes
+* Revert changelog template changes for better diffs ([#590](https://github.com/databricks/databricks-sdk-py/pull/590)).
+
+### API Changes
 
  * Added `Migrate` and `Unpublish` methods for [w.Lakeview](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#LakeviewAPI) workspace-level service.
  * Added [dashboards.MigrateDashboardRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#MigrateDashboardRequest).
