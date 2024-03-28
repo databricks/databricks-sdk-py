@@ -118,6 +118,33 @@ class LifecycleState(Enum):
 
 
 @dataclass
+class MigrateDashboardRequest:
+    source_dashboard_id: str
+    """UUID of the dashboard to be migrated."""
+
+    display_name: Optional[str] = None
+    """Display name for the new Lakeview dashboard."""
+
+    parent_path: Optional[str] = None
+    """The workspace path of the folder to contain the migrated Lakeview dashboard."""
+
+    def as_dict(self) -> dict:
+        """Serializes the MigrateDashboardRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.parent_path is not None: body['parent_path'] = self.parent_path
+        if self.source_dashboard_id is not None: body['source_dashboard_id'] = self.source_dashboard_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> MigrateDashboardRequest:
+        """Deserializes the MigrateDashboardRequest from a dictionary."""
+        return cls(display_name=d.get('display_name', None),
+                   parent_path=d.get('parent_path', None),
+                   source_dashboard_id=d.get('source_dashboard_id', None))
+
+
+@dataclass
 class PublishRequest:
     dashboard_id: Optional[str] = None
     """UUID identifying the dashboard to be published."""
@@ -188,6 +215,20 @@ class TrashDashboardResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> TrashDashboardResponse:
         """Deserializes the TrashDashboardResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
+class UnpublishDashboardResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the UnpublishDashboardResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UnpublishDashboardResponse:
+        """Deserializes the UnpublishDashboardResponse from a dictionary."""
         return cls()
 
 
@@ -300,6 +341,33 @@ class LakeviewAPI:
         res = self._api.do('GET', f'/api/2.0/lakeview/dashboards/{dashboard_id}/published', headers=headers)
         return PublishedDashboard.from_dict(res)
 
+    def migrate(self,
+                source_dashboard_id: str,
+                *,
+                display_name: Optional[str] = None,
+                parent_path: Optional[str] = None) -> Dashboard:
+        """Migrate dashboard.
+        
+        Migrates a classic SQL dashboard to Lakeview.
+        
+        :param source_dashboard_id: str
+          UUID of the dashboard to be migrated.
+        :param display_name: str (optional)
+          Display name for the new Lakeview dashboard.
+        :param parent_path: str (optional)
+          The workspace path of the folder to contain the migrated Lakeview dashboard.
+        
+        :returns: :class:`Dashboard`
+        """
+        body = {}
+        if display_name is not None: body['display_name'] = display_name
+        if parent_path is not None: body['parent_path'] = parent_path
+        if source_dashboard_id is not None: body['source_dashboard_id'] = source_dashboard_id
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do('POST', '/api/2.0/lakeview/dashboards/migrate', body=body, headers=headers)
+        return Dashboard.from_dict(res)
+
     def publish(self,
                 dashboard_id: str,
                 *,
@@ -344,6 +412,21 @@ class LakeviewAPI:
         headers = {'Accept': 'application/json', }
 
         self._api.do('DELETE', f'/api/2.0/lakeview/dashboards/{dashboard_id}', headers=headers)
+
+    def unpublish(self, dashboard_id: str):
+        """Unpublish dashboard.
+        
+        Unpublish the dashboard.
+        
+        :param dashboard_id: str
+          UUID identifying the dashboard to be published.
+        
+        
+        """
+
+        headers = {'Accept': 'application/json', }
+
+        self._api.do('DELETE', f'/api/2.0/lakeview/dashboards/{dashboard_id}/published', headers=headers)
 
     def update(self,
                dashboard_id: str,

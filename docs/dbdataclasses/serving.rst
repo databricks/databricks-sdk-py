@@ -8,6 +8,26 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: AmazonBedrockConfig
+   :members:
+   :undoc-members:
+
+.. py:class:: AmazonBedrockConfigBedrockProvider
+
+   The underlying provider in Amazon Bedrock. Supported values (case insensitive) include: Anthropic, Cohere, AI21Labs, Amazon.
+
+   .. py:attribute:: AI21LABS
+      :value: "AI21LABS"
+
+   .. py:attribute:: AMAZON
+      :value: "AMAZON"
+
+   .. py:attribute:: ANTHROPIC
+      :value: "ANTHROPIC"
+
+   .. py:attribute:: COHERE
+      :value: "COHERE"
+
 .. autoclass:: AnthropicConfig
    :members:
    :undoc-members:
@@ -35,26 +55,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: AutoCaptureState
    :members:
    :undoc-members:
-
-.. autoclass:: AwsBedrockConfig
-   :members:
-   :undoc-members:
-
-.. py:class:: AwsBedrockConfigBedrockProvider
-
-   The underlying provider in AWS Bedrock. Supported values (case insensitive) include: Anthropic, Cohere, AI21Labs, Amazon.
-
-   .. py:attribute:: AI21LABS
-      :value: "AI21LABS"
-
-   .. py:attribute:: AMAZON
-      :value: "AMAZON"
-
-   .. py:attribute:: ANTHROPIC
-      :value: "ANTHROPIC"
-
-   .. py:attribute:: COHERE
-      :value: "COHERE"
 
 .. autoclass:: BuildLogsResponse
    :members:
@@ -193,16 +193,16 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ExternalModelProvider
 
-   The name of the provider for the external model. Currently, the supported providers are 'ai21labs', 'anthropic', 'aws-bedrock', 'cohere', 'databricks-model-serving', 'openai', and 'palm'.",
+   The name of the provider for the external model. Currently, the supported providers are 'ai21labs', 'anthropic', 'amazon-bedrock', 'cohere', 'databricks-model-serving', 'openai', and 'palm'.",
 
    .. py:attribute:: AI21LABS
       :value: "AI21LABS"
 
+   .. py:attribute:: AMAZON_BEDROCK
+      :value: "AMAZON_BEDROCK"
+
    .. py:attribute:: ANTHROPIC
       :value: "ANTHROPIC"
-
-   .. py:attribute:: AWS_BEDROCK
-      :value: "AWS_BEDROCK"
 
    .. py:attribute:: COHERE
       :value: "COHERE"

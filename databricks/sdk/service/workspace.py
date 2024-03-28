@@ -71,10 +71,18 @@ class CreateCredentials:
     gitLabEnterpriseEdition and awsCodeCommit."""
 
     git_username: Optional[str] = None
-    """Git username."""
+    """The username or email provided with your Git provider account, depending on which provider you
+    are using. For GitHub, GitHub Enterprise Server, or Azure DevOps Services, either email or
+    username may be used. For GitLab, GitLab Enterprise Edition, email must be used. For AWS
+    CodeCommit, BitBucket or BitBucket Server, username must be used. For all other providers please
+    see your provider's Personal Access Token authentication documentation to see what is supported."""
 
     personal_access_token: Optional[str] = None
-    """The personal access token used to authenticate to the corresponding Git provider."""
+    """The personal access token used to authenticate to the corresponding Git provider. For certain
+    providers, support may exist for other types of scoped access tokens. [Learn more]. The personal
+    access token used to authenticate to the corresponding Git
+    
+    [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html"""
 
     def as_dict(self) -> dict:
         """Serializes the CreateCredentials into a dictionary suitable for use as a JSON request body."""
@@ -103,7 +111,11 @@ class CreateCredentialsResponse:
     gitLabEnterpriseEdition and awsCodeCommit."""
 
     git_username: Optional[str] = None
-    """Git username."""
+    """The username or email provided with your Git provider account, depending on which provider you
+    are using. For GitHub, GitHub Enterprise Server, or Azure DevOps Services, either email or
+    username may be used. For GitLab, GitLab Enterprise Edition, email must be used. For AWS
+    CodeCommit, BitBucket or BitBucket Server, username must be used. For all other providers please
+    see your provider's Personal Access Token authentication documentation to see what is supported."""
 
     def as_dict(self) -> dict:
         """Serializes the CreateCredentialsResponse into a dictionary suitable for use as a JSON request body."""
@@ -215,7 +227,11 @@ class CredentialInfo:
     gitLabEnterpriseEdition and awsCodeCommit."""
 
     git_username: Optional[str] = None
-    """Git username."""
+    """The username or email provided with your Git provider account, depending on which provider you
+    are using. For GitHub, GitHub Enterprise Server, or Azure DevOps Services, either email or
+    username may be used. For GitLab, GitLab Enterprise Edition, email must be used. For AWS
+    CodeCommit, BitBucket or BitBucket Server, username must be used. For all other providers please
+    see your provider's Personal Access Token authentication documentation to see what is supported."""
 
     def as_dict(self) -> dict:
         """Serializes the CredentialInfo into a dictionary suitable for use as a JSON request body."""
@@ -1171,10 +1187,18 @@ class UpdateCredentials:
     gitLabEnterpriseEdition and awsCodeCommit."""
 
     git_username: Optional[str] = None
-    """Git username."""
+    """The username or email provided with your Git provider account, depending on which provider you
+    are using. For GitHub, GitHub Enterprise Server, or Azure DevOps Services, either email or
+    username may be used. For GitLab, GitLab Enterprise Edition, email must be used. For AWS
+    CodeCommit, BitBucket or BitBucket Server, username must be used. For all other providers please
+    see your provider's Personal Access Token authentication documentation to see what is supported."""
 
     personal_access_token: Optional[str] = None
-    """The personal access token used to authenticate to the corresponding Git provider."""
+    """The personal access token used to authenticate to the corresponding Git provider. For certain
+    providers, support may exist for other types of scoped access tokens. [Learn more]. The personal
+    access token used to authenticate to the corresponding Git
+    
+    [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html"""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateCredentials into a dictionary suitable for use as a JSON request body."""
@@ -1449,9 +1473,17 @@ class GitCredentialsAPI:
           bitbucketCloud, gitLab, azureDevOpsServices, gitHubEnterprise, bitbucketServer,
           gitLabEnterpriseEdition and awsCodeCommit.
         :param git_username: str (optional)
-          Git username.
+          The username or email provided with your Git provider account, depending on which provider you are
+          using. For GitHub, GitHub Enterprise Server, or Azure DevOps Services, either email or username may
+          be used. For GitLab, GitLab Enterprise Edition, email must be used. For AWS CodeCommit, BitBucket or
+          BitBucket Server, username must be used. For all other providers please see your provider's Personal
+          Access Token authentication documentation to see what is supported.
         :param personal_access_token: str (optional)
-          The personal access token used to authenticate to the corresponding Git provider.
+          The personal access token used to authenticate to the corresponding Git provider. For certain
+          providers, support may exist for other types of scoped access tokens. [Learn more]. The personal
+          access token used to authenticate to the corresponding Git
+          
+          [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html
         
         :returns: :class:`CreateCredentialsResponse`
         """
@@ -1526,9 +1558,17 @@ class GitCredentialsAPI:
           bitbucketCloud, gitLab, azureDevOpsServices, gitHubEnterprise, bitbucketServer,
           gitLabEnterpriseEdition and awsCodeCommit.
         :param git_username: str (optional)
-          Git username.
+          The username or email provided with your Git provider account, depending on which provider you are
+          using. For GitHub, GitHub Enterprise Server, or Azure DevOps Services, either email or username may
+          be used. For GitLab, GitLab Enterprise Edition, email must be used. For AWS CodeCommit, BitBucket or
+          BitBucket Server, username must be used. For all other providers please see your provider's Personal
+          Access Token authentication documentation to see what is supported.
         :param personal_access_token: str (optional)
-          The personal access token used to authenticate to the corresponding Git provider.
+          The personal access token used to authenticate to the corresponding Git provider. For certain
+          providers, support may exist for other types of scoped access tokens. [Learn more]. The personal
+          access token used to authenticate to the corresponding Git
+          
+          [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html
         
         
         """
