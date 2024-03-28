@@ -3,14 +3,19 @@ import requests
 
 from databricks.sdk import errors
 
+
 def fake_response(status_code: int) -> requests.Response:
     resp = requests.Response()
     resp.status_code = status_code
     resp.request = requests.Request('GET', 'https://databricks.com/api/2.0/service').prepare()
     return resp
 
+
 def test_error_code_has_precedence_over_http_status():
-    err = errors.error_mapper(fake_response(400), {'error_code': 'INVALID_PARAMETER_VALUE', 'message': 'nope'})
+    err = errors.error_mapper(fake_response(400), {
+        'error_code': 'INVALID_PARAMETER_VALUE',
+        'message': 'nope'
+    })
     assert errors.InvalidParameterValue == type(err)
 
 
@@ -58,14 +63,24 @@ def test_subclasses(status_code, error_code, klass):
     except klass:
         return
 
-@pytest.mark.parametrize(
-    'verb, path, status_code, error_code, message, expected_error',
-    [
-        ['GET', '/api/2.0/clusters/get', 400, 'INVALID_PARAMETER_VALUE', 'Cluster abcde does not exist', errors.ResourceDoesNotExist],
-        ['GET', '/api/2.0/jobs/get', 400, 'INVALID_PARAMETER_VALUE', 'Job abcde does not exist', errors.ResourceDoesNotExist],
-        ['GET', '/api/2.1/jobs/get', 400, 'INVALID_PARAMETER_VALUE', 'Job abcde does not exist', errors.ResourceDoesNotExist],
-        ['GET', '/api/2.1/jobs/get', 400, 'INVALID_PARAMETER_VALUE', 'Invalid spark version', errors.InvalidParameterValue],
-    ])
+
+@pytest.mark.parametrize('verb, path, status_code, error_code, message, expected_error',
+                         [[
+                             'GET', '/api/2.0/clusters/get', 400, 'INVALID_PARAMETER_VALUE',
+                             'Cluster abcde does not exist', errors.ResourceDoesNotExist
+                         ],
+                          [
+                              'GET', '/api/2.0/jobs/get', 400, 'INVALID_PARAMETER_VALUE',
+                              'Job abcde does not exist', errors.ResourceDoesNotExist
+                          ],
+                          [
+                              'GET', '/api/2.1/jobs/get', 400, 'INVALID_PARAMETER_VALUE',
+                              'Job abcde does not exist', errors.ResourceDoesNotExist
+                          ],
+                          [
+                              'GET', '/api/2.1/jobs/get', 400, 'INVALID_PARAMETER_VALUE',
+                              'Invalid spark version', errors.InvalidParameterValue
+                          ], ])
 def test_error_overrides(verb, path, status_code, error_code, message, expected_error):
     resp = requests.Response()
     resp.status_code = status_code

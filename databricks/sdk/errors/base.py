@@ -68,6 +68,7 @@ class DatabricksError(IOError):
             return []
         return [detail for detail in self.details if detail.type == error_type]
 
+
 @dataclass
 class _ErrorOverride:
     # The name of the override. Used for logging purposes.

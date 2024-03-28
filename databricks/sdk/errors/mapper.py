@@ -1,6 +1,8 @@
+import requests
+
 from databricks.sdk.errors import platform
 from databricks.sdk.errors.base import DatabricksError
-import requests
+
 from .overrides import _ALL_OVERRIDES
 
 
