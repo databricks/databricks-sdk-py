@@ -1,5 +1,72 @@
 # Version changelog
 
+## 0.24.0
+
+* Revert changelog template changes for better diffs ([#590](https://github.com/databricks/databricks-sdk-py/pull/590)).
+* Properly escape multi-segment path parameters ([#596](https://github.com/databricks/databricks-sdk-py/pull/596)).
+
+API Changes:
+
+ * Added `Migrate` and `Unpublish` methods for [w.Lakeview](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#LakeviewAPI) workspace-level service.
+ * Added [dashboards.MigrateDashboardRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#MigrateDashboardRequest).
+ * Added [dashboards.UnpublishDashboardRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/dashboards#UnpublishDashboardRequest).
+ * Added `Description`, `QueueDuration` and `RepairHistory` fields for [jobs.BaseRun](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#BaseRun).
+ * Added `ComputeKey` and `JobClusterKey` fields for [jobs.ClusterSpec](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#ClusterSpec).
+ * Changed `Left`, `Op` and `Right` fields for [jobs.ConditionTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#ConditionTask) to be required.
+ * Changed `EditMode` field for [jobs.CreateJob](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#CreateJob) to [jobs.JobEditMode](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobEditMode).
+ * Replaced [jobs.CreateJobEditMode](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#CreateJobEditMode) to [jobs.JobEditMode](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobEditMode).
+ * Changed `Url` field for [jobs.FileArrivalTriggerConfiguration](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#FileArrivalTriggerConfiguration) to be required.
+ * Changed `ErrorMessageStats` field for [jobs.ForEachStats](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#ForEachStats) to [jobs.ForEachTaskErrorMessageStatsList](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#ForEachTaskErrorMessageStatsList).
+ * Changed `NewCluster` field for [jobs.JobCluster](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobCluster) to be required.
+ * Changed `EditMode` field for [jobs.JobSettings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobSettings) to [jobs.JobEditMode](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobEditMode).
+ * Replaced [jobs.JobSettingsEditMode](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobSettingsEditMode) by [jobs.JobEditMode](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobEditMode).
+ * Changed `Metric`, `Op` and `Value` fields for [jobs.JobsHealthRule](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobsHealthRule) to be required.
+ * Changed `RunType` field for [jobs.ListRunsRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#ListRunsRequest) to [jobs.RunType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RunType).
+ * Removed [jobs.ListRunsRunType](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#ListRunsRunType).
+ * Removed [jobs.ParamPairs](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#ParamPairs).
+ * Changed `PipelineId` field for [jobs.PipelineTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#PipelineTask) to be required.
+ * Changed `EntryPoint` and `PackageName` fields for [jobs.PythonWheelTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#PythonWheelTask) to be required.
+ * Changed `JobParameters` field for [jobs.RepairRun](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RepairRun) to map[string]`string`.
+ * Changed `BaseParameters` field for [jobs.ResolvedNotebookTaskValues](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#ResolvedNotebookTaskValues) to map[string]`string`.
+ * Changed `Parameters` field for [jobs.ResolvedParamPairValues](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#ResolvedParamPairValues) to map[string]`string`.
+ * Changed `NamedParameters` field for [jobs.ResolvedPythonWheelTaskValues](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#ResolvedPythonWheelTaskValues) to map[string]`string`.
+ * Removed `NamedParameters` field for [jobs.ResolvedRunJobTaskValues](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#ResolvedRunJobTaskValues).
+ * Changed `Parameters` field for [jobs.ResolvedRunJobTaskValues](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#ResolvedRunJobTaskValues) to map[string]`string`.
+ * Added `JobParameters` field for [jobs.ResolvedRunJobTaskValues](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#ResolvedRunJobTaskValues).
+ * Added `Description` field for [jobs.Run](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#Run).
+ * Added `QueueDuration` field for [jobs.Run](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#Run).
+ * Changed `Op` field for [jobs.RunConditionTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RunConditionTask) to [jobs.ConditionTaskOp](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#ConditionTaskOp).
+ * Removed [jobs.RunConditionTaskOp](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RunConditionTaskOp).
+ * Changed `Inputs` and `Task` fields for [jobs.RunForEachTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RunForEachTask) to be required.
+ * Changed `JobParameters` field for [jobs.RunJobTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RunJobTask) to map[string]`string`.
+ * Added `DbtCommands`, `JarParams`, `NotebookParams`, `PipelineParams`, `PythonNamedParams`, `PythonParams`, `SparkSubmitParams` and `SqlParams` fields for [jobs.RunJobTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RunJobTask).
+ * Changed `JobParameters` field for [jobs.RunNow](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RunNow) to map[string]`string`.
+ * Added `Info` field for [jobs.RunOutput](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RunOutput).
+ * Removed `JobParameters` field for [jobs.RunParameters](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RunParameters).
+ * Changed `TaskKey` field for [jobs.RunTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RunTask) to be required.
+ * Added `ComputeKey`,`EmailNotifications`, `JobClusterKey`, `NotificatioSettings`, `RunDuration`, `RunPageUrl`, `TimeoutSeconds` and `WebhookNotifications` fields for [jobs.RunTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#RunTask).
+ * Added `EndpointId` field for [jobs.SqlQueryOutput](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#SqlQueryOutput).
+ * Added `ConditionTask` field for [jobs.SubmitRun](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#SubmitRun).
+ * Added `DbtCommands`, `JarParams`, `NotebookParams`, `PipelineParams`, `PythonNamedParams`, `PythonParams`, `SparkSubmitParams` and `SqlParams` field for [jobs.SubmitRun](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#SubmitRun).
+ * Added `Description` field for [jobs.SubmitTask](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#SubmitTask).
+ * Added `DisableAutoOptimization` field for [jobs.Task](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#Task).
+ * Added `NoAlertForSkippedRuns` field for [jobs.TaskEmailNotifications](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#TaskEmailNotifications).
+ * Added `TableUpdate` field for [jobs.TriggerSettings](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#TriggerSettings).
+ * Changed `Id` field for [jobs.Webhook](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#Webhook) to be required.
+ * Changed `OnDurationWarningThresholdExceeded` field for [jobs.WebhookNotifications](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#WebhookNotifications) to [jobs.WebhookList](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#WebhookList).
+ * Removed [jobs.WebhookNotificationsOnDurationWarningThresholdExceededItem](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#WebhookNotificationsOnDurationWarningThresholdExceededItem).
+ * Added [jobs.JobEditMode](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/jobs#JobEditMode).
+ * Removed [serving.AwsBedrockConfig](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AwsBedrockConfig).
+ * Removed [serving.AwsBedrockConfigBedrockProvider](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AwsBedrockConfigBedrockProvider).
+ * Removed `AwsBedrockConfig` field for [serving.ExternalModel](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ExternalModel).
+ * Added `AmazonBedrockConfig` field for [serving.ExternalModel](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#ExternalModel).
+ * Added [serving.AmazonBedrockConfig](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AmazonBedrockConfig).
+ * Added [serving.AmazonBedrockConfigBedrockProvider](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/serving#AmazonBedrockConfigBedrockProvider).
+ * Changed `Get` method for [w.IpAccessLists](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#IpAccessListsAPI) workspace-level service . New request type is [settings.GetIpAccessListRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetIpAccessListRequest).
+ * Renamed [settings.GetIpAccessList](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetIpAccessList) to [settings.GetIpAccessListRequest](https://pkg.go.dev/github.com/databricks/databricks-sdk-go/service/settings#GetIpAccessListRequest).
+
+OpenAPI SHA: d38528c3e47dd81c9bdbd918272a3e49d36e09ce, Date: 2024-03-27
+
 ## 0.23.0
 
 * Add CONTRIBUTING.md ([#585](https://github.com/databricks/databricks-sdk-py/pull/585)).
