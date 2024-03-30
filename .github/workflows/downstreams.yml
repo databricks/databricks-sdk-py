@@ -20,12 +20,14 @@ permissions:
   pull-requests: write
 
 jobs:
-  backwards-compatibility:
+  compatibility:
     strategy:
       fail-fast: false
       matrix:
         downstream:
           - name: ucx
+            org: databrickslabs
+          - name: blueprint
             org: databrickslabs
     runs-on: ubuntu-latest
     steps:
@@ -38,7 +40,6 @@ jobs:
         uses: actions/setup-python@v4
         with:
           cache: 'pip'
-          cache-dependency-path: '**/pyproject.toml'
           python-version: '3.10'
 
       - name: Install toolchain
