@@ -4583,8 +4583,8 @@ class TableInfo:
 
 @dataclass
 class TableRowFilter:
-    name: str
-    """The full name of the row filter SQL UDF."""
+    function_name: str
+    """The full function name of the row filter SQL UDF."""
 
     input_column_names: List[str]
     """The list of table columns to be passed as input to the row filter function. The column types
@@ -4594,7 +4594,7 @@ class TableRowFilter:
         """Serializes the TableRowFilter into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.input_column_names: body['input_column_names'] = [v for v in self.input_column_names]
-        if self.name is not None: body['name'] = self.name
+        if self.function_name is not None: body['function_name'] = self.function_name
         return body
 
     @classmethod
