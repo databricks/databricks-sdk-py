@@ -4583,7 +4583,7 @@ class TableInfo:
 
 @dataclass
 class TableRowFilter:
-    name: str
+    function_name: str
     """The full name of the row filter SQL UDF."""
 
     input_column_names: List[str]
@@ -4594,13 +4594,13 @@ class TableRowFilter:
         """Serializes the TableRowFilter into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.input_column_names: body['input_column_names'] = [v for v in self.input_column_names]
-        if self.name is not None: body['name'] = self.name
+        if self.function_name is not None: body['function_name'] = self.function_name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> TableRowFilter:
         """Deserializes the TableRowFilter from a dictionary."""
-        return cls(input_column_names=d.get('input_column_names', None), name=d.get('name', None))
+        return cls(input_column_names=d.get('input_column_names', None), name=d.get('function_name', None))
 
 
 @dataclass
