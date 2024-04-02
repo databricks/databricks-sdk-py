@@ -36,6 +36,51 @@ class Ai21LabsConfig:
 
 
 @dataclass
+class AmazonBedrockConfig:
+    aws_region: str
+    """The AWS region to use. Bedrock has to be enabled there."""
+
+    aws_access_key_id: str
+    """The Databricks secret key reference for an AWS Access Key ID with permissions to interact with
+    Bedrock services."""
+
+    aws_secret_access_key: str
+    """The Databricks secret key reference for an AWS Secret Access Key paired with the access key ID,
+    with permissions to interact with Bedrock services."""
+
+    bedrock_provider: AmazonBedrockConfigBedrockProvider
+    """The underlying provider in Amazon Bedrock. Supported values (case insensitive) include:
+    Anthropic, Cohere, AI21Labs, Amazon."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AmazonBedrockConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.aws_access_key_id is not None: body['aws_access_key_id'] = self.aws_access_key_id
+        if self.aws_region is not None: body['aws_region'] = self.aws_region
+        if self.aws_secret_access_key is not None: body['aws_secret_access_key'] = self.aws_secret_access_key
+        if self.bedrock_provider is not None: body['bedrock_provider'] = self.bedrock_provider.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> AmazonBedrockConfig:
+        """Deserializes the AmazonBedrockConfig from a dictionary."""
+        return cls(aws_access_key_id=d.get('aws_access_key_id', None),
+                   aws_region=d.get('aws_region', None),
+                   aws_secret_access_key=d.get('aws_secret_access_key', None),
+                   bedrock_provider=_enum(d, 'bedrock_provider', AmazonBedrockConfigBedrockProvider))
+
+
+class AmazonBedrockConfigBedrockProvider(Enum):
+    """The underlying provider in Amazon Bedrock. Supported values (case insensitive) include:
+    Anthropic, Cohere, AI21Labs, Amazon."""
+
+    AI21LABS = 'ai21labs'
+    AMAZON = 'amazon'
+    ANTHROPIC = 'anthropic'
+    COHERE = 'cohere'
+
+
+@dataclass
 class AnthropicConfig:
     anthropic_api_key: str
     """The Databricks secret key reference for an Anthropic API key."""
@@ -241,51 +286,6 @@ class AutoCaptureState:
     def from_dict(cls, d: Dict[str, any]) -> AutoCaptureState:
         """Deserializes the AutoCaptureState from a dictionary."""
         return cls(payload_table=_from_dict(d, 'payload_table', PayloadTable))
-
-
-@dataclass
-class AwsBedrockConfig:
-    aws_region: str
-    """The AWS region to use. Bedrock has to be enabled there."""
-
-    aws_access_key_id: str
-    """The Databricks secret key reference for an AWS Access Key ID with permissions to interact with
-    Bedrock services."""
-
-    aws_secret_access_key: str
-    """The Databricks secret key reference for an AWS Secret Access Key paired with the access key ID,
-    with permissions to interact with Bedrock services."""
-
-    bedrock_provider: AwsBedrockConfigBedrockProvider
-    """The underlying provider in AWS Bedrock. Supported values (case insensitive) include: Anthropic,
-    Cohere, AI21Labs, Amazon."""
-
-    def as_dict(self) -> dict:
-        """Serializes the AwsBedrockConfig into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.aws_access_key_id is not None: body['aws_access_key_id'] = self.aws_access_key_id
-        if self.aws_region is not None: body['aws_region'] = self.aws_region
-        if self.aws_secret_access_key is not None: body['aws_secret_access_key'] = self.aws_secret_access_key
-        if self.bedrock_provider is not None: body['bedrock_provider'] = self.bedrock_provider.value
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AwsBedrockConfig:
-        """Deserializes the AwsBedrockConfig from a dictionary."""
-        return cls(aws_access_key_id=d.get('aws_access_key_id', None),
-                   aws_region=d.get('aws_region', None),
-                   aws_secret_access_key=d.get('aws_secret_access_key', None),
-                   bedrock_provider=_enum(d, 'bedrock_provider', AwsBedrockConfigBedrockProvider))
-
-
-class AwsBedrockConfigBedrockProvider(Enum):
-    """The underlying provider in AWS Bedrock. Supported values (case insensitive) include: Anthropic,
-    Cohere, AI21Labs, Amazon."""
-
-    AI21LABS = 'ai21labs'
-    AMAZON = 'amazon'
-    ANTHROPIC = 'anthropic'
-    COHERE = 'cohere'
 
 
 @dataclass
@@ -789,7 +789,7 @@ class ExportMetricsResponse:
 class ExternalModel:
     provider: ExternalModelProvider
     """The name of the provider for the external model. Currently, the supported providers are
-    'ai21labs', 'anthropic', 'aws-bedrock', 'cohere', 'databricks-model-serving', 'openai', and
+    'ai21labs', 'anthropic', 'amazon-bedrock', 'cohere', 'databricks-model-serving', 'openai', and
     'palm'.","""
 
     name: str
@@ -801,11 +801,11 @@ class ExternalModel:
     ai21labs_config: Optional[Ai21LabsConfig] = None
     """AI21Labs Config. Only required if the provider is 'ai21labs'."""
 
+    amazon_bedrock_config: Optional[AmazonBedrockConfig] = None
+    """Amazon Bedrock Config. Only required if the provider is 'amazon-bedrock'."""
+
     anthropic_config: Optional[AnthropicConfig] = None
     """Anthropic Config. Only required if the provider is 'anthropic'."""
-
-    aws_bedrock_config: Optional[AwsBedrockConfig] = None
-    """AWS Bedrock Config. Only required if the provider is 'aws-bedrock'."""
 
     cohere_config: Optional[CohereConfig] = None
     """Cohere Config. Only required if the provider is 'cohere'."""
@@ -823,8 +823,8 @@ class ExternalModel:
         """Serializes the ExternalModel into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.ai21labs_config: body['ai21labs_config'] = self.ai21labs_config.as_dict()
+        if self.amazon_bedrock_config: body['amazon_bedrock_config'] = self.amazon_bedrock_config.as_dict()
         if self.anthropic_config: body['anthropic_config'] = self.anthropic_config.as_dict()
-        if self.aws_bedrock_config: body['aws_bedrock_config'] = self.aws_bedrock_config.as_dict()
         if self.cohere_config: body['cohere_config'] = self.cohere_config.as_dict()
         if self.databricks_model_serving_config:
             body['databricks_model_serving_config'] = self.databricks_model_serving_config.as_dict()
@@ -839,8 +839,8 @@ class ExternalModel:
     def from_dict(cls, d: Dict[str, any]) -> ExternalModel:
         """Deserializes the ExternalModel from a dictionary."""
         return cls(ai21labs_config=_from_dict(d, 'ai21labs_config', Ai21LabsConfig),
+                   amazon_bedrock_config=_from_dict(d, 'amazon_bedrock_config', AmazonBedrockConfig),
                    anthropic_config=_from_dict(d, 'anthropic_config', AnthropicConfig),
-                   aws_bedrock_config=_from_dict(d, 'aws_bedrock_config', AwsBedrockConfig),
                    cohere_config=_from_dict(d, 'cohere_config', CohereConfig),
                    databricks_model_serving_config=_from_dict(d, 'databricks_model_serving_config',
                                                               DatabricksModelServingConfig),
@@ -853,12 +853,12 @@ class ExternalModel:
 
 class ExternalModelProvider(Enum):
     """The name of the provider for the external model. Currently, the supported providers are
-    'ai21labs', 'anthropic', 'aws-bedrock', 'cohere', 'databricks-model-serving', 'openai', and
+    'ai21labs', 'anthropic', 'amazon-bedrock', 'cohere', 'databricks-model-serving', 'openai', and
     'palm'.","""
 
     AI21LABS = 'ai21labs'
+    AMAZON_BEDROCK = 'amazon-bedrock'
     ANTHROPIC = 'anthropic'
-    AWS_BEDROCK = 'aws-bedrock'
     COHERE = 'cohere'
     DATABRICKS_MODEL_SERVING = 'databricks-model-serving'
     OPENAI = 'openai'

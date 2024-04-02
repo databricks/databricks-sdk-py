@@ -2590,6 +2590,9 @@ class PermissionsAPI:
     For the mapping of the required permissions for specific actions or abilities and other important
     information, see [Access Control].
     
+    Note that to manage access control on service principals, use **[Account Access Control
+    Proxy](:service:accountaccesscontrolproxy)**.
+    
     [Access Control]: https://docs.databricks.com/security/auth-authz/access-control/index.html"""
 
     def __init__(self, api_client):

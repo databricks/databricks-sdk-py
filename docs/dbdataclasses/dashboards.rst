@@ -20,6 +20,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: TRASHED
       :value: "TRASHED"
 
+.. autoclass:: MigrateDashboardRequest
+   :members:
+   :undoc-members:
+
 .. autoclass:: PublishRequest
    :members:
    :undoc-members:
@@ -29,6 +33,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: TrashDashboardResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: UnpublishDashboardResponse
    :members:
    :undoc-members:
 
