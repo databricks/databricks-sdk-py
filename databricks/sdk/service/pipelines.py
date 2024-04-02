@@ -2001,6 +2001,7 @@ class PipelinesAPI:
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']
+            query['filter'] = None
 
     def list_pipelines(self,
                        *,
@@ -2049,6 +2050,7 @@ class PipelinesAPI:
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']
+            query['filter'] = None
 
     def list_updates(self,
                      pipeline_id: str,
