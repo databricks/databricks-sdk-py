@@ -523,7 +523,7 @@ except ResourceDoesNotExist as e:
     print(f'Cluster not found: {e}')
 ```
 
-The SDK handles inconsistencies in error responses amongst the different services, providing a consistent interface for developers to work with. Simply catch the appropriate exception type and handle the error as needed.
+The SDK handles inconsistencies in error responses amongst the different services, providing a consistent interface for developers to work with. Simply catch the appropriate exception type and handle the error as needed. The errors returned by the Databricks API are defined in [databricks/sdk/errors/platform.py](https://github.com/databricks/databricks-sdk-py/blob/main/databricks/sdk/errors/platform.py).
 
 ## Logging<a id="logging"></a>
 
