@@ -245,6 +245,7 @@ class Generator:
         Package("oauth2", "OAuth", "Configure OAuth 2.0 application registrations for Databricks"),
         Package("vectorsearch", "Vector Search", "Create and query Vector Search indexes"),
         Package("dashboards", "Dashboards", "Manage Lakeview dashboards"),
+        Package("marketplace", "Marketplace", "Manage AI and analytics assets such as ML models, notebooks, applications in an open marketplace"),
     ]
 
     def __init__(self):
