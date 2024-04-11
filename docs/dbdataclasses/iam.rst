@@ -288,10 +288,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: URN_IETF_PARAMS_SCIM_SCHEMAS_EXTENSION_WORKSPACE_2_0_USER
       :value: "URN_IETF_PARAMS_SCIM_SCHEMAS_EXTENSION_WORKSPACE_2_0_USER"
 
-.. autoclass:: WorkspaceAssignmentsUpdated
-   :members:
-   :undoc-members:
-
 .. py:class:: WorkspacePermission
 
    .. py:attribute:: ADMIN

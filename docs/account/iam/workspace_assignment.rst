@@ -61,7 +61,7 @@
         :returns: Iterator over :class:`PermissionAssignment`
         
 
-    .. py:method:: update(workspace_id: int, principal_id: int, permissions: List[WorkspacePermission])
+    .. py:method:: update(workspace_id: int, principal_id: int, permissions: List[WorkspacePermission]) -> PermissionAssignment
 
 
         Usage:
@@ -82,9 +82,9 @@
             
             workspace_id = os.environ["DUMMY_WORKSPACE_ID"]
             
-            a.workspace_assignment.update(workspace_id=workspace_id,
-                                          principal_id=spn_id,
-                                          permissions=[iam.WorkspacePermission.USER])
+            _ = a.workspace_assignment.update(workspace_id=workspace_id,
+                                              principal_id=spn_id,
+                                              permissions=[iam.WorkspacePermission.USER])
 
         Create or update permissions assignment.
         
@@ -96,7 +96,9 @@
         :param principal_id: int
           The ID of the user, service principal, or group.
         :param permissions: List[:class:`WorkspacePermission`]
-          Array of permissions assignments to update on the workspace.
+          Array of permissions assignments to update on the workspace. Note that excluding this field will
+          have the same effect as providing an empty list which will result in the deletion of all permissions
+          for the principal.
         
-        
+        :returns: :class:`PermissionAssignment`
         

@@ -197,10 +197,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: JobCompute
-   :members:
-   :undoc-members:
-
 .. autoclass:: JobDeployment
    :members:
    :undoc-members:
@@ -224,6 +220,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "UI_LOCKED"
 
 .. autoclass:: JobEmailNotifications
+   :members:
+   :undoc-members:
+
+.. autoclass:: JobEnvironment
    :members:
    :undoc-members:
 
@@ -679,7 +679,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: TableTriggerConfiguration
+.. autoclass:: TableUpdateTriggerConfiguration
    :members:
    :undoc-members:
 

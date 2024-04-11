@@ -389,6 +389,23 @@ class ClientsTypes:
 
 
 @dataclass
+class CloneCluster:
+    source_cluster_id: str
+    """The cluster that is being cloned."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CloneCluster into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.source_cluster_id is not None: body['source_cluster_id'] = self.source_cluster_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> CloneCluster:
+        """Deserializes the CloneCluster from a dictionary."""
+        return cls(source_cluster_id=d.get('source_cluster_id', None))
+
+
+@dataclass
 class CloudProviderNodeInfo:
     status: Optional[List[CloudProviderNodeStatus]] = None
 
@@ -1420,6 +1437,10 @@ class ClusterSpec:
     """Attributes related to clusters running on Microsoft Azure. If not specified at cluster creation,
     a set of default values will be used."""
 
+    clone_from: Optional[CloneCluster] = None
+    """When specified, this clones libraries from a source cluster during the creation of a new
+    cluster."""
+
     cluster_log_conf: Optional[ClusterLogConf] = None
     """The configuration for delivering spark logs to a long-term storage destination. Two kinds of
     destinations (dbfs and s3) are supported. Only one destination can be specified for one cluster.
@@ -1554,6 +1575,7 @@ class ClusterSpec:
             body['autotermination_minutes'] = self.autotermination_minutes
         if self.aws_attributes: body['aws_attributes'] = self.aws_attributes.as_dict()
         if self.azure_attributes: body['azure_attributes'] = self.azure_attributes.as_dict()
+        if self.clone_from: body['clone_from'] = self.clone_from.as_dict()
         if self.cluster_log_conf: body['cluster_log_conf'] = self.cluster_log_conf.as_dict()
         if self.cluster_name is not None: body['cluster_name'] = self.cluster_name
         if self.cluster_source is not None: body['cluster_source'] = self.cluster_source.value
@@ -1589,6 +1611,7 @@ class ClusterSpec:
                    autotermination_minutes=d.get('autotermination_minutes', None),
                    aws_attributes=_from_dict(d, 'aws_attributes', AwsAttributes),
                    azure_attributes=_from_dict(d, 'azure_attributes', AzureAttributes),
+                   clone_from=_from_dict(d, 'clone_from', CloneCluster),
                    cluster_log_conf=_from_dict(d, 'cluster_log_conf', ClusterLogConf),
                    cluster_name=d.get('cluster_name', None),
                    cluster_source=_enum(d, 'cluster_source', ClusterSource),
@@ -1679,29 +1702,6 @@ class CommandStatusResponse:
                    status=_enum(d, 'status', CommandStatus))
 
 
-@dataclass
-class ComputeSpec:
-    kind: Optional[ComputeSpecKind] = None
-    """The kind of compute described by this compute specification."""
-
-    def as_dict(self) -> dict:
-        """Serializes the ComputeSpec into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.kind is not None: body['kind'] = self.kind.value
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ComputeSpec:
-        """Deserializes the ComputeSpec from a dictionary."""
-        return cls(kind=_enum(d, 'kind', ComputeSpecKind))
-
-
-class ComputeSpecKind(Enum):
-    """The kind of compute described by this compute specification."""
-
-    SERVERLESS_PREVIEW = 'SERVERLESS_PREVIEW'
-
-
 class ContextStatus(Enum):
 
     ERROR = 'Error'
@@ -1753,6 +1753,10 @@ class CreateCluster:
     azure_attributes: Optional[AzureAttributes] = None
     """Attributes related to clusters running on Microsoft Azure. If not specified at cluster creation,
     a set of default values will be used."""
+
+    clone_from: Optional[CloneCluster] = None
+    """When specified, this clones libraries from a source cluster during the creation of a new
+    cluster."""
 
     cluster_log_conf: Optional[ClusterLogConf] = None
     """The configuration for delivering spark logs to a long-term storage destination. Two kinds of
@@ -1884,6 +1888,7 @@ class CreateCluster:
             body['autotermination_minutes'] = self.autotermination_minutes
         if self.aws_attributes: body['aws_attributes'] = self.aws_attributes.as_dict()
         if self.azure_attributes: body['azure_attributes'] = self.azure_attributes.as_dict()
+        if self.clone_from: body['clone_from'] = self.clone_from.as_dict()
         if self.cluster_log_conf: body['cluster_log_conf'] = self.cluster_log_conf.as_dict()
         if self.cluster_name is not None: body['cluster_name'] = self.cluster_name
         if self.cluster_source is not None: body['cluster_source'] = self.cluster_source.value
@@ -1919,6 +1924,7 @@ class CreateCluster:
                    autotermination_minutes=d.get('autotermination_minutes', None),
                    aws_attributes=_from_dict(d, 'aws_attributes', AwsAttributes),
                    azure_attributes=_from_dict(d, 'azure_attributes', AzureAttributes),
+                   clone_from=_from_dict(d, 'clone_from', CloneCluster),
                    cluster_log_conf=_from_dict(d, 'cluster_log_conf', ClusterLogConf),
                    cluster_name=d.get('cluster_name', None),
                    cluster_source=_enum(d, 'cluster_source', ClusterSource),
@@ -2592,6 +2598,10 @@ class EditCluster:
     """Attributes related to clusters running on Microsoft Azure. If not specified at cluster creation,
     a set of default values will be used."""
 
+    clone_from: Optional[CloneCluster] = None
+    """When specified, this clones libraries from a source cluster during the creation of a new
+    cluster."""
+
     cluster_log_conf: Optional[ClusterLogConf] = None
     """The configuration for delivering spark logs to a long-term storage destination. Two kinds of
     destinations (dbfs and s3) are supported. Only one destination can be specified for one cluster.
@@ -2722,6 +2732,7 @@ class EditCluster:
             body['autotermination_minutes'] = self.autotermination_minutes
         if self.aws_attributes: body['aws_attributes'] = self.aws_attributes.as_dict()
         if self.azure_attributes: body['azure_attributes'] = self.azure_attributes.as_dict()
+        if self.clone_from: body['clone_from'] = self.clone_from.as_dict()
         if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
         if self.cluster_log_conf: body['cluster_log_conf'] = self.cluster_log_conf.as_dict()
         if self.cluster_name is not None: body['cluster_name'] = self.cluster_name
@@ -2758,6 +2769,7 @@ class EditCluster:
                    autotermination_minutes=d.get('autotermination_minutes', None),
                    aws_attributes=_from_dict(d, 'aws_attributes', AwsAttributes),
                    azure_attributes=_from_dict(d, 'azure_attributes', AzureAttributes),
+                   clone_from=_from_dict(d, 'clone_from', CloneCluster),
                    cluster_id=d.get('cluster_id', None),
                    cluster_log_conf=_from_dict(d, 'cluster_log_conf', ClusterLogConf),
                    cluster_name=d.get('cluster_name', None),
@@ -2967,6 +2979,37 @@ class EditResponse:
     def from_dict(cls, d: Dict[str, any]) -> EditResponse:
         """Deserializes the EditResponse from a dictionary."""
         return cls()
+
+
+@dataclass
+class Environment:
+    """The a environment entity used to preserve serverless environment side panel and jobs'
+    environment for non-notebook task. In this minimal environment spec, only pip dependencies are
+    supported. Next ID: 5"""
+
+    client: str
+    """* User-friendly name for the client version: “client”: “1” The version is a string,
+    consisting of the major client version"""
+
+    dependencies: Optional[List[str]] = None
+    """List of pip dependencies, as supported by the version of pip in this environment. Each
+    dependency is a pip requirement file line
+    https://pip.pypa.io/en/stable/reference/requirements-file-format/ Allowed dependency could be
+    <requirement specifier>, <archive url/path>, <local project path>(WSFS or Volumes in
+    Databricks), <vcs project url> E.g. dependencies: ["foo==0.0.1", "-r
+    /Workspace/test/requirements.txt"]"""
+
+    def as_dict(self) -> dict:
+        """Serializes the Environment into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.client is not None: body['client'] = self.client
+        if self.dependencies: body['dependencies'] = [v for v in self.dependencies]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> Environment:
+        """Deserializes the Environment from a dictionary."""
+        return cls(client=d.get('client', None), dependencies=d.get('dependencies', None))
 
 
 @dataclass
@@ -6208,6 +6251,7 @@ class ClustersAPI:
                autotermination_minutes: Optional[int] = None,
                aws_attributes: Optional[AwsAttributes] = None,
                azure_attributes: Optional[AzureAttributes] = None,
+               clone_from: Optional[CloneCluster] = None,
                cluster_log_conf: Optional[ClusterLogConf] = None,
                cluster_name: Optional[str] = None,
                cluster_source: Optional[ClusterSource] = None,
@@ -6256,6 +6300,8 @@ class ClustersAPI:
         :param azure_attributes: :class:`AzureAttributes` (optional)
           Attributes related to clusters running on Microsoft Azure. If not specified at cluster creation, a
           set of default values will be used.
+        :param clone_from: :class:`CloneCluster` (optional)
+          When specified, this clones libraries from a source cluster during the creation of a new cluster.
         :param cluster_log_conf: :class:`ClusterLogConf` (optional)
           The configuration for delivering spark logs to a long-term storage destination. Two kinds of
           destinations (dbfs and s3) are supported. Only one destination can be specified for one cluster. If
@@ -6364,6 +6410,7 @@ class ClustersAPI:
         if autotermination_minutes is not None: body['autotermination_minutes'] = autotermination_minutes
         if aws_attributes is not None: body['aws_attributes'] = aws_attributes.as_dict()
         if azure_attributes is not None: body['azure_attributes'] = azure_attributes.as_dict()
+        if clone_from is not None: body['clone_from'] = clone_from.as_dict()
         if cluster_log_conf is not None: body['cluster_log_conf'] = cluster_log_conf.as_dict()
         if cluster_name is not None: body['cluster_name'] = cluster_name
         if cluster_source is not None: body['cluster_source'] = cluster_source.value
@@ -6404,6 +6451,7 @@ class ClustersAPI:
         autotermination_minutes: Optional[int] = None,
         aws_attributes: Optional[AwsAttributes] = None,
         azure_attributes: Optional[AzureAttributes] = None,
+        clone_from: Optional[CloneCluster] = None,
         cluster_log_conf: Optional[ClusterLogConf] = None,
         cluster_name: Optional[str] = None,
         cluster_source: Optional[ClusterSource] = None,
@@ -6432,6 +6480,7 @@ class ClustersAPI:
                            autotermination_minutes=autotermination_minutes,
                            aws_attributes=aws_attributes,
                            azure_attributes=azure_attributes,
+                           clone_from=clone_from,
                            cluster_log_conf=cluster_log_conf,
                            cluster_name=cluster_name,
                            cluster_source=cluster_source,
@@ -6491,6 +6540,7 @@ class ClustersAPI:
              autotermination_minutes: Optional[int] = None,
              aws_attributes: Optional[AwsAttributes] = None,
              azure_attributes: Optional[AzureAttributes] = None,
+             clone_from: Optional[CloneCluster] = None,
              cluster_log_conf: Optional[ClusterLogConf] = None,
              cluster_name: Optional[str] = None,
              cluster_source: Optional[ClusterSource] = None,
@@ -6546,6 +6596,8 @@ class ClustersAPI:
         :param azure_attributes: :class:`AzureAttributes` (optional)
           Attributes related to clusters running on Microsoft Azure. If not specified at cluster creation, a
           set of default values will be used.
+        :param clone_from: :class:`CloneCluster` (optional)
+          When specified, this clones libraries from a source cluster during the creation of a new cluster.
         :param cluster_log_conf: :class:`ClusterLogConf` (optional)
           The configuration for delivering spark logs to a long-term storage destination. Two kinds of
           destinations (dbfs and s3) are supported. Only one destination can be specified for one cluster. If
@@ -6654,6 +6706,7 @@ class ClustersAPI:
         if autotermination_minutes is not None: body['autotermination_minutes'] = autotermination_minutes
         if aws_attributes is not None: body['aws_attributes'] = aws_attributes.as_dict()
         if azure_attributes is not None: body['azure_attributes'] = azure_attributes.as_dict()
+        if clone_from is not None: body['clone_from'] = clone_from.as_dict()
         if cluster_id is not None: body['cluster_id'] = cluster_id
         if cluster_log_conf is not None: body['cluster_log_conf'] = cluster_log_conf.as_dict()
         if cluster_name is not None: body['cluster_name'] = cluster_name
@@ -6696,6 +6749,7 @@ class ClustersAPI:
         autotermination_minutes: Optional[int] = None,
         aws_attributes: Optional[AwsAttributes] = None,
         azure_attributes: Optional[AzureAttributes] = None,
+        clone_from: Optional[CloneCluster] = None,
         cluster_log_conf: Optional[ClusterLogConf] = None,
         cluster_name: Optional[str] = None,
         cluster_source: Optional[ClusterSource] = None,
@@ -6724,6 +6778,7 @@ class ClustersAPI:
                          autotermination_minutes=autotermination_minutes,
                          aws_attributes=aws_attributes,
                          azure_attributes=azure_attributes,
+                         clone_from=clone_from,
                          cluster_id=cluster_id,
                          cluster_log_conf=cluster_log_conf,
                          cluster_name=cluster_name,

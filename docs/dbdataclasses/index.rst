@@ -12,6 +12,7 @@ Dataclasses
    files
    iam
    jobs
+   marketplace
    ml
    oauth2
    pipelines

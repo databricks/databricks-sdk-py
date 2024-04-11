@@ -120,7 +120,7 @@
     .. py:method:: cancel_run_and_wait(run_id: int, timeout: datetime.timedelta = 0:20:00) -> Run
 
 
-    .. py:method:: create( [, access_control_list: Optional[List[iam.AccessControlRequest]], compute: Optional[List[JobCompute]], continuous: Optional[Continuous], deployment: Optional[JobDeployment], description: Optional[str], edit_mode: Optional[JobEditMode], email_notifications: Optional[JobEmailNotifications], format: Optional[Format], git_source: Optional[GitSource], health: Optional[JobsHealthRules], job_clusters: Optional[List[JobCluster]], max_concurrent_runs: Optional[int], name: Optional[str], notification_settings: Optional[JobNotificationSettings], parameters: Optional[List[JobParameterDefinition]], queue: Optional[QueueSettings], run_as: Optional[JobRunAs], schedule: Optional[CronSchedule], tags: Optional[Dict[str, str]], tasks: Optional[List[Task]], timeout_seconds: Optional[int], trigger: Optional[TriggerSettings], webhook_notifications: Optional[WebhookNotifications]]) -> CreateResponse
+    .. py:method:: create( [, access_control_list: Optional[List[iam.AccessControlRequest]], continuous: Optional[Continuous], deployment: Optional[JobDeployment], description: Optional[str], edit_mode: Optional[JobEditMode], email_notifications: Optional[JobEmailNotifications], environments: Optional[List[JobEnvironment]], format: Optional[Format], git_source: Optional[GitSource], health: Optional[JobsHealthRules], job_clusters: Optional[List[JobCluster]], max_concurrent_runs: Optional[int], name: Optional[str], notification_settings: Optional[JobNotificationSettings], parameters: Optional[List[JobParameterDefinition]], queue: Optional[QueueSettings], run_as: Optional[JobRunAs], schedule: Optional[CronSchedule], tags: Optional[Dict[str, str]], tasks: Optional[List[Task]], timeout_seconds: Optional[int], trigger: Optional[TriggerSettings], webhook_notifications: Optional[WebhookNotifications]]) -> CreateResponse
 
 
         Usage:
@@ -158,8 +158,6 @@
         
         :param access_control_list: List[:class:`AccessControlRequest`] (optional)
           List of permissions to set on the job.
-        :param compute: List[:class:`JobCompute`] (optional)
-          A list of compute requirements that can be referenced by tasks of this job.
         :param continuous: :class:`Continuous` (optional)
           An optional continuous property for this job. The continuous property will ensure that there is
           always one run executing. Only one of `schedule` and `continuous` can be used.
@@ -175,6 +173,8 @@
         :param email_notifications: :class:`JobEmailNotifications` (optional)
           An optional set of email addresses that is notified when runs of this job begin or complete as well
           as when this job is deleted.
+        :param environments: List[:class:`JobEnvironment`] (optional)
+          A list of task execution environment specifications that can be referenced by tasks of this job.
         :param format: :class:`Format` (optional)
           Used to tell what is the format of the job. This field is ignored in Create/Update/Reset calls. When
           using the Jobs API 2.1 this value is always set to `"MULTI_TASK"`.

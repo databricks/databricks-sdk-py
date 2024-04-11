@@ -1,5 +1,141 @@
 # Version changelog
 
+## 0.25.0
+
+### Behavior Changes
+
+* Override INVALID_PARAMETER_VALUE on fetching non-existent job/cluster ([#591](https://github.com/databricks/databricks-sdk-py/pull/591)). When getting a job or cluster by ID that doesn't exist, the API currently returns a 400, corresponding to the InvalidParameterValue exception. This change throws a ResourceNotFoundException instead in this circumstance. To handle this change, modify error handling by updating your `except` blocks from:
+```py
+try:
+    w.jobs.get_by_id("123")
+except e as InvalidParameterValue:
+    ...
+```
+to
+```py
+try:
+    w.jobs.get_by_id("123")
+except e as ResourceDoesNotExist:
+    ...
+```
+
+### Internal Changes
+* Check downstream backwards compatibility ([#600](https://github.com/databricks/databricks-sdk-py/pull/600)).
+* Add support for upcoming Marketplace package ([#608](https://github.com/databricks/databricks-sdk-py/pull/608)).
+
+API Changes:
+
+ * Changed `cancel_refresh()` method for [w.lakehouse_monitors](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/lakehouse_monitors.html) workspace-level service with new required argument order.
+ * Changed `create()` method for [w.lakehouse_monitors](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/lakehouse_monitors.html) workspace-level service with new required argument order.
+ * Changed `delete()` method for [w.lakehouse_monitors](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/lakehouse_monitors.html) workspace-level service with new required argument order.
+ * Changed `get()` method for [w.lakehouse_monitors](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/lakehouse_monitors.html) workspace-level service with new required argument order.
+ * Changed `get_refresh()` method for [w.lakehouse_monitors](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/lakehouse_monitors.html) workspace-level service with new required argument order.
+ * Changed `list_refreshes()` method for [w.lakehouse_monitors](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/lakehouse_monitors.html) workspace-level service with new required argument order.
+ * Changed `run_refresh()` method for [w.lakehouse_monitors](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/lakehouse_monitors.html) workspace-level service with new required argument order.
+ * Changed `update()` method for [w.lakehouse_monitors](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/lakehouse_monitors.html) workspace-level service with new required argument order.
+ * Removed `databricks.sdk.service.catalog.AzureManagedIdentity` dataclass.
+ * Removed `full_name` field for `databricks.sdk.service.catalog.CancelRefreshRequest`.
+ * Added `table_name` field for `databricks.sdk.service.catalog.CancelRefreshRequest`.
+ * Changed `custom_metrics` field for `databricks.sdk.service.catalog.CreateMonitor` to `databricks.sdk.service.catalog.MonitorMetricList` dataclass.
+ * Removed `full_name` field for `databricks.sdk.service.catalog.CreateMonitor`.
+ * Changed `inference_log` field for `databricks.sdk.service.catalog.CreateMonitor` to `databricks.sdk.service.catalog.MonitorInferenceLog` dataclass.
+ * Changed `notifications` field for `databricks.sdk.service.catalog.CreateMonitor` to `databricks.sdk.service.catalog.MonitorNotifications` dataclass.
+ * Changed `snapshot` field for `databricks.sdk.service.catalog.CreateMonitor` to `any` dataclass.
+ * Changed `time_series` field for `databricks.sdk.service.catalog.CreateMonitor` to `databricks.sdk.service.catalog.MonitorTimeSeries` dataclass.
+ * Added `table_name` field for `databricks.sdk.service.catalog.CreateMonitor`.
+ * Changed `azure_managed_identity` field for `databricks.sdk.service.catalog.CreateStorageCredential` to `databricks.sdk.service.catalog.AzureManagedIdentityRequest` dataclass.
+ * Removed `full_name` field for `databricks.sdk.service.catalog.DeleteLakehouseMonitorRequest`.
+ * Added `table_name` field for `databricks.sdk.service.catalog.DeleteLakehouseMonitorRequest`.
+ * Removed `full_name` field for `databricks.sdk.service.catalog.GetLakehouseMonitorRequest`.
+ * Added `table_name` field for `databricks.sdk.service.catalog.GetLakehouseMonitorRequest`.
+ * Removed `full_name` field for `databricks.sdk.service.catalog.GetRefreshRequest`.
+ * Added `table_name` field for `databricks.sdk.service.catalog.GetRefreshRequest`.
+ * Removed `full_name` field for `databricks.sdk.service.catalog.ListRefreshesRequest`.
+ * Added `table_name` field for `databricks.sdk.service.catalog.ListRefreshesRequest`.
+ * Changed `quartz_cron_expression` field for `databricks.sdk.service.catalog.MonitorCronSchedule` to be required.
+ * Changed `timezone_id` field for `databricks.sdk.service.catalog.MonitorCronSchedule` to be required.
+ * Removed `databricks.sdk.service.catalog.MonitorCustomMetric` dataclass.
+ * Removed `databricks.sdk.service.catalog.MonitorCustomMetricType` dataclass.
+ * Removed `databricks.sdk.service.catalog.MonitorDestinations` dataclass.
+ * Removed `databricks.sdk.service.catalog.MonitorInferenceLogProfileType` dataclass.
+ * Removed `databricks.sdk.service.catalog.MonitorInferenceLogProfileTypeProblemType` dataclass.
+ * Changed `custom_metrics` field for `databricks.sdk.service.catalog.MonitorInfo` to `databricks.sdk.service.catalog.MonitorMetricList` dataclass.
+ * Changed `drift_metrics_table_name` field for `databricks.sdk.service.catalog.MonitorInfo` to be required.
+ * Changed `inference_log` field for `databricks.sdk.service.catalog.MonitorInfo` to `databricks.sdk.service.catalog.MonitorInferenceLog` dataclass.
+ * Changed `monitor_version` field for `databricks.sdk.service.catalog.MonitorInfo` to be required.
+ * Changed `notifications` field for `databricks.sdk.service.catalog.MonitorInfo` to `databricks.sdk.service.catalog.MonitorNotifications` dataclass.
+ * Changed `profile_metrics_table_name` field for `databricks.sdk.service.catalog.MonitorInfo` to be required.
+ * Changed `snapshot` field for `databricks.sdk.service.catalog.MonitorInfo` to `any` dataclass.
+ * Changed `status` field for `databricks.sdk.service.catalog.MonitorInfo` to be required.
+ * Changed `table_name` field for `databricks.sdk.service.catalog.MonitorInfo` to be required.
+ * Changed `time_series` field for `databricks.sdk.service.catalog.MonitorInfo` to `databricks.sdk.service.catalog.MonitorTimeSeries` dataclass.
+ * Removed `databricks.sdk.service.catalog.MonitorNotificationsConfig` dataclass.
+ * Changed `refresh_id` field for `databricks.sdk.service.catalog.MonitorRefreshInfo` to be required.
+ * Changed `start_time_ms` field for `databricks.sdk.service.catalog.MonitorRefreshInfo` to be required.
+ * Changed `state` field for `databricks.sdk.service.catalog.MonitorRefreshInfo` to be required.
+ * Added `trigger` field for `databricks.sdk.service.catalog.MonitorRefreshInfo`.
+ * Removed `any` dataclass.
+ * Removed `databricks.sdk.service.catalog.MonitorTimeSeriesProfileType` dataclass.
+ * Removed `full_name` field for `databricks.sdk.service.catalog.RunRefreshRequest`.
+ * Added `table_name` field for `databricks.sdk.service.catalog.RunRefreshRequest`.
+ * Changed `azure_managed_identity` field for `databricks.sdk.service.catalog.StorageCredentialInfo` to `databricks.sdk.service.catalog.AzureManagedIdentityResponse` dataclass.
+ * Removed `name` field for `databricks.sdk.service.catalog.TableRowFilter`.
+ * Added `function_name` field for `databricks.sdk.service.catalog.TableRowFilter`.
+ * Changed `custom_metrics` field for `databricks.sdk.service.catalog.UpdateMonitor` to `databricks.sdk.service.catalog.MonitorMetricList` dataclass.
+ * Removed `full_name` field for `databricks.sdk.service.catalog.UpdateMonitor`.
+ * Changed `inference_log` field for `databricks.sdk.service.catalog.UpdateMonitor` to `databricks.sdk.service.catalog.MonitorInferenceLog` dataclass.
+ * Changed `notifications` field for `databricks.sdk.service.catalog.UpdateMonitor` to `databricks.sdk.service.catalog.MonitorNotifications` dataclass.
+ * Changed `snapshot` field for `databricks.sdk.service.catalog.UpdateMonitor` to `any` dataclass.
+ * Changed `time_series` field for `databricks.sdk.service.catalog.UpdateMonitor` to `databricks.sdk.service.catalog.MonitorTimeSeries` dataclass.
+ * Added `table_name` field for `databricks.sdk.service.catalog.UpdateMonitor`.
+ * Changed `azure_managed_identity` field for `databricks.sdk.service.catalog.UpdateStorageCredential` to `databricks.sdk.service.catalog.AzureManagedIdentityResponse` dataclass.
+ * Changed `azure_managed_identity` field for `databricks.sdk.service.catalog.ValidateStorageCredential` to `databricks.sdk.service.catalog.AzureManagedIdentityRequest` dataclass.
+ * Removed `operation` field for `databricks.sdk.service.catalog.ValidationResult`.
+ * Added `aws_operation` field for `databricks.sdk.service.catalog.ValidationResult`.
+ * Added `azure_operation` field for `databricks.sdk.service.catalog.ValidationResult`.
+ * Added `gcp_operation` field for `databricks.sdk.service.catalog.ValidationResult`.
+ * Removed `databricks.sdk.service.catalog.ValidationResultOperation` dataclass.
+ * Added `databricks.sdk.service.catalog.AzureManagedIdentityRequest` dataclass.
+ * Added `databricks.sdk.service.catalog.AzureManagedIdentityResponse` dataclass.
+ * Added `databricks.sdk.service.catalog.MonitorDestination` dataclass.
+ * Added `databricks.sdk.service.catalog.MonitorInferenceLog` dataclass.
+ * Added `databricks.sdk.service.catalog.MonitorInferenceLogProblemType` dataclass.
+ * Added `databricks.sdk.service.catalog.MonitorMetric` dataclass.
+ * Added `databricks.sdk.service.catalog.MonitorMetricType` dataclass.
+ * Added `databricks.sdk.service.catalog.MonitorNotifications` dataclass.
+ * Added `databricks.sdk.service.catalog.MonitorRefreshInfoTrigger` dataclass.
+ * Added `any` dataclass.
+ * Added `databricks.sdk.service.catalog.MonitorTimeSeries` dataclass.
+ * Added `databricks.sdk.service.catalog.ValidationResultAwsOperation` dataclass.
+ * Added `databricks.sdk.service.catalog.ValidationResultAzureOperation` dataclass.
+ * Added `databricks.sdk.service.catalog.ValidationResultGcpOperation` dataclass.
+ * Added `clone_from` field for `databricks.sdk.service.compute.ClusterSpec`.
+ * Removed `databricks.sdk.service.compute.ComputeSpec` dataclass.
+ * Removed `databricks.sdk.service.compute.ComputeSpecKind` dataclass.
+ * Added `clone_from` field for `databricks.sdk.service.compute.CreateCluster`.
+ * Added `clone_from` field for `databricks.sdk.service.compute.EditCluster`.
+ * Added `databricks.sdk.service.compute.CloneCluster` dataclass.
+ * Added `databricks.sdk.service.compute.Environment` dataclass.
+ * Changed `update()` method for [a.workspace_assignment](https://databricks-sdk-py.readthedocs.io/en/latest/account/workspace_assignment.html) account-level service to return `databricks.sdk.service.iam.PermissionAssignment` dataclass.
+ * Removed `any` dataclass.
+ * Removed `compute_key` field for `databricks.sdk.service.jobs.ClusterSpec`.
+ * Removed `compute` field for `databricks.sdk.service.jobs.CreateJob`.
+ * Added `environments` field for `databricks.sdk.service.jobs.CreateJob`.
+ * Removed `databricks.sdk.service.jobs.JobCompute` dataclass.
+ * Removed `compute` field for `databricks.sdk.service.jobs.JobSettings`.
+ * Added `environments` field for `databricks.sdk.service.jobs.JobSettings`.
+ * Removed `compute_key` field for `databricks.sdk.service.jobs.RunTask`.
+ * Removed `databricks.sdk.service.jobs.TableTriggerConfiguration` dataclass.
+ * Removed `compute_key` field for `databricks.sdk.service.jobs.Task`.
+ * Added `environment_key` field for `databricks.sdk.service.jobs.Task`.
+ * Changed `table` field for `databricks.sdk.service.jobs.TriggerSettings` to `databricks.sdk.service.jobs.TableUpdateTriggerConfiguration` dataclass.
+ * Changed `table_update` field for `databricks.sdk.service.jobs.TriggerSettings` to `databricks.sdk.service.jobs.TableUpdateTriggerConfiguration` dataclass.
+ * Added `databricks.sdk.service.jobs.JobEnvironment` dataclass.
+ * Added `databricks.sdk.service.jobs.TableUpdateTriggerConfiguration` dataclass.
+ * Added `databricks.sdk.service.marketplace` package.
+
+OpenAPI SHA: 94684175b8bd65f8701f89729351f8069e8309c9, Date: 2024-04-11
+
 ## 0.24.0
 
 ### Improvements and Bug Fixes

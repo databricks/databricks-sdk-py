@@ -11,7 +11,7 @@
     catalog). Viewing the dashboard, computed metrics, or monitor configuration only requires the user to have
     **SELECT** privileges on the table (along with **USE_SCHEMA** and **USE_CATALOG**).
 
-    .. py:method:: cancel_refresh(full_name: str, refresh_id: str)
+    .. py:method:: cancel_refresh(table_name: str, refresh_id: str)
 
         Cancel refresh.
         
@@ -24,7 +24,7 @@
         
         Additionally, the call must be made from the workspace where the monitor was created.
         
-        :param full_name: str
+        :param table_name: str
           Full name of the table.
         :param refresh_id: str
           ID of the refresh.
@@ -32,7 +32,7 @@
         
         
 
-    .. py:method:: create(full_name: str, assets_dir: str, output_schema_name: str [, baseline_table_name: Optional[str], custom_metrics: Optional[List[MonitorCustomMetric]], data_classification_config: Optional[MonitorDataClassificationConfig], inference_log: Optional[MonitorInferenceLogProfileType], notifications: Optional[MonitorNotificationsConfig], schedule: Optional[MonitorCronSchedule], skip_builtin_dashboard: Optional[bool], slicing_exprs: Optional[List[str]], snapshot: Optional[MonitorSnapshotProfileType], time_series: Optional[MonitorTimeSeriesProfileType], warehouse_id: Optional[str]]) -> MonitorInfo
+    .. py:method:: create(table_name: str, assets_dir: str, output_schema_name: str [, baseline_table_name: Optional[str], custom_metrics: Optional[List[MonitorMetric]], data_classification_config: Optional[MonitorDataClassificationConfig], inference_log: Optional[MonitorInferenceLog], notifications: Optional[MonitorNotifications], schedule: Optional[MonitorCronSchedule], skip_builtin_dashboard: Optional[bool], slicing_exprs: Optional[List[str]], snapshot: Optional[MonitorSnapshot], time_series: Optional[MonitorTimeSeries], warehouse_id: Optional[str]]) -> MonitorInfo
 
         Create a table monitor.
         
@@ -46,7 +46,7 @@
         
         Workspace assets, such as the dashboard, will be created in the workspace where this call was made.
         
-        :param full_name: str
+        :param table_name: str
           Full name of the table.
         :param assets_dir: str
           The directory to store monitoring assets (e.g. dashboard, metric tables).
@@ -55,14 +55,14 @@
         :param baseline_table_name: str (optional)
           Name of the baseline table from which drift metrics are computed from. Columns in the monitored
           table should also be present in the baseline table.
-        :param custom_metrics: List[:class:`MonitorCustomMetric`] (optional)
+        :param custom_metrics: List[:class:`MonitorMetric`] (optional)
           Custom metrics to compute on the monitored table. These can be aggregate metrics, derived metrics
           (from already computed aggregate metrics), or drift metrics (comparing metrics across time windows).
         :param data_classification_config: :class:`MonitorDataClassificationConfig` (optional)
           The data classification config for the monitor.
-        :param inference_log: :class:`MonitorInferenceLogProfileType` (optional)
+        :param inference_log: :class:`MonitorInferenceLog` (optional)
           Configuration for monitoring inference logs.
-        :param notifications: :class:`MonitorNotificationsConfig` (optional)
+        :param notifications: :class:`MonitorNotifications` (optional)
           The notification settings for the monitor.
         :param schedule: :class:`MonitorCronSchedule` (optional)
           The schedule for automatically updating and refreshing metric tables.
@@ -72,9 +72,9 @@
           List of column expressions to slice data with for targeted analysis. The data is grouped by each
           expression independently, resulting in a separate slice for each predicate and its complements. For
           high-cardinality columns, only the top 100 unique values by frequency will generate slices.
-        :param snapshot: :class:`MonitorSnapshotProfileType` (optional)
+        :param snapshot: :class:`MonitorSnapshot` (optional)
           Configuration for monitoring snapshot tables.
-        :param time_series: :class:`MonitorTimeSeriesProfileType` (optional)
+        :param time_series: :class:`MonitorTimeSeries` (optional)
           Configuration for monitoring time series tables.
         :param warehouse_id: str (optional)
           Optional argument to specify the warehouse for dashboard creation. If not specified, the first
@@ -83,7 +83,7 @@
         :returns: :class:`MonitorInfo`
         
 
-    .. py:method:: delete(full_name: str)
+    .. py:method:: delete(table_name: str)
 
         Delete a table monitor.
         
@@ -99,13 +99,13 @@
         Note that the metric tables and dashboard will not be deleted as part of this call; those assets must
         be manually cleaned up (if desired).
         
-        :param full_name: str
+        :param table_name: str
           Full name of the table.
         
         
         
 
-    .. py:method:: get(full_name: str) -> MonitorInfo
+    .. py:method:: get(table_name: str) -> MonitorInfo
 
         Get a table monitor.
         
@@ -120,13 +120,13 @@
         the monitor. Some information (e.g., dashboard) may be filtered out if the caller is in a different
         workspace than where the monitor was created.
         
-        :param full_name: str
+        :param table_name: str
           Full name of the table.
         
         :returns: :class:`MonitorInfo`
         
 
-    .. py:method:: get_refresh(full_name: str, refresh_id: str) -> MonitorRefreshInfo
+    .. py:method:: get_refresh(table_name: str, refresh_id: str) -> MonitorRefreshInfo
 
         Get refresh.
         
@@ -139,7 +139,7 @@
         
         Additionally, the call must be made from the workspace where the monitor was created.
         
-        :param full_name: str
+        :param table_name: str
           Full name of the table.
         :param refresh_id: str
           ID of the refresh.
@@ -147,7 +147,7 @@
         :returns: :class:`MonitorRefreshInfo`
         
 
-    .. py:method:: list_refreshes(full_name: str) -> Iterator[MonitorRefreshInfo]
+    .. py:method:: list_refreshes(table_name: str) -> Iterator[MonitorRefreshInfo]
 
         List refreshes.
         
@@ -160,13 +160,13 @@
         
         Additionally, the call must be made from the workspace where the monitor was created.
         
-        :param full_name: str
+        :param table_name: str
           Full name of the table.
         
         :returns: Iterator over :class:`MonitorRefreshInfo`
         
 
-    .. py:method:: run_refresh(full_name: str) -> MonitorRefreshInfo
+    .. py:method:: run_refresh(table_name: str) -> MonitorRefreshInfo
 
         Queue a metric refresh for a monitor.
         
@@ -180,13 +180,13 @@
         
         Additionally, the call must be made from the workspace where the monitor was created.
         
-        :param full_name: str
+        :param table_name: str
           Full name of the table.
         
         :returns: :class:`MonitorRefreshInfo`
         
 
-    .. py:method:: update(full_name: str, output_schema_name: str [, baseline_table_name: Optional[str], custom_metrics: Optional[List[MonitorCustomMetric]], data_classification_config: Optional[MonitorDataClassificationConfig], inference_log: Optional[MonitorInferenceLogProfileType], notifications: Optional[MonitorNotificationsConfig], schedule: Optional[MonitorCronSchedule], slicing_exprs: Optional[List[str]], snapshot: Optional[MonitorSnapshotProfileType], time_series: Optional[MonitorTimeSeriesProfileType]]) -> MonitorInfo
+    .. py:method:: update(table_name: str, output_schema_name: str [, baseline_table_name: Optional[str], custom_metrics: Optional[List[MonitorMetric]], data_classification_config: Optional[MonitorDataClassificationConfig], inference_log: Optional[MonitorInferenceLog], notifications: Optional[MonitorNotifications], schedule: Optional[MonitorCronSchedule], slicing_exprs: Optional[List[str]], snapshot: Optional[MonitorSnapshot], time_series: Optional[MonitorTimeSeries]]) -> MonitorInfo
 
         Update a table monitor.
         
@@ -202,21 +202,21 @@
         
         Certain configuration fields, such as output asset identifiers, cannot be updated.
         
-        :param full_name: str
+        :param table_name: str
           Full name of the table.
         :param output_schema_name: str
           Schema where output metric tables are created.
         :param baseline_table_name: str (optional)
           Name of the baseline table from which drift metrics are computed from. Columns in the monitored
           table should also be present in the baseline table.
-        :param custom_metrics: List[:class:`MonitorCustomMetric`] (optional)
+        :param custom_metrics: List[:class:`MonitorMetric`] (optional)
           Custom metrics to compute on the monitored table. These can be aggregate metrics, derived metrics
           (from already computed aggregate metrics), or drift metrics (comparing metrics across time windows).
         :param data_classification_config: :class:`MonitorDataClassificationConfig` (optional)
           The data classification config for the monitor.
-        :param inference_log: :class:`MonitorInferenceLogProfileType` (optional)
+        :param inference_log: :class:`MonitorInferenceLog` (optional)
           Configuration for monitoring inference logs.
-        :param notifications: :class:`MonitorNotificationsConfig` (optional)
+        :param notifications: :class:`MonitorNotifications` (optional)
           The notification settings for the monitor.
         :param schedule: :class:`MonitorCronSchedule` (optional)
           The schedule for automatically updating and refreshing metric tables.
@@ -224,9 +224,9 @@
           List of column expressions to slice data with for targeted analysis. The data is grouped by each
           expression independently, resulting in a separate slice for each predicate and its complements. For
           high-cardinality columns, only the top 100 unique values by frequency will generate slices.
-        :param snapshot: :class:`MonitorSnapshotProfileType` (optional)
+        :param snapshot: :class:`MonitorSnapshot` (optional)
           Configuration for monitoring snapshot tables.
-        :param time_series: :class:`MonitorTimeSeriesProfileType` (optional)
+        :param time_series: :class:`MonitorTimeSeries` (optional)
           Configuration for monitoring time series tables.
         
         :returns: :class:`MonitorInfo`
