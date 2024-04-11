@@ -86,6 +86,7 @@ class ClustersExt(compute.ClustersAPI):
         :param beta: bool
         :param latest: bool
         :param ml: bool
+        :param genomics: bool
         :param gpu: bool
         :param scala: str
         :param spark_version: str
@@ -100,7 +101,7 @@ class ClustersExt(compute.ClustersAPI):
         for version in sv.versions:
             if "-scala" + scala not in version.key:
                 continue
-            matches = ((not "apache-spark-" in version.key) and (("-ml-" in version.key) == ml)
+            matches = (("apache-spark-" not in version.key) and (("-ml-" in version.key) == ml)
                        and (("-hls-" in version.key) == genomics) and (("-gpu-" in version.key) == gpu)
                        and (("-photon-" in version.key) == photon)
                        and (("-aarch64-" in version.key) == graviton) and (("Beta" in version.name) == beta))
@@ -137,7 +138,7 @@ class ClustersExt(compute.ClustersAPI):
             return False
         val = compute.CloudProviderNodeStatus
         for st in nt.node_info.status:
-            if st in (val.NotAvailableInRegion, val.NotEnabledOnSubscription):
+            if st in (val.NOT_AVAILABLE_IN_REGION, val.NOT_ENABLED_ON_SUBSCRIPTION):
                 return True
         return False
 
@@ -168,6 +169,8 @@ class ClustersExt(compute.ClustersAPI):
         :param photon_driver_capable: bool
         :param graviton: bool
         :param is_io_cache_enabled: bool
+        :param support_port_forwarding: bool
+        :param fleet: bool
 
         :returns: `node_type` compatible string
         """
