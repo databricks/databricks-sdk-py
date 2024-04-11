@@ -15,7 +15,7 @@
     To create storage credentials, you must be a Databricks account admin. The account admin who creates the
     storage credential can delegate ownership to another user or group to manage permissions on it.
 
-    .. py:method:: create(name: str [, aws_iam_role: Optional[AwsIamRoleRequest], azure_managed_identity: Optional[AzureManagedIdentity], azure_service_principal: Optional[AzureServicePrincipal], cloudflare_api_token: Optional[CloudflareApiToken], comment: Optional[str], databricks_gcp_service_account: Optional[DatabricksGcpServiceAccountRequest], read_only: Optional[bool], skip_validation: Optional[bool]]) -> StorageCredentialInfo
+    .. py:method:: create(name: str [, aws_iam_role: Optional[AwsIamRoleRequest], azure_managed_identity: Optional[AzureManagedIdentityRequest], azure_service_principal: Optional[AzureServicePrincipal], cloudflare_api_token: Optional[CloudflareApiToken], comment: Optional[str], databricks_gcp_service_account: Optional[DatabricksGcpServiceAccountRequest], read_only: Optional[bool], skip_validation: Optional[bool]]) -> StorageCredentialInfo
 
 
         Usage:
@@ -45,7 +45,7 @@
           The credential name. The name must be unique within the metastore.
         :param aws_iam_role: :class:`AwsIamRoleRequest` (optional)
           The AWS IAM role configuration.
-        :param azure_managed_identity: :class:`AzureManagedIdentity` (optional)
+        :param azure_managed_identity: :class:`AzureManagedIdentityRequest` (optional)
           The Azure managed identity configuration.
         :param azure_service_principal: :class:`AzureServicePrincipal` (optional)
           The Azure service principal configuration.
@@ -145,7 +145,7 @@
         :returns: Iterator over :class:`StorageCredentialInfo`
         
 
-    .. py:method:: update(name: str [, aws_iam_role: Optional[AwsIamRoleRequest], azure_managed_identity: Optional[AzureManagedIdentity], azure_service_principal: Optional[AzureServicePrincipal], cloudflare_api_token: Optional[CloudflareApiToken], comment: Optional[str], databricks_gcp_service_account: Optional[DatabricksGcpServiceAccountRequest], force: Optional[bool], new_name: Optional[str], owner: Optional[str], read_only: Optional[bool], skip_validation: Optional[bool]]) -> StorageCredentialInfo
+    .. py:method:: update(name: str [, aws_iam_role: Optional[AwsIamRoleRequest], azure_managed_identity: Optional[AzureManagedIdentityResponse], azure_service_principal: Optional[AzureServicePrincipal], cloudflare_api_token: Optional[CloudflareApiToken], comment: Optional[str], databricks_gcp_service_account: Optional[DatabricksGcpServiceAccountRequest], force: Optional[bool], new_name: Optional[str], owner: Optional[str], read_only: Optional[bool], skip_validation: Optional[bool]]) -> StorageCredentialInfo
 
 
         Usage:
@@ -180,7 +180,7 @@
           Name of the storage credential.
         :param aws_iam_role: :class:`AwsIamRoleRequest` (optional)
           The AWS IAM role configuration.
-        :param azure_managed_identity: :class:`AzureManagedIdentity` (optional)
+        :param azure_managed_identity: :class:`AzureManagedIdentityResponse` (optional)
           The Azure managed identity configuration.
         :param azure_service_principal: :class:`AzureServicePrincipal` (optional)
           The Azure service principal configuration.
@@ -204,7 +204,7 @@
         :returns: :class:`StorageCredentialInfo`
         
 
-    .. py:method:: validate( [, aws_iam_role: Optional[AwsIamRoleRequest], azure_managed_identity: Optional[AzureManagedIdentity], azure_service_principal: Optional[AzureServicePrincipal], cloudflare_api_token: Optional[CloudflareApiToken], databricks_gcp_service_account: Optional[DatabricksGcpServiceAccountRequest], external_location_name: Optional[str], read_only: Optional[bool], storage_credential_name: Optional[str], url: Optional[str]]) -> ValidateStorageCredentialResponse
+    .. py:method:: validate( [, aws_iam_role: Optional[AwsIamRoleRequest], azure_managed_identity: Optional[AzureManagedIdentityRequest], azure_service_principal: Optional[AzureServicePrincipal], cloudflare_api_token: Optional[CloudflareApiToken], databricks_gcp_service_account: Optional[DatabricksGcpServiceAccountRequest], external_location_name: Optional[str], read_only: Optional[bool], storage_credential_name: Optional[str], url: Optional[str]]) -> ValidateStorageCredentialResponse
 
         Validate a storage credential.
         
@@ -220,7 +220,7 @@
         
         :param aws_iam_role: :class:`AwsIamRoleRequest` (optional)
           The AWS IAM role configuration.
-        :param azure_managed_identity: :class:`AzureManagedIdentity` (optional)
+        :param azure_managed_identity: :class:`AzureManagedIdentityRequest` (optional)
           The Azure managed identity configuration.
         :param azure_service_principal: :class:`AzureServicePrincipal` (optional)
           The Azure service principal configuration.

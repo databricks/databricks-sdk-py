@@ -80,7 +80,7 @@
         :param request_object_type: str
           The type of the request object. Can be one of the following: authorization, clusters,
           cluster-policies, directories, experiments, files, instance-pools, jobs, notebooks, pipelines,
-          registered-models, repos, serving-endpoints, or sql-warehouses.
+          registered-models, repos, serving-endpoints, or warehouses.
         :param request_object_id: str
           The id of the request object.
         
@@ -157,7 +157,7 @@
         :param request_object_type: str
           The type of the request object. Can be one of the following: authorization, clusters,
           cluster-policies, directories, experiments, files, instance-pools, jobs, notebooks, pipelines,
-          registered-models, repos, serving-endpoints, or sql-warehouses.
+          registered-models, repos, serving-endpoints, or warehouses.
         :param request_object_id: str
           The id of the request object.
         :param access_control_list: List[:class:`AccessControlRequest`] (optional)
@@ -175,7 +175,7 @@
         :param request_object_type: str
           The type of the request object. Can be one of the following: authorization, clusters,
           cluster-policies, directories, experiments, files, instance-pools, jobs, notebooks, pipelines,
-          registered-models, repos, serving-endpoints, or sql-warehouses.
+          registered-models, repos, serving-endpoints, or warehouses.
         :param request_object_id: str
           The id of the request object.
         :param access_control_list: List[:class:`AccessControlRequest`] (optional)

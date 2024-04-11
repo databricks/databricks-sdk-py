@@ -356,10 +356,6 @@ class ClusterInstance:
 
 @dataclass
 class ClusterSpec:
-    compute_key: Optional[str] = None
-    """The key of the compute requirement, specified in `job.settings.compute`, to use for execution of
-    this task."""
-
     existing_cluster_id: Optional[str] = None
     """If existing_cluster_id, the ID of an existing cluster that is used for all runs. When running
     jobs or tasks on an existing cluster, you may need to manually restart the cluster if it stops
@@ -379,7 +375,6 @@ class ClusterSpec:
     def as_dict(self) -> dict:
         """Serializes the ClusterSpec into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.compute_key is not None: body['compute_key'] = self.compute_key
         if self.existing_cluster_id is not None: body['existing_cluster_id'] = self.existing_cluster_id
         if self.job_cluster_key is not None: body['job_cluster_key'] = self.job_cluster_key
         if self.libraries: body['libraries'] = [v.as_dict() for v in self.libraries]
@@ -389,8 +384,7 @@ class ClusterSpec:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ClusterSpec:
         """Deserializes the ClusterSpec from a dictionary."""
-        return cls(compute_key=d.get('compute_key', None),
-                   existing_cluster_id=d.get('existing_cluster_id', None),
+        return cls(existing_cluster_id=d.get('existing_cluster_id', None),
                    job_cluster_key=d.get('job_cluster_key', None),
                    libraries=_repeated_dict(d, 'libraries', compute.Library),
                    new_cluster=_from_dict(d, 'new_cluster', compute.ClusterSpec))
@@ -478,9 +472,6 @@ class CreateJob:
     access_control_list: Optional[List[iam.AccessControlRequest]] = None
     """List of permissions to set on the job."""
 
-    compute: Optional[List[JobCompute]] = None
-    """A list of compute requirements that can be referenced by tasks of this job."""
-
     continuous: Optional[Continuous] = None
     """An optional continuous property for this job. The continuous property will ensure that there is
     always one run executing. Only one of `schedule` and `continuous` can be used."""
@@ -500,6 +491,9 @@ class CreateJob:
     email_notifications: Optional[JobEmailNotifications] = None
     """An optional set of email addresses that is notified when runs of this job begin or complete as
     well as when this job is deleted."""
+
+    environments: Optional[List[JobEnvironment]] = None
+    """A list of task execution environment specifications that can be referenced by tasks of this job."""
 
     format: Optional[Format] = None
     """Used to tell what is the format of the job. This field is ignored in Create/Update/Reset calls.
@@ -582,12 +576,12 @@ class CreateJob:
         body = {}
         if self.access_control_list:
             body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
-        if self.compute: body['compute'] = [v.as_dict() for v in self.compute]
         if self.continuous: body['continuous'] = self.continuous.as_dict()
         if self.deployment: body['deployment'] = self.deployment.as_dict()
         if self.description is not None: body['description'] = self.description
         if self.edit_mode is not None: body['edit_mode'] = self.edit_mode.value
         if self.email_notifications: body['email_notifications'] = self.email_notifications.as_dict()
+        if self.environments: body['environments'] = [v.as_dict() for v in self.environments]
         if self.format is not None: body['format'] = self.format.value
         if self.git_source: body['git_source'] = self.git_source.as_dict()
         if self.health: body['health'] = self.health.as_dict()
@@ -610,12 +604,12 @@ class CreateJob:
     def from_dict(cls, d: Dict[str, any]) -> CreateJob:
         """Deserializes the CreateJob from a dictionary."""
         return cls(access_control_list=_repeated_dict(d, 'access_control_list', iam.AccessControlRequest),
-                   compute=_repeated_dict(d, 'compute', JobCompute),
                    continuous=_from_dict(d, 'continuous', Continuous),
                    deployment=_from_dict(d, 'deployment', JobDeployment),
                    description=d.get('description', None),
                    edit_mode=_enum(d, 'edit_mode', JobEditMode),
                    email_notifications=_from_dict(d, 'email_notifications', JobEmailNotifications),
+                   environments=_repeated_dict(d, 'environments', JobEnvironment),
                    format=_enum(d, 'format', Format),
                    git_source=_from_dict(d, 'git_source', GitSource),
                    health=_from_dict(d, 'health', JobsHealthRules),
@@ -1261,28 +1255,6 @@ class JobCluster:
 
 
 @dataclass
-class JobCompute:
-    compute_key: str
-    """A unique name for the compute requirement. This field is required and must be unique within the
-    job. `JobTaskSettings` may refer to this field to determine the compute requirements for the
-    task execution."""
-
-    spec: compute.ComputeSpec
-
-    def as_dict(self) -> dict:
-        """Serializes the JobCompute into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.compute_key is not None: body['compute_key'] = self.compute_key
-        if self.spec: body['spec'] = self.spec.as_dict()
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> JobCompute:
-        """Deserializes the JobCompute from a dictionary."""
-        return cls(compute_key=d.get('compute_key', None), spec=_from_dict(d, 'spec', compute.ComputeSpec))
-
-
-@dataclass
 class JobDeployment:
     kind: JobDeploymentKind
     """The kind of deployment that manages the job.
@@ -1372,6 +1344,30 @@ class JobEmailNotifications:
                    on_failure=d.get('on_failure', None),
                    on_start=d.get('on_start', None),
                    on_success=d.get('on_success', None))
+
+
+@dataclass
+class JobEnvironment:
+    environment_key: str
+    """The key of an environment. It has to be unique within a job."""
+
+    spec: Optional[compute.Environment] = None
+    """The a environment entity used to preserve serverless environment side panel and jobs'
+    environment for non-notebook task. In this minimal environment spec, only pip dependencies are
+    supported. Next ID: 5"""
+
+    def as_dict(self) -> dict:
+        """Serializes the JobEnvironment into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.environment_key is not None: body['environment_key'] = self.environment_key
+        if self.spec: body['spec'] = self.spec.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> JobEnvironment:
+        """Deserializes the JobEnvironment from a dictionary."""
+        return cls(environment_key=d.get('environment_key', None),
+                   spec=_from_dict(d, 'spec', compute.Environment))
 
 
 @dataclass
@@ -1582,9 +1578,6 @@ class JobRunAs:
 
 @dataclass
 class JobSettings:
-    compute: Optional[List[JobCompute]] = None
-    """A list of compute requirements that can be referenced by tasks of this job."""
-
     continuous: Optional[Continuous] = None
     """An optional continuous property for this job. The continuous property will ensure that there is
     always one run executing. Only one of `schedule` and `continuous` can be used."""
@@ -1604,6 +1597,9 @@ class JobSettings:
     email_notifications: Optional[JobEmailNotifications] = None
     """An optional set of email addresses that is notified when runs of this job begin or complete as
     well as when this job is deleted."""
+
+    environments: Optional[List[JobEnvironment]] = None
+    """A list of task execution environment specifications that can be referenced by tasks of this job."""
 
     format: Optional[Format] = None
     """Used to tell what is the format of the job. This field is ignored in Create/Update/Reset calls.
@@ -1684,12 +1680,12 @@ class JobSettings:
     def as_dict(self) -> dict:
         """Serializes the JobSettings into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.compute: body['compute'] = [v.as_dict() for v in self.compute]
         if self.continuous: body['continuous'] = self.continuous.as_dict()
         if self.deployment: body['deployment'] = self.deployment.as_dict()
         if self.description is not None: body['description'] = self.description
         if self.edit_mode is not None: body['edit_mode'] = self.edit_mode.value
         if self.email_notifications: body['email_notifications'] = self.email_notifications.as_dict()
+        if self.environments: body['environments'] = [v.as_dict() for v in self.environments]
         if self.format is not None: body['format'] = self.format.value
         if self.git_source: body['git_source'] = self.git_source.as_dict()
         if self.health: body['health'] = self.health.as_dict()
@@ -1711,12 +1707,12 @@ class JobSettings:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> JobSettings:
         """Deserializes the JobSettings from a dictionary."""
-        return cls(compute=_repeated_dict(d, 'compute', JobCompute),
-                   continuous=_from_dict(d, 'continuous', Continuous),
+        return cls(continuous=_from_dict(d, 'continuous', Continuous),
                    deployment=_from_dict(d, 'deployment', JobDeployment),
                    description=d.get('description', None),
                    edit_mode=_enum(d, 'edit_mode', JobEditMode),
                    email_notifications=_from_dict(d, 'email_notifications', JobEmailNotifications),
+                   environments=_repeated_dict(d, 'environments', JobEnvironment),
                    format=_enum(d, 'format', Format),
                    git_source=_from_dict(d, 'git_source', GitSource),
                    health=_from_dict(d, 'health', JobsHealthRules),
@@ -3366,10 +3362,6 @@ class RunTask:
     """The cluster used for this run. If the run is specified to use a new cluster, this field is set
     once the Jobs service has requested a cluster for the run."""
 
-    compute_key: Optional[str] = None
-    """The key of the compute requirement, specified in `job.settings.compute`, to use for execution of
-    this task."""
-
     condition_task: Optional[RunConditionTask] = None
     """If condition_task, specifies a condition with an outcome that can be used to control the
     execution of other tasks. Does not require a cluster to execute and does not support retries or
@@ -3520,7 +3512,6 @@ class RunTask:
         if self.attempt_number is not None: body['attempt_number'] = self.attempt_number
         if self.cleanup_duration is not None: body['cleanup_duration'] = self.cleanup_duration
         if self.cluster_instance: body['cluster_instance'] = self.cluster_instance.as_dict()
-        if self.compute_key is not None: body['compute_key'] = self.compute_key
         if self.condition_task: body['condition_task'] = self.condition_task.as_dict()
         if self.dbt_task: body['dbt_task'] = self.dbt_task.as_dict()
         if self.depends_on: body['depends_on'] = [v.as_dict() for v in self.depends_on]
@@ -3563,7 +3554,6 @@ class RunTask:
         return cls(attempt_number=d.get('attempt_number', None),
                    cleanup_duration=d.get('cleanup_duration', None),
                    cluster_instance=_from_dict(d, 'cluster_instance', ClusterInstance),
-                   compute_key=d.get('compute_key', None),
                    condition_task=_from_dict(d, 'condition_task', RunConditionTask),
                    dbt_task=_from_dict(d, 'dbt_task', DbtTask),
                    depends_on=_repeated_dict(d, 'depends_on', TaskDependency),
@@ -4450,7 +4440,7 @@ class SubmitTask:
 
 
 @dataclass
-class TableTriggerConfiguration:
+class TableUpdateTriggerConfiguration:
     condition: Optional[Condition] = None
     """The table(s) condition based on which to trigger a job run."""
 
@@ -4468,7 +4458,7 @@ class TableTriggerConfiguration:
     allowed value is 60 seconds."""
 
     def as_dict(self) -> dict:
-        """Serializes the TableTriggerConfiguration into a dictionary suitable for use as a JSON request body."""
+        """Serializes the TableUpdateTriggerConfiguration into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.condition is not None: body['condition'] = self.condition.value
         if self.min_time_between_triggers_seconds is not None:
@@ -4479,8 +4469,8 @@ class TableTriggerConfiguration:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> TableTriggerConfiguration:
-        """Deserializes the TableTriggerConfiguration from a dictionary."""
+    def from_dict(cls, d: Dict[str, any]) -> TableUpdateTriggerConfiguration:
+        """Deserializes the TableUpdateTriggerConfiguration from a dictionary."""
         return cls(condition=_enum(d, 'condition', Condition),
                    min_time_between_triggers_seconds=d.get('min_time_between_triggers_seconds', None),
                    table_names=d.get('table_names', None),
@@ -4493,10 +4483,6 @@ class Task:
     """A unique name for the task. This field is used to refer to this task from other tasks. This
     field is required and must be unique within its parent job. On Update or Reset, this field is
     used to reference the tasks to be updated or reset."""
-
-    compute_key: Optional[str] = None
-    """The key of the compute requirement, specified in `job.settings.compute`, to use for execution of
-    this task."""
 
     condition_task: Optional[ConditionTask] = None
     """If condition_task, specifies a condition with an outcome that can be used to control the
@@ -4522,6 +4508,10 @@ class Task:
     email_notifications: Optional[TaskEmailNotifications] = None
     """An optional set of email addresses that is notified when runs of this task begin or complete as
     well as when this task is deleted. The default behavior is to not send any emails."""
+
+    environment_key: Optional[str] = None
+    """The key that references an environment spec in a job. This field is required for Python script,
+    Python wheel and dbt tasks when using serverless compute."""
 
     existing_cluster_id: Optional[str] = None
     """If existing_cluster_id, the ID of an existing cluster that is used for all runs. When running
@@ -4621,7 +4611,6 @@ class Task:
     def as_dict(self) -> dict:
         """Serializes the Task into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.compute_key is not None: body['compute_key'] = self.compute_key
         if self.condition_task: body['condition_task'] = self.condition_task.as_dict()
         if self.dbt_task: body['dbt_task'] = self.dbt_task.as_dict()
         if self.depends_on: body['depends_on'] = [v.as_dict() for v in self.depends_on]
@@ -4629,6 +4618,7 @@ class Task:
         if self.disable_auto_optimization is not None:
             body['disable_auto_optimization'] = self.disable_auto_optimization
         if self.email_notifications: body['email_notifications'] = self.email_notifications.as_dict()
+        if self.environment_key is not None: body['environment_key'] = self.environment_key
         if self.existing_cluster_id is not None: body['existing_cluster_id'] = self.existing_cluster_id
         if self.for_each_task: body['for_each_task'] = self.for_each_task.as_dict()
         if self.health: body['health'] = self.health.as_dict()
@@ -4657,13 +4647,13 @@ class Task:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> Task:
         """Deserializes the Task from a dictionary."""
-        return cls(compute_key=d.get('compute_key', None),
-                   condition_task=_from_dict(d, 'condition_task', ConditionTask),
+        return cls(condition_task=_from_dict(d, 'condition_task', ConditionTask),
                    dbt_task=_from_dict(d, 'dbt_task', DbtTask),
                    depends_on=_repeated_dict(d, 'depends_on', TaskDependency),
                    description=d.get('description', None),
                    disable_auto_optimization=d.get('disable_auto_optimization', None),
                    email_notifications=_from_dict(d, 'email_notifications', TaskEmailNotifications),
+                   environment_key=d.get('environment_key', None),
                    existing_cluster_id=d.get('existing_cluster_id', None),
                    for_each_task=_from_dict(d, 'for_each_task', ForEachTask),
                    health=_from_dict(d, 'health', JobsHealthRules),
@@ -4822,10 +4812,10 @@ class TriggerSettings:
     pause_status: Optional[PauseStatus] = None
     """Whether this trigger is paused or not."""
 
-    table: Optional[TableTriggerConfiguration] = None
+    table: Optional[TableUpdateTriggerConfiguration] = None
     """Old table trigger settings name. Deprecated in favor of `table_update`."""
 
-    table_update: Optional[TableTriggerConfiguration] = None
+    table_update: Optional[TableUpdateTriggerConfiguration] = None
 
     def as_dict(self) -> dict:
         """Serializes the TriggerSettings into a dictionary suitable for use as a JSON request body."""
@@ -4841,8 +4831,8 @@ class TriggerSettings:
         """Deserializes the TriggerSettings from a dictionary."""
         return cls(file_arrival=_from_dict(d, 'file_arrival', FileArrivalTriggerConfiguration),
                    pause_status=_enum(d, 'pause_status', PauseStatus),
-                   table=_from_dict(d, 'table', TableTriggerConfiguration),
-                   table_update=_from_dict(d, 'table_update', TableTriggerConfiguration))
+                   table=_from_dict(d, 'table', TableUpdateTriggerConfiguration),
+                   table_update=_from_dict(d, 'table_update', TableUpdateTriggerConfiguration))
 
 
 class TriggerType(Enum):
@@ -5115,12 +5105,12 @@ class JobsAPI:
     def create(self,
                *,
                access_control_list: Optional[List[iam.AccessControlRequest]] = None,
-               compute: Optional[List[JobCompute]] = None,
                continuous: Optional[Continuous] = None,
                deployment: Optional[JobDeployment] = None,
                description: Optional[str] = None,
                edit_mode: Optional[JobEditMode] = None,
                email_notifications: Optional[JobEmailNotifications] = None,
+               environments: Optional[List[JobEnvironment]] = None,
                format: Optional[Format] = None,
                git_source: Optional[GitSource] = None,
                health: Optional[JobsHealthRules] = None,
@@ -5143,8 +5133,6 @@ class JobsAPI:
         
         :param access_control_list: List[:class:`AccessControlRequest`] (optional)
           List of permissions to set on the job.
-        :param compute: List[:class:`JobCompute`] (optional)
-          A list of compute requirements that can be referenced by tasks of this job.
         :param continuous: :class:`Continuous` (optional)
           An optional continuous property for this job. The continuous property will ensure that there is
           always one run executing. Only one of `schedule` and `continuous` can be used.
@@ -5160,6 +5148,8 @@ class JobsAPI:
         :param email_notifications: :class:`JobEmailNotifications` (optional)
           An optional set of email addresses that is notified when runs of this job begin or complete as well
           as when this job is deleted.
+        :param environments: List[:class:`JobEnvironment`] (optional)
+          A list of task execution environment specifications that can be referenced by tasks of this job.
         :param format: :class:`Format` (optional)
           Used to tell what is the format of the job. This field is ignored in Create/Update/Reset calls. When
           using the Jobs API 2.1 this value is always set to `"MULTI_TASK"`.
@@ -5225,12 +5215,12 @@ class JobsAPI:
         body = {}
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
-        if compute is not None: body['compute'] = [v.as_dict() for v in compute]
         if continuous is not None: body['continuous'] = continuous.as_dict()
         if deployment is not None: body['deployment'] = deployment.as_dict()
         if description is not None: body['description'] = description
         if edit_mode is not None: body['edit_mode'] = edit_mode.value
         if email_notifications is not None: body['email_notifications'] = email_notifications.as_dict()
+        if environments is not None: body['environments'] = [v.as_dict() for v in environments]
         if format is not None: body['format'] = format.value
         if git_source is not None: body['git_source'] = git_source.as_dict()
         if health is not None: body['health'] = health.as_dict()
