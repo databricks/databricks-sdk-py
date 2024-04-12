@@ -1,5 +1,11 @@
 # Version changelog
 
+## 0.25.1
+
+Bug fixes:
+* Fixed `select_node_type` error ([#614](https://github.com/databricks/databricks-sdk-py/pull/614)).
+
+
 ## 0.25.0
 
 ### Behavior Changes
