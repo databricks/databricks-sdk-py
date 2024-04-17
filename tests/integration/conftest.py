@@ -105,6 +105,7 @@ def _load_debug_env_if_runs_from_ide(key) -> bool:
 def _is_in_debug() -> bool:
     return os.path.basename(sys.argv[0]) in ['_jb_pytest_runner.py', 'testlauncher.py', ]
 
+
 @pytest.fixture(scope="function")
 def restorable_env():
     import os
