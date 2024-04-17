@@ -7,6 +7,8 @@ from pyfakefs.fake_filesystem_unittest import Patcher
 from databricks.sdk.core import Config
 from databricks.sdk.credentials_provider import credentials_provider
 
+from .integration.conftest import restorable_env  # type: ignore
+
 
 @credentials_provider('noop', [])
 def noop_credentials(_: any):
