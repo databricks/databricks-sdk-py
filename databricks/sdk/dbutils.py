@@ -1,6 +1,8 @@
 import base64
+from dataclasses import dataclass
 import json
 import logging
+import os
 import threading
 import typing
 from collections import namedtuple
@@ -241,18 +243,89 @@ class RemoteDbUtils:
                           name=util)
 
 
+@dataclass
+class OverrideResult:
+    result: typing.Any
+
+def get_local_notebook_path():
+    value = os.getenv("DATABRICKS_SOURCE_FILE")
+    if value is None:
+        raise ValueError("DABRICKS_SOURCE_FILE environment variable is not set. This is required to get the local notebook path.")
+
+    return value
+
+class _OverrideProxyUtil:
+
+    @classmethod
+    def new(cls, path: str):
+        if len(cls.__get_matching_overrides(path)) > 0:
+            return _OverrideProxyUtil(path)
+        return None
+             
+    def __init__(self, name: str):
+        self._name = name
+    
+
+    # These are the paths that we want to override and not send to remote dbutils. NOTE, for each of these paths, no prefixes
+    # are sent to remote either. This could lead to unintentional breakage. 
+    # Our current proxy implementation (which sends everything to remote dbutils) uses `{util}.{method}(*args, **kwargs)` ONLY.
+    # This means, it is completely safe to override paths starting with `{util}.{attribute}.<other_parts>`, since none of the prefixes
+    # are being proxied to remote dbutils currently. 
+    proxy_override_paths = {
+        'notebook.entry_point.getDbutils().notebook().getContext().notebookPath().get()': get_local_notebook_path,
+    }  
+
+    @classmethod 
+    def __get_matching_overrides(cls, path: str) -> list[str]:
+        return list(filter(lambda x: x.startswith(path), list(cls.proxy_override_paths.keys())))
+    
+    def __run_override(self, path: str) -> typing.Optional[OverrideResult]:
+        overrides = self.__get_matching_overrides(path)
+        if len(overrides) == 1 and overrides[0] == path:
+            return OverrideResult(self.proxy_override_paths[overrides[0]]())
+        
+        if len(overrides) > 0: 
+            return OverrideResult(_OverrideProxyUtil(name=path))
+        
+        return None
+
+    def __call__(self, *args, **kwds) -> typing.Any:
+        if len(args) != 0 or len(kwds) != 0:
+            raise TypeError(f"{self._name}() takes no arguments (1 given)")
+
+        callable_path = f"{self._name}()"
+        result = self.__run_override(callable_path)
+        if result:
+            return result.result
+        
+        raise TypeError(f"{self._name} is not callable")
+    
+    def __getattr__(self, method: str) -> typing.Any:
+        result = self.__run_override(f"{self._name}.{method}")
+        if result:
+            return result.result
+
+        raise AttributeError(f"module {self._name} has no attribute {method}")
+    
 class _ProxyUtil:
     """Enables temporary workaround to call remote in-REPL dbutils without having to re-implement them"""
+ 
 
     def __init__(self, *, command_execution: compute.CommandExecutionAPI,
-                 context_factory: typing.Callable[[],
-                                                  compute.ContextStatusResponse], cluster_id: str, name: str):
+                 context_factory: typing.Callable[[], compute.ContextStatusResponse], cluster_id: str, name: str):
         self._commands = command_execution
         self._cluster_id = cluster_id
         self._context_factory = context_factory
         self._name = name
 
-    def __getattr__(self, method: str) -> '_ProxyCall':
+    def __call__(self):
+        raise NotImplementedError(f"dbutils.{self._name} is not callable")
+
+    def __getattr__(self, method: str) -> '_ProxyCall | _ProxyUtil | _OverrideProxyUtil':
+        override = _OverrideProxyUtil.new(f"{self._name}.{method}")
+        if override:
+            return override
+        
         return _ProxyCall(command_execution=self._commands,
                           cluster_id=self._cluster_id,
                           context_factory=self._context_factory,

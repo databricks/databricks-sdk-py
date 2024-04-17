@@ -104,3 +104,14 @@ def _load_debug_env_if_runs_from_ide(key) -> bool:
 
 def _is_in_debug() -> bool:
     return os.path.basename(sys.argv[0]) in ['_jb_pytest_runner.py', 'testlauncher.py', ]
+
+@pytest.fixture(scope="function")
+def restorable_env():
+    import os
+    current_env = os.environ.copy()
+    yield
+    for k, v in os.environ.items():
+        if k not in current_env:
+            del os.environ[k]
+        elif v != current_env[k]:
+            os.environ[k] = current_env[k]
