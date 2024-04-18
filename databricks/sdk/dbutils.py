@@ -252,7 +252,7 @@ def get_local_notebook_path():
     value = os.getenv("DATABRICKS_SOURCE_FILE")
     if value is None:
         raise ValueError(
-            "DABRICKS_SOURCE_FILE environment variable is not set. This is required to get the local notebook path."
+            "Getting the current notebook path is only supported when running a notebook using the `Databricks Connect: Run as File` or `Databricks Connect: Debug as File` commands in the Databricks extension for VS Code. To bypass this error, set environment variable `DATABRICKS_SOURCE_FILE` to the desired notebook path."
         )
 
     return value
