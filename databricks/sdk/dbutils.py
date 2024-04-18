@@ -281,7 +281,7 @@ class _OverrideProxyUtil:
 
     @classmethod
     def __get_matching_overrides(cls, path: str):
-        return list(filter(lambda x: x.startswith(path), list(cls.proxy_override_paths.keys())))
+        return [x for x in cls.proxy_override_paths.keys() if x.startswith(path)]
 
     def __run_override(self, path: str) -> typing.Optional[OverrideResult]:
         overrides = self.__get_matching_overrides(path)
