@@ -3499,13 +3499,13 @@ class TimeRange:
 
 @dataclass
 class TransferOwnershipObjectId:
-    new_owner: Optional[str] = None
-    """Email address for the new owner, who must exist in the workspace."""
+    object_id: str = None
+    """The ID of the object on which to change ownership."""
 
     def as_dict(self) -> dict:
         """Serializes the TransferOwnershipObjectId into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.new_owner is not None: body['new_owner'] = self.new_owner
+        if self.object_id is not None: body['object_id'] = self.object_id
         return body
 
     @classmethod

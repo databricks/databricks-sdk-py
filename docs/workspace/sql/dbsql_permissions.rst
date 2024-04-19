@@ -46,7 +46,7 @@
         :returns: :class:`SetResponse`
         
 
-    .. py:method:: transfer_ownership(object_type: OwnableObjectType, object_id: TransferOwnershipObjectId [, new_owner: Optional[str]]) -> Success
+    .. py:method:: transfer_ownership(object_type: OwnableObjectType, object_id: TransferOwnershipObjectId [, object_id: str]) -> Success
 
         Transfer object ownership.
         
