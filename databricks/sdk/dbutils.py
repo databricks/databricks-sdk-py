@@ -45,17 +45,12 @@ class _FsUtil:
 
     def head(self, file: str, maxBytes: int = 65536) -> str:
         """Returns up to the first 'maxBytes' bytes of the given file as a String encoded in UTF-8 """
-        res = self._dbfs.read(file, length=maxBytes, offset=0)
-        raw = base64.b64decode(res.data)
-        return raw.decode('utf8')
+        with self._dbfs.download(file) as f:
+            return f.read(maxBytes).decode('utf8')
 
     def ls(self, dir: str) -> typing.List[FileInfo]:
         """Lists the contents of a directory """
-        result = []
-        for f in self._dbfs.list(dir):
-            name = f.path.split('/')[-1]
-            result.append(FileInfo(f'dbfs:{f.path}', name, f.file_size, f.modification_time))
-        return result
+        return list(self._dbfs.list(dir))
 
     def mkdirs(self, dir: str) -> bool:
         """Creates the given directory if it does not exist, also creating any necessary parent directories """

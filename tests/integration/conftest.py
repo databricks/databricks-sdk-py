@@ -37,7 +37,7 @@ def pytest_collection_modifyitems(items):
                 item.add_marker('integration')
 
 
-@pytest.fixture
+@pytest.fixture(scope='session')
 def random():
     import random
 
