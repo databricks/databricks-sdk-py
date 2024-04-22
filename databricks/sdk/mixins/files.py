@@ -7,7 +7,7 @@ import shutil
 from abc import ABC, abstractmethod
 from io import BytesIO
 from types import TracebackType
-from typing import TYPE_CHECKING, AnyStr, BinaryIO, Iterable, Iterator, Type, Union
+from typing import TYPE_CHECKING, AnyStr, BinaryIO, Iterable, Iterator, Type, Union, Generator
 import os
 
 from databricks.sdk.core import DatabricksError
@@ -302,7 +302,7 @@ class _Path(ABC):
     def open(self, *, read=False, write=False, overwrite=False):
         ...
 
-    def list(self, *, recursive=False) -> Iterable[files.FileInfo]:
+    def list(self, *, recursive=False) -> Generator[files.FileInfo, None, None]:
         ...
 
     @abstractmethod
@@ -346,7 +346,7 @@ class _LocalPath(_Path):
         self._path.parent.mkdir(mode=0o755, parents=True, exist_ok=True)
         return self._path.open(mode='wb' if overwrite else 'rb' if read else 'xb')
 
-    def list(self, recursive=False) -> Iterable[files.FileInfo]:
+    def list(self, recursive=False) -> Generator[files.FileInfo, None, None]:
         if not self.is_dir:
             st = self._path.stat()
             yield files.FileInfo(
@@ -419,7 +419,7 @@ class _VolumesPath(_Path):
     def open(self, *, read=False, write=False, overwrite=False) -> BinaryIO:
         return _VolumesIO(self._api, self.as_string, read=read, write=write, overwrite=overwrite)
 
-    def list(self, *, recursive=False) -> Iterable[files.FileInfo]:
+    def list(self, *, recursive=False) -> Generator[files.FileInfo, None, None]:
         if not self.is_dir:
             meta = self._api.get_metadata(self.as_string)
             yield files.FileInfo(
@@ -489,7 +489,7 @@ class _DbfsPath(_Path):
     def open(self, *, read=False, write=False, overwrite=False) -> BinaryIO:
         return _DbfsIO(self._api, self.as_string, read=read, write=write, overwrite=overwrite)
 
-    def list(self, *, recursive=False) -> Iterable[files.FileInfo]:
+    def list(self, *, recursive=False) -> Generator[files.FileInfo, None, None]:
         if not self.is_dir:
             meta = self._api.get_status(self.as_string)
             yield files.FileInfo(
