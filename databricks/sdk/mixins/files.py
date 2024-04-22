@@ -2,17 +2,16 @@ from __future__ import annotations
 
 import base64
 import functools
+import os
 import pathlib
 import shutil
 from abc import ABC, abstractmethod
 from io import BytesIO
 from types import TracebackType
-from typing import TYPE_CHECKING, AnyStr, BinaryIO, Iterable, Iterator, Type, Union, Generator
-import os
+from typing import (TYPE_CHECKING, AnyStr, BinaryIO, Generator, Iterable,
+                    Iterator, Type, Union)
 
-from databricks.sdk.core import DatabricksError
 from ..errors import NotFound
-
 from ..service import files
 
 if TYPE_CHECKING:
@@ -165,6 +164,7 @@ class _DbfsIO(BinaryIO):
 
 
 class _VolumesIO(BinaryIO):
+
     def __init__(self, api: files.FilesAPI, path: str, *, read: bool, write: bool, overwrite: bool):
         self._buffer = []
         self._api = api
@@ -323,6 +323,7 @@ class _Path(ABC):
 
 
 class _LocalPath(_Path):
+
     def _is_local(self) -> bool:
         return True
 
@@ -349,12 +350,11 @@ class _LocalPath(_Path):
     def list(self, recursive=False) -> Generator[files.FileInfo, None, None]:
         if not self.is_dir:
             st = self._path.stat()
-            yield files.FileInfo(
-                path=str(self._path.absolute()),
-                is_dir=False,
-                file_size=st.st_size,
-                modification_time=int(st.st_mtime_ns/1e6),
-            )
+            yield files.FileInfo(path=str(self._path.absolute()),
+                                 is_dir=False,
+                                 file_size=st.st_size,
+                                 modification_time=int(st.st_mtime_ns / 1e6),
+                                 )
             return
         queue = [self._path]
         while queue:
@@ -365,12 +365,11 @@ class _LocalPath(_Path):
                         queue.append(leaf)
                     continue
                 info = leaf.stat()
-                yield files.FileInfo(
-                    path=str(leaf.absolute()),
-                    is_dir=False,
-                    file_size=info.st_size,
-                    modification_time=int(info.st_mtime_ns/1e6),
-                )
+                yield files.FileInfo(path=str(leaf.absolute()),
+                                     is_dir=False,
+                                     file_size=info.st_size,
+                                     modification_time=int(info.st_mtime_ns / 1e6),
+                                     )
 
     def delete(self, *, recursive=False):
         if self.is_dir:
@@ -386,6 +385,7 @@ class _LocalPath(_Path):
 
 
 class _VolumesPath(_Path):
+
     def __init__(self, api: files.FilesAPI, src: Union[str, pathlib.Path]):
         super().__init__(src)
         self._api = api
@@ -422,12 +422,11 @@ class _VolumesPath(_Path):
     def list(self, *, recursive=False) -> Generator[files.FileInfo, None, None]:
         if not self.is_dir:
             meta = self._api.get_metadata(self.as_string)
-            yield files.FileInfo(
-                path=self.as_string,
-                is_dir=False,
-                file_size=meta.content_length,
-                modification_time=meta.last_modified,
-            )
+            yield files.FileInfo(path=self.as_string,
+                                 is_dir=False,
+                                 file_size=meta.content_length,
+                                 modification_time=meta.last_modified,
+                                 )
             return
         queue = [self]
         while queue:
@@ -435,12 +434,11 @@ class _VolumesPath(_Path):
             for file in self._api.list_directory_contents(next_path.as_string):
                 if recursive and file.is_directory:
                     queue.append(self.child(file.name))
-                yield files.FileInfo(
-                    path=file.path,
-                    is_dir=file.is_directory,
-                    file_size=file.file_size,
-                    modification_time=file.last_modified,
-                )
+                yield files.FileInfo(path=file.path,
+                                     is_dir=file.is_directory,
+                                     file_size=file.file_size,
+                                     modification_time=file.last_modified,
+                                     )
 
     def delete(self, *, recursive=False):
         if self.is_dir:
@@ -455,6 +453,7 @@ class _VolumesPath(_Path):
 
 
 class _DbfsPath(_Path):
+
     def __init__(self, api: files.DbfsAPI, src: str):
         super().__init__(src)
         self._api = api
@@ -492,12 +491,11 @@ class _DbfsPath(_Path):
     def list(self, *, recursive=False) -> Generator[files.FileInfo, None, None]:
         if not self.is_dir:
             meta = self._api.get_status(self.as_string)
-            yield files.FileInfo(
-                path=self.as_string,
-                is_dir=False,
-                file_size=meta.file_size,
-                modification_time=meta.modification_time,
-            )
+            yield files.FileInfo(path=self.as_string,
+                                 is_dir=False,
+                                 file_size=meta.file_size,
+                                 modification_time=meta.modification_time,
+                                 )
             return
         queue = [self]
         while queue:
@@ -523,7 +521,12 @@ class DbfsExt(files.DbfsAPI):
         self._files_api = files.FilesAPI(api_client)
         self._dbfs_api = files.DbfsAPI(api_client)
 
-    def open(self, path: str, *, read: bool = False, write: bool = False, overwrite: bool = False) -> BinaryIO:
+    def open(self,
+             path: str,
+             *,
+             read: bool = False,
+             write: bool = False,
+             overwrite: bool = False) -> BinaryIO:
         return self._path(path).open(read=read, write=write, overwrite=overwrite)
 
     def upload(self, path: str, src: BinaryIO, *, overwrite: bool = False):
