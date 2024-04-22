@@ -1963,12 +1963,20 @@ class NotebookTask:
     `git_source` is defined and `WORKSPACE` otherwise. * `WORKSPACE`: Notebook is located in
     Databricks workspace. * `GIT`: Notebook is located in cloud Git provider."""
 
+    warehouse_id: Optional[str] = None
+    """Optional `warehouse_id` to run the notebook on a SQL warehouse. Classic SQL warehouses are NOT
+    supported, please use serverless or pro SQL warehouses.
+    
+    Note that SQL warehouses only support SQL cells; if the notebook contains non-SQL cells, the run
+    will fail."""
+
     def as_dict(self) -> dict:
         """Serializes the NotebookTask into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.base_parameters: body['base_parameters'] = self.base_parameters
         if self.notebook_path is not None: body['notebook_path'] = self.notebook_path
         if self.source is not None: body['source'] = self.source.value
+        if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
         return body
 
     @classmethod
@@ -1976,7 +1984,8 @@ class NotebookTask:
         """Deserializes the NotebookTask from a dictionary."""
         return cls(base_parameters=d.get('base_parameters', None),
                    notebook_path=d.get('notebook_path', None),
-                   source=_enum(d, 'source', Source))
+                   source=_enum(d, 'source', Source),
+                   warehouse_id=d.get('warehouse_id', None))
 
 
 class PauseStatus(Enum):
@@ -3953,9 +3962,7 @@ class SqlTask:
     """If dashboard, indicates that this job must refresh a SQL dashboard."""
 
     file: Optional[SqlTaskFile] = None
-    """If file, indicates that this job runs a SQL file in a remote Git repository. Only one SQL
-    statement is supported in a file. Multiple SQL statements separated by semicolons (;) are not
-    permitted."""
+    """If file, indicates that this job runs a SQL file in a remote Git repository."""
 
     parameters: Optional[Dict[str, str]] = None
     """Parameters to be used for each run of this job. The SQL alert task does not support custom
@@ -4175,6 +4182,10 @@ class SubmitRun:
     queue: Optional[QueueSettings] = None
     """The queue settings of the one-time run."""
 
+    run_as: Optional[JobRunAs] = None
+    """Specifies the user or service principal that the job runs as. If not specified, the job runs as
+    the user who submits the request."""
+
     run_job_task: Optional[RunJobTask] = None
     """If run_job_task, indicates that this task must execute another job."""
 
@@ -4231,6 +4242,7 @@ class SubmitRun:
         if self.pipeline_task: body['pipeline_task'] = self.pipeline_task.as_dict()
         if self.python_wheel_task: body['python_wheel_task'] = self.python_wheel_task.as_dict()
         if self.queue: body['queue'] = self.queue.as_dict()
+        if self.run_as: body['run_as'] = self.run_as.as_dict()
         if self.run_job_task: body['run_job_task'] = self.run_job_task.as_dict()
         if self.run_name is not None: body['run_name'] = self.run_name
         if self.spark_jar_task: body['spark_jar_task'] = self.spark_jar_task.as_dict()
@@ -4257,6 +4269,7 @@ class SubmitRun:
                    pipeline_task=_from_dict(d, 'pipeline_task', PipelineTask),
                    python_wheel_task=_from_dict(d, 'python_wheel_task', PythonWheelTask),
                    queue=_from_dict(d, 'queue', QueueSettings),
+                   run_as=_from_dict(d, 'run_as', JobRunAs),
                    run_job_task=_from_dict(d, 'run_job_task', RunJobTask),
                    run_name=d.get('run_name', None),
                    spark_jar_task=_from_dict(d, 'spark_jar_task', SparkJarTask),
@@ -5890,6 +5903,7 @@ class JobsAPI:
                pipeline_task: Optional[PipelineTask] = None,
                python_wheel_task: Optional[PythonWheelTask] = None,
                queue: Optional[QueueSettings] = None,
+               run_as: Optional[JobRunAs] = None,
                run_job_task: Optional[RunJobTask] = None,
                run_name: Optional[str] = None,
                spark_jar_task: Optional[SparkJarTask] = None,
@@ -5951,6 +5965,9 @@ class JobsAPI:
           If python_wheel_task, indicates that this job must execute a PythonWheel.
         :param queue: :class:`QueueSettings` (optional)
           The queue settings of the one-time run.
+        :param run_as: :class:`JobRunAs` (optional)
+          Specifies the user or service principal that the job runs as. If not specified, the job runs as the
+          user who submits the request.
         :param run_job_task: :class:`RunJobTask` (optional)
           If run_job_task, indicates that this task must execute another job.
         :param run_name: str (optional)
@@ -6001,6 +6018,7 @@ class JobsAPI:
         if pipeline_task is not None: body['pipeline_task'] = pipeline_task.as_dict()
         if python_wheel_task is not None: body['python_wheel_task'] = python_wheel_task.as_dict()
         if queue is not None: body['queue'] = queue.as_dict()
+        if run_as is not None: body['run_as'] = run_as.as_dict()
         if run_job_task is not None: body['run_job_task'] = run_job_task.as_dict()
         if run_name is not None: body['run_name'] = run_name
         if spark_jar_task is not None: body['spark_jar_task'] = spark_jar_task.as_dict()
@@ -6032,6 +6050,7 @@ class JobsAPI:
         pipeline_task: Optional[PipelineTask] = None,
         python_wheel_task: Optional[PythonWheelTask] = None,
         queue: Optional[QueueSettings] = None,
+        run_as: Optional[JobRunAs] = None,
         run_job_task: Optional[RunJobTask] = None,
         run_name: Optional[str] = None,
         spark_jar_task: Optional[SparkJarTask] = None,
@@ -6054,6 +6073,7 @@ class JobsAPI:
                            pipeline_task=pipeline_task,
                            python_wheel_task=python_wheel_task,
                            queue=queue,
+                           run_as=run_as,
                            run_job_task=run_job_task,
                            run_name=run_name,
                            spark_jar_task=spark_jar_task,

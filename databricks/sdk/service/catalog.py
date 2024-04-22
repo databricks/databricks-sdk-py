@@ -3850,6 +3850,7 @@ class PrimaryKeyConstraint:
 
 class Privilege(Enum):
 
+    ACCESS = 'ACCESS'
     ALL_PRIVILEGES = 'ALL_PRIVILEGES'
     APPLY_TAG = 'APPLY_TAG'
     CREATE = 'CREATE'
@@ -3866,6 +3867,7 @@ class Privilege(Enum):
     CREATE_PROVIDER = 'CREATE_PROVIDER'
     CREATE_RECIPIENT = 'CREATE_RECIPIENT'
     CREATE_SCHEMA = 'CREATE_SCHEMA'
+    CREATE_SERVICE_CREDENTIAL = 'CREATE_SERVICE_CREDENTIAL'
     CREATE_SHARE = 'CREATE_SHARE'
     CREATE_STORAGE_CREDENTIAL = 'CREATE_STORAGE_CREDENTIAL'
     CREATE_TABLE = 'CREATE_TABLE'
@@ -4114,6 +4116,9 @@ class SchemaInfo:
     properties: Optional[Dict[str, str]] = None
     """A map of key-value properties attached to the securable."""
 
+    schema_id: Optional[str] = None
+    """The unique identifier of the schema."""
+
     storage_location: Optional[str] = None
     """Storage location for managed tables within schema."""
 
@@ -4146,6 +4151,7 @@ class SchemaInfo:
         if self.name is not None: body['name'] = self.name
         if self.owner is not None: body['owner'] = self.owner
         if self.properties: body['properties'] = self.properties
+        if self.schema_id is not None: body['schema_id'] = self.schema_id
         if self.storage_location is not None: body['storage_location'] = self.storage_location
         if self.storage_root is not None: body['storage_root'] = self.storage_root
         if self.updated_at is not None: body['updated_at'] = self.updated_at
@@ -4170,6 +4176,7 @@ class SchemaInfo:
                    name=d.get('name', None),
                    owner=d.get('owner', None),
                    properties=d.get('properties', None),
+                   schema_id=d.get('schema_id', None),
                    storage_location=d.get('storage_location', None),
                    storage_root=d.get('storage_root', None),
                    updated_at=d.get('updated_at', None),
@@ -4555,7 +4562,7 @@ class TableInfo:
     """List of table constraints. Note: this field is not set in the output of the __listTables__ API."""
 
     table_id: Optional[str] = None
-    """Name of table, relative to parent schema."""
+    """The unique identifier of the table."""
 
     table_type: Optional[TableType] = None
 
@@ -5507,17 +5514,11 @@ class ValidateStorageCredentialResponse:
 
 @dataclass
 class ValidationResult:
-    aws_operation: Optional[ValidationResultAwsOperation] = None
-    """The operation tested."""
-
-    azure_operation: Optional[ValidationResultAzureOperation] = None
-    """The operation tested."""
-
-    gcp_operation: Optional[ValidationResultGcpOperation] = None
-    """The operation tested."""
-
     message: Optional[str] = None
     """Error message would exist when the result does not equal to **PASS**."""
+
+    operation: Optional[ValidationResultOperation] = None
+    """The operation tested."""
 
     result: Optional[ValidationResultResult] = None
     """The results of the tested operation."""
@@ -5525,45 +5526,20 @@ class ValidationResult:
     def as_dict(self) -> dict:
         """Serializes the ValidationResult into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.aws_operation is not None: body['aws_operation'] = self.aws_operation.value
-        if self.azure_operation is not None: body['azure_operation'] = self.azure_operation.value
-        if self.gcp_operation is not None: body['gcp_operation'] = self.gcp_operation.value
         if self.message is not None: body['message'] = self.message
+        if self.operation is not None: body['operation'] = self.operation.value
         if self.result is not None: body['result'] = self.result.value
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ValidationResult:
         """Deserializes the ValidationResult from a dictionary."""
-        return cls(aws_operation=_enum(d, 'aws_operation', ValidationResultAwsOperation),
-                   azure_operation=_enum(d, 'azure_operation', ValidationResultAzureOperation),
-                   gcp_operation=_enum(d, 'gcp_operation', ValidationResultGcpOperation),
-                   message=d.get('message', None),
+        return cls(message=d.get('message', None),
+                   operation=_enum(d, 'operation', ValidationResultOperation),
                    result=_enum(d, 'result', ValidationResultResult))
 
 
-class ValidationResultAwsOperation(Enum):
-    """The operation tested."""
-
-    DELETE = 'DELETE'
-    LIST = 'LIST'
-    PATH_EXISTS = 'PATH_EXISTS'
-    READ = 'READ'
-    WRITE = 'WRITE'
-
-
-class ValidationResultAzureOperation(Enum):
-    """The operation tested."""
-
-    DELETE = 'DELETE'
-    HIERARCHICAL_NAMESPACE_ENABLED = 'HIERARCHICAL_NAMESPACE_ENABLED'
-    LIST = 'LIST'
-    PATH_EXISTS = 'PATH_EXISTS'
-    READ = 'READ'
-    WRITE = 'WRITE'
-
-
-class ValidationResultGcpOperation(Enum):
+class ValidationResultOperation(Enum):
     """The operation tested."""
 
     DELETE = 'DELETE'
