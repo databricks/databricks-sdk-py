@@ -13,6 +13,7 @@ from typing import (TYPE_CHECKING, AnyStr, BinaryIO, Generator, Iterable,
 
 from ..errors import NotFound
 from ..service import files
+from .._property import _cached_property
 
 if TYPE_CHECKING:
     from _typeshed import Self
@@ -286,7 +287,7 @@ class _Path(ABC):
     def child(self, path: str) -> str:
         ...
 
-    @functools.cached_property
+    @_cached_property
     def is_dir(self) -> bool:
         return self._is_dir()
 
