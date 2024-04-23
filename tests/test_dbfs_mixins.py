@@ -30,7 +30,6 @@ def test_moving_dbfs_file_to_local_dir(config, tmp_path, mocker):
 
 def test_moving_local_dir_to_dbfs(config, tmp_path, mocker):
     from databricks.sdk import WorkspaceClient
-    from databricks.sdk.core import DatabricksError
     from databricks.sdk.service.files import CreateResponse
 
     with (tmp_path / 'a').open('wb') as f:

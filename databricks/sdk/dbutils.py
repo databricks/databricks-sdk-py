@@ -3,8 +3,8 @@ import json
 import logging
 import os.path
 import threading
-from typing import Callable, List, Dict
 from collections import namedtuple
+from typing import Callable, Dict, List
 
 from .core import ApiClient, Config, DatabricksError
 from .mixins import compute as compute_ext
@@ -51,7 +51,10 @@ class _FsUtil:
 
     def ls(self, dir: str) -> List[FileInfo]:
         """Lists the contents of a directory """
-        return [FileInfo(f.path, os.path.basename(f.path), f.file_size, f.modification_time) for f in self._dbfs.list(dir)]
+        return [
+            FileInfo(f.path, os.path.basename(f.path), f.file_size, f.modification_time)
+            for f in self._dbfs.list(dir)
+        ]
 
     def mkdirs(self, dir: str) -> bool:
         """Creates the given directory if it does not exist, also creating any necessary parent directories """
@@ -241,8 +244,7 @@ class _ProxyUtil:
     """Enables temporary workaround to call remote in-REPL dbutils without having to re-implement them"""
 
     def __init__(self, *, command_execution: compute.CommandExecutionAPI,
-                 context_factory: Callable[[],
-                                                  compute.ContextStatusResponse], cluster_id: str, name: str):
+                 context_factory: Callable[[], compute.ContextStatusResponse], cluster_id: str, name: str):
         self._commands = command_execution
         self._cluster_id = cluster_id
         self._context_factory = context_factory
@@ -263,8 +265,8 @@ import re
 class _ProxyCall:
 
     def __init__(self, *, command_execution: compute.CommandExecutionAPI,
-                 context_factory: Callable[[], compute.ContextStatusResponse], cluster_id: str,
-                 util: str, method: str):
+                 context_factory: Callable[[], compute.ContextStatusResponse], cluster_id: str, util: str,
+                 method: str):
         self._commands = command_execution
         self._cluster_id = cluster_id
         self._context_factory = context_factory
