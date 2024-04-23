@@ -350,7 +350,7 @@ class _LocalPath(_Path):
     def list(self, recursive=False) -> Generator[files.FileInfo, None, None]:
         if not self.is_dir:
             st = self._path.stat()
-            yield files.FileInfo(path=str(self._path.absolute()),
+            yield files.FileInfo(path='file:' + str(self._path.absolute()),
                                  is_dir=False,
                                  file_size=st.st_size,
                                  modification_time=int(st.st_mtime_ns / 1e6),
@@ -365,7 +365,7 @@ class _LocalPath(_Path):
                         queue.append(leaf)
                     continue
                 info = leaf.stat()
-                yield files.FileInfo(path=str(leaf.absolute()),
+                yield files.FileInfo(path='file:' + str(leaf.absolute()),
                                      is_dir=False,
                                      file_size=info.st_size,
                                      modification_time=int(info.st_mtime_ns / 1e6),
@@ -491,7 +491,7 @@ class _DbfsPath(_Path):
     def list(self, *, recursive=False) -> Generator[files.FileInfo, None, None]:
         if not self.is_dir:
             meta = self._api.get_status(self.as_string)
-            yield files.FileInfo(path=self.as_string,
+            yield files.FileInfo(path='dbfs:' + self.as_string,
                                  is_dir=False,
                                  file_size=meta.file_size,
                                  modification_time=meta.modification_time,

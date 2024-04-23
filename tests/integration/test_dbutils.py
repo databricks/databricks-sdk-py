@@ -1,5 +1,6 @@
 import base64
 import logging
+import os
 
 import pytest
 
@@ -150,6 +151,26 @@ def _test_mv_dir(fs, base_path, random):
     assert output[1].path == path + "_moved/file2"
     with pytest.raises(NotFound):
         fs.ls(path)
+
+
+def test_dbutils_dbfs_mv_local_to_remote(w, random, tmp_path):
+    fs = w.dbutils.fs
+    _test_mv_local_to_remote(fs, 'dbfs:/tmp', random, tmp_path)
+
+
+def test_dbutils_volumes_mv_local_to_remote(ucws, dbfs_volume, random, tmp_path):
+    fs = ucws.dbutils.fs
+    _test_mv_local_to_remote(fs, dbfs_volume, random, tmp_path)
+
+
+def _test_mv_local_to_remote(fs, base_path, random, tmp_path):
+    path = base_path + "/dbc_qa_file-" + random()
+    with open(tmp_path / "test", "w") as f:
+        f.write("test")
+    fs.mv('file:' + str(tmp_path / "test"), path)
+    output = fs.head(path)
+    assert output == "test"
+    assert os.listdir(tmp_path) == []
 
 
 def test_dbutils_dbfs_rm_file(w, random):

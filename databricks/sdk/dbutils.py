@@ -1,8 +1,9 @@
 import base64
 import json
 import logging
+import os.path
 import threading
-import typing
+from typing import Callable, List, Dict
 from collections import namedtuple
 
 from .core import ApiClient, Config, DatabricksError
@@ -34,7 +35,7 @@ class SecretMetadata(namedtuple('SecretMetadata', ['key'])):
 class _FsUtil:
     """ Manipulates the Databricks filesystem (DBFS) """
 
-    def __init__(self, dbfs_ext: dbfs_ext.DbfsExt, proxy_factory: typing.Callable[[str], '_ProxyUtil']):
+    def __init__(self, dbfs_ext: dbfs_ext.DbfsExt, proxy_factory: Callable[[str], '_ProxyUtil']):
         self._dbfs = dbfs_ext
         self._proxy_factory = proxy_factory
 
@@ -48,9 +49,9 @@ class _FsUtil:
         with self._dbfs.download(file) as f:
             return f.read(maxBytes).decode('utf8')
 
-    def ls(self, dir: str) -> typing.List[FileInfo]:
+    def ls(self, dir: str) -> List[FileInfo]:
         """Lists the contents of a directory """
-        return list(self._dbfs.list(dir))
+        return [FileInfo(f.path, os.path.basename(f.path), f.file_size, f.modification_time) for f in self._dbfs.list(dir)]
 
     def mkdirs(self, dir: str) -> bool:
         """Creates the given directory if it does not exist, also creating any necessary parent directories """
@@ -78,7 +79,7 @@ class _FsUtil:
               mount_point: str,
               encryption_type: str = None,
               owner: str = None,
-              extra_configs: 'typing.Dict[str, str]' = None) -> bool:
+              extra_configs: Dict[str, str] = None) -> bool:
         """Mounts the given source directory into DBFS at the given mount point"""
         fs = self._proxy_factory('fs')
         kwargs = {}
@@ -100,7 +101,7 @@ class _FsUtil:
                     mount_point: str,
                     encryption_type: str = None,
                     owner: str = None,
-                    extra_configs: 'typing.Dict[str, str]' = None) -> bool:
+                    extra_configs: Dict[str, str] = None) -> bool:
         """ Similar to mount(), but updates an existing mount point (if present) instead of creating a new one """
         fs = self._proxy_factory('fs')
         kwargs = {}
@@ -112,7 +113,7 @@ class _FsUtil:
             kwargs['extra_configs'] = extra_configs
         return fs.updateMount(source, mount_point, **kwargs)
 
-    def mounts(self) -> typing.List[MountInfo]:
+    def mounts(self) -> List[MountInfo]:
         """ Displays information about what is mounted within DBFS """
         result = []
         fs = self._proxy_factory('fs')
@@ -145,13 +146,13 @@ class _SecretsUtil:
         string_value = val.decode()
         return string_value
 
-    def list(self, scope) -> typing.List[SecretMetadata]:
+    def list(self, scope) -> List[SecretMetadata]:
         """Lists the metadata for secrets within the specified scope."""
 
         # transform from SDK dataclass to dbutils-compatible namedtuple
         return [SecretMetadata(v.key) for v in self._api.list_secrets(scope)]
 
-    def listScopes(self) -> typing.List[SecretScope]:
+    def listScopes(self) -> List[SecretScope]:
         """Lists the available scopes."""
 
         # transform from SDK dataclass to dbutils-compatible namedtuple
@@ -240,7 +241,7 @@ class _ProxyUtil:
     """Enables temporary workaround to call remote in-REPL dbutils without having to re-implement them"""
 
     def __init__(self, *, command_execution: compute.CommandExecutionAPI,
-                 context_factory: typing.Callable[[],
+                 context_factory: Callable[[],
                                                   compute.ContextStatusResponse], cluster_id: str, name: str):
         self._commands = command_execution
         self._cluster_id = cluster_id
@@ -262,7 +263,7 @@ import re
 class _ProxyCall:
 
     def __init__(self, *, command_execution: compute.CommandExecutionAPI,
-                 context_factory: typing.Callable[[], compute.ContextStatusResponse], cluster_id: str,
+                 context_factory: Callable[[], compute.ContextStatusResponse], cluster_id: str,
                  util: str, method: str):
         self._commands = command_execution
         self._cluster_id = cluster_id

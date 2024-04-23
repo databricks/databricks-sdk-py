@@ -1,3 +1,6 @@
+from databricks.sdk.errors import NotFound
+
+
 def test_moving_dbfs_file_to_local_dir(config, tmp_path, mocker):
     from databricks.sdk import WorkspaceClient
     from databricks.sdk.service.files import FileInfo, ReadResponse
@@ -35,17 +38,14 @@ def test_moving_local_dir_to_dbfs(config, tmp_path, mocker):
 
     mocker.patch('databricks.sdk.service.files.DbfsAPI.create', return_value=CreateResponse(123))
 
-    def fake(path: str):
-        assert path == 'a'
-        raise DatabricksError('nope', error_code='RESOURCE_DOES_NOT_EXIST')
-
-    mocker.patch('databricks.sdk.service.files.DbfsAPI.get_status', wraps=fake)
+    get_status = mocker.patch('databricks.sdk.service.files.DbfsAPI.get_status', side_effect=NotFound())
     add_block = mocker.patch('databricks.sdk.service.files.DbfsAPI.add_block')
     close = mocker.patch('databricks.sdk.service.files.DbfsAPI.close')
 
     w = WorkspaceClient(config=config)
     w.dbfs.move_(f'file:{tmp_path}', 'a', recursive=True)
 
+    get_status.assert_called_with('a')
     close.assert_called_with(123)
     add_block.assert_called_with(123, 'aGVsbG8=')
     assert not (tmp_path / 'a').exists()
