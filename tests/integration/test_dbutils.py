@@ -34,51 +34,35 @@ def test_proxy_dbfs_mounts(w, env_or_skip):
     assert len(x) > 1
 
 
-def test_dbutils_dbfs_put_head_small(w):
-    fs = w.dbutils.fs
-    _test_put(fs, 'dbfs:/tmp')
+@pytest.fixture(params=['dbfs', 'volumes'])
+def fs_and_base_path(request, ucws, dbfs_volume):
+    if request.param == 'dbfs':
+        fs = ucws.dbutils.fs
+        base_path = 'dbfs:/tmp'
+    else:
+        fs = ucws.dbutils.fs
+        base_path = dbfs_volume
+    return fs, base_path
 
 
-def test_dbutils_volumes_put_head_small(ucws, dbfs_volume):
-    fs = ucws.dbutils.fs
-    _test_put(fs, dbfs_volume)
-
-
-def _test_put(fs, base_path):
+def test_put(fs_and_base_path):
+    fs, base_path = fs_and_base_path
     path = base_path + "/dbc_qa_file"
     fs.put(path, "test", True)
     output = fs.head(path)
     assert output == "test"
 
 
-def test_dbutils_dbfs_put_head_large(w):
-    fs = w.dbutils.fs
-    _test_large_put(fs, 'dbfs:/tmp')
-
-
-def test_dbutils_volumes_put_head_large(ucws, dbfs_volume):
-    fs = ucws.dbutils.fs
-    _test_large_put(fs, dbfs_volume)
-
-
-def _test_large_put(fs, base_path):
+def test_large_put(fs_and_base_path):
+    fs, base_path = fs_and_base_path
     path = base_path + "/dbc_qa_large_file"
     fs.put(path, "test" * 20000, True)
     output = fs.head(path)
     assert output == ("test" * 20000)[:65536]
 
 
-def test_dbutils_dbfs_cp_file(w, random):
-    fs = w.dbutils.fs
-    _test_cp_file(fs, 'dbfs:/tmp', random)
-
-
-def test_dbutils_volumes_cp_file(ucws, dbfs_volume, random):
-    fs = ucws.dbutils.fs
-    _test_cp_file(fs, dbfs_volume, random)
-
-
-def _test_cp_file(fs, base_path, random):
+def test_cp_file(fs_and_base_path, random):
+    fs, base_path = fs_and_base_path
     path = base_path + "/dbc_qa_file-" + random()
     fs.put(path, "test", True)
     fs.cp(path, path + "_copy")
@@ -87,17 +71,8 @@ def _test_cp_file(fs, base_path, random):
     assert len(fs.ls(path)) == 1
 
 
-def test_dbutils_dbfs_cp_dir(w, random):
-    fs = w.dbutils.fs
-    _test_cp_dir(fs, 'dbfs:/tmp', random)
-
-
-def test_dbutils_volumes_cp_dir(ucws, dbfs_volume, random):
-    fs = ucws.dbutils.fs
-    _test_cp_dir(fs, dbfs_volume, random)
-
-
-def _test_cp_dir(fs, base_path, random):
+def test_cp_dir(fs_and_base_path, random):
+    fs, base_path = fs_and_base_path
     path = base_path + "/dbc_qa_dir-" + random()
     fs.mkdirs(path)
     fs.put(path + "/file1", "test1", True)
@@ -109,17 +84,8 @@ def _test_cp_dir(fs, base_path, random):
     assert output[1].path == path + "_copy/file2"
 
 
-def test_dbutils_dbfs_mv_file(w, random):
-    fs = w.dbutils.fs
-    _test_mv_file(fs, 'dbfs:/tmp', random)
-
-
-def test_dbutils_volumes_mv_file(ucws, dbfs_volume, random):
-    fs = ucws.dbutils.fs
-    _test_mv_file(fs, dbfs_volume, random)
-
-
-def _test_mv_file(fs, base_path, random):
+def test_mv_file(fs_and_base_path, random):
+    fs, base_path = fs_and_base_path
     path = base_path + "/dbc_qa_file-" + random()
     fs.put(path, "test", True)
     fs.mv(path, path + "_moved")
@@ -129,17 +95,8 @@ def _test_mv_file(fs, base_path, random):
         fs.ls(path)
 
 
-def test_dbutils_dbfs_mv_dir(w, random):
-    fs = w.dbutils.fs
-    _test_mv_dir(fs, 'dbfs:/tmp', random)
-
-
-def test_dbutils_volumes_mv_dir(ucws, dbfs_volume, random):
-    fs = ucws.dbutils.fs
-    _test_mv_dir(fs, dbfs_volume, random)
-
-
-def _test_mv_dir(fs, base_path, random):
+def test_mv_dir(fs_and_base_path, random):
+    fs, base_path = fs_and_base_path
     path = base_path + "/dbc_qa_dir-" + random()
     fs.mkdirs(path)
     fs.put(path + "/file1", "test1", True)
@@ -153,17 +110,8 @@ def _test_mv_dir(fs, base_path, random):
         fs.ls(path)
 
 
-def test_dbutils_dbfs_mv_local_to_remote(w, random, tmp_path):
-    fs = w.dbutils.fs
-    _test_mv_local_to_remote(fs, 'dbfs:/tmp', random, tmp_path)
-
-
-def test_dbutils_volumes_mv_local_to_remote(ucws, dbfs_volume, random, tmp_path):
-    fs = ucws.dbutils.fs
-    _test_mv_local_to_remote(fs, dbfs_volume, random, tmp_path)
-
-
-def _test_mv_local_to_remote(fs, base_path, random, tmp_path):
+def test_mv_local_to_remote(fs_and_base_path, random, tmp_path):
+    fs, base_path = fs_and_base_path
     path = base_path + "/dbc_qa_file-" + random()
     with open(tmp_path / "test", "w") as f:
         f.write("test")
@@ -173,17 +121,20 @@ def _test_mv_local_to_remote(fs, base_path, random, tmp_path):
     assert os.listdir(tmp_path) == []
 
 
-def test_dbutils_dbfs_rm_file(w, random):
-    fs = w.dbutils.fs
-    _test_rm_file(fs, 'dbfs:/tmp', random)
+def test_mv_remote_to_local(fs_and_base_path, random, tmp_path):
+    fs, base_path = fs_and_base_path
+    path = base_path + "/dbc_qa_file-" + random()
+    fs.put(path, "test", True)
+    fs.mv(path, 'file:' + str(tmp_path / "test"))
+    with open(tmp_path / "test", "r") as f:
+        output = f.read()
+    assert output == "test"
+    with pytest.raises(NotFound):
+        fs.ls(path)
 
 
-def test_dbutils_volumes_rm_file(ucws, dbfs_volume, random):
-    fs = ucws.dbutils.fs
-    _test_rm_file(fs, dbfs_volume, random)
-
-
-def _test_rm_file(fs, base_path, random):
+def _test_rm_file(fs_and_base_path, random):
+    fs, base_path = fs_and_base_path
     path = base_path + "/dbc_qa_file-" + random()
     fs.put(path, "test", True)
     fs.rm(path)
@@ -191,17 +142,8 @@ def _test_rm_file(fs, base_path, random):
         fs.ls(path)
 
 
-def test_dbutils_dbfs_rm_dir(w, random):
-    fs = w.dbutils.fs
-    _test_rm_dir(fs, 'dbfs:/tmp', random)
-
-
-def test_dbutils_volumes_rm_dir(ucws, dbfs_volume, random):
-    fs = ucws.dbutils.fs
-    _test_rm_dir(fs, dbfs_volume, random)
-
-
-def _test_rm_dir(fs, base_path, random):
+def _test_rm_dir(fs_and_base_path, random):
+    fs, base_path = fs_and_base_path
     path = base_path + "/dbc_qa_dir-" + random()
     fs.mkdirs(path)
     fs.put(path + "/file1", "test1", True)
