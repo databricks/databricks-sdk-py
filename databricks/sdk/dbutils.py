@@ -295,7 +295,8 @@ class _OverrideProxyUtil:
 
     def __call__(self, *args, **kwds) -> typing.Any:
         if len(args) != 0 or len(kwds) != 0:
-            raise TypeError(f"{self._name}() takes no arguments (1 given)")
+            raise TypeError(
+                f"Arguments are not supported for overridden method {self._name}. Invoke as: {self._name}()")
 
         callable_path = f"{self._name}()"
         result = self.__run_override(callable_path)
