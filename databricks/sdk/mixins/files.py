@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import base64
-import functools
 import os
 import pathlib
 import shutil
@@ -11,9 +10,9 @@ from types import TracebackType
 from typing import (TYPE_CHECKING, AnyStr, BinaryIO, Generator, Iterable,
                     Iterator, Type, Union)
 
+from .._property import _cached_property
 from ..errors import NotFound
 from ..service import files
-from .._property import _cached_property
 
 if TYPE_CHECKING:
     from _typeshed import Self
