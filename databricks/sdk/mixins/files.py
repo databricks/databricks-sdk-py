@@ -502,9 +502,9 @@ class _DbfsPath(_Path):
                                  modification_time=meta.modification_time,
                                  )
             return
-        queue = [self]
+        queue = deque([self])
         while queue:
-            next_path, queue = queue[0], queue[1:]
+            next_path = queue.popleft()
             for file in self._api.list(next_path.as_string):
                 if recursive and file.is_dir:
                     queue.append(self.child(file.path))
