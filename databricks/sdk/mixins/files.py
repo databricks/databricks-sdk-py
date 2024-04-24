@@ -6,6 +6,7 @@ import pathlib
 import shutil
 import sys
 from abc import ABC, abstractmethod
+from collections import deque
 from io import BytesIO
 from types import TracebackType
 from typing import (TYPE_CHECKING, AnyStr, BinaryIO, Generator, Iterable,
@@ -357,9 +358,9 @@ class _LocalPath(_Path):
                                  modification_time=int(st.st_mtime_ns / 1e6),
                                  )
             return
-        queue = [self._path]
+        queue = deque([self._path])
         while queue:
-            path, queue = queue[0], queue[1:]
+            path = queue.popleft()
             for leaf in path.iterdir():
                 if leaf.is_dir():
                     if recursive:
@@ -432,9 +433,9 @@ class _VolumesPath(_Path):
                                  modification_time=meta.last_modified,
                                  )
             return
-        queue = [self]
+        queue = deque([self])
         while queue:
-            next_path, queue = queue[0], queue[1:]
+            next_path = queue.popleft()
             for file in self._api.list_directory_contents(next_path.as_string):
                 if recursive and file.is_directory:
                     queue.append(self.child(file.name))
