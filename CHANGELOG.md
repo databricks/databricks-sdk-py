@@ -3,36 +3,36 @@
 ## 0.26.0
 
 * Increase cluster creation test timeout ([#617](https://github.com/databricks/databricks-sdk-py/pull/617)).
-* Add code example for adding a user to a group using group patch API ([#625](https://github.com/databricks/databricks-sdk-py/pull/625)).
-* Update SDK to OpenAPI spec ([#624](https://github.com/databricks/databricks-sdk-py/pull/624)).
+* Added code example for adding a user to a group using group patch API ([#625](https://github.com/databricks/databricks-sdk-py/pull/625)).
+* Updated SDK to OpenAPI spec ([#624](https://github.com/databricks/databricks-sdk-py/pull/624)).
+
+Note: This release contains breaking changes, please see the API changes below for more details.
 
 API Changes:
 
+ * Added `deployment` field for `databricks.sdk.service.pipelines.CreatePipeline`, `databricks.sdk.service.pipelines.EditPipeline` and `databricks.sdk.service.pipelines.PipelineSpec`.
  * Added `schema_id` field for `databricks.sdk.service.catalog.SchemaInfo`.
- * Removed `aws_operation` field for `databricks.sdk.service.catalog.ValidationResult`.
- * Removed `azure_operation` field for `databricks.sdk.service.catalog.ValidationResult`.
- * Removed `gcp_operation` field for `databricks.sdk.service.catalog.ValidationResult`.
  * Added `operation` field for `databricks.sdk.service.catalog.ValidationResult`.
- * Removed `databricks.sdk.service.catalog.ValidationResultAwsOperation` dataclass.
- * Removed `databricks.sdk.service.catalog.ValidationResultAzureOperation` dataclass.
- * Removed `databricks.sdk.service.catalog.ValidationResultGcpOperation` dataclass.
- * Added `databricks.sdk.service.catalog.ValidationResultOperation` dataclass.
- * Changed `cluster_status()` method for [w.libraries](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/libraries.html) workspace-level service . New request type is `databricks.sdk.service.compute.ClusterStatus` dataclass.
- * Changed `cluster_status()` method for [w.libraries](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/libraries.html) workspace-level service to return `databricks.sdk.service.compute.ClusterStatusResponse` dataclass.
- * Removed `databricks.sdk.service.compute.ClusterStatusRequest` dataclass.
  * Added `requirements` field for `databricks.sdk.service.compute.Library`.
- * Changed `status` field for `databricks.sdk.service.compute.LibraryFullStatus` to `databricks.sdk.service.compute.LibraryInstallStatus` dataclass.
- * Removed `databricks.sdk.service.compute.LibraryFullStatusStatus` dataclass.
+ * Added `warehouse_id` field for `databricks.sdk.service.jobs.NotebookTask`.
+ * Added `run_as` field for `databricks.sdk.service.jobs.SubmitRun`.
+ * Added `databricks.sdk.service.catalog.ValidationResultOperation` dataclass.
  * Added `databricks.sdk.service.compute.ClusterStatus` dataclass.
  * Added `databricks.sdk.service.compute.ClusterStatusResponse` dataclass.
  * Added `databricks.sdk.service.compute.LibraryInstallStatus` dataclass.
- * Added `warehouse_id` field for `databricks.sdk.service.jobs.NotebookTask`.
- * Added `run_as` field for `databricks.sdk.service.jobs.SubmitRun`.
- * Added `deployment` field for `databricks.sdk.service.pipelines.CreatePipeline`.
- * Added `deployment` field for `databricks.sdk.service.pipelines.EditPipeline`.
- * Added `deployment` field for `databricks.sdk.service.pipelines.PipelineSpec`.
  * Added `databricks.sdk.service.pipelines.DeploymentKind` dataclass.
  * Added `databricks.sdk.service.pipelines.PipelineDeployment` dataclass.
+ * Removed `aws_operation` field for `databricks.sdk.service.catalog.ValidationResult`.
+ * Removed `azure_operation` field for `databricks.sdk.service.catalog.ValidationResult`.
+ * Removed `gcp_operation` field for `databricks.sdk.service.catalog.ValidationResult`.
+ * Removed `databricks.sdk.service.catalog.ValidationResultAwsOperation` dataclass.
+ * Removed `databricks.sdk.service.catalog.ValidationResultAzureOperation` dataclass.
+ * Removed `databricks.sdk.service.catalog.ValidationResultGcpOperation` dataclass.
+ * Removed `databricks.sdk.service.compute.LibraryFullStatusStatus` dataclass.
+ * Removed `databricks.sdk.service.compute.ClusterStatusRequest` dataclass.
+ * Changed `cluster_status()` method for [w.libraries](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/libraries.html) workspace-level service . New request type is `databricks.sdk.service.compute.ClusterStatus` dataclass.
+ * Changed `cluster_status()` method for [w.libraries](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/libraries.html) workspace-level service to return `databricks.sdk.service.compute.ClusterStatusResponse` dataclass.
+ * Changed `status` field for `databricks.sdk.service.compute.LibraryFullStatus` to `databricks.sdk.service.compute.LibraryInstallStatus` dataclass.
 
 OpenAPI SHA: 06d330f43d92c1be864d4638c672cd0723e20a51, Date: 2024-04-22
 
