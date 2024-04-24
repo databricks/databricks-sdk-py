@@ -1638,6 +1638,28 @@ class ClusterSpec:
 
 
 @dataclass
+class ClusterStatusResponse:
+    cluster_id: Optional[str] = None
+    """Unique identifier for the cluster."""
+
+    library_statuses: Optional[List[LibraryFullStatus]] = None
+    """Status of all libraries on the cluster."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ClusterStatusResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        if self.library_statuses: body['library_statuses'] = [v.as_dict() for v in self.library_statuses]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ClusterStatusResponse:
+        """Deserializes the ClusterStatusResponse from a dictionary."""
+        return cls(cluster_id=d.get('cluster_id', None),
+                   library_statuses=_repeated_dict(d, 'library_statuses', LibraryFullStatus))
+
+
+@dataclass
 class Command:
     cluster_id: Optional[str] = None
     """Running cluster id"""
@@ -2988,8 +3010,9 @@ class Environment:
     supported. Next ID: 5"""
 
     client: str
-    """* User-friendly name for the client version: “client”: “1” The version is a string,
-    consisting of the major client version"""
+    """Client version used by the environment The client is the user-facing environment of the runtime.
+    Each client comes with a specific set of pre-installed libraries. The version is a string,
+    consisting of the major client version."""
 
     dependencies: Optional[List[str]] = None
     """List of pip dependencies, as supported by the version of pip in this environment. Each
@@ -4223,7 +4246,14 @@ class InstancePoolGcpAttributes:
     be of a form like "us-west1-a". The provided availability zone must be in the same region as the
     Databricks workspace. For example, "us-west1-a" is not a valid zone id if the Databricks
     workspace resides in the "us-east1" region. This is an optional field at instance pool creation,
-    and if not specified, a default zone will be used."""
+    and if not specified, a default zone will be used.
+    
+    This field can be one of the following: - "HA" => High availability, spread nodes across
+    availability zones for a Databricks deployment region - A GCP availability zone => Pick One of
+    the available zones for (machine type + region) from
+    https://cloud.google.com/compute/docs/regions-zones (e.g. "us-west1-a").
+    
+    If empty, Databricks picks an availability zone to schedule the cluster on."""
 
     def as_dict(self) -> dict:
         """Serializes the InstancePoolGcpAttributes into a dictionary suitable for use as a JSON request body."""
@@ -4453,16 +4483,18 @@ class Library:
     """Specification of a CRAN library to be installed as part of the library"""
 
     egg: Optional[str] = None
-    """URI of the egg to be installed. Currently only DBFS and S3 URIs are supported. For example: `{
-    "egg": "dbfs:/my/egg" }` or `{ "egg": "s3://my-bucket/egg" }`. If S3 is used, please make sure
-    the cluster has read access on the library. You may need to launch the cluster with an IAM role
-    to access the S3 URI."""
+    """URI of the egg library to install. Supported URIs include Workspace paths, Unity Catalog Volumes
+    paths, and S3 URIs. For example: `{ "egg": "/Workspace/path/to/library.egg" }`, `{ "egg" :
+    "/Volumes/path/to/library.egg" }` or `{ "egg": "s3://my-bucket/library.egg" }`. If S3 is used,
+    please make sure the cluster has read access on the library. You may need to launch the cluster
+    with an IAM role to access the S3 URI."""
 
     jar: Optional[str] = None
-    """URI of the jar to be installed. Currently only DBFS and S3 URIs are supported. For example: `{
-    "jar": "dbfs:/mnt/databricks/library.jar" }` or `{ "jar": "s3://my-bucket/library.jar" }`. If S3
-    is used, please make sure the cluster has read access on the library. You may need to launch the
-    cluster with an IAM role to access the S3 URI."""
+    """URI of the JAR library to install. Supported URIs include Workspace paths, Unity Catalog Volumes
+    paths, and S3 URIs. For example: `{ "jar": "/Workspace/path/to/library.jar" }`, `{ "jar" :
+    "/Volumes/path/to/library.jar" }` or `{ "jar": "s3://my-bucket/library.jar" }`. If S3 is used,
+    please make sure the cluster has read access on the library. You may need to launch the cluster
+    with an IAM role to access the S3 URI."""
 
     maven: Optional[MavenLibrary] = None
     """Specification of a maven library to be installed. For example: `{ "coordinates":
@@ -4471,10 +4503,17 @@ class Library:
     pypi: Optional[PythonPyPiLibrary] = None
     """Specification of a PyPi library to be installed. For example: `{ "package": "simplejson" }`"""
 
+    requirements: Optional[str] = None
+    """URI of the requirements.txt file to install. Only Workspace paths and Unity Catalog Volumes
+    paths are supported. For example: `{ "requirements": "/Workspace/path/to/requirements.txt" }` or
+    `{ "requirements" : "/Volumes/path/to/requirements.txt" }`"""
+
     whl: Optional[str] = None
-    """URI of the wheel to be installed. For example: `{ "whl": "dbfs:/my/whl" }` or `{ "whl":
-    "s3://my-bucket/whl" }`. If S3 is used, please make sure the cluster has read access on the
-    library. You may need to launch the cluster with an IAM role to access the S3 URI."""
+    """URI of the wheel library to install. Supported URIs include Workspace paths, Unity Catalog
+    Volumes paths, and S3 URIs. For example: `{ "whl": "/Workspace/path/to/library.whl" }`, `{ "whl"
+    : "/Volumes/path/to/library.whl" }` or `{ "whl": "s3://my-bucket/library.whl" }`. If S3 is used,
+    please make sure the cluster has read access on the library. You may need to launch the cluster
+    with an IAM role to access the S3 URI."""
 
     def as_dict(self) -> dict:
         """Serializes the Library into a dictionary suitable for use as a JSON request body."""
@@ -4484,6 +4523,7 @@ class Library:
         if self.jar is not None: body['jar'] = self.jar
         if self.maven: body['maven'] = self.maven.as_dict()
         if self.pypi: body['pypi'] = self.pypi.as_dict()
+        if self.requirements is not None: body['requirements'] = self.requirements
         if self.whl is not None: body['whl'] = self.whl
         return body
 
@@ -4495,11 +4535,14 @@ class Library:
                    jar=d.get('jar', None),
                    maven=_from_dict(d, 'maven', MavenLibrary),
                    pypi=_from_dict(d, 'pypi', PythonPyPiLibrary),
+                   requirements=d.get('requirements', None),
                    whl=d.get('whl', None))
 
 
 @dataclass
 class LibraryFullStatus:
+    """The status of the library on a specific cluster."""
+
     is_library_for_all_clusters: Optional[bool] = None
     """Whether the library was set to be installed on all clusters via the libraries UI."""
 
@@ -4509,7 +4552,7 @@ class LibraryFullStatus:
     messages: Optional[List[str]] = None
     """All the info and warning messages that have occurred so far for this library."""
 
-    status: Optional[LibraryFullStatusStatus] = None
+    status: Optional[LibraryInstallStatus] = None
     """Status of installing the library on the cluster."""
 
     def as_dict(self) -> dict:
@@ -4528,17 +4571,18 @@ class LibraryFullStatus:
         return cls(is_library_for_all_clusters=d.get('is_library_for_all_clusters', None),
                    library=_from_dict(d, 'library', Library),
                    messages=d.get('messages', None),
-                   status=_enum(d, 'status', LibraryFullStatusStatus))
+                   status=_enum(d, 'status', LibraryInstallStatus))
 
 
-class LibraryFullStatusStatus(Enum):
-    """Status of installing the library on the cluster."""
+class LibraryInstallStatus(Enum):
+    """The status of a library on a specific cluster."""
 
     FAILED = 'FAILED'
     INSTALLED = 'INSTALLED'
     INSTALLING = 'INSTALLING'
     PENDING = 'PENDING'
     RESOLVING = 'RESOLVING'
+    RESTORED = 'RESTORED'
     SKIPPED = 'SKIPPED'
     UNINSTALL_ON_RESTART = 'UNINSTALL_ON_RESTART'
 
@@ -8070,15 +8114,12 @@ class LibrariesAPI:
     cluster.
     
     To make third-party or custom code available to notebooks and jobs running on your clusters, you can
-    install a library. Libraries can be written in Python, Java, Scala, and R. You can upload Java, Scala, and
-    Python libraries and point to external packages in PyPI, Maven, and CRAN repositories.
+    install a library. Libraries can be written in Python, Java, Scala, and R. You can upload Python, Java,
+    Scala and R libraries and point to external packages in PyPI, Maven, and CRAN repositories.
     
     Cluster libraries can be used by all notebooks running on a cluster. You can install a cluster library
     directly from a public repository such as PyPI or Maven, using a previously installed workspace library,
     or using an init script.
-    
-    When you install a library on a cluster, a notebook already attached to that cluster will not immediately
-    see the new library. You must first detach and then reattach the notebook to the cluster.
     
     When you uninstall a library from a cluster, the library is removed only when you restart the cluster.
     Until you restart the cluster, the status of the uninstalled library appears as Uninstall pending restart."""
@@ -8089,9 +8130,8 @@ class LibrariesAPI:
     def all_cluster_statuses(self) -> ListAllClusterLibraryStatusesResponse:
         """Get all statuses.
         
-        Get the status of all libraries on all clusters. A status will be available for all libraries
-        installed on this cluster via the API or the libraries UI as well as libraries set to be installed on
-        all clusters via the libraries UI.
+        Get the status of all libraries on all clusters. A status is returned for all libraries installed on
+        this cluster via the API or the libraries UI.
         
         :returns: :class:`ListAllClusterLibraryStatusesResponse`
         """
@@ -8104,18 +8144,11 @@ class LibrariesAPI:
     def cluster_status(self, cluster_id: str) -> Iterator[LibraryFullStatus]:
         """Get status.
         
-        Get the status of libraries on a cluster. A status will be available for all libraries installed on
-        this cluster via the API or the libraries UI as well as libraries set to be installed on all clusters
-        via the libraries UI. The order of returned libraries will be as follows.
-        
-        1. Libraries set to be installed on this cluster will be returned first. Within this group, the final
-        order will be order in which the libraries were added to the cluster.
-        
-        2. Libraries set to be installed on all clusters are returned next. Within this group there is no
-        order guarantee.
-        
-        3. Libraries that were previously requested on this cluster or on all clusters, but now marked for
-        removal. Within this group there is no order guarantee.
+        Get the status of libraries on a cluster. A status is returned for all libraries installed on this
+        cluster via the API or the libraries UI. The order of returned libraries is as follows: 1. Libraries
+        set to be installed on this cluster, in the order that the libraries were added to the cluster, are
+        returned first. 2. Libraries that were previously requested to be installed on this cluster or, but
+        are now marked for removal, in no particular order, are returned last.
         
         :param cluster_id: str
           Unique identifier of the cluster whose status should be retrieved.
@@ -8128,17 +8161,14 @@ class LibrariesAPI:
         headers = {'Accept': 'application/json', }
 
         json = self._api.do('GET', '/api/2.0/libraries/cluster-status', query=query, headers=headers)
-        parsed = ClusterLibraryStatuses.from_dict(json).library_statuses
+        parsed = ClusterStatusResponse.from_dict(json).library_statuses
         return parsed if parsed is not None else []
 
     def install(self, cluster_id: str, libraries: List[Library]):
         """Add a library.
         
-        Add libraries to be installed on a cluster. The installation is asynchronous; it happens in the
-        background after the completion of this request.
-        
-        **Note**: The actual set of libraries to be installed on a cluster is the union of the libraries
-        specified via this method and the libraries set to be installed on all clusters via the libraries UI.
+        Add libraries to install on a cluster. The installation is asynchronous; it happens in the background
+        after the completion of this request.
         
         :param cluster_id: str
           Unique identifier for the cluster on which to install these libraries.
@@ -8157,9 +8187,8 @@ class LibrariesAPI:
     def uninstall(self, cluster_id: str, libraries: List[Library]):
         """Uninstall libraries.
         
-        Set libraries to be uninstalled on a cluster. The libraries won't be uninstalled until the cluster is
-        restarted. Uninstalling libraries that are not installed on the cluster will have no impact but is not
-        an error.
+        Set libraries to uninstall from a cluster. The libraries won't be uninstalled until the cluster is
+        restarted. A request to uninstall a library that is not currently installed is ignored.
         
         :param cluster_id: str
           Unique identifier for the cluster on which to uninstall these libraries.
