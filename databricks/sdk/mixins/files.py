@@ -4,6 +4,7 @@ import base64
 import os
 import pathlib
 import shutil
+import sys
 from abc import ABC, abstractmethod
 from io import BytesIO
 from types import TracebackType
@@ -378,7 +379,10 @@ class _LocalPath(_Path):
                     _LocalPath(leaf.path).delete()
             self._path.rmdir()
         else:
-            self._path.unlink(missing_ok=True)
+            kw = {}
+            if sys.version_info[:2] > (3, 7):
+                kw['missing_ok'] = True
+            self._path.unlink(**kw)
 
     def __repr__(self) -> str:
         return f'<_LocalPath {self._path}>'
