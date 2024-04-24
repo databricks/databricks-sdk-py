@@ -1,7 +1,8 @@
 import pytest
 
 from databricks.sdk.errors import NotFound
-from databricks.sdk.mixins.files import _DbfsPath, _VolumesPath, _LocalPath, DbfsExt
+from databricks.sdk.mixins.files import (DbfsExt, _DbfsPath, _LocalPath,
+                                         _VolumesPath)
 
 
 def test_moving_dbfs_file_to_local_dir(config, tmp_path, mocker):
@@ -53,14 +54,12 @@ def test_moving_local_dir_to_dbfs(config, tmp_path, mocker):
     assert not (tmp_path / 'a').exists()
 
 
-@pytest.mark.parametrize('path,expected_type', [
-    ('/path/to/file', _DbfsPath),
-    ('/Volumes/path/to/file', _VolumesPath),
-    ('dbfs:/path/to/file', _DbfsPath),
-    ('dbfs:/Volumes/path/to/file', _VolumesPath),
-    ('file:/path/to/file', _LocalPath),
-    ('file:/Volumes/path/to/file', _LocalPath),
-])
+@pytest.mark.parametrize('path,expected_type', [('/path/to/file', _DbfsPath),
+                                                ('/Volumes/path/to/file', _VolumesPath),
+                                                ('dbfs:/path/to/file', _DbfsPath),
+                                                ('dbfs:/Volumes/path/to/file', _VolumesPath),
+                                                ('file:/path/to/file', _LocalPath),
+                                                ('file:/Volumes/path/to/file', _LocalPath), ])
 def test_fs_path(config, path, expected_type):
     dbfs_ext = DbfsExt(config)
     assert isinstance(dbfs_ext._path(path), expected_type)
