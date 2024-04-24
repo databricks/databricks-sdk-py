@@ -571,6 +571,8 @@ class DbfsExt(files.DbfsAPI):
     def _path(self, src):
         if str(src).startswith('file:'):
             return _LocalPath(src)
+        if src.startswith('dbfs:'):
+            src = src[len('dbfs:'):]
         if str(src).startswith('/Volumes'):
             return _VolumesPath(self._files_api, src)
         return _DbfsPath(self._dbfs_api, src)

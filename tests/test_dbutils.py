@@ -1,6 +1,7 @@
 import pytest as pytest
 
 from databricks.sdk.dbutils import FileInfo as DBUtilsFileInfo
+from databricks.sdk.mixins.files import _DbfsPath, _VolumesPath, _LocalPath
 from databricks.sdk.service.files import FileInfo, ReadResponse
 
 from .conftest import raises

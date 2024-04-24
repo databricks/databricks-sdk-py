@@ -13,7 +13,7 @@ from databricks.sdk.service.catalog import VolumeType
 def dbfs_volume(ucws, random):
     schema = ucws.schemas.create('dbfs-' + random(), 'main')
     volume = ucws.volumes.create('main', schema.name, 'dbfs-test', VolumeType.MANAGED)
-    yield '/Volumes/' + volume.full_name.replace(".", "/")
+    yield 'dbfs:/Volumes/' + volume.full_name.replace(".", "/")
     ucws.volumes.delete(volume.full_name)
     ucws.schemas.delete(schema.full_name)
 
@@ -133,7 +133,7 @@ def test_mv_remote_to_local(fs_and_base_path, random, tmp_path):
         fs.ls(path)
 
 
-def _test_rm_file(fs_and_base_path, random):
+def test_rm_file(fs_and_base_path, random):
     fs, base_path = fs_and_base_path
     path = base_path + "/dbc_qa_file-" + random()
     fs.put(path, "test", True)
@@ -142,7 +142,7 @@ def _test_rm_file(fs_and_base_path, random):
         fs.ls(path)
 
 
-def _test_rm_dir(fs_and_base_path, random):
+def test_rm_dir(fs_and_base_path, random):
     fs, base_path = fs_and_base_path
     path = base_path + "/dbc_qa_dir-" + random()
     fs.mkdirs(path)
