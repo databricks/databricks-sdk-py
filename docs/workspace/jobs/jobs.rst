@@ -928,7 +928,7 @@
         :returns: :class:`JobPermissions`
         
 
-    .. py:method:: submit( [, access_control_list: Optional[List[iam.AccessControlRequest]], condition_task: Optional[ConditionTask], dbt_task: Optional[DbtTask], email_notifications: Optional[JobEmailNotifications], git_source: Optional[GitSource], health: Optional[JobsHealthRules], idempotency_token: Optional[str], notebook_task: Optional[NotebookTask], notification_settings: Optional[JobNotificationSettings], pipeline_task: Optional[PipelineTask], python_wheel_task: Optional[PythonWheelTask], queue: Optional[QueueSettings], run_job_task: Optional[RunJobTask], run_name: Optional[str], spark_jar_task: Optional[SparkJarTask], spark_python_task: Optional[SparkPythonTask], spark_submit_task: Optional[SparkSubmitTask], sql_task: Optional[SqlTask], tasks: Optional[List[SubmitTask]], timeout_seconds: Optional[int], webhook_notifications: Optional[WebhookNotifications]]) -> Wait[Run]
+    .. py:method:: submit( [, access_control_list: Optional[List[iam.AccessControlRequest]], condition_task: Optional[ConditionTask], dbt_task: Optional[DbtTask], email_notifications: Optional[JobEmailNotifications], git_source: Optional[GitSource], health: Optional[JobsHealthRules], idempotency_token: Optional[str], notebook_task: Optional[NotebookTask], notification_settings: Optional[JobNotificationSettings], pipeline_task: Optional[PipelineTask], python_wheel_task: Optional[PythonWheelTask], queue: Optional[QueueSettings], run_as: Optional[JobRunAs], run_job_task: Optional[RunJobTask], run_name: Optional[str], spark_jar_task: Optional[SparkJarTask], spark_python_task: Optional[SparkPythonTask], spark_submit_task: Optional[SparkSubmitTask], sql_task: Optional[SqlTask], tasks: Optional[List[SubmitTask]], timeout_seconds: Optional[int], webhook_notifications: Optional[WebhookNotifications]]) -> Wait[Run]
 
 
         Usage:
@@ -1010,6 +1010,9 @@
           If python_wheel_task, indicates that this job must execute a PythonWheel.
         :param queue: :class:`QueueSettings` (optional)
           The queue settings of the one-time run.
+        :param run_as: :class:`JobRunAs` (optional)
+          Specifies the user or service principal that the job runs as. If not specified, the job runs as the
+          user who submits the request.
         :param run_job_task: :class:`RunJobTask` (optional)
           If run_job_task, indicates that this task must execute another job.
         :param run_name: str (optional)
@@ -1047,7 +1050,7 @@
           See :method:wait_get_run_job_terminated_or_skipped for more details.
         
 
-    .. py:method:: submit_and_wait( [, access_control_list: Optional[List[iam.AccessControlRequest]], condition_task: Optional[ConditionTask], dbt_task: Optional[DbtTask], email_notifications: Optional[JobEmailNotifications], git_source: Optional[GitSource], health: Optional[JobsHealthRules], idempotency_token: Optional[str], notebook_task: Optional[NotebookTask], notification_settings: Optional[JobNotificationSettings], pipeline_task: Optional[PipelineTask], python_wheel_task: Optional[PythonWheelTask], queue: Optional[QueueSettings], run_job_task: Optional[RunJobTask], run_name: Optional[str], spark_jar_task: Optional[SparkJarTask], spark_python_task: Optional[SparkPythonTask], spark_submit_task: Optional[SparkSubmitTask], sql_task: Optional[SqlTask], tasks: Optional[List[SubmitTask]], timeout_seconds: Optional[int], webhook_notifications: Optional[WebhookNotifications], timeout: datetime.timedelta = 0:20:00]) -> Run
+    .. py:method:: submit_and_wait( [, access_control_list: Optional[List[iam.AccessControlRequest]], condition_task: Optional[ConditionTask], dbt_task: Optional[DbtTask], email_notifications: Optional[JobEmailNotifications], git_source: Optional[GitSource], health: Optional[JobsHealthRules], idempotency_token: Optional[str], notebook_task: Optional[NotebookTask], notification_settings: Optional[JobNotificationSettings], pipeline_task: Optional[PipelineTask], python_wheel_task: Optional[PythonWheelTask], queue: Optional[QueueSettings], run_as: Optional[JobRunAs], run_job_task: Optional[RunJobTask], run_name: Optional[str], spark_jar_task: Optional[SparkJarTask], spark_python_task: Optional[SparkPythonTask], spark_submit_task: Optional[SparkSubmitTask], sql_task: Optional[SqlTask], tasks: Optional[List[SubmitTask]], timeout_seconds: Optional[int], webhook_notifications: Optional[WebhookNotifications], timeout: datetime.timedelta = 0:20:00]) -> Run
 
 
     .. py:method:: update(job_id: int [, fields_to_remove: Optional[List[str]], new_settings: Optional[JobSettings]])

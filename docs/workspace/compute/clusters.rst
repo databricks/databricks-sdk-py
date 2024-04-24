@@ -845,6 +845,8 @@
         :param photon_driver_capable: bool
         :param graviton: bool
         :param is_io_cache_enabled: bool
+        :param support_port_forwarding: bool
+        :param fleet: bool
 
         :returns: `node_type` compatible string
         
@@ -868,6 +870,7 @@
         :param beta: bool
         :param latest: bool
         :param ml: bool
+        :param genomics: bool
         :param gpu: bool
         :param scala: str
         :param spark_version: str

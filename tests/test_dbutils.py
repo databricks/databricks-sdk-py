@@ -1,5 +1,8 @@
 import pytest as pytest
 
+from databricks.sdk.dbutils import FileInfo as DBUtilsFileInfo
+from databricks.sdk.service.files import FileInfo, ReadResponse
+
 from .conftest import raises
 
 
@@ -18,30 +21,37 @@ def test_fs_cp(dbutils, mocker):
 
 
 def test_fs_head(dbutils, mocker):
-    from databricks.sdk.service.files import ReadResponse
     inner = mocker.patch('databricks.sdk.service.files.DbfsAPI.read',
-                         return_value=ReadResponse(data='aGVsbG8='))
+                         return_value=ReadResponse(data='aGVsbG8=', bytes_read=5))
+    inner2 = mocker.patch('databricks.sdk.service.files.DbfsAPI.get_status',
+                          return_value=FileInfo(path='a', is_dir=False, file_size=5))
 
     result = dbutils.fs.head('a')
 
     inner.assert_called_with('a', length=65536, offset=0)
+    inner2.assert_called_with('a')
     assert result == 'hello'
 
 
 def test_fs_ls(dbutils, mocker):
-    from databricks.sdk.service.files import FileInfo
-    inner = mocker.patch('databricks.sdk.mixins.files.DbfsExt.list',
+    inner = mocker.patch('databricks.sdk.service.files.DbfsAPI.list',
                          return_value=[
-                             FileInfo(path='b', file_size=10, modification_time=20),
-                             FileInfo(path='c', file_size=30, modification_time=40),
+                             FileInfo(path='a/b', file_size=10, modification_time=20),
+                             FileInfo(path='a/c', file_size=30, modification_time=40),
                          ])
+    inner2 = mocker.patch('databricks.sdk.service.files.DbfsAPI.get_status',
+                          side_effect=[
+                              FileInfo(path='a', is_dir=True, file_size=5),
+                              FileInfo(path='a/b', is_dir=False, file_size=5),
+                              FileInfo(path='a/c', is_dir=False, file_size=5),
+                          ])
 
     result = dbutils.fs.ls('a')
 
-    from databricks.sdk.dbutils import FileInfo
     inner.assert_called_with('a')
     assert len(result) == 2
-    assert result[0] == FileInfo('dbfs:b', 'b', 10, 20)
+    assert result[0] == DBUtilsFileInfo('dbfs:a/b', 'b', 10, 20)
+    assert result[1] == DBUtilsFileInfo('dbfs:a/c', 'c', 30, 40)
 
 
 def test_fs_mkdirs(dbutils, mocker):
@@ -85,6 +95,8 @@ def test_fs_put(dbutils, mocker):
 
 def test_fs_rm(dbutils, mocker):
     inner = mocker.patch('databricks.sdk.service.files.DbfsAPI.delete')
+    inner2 = mocker.patch('databricks.sdk.service.files.DbfsAPI.get_status',
+                          return_value=FileInfo(path='a', is_dir=False, file_size=5))
 
     dbutils.fs.rm('a')
 
