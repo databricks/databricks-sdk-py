@@ -1,6 +1,8 @@
+import platform
+
 import pytest
 
-from databricks.sdk.mixins.compute import SemVer
+from databricks.sdk.mixins.compute import SemVer, _ReturnToPrintJson
 
 
 @pytest.mark.parametrize("given,expected",
@@ -31,3 +33,34 @@ def test_sorting_semver():
         SemVer(1, 0, 0),
         SemVer(12, 0, 0),
     ]
+
+
+def test_parse_results_data_as_json():
+    if platform.python_version_tuple() < ('3', '9', '0'):
+        pytest.skip('unsupported on python<3.9')
+    out, has_return = _ReturnToPrintJson.transform("\n".join(["return [{'success': True}]"]))
+    assert out.splitlines() == ['import json', "print(json.dumps([{'success': True}]))"]
+    assert has_return
+
+
+def test_parse_results_data_as_json_with_json_import_existing():
+    if platform.python_version_tuple() < ('3', '9', '0'):
+        pytest.skip('unsupported on python<3.9')
+    out, has_return = _ReturnToPrintJson.transform("\n".join(["import json", "return [{'success': True}]"]))
+    assert out.splitlines() == ['import json', "print(json.dumps([{'success': True}]))"]
+    assert has_return
+
+
+def test_parse_results_data_as_json_with_json_without_return():
+    if platform.python_version_tuple() < ('3', '9', '0'):
+        pytest.skip('unsupported on python<3.9')
+    out, has_return = _ReturnToPrintJson.transform("\n".join(["print(1)"]))
+    assert out.splitlines() == ['print(1)']
+    assert not has_return
+
+
+def test_parse_results_data_as_json_with_json_print_and_return():
+    if platform.python_version_tuple() < ('3', '9', '0'):
+        pytest.skip('unsupported on python<3.9')
+    with pytest.raises(ValueError):
+        _ReturnToPrintJson.transform("\n".join(["print(1)", "return 1"]))

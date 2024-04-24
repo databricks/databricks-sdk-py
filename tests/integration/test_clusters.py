@@ -45,3 +45,10 @@ def test_error_unmarshall(w, random):
     err = exc_info.value
     assert 'Cluster __non_existing__ does not exist' in str(err)
     assert 'INVALID_PARAMETER_VALUE' == err.error_code
+
+
+def test_commands(w, env_or_skip):
+    cluster_id = env_or_skip("TEST_DEFAULT_CLUSTER_ID")
+    ce = w.clusters.commands(cluster_id=cluster_id)
+    rows = ce.run('return spark.sql("SHOW DATABASES").collect()')
+    assert len(rows) > 0
