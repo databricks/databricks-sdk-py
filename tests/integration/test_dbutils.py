@@ -13,7 +13,7 @@ from databricks.sdk.service.catalog import VolumeType
 def dbfs_volume(ucws, random):
     schema = ucws.schemas.create('dbfs-' + random(), 'main')
     volume = ucws.volumes.create('main', schema.name, 'dbfs-test', VolumeType.MANAGED)
-    yield 'dbfs:/Volumes/' + volume.full_name.replace(".", "/")
+    yield '/Volumes/' + volume.full_name.replace(".", "/")
     ucws.volumes.delete(volume.full_name)
     ucws.schemas.delete(schema.full_name)
 
@@ -38,7 +38,7 @@ def test_proxy_dbfs_mounts(w, env_or_skip):
 def fs_and_base_path(request, ucws, dbfs_volume):
     if request.param == 'dbfs':
         fs = ucws.dbutils.fs
-        base_path = 'dbfs:/tmp'
+        base_path = '/tmp'
     else:
         fs = ucws.dbutils.fs
         base_path = dbfs_volume
@@ -82,6 +82,27 @@ def test_cp_dir(fs_and_base_path, random):
     assert len(output) == 2
     assert output[0].path == path + "_copy/file1"
     assert output[1].path == path + "_copy/file2"
+
+
+def test_ls_file(fs_and_base_path, random):
+    fs, base_path = fs_and_base_path
+    path = base_path + "/dbc_qa_file-" + random()
+    fs.put(path, "test", True)
+    output = fs.ls(path)
+    assert len(output) == 1
+    assert output[0].path == path
+
+
+def test_ls_dir(fs_and_base_path, random):
+    fs, base_path = fs_and_base_path
+    path = base_path + "/dbc_qa_dir-" + random()
+    fs.mkdirs(path)
+    fs.put(path + "/file1", "test1", True)
+    fs.put(path + "/file2", "test2", True)
+    output = fs.ls(path)
+    assert len(output) == 2
+    assert output[0].path == path + "/file1"
+    assert output[1].path == path + "/file2"
 
 
 def test_mv_file(fs_and_base_path, random):
