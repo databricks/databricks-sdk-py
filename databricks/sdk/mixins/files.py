@@ -437,8 +437,9 @@ class _VolumesPath(_Path):
         while queue:
             next_path = queue.popleft()
             for file in self._api.list_directory_contents(next_path.as_string):
-                if recursive and file.is_directory:
-                    queue.append(self.child(file.name))
+                if file.is_directory:
+                    if recursive:
+                        queue.append(self.child(file.name))
                     continue
                 yield files.FileInfo(path=file.path,
                                      is_dir=file.is_directory,
@@ -507,8 +508,9 @@ class _DbfsPath(_Path):
         while queue:
             next_path = queue.popleft()
             for file in self._api.list(next_path.as_string):
-                if recursive and file.is_dir:
-                    queue.append(self.child(file.path))
+                if file.is_dir:
+                    if recursive:
+                        queue.append(self.child(file.path))
                     continue
                 yield file
 
@@ -571,11 +573,12 @@ class DbfsExt(files.DbfsAPI):
         return p.exists()
 
     def _path(self, src):
-        if str(src).startswith('file:'):
+        src = str(src)
+        if src.startswith('file:'):
             return _LocalPath(src)
         if src.startswith('dbfs:'):
             src = src[len('dbfs:'):]
-        if str(src).startswith('/Volumes'):
+        if src.startswith('/Volumes'):
             return _VolumesPath(self._files_api, src)
         return _DbfsPath(self._dbfs_api, src)
 
