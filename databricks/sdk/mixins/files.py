@@ -437,15 +437,14 @@ class _VolumesPath(_Path):
         while queue:
             next_path = queue.popleft()
             for file in self._api.list_directory_contents(next_path.as_string):
-                if file.is_directory:
-                    if recursive:
-                        queue.append(self.child(file.name))
-                    continue
-                yield files.FileInfo(path=file.path,
-                                     is_dir=file.is_directory,
-                                     file_size=file.file_size,
-                                     modification_time=file.last_modified,
-                                     )
+                if recursive and file.is_directory:
+                    queue.append(self.child(file.name))
+                if not recursive or not file.is_directory:
+                    yield files.FileInfo(path=file.path,
+                                         is_dir=file.is_directory,
+                                         file_size=file.file_size,
+                                         modification_time=file.last_modified,
+                                         )
 
     def delete(self, *, recursive=False):
         if self.is_dir:
@@ -508,11 +507,10 @@ class _DbfsPath(_Path):
         while queue:
             next_path = queue.popleft()
             for file in self._api.list(next_path.as_string):
-                if file.is_dir:
-                    if recursive:
-                        queue.append(self.child(file.path))
-                    continue
-                yield file
+                if recursive and file.is_dir:
+                    queue.append(self.child(file.path))
+                if not recursive or not file.is_dir:
+                    yield file
 
     def delete(self, *, recursive=False):
         self._api.delete(self.as_string, recursive=recursive)
