@@ -612,7 +612,9 @@ class DbfsExt(files.DbfsAPI):
         if source.is_local and target.is_local:
             raise IOError('both destinations are on local FS')
         if source.is_dir and not recursive:
-            raise IOError('moving directories across filesystems requires recursive flag')
+            src_type = 'local' if source.is_local else 'DBFS' if source.is_dbfs else 'UC Volume'
+            dst_type = 'local' if target.is_local else 'DBFS' if target.is_dbfs else 'UC Volume'
+            raise IOError(f'moving a directory from {src_type} to {dst_type} requires recursive flag')
         # do cross-fs moving
         self.copy(src, dst, recursive=recursive, overwrite=overwrite)
         self.delete(src, recursive=recursive)

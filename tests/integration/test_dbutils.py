@@ -112,7 +112,8 @@ def test_mv_dir(fs_and_base_path, random):
     fs.mkdirs(path)
     fs.put(path + "/file1", "test1", True)
     fs.put(path + "/file2", "test2", True)
-    fs.mv(path, path + "_moved")
+    # DBFS can do recursive mv as a single API call, but Volumes cannot
+    fs.mv(path, path + "_moved", **({'recurse': True} if path.startswith('/Volumes') else {}))
     output = fs.ls(path + "_moved")
     assert len(output) == 2
     assert output[0].path == path + "_moved/file1"
