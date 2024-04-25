@@ -439,6 +439,7 @@ class _VolumesPath(_Path):
             for file in self._api.list_directory_contents(next_path.as_string):
                 if recursive and file.is_directory:
                     queue.append(self.child(file.name))
+                    continue
                 yield files.FileInfo(path=file.path,
                                      is_dir=file.is_directory,
                                      file_size=file.file_size,
@@ -496,7 +497,7 @@ class _DbfsPath(_Path):
     def list(self, *, recursive=False) -> Generator[files.FileInfo, None, None]:
         if not self.is_dir:
             meta = self._api.get_status(self.as_string)
-            yield files.FileInfo(path='dbfs:' + self.as_string,
+            yield files.FileInfo(path=self.as_string,
                                  is_dir=False,
                                  file_size=meta.file_size,
                                  modification_time=meta.modification_time,
@@ -508,7 +509,7 @@ class _DbfsPath(_Path):
             for file in self._api.list(next_path.as_string):
                 if recursive and file.is_dir:
                     queue.append(self.child(file.path))
-                file.path = f'dbfs:{file.path}' if not file.path.startswith('dbfs:') else file.path
+                    continue
                 yield file
 
     def delete(self, *, recursive=False):
