@@ -9,15 +9,6 @@ from databricks.sdk.errors import NotFound
 from databricks.sdk.service.catalog import VolumeType
 
 
-@pytest.fixture(scope='session')
-def dbfs_volume(ucws, random):
-    schema = ucws.schemas.create('dbfs-' + random(), 'main')
-    volume = ucws.volumes.create('main', schema.name, 'dbfs-test', VolumeType.MANAGED)
-    yield '/Volumes/' + volume.full_name.replace(".", "/")
-    ucws.volumes.delete(volume.full_name)
-    ucws.schemas.delete(schema.full_name)
-
-
 def test_rest_dbfs_ls(w, env_or_skip):
     from databricks.sdk.runtime import dbutils
 
@@ -35,13 +26,13 @@ def test_proxy_dbfs_mounts(w, env_or_skip):
 
 
 @pytest.fixture(params=['dbfs', 'volumes'])
-def fs_and_base_path(request, ucws, dbfs_volume):
+def fs_and_base_path(request, ucws, volume):
     if request.param == 'dbfs':
         fs = ucws.dbutils.fs
         base_path = '/tmp'
     else:
         fs = ucws.dbutils.fs
-        base_path = dbfs_volume
+        base_path = volume
     return fs, base_path
 
 
