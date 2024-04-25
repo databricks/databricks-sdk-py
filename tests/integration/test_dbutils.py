@@ -6,7 +6,6 @@ import pytest
 
 from databricks.sdk.core import DatabricksError
 from databricks.sdk.errors import NotFound
-from databricks.sdk.service.catalog import VolumeType
 
 
 def test_rest_dbfs_ls(w, env_or_skip):
