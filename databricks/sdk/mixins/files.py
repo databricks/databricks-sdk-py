@@ -590,7 +590,7 @@ class DbfsExt(files.DbfsAPI):
             # if target is a folder, make file with the same name there
             dst = dst.child(src.name)
         if src.is_dir:
-            queue = [self._path(x.path) for x in src.list(recursive=recursive)]
+            queue = [self._path(x.path) for x in src.list(recursive=recursive) if not x.is_dir]
         else:
             queue = [src]
         for child in queue:
