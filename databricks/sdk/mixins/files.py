@@ -439,11 +439,12 @@ class _VolumesPath(_Path):
             for file in self._api.list_directory_contents(next_path.as_string):
                 if recursive and file.is_directory:
                     queue.append(self.child(file.name))
-                yield files.FileInfo(path=file.path,
-                                     is_dir=file.is_directory,
-                                     file_size=file.file_size,
-                                     modification_time=file.last_modified,
-                                     )
+                if not recursive or not file.is_directory:
+                    yield files.FileInfo(path=file.path,
+                                         is_dir=file.is_directory,
+                                         file_size=file.file_size,
+                                         modification_time=file.last_modified,
+                                         )
 
     def delete(self, *, recursive=False):
         if self.is_dir:
@@ -496,7 +497,7 @@ class _DbfsPath(_Path):
     def list(self, *, recursive=False) -> Generator[files.FileInfo, None, None]:
         if not self.is_dir:
             meta = self._api.get_status(self.as_string)
-            yield files.FileInfo(path='dbfs:' + self.as_string,
+            yield files.FileInfo(path=self.as_string,
                                  is_dir=False,
                                  file_size=meta.file_size,
                                  modification_time=meta.modification_time,
@@ -508,8 +509,8 @@ class _DbfsPath(_Path):
             for file in self._api.list(next_path.as_string):
                 if recursive and file.is_dir:
                     queue.append(self.child(file.path))
-                file.path = f'dbfs:{file.path}' if not file.path.startswith('dbfs:') else file.path
-                yield file
+                if not recursive or not file.is_dir:
+                    yield file
 
     def delete(self, *, recursive=False):
         self._api.delete(self.as_string, recursive=recursive)
@@ -570,11 +571,12 @@ class DbfsExt(files.DbfsAPI):
         return p.exists()
 
     def _path(self, src):
-        if str(src).startswith('file:'):
+        src = str(src)
+        if src.startswith('file:'):
             return _LocalPath(src)
         if src.startswith('dbfs:'):
             src = src[len('dbfs:'):]
-        if str(src).startswith('/Volumes'):
+        if src.startswith('/Volumes'):
             return _VolumesPath(self._files_api, src)
         return _DbfsPath(self._dbfs_api, src)
 
@@ -588,7 +590,7 @@ class DbfsExt(files.DbfsAPI):
             # if target is a folder, make file with the same name there
             dst = dst.child(src.name)
         if src.is_dir:
-            queue = [self._path(x.path) for x in src.list(recursive=recursive)]
+            queue = [self._path(x.path) for x in src.list(recursive=recursive) if not x.is_dir]
         else:
             queue = [src]
         for child in queue:
@@ -608,7 +610,9 @@ class DbfsExt(files.DbfsAPI):
         if source.is_local and target.is_local:
             raise IOError('both destinations are on local FS')
         if source.is_dir and not recursive:
-            raise IOError('moving directories across filesystems requires recursive flag')
+            src_type = 'local' if source.is_local else 'DBFS' if source.is_dbfs else 'UC Volume'
+            dst_type = 'local' if target.is_local else 'DBFS' if target.is_dbfs else 'UC Volume'
+            raise IOError(f'moving a directory from {src_type} to {dst_type} requires recursive flag')
         # do cross-fs moving
         self.copy(src, dst, recursive=recursive, overwrite=overwrite)
         self.delete(src, recursive=recursive)

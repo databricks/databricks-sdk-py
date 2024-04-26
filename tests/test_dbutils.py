@@ -50,8 +50,8 @@ def test_fs_ls(dbutils, mocker):
 
     inner.assert_called_with('a')
     assert len(result) == 2
-    assert result[0] == DBUtilsFileInfo('dbfs:a/b', 'b', 10, 20)
-    assert result[1] == DBUtilsFileInfo('dbfs:a/c', 'c', 30, 40)
+    assert result[0] == DBUtilsFileInfo('a/b', 'b', 10, 20)
+    assert result[1] == DBUtilsFileInfo('a/c', 'c', 30, 40)
 
 
 def test_fs_mkdirs(dbutils, mocker):
