@@ -24,6 +24,13 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: DeploymentKind
+
+   The deployment method that manages the pipeline: - BUNDLE: The pipeline is managed by a Databricks Asset Bundle.
+
+   .. py:attribute:: BUNDLE
+      :value: "BUNDLE"
+
 .. autoclass:: EditPipeline
    :members:
    :undoc-members:
@@ -148,6 +155,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: LEGACY
       :value: "LEGACY"
+
+.. autoclass:: PipelineDeployment
+   :members:
+   :undoc-members:
 
 .. autoclass:: PipelineEvent
    :members:

@@ -193,6 +193,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: Privilege
 
+   .. py:attribute:: ACCESS
+      :value: "ACCESS"
+
    .. py:attribute:: ALL_PRIVILEGES
       :value: "ALL_PRIVILEGES"
 
@@ -240,6 +243,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: CREATE_SCHEMA
       :value: "CREATE_SCHEMA"
+
+   .. py:attribute:: CREATE_SERVICE_CREDENTIAL
+      :value: "CREATE_SERVICE_CREDENTIAL"
 
    .. py:attribute:: CREATE_SHARE
       :value: "CREATE_SHARE"

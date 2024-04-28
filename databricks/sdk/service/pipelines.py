@@ -43,6 +43,9 @@ class CreatePipeline:
     continuous: Optional[bool] = None
     """Whether the pipeline is continuous or triggered. This replaces `trigger`."""
 
+    deployment: Optional[PipelineDeployment] = None
+    """Deployment type of this pipeline."""
+
     development: Optional[bool] = None
     """Whether the pipeline is in Development mode. Defaults to false."""
 
@@ -92,6 +95,7 @@ class CreatePipeline:
         if self.clusters: body['clusters'] = [v.as_dict() for v in self.clusters]
         if self.configuration: body['configuration'] = self.configuration
         if self.continuous is not None: body['continuous'] = self.continuous
+        if self.deployment: body['deployment'] = self.deployment.as_dict()
         if self.development is not None: body['development'] = self.development
         if self.dry_run is not None: body['dry_run'] = self.dry_run
         if self.edition is not None: body['edition'] = self.edition
@@ -116,6 +120,7 @@ class CreatePipeline:
                    clusters=_repeated_dict(d, 'clusters', PipelineCluster),
                    configuration=d.get('configuration', None),
                    continuous=d.get('continuous', None),
+                   deployment=_from_dict(d, 'deployment', PipelineDeployment),
                    development=d.get('development', None),
                    dry_run=d.get('dry_run', None),
                    edition=d.get('edition', None),
@@ -208,6 +213,13 @@ class DeletePipelineResponse:
         return cls()
 
 
+class DeploymentKind(Enum):
+    """The deployment method that manages the pipeline: - BUNDLE: The pipeline is managed by a
+    Databricks Asset Bundle."""
+
+    BUNDLE = 'BUNDLE'
+
+
 @dataclass
 class EditPipeline:
     allow_duplicate_names: Optional[bool] = None
@@ -230,6 +242,9 @@ class EditPipeline:
 
     continuous: Optional[bool] = None
     """Whether the pipeline is continuous or triggered. This replaces `trigger`."""
+
+    deployment: Optional[PipelineDeployment] = None
+    """Deployment type of this pipeline."""
 
     development: Optional[bool] = None
     """Whether the pipeline is in Development mode. Defaults to false."""
@@ -285,6 +300,7 @@ class EditPipeline:
         if self.clusters: body['clusters'] = [v.as_dict() for v in self.clusters]
         if self.configuration: body['configuration'] = self.configuration
         if self.continuous is not None: body['continuous'] = self.continuous
+        if self.deployment: body['deployment'] = self.deployment.as_dict()
         if self.development is not None: body['development'] = self.development
         if self.edition is not None: body['edition'] = self.edition
         if self.expected_last_modified is not None:
@@ -311,6 +327,7 @@ class EditPipeline:
                    clusters=_repeated_dict(d, 'clusters', PipelineCluster),
                    configuration=d.get('configuration', None),
                    continuous=d.get('continuous', None),
+                   deployment=_from_dict(d, 'deployment', PipelineDeployment),
                    development=d.get('development', None),
                    edition=d.get('edition', None),
                    expected_last_modified=d.get('expected_last_modified', None),
@@ -1018,6 +1035,28 @@ class PipelineClusterAutoscaleMode(Enum):
 
 
 @dataclass
+class PipelineDeployment:
+    kind: Optional[DeploymentKind] = None
+    """The deployment method that manages the pipeline."""
+
+    metadata_file_path: Optional[str] = None
+    """The path to the file containing metadata about the deployment."""
+
+    def as_dict(self) -> dict:
+        """Serializes the PipelineDeployment into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.kind is not None: body['kind'] = self.kind.value
+        if self.metadata_file_path is not None: body['metadata_file_path'] = self.metadata_file_path
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> PipelineDeployment:
+        """Deserializes the PipelineDeployment from a dictionary."""
+        return cls(kind=_enum(d, 'kind', DeploymentKind),
+                   metadata_file_path=d.get('metadata_file_path', None))
+
+
+@dataclass
 class PipelineEvent:
     error: Optional[ErrorDetail] = None
     """Information about an error captured by the event."""
@@ -1229,6 +1268,9 @@ class PipelineSpec:
     continuous: Optional[bool] = None
     """Whether the pipeline is continuous or triggered. This replaces `trigger`."""
 
+    deployment: Optional[PipelineDeployment] = None
+    """Deployment type of this pipeline."""
+
     development: Optional[bool] = None
     """Whether the pipeline is in Development mode. Defaults to false."""
 
@@ -1275,6 +1317,7 @@ class PipelineSpec:
         if self.clusters: body['clusters'] = [v.as_dict() for v in self.clusters]
         if self.configuration: body['configuration'] = self.configuration
         if self.continuous is not None: body['continuous'] = self.continuous
+        if self.deployment: body['deployment'] = self.deployment.as_dict()
         if self.development is not None: body['development'] = self.development
         if self.edition is not None: body['edition'] = self.edition
         if self.filters: body['filters'] = self.filters.as_dict()
@@ -1297,6 +1340,7 @@ class PipelineSpec:
                    clusters=_repeated_dict(d, 'clusters', PipelineCluster),
                    configuration=d.get('configuration', None),
                    continuous=d.get('continuous', None),
+                   deployment=_from_dict(d, 'deployment', PipelineDeployment),
                    development=d.get('development', None),
                    edition=d.get('edition', None),
                    filters=_from_dict(d, 'filters', Filters),
@@ -1784,6 +1828,7 @@ class PipelinesAPI:
                clusters: Optional[List[PipelineCluster]] = None,
                configuration: Optional[Dict[str, str]] = None,
                continuous: Optional[bool] = None,
+               deployment: Optional[PipelineDeployment] = None,
                development: Optional[bool] = None,
                dry_run: Optional[bool] = None,
                edition: Optional[str] = None,
@@ -1816,6 +1861,8 @@ class PipelinesAPI:
           String-String configuration for this pipeline execution.
         :param continuous: bool (optional)
           Whether the pipeline is continuous or triggered. This replaces `trigger`.
+        :param deployment: :class:`PipelineDeployment` (optional)
+          Deployment type of this pipeline.
         :param development: bool (optional)
           Whether the pipeline is in Development mode. Defaults to false.
         :param dry_run: bool (optional)
@@ -1852,6 +1899,7 @@ class PipelinesAPI:
         if clusters is not None: body['clusters'] = [v.as_dict() for v in clusters]
         if configuration is not None: body['configuration'] = configuration
         if continuous is not None: body['continuous'] = continuous
+        if deployment is not None: body['deployment'] = deployment.as_dict()
         if development is not None: body['development'] = development
         if dry_run is not None: body['dry_run'] = dry_run
         if edition is not None: body['edition'] = edition
@@ -2179,6 +2227,7 @@ class PipelinesAPI:
                clusters: Optional[List[PipelineCluster]] = None,
                configuration: Optional[Dict[str, str]] = None,
                continuous: Optional[bool] = None,
+               deployment: Optional[PipelineDeployment] = None,
                development: Optional[bool] = None,
                edition: Optional[str] = None,
                expected_last_modified: Optional[int] = None,
@@ -2212,6 +2261,8 @@ class PipelinesAPI:
           String-String configuration for this pipeline execution.
         :param continuous: bool (optional)
           Whether the pipeline is continuous or triggered. This replaces `trigger`.
+        :param deployment: :class:`PipelineDeployment` (optional)
+          Deployment type of this pipeline.
         :param development: bool (optional)
           Whether the pipeline is in Development mode. Defaults to false.
         :param edition: str (optional)
@@ -2250,6 +2301,7 @@ class PipelinesAPI:
         if clusters is not None: body['clusters'] = [v.as_dict() for v in clusters]
         if configuration is not None: body['configuration'] = configuration
         if continuous is not None: body['continuous'] = continuous
+        if deployment is not None: body['deployment'] = deployment.as_dict()
         if development is not None: body['development'] = development
         if edition is not None: body['edition'] = edition
         if expected_last_modified is not None: body['expected_last_modified'] = expected_last_modified

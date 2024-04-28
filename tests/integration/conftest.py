@@ -8,6 +8,7 @@ import sys
 import pytest
 
 from databricks.sdk import AccountClient, WorkspaceClient
+from databricks.sdk.service.catalog import VolumeType
 
 
 def pytest_addoption(parser):
@@ -37,7 +38,7 @@ def pytest_collection_modifyitems(items):
                 item.add_marker('integration')
 
 
-@pytest.fixture
+@pytest.fixture(scope='session')
 def random():
     import random
 
@@ -87,6 +88,20 @@ def env_or_skip():
         return os.environ[var]
 
     return inner
+
+
+@pytest.fixture(scope='session')
+def schema(ucws, random):
+    schema = ucws.schemas.create('dbfs-' + random(), 'main')
+    yield schema
+    ucws.schemas.delete(schema.full_name)
+
+
+@pytest.fixture(scope='session')
+def volume(ucws, schema):
+    volume = ucws.volumes.create('main', schema.name, 'dbfs-test', VolumeType.MANAGED)
+    yield '/Volumes/' + volume.full_name.replace(".", "/")
+    ucws.volumes.delete(volume.full_name)
 
 
 def _load_debug_env_if_runs_from_ide(key) -> bool:

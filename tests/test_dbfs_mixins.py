@@ -1,3 +1,10 @@
+import pytest
+
+from databricks.sdk.errors import NotFound
+from databricks.sdk.mixins.files import (DbfsExt, _DbfsPath, _LocalPath,
+                                         _VolumesPath)
+
+
 def test_moving_dbfs_file_to_local_dir(config, tmp_path, mocker):
     from databricks.sdk import WorkspaceClient
     from databricks.sdk.service.files import FileInfo, ReadResponse
@@ -27,7 +34,6 @@ def test_moving_dbfs_file_to_local_dir(config, tmp_path, mocker):
 
 def test_moving_local_dir_to_dbfs(config, tmp_path, mocker):
     from databricks.sdk import WorkspaceClient
-    from databricks.sdk.core import DatabricksError
     from databricks.sdk.service.files import CreateResponse
 
     with (tmp_path / 'a').open('wb') as f:
@@ -35,17 +41,25 @@ def test_moving_local_dir_to_dbfs(config, tmp_path, mocker):
 
     mocker.patch('databricks.sdk.service.files.DbfsAPI.create', return_value=CreateResponse(123))
 
-    def fake(path: str):
-        assert path == 'a'
-        raise DatabricksError('nope', error_code='RESOURCE_DOES_NOT_EXIST')
-
-    mocker.patch('databricks.sdk.service.files.DbfsAPI.get_status', wraps=fake)
+    get_status = mocker.patch('databricks.sdk.service.files.DbfsAPI.get_status', side_effect=NotFound())
     add_block = mocker.patch('databricks.sdk.service.files.DbfsAPI.add_block')
     close = mocker.patch('databricks.sdk.service.files.DbfsAPI.close')
 
     w = WorkspaceClient(config=config)
     w.dbfs.move_(f'file:{tmp_path}', 'a', recursive=True)
 
+    get_status.assert_called_with('a')
     close.assert_called_with(123)
     add_block.assert_called_with(123, 'aGVsbG8=')
     assert not (tmp_path / 'a').exists()
+
+
+@pytest.mark.parametrize('path,expected_type', [('/path/to/file', _DbfsPath),
+                                                ('/Volumes/path/to/file', _VolumesPath),
+                                                ('dbfs:/path/to/file', _DbfsPath),
+                                                ('dbfs:/Volumes/path/to/file', _VolumesPath),
+                                                ('file:/path/to/file', _LocalPath),
+                                                ('file:/Volumes/path/to/file', _LocalPath), ])
+def test_fs_path(config, path, expected_type):
+    dbfs_ext = DbfsExt(config)
+    assert isinstance(dbfs_ext._path(path), expected_type)
