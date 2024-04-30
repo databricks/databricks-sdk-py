@@ -212,6 +212,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ClusterStatusResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: Command
    :members:
    :undoc-members:
@@ -776,9 +780,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. py:class:: LibraryFullStatusStatus
+.. py:class:: LibraryInstallStatus
 
-   Status of installing the library on the cluster.
+   The status of a library on a specific cluster.
 
    .. py:attribute:: FAILED
       :value: "FAILED"
@@ -794,6 +798,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: RESOLVING
       :value: "RESOLVING"
+
+   .. py:attribute:: RESTORED
+      :value: "RESTORED"
 
    .. py:attribute:: SKIPPED
       :value: "SKIPPED"

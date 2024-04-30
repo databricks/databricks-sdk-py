@@ -954,6 +954,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: Privilege
 
+   .. py:attribute:: ACCESS
+      :value: "ACCESS"
+
    .. py:attribute:: ALL_PRIVILEGES
       :value: "ALL_PRIVILEGES"
 
@@ -1001,6 +1004,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: CREATE_SCHEMA
       :value: "CREATE_SCHEMA"
+
+   .. py:attribute:: CREATE_SERVICE_CREDENTIAL
+      :value: "CREATE_SERVICE_CREDENTIAL"
 
    .. py:attribute:: CREATE_SHARE
       :value: "CREATE_SHARE"
@@ -1349,48 +1355,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. py:class:: ValidationResultAwsOperation
-
-   The operation tested.
-
-   .. py:attribute:: DELETE
-      :value: "DELETE"
-
-   .. py:attribute:: LIST
-      :value: "LIST"
-
-   .. py:attribute:: PATH_EXISTS
-      :value: "PATH_EXISTS"
-
-   .. py:attribute:: READ
-      :value: "READ"
-
-   .. py:attribute:: WRITE
-      :value: "WRITE"
-
-.. py:class:: ValidationResultAzureOperation
-
-   The operation tested.
-
-   .. py:attribute:: DELETE
-      :value: "DELETE"
-
-   .. py:attribute:: HIERARCHICAL_NAMESPACE_ENABLED
-      :value: "HIERARCHICAL_NAMESPACE_ENABLED"
-
-   .. py:attribute:: LIST
-      :value: "LIST"
-
-   .. py:attribute:: PATH_EXISTS
-      :value: "PATH_EXISTS"
-
-   .. py:attribute:: READ
-      :value: "READ"
-
-   .. py:attribute:: WRITE
-      :value: "WRITE"
-
-.. py:class:: ValidationResultGcpOperation
+.. py:class:: ValidationResultOperation
 
    The operation tested.
 

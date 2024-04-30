@@ -1,15 +1,19 @@
 from __future__ import annotations
 
 import base64
+import os
 import pathlib
 import shutil
 import sys
 from abc import ABC, abstractmethod
+from collections import deque
+from io import BytesIO
 from types import TracebackType
-from typing import TYPE_CHECKING, AnyStr, BinaryIO, Iterable, Iterator, Type
+from typing import (TYPE_CHECKING, AnyStr, BinaryIO, Generator, Iterable,
+                    Iterator, Type, Union)
 
-from databricks.sdk.core import DatabricksError
-
+from .._property import _cached_property
+from ..errors import NotFound
 from ..service import files
 
 if TYPE_CHECKING:
@@ -161,19 +165,135 @@ class _DbfsIO(BinaryIO):
         return f"<_DbfsIO {self._path} {'read' if self.readable() else 'write'}=True>"
 
 
+class _VolumesIO(BinaryIO):
+
+    def __init__(self, api: files.FilesAPI, path: str, *, read: bool, write: bool, overwrite: bool):
+        self._buffer = []
+        self._api = api
+        self._path = path
+        self._read = read
+        self._write = write
+        self._overwrite = overwrite
+        self._closed = False
+        self._read_handle = None
+        self._offset = 0
+
+    def __enter__(self):
+        if self._read:
+            self.__open_read()
+        return self
+
+    def close(self):
+        if self._closed:
+            return
+        if self._write:
+            to_write = b''.join(self._buffer)
+            self._api.upload(self._path, contents=BytesIO(to_write), overwrite=self._overwrite)
+        elif self._read:
+            self._read_handle.close()
+        self._closed = True
+
+    def fileno(self) -> int:
+        return 0
+
+    def flush(self):
+        raise NotImplementedError()
+
+    def isatty(self) -> bool:
+        return False
+
+    def __check_closed(self):
+        if self._closed:
+            raise ValueError('I/O operation on closed file')
+
+    def __open_read(self):
+        if self._read_handle is None:
+            self._read_handle = self._api.download(self._path).contents
+
+    def read(self, __n=...):
+        self.__check_closed()
+        self.__open_read()
+        return self._read_handle.read(__n)
+
+    def readable(self):
+        return self._read
+
+    def readline(self, __limit=...):
+        raise NotImplementedError()
+
+    def readlines(self, __hint=...):
+        raise NotImplementedError()
+
+    def seek(self, __offset, __whence=...):
+        raise NotImplementedError()
+
+    def seekable(self):
+        return False
+
+    def tell(self):
+        if self._read_handle is not None:
+            return self._read_handle.tell()
+        return self._offset
+
+    def truncate(self, __size=...):
+        raise NotImplementedError()
+
+    def writable(self):
+        return self._write
+
+    def write(self, __s):
+        self.__check_closed()
+        self._buffer.append(__s)
+
+    def writelines(self, __lines):
+        raise NotImplementedError()
+
+    def __next__(self):
+        self.__check_closed()
+        return self._read_handle.__next__()
+
+    def __iter__(self):
+        self.__check_closed()
+        return self._read_handle.__iter__()
+
+    def __exit__(self, __t, __value, __traceback):
+        self.close()
+
+    def __repr__(self) -> str:
+        return f"<_VolumesIO {self._path} {'read' if self.readable() else 'write'}=True>"
+
+
 class _Path(ABC):
 
+    def __init__(self, path: str):
+        self._path = pathlib.Path(str(path).replace('dbfs:', '').replace('file:', ''))
+
     @property
-    @abstractmethod
     def is_local(self) -> bool:
+        return self._is_local()
+
+    @abstractmethod
+    def _is_local(self) -> bool:
+        ...
+
+    @property
+    def is_dbfs(self) -> bool:
+        return self._is_dbfs()
+
+    @abstractmethod
+    def _is_dbfs(self) -> bool:
         ...
 
     @abstractmethod
     def child(self, path: str) -> str:
         ...
 
-    @abstractmethod
+    @_cached_property
     def is_dir(self) -> bool:
+        return self._is_dir()
+
+    @abstractmethod
+    def _is_dir(self) -> bool:
         ...
 
     @abstractmethod
@@ -184,18 +304,16 @@ class _Path(ABC):
     def open(self, *, read=False, write=False, overwrite=False):
         ...
 
+    def list(self, *, recursive=False) -> Generator[files.FileInfo, None, None]:
+        ...
+
     @abstractmethod
-    def list_opened_handles(self, *, recursive=False) -> Iterator[(str, BinaryIO)]:
+    def mkdir(self):
         ...
 
     @abstractmethod
     def delete(self, *, recursive=False):
         ...
-
-    def _with_path(self, src: str):
-        # create sanitized path representation, so that
-        # we can have clean child paths in list_opened_handles()
-        self._path = pathlib.Path(str(src).replace('dbfs:', '').replace('file:', ''))
 
     @property
     def name(self) -> str:
@@ -208,18 +326,20 @@ class _Path(ABC):
 
 class _LocalPath(_Path):
 
-    def __init__(self, src: str):
-        self._with_path(src)
-
-    @property
-    def is_local(self) -> bool:
+    def _is_local(self) -> bool:
         return True
+
+    def _is_dbfs(self) -> bool:
+        return False
 
     def child(self, path: str) -> Self:
         return _LocalPath(str(self._path / path))
 
-    def is_dir(self) -> bool:
+    def _is_dir(self) -> bool:
         return self._path.is_dir()
+
+    def mkdir(self):
+        self._path.mkdir(mode=0o755, parents=True, exist_ok=True)
 
     def exists(self) -> bool:
         return self._path.exists()
@@ -229,78 +349,168 @@ class _LocalPath(_Path):
         self._path.parent.mkdir(mode=0o755, parents=True, exist_ok=True)
         return self._path.open(mode='wb' if overwrite else 'rb' if read else 'xb')
 
-    def _list_local(self, recursive=False):
-        queue = [self._path]
+    def list(self, recursive=False) -> Generator[files.FileInfo, None, None]:
+        if not self.is_dir:
+            st = self._path.stat()
+            yield files.FileInfo(path='file:' + str(self._path.absolute()),
+                                 is_dir=False,
+                                 file_size=st.st_size,
+                                 modification_time=int(st.st_mtime_ns / 1e6),
+                                 )
+            return
+        queue = deque([self._path])
         while queue:
-            path, queue = queue[0], queue[1:]
+            path = queue.popleft()
             for leaf in path.iterdir():
                 if leaf.is_dir():
                     if recursive:
                         queue.append(leaf)
                     continue
-                yield leaf
-
-    def list_opened_handles(self, *, recursive=False) -> Iterator[(str, BinaryIO)]:
-        for leaf in self._list_local(recursive):
-            if not recursive and leaf.is_dir:
-                continue
-            with leaf.open('rb') as handle:
-                child = str(leaf).replace(str(self._path) + '/', '')
-                yield child, handle
+                info = leaf.stat()
+                yield files.FileInfo(path='file:' + str(leaf.absolute()),
+                                     is_dir=False,
+                                     file_size=info.st_size,
+                                     modification_time=int(info.st_mtime_ns / 1e6),
+                                     )
 
     def delete(self, *, recursive=False):
-        if self.is_dir():
+        if self.is_dir:
             if recursive:
-                for leaf in self._list_local(True):
-                    kw = {}
-                    if sys.version_info[:2] > (3, 7):
-                        # Python3.7 does not support `missing_ok` keyword
-                        kw['missing_ok'] = True
-                    leaf.unlink(**kw)
+                for leaf in self.list(recursive=True):
+                    _LocalPath(leaf.path).delete()
             self._path.rmdir()
-            return
-        self._path.unlink()
+        else:
+            kw = {}
+            if sys.version_info[:2] > (3, 7):
+                kw['missing_ok'] = True
+            self._path.unlink(**kw)
 
     def __repr__(self) -> str:
         return f'<_LocalPath {self._path}>'
 
 
-class _DbfsPath(_Path):
+class _VolumesPath(_Path):
 
-    def __init__(self, api: 'DbfsExt', src: str):
-        self._with_path(src)
+    def __init__(self, api: files.FilesAPI, src: Union[str, pathlib.Path]):
+        super().__init__(src)
         self._api = api
 
-    @property
-    def is_local(self) -> bool:
+    def _is_local(self) -> bool:
         return False
+
+    def _is_dbfs(self) -> bool:
+        return False
+
+    def child(self, path: str) -> Self:
+        return _VolumesPath(self._api, str(self._path / path))
+
+    def _is_dir(self) -> bool:
+        try:
+            self._api.get_directory_metadata(self.as_string)
+            return True
+        except NotFound:
+            return False
+
+    def mkdir(self):
+        self._api.create_directory(self.as_string)
+
+    def exists(self) -> bool:
+        try:
+            self._api.get_metadata(self.as_string)
+            return True
+        except NotFound:
+            return self.is_dir
+
+    def open(self, *, read=False, write=False, overwrite=False) -> BinaryIO:
+        return _VolumesIO(self._api, self.as_string, read=read, write=write, overwrite=overwrite)
+
+    def list(self, *, recursive=False) -> Generator[files.FileInfo, None, None]:
+        if not self.is_dir:
+            meta = self._api.get_metadata(self.as_string)
+            yield files.FileInfo(path=self.as_string,
+                                 is_dir=False,
+                                 file_size=meta.content_length,
+                                 modification_time=meta.last_modified,
+                                 )
+            return
+        queue = deque([self])
+        while queue:
+            next_path = queue.popleft()
+            for file in self._api.list_directory_contents(next_path.as_string):
+                if recursive and file.is_directory:
+                    queue.append(self.child(file.name))
+                if not recursive or not file.is_directory:
+                    yield files.FileInfo(path=file.path,
+                                         is_dir=file.is_directory,
+                                         file_size=file.file_size,
+                                         modification_time=file.last_modified,
+                                         )
+
+    def delete(self, *, recursive=False):
+        if self.is_dir:
+            for entry in self.list(recursive=False):
+                _VolumesPath(self._api, entry.path).delete(recursive=True)
+            self._api.delete_directory(self.as_string)
+        else:
+            self._api.delete(self.as_string)
+
+    def __repr__(self) -> str:
+        return f'<_VolumesPath {self._path}>'
+
+
+class _DbfsPath(_Path):
+
+    def __init__(self, api: files.DbfsAPI, src: str):
+        super().__init__(src)
+        self._api = api
+
+    def _is_local(self) -> bool:
+        return False
+
+    def _is_dbfs(self) -> bool:
+        return True
 
     def child(self, path: str) -> Self:
         child = self._path / path
         return _DbfsPath(self._api, str(child))
 
-    def is_dir(self) -> bool:
+    def _is_dir(self) -> bool:
         try:
             remote = self._api.get_status(self.as_string)
             return remote.is_dir
-        except DatabricksError as e:
-            if e.error_code == 'RESOURCE_DOES_NOT_EXIST':
-                return False
-            raise e
+        except NotFound:
+            return False
+
+    def mkdir(self):
+        self._api.mkdirs(self.as_string)
 
     def exists(self) -> bool:
-        return self._api.exists(self.as_string)
+        try:
+            self._api.get_status(self.as_string)
+            return True
+        except NotFound:
+            return False
 
     def open(self, *, read=False, write=False, overwrite=False) -> BinaryIO:
-        return self._api.open(self.as_string, read=read, write=write, overwrite=overwrite)
+        return _DbfsIO(self._api, self.as_string, read=read, write=write, overwrite=overwrite)
 
-    def list_opened_handles(self, *, recursive=False) -> Iterator[(str, BinaryIO)]:
-        for file in self._api.list(self.as_string, recursive=recursive):
-            if not recursive and file.is_dir:
-                continue
-            with self._api.open(file.path, read=True) as handle:
-                child = file.path.replace(str(self._path) + '/', '').replace('dbfs:', '')
-                yield child, handle
+    def list(self, *, recursive=False) -> Generator[files.FileInfo, None, None]:
+        if not self.is_dir:
+            meta = self._api.get_status(self.as_string)
+            yield files.FileInfo(path=self.as_string,
+                                 is_dir=False,
+                                 file_size=meta.file_size,
+                                 modification_time=meta.modification_time,
+                                 )
+            return
+        queue = deque([self])
+        while queue:
+            next_path = queue.popleft()
+            for file in self._api.list(next_path.as_string):
+                if recursive and file.is_dir:
+                    queue.append(self.child(file.path))
+                if not recursive or not file.is_dir:
+                    yield file
 
     def delete(self, *, recursive=False):
         self._api.delete(self.as_string, recursive=recursive)
@@ -312,8 +522,18 @@ class _DbfsPath(_Path):
 class DbfsExt(files.DbfsAPI):
     __doc__ = files.DbfsAPI.__doc__
 
-    def open(self, path: str, *, read: bool = False, write: bool = False, overwrite: bool = False) -> _DbfsIO:
-        return _DbfsIO(self, path, read=read, write=write, overwrite=overwrite)
+    def __init__(self, api_client):
+        super().__init__(api_client)
+        self._files_api = files.FilesAPI(api_client)
+        self._dbfs_api = files.DbfsAPI(api_client)
+
+    def open(self,
+             path: str,
+             *,
+             read: bool = False,
+             write: bool = False,
+             overwrite: bool = False) -> BinaryIO:
+        return self._path(path).open(read=read, write=write, overwrite=overwrite)
 
     def upload(self, path: str, src: BinaryIO, *, overwrite: bool = False):
         """Upload file to DBFS"""
@@ -333,34 +553,32 @@ class DbfsExt(files.DbfsAPI):
         When calling list on a large directory, the list operation will time out after approximately 60
         seconds.
 
+        :param path: the DBFS or UC Volume path to list
         :param recursive: traverse deep into directory tree
         :returns iterator of metadata for every file
         """
-        queue = [path]
-        while queue:
-            path, queue = queue[0], queue[1:]
-            for file_info in super().list(path):
-                if recursive and file_info.is_dir:
-                    queue.append(file_info.path)
-                    continue
-                yield file_info
+        p = self._path(path)
+        yield from p.list(recursive=recursive)
+
+    def mkdirs(self, path: str):
+        """Create directory on DBFS"""
+        p = self._path(path)
+        p.mkdir()
 
     def exists(self, path: str) -> bool:
         """If file exists on DBFS"""
-        # TODO: check if we want to put it to errors module to prevent circular import
-        from databricks.sdk.core import DatabricksError
-        try:
-            self.get_status(path)
-            return True
-        except DatabricksError as e:
-            if e.error_code == 'RESOURCE_DOES_NOT_EXIST':
-                return False
-            raise e
+        p = self._path(path)
+        return p.exists()
 
     def _path(self, src):
-        if str(src).startswith('file:'):
+        src = str(src)
+        if src.startswith('file:'):
             return _LocalPath(src)
-        return _DbfsPath(self, src)
+        if src.startswith('dbfs:'):
+            src = src[len('dbfs:'):]
+        if src.startswith('/Volumes'):
+            return _VolumesPath(self._files_api, src)
+        return _DbfsPath(self._dbfs_api, src)
 
     def copy(self, src: str, dst: str, *, recursive=False, overwrite=False):
         """Copy files between DBFS and local filesystems"""
@@ -368,32 +586,40 @@ class DbfsExt(files.DbfsAPI):
         dst = self._path(dst)
         if src.is_local and dst.is_local:
             raise IOError('both destinations are on local FS')
-        if dst.exists() and dst.is_dir():
+        if dst.exists() and dst.is_dir:
             # if target is a folder, make file with the same name there
             dst = dst.child(src.name)
-        if not src.is_dir():
-            # copy single file
-            with src.open(read=True) as reader:
-                with dst.open(write=True, overwrite=overwrite) as writer:
+        if src.is_dir:
+            queue = [self._path(x.path) for x in src.list(recursive=recursive) if not x.is_dir]
+        else:
+            queue = [src]
+        for child in queue:
+            child_dst = dst.child(os.path.relpath(child.as_string, src.as_string))
+            with child.open(read=True) as reader:
+                with child_dst.open(write=True, overwrite=overwrite) as writer:
                     shutil.copyfileobj(reader, writer, length=_DbfsIO.MAX_CHUNK_SIZE)
-            return
-        # iterate through files
-        for child, reader in src.list_opened_handles(recursive=recursive):
-            with dst.child(child).open(write=True, overwrite=overwrite) as writer:
-                shutil.copyfileobj(reader, writer, length=_DbfsIO.MAX_CHUNK_SIZE)
 
     def move_(self, src: str, dst: str, *, recursive=False, overwrite=False):
         """Move files between local and DBFS systems"""
         source = self._path(src)
         target = self._path(dst)
-        if not source.is_local and not target.is_local:
+        if source.is_dbfs and target.is_dbfs:
             # Moves a file from one location to another location within DBFS.
             # this operation is recursive by default.
             return self.move(source.as_string, target.as_string)
         if source.is_local and target.is_local:
             raise IOError('both destinations are on local FS')
-        if source.is_dir() and not recursive:
-            raise IOError('moving directories across filesystems requires recursive flag')
+        if source.is_dir and not recursive:
+            src_type = 'local' if source.is_local else 'DBFS' if source.is_dbfs else 'UC Volume'
+            dst_type = 'local' if target.is_local else 'DBFS' if target.is_dbfs else 'UC Volume'
+            raise IOError(f'moving a directory from {src_type} to {dst_type} requires recursive flag')
         # do cross-fs moving
         self.copy(src, dst, recursive=recursive, overwrite=overwrite)
-        source.delete(recursive=recursive)
+        self.delete(src, recursive=recursive)
+
+    def delete(self, path: str, *, recursive=False):
+        """Delete file or directory on DBFS"""
+        p = self._path(path)
+        if p.is_dir and not recursive:
+            raise IOError('deleting directories requires recursive flag')
+        p.delete(recursive=recursive)
