@@ -5,7 +5,7 @@ import os
 import threading
 from collections import namedtuple
 from dataclasses import dataclass
-from typing import Callable, Dict, List
+from typing import Any, Callable, Dict, List, Optional
 
 from .core import ApiClient, Config, DatabricksError
 from .mixins import compute as compute_ext
@@ -243,7 +243,7 @@ class RemoteDbUtils:
 
 @dataclass
 class OverrideResult:
-    result: typing.Any
+    result: Any
 
 
 def get_local_notebook_path():
@@ -281,7 +281,7 @@ class _OverrideProxyUtil:
     def __get_matching_overrides(cls, path: str):
         return [x for x in cls.proxy_override_paths.keys() if x.startswith(path)]
 
-    def __run_override(self, path: str) -> typing.Optional[OverrideResult]:
+    def __run_override(self, path: str) -> Optional[OverrideResult]:
         overrides = self.__get_matching_overrides(path)
         if len(overrides) == 1 and overrides[0] == path:
             return OverrideResult(self.proxy_override_paths[overrides[0]]())
@@ -291,7 +291,7 @@ class _OverrideProxyUtil:
 
         return None
 
-    def __call__(self, *args, **kwds) -> typing.Any:
+    def __call__(self, *args, **kwds) -> Any:
         if len(args) != 0 or len(kwds) != 0:
             raise TypeError(
                 f"Arguments are not supported for overridden method {self._name}. Invoke as: {self._name}()")
@@ -303,7 +303,7 @@ class _OverrideProxyUtil:
 
         raise TypeError(f"{self._name} is not callable")
 
-    def __getattr__(self, method: str) -> typing.Any:
+    def __getattr__(self, method: str) -> Any:
         result = self.__run_override(f"{self._name}.{method}")
         if result:
             return result.result
