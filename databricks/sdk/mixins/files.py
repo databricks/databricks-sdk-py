@@ -5,6 +5,7 @@ import os
 import pathlib
 import shutil
 import sys
+from urllib import parse
 from abc import ABC, abstractmethod
 from collections import deque
 from io import BytesIO
@@ -570,15 +571,19 @@ class DbfsExt(files.DbfsAPI):
         p = self._path(path)
         return p.exists()
 
+    __ALLOWED_SCHEMES = [None, 'file', 'dbfs']
+
     def _path(self, src):
-        src = str(src)
-        if src.startswith('file:'):
-            return _LocalPath(src)
-        if src.startswith('dbfs:'):
-            src = src[len('dbfs:'):]
-        if src.startswith('/Volumes'):
-            return _VolumesPath(self._files_api, src)
-        return _DbfsPath(self._dbfs_api, src)
+        src = parse.urlparse(str(src))
+        if src.scheme not in self.__ALLOWED_SCHEMES:
+            raise ValueError(
+                f'unsupported scheme {src.scheme}. DBUtils in the SDK only supports local, root DBFS, and '
+                'UC Volumes paths, not external locations or DBFS mount points.')
+        if src.scheme == 'file':
+            return _LocalPath(src.geturl())
+        if src.path.startswith('/Volumes'):
+            return _VolumesPath(self._files_api, src.geturl())
+        return _DbfsPath(self._dbfs_api, src.geturl())
 
     def copy(self, src: str, dst: str, *, recursive=False, overwrite=False):
         """Copy files between DBFS and local filesystems"""
