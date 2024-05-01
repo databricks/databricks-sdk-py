@@ -575,7 +575,7 @@ class DbfsExt(files.DbfsAPI):
 
     def _path(self, src):
         src = parse.urlparse(str(src))
-        if src.scheme not in self.__ALLOWED_SCHEMES:
+        if src.scheme and src.scheme not in self.__ALLOWED_SCHEMES:
             raise ValueError(
                 f'unsupported scheme {src.scheme}. DBUtils in the SDK only supports local, root DBFS, and '
                 'UC Volumes paths, not external locations or DBFS mount points.')
