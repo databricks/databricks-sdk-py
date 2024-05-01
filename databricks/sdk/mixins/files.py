@@ -5,13 +5,13 @@ import os
 import pathlib
 import shutil
 import sys
-from urllib import parse
 from abc import ABC, abstractmethod
 from collections import deque
 from io import BytesIO
 from types import TracebackType
 from typing import (TYPE_CHECKING, AnyStr, BinaryIO, Generator, Iterable,
                     Iterator, Type, Union)
+from urllib import parse
 
 from .._property import _cached_property
 from ..errors import NotFound
@@ -577,7 +577,7 @@ class DbfsExt(files.DbfsAPI):
         src = parse.urlparse(str(src))
         if src.scheme and src.scheme not in self.__ALLOWED_SCHEMES:
             raise ValueError(
-                f'unsupported scheme {src.scheme}. DBUtils in the SDK only supports local, root DBFS, and '
+                f'unsupported scheme "{src.scheme}". DBUtils in the SDK only supports local, root DBFS, and '
                 'UC Volumes paths, not external locations or DBFS mount points.')
         if src.scheme == 'file':
             return _LocalPath(src.geturl())

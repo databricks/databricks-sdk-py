@@ -69,4 +69,4 @@ def test_fs_path_invalid(config):
     dbfs_ext = DbfsExt(config)
     with pytest.raises(ValueError) as e:
         dbfs_ext._path('s3://path/to/file')
-    assert e == ValueError('unsupported scheme: s3. DBUtils in the SDK only supports local, root DBFS, and UC Volumes paths, not external locations or DBFS mount points.')
+    assert 'unsupported scheme "s3"' in str(e.value)
