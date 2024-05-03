@@ -1,5 +1,102 @@
 # Version changelog
 
+## 0.27.0
+
+### New Features
+
+* DBUtils implementation for Volumes ([#623](https://github.com/databricks/databricks-sdk-py/pull/623), [#634](https://github.com/databricks/databricks-sdk-py/pull/634), [#631](https://github.com/databricks/databricks-sdk-py/pull/631)).
+
+### Bug Fixes
+
+* Fixed codecov for repository ([#636](https://github.com/databricks/databricks-sdk-py/pull/636)).
+
+API Changes:
+
+ * Added `ingestion_definition` field for `databricks.sdk.service.pipelines.CreatePipeline`.
+ * Added `ingestion_definition` field for `databricks.sdk.service.pipelines.EditPipeline`.
+ * Added `ingestion_definition` field for `databricks.sdk.service.pipelines.PipelineSpec`.
+ * Added `databricks.sdk.service.pipelines.IngestionConfig` dataclass.
+ * Added `databricks.sdk.service.pipelines.ManagedIngestionPipelineDefinition` dataclass.
+ * Added `databricks.sdk.service.pipelines.SchemaSpec` dataclass.
+ * Added `databricks.sdk.service.pipelines.TableSpec` dataclass.
+ * Changed `create()` method for [w.apps](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/apps.html) workspace-level service . New request type is `databricks.sdk.service.serving.CreateAppRequest` dataclass.
+ * Changed `create()` method for [w.apps](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/apps.html) workspace-level service to return `databricks.sdk.service.serving.App` dataclass.
+ * Removed `delete_app()` method for [w.apps](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/apps.html) workspace-level service.
+ * Removed `get_app()` method for [w.apps](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/apps.html) workspace-level service.
+ * Removed `get_app_deployment_status()` method for [w.apps](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/apps.html) workspace-level service.
+ * Removed `get_apps()` method for [w.apps](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/apps.html) workspace-level service.
+ * Removed `get_events()` method for [w.apps](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/apps.html) workspace-level service.
+ * Added `create_deployment()` method for [w.apps](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/apps.html) workspace-level service.
+ * Added `delete()` method for [w.apps](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/apps.html) workspace-level service.
+ * Added `get()` method for [w.apps](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/apps.html) workspace-level service.
+ * Added `get_deployment()` method for [w.apps](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/apps.html) workspace-level service.
+ * Added `get_environment()` method for [w.apps](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/apps.html) workspace-level service.
+ * Added `list()` method for [w.apps](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/apps.html) workspace-level service.
+ * Added `list_deployments()` method for [w.apps](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/apps.html) workspace-level service.
+ * Added `stop()` method for [w.apps](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/apps.html) workspace-level service.
+ * Added `update()` method for [w.apps](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/apps.html) workspace-level service.
+ * Added `get_open_api()` method for [w.serving_endpoints](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/serving_endpoints.html) workspace-level service.
+ * Removed `databricks.sdk.service.serving.AppEvents` dataclass.
+ * Removed `databricks.sdk.service.serving.AppManifest` dataclass.
+ * Removed `databricks.sdk.service.serving.AppServiceStatus` dataclass.
+ * Removed `databricks.sdk.service.serving.DeleteAppResponse` dataclass.
+ * Removed `databricks.sdk.service.serving.DeployAppRequest` dataclass.
+ * Removed `databricks.sdk.service.serving.DeploymentStatus` dataclass.
+ * Removed `databricks.sdk.service.serving.DeploymentStatusState` dataclass.
+ * Removed `databricks.sdk.service.serving.GetAppDeploymentStatusRequest` dataclass.
+ * Removed `databricks.sdk.service.serving.GetAppResponse` dataclass.
+ * Removed `databricks.sdk.service.serving.GetEventsRequest` dataclass.
+ * Removed `databricks.sdk.service.serving.ListAppEventsResponse` dataclass.
+ * Changed `apps` field for `databricks.sdk.service.serving.ListAppsResponse` to `databricks.sdk.service.serving.AppList` dataclass.
+ * Added `databricks.sdk.service.serving.App` dataclass.
+ * Added `databricks.sdk.service.serving.AppDeployment` dataclass.
+ * Added `databricks.sdk.service.serving.AppDeploymentState` dataclass.
+ * Added `databricks.sdk.service.serving.AppDeploymentStatus` dataclass.
+ * Added `databricks.sdk.service.serving.AppEnvironment` dataclass.
+ * Added `databricks.sdk.service.serving.AppState` dataclass.
+ * Added `databricks.sdk.service.serving.AppStatus` dataclass.
+ * Added `databricks.sdk.service.serving.CreateAppDeploymentRequest` dataclass.
+ * Added `databricks.sdk.service.serving.CreateAppRequest` dataclass.
+ * Added `databricks.sdk.service.serving.EnvVariable` dataclass.
+ * Added `databricks.sdk.service.serving.GetAppDeploymentRequest` dataclass.
+ * Added `databricks.sdk.service.serving.GetAppEnvironmentRequest` dataclass.
+ * Added `databricks.sdk.service.serving.GetOpenApiRequest` dataclass.
+ * Added `any` dataclass.
+ * Added `databricks.sdk.service.serving.ListAppDeploymentsRequest` dataclass.
+ * Added `databricks.sdk.service.serving.ListAppDeploymentsResponse` dataclass.
+ * Added `databricks.sdk.service.serving.ListAppsRequest` dataclass.
+ * Added `databricks.sdk.service.serving.StopAppRequest` dataclass.
+ * Added `any` dataclass.
+ * Added `databricks.sdk.service.serving.UpdateAppRequest` dataclass.
+ * Removed [w.csp_enablement](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings/csp_enablement.html) workspace-level service.
+ * Removed [w.esm_enablement](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings/esm_enablement.html) workspace-level service.
+ * Added [w.compliance_security_profile](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings/compliance_security_profile.html) workspace-level service.
+ * Added [w.enhanced_security_monitoring](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings/enhanced_security_monitoring.html) workspace-level service.
+ * Removed `databricks.sdk.service.settings.CspEnablement` dataclass.
+ * Removed `databricks.sdk.service.settings.CspEnablementSetting` dataclass.
+ * Removed `databricks.sdk.service.settings.EsmEnablement` dataclass.
+ * Removed `databricks.sdk.service.settings.EsmEnablementSetting` dataclass.
+ * Removed `databricks.sdk.service.settings.GetCspEnablementSettingRequest` dataclass.
+ * Removed `databricks.sdk.service.settings.GetEsmEnablementSettingRequest` dataclass.
+ * Removed `databricks.sdk.service.settings.UpdateCspEnablementSettingRequest` dataclass.
+ * Removed `databricks.sdk.service.settings.UpdateEsmEnablementSettingRequest` dataclass.
+ * Added `databricks.sdk.service.settings.ComplianceSecurityProfile` dataclass.
+ * Added `databricks.sdk.service.settings.ComplianceSecurityProfileSetting` dataclass.
+ * Added `databricks.sdk.service.settings.EnhancedSecurityMonitoring` dataclass.
+ * Added `databricks.sdk.service.settings.EnhancedSecurityMonitoringSetting` dataclass.
+ * Added `databricks.sdk.service.settings.GetComplianceSecurityProfileSettingRequest` dataclass.
+ * Added `databricks.sdk.service.settings.GetEnhancedSecurityMonitoringSettingRequest` dataclass.
+ * Added `databricks.sdk.service.settings.UpdateComplianceSecurityProfileSettingRequest` dataclass.
+ * Added `databricks.sdk.service.settings.UpdateEnhancedSecurityMonitoringSettingRequest` dataclass.
+ * Added `tags` field for `databricks.sdk.service.sql.DashboardEditContent`.
+ * Added `tags` field for `databricks.sdk.service.sql.QueryEditContent`.
+ * Added `catalog` field for `databricks.sdk.service.sql.QueryOptions`.
+ * Added `schema` field for `databricks.sdk.service.sql.QueryOptions`.
+ * Added `tags` field for `databricks.sdk.service.sql.QueryPostContent`.
+ * Added `query` field for `databricks.sdk.service.sql.Visualization`.
+
+OpenAPI SHA: 9bb7950fa3390afb97abaa552934bc0a2e069de5, Date: 2024-05-02
+
 ## 0.26.0
 
 * Increase cluster creation test timeout ([#617](https://github.com/databricks/databricks-sdk-py/pull/617)).

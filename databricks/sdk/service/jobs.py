@@ -2502,6 +2502,8 @@ class ResolvedValues:
 
 @dataclass
 class Run:
+    """Run was retrieved successfully"""
+
     attempt_number: Optional[int] = None
     """The sequence number of this run attempt for a triggered job run. The initial attempt of a run
     has an attempt_number of 0\. If the initial run attempt fails, and the job has a retry policy
