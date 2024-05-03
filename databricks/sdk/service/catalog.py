@@ -7592,7 +7592,8 @@ class ModelVersionsAPI:
         response. For the latter case, the caller must also be the owner or have the **USE_CATALOG** privilege
         on the parent catalog and the **USE_SCHEMA** privilege on the parent schema.
         
-        There is no guarantee of a specific ordering of the elements in the response.
+        There is no guarantee of a specific ordering of the elements in the response. The elements in the
+        response will not contain any aliases or tags.
         
         :param full_name: str
           The full three-level name of the registered model under which to list model versions
