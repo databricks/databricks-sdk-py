@@ -1,9 +1,15 @@
+import logging
 from dataclasses import dataclass
 from typing import Dict
+from urllib import parse
+
+import requests
 
 from .oauth import TokenSource
 from .service.provisioning import Workspace
 
+
+logger = logging.getLogger(__name__)
 
 @dataclass
 class AzureEnvironment:
@@ -52,3 +58,16 @@ def get_azure_resource_id(workspace: Workspace):
     return (f'/subscriptions/{workspace.azure_workspace_info.subscription_id}'
             f'/resourceGroups/{workspace.azure_workspace_info.resource_group}'
             f'/providers/Microsoft.Databricks/workspaces/{workspace.workspace_name}')
+
+
+def _load_azure_tenant_id(cfg: 'Config'):
+    if not cfg.is_azure or cfg.azure_tenant_id is not None or cfg.host is None:
+        return
+    logging.debug(f'Loading tenant ID from {cfg.host}/aad/auth')
+    resp = requests.get(f'{cfg.host}/aad/auth', allow_redirects=False)
+    entra_id_endpoint = resp.headers.get('Location')
+    if entra_id_endpoint is None:
+        return
+    url = parse.urlparse(entra_id_endpoint)
+    cfg.azure_tenant_id = url.path.split('/')[1]
+    logging.debug(f'Loaded tenant ID: {cfg.azure_tenant_id}')

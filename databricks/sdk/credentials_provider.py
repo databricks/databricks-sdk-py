@@ -18,7 +18,7 @@ from google.auth import impersonated_credentials
 from google.auth.transport.requests import Request
 from google.oauth2 import service_account
 
-from .azure import add_sp_management_token, add_workspace_id_header
+from .azure import add_sp_management_token, add_workspace_id_header, _load_azure_tenant_id
 from .oauth import (ClientCredentials, OAuthClient, Refreshable, Token,
                     TokenCache, TokenSource)
 
@@ -179,11 +179,10 @@ def _ensure_host_present(cfg: 'Config', token_source_for: Callable[[str], TokenS
 
 
 @credentials_provider('azure-client-secret',
-                      ['is_azure', 'azure_client_id', 'azure_client_secret', 'azure_tenant_id'])
+                      ['is_azure', 'azure_client_id', 'azure_client_secret'])
 def azure_service_principal(cfg: 'Config') -> HeaderFactory:
     """ Adds refreshed Azure Active Directory (AAD) Service Principal OAuth tokens
     to every request, while automatically resolving different Azure environment endpoints. """
-
     def token_source_for(resource: str) -> TokenSource:
         aad_endpoint = cfg.arm_environment.active_directory_endpoint
         return ClientCredentials(client_id=cfg.azure_client_id,
@@ -192,6 +191,7 @@ def azure_service_principal(cfg: 'Config') -> HeaderFactory:
                                  endpoint_params={"resource": resource},
                                  use_params=True)
 
+    _load_azure_tenant_id(cfg)
     _ensure_host_present(cfg, token_source_for)
     logger.info("Configured AAD token for Service Principal (%s)", cfg.azure_client_id)
     inner = token_source_for(cfg.effective_azure_login_app_id)
@@ -363,11 +363,13 @@ class CliTokenSource(Refreshable):
 class AzureCliTokenSource(CliTokenSource):
     """ Obtain the token granted by `az login` CLI command """
 
-    def __init__(self, resource: str, subscription: str = ""):
+    def __init__(self, resource: str, subscription: str = "", tenant: str = None):
         cmd = ["az", "account", "get-access-token", "--resource", resource, "--output", "json"]
         if subscription != "":
             cmd.append("--subscription")
             cmd.append(subscription)
+        if tenant:
+            cmd.extend(["--tenant", tenant])
         super().__init__(cmd=cmd,
                          token_type_field='tokenType',
                          access_token_field='accessToken',
@@ -395,7 +397,7 @@ class AzureCliTokenSource(CliTokenSource):
     @staticmethod
     def for_resource(cfg: 'Config', resource: str) -> 'AzureCliTokenSource':
         subscription = AzureCliTokenSource.get_subscription(cfg)
-        if subscription != "":
+        if cfg.azure_tenant_id == "" and subscription != "":
             token_source = AzureCliTokenSource(resource, subscription)
             try:
                 # This will fail if the user has access to the workspace, but not to the subscription
@@ -406,7 +408,7 @@ class AzureCliTokenSource(CliTokenSource):
             except OSError:
                 logger.warning("Failed to get token for subscription. Using resource only token.")
 
-        token_source = AzureCliTokenSource(resource)
+        token_source = AzureCliTokenSource(resource, cfg.azure_tenant_id)
         token_source.token()
         return token_source
 
@@ -425,6 +427,7 @@ class AzureCliTokenSource(CliTokenSource):
 @credentials_provider('azure-cli', ['is_azure'])
 def azure_cli(cfg: 'Config') -> Optional[HeaderFactory]:
     """ Adds refreshed OAuth token granted by `az login` command to every request. """
+    _load_azure_tenant_id(cfg)
     token_source = None
     mgmt_token_source = None
     try:
@@ -448,11 +451,6 @@ def azure_cli(cfg: 'Config') -> Optional[HeaderFactory]:
 
     _ensure_host_present(cfg, lambda resource: AzureCliTokenSource.for_resource(cfg, resource))
     logger.info("Using Azure CLI authentication with AAD tokens")
-    if not cfg.is_account_client and AzureCliTokenSource.get_subscription(cfg) == "":
-        logger.warning(
-            "azure_workspace_resource_id field not provided. "
-            "It is recommended to specify this field in the Databricks configuration to avoid authentication errors."
-        )
 
     def inner() -> Dict[str, str]:
         token = token_source.token()
