@@ -67,6 +67,7 @@ def _load_azure_tenant_id(cfg: 'Config'):
     resp = requests.get(f'{cfg.host}/aad/auth', allow_redirects=False)
     entra_id_endpoint = resp.headers.get('Location')
     if entra_id_endpoint is None:
+        logging.debug(f'No Location header in response from {cfg.host}/aad/auth')
         return
     url = parse.urlparse(entra_id_endpoint)
     cfg.azure_tenant_id = url.path.split('/')[1]
