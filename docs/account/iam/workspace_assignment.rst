@@ -82,9 +82,9 @@
             
             workspace_id = os.environ["DUMMY_WORKSPACE_ID"]
             
-            a.workspace_assignment.update(workspace_id=workspace_id,
-                                          principal_id=spn_id,
-                                          permissions=[iam.WorkspacePermission.USER])
+            _ = a.workspace_assignment.update(workspace_id=workspace_id,
+                                              principal_id=spn_id,
+                                              permissions=[iam.WorkspacePermission.USER])
 
         Create or update permissions assignment.
         

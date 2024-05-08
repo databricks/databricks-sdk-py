@@ -89,6 +89,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: IngestionConfig
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListPipelineEventsResponse
    :members:
    :undoc-members:
@@ -98,6 +102,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ListUpdatesResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ManagedIngestionPipelineDefinition
    :members:
    :undoc-members:
 
@@ -243,6 +251,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: SchemaSpec
+   :members:
+   :undoc-members:
+
 .. autoclass:: Sequencing
    :members:
    :undoc-members:
@@ -284,6 +296,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: StopPipelineResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: TableSpec
    :members:
    :undoc-members:
 

@@ -87,6 +87,19 @@
         :returns: :class:`ServingEndpointDetailed`
         
 
+    .. py:method:: get_open_api(name: str)
+
+        Get the schema for a serving endpoint.
+        
+        Get the query schema of the serving endpoint in OpenAPI format. The schema contains information for
+        the supported paths, input and output format and datatypes.
+        
+        :param name: str
+          The name of the serving endpoint that the served model belongs to. This field is required.
+        
+        
+        
+
     .. py:method:: get_permission_levels(serving_endpoint_id: str) -> GetServingEndpointPermissionLevelsResponse
 
         Get serving endpoint permission levels.
