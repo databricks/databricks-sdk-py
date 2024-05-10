@@ -14,9 +14,9 @@ from .credentials_provider import *
 from .errors import DatabricksError, error_mapper
 from .retries import retried
 
-__all__ = ['Config', 'DatabricksError']
+__all__ = ["Config", "DatabricksError"]
 
-logger = logging.getLogger('databricks.sdk')
+logger = logging.getLogger("databricks.sdk")
 
 
 class ApiClient:
@@ -30,8 +30,8 @@ class ApiClient:
 
         self._cfg = cfg
         # See https://github.com/databricks/databricks-sdk-go/blob/main/client/client.go#L34-L35
-        self._debug_truncate_bytes = cfg.debug_truncate_bytes if cfg.debug_truncate_bytes else 96
-        self._retry_timeout_seconds = cfg.retry_timeout_seconds if cfg.retry_timeout_seconds else 300
+        self._debug_truncate_bytes = (cfg.debug_truncate_bytes if cfg.debug_truncate_bytes else 96)
+        self._retry_timeout_seconds = (cfg.retry_timeout_seconds if cfg.retry_timeout_seconds else 300)
         self._user_agent_base = cfg.user_agent
         self._session = requests.Session()
         self._session.auth = self._authenticate
@@ -60,11 +60,12 @@ class ApiClient:
         # @retried for more details.
         http_adapter = HTTPAdapter(pool_connections=pool_connections,
                                    pool_maxsize=pool_maxsize,
-                                   pool_block=pool_block)
+                                   pool_block=pool_block,
+                                   )
         self._session.mount("https://", http_adapter)
 
         # Default to 60 seconds
-        self._http_timeout_seconds = cfg.http_timeout_seconds if cfg.http_timeout_seconds else 60
+        self._http_timeout_seconds = (cfg.http_timeout_seconds if cfg.http_timeout_seconds else 60)
 
     @property
     def account_id(self) -> str:
@@ -86,7 +87,7 @@ class ApiClient:
         # See: https://github.com/databricks/databricks-sdk-py/issues/142
         if query is None:
             return None
-        with_fixed_bools = {k: v if type(v) != bool else ('true' if v else 'false') for k, v in query.items()}
+        with_fixed_bools = {k: v if type(v) != bool else ("true" if v else "false") for k, v in query.items()}
 
         # Query parameters may be nested, e.g.
         # {'filter_by': {'user_ids': [123, 456]}}
@@ -117,16 +118,18 @@ class ApiClient:
            raw: bool = False,
            files=None,
            data=None,
-           response_headers: List[str] = None) -> Union[dict, BinaryIO]:
+           response_headers: List[str] = None,
+           ) -> Union[dict, BinaryIO]:
         # Remove extra `/` from path for Files API
         # Once we've fixed the OpenAPI spec, we can remove this
-        path = re.sub('^/api/2.0/fs/files//', '/api/2.0/fs/files/', path)
+        path = re.sub("^/api/2.0/fs/files//", "/api/2.0/fs/files/", path)
         if headers is None:
             headers = {}
-        headers['User-Agent'] = self._user_agent_base
+        headers["User-Agent"] = self._user_agent_base
         retryable = retried(timeout=timedelta(seconds=self._retry_timeout_seconds),
                             is_retryable=self._is_retryable,
-                            clock=self._cfg.clock)
+                            clock=self._cfg.clock,
+                            )
         response = retryable(self._perform)(method,
                                             path,
                                             query=query,
@@ -134,7 +137,8 @@ class ApiClient:
                                             body=body,
                                             raw=raw,
                                             files=files,
-                                            data=data)
+                                            data=data,
+                                            )
 
         resp = dict()
         for header in response_headers if response_headers else []:
@@ -160,6 +164,7 @@ class ApiClient:
         # and Databricks SDK for Go retries
         # (see https://github.com/databricks/databricks-sdk-go/blob/main/apierr/errors.go)
         from urllib3.exceptions import ProxyError
+
         if isinstance(err, ProxyError):
             err = err.original_error
         if isinstance(err, requests.ConnectionError):
@@ -170,13 +175,13 @@ class ApiClient:
             #
             # return a simple string for debug log readability, as `raise TimeoutError(...) from err`
             # will bubble up the original exception in case we reach max retries.
-            return f'cannot connect'
+            return f"cannot connect"
         if isinstance(err, requests.Timeout):
             # corresponds to `TLS handshake timeout` and `i/o timeout` in Go.
             #
             # return a simple string for debug log readability, as `raise TimeoutError(...) from err`
             # will bubble up the original exception in case we reach max retries.
-            return f'timeout'
+            return f"timeout"
         if isinstance(err, DatabricksError):
             message = str(err)
             transient_error_string_matches = [
@@ -189,7 +194,7 @@ class ApiClient:
             for substring in transient_error_string_matches:
                 if substring not in message:
                     continue
-                return f'matched {substring}'
+                return f"matched {substring}"
         return None
 
     @classmethod
@@ -209,7 +214,7 @@ class ApiClient:
         try:
             return int(retry_after)
         except ValueError:
-            logger.debug(f'Invalid Retry-After header received: {retry_after}. Defaulting to 1')
+            logger.debug(f"Invalid Retry-After header received: {retry_after}. Defaulting to 1")
             # defaulting to 1 sleep second to make self._is_retryable() simpler
             return cls._RETRY_AFTER_DEFAULT
 
@@ -221,7 +226,8 @@ class ApiClient:
                  body: dict = None,
                  raw: bool = False,
                  files=None,
-                 data=None):
+                 data=None,
+                 ):
         response = self._session.request(method,
                                          f"{self._cfg.host}{path}",
                                          params=self._fix_query_string(query),
@@ -230,7 +236,8 @@ class ApiClient:
                                          files=files,
                                          data=data,
                                          stream=raw,
-                                         timeout=self._http_timeout_seconds)
+                                         timeout=self._http_timeout_seconds,
+                                         )
         try:
             self._record_request_log(response, raw=raw or data is not None or files is not None)
             if not response.ok: # internally calls response.raise_for_status()
@@ -247,7 +254,7 @@ class ApiClient:
 
     @staticmethod
     def _make_sense_from_html(txt: str) -> str:
-        matchers = [r'<pre>(.*)</pre>', r'<title>(.*)</title>']
+        matchers = [r"<pre>(.*)</pre>", r"<title>(.*)</title>"]
         for attempt in matchers:
             expr = re.compile(attempt, re.MULTILINE)
             match = expr.search(txt)
@@ -258,14 +265,14 @@ class ApiClient:
 
     def _make_nicer_error(self, *, response: requests.Response, **kwargs) -> DatabricksError:
         status_code = response.status_code
-        message = kwargs.get('message', 'request failed')
+        message = kwargs.get("message", "request failed")
         is_http_unauthorized_or_forbidden = status_code in (401, 403)
         is_too_many_requests_or_unavailable = status_code in (429, 503)
         if is_http_unauthorized_or_forbidden:
             message = self._cfg.wrap_debug_info(message)
         if is_too_many_requests_or_unavailable:
-            kwargs['retry_after_secs'] = self._parse_retry_after(response)
-        kwargs['message'] = message
+            kwargs["retry_after_secs"] = self._parse_retry_after(response)
+        kwargs["message"] = message
         return error_mapper(response, kwargs)
 
     def _record_request_log(self, response: requests.Response, raw=False):
@@ -273,19 +280,19 @@ class ApiClient:
             return
         request = response.request
         url = urllib.parse.urlparse(request.url)
-        query = ''
+        query = ""
         if url.query:
-            query = f'?{urllib.parse.unquote(url.query)}'
-        sb = [f'{request.method} {urllib.parse.unquote(url.path)}{query}']
+            query = f"?{urllib.parse.unquote(url.query)}"
+        sb = [f"{request.method} {urllib.parse.unquote(url.path)}{query}"]
         if self._cfg.debug_headers:
             if self._cfg.host:
-                sb.append(f'> * Host: {self._cfg.host}')
+                sb.append(f"> * Host: {self._cfg.host}")
             for k, v in request.headers.items():
-                sb.append(f'> * {k}: {self._only_n_bytes(v, self._debug_truncate_bytes)}')
+                sb.append(f"> * {k}: {self._only_n_bytes(v, self._debug_truncate_bytes)}")
         if request.body:
             sb.append("> [raw stream]" if raw else self._redacted_dump("> ", request.body))
-        sb.append(f'< {response.status_code} {response.reason}')
-        if raw and response.headers.get('Content-Type', None) != 'application/json':
+        sb.append(f"< {response.status_code} {response.reason}")
+        if raw and response.headers.get("Content-Type", None) != "application/json":
             # Raw streams with `Transfer-Encoding: chunked` do not have `Content-Type` header
             sb.append("< [raw stream]")
         elif response.content:
@@ -295,7 +302,7 @@ class ApiClient:
     @staticmethod
     def _mask(m: Dict[str, any]):
         for k in m:
-            if k in {'bytes_value', 'string_value', 'token_value', 'value', 'content'}:
+            if k in {"bytes_value", "string_value", "token_value", "value", "content"}:
                 m[k] = "**REDACTED**"
 
     @staticmethod
@@ -306,7 +313,7 @@ class ApiClient:
 
     @staticmethod
     def _only_n_bytes(j: str, num_bytes: int = 96) -> str:
-        diff = len(j.encode('utf-8')) - num_bytes
+        diff = len(j.encode("utf-8")) - num_bytes
         if diff > 0:
             return f"{j[:num_bytes]}... ({diff} more bytes)"
         return j
@@ -352,9 +359,9 @@ class ApiClient:
                 max_bytes = self._debug_truncate_bytes
             # Re-marshal body taking redaction and character limit into account.
             raw = self._recursive_marshal(tmp, max_bytes)
-            return "\n".join([f'{prefix}{line}' for line in json.dumps(raw, indent=2).split("\n")])
+            return "\n".join([f"{prefix}{line}" for line in json.dumps(raw, indent=2).split("\n")])
         except JSONDecodeError:
-            return f'{prefix}[non-JSON document of {len(body)} bytes]'
+            return f"{prefix}[non-JSON document of {len(body)} bytes]"
 
 
 class StreamingResponse(BinaryIO):
@@ -372,7 +379,7 @@ class StreamingResponse(BinaryIO):
 
     def __init__(self, response: requests.Response, chunk_size: Union[int, None] = None):
         self._response = response
-        self._buffer = b''
+        self._buffer = b""
         self._content = None
         self._chunk_size = chunk_size
 
@@ -400,7 +407,7 @@ class StreamingResponse(BinaryIO):
         self._open()
         read_everything = n < 0
         remaining_bytes = n
-        res = b''
+        res = b""
         while remaining_bytes > 0 or read_everything:
             if len(self._buffer) == 0:
                 try:
@@ -408,7 +415,7 @@ class StreamingResponse(BinaryIO):
                 except StopIteration:
                     break
             bytes_available = len(self._buffer)
-            to_read = bytes_available if read_everything else min(remaining_bytes, bytes_available)
+            to_read = (bytes_available if read_everything else min(remaining_bytes, bytes_available))
             res += self._buffer[:to_read]
             self._buffer = self._buffer[to_read:]
             remaining_bytes -= to_read
@@ -451,7 +458,8 @@ class StreamingResponse(BinaryIO):
         return self._content
 
     def __exit__(self, t: Union[Type[BaseException], None], value: Union[BaseException, None],
-                 traceback: Union[TracebackType, None]) -> None:
+                 traceback: Union[TracebackType, None],
+                 ) -> None:
         self._content = None
-        self._buffer = b''
+        self._buffer = b""
         self.close()
