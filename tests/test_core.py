@@ -335,6 +335,20 @@ def test_shares(config, requests_mock):
     assert requests_mock.last_request.json() == {'changes': [{'principal': 'principal'}]}
 
 
+def test_deletes(config, requests_mock):
+    requests_mock.delete("http://localhost/api/2.0/preview/sql/alerts/alertid",
+                         request_headers={"User-Agent": config.user_agent},
+                         )
+
+    w = WorkspaceClient(config=config)
+    res = w.alerts.delete(alert_id="alertId")
+
+    assert requests_mock.call_count == 1
+    assert requests_mock.called
+
+    assert res is None
+
+
 def test_error(config, requests_mock):
     errorJson = {
         "message":

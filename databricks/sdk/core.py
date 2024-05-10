@@ -146,6 +146,8 @@ class ApiClient:
             return resp
 
         json = response.json()
+        if json is None:
+            return resp
         if isinstance(json, list):
             return json
 
