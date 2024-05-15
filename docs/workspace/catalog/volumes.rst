@@ -28,7 +28,7 @@
             
             storage_credential = w.storage_credentials.create(
                 name=f'sdk-{time.time_ns()}',
-                aws_iam_role=catalog.AwsIamRole(role_arn=os.environ["TEST_METASTORE_DATA_ACCESS_ARN"]),
+                aws_iam_role=catalog.AwsIamRoleRequest(role_arn=os.environ["TEST_METASTORE_DATA_ACCESS_ARN"]),
                 comment="created via SDK")
             
             external_location = w.external_locations.create(name=f'sdk-{time.time_ns()}',
@@ -103,7 +103,7 @@
         
         
 
-    .. py:method:: list(catalog_name: str, schema_name: str [, max_results: Optional[int], page_token: Optional[str]]) -> Iterator[VolumeInfo]
+    .. py:method:: list(catalog_name: str, schema_name: str [, include_browse: Optional[bool], max_results: Optional[int], page_token: Optional[str]]) -> Iterator[VolumeInfo]
 
 
         Usage:
@@ -142,6 +142,9 @@
           The identifier of the catalog
         :param schema_name: str
           The identifier of the schema
+        :param include_browse: bool (optional)
+          Whether to include volumes in the response for which the principal can only access selective
+          metadata for
         :param max_results: int (optional)
           Maximum number of volumes to return (page length).
           
@@ -161,7 +164,7 @@
         :returns: Iterator over :class:`VolumeInfo`
         
 
-    .. py:method:: read(name: str) -> VolumeInfo
+    .. py:method:: read(name: str [, include_browse: Optional[bool]]) -> VolumeInfo
 
 
         Usage:
@@ -178,7 +181,7 @@
             
             storage_credential = w.storage_credentials.create(
                 name=f'sdk-{time.time_ns()}',
-                aws_iam_role=catalog.AwsIamRole(role_arn=os.environ["TEST_METASTORE_DATA_ACCESS_ARN"]),
+                aws_iam_role=catalog.AwsIamRoleRequest(role_arn=os.environ["TEST_METASTORE_DATA_ACCESS_ARN"]),
                 comment="created via SDK")
             
             external_location = w.external_locations.create(name=f'sdk-{time.time_ns()}',
@@ -216,6 +219,9 @@
         
         :param name: str
           The three-level (fully qualified) name of the volume
+        :param include_browse: bool (optional)
+          Whether to include volumes in the response for which the principal can only access selective
+          metadata for
         
         :returns: :class:`VolumeInfo`
         
@@ -237,7 +243,7 @@
             
             storage_credential = w.storage_credentials.create(
                 name=f'sdk-{time.time_ns()}',
-                aws_iam_role=catalog.AwsIamRole(role_arn=os.environ["TEST_METASTORE_DATA_ACCESS_ARN"]),
+                aws_iam_role=catalog.AwsIamRoleRequest(role_arn=os.environ["TEST_METASTORE_DATA_ACCESS_ARN"]),
                 comment="created via SDK")
             
             external_location = w.external_locations.create(name=f'sdk-{time.time_ns()}',

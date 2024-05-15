@@ -1,8 +1,9 @@
 from dataclasses import dataclass
 from enum import Enum
 
-from databricks.sdk.service._internal import (_enum, _from_dict,
-                                              _repeated_dict, _repeated_enum)
+from databricks.sdk.service._internal import (
+    _enum, _escape_multi_segment_path_parameter, _from_dict, _repeated_dict,
+    _repeated_enum)
 
 
 class A(Enum):
@@ -41,3 +42,10 @@ def test_from_dict():
 
 def test_repeated_dict():
     assert _repeated_dict({'x': [{'field': 'a'}, {'field': 'c'}]}, 'x', B) == [B('a'), B('c')]
+
+
+def test_escape_multi_segment_path_parameter():
+    assert _escape_multi_segment_path_parameter('a b') == 'a%20b'
+    assert _escape_multi_segment_path_parameter('a/b') == 'a/b'
+    assert _escape_multi_segment_path_parameter('a?b') == 'a%3Fb'
+    assert _escape_multi_segment_path_parameter('a#b') == 'a%23b'

@@ -12,8 +12,8 @@
         Controls whether automatic cluster update is enabled for the current workspace. By default, it is turned
         off.
 
-    .. py:property:: csp_enablement
-        :type: CspEnablementAPI
+    .. py:property:: compliance_security_profile
+        :type: ComplianceSecurityProfileAPI
 
         Controls whether to enable the compliance security profile for the current workspace. Enabling it on a
         workspace is permanent. By default, it is turned off.
@@ -34,8 +34,8 @@
         This setting requires a restart of clusters and SQL warehouses to take effect. Additionally, the default
         namespace only applies when using Unity Catalog-enabled compute.
 
-    .. py:property:: esm_enablement
-        :type: EsmEnablementAPI
+    .. py:property:: enhanced_security_monitoring
+        :type: EnhancedSecurityMonitoringAPI
 
         Controls whether enhanced security monitoring is enabled for the current workspace. If the compliance
         security profile is enabled, this is automatically enabled. By default, it is disabled. However, if the

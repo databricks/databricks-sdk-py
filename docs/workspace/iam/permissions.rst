@@ -47,6 +47,9 @@
     For the mapping of the required permissions for specific actions or abilities and other important
     information, see [Access Control].
     
+    Note that to manage access control on service principals, use **[Account Access Control
+    Proxy](:service:accountaccesscontrolproxy)**.
+    
     [Access Control]: https://docs.databricks.com/security/auth-authz/access-control/index.html
 
     .. py:method:: get(request_object_type: str, request_object_id: str) -> ObjectPermissions
@@ -77,7 +80,7 @@
         :param request_object_type: str
           The type of the request object. Can be one of the following: authorization, clusters,
           cluster-policies, directories, experiments, files, instance-pools, jobs, notebooks, pipelines,
-          registered-models, repos, serving-endpoints, or sql-warehouses.
+          registered-models, repos, serving-endpoints, or warehouses.
         :param request_object_id: str
           The id of the request object.
         
@@ -154,7 +157,7 @@
         :param request_object_type: str
           The type of the request object. Can be one of the following: authorization, clusters,
           cluster-policies, directories, experiments, files, instance-pools, jobs, notebooks, pipelines,
-          registered-models, repos, serving-endpoints, or sql-warehouses.
+          registered-models, repos, serving-endpoints, or warehouses.
         :param request_object_id: str
           The id of the request object.
         :param access_control_list: List[:class:`AccessControlRequest`] (optional)
@@ -172,7 +175,7 @@
         :param request_object_type: str
           The type of the request object. Can be one of the following: authorization, clusters,
           cluster-policies, directories, experiments, files, instance-pools, jobs, notebooks, pipelines,
-          registered-models, repos, serving-endpoints, or sql-warehouses.
+          registered-models, repos, serving-endpoints, or warehouses.
         :param request_object_id: str
           The id of the request object.
         :param access_control_list: List[:class:`AccessControlRequest`] (optional)

@@ -30,6 +30,7 @@ The SDK's internal HTTP client is robust and handles failures on different level
 - [Long-running operations](#long-running-operations)
 - [Paginated responses](#paginated-responses)
 - [Single-sign-on with OAuth](#single-sign-on-sso-with-oauth)
+- [Error handling](#error-handling)
 - [Logging](#logging)
 - [Integration with `dbutils`](#interaction-with-dbutils)
 - [Interface stability](#interface-stability)
@@ -506,6 +507,23 @@ logging.info(f'Created new custom app: '
              f'--client_id {custom_app.client_id} '
              f'--client_secret {custom_app.client_secret}')
 ```
+
+## Error handling<a id="error-handling"></a>
+
+The Databricks SDK for Python provides a robust error-handling mechanism that allows developers to catch and handle API errors. When an error occurs, the SDK will raise an exception that contains information about the error, such as the HTTP status code, error message, and error details. Developers can catch these exceptions and handle them appropriately in their code.
+
+```python
+from databricks.sdk import WorkspaceClient
+from databricks.sdk.errors import ResourceDoesNotExist
+
+w = WorkspaceClient()
+try:
+    w.clusters.get(cluster_id='1234-5678-9012')
+except ResourceDoesNotExist as e:
+    print(f'Cluster not found: {e}')
+```
+
+The SDK handles inconsistencies in error responses amongst the different services, providing a consistent interface for developers to work with. Simply catch the appropriate exception type and handle the error as needed. The errors returned by the Databricks API are defined in [databricks/sdk/errors/platform.py](https://github.com/databricks/databricks-sdk-py/blob/main/databricks/sdk/errors/platform.py).
 
 ## Logging<a id="logging"></a>
 

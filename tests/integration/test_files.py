@@ -219,7 +219,7 @@ def test_files_api_upload_download(ucws, random):
     with ResourceWithCleanup.create_schema(w, 'main', schema):
         with ResourceWithCleanup.create_volume(w, 'main', schema, volume):
             f = io.BytesIO(b"some text data")
-            target_file = f'/Volumes/main/{schema}/{volume}/filesit-{random()}.txt'
+            target_file = f'/Volumes/main/{schema}/{volume}/filesit-with-?-and-#-{random()}.txt'
             w.files.upload(target_file, f)
             with w.files.download(target_file).contents as f:
                 assert f.read() == b"some text data"

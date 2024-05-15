@@ -1,8 +1,16 @@
+import requests
+
 from databricks.sdk.errors import platform
 from databricks.sdk.errors.base import DatabricksError
 
+from .overrides import _ALL_OVERRIDES
 
-def error_mapper(status_code: int, raw: dict) -> DatabricksError:
+
+def error_mapper(response: requests.Response, raw: dict) -> DatabricksError:
+    for override in _ALL_OVERRIDES:
+        if override.matches(response, raw):
+            return override.custom_error(**raw)
+    status_code = response.status_code
     error_code = raw.get('error_code', None)
     if error_code in platform.ERROR_CODE_MAPPING:
         # more specific error codes override more generic HTTP status codes

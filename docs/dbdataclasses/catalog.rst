@@ -65,11 +65,19 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: AwsIamRole
+.. autoclass:: AwsIamRoleRequest
    :members:
    :undoc-members:
 
-.. autoclass:: AzureManagedIdentity
+.. autoclass:: AwsIamRoleResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: AzureManagedIdentityRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: AzureManagedIdentityResponse
    :members:
    :undoc-members:
 
@@ -359,6 +367,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: CreateMonitor
+   :members:
+   :undoc-members:
+
+.. autoclass:: CreateOnlineTableRequest
    :members:
    :undoc-members:
 
@@ -745,7 +757,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: MonitorCronSchedulePauseStatus
 
-   Whether the schedule is paused or not
+   Read only field that indicates whether a schedule is paused or not.
 
    .. py:attribute:: PAUSED
       :value: "PAUSED"
@@ -753,44 +765,21 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: UNPAUSED
       :value: "UNPAUSED"
 
-.. autoclass:: MonitorCustomMetric
-   :members:
-   :undoc-members:
-
-.. py:class:: MonitorCustomMetricType
-
-   The type of the custom metric.
-
-   .. py:attribute:: CUSTOM_METRIC_TYPE_AGGREGATE
-      :value: "CUSTOM_METRIC_TYPE_AGGREGATE"
-
-   .. py:attribute:: CUSTOM_METRIC_TYPE_DERIVED
-      :value: "CUSTOM_METRIC_TYPE_DERIVED"
-
-   .. py:attribute:: CUSTOM_METRIC_TYPE_DRIFT
-      :value: "CUSTOM_METRIC_TYPE_DRIFT"
-
-   .. py:attribute:: MONITOR_STATUS_ERROR
-      :value: "MONITOR_STATUS_ERROR"
-
-   .. py:attribute:: MONITOR_STATUS_FAILED
-      :value: "MONITOR_STATUS_FAILED"
-
 .. autoclass:: MonitorDataClassificationConfig
    :members:
    :undoc-members:
 
-.. autoclass:: MonitorDestinations
+.. autoclass:: MonitorDestination
    :members:
    :undoc-members:
 
-.. autoclass:: MonitorInferenceLogProfileType
+.. autoclass:: MonitorInferenceLog
    :members:
    :undoc-members:
 
-.. py:class:: MonitorInferenceLogProfileTypeProblemType
+.. py:class:: MonitorInferenceLogProblemType
 
-   Problem type the model aims to solve.
+   Problem type the model aims to solve. Determines the type of model-quality metrics that will be computed.
 
    .. py:attribute:: PROBLEM_TYPE_CLASSIFICATION
       :value: "PROBLEM_TYPE_CLASSIFICATION"
@@ -821,7 +810,24 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: MONITOR_STATUS_PENDING
       :value: "MONITOR_STATUS_PENDING"
 
-.. autoclass:: MonitorNotificationsConfig
+.. autoclass:: MonitorMetric
+   :members:
+   :undoc-members:
+
+.. py:class:: MonitorMetricType
+
+   Can only be one of ``"CUSTOM_METRIC_TYPE_AGGREGATE"``, ``"CUSTOM_METRIC_TYPE_DERIVED"``, or ``"CUSTOM_METRIC_TYPE_DRIFT"``. The ``"CUSTOM_METRIC_TYPE_AGGREGATE"`` and ``"CUSTOM_METRIC_TYPE_DERIVED"`` metrics are computed on a single table, whereas the ``"CUSTOM_METRIC_TYPE_DRIFT"`` compare metrics across baseline and input table, or across the two consecutive time windows. - CUSTOM_METRIC_TYPE_AGGREGATE: only depend on the existing columns in your table - CUSTOM_METRIC_TYPE_DERIVED: depend on previously computed aggregate metrics - CUSTOM_METRIC_TYPE_DRIFT: depend on previously computed aggregate or derived metrics
+
+   .. py:attribute:: CUSTOM_METRIC_TYPE_AGGREGATE
+      :value: "CUSTOM_METRIC_TYPE_AGGREGATE"
+
+   .. py:attribute:: CUSTOM_METRIC_TYPE_DERIVED
+      :value: "CUSTOM_METRIC_TYPE_DERIVED"
+
+   .. py:attribute:: CUSTOM_METRIC_TYPE_DRIFT
+      :value: "CUSTOM_METRIC_TYPE_DRIFT"
+
+.. autoclass:: MonitorNotifications
    :members:
    :undoc-members:
 
@@ -848,11 +854,21 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: SUCCESS
       :value: "SUCCESS"
 
-.. autoclass:: MonitorSnapshotProfileType
+.. py:class:: MonitorRefreshInfoTrigger
+
+   The method by which the refresh was triggered.
+
+   .. py:attribute:: MANUAL
+      :value: "MANUAL"
+
+   .. py:attribute:: SCHEDULE
+      :value: "SCHEDULE"
+
+.. autoclass:: MonitorSnapshot
    :members:
    :undoc-members:
 
-.. autoclass:: MonitorTimeSeriesProfileType
+.. autoclass:: MonitorTimeSeries
    :members:
    :undoc-members:
 
@@ -938,6 +954,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: Privilege
 
+   .. py:attribute:: ACCESS
+      :value: "ACCESS"
+
    .. py:attribute:: ALL_PRIVILEGES
       :value: "ALL_PRIVILEGES"
 
@@ -985,6 +1004,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: CREATE_SCHEMA
       :value: "CREATE_SCHEMA"
+
+   .. py:attribute:: CREATE_SERVICE_CREDENTIAL
+      :value: "CREATE_SERVICE_CREDENTIAL"
 
    .. py:attribute:: CREATE_SHARE
       :value: "CREATE_SHARE"
@@ -1343,6 +1365,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: LIST
       :value: "LIST"
 
+   .. py:attribute:: PATH_EXISTS
+      :value: "PATH_EXISTS"
+
    .. py:attribute:: READ
       :value: "READ"
 
@@ -1361,10 +1386,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: SKIP
       :value: "SKIP"
-
-.. autoclass:: ViewData
-   :members:
-   :undoc-members:
 
 .. autoclass:: VolumeInfo
    :members:

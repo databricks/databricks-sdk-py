@@ -15,7 +15,7 @@
     also enforce data quality with Delta Live Tables expectations. Expectations allow you to define expected
     data quality and specify how to handle records that fail those expectations.
 
-    .. py:method:: create( [, allow_duplicate_names: Optional[bool], catalog: Optional[str], channel: Optional[str], clusters: Optional[List[PipelineCluster]], configuration: Optional[Dict[str, str]], continuous: Optional[bool], development: Optional[bool], dry_run: Optional[bool], edition: Optional[str], filters: Optional[Filters], id: Optional[str], libraries: Optional[List[PipelineLibrary]], name: Optional[str], notifications: Optional[List[Notifications]], photon: Optional[bool], serverless: Optional[bool], storage: Optional[str], target: Optional[str], trigger: Optional[PipelineTrigger]]) -> CreatePipelineResponse
+    .. py:method:: create( [, allow_duplicate_names: Optional[bool], catalog: Optional[str], channel: Optional[str], clusters: Optional[List[PipelineCluster]], configuration: Optional[Dict[str, str]], continuous: Optional[bool], deployment: Optional[PipelineDeployment], development: Optional[bool], dry_run: Optional[bool], edition: Optional[str], filters: Optional[Filters], id: Optional[str], ingestion_definition: Optional[ManagedIngestionPipelineDefinition], libraries: Optional[List[PipelineLibrary]], name: Optional[str], notifications: Optional[List[Notifications]], photon: Optional[bool], serverless: Optional[bool], storage: Optional[str], target: Optional[str], trigger: Optional[PipelineTrigger]]) -> CreatePipelineResponse
 
 
         Usage:
@@ -67,6 +67,8 @@
           String-String configuration for this pipeline execution.
         :param continuous: bool (optional)
           Whether the pipeline is continuous or triggered. This replaces `trigger`.
+        :param deployment: :class:`PipelineDeployment` (optional)
+          Deployment type of this pipeline.
         :param development: bool (optional)
           Whether the pipeline is in Development mode. Defaults to false.
         :param dry_run: bool (optional)
@@ -76,6 +78,9 @@
           Filters on which Pipeline packages to include in the deployed graph.
         :param id: str (optional)
           Unique identifier for this pipeline.
+        :param ingestion_definition: :class:`ManagedIngestionPipelineDefinition` (optional)
+          The configuration for a managed ingestion pipeline. These settings cannot be used with the
+          'libraries', 'target' or 'catalog' settings.
         :param libraries: List[:class:`PipelineLibrary`] (optional)
           Libraries or code needed by this deployment.
         :param name: str (optional)
@@ -364,7 +369,7 @@
     .. py:method:: stop_and_wait(pipeline_id: str, timeout: datetime.timedelta = 0:20:00) -> GetPipelineResponse
 
 
-    .. py:method:: update(pipeline_id: str [, allow_duplicate_names: Optional[bool], catalog: Optional[str], channel: Optional[str], clusters: Optional[List[PipelineCluster]], configuration: Optional[Dict[str, str]], continuous: Optional[bool], development: Optional[bool], edition: Optional[str], expected_last_modified: Optional[int], filters: Optional[Filters], id: Optional[str], libraries: Optional[List[PipelineLibrary]], name: Optional[str], notifications: Optional[List[Notifications]], photon: Optional[bool], serverless: Optional[bool], storage: Optional[str], target: Optional[str], trigger: Optional[PipelineTrigger]])
+    .. py:method:: update(pipeline_id: str [, allow_duplicate_names: Optional[bool], catalog: Optional[str], channel: Optional[str], clusters: Optional[List[PipelineCluster]], configuration: Optional[Dict[str, str]], continuous: Optional[bool], deployment: Optional[PipelineDeployment], development: Optional[bool], edition: Optional[str], expected_last_modified: Optional[int], filters: Optional[Filters], id: Optional[str], ingestion_definition: Optional[ManagedIngestionPipelineDefinition], libraries: Optional[List[PipelineLibrary]], name: Optional[str], notifications: Optional[List[Notifications]], photon: Optional[bool], serverless: Optional[bool], storage: Optional[str], target: Optional[str], trigger: Optional[PipelineTrigger]])
 
 
         Usage:
@@ -430,6 +435,8 @@
           String-String configuration for this pipeline execution.
         :param continuous: bool (optional)
           Whether the pipeline is continuous or triggered. This replaces `trigger`.
+        :param deployment: :class:`PipelineDeployment` (optional)
+          Deployment type of this pipeline.
         :param development: bool (optional)
           Whether the pipeline is in Development mode. Defaults to false.
         :param edition: str (optional)
@@ -441,6 +448,9 @@
           Filters on which Pipeline packages to include in the deployed graph.
         :param id: str (optional)
           Unique identifier for this pipeline.
+        :param ingestion_definition: :class:`ManagedIngestionPipelineDefinition` (optional)
+          The configuration for a managed ingestion pipeline. These settings cannot be used with the
+          'libraries', 'target' or 'catalog' settings.
         :param libraries: List[:class:`PipelineLibrary`] (optional)
           Libraries or code needed by this deployment.
         :param name: str (optional)

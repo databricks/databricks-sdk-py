@@ -167,7 +167,7 @@
         
         
 
-    .. py:method:: update(dashboard_id: str [, name: Optional[str], run_as_role: Optional[RunAsRole]]) -> Dashboard
+    .. py:method:: update(dashboard_id: str [, name: Optional[str], run_as_role: Optional[RunAsRole], tags: Optional[List[str]]]) -> Dashboard
 
         Change a dashboard definition.
         
@@ -182,6 +182,7 @@
         :param run_as_role: :class:`RunAsRole` (optional)
           Sets the **Run as** role for the object. Must be set to one of `"viewer"` (signifying "run as
           viewer" behavior) or `"owner"` (signifying "run as owner" behavior)
+        :param tags: List[str] (optional)
         
         :returns: :class:`Dashboard`
         

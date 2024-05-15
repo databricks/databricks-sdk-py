@@ -79,17 +79,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. py:class:: CreateJobEditMode
-
-   Edit mode of the job.
-   * `UI_LOCKED`: The job is in a locked UI state and cannot be modified. * `EDITABLE`: The job is in an editable state and can be modified.
-
-   .. py:attribute:: EDITABLE
-      :value: "EDITABLE"
-
-   .. py:attribute:: UI_LOCKED
-      :value: "UI_LOCKED"
-
 .. autoclass:: CreateResponse
    :members:
    :undoc-members:
@@ -208,23 +197,33 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: JobCompute
-   :members:
-   :undoc-members:
-
 .. autoclass:: JobDeployment
    :members:
    :undoc-members:
 
 .. py:class:: JobDeploymentKind
 
-   The kind of deployment that manages the job.
    * `BUNDLE`: The job is managed by Databricks Asset Bundle.
 
    .. py:attribute:: BUNDLE
       :value: "BUNDLE"
 
+.. py:class:: JobEditMode
+
+   Edit mode of the job.
+   * `UI_LOCKED`: The job is in a locked UI state and cannot be modified. * `EDITABLE`: The job is in an editable state and can be modified.
+
+   .. py:attribute:: EDITABLE
+      :value: "EDITABLE"
+
+   .. py:attribute:: UI_LOCKED
+      :value: "UI_LOCKED"
+
 .. autoclass:: JobEmailNotifications
+   :members:
+   :undoc-members:
+
+.. autoclass:: JobEnvironment
    :members:
    :undoc-members:
 
@@ -280,17 +279,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. py:class:: JobSettingsEditMode
-
-   Edit mode of the job.
-   * `UI_LOCKED`: The job is in a locked UI state and cannot be modified. * `EDITABLE`: The job is in an editable state and can be modified.
-
-   .. py:attribute:: EDITABLE
-      :value: "EDITABLE"
-
-   .. py:attribute:: UI_LOCKED
-      :value: "UI_LOCKED"
-
 .. autoclass:: JobSource
    :members:
    :undoc-members:
@@ -335,20 +323,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: ListRunsResponse
    :members:
    :undoc-members:
-
-.. py:class:: ListRunsRunType
-
-   * `JOB_RUN`: Normal job run. A run created with :method:jobs/runNow. * `WORKFLOW_RUN`: Workflow run. A run created with [dbutils.notebook.run]. * `SUBMIT_RUN`: Submit run. A run created with :method:jobs/submit.
-   [dbutils.notebook.run]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-workflow
-
-   .. py:attribute:: JOB_RUN
-      :value: "JOB_RUN"
-
-   .. py:attribute:: SUBMIT_RUN
-      :value: "SUBMIT_RUN"
-
-   .. py:attribute:: WORKFLOW_RUN
-      :value: "WORKFLOW_RUN"
 
 .. autoclass:: NotebookOutput
    :members:
@@ -451,28 +425,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: RunConditionTask
    :members:
    :undoc-members:
-
-.. py:class:: RunConditionTaskOp
-
-   The condtion task operator.
-
-   .. py:attribute:: EQUAL_TO
-      :value: "EQUAL_TO"
-
-   .. py:attribute:: GREATER_THAN
-      :value: "GREATER_THAN"
-
-   .. py:attribute:: GREATER_THAN_OR_EQUAL
-      :value: "GREATER_THAN_OR_EQUAL"
-
-   .. py:attribute:: LESS_THAN
-      :value: "LESS_THAN"
-
-   .. py:attribute:: LESS_THAN_OR_EQUAL
-      :value: "LESS_THAN_OR_EQUAL"
-
-   .. py:attribute:: NOT_EQUAL
-      :value: "NOT_EQUAL"
 
 .. autoclass:: RunForEachTask
    :members:
@@ -597,7 +549,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: RunType
 
-   * `JOB_RUN`: Normal job run. A run created with :method:jobs/runNow. * `WORKFLOW_RUN`: Workflow run. A run created with [dbutils.notebook.run]. * `SUBMIT_RUN`: Submit run. A run created with :method:jobs/submit.
+   The type of a run. * `JOB_RUN`: Normal job run. A run created with :method:jobs/runNow. * `WORKFLOW_RUN`: Workflow run. A run created with [dbutils.notebook.run]. * `SUBMIT_RUN`: Submit run. A run created with :method:jobs/submit.
    [dbutils.notebook.run]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-workflow
 
    .. py:attribute:: JOB_RUN
@@ -610,6 +562,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "WORKFLOW_RUN"
 
 .. py:class:: Source
+
+   Optional location type of the SQL file. When set to `WORKSPACE`, the SQL file will be retrieved    from the local Databricks workspace. When set to `GIT`, the SQL file will be retrieved from a Git repository defined in `git_source`. If the value is empty, the task will use `GIT` if `git_source` is defined and `WORKSPACE` otherwise.
+   * `WORKSPACE`: SQL file is located in Databricks workspace. * `GIT`: SQL file is located in cloud Git provider.
 
    .. py:attribute:: GIT
       :value: "GIT"
@@ -656,8 +611,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. py:class:: SqlDashboardWidgetOutputStatus
-
-   The execution status of the SQL widget.
 
    .. py:attribute:: CANCELLED
       :value: "CANCELLED"
@@ -726,7 +679,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: TableTriggerConfiguration
+.. autoclass:: TableUpdateTriggerConfiguration
    :members:
    :undoc-members:
 
@@ -817,9 +770,5 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: WebhookNotifications
-   :members:
-   :undoc-members:
-
-.. autoclass:: WebhookNotificationsOnDurationWarningThresholdExceededItem
    :members:
    :undoc-members:

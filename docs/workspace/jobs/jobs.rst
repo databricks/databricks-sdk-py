@@ -120,7 +120,7 @@
     .. py:method:: cancel_run_and_wait(run_id: int, timeout: datetime.timedelta = 0:20:00) -> Run
 
 
-    .. py:method:: create( [, access_control_list: Optional[List[iam.AccessControlRequest]], compute: Optional[List[JobCompute]], continuous: Optional[Continuous], deployment: Optional[JobDeployment], description: Optional[str], edit_mode: Optional[CreateJobEditMode], email_notifications: Optional[JobEmailNotifications], format: Optional[Format], git_source: Optional[GitSource], health: Optional[JobsHealthRules], job_clusters: Optional[List[JobCluster]], max_concurrent_runs: Optional[int], name: Optional[str], notification_settings: Optional[JobNotificationSettings], parameters: Optional[List[JobParameterDefinition]], queue: Optional[QueueSettings], run_as: Optional[JobRunAs], schedule: Optional[CronSchedule], tags: Optional[Dict[str, str]], tasks: Optional[List[Task]], timeout_seconds: Optional[int], trigger: Optional[TriggerSettings], webhook_notifications: Optional[WebhookNotifications]]) -> CreateResponse
+    .. py:method:: create( [, access_control_list: Optional[List[iam.AccessControlRequest]], continuous: Optional[Continuous], deployment: Optional[JobDeployment], description: Optional[str], edit_mode: Optional[JobEditMode], email_notifications: Optional[JobEmailNotifications], environments: Optional[List[JobEnvironment]], format: Optional[Format], git_source: Optional[GitSource], health: Optional[JobsHealthRules], job_clusters: Optional[List[JobCluster]], max_concurrent_runs: Optional[int], name: Optional[str], notification_settings: Optional[JobNotificationSettings], parameters: Optional[List[JobParameterDefinition]], queue: Optional[QueueSettings], run_as: Optional[JobRunAs], schedule: Optional[CronSchedule], tags: Optional[Dict[str, str]], tasks: Optional[List[Task]], timeout_seconds: Optional[int], trigger: Optional[TriggerSettings], webhook_notifications: Optional[WebhookNotifications]]) -> CreateResponse
 
 
         Usage:
@@ -158,8 +158,6 @@
         
         :param access_control_list: List[:class:`AccessControlRequest`] (optional)
           List of permissions to set on the job.
-        :param compute: List[:class:`JobCompute`] (optional)
-          A list of compute requirements that can be referenced by tasks of this job.
         :param continuous: :class:`Continuous` (optional)
           An optional continuous property for this job. The continuous property will ensure that there is
           always one run executing. Only one of `schedule` and `continuous` can be used.
@@ -167,7 +165,7 @@
           Deployment information for jobs managed by external sources.
         :param description: str (optional)
           An optional description for the job. The maximum length is 1024 characters in UTF-8 encoding.
-        :param edit_mode: :class:`CreateJobEditMode` (optional)
+        :param edit_mode: :class:`JobEditMode` (optional)
           Edit mode of the job.
           
           * `UI_LOCKED`: The job is in a locked UI state and cannot be modified. * `EDITABLE`: The job is in
@@ -175,6 +173,8 @@
         :param email_notifications: :class:`JobEmailNotifications` (optional)
           An optional set of email addresses that is notified when runs of this job begin or complete as well
           as when this job is deleted.
+        :param environments: List[:class:`JobEnvironment`] (optional)
+          A list of task execution environment specifications that can be referenced by tasks of this job.
         :param format: :class:`Format` (optional)
           Used to tell what is the format of the job. This field is ignored in Create/Update/Reset calls. When
           using the Jobs API 2.1 this value is always set to `"MULTI_TASK"`.
@@ -193,18 +193,14 @@
           A list of job cluster specifications that can be shared and reused by tasks of this job. Libraries
           cannot be declared in a shared job cluster. You must declare dependent libraries in task settings.
         :param max_concurrent_runs: int (optional)
-          An optional maximum allowed number of concurrent runs of the job.
-          
-          Set this value if you want to be able to execute multiple runs of the same job concurrently. This is
-          useful for example if you trigger your job on a frequent schedule and want to allow consecutive runs
-          to overlap with each other, or if you want to trigger multiple runs which differ by their input
-          parameters.
-          
-          This setting affects only new runs. For example, suppose the job’s concurrency is 4 and there are
-          4 concurrent active runs. Then setting the concurrency to 3 won’t kill any of the active runs.
-          However, from then on, new runs are skipped unless there are fewer than 3 active runs.
-          
-          This value cannot exceed 1000. Setting this value to `0` causes all new runs to be skipped.
+          An optional maximum allowed number of concurrent runs of the job. Set this value if you want to be
+          able to execute multiple runs of the same job concurrently. This is useful for example if you
+          trigger your job on a frequent schedule and want to allow consecutive runs to overlap with each
+          other, or if you want to trigger multiple runs which differ by their input parameters. This setting
+          affects only new runs. For example, suppose the job’s concurrency is 4 and there are 4 concurrent
+          active runs. Then setting the concurrency to 3 won’t kill any of the active runs. However, from
+          then on, new runs are skipped unless there are fewer than 3 active runs. This value cannot exceed
+          1000. Setting this value to `0` causes all new runs to be skipped.
         :param name: str (optional)
           An optional name for the job. The maximum length is 4096 bytes in UTF-8 encoding.
         :param notification_settings: :class:`JobNotificationSettings` (optional)
@@ -261,7 +257,7 @@
         Deletes a non-active run. Returns an error if the run is active.
         
         :param run_id: int
-          The canonical identifier of the run for which to retrieve the metadata.
+          ID of the run to delete.
         
         
         
@@ -470,7 +466,7 @@
         reference them beyond 60 days, you must save old run results before they expire.
         
         :param run_id: int
-          The canonical identifier for the run. This field is required.
+          The canonical identifier for the run.
         
         :returns: :class:`RunOutput`
         
@@ -521,9 +517,8 @@
         :param name: str (optional)
           A filter on the list based on the exact (case insensitive) job name.
         :param offset: int (optional)
-          The offset of the first job to return, relative to the most recently created job.
-          
-          Deprecated since June 2023. Use `page_token` to iterate through the pages instead.
+          The offset of the first job to return, relative to the most recently created job. Deprecated since
+          June 2023. Use `page_token` to iterate through the pages instead.
         :param page_token: str (optional)
           Use `next_page_token` or `prev_page_token` returned from the previous request to list the next or
           previous page of jobs respectively.
@@ -531,7 +526,7 @@
         :returns: Iterator over :class:`BaseJob`
         
 
-    .. py:method:: list_runs( [, active_only: Optional[bool], completed_only: Optional[bool], expand_tasks: Optional[bool], job_id: Optional[int], limit: Optional[int], offset: Optional[int], page_token: Optional[str], run_type: Optional[ListRunsRunType], start_time_from: Optional[int], start_time_to: Optional[int]]) -> Iterator[BaseRun]
+    .. py:method:: list_runs( [, active_only: Optional[bool], completed_only: Optional[bool], expand_tasks: Optional[bool], job_id: Optional[int], limit: Optional[int], offset: Optional[int], page_token: Optional[str], run_type: Optional[RunType], start_time_from: Optional[int], start_time_to: Optional[int]]) -> Iterator[BaseRun]
 
 
         Usage:
@@ -584,13 +579,12 @@
           The number of runs to return. This value must be greater than 0 and less than 25. The default value
           is 20. If a request specifies a limit of 0, the service instead uses the maximum limit.
         :param offset: int (optional)
-          The offset of the first run to return, relative to the most recent run.
-          
-          Deprecated since June 2023. Use `page_token` to iterate through the pages instead.
+          The offset of the first run to return, relative to the most recent run. Deprecated since June 2023.
+          Use `page_token` to iterate through the pages instead.
         :param page_token: str (optional)
           Use `next_page_token` or `prev_page_token` returned from the previous request to list the next or
           previous page of runs respectively.
-        :param run_type: :class:`ListRunsRunType` (optional)
+        :param run_type: :class:`RunType` (optional)
           The type of runs to return. For a description of run types, see :method:jobs/getRun.
         :param start_time_from: int (optional)
           Show runs that started _at or after_ this value. The value must be a UTC timestamp in milliseconds.
@@ -650,7 +644,7 @@
           The job run ID of the run to repair. The run must not be in progress.
         :param dbt_commands: List[str] (optional)
           An array of commands to execute for jobs with the dbt task, for example `"dbt_commands": ["dbt
-          deps", "dbt seed", "dbt run"]`
+          deps", "dbt seed", "dbt deps", "dbt seed", "dbt run"]`
         :param jar_params: List[str] (optional)
           A list of parameters for jobs with Spark JAR tasks, for example `"jar_params": ["john doe", "35"]`.
           The parameters are used to invoke the main function of the main class specified in the Spark JAR
@@ -658,9 +652,8 @@
           in conjunction with notebook_params. The JSON representation of this field (for example
           `{"jar_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
           
-          Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
-          
-          [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html
+          Use [Task parameter variables](/jobs.html"#parameter-variables") to set parameters containing
+          information about job runs.
         :param job_parameters: Dict[str,str] (optional)
           Job-level parameters used in the run. for example `"param": "overriding_val"`
         :param latest_repair_id: int (optional)
@@ -675,13 +668,13 @@
           
           notebook_params cannot be specified in conjunction with jar_params.
           
-          Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
+          Use [Task parameter variables] to set parameters containing information about job runs.
           
           The JSON representation of this field (for example `{"notebook_params":{"name":"john
           doe","age":"35"}}`) cannot exceed 10,000 bytes.
           
+          [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
           [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
-          [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html
         :param pipeline_params: :class:`PipelineParams` (optional)
         :param python_named_params: Dict[str,str] (optional)
           A map from keys to values for jobs with Python wheel task, for example `"python_named_params":
@@ -692,7 +685,7 @@
           would overwrite the parameters specified in job setting. The JSON representation of this field (for
           example `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
           
-          Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
+          Use [Task parameter variables] to set parameters containing information about job runs.
           
           Important
           
@@ -700,7 +693,7 @@
           returns an error. Examples of invalid, non-ASCII characters are Chinese, Japanese kanjis, and
           emojis.
           
-          [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html
+          [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
         :param rerun_all_failed_tasks: bool (optional)
           If true, repair all failed tasks. Only one of `rerun_tasks` or `rerun_all_failed_tasks` can be used.
         :param rerun_dependent_tasks: bool (optional)
@@ -715,7 +708,7 @@
           in job setting. The JSON representation of this field (for example `{"python_params":["john
           doe","35"]}`) cannot exceed 10,000 bytes.
           
-          Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
+          Use [Task parameter variables] to set parameters containing information about job runs
           
           Important
           
@@ -723,7 +716,7 @@
           returns an error. Examples of invalid, non-ASCII characters are Chinese, Japanese kanjis, and
           emojis.
           
-          [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html
+          [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
         :param sql_params: Dict[str,str] (optional)
           A map from keys to values for jobs with SQL task, for example `"sql_params": {"name": "john doe",
           "age": "35"}`. The SQL alert task does not support custom parameters.
@@ -832,7 +825,7 @@
           The ID of the job to be executed
         :param dbt_commands: List[str] (optional)
           An array of commands to execute for jobs with the dbt task, for example `"dbt_commands": ["dbt
-          deps", "dbt seed", "dbt run"]`
+          deps", "dbt seed", "dbt deps", "dbt seed", "dbt run"]`
         :param idempotency_token: str (optional)
           An optional token to guarantee the idempotency of job run requests. If a run with the provided token
           already exists, the request does not create a new run but returns the ID of the existing run
@@ -853,9 +846,8 @@
           in conjunction with notebook_params. The JSON representation of this field (for example
           `{"jar_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
           
-          Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
-          
-          [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html
+          Use [Task parameter variables](/jobs.html"#parameter-variables") to set parameters containing
+          information about job runs.
         :param job_parameters: Dict[str,str] (optional)
           Job-level parameters used in the run. for example `"param": "overriding_val"`
         :param notebook_params: Dict[str,str] (optional)
@@ -867,13 +859,13 @@
           
           notebook_params cannot be specified in conjunction with jar_params.
           
-          Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
+          Use [Task parameter variables] to set parameters containing information about job runs.
           
           The JSON representation of this field (for example `{"notebook_params":{"name":"john
           doe","age":"35"}}`) cannot exceed 10,000 bytes.
           
+          [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
           [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
-          [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html
         :param pipeline_params: :class:`PipelineParams` (optional)
         :param python_named_params: Dict[str,str] (optional)
           A map from keys to values for jobs with Python wheel task, for example `"python_named_params":
@@ -884,7 +876,7 @@
           would overwrite the parameters specified in job setting. The JSON representation of this field (for
           example `{"python_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
           
-          Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
+          Use [Task parameter variables] to set parameters containing information about job runs.
           
           Important
           
@@ -892,7 +884,7 @@
           returns an error. Examples of invalid, non-ASCII characters are Chinese, Japanese kanjis, and
           emojis.
           
-          [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html
+          [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
         :param queue: :class:`QueueSettings` (optional)
           The queue settings of the run.
         :param spark_submit_params: List[str] (optional)
@@ -902,7 +894,7 @@
           in job setting. The JSON representation of this field (for example `{"python_params":["john
           doe","35"]}`) cannot exceed 10,000 bytes.
           
-          Use [task parameter variables] such as `{{job.id}}` to pass context about job runs.
+          Use [Task parameter variables] to set parameters containing information about job runs
           
           Important
           
@@ -910,7 +902,7 @@
           returns an error. Examples of invalid, non-ASCII characters are Chinese, Japanese kanjis, and
           emojis.
           
-          [task parameter variables]: https://docs.databricks.com/workflows/jobs/parameter-value-references.html
+          [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
         :param sql_params: Dict[str,str] (optional)
           A map from keys to values for jobs with SQL task, for example `"sql_params": {"name": "john doe",
           "age": "35"}`. The SQL alert task does not support custom parameters.
@@ -936,7 +928,7 @@
         :returns: :class:`JobPermissions`
         
 
-    .. py:method:: submit( [, access_control_list: Optional[List[iam.AccessControlRequest]], email_notifications: Optional[JobEmailNotifications], git_source: Optional[GitSource], health: Optional[JobsHealthRules], idempotency_token: Optional[str], notification_settings: Optional[JobNotificationSettings], queue: Optional[QueueSettings], run_name: Optional[str], tasks: Optional[List[SubmitTask]], timeout_seconds: Optional[int], webhook_notifications: Optional[WebhookNotifications]]) -> Wait[Run]
+    .. py:method:: submit( [, access_control_list: Optional[List[iam.AccessControlRequest]], condition_task: Optional[ConditionTask], dbt_task: Optional[DbtTask], email_notifications: Optional[JobEmailNotifications], git_source: Optional[GitSource], health: Optional[JobsHealthRules], idempotency_token: Optional[str], notebook_task: Optional[NotebookTask], notification_settings: Optional[JobNotificationSettings], pipeline_task: Optional[PipelineTask], python_wheel_task: Optional[PythonWheelTask], queue: Optional[QueueSettings], run_as: Optional[JobRunAs], run_job_task: Optional[RunJobTask], run_name: Optional[str], spark_jar_task: Optional[SparkJarTask], spark_python_task: Optional[SparkPythonTask], spark_submit_task: Optional[SparkSubmitTask], sql_task: Optional[SqlTask], tasks: Optional[List[SubmitTask]], timeout_seconds: Optional[int], webhook_notifications: Optional[WebhookNotifications]]) -> Wait[Run]
 
 
         Usage:
@@ -974,6 +966,12 @@
         
         :param access_control_list: List[:class:`AccessControlRequest`] (optional)
           List of permissions to set on the job.
+        :param condition_task: :class:`ConditionTask` (optional)
+          If condition_task, specifies a condition with an outcome that can be used to control the execution
+          of other tasks. Does not require a cluster to execute and does not support retries or notifications.
+        :param dbt_task: :class:`DbtTask` (optional)
+          If dbt_task, indicates that this must execute a dbt task. It requires both Databricks SQL and the
+          ability to use a serverless or a pro SQL warehouse.
         :param email_notifications: :class:`JobEmailNotifications` (optional)
           An optional set of email addresses notified when the run begins or completes.
         :param git_source: :class:`GitSource` (optional)
@@ -1000,13 +998,47 @@
           For more information, see [How to ensure idempotency for jobs].
           
           [How to ensure idempotency for jobs]: https://kb.databricks.com/jobs/jobs-idempotency.html
+        :param notebook_task: :class:`NotebookTask` (optional)
+          If notebook_task, indicates that this task must run a notebook. This field may not be specified in
+          conjunction with spark_jar_task.
         :param notification_settings: :class:`JobNotificationSettings` (optional)
           Optional notification settings that are used when sending notifications to each of the
           `email_notifications` and `webhook_notifications` for this run.
+        :param pipeline_task: :class:`PipelineTask` (optional)
+          If pipeline_task, indicates that this task must execute a Pipeline.
+        :param python_wheel_task: :class:`PythonWheelTask` (optional)
+          If python_wheel_task, indicates that this job must execute a PythonWheel.
         :param queue: :class:`QueueSettings` (optional)
           The queue settings of the one-time run.
+        :param run_as: :class:`JobRunAs` (optional)
+          Specifies the user or service principal that the job runs as. If not specified, the job runs as the
+          user who submits the request.
+        :param run_job_task: :class:`RunJobTask` (optional)
+          If run_job_task, indicates that this task must execute another job.
         :param run_name: str (optional)
           An optional name for the run. The default value is `Untitled`.
+        :param spark_jar_task: :class:`SparkJarTask` (optional)
+          If spark_jar_task, indicates that this task must run a JAR.
+        :param spark_python_task: :class:`SparkPythonTask` (optional)
+          If spark_python_task, indicates that this task must run a Python file.
+        :param spark_submit_task: :class:`SparkSubmitTask` (optional)
+          If `spark_submit_task`, indicates that this task must be launched by the spark submit script. This
+          task can run only on new clusters.
+          
+          In the `new_cluster` specification, `libraries` and `spark_conf` are not supported. Instead, use
+          `--jars` and `--py-files` to add Java and Python libraries and `--conf` to set the Spark
+          configurations.
+          
+          `master`, `deploy-mode`, and `executor-cores` are automatically configured by Databricks; you
+          _cannot_ specify them in parameters.
+          
+          By default, the Spark submit job uses all available memory (excluding reserved memory for Databricks
+          services). You can set `--driver-memory`, and `--executor-memory` to a smaller value to leave some
+          room for off-heap usage.
+          
+          The `--jars`, `--py-files`, `--files` arguments support DBFS and S3 paths.
+        :param sql_task: :class:`SqlTask` (optional)
+          If sql_task, indicates that this job must execute a SQL task.
         :param tasks: List[:class:`SubmitTask`] (optional)
         :param timeout_seconds: int (optional)
           An optional timeout applied to each run of this job. A value of `0` means no timeout.
@@ -1018,7 +1050,7 @@
           See :method:wait_get_run_job_terminated_or_skipped for more details.
         
 
-    .. py:method:: submit_and_wait( [, access_control_list: Optional[List[iam.AccessControlRequest]], email_notifications: Optional[JobEmailNotifications], git_source: Optional[GitSource], health: Optional[JobsHealthRules], idempotency_token: Optional[str], notification_settings: Optional[JobNotificationSettings], queue: Optional[QueueSettings], run_name: Optional[str], tasks: Optional[List[SubmitTask]], timeout_seconds: Optional[int], webhook_notifications: Optional[WebhookNotifications], timeout: datetime.timedelta = 0:20:00]) -> Run
+    .. py:method:: submit_and_wait( [, access_control_list: Optional[List[iam.AccessControlRequest]], condition_task: Optional[ConditionTask], dbt_task: Optional[DbtTask], email_notifications: Optional[JobEmailNotifications], git_source: Optional[GitSource], health: Optional[JobsHealthRules], idempotency_token: Optional[str], notebook_task: Optional[NotebookTask], notification_settings: Optional[JobNotificationSettings], pipeline_task: Optional[PipelineTask], python_wheel_task: Optional[PythonWheelTask], queue: Optional[QueueSettings], run_as: Optional[JobRunAs], run_job_task: Optional[RunJobTask], run_name: Optional[str], spark_jar_task: Optional[SparkJarTask], spark_python_task: Optional[SparkPythonTask], spark_submit_task: Optional[SparkSubmitTask], sql_task: Optional[SqlTask], tasks: Optional[List[SubmitTask]], timeout_seconds: Optional[int], webhook_notifications: Optional[WebhookNotifications], timeout: datetime.timedelta = 0:20:00]) -> Run
 
 
     .. py:method:: update(job_id: int [, fields_to_remove: Optional[List[str]], new_settings: Optional[JobSettings]])

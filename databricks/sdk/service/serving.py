@@ -36,6 +36,51 @@ class Ai21LabsConfig:
 
 
 @dataclass
+class AmazonBedrockConfig:
+    aws_region: str
+    """The AWS region to use. Bedrock has to be enabled there."""
+
+    aws_access_key_id: str
+    """The Databricks secret key reference for an AWS Access Key ID with permissions to interact with
+    Bedrock services."""
+
+    aws_secret_access_key: str
+    """The Databricks secret key reference for an AWS Secret Access Key paired with the access key ID,
+    with permissions to interact with Bedrock services."""
+
+    bedrock_provider: AmazonBedrockConfigBedrockProvider
+    """The underlying provider in Amazon Bedrock. Supported values (case insensitive) include:
+    Anthropic, Cohere, AI21Labs, Amazon."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AmazonBedrockConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.aws_access_key_id is not None: body['aws_access_key_id'] = self.aws_access_key_id
+        if self.aws_region is not None: body['aws_region'] = self.aws_region
+        if self.aws_secret_access_key is not None: body['aws_secret_access_key'] = self.aws_secret_access_key
+        if self.bedrock_provider is not None: body['bedrock_provider'] = self.bedrock_provider.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> AmazonBedrockConfig:
+        """Deserializes the AmazonBedrockConfig from a dictionary."""
+        return cls(aws_access_key_id=d.get('aws_access_key_id', None),
+                   aws_region=d.get('aws_region', None),
+                   aws_secret_access_key=d.get('aws_secret_access_key', None),
+                   bedrock_provider=_enum(d, 'bedrock_provider', AmazonBedrockConfigBedrockProvider))
+
+
+class AmazonBedrockConfigBedrockProvider(Enum):
+    """The underlying provider in Amazon Bedrock. Supported values (case insensitive) include:
+    Anthropic, Cohere, AI21Labs, Amazon."""
+
+    AI21LABS = 'ai21labs'
+    AMAZON = 'amazon'
+    ANTHROPIC = 'anthropic'
+    COHERE = 'cohere'
+
+
+@dataclass
 class AnthropicConfig:
     anthropic_api_key: str
     """The Databricks secret key reference for an Anthropic API key."""
@@ -53,106 +98,190 @@ class AnthropicConfig:
 
 
 @dataclass
-class AppEvents:
-    event_name: Optional[str] = None
+class App:
+    name: str
+    """The name of the app. The name must contain only lowercase alphanumeric characters and hyphens
+    and be between 2 and 30 characters long. It must be unique within the workspace."""
 
-    event_time: Optional[str] = None
+    active_deployment: Optional[AppDeployment] = None
+    """The active deployment of the app."""
 
-    event_type: Optional[str] = None
+    create_time: Optional[str] = None
+    """The creation time of the app. Formatted timestamp in ISO 6801."""
 
-    message: Optional[str] = None
-
-    service_name: Optional[str] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the AppEvents into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.event_name is not None: body['event_name'] = self.event_name
-        if self.event_time is not None: body['event_time'] = self.event_time
-        if self.event_type is not None: body['event_type'] = self.event_type
-        if self.message is not None: body['message'] = self.message
-        if self.service_name is not None: body['service_name'] = self.service_name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AppEvents:
-        """Deserializes the AppEvents from a dictionary."""
-        return cls(event_name=d.get('event_name', None),
-                   event_time=d.get('event_time', None),
-                   event_type=d.get('event_type', None),
-                   message=d.get('message', None),
-                   service_name=d.get('service_name', None))
-
-
-@dataclass
-class AppManifest:
-    dependencies: Optional[List[Any]] = None
-    """Workspace dependencies."""
+    creator: Optional[str] = None
+    """The email of the user that created the app."""
 
     description: Optional[str] = None
-    """application description"""
+    """The description of the app."""
 
-    ingress: Optional[Any] = None
-    """Ingress rules for app public endpoints"""
+    pending_deployment: Optional[AppDeployment] = None
+    """The pending deployment of the app."""
 
-    name: Optional[str] = None
-    """Only a-z and dashes (-). Max length of 30."""
+    status: Optional[AppStatus] = None
 
-    registry: Optional[Any] = None
-    """Container private registry"""
+    update_time: Optional[str] = None
+    """The update time of the app. Formatted timestamp in ISO 6801."""
 
-    services: Optional[Any] = None
-    """list of app services. Restricted to one for now."""
+    updater: Optional[str] = None
+    """The email of the user that last updated the app."""
 
-    version: Optional[Any] = None
-    """The manifest format version. Must be set to 1."""
+    url: Optional[str] = None
+    """The URL of the app once it is deployed."""
 
     def as_dict(self) -> dict:
-        """Serializes the AppManifest into a dictionary suitable for use as a JSON request body."""
+        """Serializes the App into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.dependencies: body['dependencies'] = [v for v in self.dependencies]
+        if self.active_deployment: body['active_deployment'] = self.active_deployment.as_dict()
+        if self.create_time is not None: body['create_time'] = self.create_time
+        if self.creator is not None: body['creator'] = self.creator
         if self.description is not None: body['description'] = self.description
-        if self.ingress: body['ingress'] = self.ingress
         if self.name is not None: body['name'] = self.name
-        if self.registry: body['registry'] = self.registry
-        if self.services: body['services'] = self.services
-        if self.version: body['version'] = self.version
+        if self.pending_deployment: body['pending_deployment'] = self.pending_deployment.as_dict()
+        if self.status: body['status'] = self.status.as_dict()
+        if self.update_time is not None: body['update_time'] = self.update_time
+        if self.updater is not None: body['updater'] = self.updater
+        if self.url is not None: body['url'] = self.url
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AppManifest:
-        """Deserializes the AppManifest from a dictionary."""
-        return cls(dependencies=d.get('dependencies', None),
+    def from_dict(cls, d: Dict[str, any]) -> App:
+        """Deserializes the App from a dictionary."""
+        return cls(active_deployment=_from_dict(d, 'active_deployment', AppDeployment),
+                   create_time=d.get('create_time', None),
+                   creator=d.get('creator', None),
                    description=d.get('description', None),
-                   ingress=d.get('ingress', None),
                    name=d.get('name', None),
-                   registry=d.get('registry', None),
-                   services=d.get('services', None),
-                   version=d.get('version', None))
+                   pending_deployment=_from_dict(d, 'pending_deployment', AppDeployment),
+                   status=_from_dict(d, 'status', AppStatus),
+                   update_time=d.get('update_time', None),
+                   updater=d.get('updater', None),
+                   url=d.get('url', None))
 
 
 @dataclass
-class AppServiceStatus:
-    deployment: Optional[Any] = None
+class AppDeployment:
+    source_code_path: str
+    """The source code path of the deployment."""
 
-    name: Optional[str] = None
+    create_time: Optional[str] = None
+    """The creation time of the deployment. Formatted timestamp in ISO 6801."""
 
-    template: Optional[Any] = None
+    creator: Optional[str] = None
+    """The email of the user creates the deployment."""
+
+    deployment_id: Optional[str] = None
+    """The unique id of the deployment."""
+
+    status: Optional[AppDeploymentStatus] = None
+    """Status and status message of the deployment"""
+
+    update_time: Optional[str] = None
+    """The update time of the deployment. Formatted timestamp in ISO 6801."""
 
     def as_dict(self) -> dict:
-        """Serializes the AppServiceStatus into a dictionary suitable for use as a JSON request body."""
+        """Serializes the AppDeployment into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.deployment: body['deployment'] = self.deployment
-        if self.name is not None: body['name'] = self.name
-        if self.template: body['template'] = self.template
+        if self.create_time is not None: body['create_time'] = self.create_time
+        if self.creator is not None: body['creator'] = self.creator
+        if self.deployment_id is not None: body['deployment_id'] = self.deployment_id
+        if self.source_code_path is not None: body['source_code_path'] = self.source_code_path
+        if self.status: body['status'] = self.status.as_dict()
+        if self.update_time is not None: body['update_time'] = self.update_time
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AppServiceStatus:
-        """Deserializes the AppServiceStatus from a dictionary."""
-        return cls(deployment=d.get('deployment', None),
-                   name=d.get('name', None),
-                   template=d.get('template', None))
+    def from_dict(cls, d: Dict[str, any]) -> AppDeployment:
+        """Deserializes the AppDeployment from a dictionary."""
+        return cls(create_time=d.get('create_time', None),
+                   creator=d.get('creator', None),
+                   deployment_id=d.get('deployment_id', None),
+                   source_code_path=d.get('source_code_path', None),
+                   status=_from_dict(d, 'status', AppDeploymentStatus),
+                   update_time=d.get('update_time', None))
+
+
+class AppDeploymentState(Enum):
+
+    CANCELLED = 'CANCELLED'
+    FAILED = 'FAILED'
+    IN_PROGRESS = 'IN_PROGRESS'
+    STATE_UNSPECIFIED = 'STATE_UNSPECIFIED'
+    SUCCEEDED = 'SUCCEEDED'
+
+
+@dataclass
+class AppDeploymentStatus:
+    message: Optional[str] = None
+    """Message corresponding with the deployment state."""
+
+    state: Optional[AppDeploymentState] = None
+    """State of the deployment."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AppDeploymentStatus into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.message is not None: body['message'] = self.message
+        if self.state is not None: body['state'] = self.state.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> AppDeploymentStatus:
+        """Deserializes the AppDeploymentStatus from a dictionary."""
+        return cls(message=d.get('message', None), state=_enum(d, 'state', AppDeploymentState))
+
+
+@dataclass
+class AppEnvironment:
+    env: Optional[List[EnvVariable]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the AppEnvironment into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.env: body['env'] = [v.as_dict() for v in self.env]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> AppEnvironment:
+        """Deserializes the AppEnvironment from a dictionary."""
+        return cls(env=_repeated_dict(d, 'env', EnvVariable))
+
+
+class AppState(Enum):
+
+    CREATING = 'CREATING'
+    DELETED = 'DELETED'
+    DELETING = 'DELETING'
+    DEPLOYED = 'DEPLOYED'
+    DEPLOYING = 'DEPLOYING'
+    ERROR = 'ERROR'
+    IDLE = 'IDLE'
+    READY = 'READY'
+    RUNNING = 'RUNNING'
+    STARTING = 'STARTING'
+    STATE_UNSPECIFIED = 'STATE_UNSPECIFIED'
+    UPDATING = 'UPDATING'
+
+
+@dataclass
+class AppStatus:
+    message: Optional[str] = None
+    """Message corresponding with the app state."""
+
+    state: Optional[AppState] = None
+    """State of the app."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AppStatus into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.message is not None: body['message'] = self.message
+        if self.state is not None: body['state'] = self.state.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> AppStatus:
+        """Deserializes the AppStatus from a dictionary."""
+        return cls(message=d.get('message', None), state=_enum(d, 'state', AppState))
 
 
 @dataclass
@@ -244,51 +373,6 @@ class AutoCaptureState:
 
 
 @dataclass
-class AwsBedrockConfig:
-    aws_region: str
-    """The AWS region to use. Bedrock has to be enabled there."""
-
-    aws_access_key_id: str
-    """The Databricks secret key reference for an AWS Access Key ID with permissions to interact with
-    Bedrock services."""
-
-    aws_secret_access_key: str
-    """The Databricks secret key reference for an AWS Secret Access Key paired with the access key ID,
-    with permissions to interact with Bedrock services."""
-
-    bedrock_provider: AwsBedrockConfigBedrockProvider
-    """The underlying provider in AWS Bedrock. Supported values (case insensitive) include: Anthropic,
-    Cohere, AI21Labs, Amazon."""
-
-    def as_dict(self) -> dict:
-        """Serializes the AwsBedrockConfig into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.aws_access_key_id is not None: body['aws_access_key_id'] = self.aws_access_key_id
-        if self.aws_region is not None: body['aws_region'] = self.aws_region
-        if self.aws_secret_access_key is not None: body['aws_secret_access_key'] = self.aws_secret_access_key
-        if self.bedrock_provider is not None: body['bedrock_provider'] = self.bedrock_provider.value
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AwsBedrockConfig:
-        """Deserializes the AwsBedrockConfig from a dictionary."""
-        return cls(aws_access_key_id=d.get('aws_access_key_id', None),
-                   aws_region=d.get('aws_region', None),
-                   aws_secret_access_key=d.get('aws_secret_access_key', None),
-                   bedrock_provider=_enum(d, 'bedrock_provider', AwsBedrockConfigBedrockProvider))
-
-
-class AwsBedrockConfigBedrockProvider(Enum):
-    """The underlying provider in AWS Bedrock. Supported values (case insensitive) include: Anthropic,
-    Cohere, AI21Labs, Amazon."""
-
-    AI21LABS = 'ai21labs'
-    AMAZON = 'amazon'
-    ANTHROPIC = 'anthropic'
-    COHERE = 'cohere'
-
-
-@dataclass
 class BuildLogsResponse:
     logs: str
     """The logs associated with building the served entity's environment."""
@@ -349,6 +433,49 @@ class CohereConfig:
     def from_dict(cls, d: Dict[str, any]) -> CohereConfig:
         """Deserializes the CohereConfig from a dictionary."""
         return cls(cohere_api_key=d.get('cohere_api_key', None))
+
+
+@dataclass
+class CreateAppDeploymentRequest:
+    source_code_path: str
+    """The source code path of the deployment."""
+
+    app_name: Optional[str] = None
+    """The name of the app."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CreateAppDeploymentRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.app_name is not None: body['app_name'] = self.app_name
+        if self.source_code_path is not None: body['source_code_path'] = self.source_code_path
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> CreateAppDeploymentRequest:
+        """Deserializes the CreateAppDeploymentRequest from a dictionary."""
+        return cls(app_name=d.get('app_name', None), source_code_path=d.get('source_code_path', None))
+
+
+@dataclass
+class CreateAppRequest:
+    name: str
+    """The name of the app. The name must contain only lowercase alphanumeric characters and hyphens
+    and be between 2 and 30 characters long. It must be unique within the workspace."""
+
+    description: Optional[str] = None
+    """The description of the app."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CreateAppRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.description is not None: body['description'] = self.description
+        if self.name is not None: body['name'] = self.name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> CreateAppRequest:
+        """Deserializes the CreateAppRequest from a dictionary."""
+        return cls(description=d.get('description', None), name=d.get('name', None))
 
 
 @dataclass
@@ -434,22 +561,6 @@ class DataframeSplitInput:
 
 
 @dataclass
-class DeleteAppResponse:
-    name: Optional[str] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the DeleteAppResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.name is not None: body['name'] = self.name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteAppResponse:
-        """Deserializes the DeleteAppResponse from a dictionary."""
-        return cls(name=d.get('name', None))
-
-
-@dataclass
 class DeleteResponse:
 
     def as_dict(self) -> dict:
@@ -461,68 +572,6 @@ class DeleteResponse:
     def from_dict(cls, d: Dict[str, any]) -> DeleteResponse:
         """Deserializes the DeleteResponse from a dictionary."""
         return cls()
-
-
-@dataclass
-class DeployAppRequest:
-    manifest: AppManifest
-    """Manifest that specifies the application requirements"""
-
-    resources: Optional[Any] = None
-    """Information passed at app deployment time to fulfill app dependencies"""
-
-    def as_dict(self) -> dict:
-        """Serializes the DeployAppRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.manifest: body['manifest'] = self.manifest.as_dict()
-        if self.resources: body['resources'] = self.resources
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeployAppRequest:
-        """Deserializes the DeployAppRequest from a dictionary."""
-        return cls(manifest=_from_dict(d, 'manifest', AppManifest), resources=d.get('resources', None))
-
-
-@dataclass
-class DeploymentStatus:
-    container_logs: Optional[List[Any]] = None
-    """Container logs."""
-
-    deployment_id: Optional[str] = None
-    """description"""
-
-    extra_info: Optional[str] = None
-    """Supplementary information about pod"""
-
-    state: Optional[DeploymentStatusState] = None
-    """State: one of DEPLOYING,SUCCESS, FAILURE, DEPLOYMENT_STATE_UNSPECIFIED"""
-
-    def as_dict(self) -> dict:
-        """Serializes the DeploymentStatus into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.container_logs: body['container_logs'] = [v for v in self.container_logs]
-        if self.deployment_id is not None: body['deployment_id'] = self.deployment_id
-        if self.extra_info is not None: body['extra_info'] = self.extra_info
-        if self.state is not None: body['state'] = self.state.value
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeploymentStatus:
-        """Deserializes the DeploymentStatus from a dictionary."""
-        return cls(container_logs=d.get('container_logs', None),
-                   deployment_id=d.get('deployment_id', None),
-                   extra_info=d.get('extra_info', None),
-                   state=_enum(d, 'state', DeploymentStatusState))
-
-
-class DeploymentStatusState(Enum):
-    """State: one of DEPLOYING,SUCCESS, FAILURE, DEPLOYMENT_STATE_UNSPECIFIED"""
-
-    DEPLOYING = 'DEPLOYING'
-    DEPLOYMENT_STATE_UNSPECIFIED = 'DEPLOYMENT_STATE_UNSPECIFIED'
-    FAILURE = 'FAILURE'
-    SUCCESS = 'SUCCESS'
 
 
 @dataclass
@@ -567,12 +616,12 @@ class EndpointCoreConfigInput:
     """The name of the serving endpoint to update. This field is required."""
 
     served_entities: Optional[List[ServedEntityInput]] = None
-    """A list of served entities for the endpoint to serve. A serving endpoint can have up to 10 served
+    """A list of served entities for the endpoint to serve. A serving endpoint can have up to 15 served
     entities."""
 
     served_models: Optional[List[ServedModelInput]] = None
     """(Deprecated, use served_entities instead) A list of served models for the endpoint to serve. A
-    serving endpoint can have up to 10 served models."""
+    serving endpoint can have up to 15 served models."""
 
     traffic_config: Optional[TrafficConfig] = None
     """The traffic config defining how invocations to the serving endpoint should be routed."""
@@ -661,6 +710,10 @@ class EndpointCoreConfigSummary:
 
 @dataclass
 class EndpointPendingConfig:
+    auto_capture_config: Optional[AutoCaptureConfigOutput] = None
+    """Configuration for Inference Tables which automatically logs requests and responses to Unity
+    Catalog."""
+
     config_version: Optional[int] = None
     """The config version that the serving endpoint is currently serving."""
 
@@ -680,6 +733,7 @@ class EndpointPendingConfig:
     def as_dict(self) -> dict:
         """Serializes the EndpointPendingConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.auto_capture_config: body['auto_capture_config'] = self.auto_capture_config.as_dict()
         if self.config_version is not None: body['config_version'] = self.config_version
         if self.served_entities: body['served_entities'] = [v.as_dict() for v in self.served_entities]
         if self.served_models: body['served_models'] = [v.as_dict() for v in self.served_models]
@@ -690,7 +744,8 @@ class EndpointPendingConfig:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> EndpointPendingConfig:
         """Deserializes the EndpointPendingConfig from a dictionary."""
-        return cls(config_version=d.get('config_version', None),
+        return cls(auto_capture_config=_from_dict(d, 'auto_capture_config', AutoCaptureConfigOutput),
+                   config_version=d.get('config_version', None),
                    served_entities=_repeated_dict(d, 'served_entities', ServedEntityOutput),
                    served_models=_repeated_dict(d, 'served_models', ServedModelOutput),
                    start_time=d.get('start_time', None),
@@ -766,6 +821,28 @@ class EndpointTag:
 
 
 @dataclass
+class EnvVariable:
+    name: Optional[str] = None
+
+    value: Optional[str] = None
+
+    value_from: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the EnvVariable into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None: body['name'] = self.name
+        if self.value is not None: body['value'] = self.value
+        if self.value_from is not None: body['value_from'] = self.value_from
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> EnvVariable:
+        """Deserializes the EnvVariable from a dictionary."""
+        return cls(name=d.get('name', None), value=d.get('value', None), value_from=d.get('value_from', None))
+
+
+@dataclass
 class ExportMetricsResponse:
 
     def as_dict(self) -> dict:
@@ -783,7 +860,7 @@ class ExportMetricsResponse:
 class ExternalModel:
     provider: ExternalModelProvider
     """The name of the provider for the external model. Currently, the supported providers are
-    'ai21labs', 'anthropic', 'aws-bedrock', 'cohere', 'databricks-model-serving', 'openai', and
+    'ai21labs', 'anthropic', 'amazon-bedrock', 'cohere', 'databricks-model-serving', 'openai', and
     'palm'.","""
 
     name: str
@@ -795,11 +872,11 @@ class ExternalModel:
     ai21labs_config: Optional[Ai21LabsConfig] = None
     """AI21Labs Config. Only required if the provider is 'ai21labs'."""
 
+    amazon_bedrock_config: Optional[AmazonBedrockConfig] = None
+    """Amazon Bedrock Config. Only required if the provider is 'amazon-bedrock'."""
+
     anthropic_config: Optional[AnthropicConfig] = None
     """Anthropic Config. Only required if the provider is 'anthropic'."""
-
-    aws_bedrock_config: Optional[AwsBedrockConfig] = None
-    """AWS Bedrock Config. Only required if the provider is 'aws-bedrock'."""
 
     cohere_config: Optional[CohereConfig] = None
     """Cohere Config. Only required if the provider is 'cohere'."""
@@ -817,8 +894,8 @@ class ExternalModel:
         """Serializes the ExternalModel into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.ai21labs_config: body['ai21labs_config'] = self.ai21labs_config.as_dict()
+        if self.amazon_bedrock_config: body['amazon_bedrock_config'] = self.amazon_bedrock_config.as_dict()
         if self.anthropic_config: body['anthropic_config'] = self.anthropic_config.as_dict()
-        if self.aws_bedrock_config: body['aws_bedrock_config'] = self.aws_bedrock_config.as_dict()
         if self.cohere_config: body['cohere_config'] = self.cohere_config.as_dict()
         if self.databricks_model_serving_config:
             body['databricks_model_serving_config'] = self.databricks_model_serving_config.as_dict()
@@ -833,8 +910,8 @@ class ExternalModel:
     def from_dict(cls, d: Dict[str, any]) -> ExternalModel:
         """Deserializes the ExternalModel from a dictionary."""
         return cls(ai21labs_config=_from_dict(d, 'ai21labs_config', Ai21LabsConfig),
+                   amazon_bedrock_config=_from_dict(d, 'amazon_bedrock_config', AmazonBedrockConfig),
                    anthropic_config=_from_dict(d, 'anthropic_config', AnthropicConfig),
-                   aws_bedrock_config=_from_dict(d, 'aws_bedrock_config', AwsBedrockConfig),
                    cohere_config=_from_dict(d, 'cohere_config', CohereConfig),
                    databricks_model_serving_config=_from_dict(d, 'databricks_model_serving_config',
                                                               DatabricksModelServingConfig),
@@ -847,12 +924,12 @@ class ExternalModel:
 
 class ExternalModelProvider(Enum):
     """The name of the provider for the external model. Currently, the supported providers are
-    'ai21labs', 'anthropic', 'aws-bedrock', 'cohere', 'databricks-model-serving', 'openai', and
+    'ai21labs', 'anthropic', 'amazon-bedrock', 'cohere', 'databricks-model-serving', 'openai', and
     'palm'.","""
 
     AI21LABS = 'ai21labs'
+    AMAZON_BEDROCK = 'amazon-bedrock'
     ANTHROPIC = 'anthropic'
-    AWS_BEDROCK = 'aws-bedrock'
     COHERE = 'cohere'
     DATABRICKS_MODEL_SERVING = 'databricks-model-serving'
     OPENAI = 'openai'
@@ -919,31 +996,19 @@ class FoundationModel:
 
 
 @dataclass
-class GetAppResponse:
-    current_services: Optional[List[AppServiceStatus]] = None
-
-    name: Optional[str] = None
-
-    pending_services: Optional[List[AppServiceStatus]] = None
-
-    url: Optional[str] = None
+class GetOpenApiResponse:
+    """The response is an OpenAPI spec in JSON format that typically includes fields like openapi,
+    info, servers and paths, etc."""
 
     def as_dict(self) -> dict:
-        """Serializes the GetAppResponse into a dictionary suitable for use as a JSON request body."""
+        """Serializes the GetOpenApiResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.current_services: body['current_services'] = [v.as_dict() for v in self.current_services]
-        if self.name is not None: body['name'] = self.name
-        if self.pending_services: body['pending_services'] = [v.as_dict() for v in self.pending_services]
-        if self.url is not None: body['url'] = self.url
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetAppResponse:
-        """Deserializes the GetAppResponse from a dictionary."""
-        return cls(current_services=_repeated_dict(d, 'current_services', AppServiceStatus),
-                   name=d.get('name', None),
-                   pending_services=_repeated_dict(d, 'pending_services', AppServiceStatus),
-                   url=d.get('url', None))
+    def from_dict(cls, d: Dict[str, any]) -> GetOpenApiResponse:
+        """Deserializes the GetOpenApiResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -965,40 +1030,45 @@ class GetServingEndpointPermissionLevelsResponse:
 
 
 @dataclass
-class ListAppEventsResponse:
-    events: Optional[List[AppEvents]] = None
-    """App events"""
+class ListAppDeploymentsResponse:
+    app_deployments: Optional[List[AppDeployment]] = None
+    """Deployment history of the app."""
+
+    next_page_token: Optional[str] = None
+    """Pagination token to request the next page of apps."""
 
     def as_dict(self) -> dict:
-        """Serializes the ListAppEventsResponse into a dictionary suitable for use as a JSON request body."""
+        """Serializes the ListAppDeploymentsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.events: body['events'] = [v.as_dict() for v in self.events]
+        if self.app_deployments: body['app_deployments'] = [v.as_dict() for v in self.app_deployments]
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ListAppEventsResponse:
-        """Deserializes the ListAppEventsResponse from a dictionary."""
-        return cls(events=_repeated_dict(d, 'events', AppEvents))
+    def from_dict(cls, d: Dict[str, any]) -> ListAppDeploymentsResponse:
+        """Deserializes the ListAppDeploymentsResponse from a dictionary."""
+        return cls(app_deployments=_repeated_dict(d, 'app_deployments', AppDeployment),
+                   next_page_token=d.get('next_page_token', None))
 
 
 @dataclass
 class ListAppsResponse:
-    apps: Optional[List[Any]] = None
-    """Available apps."""
+    apps: Optional[List[App]] = None
 
     next_page_token: Optional[str] = None
+    """Pagination token to request the next page of apps."""
 
     def as_dict(self) -> dict:
         """Serializes the ListAppsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.apps: body['apps'] = [v for v in self.apps]
+        if self.apps: body['apps'] = [v.as_dict() for v in self.apps]
         if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListAppsResponse:
         """Deserializes the ListAppsResponse from a dictionary."""
-        return cls(apps=d.get('apps', None), next_page_token=d.get('next_page_token', None))
+        return cls(apps=_repeated_dict(d, 'apps', App), next_page_token=d.get('next_page_token', None))
 
 
 @dataclass
@@ -2223,6 +2293,26 @@ class ServingEndpointPermissionsRequest:
 
 
 @dataclass
+class StopAppRequest:
+    name: Optional[str] = None
+    """The name of the app."""
+
+
+@dataclass
+class StopAppResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the StopAppResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> StopAppResponse:
+        """Deserializes the StopAppResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class TrafficConfig:
     routes: Optional[List[Route]] = None
     """The list of routes that define traffic to each served entity."""
@@ -2237,6 +2327,28 @@ class TrafficConfig:
     def from_dict(cls, d: Dict[str, any]) -> TrafficConfig:
         """Deserializes the TrafficConfig from a dictionary."""
         return cls(routes=_repeated_dict(d, 'routes', Route))
+
+
+@dataclass
+class UpdateAppRequest:
+    name: str
+    """The name of the app. The name must contain only lowercase alphanumeric characters and hyphens
+    and be between 2 and 30 characters long. It must be unique within the workspace."""
+
+    description: Optional[str] = None
+    """The description of the app."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateAppRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.description is not None: body['description'] = self.description
+        if self.name is not None: body['name'] = self.name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateAppRequest:
+        """Deserializes the UpdateAppRequest from a dictionary."""
+        return cls(description=d.get('description', None), name=d.get('name', None))
 
 
 @dataclass
@@ -2277,118 +2389,304 @@ class V1ResponseChoiceElement:
 
 
 class AppsAPI:
-    """Lakehouse Apps run directly on a customer’s Databricks instance, integrate with their data, use and
-    extend Databricks services, and enable users to interact through single sign-on."""
+    """Apps run directly on a customer’s Databricks instance, integrate with their data, use and extend
+    Databricks services, and enable users to interact through single sign-on."""
 
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, manifest: AppManifest, *, resources: Optional[Any] = None) -> DeploymentStatus:
-        """Create and deploy an application.
+    def wait_get_app_idle(self,
+                          name: str,
+                          timeout=timedelta(minutes=20),
+                          callback: Optional[Callable[[App], None]] = None) -> App:
+        deadline = time.time() + timeout.total_seconds()
+        target_states = (AppState.IDLE, )
+        failure_states = (AppState.ERROR, )
+        status_message = 'polling...'
+        attempt = 1
+        while time.time() < deadline:
+            poll = self.get(name=name)
+            status = poll.status.state
+            status_message = f'current status: {status}'
+            if poll.status:
+                status_message = poll.status.message
+            if status in target_states:
+                return poll
+            if callback:
+                callback(poll)
+            if status in failure_states:
+                msg = f'failed to reach IDLE, got {status}: {status_message}'
+                raise OperationFailed(msg)
+            prefix = f"name={name}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f'timed out after {timeout}: {status_message}')
+
+    def wait_get_deployment_app_succeeded(
+            self,
+            app_name: str,
+            deployment_id: str,
+            timeout=timedelta(minutes=20),
+            callback: Optional[Callable[[AppDeployment], None]] = None) -> AppDeployment:
+        deadline = time.time() + timeout.total_seconds()
+        target_states = (AppDeploymentState.SUCCEEDED, )
+        failure_states = (AppDeploymentState.FAILED, )
+        status_message = 'polling...'
+        attempt = 1
+        while time.time() < deadline:
+            poll = self.get_deployment(app_name=app_name, deployment_id=deployment_id)
+            status = poll.status.state
+            status_message = f'current status: {status}'
+            if poll.status:
+                status_message = poll.status.message
+            if status in target_states:
+                return poll
+            if callback:
+                callback(poll)
+            if status in failure_states:
+                msg = f'failed to reach SUCCEEDED, got {status}: {status_message}'
+                raise OperationFailed(msg)
+            prefix = f"app_name={app_name}, deployment_id={deployment_id}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f'timed out after {timeout}: {status_message}')
+
+    def create(self, name: str, *, description: Optional[str] = None) -> Wait[App]:
+        """Create an App.
         
-        Creates and deploys an application.
+        Creates a new app.
         
-        :param manifest: :class:`AppManifest`
-          Manifest that specifies the application requirements
-        :param resources: Any (optional)
-          Information passed at app deployment time to fulfill app dependencies
+        :param name: str
+          The name of the app. The name must contain only lowercase alphanumeric characters and hyphens and be
+          between 2 and 30 characters long. It must be unique within the workspace.
+        :param description: str (optional)
+          The description of the app.
         
-        :returns: :class:`DeploymentStatus`
+        :returns:
+          Long-running operation waiter for :class:`App`.
+          See :method:wait_get_app_idle for more details.
         """
         body = {}
-        if manifest is not None: body['manifest'] = manifest.as_dict()
-        if resources is not None: body['resources'] = resources
+        if description is not None: body['description'] = description
+        if name is not None: body['name'] = name
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        res = self._api.do('POST', '/api/2.0/preview/apps/deployments', body=body, headers=headers)
-        return DeploymentStatus.from_dict(res)
+        op_response = self._api.do('POST', '/api/2.0/preview/apps', body=body, headers=headers)
+        return Wait(self.wait_get_app_idle, response=App.from_dict(op_response), name=op_response['name'])
 
-    def delete_app(self, name: str) -> DeleteAppResponse:
-        """Delete an application.
+    def create_and_wait(self,
+                        name: str,
+                        *,
+                        description: Optional[str] = None,
+                        timeout=timedelta(minutes=20)) -> App:
+        return self.create(description=description, name=name).result(timeout=timeout)
+
+    def create_deployment(self, app_name: str, source_code_path: str) -> Wait[AppDeployment]:
+        """Create an App Deployment.
         
-        Delete an application definition
+        Creates an app deployment for the app with the supplied name.
+        
+        :param app_name: str
+          The name of the app.
+        :param source_code_path: str
+          The source code path of the deployment.
+        
+        :returns:
+          Long-running operation waiter for :class:`AppDeployment`.
+          See :method:wait_get_deployment_app_succeeded for more details.
+        """
+        body = {}
+        if source_code_path is not None: body['source_code_path'] = source_code_path
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        op_response = self._api.do('POST',
+                                   f'/api/2.0/preview/apps/{app_name}/deployments',
+                                   body=body,
+                                   headers=headers)
+        return Wait(self.wait_get_deployment_app_succeeded,
+                    response=AppDeployment.from_dict(op_response),
+                    app_name=app_name,
+                    deployment_id=op_response['deployment_id'])
+
+    def create_deployment_and_wait(self, app_name: str, source_code_path: str,
+                                   timeout=timedelta(minutes=20)) -> AppDeployment:
+        return self.create_deployment(app_name=app_name,
+                                      source_code_path=source_code_path).result(timeout=timeout)
+
+    def delete(self, name: str):
+        """Delete an App.
+        
+        Deletes an app.
         
         :param name: str
-          The name of an application. This field is required.
+          The name of the app.
         
-        :returns: :class:`DeleteAppResponse`
+        
         """
 
         headers = {'Accept': 'application/json', }
 
-        res = self._api.do('DELETE', f'/api/2.0/preview/apps/instances/{name}', headers=headers)
-        return DeleteAppResponse.from_dict(res)
+        self._api.do('DELETE', f'/api/2.0/preview/apps/{name}', headers=headers)
 
-    def get_app(self, name: str) -> GetAppResponse:
-        """Get definition for an application.
+    def get(self, name: str) -> App:
+        """Get an App.
         
-        Get an application definition
+        Retrieves information for the app with the supplied name.
         
         :param name: str
-          The name of an application. This field is required.
+          The name of the app.
         
-        :returns: :class:`GetAppResponse`
+        :returns: :class:`App`
         """
 
         headers = {'Accept': 'application/json', }
 
-        res = self._api.do('GET', f'/api/2.0/preview/apps/instances/{name}', headers=headers)
-        return GetAppResponse.from_dict(res)
+        res = self._api.do('GET', f'/api/2.0/preview/apps/{name}', headers=headers)
+        return App.from_dict(res)
 
-    def get_app_deployment_status(self,
-                                  deployment_id: str,
-                                  *,
-                                  include_app_log: Optional[str] = None) -> DeploymentStatus:
-        """Get deployment status for an application.
+    def get_deployment(self, app_name: str, deployment_id: str) -> AppDeployment:
+        """Get an App Deployment.
         
-        Get deployment status for an application
+        Retrieves information for the app deployment with the supplied name and deployment id.
         
+        :param app_name: str
+          The name of the app.
         :param deployment_id: str
-          The deployment id for an application. This field is required.
-        :param include_app_log: str (optional)
-          Boolean flag to include application logs
+          The unique id of the deployment.
         
-        :returns: :class:`DeploymentStatus`
+        :returns: :class:`AppDeployment`
         """
 
-        query = {}
-        if include_app_log is not None: query['include_app_log'] = include_app_log
         headers = {'Accept': 'application/json', }
 
         res = self._api.do('GET',
-                           f'/api/2.0/preview/apps/deployments/{deployment_id}',
-                           query=query,
+                           f'/api/2.0/preview/apps/{app_name}/deployments/{deployment_id}',
                            headers=headers)
-        return DeploymentStatus.from_dict(res)
+        return AppDeployment.from_dict(res)
 
-    def get_apps(self) -> ListAppsResponse:
-        """List all applications.
+    def get_environment(self, name: str) -> AppEnvironment:
+        """Get App Environment.
         
-        List all available applications
-        
-        :returns: :class:`ListAppsResponse`
-        """
-
-        headers = {'Accept': 'application/json', }
-
-        res = self._api.do('GET', '/api/2.0/preview/apps/instances', headers=headers)
-        return ListAppsResponse.from_dict(res)
-
-    def get_events(self, name: str) -> ListAppEventsResponse:
-        """Get deployment events for an application.
-        
-        Get deployment events for an application
+        Retrieves app environment.
         
         :param name: str
-          The name of an application. This field is required.
+          The name of the app.
         
-        :returns: :class:`ListAppEventsResponse`
+        :returns: :class:`AppEnvironment`
         """
 
         headers = {'Accept': 'application/json', }
 
-        res = self._api.do('GET', f'/api/2.0/preview/apps/{name}/events', headers=headers)
-        return ListAppEventsResponse.from_dict(res)
+        res = self._api.do('GET', f'/api/2.0/preview/apps/{name}/environment', headers=headers)
+        return AppEnvironment.from_dict(res)
+
+    def list(self, *, page_size: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[App]:
+        """List Apps.
+        
+        Lists all apps in the workspace.
+        
+        :param page_size: int (optional)
+          Upper bound for items returned.
+        :param page_token: str (optional)
+          Pagination token to go to the next page of apps. Requests first page if absent.
+        
+        :returns: Iterator over :class:`App`
+        """
+
+        query = {}
+        if page_size is not None: query['page_size'] = page_size
+        if page_token is not None: query['page_token'] = page_token
+        headers = {'Accept': 'application/json', }
+
+        while True:
+            json = self._api.do('GET', '/api/2.0/preview/apps', query=query, headers=headers)
+            if 'apps' in json:
+                for v in json['apps']:
+                    yield App.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
+
+    def list_deployments(self,
+                         app_name: str,
+                         *,
+                         page_size: Optional[int] = None,
+                         page_token: Optional[str] = None) -> Iterator[AppDeployment]:
+        """List App Deployments.
+        
+        Lists all app deployments for the app with the supplied name.
+        
+        :param app_name: str
+          The name of the app.
+        :param page_size: int (optional)
+          Upper bound for items returned.
+        :param page_token: str (optional)
+          Pagination token to go to the next page of apps. Requests first page if absent.
+        
+        :returns: Iterator over :class:`AppDeployment`
+        """
+
+        query = {}
+        if page_size is not None: query['page_size'] = page_size
+        if page_token is not None: query['page_token'] = page_token
+        headers = {'Accept': 'application/json', }
+
+        while True:
+            json = self._api.do('GET',
+                                f'/api/2.0/preview/apps/{app_name}/deployments',
+                                query=query,
+                                headers=headers)
+            if 'app_deployments' in json:
+                for v in json['app_deployments']:
+                    yield AppDeployment.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
+
+    def stop(self, name: str):
+        """Stop an App.
+        
+        Stops the active deployment of the app in the workspace.
+        
+        :param name: str
+          The name of the app.
+        
+        
+        """
+
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        self._api.do('POST', f'/api/2.0/preview/apps/{name}/stop', headers=headers)
+
+    def update(self, name: str, *, description: Optional[str] = None) -> App:
+        """Update an App.
+        
+        Updates the app with the supplied name.
+        
+        :param name: str
+          The name of the app. The name must contain only lowercase alphanumeric characters and hyphens and be
+          between 2 and 30 characters long. It must be unique within the workspace.
+        :param description: str (optional)
+          The description of the app.
+        
+        :returns: :class:`App`
+        """
+        body = {}
+        if description is not None: body['description'] = description
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do('PATCH', f'/api/2.0/preview/apps/{name}', body=body, headers=headers)
+        return App.from_dict(res)
 
 
 class ServingEndpointsAPI:
@@ -2438,8 +2736,7 @@ class ServingEndpointsAPI:
         raise TimeoutError(f'timed out after {timeout}: {status_message}')
 
     def build_logs(self, name: str, served_model_name: str) -> BuildLogsResponse:
-        """Retrieve the logs associated with building the model's environment for a given serving endpoint's
-        served model.
+        """Get build logs for a served model.
         
         Retrieves the build logs associated with the provided served model.
         
@@ -2518,7 +2815,7 @@ class ServingEndpointsAPI:
         self._api.do('DELETE', f'/api/2.0/serving-endpoints/{name}', headers=headers)
 
     def export_metrics(self, name: str):
-        """Retrieve the metrics associated with a serving endpoint.
+        """Get metrics of a serving endpoint.
         
         Retrieves the metrics associated with the provided serving endpoint in either Prometheus or
         OpenMetrics exposition format.
@@ -2548,6 +2845,22 @@ class ServingEndpointsAPI:
 
         res = self._api.do('GET', f'/api/2.0/serving-endpoints/{name}', headers=headers)
         return ServingEndpointDetailed.from_dict(res)
+
+    def get_open_api(self, name: str):
+        """Get the schema for a serving endpoint.
+        
+        Get the query schema of the serving endpoint in OpenAPI format. The schema contains information for
+        the supported paths, input and output format and datatypes.
+        
+        :param name: str
+          The name of the serving endpoint that the served model belongs to. This field is required.
+        
+        
+        """
+
+        headers = {'Accept': 'application/json', }
+
+        self._api.do('GET', f'/api/2.0/serving-endpoints/{name}/openapi', headers=headers)
 
     def get_permission_levels(self, serving_endpoint_id: str) -> GetServingEndpointPermissionLevelsResponse:
         """Get serving endpoint permission levels.
@@ -2587,7 +2900,7 @@ class ServingEndpointsAPI:
         return ServingEndpointPermissions.from_dict(res)
 
     def list(self) -> Iterator[ServingEndpoint]:
-        """Retrieve all serving endpoints.
+        """Get all serving endpoints.
         
         :returns: Iterator over :class:`ServingEndpoint`
         """
@@ -2599,7 +2912,7 @@ class ServingEndpointsAPI:
         return parsed if parsed is not None else []
 
     def logs(self, name: str, served_model_name: str) -> ServerLogsResponse:
-        """Retrieve the most recent log lines associated with a given serving endpoint's served model.
+        """Get the latest logs for a served model.
         
         Retrieves the service logs associated with the provided served model.
         
@@ -2623,7 +2936,7 @@ class ServingEndpointsAPI:
               *,
               add_tags: Optional[List[EndpointTag]] = None,
               delete_tags: Optional[List[str]] = None) -> Iterator[EndpointTag]:
-        """Patch the tags of a serving endpoint.
+        """Update tags of a serving endpoint.
         
         Used to batch add and delete tags from a serving endpoint with a single API call.
         
@@ -2645,7 +2958,7 @@ class ServingEndpointsAPI:
         return [EndpointTag.from_dict(v) for v in res]
 
     def put(self, name: str, *, rate_limits: Optional[List[RateLimit]] = None) -> PutResponse:
-        """Update the rate limits of a serving endpoint.
+        """Update rate limits of a serving endpoint.
         
         Used to update the rate limits of a serving endpoint. NOTE: only external and foundation model
         endpoints are supported as of now.
@@ -2683,7 +2996,7 @@ class ServingEndpointsAPI:
               stop: Optional[List[str]] = None,
               stream: Optional[bool] = None,
               temperature: Optional[float] = None) -> QueryEndpointResponse:
-        """Query a serving endpoint with provided model input.
+        """Query a serving endpoint.
         
         :param name: str
           The name of the serving endpoint. This field is required.
@@ -2789,7 +3102,7 @@ class ServingEndpointsAPI:
                       served_entities: Optional[List[ServedEntityInput]] = None,
                       served_models: Optional[List[ServedModelInput]] = None,
                       traffic_config: Optional[TrafficConfig] = None) -> Wait[ServingEndpointDetailed]:
-        """Update a serving endpoint with a new config.
+        """Update config of a serving endpoint.
         
         Updates any combination of the serving endpoint's served entities, the compute configuration of those
         served entities, and the endpoint's traffic config. An endpoint that already has an update in progress
@@ -2800,11 +3113,11 @@ class ServingEndpointsAPI:
         :param auto_capture_config: :class:`AutoCaptureConfigInput` (optional)
           Configuration for Inference Tables which automatically logs requests and responses to Unity Catalog.
         :param served_entities: List[:class:`ServedEntityInput`] (optional)
-          A list of served entities for the endpoint to serve. A serving endpoint can have up to 10 served
+          A list of served entities for the endpoint to serve. A serving endpoint can have up to 15 served
           entities.
         :param served_models: List[:class:`ServedModelInput`] (optional)
           (Deprecated, use served_entities instead) A list of served models for the endpoint to serve. A
-          serving endpoint can have up to 10 served models.
+          serving endpoint can have up to 15 served models.
         :param traffic_config: :class:`TrafficConfig` (optional)
           The traffic config defining how invocations to the serving endpoint should be routed.
         

@@ -6,7 +6,7 @@ import logging
 from dataclasses import dataclass
 from typing import BinaryIO, Dict, Iterator, List, Optional
 
-from ._internal import _repeated_dict
+from ._internal import _escape_multi_segment_path_parameter, _repeated_dict
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -789,7 +789,9 @@ class FilesAPI:
 
         headers = {}
 
-        self._api.do('PUT', f'/api/2.0/fs/directories{directory_path}', headers=headers)
+        self._api.do('PUT',
+                     f'/api/2.0/fs/directories{_escape_multi_segment_path_parameter(directory_path)}',
+                     headers=headers)
 
     def delete(self, file_path: str):
         """Delete a file.
@@ -804,7 +806,9 @@ class FilesAPI:
 
         headers = {}
 
-        self._api.do('DELETE', f'/api/2.0/fs/files{file_path}', headers=headers)
+        self._api.do('DELETE',
+                     f'/api/2.0/fs/files{_escape_multi_segment_path_parameter(file_path)}',
+                     headers=headers)
 
     def delete_directory(self, directory_path: str):
         """Delete a directory.
@@ -822,7 +826,9 @@ class FilesAPI:
 
         headers = {}
 
-        self._api.do('DELETE', f'/api/2.0/fs/directories{directory_path}', headers=headers)
+        self._api.do('DELETE',
+                     f'/api/2.0/fs/directories{_escape_multi_segment_path_parameter(directory_path)}',
+                     headers=headers)
 
     def download(self, file_path: str) -> DownloadResponse:
         """Download a file.
@@ -839,7 +845,7 @@ class FilesAPI:
         headers = {'Accept': 'application/octet-stream', }
         response_headers = ['content-length', 'content-type', 'last-modified', ]
         res = self._api.do('GET',
-                           f'/api/2.0/fs/files{file_path}',
+                           f'/api/2.0/fs/files{_escape_multi_segment_path_parameter(file_path)}',
                            headers=headers,
                            response_headers=response_headers,
                            raw=True)
@@ -864,7 +870,9 @@ class FilesAPI:
 
         headers = {}
 
-        self._api.do('HEAD', f'/api/2.0/fs/directories{directory_path}', headers=headers)
+        self._api.do('HEAD',
+                     f'/api/2.0/fs/directories{_escape_multi_segment_path_parameter(directory_path)}',
+                     headers=headers)
 
     def get_metadata(self, file_path: str) -> GetMetadataResponse:
         """Get file metadata.
@@ -880,7 +888,7 @@ class FilesAPI:
         headers = {}
         response_headers = ['content-length', 'content-type', 'last-modified', ]
         res = self._api.do('HEAD',
-                           f'/api/2.0/fs/files{file_path}',
+                           f'/api/2.0/fs/files{_escape_multi_segment_path_parameter(file_path)}',
                            headers=headers,
                            response_headers=response_headers)
         return GetMetadataResponse.from_dict(res)
@@ -924,10 +932,11 @@ class FilesAPI:
         headers = {'Accept': 'application/json', }
 
         while True:
-            json = self._api.do('GET',
-                                f'/api/2.0/fs/directories{directory_path}',
-                                query=query,
-                                headers=headers)
+            json = self._api.do(
+                'GET',
+                f'/api/2.0/fs/directories{_escape_multi_segment_path_parameter(directory_path)}',
+                query=query,
+                headers=headers)
             if 'contents' in json:
                 for v in json['contents']:
                     yield DirectoryEntry.from_dict(v)
@@ -956,4 +965,8 @@ class FilesAPI:
         if overwrite is not None: query['overwrite'] = overwrite
         headers = {'Content-Type': 'application/octet-stream', }
 
-        self._api.do('PUT', f'/api/2.0/fs/files{file_path}', query=query, headers=headers, data=contents)
+        self._api.do('PUT',
+                     f'/api/2.0/fs/files{_escape_multi_segment_path_parameter(file_path)}',
+                     query=query,
+                     headers=headers,
+                     data=contents)

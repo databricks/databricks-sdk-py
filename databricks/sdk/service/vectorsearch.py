@@ -320,6 +320,9 @@ class DeltaSyncVectorIndexSpecResponse:
 
 @dataclass
 class DirectAccessVectorIndexSpec:
+    embedding_source_columns: Optional[List[EmbeddingSourceColumn]] = None
+    """Contains the optional model endpoint to use during query time."""
+
     embedding_vector_columns: Optional[List[EmbeddingVectorColumn]] = None
 
     schema_json: Optional[str] = None
@@ -333,6 +336,8 @@ class DirectAccessVectorIndexSpec:
     def as_dict(self) -> dict:
         """Serializes the DirectAccessVectorIndexSpec into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.embedding_source_columns:
+            body['embedding_source_columns'] = [v.as_dict() for v in self.embedding_source_columns]
         if self.embedding_vector_columns:
             body['embedding_vector_columns'] = [v.as_dict() for v in self.embedding_vector_columns]
         if self.schema_json is not None: body['schema_json'] = self.schema_json
@@ -341,7 +346,9 @@ class DirectAccessVectorIndexSpec:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> DirectAccessVectorIndexSpec:
         """Deserializes the DirectAccessVectorIndexSpec from a dictionary."""
-        return cls(embedding_vector_columns=_repeated_dict(d, 'embedding_vector_columns',
+        return cls(embedding_source_columns=_repeated_dict(d, 'embedding_source_columns',
+                                                           EmbeddingSourceColumn),
+                   embedding_vector_columns=_repeated_dict(d, 'embedding_vector_columns',
                                                            EmbeddingVectorColumn),
                    schema_json=d.get('schema_json', None))
 
