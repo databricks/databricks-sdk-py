@@ -596,4 +596,3 @@ def test_azure_environment(azure_environment, expected):
                azure_workspace_resource_id='...',
                azure_environment=azure_environment)
     assert c.arm_environment == expected
-    
