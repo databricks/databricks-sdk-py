@@ -581,3 +581,17 @@ def test_azure_environment(azure_environment, expected):
                azure_workspace_resource_id='...',
                azure_environment=azure_environment)
     assert c.arm_environment == expected
+
+def test_deletes(config, requests_mock):
+    requests_mock.delete("http://localhost/api/2.0/preview/sql/alerts/alertid",
+                         request_headers={"User-Agent": config.user_agent},
+                         text="null",
+                         )
+
+    w = WorkspaceClient(config=config)
+    res = w.alerts.delete(alert_id="alertId")
+
+    assert requests_mock.call_count == 1
+    assert requests_mock.called
+
+    assert res is None
