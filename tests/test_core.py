@@ -582,6 +582,7 @@ def test_azure_environment(azure_environment, expected):
                azure_environment=azure_environment)
     assert c.arm_environment == expected
 
+
 def test_deletes(config, requests_mock):
     requests_mock.delete("http://localhost/api/2.0/preview/sql/alerts/alertid",
                          request_headers={"User-Agent": config.user_agent},
