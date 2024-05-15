@@ -17,6 +17,7 @@ from .environments import (ALL_ENVS, DEFAULT_ENVIRONMENT, Cloud,
                            DatabricksEnvironment)
 from .oauth import OidcEndpoints
 from .version import __version__
+from .oauth import Token
 
 logger = logging.getLogger('databricks.sdk')
 
@@ -107,6 +108,9 @@ class Config:
         except ValueError as e:
             message = self.wrap_debug_info(str(e))
             raise ValueError(message) from e
+
+    def token(self) -> Token:
+        return self._credentials_provider.token(self)
 
     def wrap_debug_info(self, message: str) -> str:
         debug_string = self.debug_string()

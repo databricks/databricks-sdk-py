@@ -4,6 +4,7 @@ from datetime import timedelta
 from json import JSONDecodeError
 from types import TracebackType
 from typing import Any, BinaryIO, Iterator, Type
+from urllib.parse import urlencode
 
 from requests.adapters import HTTPAdapter
 
@@ -107,6 +108,21 @@ class ApiClient:
 
         flattened = dict(flatten_dict(with_fixed_bools))
         return flattened
+
+    def get_oauth_token(self, auth_details: str) -> Token:
+        original_token = self._cfg.token()
+        path = "/oidc/v1/token"
+        headers = {
+            "Content-Type": "application/x-www-form-urlencoded"
+        }
+        params = {
+            "grant_type": "urn:ietf:params:oauth:grant-type:jwt-bearer",
+            "authorization_details": auth_details,
+            "assertion": original_token.access_token
+        }
+        encoded_params = urlencode(params)
+        response = self.do('POST', path, headers=headers, data=encoded_params)
+        return Token.from_dict(response)
 
     def do(self,
            method: str,

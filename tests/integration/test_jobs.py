@@ -1,5 +1,6 @@
 import datetime
 import logging
+from databricks.sdk import WorkspaceClient
 
 
 def test_jobs(w):
@@ -8,6 +9,13 @@ def test_jobs(w):
         logging.info(f'Looking at {job.settings.name}')
         found += 1
     assert found > 0
+
+def test22():
+    w = WorkspaceClient(profile='DEFAULT')
+    c = w._config
+    t = c.token()
+    print(t.expiry)
+
 
 
 def test_submitting_jobs(w, random, env_or_skip):
