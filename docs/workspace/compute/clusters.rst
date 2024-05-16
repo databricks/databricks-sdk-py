@@ -155,10 +155,15 @@
           governance features are available in this mode. * `USER_ISOLATION`: A secure cluster that can be
           shared by multiple users. Cluster users are fully isolated so that they cannot see each other's data
           and credentials. Most data governance features are supported in this mode. But programming languages
-          and cluster features might be limited. * `LEGACY_TABLE_ACL`: This mode is for users migrating from
-          legacy Table ACL clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy
-          Passthrough on high concurrency clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating
-          from legacy Passthrough on standard clusters.
+          and cluster features might be limited.
+          
+          The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
+          future Databricks Runtime versions:
+          
+          * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *
+          `LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy Passthrough on high concurrency
+          clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy Passthrough on
+          standard clusters.
         :param docker_image: :class:`DockerImage` (optional)
         :param driver_instance_pool_id: str (optional)
           The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster uses
@@ -375,10 +380,15 @@
           governance features are available in this mode. * `USER_ISOLATION`: A secure cluster that can be
           shared by multiple users. Cluster users are fully isolated so that they cannot see each other's data
           and credentials. Most data governance features are supported in this mode. But programming languages
-          and cluster features might be limited. * `LEGACY_TABLE_ACL`: This mode is for users migrating from
-          legacy Table ACL clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy
-          Passthrough on high concurrency clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating
-          from legacy Passthrough on standard clusters.
+          and cluster features might be limited.
+          
+          The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
+          future Databricks Runtime versions:
+          
+          * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *
+          `LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy Passthrough on high concurrency
+          clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy Passthrough on
+          standard clusters.
         :param docker_image: :class:`DockerImage` (optional)
         :param driver_instance_pool_id: str (optional)
           The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster uses

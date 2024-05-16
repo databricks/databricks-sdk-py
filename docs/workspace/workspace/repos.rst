@@ -46,7 +46,8 @@
           bitbucketCloud, gitLab, azureDevOpsServices, gitHubEnterprise, bitbucketServer,
           gitLabEnterpriseEdition and awsCodeCommit.
         :param path: str (optional)
-          Desired path for the repo in the workspace. Must be in the format /Repos/{folder}/{repo-name}.
+          Desired path for the repo in the workspace. Almost any path in the workspace can be chosen. If repo
+          is created in /Repos, path must be in the format /Repos/{folder}/{repo-name}.
         :param sparse_checkout: :class:`SparseCheckout` (optional)
           If specified, the repo will be created with sparse checkout enabled. You cannot enable/disable
           sparse checkout after the repo is created.
@@ -145,7 +146,8 @@
           Token used to get the next page of results. If not specified, returns the first page of results as
           well as a next page token if there are more results.
         :param path_prefix: str (optional)
-          Filters repos that have paths starting with the given path prefix.
+          Filters repos that have paths starting with the given path prefix. If not provided repos from /Repos
+          will be served.
         
         :returns: Iterator over :class:`RepoInfo`
         

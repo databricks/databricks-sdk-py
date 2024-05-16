@@ -13,9 +13,9 @@ from databricks.sdk.service.catalog import (AccountMetastoreAssignmentsAPI,
                                             ArtifactAllowlistsAPI, CatalogsAPI,
                                             ConnectionsAPI,
                                             ExternalLocationsAPI, FunctionsAPI,
-                                            GrantsAPI, LakehouseMonitorsAPI,
-                                            MetastoresAPI, ModelVersionsAPI,
-                                            OnlineTablesAPI,
+                                            GrantsAPI, MetastoresAPI,
+                                            ModelVersionsAPI, OnlineTablesAPI,
+                                            QualityMonitorsAPI,
                                             RegisteredModelsAPI, SchemasAPI,
                                             StorageCredentialsAPI,
                                             SystemSchemasAPI,
@@ -194,7 +194,6 @@ class WorkspaceClient:
         self._instance_profiles = InstanceProfilesAPI(self._api_client)
         self._ip_access_lists = IpAccessListsAPI(self._api_client)
         self._jobs = JobsAPI(self._api_client)
-        self._lakehouse_monitors = LakehouseMonitorsAPI(self._api_client)
         self._lakeview = LakeviewAPI(self._api_client)
         self._libraries = LibrariesAPI(self._api_client)
         self._metastores = MetastoresAPI(self._api_client)
@@ -214,6 +213,7 @@ class WorkspaceClient:
             self._api_client)
         self._provider_providers = ProviderProvidersAPI(self._api_client)
         self._providers = ProvidersAPI(self._api_client)
+        self._quality_monitors = QualityMonitorsAPI(self._api_client)
         self._queries = QueriesAPI(self._api_client)
         self._query_history = QueryHistoryAPI(self._api_client)
         self._query_visualizations = QueryVisualizationsAPI(self._api_client)
@@ -426,11 +426,6 @@ class WorkspaceClient:
         return self._jobs
 
     @property
-    def lakehouse_monitors(self) -> LakehouseMonitorsAPI:
-        """A monitor computes and monitors data or model quality metrics for a table over time."""
-        return self._lakehouse_monitors
-
-    @property
     def lakeview(self) -> LakeviewAPI:
         """These APIs provide specific management operations for Lakeview dashboards."""
         return self._lakeview
@@ -519,6 +514,11 @@ class WorkspaceClient:
     def providers(self) -> ProvidersAPI:
         """A data provider is an object representing the organization in the real world who shares the data."""
         return self._providers
+
+    @property
+    def quality_monitors(self) -> QualityMonitorsAPI:
+        """A monitor computes and monitors data or model quality metrics for a table over time."""
+        return self._quality_monitors
 
     @property
     def queries(self) -> QueriesAPI:

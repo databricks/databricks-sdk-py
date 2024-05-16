@@ -120,6 +120,23 @@
         :returns: :class:`QueryVectorIndexResponse`
         
 
+    .. py:method:: scan_index(index_name: str [, last_primary_key: Optional[str], num_results: Optional[int]]) -> ScanVectorIndexResponse
+
+        Scan an index.
+        
+        Scan the specified vector index and return the first `num_results` entries after the exclusive
+        `primary_key`.
+        
+        :param index_name: str
+          Name of the vector index to scan.
+        :param last_primary_key: str (optional)
+          Primary key of the last entry returned in the previous scan.
+        :param num_results: int (optional)
+          Number of results to return. Defaults to 10.
+        
+        :returns: :class:`ScanVectorIndexResponse`
+        
+
     .. py:method:: sync_index(index_name: str)
 
         Synchronize an index.

@@ -2179,8 +2179,6 @@ class RepairRun:
     pipeline_params: Optional[PipelineParams] = None
 
     python_named_params: Optional[Dict[str, str]] = None
-    """A map from keys to values for jobs with Python wheel task, for example `"python_named_params":
-    {"name": "task", "data": "dbfs:/path/to/data.json"}`."""
 
     python_params: Optional[List[str]] = None
     """A list of parameters for jobs with Python tasks, for example `"python_params": ["john doe",
@@ -2856,8 +2854,6 @@ class RunJobTask:
     pipeline_params: Optional[PipelineParams] = None
 
     python_named_params: Optional[Dict[str, str]] = None
-    """A map from keys to values for jobs with Python wheel task, for example `"python_named_params":
-    {"name": "task", "data": "dbfs:/path/to/data.json"}`."""
 
     python_params: Optional[List[str]] = None
     """A list of parameters for jobs with Python tasks, for example `"python_params": ["john doe",
@@ -3006,8 +3002,6 @@ class RunNow:
     pipeline_params: Optional[PipelineParams] = None
 
     python_named_params: Optional[Dict[str, str]] = None
-    """A map from keys to values for jobs with Python wheel task, for example `"python_named_params":
-    {"name": "task", "data": "dbfs:/path/to/data.json"}`."""
 
     python_params: Optional[List[str]] = None
     """A list of parameters for jobs with Python tasks, for example `"python_params": ["john doe",
@@ -3217,8 +3211,6 @@ class RunParameters:
     pipeline_params: Optional[PipelineParams] = None
 
     python_named_params: Optional[Dict[str, str]] = None
-    """A map from keys to values for jobs with Python wheel task, for example `"python_named_params":
-    {"name": "task", "data": "dbfs:/path/to/data.json"}`."""
 
     python_params: Optional[List[str]] = None
     """A list of parameters for jobs with Python tasks, for example `"python_params": ["john doe",
@@ -5586,8 +5578,6 @@ class JobsAPI:
           [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
         :param pipeline_params: :class:`PipelineParams` (optional)
         :param python_named_params: Dict[str,str] (optional)
-          A map from keys to values for jobs with Python wheel task, for example `"python_named_params":
-          {"name": "task", "data": "dbfs:/path/to/data.json"}`.
         :param python_params: List[str] (optional)
           A list of parameters for jobs with Python tasks, for example `"python_params": ["john doe", "35"]`.
           The parameters are passed to Python file as command-line parameters. If specified upon `run-now`, it
@@ -5777,8 +5767,6 @@ class JobsAPI:
           [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
         :param pipeline_params: :class:`PipelineParams` (optional)
         :param python_named_params: Dict[str,str] (optional)
-          A map from keys to values for jobs with Python wheel task, for example `"python_named_params":
-          {"name": "task", "data": "dbfs:/path/to/data.json"}`.
         :param python_params: List[str] (optional)
           A list of parameters for jobs with Python tasks, for example `"python_params": ["john doe", "35"]`.
           The parameters are passed to Python file as command-line parameters. If specified upon `run-now`, it

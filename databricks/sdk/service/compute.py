@@ -551,8 +551,12 @@ class ClusterAttributes:
     features and data governance features are available in this mode. * `USER_ISOLATION`: A secure
     cluster that can be shared by multiple users. Cluster users are fully isolated so that they
     cannot see each other's data and credentials. Most data governance features are supported in
-    this mode. But programming languages and cluster features might be limited. *
-    `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *
+    this mode. But programming languages and cluster features might be limited.
+    
+    The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
+    future Databricks Runtime versions:
+    
+    * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *
     `LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy Passthrough on high
     concurrency clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
     Passthrough on standard clusters."""
@@ -763,8 +767,12 @@ class ClusterDetails:
     features and data governance features are available in this mode. * `USER_ISOLATION`: A secure
     cluster that can be shared by multiple users. Cluster users are fully isolated so that they
     cannot see each other's data and credentials. Most data governance features are supported in
-    this mode. But programming languages and cluster features might be limited. *
-    `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *
+    this mode. But programming languages and cluster features might be limited.
+    
+    The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
+    future Databricks Runtime versions:
+    
+    * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *
     `LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy Passthrough on high
     concurrency clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
     Passthrough on standard clusters."""
@@ -1474,8 +1482,12 @@ class ClusterSpec:
     features and data governance features are available in this mode. * `USER_ISOLATION`: A secure
     cluster that can be shared by multiple users. Cluster users are fully isolated so that they
     cannot see each other's data and credentials. Most data governance features are supported in
-    this mode. But programming languages and cluster features might be limited. *
-    `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *
+    this mode. But programming languages and cluster features might be limited.
+    
+    The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
+    future Databricks Runtime versions:
+    
+    * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *
     `LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy Passthrough on high
     concurrency clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
     Passthrough on standard clusters."""
@@ -1638,28 +1650,6 @@ class ClusterSpec:
 
 
 @dataclass
-class ClusterStatusResponse:
-    cluster_id: Optional[str] = None
-    """Unique identifier for the cluster."""
-
-    library_statuses: Optional[List[LibraryFullStatus]] = None
-    """Status of all libraries on the cluster."""
-
-    def as_dict(self) -> dict:
-        """Serializes the ClusterStatusResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
-        if self.library_statuses: body['library_statuses'] = [v.as_dict() for v in self.library_statuses]
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ClusterStatusResponse:
-        """Deserializes the ClusterStatusResponse from a dictionary."""
-        return cls(cluster_id=d.get('cluster_id', None),
-                   library_statuses=_repeated_dict(d, 'library_statuses', LibraryFullStatus))
-
-
-@dataclass
 class Command:
     cluster_id: Optional[str] = None
     """Running cluster id"""
@@ -1813,8 +1803,12 @@ class CreateCluster:
     features and data governance features are available in this mode. * `USER_ISOLATION`: A secure
     cluster that can be shared by multiple users. Cluster users are fully isolated so that they
     cannot see each other's data and credentials. Most data governance features are supported in
-    this mode. But programming languages and cluster features might be limited. *
-    `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *
+    this mode. But programming languages and cluster features might be limited.
+    
+    The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
+    future Databricks Runtime versions:
+    
+    * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *
     `LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy Passthrough on high
     concurrency clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
     Passthrough on standard clusters."""
@@ -2287,8 +2281,12 @@ class DataSecurityMode(Enum):
     features and data governance features are available in this mode. * `USER_ISOLATION`: A secure
     cluster that can be shared by multiple users. Cluster users are fully isolated so that they
     cannot see each other's data and credentials. Most data governance features are supported in
-    this mode. But programming languages and cluster features might be limited. *
-    `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *
+    this mode. But programming languages and cluster features might be limited.
+    
+    The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
+    future Databricks Runtime versions:
+    
+    * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *
     `LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy Passthrough on high
     concurrency clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
     Passthrough on standard clusters."""
@@ -2657,8 +2655,12 @@ class EditCluster:
     features and data governance features are available in this mode. * `USER_ISOLATION`: A secure
     cluster that can be shared by multiple users. Cluster users are fully isolated so that they
     cannot see each other's data and credentials. Most data governance features are supported in
-    this mode. But programming languages and cluster features might be limited. *
-    `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *
+    this mode. But programming languages and cluster features might be limited.
+    
+    The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
+    future Databricks Runtime versions:
+    
+    * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *
     `LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy Passthrough on high
     concurrency clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
     Passthrough on standard clusters."""
@@ -6374,10 +6376,15 @@ class ClustersAPI:
           governance features are available in this mode. * `USER_ISOLATION`: A secure cluster that can be
           shared by multiple users. Cluster users are fully isolated so that they cannot see each other's data
           and credentials. Most data governance features are supported in this mode. But programming languages
-          and cluster features might be limited. * `LEGACY_TABLE_ACL`: This mode is for users migrating from
-          legacy Table ACL clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy
-          Passthrough on high concurrency clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating
-          from legacy Passthrough on standard clusters.
+          and cluster features might be limited.
+          
+          The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
+          future Databricks Runtime versions:
+          
+          * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *
+          `LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy Passthrough on high concurrency
+          clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy Passthrough on
+          standard clusters.
         :param docker_image: :class:`DockerImage` (optional)
         :param driver_instance_pool_id: str (optional)
           The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster uses
@@ -6670,10 +6677,15 @@ class ClustersAPI:
           governance features are available in this mode. * `USER_ISOLATION`: A secure cluster that can be
           shared by multiple users. Cluster users are fully isolated so that they cannot see each other's data
           and credentials. Most data governance features are supported in this mode. But programming languages
-          and cluster features might be limited. * `LEGACY_TABLE_ACL`: This mode is for users migrating from
-          legacy Table ACL clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy
-          Passthrough on high concurrency clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating
-          from legacy Passthrough on standard clusters.
+          and cluster features might be limited.
+          
+          The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
+          future Databricks Runtime versions:
+          
+          * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *
+          `LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy Passthrough on high concurrency
+          clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy Passthrough on
+          standard clusters.
         :param docker_image: :class:`DockerImage` (optional)
         :param driver_instance_pool_id: str (optional)
           The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster uses
@@ -8127,19 +8139,20 @@ class LibrariesAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def all_cluster_statuses(self) -> ListAllClusterLibraryStatusesResponse:
+    def all_cluster_statuses(self) -> Iterator[ClusterLibraryStatuses]:
         """Get all statuses.
         
         Get the status of all libraries on all clusters. A status is returned for all libraries installed on
         this cluster via the API or the libraries UI.
         
-        :returns: :class:`ListAllClusterLibraryStatusesResponse`
+        :returns: Iterator over :class:`ClusterLibraryStatuses`
         """
 
         headers = {'Accept': 'application/json', }
 
-        res = self._api.do('GET', '/api/2.0/libraries/all-cluster-statuses', headers=headers)
-        return ListAllClusterLibraryStatusesResponse.from_dict(res)
+        json = self._api.do('GET', '/api/2.0/libraries/all-cluster-statuses', headers=headers)
+        parsed = ListAllClusterLibraryStatusesResponse.from_dict(json).statuses
+        return parsed if parsed is not None else []
 
     def cluster_status(self, cluster_id: str) -> Iterator[LibraryFullStatus]:
         """Get status.
@@ -8161,7 +8174,7 @@ class LibrariesAPI:
         headers = {'Accept': 'application/json', }
 
         json = self._api.do('GET', '/api/2.0/libraries/cluster-status', query=query, headers=headers)
-        parsed = ClusterStatusResponse.from_dict(json).library_statuses
+        parsed = ClusterLibraryStatuses.from_dict(json).library_statuses
         return parsed if parsed is not None else []
 
     def install(self, cluster_id: str, libraries: List[Library]):

@@ -1,5 +1,54 @@
 # Version changelog
 
+## 0.28.0
+
+* Fix null body response to empty in ApiClient ([#579](https://github.com/databricks/databricks-sdk-py/pull/579)).
+
+API Changes:
+
+ * Changed `list()` method for [w.connections](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/connections.html) workspace-level service to require request of `databricks.sdk.service.catalog.ListConnectionsRequest` dataclass.
+ * Removed [w.lakehouse_monitors](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/lakehouse_monitors.html) workspace-level service.
+ * Added [w.quality_monitors](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/quality_monitors.html) workspace-level service.
+ * Removed `databricks.sdk.service.catalog.DeleteLakehouseMonitorRequest` dataclass.
+ * Removed `databricks.sdk.service.catalog.GetLakehouseMonitorRequest` dataclass.
+ * Added `next_page_token` field for `databricks.sdk.service.catalog.ListConnectionsResponse`.
+ * Added `dashboard_id` field for `databricks.sdk.service.catalog.UpdateMonitor`.
+ * Added `databricks.sdk.service.catalog.DeleteQualityMonitorRequest` dataclass.
+ * Added `databricks.sdk.service.catalog.GetQualityMonitorRequest` dataclass.
+ * Added `databricks.sdk.service.catalog.ListConnectionsRequest` dataclass.
+ * Changed `cluster_status()` method for [w.libraries](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/libraries.html) workspace-level service to return `databricks.sdk.service.compute.ClusterLibraryStatuses` dataclass.
+ * Removed `databricks.sdk.service.compute.ClusterStatusResponse` dataclass.
+ * Removed `sort_by_spec` field for `databricks.sdk.service.marketplace.ListListingsRequest`.
+ * Added `is_ascending` field for `databricks.sdk.service.marketplace.ListListingsRequest`.
+ * Added `sort_by` field for `databricks.sdk.service.marketplace.ListListingsRequest`.
+ * Added `is_ascending` field for `databricks.sdk.service.marketplace.SearchListingsRequest`.
+ * Removed `databricks.sdk.service.marketplace.SortBySpec` dataclass.
+ * Removed `databricks.sdk.service.marketplace.SortOrder` dataclass.
+ * Added `gateway_definition` field for `databricks.sdk.service.pipelines.CreatePipeline`.
+ * Added `gateway_definition` field for `databricks.sdk.service.pipelines.EditPipeline`.
+ * Added `table_configuration` field for `databricks.sdk.service.pipelines.ManagedIngestionPipelineDefinition`.
+ * Added `gateway_definition` field for `databricks.sdk.service.pipelines.PipelineSpec`.
+ * Added `table_configuration` field for `databricks.sdk.service.pipelines.SchemaSpec`.
+ * Added `table_configuration` field for `databricks.sdk.service.pipelines.TableSpec`.
+ * Added `databricks.sdk.service.pipelines.IngestionGatewayPipelineDefinition` dataclass.
+ * Added `databricks.sdk.service.pipelines.TableSpecificConfig` dataclass.
+ * Added `databricks.sdk.service.pipelines.TableSpecificConfigScdType` dataclass.
+ * Added `deployment_artifacts` field for `databricks.sdk.service.serving.AppDeployment`.
+ * Added `route_optimized` field for `databricks.sdk.service.serving.CreateServingEndpoint`.
+ * Added `contents` field for `databricks.sdk.service.serving.ExportMetricsResponse`.
+ * Added `endpoint_url` field for `databricks.sdk.service.serving.ServingEndpointDetailed`.
+ * Added `route_optimized` field for `databricks.sdk.service.serving.ServingEndpointDetailed`.
+ * Added `databricks.sdk.service.serving.AppDeploymentArtifacts` dataclass.
+ * Added `scan_index()` method for [w.vector_search_indexes](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/vector_search_indexes.html) workspace-level service.
+ * Added `databricks.sdk.service.vectorsearch.ListValue` dataclass.
+ * Added `databricks.sdk.service.vectorsearch.MapStringValueEntry` dataclass.
+ * Added `databricks.sdk.service.vectorsearch.ScanVectorIndexRequest` dataclass.
+ * Added `databricks.sdk.service.vectorsearch.ScanVectorIndexResponse` dataclass.
+ * Added `databricks.sdk.service.vectorsearch.Struct` dataclass.
+ * Added `databricks.sdk.service.vectorsearch.Value` dataclass.
+
+OpenAPI SHA: b3f92dd59b5ee4ab919de4f04ed83c7585c86f2f, Date: 2024-05-16
+
 ## test
 
 ## 0.27.0

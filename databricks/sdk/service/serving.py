@@ -8,7 +8,7 @@ import time
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Any, Callable, Dict, Iterator, List, Optional
+from typing import Any, BinaryIO, Callable, Dict, Iterator, List, Optional
 
 from ..errors import OperationFailed
 from ._internal import Wait, _enum, _from_dict, _repeated_dict
@@ -170,6 +170,9 @@ class AppDeployment:
     creator: Optional[str] = None
     """The email of the user creates the deployment."""
 
+    deployment_artifacts: Optional[AppDeploymentArtifacts] = None
+    """The deployment artifacts for an app."""
+
     deployment_id: Optional[str] = None
     """The unique id of the deployment."""
 
@@ -184,6 +187,7 @@ class AppDeployment:
         body = {}
         if self.create_time is not None: body['create_time'] = self.create_time
         if self.creator is not None: body['creator'] = self.creator
+        if self.deployment_artifacts: body['deployment_artifacts'] = self.deployment_artifacts.as_dict()
         if self.deployment_id is not None: body['deployment_id'] = self.deployment_id
         if self.source_code_path is not None: body['source_code_path'] = self.source_code_path
         if self.status: body['status'] = self.status.as_dict()
@@ -195,10 +199,28 @@ class AppDeployment:
         """Deserializes the AppDeployment from a dictionary."""
         return cls(create_time=d.get('create_time', None),
                    creator=d.get('creator', None),
+                   deployment_artifacts=_from_dict(d, 'deployment_artifacts', AppDeploymentArtifacts),
                    deployment_id=d.get('deployment_id', None),
                    source_code_path=d.get('source_code_path', None),
                    status=_from_dict(d, 'status', AppDeploymentStatus),
                    update_time=d.get('update_time', None))
+
+
+@dataclass
+class AppDeploymentArtifacts:
+    source_code_path: Optional[str] = None
+    """The source code of the deployment."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AppDeploymentArtifacts into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.source_code_path is not None: body['source_code_path'] = self.source_code_path
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> AppDeploymentArtifacts:
+        """Deserializes the AppDeploymentArtifacts from a dictionary."""
+        return cls(source_code_path=d.get('source_code_path', None))
 
 
 class AppDeploymentState(Enum):
@@ -207,6 +229,7 @@ class AppDeploymentState(Enum):
     FAILED = 'FAILED'
     IN_PROGRESS = 'IN_PROGRESS'
     STATE_UNSPECIFIED = 'STATE_UNSPECIFIED'
+    STOPPED = 'STOPPED'
     SUCCEEDED = 'SUCCEEDED'
 
 
@@ -491,6 +514,9 @@ class CreateServingEndpoint:
     """Rate limits to be applied to the serving endpoint. NOTE: only external and foundation model
     endpoints are supported as of now."""
 
+    route_optimized: Optional[bool] = None
+    """Enable route optimization for the serving endpoint."""
+
     tags: Optional[List[EndpointTag]] = None
     """Tags to be attached to the serving endpoint and automatically propagated to billing logs."""
 
@@ -500,6 +526,7 @@ class CreateServingEndpoint:
         if self.config: body['config'] = self.config.as_dict()
         if self.name is not None: body['name'] = self.name
         if self.rate_limits: body['rate_limits'] = [v.as_dict() for v in self.rate_limits]
+        if self.route_optimized is not None: body['route_optimized'] = self.route_optimized
         if self.tags: body['tags'] = [v.as_dict() for v in self.tags]
         return body
 
@@ -509,6 +536,7 @@ class CreateServingEndpoint:
         return cls(config=_from_dict(d, 'config', EndpointCoreConfigInput),
                    name=d.get('name', None),
                    rate_limits=_repeated_dict(d, 'rate_limits', RateLimit),
+                   route_optimized=d.get('route_optimized', None),
                    tags=_repeated_dict(d, 'tags', EndpointTag))
 
 
@@ -844,16 +872,18 @@ class EnvVariable:
 
 @dataclass
 class ExportMetricsResponse:
+    contents: Optional[BinaryIO] = None
 
     def as_dict(self) -> dict:
         """Serializes the ExportMetricsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.contents: body['contents'] = self.contents
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ExportMetricsResponse:
         """Deserializes the ExportMetricsResponse from a dictionary."""
-        return cls()
+        return cls(contents=d.get('contents', None))
 
 
 @dataclass
@@ -2123,6 +2153,9 @@ class ServingEndpointDetailed:
     creator: Optional[str] = None
     """The email of the user who created the serving endpoint."""
 
+    endpoint_url: Optional[str] = None
+    """Endpoint invocation url if route optimization is enabled for endpoint"""
+
     id: Optional[str] = None
     """System-generated ID of the endpoint. This is used to refer to the endpoint in the Permissions
     API"""
@@ -2139,6 +2172,9 @@ class ServingEndpointDetailed:
     permission_level: Optional[ServingEndpointDetailedPermissionLevel] = None
     """The permission level of the principal making the request."""
 
+    route_optimized: Optional[bool] = None
+    """Boolean representing if route optimization has been enabled for the endpoint"""
+
     state: Optional[EndpointState] = None
     """Information corresponding to the state of the serving endpoint."""
 
@@ -2154,12 +2190,14 @@ class ServingEndpointDetailed:
         if self.config: body['config'] = self.config.as_dict()
         if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
         if self.creator is not None: body['creator'] = self.creator
+        if self.endpoint_url is not None: body['endpoint_url'] = self.endpoint_url
         if self.id is not None: body['id'] = self.id
         if self.last_updated_timestamp is not None:
             body['last_updated_timestamp'] = self.last_updated_timestamp
         if self.name is not None: body['name'] = self.name
         if self.pending_config: body['pending_config'] = self.pending_config.as_dict()
         if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        if self.route_optimized is not None: body['route_optimized'] = self.route_optimized
         if self.state: body['state'] = self.state.as_dict()
         if self.tags: body['tags'] = [v.as_dict() for v in self.tags]
         if self.task is not None: body['task'] = self.task
@@ -2171,11 +2209,13 @@ class ServingEndpointDetailed:
         return cls(config=_from_dict(d, 'config', EndpointCoreConfigOutput),
                    creation_timestamp=d.get('creation_timestamp', None),
                    creator=d.get('creator', None),
+                   endpoint_url=d.get('endpoint_url', None),
                    id=d.get('id', None),
                    last_updated_timestamp=d.get('last_updated_timestamp', None),
                    name=d.get('name', None),
                    pending_config=_from_dict(d, 'pending_config', EndpointPendingConfig),
                    permission_level=_enum(d, 'permission_level', ServingEndpointDetailedPermissionLevel),
+                   route_optimized=d.get('route_optimized', None),
                    state=_from_dict(d, 'state', EndpointState),
                    tags=_repeated_dict(d, 'tags', EndpointTag),
                    task=d.get('task', None))
@@ -2760,6 +2800,7 @@ class ServingEndpointsAPI:
                config: EndpointCoreConfigInput,
                *,
                rate_limits: Optional[List[RateLimit]] = None,
+               route_optimized: Optional[bool] = None,
                tags: Optional[List[EndpointTag]] = None) -> Wait[ServingEndpointDetailed]:
         """Create a new serving endpoint.
         
@@ -2771,6 +2812,8 @@ class ServingEndpointsAPI:
         :param rate_limits: List[:class:`RateLimit`] (optional)
           Rate limits to be applied to the serving endpoint. NOTE: only external and foundation model
           endpoints are supported as of now.
+        :param route_optimized: bool (optional)
+          Enable route optimization for the serving endpoint.
         :param tags: List[:class:`EndpointTag`] (optional)
           Tags to be attached to the serving endpoint and automatically propagated to billing logs.
         
@@ -2782,6 +2825,7 @@ class ServingEndpointsAPI:
         if config is not None: body['config'] = config.as_dict()
         if name is not None: body['name'] = name
         if rate_limits is not None: body['rate_limits'] = [v.as_dict() for v in rate_limits]
+        if route_optimized is not None: body['route_optimized'] = route_optimized
         if tags is not None: body['tags'] = [v.as_dict() for v in tags]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
@@ -2796,9 +2840,13 @@ class ServingEndpointsAPI:
         config: EndpointCoreConfigInput,
         *,
         rate_limits: Optional[List[RateLimit]] = None,
+        route_optimized: Optional[bool] = None,
         tags: Optional[List[EndpointTag]] = None,
         timeout=timedelta(minutes=20)) -> ServingEndpointDetailed:
-        return self.create(config=config, name=name, rate_limits=rate_limits,
+        return self.create(config=config,
+                           name=name,
+                           rate_limits=rate_limits,
+                           route_optimized=route_optimized,
                            tags=tags).result(timeout=timeout)
 
     def delete(self, name: str):
@@ -2814,7 +2862,7 @@ class ServingEndpointsAPI:
 
         self._api.do('DELETE', f'/api/2.0/serving-endpoints/{name}', headers=headers)
 
-    def export_metrics(self, name: str):
+    def export_metrics(self, name: str) -> ExportMetricsResponse:
         """Get metrics of a serving endpoint.
         
         Retrieves the metrics associated with the provided serving endpoint in either Prometheus or
@@ -2823,12 +2871,13 @@ class ServingEndpointsAPI:
         :param name: str
           The name of the serving endpoint to retrieve metrics for. This field is required.
         
-        
+        :returns: :class:`ExportMetricsResponse`
         """
 
-        headers = {}
+        headers = {'Accept': 'text/plain', }
 
-        self._api.do('GET', f'/api/2.0/serving-endpoints/{name}/metrics', headers=headers)
+        res = self._api.do('GET', f'/api/2.0/serving-endpoints/{name}/metrics', headers=headers, raw=True)
+        return ExportMetricsResponse.from_dict(res)
 
     def get(self, name: str) -> ServingEndpointDetailed:
         """Get a single serving endpoint.

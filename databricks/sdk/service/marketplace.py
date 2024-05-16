@@ -1909,34 +1909,6 @@ class SortBy(Enum):
 
 
 @dataclass
-class SortBySpec:
-    sort_by: SortBy
-    """The field on which to sort the listing."""
-
-    sort_order: SortOrder
-    """The order in which to sort the listing."""
-
-    def as_dict(self) -> dict:
-        """Serializes the SortBySpec into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.sort_by is not None: body['sort_by'] = self.sort_by.value
-        if self.sort_order is not None: body['sort_order'] = self.sort_order.value
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> SortBySpec:
-        """Deserializes the SortBySpec from a dictionary."""
-        return cls(sort_by=_enum(d, 'sort_by', SortBy), sort_order=_enum(d, 'sort_order', SortOrder))
-
-
-class SortOrder(Enum):
-
-    SORT_ORDER_ASCENDING = 'SORT_ORDER_ASCENDING'
-    SORT_ORDER_DESCENDING = 'SORT_ORDER_DESCENDING'
-    SORT_ORDER_UNSPECIFIED = 'SORT_ORDER_UNSPECIFIED'
-
-
-@dataclass
 class TokenDetail:
     bearer_token: Optional[str] = None
 
@@ -2579,13 +2551,14 @@ class ConsumerListingsAPI:
              *,
              assets: Optional[List[AssetType]] = None,
              categories: Optional[List[Category]] = None,
+             is_ascending: Optional[bool] = None,
              is_free: Optional[bool] = None,
              is_private_exchange: Optional[bool] = None,
              is_staff_pick: Optional[bool] = None,
              page_size: Optional[int] = None,
              page_token: Optional[str] = None,
              provider_ids: Optional[List[str]] = None,
-             sort_by_spec: Optional[SortBySpec] = None,
+             sort_by: Optional[SortBy] = None,
              tags: Optional[List[ListingTag]] = None) -> Iterator[Listing]:
         """List listings.
         
@@ -2595,6 +2568,7 @@ class ConsumerListingsAPI:
           Matches any of the following asset types
         :param categories: List[:class:`Category`] (optional)
           Matches any of the following categories
+        :param is_ascending: bool (optional)
         :param is_free: bool (optional)
           Filters each listing based on if it is free.
         :param is_private_exchange: bool (optional)
@@ -2605,7 +2579,7 @@ class ConsumerListingsAPI:
         :param page_token: str (optional)
         :param provider_ids: List[str] (optional)
           Matches any of the following provider ids
-        :param sort_by_spec: :class:`SortBySpec` (optional)
+        :param sort_by: :class:`SortBy` (optional)
           Criteria for sorting the resulting set of listings.
         :param tags: List[:class:`ListingTag`] (optional)
           Matches any of the following tags
@@ -2616,13 +2590,14 @@ class ConsumerListingsAPI:
         query = {}
         if assets is not None: query['assets'] = [v.value for v in assets]
         if categories is not None: query['categories'] = [v.value for v in categories]
+        if is_ascending is not None: query['is_ascending'] = is_ascending
         if is_free is not None: query['is_free'] = is_free
         if is_private_exchange is not None: query['is_private_exchange'] = is_private_exchange
         if is_staff_pick is not None: query['is_staff_pick'] = is_staff_pick
         if page_size is not None: query['page_size'] = page_size
         if page_token is not None: query['page_token'] = page_token
         if provider_ids is not None: query['provider_ids'] = [v for v in provider_ids]
-        if sort_by_spec is not None: query['sort_by_spec'] = sort_by_spec.as_dict()
+        if sort_by is not None: query['sort_by'] = sort_by.value
         if tags is not None: query['tags'] = [v.as_dict() for v in tags]
         headers = {'Accept': 'application/json', }
 
@@ -2640,6 +2615,7 @@ class ConsumerListingsAPI:
                *,
                assets: Optional[List[AssetType]] = None,
                categories: Optional[List[Category]] = None,
+               is_ascending: Optional[bool] = None,
                is_free: Optional[bool] = None,
                is_private_exchange: Optional[bool] = None,
                page_size: Optional[int] = None,
@@ -2657,6 +2633,7 @@ class ConsumerListingsAPI:
           Matches any of the following asset types
         :param categories: List[:class:`Category`] (optional)
           Matches any of the following categories
+        :param is_ascending: bool (optional)
         :param is_free: bool (optional)
         :param is_private_exchange: bool (optional)
         :param page_size: int (optional)
@@ -2671,6 +2648,7 @@ class ConsumerListingsAPI:
         query = {}
         if assets is not None: query['assets'] = [v.value for v in assets]
         if categories is not None: query['categories'] = [v.value for v in categories]
+        if is_ascending is not None: query['is_ascending'] = is_ascending
         if is_free is not None: query['is_free'] = is_free
         if is_private_exchange is not None: query['is_private_exchange'] = is_private_exchange
         if page_size is not None: query['page_size'] = page_size

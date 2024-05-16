@@ -677,8 +677,6 @@
           [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
         :param pipeline_params: :class:`PipelineParams` (optional)
         :param python_named_params: Dict[str,str] (optional)
-          A map from keys to values for jobs with Python wheel task, for example `"python_named_params":
-          {"name": "task", "data": "dbfs:/path/to/data.json"}`.
         :param python_params: List[str] (optional)
           A list of parameters for jobs with Python tasks, for example `"python_params": ["john doe", "35"]`.
           The parameters are passed to Python file as command-line parameters. If specified upon `run-now`, it
@@ -868,8 +866,6 @@
           [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
         :param pipeline_params: :class:`PipelineParams` (optional)
         :param python_named_params: Dict[str,str] (optional)
-          A map from keys to values for jobs with Python wheel task, for example `"python_named_params":
-          {"name": "task", "data": "dbfs:/path/to/data.json"}`.
         :param python_params: List[str] (optional)
           A list of parameters for jobs with Python tasks, for example `"python_params": ["john doe", "35"]`.
           The parameters are passed to Python file as command-line parameters. If specified upon `run-now`, it
