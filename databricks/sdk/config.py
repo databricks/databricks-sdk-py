@@ -109,7 +109,7 @@ class Config:
             raise ValueError(message) from e
 
     def token(self) -> Token:
-        return self._credentials_provider.token(self)
+        return self._credentials_provider.oauth_token(self)
 
     def wrap_debug_info(self, message: str) -> str:
         debug_string = self.debug_string()

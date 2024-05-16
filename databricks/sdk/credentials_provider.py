@@ -34,7 +34,7 @@ class OAuthHeaderFactory(abc.ABC):
         ...
 
     @abc.abstractmethod
-    def token(self) -> Token:
+    def oauth_token(self) -> Token:
         ...
 
 
@@ -56,7 +56,7 @@ class OauthCredentialsProvider(CredentialsProvider):
     supports Oauth tokens"""
 
     @abc.abstractmethod
-    def token(self, cfg: 'Config') -> Token:
+    def oauth_token(self, cfg: 'Config') -> Token:
         ...
 
 
@@ -70,6 +70,7 @@ def credentials_provider(name: str, require: List[str]):
         @functools.wraps(func)
         def wrapper(cfg: 'Config') -> Optional[HeaderFactory]:
             for attr in require:
+                t = getattr(cfg, attr)
                 if not getattr(cfg, attr):
                     return None
             return func(cfg)
@@ -95,7 +96,7 @@ def oauth_credentials_provider(name: str, require: List[str]):
             return func(cfg)
 
         wrapper.auth_type = lambda: name
-        wrapper.token = lambda cfg: wrapper(cfg).token()
+        wrapper.oauth_token = lambda cfg: wrapper(cfg).oauth_token()
         return wrapper
 
     return inner
@@ -165,7 +166,7 @@ def oauth_service_principal(cfg: 'Config') -> Optional[HeaderFactory]:
         token = token_source.token()
         return {'Authorization': f'{token.token_type} {token.access_token}'}
 
-    inner.token = token_source.token
+    inner.oauth_token = token_source.token
     return inner
 
 
@@ -245,7 +246,7 @@ def azure_service_principal(cfg: 'Config') -> HeaderFactory:
         add_sp_management_token(cloud, headers)
         return headers
 
-    refreshed_headers.token = lambda: inner.token().access_token
+    refreshed_headers.oauth_token = lambda: inner.token().access_token
 
     return refreshed_headers
 
@@ -294,7 +295,7 @@ def github_oidc_azure(cfg: 'Config') -> Optional[HeaderFactory]:
         token = inner.token()
         return {'Authorization': f'{token.token_type} {token.access_token}'}
 
-    refreshed_headers.token = inner.token
+    refreshed_headers.oauth_token = inner.token
     return refreshed_headers
 
 
@@ -334,7 +335,7 @@ def google_credentials(cfg: 'Config') -> Optional[HeaderFactory]:
             headers["X-Databricks-GCP-SA-Access-Token"] = gcp_credentials.token
         return headers
 
-    refreshed_headers.token = token
+    refreshed_headers.oauth_token = token
     return refreshed_headers
 
 
@@ -371,7 +372,7 @@ def google_id(cfg: 'Config') -> Optional[HeaderFactory]:
             headers["X-Databricks-GCP-SA-Access-Token"] = gcp_impersonated_credentials.token
         return headers
 
-    refreshed_headers.token = token
+    refreshed_headers.oauth_token = token
     return refreshed_headers
 
 
@@ -593,7 +594,7 @@ def databricks_cli(cfg: 'Config') -> Optional[HeaderFactory]:
         token = token_source.token()
         return {'Authorization': f'{token.token_type} {token.access_token}'}
 
-    inner.token = token_source.token
+    inner.oauth_token = token_source.token
     return inner
 
 
@@ -657,7 +658,7 @@ class DefaultCredentials:
     def auth_type(self) -> str:
         return self._auth_type
 
-    def token(self, cfg: 'Config') -> Token:
+    def oauth_token(self, cfg: 'Config') -> Token:
         auth_providers = [
             pat_auth, basic_auth, metadata_service, oauth_service_principal, azure_service_principal,
             github_oidc_azure, azure_cli, external_browser, databricks_cli, runtime_native_auth,
@@ -670,7 +671,7 @@ class DefaultCredentials:
                 logger.debug(f"Ignoring {auth_type} auth, because {cfg.auth_type} is preferred")
                 continue
             logger.debug(f'Retrieving token for auth type: {auth_type}')
-            return provider.token(cfg)
+            return provider.oauth_token(cfg)
 
     def __call__(self, cfg: 'Config') -> HeaderFactory:
         auth_providers = [

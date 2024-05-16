@@ -12,6 +12,16 @@ def test_jobs(w):
     assert found > 0
 
 
+def test22():
+    w = WorkspaceClient(profile='DEFAULT')
+    url = "https://adb-309687753508875.15.azuredatabricks.net/serving-endpoints/terraform-test-model-serving-0guxj/invocations"
+    auth_details = f'"type":"workspace_permission","object_type":"serving-endpoints","object_path":"/serving-endpoints/778aadd00a0b4df7bd5f1910a84ed082","actions":["query_inference_endpoint"]'
+    auth_details = "[{" + auth_details + "}]"
+    t = w.api_client.get_oauth_token(auth_details)
+
+    print(t)
+
+
 def test_submitting_jobs(w, random, env_or_skip):
     from databricks.sdk.service import compute, jobs
 
