@@ -5,10 +5,10 @@ import pytest as pytest
 from pyfakefs.fake_filesystem_unittest import Patcher
 
 from databricks.sdk.core import Config
-from databricks.sdk.credentials_provider import credentials_provider
+from databricks.sdk.credentials_provider import credentials_strategy
 
 
-@credentials_provider('noop', [])
+@credentials_strategy('noop', [])
 def noop_credentials(_: any):
     return lambda: {}
 

@@ -11,8 +11,7 @@ from pathlib import Path
 
 import pytest
 
-from databricks.sdk.service.compute import (ClusterSpec, DataSecurityMode,
-                                            Library, ResultType)
+from databricks.sdk.service.compute import (ClusterSpec, DataSecurityMode, Library, ResultType)
 from databricks.sdk.service.jobs import NotebookTask, Task, ViewType
 from databricks.sdk.service.workspace import ImportFormat
 

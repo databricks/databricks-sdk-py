@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Optional, Any, get_args
 
 from databricks.sdk import AccountClient, WorkspaceClient
-from databricks.sdk.core import credentials_provider
+from databricks.sdk.core import credentials_strategy
 
 __dir__ = os.path.dirname(__file__)
 __examples__ = Path(f'{__dir__}/../examples').absolute()
@@ -451,7 +451,7 @@ Dataclasses
 
 if __name__ == '__main__':
 
-    @credentials_provider('noop', [])
+    @credentials_strategy('noop', [])
     def noop_credentials(_: any):
         return lambda: {}
 

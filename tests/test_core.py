@@ -15,12 +15,9 @@ import requests
 
 from databricks.sdk import WorkspaceClient
 from databricks.sdk.azure import ENVIRONMENTS, AzureEnvironment
-from databricks.sdk.core import (ApiClient, Config, DatabricksError,
-                                 StreamingResponse)
-from databricks.sdk.credentials_provider import (CliTokenSource,
-                                                 CredentialsProvider,
-                                                 DatabricksCliTokenSource,
-                                                 HeaderFactory, databricks_cli)
+from databricks.sdk.core import (ApiClient, Config, DatabricksError, StreamingResponse)
+from databricks.sdk.credentials_provider import (CliTokenSource, CredentialsStrategy,
+                                                 DatabricksCliTokenSource, HeaderFactory, databricks_cli)
 from databricks.sdk.environments import Cloud, DatabricksEnvironment
 from databricks.sdk.service.catalog import PermissionsChange
 from databricks.sdk.service.iam import AccessControlRequest
@@ -207,7 +204,7 @@ def test_extra_and_upstream_user_agent(monkeypatch):
 
 def test_config_copy_shallow_copies_credential_provider():
 
-    class TestCredentialsProvider(CredentialsProvider):
+    class TestCredentialsStrategy(CredentialsStrategy):
 
         def __init__(self):
             super().__init__()
@@ -222,7 +219,7 @@ def test_config_copy_shallow_copies_credential_provider():
         def refresh(self):
             self._token = "token2"
 
-    credential_provider = TestCredentialsProvider()
+    credential_provider = TestCredentialsStrategy()
     config = Config(credentials_provider=credential_provider)
     config_copy = config.copy()
 

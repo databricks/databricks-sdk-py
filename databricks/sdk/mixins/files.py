@@ -9,8 +9,7 @@ from abc import ABC, abstractmethod
 from collections import deque
 from io import BytesIO
 from types import TracebackType
-from typing import (TYPE_CHECKING, AnyStr, BinaryIO, Generator, Iterable,
-                    Iterator, Type, Union)
+from typing import (TYPE_CHECKING, AnyStr, BinaryIO, Generator, Iterable, Iterator, Type, Union)
 from urllib import parse
 
 from .._property import _cached_property
