@@ -70,7 +70,7 @@ def credentials_provider(name: str, require: List[str]):
         @functools.wraps(func)
         def wrapper(cfg: 'Config') -> Optional[HeaderFactory]:
             for attr in require:
-                t = getattr(cfg, attr)
+                getattr(cfg, attr)
                 if not getattr(cfg, attr):
                     return None
             return func(cfg)
@@ -666,7 +666,7 @@ class DefaultCredentials:
         ]
         for provider in auth_providers:
             auth_type = provider.auth_type()
-            if cfg.auth_type and auth_type != cfg.auth_type:
+            if auth_type != self._auth_type:
                 # ignore other auth types if one is explicitly enforced
                 logger.debug(f"Ignoring {auth_type} auth, because {cfg.auth_type} is preferred")
                 continue

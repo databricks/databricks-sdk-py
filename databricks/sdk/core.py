@@ -110,7 +110,9 @@ class ApiClient:
         return flattened
 
     def get_oauth_token(self, auth_details: str) -> Token:
-        original_token = self._cfg.token()
+        if not self._cfg.auth_type:
+            self._cfg.authenticate()
+        original_token = self._cfg.oauth_token()
         path = "/oidc/v1/token"
         headers = {"Content-Type": "application/x-www-form-urlencoded"}
         params = {
