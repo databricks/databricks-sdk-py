@@ -667,10 +667,8 @@ class DefaultCredentials:
         for provider in auth_providers:
             auth_type = provider.auth_type()
             if auth_type != self._auth_type:
-                # ignore other auth types if one is explicitly enforced
-                logger.debug(f"Ignoring {auth_type} auth, because {cfg.auth_type} is preferred")
+                # ignore other auth types if they don't match the selected one
                 continue
-            logger.debug(f'Retrieving token for auth type: {auth_type}')
             return provider.oauth_token(cfg)
 
     def __call__(self, cfg: 'Config') -> HeaderFactory:
