@@ -145,11 +145,14 @@ class ApiClient:
         if not len(response.content):
             return resp
 
-        json = response.json()
-        if isinstance(json, list):
-            return json
+        jsonResponse = response.json()
+        if jsonResponse is None:
+            return resp
 
-        return {**resp, **json}
+        if isinstance(jsonResponse, list):
+            return jsonResponse
+
+        return {**resp, **jsonResponse}
 
     @staticmethod
     def _is_retryable(err: BaseException) -> Optional[str]:
