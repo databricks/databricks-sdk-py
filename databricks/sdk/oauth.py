@@ -78,11 +78,10 @@ class Token:
 
     @staticmethod
     def from_dict(raw: dict) -> 'Token':
-        expiry = None
         if 'expiry' in raw:
             expiry = datetime.fromisoformat(raw['expiry'])
         elif 'expires_in' in raw:
-            datetime.now() + timedelta(seconds=raw['expires_in'])
+            expiry = datetime.now() + timedelta(seconds=raw['expires_in'])
         else:
             raise ValueError("Token expiry not found")
         return Token(access_token=raw['access_token'],

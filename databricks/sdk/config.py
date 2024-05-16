@@ -15,9 +15,8 @@ from .clock import Clock, RealClock
 from .credentials_provider import CredentialsProvider, DefaultCredentials
 from .environments import (ALL_ENVS, DEFAULT_ENVIRONMENT, Cloud,
                            DatabricksEnvironment)
-from .oauth import OidcEndpoints
+from .oauth import OidcEndpoints, Token
 from .version import __version__
-from .oauth import Token
 
 logger = logging.getLogger('databricks.sdk')
 

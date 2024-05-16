@@ -112,9 +112,7 @@ class ApiClient:
     def get_oauth_token(self, auth_details: str) -> Token:
         original_token = self._cfg.token()
         path = "/oidc/v1/token"
-        headers = {
-            "Content-Type": "application/x-www-form-urlencoded"
-        }
+        headers = {"Content-Type": "application/x-www-form-urlencoded"}
         params = {
             "grant_type": "urn:ietf:params:oauth:grant-type:jwt-bearer",
             "authorization_details": auth_details,

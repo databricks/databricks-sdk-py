@@ -86,6 +86,7 @@ def oauth_credentials_provider(name: str, require: List[str]):
     attribute names to be present for this function to be called. """
 
     def inner(func: Callable[['Config'], OAuthHeaderFactory]) -> OauthCredentialsProvider:
+
         @functools.wraps(func)
         def wrapper(cfg: 'Config') -> Optional[OAuthHeaderFactory]:
             for attr in require:
@@ -163,6 +164,7 @@ def oauth_service_principal(cfg: 'Config') -> Optional[HeaderFactory]:
     def inner() -> Dict[str, str]:
         token = token_source.token()
         return {'Authorization': f'{token.token_type} {token.access_token}'}
+
     inner.token = token_source.token
     return inner
 
@@ -219,7 +221,7 @@ def _ensure_host_present(cfg: 'Config', token_source_for: Callable[[str], TokenS
 
 
 @oauth_credentials_provider('azure-client-secret',
-                      ['is_azure', 'azure_client_id', 'azure_client_secret', 'azure_tenant_id'])
+                            ['is_azure', 'azure_client_id', 'azure_client_secret', 'azure_tenant_id'])
 def azure_service_principal(cfg: 'Config') -> HeaderFactory:
     """ Adds refreshed Azure Active Directory (AAD) Service Principal OAuth tokens
     to every request, while automatically resolving different Azure environment endpoints. """
@@ -242,6 +244,7 @@ def azure_service_principal(cfg: 'Config') -> HeaderFactory:
         add_workspace_id_header(cfg, headers)
         add_sp_management_token(cloud, headers)
         return headers
+
     refreshed_headers.token = lambda: inner.token().access_token
 
     return refreshed_headers
@@ -290,6 +293,7 @@ def github_oidc_azure(cfg: 'Config') -> Optional[HeaderFactory]:
     def refreshed_headers() -> Dict[str, str]:
         token = inner.token()
         return {'Authorization': f'{token.token_type} {token.access_token}'}
+
     refreshed_headers.token = inner.token
     return refreshed_headers
 
@@ -329,6 +333,7 @@ def google_credentials(cfg: 'Config') -> Optional[HeaderFactory]:
             gcp_credentials.refresh(request)
             headers["X-Databricks-GCP-SA-Access-Token"] = gcp_credentials.token
         return headers
+
     refreshed_headers.token = token
     return refreshed_headers
 
@@ -587,6 +592,7 @@ def databricks_cli(cfg: 'Config') -> Optional[HeaderFactory]:
     def inner() -> Dict[str, str]:
         token = token_source.token()
         return {'Authorization': f'{token.token_type} {token.access_token}'}
+
     inner.token = token_source.token
     return inner
 
@@ -665,7 +671,6 @@ class DefaultCredentials:
                 continue
             logger.debug(f'Retrieving token for auth type: {auth_type}')
             return provider.token(cfg)
-
 
     def __call__(self, cfg: 'Config') -> HeaderFactory:
         auth_providers = [
