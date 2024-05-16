@@ -10,13 +10,6 @@ def test_jobs(w):
         found += 1
     assert found > 0
 
-def test22():
-    w = WorkspaceClient(profile='DEFAULT')
-    c = w._config
-    t = c.token()
-    print(t.expiry)
-
-
 
 def test_submitting_jobs(w, random, env_or_skip):
     from databricks.sdk.service import compute, jobs
