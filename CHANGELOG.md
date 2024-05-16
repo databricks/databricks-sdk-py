@@ -1,5 +1,10 @@
 # Version changelog
 
+## 0.27.1
+
+* Fix null body response to empty in ApiClient ([#579](https://github.com/databricks/databricks-sdk-py/pull/579)).
+
+
 ## test
 
 ## 0.27.0
