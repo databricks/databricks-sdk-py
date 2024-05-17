@@ -56,19 +56,18 @@ class OauthCredentialsStrategy(CredentialsStrategy):
     """ OauthCredentialsProvider is a CredentialsProvider which
     supports Oauth tokens"""
 
-    def __init__(self, auth_type: str, headers_provider: Callable[['Config'], CredentialsProvider], token_provider: Callable[['Config'], Token]):
+    def __init__(self, auth_type: str, headers_provider: Callable[['Config'], OAuthCredentialsProvider]):
         self._headers_provider = headers_provider
-        self._token_provider = token_provider
         self._auth_type = auth_type
 
     def auth_type(self) -> str:
         return self._auth_type
 
-    def __call__(self, cfg: 'Config') -> CredentialsProvider:
+    def __call__(self, cfg: 'Config') -> OAuthCredentialsProvider:
         return self._headers_provider(cfg)
 
     def oauth_token(self, cfg: 'Config') -> Token:
-        return self._token_provider(cfg)
+        return self._headers_provider(cfg).oauth_token()
 
 
 def credentials_strategy(name: str, require: List[str]):
@@ -106,7 +105,7 @@ def oauth_credentials_strategy(name: str, require: List[str]):
                     return None
             return func(cfg)
 
-        return OauthCredentialsStrategy(name, wrapper, lambda cfg: wrapper(cfg).oauth_token())
+        return OauthCredentialsStrategy(name, wrapper)
 
     return inner
 
