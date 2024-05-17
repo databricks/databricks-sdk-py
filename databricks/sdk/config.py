@@ -10,6 +10,7 @@ from typing import Dict, Iterable, Optional
 
 import requests
 
+from . import user_agent
 from .clock import Clock, RealClock
 from .credentials_provider import CredentialsProvider, DefaultCredentials
 from .environments import (ALL_ENVS, AzureEnvironment, Cloud,
@@ -211,38 +212,18 @@ class Config:
     @property
     def user_agent(self):
         """ Returns User-Agent header used by this SDK """
-        py_version = platform.python_version()
-        os_name = platform.uname().system.lower()
 
-        ua = [
-            f"{self._product}/{self._product_version}", f"databricks-sdk-py/{__version__}",
-            f"python/{py_version}", f"os/{os_name}", f"auth/{self.auth_type}",
-        ]
+        # global user agent includes SDK version, product name & version, platform info,
+        # and global extra info
+        ua = [user_agent.to_string()]
+        # Python SDK supports local extra info, which needs to be added in addition to global info
         if len(self._user_agent_other_info) > 0:
             ua.append(' '.join(self._user_agent_other_info))
-        if len(self._upstream_user_agent) > 0:
-            ua.append(self._upstream_user_agent)
-        if 'DATABRICKS_RUNTIME_VERSION' in os.environ:
-            runtime_version = os.environ['DATABRICKS_RUNTIME_VERSION']
-            if runtime_version != '':
-                runtime_version = self._sanitize_header_value(runtime_version)
-                ua.append(f'runtime/{runtime_version}')
-
         return ' '.join(ua)
-
-    @staticmethod
-    def _sanitize_header_value(value: str) -> str:
-        value = value.replace(' ', '-')
-        value = value.replace('/', '-')
-        return value
 
     @property
     def _upstream_user_agent(self) -> str:
-        product = os.environ.get('DATABRICKS_SDK_UPSTREAM', None)
-        product_version = os.environ.get('DATABRICKS_SDK_UPSTREAM_VERSION', None)
-        if product is not None and product_version is not None:
-            return f"upstream/{product} upstream-version/{product_version}"
-        return ""
+        return " ".join(f"{k}/{v}" for k, v in user_agent.get_upstream_user_agent_info())
 
     def with_user_agent_extra(self, key: str, value: str) -> 'Config':
         self._user_agent_other_info.append(f"{key}/{value}")
