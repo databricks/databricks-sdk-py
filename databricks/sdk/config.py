@@ -92,8 +92,14 @@ class Config:
         self._inner = {}
         self._user_agent_other_info = []
         if credentials_strategy and credentials_provider:
-            raise ValueError("When providing `credentials_strategy` field, `credential_provider` cannot be specified.")
-        self._credentials_strategy = next(s for s in [credentials_strategy, credentials_provider, DefaultCredentials()] if s is not None)
+            raise ValueError(
+                "When providing `credentials_strategy` field, `credential_provider` cannot be specified.")
+        if credentials_provider:
+            logger.warning(
+                "parameter 'credentials_provider' is deprecated. Use 'credentials_strategy' instead.")
+        self._credentials_strategy = next(
+            s for s in [credentials_strategy, credentials_provider,
+                        DefaultCredentials()] if s is not None)
         if 'databricks_environment' in kwargs:
             self.databricks_environment = kwargs['databricks_environment']
             del kwargs['databricks_environment']

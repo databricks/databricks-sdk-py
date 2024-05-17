@@ -132,6 +132,7 @@ class WorkspaceClient:
                  product="unknown",
                  product_version="0.0.0",
                  credentials_strategy: CredentialsStrategy = None,
+                 credentials_provider: CredentialsStrategy = None,
                  config: client.Config = None):
         if not config:
             config = client.Config(host=host,
@@ -153,6 +154,7 @@ class WorkspaceClient:
                                    google_credentials=google_credentials,
                                    google_service_account=google_service_account,
                                    credentials_strategy=credentials_strategy,
+                                   credentials_provider=credentials_provider,
                                    debug_truncate_bytes=debug_truncate_bytes,
                                    debug_headers=debug_headers,
                                    product=product,
@@ -701,6 +703,7 @@ class AccountClient:
                  product="unknown",
                  product_version="0.0.0",
                  credentials_strategy: CredentialsStrategy = None,
+                 credentials_provider: CredentialsStrategy = None,
                  config: client.Config = None):
         if not config:
             config = client.Config(host=host,
@@ -722,6 +725,7 @@ class AccountClient:
                                    google_credentials=google_credentials,
                                    google_service_account=google_service_account,
                                    credentials_strategy=credentials_strategy,
+                                   credentials_provider=credentials_provider,
                                    debug_truncate_bytes=debug_truncate_bytes,
                                    debug_headers=debug_headers,
                                    product=product,
