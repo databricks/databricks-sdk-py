@@ -83,5 +83,3 @@ def to_string():
     base.extend(get_upstream_user_agent_info())
     base.extend(_get_runtime_info())
     return " ".join(f"{k}/{v}" for k, v in base)
-
-

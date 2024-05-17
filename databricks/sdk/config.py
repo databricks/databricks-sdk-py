@@ -3,7 +3,6 @@ import copy
 import logging
 import os
 import pathlib
-import platform
 import sys
 import urllib.parse
 from typing import Dict, Iterable, Optional
@@ -16,7 +15,6 @@ from .credentials_provider import CredentialsProvider, DefaultCredentials
 from .environments import (ALL_ENVS, AzureEnvironment, Cloud,
                            DatabricksEnvironment, get_environment_for_hostname)
 from .oauth import OidcEndpoints
-from .version import __version__
 
 logger = logging.getLogger('databricks.sdk')
 

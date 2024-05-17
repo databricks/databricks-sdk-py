@@ -1,4 +1,5 @@
 import pytest
+
 from databricks.sdk.version import __version__
 
 
