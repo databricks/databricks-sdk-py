@@ -10,11 +10,10 @@ from typing import Dict, Iterable, Optional
 
 import requests
 
-from .azure import AzureEnvironment
 from .clock import Clock, RealClock
 from .credentials_provider import CredentialsProvider, DefaultCredentials
-from .environments import (ALL_ENVS, DEFAULT_ENVIRONMENT, Cloud,
-                           DatabricksEnvironment)
+from .environments import (ALL_ENVS, AzureEnvironment, Cloud,
+                           DatabricksEnvironment, get_environment_for_hostname)
 from .oauth import OidcEndpoints
 from .version import __version__
 
@@ -154,11 +153,7 @@ class Config:
         """Returns the environment based on configuration."""
         if self.databricks_environment:
             return self.databricks_environment
-        if self.host:
-            for environment in ALL_ENVS:
-                if self.host.endswith(environment.dns_zone):
-                    return environment
-        if self.azure_workspace_resource_id:
+        if not self.host and self.azure_workspace_resource_id:
             azure_env = self._get_azure_environment_name()
             for environment in ALL_ENVS:
                 if environment.cloud != Cloud.AZURE:
@@ -168,10 +163,12 @@ class Config:
                 if environment.dns_zone.startswith(".dev") or environment.dns_zone.startswith(".staging"):
                     continue
                 return environment
-        return DEFAULT_ENVIRONMENT
+        return get_environment_for_hostname(self.host)
 
     @property
     def is_azure(self) -> bool:
+        if self.azure_workspace_resource_id:
+            return True
         return self.environment.cloud == Cloud.AZURE
 
     @property
