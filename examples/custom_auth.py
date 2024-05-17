@@ -1,10 +1,10 @@
-from databricks.sdk.core import (ApiClient, Config, HeaderFactory,
+from databricks.sdk.core import (ApiClient, Config, CredentialsProvider,
                                  credentials_strategy)
 from databricks.sdk.service.iam import CurrentUserAPI
 
 
 @credentials_strategy("custom", ["host"])
-def user_input_token(cfg: Config) -> HeaderFactory:
+def user_input_token(cfg: Config) -> CredentialsProvider:
     pat = input("Enter Databricks PAT: ")
 
     def inner() -> dict[str, str]:

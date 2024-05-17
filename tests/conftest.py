@@ -15,7 +15,7 @@ def noop_credentials(_: any):
 
 @pytest.fixture
 def config():
-    return Config(host='http://localhost', credentials_provider=noop_credentials)
+    return Config(host='http://localhost', credentials_strategy=noop_credentials)
 
 
 @pytest.fixture

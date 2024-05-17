@@ -5,48 +5,85 @@ from databricks.sdk.credentials_provider import CredentialsStrategy
 from databricks.sdk.mixins.compute import ClustersExt
 from databricks.sdk.mixins.files import DbfsExt
 from databricks.sdk.mixins.workspace import WorkspaceExt
-from databricks.sdk.service.billing import (BillableUsageAPI, BudgetsAPI, LogDeliveryAPI)
-from databricks.sdk.service.catalog import (
-    AccountMetastoreAssignmentsAPI, AccountMetastoresAPI, AccountStorageCredentialsAPI, ArtifactAllowlistsAPI,
-    CatalogsAPI, ConnectionsAPI, ExternalLocationsAPI, FunctionsAPI, GrantsAPI, LakehouseMonitorsAPI,
-    MetastoresAPI, ModelVersionsAPI, OnlineTablesAPI, RegisteredModelsAPI, SchemasAPI, StorageCredentialsAPI,
-    SystemSchemasAPI, TableConstraintsAPI, TablesAPI, VolumesAPI, WorkspaceBindingsAPI)
-from databricks.sdk.service.compute import (ClusterPoliciesAPI, ClustersAPI, CommandExecutionAPI,
-                                            GlobalInitScriptsAPI, InstancePoolsAPI, InstanceProfilesAPI,
-                                            LibrariesAPI, PolicyFamiliesAPI)
+from databricks.sdk.service.billing import (BillableUsageAPI, BudgetsAPI,
+                                            LogDeliveryAPI)
+from databricks.sdk.service.catalog import (AccountMetastoreAssignmentsAPI,
+                                            AccountMetastoresAPI,
+                                            AccountStorageCredentialsAPI,
+                                            ArtifactAllowlistsAPI, CatalogsAPI,
+                                            ConnectionsAPI,
+                                            ExternalLocationsAPI, FunctionsAPI,
+                                            GrantsAPI, LakehouseMonitorsAPI,
+                                            MetastoresAPI, ModelVersionsAPI,
+                                            OnlineTablesAPI,
+                                            RegisteredModelsAPI, SchemasAPI,
+                                            StorageCredentialsAPI,
+                                            SystemSchemasAPI,
+                                            TableConstraintsAPI, TablesAPI,
+                                            VolumesAPI, WorkspaceBindingsAPI)
+from databricks.sdk.service.compute import (ClusterPoliciesAPI, ClustersAPI,
+                                            CommandExecutionAPI,
+                                            GlobalInitScriptsAPI,
+                                            InstancePoolsAPI,
+                                            InstanceProfilesAPI, LibrariesAPI,
+                                            PolicyFamiliesAPI)
 from databricks.sdk.service.dashboards import LakeviewAPI
 from databricks.sdk.service.files import DbfsAPI, FilesAPI
-from databricks.sdk.service.iam import (AccountAccessControlAPI, AccountAccessControlProxyAPI,
-                                        AccountGroupsAPI, AccountServicePrincipalsAPI, AccountUsersAPI,
-                                        CurrentUserAPI, GroupsAPI, PermissionMigrationAPI, PermissionsAPI,
-                                        ServicePrincipalsAPI, UsersAPI, WorkspaceAssignmentAPI)
+from databricks.sdk.service.iam import (AccountAccessControlAPI,
+                                        AccountAccessControlProxyAPI,
+                                        AccountGroupsAPI,
+                                        AccountServicePrincipalsAPI,
+                                        AccountUsersAPI, CurrentUserAPI,
+                                        GroupsAPI, PermissionMigrationAPI,
+                                        PermissionsAPI, ServicePrincipalsAPI,
+                                        UsersAPI, WorkspaceAssignmentAPI)
 from databricks.sdk.service.jobs import JobsAPI
-from databricks.sdk.service.marketplace import (ConsumerFulfillmentsAPI, ConsumerInstallationsAPI,
-                                                ConsumerListingsAPI, ConsumerPersonalizationRequestsAPI,
-                                                ConsumerProvidersAPI, ProviderExchangeFiltersAPI,
-                                                ProviderExchangesAPI, ProviderFilesAPI, ProviderListingsAPI,
-                                                ProviderPersonalizationRequestsAPI,
-                                                ProviderProviderAnalyticsDashboardsAPI, ProviderProvidersAPI)
+from databricks.sdk.service.marketplace import (
+    ConsumerFulfillmentsAPI, ConsumerInstallationsAPI, ConsumerListingsAPI,
+    ConsumerPersonalizationRequestsAPI, ConsumerProvidersAPI,
+    ProviderExchangeFiltersAPI, ProviderExchangesAPI, ProviderFilesAPI,
+    ProviderListingsAPI, ProviderPersonalizationRequestsAPI,
+    ProviderProviderAnalyticsDashboardsAPI, ProviderProvidersAPI)
 from databricks.sdk.service.ml import ExperimentsAPI, ModelRegistryAPI
-from databricks.sdk.service.oauth2 import (CustomAppIntegrationAPI, OAuthPublishedAppsAPI,
-                                           PublishedAppIntegrationAPI, ServicePrincipalSecretsAPI)
+from databricks.sdk.service.oauth2 import (CustomAppIntegrationAPI,
+                                           OAuthPublishedAppsAPI,
+                                           PublishedAppIntegrationAPI,
+                                           ServicePrincipalSecretsAPI)
 from databricks.sdk.service.pipelines import PipelinesAPI
-from databricks.sdk.service.provisioning import (CredentialsAPI, EncryptionKeysAPI, NetworksAPI,
-                                                 PrivateAccessAPI, StorageAPI, VpcEndpointsAPI, Workspace,
-                                                 WorkspacesAPI)
+from databricks.sdk.service.provisioning import (CredentialsAPI,
+                                                 EncryptionKeysAPI,
+                                                 NetworksAPI, PrivateAccessAPI,
+                                                 StorageAPI, VpcEndpointsAPI,
+                                                 Workspace, WorkspacesAPI)
 from databricks.sdk.service.serving import AppsAPI, ServingEndpointsAPI
-from databricks.sdk.service.settings import (
-    AccountIpAccessListsAPI, AccountSettingsAPI, AutomaticClusterUpdateAPI, ComplianceSecurityProfileAPI,
-    CredentialsManagerAPI, CspEnablementAccountAPI, DefaultNamespaceAPI, EnhancedSecurityMonitoringAPI,
-    EsmEnablementAccountAPI, IpAccessListsAPI, NetworkConnectivityAPI, PersonalComputeAPI,
-    RestrictWorkspaceAdminsAPI, SettingsAPI, TokenManagementAPI, TokensAPI, WorkspaceConfAPI)
-from databricks.sdk.service.sharing import (CleanRoomsAPI, ProvidersAPI, RecipientActivationAPI,
+from databricks.sdk.service.settings import (AccountIpAccessListsAPI,
+                                             AccountSettingsAPI,
+                                             AutomaticClusterUpdateAPI,
+                                             ComplianceSecurityProfileAPI,
+                                             CredentialsManagerAPI,
+                                             CspEnablementAccountAPI,
+                                             DefaultNamespaceAPI,
+                                             EnhancedSecurityMonitoringAPI,
+                                             EsmEnablementAccountAPI,
+                                             IpAccessListsAPI,
+                                             NetworkConnectivityAPI,
+                                             PersonalComputeAPI,
+                                             RestrictWorkspaceAdminsAPI,
+                                             SettingsAPI, TokenManagementAPI,
+                                             TokensAPI, WorkspaceConfAPI)
+from databricks.sdk.service.sharing import (CleanRoomsAPI, ProvidersAPI,
+                                            RecipientActivationAPI,
                                             RecipientsAPI, SharesAPI)
-from databricks.sdk.service.sql import (AlertsAPI, DashboardsAPI, DashboardWidgetsAPI, DataSourcesAPI,
-                                        DbsqlPermissionsAPI, QueriesAPI, QueryHistoryAPI,
-                                        QueryVisualizationsAPI, StatementExecutionAPI, WarehousesAPI)
-from databricks.sdk.service.vectorsearch import (VectorSearchEndpointsAPI, VectorSearchIndexesAPI)
-from databricks.sdk.service.workspace import (GitCredentialsAPI, ReposAPI, SecretsAPI, WorkspaceAPI)
+from databricks.sdk.service.sql import (AlertsAPI, DashboardsAPI,
+                                        DashboardWidgetsAPI, DataSourcesAPI,
+                                        DbsqlPermissionsAPI, QueriesAPI,
+                                        QueryHistoryAPI,
+                                        QueryVisualizationsAPI,
+                                        StatementExecutionAPI, WarehousesAPI)
+from databricks.sdk.service.vectorsearch import (VectorSearchEndpointsAPI,
+                                                 VectorSearchIndexesAPI)
+from databricks.sdk.service.workspace import (GitCredentialsAPI, ReposAPI,
+                                              SecretsAPI, WorkspaceAPI)
 
 
 def _make_dbutils(config: client.Config):

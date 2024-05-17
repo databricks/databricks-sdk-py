@@ -21,6 +21,10 @@ import requests.auth
 # See https://stackoverflow.com/a/75466778/277035 for more info
 NO_ORIGIN_FOR_SPA_CLIENT_ERROR = 'AADSTS9002327'
 
+URL_ENCODED_CONTENT_TYPE = "application/x-www-form-urlencoded"
+JWT_BEARER_GRANT_TYPE = "urn:ietf:params:oauth:grant-type:jwt-bearer"
+OIDC_TOKEN_PATH = "/oidc/v1/token"
+
 logger = logging.getLogger(__name__)
 
 
@@ -78,15 +82,9 @@ class Token:
 
     @staticmethod
     def from_dict(raw: dict) -> 'Token':
-        if 'expiry' in raw:
-            expiry = datetime.fromisoformat(raw['expiry'])
-        elif 'expires_in' in raw:
-            expiry = datetime.now() + timedelta(seconds=raw['expires_in'])
-        else:
-            raise ValueError("Token expiry not found")
         return Token(access_token=raw['access_token'],
                      token_type=raw['token_type'],
-                     expiry=expiry,
+                     expiry=datetime.fromisoformat(raw['expiry']),
                      refresh_token=raw.get('refresh_token'))
 
     def jwt_claims(self) -> Dict[str, str]:
