@@ -2,7 +2,31 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Optional
 
-from .azure import ARM_DATABRICKS_RESOURCE_ID, ENVIRONMENTS, AzureEnvironment
+
+@dataclass
+class AzureEnvironment:
+    name: str
+    service_management_endpoint: str
+    resource_manager_endpoint: str
+    active_directory_endpoint: str
+
+
+ARM_DATABRICKS_RESOURCE_ID = "2ff814a6-3304-4ab8-85cb-cd0e6f879c1d"
+
+ENVIRONMENTS = dict(
+    PUBLIC=AzureEnvironment(name="PUBLIC",
+                            service_management_endpoint="https://management.core.windows.net/",
+                            resource_manager_endpoint="https://management.azure.com/",
+                            active_directory_endpoint="https://login.microsoftonline.com/"),
+    USGOVERNMENT=AzureEnvironment(name="USGOVERNMENT",
+                                  service_management_endpoint="https://management.core.usgovcloudapi.net/",
+                                  resource_manager_endpoint="https://management.usgovcloudapi.net/",
+                                  active_directory_endpoint="https://login.microsoftonline.us/"),
+    CHINA=AzureEnvironment(name="CHINA",
+                           service_management_endpoint="https://management.core.chinacloudapi.cn/",
+                           resource_manager_endpoint="https://management.chinacloudapi.cn/",
+                           active_directory_endpoint="https://login.chinacloudapi.cn/"),
+)
 
 
 class Cloud(Enum):
@@ -70,3 +94,10 @@ ALL_ENVS = [
     DatabricksEnvironment(Cloud.GCP, ".staging.gcp.databricks.com"),
     DatabricksEnvironment(Cloud.GCP, ".gcp.databricks.com")
 ]
+
+
+def get_environment_for_hostname(hostname: str) -> DatabricksEnvironment:
+    for env in ALL_ENVS:
+        if hostname.endswith(env.dns_zone):
+            return env
+    return DEFAULT_ENVIRONMENT
