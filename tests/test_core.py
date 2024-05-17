@@ -200,9 +200,8 @@ def test_extra_and_upstream_user_agent(monkeypatch):
         .with_user_agent_extra('test-extra-2', '2')
 
     assert config.user_agent == (
-        f"test/0.0.0 databricks-sdk-py/{__version__} python/3.0.0 os/testos auth/basic"
-        f" test-extra-1/1 test-extra-2/2 upstream/upstream-product upstream-version/0.0.1"
-        " runtime/13.1-anything-else")
+        f"test/0.0.0 databricks-sdk-py/{__version__} python/3.0.0 os/testos upstream/upstream-product "
+        f"upstream-version/0.0.1 runtime/13.1-anything-else test-extra-1/1 test-extra-2/2")
 
 
 def test_config_copy_shallow_copies_credential_provider():

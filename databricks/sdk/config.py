@@ -104,6 +104,7 @@ class Config:
             self.init_auth()
             self._product = product
             self._product_version = product_version
+            user_agent.with_product(product, product_version)
         except ValueError as e:
             message = self.wrap_debug_info(str(e))
             raise ValueError(message) from e
