@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 from typing import Dict
 
 from .oauth import TokenSource
