@@ -27,7 +27,7 @@ logger = logging.getLogger('databricks.sdk')
 
 
 class OAuthCredentialsProvider:
-
+    """ OAuthCredentialsProvider is a type of CredentialsProvider which exposes OAuth tokens. """
     def __init__(self, credentials_provider: CredentialsProvider, token_provider: Callable[[], Token]):
         self._credentials_provider = credentials_provider
         self._token_provider = token_provider
