@@ -167,6 +167,8 @@ class Config:
 
     @property
     def is_azure(self) -> bool:
+        if self.azure_workspace_resource_id:
+            return True
         return self.environment.cloud == Cloud.AZURE
 
     @property

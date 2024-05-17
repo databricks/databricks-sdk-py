@@ -238,7 +238,8 @@ class ApiClient:
             if not response.ok: # internally calls response.raise_for_status()
                 # TODO: experiment with traceback pruning for better readability
                 # See https://stackoverflow.com/a/58821552/277035
-                response.json()
+                payload = response.json()
+                raise self._make_nicer_error(response=response, **payload) from None
             # Private link failures happen via a redirect to the login page. From a requests-perspective, the request
             # is successful, but the response is not what we expect. We need to handle this case separately.
             if _is_private_link_redirect(response):

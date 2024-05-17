@@ -97,6 +97,8 @@ ALL_ENVS = [
 
 
 def get_environment_for_hostname(hostname: str) -> DatabricksEnvironment:
+    if not hostname:
+        return DEFAULT_ENVIRONMENT
     for env in ALL_ENVS:
         if hostname.endswith(env.dns_zone):
             return env
