@@ -20,7 +20,8 @@ from databricks.sdk.credentials_provider import (CliTokenSource,
                                                  CredentialsProvider,
                                                  DatabricksCliTokenSource,
                                                  HeaderFactory, databricks_cli)
-from databricks.sdk.environments import Cloud, DatabricksEnvironment, ENVIRONMENTS, AzureEnvironment
+from databricks.sdk.environments import (ENVIRONMENTS, AzureEnvironment, Cloud,
+                                         DatabricksEnvironment)
 from databricks.sdk.service.catalog import PermissionsChange
 from databricks.sdk.service.iam import AccessControlRequest
 from databricks.sdk.version import __version__
