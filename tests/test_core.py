@@ -14,11 +14,11 @@ import pytest
 import requests
 
 from databricks.sdk import WorkspaceClient
-from databricks.sdk.azure import ENVIRONMENTS, AzureEnvironment
 from databricks.sdk.core import (ApiClient, Config, DatabricksError, StreamingResponse)
 from databricks.sdk.credentials_provider import (CliTokenSource, CredentialsStrategy,
                                                  DatabricksCliTokenSource, CredentialsProvider, databricks_cli)
-from databricks.sdk.environments import Cloud, DatabricksEnvironment
+from databricks.sdk.environments import (ENVIRONMENTS, AzureEnvironment, Cloud,
+                                         DatabricksEnvironment)
 from databricks.sdk.service.catalog import PermissionsChange
 from databricks.sdk.service.iam import AccessControlRequest
 from databricks.sdk.version import __version__
@@ -330,6 +330,21 @@ def test_shares(config, requests_mock):
     assert requests_mock.call_count == 1
     assert requests_mock.called
     assert requests_mock.last_request.json() == {'changes': [{'principal': 'principal'}]}
+
+
+def test_deletes(config, requests_mock):
+    requests_mock.delete("http://localhost/api/2.0/preview/sql/alerts/alertid",
+                         request_headers={"User-Agent": config.user_agent},
+                         text="null",
+                         )
+
+    w = WorkspaceClient(config=config)
+    res = w.alerts.delete(alert_id="alertId")
+
+    assert requests_mock.call_count == 1
+    assert requests_mock.called
+
+    assert res is None
 
 
 def test_error(config, requests_mock):

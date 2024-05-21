@@ -34,6 +34,14 @@ def test_missing_error_code():
     assert errors.DatabricksError == type(err)
 
 
+def test_private_link_error():
+    resp = requests.Response()
+    resp.url = 'https://databricks.com/login.html?error=private-link-validation-error'
+    resp.request = requests.Request('GET', 'https://databricks.com/api/2.0/service').prepare()
+    err = errors.error_mapper(resp, {})
+    assert errors.PrivateLinkValidationError == type(err)
+
+
 @pytest.mark.parametrize('status_code, error_code, klass',
                          [(400, ..., errors.BadRequest), (400, 'INVALID_PARAMETER_VALUE', errors.BadRequest),
                           (400, 'INVALID_PARAMETER_VALUE', errors.InvalidParameterValue),

@@ -13,6 +13,7 @@ from .config import *
 # To preserve backwards compatibility (as these definitions were previously in this module)
 from .credentials_provider import *
 from .errors import DatabricksError, error_mapper
+from .errors.private_link import _is_private_link_redirect
 from .retries import retried
 from .oauth import retrieve_token
 __all__ = ['Config', 'DatabricksError']
@@ -166,11 +167,14 @@ class ApiClient:
         if not len(response.content):
             return resp
 
-        json = response.json()
-        if isinstance(json, list):
-            return json
+        jsonResponse = response.json()
+        if jsonResponse is None:
+            return resp
 
-        return {**resp, **json}
+        if isinstance(jsonResponse, list):
+            return jsonResponse
+
+        return {**resp, **jsonResponse}
 
     @staticmethod
     def _is_retryable(err: BaseException) -> Optional[str]:
@@ -257,6 +261,10 @@ class ApiClient:
                 # See https://stackoverflow.com/a/58821552/277035
                 payload = response.json()
                 raise self._make_nicer_error(response=response, **payload) from None
+            # Private link failures happen via a redirect to the login page. From a requests-perspective, the request
+            # is successful, but the response is not what we expect. We need to handle this case separately.
+            if _is_private_link_redirect(response):
+                raise self._make_nicer_error(response=response) from None
             return response
         except requests.exceptions.JSONDecodeError:
             message = self._make_sense_from_html(response.text)
