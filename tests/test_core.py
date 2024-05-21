@@ -14,9 +14,13 @@ import pytest
 import requests
 
 from databricks.sdk import WorkspaceClient
-from databricks.sdk.core import (ApiClient, Config, DatabricksError, StreamingResponse)
-from databricks.sdk.credentials_provider import (CliTokenSource, CredentialsStrategy,
-                                                 DatabricksCliTokenSource, CredentialsProvider, databricks_cli)
+from databricks.sdk.core import (ApiClient, Config, DatabricksError,
+                                 StreamingResponse)
+from databricks.sdk.credentials_provider import (CliTokenSource,
+                                                 CredentialsProvider,
+                                                 CredentialsStrategy,
+                                                 DatabricksCliTokenSource,
+                                                 databricks_cli)
 from databricks.sdk.environments import (ENVIRONMENTS, AzureEnvironment, Cloud,
                                          DatabricksEnvironment)
 from databricks.sdk.service.catalog import PermissionsChange

@@ -14,8 +14,9 @@ from .config import *
 from .credentials_provider import *
 from .errors import DatabricksError, error_mapper
 from .errors.private_link import _is_private_link_redirect
-from .retries import retried
 from .oauth import retrieve_token
+from .retries import retried
+
 __all__ = ['Config', 'DatabricksError']
 
 logger = logging.getLogger('databricks.sdk')
@@ -23,6 +24,8 @@ logger = logging.getLogger('databricks.sdk')
 URL_ENCODED_CONTENT_TYPE = "application/x-www-form-urlencoded"
 JWT_BEARER_GRANT_TYPE = "urn:ietf:params:oauth:grant-type:jwt-bearer"
 OIDC_TOKEN_PATH = "/oidc/v1/token"
+
+
 class ApiClient:
     _cfg: Config
     _RETRY_AFTER_DEFAULT: int = 1
@@ -122,13 +125,11 @@ class ApiClient:
             "authorization_details": auth_details,
             "assertion": original_token.access_token
         })
-        return retrieve_token(
-            client_id=self._cfg.client_id,
-            client_secret=self._cfg.client_secret,
-            token_url=self._cfg.host + OIDC_TOKEN_PATH,
-            params=params,
-            headers=headers
-        )
+        return retrieve_token(client_id=self._cfg.client_id,
+                              client_secret=self._cfg.client_secret,
+                              token_url=self._cfg.host + OIDC_TOKEN_PATH,
+                              params=params,
+                              headers=headers)
 
     def do(self,
            method: str,

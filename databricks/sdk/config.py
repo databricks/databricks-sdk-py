@@ -12,7 +12,8 @@ import requests
 
 from .clock import Clock, RealClock
 from .credentials_provider import CredentialsStrategy, DefaultCredentials
-from .environments import (ALL_ENVS, AzureEnvironment, Cloud, DatabricksEnvironment, get_environment_for_hostname)
+from .environments import (ALL_ENVS, AzureEnvironment, Cloud,
+                           DatabricksEnvironment, get_environment_for_hostname)
 from .oauth import OidcEndpoints, Token
 from .version import __version__
 

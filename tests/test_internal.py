@@ -1,8 +1,9 @@
 from dataclasses import dataclass
 from enum import Enum
 
-from databricks.sdk.service._internal import (_enum, _escape_multi_segment_path_parameter, _from_dict,
-                                              _repeated_dict, _repeated_enum)
+from databricks.sdk.service._internal import (
+    _enum, _escape_multi_segment_path_parameter, _from_dict, _repeated_dict,
+    _repeated_enum)
 
 
 class A(Enum):

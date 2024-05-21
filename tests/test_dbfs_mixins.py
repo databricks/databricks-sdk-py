@@ -1,7 +1,8 @@
 import pytest
 
 from databricks.sdk.errors import NotFound
-from databricks.sdk.mixins.files import (DbfsExt, _DbfsPath, _LocalPath, _VolumesPath)
+from databricks.sdk.mixins.files import (DbfsExt, _DbfsPath, _LocalPath,
+                                         _VolumesPath)
 
 
 def test_moving_dbfs_file_to_local_dir(config, tmp_path, mocker):

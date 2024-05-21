@@ -19,7 +19,8 @@ from google.auth.transport.requests import Request
 from google.oauth2 import service_account
 
 from .azure import add_sp_management_token, add_workspace_id_header
-from .oauth import (ClientCredentials, OAuthClient, Refreshable, Token, TokenCache, TokenSource)
+from .oauth import (ClientCredentials, OAuthClient, Refreshable, Token,
+                    TokenCache, TokenSource)
 
 CredentialsProvider = Callable[[], Dict[str, str]]
 
@@ -28,6 +29,7 @@ logger = logging.getLogger('databricks.sdk')
 
 class OAuthCredentialsProvider:
     """ OAuthCredentialsProvider is a type of CredentialsProvider which exposes OAuth tokens. """
+
     def __init__(self, credentials_provider: CredentialsProvider, token_provider: Callable[[], Token]):
         self._credentials_provider = credentials_provider
         self._token_provider = token_provider
@@ -141,7 +143,8 @@ def runtime_native_auth(cfg: 'Config') -> Optional[CredentialsProvider]:
     # This import MUST be after the "DATABRICKS_RUNTIME_VERSION" check
     # above, so that we are not throwing import errors when not in
     # runtime and no config variables are set.
-    from databricks.sdk.runtime import (init_runtime_legacy_auth, init_runtime_native_auth,
+    from databricks.sdk.runtime import (init_runtime_legacy_auth,
+                                        init_runtime_native_auth,
                                         init_runtime_repl_auth)
     for init in [init_runtime_native_auth, init_runtime_repl_auth, init_runtime_legacy_auth]:
         if init is None:

@@ -103,12 +103,12 @@ except ImportError:
         logging.debug(f"Failed to initialize globals 'sqlContext' and 'table', continuing. Cause: {e}")
 
     try:
-        from pyspark.sql.functions import udf # type: ignore
+        from pyspark.sql.functions import udf  # type: ignore
     except ImportError as e:
         logging.debug(f"Failed to initialise udf global: {e}")
 
     try:
-        from databricks.connect import DatabricksSession # type: ignore
+        from databricks.connect import DatabricksSession  # type: ignore
         spark = DatabricksSession.builder.getOrCreate()
         sql = spark.sql # type: ignore
     except Exception as e:
