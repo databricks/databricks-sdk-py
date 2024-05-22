@@ -1,7 +1,7 @@
 import databricks.sdk.core as client
 import databricks.sdk.dbutils as dbutils
 from databricks.sdk import azure
-from databricks.sdk.credentials_provider import CredentialsStrategy
+from databricks.sdk.credentials_provider import CredentialsProvider
 from databricks.sdk.mixins.compute import ClustersExt
 from databricks.sdk.mixins.files import DbfsExt
 from databricks.sdk.mixins.workspace import WorkspaceExt
@@ -131,8 +131,7 @@ class WorkspaceClient:
                  debug_headers: bool = None,
                  product="unknown",
                  product_version="0.0.0",
-                 credentials_strategy: CredentialsStrategy = None,
-                 credentials_provider: CredentialsStrategy = None,
+                 credentials_provider: CredentialsProvider = None,
                  config: client.Config = None):
         if not config:
             config = client.Config(host=host,
@@ -153,7 +152,6 @@ class WorkspaceClient:
                                    cluster_id=cluster_id,
                                    google_credentials=google_credentials,
                                    google_service_account=google_service_account,
-                                   credentials_strategy=credentials_strategy,
                                    credentials_provider=credentials_provider,
                                    debug_truncate_bytes=debug_truncate_bytes,
                                    debug_headers=debug_headers,
@@ -702,8 +700,7 @@ class AccountClient:
                  debug_headers: bool = None,
                  product="unknown",
                  product_version="0.0.0",
-                 credentials_strategy: CredentialsStrategy = None,
-                 credentials_provider: CredentialsStrategy = None,
+                 credentials_provider: CredentialsProvider = None,
                  config: client.Config = None):
         if not config:
             config = client.Config(host=host,
@@ -724,7 +721,6 @@ class AccountClient:
                                    cluster_id=cluster_id,
                                    google_credentials=google_credentials,
                                    google_service_account=google_service_account,
-                                   credentials_strategy=credentials_strategy,
                                    credentials_provider=credentials_provider,
                                    debug_truncate_bytes=debug_truncate_bytes,
                                    debug_headers=debug_headers,

@@ -21,10 +21,6 @@ import requests.auth
 # See https://stackoverflow.com/a/75466778/277035 for more info
 NO_ORIGIN_FOR_SPA_CLIENT_ERROR = 'AADSTS9002327'
 
-URL_ENCODED_CONTENT_TYPE = "application/x-www-form-urlencoded"
-JWT_BEARER_GRANT_TYPE = "urn:ietf:params:oauth:grant-type:jwt-bearer"
-OIDC_TOKEN_PATH = "/oidc/v1/token"
-
 logger = logging.getLogger(__name__)
 
 
@@ -362,13 +358,13 @@ class OAuthClient:
                  client_secret: str = None):
         # TODO: is it a circular dependency?..
         from .core import Config
-        from .credentials_provider import credentials_strategy
+        from .credentials_provider import credentials_provider
 
-        @credentials_strategy('noop', [])
+        @credentials_provider('noop', [])
         def noop_credentials(_: any):
             return lambda: {}
 
-        config = Config(host=host, credentials_strategy=noop_credentials)
+        config = Config(host=host, credentials_provider=noop_credentials)
         if not scopes:
             scopes = ['all-apis']
         if config.is_azure:
