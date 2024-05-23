@@ -2448,7 +2448,6 @@ class ResolvedStringParamsValues:
 
 @dataclass
 class ResolvedValues:
-    """Next field: 15"""
 
     condition_task: Optional[ResolvedConditionTaskValues] = None
 
