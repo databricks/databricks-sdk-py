@@ -72,7 +72,7 @@
         
         
 
-    .. py:method:: create(spark_version: str [, apply_policy_default_values: Optional[bool], autoscale: Optional[AutoScale], autotermination_minutes: Optional[int], aws_attributes: Optional[AwsAttributes], azure_attributes: Optional[AzureAttributes], clone_from: Optional[CloneCluster], cluster_log_conf: Optional[ClusterLogConf], cluster_name: Optional[str], cluster_source: Optional[ClusterSource], custom_tags: Optional[Dict[str, str]], data_security_mode: Optional[DataSecurityMode], docker_image: Optional[DockerImage], driver_instance_pool_id: Optional[str], driver_node_type_id: Optional[str], enable_elastic_disk: Optional[bool], enable_local_disk_encryption: Optional[bool], gcp_attributes: Optional[GcpAttributes], init_scripts: Optional[List[InitScriptInfo]], instance_pool_id: Optional[str], node_type_id: Optional[str], num_workers: Optional[int], policy_id: Optional[str], runtime_engine: Optional[RuntimeEngine], single_user_name: Optional[str], spark_conf: Optional[Dict[str, str]], spark_env_vars: Optional[Dict[str, str]], ssh_public_keys: Optional[List[str]], workload_type: Optional[WorkloadType]]) -> Wait[ClusterDetails]
+    .. py:method:: create(spark_version: str [, apply_policy_default_values: Optional[bool], autoscale: Optional[AutoScale], autotermination_minutes: Optional[int], aws_attributes: Optional[AwsAttributes], azure_attributes: Optional[AzureAttributes], clone_from: Optional[CloneCluster], cluster_log_conf: Optional[ClusterLogConf], cluster_name: Optional[str], custom_tags: Optional[Dict[str, str]], data_security_mode: Optional[DataSecurityMode], docker_image: Optional[DockerImage], driver_instance_pool_id: Optional[str], driver_node_type_id: Optional[str], enable_elastic_disk: Optional[bool], enable_local_disk_encryption: Optional[bool], gcp_attributes: Optional[GcpAttributes], init_scripts: Optional[List[InitScriptInfo]], instance_pool_id: Optional[str], node_type_id: Optional[str], num_workers: Optional[int], policy_id: Optional[str], runtime_engine: Optional[RuntimeEngine], single_user_name: Optional[str], spark_conf: Optional[Dict[str, str]], spark_env_vars: Optional[Dict[str, str]], ssh_public_keys: Optional[List[str]], workload_type: Optional[WorkloadType]]) -> Wait[ClusterDetails]
 
 
         Usage:
@@ -112,6 +112,8 @@
           The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of available Spark versions can be
           retrieved by using the :method:clusters/sparkVersions API call.
         :param apply_policy_default_values: bool (optional)
+          When set to true, fixed and default values from the policy will be used for fields that are omitted.
+          When set to false, only fixed values from the policy will be applied.
         :param autoscale: :class:`AutoScale` (optional)
           Parameters needed in order to automatically scale clusters up and down based on load. Note:
           autoscaling works best with DB runtime versions 3.0 or later.
@@ -136,9 +138,6 @@
         :param cluster_name: str (optional)
           Cluster name requested by the user. This doesn't have to be unique. If not specified at creation,
           the cluster name will be an empty string.
-        :param cluster_source: :class:`ClusterSource` (optional)
-          Determines whether the cluster was created by a user through the UI, created by the Databricks Jobs
-          Scheduler, or through an API request. This is the same as cluster_creator, but read only.
         :param custom_tags: Dict[str,str] (optional)
           Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
           instances and EBS volumes) with these tags in addition to `default_tags`. Notes:
@@ -155,10 +154,15 @@
           governance features are available in this mode. * `USER_ISOLATION`: A secure cluster that can be
           shared by multiple users. Cluster users are fully isolated so that they cannot see each other's data
           and credentials. Most data governance features are supported in this mode. But programming languages
-          and cluster features might be limited. * `LEGACY_TABLE_ACL`: This mode is for users migrating from
-          legacy Table ACL clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy
-          Passthrough on high concurrency clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating
-          from legacy Passthrough on standard clusters.
+          and cluster features might be limited.
+          
+          The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
+          future Databricks Runtime versions:
+          
+          * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *
+          `LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy Passthrough on high concurrency
+          clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy Passthrough on
+          standard clusters.
         :param docker_image: :class:`DockerImage` (optional)
         :param driver_instance_pool_id: str (optional)
           The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster uses
@@ -229,7 +233,7 @@
           See :method:wait_get_cluster_running for more details.
         
 
-    .. py:method:: create_and_wait(spark_version: str [, apply_policy_default_values: Optional[bool], autoscale: Optional[AutoScale], autotermination_minutes: Optional[int], aws_attributes: Optional[AwsAttributes], azure_attributes: Optional[AzureAttributes], clone_from: Optional[CloneCluster], cluster_log_conf: Optional[ClusterLogConf], cluster_name: Optional[str], cluster_source: Optional[ClusterSource], custom_tags: Optional[Dict[str, str]], data_security_mode: Optional[DataSecurityMode], docker_image: Optional[DockerImage], driver_instance_pool_id: Optional[str], driver_node_type_id: Optional[str], enable_elastic_disk: Optional[bool], enable_local_disk_encryption: Optional[bool], gcp_attributes: Optional[GcpAttributes], init_scripts: Optional[List[InitScriptInfo]], instance_pool_id: Optional[str], node_type_id: Optional[str], num_workers: Optional[int], policy_id: Optional[str], runtime_engine: Optional[RuntimeEngine], single_user_name: Optional[str], spark_conf: Optional[Dict[str, str]], spark_env_vars: Optional[Dict[str, str]], ssh_public_keys: Optional[List[str]], workload_type: Optional[WorkloadType], timeout: datetime.timedelta = 0:20:00]) -> ClusterDetails
+    .. py:method:: create_and_wait(spark_version: str [, apply_policy_default_values: Optional[bool], autoscale: Optional[AutoScale], autotermination_minutes: Optional[int], aws_attributes: Optional[AwsAttributes], azure_attributes: Optional[AzureAttributes], clone_from: Optional[CloneCluster], cluster_log_conf: Optional[ClusterLogConf], cluster_name: Optional[str], custom_tags: Optional[Dict[str, str]], data_security_mode: Optional[DataSecurityMode], docker_image: Optional[DockerImage], driver_instance_pool_id: Optional[str], driver_node_type_id: Optional[str], enable_elastic_disk: Optional[bool], enable_local_disk_encryption: Optional[bool], gcp_attributes: Optional[GcpAttributes], init_scripts: Optional[List[InitScriptInfo]], instance_pool_id: Optional[str], node_type_id: Optional[str], num_workers: Optional[int], policy_id: Optional[str], runtime_engine: Optional[RuntimeEngine], single_user_name: Optional[str], spark_conf: Optional[Dict[str, str]], spark_env_vars: Optional[Dict[str, str]], ssh_public_keys: Optional[List[str]], workload_type: Optional[WorkloadType], timeout: datetime.timedelta = 0:20:00]) -> ClusterDetails
 
 
     .. py:method:: delete(cluster_id: str) -> Wait[ClusterDetails]
@@ -278,7 +282,7 @@
     .. py:method:: delete_and_wait(cluster_id: str, timeout: datetime.timedelta = 0:20:00) -> ClusterDetails
 
 
-    .. py:method:: edit(cluster_id: str, spark_version: str [, apply_policy_default_values: Optional[bool], autoscale: Optional[AutoScale], autotermination_minutes: Optional[int], aws_attributes: Optional[AwsAttributes], azure_attributes: Optional[AzureAttributes], clone_from: Optional[CloneCluster], cluster_log_conf: Optional[ClusterLogConf], cluster_name: Optional[str], cluster_source: Optional[ClusterSource], custom_tags: Optional[Dict[str, str]], data_security_mode: Optional[DataSecurityMode], docker_image: Optional[DockerImage], driver_instance_pool_id: Optional[str], driver_node_type_id: Optional[str], enable_elastic_disk: Optional[bool], enable_local_disk_encryption: Optional[bool], gcp_attributes: Optional[GcpAttributes], init_scripts: Optional[List[InitScriptInfo]], instance_pool_id: Optional[str], node_type_id: Optional[str], num_workers: Optional[int], policy_id: Optional[str], runtime_engine: Optional[RuntimeEngine], single_user_name: Optional[str], spark_conf: Optional[Dict[str, str]], spark_env_vars: Optional[Dict[str, str]], ssh_public_keys: Optional[List[str]], workload_type: Optional[WorkloadType]]) -> Wait[ClusterDetails]
+    .. py:method:: edit(cluster_id: str, spark_version: str [, apply_policy_default_values: Optional[bool], autoscale: Optional[AutoScale], autotermination_minutes: Optional[int], aws_attributes: Optional[AwsAttributes], azure_attributes: Optional[AzureAttributes], cluster_log_conf: Optional[ClusterLogConf], cluster_name: Optional[str], custom_tags: Optional[Dict[str, str]], data_security_mode: Optional[DataSecurityMode], docker_image: Optional[DockerImage], driver_instance_pool_id: Optional[str], driver_node_type_id: Optional[str], enable_elastic_disk: Optional[bool], enable_local_disk_encryption: Optional[bool], gcp_attributes: Optional[GcpAttributes], init_scripts: Optional[List[InitScriptInfo]], instance_pool_id: Optional[str], node_type_id: Optional[str], num_workers: Optional[int], policy_id: Optional[str], runtime_engine: Optional[RuntimeEngine], single_user_name: Optional[str], spark_conf: Optional[Dict[str, str]], spark_env_vars: Optional[Dict[str, str]], ssh_public_keys: Optional[List[str]], workload_type: Optional[WorkloadType]]) -> Wait[ClusterDetails]
 
 
         Usage:
@@ -332,6 +336,8 @@
           The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of available Spark versions can be
           retrieved by using the :method:clusters/sparkVersions API call.
         :param apply_policy_default_values: bool (optional)
+          When set to true, fixed and default values from the policy will be used for fields that are omitted.
+          When set to false, only fixed values from the policy will be applied.
         :param autoscale: :class:`AutoScale` (optional)
           Parameters needed in order to automatically scale clusters up and down based on load. Note:
           autoscaling works best with DB runtime versions 3.0 or later.
@@ -345,8 +351,6 @@
         :param azure_attributes: :class:`AzureAttributes` (optional)
           Attributes related to clusters running on Microsoft Azure. If not specified at cluster creation, a
           set of default values will be used.
-        :param clone_from: :class:`CloneCluster` (optional)
-          When specified, this clones libraries from a source cluster during the creation of a new cluster.
         :param cluster_log_conf: :class:`ClusterLogConf` (optional)
           The configuration for delivering spark logs to a long-term storage destination. Two kinds of
           destinations (dbfs and s3) are supported. Only one destination can be specified for one cluster. If
@@ -356,9 +360,6 @@
         :param cluster_name: str (optional)
           Cluster name requested by the user. This doesn't have to be unique. If not specified at creation,
           the cluster name will be an empty string.
-        :param cluster_source: :class:`ClusterSource` (optional)
-          Determines whether the cluster was created by a user through the UI, created by the Databricks Jobs
-          Scheduler, or through an API request. This is the same as cluster_creator, but read only.
         :param custom_tags: Dict[str,str] (optional)
           Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
           instances and EBS volumes) with these tags in addition to `default_tags`. Notes:
@@ -375,10 +376,15 @@
           governance features are available in this mode. * `USER_ISOLATION`: A secure cluster that can be
           shared by multiple users. Cluster users are fully isolated so that they cannot see each other's data
           and credentials. Most data governance features are supported in this mode. But programming languages
-          and cluster features might be limited. * `LEGACY_TABLE_ACL`: This mode is for users migrating from
-          legacy Table ACL clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy
-          Passthrough on high concurrency clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating
-          from legacy Passthrough on standard clusters.
+          and cluster features might be limited.
+          
+          The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
+          future Databricks Runtime versions:
+          
+          * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *
+          `LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy Passthrough on high concurrency
+          clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy Passthrough on
+          standard clusters.
         :param docker_image: :class:`DockerImage` (optional)
         :param driver_instance_pool_id: str (optional)
           The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster uses
@@ -449,7 +455,7 @@
           See :method:wait_get_cluster_running for more details.
         
 
-    .. py:method:: edit_and_wait(cluster_id: str, spark_version: str [, apply_policy_default_values: Optional[bool], autoscale: Optional[AutoScale], autotermination_minutes: Optional[int], aws_attributes: Optional[AwsAttributes], azure_attributes: Optional[AzureAttributes], clone_from: Optional[CloneCluster], cluster_log_conf: Optional[ClusterLogConf], cluster_name: Optional[str], cluster_source: Optional[ClusterSource], custom_tags: Optional[Dict[str, str]], data_security_mode: Optional[DataSecurityMode], docker_image: Optional[DockerImage], driver_instance_pool_id: Optional[str], driver_node_type_id: Optional[str], enable_elastic_disk: Optional[bool], enable_local_disk_encryption: Optional[bool], gcp_attributes: Optional[GcpAttributes], init_scripts: Optional[List[InitScriptInfo]], instance_pool_id: Optional[str], node_type_id: Optional[str], num_workers: Optional[int], policy_id: Optional[str], runtime_engine: Optional[RuntimeEngine], single_user_name: Optional[str], spark_conf: Optional[Dict[str, str]], spark_env_vars: Optional[Dict[str, str]], ssh_public_keys: Optional[List[str]], workload_type: Optional[WorkloadType], timeout: datetime.timedelta = 0:20:00]) -> ClusterDetails
+    .. py:method:: edit_and_wait(cluster_id: str, spark_version: str [, apply_policy_default_values: Optional[bool], autoscale: Optional[AutoScale], autotermination_minutes: Optional[int], aws_attributes: Optional[AwsAttributes], azure_attributes: Optional[AzureAttributes], cluster_log_conf: Optional[ClusterLogConf], cluster_name: Optional[str], custom_tags: Optional[Dict[str, str]], data_security_mode: Optional[DataSecurityMode], docker_image: Optional[DockerImage], driver_instance_pool_id: Optional[str], driver_node_type_id: Optional[str], enable_elastic_disk: Optional[bool], enable_local_disk_encryption: Optional[bool], gcp_attributes: Optional[GcpAttributes], init_scripts: Optional[List[InitScriptInfo]], instance_pool_id: Optional[str], node_type_id: Optional[str], num_workers: Optional[int], policy_id: Optional[str], runtime_engine: Optional[RuntimeEngine], single_user_name: Optional[str], spark_conf: Optional[Dict[str, str]], spark_env_vars: Optional[Dict[str, str]], ssh_public_keys: Optional[List[str]], workload_type: Optional[WorkloadType], timeout: datetime.timedelta = 0:20:00]) -> ClusterDetails
 
 
     .. py:method:: ensure_cluster_is_running(cluster_id: str)
