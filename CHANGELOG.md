@@ -8,59 +8,58 @@
 
 ### API Changes:
 
- * Changed `list()` method for [w.connections](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/connections.html) workspace-level service to require request of `databricks.sdk.service.catalog.ListConnectionsRequest` dataclass.
- * Removed [w.lakehouse_monitors](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/lakehouse_monitors.html) workspace-level service.
- * Added [w.quality_monitors](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/quality_monitors.html) workspace-level service.
- * Renamed `databricks.sdk.service.catalog.DeleteLakehouseMonitorRequest` dataclass to `databricks.sdk.service.catalog.DeleteQualityMonitorRequest`.
- * Changed `schema_name` field for `databricks.sdk.service.catalog.DisableRequest` to `str` dataclass.
- * Removed `databricks.sdk.service.catalog.DisableSchemaName` dataclass.
- * Changed `schema_name` field for `databricks.sdk.service.catalog.EnableRequest` to `str` dataclass.
- * Removed `databricks.sdk.service.catalog.EnableSchemaName` dataclass.
- * Renamed `databricks.sdk.service.catalog.GetLakehouseMonitorRequest` dataclass to `databricks.sdk.service.catalog.GetQualityMonitorRequest`.
- * Added `next_page_token` field for `databricks.sdk.service.catalog.ListConnectionsResponse`.
- * Added `dashboard_id` field for `databricks.sdk.service.catalog.UpdateMonitor`.
- * Added `databricks.sdk.service.catalog.ListConnectionsRequest` dataclass.
- * Added `databricks.sdk.service.catalog.MonitorRefreshListResponse` dataclass.
- * Changed `cluster_status()` method for [w.libraries](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/libraries.html) workspace-level service to return `databricks.sdk.service.compute.ClusterLibraryStatuses` dataclass.
- * Removed `cluster_source` field for `databricks.sdk.service.compute.ClusterAttributes`.
- * Changed `spec` and `cluster_source` fields for `databricks.sdk.service.compute.ClusterDetails` to `databricks.sdk.service.compute.ClusterSpec` dataclass.
- * Removed `cluster_source` field for `databricks.sdk.service.compute.ClusterSpec`.
- * Removed `databricks.sdk.service.compute.ClusterStatusResponse` dataclass.
- * Removed `cluster_source` field for `databricks.sdk.service.compute.CreateCluster`.
- * Removed `clone_from` and `cluster_source` fields for `databricks.sdk.service.compute.EditCluster`.
- * Removed `sort_by_spec` field for `databricks.sdk.service.marketplace.ListListingsRequest`.
- * Added `is_ascending` and `sort_by` fields for `databricks.sdk.service.marketplace.ListListingsRequest`.
- * Added `is_ascending` field for `databricks.sdk.service.marketplace.SearchListingsRequest`.
- * Removed `databricks.sdk.service.marketplace.SortBySpec` dataclass.
- * Removed `databricks.sdk.service.marketplace.SortOrder` dataclass.
- * Added `gateway_definition` field for `databricks.sdk.service.pipelines.CreatePipeline`.
- * Added `gateway_definition` field for `databricks.sdk.service.pipelines.EditPipeline`.
- * Added `table_configuration` field for `databricks.sdk.service.pipelines.ManagedIngestionPipelineDefinition`.
- * Added `gateway_definition` field for `databricks.sdk.service.pipelines.PipelineSpec`.
- * Added `table_configuration` field for `databricks.sdk.service.pipelines.SchemaSpec`.
- * Added `table_configuration` field for `databricks.sdk.service.pipelines.TableSpec`.
- * Added `databricks.sdk.service.pipelines.IngestionGatewayPipelineDefinition` dataclass.
- * Added `databricks.sdk.service.pipelines.TableSpecificConfig` dataclass.
- * Added `databricks.sdk.service.pipelines.TableSpecificConfigScdType` dataclass.
- * Added `deployment_artifacts` field for `databricks.sdk.service.serving.AppDeployment`.
- * Added `route_optimized` field for `databricks.sdk.service.serving.CreateServingEndpoint`.
- * Added `contents` field for `databricks.sdk.service.serving.ExportMetricsResponse`.
- * Changed `openai_api_key` field for `databricks.sdk.service.serving.OpenAiConfig` to no longer be required.
- * Added `microsoft_entra_client_id`, `microsoft_entra_client_secret` and `microsoft_entra_tenant_id` fields for `databricks.sdk.service.serving.OpenAiConfig`.
- * Added `endpoint_url` and `route_optimized` fields for `databricks.sdk.service.serving.ServingEndpointDetailed`.
- * Added `databricks.sdk.service.serving.AppDeploymentArtifacts` dataclass.
- * Added `storage_root` field for `databricks.sdk.service.sharing.CreateShare`.
- * Added `storage_location` and `storage_root` fields for `databricks.sdk.service.sharing.ShareInfo`.
- * Added `storage_root` field for `databricks.sdk.service.sharing.UpdateShare`.
- * Added `scan_index()` method for [w.vector_search_indexes](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/vector_search_indexes.html) workspace-level service.
- * Added `embedding_writeback_table` field for `databricks.sdk.service.vectorsearch.DeltaSyncVectorIndexSpecRequest`.
- * Added `embedding_writeback_table` field for `databricks.sdk.service.vectorsearch.DeltaSyncVectorIndexSpecResponse`.
+ * Renamed [w.lakehouse_monitors](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/lakehouse_monitors.html) workspace-level service to [w.quality_monitors](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/quality_monitors.html) .
  * Added `databricks.sdk.service.vectorsearch.ListValue` dataclass.
  * Added `databricks.sdk.service.vectorsearch.MapStringValueEntry` dataclass.
  * Added `databricks.sdk.service.vectorsearch.ScanVectorIndexRequest` dataclass.
  * Added `databricks.sdk.service.vectorsearch.ScanVectorIndexResponse` dataclass.
  * Added `databricks.sdk.service.vectorsearch.Struct` dataclass.
  * Added `databricks.sdk.service.vectorsearch.Value` dataclass.
+ * Added `databricks.sdk.service.catalog.ListConnectionsRequest` dataclass.
+ * Added `databricks.sdk.service.catalog.MonitorRefreshListResponse` dataclass.
+ * Added `databricks.sdk.service.pipelines.IngestionGatewayPipelineDefinition` dataclass.
+ * Added `databricks.sdk.service.pipelines.TableSpecificConfig` dataclass.
+ * Added `databricks.sdk.service.pipelines.TableSpecificConfigScdType` dataclass.
+ * Added `databricks.sdk.service.serving.AppDeploymentArtifacts` dataclass.
+ * Removed `databricks.sdk.service.catalog.EnableSchemaName` dataclass.
+ * Removed `databricks.sdk.service.catalog.DisableSchemaName` dataclass.
+ * Removed `databricks.sdk.service.marketplace.SortBySpec` dataclass.
+ * Removed `databricks.sdk.service.marketplace.SortOrder` dataclass.
+ * Renamed `databricks.sdk.service.catalog.DeleteLakehouseMonitorRequest` dataclass to `databricks.sdk.service.catalog.DeleteQualityMonitorRequest`.
+ * Renamed `databricks.sdk.service.catalog.GetLakehouseMonitorRequest` dataclass to `databricks.sdk.service.catalog.GetQualityMonitorRequest`.
+ * Added `next_page_token` field for `databricks.sdk.service.catalog.ListConnectionsResponse`.
+ * Added `dashboard_id` field for `databricks.sdk.service.catalog.UpdateMonitor`.
+ * Added `is_ascending` and `sort_by` fields for `databricks.sdk.service.marketplace.ListListingsRequest`.
+ * Added `is_ascending` field for `databricks.sdk.service.marketplace.SearchListingsRequest`.
+ * Added `gateway_definition` field for `databricks.sdk.service.pipelines.CreatePipeline`.
+ * Added `gateway_definition` field for `databricks.sdk.service.pipelines.EditPipeline`.
+ * Added `table_configuration` field for `databricks.sdk.service.pipelines.ManagedIngestionPipelineDefinition`.
+ * Added `gateway_definition` field for `databricks.sdk.service.pipelines.PipelineSpec`.
+ * Added `table_configuration` field for `databricks.sdk.service.pipelines.SchemaSpec`.
+ * Added `table_configuration` field for `databricks.sdk.service.pipelines.TableSpec`.
+ * Added `deployment_artifacts` field for `databricks.sdk.service.serving.AppDeployment`.
+ * Added `route_optimized` field for `databricks.sdk.service.serving.CreateServingEndpoint`.
+ * Added `contents` field for `databricks.sdk.service.serving.ExportMetricsResponse`.
+ * Added `microsoft_entra_client_id`, `microsoft_entra_client_secret` and `microsoft_entra_tenant_id` fields for `databricks.sdk.service.serving.OpenAiConfig`.
+ * Added `endpoint_url` and `route_optimized` fields for `databricks.sdk.service.serving.ServingEndpointDetailed`.
+ * Added `storage_root` field for `databricks.sdk.service.sharing.CreateShare`.
+ * Added `storage_location` and `storage_root` fields for `databricks.sdk.service.sharing.ShareInfo`.
+ * Added `storage_root` field for `databricks.sdk.service.sharing.UpdateShare`.
+ * Added `embedding_writeback_table` field for `databricks.sdk.service.vectorsearch.DeltaSyncVectorIndexSpecRequest`.
+ * Added `embedding_writeback_table` field for `databricks.sdk.service.vectorsearch.DeltaSyncVectorIndexSpecResponse`.
+ * Changed `schema_name` field for `databricks.sdk.service.catalog.DisableRequest` to `str` dataclass.
+ * Changed `schema_name` field for `databricks.sdk.service.catalog.EnableRequest` to `str` dataclass.
+ * Changed `cluster_status()` method for [w.libraries](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/libraries.html) workspace-level service to return `databricks.sdk.service.compute.ClusterLibraryStatuses` dataclass.
+ * Changed `spec` and `cluster_source` fields for `databricks.sdk.service.compute.ClusterDetails` to `databricks.sdk.service.compute.ClusterSpec` dataclass.
+ * Changed `openai_api_key` field for `databricks.sdk.service.serving.OpenAiConfig` to no longer be required.
+ * Removed `cluster_source` field for `databricks.sdk.service.compute.ClusterAttributes`.
+ * Removed `cluster_source` field for `databricks.sdk.service.compute.ClusterSpec`.
+ * Removed `databricks.sdk.service.compute.ClusterStatusResponse` dataclass.
+ * Removed `cluster_source` field for `databricks.sdk.service.compute.CreateCluster`.
+ * Removed `clone_from` and `cluster_source` fields for `databricks.sdk.service.compute.EditCluster`.
+ * Removed `sort_by_spec` field for `databricks.sdk.service.marketplace.ListListingsRequest`.
+ * Added `scan_index()` method for [w.vector_search_indexes](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/vector_search_indexes.html) workspace-level service.
+ * Changed `list()` method for [w.connections](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/connections.html) workspace-level service to require request of `databricks.sdk.service.catalog.ListConnectionsRequest` dataclass.
 
 OpenAPI SHA: 7eb5ad9a2ed3e3f1055968a2d1014ac92c06fe92, Date: 2024-05-21
 ## 0.27.1
