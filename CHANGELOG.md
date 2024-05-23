@@ -1,6 +1,6 @@
 # Version changelog
 
-## Release v0.28.0
+## 0.28.0
 
 ### Improvements and new features
 
