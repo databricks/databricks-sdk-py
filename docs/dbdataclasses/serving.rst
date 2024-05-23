@@ -40,6 +40,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: AppDeploymentArtifacts
+   :members:
+   :undoc-members:
+
 .. py:class:: AppDeploymentState
 
    .. py:attribute:: CANCELLED
@@ -53,6 +57,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: STATE_UNSPECIFIED
       :value: "STATE_UNSPECIFIED"
+
+   .. py:attribute:: STOPPED
+      :value: "STOPPED"
 
    .. py:attribute:: SUCCEEDED
       :value: "SUCCEEDED"

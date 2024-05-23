@@ -472,20 +472,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. py:class:: DisableSchemaName
-
-   .. py:attribute:: ACCESS
-      :value: "ACCESS"
-
-   .. py:attribute:: BILLING
-      :value: "BILLING"
-
-   .. py:attribute:: LINEAGE
-      :value: "LINEAGE"
-
-   .. py:attribute:: OPERATIONAL_DATA
-      :value: "OPERATIONAL_DATA"
-
 .. autoclass:: EffectivePermissionsList
    :members:
    :undoc-members:
@@ -528,20 +514,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: EnableResponse
    :members:
    :undoc-members:
-
-.. py:class:: EnableSchemaName
-
-   .. py:attribute:: ACCESS
-      :value: "ACCESS"
-
-   .. py:attribute:: BILLING
-      :value: "BILLING"
-
-   .. py:attribute:: LINEAGE
-      :value: "LINEAGE"
-
-   .. py:attribute:: OPERATIONAL_DATA
-      :value: "OPERATIONAL_DATA"
 
 .. autoclass:: EncryptionDetails
    :members:
@@ -864,6 +836,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: SCHEDULE
       :value: "SCHEDULE"
 
+.. autoclass:: MonitorRefreshListResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: MonitorSnapshot
    :members:
    :undoc-members:
@@ -1049,6 +1025,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: SET_SHARE_PERMISSION
       :value: "SET_SHARE_PERMISSION"
+
+   .. py:attribute:: SINGLE_USER_ACCESS
+      :value: "SINGLE_USER_ACCESS"
 
    .. py:attribute:: USAGE
       :value: "USAGE"

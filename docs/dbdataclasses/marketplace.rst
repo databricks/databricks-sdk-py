@@ -532,21 +532,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: SORT_BY_UNSPECIFIED
       :value: "SORT_BY_UNSPECIFIED"
 
-.. autoclass:: SortBySpec
-   :members:
-   :undoc-members:
-
-.. py:class:: SortOrder
-
-   .. py:attribute:: SORT_ORDER_ASCENDING
-      :value: "SORT_ORDER_ASCENDING"
-
-   .. py:attribute:: SORT_ORDER_DESCENDING
-      :value: "SORT_ORDER_DESCENDING"
-
-   .. py:attribute:: SORT_ORDER_UNSPECIFIED
-      :value: "SORT_ORDER_UNSPECIFIED"
-
 .. autoclass:: TokenDetail
    :members:
    :undoc-members:
