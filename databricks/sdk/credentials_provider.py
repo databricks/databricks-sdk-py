@@ -22,26 +22,12 @@ from .azure import add_sp_management_token, add_workspace_id_header
 from .oauth import (ClientCredentials, OAuthClient, Refreshable, Token,
                     TokenCache, TokenSource)
 
-CredentialsProvider = Callable[[], Dict[str, str]]
+HeaderFactory = Callable[[], Dict[str, str]]
 
 logger = logging.getLogger('databricks.sdk')
 
 
-class OAuthCredentialsProvider:
-    """ OAuthCredentialsProvider is a type of CredentialsProvider which exposes OAuth tokens. """
-
-    def __init__(self, credentials_provider: CredentialsProvider, token_provider: Callable[[], Token]):
-        self._credentials_provider = credentials_provider
-        self._token_provider = token_provider
-
-    def __call__(self) -> Dict[str, str]:
-        return self._credentials_provider()
-
-    def oauth_token(self) -> Token:
-        return self._token_provider()
-
-
-class CredentialsStrategy(abc.ABC):
+class CredentialsProvider(abc.ABC):
     """ CredentialsProvider is the protocol (call-side interface)
      for authenticating requests to Databricks REST APIs"""
 
@@ -50,39 +36,20 @@ class CredentialsStrategy(abc.ABC):
         ...
 
     @abc.abstractmethod
-    def __call__(self, cfg: 'Config') -> CredentialsProvider:
+    def __call__(self, cfg: 'Config') -> HeaderFactory:
         ...
 
 
-class OauthCredentialsStrategy(CredentialsStrategy):
-    """ OauthCredentialsProvider is a CredentialsProvider which
-    supports Oauth tokens"""
-
-    def __init__(self, auth_type: str, headers_provider: Callable[['Config'], OAuthCredentialsProvider]):
-        self._headers_provider = headers_provider
-        self._auth_type = auth_type
-
-    def auth_type(self) -> str:
-        return self._auth_type
-
-    def __call__(self, cfg: 'Config') -> OAuthCredentialsProvider:
-        return self._headers_provider(cfg)
-
-    def oauth_token(self, cfg: 'Config') -> Token:
-        return self._headers_provider(cfg).oauth_token()
-
-
-def credentials_strategy(name: str, require: List[str]):
+def credentials_provider(name: str, require: List[str]):
     """ Given the function that receives a Config and returns RequestVisitor,
     create CredentialsProvider with a given name and required configuration
     attribute names to be present for this function to be called. """
 
-    def inner(func: Callable[['Config'], CredentialsProvider]) -> CredentialsStrategy:
+    def inner(func: Callable[['Config'], HeaderFactory]) -> CredentialsProvider:
 
         @functools.wraps(func)
-        def wrapper(cfg: 'Config') -> Optional[CredentialsProvider]:
+        def wrapper(cfg: 'Config') -> Optional[HeaderFactory]:
             for attr in require:
-                getattr(cfg, attr)
                 if not getattr(cfg, attr):
                     return None
             return func(cfg)
@@ -93,27 +60,8 @@ def credentials_strategy(name: str, require: List[str]):
     return inner
 
 
-def oauth_credentials_strategy(name: str, require: List[str]):
-    """ Given the function that receives a Config and returns an OauthHeaderFactory,
-    create an OauthCredentialsProvider with a given name and required configuration
-    attribute names to be present for this function to be called. """
-
-    def inner(func: Callable[['Config'], OAuthCredentialsProvider]) -> OauthCredentialsStrategy:
-
-        @functools.wraps(func)
-        def wrapper(cfg: 'Config') -> Optional[OAuthCredentialsProvider]:
-            for attr in require:
-                if not getattr(cfg, attr):
-                    return None
-            return func(cfg)
-
-        return OauthCredentialsStrategy(name, wrapper)
-
-    return inner
-
-
-@credentials_strategy('basic', ['host', 'username', 'password'])
-def basic_auth(cfg: 'Config') -> CredentialsProvider:
+@credentials_provider('basic', ['host', 'username', 'password'])
+def basic_auth(cfg: 'Config') -> HeaderFactory:
     """ Given username and password, add base64-encoded Basic credentials """
     encoded = base64.b64encode(f'{cfg.username}:{cfg.password}'.encode()).decode()
     static_credentials = {'Authorization': f'Basic {encoded}'}
@@ -124,8 +72,8 @@ def basic_auth(cfg: 'Config') -> CredentialsProvider:
     return inner
 
 
-@credentials_strategy('pat', ['host', 'token'])
-def pat_auth(cfg: 'Config') -> CredentialsProvider:
+@credentials_provider('pat', ['host', 'token'])
+def pat_auth(cfg: 'Config') -> HeaderFactory:
     """ Adds Databricks Personal Access Token to every request """
     static_credentials = {'Authorization': f'Bearer {cfg.token}'}
 
@@ -135,8 +83,8 @@ def pat_auth(cfg: 'Config') -> CredentialsProvider:
     return inner
 
 
-@credentials_strategy('runtime', [])
-def runtime_native_auth(cfg: 'Config') -> Optional[CredentialsProvider]:
+@credentials_provider('runtime', [])
+def runtime_native_auth(cfg: 'Config') -> Optional[HeaderFactory]:
     if 'DATABRICKS_RUNTIME_VERSION' not in os.environ:
         return None
 
@@ -159,8 +107,8 @@ def runtime_native_auth(cfg: 'Config') -> Optional[CredentialsProvider]:
     return None
 
 
-@oauth_credentials_strategy('oauth-m2m', ['host', 'client_id', 'client_secret'])
-def oauth_service_principal(cfg: 'Config') -> Optional[CredentialsProvider]:
+@credentials_provider('oauth-m2m', ['host', 'client_id', 'client_secret'])
+def oauth_service_principal(cfg: 'Config') -> Optional[HeaderFactory]:
     """ Adds refreshed Databricks machine-to-machine OAuth Bearer token to every request,
     if /oidc/.well-known/oauth-authorization-server is available on the given host. """
     oidc = cfg.oidc_endpoints
@@ -176,11 +124,11 @@ def oauth_service_principal(cfg: 'Config') -> Optional[CredentialsProvider]:
         token = token_source.token()
         return {'Authorization': f'{token.token_type} {token.access_token}'}
 
-    return OAuthCredentialsProvider(inner, token_source.token)
+    return inner
 
 
-@credentials_strategy('external-browser', ['host', 'auth_type'])
-def external_browser(cfg: 'Config') -> Optional[CredentialsProvider]:
+@credentials_provider('external-browser', ['host', 'auth_type'])
+def external_browser(cfg: 'Config') -> Optional[HeaderFactory]:
     if cfg.auth_type != 'external-browser':
         return None
     if cfg.client_id:
@@ -230,9 +178,9 @@ def _ensure_host_present(cfg: 'Config', token_source_for: Callable[[str], TokenS
     cfg.host = f"https://{resp.json()['properties']['workspaceUrl']}"
 
 
-@oauth_credentials_strategy('azure-client-secret',
-                            ['is_azure', 'azure_client_id', 'azure_client_secret', 'azure_tenant_id'])
-def azure_service_principal(cfg: 'Config') -> CredentialsProvider:
+@credentials_provider('azure-client-secret',
+                      ['is_azure', 'azure_client_id', 'azure_client_secret', 'azure_tenant_id'])
+def azure_service_principal(cfg: 'Config') -> HeaderFactory:
     """ Adds refreshed Azure Active Directory (AAD) Service Principal OAuth tokens
     to every request, while automatically resolving different Azure environment endpoints. """
 
@@ -255,11 +203,11 @@ def azure_service_principal(cfg: 'Config') -> CredentialsProvider:
         add_sp_management_token(cloud, headers)
         return headers
 
-    return OAuthCredentialsProvider(refreshed_headers, inner.token)
+    return refreshed_headers
 
 
-@oauth_credentials_strategy('github-oidc-azure', ['host', 'azure_client_id'])
-def github_oidc_azure(cfg: 'Config') -> Optional[CredentialsProvider]:
+@credentials_provider('github-oidc-azure', ['host', 'azure_client_id'])
+def github_oidc_azure(cfg: 'Config') -> Optional[HeaderFactory]:
     if 'ACTIONS_ID_TOKEN_REQUEST_TOKEN' not in os.environ:
         # not in GitHub actions
         return None
@@ -302,14 +250,14 @@ def github_oidc_azure(cfg: 'Config') -> Optional[CredentialsProvider]:
         token = inner.token()
         return {'Authorization': f'{token.token_type} {token.access_token}'}
 
-    return OAuthCredentialsProvider(refreshed_headers, inner.token)
+    return refreshed_headers
 
 
 GcpScopes = ["https://www.googleapis.com/auth/cloud-platform", "https://www.googleapis.com/auth/compute"]
 
 
-@oauth_credentials_strategy('google-credentials', ['host', 'google_credentials'])
-def google_credentials(cfg: 'Config') -> Optional[CredentialsProvider]:
+@credentials_provider('google-credentials', ['host', 'google_credentials'])
+def google_credentials(cfg: 'Config') -> Optional[HeaderFactory]:
     if not cfg.is_gcp:
         return None
     # Reads credentials as JSON. Credentials can be either a path to JSON file, or actual JSON string.
@@ -329,10 +277,6 @@ def google_credentials(cfg: 'Config') -> Optional[CredentialsProvider]:
     gcp_credentials = service_account.Credentials.from_service_account_info(info=account_info,
                                                                             scopes=GcpScopes)
 
-    def token() -> Token:
-        credentials.refresh(request)
-        return credentials.token
-
     def refreshed_headers() -> Dict[str, str]:
         credentials.refresh(request)
         headers = {'Authorization': f'Bearer {credentials.token}'}
@@ -341,11 +285,11 @@ def google_credentials(cfg: 'Config') -> Optional[CredentialsProvider]:
             headers["X-Databricks-GCP-SA-Access-Token"] = gcp_credentials.token
         return headers
 
-    return OAuthCredentialsProvider(refreshed_headers, token)
+    return refreshed_headers
 
 
-@oauth_credentials_strategy('google-id', ['host', 'google_service_account'])
-def google_id(cfg: 'Config') -> Optional[CredentialsProvider]:
+@credentials_provider('google-id', ['host', 'google_service_account'])
+def google_id(cfg: 'Config') -> Optional[HeaderFactory]:
     if not cfg.is_gcp:
         return None
     credentials, _project_id = google.auth.default()
@@ -365,10 +309,6 @@ def google_id(cfg: 'Config') -> Optional[CredentialsProvider]:
 
     request = Request()
 
-    def token() -> Token:
-        id_creds.refresh(request)
-        return id_creds.token
-
     def refreshed_headers() -> Dict[str, str]:
         id_creds.refresh(request)
         headers = {'Authorization': f'Bearer {id_creds.token}'}
@@ -377,7 +317,7 @@ def google_id(cfg: 'Config') -> Optional[CredentialsProvider]:
             headers["X-Databricks-GCP-SA-Access-Token"] = gcp_impersonated_credentials.token
         return headers
 
-    return OAuthCredentialsProvider(refreshed_headers, token)
+    return refreshed_headers
 
 
 class CliTokenSource(Refreshable):
@@ -482,8 +422,8 @@ class AzureCliTokenSource(CliTokenSource):
         return components[2]
 
 
-@credentials_strategy('azure-cli', ['is_azure'])
-def azure_cli(cfg: 'Config') -> Optional[CredentialsProvider]:
+@credentials_provider('azure-cli', ['is_azure'])
+def azure_cli(cfg: 'Config') -> Optional[HeaderFactory]:
     """ Adds refreshed OAuth token granted by `az login` command to every request. """
     token_source = None
     mgmt_token_source = None
@@ -576,8 +516,8 @@ class DatabricksCliTokenSource(CliTokenSource):
         raise err
 
 
-@oauth_credentials_strategy('databricks-cli', ['host'])
-def databricks_cli(cfg: 'Config') -> Optional[CredentialsProvider]:
+@credentials_provider('databricks-cli', ['host'])
+def databricks_cli(cfg: 'Config') -> Optional[HeaderFactory]:
     try:
         token_source = DatabricksCliTokenSource(cfg)
     except FileNotFoundError as e:
@@ -598,7 +538,7 @@ def databricks_cli(cfg: 'Config') -> Optional[CredentialsProvider]:
         token = token_source.token()
         return {'Authorization': f'{token.token_type} {token.access_token}'}
 
-    return OAuthCredentialsProvider(inner, token_source.token)
+    return inner
 
 
 class MetadataServiceTokenSource(Refreshable):
@@ -637,8 +577,8 @@ class MetadataServiceTokenSource(Refreshable):
         return Token(access_token=access_token, token_type=token_type, expiry=expiry)
 
 
-@credentials_strategy('metadata-service', ['host', 'metadata_service_url'])
-def metadata_service(cfg: 'Config') -> Optional[CredentialsProvider]:
+@credentials_provider('metadata-service', ['host', 'metadata_service_url'])
+def metadata_service(cfg: 'Config') -> Optional[HeaderFactory]:
     """ Adds refreshed token granted by Databricks Metadata Service to every request. """
 
     token_source = MetadataServiceTokenSource(cfg)
@@ -657,25 +597,17 @@ class DefaultCredentials:
 
     def __init__(self) -> None:
         self._auth_type = 'default'
-        self._auth_providers = [
-            pat_auth, basic_auth, metadata_service, oauth_service_principal, azure_service_principal,
-            github_oidc_azure, azure_cli, external_browser, databricks_cli, runtime_native_auth,
-            google_credentials, google_id
-        ]
 
     def auth_type(self) -> str:
         return self._auth_type
 
-    def oauth_token(self, cfg: 'Config') -> Token:
-        for provider in self._auth_providers:
-            auth_type = provider.auth_type()
-            if auth_type != self._auth_type:
-                # ignore other auth types if they don't match the selected one
-                continue
-            return provider.oauth_token(cfg)
-
-    def __call__(self, cfg: 'Config') -> CredentialsProvider:
-        for provider in self._auth_providers:
+    def __call__(self, cfg: 'Config') -> HeaderFactory:
+        auth_providers = [
+            pat_auth, basic_auth, metadata_service, oauth_service_principal, azure_service_principal,
+            github_oidc_azure, azure_cli, external_browser, databricks_cli, runtime_native_auth,
+            google_credentials, google_id
+        ]
+        for provider in auth_providers:
             auth_type = provider.auth_type()
             if cfg.auth_type and auth_type != cfg.auth_type:
                 # ignore other auth types if one is explicitly enforced

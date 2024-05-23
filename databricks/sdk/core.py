@@ -4,7 +4,6 @@ from datetime import timedelta
 from json import JSONDecodeError
 from types import TracebackType
 from typing import Any, BinaryIO, Iterator, Type
-from urllib.parse import urlencode
 
 from requests.adapters import HTTPAdapter
 
@@ -14,16 +13,11 @@ from .config import *
 from .credentials_provider import *
 from .errors import DatabricksError, error_mapper
 from .errors.private_link import _is_private_link_redirect
-from .oauth import retrieve_token
 from .retries import retried
 
 __all__ = ['Config', 'DatabricksError']
 
 logger = logging.getLogger('databricks.sdk')
-
-URL_ENCODED_CONTENT_TYPE = "application/x-www-form-urlencoded"
-JWT_BEARER_GRANT_TYPE = "urn:ietf:params:oauth:grant-type:jwt-bearer"
-OIDC_TOKEN_PATH = "/oidc/v1/token"
 
 
 class ApiClient:
@@ -114,22 +108,6 @@ class ApiClient:
 
         flattened = dict(flatten_dict(with_fixed_bools))
         return flattened
-
-    def get_oauth_token(self, auth_details: str) -> Token:
-        if not self._cfg.auth_type:
-            self._cfg.authenticate()
-        original_token = self._cfg.oauth_token()
-        headers = {"Content-Type": URL_ENCODED_CONTENT_TYPE}
-        params = urlencode({
-            "grant_type": JWT_BEARER_GRANT_TYPE,
-            "authorization_details": auth_details,
-            "assertion": original_token.access_token
-        })
-        return retrieve_token(client_id=self._cfg.client_id,
-                              client_secret=self._cfg.client_secret,
-                              token_url=self._cfg.host + OIDC_TOKEN_PATH,
-                              params=params,
-                              headers=headers)
 
     def do(self,
            method: str,

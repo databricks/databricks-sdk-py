@@ -5,17 +5,17 @@ import pytest as pytest
 from pyfakefs.fake_filesystem_unittest import Patcher
 
 from databricks.sdk.core import Config
-from databricks.sdk.credentials_provider import credentials_strategy
+from databricks.sdk.credentials_provider import credentials_provider
 
 
-@credentials_strategy('noop', [])
+@credentials_provider('noop', [])
 def noop_credentials(_: any):
     return lambda: {}
 
 
 @pytest.fixture
 def config():
-    return Config(host='http://localhost', credentials_strategy=noop_credentials)
+    return Config(host='http://localhost', credentials_provider=noop_credentials)
 
 
 @pytest.fixture

@@ -11,10 +11,10 @@ from typing import Dict, Iterable, Optional
 import requests
 
 from .clock import Clock, RealClock
-from .credentials_provider import CredentialsStrategy, DefaultCredentials
+from .credentials_provider import CredentialsProvider, DefaultCredentials
 from .environments import (ALL_ENVS, AzureEnvironment, Cloud,
                            DatabricksEnvironment, get_environment_for_hostname)
-from .oauth import OidcEndpoints, Token
+from .oauth import OidcEndpoints
 from .version import __version__
 
 logger = logging.getLogger('databricks.sdk')
@@ -81,9 +81,7 @@ class Config:
 
     def __init__(self,
                  *,
-                 # Deprecated. Use credentials_strategy instead.
-                 credentials_provider: CredentialsStrategy = None,
-                 credentials_strategy: CredentialsStrategy = None,
+                 credentials_provider: CredentialsProvider = None,
                  product="unknown",
                  product_version="0.0.0",
                  clock: Clock = None,
@@ -91,15 +89,7 @@ class Config:
         self._header_factory = None
         self._inner = {}
         self._user_agent_other_info = []
-        if credentials_strategy and credentials_provider:
-            raise ValueError(
-                "When providing `credentials_strategy` field, `credential_provider` cannot be specified.")
-        if credentials_provider:
-            logger.warning(
-                "parameter 'credentials_provider' is deprecated. Use 'credentials_strategy' instead.")
-        self._credentials_strategy = next(
-            s for s in [credentials_strategy, credentials_provider,
-                        DefaultCredentials()] if s is not None)
+        self._credentials_provider = credentials_provider if credentials_provider else DefaultCredentials()
         if 'databricks_environment' in kwargs:
             self.databricks_environment = kwargs['databricks_environment']
             del kwargs['databricks_environment']
@@ -116,9 +106,6 @@ class Config:
         except ValueError as e:
             message = self.wrap_debug_info(str(e))
             raise ValueError(message) from e
-
-    def oauth_token(self) -> Token:
-        return self._credentials_strategy.oauth_token(self)
 
     def wrap_debug_info(self, message: str) -> str:
         debug_string = self.debug_string()
@@ -449,12 +436,12 @@ class Config:
 
     def init_auth(self):
         try:
-            self._header_factory = self._credentials_strategy(self)
-            self.auth_type = self._credentials_strategy.auth_type()
+            self._header_factory = self._credentials_provider(self)
+            self.auth_type = self._credentials_provider.auth_type()
             if not self._header_factory:
                 raise ValueError('not configured')
         except ValueError as e:
-            raise ValueError(f'{self._credentials_strategy.auth_type()} auth: {e}') from e
+            raise ValueError(f'{self._credentials_provider.auth_type()} auth: {e}') from e
 
     def __repr__(self):
         return f'<{self.debug_string()}>'

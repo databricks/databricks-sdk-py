@@ -18,9 +18,8 @@ from databricks.sdk.core import (ApiClient, Config, DatabricksError,
                                  StreamingResponse)
 from databricks.sdk.credentials_provider import (CliTokenSource,
                                                  CredentialsProvider,
-                                                 CredentialsStrategy,
                                                  DatabricksCliTokenSource,
-                                                 databricks_cli)
+                                                 HeaderFactory, databricks_cli)
 from databricks.sdk.environments import (ENVIRONMENTS, AzureEnvironment, Cloud,
                                          DatabricksEnvironment)
 from databricks.sdk.service.catalog import PermissionsChange
@@ -208,7 +207,7 @@ def test_extra_and_upstream_user_agent(monkeypatch):
 
 def test_config_copy_shallow_copies_credential_provider():
 
-    class TestCredentialsStrategy(CredentialsStrategy):
+    class TestCredentialsProvider(CredentialsProvider):
 
         def __init__(self):
             super().__init__()
@@ -217,24 +216,24 @@ def test_config_copy_shallow_copies_credential_provider():
         def auth_type(self) -> str:
             return "test"
 
-        def __call__(self, cfg: 'Config') -> CredentialsProvider:
+        def __call__(self, cfg: 'Config') -> HeaderFactory:
             return lambda: {"token": self._token}
 
         def refresh(self):
             self._token = "token2"
 
-    credentials_strategy = TestCredentialsStrategy()
-    config = Config(credentials_strategy=credentials_strategy)
+    credential_provider = TestCredentialsProvider()
+    config = Config(credentials_provider=credential_provider)
     config_copy = config.copy()
 
     assert config.authenticate()["token"] == "token1"
     assert config_copy.authenticate()["token"] == "token1"
 
-    credentials_strategy.refresh()
+    credential_provider.refresh()
 
     assert config.authenticate()["token"] == "token2"
     assert config_copy.authenticate()["token"] == "token2"
-    assert config._credentials_strategy == config_copy._credentials_strategy
+    assert config._credentials_provider == config_copy._credentials_provider
 
 
 def test_config_copy_deep_copies_user_agent_other_info(config):
@@ -278,7 +277,7 @@ def test_config_can_be_subclassed(fake_fs):
 
 def test_config_parsing_non_string_env_vars(monkeypatch):
     monkeypatch.setenv('DATABRICKS_DEBUG_TRUNCATE_BYTES', '100')
-    c = Config(host='http://localhost', credentials_strategy=noop_credentials)
+    c = Config(host='http://localhost', credentials_provider=noop_credentials)
     assert c.debug_truncate_bytes == 100
 
 
@@ -593,7 +592,7 @@ def test_github_oidc_flow_works_with_azure(monkeypatch):
                           ('AzureUSGovernment', ENVIRONMENTS['USGOVERNMENT']),
                           ('AzureChinaCloud', ENVIRONMENTS['CHINA']), ])
 def test_azure_environment(azure_environment, expected):
-    c = Config(credentials_strategy=noop_credentials,
+    c = Config(credentials_provider=noop_credentials,
                azure_workspace_resource_id='...',
                azure_environment=azure_environment)
     assert c.arm_environment == expected
