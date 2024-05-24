@@ -263,6 +263,7 @@ def azure_service_principal(cfg: 'Config') -> CredentialsProvider:
 
     return OAuthCredentialsProvider(refreshed_headers, token)
 
+
 @oauth_credentials_strategy('github-oidc-azure', ['host', 'azure_client_id'])
 def github_oidc_azure(cfg: 'Config') -> Optional[CredentialsProvider]:
     if 'ACTIONS_ID_TOKEN_REQUEST_TOKEN' not in os.environ:
