@@ -140,7 +140,7 @@ def dbutils_proxy(mocker):
                                                command=expect_command)
 
         dbutils = RemoteDbUtils(
-            Config(host='http://localhost', cluster_id='x', credentials_provider=noop_credentials))
+            Config(host='http://localhost', cluster_id='x', credentials_strategy=noop_credentials))
         return dbutils, assertions
 
     return inner
