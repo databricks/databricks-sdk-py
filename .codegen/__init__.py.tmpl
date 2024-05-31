@@ -5,8 +5,8 @@ from databricks.sdk.credentials_provider import CredentialsStrategy
 from databricks.sdk.mixins.files import DbfsExt
 from databricks.sdk.mixins.compute import ClustersExt
 from databricks.sdk.mixins.workspace import WorkspaceExt
-{{- range .Services}}
-from databricks.sdk.service.{{.Package.Name}} import {{.PascalName}}API{{end}}
+{{- range .Services}} {{if not .IsDataPlane}}
+from databricks.sdk.service.{{.Package.Name}} import {{.PascalName}}API{{end}}{{end}}
 from databricks.sdk.service.provisioning import Workspace
 from databricks.sdk import azure
 
@@ -61,7 +61,7 @@ class WorkspaceClient:
         self._dbutils = _make_dbutils(self._config)
         self._api_client = client.ApiClient(self._config)
 
-        {{- range .Services}}{{if and (not .IsAccounts) (not .HasParent)}}
+        {{- range .Services}}{{if and (not .IsAccounts) (not .HasParent) (not .IsDataPlane)}}
         self._{{.SnakeName}} = {{template "api" .}}(self._api_client){{end -}}{{end}}
 
     @property
@@ -76,7 +76,7 @@ class WorkspaceClient:
     def dbutils(self) -> dbutils.RemoteDbUtils:
         return self._dbutils
 
-    {{- range .Services}}{{if and (not .IsAccounts) (not .HasParent)}}
+    {{- range .Services}}{{if and (not .IsAccounts) (not .HasParent) (not .IsDataPlane)}}
     @property
     def {{.SnakeName}}(self) -> {{template "api" .}}:
         {{if .Description}}"""{{.Summary}}"""{{end}}
@@ -117,7 +117,7 @@ class AccountClient:
         self._config = config.copy()
         self._api_client = client.ApiClient(self._config)
 
-        {{- range .Services}}{{if and .IsAccounts (not .HasParent)}}
+        {{- range .Services}}{{if and .IsAccounts (not .HasParent) (not .IsDataPlane)}}
         self._{{(.TrimPrefix "account").SnakeName}} = {{template "api" .}}(self._api_client){{end -}}{{end}}
 
     @property
@@ -128,7 +128,7 @@ class AccountClient:
     def api_client(self) -> client.ApiClient:
         return self._api_client
 
-    {{- range .Services}}{{if and .IsAccounts (not .HasParent)}}
+    {{- range .Services}}{{if and .IsAccounts (not .HasParent) (not .IsDataPlane)}}
     @property
     def {{(.TrimPrefix "account").SnakeName}}(self) -> {{template "api" .}}:{{if .Description}}
         """{{.Summary}}"""{{end}}
