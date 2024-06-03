@@ -162,7 +162,8 @@
           * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *
           `LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy Passthrough on high concurrency
           clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy Passthrough on
-          standard clusters.
+          standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This mode provides a way that doesn’t have UC
+          nor passthrough enabled.
         :param docker_image: :class:`DockerImage` (optional)
         :param driver_instance_pool_id: str (optional)
           The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster uses
@@ -384,7 +385,8 @@
           * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *
           `LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy Passthrough on high concurrency
           clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy Passthrough on
-          standard clusters.
+          standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This mode provides a way that doesn’t have UC
+          nor passthrough enabled.
         :param docker_image: :class:`DockerImage` (optional)
         :param driver_instance_pool_id: str (optional)
           The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster uses

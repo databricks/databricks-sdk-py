@@ -629,6 +629,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ListAccountStorageCredentialsResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListCatalogsResponse
    :members:
    :undoc-members:

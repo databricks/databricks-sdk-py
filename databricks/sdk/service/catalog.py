@@ -2538,6 +2538,24 @@ class ListAccountMetastoreAssignmentsResponse:
 
 
 @dataclass
+class ListAccountStorageCredentialsResponse:
+    storage_credentials: Optional[List[StorageCredentialInfo]] = None
+    """An array of metastore storage credentials."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListAccountStorageCredentialsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.storage_credentials:
+            body['storage_credentials'] = [v.as_dict() for v in self.storage_credentials]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ListAccountStorageCredentialsResponse:
+        """Deserializes the ListAccountStorageCredentialsResponse from a dictionary."""
+        return cls(storage_credentials=_repeated_dict(d, 'storage_credentials', StorageCredentialInfo))
+
+
+@dataclass
 class ListCatalogsResponse:
     catalogs: Optional[List[CatalogInfo]] = None
     """An array of catalog information objects."""
@@ -6041,11 +6059,12 @@ class AccountStorageCredentialsAPI:
 
         headers = {'Accept': 'application/json', }
 
-        res = self._api.do(
+        json = self._api.do(
             'GET',
             f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/storage-credentials',
             headers=headers)
-        return [StorageCredentialInfo.from_dict(v) for v in res]
+        parsed = ListAccountStorageCredentialsResponse.from_dict(json).storage_credentials
+        return parsed if parsed is not None else []
 
     def update(self,
                metastore_id: str,

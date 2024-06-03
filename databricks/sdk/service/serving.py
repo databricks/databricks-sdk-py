@@ -15,6 +15,8 @@ from ._internal import Wait, _enum, _from_dict, _repeated_dict
 
 _LOG = logging.getLogger('databricks.sdk')
 
+from databricks.sdk.service import oauth2
+
 # all definitions in this file are in alphabetical order
 
 
@@ -1119,6 +1121,23 @@ class ListEndpointsResponse:
 
 
 @dataclass
+class ModelDataPlaneInfo:
+    query_info: Optional[oauth2.DataPlaneInfo] = None
+    """Information required to query DataPlane API 'query' endpoint."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ModelDataPlaneInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.query_info: body['query_info'] = self.query_info.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ModelDataPlaneInfo:
+        """Deserializes the ModelDataPlaneInfo from a dictionary."""
+        return cls(query_info=_from_dict(d, 'query_info', oauth2.DataPlaneInfo))
+
+
+@dataclass
 class OpenAiConfig:
     microsoft_entra_client_id: Optional[str] = None
     """This field is only required for Azure AD OpenAI and is the Microsoft Entra Client ID."""
@@ -2172,6 +2191,9 @@ class ServingEndpointDetailed:
     creator: Optional[str] = None
     """The email of the user who created the serving endpoint."""
 
+    data_plane_info: Optional[ModelDataPlaneInfo] = None
+    """Information required to query DataPlane APIs."""
+
     endpoint_url: Optional[str] = None
     """Endpoint invocation url if route optimization is enabled for endpoint"""
 
@@ -2209,6 +2231,7 @@ class ServingEndpointDetailed:
         if self.config: body['config'] = self.config.as_dict()
         if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
         if self.creator is not None: body['creator'] = self.creator
+        if self.data_plane_info: body['data_plane_info'] = self.data_plane_info.as_dict()
         if self.endpoint_url is not None: body['endpoint_url'] = self.endpoint_url
         if self.id is not None: body['id'] = self.id
         if self.last_updated_timestamp is not None:
@@ -2228,6 +2251,7 @@ class ServingEndpointDetailed:
         return cls(config=_from_dict(d, 'config', EndpointCoreConfigOutput),
                    creation_timestamp=d.get('creation_timestamp', None),
                    creator=d.get('creator', None),
+                   data_plane_info=_from_dict(d, 'data_plane_info', ModelDataPlaneInfo),
                    endpoint_url=d.get('endpoint_url', None),
                    id=d.get('id', None),
                    last_updated_timestamp=d.get('last_updated_timestamp', None),
