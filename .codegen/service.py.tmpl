@@ -100,12 +100,13 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Descriptio
 	{{- end -}}
 {{- end -}}
 
-{{range .Services}} {{if not .IsDataPlane}}
+{{range .Services}}
 class {{.PascalName}}API:{{if .Description}}
     """{{.Comment "    " 110}}"""
     {{end}}
-    def __init__(self, api_client):
+    def __init__(self, api_client{{if .IsDataPlane}}, control_plane{{end}}):
         self._api = api_client
+        {{if .IsDataPlane}}self._control_plane = control_plane {{end -}}
         {{range .Subservices}}
         self._{{.SnakeName}} = {{.PascalName}}API(self._api){{end}}
 
@@ -195,7 +196,6 @@ class {{.PascalName}}API:{{if .Description}}
         return self.{{template "safe-snake-name" .}}({{range $i, $x := .Request.Fields}}{{if $i}}, {{end}}{{template "safe-snake-name" .}}={{template "safe-snake-name" .}}{{end}}).result(timeout=timeout)
     {{end}}
     {{end -}}
-{{end}}
 {{- end}}
 
 {{define "method-parameters" -}}
