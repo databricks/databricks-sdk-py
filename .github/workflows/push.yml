@@ -2,9 +2,12 @@ name: build
 
 on:
   pull_request:
-    types: [opened, synchronize]
+    types: [ opened, synchronize ]
   merge_group:
-    types: [checks_requested]
+    types: [ checks_requested ]
+  push:
+    branches:
+      - main
 
 jobs:
   tests-ubuntu:
@@ -12,27 +15,28 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        pyVersion: [ '3.8', '3.9', '3.10', '3.11', '3.12' ]
-    with:
-      os: ubuntu-latest
-      pyVersion: ${{ matrix.pyVersion }}
+        pyVersion: [ '3.7', '3.8', '3.9', '3.10', '3.11', '3.12' ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-  tests-windows:
-      uses: ./.github/workflows/test.yml
-      strategy:
-        fail-fast: false
-        matrix:
-          pyVersion: [ '3.9', '3.10', '3.11', '3.12' ]
-      with:
-        os: windows-latest
-        pyVersion: ${{ matrix.pyVersion }}
-          
+      - name: Unshallow
+        run: git fetch --prune --unshallow
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.pyVersion }}
+
+      - name: Run tests
+        run: make dev install test
+
   fmt:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Format all files
         run: make dev fmt
