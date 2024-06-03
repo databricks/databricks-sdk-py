@@ -8,7 +8,7 @@ version_file = pathlib.Path(__file__).parent / 'databricks/sdk/version.py'
 with version_file.open('r') as f:
     exec(f.read(), version_data)
 
-setup(name="databricks-sdk",
+setup(name="sync-databricks-sdk",
       version=version_data['__version__'],
       packages=find_packages(exclude=["tests", "*tests.*", "*tests"]),
       package_data = {"databricks.sdk": ["py.typed"]},
@@ -19,9 +19,9 @@ setup(name="databricks-sdk",
                               "ipython", "ipywidgets", "requests-mock", "pyfakefs",
                               "databricks-connect"],
                       "notebook": ["ipython>=8,<9", "ipywidgets>=8,<9"]},
-      author="Serge Smertin",
-      author_email="serge.smertin@databricks.com",
-      description="Databricks SDK for Python (Beta)",
+      author="Sync Computing",
+      author_email="info@synccomputing.com",
+      description="Sync Fork Databricks SDK for Python (Beta)",
       long_description=io.open("README.md", encoding="utf-8").read(),
       long_description_content_type='text/markdown',
       url="https://databricks-sdk-py.readthedocs.io",
