@@ -2,9 +2,12 @@ name: build
 
 on:
   pull_request:
-    types: [opened, synchronize]
+    types: [ opened, synchronize ]
   merge_group:
-    types: [checks_requested]
+    types: [ checks_requested ]
+  push:
+    branches:
+      - main
 
 jobs:
   tests:
@@ -15,29 +18,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Unshallow
         run: git fetch --prune --unshallow
 
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.pyVersion }}
 
       - name: Run tests
         run: make dev install test
 
-      - name: Publish test coverage
-        uses: codecov/codecov-action@v4
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-
   fmt:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Format all files
         run: make dev fmt
