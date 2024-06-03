@@ -10,6 +10,9 @@ from datetime import timedelta
 from enum import Enum
 from typing import Any, BinaryIO, Callable, Dict, Iterator, List, Optional
 
+import requests
+
+from ..data_plane import DataPlaneDetailsFetcher
 from ..errors import OperationFailed
 from ._internal import Wait, _enum, _from_dict, _repeated_dict
 
@@ -3283,6 +3286,7 @@ class ServingEndpointsDataPlaneAPI:
     def __init__(self, api_client, control_plane):
         self._api = api_client
         self._control_plane = control_plane
+        self._details_fetcher = DataPlaneDetailsFetcher()
 
     def query(self,
               name: str,
@@ -3362,11 +3366,30 @@ class ServingEndpointsDataPlaneAPI:
         if stop is not None: body['stop'] = [v for v in stop]
         if stream is not None: body['stream'] = stream
         if temperature is not None: body['temperature'] = temperature
+
+        def info_getter():
+            response = self._control_plane.get(name=body['name'])
+            if response.data_plane_info is None:
+                raise Exception("Resource does not support direct Data Plane access")
+            return response.data_plane_info.query_info
+
+        get_params = ['name', ]
+        data_plane_details = self._details_fetcher.get_data_plane_details('query', get_params, info_getter,
+                                                                          self._api.get_oauth_token)
+
+        token = data_plane_details.token
+
+        def auth(r: requests.PreparedRequest) -> requests.PreparedRequest:
+            authorization = f"{token.token_type} {token.access_token}"
+            r.headers["Authorization"] = authorization
+            return r
+
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         response_headers = ['served-model-name', ]
         res = self._api.do('POST',
-                           f'/serving-endpoints/{name}/invocations',
+                           url=token.endpoint_url,
                            body=body,
                            headers=headers,
-                           response_headers=response_headers)
+                           response_headers=response_headers,
+                           auth=auth)
         return QueryEndpointResponse.from_dict(res)

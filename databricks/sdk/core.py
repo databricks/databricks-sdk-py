@@ -133,31 +133,36 @@ class ApiClient:
 
     def do(self,
            method: str,
-           path: str,
+           path: str = None,
+           url: str = None,
            query: dict = None,
            headers: dict = None,
            body: dict = None,
            raw: bool = False,
            files=None,
            data=None,
+           auth=None,
            response_headers: List[str] = None) -> Union[dict, BinaryIO]:
         # Remove extra `/` from path for Files API
         # Once we've fixed the OpenAPI spec, we can remove this
         path = re.sub('^/api/2.0/fs/files//', '/api/2.0/fs/files/', path)
         if headers is None:
             headers = {}
+        if url is None:
+            url = f"{self._cfg.host}{path}"
         headers['User-Agent'] = self._user_agent_base
         retryable = retried(timeout=timedelta(seconds=self._retry_timeout_seconds),
                             is_retryable=self._is_retryable,
                             clock=self._cfg.clock)
         response = retryable(self._perform)(method,
-                                            path,
+                                            url,
                                             query=query,
                                             headers=headers,
                                             body=body,
                                             raw=raw,
                                             files=files,
-                                            data=data)
+                                            data=data,
+                                            auth=auth)
 
         resp = dict()
         for header in response_headers if response_headers else []:
@@ -239,20 +244,22 @@ class ApiClient:
 
     def _perform(self,
                  method: str,
-                 path: str,
+                 url: str,
                  query: dict = None,
                  headers: dict = None,
                  body: dict = None,
                  raw: bool = False,
                  files=None,
-                 data=None):
+                 data=None,
+                 auth=None):
         response = self._session.request(method,
-                                         f"{self._cfg.host}{path}",
+                                         url,
                                          params=self._fix_query_string(query),
                                          json=body,
                                          headers=headers,
                                          files=files,
                                          data=data,
+                                         auth=auth,
                                          stream=raw,
                                          timeout=self._http_timeout_seconds)
         try:
