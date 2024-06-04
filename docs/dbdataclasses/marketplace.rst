@@ -32,6 +32,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: ASSET_TYPE_UNSPECIFIED
       :value: "ASSET_TYPE_UNSPECIFIED"
 
+.. autoclass:: BatchGetListingsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: BatchGetProvidersResponse
+   :members:
+   :undoc-members:
+
 .. py:class:: Category
 
    .. py:attribute:: ADVERTISING_AND_MARKETING

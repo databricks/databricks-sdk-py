@@ -59,6 +59,38 @@ class AssetType(Enum):
     ASSET_TYPE_UNSPECIFIED = 'ASSET_TYPE_UNSPECIFIED'
 
 
+@dataclass
+class BatchGetListingsResponse:
+    listings: Optional[List[Listing]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the BatchGetListingsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.listings: body['listings'] = [v.as_dict() for v in self.listings]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> BatchGetListingsResponse:
+        """Deserializes the BatchGetListingsResponse from a dictionary."""
+        return cls(listings=_repeated_dict(d, 'listings', Listing))
+
+
+@dataclass
+class BatchGetProvidersResponse:
+    providers: Optional[List[ProviderInfo]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the BatchGetProvidersResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.providers: body['providers'] = [v.as_dict() for v in self.providers]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> BatchGetProvidersResponse:
+        """Deserializes the BatchGetProvidersResponse from a dictionary."""
+        return cls(providers=_repeated_dict(d, 'providers', ProviderInfo))
+
+
 class Category(Enum):
 
     ADVERTISING_AND_MARKETING = 'ADVERTISING_AND_MARKETING'
@@ -2532,6 +2564,26 @@ class ConsumerListingsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
+    def batch_get(self, *, ids: Optional[List[str]] = None) -> BatchGetListingsResponse:
+        """Get one batch of listings. One may specify up to 50 IDs per request.
+        
+        Batch get a published listing in the Databricks Marketplace that the consumer has access to.
+        
+        :param ids: List[str] (optional)
+        
+        :returns: :class:`BatchGetListingsResponse`
+        """
+
+        query = {}
+        if ids is not None: query['ids'] = [v for v in ids]
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do('GET',
+                           '/api/2.1/marketplace-consumer/listings:batchGet',
+                           query=query,
+                           headers=headers)
+        return BatchGetListingsResponse.from_dict(res)
+
     def get(self, id: str) -> GetListingResponse:
         """Get listing.
         
@@ -2779,6 +2831,26 @@ class ConsumerProvidersAPI:
 
     def __init__(self, api_client):
         self._api = api_client
+
+    def batch_get(self, *, ids: Optional[List[str]] = None) -> BatchGetProvidersResponse:
+        """Get one batch of providers. One may specify up to 50 IDs per request.
+        
+        Batch get a provider in the Databricks Marketplace with at least one visible listing.
+        
+        :param ids: List[str] (optional)
+        
+        :returns: :class:`BatchGetProvidersResponse`
+        """
+
+        query = {}
+        if ids is not None: query['ids'] = [v for v in ids]
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do('GET',
+                           '/api/2.1/marketplace-consumer/providers:batchGet',
+                           query=query,
+                           headers=headers)
+        return BatchGetProvidersResponse.from_dict(res)
 
     def get(self, id: str) -> GetProviderResponse:
         """Get a provider.

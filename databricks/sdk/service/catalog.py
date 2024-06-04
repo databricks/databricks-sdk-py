@@ -1627,14 +1627,28 @@ class DataSourceFormat(Enum):
     """Data source format"""
 
     AVRO = 'AVRO'
+    BIGQUERY_FORMAT = 'BIGQUERY_FORMAT'
     CSV = 'CSV'
+    DATABRICKS_FORMAT = 'DATABRICKS_FORMAT'
     DELTA = 'DELTA'
     DELTASHARING = 'DELTASHARING'
+    HIVE_CUSTOM = 'HIVE_CUSTOM'
+    HIVE_SERDE = 'HIVE_SERDE'
     JSON = 'JSON'
+    MYSQL_FORMAT = 'MYSQL_FORMAT'
+    NETSUITE_FORMAT = 'NETSUITE_FORMAT'
     ORC = 'ORC'
     PARQUET = 'PARQUET'
+    POSTGRESQL_FORMAT = 'POSTGRESQL_FORMAT'
+    REDSHIFT_FORMAT = 'REDSHIFT_FORMAT'
+    SALESFORCE_FORMAT = 'SALESFORCE_FORMAT'
+    SNOWFLAKE_FORMAT = 'SNOWFLAKE_FORMAT'
+    SQLDW_FORMAT = 'SQLDW_FORMAT'
+    SQLSERVER_FORMAT = 'SQLSERVER_FORMAT'
     TEXT = 'TEXT'
     UNITY_CATALOG = 'UNITY_CATALOG'
+    VECTOR_INDEX_FORMAT = 'VECTOR_INDEX_FORMAT'
+    WORKDAY_RAAS_FORMAT = 'WORKDAY_RAAS_FORMAT'
 
 
 @dataclass
@@ -2535,6 +2549,24 @@ class ListAccountMetastoreAssignmentsResponse:
     def from_dict(cls, d: Dict[str, any]) -> ListAccountMetastoreAssignmentsResponse:
         """Deserializes the ListAccountMetastoreAssignmentsResponse from a dictionary."""
         return cls(workspace_ids=d.get('workspace_ids', None))
+
+
+@dataclass
+class ListAccountStorageCredentialsResponse:
+    storage_credentials: Optional[List[StorageCredentialInfo]] = None
+    """An array of metastore storage credentials."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListAccountStorageCredentialsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.storage_credentials:
+            body['storage_credentials'] = [v.as_dict() for v in self.storage_credentials]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ListAccountStorageCredentialsResponse:
+        """Deserializes the ListAccountStorageCredentialsResponse from a dictionary."""
+        return cls(storage_credentials=_repeated_dict(d, 'storage_credentials', StorageCredentialInfo))
 
 
 @dataclass
@@ -4720,7 +4752,10 @@ class TableSummary:
 class TableType(Enum):
 
     EXTERNAL = 'EXTERNAL'
+    EXTERNAL_SHALLOW_CLONE = 'EXTERNAL_SHALLOW_CLONE'
+    FOREIGN = 'FOREIGN'
     MANAGED = 'MANAGED'
+    MANAGED_SHALLOW_CLONE = 'MANAGED_SHALLOW_CLONE'
     MATERIALIZED_VIEW = 'MATERIALIZED_VIEW'
     STREAMING_TABLE = 'STREAMING_TABLE'
     VIEW = 'VIEW'
@@ -6041,11 +6076,12 @@ class AccountStorageCredentialsAPI:
 
         headers = {'Accept': 'application/json', }
 
-        res = self._api.do(
+        json = self._api.do(
             'GET',
             f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/storage-credentials',
             headers=headers)
-        return [StorageCredentialInfo.from_dict(v) for v in res]
+        parsed = ListAccountStorageCredentialsResponse.from_dict(json).storage_credentials
+        return parsed if parsed is not None else []
 
     def update(self,
                metastore_id: str,
