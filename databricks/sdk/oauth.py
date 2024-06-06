@@ -382,6 +382,7 @@ class OAuthClient:
         self.token_url = oidc.token_endpoint
         self.is_aws = config.is_aws
         self.is_azure = config.is_azure
+        self.is_gcp = config.is_gcp
 
         self._auth_url = oidc.authorization_endpoint
         self._scopes = scopes
