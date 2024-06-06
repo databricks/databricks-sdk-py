@@ -371,9 +371,6 @@ class OAuthClient:
         config = Config(host=host, credentials_strategy=noop_credentials)
         if not scopes:
             scopes = ['all-apis']
-        if config.is_azure:
-            # Azure AD only supports full access to Azure Databricks.
-            scopes = [f'{config.effective_azure_login_app_id}/user_impersonation', 'offline_access']
         oidc = config.oidc_endpoints
         if not oidc:
             raise ValueError(f'{host} does not support OAuth')
