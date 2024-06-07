@@ -588,7 +588,7 @@ class WorkspaceClient:
 
     @property
     def serving_endpoints_data_plane(self) -> ServingEndpointsDataPlaneAPI:
-        """Serving endpoints DataPlane provides a set of operations to interact with DataPlane endpoints for Serving endpoints service."""
+        """Serving endpoints DataPlane provides a set of operations to interact with data plane endpoints for Serving endpoints service."""
         return self._serving_endpoints_data_plane
 
     @property

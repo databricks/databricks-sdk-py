@@ -3320,7 +3320,7 @@ class ServingEndpointsAPI:
 
 
 class ServingEndpointsDataPlaneAPI:
-    """Serving endpoints DataPlane provides a set of operations to interact with DataPlane endpoints for Serving
+    """Serving endpoints DataPlane provides a set of operations to interact with data plane endpoints for Serving
     endpoints service."""
 
     def __init__(self, api_client, control_plane):
@@ -3408,7 +3408,7 @@ class ServingEndpointsDataPlaneAPI:
         if temperature is not None: body['temperature'] = temperature
 
         def info_getter():
-            response = self._control_plane.get(name=body['name'])
+            response = self._control_plane.get(name=name, )
             if response.data_plane_info is None:
                 raise Exception("Resource does not support direct Data Plane access")
             return response.data_plane_info.query_info
@@ -3426,7 +3426,7 @@ class ServingEndpointsDataPlaneAPI:
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
         response_headers = ['served-model-name', ]
         res = self._api.do('POST',
-                           url=token.endpoint_url,
+                           url=data_plane_details.endpoint_url,
                            body=body,
                            headers=headers,
                            response_headers=response_headers,

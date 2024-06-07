@@ -212,7 +212,7 @@ class {{.PascalName}}API:{{if .Description}}
         def info_getter():
             response = self._control_plane.{{.Service.DataPlaneInfoMethod.SnakeName}}(
                 {{- range .Service.DataPlaneInfoMethod.Request.Fields }}
-                {{.SnakeName}} = body['{{.SnakeName}}']
+                {{.SnakeName}} = {{.SnakeName}},
                 {{- end}}
                 )
             if response.{{(index .DataPlaneInfoFields 0).SnakeName}} is None:

@@ -143,12 +143,12 @@ class ApiClient:
            data=None,
            auth=None,
            response_headers: List[str] = None) -> Union[dict, BinaryIO]:
-        # Remove extra `/` from path for Files API
-        # Once we've fixed the OpenAPI spec, we can remove this
-        path = re.sub('^/api/2.0/fs/files//', '/api/2.0/fs/files/', path)
         if headers is None:
             headers = {}
         if url is None:
+            # Remove extra `/` from path for Files API
+            # Once we've fixed the OpenAPI spec, we can remove this
+            path = re.sub('^/api/2.0/fs/files//', '/api/2.0/fs/files/', path)
             url = f"{self._cfg.host}{path}"
         headers['User-Agent'] = self._user_agent_base
         retryable = retried(timeout=timedelta(seconds=self._retry_timeout_seconds),
