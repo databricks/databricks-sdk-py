@@ -93,6 +93,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: IngestionGatewayPipelineDefinition
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListPipelineEventsResponse
    :members:
    :undoc-members:
@@ -302,6 +306,20 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: TableSpec
    :members:
    :undoc-members:
+
+.. autoclass:: TableSpecificConfig
+   :members:
+   :undoc-members:
+
+.. py:class:: TableSpecificConfigScdType
+
+   The SCD type to use to ingest the table.
+
+   .. py:attribute:: SCD_TYPE_1
+      :value: "SCD_TYPE_1"
+
+   .. py:attribute:: SCD_TYPE_2
+      :value: "SCD_TYPE_2"
 
 .. autoclass:: UpdateInfo
    :members:

@@ -100,7 +100,7 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Descriptio
 	{{- end -}}
 {{- end -}}
 
-{{range .Services}}
+{{range .Services}} {{if not .IsDataPlane}}
 class {{.PascalName}}API:{{if .Description}}
     """{{.Comment "    " 110}}"""
     {{end}}
@@ -195,6 +195,7 @@ class {{.PascalName}}API:{{if .Description}}
         return self.{{template "safe-snake-name" .}}({{range $i, $x := .Request.Fields}}{{if $i}}, {{end}}{{template "safe-snake-name" .}}={{template "safe-snake-name" .}}{{end}}).result(timeout=timeout)
     {{end}}
     {{end -}}
+{{end}}
 {{- end}}
 
 {{define "method-parameters" -}}

@@ -8,12 +8,14 @@ import time
 from dataclasses import dataclass
 from datetime import timedelta
 from enum import Enum
-from typing import Any, Callable, Dict, Iterator, List, Optional
+from typing import Any, BinaryIO, Callable, Dict, Iterator, List, Optional
 
 from ..errors import OperationFailed
 from ._internal import Wait, _enum, _from_dict, _repeated_dict
 
 _LOG = logging.getLogger('databricks.sdk')
+
+from databricks.sdk.service import oauth2
 
 # all definitions in this file are in alphabetical order
 
@@ -100,8 +102,8 @@ class AnthropicConfig:
 @dataclass
 class App:
     name: str
-    """The name of the app. The name must contain only lowercase alphanumeric characters and hyphens
-    and be between 2 and 30 characters long. It must be unique within the workspace."""
+    """The name of the app. The name must contain only lowercase alphanumeric characters and hyphens.
+    It must be unique within the workspace."""
 
     active_deployment: Optional[AppDeployment] = None
     """The active deployment of the app."""
@@ -162,13 +164,23 @@ class App:
 @dataclass
 class AppDeployment:
     source_code_path: str
-    """The source code path of the deployment."""
+    """The workspace file system path of the source code used to create the app deployment. This is
+    different from `deployment_artifacts.source_code_path`, which is the path used by the deployed
+    app. The former refers to the original source code location of the app in the workspace during
+    deployment creation, whereas the latter provides a system generated stable snapshotted source
+    code path used by the deployment."""
+
+    mode: AppDeploymentMode
+    """The mode of which the deployment will manage the source code."""
 
     create_time: Optional[str] = None
     """The creation time of the deployment. Formatted timestamp in ISO 6801."""
 
     creator: Optional[str] = None
     """The email of the user creates the deployment."""
+
+    deployment_artifacts: Optional[AppDeploymentArtifacts] = None
+    """The deployment artifacts for an app."""
 
     deployment_id: Optional[str] = None
     """The unique id of the deployment."""
@@ -184,7 +196,9 @@ class AppDeployment:
         body = {}
         if self.create_time is not None: body['create_time'] = self.create_time
         if self.creator is not None: body['creator'] = self.creator
+        if self.deployment_artifacts: body['deployment_artifacts'] = self.deployment_artifacts.as_dict()
         if self.deployment_id is not None: body['deployment_id'] = self.deployment_id
+        if self.mode is not None: body['mode'] = self.mode.value
         if self.source_code_path is not None: body['source_code_path'] = self.source_code_path
         if self.status: body['status'] = self.status.as_dict()
         if self.update_time is not None: body['update_time'] = self.update_time
@@ -195,18 +209,44 @@ class AppDeployment:
         """Deserializes the AppDeployment from a dictionary."""
         return cls(create_time=d.get('create_time', None),
                    creator=d.get('creator', None),
+                   deployment_artifacts=_from_dict(d, 'deployment_artifacts', AppDeploymentArtifacts),
                    deployment_id=d.get('deployment_id', None),
+                   mode=_enum(d, 'mode', AppDeploymentMode),
                    source_code_path=d.get('source_code_path', None),
                    status=_from_dict(d, 'status', AppDeploymentStatus),
                    update_time=d.get('update_time', None))
 
 
+@dataclass
+class AppDeploymentArtifacts:
+    source_code_path: Optional[str] = None
+    """The snapshotted workspace file system path of the source code loaded by the deployed app."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AppDeploymentArtifacts into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.source_code_path is not None: body['source_code_path'] = self.source_code_path
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> AppDeploymentArtifacts:
+        """Deserializes the AppDeploymentArtifacts from a dictionary."""
+        return cls(source_code_path=d.get('source_code_path', None))
+
+
+class AppDeploymentMode(Enum):
+
+    AUTO_SYNC = 'AUTO_SYNC'
+    MODE_UNSPECIFIED = 'MODE_UNSPECIFIED'
+    SNAPSHOT = 'SNAPSHOT'
+
+
 class AppDeploymentState(Enum):
 
-    CANCELLED = 'CANCELLED'
     FAILED = 'FAILED'
     IN_PROGRESS = 'IN_PROGRESS'
     STATE_UNSPECIFIED = 'STATE_UNSPECIFIED'
+    STOPPED = 'STOPPED'
     SUCCEEDED = 'SUCCEEDED'
 
 
@@ -252,15 +292,11 @@ class AppState(Enum):
     CREATING = 'CREATING'
     DELETED = 'DELETED'
     DELETING = 'DELETING'
-    DEPLOYED = 'DEPLOYED'
-    DEPLOYING = 'DEPLOYING'
     ERROR = 'ERROR'
     IDLE = 'IDLE'
-    READY = 'READY'
     RUNNING = 'RUNNING'
     STARTING = 'STARTING'
     STATE_UNSPECIFIED = 'STATE_UNSPECIFIED'
-    UPDATING = 'UPDATING'
 
 
 @dataclass
@@ -438,7 +474,14 @@ class CohereConfig:
 @dataclass
 class CreateAppDeploymentRequest:
     source_code_path: str
-    """The source code path of the deployment."""
+    """The workspace file system path of the source code used to create the app deployment. This is
+    different from `deployment_artifacts.source_code_path`, which is the path used by the deployed
+    app. The former refers to the original source code location of the app in the workspace during
+    deployment creation, whereas the latter provides a system generated stable snapshotted source
+    code path used by the deployment."""
+
+    mode: AppDeploymentMode
+    """The mode of which the deployment will manage the source code."""
 
     app_name: Optional[str] = None
     """The name of the app."""
@@ -447,20 +490,23 @@ class CreateAppDeploymentRequest:
         """Serializes the CreateAppDeploymentRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.app_name is not None: body['app_name'] = self.app_name
+        if self.mode is not None: body['mode'] = self.mode.value
         if self.source_code_path is not None: body['source_code_path'] = self.source_code_path
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateAppDeploymentRequest:
         """Deserializes the CreateAppDeploymentRequest from a dictionary."""
-        return cls(app_name=d.get('app_name', None), source_code_path=d.get('source_code_path', None))
+        return cls(app_name=d.get('app_name', None),
+                   mode=_enum(d, 'mode', AppDeploymentMode),
+                   source_code_path=d.get('source_code_path', None))
 
 
 @dataclass
 class CreateAppRequest:
     name: str
-    """The name of the app. The name must contain only lowercase alphanumeric characters and hyphens
-    and be between 2 and 30 characters long. It must be unique within the workspace."""
+    """The name of the app. The name must contain only lowercase alphanumeric characters and hyphens.
+    It must be unique within the workspace."""
 
     description: Optional[str] = None
     """The description of the app."""
@@ -491,6 +537,9 @@ class CreateServingEndpoint:
     """Rate limits to be applied to the serving endpoint. NOTE: only external and foundation model
     endpoints are supported as of now."""
 
+    route_optimized: Optional[bool] = None
+    """Enable route optimization for the serving endpoint."""
+
     tags: Optional[List[EndpointTag]] = None
     """Tags to be attached to the serving endpoint and automatically propagated to billing logs."""
 
@@ -500,6 +549,7 @@ class CreateServingEndpoint:
         if self.config: body['config'] = self.config.as_dict()
         if self.name is not None: body['name'] = self.name
         if self.rate_limits: body['rate_limits'] = [v.as_dict() for v in self.rate_limits]
+        if self.route_optimized is not None: body['route_optimized'] = self.route_optimized
         if self.tags: body['tags'] = [v.as_dict() for v in self.tags]
         return body
 
@@ -509,6 +559,7 @@ class CreateServingEndpoint:
         return cls(config=_from_dict(d, 'config', EndpointCoreConfigInput),
                    name=d.get('name', None),
                    rate_limits=_repeated_dict(d, 'rate_limits', RateLimit),
+                   route_optimized=d.get('route_optimized', None),
                    tags=_repeated_dict(d, 'tags', EndpointTag))
 
 
@@ -844,16 +895,18 @@ class EnvVariable:
 
 @dataclass
 class ExportMetricsResponse:
+    contents: Optional[BinaryIO] = None
 
     def as_dict(self) -> dict:
         """Serializes the ExportMetricsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.contents: body['contents'] = self.contents
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ExportMetricsResponse:
         """Deserializes the ExportMetricsResponse from a dictionary."""
-        return cls()
+        return cls(contents=d.get('contents', None))
 
 
 @dataclass
@@ -1089,14 +1142,41 @@ class ListEndpointsResponse:
 
 
 @dataclass
+class ModelDataPlaneInfo:
+    query_info: Optional[oauth2.DataPlaneInfo] = None
+    """Information required to query DataPlane API 'query' endpoint."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ModelDataPlaneInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.query_info: body['query_info'] = self.query_info.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ModelDataPlaneInfo:
+        """Deserializes the ModelDataPlaneInfo from a dictionary."""
+        return cls(query_info=_from_dict(d, 'query_info', oauth2.DataPlaneInfo))
+
+
+@dataclass
 class OpenAiConfig:
-    openai_api_key: str
-    """The Databricks secret key reference for an OpenAI or Azure OpenAI API key."""
+    microsoft_entra_client_id: Optional[str] = None
+    """This field is only required for Azure AD OpenAI and is the Microsoft Entra Client ID."""
+
+    microsoft_entra_client_secret: Optional[str] = None
+    """The Databricks secret key reference for the Microsoft Entra Client Secret that is only required
+    for Azure AD OpenAI."""
+
+    microsoft_entra_tenant_id: Optional[str] = None
+    """This field is only required for Azure AD OpenAI and is the Microsoft Entra Tenant ID."""
 
     openai_api_base: Optional[str] = None
     """This is the base URL for the OpenAI API (default: "https://api.openai.com/v1"). For Azure
     OpenAI, this field is required, and is the base URL for the Azure OpenAI API service provided by
     Azure."""
+
+    openai_api_key: Optional[str] = None
+    """The Databricks secret key reference for an OpenAI or Azure OpenAI API key."""
 
     openai_api_type: Optional[str] = None
     """This is an optional field to specify the type of OpenAI API to use. For Azure OpenAI, this field
@@ -1118,6 +1198,12 @@ class OpenAiConfig:
     def as_dict(self) -> dict:
         """Serializes the OpenAiConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.microsoft_entra_client_id is not None:
+            body['microsoft_entra_client_id'] = self.microsoft_entra_client_id
+        if self.microsoft_entra_client_secret is not None:
+            body['microsoft_entra_client_secret'] = self.microsoft_entra_client_secret
+        if self.microsoft_entra_tenant_id is not None:
+            body['microsoft_entra_tenant_id'] = self.microsoft_entra_tenant_id
         if self.openai_api_base is not None: body['openai_api_base'] = self.openai_api_base
         if self.openai_api_key is not None: body['openai_api_key'] = self.openai_api_key
         if self.openai_api_type is not None: body['openai_api_type'] = self.openai_api_type
@@ -1130,7 +1216,10 @@ class OpenAiConfig:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> OpenAiConfig:
         """Deserializes the OpenAiConfig from a dictionary."""
-        return cls(openai_api_base=d.get('openai_api_base', None),
+        return cls(microsoft_entra_client_id=d.get('microsoft_entra_client_id', None),
+                   microsoft_entra_client_secret=d.get('microsoft_entra_client_secret', None),
+                   microsoft_entra_tenant_id=d.get('microsoft_entra_tenant_id', None),
+                   openai_api_base=d.get('openai_api_base', None),
                    openai_api_key=d.get('openai_api_key', None),
                    openai_api_type=d.get('openai_api_type', None),
                    openai_api_version=d.get('openai_api_version', None),
@@ -2123,6 +2212,12 @@ class ServingEndpointDetailed:
     creator: Optional[str] = None
     """The email of the user who created the serving endpoint."""
 
+    data_plane_info: Optional[ModelDataPlaneInfo] = None
+    """Information required to query DataPlane APIs."""
+
+    endpoint_url: Optional[str] = None
+    """Endpoint invocation url if route optimization is enabled for endpoint"""
+
     id: Optional[str] = None
     """System-generated ID of the endpoint. This is used to refer to the endpoint in the Permissions
     API"""
@@ -2139,6 +2234,9 @@ class ServingEndpointDetailed:
     permission_level: Optional[ServingEndpointDetailedPermissionLevel] = None
     """The permission level of the principal making the request."""
 
+    route_optimized: Optional[bool] = None
+    """Boolean representing if route optimization has been enabled for the endpoint"""
+
     state: Optional[EndpointState] = None
     """Information corresponding to the state of the serving endpoint."""
 
@@ -2154,12 +2252,15 @@ class ServingEndpointDetailed:
         if self.config: body['config'] = self.config.as_dict()
         if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
         if self.creator is not None: body['creator'] = self.creator
+        if self.data_plane_info: body['data_plane_info'] = self.data_plane_info.as_dict()
+        if self.endpoint_url is not None: body['endpoint_url'] = self.endpoint_url
         if self.id is not None: body['id'] = self.id
         if self.last_updated_timestamp is not None:
             body['last_updated_timestamp'] = self.last_updated_timestamp
         if self.name is not None: body['name'] = self.name
         if self.pending_config: body['pending_config'] = self.pending_config.as_dict()
         if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        if self.route_optimized is not None: body['route_optimized'] = self.route_optimized
         if self.state: body['state'] = self.state.as_dict()
         if self.tags: body['tags'] = [v.as_dict() for v in self.tags]
         if self.task is not None: body['task'] = self.task
@@ -2171,11 +2272,14 @@ class ServingEndpointDetailed:
         return cls(config=_from_dict(d, 'config', EndpointCoreConfigOutput),
                    creation_timestamp=d.get('creation_timestamp', None),
                    creator=d.get('creator', None),
+                   data_plane_info=_from_dict(d, 'data_plane_info', ModelDataPlaneInfo),
+                   endpoint_url=d.get('endpoint_url', None),
                    id=d.get('id', None),
                    last_updated_timestamp=d.get('last_updated_timestamp', None),
                    name=d.get('name', None),
                    pending_config=_from_dict(d, 'pending_config', EndpointPendingConfig),
                    permission_level=_enum(d, 'permission_level', ServingEndpointDetailedPermissionLevel),
+                   route_optimized=d.get('route_optimized', None),
                    state=_from_dict(d, 'state', EndpointState),
                    tags=_repeated_dict(d, 'tags', EndpointTag),
                    task=d.get('task', None))
@@ -2332,8 +2436,8 @@ class TrafficConfig:
 @dataclass
 class UpdateAppRequest:
     name: str
-    """The name of the app. The name must contain only lowercase alphanumeric characters and hyphens
-    and be between 2 and 30 characters long. It must be unique within the workspace."""
+    """The name of the app. The name must contain only lowercase alphanumeric characters and hyphens.
+    It must be unique within the workspace."""
 
     description: Optional[str] = None
     """The description of the app."""
@@ -2462,13 +2566,13 @@ class AppsAPI:
         raise TimeoutError(f'timed out after {timeout}: {status_message}')
 
     def create(self, name: str, *, description: Optional[str] = None) -> Wait[App]:
-        """Create an App.
+        """Create an app.
         
         Creates a new app.
         
         :param name: str
-          The name of the app. The name must contain only lowercase alphanumeric characters and hyphens and be
-          between 2 and 30 characters long. It must be unique within the workspace.
+          The name of the app. The name must contain only lowercase alphanumeric characters and hyphens. It
+          must be unique within the workspace.
         :param description: str (optional)
           The description of the app.
         
@@ -2491,40 +2595,8 @@ class AppsAPI:
                         timeout=timedelta(minutes=20)) -> App:
         return self.create(description=description, name=name).result(timeout=timeout)
 
-    def create_deployment(self, app_name: str, source_code_path: str) -> Wait[AppDeployment]:
-        """Create an App Deployment.
-        
-        Creates an app deployment for the app with the supplied name.
-        
-        :param app_name: str
-          The name of the app.
-        :param source_code_path: str
-          The source code path of the deployment.
-        
-        :returns:
-          Long-running operation waiter for :class:`AppDeployment`.
-          See :method:wait_get_deployment_app_succeeded for more details.
-        """
-        body = {}
-        if source_code_path is not None: body['source_code_path'] = source_code_path
-        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
-        op_response = self._api.do('POST',
-                                   f'/api/2.0/preview/apps/{app_name}/deployments',
-                                   body=body,
-                                   headers=headers)
-        return Wait(self.wait_get_deployment_app_succeeded,
-                    response=AppDeployment.from_dict(op_response),
-                    app_name=app_name,
-                    deployment_id=op_response['deployment_id'])
-
-    def create_deployment_and_wait(self, app_name: str, source_code_path: str,
-                                   timeout=timedelta(minutes=20)) -> AppDeployment:
-        return self.create_deployment(app_name=app_name,
-                                      source_code_path=source_code_path).result(timeout=timeout)
-
     def delete(self, name: str):
-        """Delete an App.
+        """Delete an app.
         
         Deletes an app.
         
@@ -2538,8 +2610,50 @@ class AppsAPI:
 
         self._api.do('DELETE', f'/api/2.0/preview/apps/{name}', headers=headers)
 
+    def deploy(self, app_name: str, source_code_path: str, mode: AppDeploymentMode) -> Wait[AppDeployment]:
+        """Create an app deployment.
+        
+        Creates an app deployment for the app with the supplied name.
+        
+        :param app_name: str
+          The name of the app.
+        :param source_code_path: str
+          The workspace file system path of the source code used to create the app deployment. This is
+          different from `deployment_artifacts.source_code_path`, which is the path used by the deployed app.
+          The former refers to the original source code location of the app in the workspace during deployment
+          creation, whereas the latter provides a system generated stable snapshotted source code path used by
+          the deployment.
+        :param mode: :class:`AppDeploymentMode`
+          The mode of which the deployment will manage the source code.
+        
+        :returns:
+          Long-running operation waiter for :class:`AppDeployment`.
+          See :method:wait_get_deployment_app_succeeded for more details.
+        """
+        body = {}
+        if mode is not None: body['mode'] = mode.value
+        if source_code_path is not None: body['source_code_path'] = source_code_path
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        op_response = self._api.do('POST',
+                                   f'/api/2.0/preview/apps/{app_name}/deployments',
+                                   body=body,
+                                   headers=headers)
+        return Wait(self.wait_get_deployment_app_succeeded,
+                    response=AppDeployment.from_dict(op_response),
+                    app_name=app_name,
+                    deployment_id=op_response['deployment_id'])
+
+    def deploy_and_wait(self,
+                        app_name: str,
+                        source_code_path: str,
+                        mode: AppDeploymentMode,
+                        timeout=timedelta(minutes=20)) -> AppDeployment:
+        return self.deploy(app_name=app_name, mode=mode,
+                           source_code_path=source_code_path).result(timeout=timeout)
+
     def get(self, name: str) -> App:
-        """Get an App.
+        """Get an app.
         
         Retrieves information for the app with the supplied name.
         
@@ -2555,7 +2669,7 @@ class AppsAPI:
         return App.from_dict(res)
 
     def get_deployment(self, app_name: str, deployment_id: str) -> AppDeployment:
-        """Get an App Deployment.
+        """Get an app deployment.
         
         Retrieves information for the app deployment with the supplied name and deployment id.
         
@@ -2575,7 +2689,7 @@ class AppsAPI:
         return AppDeployment.from_dict(res)
 
     def get_environment(self, name: str) -> AppEnvironment:
-        """Get App Environment.
+        """Get app environment.
         
         Retrieves app environment.
         
@@ -2591,7 +2705,7 @@ class AppsAPI:
         return AppEnvironment.from_dict(res)
 
     def list(self, *, page_size: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[App]:
-        """List Apps.
+        """List apps.
         
         Lists all apps in the workspace.
         
@@ -2622,7 +2736,7 @@ class AppsAPI:
                          *,
                          page_size: Optional[int] = None,
                          page_token: Optional[str] = None) -> Iterator[AppDeployment]:
-        """List App Deployments.
+        """List app deployments.
         
         Lists all app deployments for the app with the supplied name.
         
@@ -2654,7 +2768,7 @@ class AppsAPI:
             query['page_token'] = json['next_page_token']
 
     def stop(self, name: str):
-        """Stop an App.
+        """Stop an app.
         
         Stops the active deployment of the app in the workspace.
         
@@ -2669,13 +2783,13 @@ class AppsAPI:
         self._api.do('POST', f'/api/2.0/preview/apps/{name}/stop', headers=headers)
 
     def update(self, name: str, *, description: Optional[str] = None) -> App:
-        """Update an App.
+        """Update an app.
         
         Updates the app with the supplied name.
         
         :param name: str
-          The name of the app. The name must contain only lowercase alphanumeric characters and hyphens and be
-          between 2 and 30 characters long. It must be unique within the workspace.
+          The name of the app. The name must contain only lowercase alphanumeric characters and hyphens. It
+          must be unique within the workspace.
         :param description: str (optional)
           The description of the app.
         
@@ -2760,6 +2874,7 @@ class ServingEndpointsAPI:
                config: EndpointCoreConfigInput,
                *,
                rate_limits: Optional[List[RateLimit]] = None,
+               route_optimized: Optional[bool] = None,
                tags: Optional[List[EndpointTag]] = None) -> Wait[ServingEndpointDetailed]:
         """Create a new serving endpoint.
         
@@ -2771,6 +2886,8 @@ class ServingEndpointsAPI:
         :param rate_limits: List[:class:`RateLimit`] (optional)
           Rate limits to be applied to the serving endpoint. NOTE: only external and foundation model
           endpoints are supported as of now.
+        :param route_optimized: bool (optional)
+          Enable route optimization for the serving endpoint.
         :param tags: List[:class:`EndpointTag`] (optional)
           Tags to be attached to the serving endpoint and automatically propagated to billing logs.
         
@@ -2782,6 +2899,7 @@ class ServingEndpointsAPI:
         if config is not None: body['config'] = config.as_dict()
         if name is not None: body['name'] = name
         if rate_limits is not None: body['rate_limits'] = [v.as_dict() for v in rate_limits]
+        if route_optimized is not None: body['route_optimized'] = route_optimized
         if tags is not None: body['tags'] = [v.as_dict() for v in tags]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
@@ -2796,9 +2914,13 @@ class ServingEndpointsAPI:
         config: EndpointCoreConfigInput,
         *,
         rate_limits: Optional[List[RateLimit]] = None,
+        route_optimized: Optional[bool] = None,
         tags: Optional[List[EndpointTag]] = None,
         timeout=timedelta(minutes=20)) -> ServingEndpointDetailed:
-        return self.create(config=config, name=name, rate_limits=rate_limits,
+        return self.create(config=config,
+                           name=name,
+                           rate_limits=rate_limits,
+                           route_optimized=route_optimized,
                            tags=tags).result(timeout=timeout)
 
     def delete(self, name: str):
@@ -2814,7 +2936,7 @@ class ServingEndpointsAPI:
 
         self._api.do('DELETE', f'/api/2.0/serving-endpoints/{name}', headers=headers)
 
-    def export_metrics(self, name: str):
+    def export_metrics(self, name: str) -> ExportMetricsResponse:
         """Get metrics of a serving endpoint.
         
         Retrieves the metrics associated with the provided serving endpoint in either Prometheus or
@@ -2823,12 +2945,13 @@ class ServingEndpointsAPI:
         :param name: str
           The name of the serving endpoint to retrieve metrics for. This field is required.
         
-        
+        :returns: :class:`ExportMetricsResponse`
         """
 
-        headers = {}
+        headers = {'Accept': 'text/plain', }
 
-        self._api.do('GET', f'/api/2.0/serving-endpoints/{name}/metrics', headers=headers)
+        res = self._api.do('GET', f'/api/2.0/serving-endpoints/{name}/metrics', headers=headers, raw=True)
+        return ExportMetricsResponse.from_dict(res)
 
     def get(self, name: str) -> ServingEndpointDetailed:
         """Get a single serving endpoint.

@@ -235,7 +235,11 @@ class DeltaSyncVectorIndexSpecRequest:
     """The columns that contain the embedding source."""
 
     embedding_vector_columns: Optional[List[EmbeddingVectorColumn]] = None
-    """The columns that contain the embedding vectors."""
+    """The columns that contain the embedding vectors. The format should be array[double]."""
+
+    embedding_writeback_table: Optional[str] = None
+    """[Optional] Automatically sync the vector index contents and computed embeddings to the specified
+    Delta table. The only supported table name is the index name with the suffix `_writeback_table`."""
 
     pipeline_type: Optional[PipelineType] = None
     """Pipeline execution mode.
@@ -256,6 +260,8 @@ class DeltaSyncVectorIndexSpecRequest:
             body['embedding_source_columns'] = [v.as_dict() for v in self.embedding_source_columns]
         if self.embedding_vector_columns:
             body['embedding_vector_columns'] = [v.as_dict() for v in self.embedding_vector_columns]
+        if self.embedding_writeback_table is not None:
+            body['embedding_writeback_table'] = self.embedding_writeback_table
         if self.pipeline_type is not None: body['pipeline_type'] = self.pipeline_type.value
         if self.source_table is not None: body['source_table'] = self.source_table
         return body
@@ -267,6 +273,7 @@ class DeltaSyncVectorIndexSpecRequest:
                                                            EmbeddingSourceColumn),
                    embedding_vector_columns=_repeated_dict(d, 'embedding_vector_columns',
                                                            EmbeddingVectorColumn),
+                   embedding_writeback_table=d.get('embedding_writeback_table', None),
                    pipeline_type=_enum(d, 'pipeline_type', PipelineType),
                    source_table=d.get('source_table', None))
 
@@ -278,6 +285,9 @@ class DeltaSyncVectorIndexSpecResponse:
 
     embedding_vector_columns: Optional[List[EmbeddingVectorColumn]] = None
     """The columns that contain the embedding vectors."""
+
+    embedding_writeback_table: Optional[str] = None
+    """[Optional] Name of the Delta table to sync the vector index contents and computed embeddings to."""
 
     pipeline_id: Optional[str] = None
     """The ID of the pipeline that is used to sync the index."""
@@ -301,6 +311,8 @@ class DeltaSyncVectorIndexSpecResponse:
             body['embedding_source_columns'] = [v.as_dict() for v in self.embedding_source_columns]
         if self.embedding_vector_columns:
             body['embedding_vector_columns'] = [v.as_dict() for v in self.embedding_vector_columns]
+        if self.embedding_writeback_table is not None:
+            body['embedding_writeback_table'] = self.embedding_writeback_table
         if self.pipeline_id is not None: body['pipeline_id'] = self.pipeline_id
         if self.pipeline_type is not None: body['pipeline_type'] = self.pipeline_type.value
         if self.source_table is not None: body['source_table'] = self.source_table
@@ -313,6 +325,7 @@ class DeltaSyncVectorIndexSpecResponse:
                                                            EmbeddingSourceColumn),
                    embedding_vector_columns=_repeated_dict(d, 'embedding_vector_columns',
                                                            EmbeddingVectorColumn),
+                   embedding_writeback_table=d.get('embedding_writeback_table', None),
                    pipeline_id=d.get('pipeline_id', None),
                    pipeline_type=_enum(d, 'pipeline_type', PipelineType),
                    source_table=d.get('source_table', None))
@@ -516,6 +529,22 @@ class ListEndpointResponse:
 
 
 @dataclass
+class ListValue:
+    values: Optional[List[Value]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ListValue into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.values: body['values'] = [v.as_dict() for v in self.values]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ListValue:
+        """Deserializes the ListValue from a dictionary."""
+        return cls(values=_repeated_dict(d, 'values', Value))
+
+
+@dataclass
 class ListVectorIndexesResponse:
     next_page_token: Optional[str] = None
     """A token that can be used to get the next page of results. If not present, there are no more
@@ -535,6 +564,29 @@ class ListVectorIndexesResponse:
         """Deserializes the ListVectorIndexesResponse from a dictionary."""
         return cls(next_page_token=d.get('next_page_token', None),
                    vector_indexes=_repeated_dict(d, 'vector_indexes', MiniVectorIndex))
+
+
+@dataclass
+class MapStringValueEntry:
+    """Key-value pair."""
+
+    key: Optional[str] = None
+    """Column name."""
+
+    value: Optional[Value] = None
+    """Column value, nullable."""
+
+    def as_dict(self) -> dict:
+        """Serializes the MapStringValueEntry into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.key is not None: body['key'] = self.key
+        if self.value: body['value'] = self.value.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> MapStringValueEntry:
+        """Deserializes the MapStringValueEntry from a dictionary."""
+        return cls(key=d.get('key', None), value=_from_dict(d, 'value', Value))
 
 
 @dataclass
@@ -713,6 +765,75 @@ class ResultManifest:
 
 
 @dataclass
+class ScanVectorIndexRequest:
+    """Request payload for scanning data from a vector index."""
+
+    index_name: Optional[str] = None
+    """Name of the vector index to scan."""
+
+    last_primary_key: Optional[str] = None
+    """Primary key of the last entry returned in the previous scan."""
+
+    num_results: Optional[int] = None
+    """Number of results to return. Defaults to 10."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ScanVectorIndexRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.index_name is not None: body['index_name'] = self.index_name
+        if self.last_primary_key is not None: body['last_primary_key'] = self.last_primary_key
+        if self.num_results is not None: body['num_results'] = self.num_results
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ScanVectorIndexRequest:
+        """Deserializes the ScanVectorIndexRequest from a dictionary."""
+        return cls(index_name=d.get('index_name', None),
+                   last_primary_key=d.get('last_primary_key', None),
+                   num_results=d.get('num_results', None))
+
+
+@dataclass
+class ScanVectorIndexResponse:
+    """Response to a scan vector index request."""
+
+    data: Optional[List[Struct]] = None
+    """List of data entries"""
+
+    last_primary_key: Optional[str] = None
+    """Primary key of the last entry."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ScanVectorIndexResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.data: body['data'] = [v.as_dict() for v in self.data]
+        if self.last_primary_key is not None: body['last_primary_key'] = self.last_primary_key
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ScanVectorIndexResponse:
+        """Deserializes the ScanVectorIndexResponse from a dictionary."""
+        return cls(data=_repeated_dict(d, 'data', Struct), last_primary_key=d.get('last_primary_key', None))
+
+
+@dataclass
+class Struct:
+    fields: Optional[List[MapStringValueEntry]] = None
+    """Data entry, corresponding to a row in a vector index."""
+
+    def as_dict(self) -> dict:
+        """Serializes the Struct into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.fields: body['fields'] = [v.as_dict() for v in self.fields]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> Struct:
+        """Deserializes the Struct from a dictionary."""
+        return cls(fields=_repeated_dict(d, 'fields', MapStringValueEntry))
+
+
+@dataclass
 class SyncIndexResponse:
 
     def as_dict(self) -> dict:
@@ -803,6 +924,42 @@ class UpsertDataVectorIndexResponse:
         """Deserializes the UpsertDataVectorIndexResponse from a dictionary."""
         return cls(result=_from_dict(d, 'result', UpsertDataResult),
                    status=_enum(d, 'status', UpsertDataStatus))
+
+
+@dataclass
+class Value:
+    bool_value: Optional[bool] = None
+
+    list_value: Optional[ListValue] = None
+
+    null_value: Optional[str] = None
+
+    number_value: Optional[float] = None
+
+    string_value: Optional[str] = None
+
+    struct_value: Optional[Struct] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the Value into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.bool_value is not None: body['bool_value'] = self.bool_value
+        if self.list_value: body['list_value'] = self.list_value.as_dict()
+        if self.null_value is not None: body['null_value'] = self.null_value
+        if self.number_value is not None: body['number_value'] = self.number_value
+        if self.string_value is not None: body['string_value'] = self.string_value
+        if self.struct_value: body['struct_value'] = self.struct_value.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> Value:
+        """Deserializes the Value from a dictionary."""
+        return cls(bool_value=d.get('bool_value', None),
+                   list_value=_from_dict(d, 'list_value', ListValue),
+                   null_value=d.get('null_value', None),
+                   number_value=d.get('number_value', None),
+                   string_value=d.get('string_value', None),
+                   struct_value=_from_dict(d, 'struct_value', Struct))
 
 
 @dataclass
@@ -1215,6 +1372,36 @@ class VectorSearchIndexesAPI:
                            body=body,
                            headers=headers)
         return QueryVectorIndexResponse.from_dict(res)
+
+    def scan_index(self,
+                   index_name: str,
+                   *,
+                   last_primary_key: Optional[str] = None,
+                   num_results: Optional[int] = None) -> ScanVectorIndexResponse:
+        """Scan an index.
+        
+        Scan the specified vector index and return the first `num_results` entries after the exclusive
+        `primary_key`.
+        
+        :param index_name: str
+          Name of the vector index to scan.
+        :param last_primary_key: str (optional)
+          Primary key of the last entry returned in the previous scan.
+        :param num_results: int (optional)
+          Number of results to return. Defaults to 10.
+        
+        :returns: :class:`ScanVectorIndexResponse`
+        """
+        body = {}
+        if last_primary_key is not None: body['last_primary_key'] = last_primary_key
+        if num_results is not None: body['num_results'] = num_results
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do('POST',
+                           f'/api/2.0/vector-search/indexes/{index_name}/scan',
+                           body=body,
+                           headers=headers)
+        return ScanVectorIndexResponse.from_dict(res)
 
     def sync_index(self, index_name: str):
         """Synchronize an index.

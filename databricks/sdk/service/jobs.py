@@ -940,17 +940,23 @@ class ForEachTaskErrorMessageStats:
     error_message: Optional[str] = None
     """Describes the error message occured during the iterations."""
 
+    termination_category: Optional[str] = None
+    """Describes the termination reason for the error message."""
+
     def as_dict(self) -> dict:
         """Serializes the ForEachTaskErrorMessageStats into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.count is not None: body['count'] = self.count
         if self.error_message is not None: body['error_message'] = self.error_message
+        if self.termination_category is not None: body['termination_category'] = self.termination_category
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ForEachTaskErrorMessageStats:
         """Deserializes the ForEachTaskErrorMessageStats from a dictionary."""
-        return cls(count=d.get('count', None), error_message=d.get('error_message', None))
+        return cls(count=d.get('count', None),
+                   error_message=d.get('error_message', None),
+                   termination_category=d.get('termination_category', None))
 
 
 @dataclass
@@ -2179,8 +2185,6 @@ class RepairRun:
     pipeline_params: Optional[PipelineParams] = None
 
     python_named_params: Optional[Dict[str, str]] = None
-    """A map from keys to values for jobs with Python wheel task, for example `"python_named_params":
-    {"name": "task", "data": "dbfs:/path/to/data.json"}`."""
 
     python_params: Optional[List[str]] = None
     """A list of parameters for jobs with Python tasks, for example `"python_params": ["john doe",
@@ -2856,8 +2860,6 @@ class RunJobTask:
     pipeline_params: Optional[PipelineParams] = None
 
     python_named_params: Optional[Dict[str, str]] = None
-    """A map from keys to values for jobs with Python wheel task, for example `"python_named_params":
-    {"name": "task", "data": "dbfs:/path/to/data.json"}`."""
 
     python_params: Optional[List[str]] = None
     """A list of parameters for jobs with Python tasks, for example `"python_params": ["john doe",
@@ -3006,8 +3008,6 @@ class RunNow:
     pipeline_params: Optional[PipelineParams] = None
 
     python_named_params: Optional[Dict[str, str]] = None
-    """A map from keys to values for jobs with Python wheel task, for example `"python_named_params":
-    {"name": "task", "data": "dbfs:/path/to/data.json"}`."""
 
     python_params: Optional[List[str]] = None
     """A list of parameters for jobs with Python tasks, for example `"python_params": ["john doe",
@@ -3217,8 +3217,6 @@ class RunParameters:
     pipeline_params: Optional[PipelineParams] = None
 
     python_named_params: Optional[Dict[str, str]] = None
-    """A map from keys to values for jobs with Python wheel task, for example `"python_named_params":
-    {"name": "task", "data": "dbfs:/path/to/data.json"}`."""
 
     python_params: Optional[List[str]] = None
     """A list of parameters for jobs with Python tasks, for example `"python_params": ["john doe",
@@ -5586,8 +5584,6 @@ class JobsAPI:
           [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
         :param pipeline_params: :class:`PipelineParams` (optional)
         :param python_named_params: Dict[str,str] (optional)
-          A map from keys to values for jobs with Python wheel task, for example `"python_named_params":
-          {"name": "task", "data": "dbfs:/path/to/data.json"}`.
         :param python_params: List[str] (optional)
           A list of parameters for jobs with Python tasks, for example `"python_params": ["john doe", "35"]`.
           The parameters are passed to Python file as command-line parameters. If specified upon `run-now`, it
@@ -5777,8 +5773,6 @@ class JobsAPI:
           [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
         :param pipeline_params: :class:`PipelineParams` (optional)
         :param python_named_params: Dict[str,str] (optional)
-          A map from keys to values for jobs with Python wheel task, for example `"python_named_params":
-          {"name": "task", "data": "dbfs:/path/to/data.json"}`.
         :param python_params: List[str] (optional)
           A list of parameters for jobs with Python tasks, for example `"python_params": ["john doe", "35"]`.
           The parameters are passed to Python file as command-line parameters. If specified upon `run-now`, it

@@ -18,14 +18,14 @@
     When you uninstall a library from a cluster, the library is removed only when you restart the cluster.
     Until you restart the cluster, the status of the uninstalled library appears as Uninstall pending restart.
 
-    .. py:method:: all_cluster_statuses() -> ListAllClusterLibraryStatusesResponse
+    .. py:method:: all_cluster_statuses() -> Iterator[ClusterLibraryStatuses]
 
         Get all statuses.
         
         Get the status of all libraries on all clusters. A status is returned for all libraries installed on
         this cluster via the API or the libraries UI.
         
-        :returns: :class:`ListAllClusterLibraryStatusesResponse`
+        :returns: Iterator over :class:`ClusterLibraryStatuses`
         
 
     .. py:method:: cluster_status(cluster_id: str) -> Iterator[LibraryFullStatus]

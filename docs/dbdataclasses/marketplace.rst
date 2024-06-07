@@ -32,6 +32,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: ASSET_TYPE_UNSPECIFIED
       :value: "ASSET_TYPE_UNSPECIFIED"
 
+.. autoclass:: BatchGetListingsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: BatchGetProvidersResponse
+   :members:
+   :undoc-members:
+
 .. py:class:: Category
 
    .. py:attribute:: ADVERTISING_AND_MARKETING
@@ -531,21 +539,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: SORT_BY_UNSPECIFIED
       :value: "SORT_BY_UNSPECIFIED"
-
-.. autoclass:: SortBySpec
-   :members:
-   :undoc-members:
-
-.. py:class:: SortOrder
-
-   .. py:attribute:: SORT_ORDER_ASCENDING
-      :value: "SORT_ORDER_ASCENDING"
-
-   .. py:attribute:: SORT_ORDER_DESCENDING
-      :value: "SORT_ORDER_DESCENDING"
-
-   .. py:attribute:: SORT_ORDER_UNSPECIFIED
-      :value: "SORT_ORDER_UNSPECIFIED"
 
 .. autoclass:: TokenDetail
    :members:

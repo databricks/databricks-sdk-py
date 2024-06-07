@@ -416,8 +416,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: AVRO
       :value: "AVRO"
 
+   .. py:attribute:: BIGQUERY_FORMAT
+      :value: "BIGQUERY_FORMAT"
+
    .. py:attribute:: CSV
       :value: "CSV"
+
+   .. py:attribute:: DATABRICKS_FORMAT
+      :value: "DATABRICKS_FORMAT"
 
    .. py:attribute:: DELTA
       :value: "DELTA"
@@ -425,8 +431,20 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: DELTASHARING
       :value: "DELTASHARING"
 
+   .. py:attribute:: HIVE_CUSTOM
+      :value: "HIVE_CUSTOM"
+
+   .. py:attribute:: HIVE_SERDE
+      :value: "HIVE_SERDE"
+
    .. py:attribute:: JSON
       :value: "JSON"
+
+   .. py:attribute:: MYSQL_FORMAT
+      :value: "MYSQL_FORMAT"
+
+   .. py:attribute:: NETSUITE_FORMAT
+      :value: "NETSUITE_FORMAT"
 
    .. py:attribute:: ORC
       :value: "ORC"
@@ -434,11 +452,35 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: PARQUET
       :value: "PARQUET"
 
+   .. py:attribute:: POSTGRESQL_FORMAT
+      :value: "POSTGRESQL_FORMAT"
+
+   .. py:attribute:: REDSHIFT_FORMAT
+      :value: "REDSHIFT_FORMAT"
+
+   .. py:attribute:: SALESFORCE_FORMAT
+      :value: "SALESFORCE_FORMAT"
+
+   .. py:attribute:: SNOWFLAKE_FORMAT
+      :value: "SNOWFLAKE_FORMAT"
+
+   .. py:attribute:: SQLDW_FORMAT
+      :value: "SQLDW_FORMAT"
+
+   .. py:attribute:: SQLSERVER_FORMAT
+      :value: "SQLSERVER_FORMAT"
+
    .. py:attribute:: TEXT
       :value: "TEXT"
 
    .. py:attribute:: UNITY_CATALOG
       :value: "UNITY_CATALOG"
+
+   .. py:attribute:: VECTOR_INDEX_FORMAT
+      :value: "VECTOR_INDEX_FORMAT"
+
+   .. py:attribute:: WORKDAY_RAAS_FORMAT
+      :value: "WORKDAY_RAAS_FORMAT"
 
 .. autoclass:: DatabricksGcpServiceAccountRequest
    :members:
@@ -471,20 +513,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: DisableResponse
    :members:
    :undoc-members:
-
-.. py:class:: DisableSchemaName
-
-   .. py:attribute:: ACCESS
-      :value: "ACCESS"
-
-   .. py:attribute:: BILLING
-      :value: "BILLING"
-
-   .. py:attribute:: LINEAGE
-      :value: "LINEAGE"
-
-   .. py:attribute:: OPERATIONAL_DATA
-      :value: "OPERATIONAL_DATA"
 
 .. autoclass:: EffectivePermissionsList
    :members:
@@ -528,20 +556,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: EnableResponse
    :members:
    :undoc-members:
-
-.. py:class:: EnableSchemaName
-
-   .. py:attribute:: ACCESS
-      :value: "ACCESS"
-
-   .. py:attribute:: BILLING
-      :value: "BILLING"
-
-   .. py:attribute:: LINEAGE
-      :value: "LINEAGE"
-
-   .. py:attribute:: OPERATIONAL_DATA
-      :value: "OPERATIONAL_DATA"
 
 .. autoclass:: EncryptionDetails
    :members:
@@ -654,6 +668,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "OPEN"
 
 .. autoclass:: ListAccountMetastoreAssignmentsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListAccountStorageCredentialsResponse
    :members:
    :undoc-members:
 
@@ -864,6 +882,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: SCHEDULE
       :value: "SCHEDULE"
 
+.. autoclass:: MonitorRefreshListResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: MonitorSnapshot
    :members:
    :undoc-members:
@@ -1049,6 +1071,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: SET_SHARE_PERMISSION
       :value: "SET_SHARE_PERMISSION"
+
+   .. py:attribute:: SINGLE_USER_ACCESS
+      :value: "SINGLE_USER_ACCESS"
 
    .. py:attribute:: USAGE
       :value: "USAGE"
@@ -1245,8 +1270,17 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: EXTERNAL
       :value: "EXTERNAL"
 
+   .. py:attribute:: EXTERNAL_SHALLOW_CLONE
+      :value: "EXTERNAL_SHALLOW_CLONE"
+
+   .. py:attribute:: FOREIGN
+      :value: "FOREIGN"
+
    .. py:attribute:: MANAGED
       :value: "MANAGED"
+
+   .. py:attribute:: MANAGED_SHALLOW_CLONE
+      :value: "MANAGED_SHALLOW_CLONE"
 
    .. py:attribute:: MATERIALIZED_VIEW
       :value: "MATERIALIZED_VIEW"

@@ -1627,14 +1627,28 @@ class DataSourceFormat(Enum):
     """Data source format"""
 
     AVRO = 'AVRO'
+    BIGQUERY_FORMAT = 'BIGQUERY_FORMAT'
     CSV = 'CSV'
+    DATABRICKS_FORMAT = 'DATABRICKS_FORMAT'
     DELTA = 'DELTA'
     DELTASHARING = 'DELTASHARING'
+    HIVE_CUSTOM = 'HIVE_CUSTOM'
+    HIVE_SERDE = 'HIVE_SERDE'
     JSON = 'JSON'
+    MYSQL_FORMAT = 'MYSQL_FORMAT'
+    NETSUITE_FORMAT = 'NETSUITE_FORMAT'
     ORC = 'ORC'
     PARQUET = 'PARQUET'
+    POSTGRESQL_FORMAT = 'POSTGRESQL_FORMAT'
+    REDSHIFT_FORMAT = 'REDSHIFT_FORMAT'
+    SALESFORCE_FORMAT = 'SALESFORCE_FORMAT'
+    SNOWFLAKE_FORMAT = 'SNOWFLAKE_FORMAT'
+    SQLDW_FORMAT = 'SQLDW_FORMAT'
+    SQLSERVER_FORMAT = 'SQLSERVER_FORMAT'
     TEXT = 'TEXT'
     UNITY_CATALOG = 'UNITY_CATALOG'
+    VECTOR_INDEX_FORMAT = 'VECTOR_INDEX_FORMAT'
+    WORKDAY_RAAS_FORMAT = 'WORKDAY_RAAS_FORMAT'
 
 
 @dataclass
@@ -1778,14 +1792,6 @@ class DisableResponse:
         return cls()
 
 
-class DisableSchemaName(Enum):
-
-    ACCESS = 'access'
-    BILLING = 'billing'
-    LINEAGE = 'lineage'
-    OPERATIONAL_DATA = 'operational_data'
-
-
 @dataclass
 class EffectivePermissionsList:
     privilege_assignments: Optional[List[EffectivePrivilegeAssignment]] = None
@@ -1914,14 +1920,6 @@ class EnableResponse:
     def from_dict(cls, d: Dict[str, any]) -> EnableResponse:
         """Deserializes the EnableResponse from a dictionary."""
         return cls()
-
-
-class EnableSchemaName(Enum):
-
-    ACCESS = 'access'
-    BILLING = 'billing'
-    LINEAGE = 'lineage'
-    OPERATIONAL_DATA = 'operational_data'
 
 
 @dataclass
@@ -2554,6 +2552,24 @@ class ListAccountMetastoreAssignmentsResponse:
 
 
 @dataclass
+class ListAccountStorageCredentialsResponse:
+    storage_credentials: Optional[List[StorageCredentialInfo]] = None
+    """An array of metastore storage credentials."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListAccountStorageCredentialsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.storage_credentials:
+            body['storage_credentials'] = [v.as_dict() for v in self.storage_credentials]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ListAccountStorageCredentialsResponse:
+        """Deserializes the ListAccountStorageCredentialsResponse from a dictionary."""
+        return cls(storage_credentials=_repeated_dict(d, 'storage_credentials', StorageCredentialInfo))
+
+
+@dataclass
 class ListCatalogsResponse:
     catalogs: Optional[List[CatalogInfo]] = None
     """An array of catalog information objects."""
@@ -2575,16 +2591,22 @@ class ListConnectionsResponse:
     connections: Optional[List[ConnectionInfo]] = None
     """An array of connection information objects."""
 
+    next_page_token: Optional[str] = None
+    """Opaque token to retrieve the next page of results. Absent if there are no more pages.
+    __page_token__ should be set to this value for the next request (for the next page of results)."""
+
     def as_dict(self) -> dict:
         """Serializes the ListConnectionsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.connections: body['connections'] = [v.as_dict() for v in self.connections]
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListConnectionsResponse:
         """Deserializes the ListConnectionsResponse from a dictionary."""
-        return cls(connections=_repeated_dict(d, 'connections', ConnectionInfo))
+        return cls(connections=_repeated_dict(d, 'connections', ConnectionInfo),
+                   next_page_token=d.get('next_page_token', None))
 
 
 @dataclass
@@ -3501,6 +3523,23 @@ class MonitorRefreshInfoTrigger(Enum):
 
 
 @dataclass
+class MonitorRefreshListResponse:
+    refreshes: Optional[List[MonitorRefreshInfo]] = None
+    """List of refreshes."""
+
+    def as_dict(self) -> dict:
+        """Serializes the MonitorRefreshListResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.refreshes: body['refreshes'] = [v.as_dict() for v in self.refreshes]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> MonitorRefreshListResponse:
+        """Deserializes the MonitorRefreshListResponse from a dictionary."""
+        return cls(refreshes=_repeated_dict(d, 'refreshes', MonitorRefreshInfo))
+
+
+@dataclass
 class MonitorSnapshot:
 
     def as_dict(self) -> dict:
@@ -3882,6 +3921,7 @@ class Privilege(Enum):
     REFRESH = 'REFRESH'
     SELECT = 'SELECT'
     SET_SHARE_PERMISSION = 'SET_SHARE_PERMISSION'
+    SINGLE_USER_ACCESS = 'SINGLE_USER_ACCESS'
     USAGE = 'USAGE'
     USE_CATALOG = 'USE_CATALOG'
     USE_CONNECTION = 'USE_CONNECTION'
@@ -4712,7 +4752,10 @@ class TableSummary:
 class TableType(Enum):
 
     EXTERNAL = 'EXTERNAL'
+    EXTERNAL_SHALLOW_CLONE = 'EXTERNAL_SHALLOW_CLONE'
+    FOREIGN = 'FOREIGN'
     MANAGED = 'MANAGED'
+    MANAGED_SHALLOW_CLONE = 'MANAGED_SHALLOW_CLONE'
     MATERIALIZED_VIEW = 'MATERIALIZED_VIEW'
     STREAMING_TABLE = 'STREAMING_TABLE'
     VIEW = 'VIEW'
@@ -5084,6 +5127,10 @@ class UpdateMonitor:
     metrics (from already computed aggregate metrics), or drift metrics (comparing metrics across
     time windows)."""
 
+    dashboard_id: Optional[str] = None
+    """Id of dashboard that visualizes the computed metrics. This can be empty if the monitor is in
+    PENDING state."""
+
     data_classification_config: Optional[MonitorDataClassificationConfig] = None
     """The data classification config for the monitor."""
 
@@ -5115,6 +5162,7 @@ class UpdateMonitor:
         body = {}
         if self.baseline_table_name is not None: body['baseline_table_name'] = self.baseline_table_name
         if self.custom_metrics: body['custom_metrics'] = [v.as_dict() for v in self.custom_metrics]
+        if self.dashboard_id is not None: body['dashboard_id'] = self.dashboard_id
         if self.data_classification_config:
             body['data_classification_config'] = self.data_classification_config.as_dict()
         if self.inference_log: body['inference_log'] = self.inference_log.as_dict()
@@ -5132,6 +5180,7 @@ class UpdateMonitor:
         """Deserializes the UpdateMonitor from a dictionary."""
         return cls(baseline_table_name=d.get('baseline_table_name', None),
                    custom_metrics=_repeated_dict(d, 'custom_metrics', MonitorMetric),
+                   dashboard_id=d.get('dashboard_id', None),
                    data_classification_config=_from_dict(d, 'data_classification_config',
                                                          MonitorDataClassificationConfig),
                    inference_log=_from_dict(d, 'inference_log', MonitorInferenceLog),
@@ -6027,11 +6076,12 @@ class AccountStorageCredentialsAPI:
 
         headers = {'Accept': 'application/json', }
 
-        res = self._api.do(
+        json = self._api.do(
             'GET',
             f'/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/storage-credentials',
             headers=headers)
-        return [StorageCredentialInfo.from_dict(v) for v in res]
+        parsed = ListAccountStorageCredentialsResponse.from_dict(json).storage_credentials
+        return parsed if parsed is not None else []
 
     def update(self,
                metastore_id: str,
@@ -6372,19 +6422,38 @@ class ConnectionsAPI:
         res = self._api.do('GET', f'/api/2.1/unity-catalog/connections/{name}', headers=headers)
         return ConnectionInfo.from_dict(res)
 
-    def list(self) -> Iterator[ConnectionInfo]:
+    def list(self,
+             *,
+             max_results: Optional[int] = None,
+             page_token: Optional[str] = None) -> Iterator[ConnectionInfo]:
         """List connections.
         
         List all connections.
         
+        :param max_results: int (optional)
+          Maximum number of connections to return. - If not set, all connections are returned (not
+          recommended). - when set to a value greater than 0, the page length is the minimum of this value and
+          a server configured value; - when set to 0, the page length is set to a server configured value
+          (recommended); - when set to a value less than 0, an invalid parameter error is returned;
+        :param page_token: str (optional)
+          Opaque pagination token to go to next page based on previous query.
+        
         :returns: Iterator over :class:`ConnectionInfo`
         """
 
+        query = {}
+        if max_results is not None: query['max_results'] = max_results
+        if page_token is not None: query['page_token'] = page_token
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET', '/api/2.1/unity-catalog/connections', headers=headers)
-        parsed = ListConnectionsResponse.from_dict(json).connections
-        return parsed if parsed is not None else []
+        while True:
+            json = self._api.do('GET', '/api/2.1/unity-catalog/connections', query=query, headers=headers)
+            if 'connections' in json:
+                for v in json['connections']:
+                    yield ConnectionInfo.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
 
     def update(self,
                name: str,
@@ -6896,335 +6965,6 @@ class GrantsAPI:
         return PermissionsList.from_dict(res)
 
 
-class LakehouseMonitorsAPI:
-    """A monitor computes and monitors data or model quality metrics for a table over time. It generates metrics
-    tables and a dashboard that you can use to monitor table health and set alerts.
-    
-    Most write operations require the user to be the owner of the table (or its parent schema or parent
-    catalog). Viewing the dashboard, computed metrics, or monitor configuration only requires the user to have
-    **SELECT** privileges on the table (along with **USE_SCHEMA** and **USE_CATALOG**)."""
-
-    def __init__(self, api_client):
-        self._api = api_client
-
-    def cancel_refresh(self, table_name: str, refresh_id: str):
-        """Cancel refresh.
-        
-        Cancel an active monitor refresh for the given refresh ID.
-        
-        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
-        table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
-        - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema - be an
-        owner of the table
-        
-        Additionally, the call must be made from the workspace where the monitor was created.
-        
-        :param table_name: str
-          Full name of the table.
-        :param refresh_id: str
-          ID of the refresh.
-        
-        
-        """
-
-        headers = {}
-
-        self._api.do('POST',
-                     f'/api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes/{refresh_id}/cancel',
-                     headers=headers)
-
-    def create(self,
-               table_name: str,
-               assets_dir: str,
-               output_schema_name: str,
-               *,
-               baseline_table_name: Optional[str] = None,
-               custom_metrics: Optional[List[MonitorMetric]] = None,
-               data_classification_config: Optional[MonitorDataClassificationConfig] = None,
-               inference_log: Optional[MonitorInferenceLog] = None,
-               notifications: Optional[MonitorNotifications] = None,
-               schedule: Optional[MonitorCronSchedule] = None,
-               skip_builtin_dashboard: Optional[bool] = None,
-               slicing_exprs: Optional[List[str]] = None,
-               snapshot: Optional[MonitorSnapshot] = None,
-               time_series: Optional[MonitorTimeSeries] = None,
-               warehouse_id: Optional[str] = None) -> MonitorInfo:
-        """Create a table monitor.
-        
-        Creates a new monitor for the specified table.
-        
-        The caller must either: 1. be an owner of the table's parent catalog, have **USE_SCHEMA** on the
-        table's parent schema, and have **SELECT** access on the table 2. have **USE_CATALOG** on the table's
-        parent catalog, be an owner of the table's parent schema, and have **SELECT** access on the table. 3.
-        have the following permissions: - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on
-        the table's parent schema - be an owner of the table.
-        
-        Workspace assets, such as the dashboard, will be created in the workspace where this call was made.
-        
-        :param table_name: str
-          Full name of the table.
-        :param assets_dir: str
-          The directory to store monitoring assets (e.g. dashboard, metric tables).
-        :param output_schema_name: str
-          Schema where output metric tables are created.
-        :param baseline_table_name: str (optional)
-          Name of the baseline table from which drift metrics are computed from. Columns in the monitored
-          table should also be present in the baseline table.
-        :param custom_metrics: List[:class:`MonitorMetric`] (optional)
-          Custom metrics to compute on the monitored table. These can be aggregate metrics, derived metrics
-          (from already computed aggregate metrics), or drift metrics (comparing metrics across time windows).
-        :param data_classification_config: :class:`MonitorDataClassificationConfig` (optional)
-          The data classification config for the monitor.
-        :param inference_log: :class:`MonitorInferenceLog` (optional)
-          Configuration for monitoring inference logs.
-        :param notifications: :class:`MonitorNotifications` (optional)
-          The notification settings for the monitor.
-        :param schedule: :class:`MonitorCronSchedule` (optional)
-          The schedule for automatically updating and refreshing metric tables.
-        :param skip_builtin_dashboard: bool (optional)
-          Whether to skip creating a default dashboard summarizing data quality metrics.
-        :param slicing_exprs: List[str] (optional)
-          List of column expressions to slice data with for targeted analysis. The data is grouped by each
-          expression independently, resulting in a separate slice for each predicate and its complements. For
-          high-cardinality columns, only the top 100 unique values by frequency will generate slices.
-        :param snapshot: :class:`MonitorSnapshot` (optional)
-          Configuration for monitoring snapshot tables.
-        :param time_series: :class:`MonitorTimeSeries` (optional)
-          Configuration for monitoring time series tables.
-        :param warehouse_id: str (optional)
-          Optional argument to specify the warehouse for dashboard creation. If not specified, the first
-          running warehouse will be used.
-        
-        :returns: :class:`MonitorInfo`
-        """
-        body = {}
-        if assets_dir is not None: body['assets_dir'] = assets_dir
-        if baseline_table_name is not None: body['baseline_table_name'] = baseline_table_name
-        if custom_metrics is not None: body['custom_metrics'] = [v.as_dict() for v in custom_metrics]
-        if data_classification_config is not None:
-            body['data_classification_config'] = data_classification_config.as_dict()
-        if inference_log is not None: body['inference_log'] = inference_log.as_dict()
-        if notifications is not None: body['notifications'] = notifications.as_dict()
-        if output_schema_name is not None: body['output_schema_name'] = output_schema_name
-        if schedule is not None: body['schedule'] = schedule.as_dict()
-        if skip_builtin_dashboard is not None: body['skip_builtin_dashboard'] = skip_builtin_dashboard
-        if slicing_exprs is not None: body['slicing_exprs'] = [v for v in slicing_exprs]
-        if snapshot is not None: body['snapshot'] = snapshot.as_dict()
-        if time_series is not None: body['time_series'] = time_series.as_dict()
-        if warehouse_id is not None: body['warehouse_id'] = warehouse_id
-        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
-        res = self._api.do('POST',
-                           f'/api/2.1/unity-catalog/tables/{table_name}/monitor',
-                           body=body,
-                           headers=headers)
-        return MonitorInfo.from_dict(res)
-
-    def delete(self, table_name: str):
-        """Delete a table monitor.
-        
-        Deletes a monitor for the specified table.
-        
-        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
-        table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
-        - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema - be an
-        owner of the table.
-        
-        Additionally, the call must be made from the workspace where the monitor was created.
-        
-        Note that the metric tables and dashboard will not be deleted as part of this call; those assets must
-        be manually cleaned up (if desired).
-        
-        :param table_name: str
-          Full name of the table.
-        
-        
-        """
-
-        headers = {}
-
-        self._api.do('DELETE', f'/api/2.1/unity-catalog/tables/{table_name}/monitor', headers=headers)
-
-    def get(self, table_name: str) -> MonitorInfo:
-        """Get a table monitor.
-        
-        Gets a monitor for the specified table.
-        
-        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
-        table's parent catalog and be an owner of the table's parent schema. 3. have the following
-        permissions: - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent
-        schema - **SELECT** privilege on the table.
-        
-        The returned information includes configuration values, as well as information on assets created by
-        the monitor. Some information (e.g., dashboard) may be filtered out if the caller is in a different
-        workspace than where the monitor was created.
-        
-        :param table_name: str
-          Full name of the table.
-        
-        :returns: :class:`MonitorInfo`
-        """
-
-        headers = {'Accept': 'application/json', }
-
-        res = self._api.do('GET', f'/api/2.1/unity-catalog/tables/{table_name}/monitor', headers=headers)
-        return MonitorInfo.from_dict(res)
-
-    def get_refresh(self, table_name: str, refresh_id: str) -> MonitorRefreshInfo:
-        """Get refresh.
-        
-        Gets info about a specific monitor refresh using the given refresh ID.
-        
-        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
-        table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
-        - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema -
-        **SELECT** privilege on the table.
-        
-        Additionally, the call must be made from the workspace where the monitor was created.
-        
-        :param table_name: str
-          Full name of the table.
-        :param refresh_id: str
-          ID of the refresh.
-        
-        :returns: :class:`MonitorRefreshInfo`
-        """
-
-        headers = {'Accept': 'application/json', }
-
-        res = self._api.do('GET',
-                           f'/api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes/{refresh_id}',
-                           headers=headers)
-        return MonitorRefreshInfo.from_dict(res)
-
-    def list_refreshes(self, table_name: str) -> Iterator[MonitorRefreshInfo]:
-        """List refreshes.
-        
-        Gets an array containing the history of the most recent refreshes (up to 25) for this table.
-        
-        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
-        table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
-        - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema -
-        **SELECT** privilege on the table.
-        
-        Additionally, the call must be made from the workspace where the monitor was created.
-        
-        :param table_name: str
-          Full name of the table.
-        
-        :returns: Iterator over :class:`MonitorRefreshInfo`
-        """
-
-        headers = {'Accept': 'application/json', }
-
-        res = self._api.do('GET',
-                           f'/api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes',
-                           headers=headers)
-        return [MonitorRefreshInfo.from_dict(v) for v in res]
-
-    def run_refresh(self, table_name: str) -> MonitorRefreshInfo:
-        """Queue a metric refresh for a monitor.
-        
-        Queues a metric refresh on the monitor for the specified table. The refresh will execute in the
-        background.
-        
-        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
-        table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
-        - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema - be an
-        owner of the table
-        
-        Additionally, the call must be made from the workspace where the monitor was created.
-        
-        :param table_name: str
-          Full name of the table.
-        
-        :returns: :class:`MonitorRefreshInfo`
-        """
-
-        headers = {'Accept': 'application/json', }
-
-        res = self._api.do('POST',
-                           f'/api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes',
-                           headers=headers)
-        return MonitorRefreshInfo.from_dict(res)
-
-    def update(self,
-               table_name: str,
-               output_schema_name: str,
-               *,
-               baseline_table_name: Optional[str] = None,
-               custom_metrics: Optional[List[MonitorMetric]] = None,
-               data_classification_config: Optional[MonitorDataClassificationConfig] = None,
-               inference_log: Optional[MonitorInferenceLog] = None,
-               notifications: Optional[MonitorNotifications] = None,
-               schedule: Optional[MonitorCronSchedule] = None,
-               slicing_exprs: Optional[List[str]] = None,
-               snapshot: Optional[MonitorSnapshot] = None,
-               time_series: Optional[MonitorTimeSeries] = None) -> MonitorInfo:
-        """Update a table monitor.
-        
-        Updates a monitor for the specified table.
-        
-        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
-        table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
-        - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema - be an
-        owner of the table.
-        
-        Additionally, the call must be made from the workspace where the monitor was created, and the caller
-        must be the original creator of the monitor.
-        
-        Certain configuration fields, such as output asset identifiers, cannot be updated.
-        
-        :param table_name: str
-          Full name of the table.
-        :param output_schema_name: str
-          Schema where output metric tables are created.
-        :param baseline_table_name: str (optional)
-          Name of the baseline table from which drift metrics are computed from. Columns in the monitored
-          table should also be present in the baseline table.
-        :param custom_metrics: List[:class:`MonitorMetric`] (optional)
-          Custom metrics to compute on the monitored table. These can be aggregate metrics, derived metrics
-          (from already computed aggregate metrics), or drift metrics (comparing metrics across time windows).
-        :param data_classification_config: :class:`MonitorDataClassificationConfig` (optional)
-          The data classification config for the monitor.
-        :param inference_log: :class:`MonitorInferenceLog` (optional)
-          Configuration for monitoring inference logs.
-        :param notifications: :class:`MonitorNotifications` (optional)
-          The notification settings for the monitor.
-        :param schedule: :class:`MonitorCronSchedule` (optional)
-          The schedule for automatically updating and refreshing metric tables.
-        :param slicing_exprs: List[str] (optional)
-          List of column expressions to slice data with for targeted analysis. The data is grouped by each
-          expression independently, resulting in a separate slice for each predicate and its complements. For
-          high-cardinality columns, only the top 100 unique values by frequency will generate slices.
-        :param snapshot: :class:`MonitorSnapshot` (optional)
-          Configuration for monitoring snapshot tables.
-        :param time_series: :class:`MonitorTimeSeries` (optional)
-          Configuration for monitoring time series tables.
-        
-        :returns: :class:`MonitorInfo`
-        """
-        body = {}
-        if baseline_table_name is not None: body['baseline_table_name'] = baseline_table_name
-        if custom_metrics is not None: body['custom_metrics'] = [v.as_dict() for v in custom_metrics]
-        if data_classification_config is not None:
-            body['data_classification_config'] = data_classification_config.as_dict()
-        if inference_log is not None: body['inference_log'] = inference_log.as_dict()
-        if notifications is not None: body['notifications'] = notifications.as_dict()
-        if output_schema_name is not None: body['output_schema_name'] = output_schema_name
-        if schedule is not None: body['schedule'] = schedule.as_dict()
-        if slicing_exprs is not None: body['slicing_exprs'] = [v for v in slicing_exprs]
-        if snapshot is not None: body['snapshot'] = snapshot.as_dict()
-        if time_series is not None: body['time_series'] = time_series.as_dict()
-        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
-        res = self._api.do('PUT',
-                           f'/api/2.1/unity-catalog/tables/{table_name}/monitor',
-                           body=body,
-                           headers=headers)
-        return MonitorInfo.from_dict(res)
-
-
 class MetastoresAPI:
     """A metastore is the top-level container of objects in Unity Catalog. It stores data assets (tables and
     views) and the permissions that govern access to them. Databricks account admins can create metastores and
@@ -7719,6 +7459,340 @@ class OnlineTablesAPI:
 
         res = self._api.do('GET', f'/api/2.0/online-tables/{name}', headers=headers)
         return OnlineTable.from_dict(res)
+
+
+class QualityMonitorsAPI:
+    """A monitor computes and monitors data or model quality metrics for a table over time. It generates metrics
+    tables and a dashboard that you can use to monitor table health and set alerts.
+    
+    Most write operations require the user to be the owner of the table (or its parent schema or parent
+    catalog). Viewing the dashboard, computed metrics, or monitor configuration only requires the user to have
+    **SELECT** privileges on the table (along with **USE_SCHEMA** and **USE_CATALOG**)."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def cancel_refresh(self, table_name: str, refresh_id: str):
+        """Cancel refresh.
+        
+        Cancel an active monitor refresh for the given refresh ID.
+        
+        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
+        table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
+        - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema - be an
+        owner of the table
+        
+        Additionally, the call must be made from the workspace where the monitor was created.
+        
+        :param table_name: str
+          Full name of the table.
+        :param refresh_id: str
+          ID of the refresh.
+        
+        
+        """
+
+        headers = {}
+
+        self._api.do('POST',
+                     f'/api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes/{refresh_id}/cancel',
+                     headers=headers)
+
+    def create(self,
+               table_name: str,
+               assets_dir: str,
+               output_schema_name: str,
+               *,
+               baseline_table_name: Optional[str] = None,
+               custom_metrics: Optional[List[MonitorMetric]] = None,
+               data_classification_config: Optional[MonitorDataClassificationConfig] = None,
+               inference_log: Optional[MonitorInferenceLog] = None,
+               notifications: Optional[MonitorNotifications] = None,
+               schedule: Optional[MonitorCronSchedule] = None,
+               skip_builtin_dashboard: Optional[bool] = None,
+               slicing_exprs: Optional[List[str]] = None,
+               snapshot: Optional[MonitorSnapshot] = None,
+               time_series: Optional[MonitorTimeSeries] = None,
+               warehouse_id: Optional[str] = None) -> MonitorInfo:
+        """Create a table monitor.
+        
+        Creates a new monitor for the specified table.
+        
+        The caller must either: 1. be an owner of the table's parent catalog, have **USE_SCHEMA** on the
+        table's parent schema, and have **SELECT** access on the table 2. have **USE_CATALOG** on the table's
+        parent catalog, be an owner of the table's parent schema, and have **SELECT** access on the table. 3.
+        have the following permissions: - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on
+        the table's parent schema - be an owner of the table.
+        
+        Workspace assets, such as the dashboard, will be created in the workspace where this call was made.
+        
+        :param table_name: str
+          Full name of the table.
+        :param assets_dir: str
+          The directory to store monitoring assets (e.g. dashboard, metric tables).
+        :param output_schema_name: str
+          Schema where output metric tables are created.
+        :param baseline_table_name: str (optional)
+          Name of the baseline table from which drift metrics are computed from. Columns in the monitored
+          table should also be present in the baseline table.
+        :param custom_metrics: List[:class:`MonitorMetric`] (optional)
+          Custom metrics to compute on the monitored table. These can be aggregate metrics, derived metrics
+          (from already computed aggregate metrics), or drift metrics (comparing metrics across time windows).
+        :param data_classification_config: :class:`MonitorDataClassificationConfig` (optional)
+          The data classification config for the monitor.
+        :param inference_log: :class:`MonitorInferenceLog` (optional)
+          Configuration for monitoring inference logs.
+        :param notifications: :class:`MonitorNotifications` (optional)
+          The notification settings for the monitor.
+        :param schedule: :class:`MonitorCronSchedule` (optional)
+          The schedule for automatically updating and refreshing metric tables.
+        :param skip_builtin_dashboard: bool (optional)
+          Whether to skip creating a default dashboard summarizing data quality metrics.
+        :param slicing_exprs: List[str] (optional)
+          List of column expressions to slice data with for targeted analysis. The data is grouped by each
+          expression independently, resulting in a separate slice for each predicate and its complements. For
+          high-cardinality columns, only the top 100 unique values by frequency will generate slices.
+        :param snapshot: :class:`MonitorSnapshot` (optional)
+          Configuration for monitoring snapshot tables.
+        :param time_series: :class:`MonitorTimeSeries` (optional)
+          Configuration for monitoring time series tables.
+        :param warehouse_id: str (optional)
+          Optional argument to specify the warehouse for dashboard creation. If not specified, the first
+          running warehouse will be used.
+        
+        :returns: :class:`MonitorInfo`
+        """
+        body = {}
+        if assets_dir is not None: body['assets_dir'] = assets_dir
+        if baseline_table_name is not None: body['baseline_table_name'] = baseline_table_name
+        if custom_metrics is not None: body['custom_metrics'] = [v.as_dict() for v in custom_metrics]
+        if data_classification_config is not None:
+            body['data_classification_config'] = data_classification_config.as_dict()
+        if inference_log is not None: body['inference_log'] = inference_log.as_dict()
+        if notifications is not None: body['notifications'] = notifications.as_dict()
+        if output_schema_name is not None: body['output_schema_name'] = output_schema_name
+        if schedule is not None: body['schedule'] = schedule.as_dict()
+        if skip_builtin_dashboard is not None: body['skip_builtin_dashboard'] = skip_builtin_dashboard
+        if slicing_exprs is not None: body['slicing_exprs'] = [v for v in slicing_exprs]
+        if snapshot is not None: body['snapshot'] = snapshot.as_dict()
+        if time_series is not None: body['time_series'] = time_series.as_dict()
+        if warehouse_id is not None: body['warehouse_id'] = warehouse_id
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do('POST',
+                           f'/api/2.1/unity-catalog/tables/{table_name}/monitor',
+                           body=body,
+                           headers=headers)
+        return MonitorInfo.from_dict(res)
+
+    def delete(self, table_name: str):
+        """Delete a table monitor.
+        
+        Deletes a monitor for the specified table.
+        
+        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
+        table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
+        - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema - be an
+        owner of the table.
+        
+        Additionally, the call must be made from the workspace where the monitor was created.
+        
+        Note that the metric tables and dashboard will not be deleted as part of this call; those assets must
+        be manually cleaned up (if desired).
+        
+        :param table_name: str
+          Full name of the table.
+        
+        
+        """
+
+        headers = {}
+
+        self._api.do('DELETE', f'/api/2.1/unity-catalog/tables/{table_name}/monitor', headers=headers)
+
+    def get(self, table_name: str) -> MonitorInfo:
+        """Get a table monitor.
+        
+        Gets a monitor for the specified table.
+        
+        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
+        table's parent catalog and be an owner of the table's parent schema. 3. have the following
+        permissions: - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent
+        schema - **SELECT** privilege on the table.
+        
+        The returned information includes configuration values, as well as information on assets created by
+        the monitor. Some information (e.g., dashboard) may be filtered out if the caller is in a different
+        workspace than where the monitor was created.
+        
+        :param table_name: str
+          Full name of the table.
+        
+        :returns: :class:`MonitorInfo`
+        """
+
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do('GET', f'/api/2.1/unity-catalog/tables/{table_name}/monitor', headers=headers)
+        return MonitorInfo.from_dict(res)
+
+    def get_refresh(self, table_name: str, refresh_id: str) -> MonitorRefreshInfo:
+        """Get refresh.
+        
+        Gets info about a specific monitor refresh using the given refresh ID.
+        
+        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
+        table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
+        - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema -
+        **SELECT** privilege on the table.
+        
+        Additionally, the call must be made from the workspace where the monitor was created.
+        
+        :param table_name: str
+          Full name of the table.
+        :param refresh_id: str
+          ID of the refresh.
+        
+        :returns: :class:`MonitorRefreshInfo`
+        """
+
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do('GET',
+                           f'/api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes/{refresh_id}',
+                           headers=headers)
+        return MonitorRefreshInfo.from_dict(res)
+
+    def list_refreshes(self, table_name: str) -> MonitorRefreshListResponse:
+        """List refreshes.
+        
+        Gets an array containing the history of the most recent refreshes (up to 25) for this table.
+        
+        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
+        table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
+        - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema -
+        **SELECT** privilege on the table.
+        
+        Additionally, the call must be made from the workspace where the monitor was created.
+        
+        :param table_name: str
+          Full name of the table.
+        
+        :returns: :class:`MonitorRefreshListResponse`
+        """
+
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do('GET',
+                           f'/api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes',
+                           headers=headers)
+        return MonitorRefreshListResponse.from_dict(res)
+
+    def run_refresh(self, table_name: str) -> MonitorRefreshInfo:
+        """Queue a metric refresh for a monitor.
+        
+        Queues a metric refresh on the monitor for the specified table. The refresh will execute in the
+        background.
+        
+        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
+        table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
+        - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema - be an
+        owner of the table
+        
+        Additionally, the call must be made from the workspace where the monitor was created.
+        
+        :param table_name: str
+          Full name of the table.
+        
+        :returns: :class:`MonitorRefreshInfo`
+        """
+
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do('POST',
+                           f'/api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes',
+                           headers=headers)
+        return MonitorRefreshInfo.from_dict(res)
+
+    def update(self,
+               table_name: str,
+               output_schema_name: str,
+               *,
+               baseline_table_name: Optional[str] = None,
+               custom_metrics: Optional[List[MonitorMetric]] = None,
+               dashboard_id: Optional[str] = None,
+               data_classification_config: Optional[MonitorDataClassificationConfig] = None,
+               inference_log: Optional[MonitorInferenceLog] = None,
+               notifications: Optional[MonitorNotifications] = None,
+               schedule: Optional[MonitorCronSchedule] = None,
+               slicing_exprs: Optional[List[str]] = None,
+               snapshot: Optional[MonitorSnapshot] = None,
+               time_series: Optional[MonitorTimeSeries] = None) -> MonitorInfo:
+        """Update a table monitor.
+        
+        Updates a monitor for the specified table.
+        
+        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
+        table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
+        - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema - be an
+        owner of the table.
+        
+        Additionally, the call must be made from the workspace where the monitor was created, and the caller
+        must be the original creator of the monitor.
+        
+        Certain configuration fields, such as output asset identifiers, cannot be updated.
+        
+        :param table_name: str
+          Full name of the table.
+        :param output_schema_name: str
+          Schema where output metric tables are created.
+        :param baseline_table_name: str (optional)
+          Name of the baseline table from which drift metrics are computed from. Columns in the monitored
+          table should also be present in the baseline table.
+        :param custom_metrics: List[:class:`MonitorMetric`] (optional)
+          Custom metrics to compute on the monitored table. These can be aggregate metrics, derived metrics
+          (from already computed aggregate metrics), or drift metrics (comparing metrics across time windows).
+        :param dashboard_id: str (optional)
+          Id of dashboard that visualizes the computed metrics. This can be empty if the monitor is in PENDING
+          state.
+        :param data_classification_config: :class:`MonitorDataClassificationConfig` (optional)
+          The data classification config for the monitor.
+        :param inference_log: :class:`MonitorInferenceLog` (optional)
+          Configuration for monitoring inference logs.
+        :param notifications: :class:`MonitorNotifications` (optional)
+          The notification settings for the monitor.
+        :param schedule: :class:`MonitorCronSchedule` (optional)
+          The schedule for automatically updating and refreshing metric tables.
+        :param slicing_exprs: List[str] (optional)
+          List of column expressions to slice data with for targeted analysis. The data is grouped by each
+          expression independently, resulting in a separate slice for each predicate and its complements. For
+          high-cardinality columns, only the top 100 unique values by frequency will generate slices.
+        :param snapshot: :class:`MonitorSnapshot` (optional)
+          Configuration for monitoring snapshot tables.
+        :param time_series: :class:`MonitorTimeSeries` (optional)
+          Configuration for monitoring time series tables.
+        
+        :returns: :class:`MonitorInfo`
+        """
+        body = {}
+        if baseline_table_name is not None: body['baseline_table_name'] = baseline_table_name
+        if custom_metrics is not None: body['custom_metrics'] = [v.as_dict() for v in custom_metrics]
+        if dashboard_id is not None: body['dashboard_id'] = dashboard_id
+        if data_classification_config is not None:
+            body['data_classification_config'] = data_classification_config.as_dict()
+        if inference_log is not None: body['inference_log'] = inference_log.as_dict()
+        if notifications is not None: body['notifications'] = notifications.as_dict()
+        if output_schema_name is not None: body['output_schema_name'] = output_schema_name
+        if schedule is not None: body['schedule'] = schedule.as_dict()
+        if slicing_exprs is not None: body['slicing_exprs'] = [v for v in slicing_exprs]
+        if snapshot is not None: body['snapshot'] = snapshot.as_dict()
+        if time_series is not None: body['time_series'] = time_series.as_dict()
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do('PUT',
+                           f'/api/2.1/unity-catalog/tables/{table_name}/monitor',
+                           body=body,
+                           headers=headers)
+        return MonitorInfo.from_dict(res)
 
 
 class RegisteredModelsAPI:
@@ -8450,7 +8524,7 @@ class SystemSchemasAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def disable(self, metastore_id: str, schema_name: DisableSchemaName):
+    def disable(self, metastore_id: str, schema_name: str):
         """Disable a system schema.
         
         Disables the system schema and removes it from the system catalog. The caller must be an account admin
@@ -8458,7 +8532,7 @@ class SystemSchemasAPI:
         
         :param metastore_id: str
           The metastore ID under which the system schema lives.
-        :param schema_name: :class:`DisableSchemaName`
+        :param schema_name: str
           Full name of the system schema.
         
         
@@ -8467,10 +8541,10 @@ class SystemSchemasAPI:
         headers = {'Accept': 'application/json', }
 
         self._api.do('DELETE',
-                     f'/api/2.1/unity-catalog/metastores/{metastore_id}/systemschemas/{schema_name.value}',
+                     f'/api/2.1/unity-catalog/metastores/{metastore_id}/systemschemas/{schema_name}',
                      headers=headers)
 
-    def enable(self, metastore_id: str, schema_name: EnableSchemaName):
+    def enable(self, metastore_id: str, schema_name: str):
         """Enable a system schema.
         
         Enables the system schema and adds it to the system catalog. The caller must be an account admin or a
@@ -8478,7 +8552,7 @@ class SystemSchemasAPI:
         
         :param metastore_id: str
           The metastore ID under which the system schema lives.
-        :param schema_name: :class:`EnableSchemaName`
+        :param schema_name: str
           Full name of the system schema.
         
         
@@ -8487,7 +8561,7 @@ class SystemSchemasAPI:
         headers = {'Accept': 'application/json', }
 
         self._api.do('PUT',
-                     f'/api/2.1/unity-catalog/metastores/{metastore_id}/systemschemas/{schema_name.value}',
+                     f'/api/2.1/unity-catalog/metastores/{metastore_id}/systemschemas/{schema_name}',
                      headers=headers)
 
     def list(self, metastore_id: str) -> Iterator[SystemSchemaInfo]:

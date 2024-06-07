@@ -7,7 +7,7 @@
     A system schema is a schema that lives within the system catalog. A system schema may contain information
     about customer usage of Unity Catalog such as audit-logs, billing-logs, lineage information, etc.
 
-    .. py:method:: disable(metastore_id: str, schema_name: DisableSchemaName)
+    .. py:method:: disable(metastore_id: str, schema_name: str)
 
         Disable a system schema.
         
@@ -16,13 +16,13 @@
         
         :param metastore_id: str
           The metastore ID under which the system schema lives.
-        :param schema_name: :class:`DisableSchemaName`
+        :param schema_name: str
           Full name of the system schema.
         
         
         
 
-    .. py:method:: enable(metastore_id: str, schema_name: EnableSchemaName)
+    .. py:method:: enable(metastore_id: str, schema_name: str)
 
         Enable a system schema.
         
@@ -31,7 +31,7 @@
         
         :param metastore_id: str
           The metastore ID under which the system schema lives.
-        :param schema_name: :class:`EnableSchemaName`
+        :param schema_name: str
           Full name of the system schema.
         
         
