@@ -9,7 +9,7 @@ from typing import Dict, Iterable, Optional
 
 import requests
 
-from . import user_agent
+from . import useragent
 from .clock import Clock, RealClock
 from .credentials_provider import CredentialsProvider, DefaultCredentials
 from .environments import (ALL_ENVS, AzureEnvironment, Cloud,
@@ -81,8 +81,8 @@ class Config:
     def __init__(self,
                  *,
                  credentials_provider: CredentialsProvider = None,
-                 product="unknown",
-                 product_version="0.0.0",
+                 product=None,
+                 product_version=None,
                  clock: Clock = None,
                  **kwargs):
         self._header_factory = None
@@ -100,9 +100,8 @@ class Config:
             self._fix_host_if_needed()
             self._validate()
             self.init_auth()
-            self._product = product
-            self._product_version = product_version
-            user_agent.with_product(product, product_version)
+            if product is not None and product_version is not None:
+                useragent.with_product(product, product_version)
         except ValueError as e:
             message = self.wrap_debug_info(str(e))
             raise ValueError(message) from e
@@ -214,7 +213,7 @@ class Config:
 
         # global user agent includes SDK version, product name & version, platform info,
         # and global extra info
-        ua = [user_agent.to_string()]
+        ua = [useragent.to_string()]
         # Python SDK supports local extra info, which needs to be added in addition to global info
         if len(self._user_agent_other_info) > 0:
             ua.append(' '.join(self._user_agent_other_info))
@@ -222,7 +221,7 @@ class Config:
 
     @property
     def _upstream_user_agent(self) -> str:
-        return " ".join(f"{k}/{v}" for k, v in user_agent.get_upstream_user_agent_info())
+        return " ".join(f"{k}/{v}" for k, v in useragent.get_upstream_user_agent_info())
 
     def with_user_agent_extra(self, key: str, value: str) -> 'Config':
         self._user_agent_other_info.append(f"{key}/{value}")
