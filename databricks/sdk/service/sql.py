@@ -360,6 +360,7 @@ class ChannelInfo:
 
 
 class ChannelName(Enum):
+    """Name of the channel"""
 
     CHANNEL_NAME_CURRENT = 'CHANNEL_NAME_CURRENT'
     CHANNEL_NAME_CUSTOM = 'CHANNEL_NAME_CUSTOM'
@@ -1390,8 +1391,9 @@ class ExecuteStatementRequest:
     """The SQL statement to execute. The statement can optionally be parameterized, see `parameters`."""
 
     warehouse_id: str
-    """Warehouse upon which to execute a statement. See also [What are SQL
-    warehouses?](/sql/admin/warehouse-type.html)"""
+    """Warehouse upon which to execute a statement. See also [What are SQL warehouses?]
+    
+    [What are SQL warehouses?]: https://docs.databricks.com/sql/admin/warehouse-type.html"""
 
     byte_limit: Optional[int] = None
     """Applies the given byte limit to the statement's result size. Byte counts are based on internal
@@ -3273,8 +3275,10 @@ class StatementParameterListItem:
     type: Optional[str] = None
     """The data type, given as a string. For example: `INT`, `STRING`, `DECIMAL(10,2)`. If no type is
     given the type is assumed to be `STRING`. Complex types, such as `ARRAY`, `MAP`, and `STRUCT`
-    are not supported. For valid types, refer to the section [Data
-    types](/sql/language-manual/functions/cast.html) of the SQL language reference."""
+    are not supported. For valid types, refer to the section [Data types] of the SQL language
+    reference.
+    
+    [Data types]: https://docs.databricks.com/sql/language-manual/functions/cast.html"""
 
     value: Optional[str] = None
     """The value to substitute, represented as a string. If omitted, the value is interpreted as NULL."""
@@ -4960,8 +4964,9 @@ class StatementExecutionAPI:
         :param statement: str
           The SQL statement to execute. The statement can optionally be parameterized, see `parameters`.
         :param warehouse_id: str
-          Warehouse upon which to execute a statement. See also [What are SQL
-          warehouses?](/sql/admin/warehouse-type.html)
+          Warehouse upon which to execute a statement. See also [What are SQL warehouses?]
+          
+          [What are SQL warehouses?]: https://docs.databricks.com/sql/admin/warehouse-type.html
         :param byte_limit: int (optional)
           Applies the given byte limit to the statement's result size. Byte counts are based on internal data
           representations and might not match the final size in the requested `format`. If the result was

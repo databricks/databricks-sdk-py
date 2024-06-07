@@ -340,6 +340,24 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: UNPAUSED
       :value: "UNPAUSED"
 
+.. autoclass:: PeriodicTriggerConfiguration
+   :members:
+   :undoc-members:
+
+.. py:class:: PeriodicTriggerConfigurationTimeUnit
+
+   .. py:attribute:: DAYS
+      :value: "DAYS"
+
+   .. py:attribute:: HOURS
+      :value: "HOURS"
+
+   .. py:attribute:: TIME_UNIT_UNSPECIFIED
+      :value: "TIME_UNIT_UNSPECIFIED"
+
+   .. py:attribute:: WEEKS
+      :value: "WEEKS"
+
 .. autoclass:: PipelineParams
    :members:
    :undoc-members:

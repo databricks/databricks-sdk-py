@@ -2564,7 +2564,7 @@ class ConsumerListingsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def g_et(self, *, ids: Optional[List[str]] = None) -> BatchGetListingsResponse:
+    def batch_get(self, *, ids: Optional[List[str]] = None) -> BatchGetListingsResponse:
         """Get one batch of listings. One may specify up to 50 IDs per request.
         
         Batch get a published listing in the Databricks Marketplace that the consumer has access to.
@@ -2832,7 +2832,7 @@ class ConsumerProvidersAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def g_et(self, *, ids: Optional[List[str]] = None) -> BatchGetProvidersResponse:
+    def batch_get(self, *, ids: Optional[List[str]] = None) -> BatchGetProvidersResponse:
         """Get one batch of providers. One may specify up to 50 IDs per request.
         
         Batch get a provider in the Databricks Marketplace with at least one visible listing.

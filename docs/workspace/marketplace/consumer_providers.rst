@@ -6,7 +6,7 @@
 
     Providers are the entities that publish listings to the Marketplace.
 
-    .. py:method:: g_et( [, ids: Optional[List[str]]]) -> BatchGetProvidersResponse
+    .. py:method:: batch_get( [, ids: Optional[List[str]]]) -> BatchGetProvidersResponse
 
         Get one batch of providers. One may specify up to 50 IDs per request.
         

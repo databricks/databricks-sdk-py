@@ -2001,6 +2001,34 @@ class PauseStatus(Enum):
 
 
 @dataclass
+class PeriodicTriggerConfiguration:
+    interval: int
+
+    unit: PeriodicTriggerConfigurationTimeUnit
+
+    def as_dict(self) -> dict:
+        """Serializes the PeriodicTriggerConfiguration into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.interval is not None: body['interval'] = self.interval
+        if self.unit is not None: body['unit'] = self.unit.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> PeriodicTriggerConfiguration:
+        """Deserializes the PeriodicTriggerConfiguration from a dictionary."""
+        return cls(interval=d.get('interval', None),
+                   unit=_enum(d, 'unit', PeriodicTriggerConfigurationTimeUnit))
+
+
+class PeriodicTriggerConfigurationTimeUnit(Enum):
+
+    DAYS = 'DAYS'
+    HOURS = 'HOURS'
+    TIME_UNIT_UNSPECIFIED = 'TIME_UNIT_UNSPECIFIED'
+    WEEKS = 'WEEKS'
+
+
+@dataclass
 class PipelineParams:
     full_refresh: Optional[bool] = None
     """If true, triggers a full refresh on the delta live table."""
@@ -4825,6 +4853,8 @@ class TriggerSettings:
     pause_status: Optional[PauseStatus] = None
     """Whether this trigger is paused or not."""
 
+    periodic: Optional[PeriodicTriggerConfiguration] = None
+
     table: Optional[TableUpdateTriggerConfiguration] = None
     """Old table trigger settings name. Deprecated in favor of `table_update`."""
 
@@ -4835,6 +4865,7 @@ class TriggerSettings:
         body = {}
         if self.file_arrival: body['file_arrival'] = self.file_arrival.as_dict()
         if self.pause_status is not None: body['pause_status'] = self.pause_status.value
+        if self.periodic: body['periodic'] = self.periodic.as_dict()
         if self.table: body['table'] = self.table.as_dict()
         if self.table_update: body['table_update'] = self.table_update.as_dict()
         return body
@@ -4844,6 +4875,7 @@ class TriggerSettings:
         """Deserializes the TriggerSettings from a dictionary."""
         return cls(file_arrival=_from_dict(d, 'file_arrival', FileArrivalTriggerConfiguration),
                    pause_status=_enum(d, 'pause_status', PauseStatus),
+                   periodic=_from_dict(d, 'periodic', PeriodicTriggerConfiguration),
                    table=_from_dict(d, 'table', TableUpdateTriggerConfiguration),
                    table_update=_from_dict(d, 'table_update', TableUpdateTriggerConfiguration))
 

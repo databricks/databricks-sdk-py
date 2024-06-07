@@ -221,7 +221,6 @@ class {{.PascalName}}API:{{if .Description}}
 
         get_params = [{{- range .Service.DataPlaneInfoMethod.Request.Fields }}'{{.SnakeName}}',{{end}}]
         data_plane_details = self._details_fetcher.get_data_plane_details('{{.SnakeName}}', get_params, info_getter, self._api.get_oauth_token)
-
         token = data_plane_details.token
 
         def auth(r: requests.PreparedRequest) -> requests.PreparedRequest:

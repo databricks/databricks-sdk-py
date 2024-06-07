@@ -7,7 +7,7 @@
     Listings are the core entities in the Marketplace. They represent the products that are available for
     consumption.
 
-    .. py:method:: g_et( [, ids: Optional[List[str]]]) -> BatchGetListingsResponse
+    .. py:method:: batch_get( [, ids: Optional[List[str]]]) -> BatchGetListingsResponse
 
         Get one batch of listings. One may specify up to 50 IDs per request.
         

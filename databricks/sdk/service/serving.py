@@ -105,8 +105,8 @@ class AnthropicConfig:
 @dataclass
 class App:
     name: str
-    """The name of the app. The name must contain only lowercase alphanumeric characters and hyphens
-    and be between 2 and 30 characters long. It must be unique within the workspace."""
+    """The name of the app. The name must contain only lowercase alphanumeric characters and hyphens.
+    It must be unique within the workspace."""
 
     active_deployment: Optional[AppDeployment] = None
     """The active deployment of the app."""
@@ -122,6 +122,10 @@ class App:
 
     pending_deployment: Optional[AppDeployment] = None
     """The pending deployment of the app."""
+
+    service_principal_id: Optional[int] = None
+
+    service_principal_name: Optional[str] = None
 
     status: Optional[AppStatus] = None
 
@@ -143,6 +147,9 @@ class App:
         if self.description is not None: body['description'] = self.description
         if self.name is not None: body['name'] = self.name
         if self.pending_deployment: body['pending_deployment'] = self.pending_deployment.as_dict()
+        if self.service_principal_id is not None: body['service_principal_id'] = self.service_principal_id
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
         if self.status: body['status'] = self.status.as_dict()
         if self.update_time is not None: body['update_time'] = self.update_time
         if self.updater is not None: body['updater'] = self.updater
@@ -158,6 +165,8 @@ class App:
                    description=d.get('description', None),
                    name=d.get('name', None),
                    pending_deployment=_from_dict(d, 'pending_deployment', AppDeployment),
+                   service_principal_id=d.get('service_principal_id', None),
+                   service_principal_name=d.get('service_principal_name', None),
                    status=_from_dict(d, 'status', AppStatus),
                    update_time=d.get('update_time', None),
                    updater=d.get('updater', None),
@@ -167,7 +176,14 @@ class App:
 @dataclass
 class AppDeployment:
     source_code_path: str
-    """The source code path of the deployment."""
+    """The workspace file system path of the source code used to create the app deployment. This is
+    different from `deployment_artifacts.source_code_path`, which is the path used by the deployed
+    app. The former refers to the original source code location of the app in the workspace during
+    deployment creation, whereas the latter provides a system generated stable snapshotted source
+    code path used by the deployment."""
+
+    mode: AppDeploymentMode
+    """The mode of which the deployment will manage the source code."""
 
     create_time: Optional[str] = None
     """The creation time of the deployment. Formatted timestamp in ISO 6801."""
@@ -194,6 +210,7 @@ class AppDeployment:
         if self.creator is not None: body['creator'] = self.creator
         if self.deployment_artifacts: body['deployment_artifacts'] = self.deployment_artifacts.as_dict()
         if self.deployment_id is not None: body['deployment_id'] = self.deployment_id
+        if self.mode is not None: body['mode'] = self.mode.value
         if self.source_code_path is not None: body['source_code_path'] = self.source_code_path
         if self.status: body['status'] = self.status.as_dict()
         if self.update_time is not None: body['update_time'] = self.update_time
@@ -206,6 +223,7 @@ class AppDeployment:
                    creator=d.get('creator', None),
                    deployment_artifacts=_from_dict(d, 'deployment_artifacts', AppDeploymentArtifacts),
                    deployment_id=d.get('deployment_id', None),
+                   mode=_enum(d, 'mode', AppDeploymentMode),
                    source_code_path=d.get('source_code_path', None),
                    status=_from_dict(d, 'status', AppDeploymentStatus),
                    update_time=d.get('update_time', None))
@@ -214,7 +232,7 @@ class AppDeployment:
 @dataclass
 class AppDeploymentArtifacts:
     source_code_path: Optional[str] = None
-    """The source code of the deployment."""
+    """The snapshotted workspace file system path of the source code loaded by the deployed app."""
 
     def as_dict(self) -> dict:
         """Serializes the AppDeploymentArtifacts into a dictionary suitable for use as a JSON request body."""
@@ -228,9 +246,15 @@ class AppDeploymentArtifacts:
         return cls(source_code_path=d.get('source_code_path', None))
 
 
+class AppDeploymentMode(Enum):
+
+    AUTO_SYNC = 'AUTO_SYNC'
+    MODE_UNSPECIFIED = 'MODE_UNSPECIFIED'
+    SNAPSHOT = 'SNAPSHOT'
+
+
 class AppDeploymentState(Enum):
 
-    CANCELLED = 'CANCELLED'
     FAILED = 'FAILED'
     IN_PROGRESS = 'IN_PROGRESS'
     STATE_UNSPECIFIED = 'STATE_UNSPECIFIED'
@@ -280,15 +304,11 @@ class AppState(Enum):
     CREATING = 'CREATING'
     DELETED = 'DELETED'
     DELETING = 'DELETING'
-    DEPLOYED = 'DEPLOYED'
-    DEPLOYING = 'DEPLOYING'
     ERROR = 'ERROR'
     IDLE = 'IDLE'
-    READY = 'READY'
     RUNNING = 'RUNNING'
     STARTING = 'STARTING'
     STATE_UNSPECIFIED = 'STATE_UNSPECIFIED'
-    UPDATING = 'UPDATING'
 
 
 @dataclass
@@ -466,7 +486,14 @@ class CohereConfig:
 @dataclass
 class CreateAppDeploymentRequest:
     source_code_path: str
-    """The source code path of the deployment."""
+    """The workspace file system path of the source code used to create the app deployment. This is
+    different from `deployment_artifacts.source_code_path`, which is the path used by the deployed
+    app. The former refers to the original source code location of the app in the workspace during
+    deployment creation, whereas the latter provides a system generated stable snapshotted source
+    code path used by the deployment."""
+
+    mode: AppDeploymentMode
+    """The mode of which the deployment will manage the source code."""
 
     app_name: Optional[str] = None
     """The name of the app."""
@@ -475,20 +502,23 @@ class CreateAppDeploymentRequest:
         """Serializes the CreateAppDeploymentRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.app_name is not None: body['app_name'] = self.app_name
+        if self.mode is not None: body['mode'] = self.mode.value
         if self.source_code_path is not None: body['source_code_path'] = self.source_code_path
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateAppDeploymentRequest:
         """Deserializes the CreateAppDeploymentRequest from a dictionary."""
-        return cls(app_name=d.get('app_name', None), source_code_path=d.get('source_code_path', None))
+        return cls(app_name=d.get('app_name', None),
+                   mode=_enum(d, 'mode', AppDeploymentMode),
+                   source_code_path=d.get('source_code_path', None))
 
 
 @dataclass
 class CreateAppRequest:
     name: str
-    """The name of the app. The name must contain only lowercase alphanumeric characters and hyphens
-    and be between 2 and 30 characters long. It must be unique within the workspace."""
+    """The name of the app. The name must contain only lowercase alphanumeric characters and hyphens.
+    It must be unique within the workspace."""
 
     description: Optional[str] = None
     """The description of the app."""
@@ -2418,8 +2448,8 @@ class TrafficConfig:
 @dataclass
 class UpdateAppRequest:
     name: str
-    """The name of the app. The name must contain only lowercase alphanumeric characters and hyphens
-    and be between 2 and 30 characters long. It must be unique within the workspace."""
+    """The name of the app. The name must contain only lowercase alphanumeric characters and hyphens.
+    It must be unique within the workspace."""
 
     description: Optional[str] = None
     """The description of the app."""
@@ -2548,13 +2578,13 @@ class AppsAPI:
         raise TimeoutError(f'timed out after {timeout}: {status_message}')
 
     def create(self, name: str, *, description: Optional[str] = None) -> Wait[App]:
-        """Create an App.
+        """Create an app.
         
         Creates a new app.
         
         :param name: str
-          The name of the app. The name must contain only lowercase alphanumeric characters and hyphens and be
-          between 2 and 30 characters long. It must be unique within the workspace.
+          The name of the app. The name must contain only lowercase alphanumeric characters and hyphens. It
+          must be unique within the workspace.
         :param description: str (optional)
           The description of the app.
         
@@ -2577,40 +2607,8 @@ class AppsAPI:
                         timeout=timedelta(minutes=20)) -> App:
         return self.create(description=description, name=name).result(timeout=timeout)
 
-    def create_deployment(self, app_name: str, source_code_path: str) -> Wait[AppDeployment]:
-        """Create an App Deployment.
-        
-        Creates an app deployment for the app with the supplied name.
-        
-        :param app_name: str
-          The name of the app.
-        :param source_code_path: str
-          The source code path of the deployment.
-        
-        :returns:
-          Long-running operation waiter for :class:`AppDeployment`.
-          See :method:wait_get_deployment_app_succeeded for more details.
-        """
-        body = {}
-        if source_code_path is not None: body['source_code_path'] = source_code_path
-        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
-        op_response = self._api.do('POST',
-                                   f'/api/2.0/preview/apps/{app_name}/deployments',
-                                   body=body,
-                                   headers=headers)
-        return Wait(self.wait_get_deployment_app_succeeded,
-                    response=AppDeployment.from_dict(op_response),
-                    app_name=app_name,
-                    deployment_id=op_response['deployment_id'])
-
-    def create_deployment_and_wait(self, app_name: str, source_code_path: str,
-                                   timeout=timedelta(minutes=20)) -> AppDeployment:
-        return self.create_deployment(app_name=app_name,
-                                      source_code_path=source_code_path).result(timeout=timeout)
-
     def delete(self, name: str):
-        """Delete an App.
+        """Delete an app.
         
         Deletes an app.
         
@@ -2624,8 +2622,50 @@ class AppsAPI:
 
         self._api.do('DELETE', f'/api/2.0/preview/apps/{name}', headers=headers)
 
+    def deploy(self, app_name: str, source_code_path: str, mode: AppDeploymentMode) -> Wait[AppDeployment]:
+        """Create an app deployment.
+        
+        Creates an app deployment for the app with the supplied name.
+        
+        :param app_name: str
+          The name of the app.
+        :param source_code_path: str
+          The workspace file system path of the source code used to create the app deployment. This is
+          different from `deployment_artifacts.source_code_path`, which is the path used by the deployed app.
+          The former refers to the original source code location of the app in the workspace during deployment
+          creation, whereas the latter provides a system generated stable snapshotted source code path used by
+          the deployment.
+        :param mode: :class:`AppDeploymentMode`
+          The mode of which the deployment will manage the source code.
+        
+        :returns:
+          Long-running operation waiter for :class:`AppDeployment`.
+          See :method:wait_get_deployment_app_succeeded for more details.
+        """
+        body = {}
+        if mode is not None: body['mode'] = mode.value
+        if source_code_path is not None: body['source_code_path'] = source_code_path
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        op_response = self._api.do('POST',
+                                   f'/api/2.0/preview/apps/{app_name}/deployments',
+                                   body=body,
+                                   headers=headers)
+        return Wait(self.wait_get_deployment_app_succeeded,
+                    response=AppDeployment.from_dict(op_response),
+                    app_name=app_name,
+                    deployment_id=op_response['deployment_id'])
+
+    def deploy_and_wait(self,
+                        app_name: str,
+                        source_code_path: str,
+                        mode: AppDeploymentMode,
+                        timeout=timedelta(minutes=20)) -> AppDeployment:
+        return self.deploy(app_name=app_name, mode=mode,
+                           source_code_path=source_code_path).result(timeout=timeout)
+
     def get(self, name: str) -> App:
-        """Get an App.
+        """Get an app.
         
         Retrieves information for the app with the supplied name.
         
@@ -2641,7 +2681,7 @@ class AppsAPI:
         return App.from_dict(res)
 
     def get_deployment(self, app_name: str, deployment_id: str) -> AppDeployment:
-        """Get an App Deployment.
+        """Get an app deployment.
         
         Retrieves information for the app deployment with the supplied name and deployment id.
         
@@ -2661,7 +2701,7 @@ class AppsAPI:
         return AppDeployment.from_dict(res)
 
     def get_environment(self, name: str) -> AppEnvironment:
-        """Get App Environment.
+        """Get app environment.
         
         Retrieves app environment.
         
@@ -2677,7 +2717,7 @@ class AppsAPI:
         return AppEnvironment.from_dict(res)
 
     def list(self, *, page_size: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[App]:
-        """List Apps.
+        """List apps.
         
         Lists all apps in the workspace.
         
@@ -2708,7 +2748,7 @@ class AppsAPI:
                          *,
                          page_size: Optional[int] = None,
                          page_token: Optional[str] = None) -> Iterator[AppDeployment]:
-        """List App Deployments.
+        """List app deployments.
         
         Lists all app deployments for the app with the supplied name.
         
@@ -2740,7 +2780,7 @@ class AppsAPI:
             query['page_token'] = json['next_page_token']
 
     def stop(self, name: str):
-        """Stop an App.
+        """Stop an app.
         
         Stops the active deployment of the app in the workspace.
         
@@ -2755,13 +2795,13 @@ class AppsAPI:
         self._api.do('POST', f'/api/2.0/preview/apps/{name}/stop', headers=headers)
 
     def update(self, name: str, *, description: Optional[str] = None) -> App:
-        """Update an App.
+        """Update an app.
         
         Updates the app with the supplied name.
         
         :param name: str
-          The name of the app. The name must contain only lowercase alphanumeric characters and hyphens and be
-          between 2 and 30 characters long. It must be unique within the workspace.
+          The name of the app. The name must contain only lowercase alphanumeric characters and hyphens. It
+          must be unique within the workspace.
         :param description: str (optional)
           The description of the app.
         
@@ -3376,7 +3416,6 @@ class ServingEndpointsDataPlaneAPI:
         get_params = ['name', ]
         data_plane_details = self._details_fetcher.get_data_plane_details('query', get_params, info_getter,
                                                                           self._api.get_oauth_token)
-
         token = data_plane_details.token
 
         def auth(r: requests.PreparedRequest) -> requests.PreparedRequest:

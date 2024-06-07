@@ -571,8 +571,6 @@ class CatalogInfoSecurableKind(Enum):
     CATALOG_FOREIGN_SQLDW = 'CATALOG_FOREIGN_SQLDW'
     CATALOG_FOREIGN_SQLSERVER = 'CATALOG_FOREIGN_SQLSERVER'
     CATALOG_INTERNAL = 'CATALOG_INTERNAL'
-    CATALOG_ONLINE = 'CATALOG_ONLINE'
-    CATALOG_ONLINE_INDEX = 'CATALOG_ONLINE_INDEX'
     CATALOG_STANDARD = 'CATALOG_STANDARD'
     CATALOG_SYSTEM = 'CATALOG_SYSTEM'
     CATALOG_SYSTEM_DELTASHARING = 'CATALOG_SYSTEM_DELTASHARING'
@@ -996,6 +994,23 @@ class CreateConnection:
                    options=d.get('options', None),
                    properties=d.get('properties', None),
                    read_only=d.get('read_only', None))
+
+
+@dataclass
+class CreateEndpointRequest:
+    endpoint: Optional[Endpoint] = None
+    """Endpoint"""
+
+    def as_dict(self) -> dict:
+        """Serializes the CreateEndpointRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.endpoint: body['endpoint'] = self.endpoint.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> CreateEndpointRequest:
+        """Deserializes the CreateEndpointRequest from a dictionary."""
+        return cls(endpoint=_from_dict(d, 'endpoint', Endpoint))
 
 
 @dataclass
@@ -1494,7 +1509,7 @@ class CreateStorageCredential:
     """Comment associated with the credential."""
 
     databricks_gcp_service_account: Optional[DatabricksGcpServiceAccountRequest] = None
-    """The <Databricks> managed GCP service account configuration."""
+    """The Databricks managed GCP service account configuration."""
 
     read_only: Optional[bool] = None
     """Whether the storage credential is only usable for read operations."""
@@ -1627,14 +1642,28 @@ class DataSourceFormat(Enum):
     """Data source format"""
 
     AVRO = 'AVRO'
+    BIGQUERY_FORMAT = 'BIGQUERY_FORMAT'
     CSV = 'CSV'
+    DATABRICKS_FORMAT = 'DATABRICKS_FORMAT'
     DELTA = 'DELTA'
     DELTASHARING = 'DELTASHARING'
+    HIVE_CUSTOM = 'HIVE_CUSTOM'
+    HIVE_SERDE = 'HIVE_SERDE'
     JSON = 'JSON'
+    MYSQL_FORMAT = 'MYSQL_FORMAT'
+    NETSUITE_FORMAT = 'NETSUITE_FORMAT'
     ORC = 'ORC'
     PARQUET = 'PARQUET'
+    POSTGRESQL_FORMAT = 'POSTGRESQL_FORMAT'
+    REDSHIFT_FORMAT = 'REDSHIFT_FORMAT'
+    SALESFORCE_FORMAT = 'SALESFORCE_FORMAT'
+    SNOWFLAKE_FORMAT = 'SNOWFLAKE_FORMAT'
+    SQLDW_FORMAT = 'SQLDW_FORMAT'
+    SQLSERVER_FORMAT = 'SQLSERVER_FORMAT'
     TEXT = 'TEXT'
     UNITY_CATALOG = 'UNITY_CATALOG'
+    VECTOR_INDEX_FORMAT = 'VECTOR_INDEX_FORMAT'
+    WORKDAY_RAAS_FORMAT = 'WORKDAY_RAAS_FORMAT'
 
 
 @dataclass
@@ -1928,6 +1957,36 @@ class EncryptionDetails:
 
 
 @dataclass
+class Endpoint:
+    """Endpoint"""
+
+    name: Optional[str] = None
+
+    status: Optional[EndpointState] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the Endpoint into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None: body['name'] = self.name
+        if self.status is not None: body['status'] = self.status.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> Endpoint:
+        """Deserializes the Endpoint from a dictionary."""
+        return cls(name=d.get('name', None), status=_enum(d, 'status', EndpointState))
+
+
+class EndpointState(Enum):
+
+    ENDPOINT_DELETING = 'ENDPOINT_DELETING'
+    ENDPOINT_FAILED = 'ENDPOINT_FAILED'
+    ENDPOINT_ONLINE = 'ENDPOINT_ONLINE'
+    ENDPOINT_PROVISIONING = 'ENDPOINT_PROVISIONING'
+    ENDPOINT_STATE_UNSPECIFIED = 'ENDPOINT_STATE_UNSPECIFIED'
+
+
+@dataclass
 class ExternalLocationInfo:
     access_point: Optional[str] = None
     """The AWS access point to use when accesing s3 for this external location."""
@@ -1953,6 +2012,9 @@ class ExternalLocationInfo:
 
     encryption_details: Optional[EncryptionDetails] = None
     """Encryption options that apply to clients connecting to cloud storage."""
+
+    isolation_mode: Optional[IsolationMode] = None
+    """Whether the current securable is accessible from all workspaces or a specific set of workspaces."""
 
     metastore_id: Optional[str] = None
     """Unique identifier of metastore hosting the external location."""
@@ -1986,6 +2048,7 @@ class ExternalLocationInfo:
         if self.credential_id is not None: body['credential_id'] = self.credential_id
         if self.credential_name is not None: body['credential_name'] = self.credential_name
         if self.encryption_details: body['encryption_details'] = self.encryption_details.as_dict()
+        if self.isolation_mode is not None: body['isolation_mode'] = self.isolation_mode.value
         if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
         if self.name is not None: body['name'] = self.name
         if self.owner is not None: body['owner'] = self.owner
@@ -2006,6 +2069,7 @@ class ExternalLocationInfo:
                    credential_id=d.get('credential_id', None),
                    credential_name=d.get('credential_name', None),
                    encryption_details=_from_dict(d, 'encryption_details', EncryptionDetails),
+                   isolation_mode=_enum(d, 'isolation_mode', IsolationMode),
                    metastore_id=d.get('metastore_id', None),
                    name=d.get('name', None),
                    owner=d.get('owner', None),
@@ -2515,8 +2579,8 @@ class GetMetastoreSummaryResponseDeltaSharingScope(Enum):
 class IsolationMode(Enum):
     """Whether the current securable is accessible from all workspaces or a specific set of workspaces."""
 
-    ISOLATED = 'ISOLATED'
-    OPEN = 'OPEN'
+    ISOLATION_MODE_ISOLATED = 'ISOLATION_MODE_ISOLATED'
+    ISOLATION_MODE_OPEN = 'ISOLATION_MODE_OPEN'
 
 
 @dataclass
@@ -4336,10 +4400,13 @@ class StorageCredentialInfo:
     """Username of credential creator."""
 
     databricks_gcp_service_account: Optional[DatabricksGcpServiceAccountResponse] = None
-    """The <Databricks> managed GCP service account configuration."""
+    """The Databricks managed GCP service account configuration."""
 
     id: Optional[str] = None
     """The unique identifier of the credential."""
+
+    isolation_mode: Optional[IsolationMode] = None
+    """Whether the current securable is accessible from all workspaces or a specific set of workspaces."""
 
     metastore_id: Optional[str] = None
     """Unique identifier of parent metastore."""
@@ -4376,6 +4443,7 @@ class StorageCredentialInfo:
         if self.databricks_gcp_service_account:
             body['databricks_gcp_service_account'] = self.databricks_gcp_service_account.as_dict()
         if self.id is not None: body['id'] = self.id
+        if self.isolation_mode is not None: body['isolation_mode'] = self.isolation_mode.value
         if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
         if self.name is not None: body['name'] = self.name
         if self.owner is not None: body['owner'] = self.owner
@@ -4400,6 +4468,7 @@ class StorageCredentialInfo:
                    databricks_gcp_service_account=_from_dict(d, 'databricks_gcp_service_account',
                                                              DatabricksGcpServiceAccountResponse),
                    id=d.get('id', None),
+                   isolation_mode=_enum(d, 'isolation_mode', IsolationMode),
                    metastore_id=d.get('metastore_id', None),
                    name=d.get('name', None),
                    owner=d.get('owner', None),
@@ -4738,7 +4807,10 @@ class TableSummary:
 class TableType(Enum):
 
     EXTERNAL = 'EXTERNAL'
+    EXTERNAL_SHALLOW_CLONE = 'EXTERNAL_SHALLOW_CLONE'
+    FOREIGN = 'FOREIGN'
     MANAGED = 'MANAGED'
+    MANAGED_SHALLOW_CLONE = 'MANAGED_SHALLOW_CLONE'
     MATERIALIZED_VIEW = 'MATERIALIZED_VIEW'
     STREAMING_TABLE = 'STREAMING_TABLE'
     VIEW = 'VIEW'
@@ -5311,7 +5383,7 @@ class UpdateStorageCredential:
     """Comment associated with the credential."""
 
     databricks_gcp_service_account: Optional[DatabricksGcpServiceAccountRequest] = None
-    """The <Databricks> managed GCP service account configuration."""
+    """The Databricks managed GCP service account configuration."""
 
     force: Optional[bool] = None
     """Force update even if there are dependent external locations or external tables."""
@@ -6467,6 +6539,53 @@ class ConnectionsAPI:
 
         res = self._api.do('PATCH', f'/api/2.1/unity-catalog/connections/{name}', body=body, headers=headers)
         return ConnectionInfo.from_dict(res)
+
+
+class EndpointsAPI:
+    """Endpoints are used to connect to PG clusters."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def create(self, *, endpoint: Optional[Endpoint] = None) -> Endpoint:
+        """Create an Endpoint.
+        
+        :param endpoint: :class:`Endpoint` (optional)
+          Endpoint
+        
+        :returns: :class:`Endpoint`
+        """
+        body = {}
+        if endpoint is not None: body['endpoint'] = endpoint.as_dict()
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do('POST', '/api/2.0/hadron-endpoints', body=body, headers=headers)
+        return Endpoint.from_dict(res)
+
+    def delete(self, name: str):
+        """Delete an Endpoint.
+        
+        :param name: str
+        
+        
+        """
+
+        headers = {'Accept': 'application/json', }
+
+        self._api.do('DELETE', f'/api/2.0/hadron-endpoints/{name}', headers=headers)
+
+    def get(self, name: str) -> Endpoint:
+        """Get an Endpoint.
+        
+        :param name: str
+        
+        :returns: :class:`Endpoint`
+        """
+
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do('GET', f'/api/2.0/hadron-endpoints/{name}', headers=headers)
+        return Endpoint.from_dict(res)
 
 
 class ExternalLocationsAPI:
@@ -8260,7 +8379,7 @@ class StorageCredentialsAPI:
         :param comment: str (optional)
           Comment associated with the credential.
         :param databricks_gcp_service_account: :class:`DatabricksGcpServiceAccountRequest` (optional)
-          The <Databricks> managed GCP service account configuration.
+          The Databricks managed GCP service account configuration.
         :param read_only: bool (optional)
           Whether the storage credential is only usable for read operations.
         :param skip_validation: bool (optional)
@@ -8397,7 +8516,7 @@ class StorageCredentialsAPI:
         :param comment: str (optional)
           Comment associated with the credential.
         :param databricks_gcp_service_account: :class:`DatabricksGcpServiceAccountRequest` (optional)
-          The <Databricks> managed GCP service account configuration.
+          The Databricks managed GCP service account configuration.
         :param force: bool (optional)
           Force update even if there are dependent external locations or external tables.
         :param new_name: str (optional)

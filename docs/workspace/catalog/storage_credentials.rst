@@ -54,7 +54,7 @@
         :param comment: str (optional)
           Comment associated with the credential.
         :param databricks_gcp_service_account: :class:`DatabricksGcpServiceAccountRequest` (optional)
-          The <Databricks> managed GCP service account configuration.
+          The Databricks managed GCP service account configuration.
         :param read_only: bool (optional)
           Whether the storage credential is only usable for read operations.
         :param skip_validation: bool (optional)
@@ -189,7 +189,7 @@
         :param comment: str (optional)
           Comment associated with the credential.
         :param databricks_gcp_service_account: :class:`DatabricksGcpServiceAccountRequest` (optional)
-          The <Databricks> managed GCP service account configuration.
+          The Databricks managed GCP service account configuration.
         :param force: bool (optional)
           Force update even if there are dependent external locations or external tables.
         :param new_name: str (optional)
