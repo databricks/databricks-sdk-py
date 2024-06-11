@@ -267,7 +267,7 @@ class _VolumesIO(BinaryIO):
 class _Path(ABC):
 
     def __init__(self, path: str):
-        self._path = pathlib.Path(str(path).replace('dbfs:', '').replace('file:', ''))
+        self._path = pathlib.PurePosixPath(str(path).replace('dbfs:', '').replace('file:', ''))
 
     @property
     def is_local(self) -> bool:
@@ -392,7 +392,7 @@ class _LocalPath(_Path):
 
 class _VolumesPath(_Path):
 
-    def __init__(self, api: files.FilesAPI, src: Union[str, pathlib.Path]):
+    def __init__(self, api: files.FilesAPI, src: Union[str, pathlib.PurePosixPath]):
         super().__init__(src)
         self._api = api
 
