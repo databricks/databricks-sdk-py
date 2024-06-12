@@ -965,8 +965,10 @@ class FilesAPI:
         if overwrite is not None: query['overwrite'] = overwrite
         headers = {'Content-Type': 'application/octet-stream', }
 
-        self._api.do('PUT',
+        res = self._api.do('PUT',
                      f'/api/2.0/fs/files{_escape_multi_segment_path_parameter(file_path)}',
                      query=query,
                      headers=headers,
                      data=contents)
+        
+        return GetMetadataResponse.from_dict(res)
