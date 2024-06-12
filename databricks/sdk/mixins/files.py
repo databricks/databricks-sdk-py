@@ -268,6 +268,7 @@ class _Path(ABC):
 
     def __init__(self, path: str):
         self._path = pathlib.PurePosixPath(str(path).replace('dbfs:', '').replace('file:', ''))
+        self._system_path = pathlib.Path(self._path)
 
     @property
     def is_local(self) -> bool:
@@ -337,18 +338,18 @@ class _LocalPath(_Path):
         return _LocalPath(str(self._path / path))
 
     def _is_dir(self) -> bool:
-        return self._path.is_dir()
+        return self._system_path.is_dir()
 
     def mkdir(self):
-        self._path.mkdir(mode=0o755, parents=True, exist_ok=True)
+        self._system_path.mkdir(mode=0o755, parents=True, exist_ok=True)
 
     def exists(self) -> bool:
-        return self._path.exists()
+        return self._system_path.exists()
 
     def open(self, *, read=False, write=False, overwrite=False):
         # make local fs follow the similar semantics as DBFS
-        self._path.parent.mkdir(mode=0o755, parents=True, exist_ok=True)
-        return self._path.open(mode='wb' if overwrite else 'rb' if read else 'xb')
+        self._system_path.parent.mkdir(mode=0o755, parents=True, exist_ok=True)
+        return self._system_path.open(mode='wb' if overwrite else 'rb' if read else 'xb')
 
     def list(self, recursive=False) -> Generator[files.FileInfo, None, None]:
         if not self.is_dir:
@@ -359,7 +360,7 @@ class _LocalPath(_Path):
                                  modification_time=int(st.st_mtime_ns / 1e6),
                                  )
             return
-        queue = deque([self._path])
+        queue = deque([self._system_path])
         while queue:
             path = queue.popleft()
             for leaf in path.iterdir():
@@ -379,12 +380,12 @@ class _LocalPath(_Path):
             if recursive:
                 for leaf in self.list(recursive=True):
                     _LocalPath(leaf.path).delete()
-            self._path.rmdir()
+            self._system_path.rmdir()
         else:
             kw = {}
             if sys.version_info[:2] > (3, 7):
                 kw['missing_ok'] = True
-            self._path.unlink(**kw)
+            self._system_path.unlink(**kw)
 
     def __repr__(self) -> str:
         return f'<_LocalPath {self._path}>'
@@ -392,7 +393,7 @@ class _LocalPath(_Path):
 
 class _VolumesPath(_Path):
 
-    def __init__(self, api: files.FilesAPI, src: Union[str, pathlib.PurePosixPath]):
+    def __init__(self, api: files.FilesAPI, src: Union[str, pathlib.Path]):
         super().__init__(src)
         self._api = api
 
