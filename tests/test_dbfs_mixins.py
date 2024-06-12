@@ -70,3 +70,11 @@ def test_fs_path_invalid(config):
     with pytest.raises(ValueError) as e:
         dbfs_ext._path('s3://path/to/file')
     assert 'unsupported scheme "s3"' in str(e.value)
+
+
+def test_dbfs_local_path_mkdir(config, tmp_path):
+    from databricks.sdk import WorkspaceClient
+
+    w = WorkspaceClient(config=config)
+    w.dbfs._path(f'file:{tmp_path}/test_dir').mkdir()
+    assert w.dbfs.exists(f'file:{tmp_path}/test_dir')
