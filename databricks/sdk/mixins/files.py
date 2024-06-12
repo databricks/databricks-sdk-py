@@ -267,6 +267,7 @@ class _VolumesIO(BinaryIO):
 class _Path(ABC):
 
     def __init__(self, path: str):
+        """Posix Path for API Compatibility in windows and OS Specific Path(System Path) for using pathlib.Path functions."""
         self._path = pathlib.PurePosixPath(str(path).replace('dbfs:', '').replace('file:', ''))
         self._system_path = pathlib.Path(self._path)
 
