@@ -6,7 +6,7 @@ import pathlib
 import platform
 import sys
 import urllib.parse
-from typing import Dict, Iterable, Optional
+from typing import Dict, Iterable, List, Optional, Tuple
 
 import requests
 
@@ -46,7 +46,7 @@ class ConfigAttribute:
 
 _DEFAULT_PRODUCT_NAME = 'unknown'
 _DEFAULT_PRODUCT_VERSION = '0.0.0'
-_STATIC_USER_AGENT: tuple[str, str, list[str]] = _DEFAULT_PRODUCT_NAME, _DEFAULT_PRODUCT_VERSION, []
+_STATIC_USER_AGENT: Tuple[str, str, List[str]] = _DEFAULT_PRODUCT_NAME, _DEFAULT_PRODUCT_VERSION, []
 
 
 def with_product(product: str, product_version: str):
