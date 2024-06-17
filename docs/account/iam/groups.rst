@@ -20,25 +20,25 @@
 
             import time
             
-            from databricks.sdk import WorkspaceClient
-            
-            w = WorkspaceClient()
-            
-            group = w.groups.create(display_name=f'sdk-{time.time_ns()}')
-            
+            from databricks.sdk import AccountClient
+
+            a = AccountClient()
+
+            group = a.groups.create(display_name=f'sdk-{time.time_ns()}')
+
             # cleanup
-            w.groups.delete(id=group.id)
+            a.groups.delete(id=group.id)
 
         Create a new group.
-        
+
         Creates a group in the Databricks account with a unique name, using the supplied group details.
-        
+
         :param display_name: str (optional)
           String that represents a human-readable group name
         :param entitlements: List[:class:`ComplexValue`] (optional)
           Entitlements assigned to the group. See [assigning entitlements] for a full list of supported
           values.
-          
+
           [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
         :param external_id: str (optional)
         :param groups: List[:class:`ComplexValue`] (optional)
@@ -51,9 +51,9 @@
           Corresponds to AWS instance profile/arn role.
         :param schemas: List[:class:`GroupSchema`] (optional)
           The schema of the group.
-        
+
         :returns: :class:`Group`
-        
+
 
     .. py:method:: delete(id: str)
 
@@ -63,24 +63,24 @@
         .. code-block::
 
             import time
-            
-            from databricks.sdk import WorkspaceClient
-            
-            w = WorkspaceClient()
-            
-            group = w.groups.create(display_name=f'sdk-{time.time_ns()}')
-            
-            w.groups.delete(id=group.id)
+
+            from databricks.sdk import AccountClient
+
+            a = AccountClient()
+
+            group = a.groups.create(display_name=f'sdk-{time.time_ns()}')
+
+            a.groups.delete(id=group.id)
 
         Delete a group.
-        
+
         Deletes a group from the Databricks account.
-        
+
         :param id: str
           Unique ID for a group in the Databricks account.
-        
-        
-        
+
+
+
 
     .. py:method:: get(id: str) -> Group
 
@@ -90,17 +90,17 @@
         .. code-block::
 
             import time
-            
-            from databricks.sdk import WorkspaceClient
-            
-            w = WorkspaceClient()
-            
-            group = w.groups.create(display_name=f'sdk-{time.time_ns()}')
-            
-            fetch = w.groups.get(id=group.id)
-            
+
+            from databricks.sdk import AccountClient
+
+            a = AccountClient()
+
+            group = a.groups.create(display_name=f'sdk-{time.time_ns()}')
+
+            fetch = a.groups.get(id=group.id)
+
             # cleanup
-            w.groups.delete(id=group.id)
+            a.groups.delete(id=group.id)
 
         Get group details.
         
