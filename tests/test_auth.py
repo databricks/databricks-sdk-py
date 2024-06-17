@@ -196,10 +196,10 @@ def test_config_azure_pat():
 def test_config_azure_cli_host(monkeypatch):
     monkeypatch.setenv('HOME', __tests__ + '/testdata/azure')
     monkeypatch.setenv('PATH', __tests__ + '/testdata:/bin')
-    cfg = Config(host='x', azure_workspace_resource_id='/sub/rg/ws')
+    cfg = Config(host='https://adb-123.4.azuredatabricks.net', azure_workspace_resource_id='/sub/rg/ws')
 
     assert cfg.auth_type == 'azure-cli'
-    assert cfg.host == 'https://x'
+    assert cfg.host == 'https://adb-123.4.azuredatabricks.net'
     assert cfg.is_azure
 
 
@@ -232,10 +232,10 @@ def test_config_azure_cli_host_pat_conflict_with_config_file_present_without_def
 def test_config_azure_cli_host_and_resource_id(monkeypatch):
     monkeypatch.setenv('HOME', __tests__ + '/testdata')
     monkeypatch.setenv('PATH', __tests__ + '/testdata:/bin')
-    cfg = Config(host='x', azure_workspace_resource_id='/sub/rg/ws')
+    cfg = Config(host='https://adb-123.4.azuredatabricks.net', azure_workspace_resource_id='/sub/rg/ws')
 
     assert cfg.auth_type == 'azure-cli'
-    assert cfg.host == 'https://x'
+    assert cfg.host == 'https://adb-123.4.azuredatabricks.net'
     assert cfg.is_azure
 
 
@@ -243,21 +243,21 @@ def test_config_azure_cli_host_and_resource_i_d_configuration_precedence(monkeyp
     monkeypatch.setenv('DATABRICKS_CONFIG_PROFILE', 'justhost')
     monkeypatch.setenv('HOME', __tests__ + '/testdata/azure')
     monkeypatch.setenv('PATH', __tests__ + '/testdata:/bin')
-    cfg = Config(host='x', azure_workspace_resource_id='/sub/rg/ws')
+    cfg = Config(host='https://adb-123.4.azuredatabricks.net', azure_workspace_resource_id='/sub/rg/ws')
 
     assert cfg.auth_type == 'azure-cli'
-    assert cfg.host == 'https://x'
+    assert cfg.host == 'https://adb-123.4.azuredatabricks.net'
     assert cfg.is_azure
 
 
 @raises(
-    "validate: more than one authorization method configured: azure and basic. Config: host=https://x, username=x, azure_workspace_resource_id=/sub/rg/ws. Env: DATABRICKS_USERNAME"
+    "validate: more than one authorization method configured: azure and basic. Config: host=https://adb-123.4.azuredatabricks.net, username=x, azure_workspace_resource_id=/sub/rg/ws. Env: DATABRICKS_USERNAME"
 )
 def test_config_azure_and_password_conflict(monkeypatch):
     monkeypatch.setenv('DATABRICKS_USERNAME', 'x')
     monkeypatch.setenv('HOME', __tests__ + '/testdata/azure')
     monkeypatch.setenv('PATH', __tests__ + '/testdata:/bin')
-    cfg = Config(host='x', azure_workspace_resource_id='/sub/rg/ws')
+    cfg = Config(host='https://adb-123.4.azuredatabricks.net', azure_workspace_resource_id='/sub/rg/ws')
 
 
 @raises(

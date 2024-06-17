@@ -71,10 +71,18 @@ class CreateCredentials:
     gitLabEnterpriseEdition and awsCodeCommit."""
 
     git_username: Optional[str] = None
-    """Git username."""
+    """The username or email provided with your Git provider account, depending on which provider you
+    are using. For GitHub, GitHub Enterprise Server, or Azure DevOps Services, either email or
+    username may be used. For GitLab, GitLab Enterprise Edition, email must be used. For AWS
+    CodeCommit, BitBucket or BitBucket Server, username must be used. For all other providers please
+    see your provider's Personal Access Token authentication documentation to see what is supported."""
 
     personal_access_token: Optional[str] = None
-    """The personal access token used to authenticate to the corresponding Git provider."""
+    """The personal access token used to authenticate to the corresponding Git provider. For certain
+    providers, support may exist for other types of scoped access tokens. [Learn more]. The personal
+    access token used to authenticate to the corresponding Git
+    
+    [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html"""
 
     def as_dict(self) -> dict:
         """Serializes the CreateCredentials into a dictionary suitable for use as a JSON request body."""
@@ -103,7 +111,11 @@ class CreateCredentialsResponse:
     gitLabEnterpriseEdition and awsCodeCommit."""
 
     git_username: Optional[str] = None
-    """Git username."""
+    """The username or email provided with your Git provider account, depending on which provider you
+    are using. For GitHub, GitHub Enterprise Server, or Azure DevOps Services, either email or
+    username may be used. For GitLab, GitLab Enterprise Edition, email must be used. For AWS
+    CodeCommit, BitBucket or BitBucket Server, username must be used. For all other providers please
+    see your provider's Personal Access Token authentication documentation to see what is supported."""
 
     def as_dict(self) -> dict:
         """Serializes the CreateCredentialsResponse into a dictionary suitable for use as a JSON request body."""
@@ -132,7 +144,8 @@ class CreateRepo:
     gitLabEnterpriseEdition and awsCodeCommit."""
 
     path: Optional[str] = None
-    """Desired path for the repo in the workspace. Must be in the format /Repos/{folder}/{repo-name}."""
+    """Desired path for the repo in the workspace. Almost any path in the workspace can be chosen. If
+    repo is created in /Repos, path must be in the format /Repos/{folder}/{repo-name}."""
 
     sparse_checkout: Optional[SparseCheckout] = None
     """If specified, the repo will be created with sparse checkout enabled. You cannot enable/disable
@@ -215,7 +228,11 @@ class CredentialInfo:
     gitLabEnterpriseEdition and awsCodeCommit."""
 
     git_username: Optional[str] = None
-    """Git username."""
+    """The username or email provided with your Git provider account, depending on which provider you
+    are using. For GitHub, GitHub Enterprise Server, or Azure DevOps Services, either email or
+    username may be used. For GitLab, GitLab Enterprise Edition, email must be used. For AWS
+    CodeCommit, BitBucket or BitBucket Server, username must be used. For all other providers please
+    see your provider's Personal Access Token authentication documentation to see what is supported."""
 
     def as_dict(self) -> dict:
         """Serializes the CredentialInfo into a dictionary suitable for use as a JSON request body."""
@@ -933,7 +950,8 @@ class RepoInfo:
     """ID of the repo object in the workspace."""
 
     path: Optional[str] = None
-    """Desired path for the repo in the workspace. Must be in the format /Repos/{folder}/{repo-name}."""
+    """Desired path for the repo in the workspace. Almost any path in the workspace can be chosen. If
+    repo is created in /Repos, path must be in the format /Repos/{folder}/{repo-name}."""
 
     provider: Optional[str] = None
     """Git provider. This field is case-insensitive. The available Git providers are gitHub,
@@ -1171,10 +1189,18 @@ class UpdateCredentials:
     gitLabEnterpriseEdition and awsCodeCommit."""
 
     git_username: Optional[str] = None
-    """Git username."""
+    """The username or email provided with your Git provider account, depending on which provider you
+    are using. For GitHub, GitHub Enterprise Server, or Azure DevOps Services, either email or
+    username may be used. For GitLab, GitLab Enterprise Edition, email must be used. For AWS
+    CodeCommit, BitBucket or BitBucket Server, username must be used. For all other providers please
+    see your provider's Personal Access Token authentication documentation to see what is supported."""
 
     personal_access_token: Optional[str] = None
-    """The personal access token used to authenticate to the corresponding Git provider."""
+    """The personal access token used to authenticate to the corresponding Git provider. For certain
+    providers, support may exist for other types of scoped access tokens. [Learn more]. The personal
+    access token used to authenticate to the corresponding Git
+    
+    [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html"""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateCredentials into a dictionary suitable for use as a JSON request body."""
@@ -1449,9 +1475,17 @@ class GitCredentialsAPI:
           bitbucketCloud, gitLab, azureDevOpsServices, gitHubEnterprise, bitbucketServer,
           gitLabEnterpriseEdition and awsCodeCommit.
         :param git_username: str (optional)
-          Git username.
+          The username or email provided with your Git provider account, depending on which provider you are
+          using. For GitHub, GitHub Enterprise Server, or Azure DevOps Services, either email or username may
+          be used. For GitLab, GitLab Enterprise Edition, email must be used. For AWS CodeCommit, BitBucket or
+          BitBucket Server, username must be used. For all other providers please see your provider's Personal
+          Access Token authentication documentation to see what is supported.
         :param personal_access_token: str (optional)
-          The personal access token used to authenticate to the corresponding Git provider.
+          The personal access token used to authenticate to the corresponding Git provider. For certain
+          providers, support may exist for other types of scoped access tokens. [Learn more]. The personal
+          access token used to authenticate to the corresponding Git
+          
+          [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html
         
         :returns: :class:`CreateCredentialsResponse`
         """
@@ -1526,9 +1560,17 @@ class GitCredentialsAPI:
           bitbucketCloud, gitLab, azureDevOpsServices, gitHubEnterprise, bitbucketServer,
           gitLabEnterpriseEdition and awsCodeCommit.
         :param git_username: str (optional)
-          Git username.
+          The username or email provided with your Git provider account, depending on which provider you are
+          using. For GitHub, GitHub Enterprise Server, or Azure DevOps Services, either email or username may
+          be used. For GitLab, GitLab Enterprise Edition, email must be used. For AWS CodeCommit, BitBucket or
+          BitBucket Server, username must be used. For all other providers please see your provider's Personal
+          Access Token authentication documentation to see what is supported.
         :param personal_access_token: str (optional)
-          The personal access token used to authenticate to the corresponding Git provider.
+          The personal access token used to authenticate to the corresponding Git provider. For certain
+          providers, support may exist for other types of scoped access tokens. [Learn more]. The personal
+          access token used to authenticate to the corresponding Git
+          
+          [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html
         
         
         """
@@ -1573,7 +1615,8 @@ class ReposAPI:
           bitbucketCloud, gitLab, azureDevOpsServices, gitHubEnterprise, bitbucketServer,
           gitLabEnterpriseEdition and awsCodeCommit.
         :param path: str (optional)
-          Desired path for the repo in the workspace. Must be in the format /Repos/{folder}/{repo-name}.
+          Desired path for the repo in the workspace. Almost any path in the workspace can be chosen. If repo
+          is created in /Repos, path must be in the format /Repos/{folder}/{repo-name}.
         :param sparse_checkout: :class:`SparseCheckout` (optional)
           If specified, the repo will be created with sparse checkout enabled. You cannot enable/disable
           sparse checkout after the repo is created.
@@ -1666,7 +1709,8 @@ class ReposAPI:
           Token used to get the next page of results. If not specified, returns the first page of results as
           well as a next page token if there are more results.
         :param path_prefix: str (optional)
-          Filters repos that have paths starting with the given path prefix.
+          Filters repos that have paths starting with the given path prefix. If not provided repos from /Repos
+          will be served.
         
         :returns: Iterator over :class:`RepoInfo`
         """

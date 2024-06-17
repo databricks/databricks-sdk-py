@@ -13,22 +13,6 @@
 
     .. py:method:: create( [, display_name: Optional[str], entitlements: Optional[List[ComplexValue]], external_id: Optional[str], groups: Optional[List[ComplexValue]], id: Optional[str], members: Optional[List[ComplexValue]], meta: Optional[ResourceMeta], roles: Optional[List[ComplexValue]], schemas: Optional[List[GroupSchema]]]) -> Group
 
-
-        Usage:
-
-        .. code-block::
-
-            import time
-            
-            from databricks.sdk import WorkspaceClient
-            
-            w = WorkspaceClient()
-            
-            group = w.groups.create(display_name=f'sdk-{time.time_ns()}')
-            
-            # cleanup
-            w.groups.delete(id=group.id)
-
         Create a new group.
         
         Creates a group in the Databricks account with a unique name, using the supplied group details.
@@ -57,21 +41,6 @@
 
     .. py:method:: delete(id: str)
 
-
-        Usage:
-
-        .. code-block::
-
-            import time
-            
-            from databricks.sdk import WorkspaceClient
-            
-            w = WorkspaceClient()
-            
-            group = w.groups.create(display_name=f'sdk-{time.time_ns()}')
-            
-            w.groups.delete(id=group.id)
-
         Delete a group.
         
         Deletes a group from the Databricks account.
@@ -83,24 +52,6 @@
         
 
     .. py:method:: get(id: str) -> Group
-
-
-        Usage:
-
-        .. code-block::
-
-            import time
-            
-            from databricks.sdk import WorkspaceClient
-            
-            w = WorkspaceClient()
-            
-            group = w.groups.create(display_name=f'sdk-{time.time_ns()}')
-            
-            fetch = w.groups.get(id=group.id)
-            
-            # cleanup
-            w.groups.delete(id=group.id)
 
         Get group details.
         

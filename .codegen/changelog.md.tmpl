@@ -35,7 +35,7 @@ Dependency updates:
 {{- end -}}
 
 {{- define "service" -}}
-    [{{if .IsAccounts}}a{{else}}w{{end}}.{{.SnakeName}}](https://databricks-sdk-py.readthedocs.io/en/latest/{{if .IsAccounts}}account{{else}}workspace{{end}}/{{.SnakeName}}.html) {{if .IsAccounts}}account{{else}}workspace{{end}}-level service
+    [{{if .IsAccounts}}a{{else}}w{{end}}.{{.SnakeName}}](https://databricks-sdk-py.readthedocs.io/en/latest/{{if .IsAccounts}}account{{else}}workspace{{end}}{{with .ParentService}}/{{.SnakeName}}{{end}}/{{.SnakeName}}.html) {{if .IsAccounts}}account{{else}}workspace{{end}}-level service
 {{- end -}}
 
 {{- define "entity" -}}

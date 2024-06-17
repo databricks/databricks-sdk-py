@@ -8,7 +8,7 @@
     SQL warehouse, query text, name, description, tags, parameters, and visualizations. Queries can be
     scheduled using the `sql_task` type of the Jobs API, e.g. :method:jobs/create.
 
-    .. py:method:: create( [, data_source_id: Optional[str], description: Optional[str], name: Optional[str], options: Optional[Any], parent: Optional[str], query: Optional[str], run_as_role: Optional[RunAsRole]]) -> Query
+    .. py:method:: create( [, data_source_id: Optional[str], description: Optional[str], name: Optional[str], options: Optional[Any], parent: Optional[str], query: Optional[str], run_as_role: Optional[RunAsRole], tags: Optional[List[str]]]) -> Query
 
 
         Usage:
@@ -62,6 +62,7 @@
         :param run_as_role: :class:`RunAsRole` (optional)
           Sets the **Run as** role for the object. Must be set to one of `"viewer"` (signifying "run as
           viewer" behavior) or `"owner"` (signifying "run as owner" behavior)
+        :param tags: List[str] (optional)
         
         :returns: :class:`Query`
         
@@ -158,7 +159,7 @@
         
         
 
-    .. py:method:: update(query_id: str [, data_source_id: Optional[str], description: Optional[str], name: Optional[str], options: Optional[Any], query: Optional[str], run_as_role: Optional[RunAsRole]]) -> Query
+    .. py:method:: update(query_id: str [, data_source_id: Optional[str], description: Optional[str], name: Optional[str], options: Optional[Any], query: Optional[str], run_as_role: Optional[RunAsRole], tags: Optional[List[str]]]) -> Query
 
 
         Usage:
@@ -212,6 +213,7 @@
         :param run_as_role: :class:`RunAsRole` (optional)
           Sets the **Run as** role for the object. Must be set to one of `"viewer"` (signifying "run as
           viewer" behavior) or `"owner"` (signifying "run as owner" behavior)
+        :param tags: List[str] (optional)
         
         :returns: :class:`Query`
         

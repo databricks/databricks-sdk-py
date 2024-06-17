@@ -9,7 +9,7 @@ import time
 import random
 import logging
 from ..errors import OperationTimeout, OperationFailed
-from ._internal import _enum, _from_dict, _repeated_dict, _repeated_enum, Wait
+from ._internal import _enum, _from_dict, _repeated_dict, _repeated_enum, Wait, _escape_multi_segment_path_parameter
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -100,7 +100,7 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Descriptio
 	{{- end -}}
 {{- end -}}
 
-{{range .Services}}
+{{range .Services}} {{if not .IsDataPlane}}
 class {{.PascalName}}API:{{if .Description}}
     """{{.Comment "    " 110}}"""
     {{end}}
@@ -195,6 +195,7 @@ class {{.PascalName}}API:{{if .Description}}
         return self.{{template "safe-snake-name" .}}({{range $i, $x := .Request.Fields}}{{if $i}}, {{end}}{{template "safe-snake-name" .}}={{template "safe-snake-name" .}}{{end}}).result(timeout=timeout)
     {{end}}
     {{end -}}
+{{end}}
 {{- end}}
 
 {{define "method-parameters" -}}
@@ -325,9 +326,7 @@ class {{.PascalName}}API:{{if .Description}}
 
 {{define "method-do" -}}
 self._api.do('{{.Verb}}',
-  {{if .PathParts -}}
-      f'{{range  .PathParts}}{{.Prefix}}{{if .Field}}{{"{"}}{{template "safe-snake-name" .Field}}{{with .Field.Entity.Enum}}.value{{end}}{{"}"}}{{else if .IsAccountId}}{{"{self._api.account_id}"}}{{end}}{{ end }}'
-  {{- else}}'{{.Path}}'{{end}}
+  {{ template "path" . }}
   {{if .Request}}
       {{- if .Request.HasQueryField}}, query=query{{end}}
       {{- if .Request.MapValue}}, body=contents
@@ -340,6 +339,31 @@ self._api.do('{{.Verb}}',
   {{- if and .IsRequestByteStream .RequestBodyField }}, data={{template "safe-snake-name" .RequestBodyField}}{{ end }}
   {{- if .IsResponseByteStream }}, raw=True{{ end }})
 {{- end}}
+
+{{- define "path" -}}
+{{- if .PathParts -}}
+  f'{{range  .PathParts -}}
+    {{- .Prefix -}}
+    {{- if .Field -}}
+      {{- "{" -}}
+      {{- if .Field.IsPathMultiSegment -}}_escape_multi_segment_path_parameter({{ template "path-parameter" . }})
+      {{- else -}}{{ template "path-parameter" . }}
+      {{- end -}}
+      {{- "}" -}}
+    {{- else if .IsAccountId}}
+      {{- "{" -}}
+      self._api.account_id
+      {{- "}" -}}
+    {{- end -}}
+  {{- end }}'
+{{- else -}}
+  '{{.Path}}'
+{{- end -}}
+{{- end -}}
+
+{{- define "path-parameter" -}}
+  {{template "safe-snake-name" .Field}}{{with .Field.Entity.Enum}}.value{{end}}
+{{- end -}}
 
 {{define "method-return-type" -}}
   {{if and .Wait (and (not .IsCrudRead) (not (eq .SnakeName "get_run"))) }} -> Wait[{{.Wait.Poll.Response.PascalName}}]

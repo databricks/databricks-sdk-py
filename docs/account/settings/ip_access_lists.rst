@@ -25,25 +25,6 @@
 
     .. py:method:: create(label: str, list_type: ListType [, ip_addresses: Optional[List[str]]]) -> CreateIpAccessListResponse
 
-
-        Usage:
-
-        .. code-block::
-
-            import time
-            
-            from databricks.sdk import WorkspaceClient
-            from databricks.sdk.service import settings
-            
-            w = WorkspaceClient()
-            
-            created = w.ip_access_lists.create(label=f'sdk-{time.time_ns()}',
-                                               ip_addresses=["1.0.0.0/16"],
-                                               list_type=settings.ListType.BLOCK)
-            
-            # cleanup
-            w.ip_access_lists.delete(ip_access_list_id=created.ip_access_list.list_id)
-
         Create access list.
         
         Creates an IP access list for the account.
@@ -86,27 +67,6 @@
 
     .. py:method:: get(ip_access_list_id: str) -> GetIpAccessListResponse
 
-
-        Usage:
-
-        .. code-block::
-
-            import time
-            
-            from databricks.sdk import WorkspaceClient
-            from databricks.sdk.service import settings
-            
-            w = WorkspaceClient()
-            
-            created = w.ip_access_lists.create(label=f'sdk-{time.time_ns()}',
-                                               ip_addresses=["1.0.0.0/16"],
-                                               list_type=settings.ListType.BLOCK)
-            
-            by_id = w.ip_access_lists.get(ip_access_list_id=created.ip_access_list.list_id)
-            
-            # cleanup
-            w.ip_access_lists.delete(ip_access_list_id=created.ip_access_list.list_id)
-
         Get IP access list.
         
         Gets an IP access list, specified by its list ID.
@@ -119,17 +79,6 @@
 
     .. py:method:: list() -> Iterator[IpAccessListInfo]
 
-
-        Usage:
-
-        .. code-block::
-
-            from databricks.sdk import WorkspaceClient
-            
-            w = WorkspaceClient()
-            
-            all = w.ip_access_lists.list()
-
         Get access lists.
         
         Gets all IP access lists for the specified account.
@@ -138,31 +87,6 @@
         
 
     .. py:method:: replace(ip_access_list_id: str, label: str, list_type: ListType, enabled: bool [, ip_addresses: Optional[List[str]]])
-
-
-        Usage:
-
-        .. code-block::
-
-            import time
-            
-            from databricks.sdk import WorkspaceClient
-            from databricks.sdk.service import settings
-            
-            w = WorkspaceClient()
-            
-            created = w.ip_access_lists.create(label=f'sdk-{time.time_ns()}',
-                                               ip_addresses=["1.0.0.0/16"],
-                                               list_type=settings.ListType.BLOCK)
-            
-            w.ip_access_lists.replace(ip_access_list_id=created.ip_access_list.list_id,
-                                      label=f'sdk-{time.time_ns()}',
-                                      ip_addresses=["1.0.0.0/24"],
-                                      list_type=settings.ListType.BLOCK,
-                                      enabled=False)
-            
-            # cleanup
-            w.ip_access_lists.delete(ip_access_list_id=created.ip_access_list.list_id)
 
         Replace access list.
         

@@ -128,7 +128,7 @@
         :returns: :class:`ConnectionInfo`
         
 
-    .. py:method:: list() -> Iterator[ConnectionInfo]
+    .. py:method:: list( [, max_results: Optional[int], page_token: Optional[str]]) -> Iterator[ConnectionInfo]
 
 
         Usage:
@@ -136,14 +136,23 @@
         .. code-block::
 
             from databricks.sdk import WorkspaceClient
+            from databricks.sdk.service import catalog
             
             w = WorkspaceClient()
             
-            conn_list = w.connections.list()
+            conn_list = w.connections.list(catalog.ListConnectionsRequest())
 
         List connections.
         
         List all connections.
+        
+        :param max_results: int (optional)
+          Maximum number of connections to return. - If not set, all connections are returned (not
+          recommended). - when set to a value greater than 0, the page length is the minimum of this value and
+          a server configured value; - when set to 0, the page length is set to a server configured value
+          (recommended); - when set to a value less than 0, an invalid parameter error is returned;
+        :param page_token: str (optional)
+          Opaque pagination token to go to next page based on previous query.
         
         :returns: Iterator over :class:`ConnectionInfo`
         

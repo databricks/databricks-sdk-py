@@ -1,8 +1,18 @@
+import requests
+
 from databricks.sdk.errors import platform
 from databricks.sdk.errors.base import DatabricksError
 
+from .overrides import _ALL_OVERRIDES
+from .private_link import (_get_private_link_validation_error,
+                           _is_private_link_redirect)
 
-def error_mapper(status_code: int, raw: dict) -> DatabricksError:
+
+def error_mapper(response: requests.Response, raw: dict) -> DatabricksError:
+    for override in _ALL_OVERRIDES:
+        if override.matches(response, raw):
+            return override.custom_error(**raw)
+    status_code = response.status_code
     error_code = raw.get('error_code', None)
     if error_code in platform.ERROR_CODE_MAPPING:
         # more specific error codes override more generic HTTP status codes
@@ -13,6 +23,8 @@ def error_mapper(status_code: int, raw: dict) -> DatabricksError:
         # where there's a default exception class per HTTP status code, and we do
         # rely on Databricks platform exception mapper to do the right thing.
         return platform.STATUS_CODE_MAPPING[status_code](**raw)
+    if _is_private_link_redirect(response):
+        return _get_private_link_validation_error(response.url)
 
     # backwards-compatible error creation for cases like using older versions of
     # the SDK on way never releases of the platform.

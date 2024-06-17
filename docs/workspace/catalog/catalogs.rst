@@ -71,7 +71,7 @@
         
         
 
-    .. py:method:: get(name: str) -> CatalogInfo
+    .. py:method:: get(name: str [, include_browse: Optional[bool]]) -> CatalogInfo
 
 
         Usage:
@@ -98,11 +98,14 @@
         
         :param name: str
           The name of the catalog.
+        :param include_browse: bool (optional)
+          Whether to include catalogs in the response for which the principal can only access selective
+          metadata for
         
         :returns: :class:`CatalogInfo`
         
 
-    .. py:method:: list() -> Iterator[CatalogInfo]
+    .. py:method:: list( [, include_browse: Optional[bool]]) -> Iterator[CatalogInfo]
 
 
         Usage:
@@ -110,10 +113,11 @@
         .. code-block::
 
             from databricks.sdk import WorkspaceClient
+            from databricks.sdk.service import catalog
             
             w = WorkspaceClient()
             
-            all = w.catalogs.list()
+            all = w.catalogs.list(catalog.ListCatalogsRequest())
 
         List catalogs.
         
@@ -121,6 +125,10 @@
         retrieved. Otherwise, only catalogs owned by the caller (or for which the caller has the
         **USE_CATALOG** privilege) will be retrieved. There is no guarantee of a specific ordering of the
         elements in the array.
+        
+        :param include_browse: bool (optional)
+          Whether to include catalogs in the response for which the principal can only access selective
+          metadata for
         
         :returns: Iterator over :class:`CatalogInfo`
         

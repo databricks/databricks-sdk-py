@@ -161,6 +161,28 @@ class CreateServicePrincipalSecretResponse:
 
 
 @dataclass
+class DataPlaneInfo:
+    authorization_details: Optional[str] = None
+    """Authorization details as a string."""
+
+    endpoint_url: Optional[str] = None
+    """The URL of the endpoint for this operation in the dataplane."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DataPlaneInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.authorization_details is not None: body['authorization_details'] = self.authorization_details
+        if self.endpoint_url is not None: body['endpoint_url'] = self.endpoint_url
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DataPlaneInfo:
+        """Deserializes the DataPlaneInfo from a dictionary."""
+        return cls(authorization_details=d.get('authorization_details', None),
+                   endpoint_url=d.get('endpoint_url', None))
+
+
+@dataclass
 class DeleteCustomAppIntegrationOutput:
 
     def as_dict(self) -> dict:

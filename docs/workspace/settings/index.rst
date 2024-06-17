@@ -11,9 +11,9 @@ Manage security settings for Accounts and Workspaces
    ip_access_lists
    settings
    automatic_cluster_update
-   csp_enablement
+   compliance_security_profile
    default_namespace
-   esm_enablement
+   enhanced_security_monitoring
    restrict_workspace_admins
    token_management
    tokens

@@ -1,7 +1,7 @@
 import databricks.sdk.core as client
 import databricks.sdk.dbutils as dbutils
 from databricks.sdk import azure
-from databricks.sdk.credentials_provider import CredentialsProvider
+from databricks.sdk.credentials_provider import CredentialsStrategy
 from databricks.sdk.mixins.compute import ClustersExt
 from databricks.sdk.mixins.files import DbfsExt
 from databricks.sdk.mixins.workspace import WorkspaceExt
@@ -13,9 +13,9 @@ from databricks.sdk.service.catalog import (AccountMetastoreAssignmentsAPI,
                                             ArtifactAllowlistsAPI, CatalogsAPI,
                                             ConnectionsAPI,
                                             ExternalLocationsAPI, FunctionsAPI,
-                                            GrantsAPI, LakehouseMonitorsAPI,
-                                            MetastoresAPI, ModelVersionsAPI,
-                                            OnlineTablesAPI,
+                                            GrantsAPI, MetastoresAPI,
+                                            ModelVersionsAPI, OnlineTablesAPI,
+                                            QualityMonitorsAPI,
                                             RegisteredModelsAPI, SchemasAPI,
                                             StorageCredentialsAPI,
                                             SystemSchemasAPI,
@@ -38,6 +38,12 @@ from databricks.sdk.service.iam import (AccountAccessControlAPI,
                                         PermissionsAPI, ServicePrincipalsAPI,
                                         UsersAPI, WorkspaceAssignmentAPI)
 from databricks.sdk.service.jobs import JobsAPI
+from databricks.sdk.service.marketplace import (
+    ConsumerFulfillmentsAPI, ConsumerInstallationsAPI, ConsumerListingsAPI,
+    ConsumerPersonalizationRequestsAPI, ConsumerProvidersAPI,
+    ProviderExchangeFiltersAPI, ProviderExchangesAPI, ProviderFilesAPI,
+    ProviderListingsAPI, ProviderPersonalizationRequestsAPI,
+    ProviderProviderAnalyticsDashboardsAPI, ProviderProvidersAPI)
 from databricks.sdk.service.ml import ExperimentsAPI, ModelRegistryAPI
 from databricks.sdk.service.oauth2 import (CustomAppIntegrationAPI,
                                            OAuthPublishedAppsAPI,
@@ -53,12 +59,12 @@ from databricks.sdk.service.serving import AppsAPI, ServingEndpointsAPI
 from databricks.sdk.service.settings import (AccountIpAccessListsAPI,
                                              AccountSettingsAPI,
                                              AutomaticClusterUpdateAPI,
+                                             ComplianceSecurityProfileAPI,
                                              CredentialsManagerAPI,
                                              CspEnablementAccountAPI,
-                                             CspEnablementAPI,
                                              DefaultNamespaceAPI,
+                                             EnhancedSecurityMonitoringAPI,
                                              EsmEnablementAccountAPI,
-                                             EsmEnablementAPI,
                                              IpAccessListsAPI,
                                              NetworkConnectivityAPI,
                                              PersonalComputeAPI,
@@ -125,7 +131,8 @@ class WorkspaceClient:
                  debug_headers: bool = None,
                  product="unknown",
                  product_version="0.0.0",
-                 credentials_provider: CredentialsProvider = None,
+                 credentials_strategy: CredentialsStrategy = None,
+                 credentials_provider: CredentialsStrategy = None,
                  config: client.Config = None):
         if not config:
             config = client.Config(host=host,
@@ -146,6 +153,7 @@ class WorkspaceClient:
                                    cluster_id=cluster_id,
                                    google_credentials=google_credentials,
                                    google_service_account=google_service_account,
+                                   credentials_strategy=credentials_strategy,
                                    credentials_provider=credentials_provider,
                                    debug_truncate_bytes=debug_truncate_bytes,
                                    debug_headers=debug_headers,
@@ -164,6 +172,11 @@ class WorkspaceClient:
         self._clusters = ClustersExt(self._api_client)
         self._command_execution = CommandExecutionAPI(self._api_client)
         self._connections = ConnectionsAPI(self._api_client)
+        self._consumer_fulfillments = ConsumerFulfillmentsAPI(self._api_client)
+        self._consumer_installations = ConsumerInstallationsAPI(self._api_client)
+        self._consumer_listings = ConsumerListingsAPI(self._api_client)
+        self._consumer_personalization_requests = ConsumerPersonalizationRequestsAPI(self._api_client)
+        self._consumer_providers = ConsumerProvidersAPI(self._api_client)
         self._credentials_manager = CredentialsManagerAPI(self._api_client)
         self._current_user = CurrentUserAPI(self._api_client)
         self._dashboard_widgets = DashboardWidgetsAPI(self._api_client)
@@ -183,7 +196,6 @@ class WorkspaceClient:
         self._instance_profiles = InstanceProfilesAPI(self._api_client)
         self._ip_access_lists = IpAccessListsAPI(self._api_client)
         self._jobs = JobsAPI(self._api_client)
-        self._lakehouse_monitors = LakehouseMonitorsAPI(self._api_client)
         self._lakeview = LakeviewAPI(self._api_client)
         self._libraries = LibrariesAPI(self._api_client)
         self._metastores = MetastoresAPI(self._api_client)
@@ -194,7 +206,16 @@ class WorkspaceClient:
         self._permissions = PermissionsAPI(self._api_client)
         self._pipelines = PipelinesAPI(self._api_client)
         self._policy_families = PolicyFamiliesAPI(self._api_client)
+        self._provider_exchange_filters = ProviderExchangeFiltersAPI(self._api_client)
+        self._provider_exchanges = ProviderExchangesAPI(self._api_client)
+        self._provider_files = ProviderFilesAPI(self._api_client)
+        self._provider_listings = ProviderListingsAPI(self._api_client)
+        self._provider_personalization_requests = ProviderPersonalizationRequestsAPI(self._api_client)
+        self._provider_provider_analytics_dashboards = ProviderProviderAnalyticsDashboardsAPI(
+            self._api_client)
+        self._provider_providers = ProviderProvidersAPI(self._api_client)
         self._providers = ProvidersAPI(self._api_client)
+        self._quality_monitors = QualityMonitorsAPI(self._api_client)
         self._queries = QueriesAPI(self._api_client)
         self._query_history = QueryHistoryAPI(self._api_client)
         self._query_visualizations = QueryVisualizationsAPI(self._api_client)
@@ -248,7 +269,7 @@ class WorkspaceClient:
 
     @property
     def apps(self) -> AppsAPI:
-        """Lakehouse Apps run directly on a customer’s Databricks instance, integrate with their data, use and extend Databricks services, and enable users to interact through single sign-on."""
+        """Apps run directly on a customer’s Databricks instance, integrate with their data, use and extend Databricks services, and enable users to interact through single sign-on."""
         return self._apps
 
     @property
@@ -285,6 +306,31 @@ class WorkspaceClient:
     def connections(self) -> ConnectionsAPI:
         """Connections allow for creating a connection to an external data source."""
         return self._connections
+
+    @property
+    def consumer_fulfillments(self) -> ConsumerFulfillmentsAPI:
+        """Fulfillments are entities that allow consumers to preview installations."""
+        return self._consumer_fulfillments
+
+    @property
+    def consumer_installations(self) -> ConsumerInstallationsAPI:
+        """Installations are entities that allow consumers to interact with Databricks Marketplace listings."""
+        return self._consumer_installations
+
+    @property
+    def consumer_listings(self) -> ConsumerListingsAPI:
+        """Listings are the core entities in the Marketplace."""
+        return self._consumer_listings
+
+    @property
+    def consumer_personalization_requests(self) -> ConsumerPersonalizationRequestsAPI:
+        """Personalization Requests allow customers to interact with the individualized Marketplace listing flow."""
+        return self._consumer_personalization_requests
+
+    @property
+    def consumer_providers(self) -> ConsumerProvidersAPI:
+        """Providers are the entities that publish listings to the Marketplace."""
+        return self._consumer_providers
 
     @property
     def credentials_manager(self) -> CredentialsManagerAPI:
@@ -382,11 +428,6 @@ class WorkspaceClient:
         return self._jobs
 
     @property
-    def lakehouse_monitors(self) -> LakehouseMonitorsAPI:
-        """A monitor computes and monitors data or model quality metrics for a table over time."""
-        return self._lakehouse_monitors
-
-    @property
     def lakeview(self) -> LakeviewAPI:
         """These APIs provide specific management operations for Lakeview dashboards."""
         return self._lakeview
@@ -437,9 +478,49 @@ class WorkspaceClient:
         return self._policy_families
 
     @property
+    def provider_exchange_filters(self) -> ProviderExchangeFiltersAPI:
+        """Marketplace exchanges filters curate which groups can access an exchange."""
+        return self._provider_exchange_filters
+
+    @property
+    def provider_exchanges(self) -> ProviderExchangesAPI:
+        """Marketplace exchanges allow providers to share their listings with a curated set of customers."""
+        return self._provider_exchanges
+
+    @property
+    def provider_files(self) -> ProviderFilesAPI:
+        """Marketplace offers a set of file APIs for various purposes such as preview notebooks and provider icons."""
+        return self._provider_files
+
+    @property
+    def provider_listings(self) -> ProviderListingsAPI:
+        """Listings are the core entities in the Marketplace."""
+        return self._provider_listings
+
+    @property
+    def provider_personalization_requests(self) -> ProviderPersonalizationRequestsAPI:
+        """Personalization requests are an alternate to instantly available listings."""
+        return self._provider_personalization_requests
+
+    @property
+    def provider_provider_analytics_dashboards(self) -> ProviderProviderAnalyticsDashboardsAPI:
+        """Manage templated analytics solution for providers."""
+        return self._provider_provider_analytics_dashboards
+
+    @property
+    def provider_providers(self) -> ProviderProvidersAPI:
+        """Providers are entities that manage assets in Marketplace."""
+        return self._provider_providers
+
+    @property
     def providers(self) -> ProvidersAPI:
         """A data provider is an object representing the organization in the real world who shares the data."""
         return self._providers
+
+    @property
+    def quality_monitors(self) -> QualityMonitorsAPI:
+        """A monitor computes and monitors data or model quality metrics for a table over time."""
+        return self._quality_monitors
 
     @property
     def queries(self) -> QueriesAPI:
@@ -621,7 +702,8 @@ class AccountClient:
                  debug_headers: bool = None,
                  product="unknown",
                  product_version="0.0.0",
-                 credentials_provider: CredentialsProvider = None,
+                 credentials_strategy: CredentialsStrategy = None,
+                 credentials_provider: CredentialsStrategy = None,
                  config: client.Config = None):
         if not config:
             config = client.Config(host=host,
@@ -642,6 +724,7 @@ class AccountClient:
                                    cluster_id=cluster_id,
                                    google_credentials=google_credentials,
                                    google_service_account=google_service_account,
+                                   credentials_strategy=credentials_strategy,
                                    credentials_provider=credentials_provider,
                                    debug_truncate_bytes=debug_truncate_bytes,
                                    debug_headers=debug_headers,

@@ -77,13 +77,13 @@
 
             import time
             
-            from databricks.sdk import WorkspaceClient
+            from databricks.sdk import AccountClient
             
-            w = WorkspaceClient()
+            a = AccountClient()
             
-            other_owner = w.users.create(user_name=f'sdk-{time.time_ns()}@example.com')
+            user = a.users.create(display_name=f'sdk-{time.time_ns()}', user_name=f'sdk-{time.time_ns()}@example.com')
             
-            w.users.delete(id=other_owner.id)
+            a.users.delete(id=user.id)
 
         Delete a user.
         
@@ -148,20 +148,6 @@
 
     .. py:method:: list( [, attributes: Optional[str], count: Optional[int], excluded_attributes: Optional[str], filter: Optional[str], sort_by: Optional[str], sort_order: Optional[ListSortOrder], start_index: Optional[int]]) -> Iterator[User]
 
-
-        Usage:
-
-        .. code-block::
-
-            from databricks.sdk import WorkspaceClient
-            from databricks.sdk.service import iam
-            
-            w = WorkspaceClient()
-            
-            all_users = w.users.list(attributes="id,userName",
-                                     sort_by="userName",
-                                     sort_order=iam.ListSortOrder.DESCENDING)
-
         List users.
         
         Gets details for all the users associated with a Databricks account.
@@ -199,16 +185,22 @@
 
             import time
             
-            from databricks.sdk import WorkspaceClient
+            from databricks.sdk import AccountClient
             from databricks.sdk.service import iam
             
-            w = WorkspaceClient()
+            a = AccountClient()
             
-            user = w.users.create(display_name=f'sdk-{time.time_ns()}', user_name=f'sdk-{time.time_ns()}@example.com')
+            user = a.users.create(display_name=f'sdk-{time.time_ns()}', user_name=f'sdk-{time.time_ns()}@example.com')
             
-            w.users.patch(id=user.id,
-                          operations=[iam.Patch(op=iam.PatchOp.REPLACE, path="active", value="false")],
-                          schemas=[iam.PatchSchema.URN_IETF_PARAMS_SCIM_API_MESSAGES_2_0_PATCH_OP])
+            a.users.patch(id=user.id,
+                          schemas=[iam.PatchSchema.URN_IETF_PARAMS_SCIM_API_MESSAGES_2_0_PATCH_OP],
+                          operations=[
+                              iam.Patch(op=iam.PatchOp.ADD,
+                                        value=iam.User(roles=[iam.ComplexValue(value="account_admin")]))
+                          ])
+            
+            # cleanup
+            a.users.delete(id=user.id)
 
         Update user details.
         
@@ -224,21 +216,6 @@
         
 
     .. py:method:: update(id: str [, active: Optional[bool], display_name: Optional[str], emails: Optional[List[ComplexValue]], entitlements: Optional[List[ComplexValue]], external_id: Optional[str], groups: Optional[List[ComplexValue]], name: Optional[Name], roles: Optional[List[ComplexValue]], schemas: Optional[List[UserSchema]], user_name: Optional[str]])
-
-
-        Usage:
-
-        .. code-block::
-
-            import time
-            
-            from databricks.sdk import WorkspaceClient
-            
-            w = WorkspaceClient()
-            
-            user = w.users.create(display_name=f'sdk-{time.time_ns()}', user_name=f'sdk-{time.time_ns()}@example.com')
-            
-            w.users.update(id=user.id, user_name=user.user_name, active=True)
 
         Replace a user.
         

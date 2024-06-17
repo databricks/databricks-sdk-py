@@ -531,17 +531,23 @@ class CreateShare:
     comment: Optional[str] = None
     """User-provided free-form text description."""
 
+    storage_root: Optional[str] = None
+    """Storage root URL for the share."""
+
     def as_dict(self) -> dict:
         """Serializes the CreateShare into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.comment is not None: body['comment'] = self.comment
         if self.name is not None: body['name'] = self.name
+        if self.storage_root is not None: body['storage_root'] = self.storage_root
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateShare:
         """Deserializes the CreateShare from a dictionary."""
-        return cls(comment=d.get('comment', None), name=d.get('name', None))
+        return cls(comment=d.get('comment', None),
+                   name=d.get('name', None),
+                   storage_root=d.get('storage_root', None))
 
 
 @dataclass
@@ -758,6 +764,7 @@ class PartitionValueOp(Enum):
 
 class Privilege(Enum):
 
+    ACCESS = 'ACCESS'
     ALL_PRIVILEGES = 'ALL_PRIVILEGES'
     APPLY_TAG = 'APPLY_TAG'
     CREATE = 'CREATE'
@@ -774,6 +781,7 @@ class Privilege(Enum):
     CREATE_PROVIDER = 'CREATE_PROVIDER'
     CREATE_RECIPIENT = 'CREATE_RECIPIENT'
     CREATE_SCHEMA = 'CREATE_SCHEMA'
+    CREATE_SERVICE_CREDENTIAL = 'CREATE_SERVICE_CREDENTIAL'
     CREATE_SHARE = 'CREATE_SHARE'
     CREATE_STORAGE_CREDENTIAL = 'CREATE_STORAGE_CREDENTIAL'
     CREATE_TABLE = 'CREATE_TABLE'
@@ -788,6 +796,7 @@ class Privilege(Enum):
     REFRESH = 'REFRESH'
     SELECT = 'SELECT'
     SET_SHARE_PERMISSION = 'SET_SHARE_PERMISSION'
+    SINGLE_USER_ACCESS = 'SINGLE_USER_ACCESS'
     USAGE = 'USAGE'
     USE_CATALOG = 'USE_CATALOG'
     USE_CONNECTION = 'USE_CONNECTION'
@@ -1213,6 +1222,12 @@ class ShareInfo:
     owner: Optional[str] = None
     """Username of current owner of share."""
 
+    storage_location: Optional[str] = None
+    """Storage Location URL (full path) for the share."""
+
+    storage_root: Optional[str] = None
+    """Storage root URL for the share."""
+
     updated_at: Optional[int] = None
     """Time at which this share was updated, in epoch milliseconds."""
 
@@ -1228,6 +1243,8 @@ class ShareInfo:
         if self.name is not None: body['name'] = self.name
         if self.objects: body['objects'] = [v.as_dict() for v in self.objects]
         if self.owner is not None: body['owner'] = self.owner
+        if self.storage_location is not None: body['storage_location'] = self.storage_location
+        if self.storage_root is not None: body['storage_root'] = self.storage_root
         if self.updated_at is not None: body['updated_at'] = self.updated_at
         if self.updated_by is not None: body['updated_by'] = self.updated_by
         return body
@@ -1241,6 +1258,8 @@ class ShareInfo:
                    name=d.get('name', None),
                    objects=_repeated_dict(d, 'objects', SharedDataObject),
                    owner=d.get('owner', None),
+                   storage_location=d.get('storage_location', None),
+                   storage_root=d.get('storage_root', None),
                    updated_at=d.get('updated_at', None),
                    updated_by=d.get('updated_by', None))
 
@@ -1287,7 +1306,12 @@ class SharedDataObject:
     comment: Optional[str] = None
     """A user-provided comment when adding the data object to the share. [Update:OPT]"""
 
-    data_object_type: Optional[str] = None
+    content: Optional[str] = None
+    """The content of the notebook file when the data object type is NOTEBOOK_FILE. This should be
+    base64 encoded. Required for adding a NOTEBOOK_FILE, optional for updating, ignored for other
+    types."""
+
+    data_object_type: Optional[SharedDataObjectDataObjectType] = None
     """The type of the data object."""
 
     history_data_sharing_status: Optional[SharedDataObjectHistoryDataSharingStatus] = None
@@ -1326,7 +1350,8 @@ class SharedDataObject:
         if self.added_by is not None: body['added_by'] = self.added_by
         if self.cdf_enabled is not None: body['cdf_enabled'] = self.cdf_enabled
         if self.comment is not None: body['comment'] = self.comment
-        if self.data_object_type is not None: body['data_object_type'] = self.data_object_type
+        if self.content is not None: body['content'] = self.content
+        if self.data_object_type is not None: body['data_object_type'] = self.data_object_type.value
         if self.history_data_sharing_status is not None:
             body['history_data_sharing_status'] = self.history_data_sharing_status.value
         if self.name is not None: body['name'] = self.name
@@ -1344,7 +1369,8 @@ class SharedDataObject:
                    added_by=d.get('added_by', None),
                    cdf_enabled=d.get('cdf_enabled', None),
                    comment=d.get('comment', None),
-                   data_object_type=d.get('data_object_type', None),
+                   content=d.get('content', None),
+                   data_object_type=_enum(d, 'data_object_type', SharedDataObjectDataObjectType),
                    history_data_sharing_status=_enum(d, 'history_data_sharing_status',
                                                      SharedDataObjectHistoryDataSharingStatus),
                    name=d.get('name', None),
@@ -1353,6 +1379,18 @@ class SharedDataObject:
                    start_version=d.get('start_version', None),
                    status=_enum(d, 'status', SharedDataObjectStatus),
                    string_shared_as=d.get('string_shared_as', None))
+
+
+class SharedDataObjectDataObjectType(Enum):
+    """The type of the data object."""
+
+    MATERIALIZED_VIEW = 'MATERIALIZED_VIEW'
+    MODEL = 'MODEL'
+    NOTEBOOK_FILE = 'NOTEBOOK_FILE'
+    SCHEMA = 'SCHEMA'
+    STREAMING_TABLE = 'STREAMING_TABLE'
+    TABLE = 'TABLE'
+    VIEW = 'VIEW'
 
 
 class SharedDataObjectHistoryDataSharingStatus(Enum):
@@ -1555,6 +1593,9 @@ class UpdateShare:
     owner: Optional[str] = None
     """Username of current owner of share."""
 
+    storage_root: Optional[str] = None
+    """Storage root URL for the share."""
+
     updates: Optional[List[SharedDataObjectUpdate]] = None
     """Array of shared data object updates."""
 
@@ -1565,6 +1606,7 @@ class UpdateShare:
         if self.name is not None: body['name'] = self.name
         if self.new_name is not None: body['new_name'] = self.new_name
         if self.owner is not None: body['owner'] = self.owner
+        if self.storage_root is not None: body['storage_root'] = self.storage_root
         if self.updates: body['updates'] = [v.as_dict() for v in self.updates]
         return body
 
@@ -1575,6 +1617,7 @@ class UpdateShare:
                    name=d.get('name', None),
                    new_name=d.get('new_name', None),
                    owner=d.get('owner', None),
+                   storage_root=d.get('storage_root', None),
                    updates=_repeated_dict(d, 'updates', SharedDataObjectUpdate))
 
 
@@ -2172,7 +2215,11 @@ class SharesAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, name: str, *, comment: Optional[str] = None) -> ShareInfo:
+    def create(self,
+               name: str,
+               *,
+               comment: Optional[str] = None,
+               storage_root: Optional[str] = None) -> ShareInfo:
         """Create a share.
         
         Creates a new share for data objects. Data objects can be added after creation with **update**. The
@@ -2182,12 +2229,15 @@ class SharesAPI:
           Name of the share.
         :param comment: str (optional)
           User-provided free-form text description.
+        :param storage_root: str (optional)
+          Storage root URL for the share.
         
         :returns: :class:`ShareInfo`
         """
         body = {}
         if comment is not None: body['comment'] = comment
         if name is not None: body['name'] = name
+        if storage_root is not None: body['storage_root'] = storage_root
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         res = self._api.do('POST', '/api/2.1/unity-catalog/shares', body=body, headers=headers)
@@ -2267,6 +2317,7 @@ class SharesAPI:
                comment: Optional[str] = None,
                new_name: Optional[str] = None,
                owner: Optional[str] = None,
+               storage_root: Optional[str] = None,
                updates: Optional[List[SharedDataObjectUpdate]] = None) -> ShareInfo:
         """Update a share.
         
@@ -2277,6 +2328,8 @@ class SharesAPI:
         
         In the case that the share name is changed, **updateShare** requires that the caller is both the share
         owner and a metastore admin.
+        
+        If there are notebook files in the share, the __storage_root__ field cannot be updated.
         
         For each table that is added through this method, the share owner must also have **SELECT** privilege
         on the table. This privilege must be maintained indefinitely for recipients to be able to access the
@@ -2292,6 +2345,8 @@ class SharesAPI:
           New name for the share.
         :param owner: str (optional)
           Username of current owner of share.
+        :param storage_root: str (optional)
+          Storage root URL for the share.
         :param updates: List[:class:`SharedDataObjectUpdate`] (optional)
           Array of shared data object updates.
         
@@ -2301,6 +2356,7 @@ class SharesAPI:
         if comment is not None: body['comment'] = comment
         if new_name is not None: body['new_name'] = new_name
         if owner is not None: body['owner'] = owner
+        if storage_root is not None: body['storage_root'] = storage_root
         if updates is not None: body['updates'] = [v.as_dict() for v in updates]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 

@@ -8,19 +8,105 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: AmazonBedrockConfig
+   :members:
+   :undoc-members:
+
+.. py:class:: AmazonBedrockConfigBedrockProvider
+
+   The underlying provider in Amazon Bedrock. Supported values (case insensitive) include: Anthropic, Cohere, AI21Labs, Amazon.
+
+   .. py:attribute:: AI21LABS
+      :value: "AI21LABS"
+
+   .. py:attribute:: AMAZON
+      :value: "AMAZON"
+
+   .. py:attribute:: ANTHROPIC
+      :value: "ANTHROPIC"
+
+   .. py:attribute:: COHERE
+      :value: "COHERE"
+
 .. autoclass:: AnthropicConfig
    :members:
    :undoc-members:
 
-.. autoclass:: AppEvents
+.. autoclass:: App
    :members:
    :undoc-members:
 
-.. autoclass:: AppManifest
+.. autoclass:: AppDeployment
    :members:
    :undoc-members:
 
-.. autoclass:: AppServiceStatus
+.. autoclass:: AppDeploymentArtifacts
+   :members:
+   :undoc-members:
+
+.. py:class:: AppDeploymentMode
+
+   .. py:attribute:: AUTO_SYNC
+      :value: "AUTO_SYNC"
+
+   .. py:attribute:: MODE_UNSPECIFIED
+      :value: "MODE_UNSPECIFIED"
+
+   .. py:attribute:: SNAPSHOT
+      :value: "SNAPSHOT"
+
+.. py:class:: AppDeploymentState
+
+   .. py:attribute:: FAILED
+      :value: "FAILED"
+
+   .. py:attribute:: IN_PROGRESS
+      :value: "IN_PROGRESS"
+
+   .. py:attribute:: STATE_UNSPECIFIED
+      :value: "STATE_UNSPECIFIED"
+
+   .. py:attribute:: STOPPED
+      :value: "STOPPED"
+
+   .. py:attribute:: SUCCEEDED
+      :value: "SUCCEEDED"
+
+.. autoclass:: AppDeploymentStatus
+   :members:
+   :undoc-members:
+
+.. autoclass:: AppEnvironment
+   :members:
+   :undoc-members:
+
+.. py:class:: AppState
+
+   .. py:attribute:: CREATING
+      :value: "CREATING"
+
+   .. py:attribute:: DELETED
+      :value: "DELETED"
+
+   .. py:attribute:: DELETING
+      :value: "DELETING"
+
+   .. py:attribute:: ERROR
+      :value: "ERROR"
+
+   .. py:attribute:: IDLE
+      :value: "IDLE"
+
+   .. py:attribute:: RUNNING
+      :value: "RUNNING"
+
+   .. py:attribute:: STARTING
+      :value: "STARTING"
+
+   .. py:attribute:: STATE_UNSPECIFIED
+      :value: "STATE_UNSPECIFIED"
+
+.. autoclass:: AppStatus
    :members:
    :undoc-members:
 
@@ -35,26 +121,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: AutoCaptureState
    :members:
    :undoc-members:
-
-.. autoclass:: AwsBedrockConfig
-   :members:
-   :undoc-members:
-
-.. py:class:: AwsBedrockConfigBedrockProvider
-
-   The underlying provider in AWS Bedrock. Supported values (case insensitive) include: Anthropic, Cohere, AI21Labs, Amazon.
-
-   .. py:attribute:: AI21LABS
-      :value: "AI21LABS"
-
-   .. py:attribute:: AMAZON
-      :value: "AMAZON"
-
-   .. py:attribute:: ANTHROPIC
-      :value: "ANTHROPIC"
-
-   .. py:attribute:: COHERE
-      :value: "COHERE"
 
 .. autoclass:: BuildLogsResponse
    :members:
@@ -81,6 +147,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: CreateAppDeploymentRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: CreateAppRequest
+   :members:
+   :undoc-members:
+
 .. autoclass:: CreateServingEndpoint
    :members:
    :undoc-members:
@@ -93,37 +167,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: DeleteAppResponse
-   :members:
-   :undoc-members:
-
 .. autoclass:: DeleteResponse
    :members:
    :undoc-members:
-
-.. autoclass:: DeployAppRequest
-   :members:
-   :undoc-members:
-
-.. autoclass:: DeploymentStatus
-   :members:
-   :undoc-members:
-
-.. py:class:: DeploymentStatusState
-
-   State: one of DEPLOYING,SUCCESS, FAILURE, DEPLOYMENT_STATE_UNSPECIFIED
-
-   .. py:attribute:: DEPLOYING
-      :value: "DEPLOYING"
-
-   .. py:attribute:: DEPLOYMENT_STATE_UNSPECIFIED
-      :value: "DEPLOYMENT_STATE_UNSPECIFIED"
-
-   .. py:attribute:: FAILURE
-      :value: "FAILURE"
-
-   .. py:attribute:: SUCCESS
-      :value: "SUCCESS"
 
 .. autoclass:: EmbeddingsV1ResponseEmbeddingElement
    :members:
@@ -183,6 +229,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: EnvVariable
+   :members:
+   :undoc-members:
+
 .. autoclass:: ExportMetricsResponse
    :members:
    :undoc-members:
@@ -193,16 +243,16 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ExternalModelProvider
 
-   The name of the provider for the external model. Currently, the supported providers are 'ai21labs', 'anthropic', 'aws-bedrock', 'cohere', 'databricks-model-serving', 'openai', and 'palm'.",
+   The name of the provider for the external model. Currently, the supported providers are 'ai21labs', 'anthropic', 'amazon-bedrock', 'cohere', 'databricks-model-serving', 'openai', and 'palm'.",
 
    .. py:attribute:: AI21LABS
       :value: "AI21LABS"
 
+   .. py:attribute:: AMAZON_BEDROCK
+      :value: "AMAZON_BEDROCK"
+
    .. py:attribute:: ANTHROPIC
       :value: "ANTHROPIC"
-
-   .. py:attribute:: AWS_BEDROCK
-      :value: "AWS_BEDROCK"
 
    .. py:attribute:: COHERE
       :value: "COHERE"
@@ -224,7 +274,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: GetAppResponse
+.. autoclass:: GetOpenApiResponse
    :members:
    :undoc-members:
 
@@ -232,7 +282,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: ListAppEventsResponse
+.. autoclass:: ListAppDeploymentsResponse
    :members:
    :undoc-members:
 
@@ -241,6 +291,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ListEndpointsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ModelDataPlaneInfo
    :members:
    :undoc-members:
 
@@ -452,7 +506,19 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: StopAppRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: StopAppResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: TrafficConfig
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateAppRequest
    :members:
    :undoc-members:
 
