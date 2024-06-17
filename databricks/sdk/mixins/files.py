@@ -3,6 +3,7 @@ from __future__ import annotations
 import base64
 import os
 import pathlib
+import platform
 import shutil
 import sys
 from abc import ABC, abstractmethod
@@ -266,10 +267,9 @@ class _VolumesIO(BinaryIO):
 
 class _Path(ABC):
 
-    def __init__(self, path: str):
-        """Posix Path for API Compatibility in windows and OS Specific Path(System Path) for using pathlib.Path functions."""
-        self._path = pathlib.PurePosixPath(str(path).replace('dbfs:', '').replace('file:', ''))
-        self._system_path = pathlib.Path(self._path)
+    @abstractmethod
+    def __init__(self):
+        ...
 
     @property
     def is_local(self) -> bool:
@@ -329,6 +329,12 @@ class _Path(ABC):
 
 class _LocalPath(_Path):
 
+    def __init__(self, path: str):
+        if platform.system() == "Windows":
+            self._path = pathlib.Path(str(path).replace('file:///', '').replace('file:', ''))
+        else:
+            self._path = pathlib.Path(str(path).replace('file:', ''))
+
     def _is_local(self) -> bool:
         return True
 
@@ -339,18 +345,18 @@ class _LocalPath(_Path):
         return _LocalPath(str(self._path / path))
 
     def _is_dir(self) -> bool:
-        return self._system_path.is_dir()
+        return self._path.is_dir()
 
     def mkdir(self):
-        self._system_path.mkdir(mode=0o755, parents=True, exist_ok=True)
+        self._path.mkdir(mode=0o755, parents=True, exist_ok=True)
 
     def exists(self) -> bool:
-        return self._system_path.exists()
+        return self._path.exists()
 
     def open(self, *, read=False, write=False, overwrite=False):
         # make local fs follow the similar semantics as DBFS
-        self._system_path.parent.mkdir(mode=0o755, parents=True, exist_ok=True)
-        return self._system_path.open(mode='wb' if overwrite else 'rb' if read else 'xb')
+        self._path.parent.mkdir(mode=0o755, parents=True, exist_ok=True)
+        return self._path.open(mode='wb' if overwrite else 'rb' if read else 'xb')
 
     def list(self, recursive=False) -> Generator[files.FileInfo, None, None]:
         if not self.is_dir:
@@ -361,7 +367,7 @@ class _LocalPath(_Path):
                                  modification_time=int(st.st_mtime_ns / 1e6),
                                  )
             return
-        queue = deque([self._system_path])
+        queue = deque([self._path])
         while queue:
             path = queue.popleft()
             for leaf in path.iterdir():
@@ -381,12 +387,12 @@ class _LocalPath(_Path):
             if recursive:
                 for leaf in self.list(recursive=True):
                     _LocalPath(leaf.path).delete()
-            self._system_path.rmdir()
+            self._path.rmdir()
         else:
             kw = {}
             if sys.version_info[:2] > (3, 7):
                 kw['missing_ok'] = True
-            self._system_path.unlink(**kw)
+            self._path.unlink(**kw)
 
     def __repr__(self) -> str:
         return f'<_LocalPath {self._path}>'
@@ -395,7 +401,7 @@ class _LocalPath(_Path):
 class _VolumesPath(_Path):
 
     def __init__(self, api: files.FilesAPI, src: Union[str, pathlib.Path]):
-        super().__init__(src)
+        self._path = pathlib.PurePosixPath(str(src).replace('dbfs:', '').replace('file:', ''))
         self._api = api
 
     def _is_local(self) -> bool:
@@ -464,7 +470,7 @@ class _VolumesPath(_Path):
 class _DbfsPath(_Path):
 
     def __init__(self, api: files.DbfsAPI, src: str):
-        super().__init__(src)
+        self._path = pathlib.PurePosixPath(str(src).replace('dbfs:', '').replace('file:', ''))
         self._api = api
 
     def _is_local(self) -> bool:
