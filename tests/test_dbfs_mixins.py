@@ -78,3 +78,14 @@ def test_dbfs_local_path_mkdir(config, tmp_path):
     w = WorkspaceClient(config=config)
     w.dbfs._path(f'file:{tmp_path}/test_dir').mkdir()
     assert w.dbfs.exists(f'file:{tmp_path}/test_dir')
+
+
+def test_dbfs_exists(config, mocker):
+    from databricks.sdk import WorkspaceClient
+
+    get_status = mocker.patch('databricks.sdk.service.files.DbfsAPI.get_status', side_effect=NotFound())
+
+    client = WorkspaceClient(config=config)
+    client.dbfs.exists('/abc/def/ghi')
+
+    get_status.assert_called_with('/abc/def/ghi')
