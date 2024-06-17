@@ -365,6 +365,8 @@ class Config:
         o = urllib.parse.urlparse(self.host)
         if not o.hostname:
             # only hostname is specified
+            if self.host.endswith('/'):
+                self.host = self.host[:-1]
             self.host = f"https://{self.host}"
         else:
             self.host = f"{o.scheme}://{o.netloc}"
