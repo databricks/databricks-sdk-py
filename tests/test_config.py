@@ -24,8 +24,12 @@ def test_config_host_url_format_check(mocker):
     c2 = Config(host="https://abc.def.ghi/")
     c3 = Config(host="https://abc.def.ghi")
     c4 = Config(host="abc.def.ghi")
+    c5 = Config(host="https://abc.def.ghi:443")
+    c6 = Config(host="abc.def.ghi:443")
 
     assert c1.host == "https://abc.def.ghi"
     assert c2.host == "https://abc.def.ghi"
     assert c3.host == "https://abc.def.ghi"
     assert c4.host == "https://abc.def.ghi"
+    assert c5.host == "https://abc.def.ghi"
+    assert c6.host == "https://abc.def.ghi"
