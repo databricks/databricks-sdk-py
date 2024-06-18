@@ -369,9 +369,11 @@ class Config:
         o = urllib.parse.urlparse(self.host)
         # remove trailing slash
         path = o.path.rstrip('/')
-        # remove port
-        netloc = o.hostname
-        
+        # remove port if 443
+        netloc = o.netloc
+        if o.port == 443:
+            netloc = netloc.split(':')[0]
+
         self.host = urllib.parse.urlunparse((o.scheme, netloc, path, o.params, o.query, o.fragment))
 
     def _set_inner_config(self, keyword_args: Dict[str, any]):
