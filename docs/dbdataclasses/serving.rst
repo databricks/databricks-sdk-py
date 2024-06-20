@@ -44,10 +44,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. py:class:: AppDeploymentState
+.. py:class:: AppDeploymentMode
 
-   .. py:attribute:: CANCELLED
-      :value: "CANCELLED"
+   .. py:attribute:: AUTO_SYNC
+      :value: "AUTO_SYNC"
+
+   .. py:attribute:: MODE_UNSPECIFIED
+      :value: "MODE_UNSPECIFIED"
+
+   .. py:attribute:: SNAPSHOT
+      :value: "SNAPSHOT"
+
+.. py:class:: AppDeploymentState
 
    .. py:attribute:: FAILED
       :value: "FAILED"
@@ -83,20 +91,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: DELETING
       :value: "DELETING"
 
-   .. py:attribute:: DEPLOYED
-      :value: "DEPLOYED"
-
-   .. py:attribute:: DEPLOYING
-      :value: "DEPLOYING"
-
    .. py:attribute:: ERROR
       :value: "ERROR"
 
    .. py:attribute:: IDLE
       :value: "IDLE"
-
-   .. py:attribute:: READY
-      :value: "READY"
 
    .. py:attribute:: RUNNING
       :value: "RUNNING"
@@ -106,9 +105,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: STATE_UNSPECIFIED
       :value: "STATE_UNSPECIFIED"
-
-   .. py:attribute:: UPDATING
-      :value: "UPDATING"
 
 .. autoclass:: AppStatus
    :members:
@@ -295,6 +291,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ListEndpointsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ModelDataPlaneInfo
    :members:
    :undoc-members:
 

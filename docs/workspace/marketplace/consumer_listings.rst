@@ -7,6 +7,17 @@
     Listings are the core entities in the Marketplace. They represent the products that are available for
     consumption.
 
+    .. py:method:: batch_get( [, ids: Optional[List[str]]]) -> BatchGetListingsResponse
+
+        Get one batch of listings. One may specify up to 50 IDs per request.
+        
+        Batch get a published listing in the Databricks Marketplace that the consumer has access to.
+        
+        :param ids: List[str] (optional)
+        
+        :returns: :class:`BatchGetListingsResponse`
+        
+
     .. py:method:: get(id: str) -> GetListingResponse
 
         Get listing.

@@ -2472,7 +2472,7 @@ class QueryInfo:
     """Channel information for the SQL warehouse at the time of query execution"""
 
     duration: Optional[int] = None
-    """Total execution time of the query from the client’s point of view, in milliseconds."""
+    """Total execution time of the statement ( excluding result fetch time )."""
 
     endpoint_id: Optional[str] = None
     """Alias for `warehouse_id`."""
