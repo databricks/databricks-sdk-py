@@ -88,8 +88,9 @@
         :param name: str
           The user-specified name of the metastore.
         :param region: str (optional)
-          Cloud region which the metastore serves (e.g., `us-west-2`, `westus`). If this field is omitted, the
-          region of the workspace receiving the request will be used.
+          Cloud region which the metastore serves (e.g., `us-west-2`, `westus`). The field can be omitted in
+          the __workspace-level__ __API__ but not in the __account-level__ __API__. If this field is omitted,
+          the region of the workspace receiving the request will be used.
         :param storage_root: str (optional)
           The storage root URL for metastore
         

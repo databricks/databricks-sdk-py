@@ -132,6 +132,18 @@
         :returns: Iterator over :class:`AppDeployment`
         
 
+    .. py:method:: start(name: str) -> AppDeployment
+
+        Start an app.
+        
+        Start the last active deployment of the app in the workspace.
+        
+        :param name: str
+          The name of the app.
+        
+        :returns: :class:`AppDeployment`
+        
+
     .. py:method:: stop(name: str)
 
         Stop an app.

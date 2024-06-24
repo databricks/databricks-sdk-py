@@ -297,9 +297,22 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. py:class:: JobsHealthMetric
 
    Specifies the health metric that is being evaluated for a particular health rule.
+   * `RUN_DURATION_SECONDS`: Expected total time for a run in seconds. * `STREAMING_BACKLOG_BYTES`: An estimate of the maximum bytes of data waiting to be consumed across all streams. This metric is in Private Preview. * `STREAMING_BACKLOG_RECORDS`: An estimate of the maximum offset lag across all streams. This metric is in Private Preview. * `STREAMING_BACKLOG_SECONDS`: An estimate of the maximum consumer delay across all streams. This metric is in Private Preview. * `STREAMING_BACKLOG_FILES`: An estimate of the maximum number of outstanding files across all streams. This metric is in Private Preview.
 
    .. py:attribute:: RUN_DURATION_SECONDS
       :value: "RUN_DURATION_SECONDS"
+
+   .. py:attribute:: STREAMING_BACKLOG_BYTES
+      :value: "STREAMING_BACKLOG_BYTES"
+
+   .. py:attribute:: STREAMING_BACKLOG_FILES
+      :value: "STREAMING_BACKLOG_FILES"
+
+   .. py:attribute:: STREAMING_BACKLOG_RECORDS
+      :value: "STREAMING_BACKLOG_RECORDS"
+
+   .. py:attribute:: STREAMING_BACKLOG_SECONDS
+      :value: "STREAMING_BACKLOG_SECONDS"
 
 .. py:class:: JobsHealthOperator
 
@@ -339,6 +352,24 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: UNPAUSED
       :value: "UNPAUSED"
+
+.. autoclass:: PeriodicTriggerConfiguration
+   :members:
+   :undoc-members:
+
+.. py:class:: PeriodicTriggerConfigurationTimeUnit
+
+   .. py:attribute:: DAYS
+      :value: "DAYS"
+
+   .. py:attribute:: HOURS
+      :value: "HOURS"
+
+   .. py:attribute:: TIME_UNIT_UNSPECIFIED
+      :value: "TIME_UNIT_UNSPECIFIED"
+
+   .. py:attribute:: WEEKS
+      :value: "WEEKS"
 
 .. autoclass:: PipelineParams
    :members:

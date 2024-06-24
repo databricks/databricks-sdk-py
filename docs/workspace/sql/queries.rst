@@ -7,6 +7,10 @@
     These endpoints are used for CRUD operations on query definitions. Query definitions include the target
     SQL warehouse, query text, name, description, tags, parameters, and visualizations. Queries can be
     scheduled using the `sql_task` type of the Jobs API, e.g. :method:jobs/create.
+    
+    **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+    
+    [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
 
     .. py:method:: create( [, data_source_id: Optional[str], description: Optional[str], name: Optional[str], options: Optional[Any], parent: Optional[str], query: Optional[str], run_as_role: Optional[RunAsRole], tags: Optional[List[str]]]) -> Query
 
@@ -42,9 +46,13 @@
         
         **Note**: You cannot add a visualization until you create the query.
         
+        **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
+        
         :param data_source_id: str (optional)
           Data source ID maps to the ID of the data source used by the resource and is distinct from the
-          warehouse ID. [Learn more].
+          warehouse ID. [Learn more]
           
           [Learn more]: https://docs.databricks.com/api/workspace/datasources/list
         :param description: str (optional)
@@ -73,6 +81,10 @@
         
         Moves a query to the trash. Trashed queries immediately disappear from searches and list views, and
         they cannot be used for alerts. The trash is deleted after 30 days.
+        
+        **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
         
         :param query_id: str
         
@@ -109,6 +121,10 @@
         Retrieve a query object definition along with contextual permissions information about the currently
         authenticated user.
         
+        **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
+        
         :param query_id: str
         
         :returns: :class:`Query`
@@ -120,8 +136,12 @@
         
         Gets a list of queries. Optionally, this list can be filtered by a search term.
         
-        ### **Warning: Calling this API concurrently 10 or more times could result in throttling, service
-        degradation, or a temporary ban.**
+        **Warning**: Calling this API concurrently 10 or more times could result in throttling, service
+        degradation, or a temporary ban.
+        
+        **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
         
         :param order: str (optional)
           Name of query attribute to order by. Default sort order is ascending. Append a dash (`-`) to order
@@ -153,6 +173,10 @@
         
         Restore a query that has been moved to the trash. A restored query appears in list views and searches.
         You can use restored queries for alerts.
+        
+        **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
         
         :param query_id: str
         
@@ -194,10 +218,14 @@
         
         **Note**: You cannot undo this operation.
         
+        **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
+        
         :param query_id: str
         :param data_source_id: str (optional)
           Data source ID maps to the ID of the data source used by the resource and is distinct from the
-          warehouse ID. [Learn more].
+          warehouse ID. [Learn more]
           
           [Learn more]: https://docs.databricks.com/api/workspace/datasources/list
         :param description: str (optional)
