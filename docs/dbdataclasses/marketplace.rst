@@ -494,7 +494,26 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ProviderIconFile
+   :members:
+   :undoc-members:
+
+.. py:class:: ProviderIconType
+
+   .. py:attribute:: DARK
+      :value: "DARK"
+
+   .. py:attribute:: PRIMARY
+      :value: "PRIMARY"
+
+   .. py:attribute:: PROVIDER_ICON_TYPE_UNSPECIFIED
+      :value: "PROVIDER_ICON_TYPE_UNSPECIFIED"
+
 .. autoclass:: ProviderInfo
+   :members:
+   :undoc-members:
+
+.. autoclass:: ProviderListingSummaryInfo
    :members:
    :undoc-members:
 

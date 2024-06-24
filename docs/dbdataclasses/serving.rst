@@ -506,6 +506,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: StartAppRequest
+   :members:
+   :undoc-members:
+
 .. autoclass:: StopAppRequest
    :members:
    :undoc-members:

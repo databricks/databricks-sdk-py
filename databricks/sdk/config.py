@@ -6,7 +6,7 @@ import pathlib
 import platform
 import sys
 import urllib.parse
-from typing import Dict, Iterable, Optional
+from typing import Dict, Iterable, List, Optional, Tuple
 
 import requests
 
@@ -42,6 +42,32 @@ class ConfigAttribute:
 
     def __repr__(self) -> str:
         return f"<ConfigAttribute '{self.name}' {self.transform.__name__}>"
+
+
+_DEFAULT_PRODUCT_NAME = 'unknown'
+_DEFAULT_PRODUCT_VERSION = '0.0.0'
+_STATIC_USER_AGENT: Tuple[str, str, List[str]] = (_DEFAULT_PRODUCT_NAME, _DEFAULT_PRODUCT_VERSION, [])
+
+
+def with_product(product: str, product_version: str):
+    """[INTERNAL API] Change the product name and version used in the User-Agent header."""
+    global _STATIC_USER_AGENT
+    prev_product, prev_version, prev_other_info = _STATIC_USER_AGENT
+    logger.debug(f'Changing product from {prev_product}/{prev_version} to {product}/{product_version}')
+    _STATIC_USER_AGENT = product, product_version, prev_other_info
+
+
+def with_user_agent_extra(key: str, value: str):
+    """[INTERNAL API] Add extra metadata to the User-Agent header when developing a library."""
+    global _STATIC_USER_AGENT
+    product_name, product_version, other_info = _STATIC_USER_AGENT
+    for item in other_info:
+        if item.startswith(f"{key}/"):
+            # ensure that we don't have duplicates
+            other_info.remove(item)
+            break
+    other_info.append(f"{key}/{value}")
+    _STATIC_USER_AGENT = product_name, product_version, other_info
 
 
 class Config:
@@ -85,12 +111,21 @@ class Config:
                  # Deprecated. Use credentials_strategy instead.
                  credentials_provider: CredentialsStrategy = None,
                  credentials_strategy: CredentialsStrategy = None,
-                 product="unknown",
-                 product_version="0.0.0",
+                 product=_DEFAULT_PRODUCT_NAME,
+                 product_version=_DEFAULT_PRODUCT_VERSION,
                  clock: Clock = None,
                  **kwargs):
         self._header_factory = None
         self._inner = {}
+        # as in SDK for Go, pull information from global static user agent context,
+        # so that we can track additional metadata for mid-stream libraries, as well
+        # as for cases, when the downstream product is used as a library and is not
+        # configured with a proper product name and version.
+        static_product, static_version, _ = _STATIC_USER_AGENT
+        if product == _DEFAULT_PRODUCT_NAME:
+            product = static_product
+        if product_version == _DEFAULT_PRODUCT_VERSION:
+            product_version = static_version
         self._user_agent_other_info = []
         if credentials_strategy and credentials_provider:
             raise ValueError(
@@ -234,6 +269,12 @@ class Config:
         ]
         if len(self._user_agent_other_info) > 0:
             ua.append(' '.join(self._user_agent_other_info))
+        # as in SDK for Go, pull information from global static user agent context,
+        # so that we can track additional metadata for mid-stream libraries. this value
+        # is shared across all instances of Config objects intentionally.
+        _, _, static_info = _STATIC_USER_AGENT
+        if len(static_info) > 0:
+            ua.append(' '.join(static_info))
         if len(self._upstream_user_agent) > 0:
             ua.append(self._upstream_user_agent)
         if 'DATABRICKS_RUNTIME_VERSION' in os.environ:

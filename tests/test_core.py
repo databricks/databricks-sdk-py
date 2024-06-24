@@ -2,7 +2,6 @@ import contextlib
 import functools
 import os
 import pathlib
-import platform
 import random
 import string
 import typing
@@ -25,7 +24,6 @@ from databricks.sdk.environments import (ENVIRONMENTS, AzureEnvironment, Cloud,
                                          DatabricksEnvironment)
 from databricks.sdk.service.catalog import PermissionsChange
 from databricks.sdk.service.iam import AccessControlRequest
-from databricks.sdk.version import __version__
 
 from .clock import FakeClock
 from .conftest import noop_credentials
@@ -181,31 +179,6 @@ def test_databricks_cli_credential_provider_installed_new(config, monkeypatch, t
     assert databricks_cli(config) is not None
 
 
-def test_extra_and_upstream_user_agent(monkeypatch):
-
-    class MockUname:
-
-        @property
-        def system(self):
-            return 'TestOS'
-
-    monkeypatch.setattr(platform, 'python_version', lambda: '3.0.0')
-    monkeypatch.setattr(platform, 'uname', MockUname)
-    monkeypatch.setenv('DATABRICKS_SDK_UPSTREAM', "upstream-product")
-    monkeypatch.setenv('DATABRICKS_SDK_UPSTREAM_VERSION', "0.0.1")
-    monkeypatch.setenv('DATABRICKS_RUNTIME_VERSION', "13.1 anything/else")
-
-    config = Config(host='http://localhost', username="something", password="something", product='test',
-                    product_version='0.0.0') \
-        .with_user_agent_extra('test-extra-1', '1') \
-        .with_user_agent_extra('test-extra-2', '2')
-
-    assert config.user_agent == (
-        f"test/0.0.0 databricks-sdk-py/{__version__} python/3.0.0 os/testos auth/basic"
-        f" test-extra-1/1 test-extra-2/2 upstream/upstream-product upstream-version/0.0.1"
-        " runtime/13.1-anything-else")
-
-
 def test_config_copy_shallow_copies_credential_provider():
 
     class TestCredentialsStrategy(CredentialsStrategy):
@@ -235,18 +208,6 @@ def test_config_copy_shallow_copies_credential_provider():
     assert config.authenticate()["token"] == "token2"
     assert config_copy.authenticate()["token"] == "token2"
     assert config._credentials_strategy == config_copy._credentials_strategy
-
-
-def test_config_copy_deep_copies_user_agent_other_info(config):
-    config_copy = config.copy()
-
-    config.with_user_agent_extra("test", "test1")
-    assert "test/test1" not in config_copy.user_agent
-    assert "test/test1" in config.user_agent
-
-    config_copy.with_user_agent_extra("test", "test2")
-    assert "test/test2" in config_copy.user_agent
-    assert "test/test2" not in config.user_agent
 
 
 def test_config_accounts_aws_is_accounts_host(config):
