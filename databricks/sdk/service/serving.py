@@ -120,6 +120,10 @@ class App:
     pending_deployment: Optional[AppDeployment] = None
     """The pending deployment of the app."""
 
+    service_principal_id: Optional[int] = None
+
+    service_principal_name: Optional[str] = None
+
     status: Optional[AppStatus] = None
 
     update_time: Optional[str] = None
@@ -140,6 +144,9 @@ class App:
         if self.description is not None: body['description'] = self.description
         if self.name is not None: body['name'] = self.name
         if self.pending_deployment: body['pending_deployment'] = self.pending_deployment.as_dict()
+        if self.service_principal_id is not None: body['service_principal_id'] = self.service_principal_id
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
         if self.status: body['status'] = self.status.as_dict()
         if self.update_time is not None: body['update_time'] = self.update_time
         if self.updater is not None: body['updater'] = self.updater
@@ -155,6 +162,8 @@ class App:
                    description=d.get('description', None),
                    name=d.get('name', None),
                    pending_deployment=_from_dict(d, 'pending_deployment', AppDeployment),
+                   service_principal_id=d.get('service_principal_id', None),
+                   service_principal_name=d.get('service_principal_name', None),
                    status=_from_dict(d, 'status', AppStatus),
                    update_time=d.get('update_time', None),
                    updater=d.get('updater', None),
@@ -324,19 +333,18 @@ class AppStatus:
 class AutoCaptureConfigInput:
     catalog_name: Optional[str] = None
     """The name of the catalog in Unity Catalog. NOTE: On update, you cannot change the catalog name if
-    it was already set."""
+    the inference table is already enabled."""
 
     enabled: Optional[bool] = None
-    """If inference tables are enabled or not. NOTE: If you have already disabled payload logging once,
-    you cannot enable again."""
+    """Indicates whether the inference table is enabled."""
 
     schema_name: Optional[str] = None
     """The name of the schema in Unity Catalog. NOTE: On update, you cannot change the schema name if
-    it was already set."""
+    the inference table is already enabled."""
 
     table_name_prefix: Optional[str] = None
     """The prefix of the table in Unity Catalog. NOTE: On update, you cannot change the prefix name if
-    it was already set."""
+    the inference table is already enabled."""
 
     def as_dict(self) -> dict:
         """Serializes the AutoCaptureConfigInput into a dictionary suitable for use as a JSON request body."""
@@ -362,7 +370,7 @@ class AutoCaptureConfigOutput:
     """The name of the catalog in Unity Catalog."""
 
     enabled: Optional[bool] = None
-    """If inference tables are enabled or not."""
+    """Indicates whether the inference table is enabled."""
 
     schema_name: Optional[str] = None
     """The name of the schema in Unity Catalog."""
@@ -2397,6 +2405,12 @@ class ServingEndpointPermissionsRequest:
 
 
 @dataclass
+class StartAppRequest:
+    name: Optional[str] = None
+    """The name of the app."""
+
+
+@dataclass
 class StopAppRequest:
     name: Optional[str] = None
     """The name of the app."""
@@ -2766,6 +2780,22 @@ class AppsAPI:
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']
+
+    def start(self, name: str) -> AppDeployment:
+        """Start an app.
+        
+        Start the last active deployment of the app in the workspace.
+        
+        :param name: str
+          The name of the app.
+        
+        :returns: :class:`AppDeployment`
+        """
+
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do('POST', f'/api/2.0/preview/apps/{name}/start', headers=headers)
+        return AppDeployment.from_dict(res)
 
     def stop(self, name: str):
         """Stop an app.

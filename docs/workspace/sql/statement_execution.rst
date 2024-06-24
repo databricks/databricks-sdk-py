@@ -108,8 +108,9 @@
         :param statement: str
           The SQL statement to execute. The statement can optionally be parameterized, see `parameters`.
         :param warehouse_id: str
-          Warehouse upon which to execute a statement. See also [What are SQL
-          warehouses?](/sql/admin/warehouse-type.html)
+          Warehouse upon which to execute a statement. See also [What are SQL warehouses?]
+          
+          [What are SQL warehouses?]: https://docs.databricks.com/sql/admin/warehouse-type.html
         :param byte_limit: int (optional)
           Applies the given byte limit to the statement's result size. Byte counts are based on internal data
           representations and might not match the final size in the requested `format`. If the result was

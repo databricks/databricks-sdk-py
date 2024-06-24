@@ -790,7 +790,7 @@ class ClusterDetails:
 
     driver: Optional[SparkNode] = None
     """Node on which the Spark driver resides. The driver node contains the Spark master and the
-    <Databricks> application that manages the per-notebook Spark REPLs."""
+    Databricks application that manages the per-notebook Spark REPLs."""
 
     driver_instance_pool_id: Optional[str] = None
     """The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster
@@ -2984,9 +2984,8 @@ class EditResponse:
 
 @dataclass
 class Environment:
-    """The a environment entity used to preserve serverless environment side panel and jobs'
-    environment for non-notebook task. In this minimal environment spec, only pip dependencies are
-    supported. Next ID: 5"""
+    """The environment entity used to preserve serverless environment side panel and jobs' environment
+    for non-notebook task. In this minimal environment spec, only pip dependencies are supported."""
 
     client: str
     """Client version used by the environment The client is the user-facing environment of the runtime.
@@ -5076,7 +5075,7 @@ class Policy:
     """Additional human-readable description of the cluster policy."""
 
     is_default: Optional[bool] = None
-    """If true, policy is a default policy created and managed by <Databricks>. Default policies cannot
+    """If true, policy is a default policy created and managed by Databricks. Default policies cannot
     be deleted, and their policy families cannot be changed."""
 
     libraries: Optional[List[Library]] = None

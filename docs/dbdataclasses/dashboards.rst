@@ -8,7 +8,35 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: CreateScheduleRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: CreateSubscriptionRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: CronSchedule
+   :members:
+   :undoc-members:
+
 .. autoclass:: Dashboard
+   :members:
+   :undoc-members:
+
+.. py:class:: DashboardView
+
+   .. py:attribute:: DASHBOARD_VIEW_BASIC
+      :value: "DASHBOARD_VIEW_BASIC"
+
+   .. py:attribute:: DASHBOARD_VIEW_FULL
+      :value: "DASHBOARD_VIEW_FULL"
+
+.. autoclass:: DeleteScheduleResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: DeleteSubscriptionResponse
    :members:
    :undoc-members:
 
@@ -19,6 +47,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: TRASHED
       :value: "TRASHED"
+
+.. autoclass:: ListDashboardsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListSchedulesResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListSubscriptionsResponse
+   :members:
+   :undoc-members:
 
 .. autoclass:: MigrateDashboardRequest
    :members:
@@ -32,6 +72,34 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: Schedule
+   :members:
+   :undoc-members:
+
+.. py:class:: SchedulePauseStatus
+
+   .. py:attribute:: PAUSED
+      :value: "PAUSED"
+
+   .. py:attribute:: UNPAUSED
+      :value: "UNPAUSED"
+
+.. autoclass:: Subscriber
+   :members:
+   :undoc-members:
+
+.. autoclass:: Subscription
+   :members:
+   :undoc-members:
+
+.. autoclass:: SubscriptionSubscriberDestination
+   :members:
+   :undoc-members:
+
+.. autoclass:: SubscriptionSubscriberUser
+   :members:
+   :undoc-members:
+
 .. autoclass:: TrashDashboardResponse
    :members:
    :undoc-members:
@@ -41,5 +109,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: UpdateDashboardRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateScheduleRequest
    :members:
    :undoc-members:
