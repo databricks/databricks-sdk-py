@@ -6,14 +6,14 @@ from databricks.sdk.version import __version__
 @pytest.fixture(scope="function")
 def user_agent():
     from databricks.sdk import useragent
-    orig_product_name = useragent.product_name
-    orig_product_version = useragent.product_version
+    orig_product_name = useragent._product_name
+    orig_product_version = useragent._product_version
     orig_extra = useragent._extra
 
     yield useragent
 
-    useragent.product_name = orig_product_name
-    useragent.product_version = orig_product_version
+    useragent._product_name = orig_product_name
+    useragent._product_version = orig_product_version
     useragent._extra = orig_extra
 
 

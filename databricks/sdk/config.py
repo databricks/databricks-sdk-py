@@ -121,8 +121,7 @@ class Config:
             self._fix_host_if_needed()
             self._validate()
             self.init_auth()
-            self._product = product
-            self._product_version = product_version
+            self._init_product(product, product_version)
         except ValueError as e:
             message = self.wrap_debug_info(str(e))
             raise ValueError(message) from e
@@ -236,8 +235,8 @@ class Config:
         """ Returns User-Agent header used by this SDK """
 
         # global user agent includes SDK version, product name & version, platform info,
-        # and global extra info
-        ua = [useragent.to_string((self._product, self._product_version))]
+        # and global extra info. However,
+        ua = [useragent.to_string(self._product_info)]
         # Python SDK supports local extra info, which needs to be added in addition to global info
         if len(self._user_agent_other_info) > 0:
             ua.append(' '.join(self._user_agent_other_info))
@@ -445,6 +444,14 @@ class Config:
                 raise ValueError('not configured')
         except ValueError as e:
             raise ValueError(f'{self._credentials_strategy.auth_type()} auth: {e}') from e
+
+    def _init_product(self, product, product_version):
+        if product is not None or product_version is not None:
+            default_product, default_version = useragent.product()
+            self._product_info = (product or default_product, product_version or default_version)
+        else:
+            self._product_info = None
+
 
     def __repr__(self):
         return f'<{self.debug_string()}>'

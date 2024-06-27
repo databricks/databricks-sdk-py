@@ -11,8 +11,8 @@ RUNTIME_KEY = 'runtime'
 CICD_KEY = 'cicd'
 AUTH_KEY = 'auth'
 
-product_name = "unknown"
-product_version = "0.0.0"
+_product_name = "unknown"
+_product_version = "0.0.0"
 
 logger = logging.getLogger("databricks.sdk.useragent")
 
@@ -38,14 +38,18 @@ def _match_alphanum_or_semver(value):
         raise ValueError(f"Invalid value: {value}")
 
 
+def product():
+    return _product_name, _product_version
+
+
 def with_product(name: str, version: str):
     """Change the product name and version used in the User-Agent header."""
-    global product_name, product_version
+    global _product_name, _product_version
     match_alphanum(name)
     match_semver(version)
-    logger.debug(f'Changing product from {product_name}/{product_version} to {name}/{version}')
-    product_name = name
-    product_version = version
+    logger.debug(f'Changing product from {_product_name}/{_product_version} to {name}/{version}')
+    _product_name = name
+    _product_version = version
 
 
 def with_user_agent_extra(key: str, value: str):
@@ -89,7 +93,7 @@ def to_string(alternate_product_info: Optional[Tuple[str, str]] = None):
     if alternate_product_info:
         base.append(alternate_product_info)
     else:
-        base.append((product_name, product_version))
+        base.append((_product_name, _product_version))
     base.extend([
         ("databricks-sdk-py", __version__),
         ("python", platform.python_version()),
