@@ -105,7 +105,7 @@
         :returns: :class:`CatalogInfo`
         
 
-    .. py:method:: list( [, include_browse: Optional[bool]]) -> Iterator[CatalogInfo]
+    .. py:method:: list( [, include_browse: Optional[bool], max_results: Optional[int], page_token: Optional[str]]) -> Iterator[CatalogInfo]
 
 
         Usage:
@@ -129,11 +129,21 @@
         :param include_browse: bool (optional)
           Whether to include catalogs in the response for which the principal can only access selective
           metadata for
+        :param max_results: int (optional)
+          Maximum number of catalogs to return. - when set to 0, the page length is set to a server configured
+          value (recommended); - when set to a value greater than 0, the page length is the minimum of this
+          value and a server configured value; - when set to a value less than 0, an invalid parameter error
+          is returned; - If not set, all valid catalogs are returned (not recommended). - Note: The number of
+          returned catalogs might be less than the specified max_results size, even zero. The only definitive
+          indication that no further catalogs can be fetched is when the next_page_token is unset from the
+          response.
+        :param page_token: str (optional)
+          Opaque pagination token to go to next page based on previous query.
         
         :returns: Iterator over :class:`CatalogInfo`
         
 
-    .. py:method:: update(name: str [, comment: Optional[str], enable_predictive_optimization: Optional[EnablePredictiveOptimization], isolation_mode: Optional[IsolationMode], new_name: Optional[str], owner: Optional[str], properties: Optional[Dict[str, str]]]) -> CatalogInfo
+    .. py:method:: update(name: str [, comment: Optional[str], enable_predictive_optimization: Optional[EnablePredictiveOptimization], isolation_mode: Optional[CatalogIsolationMode], new_name: Optional[str], owner: Optional[str], properties: Optional[Dict[str, str]]]) -> CatalogInfo
 
 
         Usage:
@@ -164,7 +174,7 @@
           User-provided free-form text description.
         :param enable_predictive_optimization: :class:`EnablePredictiveOptimization` (optional)
           Whether predictive optimization should be enabled for this object and objects under it.
-        :param isolation_mode: :class:`IsolationMode` (optional)
+        :param isolation_mode: :class:`CatalogIsolationMode` (optional)
           Whether the current securable is accessible from all workspaces or a specific set of workspaces.
         :param new_name: str (optional)
           New name for the catalog.

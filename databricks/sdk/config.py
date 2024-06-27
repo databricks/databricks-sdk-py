@@ -5,7 +5,7 @@ import os
 import pathlib
 import sys
 import urllib.parse
-from typing import Dict, Iterable, Optional
+from typing import Dict, Iterable, List, Optional, Tuple
 
 import requests
 
@@ -43,6 +43,16 @@ class ConfigAttribute:
         return f"<ConfigAttribute '{self.name}' {self.transform.__name__}>"
 
 
+def with_product(product: str, product_version: str):
+    """[INTERNAL API] Change the product name and version used in the User-Agent header."""
+    useragent.with_product(product, product_version)
+
+
+def with_user_agent_extra(key: str, value: str):
+    """[INTERNAL API] Add extra metadata to the User-Agent header when developing a library."""
+    useragent.with_user_agent_extra(key, value)
+
+
 class Config:
     host: str = ConfigAttribute(env='DATABRICKS_HOST')
     account_id: str = ConfigAttribute(env='DATABRICKS_ACCOUNT_ID')
@@ -65,6 +75,7 @@ class Config:
     auth_type: str = ConfigAttribute(env='DATABRICKS_AUTH_TYPE')
     cluster_id: str = ConfigAttribute(env='DATABRICKS_CLUSTER_ID')
     warehouse_id: str = ConfigAttribute(env='DATABRICKS_WAREHOUSE_ID')
+    serverless_compute_id: str = ConfigAttribute(env='DATABRICKS_SERVERLESS_COMPUTE_ID')
     skip_verify: bool = ConfigAttribute()
     http_timeout_seconds: float = ConfigAttribute()
     debug_truncate_bytes: int = ConfigAttribute(env='DATABRICKS_DEBUG_TRUNCATE_BYTES')
@@ -110,8 +121,8 @@ class Config:
             self._fix_host_if_needed()
             self._validate()
             self.init_auth()
-            if product is not None and product_version is not None:
-                useragent.with_product(product, product_version)
+            self._product = product
+            self._product_version = product_version
         except ValueError as e:
             message = self.wrap_debug_info(str(e))
             raise ValueError(message) from e
@@ -226,7 +237,7 @@ class Config:
 
         # global user agent includes SDK version, product name & version, platform info,
         # and global extra info
-        ua = [useragent.to_string()]
+        ua = [useragent.to_string((self._product, self._product_version))]
         # Python SDK supports local extra info, which needs to be added in addition to global info
         if len(self._user_agent_other_info) > 0:
             ua.append(' '.join(self._user_agent_other_info))

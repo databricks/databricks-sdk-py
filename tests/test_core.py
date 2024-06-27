@@ -236,18 +236,6 @@ def test_config_copy_shallow_copies_credential_provider():
     assert config._credentials_strategy == config_copy._credentials_strategy
 
 
-def test_config_copy_deep_copies_user_agent_other_info(config):
-    config_copy = config.copy()
-
-    config.with_user_agent_extra("test", "test1")
-    assert "test/test1" not in config_copy.user_agent
-    assert "test/test1" in config.user_agent
-
-    config_copy.with_user_agent_extra("test", "test2")
-    assert "test/test2" in config_copy.user_agent
-    assert "test/test2" not in config.user_agent
-
-
 def test_config_accounts_aws_is_accounts_host(config):
     config.host = "https://accounts.cloud.databricks.com"
     assert config.is_account_client

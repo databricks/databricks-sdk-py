@@ -1,6 +1,8 @@
+import logging
 import os
 import platform
 import re
+from typing import Optional, Tuple
 
 from .version import __version__
 
@@ -11,6 +13,8 @@ AUTH_KEY = 'auth'
 
 product_name = "unknown"
 product_version = "0.0.0"
+
+logger = logging.getLogger("databricks.sdk.useragent")
 
 _extra = []
 
@@ -34,18 +38,22 @@ def _match_alphanum_or_semver(value):
         raise ValueError(f"Invalid value: {value}")
 
 
-def with_product(name, version):
+def with_product(name: str, version: str):
+    """Change the product name and version used in the User-Agent header."""
     global product_name, product_version
     match_alphanum(name)
     match_semver(version)
+    logger.debug(f'Changing product from {product_name}/{product_version} to {name}/{version}')
     product_name = name
     product_version = version
 
 
-def with_user_agent_extra(key, value):
+def with_user_agent_extra(key: str, value: str):
+    """Add extra metadata to the User-Agent header when developing a library."""
     global _extra
     match_alphanum(key)
     _match_alphanum_or_semver(value)
+    logger.debug(f'Adding {key}/{value} to User-Agent')
     _extra.append((key, value))
 
 
@@ -76,9 +84,17 @@ def _sanitize_header_value(value: str) -> str:
     return value
 
 
-def to_string():
-    base = [(product_name, product_version), ("databricks-sdk-py", __version__),
-            ("python", platform.python_version()), ("os", platform.uname().system.lower())]
+def to_string(alternate_product_info: Optional[Tuple[str, str]] = None):
+    base = []
+    if alternate_product_info:
+        base.append(alternate_product_info)
+    else:
+        base.append((product_name, product_version))
+    base.extend([
+        ("databricks-sdk-py", __version__),
+        ("python", platform.python_version()),
+        ("os", platform.uname().system.lower()),
+    ])
     base.extend(_extra)
     base.extend(get_upstream_user_agent_info())
     base.extend(_get_runtime_info())
