@@ -7,7 +7,7 @@ w = WorkspaceClient()
 
 created = w.catalogs.create(name=f'sdk-{time.time_ns()}')
 
-_ = w.catalogs.update(name=created.name, isolation_mode=catalog.isolation_mode_isolation_mode_isolated)
+_ = w.catalogs.update(name=created.name, isolation_mode=catalog.CatalogIsolationMode.ISOLATED)
 
 # cleanup
 w.catalogs.delete(name=created.name, force=True)

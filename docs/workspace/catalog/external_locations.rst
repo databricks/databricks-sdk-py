@@ -163,7 +163,7 @@
         :returns: Iterator over :class:`ExternalLocationInfo`
         
 
-    .. py:method:: update(name: str [, access_point: Optional[str], comment: Optional[str], credential_name: Optional[str], encryption_details: Optional[EncryptionDetails], force: Optional[bool], new_name: Optional[str], owner: Optional[str], read_only: Optional[bool], skip_validation: Optional[bool], url: Optional[str]]) -> ExternalLocationInfo
+    .. py:method:: update(name: str [, access_point: Optional[str], comment: Optional[str], credential_name: Optional[str], encryption_details: Optional[EncryptionDetails], force: Optional[bool], isolation_mode: Optional[IsolationMode], new_name: Optional[str], owner: Optional[str], read_only: Optional[bool], skip_validation: Optional[bool], url: Optional[str]]) -> ExternalLocationInfo
 
 
         Usage:
@@ -212,6 +212,8 @@
           Encryption options that apply to clients connecting to cloud storage.
         :param force: bool (optional)
           Force update even if changing url invalidates dependent external tables or mounts.
+        :param isolation_mode: :class:`IsolationMode` (optional)
+          Whether the current securable is accessible from all workspaces or a specific set of workspaces.
         :param new_name: str (optional)
           New name for the external location.
         :param owner: str (optional)

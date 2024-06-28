@@ -8,6 +8,10 @@
     periodically runs a query, evaluates a condition of its result, and notifies one or more users and/or
     notification destinations if the condition was met. Alerts can be scheduled using the `sql_task` type of
     the Jobs API, e.g. :method:jobs/create.
+    
+    **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+    
+    [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
 
     .. py:method:: create(name: str, options: AlertOptions, query_id: str [, parent: Optional[str], rearm: Optional[int]]) -> Alert
 
@@ -43,6 +47,10 @@
         Creates an alert. An alert is a Databricks SQL object that periodically runs a query, evaluates a
         condition of its result, and notifies users or notification destinations if the condition was met.
         
+        **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
+        
         :param name: str
           Name of the alert.
         :param options: :class:`AlertOptions`
@@ -62,8 +70,12 @@
 
         Delete an alert.
         
-        Deletes an alert. Deleted alerts are no longer accessible and cannot be restored. **Note:** Unlike
+        Deletes an alert. Deleted alerts are no longer accessible and cannot be restored. **Note**: Unlike
         queries and dashboards, alerts cannot be moved to the trash.
+        
+        **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
         
         :param alert_id: str
         
@@ -105,6 +117,10 @@
         
         Gets an alert.
         
+        **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
+        
         :param alert_id: str
         
         :returns: :class:`Alert`
@@ -126,6 +142,10 @@
         Get alerts.
         
         Gets a list of alerts.
+        
+        **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
         
         :returns: Iterator over :class:`Alert`
         
@@ -167,6 +187,10 @@
         Update an alert.
         
         Updates an alert.
+        
+        **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
         
         :param alert_id: str
         :param name: str

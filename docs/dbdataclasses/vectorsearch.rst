@@ -132,6 +132,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: TRIGGERED
       :value: "TRIGGERED"
 
+.. autoclass:: QueryVectorIndexNextPageRequest
+   :members:
+   :undoc-members:
+
 .. autoclass:: QueryVectorIndexRequest
    :members:
    :undoc-members:
