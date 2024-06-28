@@ -252,16 +252,23 @@ class SessionCredentials(Refreshable):
             raise ValueError('oauth2: token expired and refresh token is not set')
         params = {'grant_type': 'refresh_token', 'refresh_token': refresh_token}
         headers = {}
-        if 'microsoft' in self._client.token_url:
-            # Tokens issued for the 'Single-Page Application' client-type may
-            # only be redeemed via cross-origin requests
-            headers = {'Origin': self._client.redirect_url}
-        return retrieve_token(client_id=self._client.client_id,
-                              client_secret=self._client.client_secret,
-                              token_url=self._client.token_url,
-                              params=params,
-                              use_params=True,
-                              headers=headers)
+        while True:
+            try:
+                return retrieve_token(client_id=self._client.client_id,
+                                      client_secret=self._client.client_secret,
+                                      token_url=self._client.token_url,
+                                      params=params,
+                                      use_params=True,
+                                      headers=headers)
+            except ValueError as e:
+                if NO_ORIGIN_FOR_SPA_CLIENT_ERROR in str(e):
+                    # Retry in cases of 'Single-Page Application' client-type with
+                    # 'Origin' header equal to client's redirect URL.
+                    headers = {'Origin': self._client.redirect_url}
+                    msg = f'Retrying OAuth token exchange with {self._client.redirect_url} origin'
+                    logger.debug(msg)
+                    continue
+                raise e
 
 
 class Consent:
