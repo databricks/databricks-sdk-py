@@ -19,6 +19,7 @@ def user_agent():
 
 @pytest.mark.xdist_group(name="user_agent")
 def test_user_agent(user_agent):
+    user_agent._reset_product()
     default = user_agent.to_string()
 
     assert 'unknown/0.0.0' in default

@@ -2,7 +2,8 @@ import logging
 import os
 import platform
 import re
-from typing import Optional, Tuple
+import copy
+from typing import Optional, Tuple, List
 
 from .version import __version__
 
@@ -19,8 +20,17 @@ logger = logging.getLogger("databricks.sdk.useragent")
 _extra = []
 
 # Precompiled regex patterns
-alphanum_pattern = re.compile(r'^[a-zA-Z0-9]+$')
+alphanum_pattern = re.compile(r'^[a-zA-Z0-9_.+-]+$')
 semver_pattern = re.compile(r'^v?(\d+\.)?(\d+\.)?(\*|\d+)$')
+
+
+def _reset_product():
+    """[Internal API] Reset product name and version to the default values.
+
+    Used for testing purposes only."""
+    global _product_name, _product_version
+    _product_name = "unknown"
+    _product_version = "0.0.0"
 
 
 def match_alphanum(value):
@@ -61,6 +71,19 @@ def with_user_agent_extra(key: str, value: str):
     _extra.append((key, value))
 
 
+def extra() -> List[Tuple[str, str]]:
+    return copy.deepcopy(_extra)
+
+
+def reset_extra(extra: List[Tuple[str, str]]):
+    """Reset the extra metadata to a new list.
+
+    Prefer using with_user_agent_extra instead of this method to avoid overwriting other information included in the
+    user agent."""
+    global _extra
+    _extra = extra
+
+
 def with_partner(partner):
     with_user_agent_extra("partner", partner)
 
@@ -88,7 +111,7 @@ def _sanitize_header_value(value: str) -> str:
     return value
 
 
-def to_string(alternate_product_info: Optional[Tuple[str, str]] = None):
+def to_string(alternate_product_info: Optional[Tuple[str, str]] = None, other_info: Optional[List[Tuple[str, str]]] = None) -> str:
     base = []
     if alternate_product_info:
         base.append(alternate_product_info)
@@ -99,6 +122,8 @@ def to_string(alternate_product_info: Optional[Tuple[str, str]] = None):
         ("python", platform.python_version()),
         ("os", platform.uname().system.lower()),
     ])
+    if other_info:
+        base.extend(other_info)
     base.extend(_extra)
     base.extend(get_upstream_user_agent_info())
     base.extend(_get_runtime_info())

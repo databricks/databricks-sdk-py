@@ -235,19 +235,16 @@ class Config:
         """ Returns User-Agent header used by this SDK """
 
         # global user agent includes SDK version, product name & version, platform info,
-        # and global extra info. However,
-        ua = [useragent.to_string(self._product_info)]
-        # Python SDK supports local extra info, which needs to be added in addition to global info
-        if len(self._user_agent_other_info) > 0:
-            ua.append(' '.join(self._user_agent_other_info))
-        return ' '.join(ua)
+        # and global extra info. Config can have specific extra info associated with it,
+        # such as an override product, auth type, and other user-defined information.
+        return useragent.to_string(self._product_info, [("auth", self.auth_type)] + self._user_agent_other_info)
 
     @property
     def _upstream_user_agent(self) -> str:
         return " ".join(f"{k}/{v}" for k, v in useragent.get_upstream_user_agent_info())
 
     def with_user_agent_extra(self, key: str, value: str) -> 'Config':
-        self._user_agent_other_info.append(f"{key}/{value}")
+        self._user_agent_other_info.append((key, value))
         return self
 
     @property
