@@ -1,5 +1,6 @@
-import pytest
 import platform
+
+import pytest
 
 from databricks.sdk.config import Config, with_product, with_user_agent_extra
 from databricks.sdk.version import __version__
@@ -22,11 +23,11 @@ def test_config_supports_legacy_credentials_provider():
 
 
 @pytest.mark.parametrize('host,expected', [("https://abc.def.ghi", "https://abc.def.ghi"),
-                                             ("https://abc.def.ghi/", "https://abc.def.ghi"),
-                                             ("abc.def.ghi", "https://abc.def.ghi"),
-                                             ("abc.def.ghi/", "https://abc.def.ghi"),
-                                             ("https://abc.def.ghi:443", "https://abc.def.ghi"),
-                                             ("abc.def.ghi:443", "https://abc.def.ghi")])
+                                           ("https://abc.def.ghi/", "https://abc.def.ghi"),
+                                           ("abc.def.ghi", "https://abc.def.ghi"),
+                                           ("abc.def.ghi/", "https://abc.def.ghi"),
+                                           ("https://abc.def.ghi:443", "https://abc.def.ghi"),
+                                           ("abc.def.ghi:443", "https://abc.def.ghi")])
 def test_config_host_url_format_check(mocker, host, expected):
     mocker.patch('databricks.sdk.config.Config.init_auth')
     assert Config(host=host).host == expected
