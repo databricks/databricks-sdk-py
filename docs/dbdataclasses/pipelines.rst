@@ -24,6 +24,13 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: DeploymentKind
+
+   The deployment method that manages the pipeline: - BUNDLE: The pipeline is managed by a Databricks Asset Bundle.
+
+   .. py:attribute:: BUNDLE
+      :value: "BUNDLE"
+
 .. autoclass:: EditPipeline
    :members:
    :undoc-members:
@@ -82,6 +89,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: IngestionConfig
+   :members:
+   :undoc-members:
+
+.. autoclass:: IngestionGatewayPipelineDefinition
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListPipelineEventsResponse
    :members:
    :undoc-members:
@@ -91,6 +106,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ListUpdatesResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ManagedIngestionPipelineDefinition
    :members:
    :undoc-members:
 
@@ -148,6 +167,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: LEGACY
       :value: "LEGACY"
+
+.. autoclass:: PipelineDeployment
+   :members:
+   :undoc-members:
 
 .. autoclass:: PipelineEvent
    :members:
@@ -232,6 +255,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: SchemaSpec
+   :members:
+   :undoc-members:
+
 .. autoclass:: Sequencing
    :members:
    :undoc-members:
@@ -275,6 +302,24 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: StopPipelineResponse
    :members:
    :undoc-members:
+
+.. autoclass:: TableSpec
+   :members:
+   :undoc-members:
+
+.. autoclass:: TableSpecificConfig
+   :members:
+   :undoc-members:
+
+.. py:class:: TableSpecificConfigScdType
+
+   The SCD type to use to ingest the table.
+
+   .. py:attribute:: SCD_TYPE_1
+      :value: "SCD_TYPE_1"
+
+   .. py:attribute:: SCD_TYPE_2
+      :value: "SCD_TYPE_2"
 
 .. autoclass:: UpdateInfo
    :members:

@@ -9,7 +9,7 @@
     register data assets under their original name, qualified by their original schema, or provide alternate
     exposed names.
 
-    .. py:method:: create(name: str [, comment: Optional[str]]) -> ShareInfo
+    .. py:method:: create(name: str [, comment: Optional[str], storage_root: Optional[str]]) -> ShareInfo
 
 
         Usage:
@@ -36,6 +36,8 @@
           Name of the share.
         :param comment: str (optional)
           User-provided free-form text description.
+        :param storage_root: str (optional)
+          Storage root URL for the share.
         
         :returns: :class:`ShareInfo`
         
@@ -119,7 +121,7 @@
         :returns: :class:`PermissionsList`
         
 
-    .. py:method:: update(name: str [, comment: Optional[str], new_name: Optional[str], owner: Optional[str], updates: Optional[List[SharedDataObjectUpdate]]]) -> ShareInfo
+    .. py:method:: update(name: str [, comment: Optional[str], new_name: Optional[str], owner: Optional[str], storage_root: Optional[str], updates: Optional[List[SharedDataObjectUpdate]]]) -> ShareInfo
 
 
         Usage:
@@ -140,10 +142,12 @@
             
             created_schema = w.schemas.create(name=f'sdk-{time.time_ns()}', catalog_name=created_catalog.name)
             
-            _ = w.statement_execution.execute(warehouse_id=os.environ["TEST_DEFAULT_WAREHOUSE_ID"],
-                                              catalog=created_catalog.name,
-                                              schema=created_schema.name,
-                                              statement="CREATE TABLE %s AS SELECT 2+2 as four" % (table_name)).result()
+            _ = w.statement_execution.execute(
+                warehouse_id=os.environ["TEST_DEFAULT_WAREHOUSE_ID"],
+                catalog=created_catalog.name,
+                schema=created_schema.name,
+                statement="CREATE TABLE %s TBLPROPERTIES (delta.enableDeletionVectors=false) AS SELECT 2+2 as four" %
+                (table_name)).result()
             
             table_full_name = "%s.%s.%s" % (created_catalog.name, created_schema.name, table_name)
             
@@ -172,6 +176,8 @@
         In the case that the share name is changed, **updateShare** requires that the caller is both the share
         owner and a metastore admin.
         
+        If there are notebook files in the share, the __storage_root__ field cannot be updated.
+        
         For each table that is added through this method, the share owner must also have **SELECT** privilege
         on the table. This privilege must be maintained indefinitely for recipients to be able to access the
         table. Typically, you should use a group as the share owner.
@@ -186,6 +192,8 @@
           New name for the share.
         :param owner: str (optional)
           Username of current owner of share.
+        :param storage_root: str (optional)
+          Storage root URL for the share.
         :param updates: List[:class:`SharedDataObjectUpdate`] (optional)
           Array of shared data object updates.
         

@@ -1,34 +1,7 @@
-from dataclasses import dataclass
 from typing import Dict
 
 from .oauth import TokenSource
 from .service.provisioning import Workspace
-
-
-@dataclass
-class AzureEnvironment:
-    name: str
-    service_management_endpoint: str
-    resource_manager_endpoint: str
-    active_directory_endpoint: str
-
-
-ARM_DATABRICKS_RESOURCE_ID = "2ff814a6-3304-4ab8-85cb-cd0e6f879c1d"
-
-ENVIRONMENTS = dict(
-    PUBLIC=AzureEnvironment(name="PUBLIC",
-                            service_management_endpoint="https://management.core.windows.net/",
-                            resource_manager_endpoint="https://management.azure.com/",
-                            active_directory_endpoint="https://login.microsoftonline.com/"),
-    USGOVERNMENT=AzureEnvironment(name="USGOVERNMENT",
-                                  service_management_endpoint="https://management.core.usgovcloudapi.net/",
-                                  resource_manager_endpoint="https://management.usgovcloudapi.net/",
-                                  active_directory_endpoint="https://login.microsoftonline.us/"),
-    CHINA=AzureEnvironment(name="CHINA",
-                           service_management_endpoint="https://management.core.chinacloudapi.cn/",
-                           resource_manager_endpoint="https://management.chinacloudapi.cn/",
-                           active_directory_endpoint="https://login.chinacloudapi.cn/"),
-)
 
 
 def add_workspace_id_header(cfg: 'Config', headers: Dict[str, str]):

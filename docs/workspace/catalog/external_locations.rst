@@ -32,7 +32,7 @@
             
             storage_credential = w.storage_credentials.create(
                 name=f'sdk-{time.time_ns()}',
-                aws_iam_role=catalog.AwsIamRole(role_arn=os.environ["TEST_METASTORE_DATA_ACCESS_ARN"]),
+                aws_iam_role=catalog.AwsIamRoleRequest(role_arn=os.environ["TEST_METASTORE_DATA_ACCESS_ARN"]),
                 comment="created via SDK")
             
             external_location = w.external_locations.create(name=f'sdk-{time.time_ns()}',
@@ -86,7 +86,7 @@
         
         
 
-    .. py:method:: get(name: str) -> ExternalLocationInfo
+    .. py:method:: get(name: str [, include_browse: Optional[bool]]) -> ExternalLocationInfo
 
 
         Usage:
@@ -122,11 +122,14 @@
         
         :param name: str
           Name of the external location.
+        :param include_browse: bool (optional)
+          Whether to include external locations in the response for which the principal can only access
+          selective metadata for
         
         :returns: :class:`ExternalLocationInfo`
         
 
-    .. py:method:: list( [, max_results: Optional[int], page_token: Optional[str]]) -> Iterator[ExternalLocationInfo]
+    .. py:method:: list( [, include_browse: Optional[bool], max_results: Optional[int], page_token: Optional[str]]) -> Iterator[ExternalLocationInfo]
 
 
         Usage:
@@ -144,9 +147,11 @@
         
         Gets an array of external locations (__ExternalLocationInfo__ objects) from the metastore. The caller
         must be a metastore admin, the owner of the external location, or a user that has some privilege on
-        the external location. For unpaginated request, there is no guarantee of a specific ordering of the
-        elements in the array. For paginated request, elements are ordered by their name.
+        the external location. There is no guarantee of a specific ordering of the elements in the array.
         
+        :param include_browse: bool (optional)
+          Whether to include external locations in the response for which the principal can only access
+          selective metadata for
         :param max_results: int (optional)
           Maximum number of external locations to return. If not set, all the external locations are returned
           (not recommended). - when set to a value greater than 0, the page length is the minimum of this
@@ -175,7 +180,7 @@
             
             credential = w.storage_credentials.create(
                 name=f'sdk-{time.time_ns()}',
-                aws_iam_role=catalog.AwsIamRole(role_arn=os.environ["TEST_METASTORE_DATA_ACCESS_ARN"]))
+                aws_iam_role=catalog.AwsIamRoleRequest(role_arn=os.environ["TEST_METASTORE_DATA_ACCESS_ARN"]))
             
             created = w.external_locations.create(name=f'sdk-{time.time_ns()}',
                                                   credential_name=credential.name,

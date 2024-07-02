@@ -35,7 +35,7 @@ def test_create_cluster(w, env_or_skip, random):
                              spark_version=w.clusters.select_spark_version(long_term_support=True),
                              instance_pool_id=env_or_skip('TEST_INSTANCE_POOL_ID'),
                              autotermination_minutes=10,
-                             num_workers=1).result(timeout=timedelta(minutes=10))
+                             num_workers=1).result(timeout=timedelta(minutes=20))
     logging.info(f'Created: {info}')
 
 

@@ -193,6 +193,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: Privilege
 
+   .. py:attribute:: ACCESS
+      :value: "ACCESS"
+
    .. py:attribute:: ALL_PRIVILEGES
       :value: "ALL_PRIVILEGES"
 
@@ -241,6 +244,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: CREATE_SCHEMA
       :value: "CREATE_SCHEMA"
 
+   .. py:attribute:: CREATE_SERVICE_CREDENTIAL
+      :value: "CREATE_SERVICE_CREDENTIAL"
+
    .. py:attribute:: CREATE_SHARE
       :value: "CREATE_SHARE"
 
@@ -282,6 +288,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: SET_SHARE_PERMISSION
       :value: "SET_SHARE_PERMISSION"
+
+   .. py:attribute:: SINGLE_USER_ACCESS
+      :value: "SINGLE_USER_ACCESS"
 
    .. py:attribute:: USAGE
       :value: "USAGE"
@@ -363,6 +372,31 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: SharedDataObject
    :members:
    :undoc-members:
+
+.. py:class:: SharedDataObjectDataObjectType
+
+   The type of the data object.
+
+   .. py:attribute:: MATERIALIZED_VIEW
+      :value: "MATERIALIZED_VIEW"
+
+   .. py:attribute:: MODEL
+      :value: "MODEL"
+
+   .. py:attribute:: NOTEBOOK_FILE
+      :value: "NOTEBOOK_FILE"
+
+   .. py:attribute:: SCHEMA
+      :value: "SCHEMA"
+
+   .. py:attribute:: STREAMING_TABLE
+      :value: "STREAMING_TABLE"
+
+   .. py:attribute:: TABLE
+      :value: "TABLE"
+
+   .. py:attribute:: VIEW
+      :value: "VIEW"
 
 .. py:class:: SharedDataObjectHistoryDataSharingStatus
 

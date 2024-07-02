@@ -777,6 +777,7 @@ class PermissionLevel(Enum):
     CAN_MANAGE_PRODUCTION_VERSIONS = 'CAN_MANAGE_PRODUCTION_VERSIONS'
     CAN_MANAGE_RUN = 'CAN_MANAGE_RUN'
     CAN_MANAGE_STAGING_VERSIONS = 'CAN_MANAGE_STAGING_VERSIONS'
+    CAN_QUERY = 'CAN_QUERY'
     CAN_READ = 'CAN_READ'
     CAN_RESTART = 'CAN_RESTART'
     CAN_RUN = 'CAN_RUN'
@@ -889,7 +890,7 @@ class PermissionsRequest:
     request_object_type: Optional[str] = None
     """The type of the request object. Can be one of the following: authorization, clusters,
     cluster-policies, directories, experiments, files, instance-pools, jobs, notebooks, pipelines,
-    registered-models, repos, serving-endpoints, or sql-warehouses."""
+    registered-models, repos, serving-endpoints, or warehouses."""
 
     def as_dict(self) -> dict:
         """Serializes the PermissionsRequest into a dictionary suitable for use as a JSON request body."""
@@ -914,7 +915,7 @@ class PrincipalOutput:
     """The display name of the principal."""
 
     group_name: Optional[str] = None
-    """The group name of the groupl. Present only if the principal is a group."""
+    """The group name of the group. Present only if the principal is a group."""
 
     principal_id: Optional[int] = None
     """The unique, opaque id of the principal."""
@@ -1134,7 +1135,9 @@ class UpdateRuleSetRequest:
 @dataclass
 class UpdateWorkspaceAssignments:
     permissions: List[WorkspacePermission]
-    """Array of permissions assignments to update on the workspace."""
+    """Array of permissions assignments to update on the workspace. Note that excluding this field will
+    have the same effect as providing an empty list which will result in the deletion of all
+    permissions for the principal."""
 
     principal_id: Optional[int] = None
     """The ID of the user, service principal, or group."""
@@ -1235,20 +1238,6 @@ class UserSchema(Enum):
 
     URN_IETF_PARAMS_SCIM_SCHEMAS_CORE_2_0_USER = 'urn:ietf:params:scim:schemas:core:2.0:User'
     URN_IETF_PARAMS_SCIM_SCHEMAS_EXTENSION_WORKSPACE_2_0_USER = 'urn:ietf:params:scim:schemas:extension:workspace:2.0:User'
-
-
-@dataclass
-class WorkspaceAssignmentsUpdated:
-
-    def as_dict(self) -> dict:
-        """Serializes the WorkspaceAssignmentsUpdated into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> WorkspaceAssignmentsUpdated:
-        """Deserializes the WorkspaceAssignmentsUpdated from a dictionary."""
-        return cls()
 
 
 class WorkspacePermission(Enum):
@@ -2589,6 +2578,9 @@ class PermissionsAPI:
     For the mapping of the required permissions for specific actions or abilities and other important
     information, see [Access Control].
     
+    Note that to manage access control on service principals, use **[Account Access Control
+    Proxy](:service:accountaccesscontrolproxy)**.
+    
     [Access Control]: https://docs.databricks.com/security/auth-authz/access-control/index.html"""
 
     def __init__(self, api_client):
@@ -2603,7 +2595,7 @@ class PermissionsAPI:
         :param request_object_type: str
           The type of the request object. Can be one of the following: authorization, clusters,
           cluster-policies, directories, experiments, files, instance-pools, jobs, notebooks, pipelines,
-          registered-models, repos, serving-endpoints, or sql-warehouses.
+          registered-models, repos, serving-endpoints, or warehouses.
         :param request_object_id: str
           The id of the request object.
         
@@ -2651,7 +2643,7 @@ class PermissionsAPI:
         :param request_object_type: str
           The type of the request object. Can be one of the following: authorization, clusters,
           cluster-policies, directories, experiments, files, instance-pools, jobs, notebooks, pipelines,
-          registered-models, repos, serving-endpoints, or sql-warehouses.
+          registered-models, repos, serving-endpoints, or warehouses.
         :param request_object_id: str
           The id of the request object.
         :param access_control_list: List[:class:`AccessControlRequest`] (optional)
@@ -2682,7 +2674,7 @@ class PermissionsAPI:
         :param request_object_type: str
           The type of the request object. Can be one of the following: authorization, clusters,
           cluster-policies, directories, experiments, files, instance-pools, jobs, notebooks, pipelines,
-          registered-models, repos, serving-endpoints, or sql-warehouses.
+          registered-models, repos, serving-endpoints, or warehouses.
         :param request_object_id: str
           The id of the request object.
         :param access_control_list: List[:class:`AccessControlRequest`] (optional)
@@ -3374,7 +3366,8 @@ class WorkspaceAssignmentAPI:
         parsed = PermissionAssignments.from_dict(json).permission_assignments
         return parsed if parsed is not None else []
 
-    def update(self, workspace_id: int, principal_id: int, permissions: List[WorkspacePermission]):
+    def update(self, workspace_id: int, principal_id: int,
+               permissions: List[WorkspacePermission]) -> PermissionAssignment:
         """Create or update permissions assignment.
         
         Creates or updates the workspace permissions assignment in a given account and workspace for the
@@ -3385,16 +3378,19 @@ class WorkspaceAssignmentAPI:
         :param principal_id: int
           The ID of the user, service principal, or group.
         :param permissions: List[:class:`WorkspacePermission`]
-          Array of permissions assignments to update on the workspace.
+          Array of permissions assignments to update on the workspace. Note that excluding this field will
+          have the same effect as providing an empty list which will result in the deletion of all permissions
+          for the principal.
         
-        
+        :returns: :class:`PermissionAssignment`
         """
         body = {}
         if permissions is not None: body['permissions'] = [v.value for v in permissions]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        self._api.do(
+        res = self._api.do(
             'PUT',
             f'/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}/permissionassignments/principals/{principal_id}',
             body=body,
             headers=headers)
+        return PermissionAssignment.from_dict(res)

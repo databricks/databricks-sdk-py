@@ -30,7 +30,7 @@
         
         
 
-    .. py:method:: get(full_name: str, version: int) -> RegisteredModelInfo
+    .. py:method:: get(full_name: str, version: int [, include_browse: Optional[bool]]) -> RegisteredModelInfo
 
         Get a Model Version.
         
@@ -44,6 +44,9 @@
           The three-level (fully qualified) name of the model version
         :param version: int
           The integer version number of the model version
+        :param include_browse: bool (optional)
+          Whether to include model versions in the response for which the principal can only access selective
+          metadata for
         
         :returns: :class:`RegisteredModelInfo`
         
@@ -66,7 +69,7 @@
         :returns: :class:`ModelVersionInfo`
         
 
-    .. py:method:: list(full_name: str [, max_results: Optional[int], page_token: Optional[str]]) -> Iterator[ModelVersionInfo]
+    .. py:method:: list(full_name: str [, include_browse: Optional[bool], max_results: Optional[int], page_token: Optional[str]]) -> Iterator[ModelVersionInfo]
 
         List Model Versions.
         
@@ -79,10 +82,14 @@
         response. For the latter case, the caller must also be the owner or have the **USE_CATALOG** privilege
         on the parent catalog and the **USE_SCHEMA** privilege on the parent schema.
         
-        There is no guarantee of a specific ordering of the elements in the response.
+        There is no guarantee of a specific ordering of the elements in the response. The elements in the
+        response will not contain any aliases or tags.
         
         :param full_name: str
           The full three-level name of the registered model under which to list model versions
+        :param include_browse: bool (optional)
+          Whether to include model versions in the response for which the principal can only access selective
+          metadata for
         :param max_results: int (optional)
           Maximum number of model versions to return. If not set, the page length is set to a server
           configured value (100, as of 1/3/2024). - when set to a value greater than 0, the page length is the

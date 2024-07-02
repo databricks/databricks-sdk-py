@@ -220,7 +220,7 @@ class AlertQuery:
     """The timestamp at which this query was last updated."""
 
     user_id: Optional[int] = None
-    """The ID of the user who created this query."""
+    """The ID of the user who owns the query."""
 
     def as_dict(self) -> dict:
         """Serializes the AlertQuery into a dictionary suitable for use as a JSON request body."""
@@ -709,7 +709,7 @@ class Dashboard:
     user: Optional[User] = None
 
     user_id: Optional[int] = None
-    """The ID of the user that created and owns this dashboard."""
+    """The ID of the user who owns the dashboard."""
 
     widgets: Optional[List[Widget]] = None
 
@@ -769,12 +769,15 @@ class DashboardEditContent:
     """Sets the **Run as** role for the object. Must be set to one of `"viewer"` (signifying "run as
     viewer" behavior) or `"owner"` (signifying "run as owner" behavior)"""
 
+    tags: Optional[List[str]] = None
+
     def as_dict(self) -> dict:
         """Serializes the DashboardEditContent into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.dashboard_id is not None: body['dashboard_id'] = self.dashboard_id
         if self.name is not None: body['name'] = self.name
         if self.run_as_role is not None: body['run_as_role'] = self.run_as_role.value
+        if self.tags: body['tags'] = [v for v in self.tags]
         return body
 
     @classmethod
@@ -782,7 +785,8 @@ class DashboardEditContent:
         """Deserializes the DashboardEditContent from a dictionary."""
         return cls(dashboard_id=d.get('dashboard_id', None),
                    name=d.get('name', None),
-                   run_as_role=_enum(d, 'run_as_role', RunAsRole))
+                   run_as_role=_enum(d, 'run_as_role', RunAsRole),
+                   tags=d.get('tags', None))
 
 
 @dataclass
@@ -2304,7 +2308,7 @@ class Query:
     user: Optional[User] = None
 
     user_id: Optional[int] = None
-    """The ID of the user who created this query."""
+    """The ID of the user who owns the query."""
 
     visualizations: Optional[List[Visualization]] = None
 
@@ -2394,6 +2398,8 @@ class QueryEditContent:
     """Sets the **Run as** role for the object. Must be set to one of `"viewer"` (signifying "run as
     viewer" behavior) or `"owner"` (signifying "run as owner" behavior)"""
 
+    tags: Optional[List[str]] = None
+
     def as_dict(self) -> dict:
         """Serializes the QueryEditContent into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -2404,6 +2410,7 @@ class QueryEditContent:
         if self.query is not None: body['query'] = self.query
         if self.query_id is not None: body['query_id'] = self.query_id
         if self.run_as_role is not None: body['run_as_role'] = self.run_as_role.value
+        if self.tags: body['tags'] = [v for v in self.tags]
         return body
 
     @classmethod
@@ -2415,7 +2422,8 @@ class QueryEditContent:
                    options=d.get('options', None),
                    query=d.get('query', None),
                    query_id=d.get('query_id', None),
-                   run_as_role=_enum(d, 'run_as_role', RunAsRole))
+                   run_as_role=_enum(d, 'run_as_role', RunAsRole),
+                   tags=d.get('tags', None))
 
 
 @dataclass
@@ -2464,7 +2472,7 @@ class QueryInfo:
     """Channel information for the SQL warehouse at the time of query execution"""
 
     duration: Optional[int] = None
-    """Total execution time of the query from the client’s point of view, in milliseconds."""
+    """Total execution time of the statement ( excluding result fetch time )."""
 
     endpoint_id: Optional[str] = None
     """Alias for `warehouse_id`."""
@@ -2765,24 +2773,34 @@ class QueryMetrics:
 
 @dataclass
 class QueryOptions:
+    catalog: Optional[str] = None
+    """The name of the catalog to execute this query in."""
+
     moved_to_trash_at: Optional[str] = None
     """The timestamp when this query was moved to trash. Only present when the `is_archived` property
     is `true`. Trashed items are deleted after thirty days."""
 
     parameters: Optional[List[Parameter]] = None
 
+    schema: Optional[str] = None
+    """The name of the schema to execute this query in."""
+
     def as_dict(self) -> dict:
         """Serializes the QueryOptions into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.catalog is not None: body['catalog'] = self.catalog
         if self.moved_to_trash_at is not None: body['moved_to_trash_at'] = self.moved_to_trash_at
         if self.parameters: body['parameters'] = [v.as_dict() for v in self.parameters]
+        if self.schema is not None: body['schema'] = self.schema
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> QueryOptions:
         """Deserializes the QueryOptions from a dictionary."""
-        return cls(moved_to_trash_at=d.get('moved_to_trash_at', None),
-                   parameters=_repeated_dict(d, 'parameters', Parameter))
+        return cls(catalog=d.get('catalog', None),
+                   moved_to_trash_at=d.get('moved_to_trash_at', None),
+                   parameters=_repeated_dict(d, 'parameters', Parameter),
+                   schema=d.get('schema', None))
 
 
 @dataclass
@@ -2814,6 +2832,8 @@ class QueryPostContent:
     """Sets the **Run as** role for the object. Must be set to one of `"viewer"` (signifying "run as
     viewer" behavior) or `"owner"` (signifying "run as owner" behavior)"""
 
+    tags: Optional[List[str]] = None
+
     def as_dict(self) -> dict:
         """Serializes the QueryPostContent into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -2824,6 +2844,7 @@ class QueryPostContent:
         if self.parent is not None: body['parent'] = self.parent
         if self.query is not None: body['query'] = self.query
         if self.run_as_role is not None: body['run_as_role'] = self.run_as_role.value
+        if self.tags: body['tags'] = [v for v in self.tags]
         return body
 
     @classmethod
@@ -2835,7 +2856,8 @@ class QueryPostContent:
                    options=d.get('options', None),
                    parent=d.get('parent', None),
                    query=d.get('query', None),
-                   run_as_role=_enum(d, 'run_as_role', RunAsRole))
+                   run_as_role=_enum(d, 'run_as_role', RunAsRole),
+                   tags=d.get('tags', None))
 
 
 class QueryStatementType(Enum):
@@ -3572,6 +3594,8 @@ class Visualization:
     """The options object varies widely from one visualization type to the next and is unsupported.
     Databricks does not recommend modifying visualization settings in JSON."""
 
+    query: Optional[Query] = None
+
     type: Optional[str] = None
     """The type of visualization: chart, table, pivot table, and so on."""
 
@@ -3585,6 +3609,7 @@ class Visualization:
         if self.id is not None: body['id'] = self.id
         if self.name is not None: body['name'] = self.name
         if self.options: body['options'] = self.options
+        if self.query: body['query'] = self.query.as_dict()
         if self.type is not None: body['type'] = self.type
         if self.updated_at is not None: body['updated_at'] = self.updated_at
         return body
@@ -3597,6 +3622,7 @@ class Visualization:
                    id=d.get('id', None),
                    name=d.get('name', None),
                    options=d.get('options', None),
+                   query=_from_dict(d, 'query', Query),
                    type=d.get('type', None),
                    updated_at=d.get('updated_at', None))
 
@@ -4286,7 +4312,8 @@ class DashboardsAPI:
                dashboard_id: str,
                *,
                name: Optional[str] = None,
-               run_as_role: Optional[RunAsRole] = None) -> Dashboard:
+               run_as_role: Optional[RunAsRole] = None,
+               tags: Optional[List[str]] = None) -> Dashboard:
         """Change a dashboard definition.
         
         Modify this dashboard definition. This operation only affects attributes of the dashboard object. It
@@ -4300,12 +4327,14 @@ class DashboardsAPI:
         :param run_as_role: :class:`RunAsRole` (optional)
           Sets the **Run as** role for the object. Must be set to one of `"viewer"` (signifying "run as
           viewer" behavior) or `"owner"` (signifying "run as owner" behavior)
+        :param tags: List[str] (optional)
         
         :returns: :class:`Dashboard`
         """
         body = {}
         if name is not None: body['name'] = name
         if run_as_role is not None: body['run_as_role'] = run_as_role.value
+        if tags is not None: body['tags'] = [v for v in tags]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         res = self._api.do('POST',
@@ -4453,7 +4482,8 @@ class QueriesAPI:
                options: Optional[Any] = None,
                parent: Optional[str] = None,
                query: Optional[str] = None,
-               run_as_role: Optional[RunAsRole] = None) -> Query:
+               run_as_role: Optional[RunAsRole] = None,
+               tags: Optional[List[str]] = None) -> Query:
         """Create a new query definition.
         
         Creates a new query definition. Queries created with this endpoint belong to the authenticated user
@@ -4485,6 +4515,7 @@ class QueriesAPI:
         :param run_as_role: :class:`RunAsRole` (optional)
           Sets the **Run as** role for the object. Must be set to one of `"viewer"` (signifying "run as
           viewer" behavior) or `"owner"` (signifying "run as owner" behavior)
+        :param tags: List[str] (optional)
         
         :returns: :class:`Query`
         """
@@ -4496,6 +4527,7 @@ class QueriesAPI:
         if parent is not None: body['parent'] = parent
         if query is not None: body['query'] = query
         if run_as_role is not None: body['run_as_role'] = run_as_role.value
+        if tags is not None: body['tags'] = [v for v in tags]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         res = self._api.do('POST', '/api/2.0/preview/sql/queries', body=body, headers=headers)
@@ -4615,7 +4647,8 @@ class QueriesAPI:
                name: Optional[str] = None,
                options: Optional[Any] = None,
                query: Optional[str] = None,
-               run_as_role: Optional[RunAsRole] = None) -> Query:
+               run_as_role: Optional[RunAsRole] = None,
+               tags: Optional[List[str]] = None) -> Query:
         """Change a query definition.
         
         Modify this query definition.
@@ -4641,6 +4674,7 @@ class QueriesAPI:
         :param run_as_role: :class:`RunAsRole` (optional)
           Sets the **Run as** role for the object. Must be set to one of `"viewer"` (signifying "run as
           viewer" behavior) or `"owner"` (signifying "run as owner" behavior)
+        :param tags: List[str] (optional)
         
         :returns: :class:`Query`
         """
@@ -4651,6 +4685,7 @@ class QueriesAPI:
         if options is not None: body['options'] = options
         if query is not None: body['query'] = query
         if run_as_role is not None: body['run_as_role'] = run_as_role.value
+        if tags is not None: body['tags'] = [v for v in tags]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         res = self._api.do('POST', f'/api/2.0/preview/sql/queries/{query_id}', body=body, headers=headers)
@@ -4767,6 +4802,7 @@ class QueryVisualizationsAPI:
                description: Optional[str] = None,
                name: Optional[str] = None,
                options: Optional[Any] = None,
+               query: Optional[Query] = None,
                type: Optional[str] = None,
                updated_at: Optional[str] = None) -> Visualization:
         """Edit existing visualization.
@@ -4781,6 +4817,7 @@ class QueryVisualizationsAPI:
         :param options: Any (optional)
           The options object varies widely from one visualization type to the next and is unsupported.
           Databricks does not recommend modifying visualization settings in JSON.
+        :param query: :class:`Query` (optional)
         :param type: str (optional)
           The type of visualization: chart, table, pivot table, and so on.
         :param updated_at: str (optional)
@@ -4792,6 +4829,7 @@ class QueryVisualizationsAPI:
         if description is not None: body['description'] = description
         if name is not None: body['name'] = name
         if options is not None: body['options'] = options
+        if query is not None: body['query'] = query.as_dict()
         if type is not None: body['type'] = type
         if updated_at is not None: body['updated_at'] = updated_at
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }

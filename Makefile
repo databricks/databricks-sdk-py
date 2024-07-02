@@ -24,7 +24,7 @@ test:
 	pytest -m 'not integration and not benchmark' --cov=databricks --cov-report html tests
 
 integration:
-	pytest -n auto -m 'integration and not benchmark' --dist loadgroup --cov=databricks --cov-report html tests 
+	pytest -n auto -m 'integration and not benchmark' --reruns 2 --dist loadgroup --cov=databricks --cov-report html tests
 
 benchmark:
 	pytest -m 'benchmark' tests

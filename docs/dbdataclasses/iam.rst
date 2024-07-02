@@ -191,6 +191,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: CAN_MANAGE_STAGING_VERSIONS
       :value: "CAN_MANAGE_STAGING_VERSIONS"
 
+   .. py:attribute:: CAN_QUERY
+      :value: "CAN_QUERY"
+
    .. py:attribute:: CAN_READ
       :value: "CAN_READ"
 
@@ -284,10 +287,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: URN_IETF_PARAMS_SCIM_SCHEMAS_EXTENSION_WORKSPACE_2_0_USER
       :value: "URN_IETF_PARAMS_SCIM_SCHEMAS_EXTENSION_WORKSPACE_2_0_USER"
-
-.. autoclass:: WorkspaceAssignmentsUpdated
-   :members:
-   :undoc-members:
 
 .. py:class:: WorkspacePermission
 

@@ -1,9 +1,11 @@
 import base64
 import json
 import logging
+import os
 import threading
-import typing
 from collections import namedtuple
+from dataclasses import dataclass
+from typing import Any, Callable, Dict, List, Optional
 
 from .core import ApiClient, Config, DatabricksError
 from .mixins import compute as compute_ext
@@ -34,7 +36,7 @@ class SecretMetadata(namedtuple('SecretMetadata', ['key'])):
 class _FsUtil:
     """ Manipulates the Databricks filesystem (DBFS) """
 
-    def __init__(self, dbfs_ext: dbfs_ext.DbfsExt, proxy_factory: typing.Callable[[str], '_ProxyUtil']):
+    def __init__(self, dbfs_ext: dbfs_ext.DbfsExt, proxy_factory: Callable[[str], '_ProxyUtil']):
         self._dbfs = dbfs_ext
         self._proxy_factory = proxy_factory
 
@@ -45,17 +47,15 @@ class _FsUtil:
 
     def head(self, file: str, maxBytes: int = 65536) -> str:
         """Returns up to the first 'maxBytes' bytes of the given file as a String encoded in UTF-8 """
-        res = self._dbfs.read(file, length=maxBytes, offset=0)
-        raw = base64.b64decode(res.data)
-        return raw.decode('utf8')
+        with self._dbfs.download(file) as f:
+            return f.read(maxBytes).decode('utf8')
 
-    def ls(self, dir: str) -> typing.List[FileInfo]:
+    def ls(self, dir: str) -> List[FileInfo]:
         """Lists the contents of a directory """
-        result = []
-        for f in self._dbfs.list(dir):
-            name = f.path.split('/')[-1]
-            result.append(FileInfo(f'dbfs:{f.path}', name, f.file_size, f.modification_time))
-        return result
+        return [
+            FileInfo(f.path, os.path.basename(f.path), f.file_size, f.modification_time)
+            for f in self._dbfs.list(dir)
+        ]
 
     def mkdirs(self, dir: str) -> bool:
         """Creates the given directory if it does not exist, also creating any necessary parent directories """
@@ -83,7 +83,7 @@ class _FsUtil:
               mount_point: str,
               encryption_type: str = None,
               owner: str = None,
-              extra_configs: 'typing.Dict[str, str]' = None) -> bool:
+              extra_configs: Dict[str, str] = None) -> bool:
         """Mounts the given source directory into DBFS at the given mount point"""
         fs = self._proxy_factory('fs')
         kwargs = {}
@@ -105,7 +105,7 @@ class _FsUtil:
                     mount_point: str,
                     encryption_type: str = None,
                     owner: str = None,
-                    extra_configs: 'typing.Dict[str, str]' = None) -> bool:
+                    extra_configs: Dict[str, str] = None) -> bool:
         """ Similar to mount(), but updates an existing mount point (if present) instead of creating a new one """
         fs = self._proxy_factory('fs')
         kwargs = {}
@@ -117,7 +117,7 @@ class _FsUtil:
             kwargs['extra_configs'] = extra_configs
         return fs.updateMount(source, mount_point, **kwargs)
 
-    def mounts(self) -> typing.List[MountInfo]:
+    def mounts(self) -> List[MountInfo]:
         """ Displays information about what is mounted within DBFS """
         result = []
         fs = self._proxy_factory('fs')
@@ -150,13 +150,13 @@ class _SecretsUtil:
         string_value = val.decode()
         return string_value
 
-    def list(self, scope) -> typing.List[SecretMetadata]:
+    def list(self, scope) -> List[SecretMetadata]:
         """Lists the metadata for secrets within the specified scope."""
 
         # transform from SDK dataclass to dbutils-compatible namedtuple
         return [SecretMetadata(v.key) for v in self._api.list_secrets(scope)]
 
-    def listScopes(self) -> typing.List[SecretScope]:
+    def listScopes(self) -> List[SecretScope]:
         """Lists the available scopes."""
 
         # transform from SDK dataclass to dbutils-compatible namedtuple
@@ -241,18 +241,94 @@ class RemoteDbUtils:
                           name=util)
 
 
+@dataclass
+class OverrideResult:
+    result: Any
+
+
+def get_local_notebook_path():
+    value = os.getenv("DATABRICKS_SOURCE_FILE")
+    if value is None:
+        raise ValueError(
+            "Getting the current notebook path is only supported when running a notebook using the `Databricks Connect: Run as File` or `Databricks Connect: Debug as File` commands in the Databricks extension for VS Code. To bypass this error, set environment variable `DATABRICKS_SOURCE_FILE` to the desired notebook path."
+        )
+
+    return value
+
+
+class _OverrideProxyUtil:
+
+    @classmethod
+    def new(cls, path: str):
+        if len(cls.__get_matching_overrides(path)) > 0:
+            return _OverrideProxyUtil(path)
+        return None
+
+    def __init__(self, name: str):
+        self._name = name
+
+    # These are the paths that we want to override and not send to remote dbutils. NOTE, for each of these paths, no prefixes
+    # are sent to remote either. This could lead to unintentional breakage.
+    # Our current proxy implementation (which sends everything to remote dbutils) uses `{util}.{method}(*args, **kwargs)` ONLY.
+    # This means, it is completely safe to override paths starting with `{util}.{attribute}.<other_parts>`, since none of the prefixes
+    # are being proxied to remote dbutils currently.
+    proxy_override_paths = {
+        'notebook.entry_point.getDbutils().notebook().getContext().notebookPath().get()':
+        get_local_notebook_path,
+    }
+
+    @classmethod
+    def __get_matching_overrides(cls, path: str):
+        return [x for x in cls.proxy_override_paths.keys() if x.startswith(path)]
+
+    def __run_override(self, path: str) -> Optional[OverrideResult]:
+        overrides = self.__get_matching_overrides(path)
+        if len(overrides) == 1 and overrides[0] == path:
+            return OverrideResult(self.proxy_override_paths[overrides[0]]())
+
+        if len(overrides) > 0:
+            return OverrideResult(_OverrideProxyUtil(name=path))
+
+        return None
+
+    def __call__(self, *args, **kwds) -> Any:
+        if len(args) != 0 or len(kwds) != 0:
+            raise TypeError(
+                f"Arguments are not supported for overridden method {self._name}. Invoke as: {self._name}()")
+
+        callable_path = f"{self._name}()"
+        result = self.__run_override(callable_path)
+        if result:
+            return result.result
+
+        raise TypeError(f"{self._name} is not callable")
+
+    def __getattr__(self, method: str) -> Any:
+        result = self.__run_override(f"{self._name}.{method}")
+        if result:
+            return result.result
+
+        raise AttributeError(f"module {self._name} has no attribute {method}")
+
+
 class _ProxyUtil:
     """Enables temporary workaround to call remote in-REPL dbutils without having to re-implement them"""
 
     def __init__(self, *, command_execution: compute.CommandExecutionAPI,
-                 context_factory: typing.Callable[[],
-                                                  compute.ContextStatusResponse], cluster_id: str, name: str):
+                 context_factory: Callable[[], compute.ContextStatusResponse], cluster_id: str, name: str):
         self._commands = command_execution
         self._cluster_id = cluster_id
         self._context_factory = context_factory
         self._name = name
 
-    def __getattr__(self, method: str) -> '_ProxyCall':
+    def __call__(self):
+        raise NotImplementedError(f"dbutils.{self._name} is not callable")
+
+    def __getattr__(self, method: str) -> '_ProxyCall | _ProxyUtil | _OverrideProxyUtil':
+        override = _OverrideProxyUtil.new(f"{self._name}.{method}")
+        if override:
+            return override
+
         return _ProxyCall(command_execution=self._commands,
                           cluster_id=self._cluster_id,
                           context_factory=self._context_factory,
@@ -267,8 +343,8 @@ import re
 class _ProxyCall:
 
     def __init__(self, *, command_execution: compute.CommandExecutionAPI,
-                 context_factory: typing.Callable[[], compute.ContextStatusResponse], cluster_id: str,
-                 util: str, method: str):
+                 context_factory: Callable[[], compute.ContextStatusResponse], cluster_id: str, util: str,
+                 method: str):
         self._commands = command_execution
         self._cluster_id = cluster_id
         self._context_factory = context_factory

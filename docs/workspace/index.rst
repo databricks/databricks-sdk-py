@@ -13,6 +13,7 @@ These APIs are available from WorkspaceClient
    files/index
    iam/index
    jobs/index
+   marketplace/index
    ml/index
    pipelines/index
    serving/index

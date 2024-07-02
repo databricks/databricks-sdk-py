@@ -8,14 +8,14 @@ access Databricks resources.
 
 If you have already Custom App:
 
-./flask_app_with_oauth.py <databricks workspace url> \
+./flask_app_with_oauth.py --host <databricks workspace url> \
     --client_id <app-client-id> \
     --client_secret <app-secret> \
     --port 5001
 
 If you want this script to register Custom App and redirect URL for you:
 
-./flask_app_with_oauth.py <databricks workspace url>
+./flask_app_with_oauth.py --port 5001 --profile <databricks account profile>
 
 You'll get prompted for Databricks Account username and password for
 script to enroll your account into OAuth and create a custom app with
@@ -44,7 +44,7 @@ all_clusters_template = """<ul>
 </ul>"""
 
 
-def create_flask_app(oauth_client: OAuthClient, port: int):
+def create_flask_app(oauth_client: OAuthClient):
     """The create_flask_app function creates a Flask app that is enabled with OAuth.
 
     It initializes the app and web session secret keys with a randomly generated token. It defines two routes for
@@ -91,23 +91,13 @@ def create_flask_app(oauth_client: OAuthClient, port: int):
     return app
 
 
-def register_custom_app(oauth_client: OAuthClient, args: argparse.Namespace) -> tuple[str, str]:
+def register_custom_app(args: argparse.Namespace) -> tuple[str, str]:
     """Creates new Custom OAuth App in Databricks Account"""
-    if not oauth_client.is_aws:
-        logging.error("Not supported for other clouds than AWS")
-        sys.exit(2)
-
     logging.info("No OAuth custom app client/secret provided, creating new app")
-
-    import getpass
 
     from databricks.sdk import AccountClient
 
-    account_client = AccountClient(host="https://accounts.cloud.databricks.com",
-                                   account_id=input("Databricks Account ID: "),
-                                   username=input("Username: "),
-                                   password=getpass.getpass("Password: "),
-                                   )
+    account_client = AccountClient(profile=args.profile)
 
     custom_app = account_client.custom_app_integration.create(
         name=APP_NAME, redirect_urls=[f"http://localhost:{args.port}/callback"], confidential=True,
@@ -129,7 +119,7 @@ def init_oauth_config(args) -> OAuthClient:
                                scopes=["all-apis"],
                                )
     if not oauth_client.client_id:
-        client_id, client_secret = register_custom_app(oauth_client, args)
+        client_id, client_secret = register_custom_app(args)
         oauth_client.client_id = client_id
         oauth_client.client_secret = client_secret
 
@@ -139,10 +129,11 @@ def init_oauth_config(args) -> OAuthClient:
 def parse_arguments() -> argparse.Namespace:
     """Parses arguments for this demo"""
     parser = argparse.ArgumentParser(prog=APP_NAME, description=__doc__.strip())
-    parser.add_argument("host")
+    parser.add_argument("--host")
     for flag in ["client_id", "client_secret"]:
         parser.add_argument(f"--{flag}")
     parser.add_argument("--port", default=5001, type=int)
+    parser.add_argument("--profile", default="DEFAULT", help="Databricks account profile to use for authentication.")
     return parser.parse_args()
 
 
@@ -155,7 +146,7 @@ if __name__ == "__main__":
 
     args = parse_arguments()
     oauth_cfg = init_oauth_config(args)
-    app = create_flask_app(oauth_cfg, args.port)
+    app = create_flask_app(oauth_cfg)
 
     app.run(
         host="localhost",

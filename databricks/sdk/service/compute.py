@@ -389,6 +389,23 @@ class ClientsTypes:
 
 
 @dataclass
+class CloneCluster:
+    source_cluster_id: str
+    """The cluster that is being cloned."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CloneCluster into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.source_cluster_id is not None: body['source_cluster_id'] = self.source_cluster_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> CloneCluster:
+        """Deserializes the CloneCluster from a dictionary."""
+        return cls(source_cluster_id=d.get('source_cluster_id', None))
+
+
+@dataclass
 class CloudProviderNodeInfo:
     status: Optional[List[CloudProviderNodeStatus]] = None
 
@@ -512,10 +529,6 @@ class ClusterAttributes:
     """Cluster name requested by the user. This doesn't have to be unique. If not specified at
     creation, the cluster name will be an empty string."""
 
-    cluster_source: Optional[ClusterSource] = None
-    """Determines whether the cluster was created by a user through the UI, created by the Databricks
-    Jobs Scheduler, or through an API request. This is the same as cluster_creator, but read only."""
-
     custom_tags: Optional[Dict[str, str]] = None
     """Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
     instances and EBS volumes) with these tags in addition to `default_tags`. Notes:
@@ -534,11 +547,16 @@ class ClusterAttributes:
     features and data governance features are available in this mode. * `USER_ISOLATION`: A secure
     cluster that can be shared by multiple users. Cluster users are fully isolated so that they
     cannot see each other's data and credentials. Most data governance features are supported in
-    this mode. But programming languages and cluster features might be limited. *
-    `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *
+    this mode. But programming languages and cluster features might be limited.
+    
+    The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
+    future Databricks Runtime versions:
+    
+    * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *
     `LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy Passthrough on high
     concurrency clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
-    Passthrough on standard clusters."""
+    Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This mode provides a way that
+    doesn’t have UC nor passthrough enabled."""
 
     docker_image: Optional[DockerImage] = None
 
@@ -620,7 +638,6 @@ class ClusterAttributes:
         if self.azure_attributes: body['azure_attributes'] = self.azure_attributes.as_dict()
         if self.cluster_log_conf: body['cluster_log_conf'] = self.cluster_log_conf.as_dict()
         if self.cluster_name is not None: body['cluster_name'] = self.cluster_name
-        if self.cluster_source is not None: body['cluster_source'] = self.cluster_source.value
         if self.custom_tags: body['custom_tags'] = self.custom_tags
         if self.data_security_mode is not None: body['data_security_mode'] = self.data_security_mode.value
         if self.docker_image: body['docker_image'] = self.docker_image.as_dict()
@@ -652,7 +669,6 @@ class ClusterAttributes:
                    azure_attributes=_from_dict(d, 'azure_attributes', AzureAttributes),
                    cluster_log_conf=_from_dict(d, 'cluster_log_conf', ClusterLogConf),
                    cluster_name=d.get('cluster_name', None),
-                   cluster_source=_enum(d, 'cluster_source', ClusterSource),
                    custom_tags=d.get('custom_tags', None),
                    data_security_mode=_enum(d, 'data_security_mode', DataSecurityMode),
                    docker_image=_from_dict(d, 'docker_image', DockerImage),
@@ -746,11 +762,16 @@ class ClusterDetails:
     features and data governance features are available in this mode. * `USER_ISOLATION`: A secure
     cluster that can be shared by multiple users. Cluster users are fully isolated so that they
     cannot see each other's data and credentials. Most data governance features are supported in
-    this mode. But programming languages and cluster features might be limited. *
-    `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *
+    this mode. But programming languages and cluster features might be limited.
+    
+    The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
+    future Databricks Runtime versions:
+    
+    * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *
     `LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy Passthrough on high
     concurrency clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
-    Passthrough on standard clusters."""
+    Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This mode provides a way that
+    doesn’t have UC nor passthrough enabled."""
 
     default_tags: Optional[Dict[str, str]] = None
     """Tags that are added by Databricks regardless of any `custom_tags`, including:
@@ -865,7 +886,7 @@ class ClusterDetails:
     """The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of available Spark versions can
     be retrieved by using the :method:clusters/sparkVersions API call."""
 
-    spec: Optional[CreateCluster] = None
+    spec: Optional[ClusterSpec] = None
     """`spec` contains a snapshot of the field values that were used to create or edit this cluster.
     The contents of `spec` can be used in the body of a create cluster request. This field might not
     be populated for older clusters. Note: not included in the response of the ListClusters API."""
@@ -988,7 +1009,7 @@ class ClusterDetails:
                    spark_context_id=d.get('spark_context_id', None),
                    spark_env_vars=d.get('spark_env_vars', None),
                    spark_version=d.get('spark_version', None),
-                   spec=_from_dict(d, 'spec', CreateCluster),
+                   spec=_from_dict(d, 'spec', ClusterSpec),
                    ssh_public_keys=d.get('ssh_public_keys', None),
                    start_time=d.get('start_time', None),
                    state=_enum(d, 'state', State),
@@ -1401,6 +1422,8 @@ class ClusterSource(Enum):
 @dataclass
 class ClusterSpec:
     apply_policy_default_values: Optional[bool] = None
+    """When set to true, fixed and default values from the policy will be used for fields that are
+    omitted. When set to false, only fixed values from the policy will be applied."""
 
     autoscale: Optional[AutoScale] = None
     """Parameters needed in order to automatically scale clusters up and down based on load. Note:
@@ -1431,10 +1454,6 @@ class ClusterSpec:
     """Cluster name requested by the user. This doesn't have to be unique. If not specified at
     creation, the cluster name will be an empty string."""
 
-    cluster_source: Optional[ClusterSource] = None
-    """Determines whether the cluster was created by a user through the UI, created by the Databricks
-    Jobs Scheduler, or through an API request. This is the same as cluster_creator, but read only."""
-
     custom_tags: Optional[Dict[str, str]] = None
     """Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
     instances and EBS volumes) with these tags in addition to `default_tags`. Notes:
@@ -1453,11 +1472,16 @@ class ClusterSpec:
     features and data governance features are available in this mode. * `USER_ISOLATION`: A secure
     cluster that can be shared by multiple users. Cluster users are fully isolated so that they
     cannot see each other's data and credentials. Most data governance features are supported in
-    this mode. But programming languages and cluster features might be limited. *
-    `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *
+    this mode. But programming languages and cluster features might be limited.
+    
+    The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
+    future Databricks Runtime versions:
+    
+    * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *
     `LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy Passthrough on high
     concurrency clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
-    Passthrough on standard clusters."""
+    Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This mode provides a way that
+    doesn’t have UC nor passthrough enabled."""
 
     docker_image: Optional[DockerImage] = None
 
@@ -1556,7 +1580,6 @@ class ClusterSpec:
         if self.azure_attributes: body['azure_attributes'] = self.azure_attributes.as_dict()
         if self.cluster_log_conf: body['cluster_log_conf'] = self.cluster_log_conf.as_dict()
         if self.cluster_name is not None: body['cluster_name'] = self.cluster_name
-        if self.cluster_source is not None: body['cluster_source'] = self.cluster_source.value
         if self.custom_tags: body['custom_tags'] = self.custom_tags
         if self.data_security_mode is not None: body['data_security_mode'] = self.data_security_mode.value
         if self.docker_image: body['docker_image'] = self.docker_image.as_dict()
@@ -1591,7 +1614,6 @@ class ClusterSpec:
                    azure_attributes=_from_dict(d, 'azure_attributes', AzureAttributes),
                    cluster_log_conf=_from_dict(d, 'cluster_log_conf', ClusterLogConf),
                    cluster_name=d.get('cluster_name', None),
-                   cluster_source=_enum(d, 'cluster_source', ClusterSource),
                    custom_tags=d.get('custom_tags', None),
                    data_security_mode=_enum(d, 'data_security_mode', DataSecurityMode),
                    docker_image=_from_dict(d, 'docker_image', DockerImage),
@@ -1679,29 +1701,6 @@ class CommandStatusResponse:
                    status=_enum(d, 'status', CommandStatus))
 
 
-@dataclass
-class ComputeSpec:
-    kind: Optional[ComputeSpecKind] = None
-    """The kind of compute described by this compute specification."""
-
-    def as_dict(self) -> dict:
-        """Serializes the ComputeSpec into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.kind is not None: body['kind'] = self.kind.value
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ComputeSpec:
-        """Deserializes the ComputeSpec from a dictionary."""
-        return cls(kind=_enum(d, 'kind', ComputeSpecKind))
-
-
-class ComputeSpecKind(Enum):
-    """The kind of compute described by this compute specification."""
-
-    SERVERLESS_PREVIEW = 'SERVERLESS_PREVIEW'
-
-
 class ContextStatus(Enum):
 
     ERROR = 'Error'
@@ -1735,6 +1734,8 @@ class CreateCluster:
     be retrieved by using the :method:clusters/sparkVersions API call."""
 
     apply_policy_default_values: Optional[bool] = None
+    """When set to true, fixed and default values from the policy will be used for fields that are
+    omitted. When set to false, only fixed values from the policy will be applied."""
 
     autoscale: Optional[AutoScale] = None
     """Parameters needed in order to automatically scale clusters up and down based on load. Note:
@@ -1754,6 +1755,10 @@ class CreateCluster:
     """Attributes related to clusters running on Microsoft Azure. If not specified at cluster creation,
     a set of default values will be used."""
 
+    clone_from: Optional[CloneCluster] = None
+    """When specified, this clones libraries from a source cluster during the creation of a new
+    cluster."""
+
     cluster_log_conf: Optional[ClusterLogConf] = None
     """The configuration for delivering spark logs to a long-term storage destination. Two kinds of
     destinations (dbfs and s3) are supported. Only one destination can be specified for one cluster.
@@ -1764,10 +1769,6 @@ class CreateCluster:
     cluster_name: Optional[str] = None
     """Cluster name requested by the user. This doesn't have to be unique. If not specified at
     creation, the cluster name will be an empty string."""
-
-    cluster_source: Optional[ClusterSource] = None
-    """Determines whether the cluster was created by a user through the UI, created by the Databricks
-    Jobs Scheduler, or through an API request. This is the same as cluster_creator, but read only."""
 
     custom_tags: Optional[Dict[str, str]] = None
     """Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
@@ -1787,11 +1788,16 @@ class CreateCluster:
     features and data governance features are available in this mode. * `USER_ISOLATION`: A secure
     cluster that can be shared by multiple users. Cluster users are fully isolated so that they
     cannot see each other's data and credentials. Most data governance features are supported in
-    this mode. But programming languages and cluster features might be limited. *
-    `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *
+    this mode. But programming languages and cluster features might be limited.
+    
+    The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
+    future Databricks Runtime versions:
+    
+    * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *
     `LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy Passthrough on high
     concurrency clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
-    Passthrough on standard clusters."""
+    Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This mode provides a way that
+    doesn’t have UC nor passthrough enabled."""
 
     docker_image: Optional[DockerImage] = None
 
@@ -1884,9 +1890,9 @@ class CreateCluster:
             body['autotermination_minutes'] = self.autotermination_minutes
         if self.aws_attributes: body['aws_attributes'] = self.aws_attributes.as_dict()
         if self.azure_attributes: body['azure_attributes'] = self.azure_attributes.as_dict()
+        if self.clone_from: body['clone_from'] = self.clone_from.as_dict()
         if self.cluster_log_conf: body['cluster_log_conf'] = self.cluster_log_conf.as_dict()
         if self.cluster_name is not None: body['cluster_name'] = self.cluster_name
-        if self.cluster_source is not None: body['cluster_source'] = self.cluster_source.value
         if self.custom_tags: body['custom_tags'] = self.custom_tags
         if self.data_security_mode is not None: body['data_security_mode'] = self.data_security_mode.value
         if self.docker_image: body['docker_image'] = self.docker_image.as_dict()
@@ -1919,9 +1925,9 @@ class CreateCluster:
                    autotermination_minutes=d.get('autotermination_minutes', None),
                    aws_attributes=_from_dict(d, 'aws_attributes', AwsAttributes),
                    azure_attributes=_from_dict(d, 'azure_attributes', AzureAttributes),
+                   clone_from=_from_dict(d, 'clone_from', CloneCluster),
                    cluster_log_conf=_from_dict(d, 'cluster_log_conf', ClusterLogConf),
                    cluster_name=d.get('cluster_name', None),
-                   cluster_source=_enum(d, 'cluster_source', ClusterSource),
                    custom_tags=d.get('custom_tags', None),
                    data_security_mode=_enum(d, 'data_security_mode', DataSecurityMode),
                    docker_image=_from_dict(d, 'docker_image', DockerImage),
@@ -2259,14 +2265,20 @@ class DataSecurityMode(Enum):
     features and data governance features are available in this mode. * `USER_ISOLATION`: A secure
     cluster that can be shared by multiple users. Cluster users are fully isolated so that they
     cannot see each other's data and credentials. Most data governance features are supported in
-    this mode. But programming languages and cluster features might be limited. *
-    `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *
+    this mode. But programming languages and cluster features might be limited.
+    
+    The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
+    future Databricks Runtime versions:
+    
+    * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *
     `LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy Passthrough on high
     concurrency clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
-    Passthrough on standard clusters."""
+    Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This mode provides a way that
+    doesn’t have UC nor passthrough enabled."""
 
     LEGACY_PASSTHROUGH = 'LEGACY_PASSTHROUGH'
     LEGACY_SINGLE_USER = 'LEGACY_SINGLE_USER'
+    LEGACY_SINGLE_USER_STANDARD = 'LEGACY_SINGLE_USER_STANDARD'
     LEGACY_TABLE_ACL = 'LEGACY_TABLE_ACL'
     NONE = 'NONE'
     SINGLE_USER = 'SINGLE_USER'
@@ -2573,6 +2585,8 @@ class EditCluster:
     be retrieved by using the :method:clusters/sparkVersions API call."""
 
     apply_policy_default_values: Optional[bool] = None
+    """When set to true, fixed and default values from the policy will be used for fields that are
+    omitted. When set to false, only fixed values from the policy will be applied."""
 
     autoscale: Optional[AutoScale] = None
     """Parameters needed in order to automatically scale clusters up and down based on load. Note:
@@ -2603,10 +2617,6 @@ class EditCluster:
     """Cluster name requested by the user. This doesn't have to be unique. If not specified at
     creation, the cluster name will be an empty string."""
 
-    cluster_source: Optional[ClusterSource] = None
-    """Determines whether the cluster was created by a user through the UI, created by the Databricks
-    Jobs Scheduler, or through an API request. This is the same as cluster_creator, but read only."""
-
     custom_tags: Optional[Dict[str, str]] = None
     """Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
     instances and EBS volumes) with these tags in addition to `default_tags`. Notes:
@@ -2625,11 +2635,16 @@ class EditCluster:
     features and data governance features are available in this mode. * `USER_ISOLATION`: A secure
     cluster that can be shared by multiple users. Cluster users are fully isolated so that they
     cannot see each other's data and credentials. Most data governance features are supported in
-    this mode. But programming languages and cluster features might be limited. *
-    `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *
+    this mode. But programming languages and cluster features might be limited.
+    
+    The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
+    future Databricks Runtime versions:
+    
+    * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *
     `LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy Passthrough on high
     concurrency clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
-    Passthrough on standard clusters."""
+    Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This mode provides a way that
+    doesn’t have UC nor passthrough enabled."""
 
     docker_image: Optional[DockerImage] = None
 
@@ -2725,7 +2740,6 @@ class EditCluster:
         if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
         if self.cluster_log_conf: body['cluster_log_conf'] = self.cluster_log_conf.as_dict()
         if self.cluster_name is not None: body['cluster_name'] = self.cluster_name
-        if self.cluster_source is not None: body['cluster_source'] = self.cluster_source.value
         if self.custom_tags: body['custom_tags'] = self.custom_tags
         if self.data_security_mode is not None: body['data_security_mode'] = self.data_security_mode.value
         if self.docker_image: body['docker_image'] = self.docker_image.as_dict()
@@ -2761,7 +2775,6 @@ class EditCluster:
                    cluster_id=d.get('cluster_id', None),
                    cluster_log_conf=_from_dict(d, 'cluster_log_conf', ClusterLogConf),
                    cluster_name=d.get('cluster_name', None),
-                   cluster_source=_enum(d, 'cluster_source', ClusterSource),
                    custom_tags=d.get('custom_tags', None),
                    data_security_mode=_enum(d, 'data_security_mode', DataSecurityMode),
                    docker_image=_from_dict(d, 'docker_image', DockerImage),
@@ -2967,6 +2980,38 @@ class EditResponse:
     def from_dict(cls, d: Dict[str, any]) -> EditResponse:
         """Deserializes the EditResponse from a dictionary."""
         return cls()
+
+
+@dataclass
+class Environment:
+    """The a environment entity used to preserve serverless environment side panel and jobs'
+    environment for non-notebook task. In this minimal environment spec, only pip dependencies are
+    supported. Next ID: 5"""
+
+    client: str
+    """Client version used by the environment The client is the user-facing environment of the runtime.
+    Each client comes with a specific set of pre-installed libraries. The version is a string,
+    consisting of the major client version."""
+
+    dependencies: Optional[List[str]] = None
+    """List of pip dependencies, as supported by the version of pip in this environment. Each
+    dependency is a pip requirement file line
+    https://pip.pypa.io/en/stable/reference/requirements-file-format/ Allowed dependency could be
+    <requirement specifier>, <archive url/path>, <local project path>(WSFS or Volumes in
+    Databricks), <vcs project url> E.g. dependencies: ["foo==0.0.1", "-r
+    /Workspace/test/requirements.txt"]"""
+
+    def as_dict(self) -> dict:
+        """Serializes the Environment into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.client is not None: body['client'] = self.client
+        if self.dependencies: body['dependencies'] = [v for v in self.dependencies]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> Environment:
+        """Deserializes the Environment from a dictionary."""
+        return cls(client=d.get('client', None), dependencies=d.get('dependencies', None))
 
 
 @dataclass
@@ -4180,7 +4225,14 @@ class InstancePoolGcpAttributes:
     be of a form like "us-west1-a". The provided availability zone must be in the same region as the
     Databricks workspace. For example, "us-west1-a" is not a valid zone id if the Databricks
     workspace resides in the "us-east1" region. This is an optional field at instance pool creation,
-    and if not specified, a default zone will be used."""
+    and if not specified, a default zone will be used.
+    
+    This field can be one of the following: - "HA" => High availability, spread nodes across
+    availability zones for a Databricks deployment region - A GCP availability zone => Pick One of
+    the available zones for (machine type + region) from
+    https://cloud.google.com/compute/docs/regions-zones (e.g. "us-west1-a").
+    
+    If empty, Databricks picks an availability zone to schedule the cluster on."""
 
     def as_dict(self) -> dict:
         """Serializes the InstancePoolGcpAttributes into a dictionary suitable for use as a JSON request body."""
@@ -4410,16 +4462,18 @@ class Library:
     """Specification of a CRAN library to be installed as part of the library"""
 
     egg: Optional[str] = None
-    """URI of the egg to be installed. Currently only DBFS and S3 URIs are supported. For example: `{
-    "egg": "dbfs:/my/egg" }` or `{ "egg": "s3://my-bucket/egg" }`. If S3 is used, please make sure
-    the cluster has read access on the library. You may need to launch the cluster with an IAM role
-    to access the S3 URI."""
+    """URI of the egg library to install. Supported URIs include Workspace paths, Unity Catalog Volumes
+    paths, and S3 URIs. For example: `{ "egg": "/Workspace/path/to/library.egg" }`, `{ "egg" :
+    "/Volumes/path/to/library.egg" }` or `{ "egg": "s3://my-bucket/library.egg" }`. If S3 is used,
+    please make sure the cluster has read access on the library. You may need to launch the cluster
+    with an IAM role to access the S3 URI."""
 
     jar: Optional[str] = None
-    """URI of the jar to be installed. Currently only DBFS and S3 URIs are supported. For example: `{
-    "jar": "dbfs:/mnt/databricks/library.jar" }` or `{ "jar": "s3://my-bucket/library.jar" }`. If S3
-    is used, please make sure the cluster has read access on the library. You may need to launch the
-    cluster with an IAM role to access the S3 URI."""
+    """URI of the JAR library to install. Supported URIs include Workspace paths, Unity Catalog Volumes
+    paths, and S3 URIs. For example: `{ "jar": "/Workspace/path/to/library.jar" }`, `{ "jar" :
+    "/Volumes/path/to/library.jar" }` or `{ "jar": "s3://my-bucket/library.jar" }`. If S3 is used,
+    please make sure the cluster has read access on the library. You may need to launch the cluster
+    with an IAM role to access the S3 URI."""
 
     maven: Optional[MavenLibrary] = None
     """Specification of a maven library to be installed. For example: `{ "coordinates":
@@ -4428,10 +4482,17 @@ class Library:
     pypi: Optional[PythonPyPiLibrary] = None
     """Specification of a PyPi library to be installed. For example: `{ "package": "simplejson" }`"""
 
+    requirements: Optional[str] = None
+    """URI of the requirements.txt file to install. Only Workspace paths and Unity Catalog Volumes
+    paths are supported. For example: `{ "requirements": "/Workspace/path/to/requirements.txt" }` or
+    `{ "requirements" : "/Volumes/path/to/requirements.txt" }`"""
+
     whl: Optional[str] = None
-    """URI of the wheel to be installed. For example: `{ "whl": "dbfs:/my/whl" }` or `{ "whl":
-    "s3://my-bucket/whl" }`. If S3 is used, please make sure the cluster has read access on the
-    library. You may need to launch the cluster with an IAM role to access the S3 URI."""
+    """URI of the wheel library to install. Supported URIs include Workspace paths, Unity Catalog
+    Volumes paths, and S3 URIs. For example: `{ "whl": "/Workspace/path/to/library.whl" }`, `{ "whl"
+    : "/Volumes/path/to/library.whl" }` or `{ "whl": "s3://my-bucket/library.whl" }`. If S3 is used,
+    please make sure the cluster has read access on the library. You may need to launch the cluster
+    with an IAM role to access the S3 URI."""
 
     def as_dict(self) -> dict:
         """Serializes the Library into a dictionary suitable for use as a JSON request body."""
@@ -4441,6 +4502,7 @@ class Library:
         if self.jar is not None: body['jar'] = self.jar
         if self.maven: body['maven'] = self.maven.as_dict()
         if self.pypi: body['pypi'] = self.pypi.as_dict()
+        if self.requirements is not None: body['requirements'] = self.requirements
         if self.whl is not None: body['whl'] = self.whl
         return body
 
@@ -4452,11 +4514,14 @@ class Library:
                    jar=d.get('jar', None),
                    maven=_from_dict(d, 'maven', MavenLibrary),
                    pypi=_from_dict(d, 'pypi', PythonPyPiLibrary),
+                   requirements=d.get('requirements', None),
                    whl=d.get('whl', None))
 
 
 @dataclass
 class LibraryFullStatus:
+    """The status of the library on a specific cluster."""
+
     is_library_for_all_clusters: Optional[bool] = None
     """Whether the library was set to be installed on all clusters via the libraries UI."""
 
@@ -4466,7 +4531,7 @@ class LibraryFullStatus:
     messages: Optional[List[str]] = None
     """All the info and warning messages that have occurred so far for this library."""
 
-    status: Optional[LibraryFullStatusStatus] = None
+    status: Optional[LibraryInstallStatus] = None
     """Status of installing the library on the cluster."""
 
     def as_dict(self) -> dict:
@@ -4485,17 +4550,18 @@ class LibraryFullStatus:
         return cls(is_library_for_all_clusters=d.get('is_library_for_all_clusters', None),
                    library=_from_dict(d, 'library', Library),
                    messages=d.get('messages', None),
-                   status=_enum(d, 'status', LibraryFullStatusStatus))
+                   status=_enum(d, 'status', LibraryInstallStatus))
 
 
-class LibraryFullStatusStatus(Enum):
-    """Status of installing the library on the cluster."""
+class LibraryInstallStatus(Enum):
+    """The status of a library on a specific cluster."""
 
     FAILED = 'FAILED'
     INSTALLED = 'INSTALLED'
     INSTALLING = 'INSTALLING'
     PENDING = 'PENDING'
     RESOLVING = 'RESOLVING'
+    RESTORED = 'RESTORED'
     SKIPPED = 'SKIPPED'
     UNINSTALL_ON_RESTART = 'UNINSTALL_ON_RESTART'
 
@@ -6208,9 +6274,9 @@ class ClustersAPI:
                autotermination_minutes: Optional[int] = None,
                aws_attributes: Optional[AwsAttributes] = None,
                azure_attributes: Optional[AzureAttributes] = None,
+               clone_from: Optional[CloneCluster] = None,
                cluster_log_conf: Optional[ClusterLogConf] = None,
                cluster_name: Optional[str] = None,
-               cluster_source: Optional[ClusterSource] = None,
                custom_tags: Optional[Dict[str, str]] = None,
                data_security_mode: Optional[DataSecurityMode] = None,
                docker_image: Optional[DockerImage] = None,
@@ -6243,6 +6309,8 @@ class ClustersAPI:
           The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of available Spark versions can be
           retrieved by using the :method:clusters/sparkVersions API call.
         :param apply_policy_default_values: bool (optional)
+          When set to true, fixed and default values from the policy will be used for fields that are omitted.
+          When set to false, only fixed values from the policy will be applied.
         :param autoscale: :class:`AutoScale` (optional)
           Parameters needed in order to automatically scale clusters up and down based on load. Note:
           autoscaling works best with DB runtime versions 3.0 or later.
@@ -6256,6 +6324,8 @@ class ClustersAPI:
         :param azure_attributes: :class:`AzureAttributes` (optional)
           Attributes related to clusters running on Microsoft Azure. If not specified at cluster creation, a
           set of default values will be used.
+        :param clone_from: :class:`CloneCluster` (optional)
+          When specified, this clones libraries from a source cluster during the creation of a new cluster.
         :param cluster_log_conf: :class:`ClusterLogConf` (optional)
           The configuration for delivering spark logs to a long-term storage destination. Two kinds of
           destinations (dbfs and s3) are supported. Only one destination can be specified for one cluster. If
@@ -6265,9 +6335,6 @@ class ClustersAPI:
         :param cluster_name: str (optional)
           Cluster name requested by the user. This doesn't have to be unique. If not specified at creation,
           the cluster name will be an empty string.
-        :param cluster_source: :class:`ClusterSource` (optional)
-          Determines whether the cluster was created by a user through the UI, created by the Databricks Jobs
-          Scheduler, or through an API request. This is the same as cluster_creator, but read only.
         :param custom_tags: Dict[str,str] (optional)
           Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
           instances and EBS volumes) with these tags in addition to `default_tags`. Notes:
@@ -6284,10 +6351,16 @@ class ClustersAPI:
           governance features are available in this mode. * `USER_ISOLATION`: A secure cluster that can be
           shared by multiple users. Cluster users are fully isolated so that they cannot see each other's data
           and credentials. Most data governance features are supported in this mode. But programming languages
-          and cluster features might be limited. * `LEGACY_TABLE_ACL`: This mode is for users migrating from
-          legacy Table ACL clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy
-          Passthrough on high concurrency clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating
-          from legacy Passthrough on standard clusters.
+          and cluster features might be limited.
+          
+          The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
+          future Databricks Runtime versions:
+          
+          * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *
+          `LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy Passthrough on high concurrency
+          clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy Passthrough on
+          standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This mode provides a way that doesn’t have UC
+          nor passthrough enabled.
         :param docker_image: :class:`DockerImage` (optional)
         :param driver_instance_pool_id: str (optional)
           The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster uses
@@ -6364,9 +6437,9 @@ class ClustersAPI:
         if autotermination_minutes is not None: body['autotermination_minutes'] = autotermination_minutes
         if aws_attributes is not None: body['aws_attributes'] = aws_attributes.as_dict()
         if azure_attributes is not None: body['azure_attributes'] = azure_attributes.as_dict()
+        if clone_from is not None: body['clone_from'] = clone_from.as_dict()
         if cluster_log_conf is not None: body['cluster_log_conf'] = cluster_log_conf.as_dict()
         if cluster_name is not None: body['cluster_name'] = cluster_name
-        if cluster_source is not None: body['cluster_source'] = cluster_source.value
         if custom_tags is not None: body['custom_tags'] = custom_tags
         if data_security_mode is not None: body['data_security_mode'] = data_security_mode.value
         if docker_image is not None: body['docker_image'] = docker_image.as_dict()
@@ -6404,9 +6477,9 @@ class ClustersAPI:
         autotermination_minutes: Optional[int] = None,
         aws_attributes: Optional[AwsAttributes] = None,
         azure_attributes: Optional[AzureAttributes] = None,
+        clone_from: Optional[CloneCluster] = None,
         cluster_log_conf: Optional[ClusterLogConf] = None,
         cluster_name: Optional[str] = None,
-        cluster_source: Optional[ClusterSource] = None,
         custom_tags: Optional[Dict[str, str]] = None,
         data_security_mode: Optional[DataSecurityMode] = None,
         docker_image: Optional[DockerImage] = None,
@@ -6432,9 +6505,9 @@ class ClustersAPI:
                            autotermination_minutes=autotermination_minutes,
                            aws_attributes=aws_attributes,
                            azure_attributes=azure_attributes,
+                           clone_from=clone_from,
                            cluster_log_conf=cluster_log_conf,
                            cluster_name=cluster_name,
-                           cluster_source=cluster_source,
                            custom_tags=custom_tags,
                            data_security_mode=data_security_mode,
                            docker_image=docker_image,
@@ -6493,7 +6566,6 @@ class ClustersAPI:
              azure_attributes: Optional[AzureAttributes] = None,
              cluster_log_conf: Optional[ClusterLogConf] = None,
              cluster_name: Optional[str] = None,
-             cluster_source: Optional[ClusterSource] = None,
              custom_tags: Optional[Dict[str, str]] = None,
              data_security_mode: Optional[DataSecurityMode] = None,
              docker_image: Optional[DockerImage] = None,
@@ -6533,6 +6605,8 @@ class ClustersAPI:
           The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of available Spark versions can be
           retrieved by using the :method:clusters/sparkVersions API call.
         :param apply_policy_default_values: bool (optional)
+          When set to true, fixed and default values from the policy will be used for fields that are omitted.
+          When set to false, only fixed values from the policy will be applied.
         :param autoscale: :class:`AutoScale` (optional)
           Parameters needed in order to automatically scale clusters up and down based on load. Note:
           autoscaling works best with DB runtime versions 3.0 or later.
@@ -6555,9 +6629,6 @@ class ClustersAPI:
         :param cluster_name: str (optional)
           Cluster name requested by the user. This doesn't have to be unique. If not specified at creation,
           the cluster name will be an empty string.
-        :param cluster_source: :class:`ClusterSource` (optional)
-          Determines whether the cluster was created by a user through the UI, created by the Databricks Jobs
-          Scheduler, or through an API request. This is the same as cluster_creator, but read only.
         :param custom_tags: Dict[str,str] (optional)
           Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
           instances and EBS volumes) with these tags in addition to `default_tags`. Notes:
@@ -6574,10 +6645,16 @@ class ClustersAPI:
           governance features are available in this mode. * `USER_ISOLATION`: A secure cluster that can be
           shared by multiple users. Cluster users are fully isolated so that they cannot see each other's data
           and credentials. Most data governance features are supported in this mode. But programming languages
-          and cluster features might be limited. * `LEGACY_TABLE_ACL`: This mode is for users migrating from
-          legacy Table ACL clusters. * `LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy
-          Passthrough on high concurrency clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating
-          from legacy Passthrough on standard clusters.
+          and cluster features might be limited.
+          
+          The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
+          future Databricks Runtime versions:
+          
+          * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *
+          `LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy Passthrough on high concurrency
+          clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy Passthrough on
+          standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This mode provides a way that doesn’t have UC
+          nor passthrough enabled.
         :param docker_image: :class:`DockerImage` (optional)
         :param driver_instance_pool_id: str (optional)
           The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster uses
@@ -6657,7 +6734,6 @@ class ClustersAPI:
         if cluster_id is not None: body['cluster_id'] = cluster_id
         if cluster_log_conf is not None: body['cluster_log_conf'] = cluster_log_conf.as_dict()
         if cluster_name is not None: body['cluster_name'] = cluster_name
-        if cluster_source is not None: body['cluster_source'] = cluster_source.value
         if custom_tags is not None: body['custom_tags'] = custom_tags
         if data_security_mode is not None: body['data_security_mode'] = data_security_mode.value
         if docker_image is not None: body['docker_image'] = docker_image.as_dict()
@@ -6698,7 +6774,6 @@ class ClustersAPI:
         azure_attributes: Optional[AzureAttributes] = None,
         cluster_log_conf: Optional[ClusterLogConf] = None,
         cluster_name: Optional[str] = None,
-        cluster_source: Optional[ClusterSource] = None,
         custom_tags: Optional[Dict[str, str]] = None,
         data_security_mode: Optional[DataSecurityMode] = None,
         docker_image: Optional[DockerImage] = None,
@@ -6727,7 +6802,6 @@ class ClustersAPI:
                          cluster_id=cluster_id,
                          cluster_log_conf=cluster_log_conf,
                          cluster_name=cluster_name,
-                         cluster_source=cluster_source,
                          custom_tags=custom_tags,
                          data_security_mode=data_security_mode,
                          docker_image=docker_image,
@@ -8015,15 +8089,12 @@ class LibrariesAPI:
     cluster.
     
     To make third-party or custom code available to notebooks and jobs running on your clusters, you can
-    install a library. Libraries can be written in Python, Java, Scala, and R. You can upload Java, Scala, and
-    Python libraries and point to external packages in PyPI, Maven, and CRAN repositories.
+    install a library. Libraries can be written in Python, Java, Scala, and R. You can upload Python, Java,
+    Scala and R libraries and point to external packages in PyPI, Maven, and CRAN repositories.
     
     Cluster libraries can be used by all notebooks running on a cluster. You can install a cluster library
     directly from a public repository such as PyPI or Maven, using a previously installed workspace library,
     or using an init script.
-    
-    When you install a library on a cluster, a notebook already attached to that cluster will not immediately
-    see the new library. You must first detach and then reattach the notebook to the cluster.
     
     When you uninstall a library from a cluster, the library is removed only when you restart the cluster.
     Until you restart the cluster, the status of the uninstalled library appears as Uninstall pending restart."""
@@ -8031,36 +8102,29 @@ class LibrariesAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def all_cluster_statuses(self) -> ListAllClusterLibraryStatusesResponse:
+    def all_cluster_statuses(self) -> Iterator[ClusterLibraryStatuses]:
         """Get all statuses.
         
-        Get the status of all libraries on all clusters. A status will be available for all libraries
-        installed on this cluster via the API or the libraries UI as well as libraries set to be installed on
-        all clusters via the libraries UI.
+        Get the status of all libraries on all clusters. A status is returned for all libraries installed on
+        this cluster via the API or the libraries UI.
         
-        :returns: :class:`ListAllClusterLibraryStatusesResponse`
+        :returns: Iterator over :class:`ClusterLibraryStatuses`
         """
 
         headers = {'Accept': 'application/json', }
 
-        res = self._api.do('GET', '/api/2.0/libraries/all-cluster-statuses', headers=headers)
-        return ListAllClusterLibraryStatusesResponse.from_dict(res)
+        json = self._api.do('GET', '/api/2.0/libraries/all-cluster-statuses', headers=headers)
+        parsed = ListAllClusterLibraryStatusesResponse.from_dict(json).statuses
+        return parsed if parsed is not None else []
 
     def cluster_status(self, cluster_id: str) -> Iterator[LibraryFullStatus]:
         """Get status.
         
-        Get the status of libraries on a cluster. A status will be available for all libraries installed on
-        this cluster via the API or the libraries UI as well as libraries set to be installed on all clusters
-        via the libraries UI. The order of returned libraries will be as follows.
-        
-        1. Libraries set to be installed on this cluster will be returned first. Within this group, the final
-        order will be order in which the libraries were added to the cluster.
-        
-        2. Libraries set to be installed on all clusters are returned next. Within this group there is no
-        order guarantee.
-        
-        3. Libraries that were previously requested on this cluster or on all clusters, but now marked for
-        removal. Within this group there is no order guarantee.
+        Get the status of libraries on a cluster. A status is returned for all libraries installed on this
+        cluster via the API or the libraries UI. The order of returned libraries is as follows: 1. Libraries
+        set to be installed on this cluster, in the order that the libraries were added to the cluster, are
+        returned first. 2. Libraries that were previously requested to be installed on this cluster or, but
+        are now marked for removal, in no particular order, are returned last.
         
         :param cluster_id: str
           Unique identifier of the cluster whose status should be retrieved.
@@ -8079,11 +8143,8 @@ class LibrariesAPI:
     def install(self, cluster_id: str, libraries: List[Library]):
         """Add a library.
         
-        Add libraries to be installed on a cluster. The installation is asynchronous; it happens in the
-        background after the completion of this request.
-        
-        **Note**: The actual set of libraries to be installed on a cluster is the union of the libraries
-        specified via this method and the libraries set to be installed on all clusters via the libraries UI.
+        Add libraries to install on a cluster. The installation is asynchronous; it happens in the background
+        after the completion of this request.
         
         :param cluster_id: str
           Unique identifier for the cluster on which to install these libraries.
@@ -8102,9 +8163,8 @@ class LibrariesAPI:
     def uninstall(self, cluster_id: str, libraries: List[Library]):
         """Uninstall libraries.
         
-        Set libraries to be uninstalled on a cluster. The libraries won't be uninstalled until the cluster is
-        restarted. Uninstalling libraries that are not installed on the cluster will have no impact but is not
-        an error.
+        Set libraries to uninstall from a cluster. The libraries won't be uninstalled until the cluster is
+        restarted. A request to uninstall a library that is not currently installed is ignored.
         
         :param cluster_id: str
           Unique identifier for the cluster on which to uninstall these libraries.

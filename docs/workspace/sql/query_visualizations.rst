@@ -36,7 +36,7 @@
         
         
 
-    .. py:method:: update(id: str [, created_at: Optional[str], description: Optional[str], name: Optional[str], options: Optional[Any], type: Optional[str], updated_at: Optional[str]]) -> Visualization
+    .. py:method:: update(id: str [, created_at: Optional[str], description: Optional[str], name: Optional[str], options: Optional[Any], query: Optional[Query], type: Optional[str], updated_at: Optional[str]]) -> Visualization
 
         Edit existing visualization.
         
@@ -50,6 +50,7 @@
         :param options: Any (optional)
           The options object varies widely from one visualization type to the next and is unsupported.
           Databricks does not recommend modifying visualization settings in JSON.
+        :param query: :class:`Query` (optional)
         :param type: str (optional)
           The type of visualization: chart, table, pivot table, and so on.
         :param updated_at: str (optional)

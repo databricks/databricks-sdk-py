@@ -214,6 +214,70 @@ class ClusterAutoRestartMessageMaintenanceWindowWindowStartTime:
         return cls(hours=d.get('hours', None), minutes=d.get('minutes', None))
 
 
+@dataclass
+class ComplianceSecurityProfile:
+    """SHIELD feature: CSP"""
+
+    compliance_standards: Optional[List[ComplianceStandard]] = None
+    """Set by customers when they request Compliance Security Profile (CSP)"""
+
+    is_enabled: Optional[bool] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ComplianceSecurityProfile into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.compliance_standards:
+            body['compliance_standards'] = [v.value for v in self.compliance_standards]
+        if self.is_enabled is not None: body['is_enabled'] = self.is_enabled
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ComplianceSecurityProfile:
+        """Deserializes the ComplianceSecurityProfile from a dictionary."""
+        return cls(compliance_standards=_repeated_enum(d, 'compliance_standards', ComplianceStandard),
+                   is_enabled=d.get('is_enabled', None))
+
+
+@dataclass
+class ComplianceSecurityProfileSetting:
+    compliance_security_profile_workspace: ComplianceSecurityProfile
+    """SHIELD feature: CSP"""
+
+    etag: Optional[str] = None
+    """etag used for versioning. The response is at least as fresh as the eTag provided. This is used
+    for optimistic concurrency control as a way to help prevent simultaneous writes of a setting
+    overwriting each other. It is strongly suggested that systems make use of the etag in the read
+    -> update pattern to perform setting updates in order to avoid race conditions. That is, get an
+    etag from a GET request, and pass it with the PATCH request to identify the setting version you
+    are updating."""
+
+    setting_name: Optional[str] = None
+    """Name of the corresponding setting. This field is populated in the response, but it will not be
+    respected even if it's set in the request body. The setting name in the path parameter will be
+    respected instead. Setting name is required to be 'default' if the setting only has one instance
+    per workspace."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ComplianceSecurityProfileSetting into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.compliance_security_profile_workspace:
+            body[
+                'compliance_security_profile_workspace'] = self.compliance_security_profile_workspace.as_dict(
+                )
+        if self.etag is not None: body['etag'] = self.etag
+        if self.setting_name is not None: body['setting_name'] = self.setting_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ComplianceSecurityProfileSetting:
+        """Deserializes the ComplianceSecurityProfileSetting from a dictionary."""
+        return cls(compliance_security_profile_workspace=_from_dict(d,
+                                                                    'compliance_security_profile_workspace',
+                                                                    ComplianceSecurityProfile),
+                   etag=d.get('etag', None),
+                   setting_name=d.get('setting_name', None))
+
+
 class ComplianceStandard(Enum):
     """Compliance stardard for SHIELD customers"""
 
@@ -438,32 +502,6 @@ class CreateTokenResponse:
 
 
 @dataclass
-class CspEnablement:
-    """Compliance Security Profile (CSP) - one of the features in ESC product Tracks if the feature is
-    enabled."""
-
-    compliance_standards: Optional[List[ComplianceStandard]] = None
-    """Set by customers when they request Compliance Security Profile (CSP) Invariants are enforced in
-    Settings policy."""
-
-    is_enabled: Optional[bool] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the CspEnablement into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.compliance_standards:
-            body['compliance_standards'] = [v.value for v in self.compliance_standards]
-        if self.is_enabled is not None: body['is_enabled'] = self.is_enabled
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CspEnablement:
-        """Deserializes the CspEnablement from a dictionary."""
-        return cls(compliance_standards=_repeated_enum(d, 'compliance_standards', ComplianceStandard),
-                   is_enabled=d.get('is_enabled', None))
-
-
-@dataclass
 class CspEnablementAccount:
     """Account level policy for CSP"""
 
@@ -520,43 +558,6 @@ class CspEnablementAccountSetting:
     def from_dict(cls, d: Dict[str, any]) -> CspEnablementAccountSetting:
         """Deserializes the CspEnablementAccountSetting from a dictionary."""
         return cls(csp_enablement_account=_from_dict(d, 'csp_enablement_account', CspEnablementAccount),
-                   etag=d.get('etag', None),
-                   setting_name=d.get('setting_name', None))
-
-
-@dataclass
-class CspEnablementSetting:
-    csp_enablement_workspace: CspEnablement
-    """Compliance Security Profile (CSP) - one of the features in ESC product Tracks if the feature is
-    enabled."""
-
-    etag: Optional[str] = None
-    """etag used for versioning. The response is at least as fresh as the eTag provided. This is used
-    for optimistic concurrency control as a way to help prevent simultaneous writes of a setting
-    overwriting each other. It is strongly suggested that systems make use of the etag in the read
-    -> update pattern to perform setting updates in order to avoid race conditions. That is, get an
-    etag from a GET request, and pass it with the PATCH request to identify the setting version you
-    are updating."""
-
-    setting_name: Optional[str] = None
-    """Name of the corresponding setting. This field is populated in the response, but it will not be
-    respected even if it's set in the request body. The setting name in the path parameter will be
-    respected instead. Setting name is required to be 'default' if the setting only has one instance
-    per workspace."""
-
-    def as_dict(self) -> dict:
-        """Serializes the CspEnablementSetting into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.csp_enablement_workspace:
-            body['csp_enablement_workspace'] = self.csp_enablement_workspace.as_dict()
-        if self.etag is not None: body['etag'] = self.etag
-        if self.setting_name is not None: body['setting_name'] = self.setting_name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CspEnablementSetting:
-        """Deserializes the CspEnablementSetting from a dictionary."""
-        return cls(csp_enablement_workspace=_from_dict(d, 'csp_enablement_workspace', CspEnablement),
                    etag=d.get('etag', None),
                    setting_name=d.get('setting_name', None))
 
@@ -704,22 +705,60 @@ class DeleteRestrictWorkspaceAdminsSettingResponse:
 
 
 @dataclass
-class EsmEnablement:
-    """Enhanced Security Monitoring (ESM) - one of the features in ESC product Tracks if the feature is
-    enabled."""
+class EnhancedSecurityMonitoring:
+    """SHIELD feature: ESM"""
 
     is_enabled: Optional[bool] = None
 
     def as_dict(self) -> dict:
-        """Serializes the EsmEnablement into a dictionary suitable for use as a JSON request body."""
+        """Serializes the EnhancedSecurityMonitoring into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.is_enabled is not None: body['is_enabled'] = self.is_enabled
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EsmEnablement:
-        """Deserializes the EsmEnablement from a dictionary."""
+    def from_dict(cls, d: Dict[str, any]) -> EnhancedSecurityMonitoring:
+        """Deserializes the EnhancedSecurityMonitoring from a dictionary."""
         return cls(is_enabled=d.get('is_enabled', None))
+
+
+@dataclass
+class EnhancedSecurityMonitoringSetting:
+    enhanced_security_monitoring_workspace: EnhancedSecurityMonitoring
+    """SHIELD feature: ESM"""
+
+    etag: Optional[str] = None
+    """etag used for versioning. The response is at least as fresh as the eTag provided. This is used
+    for optimistic concurrency control as a way to help prevent simultaneous writes of a setting
+    overwriting each other. It is strongly suggested that systems make use of the etag in the read
+    -> update pattern to perform setting updates in order to avoid race conditions. That is, get an
+    etag from a GET request, and pass it with the PATCH request to identify the setting version you
+    are updating."""
+
+    setting_name: Optional[str] = None
+    """Name of the corresponding setting. This field is populated in the response, but it will not be
+    respected even if it's set in the request body. The setting name in the path parameter will be
+    respected instead. Setting name is required to be 'default' if the setting only has one instance
+    per workspace."""
+
+    def as_dict(self) -> dict:
+        """Serializes the EnhancedSecurityMonitoringSetting into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.enhanced_security_monitoring_workspace:
+            body[
+                'enhanced_security_monitoring_workspace'] = self.enhanced_security_monitoring_workspace.as_dict(
+                )
+        if self.etag is not None: body['etag'] = self.etag
+        if self.setting_name is not None: body['setting_name'] = self.setting_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> EnhancedSecurityMonitoringSetting:
+        """Deserializes the EnhancedSecurityMonitoringSetting from a dictionary."""
+        return cls(enhanced_security_monitoring_workspace=_from_dict(
+            d, 'enhanced_security_monitoring_workspace', EnhancedSecurityMonitoring),
+                   etag=d.get('etag', None),
+                   setting_name=d.get('setting_name', None))
 
 
 @dataclass
@@ -771,43 +810,6 @@ class EsmEnablementAccountSetting:
     def from_dict(cls, d: Dict[str, any]) -> EsmEnablementAccountSetting:
         """Deserializes the EsmEnablementAccountSetting from a dictionary."""
         return cls(esm_enablement_account=_from_dict(d, 'esm_enablement_account', EsmEnablementAccount),
-                   etag=d.get('etag', None),
-                   setting_name=d.get('setting_name', None))
-
-
-@dataclass
-class EsmEnablementSetting:
-    esm_enablement_workspace: EsmEnablement
-    """Enhanced Security Monitoring (ESM) - one of the features in ESC product Tracks if the feature is
-    enabled."""
-
-    etag: Optional[str] = None
-    """etag used for versioning. The response is at least as fresh as the eTag provided. This is used
-    for optimistic concurrency control as a way to help prevent simultaneous writes of a setting
-    overwriting each other. It is strongly suggested that systems make use of the etag in the read
-    -> update pattern to perform setting updates in order to avoid race conditions. That is, get an
-    etag from a GET request, and pass it with the PATCH request to identify the setting version you
-    are updating."""
-
-    setting_name: Optional[str] = None
-    """Name of the corresponding setting. This field is populated in the response, but it will not be
-    respected even if it's set in the request body. The setting name in the path parameter will be
-    respected instead. Setting name is required to be 'default' if the setting only has one instance
-    per workspace."""
-
-    def as_dict(self) -> dict:
-        """Serializes the EsmEnablementSetting into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.esm_enablement_workspace:
-            body['esm_enablement_workspace'] = self.esm_enablement_workspace.as_dict()
-        if self.etag is not None: body['etag'] = self.etag
-        if self.setting_name is not None: body['setting_name'] = self.setting_name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EsmEnablementSetting:
-        """Deserializes the EsmEnablementSetting from a dictionary."""
-        return cls(esm_enablement_workspace=_from_dict(d, 'esm_enablement_workspace', EsmEnablement),
                    etag=d.get('etag', None),
                    setting_name=d.get('setting_name', None))
 
@@ -1989,6 +1991,36 @@ class UpdateAutomaticClusterUpdateSettingRequest:
 
 
 @dataclass
+class UpdateComplianceSecurityProfileSettingRequest:
+    """Details required to update a setting."""
+
+    allow_missing: bool
+    """This should always be set to true for Settings API. Added for AIP compliance."""
+
+    setting: ComplianceSecurityProfileSetting
+
+    field_mask: str
+    """Field mask is required to be passed into the PATCH request. Field mask specifies which fields of
+    the setting payload will be updated. The field mask needs to be supplied as single string. To
+    specify multiple fields in the field mask, use comma as the separator (no space)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateComplianceSecurityProfileSettingRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.allow_missing is not None: body['allow_missing'] = self.allow_missing
+        if self.field_mask is not None: body['field_mask'] = self.field_mask
+        if self.setting: body['setting'] = self.setting.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateComplianceSecurityProfileSettingRequest:
+        """Deserializes the UpdateComplianceSecurityProfileSettingRequest from a dictionary."""
+        return cls(allow_missing=d.get('allow_missing', None),
+                   field_mask=d.get('field_mask', None),
+                   setting=_from_dict(d, 'setting', ComplianceSecurityProfileSetting))
+
+
+@dataclass
 class UpdateCspEnablementAccountSettingRequest:
     """Details required to update a setting."""
 
@@ -2016,36 +2048,6 @@ class UpdateCspEnablementAccountSettingRequest:
         return cls(allow_missing=d.get('allow_missing', None),
                    field_mask=d.get('field_mask', None),
                    setting=_from_dict(d, 'setting', CspEnablementAccountSetting))
-
-
-@dataclass
-class UpdateCspEnablementSettingRequest:
-    """Details required to update a setting."""
-
-    allow_missing: bool
-    """This should always be set to true for Settings API. Added for AIP compliance."""
-
-    setting: CspEnablementSetting
-
-    field_mask: str
-    """Field mask is required to be passed into the PATCH request. Field mask specifies which fields of
-    the setting payload will be updated. The field mask needs to be supplied as single string. To
-    specify multiple fields in the field mask, use comma as the separator (no space)."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateCspEnablementSettingRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.allow_missing is not None: body['allow_missing'] = self.allow_missing
-        if self.field_mask is not None: body['field_mask'] = self.field_mask
-        if self.setting: body['setting'] = self.setting.as_dict()
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateCspEnablementSettingRequest:
-        """Deserializes the UpdateCspEnablementSettingRequest from a dictionary."""
-        return cls(allow_missing=d.get('allow_missing', None),
-                   field_mask=d.get('field_mask', None),
-                   setting=_from_dict(d, 'setting', CspEnablementSetting))
 
 
 @dataclass
@@ -2086,6 +2088,36 @@ class UpdateDefaultNamespaceSettingRequest:
 
 
 @dataclass
+class UpdateEnhancedSecurityMonitoringSettingRequest:
+    """Details required to update a setting."""
+
+    allow_missing: bool
+    """This should always be set to true for Settings API. Added for AIP compliance."""
+
+    setting: EnhancedSecurityMonitoringSetting
+
+    field_mask: str
+    """Field mask is required to be passed into the PATCH request. Field mask specifies which fields of
+    the setting payload will be updated. The field mask needs to be supplied as single string. To
+    specify multiple fields in the field mask, use comma as the separator (no space)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateEnhancedSecurityMonitoringSettingRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.allow_missing is not None: body['allow_missing'] = self.allow_missing
+        if self.field_mask is not None: body['field_mask'] = self.field_mask
+        if self.setting: body['setting'] = self.setting.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateEnhancedSecurityMonitoringSettingRequest:
+        """Deserializes the UpdateEnhancedSecurityMonitoringSettingRequest from a dictionary."""
+        return cls(allow_missing=d.get('allow_missing', None),
+                   field_mask=d.get('field_mask', None),
+                   setting=_from_dict(d, 'setting', EnhancedSecurityMonitoringSetting))
+
+
+@dataclass
 class UpdateEsmEnablementAccountSettingRequest:
     """Details required to update a setting."""
 
@@ -2113,36 +2145,6 @@ class UpdateEsmEnablementAccountSettingRequest:
         return cls(allow_missing=d.get('allow_missing', None),
                    field_mask=d.get('field_mask', None),
                    setting=_from_dict(d, 'setting', EsmEnablementAccountSetting))
-
-
-@dataclass
-class UpdateEsmEnablementSettingRequest:
-    """Details required to update a setting."""
-
-    allow_missing: bool
-    """This should always be set to true for Settings API. Added for AIP compliance."""
-
-    setting: EsmEnablementSetting
-
-    field_mask: str
-    """Field mask is required to be passed into the PATCH request. Field mask specifies which fields of
-    the setting payload will be updated. The field mask needs to be supplied as single string. To
-    specify multiple fields in the field mask, use comma as the separator (no space)."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateEsmEnablementSettingRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.allow_missing is not None: body['allow_missing'] = self.allow_missing
-        if self.field_mask is not None: body['field_mask'] = self.field_mask
-        if self.setting: body['setting'] = self.setting.as_dict()
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateEsmEnablementSettingRequest:
-        """Deserializes the UpdateEsmEnablementSettingRequest from a dictionary."""
-        return cls(allow_missing=d.get('allow_missing', None),
-                   field_mask=d.get('field_mask', None),
-                   setting=_from_dict(d, 'setting', EsmEnablementSetting))
 
 
 @dataclass
@@ -2568,6 +2570,72 @@ class AutomaticClusterUpdateAPI:
         return AutomaticClusterUpdateSetting.from_dict(res)
 
 
+class ComplianceSecurityProfileAPI:
+    """Controls whether to enable the compliance security profile for the current workspace. Enabling it on a
+    workspace is permanent. By default, it is turned off.
+    
+    This settings can NOT be disabled once it is enabled."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def get(self, *, etag: Optional[str] = None) -> ComplianceSecurityProfileSetting:
+        """Get the compliance security profile setting.
+        
+        Gets the compliance security profile setting.
+        
+        :param etag: str (optional)
+          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
+          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
+          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
+          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
+          request, and pass it with the DELETE request to identify the rule set version you are deleting.
+        
+        :returns: :class:`ComplianceSecurityProfileSetting`
+        """
+
+        query = {}
+        if etag is not None: query['etag'] = etag
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do('GET',
+                           '/api/2.0/settings/types/shield_csp_enablement_ws_db/names/default',
+                           query=query,
+                           headers=headers)
+        return ComplianceSecurityProfileSetting.from_dict(res)
+
+    def update(self, allow_missing: bool, setting: ComplianceSecurityProfileSetting,
+               field_mask: str) -> ComplianceSecurityProfileSetting:
+        """Update the compliance security profile setting.
+        
+        Updates the compliance security profile setting for the workspace. A fresh etag needs to be provided
+        in `PATCH` requests (as part of the setting field). The etag can be retrieved by making a `GET`
+        request before the `PATCH` request. If the setting is updated concurrently, `PATCH` fails with 409 and
+        the request must be retried by using the fresh etag in the 409 response.
+        
+        :param allow_missing: bool
+          This should always be set to true for Settings API. Added for AIP compliance.
+        :param setting: :class:`ComplianceSecurityProfileSetting`
+        :param field_mask: str
+          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
+          setting payload will be updated. The field mask needs to be supplied as single string. To specify
+          multiple fields in the field mask, use comma as the separator (no space).
+        
+        :returns: :class:`ComplianceSecurityProfileSetting`
+        """
+        body = {}
+        if allow_missing is not None: body['allow_missing'] = allow_missing
+        if field_mask is not None: body['field_mask'] = field_mask
+        if setting is not None: body['setting'] = setting.as_dict()
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do('PATCH',
+                           '/api/2.0/settings/types/shield_csp_enablement_ws_db/names/default',
+                           body=body,
+                           headers=headers)
+        return ComplianceSecurityProfileSetting.from_dict(res)
+
+
 class CredentialsManagerAPI:
     """Credentials manager interacts with with Identity Providers to to perform token exchanges using stored
     credentials and refresh tokens."""
@@ -2602,72 +2670,6 @@ class CredentialsManagerAPI:
                            body=body,
                            headers=headers)
         return ExchangeTokenResponse.from_dict(res)
-
-
-class CspEnablementAPI:
-    """Controls whether to enable the compliance security profile for the current workspace. Enabling it on a
-    workspace is permanent. By default, it is turned off.
-    
-    This settings can NOT be disabled once it is enabled."""
-
-    def __init__(self, api_client):
-        self._api = api_client
-
-    def get(self, *, etag: Optional[str] = None) -> CspEnablementSetting:
-        """Get the compliance security profile setting.
-        
-        Gets the compliance security profile setting.
-        
-        :param etag: str (optional)
-          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
-          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
-          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
-          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
-          request, and pass it with the DELETE request to identify the rule set version you are deleting.
-        
-        :returns: :class:`CspEnablementSetting`
-        """
-
-        query = {}
-        if etag is not None: query['etag'] = etag
-        headers = {'Accept': 'application/json', }
-
-        res = self._api.do('GET',
-                           '/api/2.0/settings/types/shield_csp_enablement_ws_db/names/default',
-                           query=query,
-                           headers=headers)
-        return CspEnablementSetting.from_dict(res)
-
-    def update(self, allow_missing: bool, setting: CspEnablementSetting,
-               field_mask: str) -> CspEnablementSetting:
-        """Update the compliance security profile setting.
-        
-        Updates the compliance security profile setting for the workspace. A fresh etag needs to be provided
-        in `PATCH` requests (as part of the setting field). The etag can be retrieved by making a `GET`
-        request before the `PATCH` request. If the setting is updated concurrently, `PATCH` fails with 409 and
-        the request must be retried by using the fresh etag in the 409 response.
-        
-        :param allow_missing: bool
-          This should always be set to true for Settings API. Added for AIP compliance.
-        :param setting: :class:`CspEnablementSetting`
-        :param field_mask: str
-          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
-          setting payload will be updated. The field mask needs to be supplied as single string. To specify
-          multiple fields in the field mask, use comma as the separator (no space).
-        
-        :returns: :class:`CspEnablementSetting`
-        """
-        body = {}
-        if allow_missing is not None: body['allow_missing'] = allow_missing
-        if field_mask is not None: body['field_mask'] = field_mask
-        if setting is not None: body['setting'] = setting.as_dict()
-        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
-        res = self._api.do('PATCH',
-                           '/api/2.0/settings/types/shield_csp_enablement_ws_db/names/default',
-                           body=body,
-                           headers=headers)
-        return CspEnablementSetting.from_dict(res)
 
 
 class CspEnablementAccountAPI:
@@ -2846,7 +2848,7 @@ class DefaultNamespaceAPI:
         return DefaultNamespaceSetting.from_dict(res)
 
 
-class EsmEnablementAPI:
+class EnhancedSecurityMonitoringAPI:
     """Controls whether enhanced security monitoring is enabled for the current workspace. If the compliance
     security profile is enabled, this is automatically enabled. By default, it is disabled. However, if the
     compliance security profile is enabled, this is automatically enabled.
@@ -2857,7 +2859,7 @@ class EsmEnablementAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def get(self, *, etag: Optional[str] = None) -> EsmEnablementSetting:
+    def get(self, *, etag: Optional[str] = None) -> EnhancedSecurityMonitoringSetting:
         """Get the enhanced security monitoring setting.
         
         Gets the enhanced security monitoring setting.
@@ -2869,7 +2871,7 @@ class EsmEnablementAPI:
           to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
           request, and pass it with the DELETE request to identify the rule set version you are deleting.
         
-        :returns: :class:`EsmEnablementSetting`
+        :returns: :class:`EnhancedSecurityMonitoringSetting`
         """
 
         query = {}
@@ -2880,10 +2882,10 @@ class EsmEnablementAPI:
                            '/api/2.0/settings/types/shield_esm_enablement_ws_db/names/default',
                            query=query,
                            headers=headers)
-        return EsmEnablementSetting.from_dict(res)
+        return EnhancedSecurityMonitoringSetting.from_dict(res)
 
-    def update(self, allow_missing: bool, setting: EsmEnablementSetting,
-               field_mask: str) -> EsmEnablementSetting:
+    def update(self, allow_missing: bool, setting: EnhancedSecurityMonitoringSetting,
+               field_mask: str) -> EnhancedSecurityMonitoringSetting:
         """Update the enhanced security monitoring setting.
         
         Updates the enhanced security monitoring setting for the workspace. A fresh etag needs to be provided
@@ -2893,13 +2895,13 @@ class EsmEnablementAPI:
         
         :param allow_missing: bool
           This should always be set to true for Settings API. Added for AIP compliance.
-        :param setting: :class:`EsmEnablementSetting`
+        :param setting: :class:`EnhancedSecurityMonitoringSetting`
         :param field_mask: str
           Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
           setting payload will be updated. The field mask needs to be supplied as single string. To specify
           multiple fields in the field mask, use comma as the separator (no space).
         
-        :returns: :class:`EsmEnablementSetting`
+        :returns: :class:`EnhancedSecurityMonitoringSetting`
         """
         body = {}
         if allow_missing is not None: body['allow_missing'] = allow_missing
@@ -2911,7 +2913,7 @@ class EsmEnablementAPI:
                            '/api/2.0/settings/types/shield_esm_enablement_ws_db/names/default',
                            body=body,
                            headers=headers)
-        return EsmEnablementSetting.from_dict(res)
+        return EnhancedSecurityMonitoringSetting.from_dict(res)
 
 
 class EsmEnablementAccountAPI:
@@ -3271,10 +3273,10 @@ class NetworkConnectivityAPI:
                                      private_endpoint_rule_id: str) -> NccAzurePrivateEndpointRule:
         """Delete a private endpoint rule.
         
-        Initiates deleting a private endpoint rule. The private endpoint will be deactivated and will be
-        purged after seven days of deactivation. When a private endpoint is in deactivated state,
-        `deactivated` field is set to `true` and the private endpoint is not available to your serverless
-        compute resources.
+        Initiates deleting a private endpoint rule. If the connection state is PENDING or EXPIRED, the private
+        endpoint is immediately deleted. Otherwise, the private endpoint is deactivated and will be deleted
+        after seven days of deactivation. When a private endpoint is deactivated, the `deactivated` field is
+        set to `true` and the private endpoint is not available to your serverless compute resources.
         
         :param network_connectivity_config_id: str
           Your Network Connectvity Configuration ID.
@@ -3599,9 +3601,9 @@ class SettingsAPI:
         self._api = api_client
 
         self._automatic_cluster_update = AutomaticClusterUpdateAPI(self._api)
-        self._csp_enablement = CspEnablementAPI(self._api)
+        self._compliance_security_profile = ComplianceSecurityProfileAPI(self._api)
         self._default_namespace = DefaultNamespaceAPI(self._api)
-        self._esm_enablement = EsmEnablementAPI(self._api)
+        self._enhanced_security_monitoring = EnhancedSecurityMonitoringAPI(self._api)
         self._restrict_workspace_admins = RestrictWorkspaceAdminsAPI(self._api)
 
     @property
@@ -3610,9 +3612,9 @@ class SettingsAPI:
         return self._automatic_cluster_update
 
     @property
-    def csp_enablement(self) -> CspEnablementAPI:
+    def compliance_security_profile(self) -> ComplianceSecurityProfileAPI:
         """Controls whether to enable the compliance security profile for the current workspace."""
-        return self._csp_enablement
+        return self._compliance_security_profile
 
     @property
     def default_namespace(self) -> DefaultNamespaceAPI:
@@ -3620,9 +3622,9 @@ class SettingsAPI:
         return self._default_namespace
 
     @property
-    def esm_enablement(self) -> EsmEnablementAPI:
+    def enhanced_security_monitoring(self) -> EnhancedSecurityMonitoringAPI:
         """Controls whether enhanced security monitoring is enabled for the current workspace."""
-        return self._esm_enablement
+        return self._enhanced_security_monitoring
 
     @property
     def restrict_workspace_admins(self) -> RestrictWorkspaceAdminsAPI:

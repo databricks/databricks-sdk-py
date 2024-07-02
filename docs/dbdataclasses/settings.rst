@@ -80,6 +80,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ComplianceSecurityProfile
+   :members:
+   :undoc-members:
+
+.. autoclass:: ComplianceSecurityProfileSetting
+   :members:
+   :undoc-members:
+
 .. py:class:: ComplianceStandard
 
    Compliance stardard for SHIELD customers
@@ -159,19 +167,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: CspEnablement
-   :members:
-   :undoc-members:
-
 .. autoclass:: CspEnablementAccount
    :members:
    :undoc-members:
 
 .. autoclass:: CspEnablementAccountSetting
-   :members:
-   :undoc-members:
-
-.. autoclass:: CspEnablementSetting
    :members:
    :undoc-members:
 
@@ -199,7 +199,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: EsmEnablement
+.. autoclass:: EnhancedSecurityMonitoring
+   :members:
+   :undoc-members:
+
+.. autoclass:: EnhancedSecurityMonitoringSetting
    :members:
    :undoc-members:
 
@@ -208,10 +212,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: EsmEnablementAccountSetting
-   :members:
-   :undoc-members:
-
-.. autoclass:: EsmEnablementSetting
    :members:
    :undoc-members:
 
@@ -461,11 +461,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: UpdateCspEnablementAccountSettingRequest
+.. autoclass:: UpdateComplianceSecurityProfileSettingRequest
    :members:
    :undoc-members:
 
-.. autoclass:: UpdateCspEnablementSettingRequest
+.. autoclass:: UpdateCspEnablementAccountSettingRequest
    :members:
    :undoc-members:
 
@@ -473,11 +473,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: UpdateEsmEnablementAccountSettingRequest
+.. autoclass:: UpdateEnhancedSecurityMonitoringSettingRequest
    :members:
    :undoc-members:
 
-.. autoclass:: UpdateEsmEnablementSettingRequest
+.. autoclass:: UpdateEsmEnablementAccountSettingRequest
    :members:
    :undoc-members:
 

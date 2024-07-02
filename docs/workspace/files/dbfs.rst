@@ -62,33 +62,9 @@
         :returns: :class:`CreateResponse`
         
 
-    .. py:method:: delete(path: str [, recursive: Optional[bool]])
+    .. py:method:: delete(path: str [, recursive: bool = False])
 
-        Delete a file/directory.
-        
-        Delete the file or directory (optionally recursively delete all files in the directory). This call
-        throws an exception with `IO_ERROR` if the path is a non-empty directory and `recursive` is set to
-        `false` or on other similar errors.
-        
-        When you delete a large number of files, the delete operation is done in increments. The call returns
-        a response after approximately 45 seconds with an error message (503 Service Unavailable) asking you
-        to re-invoke the delete operation until the directory structure is fully deleted.
-        
-        For operations that delete more than 10K files, we discourage using the DBFS REST API, but advise you
-        to perform such operations in the context of a cluster, using the [File system utility
-        (dbutils.fs)](/dev-tools/databricks-utils.html#dbutils-fs). `dbutils.fs` covers the functional scope
-        of the DBFS REST API, but from notebooks. Running such operations using notebooks provides better
-        control and manageability, such as selective deletes, and the possibility to automate periodic delete
-        jobs.
-        
-        :param path: str
-          The path of the file or directory to delete. The path should be the absolute DBFS path.
-        :param recursive: bool (optional)
-          Whether or not to recursively delete the directory's contents. Deleting empty directories can be
-          done without providing the recursive flag.
-        
-        
-        
+        Delete file or directory on DBFS
 
     .. py:method:: download(path: str) -> BinaryIO
 
@@ -142,24 +118,14 @@
         When calling list on a large directory, the list operation will time out after approximately 60
         seconds.
 
+        :param path: the DBFS or UC Volume path to list
         :param recursive: traverse deep into directory tree
         :returns iterator of metadata for every file
         
 
     .. py:method:: mkdirs(path: str)
 
-        Create a directory.
-        
-        Creates the given directory and necessary parent directories if they do not exist. If a file (not a
-        directory) exists at any prefix of the input path, this call throws an exception with
-        `RESOURCE_ALREADY_EXISTS`. **Note**: If this operation fails, it might have succeeded in creating some
-        of the necessary parent directories.
-        
-        :param path: str
-          The path of the new directory. The path should be the absolute DBFS path.
-        
-        
-        
+        Create directory on DBFS
 
     .. py:method:: move(source_path: str, destination_path: str)
 
@@ -182,7 +148,7 @@
 
         Move files between local and DBFS systems
 
-    .. py:method:: open(path: str [, read: bool = False, write: bool = False, overwrite: bool = False]) -> _DbfsIO
+    .. py:method:: open(path: str [, read: bool = False, write: bool = False, overwrite: bool = False]) -> BinaryIO
 
 
     .. py:method:: put(path: str [, contents: Optional[str], overwrite: Optional[bool]])

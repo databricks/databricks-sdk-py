@@ -17,8 +17,7 @@
 
     .. py:method:: build_logs(name: str, served_model_name: str) -> BuildLogsResponse
 
-        Retrieve the logs associated with building the model's environment for a given serving endpoint's
-        served model.
+        Get build logs for a served model.
         
         Retrieves the build logs associated with the provided served model.
         
@@ -30,7 +29,7 @@
         :returns: :class:`BuildLogsResponse`
         
 
-    .. py:method:: create(name: str, config: EndpointCoreConfigInput [, rate_limits: Optional[List[RateLimit]], tags: Optional[List[EndpointTag]]]) -> Wait[ServingEndpointDetailed]
+    .. py:method:: create(name: str, config: EndpointCoreConfigInput [, rate_limits: Optional[List[RateLimit]], route_optimized: Optional[bool], tags: Optional[List[EndpointTag]]]) -> Wait[ServingEndpointDetailed]
 
         Create a new serving endpoint.
         
@@ -42,6 +41,8 @@
         :param rate_limits: List[:class:`RateLimit`] (optional)
           Rate limits to be applied to the serving endpoint. NOTE: only external and foundation model
           endpoints are supported as of now.
+        :param route_optimized: bool (optional)
+          Enable route optimization for the serving endpoint.
         :param tags: List[:class:`EndpointTag`] (optional)
           Tags to be attached to the serving endpoint and automatically propagated to billing logs.
         
@@ -50,7 +51,7 @@
           See :method:wait_get_serving_endpoint_not_updating for more details.
         
 
-    .. py:method:: create_and_wait(name: str, config: EndpointCoreConfigInput [, rate_limits: Optional[List[RateLimit]], tags: Optional[List[EndpointTag]], timeout: datetime.timedelta = 0:20:00]) -> ServingEndpointDetailed
+    .. py:method:: create_and_wait(name: str, config: EndpointCoreConfigInput [, rate_limits: Optional[List[RateLimit]], route_optimized: Optional[bool], tags: Optional[List[EndpointTag]], timeout: datetime.timedelta = 0:20:00]) -> ServingEndpointDetailed
 
 
     .. py:method:: delete(name: str)
@@ -63,9 +64,9 @@
         
         
 
-    .. py:method:: export_metrics(name: str)
+    .. py:method:: export_metrics(name: str) -> ExportMetricsResponse
 
-        Retrieve the metrics associated with a serving endpoint.
+        Get metrics of a serving endpoint.
         
         Retrieves the metrics associated with the provided serving endpoint in either Prometheus or
         OpenMetrics exposition format.
@@ -73,7 +74,7 @@
         :param name: str
           The name of the serving endpoint to retrieve metrics for. This field is required.
         
-        
+        :returns: :class:`ExportMetricsResponse`
         
 
     .. py:method:: get(name: str) -> ServingEndpointDetailed
@@ -86,6 +87,19 @@
           The name of the serving endpoint. This field is required.
         
         :returns: :class:`ServingEndpointDetailed`
+        
+
+    .. py:method:: get_open_api(name: str)
+
+        Get the schema for a serving endpoint.
+        
+        Get the query schema of the serving endpoint in OpenAPI format. The schema contains information for
+        the supported paths, input and output format and datatypes.
+        
+        :param name: str
+          The name of the serving endpoint that the served model belongs to. This field is required.
+        
+        
         
 
     .. py:method:: get_permission_levels(serving_endpoint_id: str) -> GetServingEndpointPermissionLevelsResponse
@@ -115,14 +129,14 @@
 
     .. py:method:: list() -> Iterator[ServingEndpoint]
 
-        Retrieve all serving endpoints.
+        Get all serving endpoints.
         
         :returns: Iterator over :class:`ServingEndpoint`
         
 
     .. py:method:: logs(name: str, served_model_name: str) -> ServerLogsResponse
 
-        Retrieve the most recent log lines associated with a given serving endpoint's served model.
+        Get the latest logs for a served model.
         
         Retrieves the service logs associated with the provided served model.
         
@@ -136,7 +150,7 @@
 
     .. py:method:: patch(name: str [, add_tags: Optional[List[EndpointTag]], delete_tags: Optional[List[str]]]) -> Iterator[EndpointTag]
 
-        Patch the tags of a serving endpoint.
+        Update tags of a serving endpoint.
         
         Used to batch add and delete tags from a serving endpoint with a single API call.
         
@@ -152,7 +166,7 @@
 
     .. py:method:: put(name: str [, rate_limits: Optional[List[RateLimit]]]) -> PutResponse
 
-        Update the rate limits of a serving endpoint.
+        Update rate limits of a serving endpoint.
         
         Used to update the rate limits of a serving endpoint. NOTE: only external and foundation model
         endpoints are supported as of now.
@@ -167,7 +181,7 @@
 
     .. py:method:: query(name: str [, dataframe_records: Optional[List[Any]], dataframe_split: Optional[DataframeSplitInput], extra_params: Optional[Dict[str, str]], input: Optional[Any], inputs: Optional[Any], instances: Optional[List[Any]], max_tokens: Optional[int], messages: Optional[List[ChatMessage]], n: Optional[int], prompt: Optional[Any], stop: Optional[List[str]], stream: Optional[bool], temperature: Optional[float]]) -> QueryEndpointResponse
 
-        Query a serving endpoint with provided model input.
+        Query a serving endpoint.
         
         :param name: str
           The name of the serving endpoint. This field is required.
@@ -232,7 +246,7 @@
 
     .. py:method:: update_config(name: str [, auto_capture_config: Optional[AutoCaptureConfigInput], served_entities: Optional[List[ServedEntityInput]], served_models: Optional[List[ServedModelInput]], traffic_config: Optional[TrafficConfig]]) -> Wait[ServingEndpointDetailed]
 
-        Update a serving endpoint with a new config.
+        Update config of a serving endpoint.
         
         Updates any combination of the serving endpoint's served entities, the compute configuration of those
         served entities, and the endpoint's traffic config. An endpoint that already has an update in progress
@@ -243,11 +257,11 @@
         :param auto_capture_config: :class:`AutoCaptureConfigInput` (optional)
           Configuration for Inference Tables which automatically logs requests and responses to Unity Catalog.
         :param served_entities: List[:class:`ServedEntityInput`] (optional)
-          A list of served entities for the endpoint to serve. A serving endpoint can have up to 10 served
+          A list of served entities for the endpoint to serve. A serving endpoint can have up to 15 served
           entities.
         :param served_models: List[:class:`ServedModelInput`] (optional)
           (Deprecated, use served_entities instead) A list of served models for the endpoint to serve. A
-          serving endpoint can have up to 10 served models.
+          serving endpoint can have up to 15 served models.
         :param traffic_config: :class:`TrafficConfig` (optional)
           The traffic config defining how invocations to the serving endpoint should be routed.
         
