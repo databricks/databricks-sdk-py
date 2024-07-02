@@ -1019,11 +1019,23 @@ class ClusterDetails:
     
     - Name: <Databricks internal use>"""
 
+    disk_spec: Optional[dict] = None
+    """[PROD-2198] An APC attribute only. This field is missing in the API docs and the unforked databricks
+    sdk so it needed to be added here"""
+
     docker_image: Optional[DockerImage] = None
 
     driver: Optional[SparkNode] = None
     """Node on which the Spark driver resides. The driver node contains the Spark master and the
     Databricks application that manages the per-notebook Spark REPLs."""
+
+    driver_healthy: Optional[bool] = None
+    """[PROD-2198] An APC attribute only. This field is missing in the API docs and the unforked databricks
+    sdk so it needed to be added here"""
+
+    driver_instance_source: Optional[dict] = None
+    """[PROD-2198] An APC attribute only. This field is missing in the API docs and the unforked databricks
+    sdk so it needed to be added here"""
 
     driver_instance_pool_id: Optional[str] = None
     """The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster
@@ -1032,6 +1044,10 @@ class ClusterDetails:
     driver_node_type_id: Optional[str] = None
     """The node type of the Spark driver. Note that this field is optional; if unset, the driver node
     type will be set as the same value as `node_type_id` defined above."""
+
+    effective_spark_version: Optional[str] = None
+    """[PROD-2198] An APC attribute only. This field is missing in the API docs and the unforked databricks
+    sdk so it needed to be added here"""
 
     enable_elastic_disk: Optional[bool] = None
     """Autoscaling Local Storage: when enabled, this cluster will dynamically acquire additional disk
@@ -1053,8 +1069,16 @@ class ClusterDetails:
     scripts are executed sequentially in the order provided. If `cluster_log_conf` is specified,
     init script logs are sent to `<destination>/<cluster-ID>/init_scripts`."""
 
+    init_scripts_safe_mode: Optional[int] = None
+    """[PROD-2198] An APC attribute only. This field is missing in the API docs and the unforked databricks
+    sdk so it needed to be added here"""
+
     instance_pool_id: Optional[str] = None
     """The optional ID of the instance pool to which the cluster belongs."""
+
+    instance_source: Optional[dict] = None
+    """[PROD-2198] An APC attribute only. This field is missing in the API docs and the unforked databricks
+    sdk so it needed to be added here"""
 
     is_single_node: Optional[bool] = None
     """This field can only be used with `kind`.
@@ -1073,6 +1097,10 @@ class ClusterDetails:
     
     The first usage of this value is for the simple cluster form where it sets `kind =
     CLASSIC_PREVIEW`."""
+
+    last_activity_time: Optional[int] = None
+    """[PROD-2198] An APC attribute only. This field is missing in the API docs and the unforked databricks
+    sdk so it needed to be added here"""
 
     last_restarted_time: Optional[int] = None
     """the timestamp that the cluster was started/restarted"""
