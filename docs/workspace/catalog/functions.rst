@@ -14,6 +14,8 @@
 
         Create a function.
         
+        **WARNING: This API is experimental and will change in future versions**
+        
         Creates a new function
         
         The user must have the following permissions in order for the function to be created: -

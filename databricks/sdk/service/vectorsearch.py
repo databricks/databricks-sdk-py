@@ -645,6 +645,35 @@ class PipelineType(Enum):
 
 
 @dataclass
+class QueryVectorIndexNextPageRequest:
+    """Request payload for getting next page of results."""
+
+    endpoint_name: Optional[str] = None
+    """Name of the endpoint."""
+
+    index_name: Optional[str] = None
+    """Name of the vector index to query."""
+
+    page_token: Optional[str] = None
+    """Page token returned from previous `QueryVectorIndex` or `QueryVectorIndexNextPage` API."""
+
+    def as_dict(self) -> dict:
+        """Serializes the QueryVectorIndexNextPageRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.endpoint_name is not None: body['endpoint_name'] = self.endpoint_name
+        if self.index_name is not None: body['index_name'] = self.index_name
+        if self.page_token is not None: body['page_token'] = self.page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> QueryVectorIndexNextPageRequest:
+        """Deserializes the QueryVectorIndexNextPageRequest from a dictionary."""
+        return cls(endpoint_name=d.get('endpoint_name', None),
+                   index_name=d.get('index_name', None),
+                   page_token=d.get('page_token', None))
+
+
+@dataclass
 class QueryVectorIndexRequest:
     columns: List[str]
     """List of column names to include in the response."""
@@ -665,6 +694,9 @@ class QueryVectorIndexRequest:
     query_text: Optional[str] = None
     """Query text. Required for Delta Sync Index using model endpoint."""
 
+    query_type: Optional[str] = None
+    """The query type to use. Choices are `ANN` and `HYBRID`. Defaults to `ANN`."""
+
     query_vector: Optional[List[float]] = None
     """Query vector. Required for Direct Vector Access Index and Delta Sync Index using self-managed
     vectors."""
@@ -680,6 +712,7 @@ class QueryVectorIndexRequest:
         if self.index_name is not None: body['index_name'] = self.index_name
         if self.num_results is not None: body['num_results'] = self.num_results
         if self.query_text is not None: body['query_text'] = self.query_text
+        if self.query_type is not None: body['query_type'] = self.query_type
         if self.query_vector: body['query_vector'] = [v for v in self.query_vector]
         if self.score_threshold is not None: body['score_threshold'] = self.score_threshold
         return body
@@ -692,6 +725,7 @@ class QueryVectorIndexRequest:
                    index_name=d.get('index_name', None),
                    num_results=d.get('num_results', None),
                    query_text=d.get('query_text', None),
+                   query_type=d.get('query_type', None),
                    query_vector=d.get('query_vector', None),
                    score_threshold=d.get('score_threshold', None))
 
@@ -701,6 +735,11 @@ class QueryVectorIndexResponse:
     manifest: Optional[ResultManifest] = None
     """Metadata about the result set."""
 
+    next_page_token: Optional[str] = None
+    """[Optional] Token that can be used in `QueryVectorIndexNextPage` API to get next page of results.
+    If more than 1000 results satisfy the query, they are returned in groups of 1000. Empty value
+    means no more results."""
+
     result: Optional[ResultData] = None
     """Data returned in the query result."""
 
@@ -708,6 +747,7 @@ class QueryVectorIndexResponse:
         """Serializes the QueryVectorIndexResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.manifest: body['manifest'] = self.manifest.as_dict()
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         if self.result: body['result'] = self.result.as_dict()
         return body
 
@@ -715,6 +755,7 @@ class QueryVectorIndexResponse:
     def from_dict(cls, d: Dict[str, any]) -> QueryVectorIndexResponse:
         """Deserializes the QueryVectorIndexResponse from a dictionary."""
         return cls(manifest=_from_dict(d, 'manifest', ResultManifest),
+                   next_page_token=d.get('next_page_token', None),
                    result=_from_dict(d, 'result', ResultData))
 
 
@@ -1330,6 +1371,7 @@ class VectorSearchIndexesAPI:
                     filters_json: Optional[str] = None,
                     num_results: Optional[int] = None,
                     query_text: Optional[str] = None,
+                    query_type: Optional[str] = None,
                     query_vector: Optional[List[float]] = None,
                     score_threshold: Optional[float] = None) -> QueryVectorIndexResponse:
         """Query an index.
@@ -1350,6 +1392,8 @@ class VectorSearchIndexesAPI:
           Number of results to return. Defaults to 10.
         :param query_text: str (optional)
           Query text. Required for Delta Sync Index using model endpoint.
+        :param query_type: str (optional)
+          The query type to use. Choices are `ANN` and `HYBRID`. Defaults to `ANN`.
         :param query_vector: List[float] (optional)
           Query vector. Required for Direct Vector Access Index and Delta Sync Index using self-managed
           vectors.
@@ -1363,12 +1407,43 @@ class VectorSearchIndexesAPI:
         if filters_json is not None: body['filters_json'] = filters_json
         if num_results is not None: body['num_results'] = num_results
         if query_text is not None: body['query_text'] = query_text
+        if query_type is not None: body['query_type'] = query_type
         if query_vector is not None: body['query_vector'] = [v for v in query_vector]
         if score_threshold is not None: body['score_threshold'] = score_threshold
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         res = self._api.do('POST',
                            f'/api/2.0/vector-search/indexes/{index_name}/query',
+                           body=body,
+                           headers=headers)
+        return QueryVectorIndexResponse.from_dict(res)
+
+    def query_next_page(self,
+                        index_name: str,
+                        *,
+                        endpoint_name: Optional[str] = None,
+                        page_token: Optional[str] = None) -> QueryVectorIndexResponse:
+        """Query next page.
+        
+        Use `next_page_token` returned from previous `QueryVectorIndex` or `QueryVectorIndexNextPage` request
+        to fetch next page of results.
+        
+        :param index_name: str
+          Name of the vector index to query.
+        :param endpoint_name: str (optional)
+          Name of the endpoint.
+        :param page_token: str (optional)
+          Page token returned from previous `QueryVectorIndex` or `QueryVectorIndexNextPage` API.
+        
+        :returns: :class:`QueryVectorIndexResponse`
+        """
+        body = {}
+        if endpoint_name is not None: body['endpoint_name'] = endpoint_name
+        if page_token is not None: body['page_token'] = page_token
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do('POST',
+                           f'/api/2.0/vector-search/indexes/{index_name}/query-next-page',
                            body=body,
                            headers=headers)
         return QueryVectorIndexResponse.from_dict(res)
