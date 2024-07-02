@@ -1,3 +1,4 @@
+import pytest
 from databricks.sdk.config import Config
 
 from .conftest import noop_credentials
@@ -16,20 +17,12 @@ def test_config_supports_legacy_credentials_provider():
     assert c2._product == 'foo'
     assert c2._product_version == '1.2.3'
 
-
-def test_config_host_url_format_check(mocker):
+@pytest.mark.parametrize('host,expected', [("https://abc.def.ghi", "https://abc.def.ghi"),
+                                             ("https://abc.def.ghi/", "https://abc.def.ghi"),
+                                             ("abc.def.ghi", "https://abc.def.ghi"),
+                                             ("abc.def.ghi/", "https://abc.def.ghi"),
+                                             ("https://abc.def.ghi:443", "https://abc.def.ghi"),
+                                             ("abc.def.ghi:443", "https://abc.def.ghi")])
+def test_config_host_url_format_check(mocker, host, expected):
     mocker.patch('databricks.sdk.config.Config.init_auth')
-
-    c1 = Config(host="abc.def.ghi/")
-    c2 = Config(host="https://abc.def.ghi/")
-    c3 = Config(host="https://abc.def.ghi")
-    c4 = Config(host="abc.def.ghi")
-    c5 = Config(host="https://abc.def.ghi:443")
-    c6 = Config(host="abc.def.ghi:443")
-
-    assert c1.host == "https://abc.def.ghi"
-    assert c2.host == "https://abc.def.ghi"
-    assert c3.host == "https://abc.def.ghi"
-    assert c4.host == "https://abc.def.ghi"
-    assert c5.host == "https://abc.def.ghi"
-    assert c6.host == "https://abc.def.ghi"
+    assert Config(host=host).host == expected
