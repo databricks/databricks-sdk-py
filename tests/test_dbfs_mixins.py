@@ -90,6 +90,7 @@ def test_dbfs_exists(config, mocker):
 
     get_status.assert_called_with('/abc/def/ghi')
 
+
 def test_volume_exists(config, mocker):
     from databricks.sdk import WorkspaceClient
 
