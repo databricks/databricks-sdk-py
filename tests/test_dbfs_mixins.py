@@ -89,3 +89,13 @@ def test_dbfs_exists(config, mocker):
     client.dbfs.exists('/abc/def/ghi')
 
     get_status.assert_called_with('/abc/def/ghi')
+
+def test_volume_exists(config, mocker):
+    from databricks.sdk import WorkspaceClient
+
+    get_metadata = mocker.patch('databricks.sdk.service.files.FilesAPI.get_metadata')
+
+    client = WorkspaceClient(config=config)
+    client.dbfs.exists('/Volumes/abc/def/ghi')
+
+    get_metadata.assert_called_with('/Volumes/abc/def/ghi')
