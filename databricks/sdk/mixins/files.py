@@ -3,6 +3,7 @@ from __future__ import annotations
 import base64
 import os
 import pathlib
+import platform
 import shutil
 import sys
 from abc import ABC, abstractmethod
@@ -266,8 +267,9 @@ class _VolumesIO(BinaryIO):
 
 class _Path(ABC):
 
-    def __init__(self, path: str):
-        self._path = pathlib.Path(str(path).replace('dbfs:', '').replace('file:', ''))
+    @abstractmethod
+    def __init__(self):
+        ...
 
     @property
     def is_local(self) -> bool:
@@ -326,6 +328,12 @@ class _Path(ABC):
 
 
 class _LocalPath(_Path):
+
+    def __init__(self, path: str):
+        if platform.system() == "Windows":
+            self._path = pathlib.Path(str(path).replace('file:///', '').replace('file:', ''))
+        else:
+            self._path = pathlib.Path(str(path).replace('file:', ''))
 
     def _is_local(self) -> bool:
         return True
@@ -393,7 +401,7 @@ class _LocalPath(_Path):
 class _VolumesPath(_Path):
 
     def __init__(self, api: files.FilesAPI, src: Union[str, pathlib.Path]):
-        super().__init__(src)
+        self._path = pathlib.PurePosixPath(str(src).replace('dbfs:', '').replace('file:', ''))
         self._api = api
 
     def _is_local(self) -> bool:
@@ -462,7 +470,7 @@ class _VolumesPath(_Path):
 class _DbfsPath(_Path):
 
     def __init__(self, api: files.DbfsAPI, src: str):
-        super().__init__(src)
+        self._path = pathlib.PurePosixPath(str(src).replace('dbfs:', '').replace('file:', ''))
         self._api = api
 
     def _is_local(self) -> bool:

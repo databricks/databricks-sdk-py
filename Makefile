@@ -1,6 +1,10 @@
 dev:
 	python3 -m venv .venv
+ifeq ($(OS), Windows_NT)
+	.venv\Scripts\activate
+else
 	. .venv/bin/activate
+endif
 	pip install '.[dev]'
 
 install:
