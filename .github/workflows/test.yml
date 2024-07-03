@@ -8,7 +8,7 @@ on:
             type: string
         pyVersion:
             required: true
-            type: number
+            type: string
         continueOnError:
             required: false
             type: boolean
