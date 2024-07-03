@@ -15,12 +15,20 @@
     - `CAN_RUN`: Allows read access and run access (superset of `CAN_VIEW`)
     
     - `CAN_MANAGE`: Allows all actions: read, run, edit, delete, modify permissions (superset of `CAN_RUN`)
+    
+    **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+    
+    [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
 
     .. py:method:: get(object_type: ObjectTypePlural, object_id: str) -> GetResponse
 
         Get object ACL.
         
         Gets a JSON representation of the access control list (ACL) for a specified object.
+        
+        **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
         
         :param object_type: :class:`ObjectTypePlural`
           The type of object permissions to check.
@@ -37,6 +45,10 @@
         Sets the access control list (ACL) for a specified object. This operation will complete rewrite the
         ACL.
         
+        **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
+        
         :param object_type: :class:`ObjectTypePlural`
           The type of object permission to set.
         :param object_id: str
@@ -51,6 +63,10 @@
         Transfer object ownership.
         
         Transfers ownership of a dashboard, query, or alert to an active user. Requires an admin API key.
+        
+        **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
         
         :param object_type: :class:`OwnableObjectType`
           The type of object on which to change ownership.

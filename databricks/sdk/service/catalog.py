@@ -448,7 +448,7 @@ class CatalogInfo:
     full_name: Optional[str] = None
     """The full name of the catalog. Corresponds with the name field."""
 
-    isolation_mode: Optional[IsolationMode] = None
+    isolation_mode: Optional[CatalogIsolationMode] = None
     """Whether the current securable is accessible from all workspaces or a specific set of workspaces."""
 
     metastore_id: Optional[str] = None
@@ -541,7 +541,7 @@ class CatalogInfo:
                    enable_predictive_optimization=_enum(d, 'enable_predictive_optimization',
                                                         EnablePredictiveOptimization),
                    full_name=d.get('full_name', None),
-                   isolation_mode=_enum(d, 'isolation_mode', IsolationMode),
+                   isolation_mode=_enum(d, 'isolation_mode', CatalogIsolationMode),
                    metastore_id=d.get('metastore_id', None),
                    name=d.get('name', None),
                    options=d.get('options', None),
@@ -571,11 +571,16 @@ class CatalogInfoSecurableKind(Enum):
     CATALOG_FOREIGN_SQLDW = 'CATALOG_FOREIGN_SQLDW'
     CATALOG_FOREIGN_SQLSERVER = 'CATALOG_FOREIGN_SQLSERVER'
     CATALOG_INTERNAL = 'CATALOG_INTERNAL'
-    CATALOG_ONLINE = 'CATALOG_ONLINE'
-    CATALOG_ONLINE_INDEX = 'CATALOG_ONLINE_INDEX'
     CATALOG_STANDARD = 'CATALOG_STANDARD'
     CATALOG_SYSTEM = 'CATALOG_SYSTEM'
     CATALOG_SYSTEM_DELTASHARING = 'CATALOG_SYSTEM_DELTASHARING'
+
+
+class CatalogIsolationMode(Enum):
+    """Whether the current securable is accessible from all workspaces or a specific set of workspaces."""
+
+    ISOLATED = 'ISOLATED'
+    OPEN = 'OPEN'
 
 
 class CatalogType(Enum):
@@ -1222,8 +1227,9 @@ class CreateMetastore:
     """The user-specified name of the metastore."""
 
     region: Optional[str] = None
-    """Cloud region which the metastore serves (e.g., `us-west-2`, `westus`). If this field is omitted,
-    the region of the workspace receiving the request will be used."""
+    """Cloud region which the metastore serves (e.g., `us-west-2`, `westus`). The field can be omitted
+    in the __workspace-level__ __API__ but not in the __account-level__ __API__. If this field is
+    omitted, the region of the workspace receiving the request will be used."""
 
     storage_root: Optional[str] = None
     """The storage root URL for metastore"""
@@ -1494,7 +1500,7 @@ class CreateStorageCredential:
     """Comment associated with the credential."""
 
     databricks_gcp_service_account: Optional[DatabricksGcpServiceAccountRequest] = None
-    """The <Databricks> managed GCP service account configuration."""
+    """The Databricks managed GCP service account configuration."""
 
     read_only: Optional[bool] = None
     """Whether the storage credential is only usable for read operations."""
@@ -1968,6 +1974,9 @@ class ExternalLocationInfo:
     encryption_details: Optional[EncryptionDetails] = None
     """Encryption options that apply to clients connecting to cloud storage."""
 
+    isolation_mode: Optional[IsolationMode] = None
+    """Whether the current securable is accessible from all workspaces or a specific set of workspaces."""
+
     metastore_id: Optional[str] = None
     """Unique identifier of metastore hosting the external location."""
 
@@ -2000,6 +2009,7 @@ class ExternalLocationInfo:
         if self.credential_id is not None: body['credential_id'] = self.credential_id
         if self.credential_name is not None: body['credential_name'] = self.credential_name
         if self.encryption_details: body['encryption_details'] = self.encryption_details.as_dict()
+        if self.isolation_mode is not None: body['isolation_mode'] = self.isolation_mode.value
         if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
         if self.name is not None: body['name'] = self.name
         if self.owner is not None: body['owner'] = self.owner
@@ -2020,6 +2030,7 @@ class ExternalLocationInfo:
                    credential_id=d.get('credential_id', None),
                    credential_name=d.get('credential_name', None),
                    encryption_details=_from_dict(d, 'encryption_details', EncryptionDetails),
+                   isolation_mode=_enum(d, 'isolation_mode', IsolationMode),
                    metastore_id=d.get('metastore_id', None),
                    name=d.get('name', None),
                    owner=d.get('owner', None),
@@ -2529,8 +2540,8 @@ class GetMetastoreSummaryResponseDeltaSharingScope(Enum):
 class IsolationMode(Enum):
     """Whether the current securable is accessible from all workspaces or a specific set of workspaces."""
 
-    ISOLATED = 'ISOLATED'
-    OPEN = 'OPEN'
+    ISOLATION_MODE_ISOLATED = 'ISOLATION_MODE_ISOLATED'
+    ISOLATION_MODE_OPEN = 'ISOLATION_MODE_OPEN'
 
 
 @dataclass
@@ -2574,16 +2585,22 @@ class ListCatalogsResponse:
     catalogs: Optional[List[CatalogInfo]] = None
     """An array of catalog information objects."""
 
+    next_page_token: Optional[str] = None
+    """Opaque token to retrieve the next page of results. Absent if there are no more pages.
+    __page_token__ should be set to this value for the next request (for the next page of results)."""
+
     def as_dict(self) -> dict:
         """Serializes the ListCatalogsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.catalogs: body['catalogs'] = [v.as_dict() for v in self.catalogs]
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListCatalogsResponse:
         """Deserializes the ListCatalogsResponse from a dictionary."""
-        return cls(catalogs=_repeated_dict(d, 'catalogs', CatalogInfo))
+        return cls(catalogs=_repeated_dict(d, 'catalogs', CatalogInfo),
+                   next_page_token=d.get('next_page_token', None))
 
 
 @dataclass
@@ -3610,12 +3627,16 @@ class OnlineTable:
     status: Optional[OnlineTableStatus] = None
     """Online Table status"""
 
+    table_serving_url: Optional[str] = None
+    """Data serving REST API URL for this table"""
+
     def as_dict(self) -> dict:
         """Serializes the OnlineTable into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.name is not None: body['name'] = self.name
         if self.spec: body['spec'] = self.spec.as_dict()
         if self.status: body['status'] = self.status.as_dict()
+        if self.table_serving_url is not None: body['table_serving_url'] = self.table_serving_url
         return body
 
     @classmethod
@@ -3623,7 +3644,8 @@ class OnlineTable:
         """Deserializes the OnlineTable from a dictionary."""
         return cls(name=d.get('name', None),
                    spec=_from_dict(d, 'spec', OnlineTableSpec),
-                   status=_from_dict(d, 'status', OnlineTableStatus))
+                   status=_from_dict(d, 'status', OnlineTableStatus),
+                   table_serving_url=d.get('table_serving_url', None))
 
 
 @dataclass
@@ -3921,7 +3943,6 @@ class Privilege(Enum):
     REFRESH = 'REFRESH'
     SELECT = 'SELECT'
     SET_SHARE_PERMISSION = 'SET_SHARE_PERMISSION'
-    SINGLE_USER_ACCESS = 'SINGLE_USER_ACCESS'
     USAGE = 'USAGE'
     USE_CATALOG = 'USE_CATALOG'
     USE_CONNECTION = 'USE_CONNECTION'
@@ -4350,10 +4371,13 @@ class StorageCredentialInfo:
     """Username of credential creator."""
 
     databricks_gcp_service_account: Optional[DatabricksGcpServiceAccountResponse] = None
-    """The <Databricks> managed GCP service account configuration."""
+    """The Databricks managed GCP service account configuration."""
 
     id: Optional[str] = None
     """The unique identifier of the credential."""
+
+    isolation_mode: Optional[IsolationMode] = None
+    """Whether the current securable is accessible from all workspaces or a specific set of workspaces."""
 
     metastore_id: Optional[str] = None
     """Unique identifier of parent metastore."""
@@ -4390,6 +4414,7 @@ class StorageCredentialInfo:
         if self.databricks_gcp_service_account:
             body['databricks_gcp_service_account'] = self.databricks_gcp_service_account.as_dict()
         if self.id is not None: body['id'] = self.id
+        if self.isolation_mode is not None: body['isolation_mode'] = self.isolation_mode.value
         if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
         if self.name is not None: body['name'] = self.name
         if self.owner is not None: body['owner'] = self.owner
@@ -4414,6 +4439,7 @@ class StorageCredentialInfo:
                    databricks_gcp_service_account=_from_dict(d, 'databricks_gcp_service_account',
                                                              DatabricksGcpServiceAccountResponse),
                    id=d.get('id', None),
+                   isolation_mode=_enum(d, 'isolation_mode', IsolationMode),
                    metastore_id=d.get('metastore_id', None),
                    name=d.get('name', None),
                    owner=d.get('owner', None),
@@ -4831,7 +4857,7 @@ class UpdateCatalog:
     enable_predictive_optimization: Optional[EnablePredictiveOptimization] = None
     """Whether predictive optimization should be enabled for this object and objects under it."""
 
-    isolation_mode: Optional[IsolationMode] = None
+    isolation_mode: Optional[CatalogIsolationMode] = None
     """Whether the current securable is accessible from all workspaces or a specific set of workspaces."""
 
     name: Optional[str] = None
@@ -4865,7 +4891,7 @@ class UpdateCatalog:
         return cls(comment=d.get('comment', None),
                    enable_predictive_optimization=_enum(d, 'enable_predictive_optimization',
                                                         EnablePredictiveOptimization),
-                   isolation_mode=_enum(d, 'isolation_mode', IsolationMode),
+                   isolation_mode=_enum(d, 'isolation_mode', CatalogIsolationMode),
                    name=d.get('name', None),
                    new_name=d.get('new_name', None),
                    owner=d.get('owner', None),
@@ -4921,6 +4947,9 @@ class UpdateExternalLocation:
     force: Optional[bool] = None
     """Force update even if changing url invalidates dependent external tables or mounts."""
 
+    isolation_mode: Optional[IsolationMode] = None
+    """Whether the current securable is accessible from all workspaces or a specific set of workspaces."""
+
     name: Optional[str] = None
     """Name of the external location."""
 
@@ -4947,6 +4976,7 @@ class UpdateExternalLocation:
         if self.credential_name is not None: body['credential_name'] = self.credential_name
         if self.encryption_details: body['encryption_details'] = self.encryption_details.as_dict()
         if self.force is not None: body['force'] = self.force
+        if self.isolation_mode is not None: body['isolation_mode'] = self.isolation_mode.value
         if self.name is not None: body['name'] = self.name
         if self.new_name is not None: body['new_name'] = self.new_name
         if self.owner is not None: body['owner'] = self.owner
@@ -4963,6 +4993,7 @@ class UpdateExternalLocation:
                    credential_name=d.get('credential_name', None),
                    encryption_details=_from_dict(d, 'encryption_details', EncryptionDetails),
                    force=d.get('force', None),
+                   isolation_mode=_enum(d, 'isolation_mode', IsolationMode),
                    name=d.get('name', None),
                    new_name=d.get('new_name', None),
                    owner=d.get('owner', None),
@@ -5328,10 +5359,13 @@ class UpdateStorageCredential:
     """Comment associated with the credential."""
 
     databricks_gcp_service_account: Optional[DatabricksGcpServiceAccountRequest] = None
-    """The <Databricks> managed GCP service account configuration."""
+    """The Databricks managed GCP service account configuration."""
 
     force: Optional[bool] = None
     """Force update even if there are dependent external locations or external tables."""
+
+    isolation_mode: Optional[IsolationMode] = None
+    """Whether the current securable is accessible from all workspaces or a specific set of workspaces."""
 
     name: Optional[str] = None
     """Name of the storage credential."""
@@ -5360,6 +5394,7 @@ class UpdateStorageCredential:
         if self.databricks_gcp_service_account:
             body['databricks_gcp_service_account'] = self.databricks_gcp_service_account.as_dict()
         if self.force is not None: body['force'] = self.force
+        if self.isolation_mode is not None: body['isolation_mode'] = self.isolation_mode.value
         if self.name is not None: body['name'] = self.name
         if self.new_name is not None: body['new_name'] = self.new_name
         if self.owner is not None: body['owner'] = self.owner
@@ -5379,6 +5414,7 @@ class UpdateStorageCredential:
                    databricks_gcp_service_account=_from_dict(d, 'databricks_gcp_service_account',
                                                              DatabricksGcpServiceAccountRequest),
                    force=d.get('force', None),
+                   isolation_mode=_enum(d, 'isolation_mode', IsolationMode),
                    name=d.get('name', None),
                    new_name=d.get('new_name', None),
                    owner=d.get('owner', None),
@@ -6268,7 +6304,11 @@ class CatalogsAPI:
         res = self._api.do('GET', f'/api/2.1/unity-catalog/catalogs/{name}', query=query, headers=headers)
         return CatalogInfo.from_dict(res)
 
-    def list(self, *, include_browse: Optional[bool] = None) -> Iterator[CatalogInfo]:
+    def list(self,
+             *,
+             include_browse: Optional[bool] = None,
+             max_results: Optional[int] = None,
+             page_token: Optional[str] = None) -> Iterator[CatalogInfo]:
         """List catalogs.
         
         Gets an array of catalogs in the metastore. If the caller is the metastore admin, all catalogs will be
@@ -6279,24 +6319,41 @@ class CatalogsAPI:
         :param include_browse: bool (optional)
           Whether to include catalogs in the response for which the principal can only access selective
           metadata for
+        :param max_results: int (optional)
+          Maximum number of catalogs to return. - when set to 0, the page length is set to a server configured
+          value (recommended); - when set to a value greater than 0, the page length is the minimum of this
+          value and a server configured value; - when set to a value less than 0, an invalid parameter error
+          is returned; - If not set, all valid catalogs are returned (not recommended). - Note: The number of
+          returned catalogs might be less than the specified max_results size, even zero. The only definitive
+          indication that no further catalogs can be fetched is when the next_page_token is unset from the
+          response.
+        :param page_token: str (optional)
+          Opaque pagination token to go to next page based on previous query.
         
         :returns: Iterator over :class:`CatalogInfo`
         """
 
         query = {}
         if include_browse is not None: query['include_browse'] = include_browse
+        if max_results is not None: query['max_results'] = max_results
+        if page_token is not None: query['page_token'] = page_token
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET', '/api/2.1/unity-catalog/catalogs', query=query, headers=headers)
-        parsed = ListCatalogsResponse.from_dict(json).catalogs
-        return parsed if parsed is not None else []
+        while True:
+            json = self._api.do('GET', '/api/2.1/unity-catalog/catalogs', query=query, headers=headers)
+            if 'catalogs' in json:
+                for v in json['catalogs']:
+                    yield CatalogInfo.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
 
     def update(self,
                name: str,
                *,
                comment: Optional[str] = None,
                enable_predictive_optimization: Optional[EnablePredictiveOptimization] = None,
-               isolation_mode: Optional[IsolationMode] = None,
+               isolation_mode: Optional[CatalogIsolationMode] = None,
                new_name: Optional[str] = None,
                owner: Optional[str] = None,
                properties: Optional[Dict[str, str]] = None) -> CatalogInfo:
@@ -6311,7 +6368,7 @@ class CatalogsAPI:
           User-provided free-form text description.
         :param enable_predictive_optimization: :class:`EnablePredictiveOptimization` (optional)
           Whether predictive optimization should be enabled for this object and objects under it.
-        :param isolation_mode: :class:`IsolationMode` (optional)
+        :param isolation_mode: :class:`CatalogIsolationMode` (optional)
           Whether the current securable is accessible from all workspaces or a specific set of workspaces.
         :param new_name: str (optional)
           New name for the catalog.
@@ -6649,6 +6706,7 @@ class ExternalLocationsAPI:
                credential_name: Optional[str] = None,
                encryption_details: Optional[EncryptionDetails] = None,
                force: Optional[bool] = None,
+               isolation_mode: Optional[IsolationMode] = None,
                new_name: Optional[str] = None,
                owner: Optional[str] = None,
                read_only: Optional[bool] = None,
@@ -6672,6 +6730,8 @@ class ExternalLocationsAPI:
           Encryption options that apply to clients connecting to cloud storage.
         :param force: bool (optional)
           Force update even if changing url invalidates dependent external tables or mounts.
+        :param isolation_mode: :class:`IsolationMode` (optional)
+          Whether the current securable is accessible from all workspaces or a specific set of workspaces.
         :param new_name: str (optional)
           New name for the external location.
         :param owner: str (optional)
@@ -6691,6 +6751,7 @@ class ExternalLocationsAPI:
         if credential_name is not None: body['credential_name'] = credential_name
         if encryption_details is not None: body['encryption_details'] = encryption_details.as_dict()
         if force is not None: body['force'] = force
+        if isolation_mode is not None: body['isolation_mode'] = isolation_mode.value
         if new_name is not None: body['new_name'] = new_name
         if owner is not None: body['owner'] = owner
         if read_only is not None: body['read_only'] = read_only
@@ -6717,6 +6778,8 @@ class FunctionsAPI:
 
     def create(self, function_info: CreateFunction) -> FunctionInfo:
         """Create a function.
+        
+        **WARNING: This API is experimental and will change in future versions**
         
         Creates a new function
         
@@ -7022,8 +7085,9 @@ class MetastoresAPI:
         :param name: str
           The user-specified name of the metastore.
         :param region: str (optional)
-          Cloud region which the metastore serves (e.g., `us-west-2`, `westus`). If this field is omitted, the
-          region of the workspace receiving the request will be used.
+          Cloud region which the metastore serves (e.g., `us-west-2`, `westus`). The field can be omitted in
+          the __workspace-level__ __API__ but not in the __account-level__ __API__. If this field is omitted,
+          the region of the workspace receiving the request will be used.
         :param storage_root: str (optional)
           The storage root URL for metastore
         
@@ -8277,7 +8341,7 @@ class StorageCredentialsAPI:
         :param comment: str (optional)
           Comment associated with the credential.
         :param databricks_gcp_service_account: :class:`DatabricksGcpServiceAccountRequest` (optional)
-          The <Databricks> managed GCP service account configuration.
+          The Databricks managed GCP service account configuration.
         :param read_only: bool (optional)
           Whether the storage credential is only usable for read operations.
         :param skip_validation: bool (optional)
@@ -8393,6 +8457,7 @@ class StorageCredentialsAPI:
                comment: Optional[str] = None,
                databricks_gcp_service_account: Optional[DatabricksGcpServiceAccountRequest] = None,
                force: Optional[bool] = None,
+               isolation_mode: Optional[IsolationMode] = None,
                new_name: Optional[str] = None,
                owner: Optional[str] = None,
                read_only: Optional[bool] = None,
@@ -8414,9 +8479,11 @@ class StorageCredentialsAPI:
         :param comment: str (optional)
           Comment associated with the credential.
         :param databricks_gcp_service_account: :class:`DatabricksGcpServiceAccountRequest` (optional)
-          The <Databricks> managed GCP service account configuration.
+          The Databricks managed GCP service account configuration.
         :param force: bool (optional)
           Force update even if there are dependent external locations or external tables.
+        :param isolation_mode: :class:`IsolationMode` (optional)
+          Whether the current securable is accessible from all workspaces or a specific set of workspaces.
         :param new_name: str (optional)
           New name for the storage credential.
         :param owner: str (optional)
@@ -8439,6 +8506,7 @@ class StorageCredentialsAPI:
         if databricks_gcp_service_account is not None:
             body['databricks_gcp_service_account'] = databricks_gcp_service_account.as_dict()
         if force is not None: body['force'] = force
+        if isolation_mode is not None: body['isolation_mode'] = isolation_mode.value
         if new_name is not None: body['new_name'] = new_name
         if owner is not None: body['owner'] = owner
         if read_only is not None: body['read_only'] = read_only

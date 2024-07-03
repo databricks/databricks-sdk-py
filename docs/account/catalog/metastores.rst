@@ -9,25 +9,6 @@
 
     .. py:method:: create( [, metastore_info: Optional[CreateMetastore]]) -> AccountsMetastoreInfo
 
-
-        Usage:
-
-        .. code-block::
-
-            import os
-            import time
-            
-            from databricks.sdk import WorkspaceClient
-            
-            w = WorkspaceClient()
-            
-            created = w.metastores.create(name=f'sdk-{time.time_ns()}',
-                                          storage_root="s3://%s/%s" %
-                                          (os.environ["TEST_BUCKET"], f'sdk-{time.time_ns()}'))
-            
-            # cleanup
-            w.metastores.delete(id=created.metastore_id, force=True)
-
         Create metastore.
         
         Creates a Unity Catalog metastore.
@@ -53,27 +34,6 @@
 
     .. py:method:: get(metastore_id: str) -> AccountsMetastoreInfo
 
-
-        Usage:
-
-        .. code-block::
-
-            import os
-            import time
-            
-            from databricks.sdk import WorkspaceClient
-            
-            w = WorkspaceClient()
-            
-            created = w.metastores.create(name=f'sdk-{time.time_ns()}',
-                                          storage_root="s3://%s/%s" %
-                                          (os.environ["TEST_BUCKET"], f'sdk-{time.time_ns()}'))
-            
-            _ = w.metastores.get(id=created.metastore_id)
-            
-            # cleanup
-            w.metastores.delete(id=created.metastore_id, force=True)
-
         Get a metastore.
         
         Gets a Unity Catalog metastore from an account, both specified by ID.
@@ -86,17 +46,6 @@
 
     .. py:method:: list() -> Iterator[MetastoreInfo]
 
-
-        Usage:
-
-        .. code-block::
-
-            from databricks.sdk import WorkspaceClient
-            
-            w = WorkspaceClient()
-            
-            all = w.metastores.list()
-
         Get all metastores associated with an account.
         
         Gets all Unity Catalog metastores associated with an account specified by ID.
@@ -105,27 +54,6 @@
         
 
     .. py:method:: update(metastore_id: str [, metastore_info: Optional[UpdateMetastore]]) -> AccountsMetastoreInfo
-
-
-        Usage:
-
-        .. code-block::
-
-            import os
-            import time
-            
-            from databricks.sdk import WorkspaceClient
-            
-            w = WorkspaceClient()
-            
-            created = w.metastores.create(name=f'sdk-{time.time_ns()}',
-                                          storage_root="s3://%s/%s" %
-                                          (os.environ["TEST_BUCKET"], f'sdk-{time.time_ns()}'))
-            
-            _ = w.metastores.update(id=created.metastore_id, new_name=f'sdk-{time.time_ns()}')
-            
-            # cleanup
-            w.metastores.delete(id=created.metastore_id, force=True)
 
         Update a metastore.
         

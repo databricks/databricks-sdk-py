@@ -12,7 +12,7 @@
     ".codegen/error_overrides.py.tmpl": "databricks/sdk/errors/overrides.py"
   },
   "samples": {
-    ".codegen/example.py.tmpl": "examples/{{.Service.SnakeName}}/{{.Method.SnakeName}}_{{.SnakeName}}.py"
+    ".codegen/example.py.tmpl": "examples/{{if .IsAccount}}account{{else}}workspace{{end}}/{{.Service.SnakeName}}/{{.Method.SnakeName}}_{{.SnakeName}}.py"
   },
   "version": {
     "databricks/sdk/version.py": "__version__ = '$VERSION'"

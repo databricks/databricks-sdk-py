@@ -23,14 +23,11 @@
 
             import time
             
-            from databricks.sdk import AccountClient
+            from databricks.sdk import WorkspaceClient
             
-            a = AccountClient()
+            w = WorkspaceClient()
             
-            user = a.users.create(display_name=f'sdk-{time.time_ns()}', user_name=f'sdk-{time.time_ns()}@example.com')
-            
-            # cleanup
-            a.users.delete(id=user.id)
+            user = w.users.create(display_name=f'sdk-{time.time_ns()}', user_name=f'sdk-{time.time_ns()}@example.com')
 
         Create a new user.
         
@@ -105,16 +102,13 @@
 
             import time
             
-            from databricks.sdk import AccountClient
+            from databricks.sdk import WorkspaceClient
             
-            a = AccountClient()
+            w = WorkspaceClient()
             
-            user = a.users.create(display_name=f'sdk-{time.time_ns()}', user_name=f'sdk-{time.time_ns()}@example.com')
+            user = w.users.create(display_name=f'sdk-{time.time_ns()}', user_name=f'sdk-{time.time_ns()}@example.com')
             
-            by_id = a.users.get(id=user.id)
-            
-            # cleanup
-            a.users.delete(id=user.id)
+            fetch = w.users.get(id=user.id)
 
         Get user details.
         

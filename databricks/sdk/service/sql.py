@@ -182,7 +182,7 @@ class AlertQuery:
 
     data_source_id: Optional[str] = None
     """Data source ID maps to the ID of the data source used by the resource and is distinct from the
-    warehouse ID. [Learn more].
+    warehouse ID. [Learn more]
     
     [Learn more]: https://docs.databricks.com/api/workspace/datasources/list"""
 
@@ -856,7 +856,7 @@ class DataSource:
 
     id: Optional[str] = None
     """Data source ID maps to the ID of the data source used by the resource and is distinct from the
-    warehouse ID. [Learn more].
+    warehouse ID. [Learn more]
     
     [Learn more]: https://docs.databricks.com/api/workspace/datasources/list"""
 
@@ -1390,8 +1390,9 @@ class ExecuteStatementRequest:
     """The SQL statement to execute. The statement can optionally be parameterized, see `parameters`."""
 
     warehouse_id: str
-    """Warehouse upon which to execute a statement. See also [What are SQL
-    warehouses?](/sql/admin/warehouse-type.html)"""
+    """Warehouse upon which to execute a statement. See also [What are SQL warehouses?]
+    
+    [What are SQL warehouses?]: https://docs.databricks.com/sql/admin/warehouse-type.html"""
 
     byte_limit: Optional[int] = None
     """Applies the given byte limit to the statement's result size. Byte counts are based on internal
@@ -2241,7 +2242,7 @@ class Query:
 
     data_source_id: Optional[str] = None
     """Data source ID maps to the ID of the data source used by the resource and is distinct from the
-    warehouse ID. [Learn more].
+    warehouse ID. [Learn more]
     
     [Learn more]: https://docs.databricks.com/api/workspace/datasources/list"""
 
@@ -2374,7 +2375,7 @@ class Query:
 class QueryEditContent:
     data_source_id: Optional[str] = None
     """Data source ID maps to the ID of the data source used by the resource and is distinct from the
-    warehouse ID. [Learn more].
+    warehouse ID. [Learn more]
     
     [Learn more]: https://docs.databricks.com/api/workspace/datasources/list"""
 
@@ -2807,7 +2808,7 @@ class QueryOptions:
 class QueryPostContent:
     data_source_id: Optional[str] = None
     """Data source ID maps to the ID of the data source used by the resource and is distinct from the
-    warehouse ID. [Learn more].
+    warehouse ID. [Learn more]
     
     [Learn more]: https://docs.databricks.com/api/workspace/datasources/list"""
 
@@ -3273,8 +3274,10 @@ class StatementParameterListItem:
     type: Optional[str] = None
     """The data type, given as a string. For example: `INT`, `STRING`, `DECIMAL(10,2)`. If no type is
     given the type is assumed to be `STRING`. Complex types, such as `ARRAY`, `MAP`, and `STRUCT`
-    are not supported. For valid types, refer to the section [Data
-    types](/sql/language-manual/functions/cast.html) of the SQL language reference."""
+    are not supported. For valid types, refer to the section [Data types] of the SQL language
+    reference.
+    
+    [Data types]: https://docs.databricks.com/sql/language-manual/functions/cast.html"""
 
     value: Optional[str] = None
     """The value to substitute, represented as a string. If omitted, the value is interpreted as NULL."""
@@ -3959,7 +3962,11 @@ class AlertsAPI:
     """The alerts API can be used to perform CRUD operations on alerts. An alert is a Databricks SQL object that
     periodically runs a query, evaluates a condition of its result, and notifies one or more users and/or
     notification destinations if the condition was met. Alerts can be scheduled using the `sql_task` type of
-    the Jobs API, e.g. :method:jobs/create."""
+    the Jobs API, e.g. :method:jobs/create.
+    
+    **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+    
+    [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -3975,6 +3982,10 @@ class AlertsAPI:
         
         Creates an alert. An alert is a Databricks SQL object that periodically runs a query, evaluates a
         condition of its result, and notifies users or notification destinations if the condition was met.
+        
+        **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
         
         :param name: str
           Name of the alert.
@@ -4004,8 +4015,12 @@ class AlertsAPI:
     def delete(self, alert_id: str):
         """Delete an alert.
         
-        Deletes an alert. Deleted alerts are no longer accessible and cannot be restored. **Note:** Unlike
+        Deletes an alert. Deleted alerts are no longer accessible and cannot be restored. **Note**: Unlike
         queries and dashboards, alerts cannot be moved to the trash.
+        
+        **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
         
         :param alert_id: str
         
@@ -4021,6 +4036,10 @@ class AlertsAPI:
         
         Gets an alert.
         
+        **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
+        
         :param alert_id: str
         
         :returns: :class:`Alert`
@@ -4035,6 +4054,10 @@ class AlertsAPI:
         """Get alerts.
         
         Gets a list of alerts.
+        
+        **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
         
         :returns: Iterator over :class:`Alert`
         """
@@ -4054,6 +4077,10 @@ class AlertsAPI:
         """Update an alert.
         
         Updates an alert.
+        
+        **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
         
         :param alert_id: str
         :param name: str
@@ -4256,8 +4283,8 @@ class DashboardsAPI:
         
         Fetch a paginated list of dashboard objects.
         
-        ### **Warning: Calling this API concurrently 10 or more times could result in throttling, service
-        degradation, or a temporary ban.**
+        **Warning**: Calling this API concurrently 10 or more times could result in throttling, service
+        degradation, or a temporary ban.
         
         :param order: :class:`ListOrder` (optional)
           Name of dashboard attribute to order by.
@@ -4351,7 +4378,11 @@ class DataSourcesAPI:
     
     This API does not support searches. It returns the full list of SQL warehouses in your workspace. We
     advise you to use any text editor, REST client, or `grep` to search the response from this API for the
-    name of your SQL warehouse as it appears in Databricks SQL."""
+    name of your SQL warehouse as it appears in Databricks SQL.
+    
+    **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+    
+    [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -4362,6 +4393,10 @@ class DataSourcesAPI:
         Retrieves a full list of SQL warehouses available in this workspace. All fields that appear in this
         API response are enumerated for clarity. However, you need only a SQL warehouse's `id` to create new
         queries against it.
+        
+        **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
         
         :returns: Iterator over :class:`DataSource`
         """
@@ -4383,7 +4418,11 @@ class DbsqlPermissionsAPI:
     
     - `CAN_RUN`: Allows read access and run access (superset of `CAN_VIEW`)
     
-    - `CAN_MANAGE`: Allows all actions: read, run, edit, delete, modify permissions (superset of `CAN_RUN`)"""
+    - `CAN_MANAGE`: Allows all actions: read, run, edit, delete, modify permissions (superset of `CAN_RUN`)
+    
+    **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+    
+    [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -4392,6 +4431,10 @@ class DbsqlPermissionsAPI:
         """Get object ACL.
         
         Gets a JSON representation of the access control list (ACL) for a specified object.
+        
+        **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
         
         :param object_type: :class:`ObjectTypePlural`
           The type of object permissions to check.
@@ -4417,6 +4460,10 @@ class DbsqlPermissionsAPI:
         
         Sets the access control list (ACL) for a specified object. This operation will complete rewrite the
         ACL.
+        
+        **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
         
         :param object_type: :class:`ObjectTypePlural`
           The type of object permission to set.
@@ -4446,6 +4493,10 @@ class DbsqlPermissionsAPI:
         
         Transfers ownership of a dashboard, query, or alert to an active user. Requires an admin API key.
         
+        **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
+        
         :param object_type: :class:`OwnableObjectType`
           The type of object on which to change ownership.
         :param object_id: :class:`TransferOwnershipObjectId`
@@ -4469,7 +4520,11 @@ class DbsqlPermissionsAPI:
 class QueriesAPI:
     """These endpoints are used for CRUD operations on query definitions. Query definitions include the target
     SQL warehouse, query text, name, description, tags, parameters, and visualizations. Queries can be
-    scheduled using the `sql_task` type of the Jobs API, e.g. :method:jobs/create."""
+    scheduled using the `sql_task` type of the Jobs API, e.g. :method:jobs/create.
+    
+    **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+    
+    [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -4495,9 +4550,13 @@ class QueriesAPI:
         
         **Note**: You cannot add a visualization until you create the query.
         
+        **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
+        
         :param data_source_id: str (optional)
           Data source ID maps to the ID of the data source used by the resource and is distinct from the
-          warehouse ID. [Learn more].
+          warehouse ID. [Learn more]
           
           [Learn more]: https://docs.databricks.com/api/workspace/datasources/list
         :param description: str (optional)
@@ -4539,6 +4598,10 @@ class QueriesAPI:
         Moves a query to the trash. Trashed queries immediately disappear from searches and list views, and
         they cannot be used for alerts. The trash is deleted after 30 days.
         
+        **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
+        
         :param query_id: str
         
         
@@ -4553,6 +4616,10 @@ class QueriesAPI:
         
         Retrieve a query object definition along with contextual permissions information about the currently
         authenticated user.
+        
+        **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
         
         :param query_id: str
         
@@ -4574,8 +4641,12 @@ class QueriesAPI:
         
         Gets a list of queries. Optionally, this list can be filtered by a search term.
         
-        ### **Warning: Calling this API concurrently 10 or more times could result in throttling, service
-        degradation, or a temporary ban.**
+        **Warning**: Calling this API concurrently 10 or more times could result in throttling, service
+        degradation, or a temporary ban.
+        
+        **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
         
         :param order: str (optional)
           Name of query attribute to order by. Default sort order is ascending. Append a dash (`-`) to order
@@ -4630,6 +4701,10 @@ class QueriesAPI:
         Restore a query that has been moved to the trash. A restored query appears in list views and searches.
         You can use restored queries for alerts.
         
+        **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
+        
         :param query_id: str
         
         
@@ -4655,10 +4730,14 @@ class QueriesAPI:
         
         **Note**: You cannot undo this operation.
         
+        **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
+        
         :param query_id: str
         :param data_source_id: str (optional)
           Data source ID maps to the ID of the data source used by the resource and is distinct from the
-          warehouse ID. [Learn more].
+          warehouse ID. [Learn more]
           
           [Learn more]: https://docs.databricks.com/api/workspace/datasources/list
         :param description: str (optional)
@@ -4960,8 +5039,9 @@ class StatementExecutionAPI:
         :param statement: str
           The SQL statement to execute. The statement can optionally be parameterized, see `parameters`.
         :param warehouse_id: str
-          Warehouse upon which to execute a statement. See also [What are SQL
-          warehouses?](/sql/admin/warehouse-type.html)
+          Warehouse upon which to execute a statement. See also [What are SQL warehouses?]
+          
+          [What are SQL warehouses?]: https://docs.databricks.com/sql/admin/warehouse-type.html
         :param byte_limit: int (optional)
           Applies the given byte limit to the statement's result size. Byte counts are based on internal data
           representations and might not match the final size in the requested `format`. If the result was

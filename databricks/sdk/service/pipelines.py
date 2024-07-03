@@ -1242,7 +1242,7 @@ class PipelineLibrary:
     """Specification of a maven library to be installed."""
 
     notebook: Optional[NotebookLibrary] = None
-    """The path to a notebook that defines a pipeline and is stored in the <Databricks> workspace."""
+    """The path to a notebook that defines a pipeline and is stored in the Databricks workspace."""
 
     def as_dict(self) -> dict:
         """Serializes the PipelineLibrary into a dictionary suitable for use as a JSON request body."""
