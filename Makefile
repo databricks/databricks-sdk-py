@@ -3,11 +3,11 @@ dev: ## Create virtual environment and install development dependencies.
 	@echo "Creating virtual environment..."
 	@python3 -m venv .venv
 	@echo "Activating virtual environment..."
-	@if [ "$(OS)" = "Windows_NT" ]; then \
-		.venv\Scripts\activate; \
-	else \
-		. .venv/bin/activate; \
-	fi
+ifeq ($(OS), Windows_NT)
+	.venv\Scripts\activate
+else
+	. .venv/bin/activate
+endif
 	@echo "Installing development dependencies..."
 	@pip install '.[dev]'
 
