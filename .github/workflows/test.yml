@@ -9,16 +9,11 @@ on:
         pyVersion:
             required: true
             type: string
-        continueOnError:
-            required: false
-            type: boolean
-            default: false
 
 jobs:
   test:
     strategy:
         fail-fast: false
-    continue-on-error: ${{ inputs.continueOnError }}
     runs-on: ${{ inputs.os }}
     steps:
       - name: Checkout

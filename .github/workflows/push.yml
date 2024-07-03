@@ -49,8 +49,7 @@ jobs:
       with:
         os: windows-latest
         pyVersion: ${{ matrix.pyVersion }}
-        continueOnError: true
-  
+          
   fmt:
     runs-on: ubuntu-latest
 
