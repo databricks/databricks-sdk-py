@@ -1,26 +1,15 @@
-<<<<<<< HEAD
-dev:
-	python3 -m venv .venv
-ifeq ($(OS), Windows_NT)
-	.venv\Scripts\activate
-else
-	. .venv/bin/activate
-endif
-=======
 .PHONY: dev
 dev: ## Create virtual environment and install development dependencies.
 	@echo "Creating virtual environment..."
 	@python3 -m venv .venv
+	@echo "Activating virtual environment..."
 	@if [ "$(OS)" = "Windows_NT" ]; then \
-		echo "🚀 Activating virtual environment on Windows"; \
 		.venv\Scripts\activate; \
 	else \
-		echo "🚀 Activating virtual environment on Unix"; \
 		. .venv/bin/activate; \
-	fi && \
-	echo "🚀 Installing development dependencies" && \
->>>>>>> 9b7d99a (update makefile)
-	pip install '.[dev]'
+	fi
+	@echo "Installing development dependencies..."
+	@pip install '.[dev]'
 
 .PHONY: install
 install: ## Install the package.
