@@ -31,18 +31,18 @@ fmte: ## Format the code in 'examples' directory.
 	@isort examples
 
 .PHONY: lint
-lint: ## Lint the code and check for unused imports in 'databricks' directory.
+lint: ## Lint the code in 'databricks' directory.
 	@echo "Linting code..."
 	@pycodestyle databricks
 	@autoflake --check-diff --quiet --recursive databricks
 
 .PHONY: test
-test: ## Run unit tests with coverage report.
+test: ## Run unit tests.
 	@echo "Running unit tests..."
 	@pytest -m 'not integration and not benchmark' --cov=databricks --cov-report html tests
 
 .PHONY: integration
-integration: ## Run integration tests in parallel with retry on failure.
+integration: ## Run integration tests.
 	@echo "Running integration tests..."
 	@pytest -n auto -m 'integration and not benchmark' --reruns 2 --dist loadgroup --cov=databricks --cov-report html tests
 
