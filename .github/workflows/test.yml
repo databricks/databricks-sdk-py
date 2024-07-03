@@ -1,0 +1,42 @@
+name: Test Workflow
+
+on:
+  workflow_call:
+    inputs:
+        os:
+            required: true
+            type: string
+        pyVersion:
+            required: true
+            type: string
+        continueOnError:
+            required: false
+            type: boolean
+            default: false
+
+jobs:
+  test:
+    strategy:
+        fail-fast: false
+        matrix:
+            pyVersion: ${{ inputs.pyVersion }} 
+    continue-on-error: ${{ inputs.continueOnError }}
+    runs-on: ${{ inputs.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Unshallow
+        run: git fetch --prune --unshallow
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.pyVersion }}
+
+      - name: Run tests
+        run: make dev install test
+
+      - name: Publish test coverage
+        uses: codecov/codecov-action@v4
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
