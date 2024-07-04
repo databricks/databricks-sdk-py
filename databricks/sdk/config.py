@@ -347,13 +347,20 @@ class Config:
     def _fix_host_if_needed(self):
         if not self.host:
             return
-        # fix url to remove trailing slash
+
+        # Add a default scheme if it's missing
+        if '://' not in self.host:
+            self.host = 'https://' + self.host
+
         o = urllib.parse.urlparse(self.host)
-        if not o.hostname:
-            # only hostname is specified
-            self.host = f"https://{self.host}"
-        else:
-            self.host = f"{o.scheme}://{o.netloc}"
+        # remove trailing slash
+        path = o.path.rstrip('/')
+        # remove port if 443
+        netloc = o.netloc
+        if o.port == 443:
+            netloc = netloc.split(':')[0]
+
+        self.host = urllib.parse.urlunparse((o.scheme, netloc, path, o.params, o.query, o.fragment))
 
     def _set_inner_config(self, keyword_args: Dict[str, any]):
         for attr in self.attributes():

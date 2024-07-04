@@ -1,4 +1,5 @@
 import platform
+import pytest
 
 from databricks.sdk import useragent
 from databricks.sdk.config import Config, with_product, with_user_agent_extra
@@ -11,6 +12,17 @@ def test_config_supports_legacy_credentials_provider():
     c = Config(credentials_provider=noop_credentials, product='foo', product_version='1.2.3')
     c2 = c.copy()
     assert c2._product_info == ('foo', '1.2.3')
+
+
+@pytest.mark.parametrize('host,expected', [("https://abc.def.ghi", "https://abc.def.ghi"),
+                                           ("https://abc.def.ghi/", "https://abc.def.ghi"),
+                                           ("abc.def.ghi", "https://abc.def.ghi"),
+                                           ("abc.def.ghi/", "https://abc.def.ghi"),
+                                           ("https://abc.def.ghi:443", "https://abc.def.ghi"),
+                                           ("abc.def.ghi:443", "https://abc.def.ghi")])
+def test_config_host_url_format_check(mocker, host, expected):
+    mocker.patch('databricks.sdk.config.Config.init_auth')
+    assert Config(host=host).host == expected
 
 
 def test_extra_and_upstream_user_agent(monkeypatch):
