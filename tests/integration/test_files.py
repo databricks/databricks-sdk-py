@@ -1,9 +1,10 @@
 import io
 import logging
 import pathlib
+import platform
 import time
 from typing import Callable, List, Tuple, Union
-import platform
+
 import pytest
 
 from databricks.sdk.core import DatabricksError
