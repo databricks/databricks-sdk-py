@@ -2,6 +2,7 @@ import contextlib
 import functools
 import os
 import pathlib
+import platform
 import random
 import string
 import typing
@@ -24,6 +25,7 @@ from databricks.sdk.environments import (ENVIRONMENTS, AzureEnvironment, Cloud,
                                          DatabricksEnvironment)
 from databricks.sdk.service.catalog import PermissionsChange
 from databricks.sdk.service.iam import AccessControlRequest
+from databricks.sdk.version import __version__
 
 from .clock import FakeClock
 from .conftest import noop_credentials
@@ -177,6 +179,30 @@ def test_databricks_cli_credential_provider_installed_new(config, monkeypatch, t
     write_large_dummy_executable(tmp_path)
     monkeypatch.setenv('PATH', str(os.pathsep).join([tmp_path.as_posix(), os.environ['PATH']]))
     assert databricks_cli(config) is not None
+
+
+def test_extra_and_upstream_user_agent(monkeypatch):
+
+    class MockUname:
+
+        @property
+        def system(self):
+            return 'TestOS'
+
+    monkeypatch.setattr(platform, 'python_version', lambda: '3.0.0')
+    monkeypatch.setattr(platform, 'uname', MockUname)
+    monkeypatch.setenv('DATABRICKS_SDK_UPSTREAM', "upstream-product")
+    monkeypatch.setenv('DATABRICKS_SDK_UPSTREAM_VERSION', "0.0.1")
+    monkeypatch.setenv('DATABRICKS_RUNTIME_VERSION', "13.1 anything/else")
+
+    config = Config(host='http://localhost', username="something", password="something", product='test',
+                    product_version='0.0.0') \
+        .with_user_agent_extra('test-extra-1', '1') \
+        .with_user_agent_extra('test-extra-2', '2')
+
+    assert config.user_agent == (
+        f"test/0.0.0 databricks-sdk-py/{__version__} python/3.0.0 os/testos auth/basic test-extra-1/1 test-extra-2/2"
+        " upstream/upstream-product upstream-version/0.0.1 runtime/13.1-anything-else")
 
 
 def test_config_copy_shallow_copies_credential_provider():

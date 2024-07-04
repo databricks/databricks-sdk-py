@@ -3,19 +3,18 @@ import copy
 import logging
 import os
 import pathlib
-import platform
 import sys
 import urllib.parse
-from typing import Dict, Iterable, List, Optional, Tuple
+from typing import Dict, Iterable, Optional
 
 import requests
 
+from . import useragent
 from .clock import Clock, RealClock
 from .credentials_provider import CredentialsStrategy, DefaultCredentials
 from .environments import (ALL_ENVS, AzureEnvironment, Cloud,
                            DatabricksEnvironment, get_environment_for_hostname)
 from .oauth import OidcEndpoints, Token
-from .version import __version__
 
 logger = logging.getLogger('databricks.sdk')
 
@@ -44,30 +43,14 @@ class ConfigAttribute:
         return f"<ConfigAttribute '{self.name}' {self.transform.__name__}>"
 
 
-_DEFAULT_PRODUCT_NAME = 'unknown'
-_DEFAULT_PRODUCT_VERSION = '0.0.0'
-_STATIC_USER_AGENT: Tuple[str, str, List[str]] = (_DEFAULT_PRODUCT_NAME, _DEFAULT_PRODUCT_VERSION, [])
-
-
 def with_product(product: str, product_version: str):
     """[INTERNAL API] Change the product name and version used in the User-Agent header."""
-    global _STATIC_USER_AGENT
-    prev_product, prev_version, prev_other_info = _STATIC_USER_AGENT
-    logger.debug(f'Changing product from {prev_product}/{prev_version} to {product}/{product_version}')
-    _STATIC_USER_AGENT = product, product_version, prev_other_info
+    useragent.with_product(product, product_version)
 
 
 def with_user_agent_extra(key: str, value: str):
     """[INTERNAL API] Add extra metadata to the User-Agent header when developing a library."""
-    global _STATIC_USER_AGENT
-    product_name, product_version, other_info = _STATIC_USER_AGENT
-    for item in other_info:
-        if item.startswith(f"{key}/"):
-            # ensure that we don't have duplicates
-            other_info.remove(item)
-            break
-    other_info.append(f"{key}/{value}")
-    _STATIC_USER_AGENT = product_name, product_version, other_info
+    useragent.with_extra(key, value)
 
 
 class Config:
@@ -111,21 +94,12 @@ class Config:
                  # Deprecated. Use credentials_strategy instead.
                  credentials_provider: CredentialsStrategy = None,
                  credentials_strategy: CredentialsStrategy = None,
-                 product=_DEFAULT_PRODUCT_NAME,
-                 product_version=_DEFAULT_PRODUCT_VERSION,
+                 product=None,
+                 product_version=None,
                  clock: Clock = None,
                  **kwargs):
         self._header_factory = None
         self._inner = {}
-        # as in SDK for Go, pull information from global static user agent context,
-        # so that we can track additional metadata for mid-stream libraries, as well
-        # as for cases, when the downstream product is used as a library and is not
-        # configured with a proper product name and version.
-        static_product, static_version, _ = _STATIC_USER_AGENT
-        if product == _DEFAULT_PRODUCT_NAME:
-            product = static_product
-        if product_version == _DEFAULT_PRODUCT_VERSION:
-            product_version = static_version
         self._user_agent_other_info = []
         if credentials_strategy and credentials_provider:
             raise ValueError(
@@ -147,8 +121,7 @@ class Config:
             self._fix_host_if_needed()
             self._validate()
             self.init_auth()
-            self._product = product
-            self._product_version = product_version
+            self._init_product(product, product_version)
         except ValueError as e:
             message = self.wrap_debug_info(str(e))
             raise ValueError(message) from e
@@ -260,47 +233,19 @@ class Config:
     @property
     def user_agent(self):
         """ Returns User-Agent header used by this SDK """
-        py_version = platform.python_version()
-        os_name = platform.uname().system.lower()
 
-        ua = [
-            f"{self._product}/{self._product_version}", f"databricks-sdk-py/{__version__}",
-            f"python/{py_version}", f"os/{os_name}", f"auth/{self.auth_type}",
-        ]
-        if len(self._user_agent_other_info) > 0:
-            ua.append(' '.join(self._user_agent_other_info))
-        # as in SDK for Go, pull information from global static user agent context,
-        # so that we can track additional metadata for mid-stream libraries. this value
-        # is shared across all instances of Config objects intentionally.
-        _, _, static_info = _STATIC_USER_AGENT
-        if len(static_info) > 0:
-            ua.append(' '.join(static_info))
-        if len(self._upstream_user_agent) > 0:
-            ua.append(self._upstream_user_agent)
-        if 'DATABRICKS_RUNTIME_VERSION' in os.environ:
-            runtime_version = os.environ['DATABRICKS_RUNTIME_VERSION']
-            if runtime_version != '':
-                runtime_version = self._sanitize_header_value(runtime_version)
-                ua.append(f'runtime/{runtime_version}')
-
-        return ' '.join(ua)
-
-    @staticmethod
-    def _sanitize_header_value(value: str) -> str:
-        value = value.replace(' ', '-')
-        value = value.replace('/', '-')
-        return value
+        # global user agent includes SDK version, product name & version, platform info,
+        # and global extra info. Config can have specific extra info associated with it,
+        # such as an override product, auth type, and other user-defined information.
+        return useragent.to_string(self._product_info,
+                                   [("auth", self.auth_type)] + self._user_agent_other_info)
 
     @property
     def _upstream_user_agent(self) -> str:
-        product = os.environ.get('DATABRICKS_SDK_UPSTREAM', None)
-        product_version = os.environ.get('DATABRICKS_SDK_UPSTREAM_VERSION', None)
-        if product is not None and product_version is not None:
-            return f"upstream/{product} upstream-version/{product_version}"
-        return ""
+        return " ".join(f"{k}/{v}" for k, v in useragent._get_upstream_user_agent_info())
 
     def with_user_agent_extra(self, key: str, value: str) -> 'Config':
-        self._user_agent_other_info.append(f"{key}/{value}")
+        self._user_agent_other_info.append((key, value))
         return self
 
     @property
@@ -504,6 +449,13 @@ class Config:
                 raise ValueError('not configured')
         except ValueError as e:
             raise ValueError(f'{self._credentials_strategy.auth_type()} auth: {e}') from e
+
+    def _init_product(self, product, product_version):
+        if product is not None or product_version is not None:
+            default_product, default_version = useragent.product()
+            self._product_info = (product or default_product, product_version or default_version)
+        else:
+            self._product_info = None
 
     def __repr__(self):
         return f'<{self.debug_string()}>'
