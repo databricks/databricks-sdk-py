@@ -72,4 +72,4 @@ def test_config_copy_deep_copies_user_agent_other_info(config):
     with_user_agent_extra("blueprint", "0.4.6")
     assert "blueprint/0.4.6" in config.user_agent
     assert "blueprint/0.4.6" in config_copy.user_agent
-    useragent.reset_extra(original_extra)
+    useragent._reset_extra(original_extra)

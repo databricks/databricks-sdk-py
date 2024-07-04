@@ -241,7 +241,7 @@ class Config:
 
     @property
     def _upstream_user_agent(self) -> str:
-        return " ".join(f"{k}/{v}" for k, v in useragent.get_upstream_user_agent_info())
+        return " ".join(f"{k}/{v}" for k, v in useragent._get_upstream_user_agent_info())
 
     def with_user_agent_extra(self, key: str, value: str) -> 'Config':
         self._user_agent_other_info.append((key, value))
