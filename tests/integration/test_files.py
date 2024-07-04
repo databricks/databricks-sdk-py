@@ -3,7 +3,7 @@ import logging
 import pathlib
 import time
 from typing import Callable, List, Tuple, Union
-
+import platform
 import pytest
 
 from databricks.sdk.core import DatabricksError
@@ -11,7 +11,10 @@ from databricks.sdk.service.catalog import VolumeType
 
 
 def test_local_io(random):
-    dummy_file = f'/tmp/{random()}'
+    if platform.system() == 'Windows':
+        dummy_file = f'C:\\Windows\\Temp\\{random()}'
+    else:
+        dummy_file = f'/tmp/{random()}'
     to_write = random(1024 * 1024 * 2.5).encode()
     with open(dummy_file, 'wb') as f:
         written = f.write(to_write)
