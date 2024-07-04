@@ -50,7 +50,7 @@ def with_product(product: str, product_version: str):
 
 def with_user_agent_extra(key: str, value: str):
     """[INTERNAL API] Add extra metadata to the User-Agent header when developing a library."""
-    useragent.with_user_agent_extra(key, value)
+    useragent.with_extra(key, value)
 
 
 class Config:

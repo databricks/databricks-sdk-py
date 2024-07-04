@@ -63,7 +63,7 @@ def _reset_product():
     _product_version = "0.0.0"
 
 
-def with_user_agent_extra(key: str, value: str):
+def with_extra(key: str, value: str):
     """Add extra metadata to all requests submitted to Databricks.
 
     User-specified extra metadata can be inserted into request headers to provide additional context to Databricks
@@ -93,7 +93,7 @@ def _reset_extra(extra: List[Tuple[str, str]]):
 
 def with_partner(partner: str):
     """Adds the given partner to the metadata submitted to Databricks on every request."""
-    with_user_agent_extra("partner", partner)
+    with_extra("partner", partner)
 
 
 def _get_upstream_user_agent_info() -> List[Tuple[str, str]]:
