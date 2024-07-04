@@ -5,7 +5,7 @@ import os
 import pathlib
 import sys
 import urllib.parse
-from typing import Dict, Iterable, List, Optional, Tuple
+from typing import Dict, Iterable, Optional
 
 import requests
 
@@ -237,7 +237,8 @@ class Config:
         # global user agent includes SDK version, product name & version, platform info,
         # and global extra info. Config can have specific extra info associated with it,
         # such as an override product, auth type, and other user-defined information.
-        return useragent.to_string(self._product_info, [("auth", self.auth_type)] + self._user_agent_other_info)
+        return useragent.to_string(self._product_info,
+                                   [("auth", self.auth_type)] + self._user_agent_other_info)
 
     @property
     def _upstream_user_agent(self) -> str:
@@ -455,7 +456,6 @@ class Config:
             self._product_info = (product or default_product, product_version or default_version)
         else:
             self._product_info = None
-
 
     def __repr__(self):
         return f'<{self.debug_string()}>'

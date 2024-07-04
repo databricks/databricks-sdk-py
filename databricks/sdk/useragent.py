@@ -1,9 +1,9 @@
+import copy
 import logging
 import os
 import platform
 import re
-import copy
-from typing import Optional, Tuple, List
+from typing import List, Optional, Tuple
 
 from .version import __version__
 
@@ -121,7 +121,8 @@ def _sanitize_header_value(value: str) -> str:
     return value
 
 
-def to_string(alternate_product_info: Optional[Tuple[str, str]] = None, other_info: Optional[List[Tuple[str, str]]] = None) -> str:
+def to_string(alternate_product_info: Optional[Tuple[str, str]] = None,
+              other_info: Optional[List[Tuple[str, str]]] = None) -> str:
     """Compute the full User-Agent header.
 
     The User-Agent header contains the product name, version, and other metadata that is submitted to Databricks on
@@ -133,11 +134,8 @@ def to_string(alternate_product_info: Optional[Tuple[str, str]] = None, other_in
         base.append(alternate_product_info)
     else:
         base.append((_product_name, _product_version))
-    base.extend([
-        ("databricks-sdk-py", __version__),
-        ("python", platform.python_version()),
-        ("os", platform.uname().system.lower()),
-    ])
+    base.extend([("databricks-sdk-py", __version__), ("python", platform.python_version()),
+                 ("os", platform.uname().system.lower()), ])
     if other_info:
         base.extend(other_info)
     base.extend(_extra)
