@@ -39,7 +39,11 @@ def raises(msg):
             with pytest.raises(ValueError) as info:
                 func(*args, **kwargs)
             exception_str = str(info.value)
-            exception_str = exception_str.replace(__tests__ + '/', '')
+            if platform.system() == 'Windows':
+                exception_str = exception_str.replace(__tests__ + '\\', '')
+                exception_str = exception_str.replace('\\', '/')
+            else:
+                exception_str = exception_str.replace(__tests__ + '/', '')
             assert msg in exception_str
 
         return wrapper

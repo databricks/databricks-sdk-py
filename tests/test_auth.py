@@ -121,7 +121,7 @@ def test_config_config_file(monkeypatch):
 
 @raises(f"{default_auth_base_error_message}. Config: host=https://x")
 def test_config_config_file_skip_default_profile_if_host_specified(monkeypatch):
-    monkeypatch.setenv('HOME', __tests__ + '/testdata')
+    set_home(monkeypatch, '/testdata')
     cfg = Config(host='x')
 
 
