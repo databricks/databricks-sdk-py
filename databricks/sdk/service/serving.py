@@ -336,19 +336,18 @@ class AppStatus:
 class AutoCaptureConfigInput:
     catalog_name: Optional[str] = None
     """The name of the catalog in Unity Catalog. NOTE: On update, you cannot change the catalog name if
-    it was already set."""
+    the inference table is already enabled."""
 
     enabled: Optional[bool] = None
-    """If inference tables are enabled or not. NOTE: If you have already disabled payload logging once,
-    you cannot enable again."""
+    """Indicates whether the inference table is enabled."""
 
     schema_name: Optional[str] = None
     """The name of the schema in Unity Catalog. NOTE: On update, you cannot change the schema name if
-    it was already set."""
+    the inference table is already enabled."""
 
     table_name_prefix: Optional[str] = None
     """The prefix of the table in Unity Catalog. NOTE: On update, you cannot change the prefix name if
-    it was already set."""
+    the inference table is already enabled."""
 
     def as_dict(self) -> dict:
         """Serializes the AutoCaptureConfigInput into a dictionary suitable for use as a JSON request body."""
@@ -374,7 +373,7 @@ class AutoCaptureConfigOutput:
     """The name of the catalog in Unity Catalog."""
 
     enabled: Optional[bool] = None
-    """If inference tables are enabled or not."""
+    """Indicates whether the inference table is enabled."""
 
     schema_name: Optional[str] = None
     """The name of the schema in Unity Catalog."""
@@ -2409,6 +2408,12 @@ class ServingEndpointPermissionsRequest:
 
 
 @dataclass
+class StartAppRequest:
+    name: Optional[str] = None
+    """The name of the app."""
+
+
+@dataclass
 class StopAppRequest:
     name: Optional[str] = None
     """The name of the app."""
@@ -2778,6 +2783,22 @@ class AppsAPI:
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']
+
+    def start(self, name: str) -> AppDeployment:
+        """Start an app.
+        
+        Start the last active deployment of the app in the workspace.
+        
+        :param name: str
+          The name of the app.
+        
+        :returns: :class:`AppDeployment`
+        """
+
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do('POST', f'/api/2.0/preview/apps/{name}/start', headers=headers)
+        return AppDeployment.from_dict(res)
 
     def stop(self, name: str):
         """Stop an app.

@@ -24,6 +24,22 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: DashboardView
+
+   .. py:attribute:: DASHBOARD_VIEW_BASIC
+      :value: "DASHBOARD_VIEW_BASIC"
+
+   .. py:attribute:: DASHBOARD_VIEW_FULL
+      :value: "DASHBOARD_VIEW_FULL"
+
+.. autoclass:: DeleteScheduleResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: DeleteSubscriptionResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: DeleteScheduleResponse
    :members:
    :undoc-members:
@@ -39,6 +55,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: TRASHED
       :value: "TRASHED"
+
+.. autoclass:: ListDashboardsResponse
+   :members:
+   :undoc-members:
 
 .. autoclass:: ListSchedulesResponse
    :members:

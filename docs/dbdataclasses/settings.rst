@@ -95,6 +95,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: COMPLIANCE_STANDARD_UNSPECIFIED
       :value: "COMPLIANCE_STANDARD_UNSPECIFIED"
 
+   .. py:attribute:: CYBER_ESSENTIAL_PLUS
+      :value: "CYBER_ESSENTIAL_PLUS"
+
    .. py:attribute:: FEDRAMP_HIGH
       :value: "FEDRAMP_HIGH"
 

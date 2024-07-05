@@ -136,6 +136,16 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: CATALOG_SYSTEM_DELTASHARING
       :value: "CATALOG_SYSTEM_DELTASHARING"
 
+.. py:class:: CatalogIsolationMode
+
+   Whether the current securable is accessible from all workspaces or a specific set of workspaces.
+
+   .. py:attribute:: ISOLATED
+      :value: "ISOLATED"
+
+   .. py:attribute:: OPEN
+      :value: "OPEN"
+
 .. py:class:: CatalogType
 
    The type of the catalog.
@@ -1090,9 +1100,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: SET_SHARE_PERMISSION
       :value: "SET_SHARE_PERMISSION"
-
-   .. py:attribute:: SINGLE_USER_ACCESS
-      :value: "SINGLE_USER_ACCESS"
 
    .. py:attribute:: USAGE
       :value: "USAGE"

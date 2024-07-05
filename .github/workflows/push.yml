@@ -7,31 +7,24 @@ on:
     types: [checks_requested]
 
 jobs:
-  tests:
+  tests-ubuntu:
+    uses: ./.github/workflows/test.yml
     strategy:
-      fail-fast: false
       matrix:
         pyVersion: [ '3.7', '3.8', '3.9', '3.10', '3.11', '3.12' ]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
+    with:
+      os: ubuntu-latest
+      pyVersion: ${{ matrix.pyVersion }}
 
-      - name: Unshallow
-        run: git fetch --prune --unshallow
-
-      - uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.pyVersion }}
-
-      - name: Run tests
-        run: make dev install test
-
-      - name: Publish test coverage
-        uses: codecov/codecov-action@v4
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-
+  tests-windows:
+      uses: ./.github/workflows/test.yml
+      strategy:
+        matrix:
+          pyVersion: [ '3.9', '3.10', '3.11', '3.12' ]
+      with:
+        os: windows-latest
+        pyVersion: ${{ matrix.pyVersion }}
+          
   fmt:
     runs-on: ubuntu-latest
 

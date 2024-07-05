@@ -199,6 +199,12 @@ class Dashboard:
                    warehouse_id=d.get('warehouse_id', None))
 
 
+class DashboardView(Enum):
+
+    DASHBOARD_VIEW_BASIC = 'DASHBOARD_VIEW_BASIC'
+    DASHBOARD_VIEW_FULL = 'DASHBOARD_VIEW_FULL'
+
+
 @dataclass
 class DeleteScheduleResponse:
 
@@ -231,6 +237,28 @@ class LifecycleState(Enum):
 
     ACTIVE = 'ACTIVE'
     TRASHED = 'TRASHED'
+
+
+@dataclass
+class ListDashboardsResponse:
+    dashboards: Optional[List[Dashboard]] = None
+
+    next_page_token: Optional[str] = None
+    """A token, which can be sent as `page_token` to retrieve the next page. If this field is omitted,
+    there are no subsequent dashboards."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListDashboardsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.dashboards: body['dashboards'] = [v.as_dict() for v in self.dashboards]
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ListDashboardsResponse:
+        """Deserializes the ListDashboardsResponse from a dictionary."""
+        return cls(dashboards=_repeated_dict(d, 'dashboards', Dashboard),
+                   next_page_token=d.get('next_page_token', None))
 
 
 @dataclass
@@ -693,7 +721,7 @@ class LakeviewAPI:
                         display_name: Optional[str] = None,
                         pause_status: Optional[SchedulePauseStatus] = None) -> Schedule:
         """Create dashboard schedule.
-        
+
         :param dashboard_id: str
           UUID identifying the dashboard to which the schedule belongs.
         :param cron_schedule: :class:`CronSchedule`
@@ -702,7 +730,7 @@ class LakeviewAPI:
           The display name for schedule.
         :param pause_status: :class:`SchedulePauseStatus` (optional)
           The status indicates whether this schedule is paused or not.
-        
+
         :returns: :class:`Schedule`
         """
         body = {}
@@ -720,14 +748,14 @@ class LakeviewAPI:
     def create_subscription(self, dashboard_id: str, schedule_id: str,
                             subscriber: Subscriber) -> Subscription:
         """Create schedule subscription.
-        
+
         :param dashboard_id: str
           UUID identifying the dashboard to which the subscription belongs.
         :param schedule_id: str
           UUID identifying the schedule to which the subscription belongs.
         :param subscriber: :class:`Subscriber`
           Subscriber details for users and destinations to be added as subscribers to the schedule.
-        
+
         :returns: :class:`Subscription`
         """
         body = {}
@@ -743,7 +771,7 @@ class LakeviewAPI:
 
     def delete_schedule(self, dashboard_id: str, schedule_id: str, *, etag: Optional[str] = None):
         """Delete dashboard schedule.
-        
+
         :param dashboard_id: str
           UUID identifying the dashboard to which the schedule belongs.
         :param schedule_id: str
@@ -751,8 +779,8 @@ class LakeviewAPI:
         :param etag: str (optional)
           The etag for the schedule. Optionally, it can be provided to verify that the schedule has not been
           modified from its last retrieval.
-        
-        
+
+
         """
 
         query = {}
@@ -771,7 +799,7 @@ class LakeviewAPI:
                             *,
                             etag: Optional[str] = None):
         """Delete schedule subscription.
-        
+
         :param dashboard_id: str
           UUID identifying the dashboard which the subscription belongs.
         :param schedule_id: str
@@ -781,8 +809,8 @@ class LakeviewAPI:
         :param etag: str (optional)
           The etag for the subscription. Can be optionally provided to ensure that the subscription has not
           been modified since the last read.
-        
-        
+
+
         """
 
         query = {}
@@ -829,12 +857,12 @@ class LakeviewAPI:
 
     def get_schedule(self, dashboard_id: str, schedule_id: str) -> Schedule:
         """Get dashboard schedule.
-        
+
         :param dashboard_id: str
           UUID identifying the dashboard to which the schedule belongs.
         :param schedule_id: str
           UUID identifying the schedule.
-        
+
         :returns: :class:`Schedule`
         """
 
@@ -847,14 +875,14 @@ class LakeviewAPI:
 
     def get_subscription(self, dashboard_id: str, schedule_id: str, subscription_id: str) -> Subscription:
         """Get schedule subscription.
-        
+
         :param dashboard_id: str
           UUID identifying the dashboard which the subscription belongs.
         :param schedule_id: str
           UUID identifying the schedule which the subscription belongs.
         :param subscription_id: str
           UUID identifying the subscription.
-        
+
         :returns: :class:`Subscription`
         """
 
@@ -866,13 +894,52 @@ class LakeviewAPI:
             headers=headers)
         return Subscription.from_dict(res)
 
+    def list(self,
+             *,
+             page_size: Optional[int] = None,
+             page_token: Optional[str] = None,
+             show_trashed: Optional[bool] = None,
+             view: Optional[DashboardView] = None) -> Iterator[Dashboard]:
+        """List dashboards.
+
+        :param page_size: int (optional)
+          The number of dashboards to return per page.
+        :param page_token: str (optional)
+          A page token, received from a previous `ListDashboards` call. This token can be used to retrieve the
+          subsequent page.
+        :param show_trashed: bool (optional)
+          The flag to include dashboards located in the trash. If unspecified, only active dashboards will be
+          returned.
+        :param view: :class:`DashboardView` (optional)
+          Indicates whether to include all metadata from the dashboard in the response. If unset, the response
+          defaults to `DASHBOARD_VIEW_BASIC` which only includes summary metadata from the dashboard.
+
+        :returns: Iterator over :class:`Dashboard`
+        """
+
+        query = {}
+        if page_size is not None: query['page_size'] = page_size
+        if page_token is not None: query['page_token'] = page_token
+        if show_trashed is not None: query['show_trashed'] = show_trashed
+        if view is not None: query['view'] = view.value
+        headers = {'Accept': 'application/json', }
+
+        while True:
+            json = self._api.do('GET', '/api/2.0/lakeview/dashboards', query=query, headers=headers)
+            if 'dashboards' in json:
+                for v in json['dashboards']:
+                    yield Dashboard.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
+
     def list_schedules(self,
                        dashboard_id: str,
                        *,
                        page_size: Optional[int] = None,
                        page_token: Optional[str] = None) -> Iterator[Schedule]:
         """List dashboard schedules.
-        
+
         :param dashboard_id: str
           UUID identifying the dashboard to which the schedule belongs.
         :param page_size: int (optional)
@@ -880,7 +947,7 @@ class LakeviewAPI:
         :param page_token: str (optional)
           A page token, received from a previous `ListSchedules` call. Use this to retrieve the subsequent
           page.
-        
+
         :returns: Iterator over :class:`Schedule`
         """
 
@@ -908,7 +975,7 @@ class LakeviewAPI:
                            page_size: Optional[int] = None,
                            page_token: Optional[str] = None) -> Iterator[Subscription]:
         """List schedule subscriptions.
-        
+
         :param dashboard_id: str
           UUID identifying the dashboard to which the subscription belongs.
         :param schedule_id: str
@@ -918,7 +985,7 @@ class LakeviewAPI:
         :param page_token: str (optional)
           A page token, received from a previous `ListSubscriptions` call. Use this to retrieve the subsequent
           page.
-        
+
         :returns: Iterator over :class:`Subscription`
         """
 
@@ -1074,7 +1141,7 @@ class LakeviewAPI:
                         etag: Optional[str] = None,
                         pause_status: Optional[SchedulePauseStatus] = None) -> Schedule:
         """Update dashboard schedule.
-        
+
         :param dashboard_id: str
           UUID identifying the dashboard to which the schedule belongs.
         :param schedule_id: str
@@ -1088,7 +1155,7 @@ class LakeviewAPI:
           the schedule has not been modified since the last read, and can be optionally provided on delete.
         :param pause_status: :class:`SchedulePauseStatus` (optional)
           The status indicates whether this schedule is paused or not.
-        
+
         :returns: :class:`Schedule`
         """
         body = {}

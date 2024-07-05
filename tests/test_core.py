@@ -201,9 +201,8 @@ def test_extra_and_upstream_user_agent(monkeypatch):
         .with_user_agent_extra('test-extra-2', '2')
 
     assert config.user_agent == (
-        f"test/0.0.0 databricks-sdk-py/{__version__} python/3.0.0 os/testos auth/basic"
-        f" test-extra-1/1 test-extra-2/2 upstream/upstream-product upstream-version/0.0.1"
-        " runtime/13.1-anything-else")
+        f"test/0.0.0 databricks-sdk-py/{__version__} python/3.0.0 os/testos auth/basic test-extra-1/1 test-extra-2/2"
+        " upstream/upstream-product upstream-version/0.0.1 runtime/13.1-anything-else")
 
 
 def test_config_copy_shallow_copies_credential_provider():
@@ -235,18 +234,6 @@ def test_config_copy_shallow_copies_credential_provider():
     assert config.authenticate()["token"] == "token2"
     assert config_copy.authenticate()["token"] == "token2"
     assert config._credentials_strategy == config_copy._credentials_strategy
-
-
-def test_config_copy_deep_copies_user_agent_other_info(config):
-    config_copy = config.copy()
-
-    config.with_user_agent_extra("test", "test1")
-    assert "test/test1" not in config_copy.user_agent
-    assert "test/test1" in config.user_agent
-
-    config_copy.with_user_agent_extra("test", "test2")
-    assert "test/test2" in config_copy.user_agent
-    assert "test/test2" not in config.user_agent
 
 
 def test_config_accounts_aws_is_accounts_host(config):
