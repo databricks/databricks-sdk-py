@@ -1799,7 +1799,7 @@ class JobSourceDirtyState(Enum):
 
 class JobsHealthMetric(Enum):
     """Specifies the health metric that is being evaluated for a particular health rule.
-
+    
     * `RUN_DURATION_SECONDS`: Expected total time for a run in seconds. * `STREAMING_BACKLOG_BYTES`:
     An estimate of the maximum bytes of data waiting to be consumed across all streams. This metric
     is in Private Preview. * `STREAMING_BACKLOG_RECORDS`: An estimate of the maximum offset lag

@@ -1004,23 +1004,6 @@ class CreateConnection:
 
 
 @dataclass
-class CreateEndpointRequest:
-    endpoint: Optional[Endpoint] = None
-    """Endpoint"""
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateEndpointRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.endpoint: body['endpoint'] = self.endpoint.as_dict()
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateEndpointRequest:
-        """Deserializes the CreateEndpointRequest from a dictionary."""
-        return cls(endpoint=_from_dict(d, 'endpoint', Endpoint))
-
-
-@dataclass
 class CreateExternalLocation:
     name: str
     """Name of the external location."""
@@ -1962,36 +1945,6 @@ class EncryptionDetails:
     def from_dict(cls, d: Dict[str, any]) -> EncryptionDetails:
         """Deserializes the EncryptionDetails from a dictionary."""
         return cls(sse_encryption_details=_from_dict(d, 'sse_encryption_details', SseEncryptionDetails))
-
-
-@dataclass
-class Endpoint:
-    """Endpoint"""
-
-    name: Optional[str] = None
-
-    status: Optional[EndpointState] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the Endpoint into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.name is not None: body['name'] = self.name
-        if self.status is not None: body['status'] = self.status.value
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Endpoint:
-        """Deserializes the Endpoint from a dictionary."""
-        return cls(name=d.get('name', None), status=_enum(d, 'status', EndpointState))
-
-
-class EndpointState(Enum):
-
-    ENDPOINT_DELETING = 'ENDPOINT_DELETING'
-    ENDPOINT_FAILED = 'ENDPOINT_FAILED'
-    ENDPOINT_ONLINE = 'ENDPOINT_ONLINE'
-    ENDPOINT_PROVISIONING = 'ENDPOINT_PROVISIONING'
-    ENDPOINT_STATE_UNSPECIFIED = 'ENDPOINT_STATE_UNSPECIFIED'
 
 
 @dataclass
@@ -6588,53 +6541,6 @@ class ConnectionsAPI:
 
         res = self._api.do('PATCH', f'/api/2.1/unity-catalog/connections/{name}', body=body, headers=headers)
         return ConnectionInfo.from_dict(res)
-
-
-class EndpointsAPI:
-    """Endpoints are used to connect to PG clusters."""
-
-    def __init__(self, api_client):
-        self._api = api_client
-
-    def create(self, *, endpoint: Optional[Endpoint] = None) -> Endpoint:
-        """Create an Endpoint.
-        
-        :param endpoint: :class:`Endpoint` (optional)
-          Endpoint
-        
-        :returns: :class:`Endpoint`
-        """
-        body = {}
-        if endpoint is not None: body['endpoint'] = endpoint.as_dict()
-        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
-
-        res = self._api.do('POST', '/api/2.0/hadron-endpoints', body=body, headers=headers)
-        return Endpoint.from_dict(res)
-
-    def delete(self, name: str):
-        """Delete an Endpoint.
-        
-        :param name: str
-        
-        
-        """
-
-        headers = {'Accept': 'application/json', }
-
-        self._api.do('DELETE', f'/api/2.0/hadron-endpoints/{name}', headers=headers)
-
-    def get(self, name: str) -> Endpoint:
-        """Get an Endpoint.
-        
-        :param name: str
-        
-        :returns: :class:`Endpoint`
-        """
-
-        headers = {'Accept': 'application/json', }
-
-        res = self._api.do('GET', f'/api/2.0/hadron-endpoints/{name}', headers=headers)
-        return Endpoint.from_dict(res)
 
 
 class ExternalLocationsAPI:

@@ -313,10 +313,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: CreateEndpointRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: CreateExternalLocation
    :members:
    :undoc-members:
@@ -568,27 +564,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: EncryptionDetails
    :members:
    :undoc-members:
-
-.. autoclass:: Endpoint
-   :members:
-   :undoc-members:
-
-.. py:class:: EndpointState
-
-   .. py:attribute:: ENDPOINT_DELETING
-      :value: "ENDPOINT_DELETING"
-
-   .. py:attribute:: ENDPOINT_FAILED
-      :value: "ENDPOINT_FAILED"
-
-   .. py:attribute:: ENDPOINT_ONLINE
-      :value: "ENDPOINT_ONLINE"
-
-   .. py:attribute:: ENDPOINT_PROVISIONING
-      :value: "ENDPOINT_PROVISIONING"
-
-   .. py:attribute:: ENDPOINT_STATE_UNSPECIFIED
-      :value: "ENDPOINT_STATE_UNSPECIFIED"
 
 .. autoclass:: ExternalLocationInfo
    :members:

@@ -12,7 +12,7 @@ from typing import Any, BinaryIO, Callable, Dict, Iterator, List, Optional
 
 import requests
 
-from ..data_plane import DataPlaneDetailsFetcher
+from ..data_plane import DataPlaneService
 from ..errors import OperationFailed
 from ._internal import Wait, _enum, _from_dict, _repeated_dict
 
@@ -3347,7 +3347,7 @@ class ServingEndpointsDataPlaneAPI:
     def __init__(self, api_client, control_plane):
         self._api = api_client
         self._control_plane = control_plane
-        self._details_fetcher = DataPlaneDetailsFetcher()
+        self._data_plane_service = DataPlaneService()
 
     def query(self,
               name: str,
@@ -3435,8 +3435,8 @@ class ServingEndpointsDataPlaneAPI:
             return response.data_plane_info.query_info
 
         get_params = ['name', ]
-        data_plane_details = self._details_fetcher.get_data_plane_details('query', get_params, info_getter,
-                                                                          self._api.get_oauth_token)
+        data_plane_details = self._data_plane_service.get_data_plane_details('query', get_params, info_getter,
+                                                                             self._api.get_oauth_token)
         token = data_plane_details.token
 
         def auth(r: requests.PreparedRequest) -> requests.PreparedRequest:

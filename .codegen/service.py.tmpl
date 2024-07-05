@@ -10,7 +10,7 @@ import random
 import logging
 import requests
 
-from ..data_plane import DataPlaneDetailsFetcher
+from ..data_plane import DataPlaneService
 from ..errors import OperationTimeout, OperationFailed
 from ._internal import _enum, _from_dict, _repeated_dict, _repeated_enum, Wait, _escape_multi_segment_path_parameter
 from ..oauth import Token
@@ -112,7 +112,7 @@ class {{.PascalName}}API:{{if .Description}}
         self._api = api_client
         {{if .IsDataPlane -}}
         self._control_plane = control_plane
-        self._details_fetcher = DataPlaneDetailsFetcher()
+        self._data_plane_service = DataPlaneService()
         {{end -}}
         {{range .Subservices}}
         self._{{.SnakeName}} = {{.PascalName}}API(self._api){{end}}
@@ -220,7 +220,7 @@ class {{.PascalName}}API:{{if .Description}}
             return response{{range .DataPlaneInfoFields}}.{{.SnakeName}}{{end}}
 
         get_params = [{{- range .Service.DataPlaneInfoMethod.Request.Fields }}'{{.SnakeName}}',{{end}}]
-        data_plane_details = self._details_fetcher.get_data_plane_details('{{.SnakeName}}', get_params, info_getter, self._api.get_oauth_token)
+        data_plane_details = self._data_plane_service.get_data_plane_details('{{.SnakeName}}', get_params, info_getter, self._api.get_oauth_token)
         token = data_plane_details.token
 
         def auth(r: requests.PreparedRequest) -> requests.PreparedRequest:
@@ -374,7 +374,7 @@ self._api.do('{{.Verb}}',
   {{- if .IsResponseByteStream }}, raw=True{{ end }})
 {{- else -}}
   self._api.do('{{.Verb}}',
-    url=token.endpoint_url
+    url=data_plane_details.endpoint_url
     {{if .Request}}
         {{- if .Request.HasQueryField}}, query=query{{end}}
         {{- if .Request.MapValue}}, body=contents

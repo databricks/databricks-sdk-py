@@ -4,7 +4,7 @@
 
 .. py:class:: ServingEndpointsDataPlaneAPI
 
-    Serving endpoints DataPlane provides a set of operations to interact with DataPlane endpoints for Serving
+    Serving endpoints DataPlane provides a set of operations to interact with data plane endpoints for Serving
     endpoints service.
 
     .. py:method:: query(name: str [, dataframe_records: Optional[List[Any]], dataframe_split: Optional[DataframeSplitInput], extra_params: Optional[Dict[str, str]], input: Optional[Any], inputs: Optional[Any], instances: Optional[List[Any]], max_tokens: Optional[int], messages: Optional[List[ChatMessage]], n: Optional[int], prompt: Optional[Any], stop: Optional[List[str]], stream: Optional[bool], temperature: Optional[float]]) -> QueryEndpointResponse

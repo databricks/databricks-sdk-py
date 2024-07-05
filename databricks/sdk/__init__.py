@@ -11,7 +11,7 @@ from databricks.sdk.service.catalog import (AccountMetastoreAssignmentsAPI,
                                             AccountMetastoresAPI,
                                             AccountStorageCredentialsAPI,
                                             ArtifactAllowlistsAPI, CatalogsAPI,
-                                            ConnectionsAPI, EndpointsAPI,
+                                            ConnectionsAPI,
                                             ExternalLocationsAPI, FunctionsAPI,
                                             GrantsAPI, MetastoresAPI,
                                             ModelVersionsAPI, OnlineTablesAPI,
@@ -186,7 +186,6 @@ class WorkspaceClient:
         self._data_sources = DataSourcesAPI(self._api_client)
         self._dbfs = DbfsExt(self._api_client)
         self._dbsql_permissions = DbsqlPermissionsAPI(self._api_client)
-        self._endpoints = EndpointsAPI(self._api_client)
         self._experiments = ExperimentsAPI(self._api_client)
         self._external_locations = ExternalLocationsAPI(self._api_client)
         self._files = FilesAPI(self._api_client)
@@ -370,11 +369,6 @@ class WorkspaceClient:
     def dbsql_permissions(self) -> DbsqlPermissionsAPI:
         """The SQL Permissions API is similar to the endpoints of the :method:permissions/set."""
         return self._dbsql_permissions
-
-    @property
-    def endpoints(self) -> EndpointsAPI:
-        """Endpoints are used to connect to PG clusters."""
-        return self._endpoints
 
     @property
     def experiments(self) -> ExperimentsAPI:

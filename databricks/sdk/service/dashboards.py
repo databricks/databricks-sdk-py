@@ -721,7 +721,7 @@ class LakeviewAPI:
                         display_name: Optional[str] = None,
                         pause_status: Optional[SchedulePauseStatus] = None) -> Schedule:
         """Create dashboard schedule.
-
+        
         :param dashboard_id: str
           UUID identifying the dashboard to which the schedule belongs.
         :param cron_schedule: :class:`CronSchedule`
@@ -730,7 +730,7 @@ class LakeviewAPI:
           The display name for schedule.
         :param pause_status: :class:`SchedulePauseStatus` (optional)
           The status indicates whether this schedule is paused or not.
-
+        
         :returns: :class:`Schedule`
         """
         body = {}
@@ -748,14 +748,14 @@ class LakeviewAPI:
     def create_subscription(self, dashboard_id: str, schedule_id: str,
                             subscriber: Subscriber) -> Subscription:
         """Create schedule subscription.
-
+        
         :param dashboard_id: str
           UUID identifying the dashboard to which the subscription belongs.
         :param schedule_id: str
           UUID identifying the schedule to which the subscription belongs.
         :param subscriber: :class:`Subscriber`
           Subscriber details for users and destinations to be added as subscribers to the schedule.
-
+        
         :returns: :class:`Subscription`
         """
         body = {}
@@ -771,7 +771,7 @@ class LakeviewAPI:
 
     def delete_schedule(self, dashboard_id: str, schedule_id: str, *, etag: Optional[str] = None):
         """Delete dashboard schedule.
-
+        
         :param dashboard_id: str
           UUID identifying the dashboard to which the schedule belongs.
         :param schedule_id: str
@@ -779,8 +779,8 @@ class LakeviewAPI:
         :param etag: str (optional)
           The etag for the schedule. Optionally, it can be provided to verify that the schedule has not been
           modified from its last retrieval.
-
-
+        
+        
         """
 
         query = {}
@@ -799,7 +799,7 @@ class LakeviewAPI:
                             *,
                             etag: Optional[str] = None):
         """Delete schedule subscription.
-
+        
         :param dashboard_id: str
           UUID identifying the dashboard which the subscription belongs.
         :param schedule_id: str
@@ -809,8 +809,8 @@ class LakeviewAPI:
         :param etag: str (optional)
           The etag for the subscription. Can be optionally provided to ensure that the subscription has not
           been modified since the last read.
-
-
+        
+        
         """
 
         query = {}
@@ -857,12 +857,12 @@ class LakeviewAPI:
 
     def get_schedule(self, dashboard_id: str, schedule_id: str) -> Schedule:
         """Get dashboard schedule.
-
+        
         :param dashboard_id: str
           UUID identifying the dashboard to which the schedule belongs.
         :param schedule_id: str
           UUID identifying the schedule.
-
+        
         :returns: :class:`Schedule`
         """
 
@@ -875,14 +875,14 @@ class LakeviewAPI:
 
     def get_subscription(self, dashboard_id: str, schedule_id: str, subscription_id: str) -> Subscription:
         """Get schedule subscription.
-
+        
         :param dashboard_id: str
           UUID identifying the dashboard which the subscription belongs.
         :param schedule_id: str
           UUID identifying the schedule which the subscription belongs.
         :param subscription_id: str
           UUID identifying the subscription.
-
+        
         :returns: :class:`Subscription`
         """
 
@@ -901,7 +901,7 @@ class LakeviewAPI:
              show_trashed: Optional[bool] = None,
              view: Optional[DashboardView] = None) -> Iterator[Dashboard]:
         """List dashboards.
-
+        
         :param page_size: int (optional)
           The number of dashboards to return per page.
         :param page_token: str (optional)
@@ -913,7 +913,7 @@ class LakeviewAPI:
         :param view: :class:`DashboardView` (optional)
           Indicates whether to include all metadata from the dashboard in the response. If unset, the response
           defaults to `DASHBOARD_VIEW_BASIC` which only includes summary metadata from the dashboard.
-
+        
         :returns: Iterator over :class:`Dashboard`
         """
 
@@ -939,7 +939,7 @@ class LakeviewAPI:
                        page_size: Optional[int] = None,
                        page_token: Optional[str] = None) -> Iterator[Schedule]:
         """List dashboard schedules.
-
+        
         :param dashboard_id: str
           UUID identifying the dashboard to which the schedule belongs.
         :param page_size: int (optional)
@@ -947,7 +947,7 @@ class LakeviewAPI:
         :param page_token: str (optional)
           A page token, received from a previous `ListSchedules` call. Use this to retrieve the subsequent
           page.
-
+        
         :returns: Iterator over :class:`Schedule`
         """
 
@@ -975,7 +975,7 @@ class LakeviewAPI:
                            page_size: Optional[int] = None,
                            page_token: Optional[str] = None) -> Iterator[Subscription]:
         """List schedule subscriptions.
-
+        
         :param dashboard_id: str
           UUID identifying the dashboard to which the subscription belongs.
         :param schedule_id: str
@@ -985,7 +985,7 @@ class LakeviewAPI:
         :param page_token: str (optional)
           A page token, received from a previous `ListSubscriptions` call. Use this to retrieve the subsequent
           page.
-
+        
         :returns: Iterator over :class:`Subscription`
         """
 
@@ -1141,7 +1141,7 @@ class LakeviewAPI:
                         etag: Optional[str] = None,
                         pause_status: Optional[SchedulePauseStatus] = None) -> Schedule:
         """Update dashboard schedule.
-
+        
         :param dashboard_id: str
           UUID identifying the dashboard to which the schedule belongs.
         :param schedule_id: str
@@ -1155,7 +1155,7 @@ class LakeviewAPI:
           the schedule has not been modified since the last read, and can be optionally provided on delete.
         :param pause_status: :class:`SchedulePauseStatus` (optional)
           The status indicates whether this schedule is paused or not.
-
+        
         :returns: :class:`Schedule`
         """
         body = {}

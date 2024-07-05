@@ -10,7 +10,6 @@ Configure data governance with Unity Catalog for metastores, catalogs, schemas, 
    artifact_allowlists
    catalogs
    connections
-   endpoints
    external_locations
    functions
    grants
