@@ -51,6 +51,14 @@ def test_large_put(fs_and_base_path):
     assert output == ("test" * 20000)[:65536]
 
 
+def test_put_local_path(fs_and_base_path, random):
+    fs, base_path = fs_and_base_path
+    to_write = random(1024 * 1024 * 2)
+    base_path = base_path / "tmp_file"
+    fs.put(f'file:{base_path}', to_write, True)
+    assert fs.head(f'file:{base_path}', 1024*1024*2) == to_write
+
+
 def test_cp_file(fs_and_base_path, random):
     fs, base_path = fs_and_base_path
     path = base_path + "/dbc_qa_file-" + random()
