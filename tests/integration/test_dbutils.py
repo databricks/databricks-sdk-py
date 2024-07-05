@@ -9,10 +9,10 @@ from databricks.sdk.errors import NotFound
 
 
 def test_put_local_path(w, random, tmp_path):
-    to_write = random(1024 * 1024 * 2.5)
+    to_write = random(1024 * 1024 * 2)
     tmp_path = tmp_path / "tmp_file"
     w.dbutils.fs.put(f'file:{tmp_path}', to_write, True)
-    assert w.dbutils.fs.head(f'file:{tmp_path}', 1024*1024*2.5) == to_write
+    assert w.dbutils.fs.head(f'file:{tmp_path}', 1024*1024*2) == to_write
     assert False
 
 
