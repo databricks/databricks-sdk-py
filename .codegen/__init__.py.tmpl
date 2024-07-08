@@ -61,7 +61,7 @@ class WorkspaceClient:
         self._dbutils = _make_dbutils(self._config)
         self._api_client = client.ApiClient(self._config)
 
-        {{- range .Services}}{{if and (not .IsAccounts) (not .HasParent) (.HasDataPlaneAPI) (not .IsDataPlane)}}
+        {{- range .Services}}{{if and (not .IsAccounts) (not .HasParent) .HasDataPlaneAPI (not .IsDataPlane)}}
         {{.SnakeName}} = {{template "api" .}}(self._api_client){{end -}}{{end}}
 
         {{- range .Services}}
@@ -129,7 +129,7 @@ class AccountClient:
         self._config = config.copy()
         self._api_client = client.ApiClient(self._config)
 
-        {{- range .Services}}{{if and .IsAccounts (not .HasParent) (.HasDataPlaneAPI) (not .IsDataPlane)}}
+        {{- range .Services}}{{if and .IsAccounts (not .HasParent) .HasDataPlaneAPI (not .IsDataPlane)}}
         {{(.TrimPrefix "account").SnakeName}} = {{template "api" .}}(self._api_client){{end -}}{{end}}
 
         {{- range .Services}}
