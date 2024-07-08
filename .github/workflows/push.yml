@@ -37,3 +37,26 @@ jobs:
 
       - name: Fail on differences
         run: git diff --exit-code
+
+  commit-message:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Validate Tag
+        run: |
+            MSG=$(git log --format=%B -n 1 ${{github.event.after}})
+            TAG=$(echo MSG | sed 's/\[\(.*\)\].*/\1/')
+            echo "Found tag {$TAG}"
+            LINE=$(cat .codegen/changelog_config.yml | grep "tag: \"\[$(echo $TAG)\]\"")
+            VALID=$([ -z "$TAG" ] && echo "False" || echo "True")
+            echo "::set-env name=VALID_TAG::${TAG}"
+
+      - name: Valid Tag
+        if: ${{VALID}} != "true"
+        uses: actions/github-script@v3
+        with:
+          script: |
+            core.setFailed('Invalid tag name')
