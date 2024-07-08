@@ -3,17 +3,21 @@ import logging
 import os
 
 import pytest
-
+import platform
 from databricks.sdk.core import DatabricksError
 from databricks.sdk.errors import NotFound
 
 
 def test_put_local_path(fs_and_base_path, random):
     fs, base_path = fs_and_base_path
+    if platform.system() == 'Windows':
+        dummy_file = f'C:\\Windows\\Temp\\{random()}'
+    else:
+        dummy_file = f'/tmp/{random()}'
     to_write = random(1024 * 1024 * 2)
-    base_path = base_path / "tmp_file"
-    fs.put(base_path, to_write, True)
-    assert fs.head(base_path, 1024 * 1024 * 2) == to_write
+    # tmp_path = tmp_path / "tmp_file"
+    fs.put(dummy_file, to_write, True)
+    assert fs.head(dummy_file, 1024 * 1024 * 2) == to_write
 
 
 
