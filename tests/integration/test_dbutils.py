@@ -8,11 +8,13 @@ from databricks.sdk.core import DatabricksError
 from databricks.sdk.errors import NotFound
 
 
-def test_put_local_path(w, random, tmp_path):
+def test_put_local_path(fs_and_base_path, random):
+    fs, base_path = fs_and_base_path
     to_write = random(1024 * 1024 * 2)
-    tmp_path = tmp_path / "tmp_file"
-    w.dbutils.fs.put(f'file:{tmp_path}', to_write, True)
-    assert w.dbutils.fs.head(f'file:{tmp_path}', 1024*1024*2) == to_write
+    base_path = base_path / "tmp_file"
+    fs.put(base_path, to_write, True)
+    assert fs.head(base_path, 1024 * 1024 * 2) == to_write
+
 
 
 def test_rest_dbfs_ls(w, env_or_skip):
