@@ -141,11 +141,11 @@ def test_databricks_cli_token_source_installed_legacy_with_symlink(config, monke
 
     if platform.system() == 'Windows':
         (dir1 / "databricks.exe").symlink_to(write_small_dummy_executable(dir2))
-        path = pathlib.PureWindowsPath(dir1)
     else:
         (dir1 / "databricks").symlink_to(write_small_dummy_executable(dir2))
-        path = pathlib.PurePosixPath(dir1)
-    path = path.__str__()
+
+    path = pathlib.Path(dir1)
+    path = str(path)
     monkeypatch.setenv('PATH', path)
 
     with pytest.raises(FileNotFoundError, match="version <0.100.0 detected"):
@@ -194,12 +194,8 @@ def test_databricks_cli_credential_provider_installed_new(config, monkeypatch, t
                                                expiry=datetime(2023, 5, 22, 0, 0, 0)))
     write_large_dummy_executable(tmp_path)
     path = str(os.pathsep).join([tmp_path.as_posix(), os.environ['PATH']])
-    if platform.system() == 'Windows':
-        path = pathlib.PureWindowsPath(path)
-        monkeypatch.setenv('COMSPEC', 'C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe')
-    else:
-        path = pathlib.PurePosixPath(path)
-    path = path.__str__()
+    path = pathlib.Path(path)
+    path = str(path)
     monkeypatch.setenv('PATH', path)
 
     assert databricks_cli(config) is not None
