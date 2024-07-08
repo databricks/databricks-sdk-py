@@ -203,6 +203,7 @@ def test_databricks_cli_credential_provider_installed_new(config, monkeypatch, t
                             return_value=Token(access_token='token',
                                                token_type='Bearer',
                                                expiry=datetime(2023, 5, 22, 0, 0, 0)))
+    write_large_dummy_executable(tmp_path)
     path = str(os.pathsep).join([tmp_path.as_posix(), os.environ['PATH']])
     if platform.system() == 'Windows':
         path = pathlib.PureWindowsPath(path)
@@ -211,6 +212,7 @@ def test_databricks_cli_credential_provider_installed_new(config, monkeypatch, t
         path = pathlib.PurePosixPath(path)
     path = path.__str__()
     monkeypatch.setenv('PATH', path)
+
     assert databricks_cli(config) is not None
     assert get_mock.call_count == 1
 
