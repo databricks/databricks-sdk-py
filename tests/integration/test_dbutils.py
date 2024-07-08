@@ -56,7 +56,7 @@ def test_put_local_path(fs_and_base_path, random):
     to_write = random(1024 * 1024 * 2)
     base_path = base_path / "tmp_file"
     fs.put(base_path, to_write, True)
-    assert fs.head(base_path, 1024*1024*2) == to_write
+    assert fs.head(base_path, 1024 * 1024 * 2) == to_write
 
 
 def test_cp_file(fs_and_base_path, random):
