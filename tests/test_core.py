@@ -107,28 +107,11 @@ def test_streaming_response_read_closes(config):
 
 
 def write_large_dummy_executable(path: pathlib.Path):
-    if platform.system() == "Windows":
-        cli = path.joinpath('databricks.ps1')
-        random_string = ''.join(random.choice(string.ascii_letters) for i in range(1024 * 1024))
-        cli.write_text("""#!C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe
+    cli = path.joinpath('databricks')
 
-$tokenInfo = @"
-{
-"access_token": "token",
-"token_type": "Bearer",
-"expiry": "2023-05-22T00:00:00.000000+00:00"
-}
-"@
-
-Write-Output $tokenInfo
-exit 0""" + random_string)
-        cli.chmod(0o755)
-    else:
-        cli = path.joinpath('databricks')
-
-        # Generate a long random string to inflate the file size.
-        random_string = ''.join(random.choice(string.ascii_letters) for i in range(1024 * 1024))
-        cli.write_text("""#!/bin/sh
+    # Generate a long random string to inflate the file size.
+    random_string = ''.join(random.choice(string.ascii_letters) for i in range(1024 * 1024))
+    cli.write_text("""#!/bin/sh
 cat <<EOF
 {
 "access_token": "token",
@@ -138,7 +121,7 @@ cat <<EOF
 EOF
 exit 0
 """ + random_string)
-        cli.chmod(0o755)
+    cli.chmod(0o755)
     assert cli.stat().st_size >= (1024 * 1024)
     return cli
 
