@@ -139,9 +139,15 @@ def test_databricks_cli_token_source_installed_legacy_with_symlink(config, monke
     dir1.mkdir()
     dir2.mkdir()
 
-    (dir1 / "databricks").symlink_to(write_small_dummy_executable(dir2))
+    if platform.system() == 'Windows':
+        (dir1 / "databricks.exe").symlink_to(write_small_dummy_executable(dir2))
+        path = pathlib.PureWindowsPath(dir1)
+    else:
+        (dir1 / "databricks").symlink_to(write_small_dummy_executable(dir2))
+        path = pathlib.PurePosixPath(dir1)
+    path = path.__str__()
+    monkeypatch.setenv('PATH', path)
 
-    monkeypatch.setenv('PATH', dir1.as_posix())
     with pytest.raises(FileNotFoundError, match="version <0.100.0 detected"):
         DatabricksCliTokenSource(config)
 
