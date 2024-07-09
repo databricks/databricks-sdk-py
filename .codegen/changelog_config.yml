@@ -1,0 +1,11 @@
+change_types:
+  - message: New Features and Improvements
+    tag: "[Feature]"
+  - message: Bug Fixes
+    tag: "[Fix]"
+  - message: Documentation
+    tag: "[Doc]"
+  - message: Internal Changes
+    tag: "[Internal]"
+  # Default for messages without a tag
+  - message: Other Changes
