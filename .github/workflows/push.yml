@@ -40,23 +40,19 @@ jobs:
 
   commit-message:
     runs-on: ubuntu-latest
-
+    if: ${{ github.event_name == 'pull_request' }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: Validate Tag
         run: |
-            MSG=$(git log --format=%B -n 1 ${{github.event.after}})
-            TAG=$(echo MSG | sed 's/\[\(.*\)\].*/\1/')
-            echo "Found tag {$TAG}"
-            LINE=$(cat .codegen/changelog_config.yml | grep "tag: \"\[$(echo $TAG)\]\"")
-            VALID=$([ -z "$TAG" ] && echo "False" || echo "True")
-            echo "::set-env name=VALID_TAG::${TAG}"
-
-      - name: Valid Tag
-        if: ${{VALID}} != "true"
-        uses: actions/github-script@v3
-        with:
-          script: |
-            core.setFailed('Invalid tag name')
+          TAG=$(echo ${{ github.event.pull_request.title }} | sed -ne 's/\[\(.*\)\].*/\1/p')
+          if grep -q "tag: \"[$TAG]\"" .codegen/changelog_config.yml; then 
+            echo "Invalid or missing tag in commit message: [$TAG]" 
+            exit 1
+          else 
+            echo "Valid tag found: [$TAG]"
+          fi
