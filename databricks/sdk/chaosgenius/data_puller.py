@@ -323,6 +323,7 @@ class DataPuller:
         )
         return success
 
+    # TODO: Not being used currently.
     def get_jobs_list(self) -> bool:
         self._logger.info("Saving jobs list.")
         self._add_status_entry("jobs", "initializing", {})
@@ -342,6 +343,7 @@ class DataPuller:
             self._add_status_entry("jobs", "failed", {})
             return False
 
+    # TODO: Not being used currently.
     def get_job_runs_list(self) -> bool:
         self._logger.info("Saving job runs.")
         self._add_status_entry("job_runs", "initializing", {})
@@ -426,8 +428,8 @@ class DataPuller:
             ("instance pools", self.get_instance_pools_list),
             ("warehouses list", self.get_sql_warehouses_list),
             ("query history", self.get_sql_query_history),
-            ("jobs list", self.get_jobs_list),
-            ("job runs", self.get_job_runs_list),
+            # ("jobs list", self.get_jobs_list),
+            # ("job runs", self.get_job_runs_list),
             ("users list", self.get_users_list),
         ]
 
