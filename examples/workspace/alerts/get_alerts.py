@@ -5,19 +5,30 @@ from databricks.sdk.service import sql
 
 w = WorkspaceClient()
 
-srcs = w.data_sources.list()
+query = w.queries.create(
+    query=sql.CreateQueryRequestQuery(
+        display_name=f"sdk-{time.time_ns()}",
+        description="This is a test query created from the SDK",
+        query_text="SELECT 1",
+    )
+)
 
-query = w.queries.create(name=f'sdk-{time.time_ns()}',
-                         data_source_id=srcs[0].id,
-                         description="test query from Go SDK",
-                         query="SELECT 1")
+alert = w.alerts.create(
+    alert=sql.CreateAlertRequestAlert(
+        display_name=f"sdk-{time.time_ns()}",
+        query_id=query.id,
+        condition=sql.AlertCondition(
+            op=sql.AlertOperator.LESS_THAN,
+            operand=sql.AlertConditionOperand(column=sql.AlertOperandColumn(name="1")),
+            threshold=sql.AlertConditionThreshold(
+                value=sql.AlertOperandValue(double_value=1.5)
+            ),
+        ),
+    )
+)
 
-alert = w.alerts.create(options=sql.AlertOptions(column="1", op="==", value="1"),
-                        name=f'sdk-{time.time_ns()}',
-                        query_id=query.id)
-
-by_id = w.alerts.get(alert_id=alert.id)
+by_id = w.alerts.get(id=alert.id)
 
 # cleanup
-w.queries.delete(query_id=query.id)
-w.alerts.delete(alert_id=alert.id)
+w.queries.delete(id=query.id)
+w.alerts.delete(id=alert.id)
