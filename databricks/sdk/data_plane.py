@@ -1,6 +1,6 @@
 import threading
 from dataclasses import dataclass
-from typing import Callable
+from typing import Callable, List
 
 from databricks.sdk.oauth import Token
 from databricks.sdk.service.oauth2 import DataPlaneInfo
@@ -19,7 +19,7 @@ class DataPlaneService:
         self._tokens = {}
         self._lock = threading.Lock()
 
-    def get_data_plane_details(self, method: str, params: list[str], info_getter: Callable[[], DataPlaneInfo],
+    def get_data_plane_details(self, method: str, params: List[str], info_getter: Callable[[], DataPlaneInfo],
                                refresh: Callable[[str], Token]):
         all_elements = params.copy()
         all_elements.insert(0, method)
