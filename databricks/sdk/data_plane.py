@@ -19,6 +19,7 @@ class DataPlaneDetails:
 
 class DataPlaneService:
     """Helper class to fetch and manage DataPlane details."""
+
     def __init__(self):
         self._data_plane_info = {}
         self._tokens = {}
