@@ -219,7 +219,7 @@ class {{.PascalName}}API:{{if .Description}}
             	raise Exception("Resource does not support direct Data Plane access")
             return response{{range .DataPlaneInfoFields}}.{{.SnakeName}}{{end}}
 
-        get_params = [{{- range .Service.DataPlaneInfoMethod.Request.Fields }}'{{.SnakeName}}',{{end}}]
+        get_params = [{{- range .Service.DataPlaneInfoMethod.Request.Fields }}{{.SnakeName}},{{end}}]
         data_plane_details = self._data_plane_service.get_data_plane_details('{{.SnakeName}}', get_params, info_getter, self._api.get_oauth_token)
         token = data_plane_details.token
 
@@ -356,23 +356,12 @@ class {{.PascalName}}API:{{if .Description}}
 {{- end}}
 
 {{define "method-do" -}}
-{{- if not .Service.IsDataPlane -}}
-self._api.do('{{.Verb}}',
-  {{ template "path" . }}
-  {{if .Request}}
-      {{- if .Request.HasQueryField}}, query=query{{end}}
-      {{- if .Request.MapValue}}, body=contents
-      {{- else if .Request.HasJsonField}}, body=body{{end}}
-  {{end}}
-  , headers=headers
-  {{if .Response.HasHeaderField -}}
-  , response_headers=response_headers
-  {{- end}}
-  {{- if and .IsRequestByteStream .RequestBodyField }}, data={{template "safe-snake-name" .RequestBodyField}}{{ end }}
-  {{- if .IsResponseByteStream }}, raw=True{{ end }})
-{{- else -}}
-  self._api.do('{{.Verb}}',
+    self._api.do('{{.Verb}}',
+    {{- if .Service.IsDataPlane -}}
     url=data_plane_details.endpoint_url
+    {{- else -}}
+    {{ template "path" . }}
+    {{- end -}}
     {{if .Request}}
         {{- if .Request.HasQueryField}}, query=query{{end}}
         {{- if .Request.MapValue}}, body=contents
@@ -383,9 +372,10 @@ self._api.do('{{.Verb}}',
     , response_headers=response_headers
     {{- end}}
     {{- if and .IsRequestByteStream .RequestBodyField }}, data={{template "safe-snake-name" .RequestBodyField}}{{ end }}
+    {{- if .Service.IsDataPlane -}}
     ,auth=auth
+    {{- end -}}
     {{- if .IsResponseByteStream }}, raw=True{{ end }})
-{{- end -}}
 {{- end}}
 
 {{- define "path" -}}

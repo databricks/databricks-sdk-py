@@ -141,7 +141,7 @@ class ApiClient:
            raw: bool = False,
            files=None,
            data=None,
-           auth=None,
+           auth: Callable[[requests.PreparedRequest], requests.PreparedRequest] = None,
            response_headers: List[str] = None) -> Union[dict, BinaryIO]:
         if headers is None:
             headers = {}
@@ -251,7 +251,7 @@ class ApiClient:
                  raw: bool = False,
                  files=None,
                  data=None,
-                 auth=None):
+                 auth: Callable[[requests.PreparedRequest], requests.PreparedRequest] = None):
         response = self._session.request(method,
                                          url,
                                          params=self._fix_query_string(query),

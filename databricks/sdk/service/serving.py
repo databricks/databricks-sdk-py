@@ -3434,7 +3434,7 @@ class ServingEndpointsDataPlaneAPI:
                 raise Exception("Resource does not support direct Data Plane access")
             return response.data_plane_info.query_info
 
-        get_params = ['name', ]
+        get_params = [name, ]
         data_plane_details = self._data_plane_service.get_data_plane_details('query', get_params, info_getter,
                                                                              self._api.get_oauth_token)
         token = data_plane_details.token
