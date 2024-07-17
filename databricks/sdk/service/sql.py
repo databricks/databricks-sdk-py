@@ -2857,8 +2857,7 @@ class ClientCallContext:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ClientCallContext:
         """Deserializes the ClientCallContext from a dictionary."""
-        return cls(file_name=FileName.from_dict(d['file_name']) if d.get('file_name') else None,
-                   line_number=d.get('line_number', None))
+        return cls(file_name=_from_dict(d, "file_name", FileName), line_number=d.get('line_number', None))
 
 
 @dataclass
@@ -2877,7 +2876,7 @@ class ServerlessChannelInfo:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ServerlessChannelInfo:
         """Deserializes the ServerlessChannelInfo from a dictionary."""
-        return cls(name=ServerlessChannelName(d['name']) if d.get('name') else None)
+        return cls(name=_enum(d, 'name', ServerlessChannelName))
 
 
 @dataclass
@@ -3018,8 +3017,8 @@ class QuerySource:
     def from_dict(cls, d: Dict[str, Any]) -> QuerySource:
         """Deserializes the QuerySource from a dictionary."""
         return cls(query_tags=d.get('query_tags', None),
-                   driver_info=DriverInfo.from_dict(d['driver_info']) if d.get('driver_info') else None,
-                   scheduled_by=ScheduledBy(d['scheduled_by']) if d.get('scheduled_by') else None,
+                   driver_info=_from_dict(d, 'driver_info', DriverInfo),
+                   scheduled_by=_enum(d, 'scheduled_by', ScheduledBy),
                    is_cloud_fetch=d.get('is_cloud_fetch', None),
                    source_query_id=d.get('source_query_id', None),
                    dashboard_id=d.get('dashboard_id', None),
@@ -3028,16 +3027,14 @@ class QuerySource:
                    run_id=d.get('run_id', None),
                    notebook_id=d.get('notebook_id', None),
                    is_databricks_sql_exec_api=d.get('is_databricks_sql_exec_api', None),
-                   entry_point=EntryPoint(d['entry_point']) if d.get('entry_point') else None,
+                   entry_point=_enum(d, 'entry_point', EntryPoint),
                    dashboard_v3_id=d.get('dashboard_v3_id', None),
-                   serverless_channel_info=ServerlessChannelInfo.from_dict(d['serverless_channel_info'])
-                   if d.get('serverless_channel_info') else None,
+                   serverless_channel_info=_from_dict(d, 'serverless_channel_info', ServerlessChannelInfo),
                    command_id=d.get('command_id', None),
                    command_run_id=d.get('command_run_id', None),
                    runnable_command_id=d.get('runnable_command_id', None),
-                   client_call_context=ClientCallContext.from_dict(d['client_call_context'])
-                   if d.get('client_call_context') else None,
-                   job_managed_by=JobManagedBy(d['job_managed_by']) if d.get('job_managed_by') else None,
+                   client_call_context=_from_dict(d, 'client_call_context', ClientCallContext),
+                   job_managed_by=_enum(d, 'job_managed_by', JobManagedBy),
                    pipeline_id=d.get('pipeline_id', None),
                    pipeline_update_id=d.get('pipeline_update_id', None),
                    genie_space_id=d.get('genie_space_id', None))
