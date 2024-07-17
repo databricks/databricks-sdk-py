@@ -55,7 +55,8 @@ from databricks.sdk.service.provisioning import (CredentialsAPI,
                                                  NetworksAPI, PrivateAccessAPI,
                                                  StorageAPI, VpcEndpointsAPI,
                                                  Workspace, WorkspacesAPI)
-from databricks.sdk.service.serving import AppsAPI, ServingEndpointsAPI
+from databricks.sdk.service.serving import (AppsAPI, ServingEndpointsAPI,
+                                            ServingEndpointsDataPlaneAPI)
 from databricks.sdk.service.settings import (AccountIpAccessListsAPI,
                                              AccountSettingsAPI,
                                              AutomaticClusterUpdateAPI,
@@ -162,6 +163,7 @@ class WorkspaceClient:
         self._config = config.copy()
         self._dbutils = _make_dbutils(self._config)
         self._api_client = client.ApiClient(self._config)
+        serving_endpoints = ServingEndpointsAPI(self._api_client)
         self._account_access_control_proxy = AccountAccessControlProxyAPI(self._api_client)
         self._alerts = AlertsAPI(self._api_client)
         self._apps = AppsAPI(self._api_client)
@@ -226,7 +228,8 @@ class WorkspaceClient:
         self._schemas = SchemasAPI(self._api_client)
         self._secrets = SecretsAPI(self._api_client)
         self._service_principals = ServicePrincipalsAPI(self._api_client)
-        self._serving_endpoints = ServingEndpointsAPI(self._api_client)
+        self._serving_endpoints = serving_endpoints
+        self._serving_endpoints_data_plane = ServingEndpointsDataPlaneAPI(self._api_client, serving_endpoints)
         self._settings = SettingsAPI(self._api_client)
         self._shares = SharesAPI(self._api_client)
         self._statement_execution = StatementExecutionAPI(self._api_client)
@@ -576,6 +579,11 @@ class WorkspaceClient:
     def serving_endpoints(self) -> ServingEndpointsAPI:
         """The Serving Endpoints API allows you to create, update, and delete model serving endpoints."""
         return self._serving_endpoints
+
+    @property
+    def serving_endpoints_data_plane(self) -> ServingEndpointsDataPlaneAPI:
+        """Serving endpoints DataPlane provides a set of operations to interact with data plane endpoints for Serving endpoints service."""
+        return self._serving_endpoints_data_plane
 
     @property
     def settings(self) -> SettingsAPI:

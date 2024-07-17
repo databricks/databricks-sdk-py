@@ -10,6 +10,9 @@ from datetime import timedelta
 from enum import Enum
 from typing import Any, BinaryIO, Callable, Dict, Iterator, List, Optional
 
+import requests
+
+from ..data_plane import DataPlaneService
 from ..errors import OperationFailed
 from ._internal import Wait, _enum, _from_dict, _repeated_dict
 
@@ -3335,3 +3338,118 @@ class ServingEndpointsAPI:
                            body=body,
                            headers=headers)
         return ServingEndpointPermissions.from_dict(res)
+
+
+class ServingEndpointsDataPlaneAPI:
+    """Serving endpoints DataPlane provides a set of operations to interact with data plane endpoints for Serving
+    endpoints service."""
+
+    def __init__(self, api_client, control_plane):
+        self._api = api_client
+        self._control_plane = control_plane
+        self._data_plane_service = DataPlaneService()
+
+    def query(self,
+              name: str,
+              *,
+              dataframe_records: Optional[List[Any]] = None,
+              dataframe_split: Optional[DataframeSplitInput] = None,
+              extra_params: Optional[Dict[str, str]] = None,
+              input: Optional[Any] = None,
+              inputs: Optional[Any] = None,
+              instances: Optional[List[Any]] = None,
+              max_tokens: Optional[int] = None,
+              messages: Optional[List[ChatMessage]] = None,
+              n: Optional[int] = None,
+              prompt: Optional[Any] = None,
+              stop: Optional[List[str]] = None,
+              stream: Optional[bool] = None,
+              temperature: Optional[float] = None) -> QueryEndpointResponse:
+        """Query a serving endpoint.
+        
+        :param name: str
+          The name of the serving endpoint. This field is required.
+        :param dataframe_records: List[Any] (optional)
+          Pandas Dataframe input in the records orientation.
+        :param dataframe_split: :class:`DataframeSplitInput` (optional)
+          Pandas Dataframe input in the split orientation.
+        :param extra_params: Dict[str,str] (optional)
+          The extra parameters field used ONLY for __completions, chat,__ and __embeddings external &
+          foundation model__ serving endpoints. This is a map of strings and should only be used with other
+          external/foundation model query fields.
+        :param input: Any (optional)
+          The input string (or array of strings) field used ONLY for __embeddings external & foundation
+          model__ serving endpoints and is the only field (along with extra_params if needed) used by
+          embeddings queries.
+        :param inputs: Any (optional)
+          Tensor-based input in columnar format.
+        :param instances: List[Any] (optional)
+          Tensor-based input in row format.
+        :param max_tokens: int (optional)
+          The max tokens field used ONLY for __completions__ and __chat external & foundation model__ serving
+          endpoints. This is an integer and should only be used with other chat/completions query fields.
+        :param messages: List[:class:`ChatMessage`] (optional)
+          The messages field used ONLY for __chat external & foundation model__ serving endpoints. This is a
+          map of strings and should only be used with other chat query fields.
+        :param n: int (optional)
+          The n (number of candidates) field used ONLY for __completions__ and __chat external & foundation
+          model__ serving endpoints. This is an integer between 1 and 5 with a default of 1 and should only be
+          used with other chat/completions query fields.
+        :param prompt: Any (optional)
+          The prompt string (or array of strings) field used ONLY for __completions external & foundation
+          model__ serving endpoints and should only be used with other completions query fields.
+        :param stop: List[str] (optional)
+          The stop sequences field used ONLY for __completions__ and __chat external & foundation model__
+          serving endpoints. This is a list of strings and should only be used with other chat/completions
+          query fields.
+        :param stream: bool (optional)
+          The stream field used ONLY for __completions__ and __chat external & foundation model__ serving
+          endpoints. This is a boolean defaulting to false and should only be used with other chat/completions
+          query fields.
+        :param temperature: float (optional)
+          The temperature field used ONLY for __completions__ and __chat external & foundation model__ serving
+          endpoints. This is a float between 0.0 and 2.0 with a default of 1.0 and should only be used with
+          other chat/completions query fields.
+        
+        :returns: :class:`QueryEndpointResponse`
+        """
+        body = {}
+        if dataframe_records is not None: body['dataframe_records'] = [v for v in dataframe_records]
+        if dataframe_split is not None: body['dataframe_split'] = dataframe_split.as_dict()
+        if extra_params is not None: body['extra_params'] = extra_params
+        if input is not None: body['input'] = input
+        if inputs is not None: body['inputs'] = inputs
+        if instances is not None: body['instances'] = [v for v in instances]
+        if max_tokens is not None: body['max_tokens'] = max_tokens
+        if messages is not None: body['messages'] = [v.as_dict() for v in messages]
+        if n is not None: body['n'] = n
+        if prompt is not None: body['prompt'] = prompt
+        if stop is not None: body['stop'] = [v for v in stop]
+        if stream is not None: body['stream'] = stream
+        if temperature is not None: body['temperature'] = temperature
+
+        def info_getter():
+            response = self._control_plane.get(name=name, )
+            if response.data_plane_info is None:
+                raise Exception("Resource does not support direct Data Plane access")
+            return response.data_plane_info.query_info
+
+        get_params = [name, ]
+        data_plane_details = self._data_plane_service.get_data_plane_details('query', get_params, info_getter,
+                                                                             self._api.get_oauth_token)
+        token = data_plane_details.token
+
+        def auth(r: requests.PreparedRequest) -> requests.PreparedRequest:
+            authorization = f"{token.token_type} {token.access_token}"
+            r.headers["Authorization"] = authorization
+            return r
+
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        response_headers = ['served-model-name', ]
+        res = self._api.do('POST',
+                           url=data_plane_details.endpoint_url,
+                           body=body,
+                           headers=headers,
+                           response_headers=response_headers,
+                           auth=auth)
+        return QueryEndpointResponse.from_dict(res)
