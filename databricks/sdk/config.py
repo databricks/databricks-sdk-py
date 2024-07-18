@@ -363,6 +363,33 @@ class Config:
 
         self.host = urllib.parse.urlunparse((o.scheme, netloc, path, o.params, o.query, o.fragment))
 
+    def load_azure_tenant_id(self):
+        """[Internal] Load the Azure tenant ID from the Azure Databricks login page.
+
+        If the tenant ID is already set, this method does nothing."""
+        if not self.is_azure or self.azure_tenant_id is not None or self.host is None:
+            return
+        login_url = f'{self.host}/aad/auth'
+        logger.debug(f'Loading tenant ID from {login_url}')
+        resp = requests.get(login_url, allow_redirects=False)
+        if resp.status_code // 100 != 3:
+            logger.debug(
+                f'Failed to get tenant ID from {login_url}: expected status code 3xx, got {resp.status_code}')
+            return
+        entra_id_endpoint = resp.headers.get('Location')
+        if entra_id_endpoint is None:
+            logger.debug(f'No Location header in response from {login_url}')
+            return
+        # The Location header has the following form: https://login.microsoftonline.com/<tenant-id>/oauth2/authorize?...
+        # The domain may change depending on the Azure cloud (e.g. login.microsoftonline.us for US Government cloud).
+        url = urllib.parse.urlparse(entra_id_endpoint)
+        path_segments = url.path.split('/')
+        if len(path_segments) < 2:
+            logger.debug(f'Invalid path in Location header: {url.path}')
+            return
+        self.azure_tenant_id = path_segments[1]
+        logger.debug(f'Loaded tenant ID: {self.azure_tenant_id}')
+
     def _set_inner_config(self, keyword_args: Dict[str, any]):
         for attr in self.attributes():
             if attr.name not in keyword_args:
