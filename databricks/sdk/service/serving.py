@@ -3111,7 +3111,7 @@ class ServingEndpointsAPI:
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         res = self._api.do('PATCH', f'/api/2.0/serving-endpoints/{name}/tags', body=body, headers=headers)
-        return [EndpointTag.from_dict(v) for v in res]
+        return [EndpointTag.from_dict(v) for v in res["tags"]]
 
     def put(self, name: str, *, rate_limits: Optional[List[RateLimit]] = None) -> PutResponse:
         """Update rate limits of a serving endpoint.
