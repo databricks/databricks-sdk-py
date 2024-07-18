@@ -119,7 +119,6 @@ class Config:
             self._load_from_env()
             self._known_file_config_loader()
             self._fix_host_if_needed()
-            self._load_azure_tenant_id()
             self._validate()
             self.init_auth()
             self._init_product(product, product_version)
@@ -364,7 +363,10 @@ class Config:
 
         self.host = urllib.parse.urlunparse((o.scheme, netloc, path, o.params, o.query, o.fragment))
 
-    def _load_azure_tenant_id(self):
+    def load_azure_tenant_id(self):
+        """[Internal] Load the Azure tenant ID from the Azure Databricks login page.
+
+        If the tenant ID is already set, this method does nothing."""
         if not self.is_azure or self.azure_tenant_id is not None or self.host is None:
             return
         login_url = f'{self.host}/aad/auth'

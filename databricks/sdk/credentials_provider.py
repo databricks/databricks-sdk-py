@@ -246,6 +246,7 @@ def azure_service_principal(cfg: 'Config') -> CredentialsProvider:
                                  endpoint_params={"resource": resource},
                                  use_params=True)
 
+    cfg.load_azure_tenant_id()
     _ensure_host_present(cfg, token_source_for)
     logger.info("Configured AAD token for Service Principal (%s)", cfg.azure_client_id)
     inner = token_source_for(cfg.effective_azure_login_app_id)
@@ -495,6 +496,7 @@ class AzureCliTokenSource(CliTokenSource):
 @credentials_strategy('azure-cli', ['is_azure'])
 def azure_cli(cfg: 'Config') -> Optional[CredentialsProvider]:
     """ Adds refreshed OAuth token granted by `az login` command to every request. """
+    cfg.load_azure_tenant_id()
     token_source = None
     mgmt_token_source = None
     try:
