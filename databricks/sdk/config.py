@@ -380,6 +380,8 @@ class Config:
         if entra_id_endpoint is None:
             logger.debug(f'No Location header in response from {login_url}')
             return
+        # The Location header has the following form: https://login.microsoftonline.com/<tenant-id>/oauth2/authorize?...
+        # The domain may change depending on the Azure cloud (e.g. login.microsoftonline.us for US Government cloud).
         url = urllib.parse.urlparse(entra_id_endpoint)
         path_segments = url.path.split('/')
         if len(path_segments) < 2:
