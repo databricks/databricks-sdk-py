@@ -77,3 +77,16 @@ def set_az_path(monkeypatch):
         monkeypatch.setenv('COMSPEC', 'C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe')
     else:
         monkeypatch.setenv('PATH', __tests__ + "/testdata:/bin")
+
+
+@pytest.fixture
+def mock_tenant(requests_mock):
+
+    def stub_tenant_request(host, tenant_id="test-tenant-id"):
+        mock = requests_mock.get(
+            f'https://{host}/aad/auth',
+            status_code=302,
+            headers={'Location': f'https://login.microsoftonline.com/{tenant_id}/oauth2/authorize'})
+        return mock
+
+    return stub_tenant_request
