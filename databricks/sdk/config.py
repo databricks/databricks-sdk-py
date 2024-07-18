@@ -3,20 +3,18 @@ import copy
 import logging
 import os
 import pathlib
-import platform
 import sys
 import urllib.parse
 from typing import Dict, Iterable, Optional
 
 import requests
 
-from .azure import AzureEnvironment
+from . import useragent
 from .clock import Clock, RealClock
-from .credentials_provider import CredentialsProvider, DefaultCredentials
-from .environments import (ALL_ENVS, DEFAULT_ENVIRONMENT, Cloud,
-                           DatabricksEnvironment)
-from .oauth import OidcEndpoints
-from .version import __version__
+from .credentials_provider import CredentialsStrategy, DefaultCredentials
+from .environments import (ALL_ENVS, AzureEnvironment, Cloud,
+                           DatabricksEnvironment, get_environment_for_hostname)
+from .oauth import OidcEndpoints, Token
 
 logger = logging.getLogger('databricks.sdk')
 
@@ -45,6 +43,16 @@ class ConfigAttribute:
         return f"<ConfigAttribute '{self.name}' {self.transform.__name__}>"
 
 
+def with_product(product: str, product_version: str):
+    """[INTERNAL API] Change the product name and version used in the User-Agent header."""
+    useragent.with_product(product, product_version)
+
+
+def with_user_agent_extra(key: str, value: str):
+    """[INTERNAL API] Add extra metadata to the User-Agent header when developing a library."""
+    useragent.with_extra(key, value)
+
+
 class Config:
     host: str = ConfigAttribute(env='DATABRICKS_HOST')
     account_id: str = ConfigAttribute(env='DATABRICKS_ACCOUNT_ID')
@@ -67,6 +75,7 @@ class Config:
     auth_type: str = ConfigAttribute(env='DATABRICKS_AUTH_TYPE')
     cluster_id: str = ConfigAttribute(env='DATABRICKS_CLUSTER_ID')
     warehouse_id: str = ConfigAttribute(env='DATABRICKS_WAREHOUSE_ID')
+    serverless_compute_id: str = ConfigAttribute(env='DATABRICKS_SERVERLESS_COMPUTE_ID')
     skip_verify: bool = ConfigAttribute()
     http_timeout_seconds: float = ConfigAttribute()
     debug_truncate_bytes: int = ConfigAttribute(env='DATABRICKS_DEBUG_TRUNCATE_BYTES')
@@ -82,15 +91,25 @@ class Config:
 
     def __init__(self,
                  *,
-                 credentials_provider: CredentialsProvider = None,
-                 product="unknown",
-                 product_version="0.0.0",
+                 # Deprecated. Use credentials_strategy instead.
+                 credentials_provider: CredentialsStrategy = None,
+                 credentials_strategy: CredentialsStrategy = None,
+                 product=None,
+                 product_version=None,
                  clock: Clock = None,
                  **kwargs):
         self._header_factory = None
         self._inner = {}
         self._user_agent_other_info = []
-        self._credentials_provider = credentials_provider if credentials_provider else DefaultCredentials()
+        if credentials_strategy and credentials_provider:
+            raise ValueError(
+                "When providing `credentials_strategy` field, `credential_provider` cannot be specified.")
+        if credentials_provider:
+            logger.warning(
+                "parameter 'credentials_provider' is deprecated. Use 'credentials_strategy' instead.")
+        self._credentials_strategy = next(
+            s for s in [credentials_strategy, credentials_provider,
+                        DefaultCredentials()] if s is not None)
         if 'databricks_environment' in kwargs:
             self.databricks_environment = kwargs['databricks_environment']
             del kwargs['databricks_environment']
@@ -102,11 +121,13 @@ class Config:
             self._fix_host_if_needed()
             self._validate()
             self.init_auth()
-            self._product = product
-            self._product_version = product_version
+            self._init_product(product, product_version)
         except ValueError as e:
             message = self.wrap_debug_info(str(e))
             raise ValueError(message) from e
+
+    def oauth_token(self) -> Token:
+        return self._credentials_strategy.oauth_token(self)
 
     def wrap_debug_info(self, message: str) -> str:
         debug_string = self.debug_string()
@@ -154,11 +175,7 @@ class Config:
         """Returns the environment based on configuration."""
         if self.databricks_environment:
             return self.databricks_environment
-        if self.host:
-            for environment in ALL_ENVS:
-                if self.host.endswith(environment.dns_zone):
-                    return environment
-        if self.azure_workspace_resource_id:
+        if not self.host and self.azure_workspace_resource_id:
             azure_env = self._get_azure_environment_name()
             for environment in ALL_ENVS:
                 if environment.cloud != Cloud.AZURE:
@@ -168,10 +185,12 @@ class Config:
                 if environment.dns_zone.startswith(".dev") or environment.dns_zone.startswith(".staging"):
                     continue
                 return environment
-        return DEFAULT_ENVIRONMENT
+        return get_environment_for_hostname(self.host)
 
     @property
     def is_azure(self) -> bool:
+        if self.azure_workspace_resource_id:
+            return True
         return self.environment.cloud == Cloud.AZURE
 
     @property
@@ -214,41 +233,19 @@ class Config:
     @property
     def user_agent(self):
         """ Returns User-Agent header used by this SDK """
-        py_version = platform.python_version()
-        os_name = platform.uname().system.lower()
 
-        ua = [
-            f"{self._product}/{self._product_version}", f"databricks-sdk-py/{__version__}",
-            f"python/{py_version}", f"os/{os_name}", f"auth/{self.auth_type}",
-        ]
-        if len(self._user_agent_other_info) > 0:
-            ua.append(' '.join(self._user_agent_other_info))
-        if len(self._upstream_user_agent) > 0:
-            ua.append(self._upstream_user_agent)
-        if 'DATABRICKS_RUNTIME_VERSION' in os.environ:
-            runtime_version = os.environ['DATABRICKS_RUNTIME_VERSION']
-            if runtime_version != '':
-                runtime_version = self._sanitize_header_value(runtime_version)
-                ua.append(f'runtime/{runtime_version}')
-
-        return ' '.join(ua)
-
-    @staticmethod
-    def _sanitize_header_value(value: str) -> str:
-        value = value.replace(' ', '-')
-        value = value.replace('/', '-')
-        return value
+        # global user agent includes SDK version, product name & version, platform info,
+        # and global extra info. Config can have specific extra info associated with it,
+        # such as an override product, auth type, and other user-defined information.
+        return useragent.to_string(self._product_info,
+                                   [("auth", self.auth_type)] + self._user_agent_other_info)
 
     @property
     def _upstream_user_agent(self) -> str:
-        product = os.environ.get('DATABRICKS_SDK_UPSTREAM', None)
-        product_version = os.environ.get('DATABRICKS_SDK_UPSTREAM_VERSION', None)
-        if product is not None and product_version is not None:
-            return f"upstream/{product} upstream-version/{product_version}"
-        return ""
+        return " ".join(f"{k}/{v}" for k, v in useragent._get_upstream_user_agent_info())
 
     def with_user_agent_extra(self, key: str, value: str) -> 'Config':
-        self._user_agent_other_info.append(f"{key}/{value}")
+        self._user_agent_other_info.append((key, value))
         return self
 
     @property
@@ -351,13 +348,20 @@ class Config:
     def _fix_host_if_needed(self):
         if not self.host:
             return
-        # fix url to remove trailing slash
+
+        # Add a default scheme if it's missing
+        if '://' not in self.host:
+            self.host = 'https://' + self.host
+
         o = urllib.parse.urlparse(self.host)
-        if not o.hostname:
-            # only hostname is specified
-            self.host = f"https://{self.host}"
-        else:
-            self.host = f"{o.scheme}://{o.netloc}"
+        # remove trailing slash
+        path = o.path.rstrip('/')
+        # remove port if 443
+        netloc = o.netloc
+        if o.port == 443:
+            netloc = netloc.split(':')[0]
+
+        self.host = urllib.parse.urlunparse((o.scheme, netloc, path, o.params, o.query, o.fragment))
 
     def _set_inner_config(self, keyword_args: Dict[str, any]):
         for attr in self.attributes():
@@ -439,12 +443,19 @@ class Config:
 
     def init_auth(self):
         try:
-            self._header_factory = self._credentials_provider(self)
-            self.auth_type = self._credentials_provider.auth_type()
+            self._header_factory = self._credentials_strategy(self)
+            self.auth_type = self._credentials_strategy.auth_type()
             if not self._header_factory:
                 raise ValueError('not configured')
         except ValueError as e:
-            raise ValueError(f'{self._credentials_provider.auth_type()} auth: {e}') from e
+            raise ValueError(f'{self._credentials_strategy.auth_type()} auth: {e}') from e
+
+    def _init_product(self, product, product_version):
+        if product is not None or product_version is not None:
+            default_product, default_version = useragent.product()
+            self._product_info = (product or default_product, product_version or default_version)
+        else:
+            self._product_info = None
 
     def __repr__(self):
         return f'<{self.debug_string()}>'

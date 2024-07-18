@@ -1,6 +1,10 @@
 dev:
 	python3 -m venv .venv
+ifeq ($(OS), Windows_NT)
+	.venv\Scripts\activate
+else
 	. .venv/bin/activate
+endif
 	pip install '.[dev]'
 
 install:
@@ -24,7 +28,7 @@ test:
 	pytest -m 'not integration and not benchmark' --cov=databricks --cov-report html tests
 
 integration:
-	pytest -n auto -m 'integration and not benchmark' --dist loadgroup --cov=databricks --cov-report html tests 
+	pytest -n auto -m 'integration and not benchmark' --reruns 2 --dist loadgroup --cov=databricks --cov-report html tests
 
 benchmark:
 	pytest -m 'benchmark' tests

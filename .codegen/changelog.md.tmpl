@@ -1,13 +1,17 @@
 # Version changelog
 
 ## {{.Version}}
+{{- range .GroupChanges}}
 
-{{range .Changes -}}
+### {{.Type.Message}}
+{{range .Changes}}
  * {{.}}.
-{{end}}{{- if .ApiChanges}}
-API Changes:
-{{range .ApiChanges}}
- * {{.Action}} {{template "what" .}}{{if .Extra}} {{.Extra}}{{with .Other}} {{template "what" .}}{{end}}{{end}}.
+{{- end}}
+{{end}}
+{{if .ApiChanges}}
+### API Changes:
+{{range .ApiChanges.GroupDiff}}
+ * {{.Action}} {{template "group-what" .}}{{if .Extra}} {{.Extra}}{{with .Other}} {{template "other-what" .}}{{end}}{{end}}.
 {{- end}}
 
 OpenAPI SHA: {{.Sha}}, Date: {{.Changed}}
@@ -20,7 +24,35 @@ Dependency updates:
 
 ## {{.PrevVersion}}
 
-{{- define "what" -}}
+{{- define "group-what" -}}
+{{if gt (len .Changes) 1 -}} {{template "single-what" .Changes.First}}{{end -}}
+{{range .Changes.Middle -}}, {{template "single-what" .}}{{end -}}
+{{if gt (len .Changes) 1}} and {{end}}{{template "single-what" .Changes.Last}}{{template "suffix-what" .}}
+{{- end -}}
+
+{{- define "single-what" -}}
+    {{if eq .X "package" -}}
+        `databricks.sdk.service.{{.Package.Name}}`
+    {{- else if eq .X "service" -}}
+        {{template "service" .Service}}
+    {{- else if eq .X "method" -}}
+        `{{.Method.SnakeName}}()`
+    {{- else if eq .X "entity" -}}
+        {{template "entity" .Entity}}
+    {{- else if eq .X "field" -}}
+        `{{.Field.SnakeName}}`
+    {{- end}}
+{{- end -}}
+
+{{- define "suffix-what" -}}
+    {{if eq .Type "package" }} package{{if gt (len .Changes) 1}}s{{end}}
+    {{- else if eq .Type "method" }} method{{if gt (len .Changes) 1}}s{{end}} for {{template "service" .Parent.Service}}
+    {{- else if eq .Type "entity" }} dataclass{{if gt (len .Changes) 1}}es{{end}}
+    {{- else if eq .Type "field" }} field{{if gt (len .Changes) 1}}s{{end}} for {{template "entity" .Parent.Entity}}
+    {{- end}}
+{{- end -}}
+
+{{- define "other-what" -}}
     {{if eq .X "package" -}}
         `databricks.sdk.service.{{.Package.Name}}` package
     {{- else if eq .X "service" -}}

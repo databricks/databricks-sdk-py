@@ -105,7 +105,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ListValue
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListVectorIndexesResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: MapStringValueEntry
    :members:
    :undoc-members:
 
@@ -124,6 +132,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: TRIGGERED
       :value: "TRIGGERED"
 
+.. autoclass:: QueryVectorIndexNextPageRequest
+   :members:
+   :undoc-members:
+
 .. autoclass:: QueryVectorIndexRequest
    :members:
    :undoc-members:
@@ -137,6 +149,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ResultManifest
+   :members:
+   :undoc-members:
+
+.. autoclass:: ScanVectorIndexRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: ScanVectorIndexResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: Struct
    :members:
    :undoc-members:
 
@@ -166,6 +190,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: UpsertDataVectorIndexResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: Value
    :members:
    :undoc-members:
 

@@ -9,3 +9,4 @@ Use real-time inference for machine learning
 
    apps
    serving_endpoints
+   serving_endpoints_data_plane

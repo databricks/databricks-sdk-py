@@ -9,13 +9,13 @@
 
     .. py:method:: create(name: str [, description: Optional[str]]) -> Wait[App]
 
-        Create an App.
+        Create an app.
         
         Creates a new app.
         
         :param name: str
-          The name of the app. The name must contain only lowercase alphanumeric characters and hyphens and be
-          between 2 and 30 characters long. It must be unique within the workspace.
+          The name of the app. The name must contain only lowercase alphanumeric characters and hyphens. It
+          must be unique within the workspace.
         :param description: str (optional)
           The description of the app.
         
@@ -27,28 +27,9 @@
     .. py:method:: create_and_wait(name: str [, description: Optional[str], timeout: datetime.timedelta = 0:20:00]) -> App
 
 
-    .. py:method:: create_deployment(app_name: str, source_code_path: str) -> Wait[AppDeployment]
-
-        Create an App Deployment.
-        
-        Creates an app deployment for the app with the supplied name.
-        
-        :param app_name: str
-          The name of the app.
-        :param source_code_path: str
-          The source code path of the deployment.
-        
-        :returns:
-          Long-running operation waiter for :class:`AppDeployment`.
-          See :method:wait_get_deployment_app_succeeded for more details.
-        
-
-    .. py:method:: create_deployment_and_wait(app_name: str, source_code_path: str, timeout: datetime.timedelta = 0:20:00) -> AppDeployment
-
-
     .. py:method:: delete(name: str)
 
-        Delete an App.
+        Delete an app.
         
         Deletes an app.
         
@@ -58,9 +39,34 @@
         
         
 
+    .. py:method:: deploy(app_name: str, source_code_path: str, mode: AppDeploymentMode) -> Wait[AppDeployment]
+
+        Create an app deployment.
+        
+        Creates an app deployment for the app with the supplied name.
+        
+        :param app_name: str
+          The name of the app.
+        :param source_code_path: str
+          The workspace file system path of the source code used to create the app deployment. This is
+          different from `deployment_artifacts.source_code_path`, which is the path used by the deployed app.
+          The former refers to the original source code location of the app in the workspace during deployment
+          creation, whereas the latter provides a system generated stable snapshotted source code path used by
+          the deployment.
+        :param mode: :class:`AppDeploymentMode`
+          The mode of which the deployment will manage the source code.
+        
+        :returns:
+          Long-running operation waiter for :class:`AppDeployment`.
+          See :method:wait_get_deployment_app_succeeded for more details.
+        
+
+    .. py:method:: deploy_and_wait(app_name: str, source_code_path: str, mode: AppDeploymentMode, timeout: datetime.timedelta = 0:20:00) -> AppDeployment
+
+
     .. py:method:: get(name: str) -> App
 
-        Get an App.
+        Get an app.
         
         Retrieves information for the app with the supplied name.
         
@@ -72,7 +78,7 @@
 
     .. py:method:: get_deployment(app_name: str, deployment_id: str) -> AppDeployment
 
-        Get an App Deployment.
+        Get an app deployment.
         
         Retrieves information for the app deployment with the supplied name and deployment id.
         
@@ -86,7 +92,7 @@
 
     .. py:method:: get_environment(name: str) -> AppEnvironment
 
-        Get App Environment.
+        Get app environment.
         
         Retrieves app environment.
         
@@ -98,7 +104,7 @@
 
     .. py:method:: list( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[App]
 
-        List Apps.
+        List apps.
         
         Lists all apps in the workspace.
         
@@ -112,7 +118,7 @@
 
     .. py:method:: list_deployments(app_name: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[AppDeployment]
 
-        List App Deployments.
+        List app deployments.
         
         Lists all app deployments for the app with the supplied name.
         
@@ -126,9 +132,21 @@
         :returns: Iterator over :class:`AppDeployment`
         
 
+    .. py:method:: start(name: str) -> AppDeployment
+
+        Start an app.
+        
+        Start the last active deployment of the app in the workspace.
+        
+        :param name: str
+          The name of the app.
+        
+        :returns: :class:`AppDeployment`
+        
+
     .. py:method:: stop(name: str)
 
-        Stop an App.
+        Stop an app.
         
         Stops the active deployment of the app in the workspace.
         
@@ -140,13 +158,13 @@
 
     .. py:method:: update(name: str [, description: Optional[str]]) -> App
 
-        Update an App.
+        Update an app.
         
         Updates the app with the supplied name.
         
         :param name: str
-          The name of the app. The name must contain only lowercase alphanumeric characters and hyphens and be
-          between 2 and 30 characters long. It must be unique within the workspace.
+          The name of the app. The name must contain only lowercase alphanumeric characters and hyphens. It
+          must be unique within the workspace.
         :param description: str (optional)
           The description of the app.
         

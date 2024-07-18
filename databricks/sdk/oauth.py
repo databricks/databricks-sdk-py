@@ -21,6 +21,10 @@ import requests.auth
 # See https://stackoverflow.com/a/75466778/277035 for more info
 NO_ORIGIN_FOR_SPA_CLIENT_ERROR = 'AADSTS9002327'
 
+URL_ENCODED_CONTENT_TYPE = "application/x-www-form-urlencoded"
+JWT_BEARER_GRANT_TYPE = "urn:ietf:params:oauth:grant-type:jwt-bearer"
+OIDC_TOKEN_PATH = "/oidc/v1/token"
+
 logger = logging.getLogger(__name__)
 
 
@@ -358,18 +362,15 @@ class OAuthClient:
                  client_secret: str = None):
         # TODO: is it a circular dependency?..
         from .core import Config
-        from .credentials_provider import credentials_provider
+        from .credentials_provider import credentials_strategy
 
-        @credentials_provider('noop', [])
+        @credentials_strategy('noop', [])
         def noop_credentials(_: any):
             return lambda: {}
 
-        config = Config(host=host, credentials_provider=noop_credentials)
+        config = Config(host=host, credentials_strategy=noop_credentials)
         if not scopes:
             scopes = ['all-apis']
-        if config.is_azure:
-            # Azure AD only supports full access to Azure Databricks.
-            scopes = [f'{config.effective_azure_login_app_id}/user_impersonation', 'offline_access']
         oidc = config.oidc_endpoints
         if not oidc:
             raise ValueError(f'{host} does not support OAuth')
@@ -381,6 +382,7 @@ class OAuthClient:
         self.token_url = oidc.token_endpoint
         self.is_aws = config.is_aws
         self.is_azure = config.is_azure
+        self.is_gcp = config.is_gcp
 
         self._auth_url = oidc.authorization_endpoint
         self._scopes = scopes

@@ -23,18 +23,6 @@ def reload_modules(name: str):
         print(f"Failed to reload {name}: {e}")
 
 
-@pytest.fixture(scope="function")
-def restorable_env():
-    import os
-    current_env = os.environ.copy()
-    yield
-    for k, v in os.environ.items():
-        if k not in current_env:
-            del os.environ[k]
-        elif v != current_env[k]:
-            os.environ[k] = current_env[k]
-
-
 @pytest.fixture(params=list(DBCONNECT_DBR_CLIENT.keys()))
 def setup_dbconnect_test(request, env_or_skip, restorable_env):
     dbr = request.param

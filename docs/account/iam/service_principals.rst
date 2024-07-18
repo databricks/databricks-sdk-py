@@ -19,18 +19,14 @@
 
             import time
             
-            from databricks.sdk import WorkspaceClient
-            from databricks.sdk.service import iam
+            from databricks.sdk import AccountClient
             
-            w = WorkspaceClient()
+            a = AccountClient()
             
-            groups = w.groups.group_display_name_to_id_map(iam.ListGroupsRequest())
-            
-            spn = w.service_principals.create(display_name=f'sdk-{time.time_ns()}',
-                                              groups=[iam.ComplexValue(value=groups["admins"])])
+            sp_create = a.service_principals.create(active=True, display_name=f'sdk-{time.time_ns()}')
             
             # cleanup
-            w.service_principals.delete(id=spn.id)
+            a.service_principals.delete(id=sp_create.id)
 
         Create a service principal.
         
@@ -80,16 +76,16 @@
 
             import time
             
-            from databricks.sdk import WorkspaceClient
+            from databricks.sdk import AccountClient
             
-            w = WorkspaceClient()
+            a = AccountClient()
             
-            created = w.service_principals.create(display_name=f'sdk-{time.time_ns()}')
+            sp_create = a.service_principals.create(active=True, display_name=f'sdk-{time.time_ns()}')
             
-            by_id = w.service_principals.get(id=created.id)
+            sp = a.service_principals.get(id=sp_create.id)
             
             # cleanup
-            w.service_principals.delete(id=created.id)
+            a.service_principals.delete(id=sp_create.id)
 
         Get service principal details.
         
@@ -197,19 +193,18 @@
 
             import time
             
-            from databricks.sdk import WorkspaceClient
-            from databricks.sdk.service import iam
+            from databricks.sdk import AccountClient
             
-            w = WorkspaceClient()
+            a = AccountClient()
             
-            created = w.service_principals.create(display_name=f'sdk-{time.time_ns()}')
+            sp_create = a.service_principals.create(active=True, display_name=f'sdk-{time.time_ns()}')
             
-            w.service_principals.update(id=created.id,
-                                        display_name=f'sdk-{time.time_ns()}',
-                                        roles=[iam.ComplexValue(value="xyz")])
+            sp = a.service_principals.get(id=sp_create.id)
+            
+            a.service_principals.update(active=True, display_name=sp.display_name, id=sp.id)
             
             # cleanup
-            w.service_principals.delete(id=created.id)
+            a.service_principals.delete(id=sp_create.id)
 
         Replace service principal.
         

@@ -14,14 +14,16 @@ import pytest
 import requests
 
 from databricks.sdk import WorkspaceClient
-from databricks.sdk.azure import ENVIRONMENTS, AzureEnvironment
 from databricks.sdk.core import (ApiClient, Config, DatabricksError,
                                  StreamingResponse)
 from databricks.sdk.credentials_provider import (CliTokenSource,
                                                  CredentialsProvider,
+                                                 CredentialsStrategy,
                                                  DatabricksCliTokenSource,
-                                                 HeaderFactory, databricks_cli)
-from databricks.sdk.environments import Cloud, DatabricksEnvironment
+                                                 databricks_cli)
+from databricks.sdk.environments import (ENVIRONMENTS, AzureEnvironment, Cloud,
+                                         DatabricksEnvironment)
+from databricks.sdk.oauth import Token
 from databricks.sdk.service.catalog import PermissionsChange
 from databricks.sdk.service.iam import AccessControlRequest
 from databricks.sdk.version import __version__
@@ -66,9 +68,14 @@ def test_databricks_cli_token_parse_expiry(date_string, expected):
 
 
 def write_small_dummy_executable(path: pathlib.Path):
-    cli = path.joinpath('databricks')
-    cli.write_text('#!/bin/sh\necho "hello world"\n')
-    cli.chmod(0o755)
+    if platform.system() == "Windows":
+        cli = path.joinpath('databricks.exe')
+        cli.touch()
+        cli.write_text('@echo off\necho "hello world"\n')
+    else:
+        cli = path.joinpath('databricks')
+        cli.write_text('#!/bin/sh\necho "hello world"\n')
+        cli.chmod(0o755)
     assert cli.stat().st_size < 1024
     return cli
 
@@ -132,9 +139,15 @@ def test_databricks_cli_token_source_installed_legacy_with_symlink(config, monke
     dir1.mkdir()
     dir2.mkdir()
 
-    (dir1 / "databricks").symlink_to(write_small_dummy_executable(dir2))
+    if platform.system() == 'Windows':
+        (dir1 / "databricks.exe").symlink_to(write_small_dummy_executable(dir2))
+    else:
+        (dir1 / "databricks").symlink_to(write_small_dummy_executable(dir2))
 
-    monkeypatch.setenv('PATH', dir1.as_posix())
+    path = pathlib.Path(dir1)
+    path = str(path)
+    monkeypatch.setenv('PATH', path)
+
     with pytest.raises(FileNotFoundError, match="version <0.100.0 detected"):
         DatabricksCliTokenSource(config)
 
@@ -174,10 +187,19 @@ def test_databricks_cli_credential_provider_installed_legacy(config, monkeypatch
     assert databricks_cli(config) == None
 
 
-def test_databricks_cli_credential_provider_installed_new(config, monkeypatch, tmp_path):
+def test_databricks_cli_credential_provider_installed_new(config, monkeypatch, tmp_path, mocker):
+    get_mock = mocker.patch('databricks.sdk.credentials_provider.CliTokenSource.refresh',
+                            return_value=Token(access_token='token',
+                                               token_type='Bearer',
+                                               expiry=datetime(2023, 5, 22, 0, 0, 0)))
     write_large_dummy_executable(tmp_path)
-    monkeypatch.setenv('PATH', str(os.pathsep).join([tmp_path.as_posix(), os.environ['PATH']]))
+    path = str(os.pathsep).join([tmp_path.as_posix(), os.environ['PATH']])
+    path = pathlib.Path(path)
+    path = str(path)
+    monkeypatch.setenv('PATH', path)
+
     assert databricks_cli(config) is not None
+    assert get_mock.call_count == 1
 
 
 def test_extra_and_upstream_user_agent(monkeypatch):
@@ -200,14 +222,13 @@ def test_extra_and_upstream_user_agent(monkeypatch):
         .with_user_agent_extra('test-extra-2', '2')
 
     assert config.user_agent == (
-        f"test/0.0.0 databricks-sdk-py/{__version__} python/3.0.0 os/testos auth/basic"
-        f" test-extra-1/1 test-extra-2/2 upstream/upstream-product upstream-version/0.0.1"
-        " runtime/13.1-anything-else")
+        f"test/0.0.0 databricks-sdk-py/{__version__} python/3.0.0 os/testos auth/basic test-extra-1/1 test-extra-2/2"
+        " upstream/upstream-product upstream-version/0.0.1 runtime/13.1-anything-else")
 
 
 def test_config_copy_shallow_copies_credential_provider():
 
-    class TestCredentialsProvider(CredentialsProvider):
+    class TestCredentialsStrategy(CredentialsStrategy):
 
         def __init__(self):
             super().__init__()
@@ -216,36 +237,24 @@ def test_config_copy_shallow_copies_credential_provider():
         def auth_type(self) -> str:
             return "test"
 
-        def __call__(self, cfg: 'Config') -> HeaderFactory:
+        def __call__(self, cfg: 'Config') -> CredentialsProvider:
             return lambda: {"token": self._token}
 
         def refresh(self):
             self._token = "token2"
 
-    credential_provider = TestCredentialsProvider()
-    config = Config(credentials_provider=credential_provider)
+    credentials_strategy = TestCredentialsStrategy()
+    config = Config(credentials_strategy=credentials_strategy)
     config_copy = config.copy()
 
     assert config.authenticate()["token"] == "token1"
     assert config_copy.authenticate()["token"] == "token1"
 
-    credential_provider.refresh()
+    credentials_strategy.refresh()
 
     assert config.authenticate()["token"] == "token2"
     assert config_copy.authenticate()["token"] == "token2"
-    assert config._credentials_provider == config_copy._credentials_provider
-
-
-def test_config_copy_deep_copies_user_agent_other_info(config):
-    config_copy = config.copy()
-
-    config.with_user_agent_extra("test", "test1")
-    assert "test/test1" not in config_copy.user_agent
-    assert "test/test1" in config.user_agent
-
-    config_copy.with_user_agent_extra("test", "test2")
-    assert "test/test2" in config_copy.user_agent
-    assert "test/test2" not in config.user_agent
+    assert config._credentials_strategy == config_copy._credentials_strategy
 
 
 def test_config_accounts_aws_is_accounts_host(config):
@@ -277,7 +286,7 @@ def test_config_can_be_subclassed(fake_fs):
 
 def test_config_parsing_non_string_env_vars(monkeypatch):
     monkeypatch.setenv('DATABRICKS_DEBUG_TRUNCATE_BYTES', '100')
-    c = Config(host='http://localhost', credentials_provider=noop_credentials)
+    c = Config(host='http://localhost', credentials_strategy=noop_credentials)
     assert c.debug_truncate_bytes == 100
 
 
@@ -333,6 +342,21 @@ def test_shares(config, requests_mock):
     assert requests_mock.call_count == 1
     assert requests_mock.called
     assert requests_mock.last_request.json() == {'changes': [{'principal': 'principal'}]}
+
+
+def test_deletes(config, requests_mock):
+    requests_mock.delete("http://localhost/api/2.0/preview/sql/alerts/alertid",
+                         request_headers={"User-Agent": config.user_agent},
+                         text="null",
+                         )
+
+    w = WorkspaceClient(config=config)
+    res = w.alerts.delete(alert_id="alertId")
+
+    assert requests_mock.call_count == 1
+    assert requests_mock.called
+
+    assert res is None
 
 
 def test_error(config, requests_mock):
@@ -577,7 +601,7 @@ def test_github_oidc_flow_works_with_azure(monkeypatch):
                           ('AzureUSGovernment', ENVIRONMENTS['USGOVERNMENT']),
                           ('AzureChinaCloud', ENVIRONMENTS['CHINA']), ])
 def test_azure_environment(azure_environment, expected):
-    c = Config(credentials_provider=noop_credentials,
+    c = Config(credentials_strategy=noop_credentials,
                azure_workspace_resource_id='...',
                azure_environment=azure_environment)
     assert c.arm_environment == expected

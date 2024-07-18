@@ -4,6 +4,7 @@ from datetime import timedelta
 from json import JSONDecodeError
 from types import TracebackType
 from typing import Any, BinaryIO, Iterator, Type
+from urllib.parse import urlencode
 
 from requests.adapters import HTTPAdapter
 
@@ -12,11 +13,17 @@ from .config import *
 # To preserve backwards compatibility (as these definitions were previously in this module)
 from .credentials_provider import *
 from .errors import DatabricksError, error_mapper
+from .errors.private_link import _is_private_link_redirect
+from .oauth import retrieve_token
 from .retries import retried
 
 __all__ = ['Config', 'DatabricksError']
 
 logger = logging.getLogger('databricks.sdk')
+
+URL_ENCODED_CONTENT_TYPE = "application/x-www-form-urlencoded"
+JWT_BEARER_GRANT_TYPE = "urn:ietf:params:oauth:grant-type:jwt-bearer"
+OIDC_TOKEN_PATH = "/oidc/v1/token"
 
 
 class ApiClient:
@@ -108,33 +115,54 @@ class ApiClient:
         flattened = dict(flatten_dict(with_fixed_bools))
         return flattened
 
+    def get_oauth_token(self, auth_details: str) -> Token:
+        if not self._cfg.auth_type:
+            self._cfg.authenticate()
+        original_token = self._cfg.oauth_token()
+        headers = {"Content-Type": URL_ENCODED_CONTENT_TYPE}
+        params = urlencode({
+            "grant_type": JWT_BEARER_GRANT_TYPE,
+            "authorization_details": auth_details,
+            "assertion": original_token.access_token
+        })
+        return retrieve_token(client_id=self._cfg.client_id,
+                              client_secret=self._cfg.client_secret,
+                              token_url=self._cfg.host + OIDC_TOKEN_PATH,
+                              params=params,
+                              headers=headers)
+
     def do(self,
            method: str,
-           path: str,
+           path: str = None,
+           url: str = None,
            query: dict = None,
            headers: dict = None,
            body: dict = None,
            raw: bool = False,
            files=None,
            data=None,
+           auth: Callable[[requests.PreparedRequest], requests.PreparedRequest] = None,
            response_headers: List[str] = None) -> Union[dict, BinaryIO]:
-        # Remove extra `/` from path for Files API
-        # Once we've fixed the OpenAPI spec, we can remove this
-        path = re.sub('^/api/2.0/fs/files//', '/api/2.0/fs/files/', path)
         if headers is None:
             headers = {}
+        if url is None:
+            # Remove extra `/` from path for Files API
+            # Once we've fixed the OpenAPI spec, we can remove this
+            path = re.sub('^/api/2.0/fs/files//', '/api/2.0/fs/files/', path)
+            url = f"{self._cfg.host}{path}"
         headers['User-Agent'] = self._user_agent_base
         retryable = retried(timeout=timedelta(seconds=self._retry_timeout_seconds),
                             is_retryable=self._is_retryable,
                             clock=self._cfg.clock)
         response = retryable(self._perform)(method,
-                                            path,
+                                            url,
                                             query=query,
                                             headers=headers,
                                             body=body,
                                             raw=raw,
                                             files=files,
-                                            data=data)
+                                            data=data,
+                                            auth=auth)
 
         resp = dict()
         for header in response_headers if response_headers else []:
@@ -145,11 +173,14 @@ class ApiClient:
         if not len(response.content):
             return resp
 
-        json = response.json()
-        if isinstance(json, list):
-            return json
+        jsonResponse = response.json()
+        if jsonResponse is None:
+            return resp
 
-        return {**resp, **json}
+        if isinstance(jsonResponse, list):
+            return jsonResponse
+
+        return {**resp, **jsonResponse}
 
     @staticmethod
     def _is_retryable(err: BaseException) -> Optional[str]:
@@ -213,20 +244,22 @@ class ApiClient:
 
     def _perform(self,
                  method: str,
-                 path: str,
+                 url: str,
                  query: dict = None,
                  headers: dict = None,
                  body: dict = None,
                  raw: bool = False,
                  files=None,
-                 data=None):
+                 data=None,
+                 auth: Callable[[requests.PreparedRequest], requests.PreparedRequest] = None):
         response = self._session.request(method,
-                                         f"{self._cfg.host}{path}",
+                                         url,
                                          params=self._fix_query_string(query),
                                          json=body,
                                          headers=headers,
                                          files=files,
                                          data=data,
+                                         auth=auth,
                                          stream=raw,
                                          timeout=self._http_timeout_seconds)
         try:
@@ -236,6 +269,10 @@ class ApiClient:
                 # See https://stackoverflow.com/a/58821552/277035
                 payload = response.json()
                 raise self._make_nicer_error(response=response, **payload) from None
+            # Private link failures happen via a redirect to the login page. From a requests-perspective, the request
+            # is successful, but the response is not what we expect. We need to handle this case separately.
+            if _is_private_link_redirect(response):
+                raise self._make_nicer_error(response=response) from None
             return response
         except requests.exceptions.JSONDecodeError:
             message = self._make_sense_from_html(response.text)

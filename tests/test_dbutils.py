@@ -140,7 +140,7 @@ def dbutils_proxy(mocker):
                                                command=expect_command)
 
         dbutils = RemoteDbUtils(
-            Config(host='http://localhost', cluster_id='x', credentials_provider=noop_credentials))
+            Config(host='http://localhost', cluster_id='x', credentials_strategy=noop_credentials))
         return dbutils, assertions
 
     return inner
@@ -238,3 +238,11 @@ def test_jobs_task_values_get_throws(dbutils):
     except TypeError as e:
         assert str(
             e) == 'Must pass debugValue when calling get outside of a job context. debugValue cannot be None.'
+
+
+def test_dbutils_proxy_overrides(dbutils, mocker, restorable_env):
+    import os
+    os.environ["DATABRICKS_SOURCE_FILE"] = "test_source_file"
+    mocker.patch('databricks.sdk.dbutils.RemoteDbUtils._cluster_id', return_value="test_cluster_id")
+    assert dbutils.notebook.entry_point.getDbutils().notebook().getContext().notebookPath().get(
+    ) == "test_source_file"

@@ -1,21 +1,24 @@
 import functools
 import os
+import platform
 
 import pytest as pytest
 from pyfakefs.fake_filesystem_unittest import Patcher
 
 from databricks.sdk.core import Config
-from databricks.sdk.credentials_provider import credentials_provider
+from databricks.sdk.credentials_provider import credentials_strategy
+
+from .integration.conftest import restorable_env  # type: ignore
 
 
-@credentials_provider('noop', [])
+@credentials_strategy('noop', [])
 def noop_credentials(_: any):
     return lambda: {}
 
 
 @pytest.fixture
 def config():
-    return Config(host='http://localhost', credentials_provider=noop_credentials)
+    return Config(host='http://localhost', credentials_strategy=noop_credentials)
 
 
 @pytest.fixture
@@ -36,7 +39,11 @@ def raises(msg):
             with pytest.raises(ValueError) as info:
                 func(*args, **kwargs)
             exception_str = str(info.value)
-            exception_str = exception_str.replace(__tests__ + '/', '')
+            if platform.system() == 'Windows':
+                exception_str = exception_str.replace(__tests__ + '\\', '')
+                exception_str = exception_str.replace('\\', '/')
+            else:
+                exception_str = exception_str.replace(__tests__ + '/', '')
             assert msg in exception_str
 
         return wrapper
@@ -55,3 +62,18 @@ def fake_fs():
         patcher.fs.add_real_directory(test_data_path)
 
         yield patcher.fs # This will return a fake file system
+
+
+def set_home(monkeypatch, path):
+    if platform.system() == 'Windows':
+        monkeypatch.setenv('USERPROFILE', __tests__ + path)
+    else:
+        monkeypatch.setenv('HOME', __tests__ + path)
+
+
+def set_az_path(monkeypatch):
+    if platform.system() == 'Windows':
+        monkeypatch.setenv('Path', __tests__ + "\\testdata\\windows\\")
+        monkeypatch.setenv('COMSPEC', 'C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe')
+    else:
+        monkeypatch.setenv('PATH', __tests__ + "/testdata:/bin")

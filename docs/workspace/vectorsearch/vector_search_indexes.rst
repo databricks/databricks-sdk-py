@@ -91,7 +91,7 @@
         :returns: Iterator over :class:`MiniVectorIndex`
         
 
-    .. py:method:: query_index(index_name: str, columns: List[str] [, filters_json: Optional[str], num_results: Optional[int], query_text: Optional[str], query_vector: Optional[List[float]], score_threshold: Optional[float]]) -> QueryVectorIndexResponse
+    .. py:method:: query_index(index_name: str, columns: List[str] [, filters_json: Optional[str], num_results: Optional[int], query_text: Optional[str], query_type: Optional[str], query_vector: Optional[List[float]], score_threshold: Optional[float]]) -> QueryVectorIndexResponse
 
         Query an index.
         
@@ -111,6 +111,8 @@
           Number of results to return. Defaults to 10.
         :param query_text: str (optional)
           Query text. Required for Delta Sync Index using model endpoint.
+        :param query_type: str (optional)
+          The query type to use. Choices are `ANN` and `HYBRID`. Defaults to `ANN`.
         :param query_vector: List[float] (optional)
           Query vector. Required for Direct Vector Access Index and Delta Sync Index using self-managed
           vectors.
@@ -118,6 +120,40 @@
           Threshold for the approximate nearest neighbor search. Defaults to 0.0.
         
         :returns: :class:`QueryVectorIndexResponse`
+        
+
+    .. py:method:: query_next_page(index_name: str [, endpoint_name: Optional[str], page_token: Optional[str]]) -> QueryVectorIndexResponse
+
+        Query next page.
+        
+        Use `next_page_token` returned from previous `QueryVectorIndex` or `QueryVectorIndexNextPage` request
+        to fetch next page of results.
+        
+        :param index_name: str
+          Name of the vector index to query.
+        :param endpoint_name: str (optional)
+          Name of the endpoint.
+        :param page_token: str (optional)
+          Page token returned from previous `QueryVectorIndex` or `QueryVectorIndexNextPage` API.
+        
+        :returns: :class:`QueryVectorIndexResponse`
+        
+
+    .. py:method:: scan_index(index_name: str [, last_primary_key: Optional[str], num_results: Optional[int]]) -> ScanVectorIndexResponse
+
+        Scan an index.
+        
+        Scan the specified vector index and return the first `num_results` entries after the exclusive
+        `primary_key`.
+        
+        :param index_name: str
+          Name of the vector index to scan.
+        :param last_primary_key: str (optional)
+          Primary key of the last entry returned in the previous scan.
+        :param num_results: int (optional)
+          Number of results to return. Defaults to 10.
+        
+        :returns: :class:`ScanVectorIndexResponse`
         
 
     .. py:method:: sync_index(index_name: str)

@@ -1,7 +1,7 @@
 import databricks.sdk.core as client
 import databricks.sdk.dbutils as dbutils
 from databricks.sdk import azure
-from databricks.sdk.credentials_provider import CredentialsProvider
+from databricks.sdk.credentials_provider import CredentialsStrategy
 from databricks.sdk.mixins.compute import ClustersExt
 from databricks.sdk.mixins.files import DbfsExt
 from databricks.sdk.mixins.workspace import WorkspaceExt
@@ -13,9 +13,9 @@ from databricks.sdk.service.catalog import (AccountMetastoreAssignmentsAPI,
                                             ArtifactAllowlistsAPI, CatalogsAPI,
                                             ConnectionsAPI,
                                             ExternalLocationsAPI, FunctionsAPI,
-                                            GrantsAPI, LakehouseMonitorsAPI,
-                                            MetastoresAPI, ModelVersionsAPI,
-                                            OnlineTablesAPI,
+                                            GrantsAPI, MetastoresAPI,
+                                            ModelVersionsAPI, OnlineTablesAPI,
+                                            QualityMonitorsAPI,
                                             RegisteredModelsAPI, SchemasAPI,
                                             StorageCredentialsAPI,
                                             SystemSchemasAPI,
@@ -55,7 +55,8 @@ from databricks.sdk.service.provisioning import (CredentialsAPI,
                                                  NetworksAPI, PrivateAccessAPI,
                                                  StorageAPI, VpcEndpointsAPI,
                                                  Workspace, WorkspacesAPI)
-from databricks.sdk.service.serving import AppsAPI, ServingEndpointsAPI
+from databricks.sdk.service.serving import (AppsAPI, ServingEndpointsAPI,
+                                            ServingEndpointsDataPlaneAPI)
 from databricks.sdk.service.settings import (AccountIpAccessListsAPI,
                                              AccountSettingsAPI,
                                              AutomaticClusterUpdateAPI,
@@ -131,7 +132,8 @@ class WorkspaceClient:
                  debug_headers: bool = None,
                  product="unknown",
                  product_version="0.0.0",
-                 credentials_provider: CredentialsProvider = None,
+                 credentials_strategy: CredentialsStrategy = None,
+                 credentials_provider: CredentialsStrategy = None,
                  config: client.Config = None):
         if not config:
             config = client.Config(host=host,
@@ -152,6 +154,7 @@ class WorkspaceClient:
                                    cluster_id=cluster_id,
                                    google_credentials=google_credentials,
                                    google_service_account=google_service_account,
+                                   credentials_strategy=credentials_strategy,
                                    credentials_provider=credentials_provider,
                                    debug_truncate_bytes=debug_truncate_bytes,
                                    debug_headers=debug_headers,
@@ -160,6 +163,7 @@ class WorkspaceClient:
         self._config = config.copy()
         self._dbutils = _make_dbutils(self._config)
         self._api_client = client.ApiClient(self._config)
+        serving_endpoints = ServingEndpointsAPI(self._api_client)
         self._account_access_control_proxy = AccountAccessControlProxyAPI(self._api_client)
         self._alerts = AlertsAPI(self._api_client)
         self._apps = AppsAPI(self._api_client)
@@ -194,7 +198,6 @@ class WorkspaceClient:
         self._instance_profiles = InstanceProfilesAPI(self._api_client)
         self._ip_access_lists = IpAccessListsAPI(self._api_client)
         self._jobs = JobsAPI(self._api_client)
-        self._lakehouse_monitors = LakehouseMonitorsAPI(self._api_client)
         self._lakeview = LakeviewAPI(self._api_client)
         self._libraries = LibrariesAPI(self._api_client)
         self._metastores = MetastoresAPI(self._api_client)
@@ -214,6 +217,7 @@ class WorkspaceClient:
             self._api_client)
         self._provider_providers = ProviderProvidersAPI(self._api_client)
         self._providers = ProvidersAPI(self._api_client)
+        self._quality_monitors = QualityMonitorsAPI(self._api_client)
         self._queries = QueriesAPI(self._api_client)
         self._query_history = QueryHistoryAPI(self._api_client)
         self._query_visualizations = QueryVisualizationsAPI(self._api_client)
@@ -224,7 +228,8 @@ class WorkspaceClient:
         self._schemas = SchemasAPI(self._api_client)
         self._secrets = SecretsAPI(self._api_client)
         self._service_principals = ServicePrincipalsAPI(self._api_client)
-        self._serving_endpoints = ServingEndpointsAPI(self._api_client)
+        self._serving_endpoints = serving_endpoints
+        self._serving_endpoints_data_plane = ServingEndpointsDataPlaneAPI(self._api_client, serving_endpoints)
         self._settings = SettingsAPI(self._api_client)
         self._shares = SharesAPI(self._api_client)
         self._statement_execution = StatementExecutionAPI(self._api_client)
@@ -426,11 +431,6 @@ class WorkspaceClient:
         return self._jobs
 
     @property
-    def lakehouse_monitors(self) -> LakehouseMonitorsAPI:
-        """A monitor computes and monitors data or model quality metrics for a table over time."""
-        return self._lakehouse_monitors
-
-    @property
     def lakeview(self) -> LakeviewAPI:
         """These APIs provide specific management operations for Lakeview dashboards."""
         return self._lakeview
@@ -521,6 +521,11 @@ class WorkspaceClient:
         return self._providers
 
     @property
+    def quality_monitors(self) -> QualityMonitorsAPI:
+        """A monitor computes and monitors data or model quality metrics for a table over time."""
+        return self._quality_monitors
+
+    @property
     def queries(self) -> QueriesAPI:
         """These endpoints are used for CRUD operations on query definitions."""
         return self._queries
@@ -574,6 +579,11 @@ class WorkspaceClient:
     def serving_endpoints(self) -> ServingEndpointsAPI:
         """The Serving Endpoints API allows you to create, update, and delete model serving endpoints."""
         return self._serving_endpoints
+
+    @property
+    def serving_endpoints_data_plane(self) -> ServingEndpointsDataPlaneAPI:
+        """Serving endpoints DataPlane provides a set of operations to interact with data plane endpoints for Serving endpoints service."""
+        return self._serving_endpoints_data_plane
 
     @property
     def settings(self) -> SettingsAPI:
@@ -700,7 +710,8 @@ class AccountClient:
                  debug_headers: bool = None,
                  product="unknown",
                  product_version="0.0.0",
-                 credentials_provider: CredentialsProvider = None,
+                 credentials_strategy: CredentialsStrategy = None,
+                 credentials_provider: CredentialsStrategy = None,
                  config: client.Config = None):
         if not config:
             config = client.Config(host=host,
@@ -721,6 +732,7 @@ class AccountClient:
                                    cluster_id=cluster_id,
                                    google_credentials=google_credentials,
                                    google_service_account=google_service_account,
+                                   credentials_strategy=credentials_strategy,
                                    credentials_provider=credentials_provider,
                                    debug_truncate_bytes=debug_truncate_bytes,
                                    debug_headers=debug_headers,
