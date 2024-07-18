@@ -119,6 +119,7 @@ class Config:
             self._load_from_env()
             self._known_file_config_loader()
             self._fix_host_if_needed()
+            self._load_azure_tenant_id()
             self._validate()
             self.init_auth()
             self._init_product(product, product_version)
@@ -362,6 +363,27 @@ class Config:
             netloc = netloc.split(':')[0]
 
         self.host = urllib.parse.urlunparse((o.scheme, netloc, path, o.params, o.query, o.fragment))
+
+    def _load_azure_tenant_id(self):
+        if not self.is_azure or self.azure_tenant_id is not None or self.host is None:
+            return
+        login_url = f'{self.host}/aad/auth'
+        logger.debug(f'Loading tenant ID from {login_url}')
+        resp = requests.get(login_url, allow_redirects=False)
+        if resp.status_code // 100 != 3:
+            logger.debug(f'Failed to get tenant ID from {login_url}: expected status code 3xx, got {resp.status_code}')
+            return
+        entra_id_endpoint = resp.headers.get('Location')
+        if entra_id_endpoint is None:
+            logger.debug(f'No Location header in response from {login_url}')
+            return
+        url = urllib.parse.urlparse(entra_id_endpoint)
+        path_segments = url.path.split('/')
+        if len(path_segments) < 2:
+            logger.debug(f'Invalid path in Location header: {url.path}')
+            return
+        self.azure_tenant_id = path_segments[1]
+        logger.debug(f'Loaded tenant ID: {self.azure_tenant_id}')
 
     def _set_inner_config(self, keyword_args: Dict[str, any]):
         for attr in self.attributes():

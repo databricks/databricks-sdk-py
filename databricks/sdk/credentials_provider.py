@@ -18,7 +18,7 @@ from google.auth import impersonated_credentials
 from google.auth.transport.requests import Request
 from google.oauth2 import service_account
 
-from .azure import add_sp_management_token, add_workspace_id_header, _load_azure_tenant_id
+from .azure import add_sp_management_token, add_workspace_id_header
 from .oauth import (ClientCredentials, OAuthClient, Refreshable, Token,
                     TokenCache, TokenSource)
 
@@ -246,7 +246,6 @@ def azure_service_principal(cfg: 'Config') -> CredentialsProvider:
                                  endpoint_params={"resource": resource},
                                  use_params=True)
 
-    _load_azure_tenant_id(cfg)
     _ensure_host_present(cfg, token_source_for)
     logger.info("Configured AAD token for Service Principal (%s)", cfg.azure_client_id)
     inner = token_source_for(cfg.effective_azure_login_app_id)
@@ -432,9 +431,9 @@ class CliTokenSource(Refreshable):
 class AzureCliTokenSource(CliTokenSource):
     """ Obtain the token granted by `az login` CLI command """
 
-    def __init__(self, resource: str, subscription: str = "", tenant: str = None):
+    def __init__(self, resource: str, subscription: Optional[str] = None, tenant: Optional[str] = None):
         cmd = ["az", "account", "get-access-token", "--resource", resource, "--output", "json"]
-        if subscription != "":
+        if subscription is not None:
             cmd.append("--subscription")
             cmd.append(subscription)
         if tenant:
@@ -466,8 +465,8 @@ class AzureCliTokenSource(CliTokenSource):
     @staticmethod
     def for_resource(cfg: 'Config', resource: str) -> 'AzureCliTokenSource':
         subscription = AzureCliTokenSource.get_subscription(cfg)
-        if cfg.azure_tenant_id == "" and subscription != "":
-            token_source = AzureCliTokenSource(resource, subscription)
+        if subscription is not None:
+            token_source = AzureCliTokenSource(resource, subscription=subscription, tenant=cfg.azure_tenant_id)
             try:
                 # This will fail if the user has access to the workspace, but not to the subscription
                 # itself.
@@ -477,26 +476,25 @@ class AzureCliTokenSource(CliTokenSource):
             except OSError:
                 logger.warning("Failed to get token for subscription. Using resource only token.")
 
-        token_source = AzureCliTokenSource(resource, cfg.azure_tenant_id)
+        token_source = AzureCliTokenSource(resource, subscription=None, tenant=cfg.azure_tenant_id)
         token_source.token()
         return token_source
 
     @staticmethod
-    def get_subscription(cfg: 'Config') -> str:
+    def get_subscription(cfg: 'Config') -> Optional[str]:
         resource = cfg.azure_workspace_resource_id
         if resource is None or resource == "":
-            return ""
+            return None
         components = resource.split('/')
         if len(components) < 3:
             logger.warning("Invalid azure workspace resource ID")
-            return ""
+            return None
         return components[2]
 
 
 @credentials_strategy('azure-cli', ['is_azure'])
 def azure_cli(cfg: 'Config') -> Optional[CredentialsProvider]:
     """ Adds refreshed OAuth token granted by `az login` command to every request. """
-    _load_azure_tenant_id(cfg)
     token_source = None
     mgmt_token_source = None
     try:
