@@ -246,8 +246,8 @@ def azure_service_principal(cfg: 'Config') -> CredentialsProvider:
                                  endpoint_params={"resource": resource},
                                  use_params=True)
 
-    cfg.load_azure_tenant_id()
     _ensure_host_present(cfg, token_source_for)
+    cfg.load_azure_tenant_id()
     logger.info("Configured AAD token for Service Principal (%s)", cfg.azure_client_id)
     inner = token_source_for(cfg.effective_azure_login_app_id)
     cloud = token_source_for(cfg.arm_environment.service_management_endpoint)
