@@ -1,3 +1,4 @@
+import os
 import platform
 
 import pytest
@@ -8,9 +9,8 @@ from databricks.sdk.version import __version__
 
 from .conftest import noop_credentials
 
-import os
-
 __tests__ = os.path.dirname(__file__)
+
 
 def test_config_supports_legacy_credentials_provider():
     c = Config(credentials_provider=noop_credentials, product='foo', product_version='1.2.3')
@@ -97,7 +97,9 @@ def test_load_azure_tenant_id_no_location_header(requests_mock, monkeypatch):
 
 def test_load_azure_tenant_id_unparsable_location_header(requests_mock, monkeypatch):
     monkeypatch.setenv('PATH', __tests__ + '/testdata:/bin')
-    mock = requests_mock.get('https://abc123.azuredatabricks.net/aad/auth', status_code=302, headers={'Location': 'https://unexpected-location'})
+    mock = requests_mock.get('https://abc123.azuredatabricks.net/aad/auth',
+                             status_code=302,
+                             headers={'Location': 'https://unexpected-location'})
     cfg = Config(host="https://abc123.azuredatabricks.net")
     assert cfg.azure_tenant_id is None
     assert mock.called_once
@@ -105,7 +107,10 @@ def test_load_azure_tenant_id_unparsable_location_header(requests_mock, monkeypa
 
 def test_load_azure_tenant_id_happy_path(requests_mock, monkeypatch):
     monkeypatch.setenv('PATH', __tests__ + '/testdata:/bin')
-    mock = requests_mock.get('https://abc123.azuredatabricks.net/aad/auth', status_code=302, headers={'Location': 'https://login.microsoftonline.com/tenant-id/oauth2/authorize'})
+    mock = requests_mock.get(
+        'https://abc123.azuredatabricks.net/aad/auth',
+        status_code=302,
+        headers={'Location': 'https://login.microsoftonline.com/tenant-id/oauth2/authorize'})
     cfg = Config(host="https://abc123.azuredatabricks.net")
     assert cfg.azure_tenant_id == 'tenant-id'
     assert mock.called_once

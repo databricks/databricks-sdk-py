@@ -193,9 +193,10 @@ def test_config_azure_pat():
     assert cfg.is_azure
 
 
-def test_config_azure_cli_host(monkeypatch):
+def test_config_azure_cli_host(monkeypatch, mock_tenant):
     set_home(monkeypatch, '/testdata/azure')
     set_az_path(monkeypatch)
+    mock_tenant('adb-123.4.azuredatabricks.net')
     cfg = Config(host='https://adb-123.4.azuredatabricks.net', azure_workspace_resource_id='/sub/rg/ws')
 
     assert cfg.auth_type == 'azure-cli'
@@ -229,9 +230,10 @@ def test_config_azure_cli_host_pat_conflict_with_config_file_present_without_def
     cfg = Config(token='x', azure_workspace_resource_id='/sub/rg/ws')
 
 
-def test_config_azure_cli_host_and_resource_id(monkeypatch):
+def test_config_azure_cli_host_and_resource_id(monkeypatch, mock_tenant):
     set_home(monkeypatch, '/testdata')
     set_az_path(monkeypatch)
+    mock_tenant('adb-123.4.azuredatabricks.net')
     cfg = Config(host='https://adb-123.4.azuredatabricks.net', azure_workspace_resource_id='/sub/rg/ws')
 
     assert cfg.auth_type == 'azure-cli'
@@ -239,10 +241,11 @@ def test_config_azure_cli_host_and_resource_id(monkeypatch):
     assert cfg.is_azure
 
 
-def test_config_azure_cli_host_and_resource_i_d_configuration_precedence(monkeypatch):
+def test_config_azure_cli_host_and_resource_i_d_configuration_precedence(monkeypatch, mock_tenant):
     monkeypatch.setenv('DATABRICKS_CONFIG_PROFILE', 'justhost')
     set_home(monkeypatch, '/testdata/azure')
     set_az_path(monkeypatch)
+    mock_tenant('adb-123.4.azuredatabricks.net')
     cfg = Config(host='https://adb-123.4.azuredatabricks.net', azure_workspace_resource_id='/sub/rg/ws')
 
     assert cfg.auth_type == 'azure-cli'

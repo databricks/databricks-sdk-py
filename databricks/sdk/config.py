@@ -373,7 +373,8 @@ class Config:
         logger.debug(f'Loading tenant ID from {login_url}')
         resp = requests.get(login_url, allow_redirects=False)
         if resp.status_code // 100 != 3:
-            logger.debug(f'Failed to get tenant ID from {login_url}: expected status code 3xx, got {resp.status_code}')
+            logger.debug(
+                f'Failed to get tenant ID from {login_url}: expected status code 3xx, got {resp.status_code}')
             return
         entra_id_endpoint = resp.headers.get('Location')
         if entra_id_endpoint is None:

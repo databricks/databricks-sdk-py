@@ -233,11 +233,11 @@ def _ensure_host_present(cfg: 'Config', token_source_for: Callable[[str], TokenS
     cfg.host = f"https://{resp.json()['properties']['workspaceUrl']}"
 
 
-@oauth_credentials_strategy('azure-client-secret',
-                            ['is_azure', 'azure_client_id', 'azure_client_secret'])
+@oauth_credentials_strategy('azure-client-secret', ['is_azure', 'azure_client_id', 'azure_client_secret'])
 def azure_service_principal(cfg: 'Config') -> CredentialsProvider:
     """ Adds refreshed Azure Active Directory (AAD) Service Principal OAuth tokens
     to every request, while automatically resolving different Azure environment endpoints. """
+
     def token_source_for(resource: str) -> TokenSource:
         aad_endpoint = cfg.arm_environment.active_directory_endpoint
         return ClientCredentials(client_id=cfg.azure_client_id,
@@ -467,7 +467,9 @@ class AzureCliTokenSource(CliTokenSource):
     def for_resource(cfg: 'Config', resource: str) -> 'AzureCliTokenSource':
         subscription = AzureCliTokenSource.get_subscription(cfg)
         if subscription is not None:
-            token_source = AzureCliTokenSource(resource, subscription=subscription, tenant=cfg.azure_tenant_id)
+            token_source = AzureCliTokenSource(resource,
+                                               subscription=subscription,
+                                               tenant=cfg.azure_tenant_id)
             try:
                 # This will fail if the user has access to the workspace, but not to the subscription
                 # itself.
