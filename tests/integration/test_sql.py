@@ -13,3 +13,10 @@ def test_query_history_list_with_filter(w):
     queries = w.query_history.list(filter_by=filter)
     for q in queries:
         print(q)
+
+
+def test_query_history_list_with_query_source(w):
+    queries = w.query_history.list(include_query_source=True)
+
+    for q in queries:
+        print(q)

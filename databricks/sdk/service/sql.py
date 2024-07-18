@@ -1673,7 +1673,6 @@ class ExternalLink:
 
 
 class Format(Enum):
-
     ARROW_STREAM = 'ARROW_STREAM'
     CSV = 'CSV'
     JSON_ARRAY = 'JSON_ARRAY'
@@ -1989,7 +1988,6 @@ class GetWorkspaceWarehouseConfigResponseSecurityPolicy(Enum):
 
 
 class ListOrder(Enum):
-
     CREATED_AT = 'created_at'
     NAME = 'name'
 
@@ -2503,6 +2501,9 @@ class QueryInfo:
     plans_state: Optional[PlansState] = None
     """Whether plans exist for the execution, or the reason why they are missing"""
 
+    query_source: Optional[QuerySource] = None
+    """Information about the source of the query."""
+
     query_end_time_ms: Optional[int] = None
     """The time the query ended."""
 
@@ -2554,6 +2555,7 @@ class QueryInfo:
         if self.lookup_key is not None: body['lookup_key'] = self.lookup_key
         if self.metrics: body['metrics'] = self.metrics.as_dict()
         if self.plans_state is not None: body['plans_state'] = self.plans_state.value
+        if self.query_source: body["query_source"] = self.query_source.as_dict()
         if self.query_end_time_ms is not None: body['query_end_time_ms'] = self.query_end_time_ms
         if self.query_id is not None: body['query_id'] = self.query_id
         if self.query_start_time_ms is not None: body['query_start_time_ms'] = self.query_start_time_ms
@@ -2582,6 +2584,7 @@ class QueryInfo:
                    lookup_key=d.get('lookup_key', None),
                    metrics=_from_dict(d, 'metrics', QueryMetrics),
                    plans_state=_enum(d, 'plans_state', PlansState),
+                   query_source=_from_dict(d, 'query_source', QuerySource),
                    query_end_time_ms=d.get('query_end_time_ms', None),
                    query_id=d.get('query_id', None),
                    query_start_time_ms=d.get('query_start_time_ms', None),
@@ -2771,6 +2774,270 @@ class QueryMetrics:
                    task_total_time_ms=d.get('task_total_time_ms', None),
                    total_time_ms=d.get('total_time_ms', None),
                    write_remote_bytes=d.get('write_remote_bytes', None))
+
+
+class ScheduledBy(Enum):
+    """Enum for the scheduling method of the query."""
+    MANUAL = "MANUAL"
+    SCHEDULED = "SCHEDULED"
+
+
+class EntryPoint(Enum):
+    """Enum for the Spark service that received and processed the query."""
+    THRIFT_SERVER = "THRIFT_SERVER"
+    SPARK_CONNECT = "SPARK_CONNECT"
+    DLT = "DLT"
+
+
+class ServerlessChannelName(Enum):
+    """Enum for the name of the serverless channel."""
+    CHANNEL_NAME_PREVIEW = "CHANNEL_NAME_PREVIEW"
+    CHANNEL_NAME_CURRENT = "CHANNEL_NAME_CURRENT"
+    CHANNEL_NAME_PREVIOUS = "CHANNEL_NAME_PREVIOUS"
+    CHANNEL_NAME_CUSTOM = "CHANNEL_NAME_CUSTOM"
+
+
+class JobManagedBy(Enum):
+    """Enum for the management of jobs."""
+    JOBS = "JOBS"
+    DATA_MONITORING = "DATA_MONITORING"
+    AUTOML = "AUTOML"
+    AUTO_MAINTENANCE = "AUTO_MAINTENANCE"
+    SCHEDULED_MV_REFRESH = "SCHEDULED_MV_REFRESH"
+    CLEAN_ROOMS = "CLEAN_ROOMS"
+    LAKEVIEW = "LAKEVIEW"
+    FABRIC_CRAWLER = "FABRIC_CRAWLER"
+    ENCRYPTION = "ENCRYPTION"
+    APP_SYSTEM_TABLE = "APP_SYSTEM_TABLE"
+    DATA_SHARING = "DATA_SHARING"
+    MANAGED_RAG = "MANAGED_RAG"
+    TESTING = "TESTING"
+
+
+@dataclass
+class FileName:
+    """File name that contains the last line that triggered the request."""
+
+    text: Optional[str] = None
+    """text data"""
+
+    encoding: Optional[str] = None
+    """Carry text data in different form."""
+
+    def as_dict(self) -> dict:
+        """Serializes the FileName into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.text is not None: body['text'] = self.text
+        if self.encoding is not None: body['encoding'] = self.encoding
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> FileName:
+        """Deserializes the FileName from a dictionary."""
+        return cls(text=d.get('text', None), encoding=d.get('encoding', None))
+
+
+@dataclass
+class ClientCallContext:
+    """Client code that triggered the request."""
+
+    file_name: Optional[FileName] = None
+    """File name that contains the last line that triggered the request."""
+
+    line_number: Optional[int] = None
+    """Last line number within a file or notebook cell that triggered the request."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ClientCallContext into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.file_name is not None: body['file_name'] = self.file_name.as_dict()
+        if self.line_number is not None: body['line_number'] = self.line_number
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ClientCallContext:
+        """Deserializes the ClientCallContext from a dictionary."""
+        return cls(file_name=_from_dict(d, "file_name", FileName), line_number=d.get('line_number', None))
+
+
+@dataclass
+class ServerlessChannelInfo:
+    """Information about the serverless channel"""
+
+    name: Optional[ServerlessChannelName] = None
+    """Name of the Channel."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ServerlessChannelInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None: body['name'] = self.name.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ServerlessChannelInfo:
+        """Deserializes the ServerlessChannelInfo from a dictionary."""
+        return cls(name=_enum(d, 'name', ServerlessChannelName))
+
+
+@dataclass
+class DriverInfo:
+    """Information about the driver used to execute the query."""
+
+    driver_name: Optional[str] = None
+    """Name of the driver."""
+
+    version_number: Optional[str] = None
+    """Version number of the driver."""
+
+    simba_branding_vendor: Optional[str] = None
+    """Vendor branding information for Simba driver."""
+
+    bi_tool_entry: Optional[str] = None
+    """Business Intelligence tool entry."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DriverInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.driver_name is not None: body['driver_name'] = self.driver_name
+        if self.version_number is not None: body['version_number'] = self.version_number
+        if self.simba_branding_vendor is not None: body['simba_branding_vendor'] = self.simba_branding_vendor
+        if self.bi_tool_entry is not None: body['bi_tool_entry'] = self.bi_tool_entry
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DriverInfo:
+        """Deserializes the DriverInfo from a dictionary."""
+        return cls(driver_name=d.get('driver_name', None),
+                   version_number=d.get('version_number', None),
+                   simba_branding_vendor=d.get('simba_branding_vendor', None),
+                   bi_tool_entry=d.get('bi_tool_entry', None))
+
+
+@dataclass
+class QuerySource:
+    """Represents the source and context information of a query."""
+
+    query_tags: Optional[str] = None
+    """String provided by a customer that'll help them identify the query."""
+
+    driver_info: Optional[DriverInfo] = None
+    """Information about the driver used to execute the query."""
+
+    scheduled_by: Optional[ScheduledBy] = None
+    """The scheduling method of the query."""
+
+    is_cloud_fetch: Optional[bool] = None
+    """Indicates if cloud fetch is used."""
+
+    source_query_id: Optional[str] = None
+    """UUID of the source query."""
+
+    dashboard_id: Optional[str] = None
+    """UUID of the dashboard."""
+
+    alert_id: Optional[str] = None
+    """UUID of the alert."""
+
+    job_id: Optional[str] = None
+    """ID associated with a job."""
+
+    run_id: Optional[str] = None
+    """ID associated with a job run or execution."""
+
+    notebook_id: Optional[str] = None
+    """ID associated with a notebook."""
+
+    is_databricks_sql_exec_api: Optional[bool] = None
+    """Indicates if the query is executed via Databricks SQL Exec API."""
+
+    entry_point: Optional[EntryPoint] = None
+    """Spark service that received and processed the query."""
+
+    dashboard_v3_id: Optional[str] = None
+    """UUID for Lakeview Dashboards, separate from DBSQL Dashboards (dashboard_id)."""
+
+    serverless_channel_info: Optional[ServerlessChannelInfo] = None
+    """Information about the serverless channel."""
+
+    command_id: Optional[str] = None
+    """ID associated with a notebook cell."""
+
+    command_run_id: Optional[str] = None
+    """ID associated with a notebook run or execution."""
+
+    runnable_command_id: Optional[str] = None
+    """ID associated with a notebook cell run or execution."""
+
+    client_call_context: Optional[ClientCallContext] = None
+    """Client code that triggered the request."""
+
+    job_managed_by: Optional[JobManagedBy] = None
+    """Jobs can be managed by different internal teams."""
+
+    pipeline_id: Optional[str] = None
+    """ID associated with a DLT pipeline."""
+
+    pipeline_update_id: Optional[str] = None
+    """ID associated with a DLT update."""
+
+    genie_space_id: Optional[str] = None
+    """UUID for Genie space."""
+
+    def as_dict(self) -> dict:
+        """Serializes the QuerySource into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.query_tags is not None: body['query_tags'] = self.query_tags
+        if self.driver_info is not None: body['driver_info'] = self.driver_info.as_dict()
+        if self.scheduled_by is not None: body['scheduled_by'] = self.scheduled_by.value
+        if self.is_cloud_fetch is not None: body['is_cloud_fetch'] = self.is_cloud_fetch
+        if self.source_query_id is not None: body['source_query_id'] = self.source_query_id
+        if self.dashboard_id is not None: body['dashboard_id'] = self.dashboard_id
+        if self.alert_id is not None: body['alert_id'] = self.alert_id
+        if self.job_id is not None: body['job_id'] = self.job_id
+        if self.run_id is not None: body['run_id'] = self.run_id
+        if self.notebook_id is not None: body['notebook_id'] = self.notebook_id
+        if self.is_databricks_sql_exec_api is not None:
+            body['is_databricks_sql_exec_api'] = self.is_databricks_sql_exec_api
+        if self.entry_point is not None: body['entry_point'] = self.entry_point.value
+        if self.dashboard_v3_id is not None: body['dashboard_v3_id'] = self.dashboard_v3_id
+        if self.serverless_channel_info is not None:
+            body['serverless_channel_info'] = self.serverless_channel_info.as_dict()
+        if self.command_id is not None: body['command_id'] = self.command_id
+        if self.command_run_id is not None: body['command_run_id'] = self.command_run_id
+        if self.runnable_command_id is not None: body['runnable_command_id'] = self.runnable_command_id
+        if self.client_call_context is not None:
+            body['client_call_context'] = self.client_call_context.as_dict()
+        if self.job_managed_by is not None: body['job_managed_by'] = self.job_managed_by.value
+        if self.pipeline_id is not None: body['pipeline_id'] = self.pipeline_id
+        if self.pipeline_update_id is not None: body['pipeline_update_id'] = self.pipeline_update_id
+        if self.genie_space_id is not None: body['genie_space_id'] = self.genie_space_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> QuerySource:
+        """Deserializes the QuerySource from a dictionary."""
+        return cls(query_tags=d.get('query_tags', None),
+                   driver_info=_from_dict(d, 'driver_info', DriverInfo),
+                   scheduled_by=_enum(d, 'scheduled_by', ScheduledBy),
+                   is_cloud_fetch=d.get('is_cloud_fetch', None),
+                   source_query_id=d.get('source_query_id', None),
+                   dashboard_id=d.get('dashboard_id', None),
+                   alert_id=d.get('alert_id', None),
+                   job_id=d.get('job_id', None),
+                   run_id=d.get('run_id', None),
+                   notebook_id=d.get('notebook_id', None),
+                   is_databricks_sql_exec_api=d.get('is_databricks_sql_exec_api', None),
+                   entry_point=_enum(d, 'entry_point', EntryPoint),
+                   dashboard_v3_id=d.get('dashboard_v3_id', None),
+                   serverless_channel_info=_from_dict(d, 'serverless_channel_info', ServerlessChannelInfo),
+                   command_id=d.get('command_id', None),
+                   command_run_id=d.get('command_run_id', None),
+                   runnable_command_id=d.get('runnable_command_id', None),
+                   client_call_context=_from_dict(d, 'client_call_context', ClientCallContext),
+                   job_managed_by=_enum(d, 'job_managed_by', JobManagedBy),
+                   pipeline_id=d.get('pipeline_id', None),
+                   pipeline_update_id=d.get('pipeline_update_id', None),
+                   genie_space_id=d.get('genie_space_id', None))
 
 
 @dataclass
@@ -3100,7 +3367,6 @@ class ServiceError:
 
 
 class ServiceErrorCode(Enum):
-
     ABORTED = 'ABORTED'
     ALREADY_EXISTS = 'ALREADY_EXISTS'
     BAD_REQUEST = 'BAD_REQUEST'
@@ -3378,7 +3644,6 @@ class Success:
 
 
 class SuccessMessage(Enum):
-
     SUCCESS = 'Success'
 
 
@@ -4782,6 +5047,7 @@ class QueryHistoryAPI:
              *,
              filter_by: Optional[QueryFilter] = None,
              include_metrics: Optional[bool] = None,
+             include_query_source: Optional[bool] = None,
              max_results: Optional[int] = None,
              page_token: Optional[str] = None) -> Iterator[QueryInfo]:
         """List Queries.
@@ -4794,6 +5060,8 @@ class QueryHistoryAPI:
           A filter to limit query history results. This field is optional.
         :param include_metrics: bool (optional)
           Whether to include metrics about query.
+        :param include_query_source: bool (optional)
+          Whether to include information about the query source.
         :param max_results: int (optional)
           Limit the number of results returned in one page. The default is 100.
         :param page_token: str (optional)
@@ -4807,6 +5075,7 @@ class QueryHistoryAPI:
         query = {}
         if filter_by is not None: query['filter_by'] = filter_by.as_dict()
         if include_metrics is not None: query['include_metrics'] = include_metrics
+        if include_query_source is not None: query['include_query_source'] = include_query_source
         if max_results is not None: query['max_results'] = max_results
         if page_token is not None: query['page_token'] = page_token
         headers = {'Accept': 'application/json', }
