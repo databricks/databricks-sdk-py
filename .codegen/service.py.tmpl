@@ -295,7 +295,7 @@ class {{.PascalName}}API:{{if .Description}}
         {{if .NeedsOffsetDedupe -}}
         # deduplicate items that may have been added during iteration
         seen = set()
-        {{- end}}{{if and .Pagination.Offset (not (eq .Path "/api/2.0/clusters/events")) }}
+        {{- end}}{{if and .Pagination.Offset (not (eq .Path "/api/2.1/clusters/events")) }}
         query['{{.Pagination.Offset.Name}}'] =
         {{- if eq .Pagination.Increment 1 -}}
           1
@@ -321,7 +321,7 @@ class {{.PascalName}}API:{{if .Description}}
           if '{{.Pagination.Token.Bind.Name}}' not in json or not json['{{.Pagination.Token.Bind.Name}}']:
             return
           {{if or (eq "GET" .Verb) (eq "HEAD" .Verb)}}query{{else}}body{{end}}['{{.Pagination.Token.PollField.Name}}'] = json['{{.Pagination.Token.Bind.Name}}']
-          {{- else if eq .Path "/api/2.0/clusters/events" -}}
+          {{- else if eq .Path "/api/2.1/clusters/events" -}}
           if 'next_page' not in json or not json['next_page']:
             return
           body = json['next_page']

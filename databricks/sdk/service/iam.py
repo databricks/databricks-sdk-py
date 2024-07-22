@@ -132,16 +132,16 @@ class DeleteResponse:
 
 
 @dataclass
-class DeleteWorkspaceAssignments:
+class DeleteWorkspacePermissionAssignmentResponse:
 
     def as_dict(self) -> dict:
-        """Serializes the DeleteWorkspaceAssignments into a dictionary suitable for use as a JSON request body."""
+        """Serializes the DeleteWorkspacePermissionAssignmentResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteWorkspaceAssignments:
-        """Deserializes the DeleteWorkspaceAssignments from a dictionary."""
+    def from_dict(cls, d: Dict[str, any]) -> DeleteWorkspacePermissionAssignmentResponse:
+        """Deserializes the DeleteWorkspacePermissionAssignmentResponse from a dictionary."""
         return cls()
 
 
@@ -404,6 +404,56 @@ class ListUsersResponse:
                    schemas=_repeated_enum(d, 'schemas', ListResponseSchema),
                    start_index=d.get('startIndex', None),
                    total_results=d.get('totalResults', None))
+
+
+@dataclass
+class MigratePermissionsRequest:
+    workspace_id: int
+    """WorkspaceId of the associated workspace where the permission migration will occur."""
+
+    from_workspace_group_name: str
+    """The name of the workspace group that permissions will be migrated from."""
+
+    to_account_group_name: str
+    """The name of the account group that permissions will be migrated to."""
+
+    size: Optional[int] = None
+    """The maximum number of permissions that will be migrated."""
+
+    def as_dict(self) -> dict:
+        """Serializes the MigratePermissionsRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.from_workspace_group_name is not None:
+            body['from_workspace_group_name'] = self.from_workspace_group_name
+        if self.size is not None: body['size'] = self.size
+        if self.to_account_group_name is not None: body['to_account_group_name'] = self.to_account_group_name
+        if self.workspace_id is not None: body['workspace_id'] = self.workspace_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> MigratePermissionsRequest:
+        """Deserializes the MigratePermissionsRequest from a dictionary."""
+        return cls(from_workspace_group_name=d.get('from_workspace_group_name', None),
+                   size=d.get('size', None),
+                   to_account_group_name=d.get('to_account_group_name', None),
+                   workspace_id=d.get('workspace_id', None))
+
+
+@dataclass
+class MigratePermissionsResponse:
+    permissions_migrated: Optional[int] = None
+    """Number of permissions migrated."""
+
+    def as_dict(self) -> dict:
+        """Serializes the MigratePermissionsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.permissions_migrated is not None: body['permissions_migrated'] = self.permissions_migrated
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> MigratePermissionsResponse:
+        """Deserializes the MigratePermissionsResponse from a dictionary."""
+        return cls(permissions_migrated=d.get('permissions_migrated', None))
 
 
 @dataclass
@@ -723,6 +773,9 @@ class Permission:
 
 @dataclass
 class PermissionAssignment:
+    """The output format for existing workspace PermissionAssignment records, which contains some info
+    for user consumption."""
+
     error: Optional[str] = None
     """Error response associated with a workspace permission assignment, if any."""
 
@@ -785,57 +838,6 @@ class PermissionLevel(Enum):
     CAN_VIEW = 'CAN_VIEW'
     CAN_VIEW_METADATA = 'CAN_VIEW_METADATA'
     IS_OWNER = 'IS_OWNER'
-
-
-@dataclass
-class PermissionMigrationRequest:
-    workspace_id: int
-    """WorkspaceId of the associated workspace where the permission migration will occur. Both
-    workspace group and account group must be in this workspace."""
-
-    from_workspace_group_name: str
-    """The name of the workspace group that permissions will be migrated from."""
-
-    to_account_group_name: str
-    """The name of the account group that permissions will be migrated to."""
-
-    size: Optional[int] = None
-    """The maximum number of permissions that will be migrated."""
-
-    def as_dict(self) -> dict:
-        """Serializes the PermissionMigrationRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.from_workspace_group_name is not None:
-            body['from_workspace_group_name'] = self.from_workspace_group_name
-        if self.size is not None: body['size'] = self.size
-        if self.to_account_group_name is not None: body['to_account_group_name'] = self.to_account_group_name
-        if self.workspace_id is not None: body['workspace_id'] = self.workspace_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PermissionMigrationRequest:
-        """Deserializes the PermissionMigrationRequest from a dictionary."""
-        return cls(from_workspace_group_name=d.get('from_workspace_group_name', None),
-                   size=d.get('size', None),
-                   to_account_group_name=d.get('to_account_group_name', None),
-                   workspace_id=d.get('workspace_id', None))
-
-
-@dataclass
-class PermissionMigrationResponse:
-    permissions_migrated: Optional[int] = None
-    """Number of permissions migrated."""
-
-    def as_dict(self) -> dict:
-        """Serializes the PermissionMigrationResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.permissions_migrated is not None: body['permissions_migrated'] = self.permissions_migrated
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> PermissionMigrationResponse:
-        """Deserializes the PermissionMigrationResponse from a dictionary."""
-        return cls(permissions_migrated=d.get('permissions_migrated', None))
 
 
 @dataclass
@@ -911,6 +913,8 @@ class PermissionsRequest:
 
 @dataclass
 class PrincipalOutput:
+    """Information about the principal assigned to the workspace."""
+
     display_name: Optional[str] = None
     """The display name of the principal."""
 
@@ -1134,7 +1138,7 @@ class UpdateRuleSetRequest:
 
 @dataclass
 class UpdateWorkspaceAssignments:
-    permissions: List[WorkspacePermission]
+    permissions: Optional[List[WorkspacePermission]] = None
     """Array of permissions assignments to update on the workspace. Note that excluding this field will
     have the same effect as providing an empty list which will result in the deletion of all
     permissions for the principal."""
@@ -1143,7 +1147,7 @@ class UpdateWorkspaceAssignments:
     """The ID of the user, service principal, or group."""
 
     workspace_id: Optional[int] = None
-    """The workspace ID."""
+    """The workspace ID for the account."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateWorkspaceAssignments into a dictionary suitable for use as a JSON request body."""
@@ -2495,7 +2499,7 @@ class GroupsAPI:
 
 
 class PermissionMigrationAPI:
-    """This spec contains undocumented permission migration APIs used in https://github.com/databrickslabs/ucx."""
+    """APIs for migrating acl permissions, used only by the ucx tool: https://github.com/databrickslabs/ucx"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -2505,14 +2509,11 @@ class PermissionMigrationAPI:
                             from_workspace_group_name: str,
                             to_account_group_name: str,
                             *,
-                            size: Optional[int] = None) -> PermissionMigrationResponse:
+                            size: Optional[int] = None) -> MigratePermissionsResponse:
         """Migrate Permissions.
         
-        Migrate a batch of permissions from a workspace local group to an account group.
-        
         :param workspace_id: int
-          WorkspaceId of the associated workspace where the permission migration will occur. Both workspace
-          group and account group must be in this workspace.
+          WorkspaceId of the associated workspace where the permission migration will occur.
         :param from_workspace_group_name: str
           The name of the workspace group that permissions will be migrated from.
         :param to_account_group_name: str
@@ -2520,7 +2521,7 @@ class PermissionMigrationAPI:
         :param size: int (optional)
           The maximum number of permissions that will be migrated.
         
-        :returns: :class:`PermissionMigrationResponse`
+        :returns: :class:`MigratePermissionsResponse`
         """
         body = {}
         if from_workspace_group_name is not None:
@@ -2531,7 +2532,7 @@ class PermissionMigrationAPI:
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         res = self._api.do('POST', '/api/2.0/permissionmigration', body=body, headers=headers)
-        return PermissionMigrationResponse.from_dict(res)
+        return MigratePermissionsResponse.from_dict(res)
 
 
 class PermissionsAPI:
@@ -3313,7 +3314,7 @@ class WorkspaceAssignmentAPI:
         principal.
         
         :param workspace_id: int
-          The workspace ID.
+          The workspace ID for the account.
         :param principal_id: int
           The ID of the user, service principal, or group.
         
@@ -3366,18 +3367,21 @@ class WorkspaceAssignmentAPI:
         parsed = PermissionAssignments.from_dict(json).permission_assignments
         return parsed if parsed is not None else []
 
-    def update(self, workspace_id: int, principal_id: int,
-               permissions: List[WorkspacePermission]) -> PermissionAssignment:
+    def update(self,
+               workspace_id: int,
+               principal_id: int,
+               *,
+               permissions: Optional[List[WorkspacePermission]] = None) -> PermissionAssignment:
         """Create or update permissions assignment.
         
         Creates or updates the workspace permissions assignment in a given account and workspace for the
         specified principal.
         
         :param workspace_id: int
-          The workspace ID.
+          The workspace ID for the account.
         :param principal_id: int
           The ID of the user, service principal, or group.
-        :param permissions: List[:class:`WorkspacePermission`]
+        :param permissions: List[:class:`WorkspacePermission`] (optional)
           Array of permissions assignments to update on the workspace. Note that excluding this field will
           have the same effect as providing an empty list which will result in the deletion of all permissions
           for the principal.
