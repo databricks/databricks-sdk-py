@@ -345,13 +345,13 @@ def test_shares(config, requests_mock):
 
 
 def test_deletes(config, requests_mock):
-    requests_mock.delete("http://localhost/api/2.0/preview/sql/alerts/alertid",
+    requests_mock.delete("http://localhost/api/2.0/sql/alerts/alertId",
                          request_headers={"User-Agent": config.user_agent},
                          text="null",
                          )
 
     w = WorkspaceClient(config=config)
-    res = w.alerts.delete(alert_id="alertId")
+    res = w.alerts.delete(id="alertId")
 
     assert requests_mock.call_count == 1
     assert requests_mock.called

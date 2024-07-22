@@ -25,19 +25,29 @@ from databricks.sdk.service import oauth2
 
 @dataclass
 class Ai21LabsConfig:
-    ai21labs_api_key: str
-    """The Databricks secret key reference for an AI21Labs API key."""
+    ai21labs_api_key: Optional[str] = None
+    """The Databricks secret key reference for an AI21 Labs API key. If you prefer to paste your API
+    key directly, see `ai21labs_api_key_plaintext`. You must provide an API key using one of the
+    following fields: `ai21labs_api_key` or `ai21labs_api_key_plaintext`."""
+
+    ai21labs_api_key_plaintext: Optional[str] = None
+    """An AI21 Labs API key provided as a plaintext string. If you prefer to reference your key using
+    Databricks Secrets, see `ai21labs_api_key`. You must provide an API key using one of the
+    following fields: `ai21labs_api_key` or `ai21labs_api_key_plaintext`."""
 
     def as_dict(self) -> dict:
         """Serializes the Ai21LabsConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.ai21labs_api_key is not None: body['ai21labs_api_key'] = self.ai21labs_api_key
+        if self.ai21labs_api_key_plaintext is not None:
+            body['ai21labs_api_key_plaintext'] = self.ai21labs_api_key_plaintext
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> Ai21LabsConfig:
         """Deserializes the Ai21LabsConfig from a dictionary."""
-        return cls(ai21labs_api_key=d.get('ai21labs_api_key', None))
+        return cls(ai21labs_api_key=d.get('ai21labs_api_key', None),
+                   ai21labs_api_key_plaintext=d.get('ai21labs_api_key_plaintext', None))
 
 
 @dataclass
@@ -45,24 +55,44 @@ class AmazonBedrockConfig:
     aws_region: str
     """The AWS region to use. Bedrock has to be enabled there."""
 
-    aws_access_key_id: str
-    """The Databricks secret key reference for an AWS Access Key ID with permissions to interact with
-    Bedrock services."""
-
-    aws_secret_access_key: str
-    """The Databricks secret key reference for an AWS Secret Access Key paired with the access key ID,
-    with permissions to interact with Bedrock services."""
-
     bedrock_provider: AmazonBedrockConfigBedrockProvider
     """The underlying provider in Amazon Bedrock. Supported values (case insensitive) include:
     Anthropic, Cohere, AI21Labs, Amazon."""
+
+    aws_access_key_id: Optional[str] = None
+    """The Databricks secret key reference for an AWS access key ID with permissions to interact with
+    Bedrock services. If you prefer to paste your API key directly, see `aws_access_key_id`. You
+    must provide an API key using one of the following fields: `aws_access_key_id` or
+    `aws_access_key_id_plaintext`."""
+
+    aws_access_key_id_plaintext: Optional[str] = None
+    """An AWS access key ID with permissions to interact with Bedrock services provided as a plaintext
+    string. If you prefer to reference your key using Databricks Secrets, see `aws_access_key_id`.
+    You must provide an API key using one of the following fields: `aws_access_key_id` or
+    `aws_access_key_id_plaintext`."""
+
+    aws_secret_access_key: Optional[str] = None
+    """The Databricks secret key reference for an AWS secret access key paired with the access key ID,
+    with permissions to interact with Bedrock services. If you prefer to paste your API key
+    directly, see `aws_secret_access_key_plaintext`. You must provide an API key using one of the
+    following fields: `aws_secret_access_key` or `aws_secret_access_key_plaintext`."""
+
+    aws_secret_access_key_plaintext: Optional[str] = None
+    """An AWS secret access key paired with the access key ID, with permissions to interact with
+    Bedrock services provided as a plaintext string. If you prefer to reference your key using
+    Databricks Secrets, see `aws_secret_access_key`. You must provide an API key using one of the
+    following fields: `aws_secret_access_key` or `aws_secret_access_key_plaintext`."""
 
     def as_dict(self) -> dict:
         """Serializes the AmazonBedrockConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.aws_access_key_id is not None: body['aws_access_key_id'] = self.aws_access_key_id
+        if self.aws_access_key_id_plaintext is not None:
+            body['aws_access_key_id_plaintext'] = self.aws_access_key_id_plaintext
         if self.aws_region is not None: body['aws_region'] = self.aws_region
         if self.aws_secret_access_key is not None: body['aws_secret_access_key'] = self.aws_secret_access_key
+        if self.aws_secret_access_key_plaintext is not None:
+            body['aws_secret_access_key_plaintext'] = self.aws_secret_access_key_plaintext
         if self.bedrock_provider is not None: body['bedrock_provider'] = self.bedrock_provider.value
         return body
 
@@ -70,8 +100,10 @@ class AmazonBedrockConfig:
     def from_dict(cls, d: Dict[str, any]) -> AmazonBedrockConfig:
         """Deserializes the AmazonBedrockConfig from a dictionary."""
         return cls(aws_access_key_id=d.get('aws_access_key_id', None),
+                   aws_access_key_id_plaintext=d.get('aws_access_key_id_plaintext', None),
                    aws_region=d.get('aws_region', None),
                    aws_secret_access_key=d.get('aws_secret_access_key', None),
+                   aws_secret_access_key_plaintext=d.get('aws_secret_access_key_plaintext', None),
                    bedrock_provider=_enum(d, 'bedrock_provider', AmazonBedrockConfigBedrockProvider))
 
 
@@ -87,19 +119,29 @@ class AmazonBedrockConfigBedrockProvider(Enum):
 
 @dataclass
 class AnthropicConfig:
-    anthropic_api_key: str
-    """The Databricks secret key reference for an Anthropic API key."""
+    anthropic_api_key: Optional[str] = None
+    """The Databricks secret key reference for an Anthropic API key. If you prefer to paste your API
+    key directly, see `anthropic_api_key_plaintext`. You must provide an API key using one of the
+    following fields: `anthropic_api_key` or `anthropic_api_key_plaintext`."""
+
+    anthropic_api_key_plaintext: Optional[str] = None
+    """The Anthropic API key provided as a plaintext string. If you prefer to reference your key using
+    Databricks Secrets, see `anthropic_api_key`. You must provide an API key using one of the
+    following fields: `anthropic_api_key` or `anthropic_api_key_plaintext`."""
 
     def as_dict(self) -> dict:
         """Serializes the AnthropicConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.anthropic_api_key is not None: body['anthropic_api_key'] = self.anthropic_api_key
+        if self.anthropic_api_key_plaintext is not None:
+            body['anthropic_api_key_plaintext'] = self.anthropic_api_key_plaintext
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> AnthropicConfig:
         """Deserializes the AnthropicConfig from a dictionary."""
-        return cls(anthropic_api_key=d.get('anthropic_api_key', None))
+        return cls(anthropic_api_key=d.get('anthropic_api_key', None),
+                   anthropic_api_key_plaintext=d.get('anthropic_api_key_plaintext', None))
 
 
 @dataclass
@@ -249,7 +291,6 @@ class AppDeploymentArtifacts:
 class AppDeploymentMode(Enum):
 
     AUTO_SYNC = 'AUTO_SYNC'
-    MODE_UNSPECIFIED = 'MODE_UNSPECIFIED'
     SNAPSHOT = 'SNAPSHOT'
 
 
@@ -257,7 +298,6 @@ class AppDeploymentState(Enum):
 
     FAILED = 'FAILED'
     IN_PROGRESS = 'IN_PROGRESS'
-    STATE_UNSPECIFIED = 'STATE_UNSPECIFIED'
     STOPPED = 'STOPPED'
     SUCCEEDED = 'SUCCEEDED'
 
@@ -308,7 +348,6 @@ class AppState(Enum):
     IDLE = 'IDLE'
     RUNNING = 'RUNNING'
     STARTING = 'STARTING'
-    STATE_UNSPECIFIED = 'STATE_UNSPECIFIED'
 
 
 @dataclass
@@ -467,19 +506,35 @@ class ChatMessageRole(Enum):
 
 @dataclass
 class CohereConfig:
-    cohere_api_key: str
-    """The Databricks secret key reference for a Cohere API key."""
+    cohere_api_base: Optional[str] = None
+    """This is an optional field to provide a customized base URL for the Cohere API. If left
+    unspecified, the standard Cohere base URL is used."""
+
+    cohere_api_key: Optional[str] = None
+    """The Databricks secret key reference for a Cohere API key. If you prefer to paste your API key
+    directly, see `cohere_api_key_plaintext`. You must provide an API key using one of the following
+    fields: `cohere_api_key` or `cohere_api_key_plaintext`."""
+
+    cohere_api_key_plaintext: Optional[str] = None
+    """The Cohere API key provided as a plaintext string. If you prefer to reference your key using
+    Databricks Secrets, see `cohere_api_key`. You must provide an API key using one of the following
+    fields: `cohere_api_key` or `cohere_api_key_plaintext`."""
 
     def as_dict(self) -> dict:
         """Serializes the CohereConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.cohere_api_base is not None: body['cohere_api_base'] = self.cohere_api_base
         if self.cohere_api_key is not None: body['cohere_api_key'] = self.cohere_api_key
+        if self.cohere_api_key_plaintext is not None:
+            body['cohere_api_key_plaintext'] = self.cohere_api_key_plaintext
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CohereConfig:
         """Deserializes the CohereConfig from a dictionary."""
-        return cls(cohere_api_key=d.get('cohere_api_key', None))
+        return cls(cohere_api_base=d.get('cohere_api_base', None),
+                   cohere_api_key=d.get('cohere_api_key', None),
+                   cohere_api_key_plaintext=d.get('cohere_api_key_plaintext', None))
 
 
 @dataclass
@@ -576,19 +631,30 @@ class CreateServingEndpoint:
 
 @dataclass
 class DatabricksModelServingConfig:
-    databricks_api_token: str
-    """The Databricks secret key reference for a Databricks API token that corresponds to a user or
-    service principal with Can Query access to the model serving endpoint pointed to by this
-    external model."""
-
     databricks_workspace_url: str
     """The URL of the Databricks workspace containing the model serving endpoint pointed to by this
     external model."""
+
+    databricks_api_token: Optional[str] = None
+    """The Databricks secret key reference for a Databricks API token that corresponds to a user or
+    service principal with Can Query access to the model serving endpoint pointed to by this
+    external model. If you prefer to paste your API key directly, see
+    `databricks_api_token_plaintext`. You must provide an API key using one of the following fields:
+    `databricks_api_token` or `databricks_api_token_plaintext`."""
+
+    databricks_api_token_plaintext: Optional[str] = None
+    """The Databricks API token that corresponds to a user or service principal with Can Query access
+    to the model serving endpoint pointed to by this external model provided as a plaintext string.
+    If you prefer to reference your key using Databricks Secrets, see `databricks_api_token`. You
+    must provide an API key using one of the following fields: `databricks_api_token` or
+    `databricks_api_token_plaintext`."""
 
     def as_dict(self) -> dict:
         """Serializes the DatabricksModelServingConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.databricks_api_token is not None: body['databricks_api_token'] = self.databricks_api_token
+        if self.databricks_api_token_plaintext is not None:
+            body['databricks_api_token_plaintext'] = self.databricks_api_token_plaintext
         if self.databricks_workspace_url is not None:
             body['databricks_workspace_url'] = self.databricks_workspace_url
         return body
@@ -597,6 +663,7 @@ class DatabricksModelServingConfig:
     def from_dict(cls, d: Dict[str, any]) -> DatabricksModelServingConfig:
         """Deserializes the DatabricksModelServingConfig from a dictionary."""
         return cls(databricks_api_token=d.get('databricks_api_token', None),
+                   databricks_api_token_plaintext=d.get('databricks_api_token_plaintext', None),
                    databricks_workspace_url=d.get('databricks_workspace_url', None))
 
 
@@ -849,6 +916,7 @@ class EndpointStateConfigUpdate(Enum):
 
     IN_PROGRESS = 'IN_PROGRESS'
     NOT_UPDATING = 'NOT_UPDATING'
+    UPDATE_CANCELED = 'UPDATE_CANCELED'
     UPDATE_FAILED = 'UPDATE_FAILED'
 
 
@@ -924,8 +992,8 @@ class ExportMetricsResponse:
 class ExternalModel:
     provider: ExternalModelProvider
     """The name of the provider for the external model. Currently, the supported providers are
-    'ai21labs', 'anthropic', 'amazon-bedrock', 'cohere', 'databricks-model-serving', 'openai', and
-    'palm'.","""
+    'ai21labs', 'anthropic', 'amazon-bedrock', 'cohere', 'databricks-model-serving',
+    'google-cloud-vertex-ai', 'openai', and 'palm'.","""
 
     name: str
     """The name of the external model."""
@@ -948,6 +1016,9 @@ class ExternalModel:
     databricks_model_serving_config: Optional[DatabricksModelServingConfig] = None
     """Databricks Model Serving Config. Only required if the provider is 'databricks-model-serving'."""
 
+    google_cloud_vertex_ai_config: Optional[GoogleCloudVertexAiConfig] = None
+    """Google Cloud Vertex AI Config. Only required if the provider is 'google-cloud-vertex-ai'."""
+
     openai_config: Optional[OpenAiConfig] = None
     """OpenAI Config. Only required if the provider is 'openai'."""
 
@@ -963,6 +1034,8 @@ class ExternalModel:
         if self.cohere_config: body['cohere_config'] = self.cohere_config.as_dict()
         if self.databricks_model_serving_config:
             body['databricks_model_serving_config'] = self.databricks_model_serving_config.as_dict()
+        if self.google_cloud_vertex_ai_config:
+            body['google_cloud_vertex_ai_config'] = self.google_cloud_vertex_ai_config.as_dict()
         if self.name is not None: body['name'] = self.name
         if self.openai_config: body['openai_config'] = self.openai_config.as_dict()
         if self.palm_config: body['palm_config'] = self.palm_config.as_dict()
@@ -979,6 +1052,8 @@ class ExternalModel:
                    cohere_config=_from_dict(d, 'cohere_config', CohereConfig),
                    databricks_model_serving_config=_from_dict(d, 'databricks_model_serving_config',
                                                               DatabricksModelServingConfig),
+                   google_cloud_vertex_ai_config=_from_dict(d, 'google_cloud_vertex_ai_config',
+                                                            GoogleCloudVertexAiConfig),
                    name=d.get('name', None),
                    openai_config=_from_dict(d, 'openai_config', OpenAiConfig),
                    palm_config=_from_dict(d, 'palm_config', PaLmConfig),
@@ -988,14 +1063,15 @@ class ExternalModel:
 
 class ExternalModelProvider(Enum):
     """The name of the provider for the external model. Currently, the supported providers are
-    'ai21labs', 'anthropic', 'amazon-bedrock', 'cohere', 'databricks-model-serving', 'openai', and
-    'palm'.","""
+    'ai21labs', 'anthropic', 'amazon-bedrock', 'cohere', 'databricks-model-serving',
+    'google-cloud-vertex-ai', 'openai', and 'palm'.","""
 
     AI21LABS = 'ai21labs'
     AMAZON_BEDROCK = 'amazon-bedrock'
     ANTHROPIC = 'anthropic'
     COHERE = 'cohere'
     DATABRICKS_MODEL_SERVING = 'databricks-model-serving'
+    GOOGLE_CLOUD_VERTEX_AI = 'google-cloud-vertex-ai'
     OPENAI = 'openai'
     PALM = 'palm'
 
@@ -1094,6 +1170,51 @@ class GetServingEndpointPermissionLevelsResponse:
 
 
 @dataclass
+class GoogleCloudVertexAiConfig:
+    private_key: Optional[str] = None
+    """The Databricks secret key reference for a private key for the service account which has access
+    to the Google Cloud Vertex AI Service. See [Best practices for managing service account keys].
+    If you prefer to paste your API key directly, see `private_key_plaintext`. You must provide an
+    API key using one of the following fields: `private_key` or `private_key_plaintext`
+    
+    [Best practices for managing service account keys]: https://cloud.google.com/iam/docs/best-practices-for-managing-service-account-keys"""
+
+    private_key_plaintext: Optional[str] = None
+    """The private key for the service account which has access to the Google Cloud Vertex AI Service
+    provided as a plaintext secret. See [Best practices for managing service account keys]. If you
+    prefer to reference your key using Databricks Secrets, see `private_key`. You must provide an
+    API key using one of the following fields: `private_key` or `private_key_plaintext`.
+    
+    [Best practices for managing service account keys]: https://cloud.google.com/iam/docs/best-practices-for-managing-service-account-keys"""
+
+    project_id: Optional[str] = None
+    """This is the Google Cloud project id that the service account is associated with."""
+
+    region: Optional[str] = None
+    """This is the region for the Google Cloud Vertex AI Service. See [supported regions] for more
+    details. Some models are only available in specific regions.
+    
+    [supported regions]: https://cloud.google.com/vertex-ai/docs/general/locations"""
+
+    def as_dict(self) -> dict:
+        """Serializes the GoogleCloudVertexAiConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.private_key is not None: body['private_key'] = self.private_key
+        if self.private_key_plaintext is not None: body['private_key_plaintext'] = self.private_key_plaintext
+        if self.project_id is not None: body['project_id'] = self.project_id
+        if self.region is not None: body['region'] = self.region
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> GoogleCloudVertexAiConfig:
+        """Deserializes the GoogleCloudVertexAiConfig from a dictionary."""
+        return cls(private_key=d.get('private_key', None),
+                   private_key_plaintext=d.get('private_key_plaintext', None),
+                   project_id=d.get('project_id', None),
+                   region=d.get('region', None))
+
+
+@dataclass
 class ListAppDeploymentsResponse:
     app_deployments: Optional[List[AppDeployment]] = None
     """Deployment history of the app."""
@@ -1175,19 +1296,35 @@ class OpenAiConfig:
     """This field is only required for Azure AD OpenAI and is the Microsoft Entra Client ID."""
 
     microsoft_entra_client_secret: Optional[str] = None
-    """The Databricks secret key reference for the Microsoft Entra Client Secret that is only required
-    for Azure AD OpenAI."""
+    """The Databricks secret key reference for a client secret used for Microsoft Entra ID
+    authentication. If you prefer to paste your client secret directly, see
+    `microsoft_entra_client_secret_plaintext`. You must provide an API key using one of the
+    following fields: `microsoft_entra_client_secret` or `microsoft_entra_client_secret_plaintext`."""
+
+    microsoft_entra_client_secret_plaintext: Optional[str] = None
+    """The client secret used for Microsoft Entra ID authentication provided as a plaintext string. If
+    you prefer to reference your key using Databricks Secrets, see `microsoft_entra_client_secret`.
+    You must provide an API key using one of the following fields: `microsoft_entra_client_secret`
+    or `microsoft_entra_client_secret_plaintext`."""
 
     microsoft_entra_tenant_id: Optional[str] = None
     """This field is only required for Azure AD OpenAI and is the Microsoft Entra Tenant ID."""
 
     openai_api_base: Optional[str] = None
-    """This is the base URL for the OpenAI API (default: "https://api.openai.com/v1"). For Azure
-    OpenAI, this field is required, and is the base URL for the Azure OpenAI API service provided by
-    Azure."""
+    """This is a field to provide a customized base URl for the OpenAI API. For Azure OpenAI, this
+    field is required, and is the base URL for the Azure OpenAI API service provided by Azure. For
+    other OpenAI API types, this field is optional, and if left unspecified, the standard OpenAI
+    base URL is used."""
 
     openai_api_key: Optional[str] = None
-    """The Databricks secret key reference for an OpenAI or Azure OpenAI API key."""
+    """The Databricks secret key reference for an OpenAI API key using the OpenAI or Azure service. If
+    you prefer to paste your API key directly, see `openai_api_key_plaintext`. You must provide an
+    API key using one of the following fields: `openai_api_key` or `openai_api_key_plaintext`."""
+
+    openai_api_key_plaintext: Optional[str] = None
+    """The OpenAI API key using the OpenAI or Azure service provided as a plaintext string. If you
+    prefer to reference your key using Databricks Secrets, see `openai_api_key`. You must provide an
+    API key using one of the following fields: `openai_api_key` or `openai_api_key_plaintext`."""
 
     openai_api_type: Optional[str] = None
     """This is an optional field to specify the type of OpenAI API to use. For Azure OpenAI, this field
@@ -1213,10 +1350,14 @@ class OpenAiConfig:
             body['microsoft_entra_client_id'] = self.microsoft_entra_client_id
         if self.microsoft_entra_client_secret is not None:
             body['microsoft_entra_client_secret'] = self.microsoft_entra_client_secret
+        if self.microsoft_entra_client_secret_plaintext is not None:
+            body['microsoft_entra_client_secret_plaintext'] = self.microsoft_entra_client_secret_plaintext
         if self.microsoft_entra_tenant_id is not None:
             body['microsoft_entra_tenant_id'] = self.microsoft_entra_tenant_id
         if self.openai_api_base is not None: body['openai_api_base'] = self.openai_api_base
         if self.openai_api_key is not None: body['openai_api_key'] = self.openai_api_key
+        if self.openai_api_key_plaintext is not None:
+            body['openai_api_key_plaintext'] = self.openai_api_key_plaintext
         if self.openai_api_type is not None: body['openai_api_type'] = self.openai_api_type
         if self.openai_api_version is not None: body['openai_api_version'] = self.openai_api_version
         if self.openai_deployment_name is not None:
@@ -1229,9 +1370,12 @@ class OpenAiConfig:
         """Deserializes the OpenAiConfig from a dictionary."""
         return cls(microsoft_entra_client_id=d.get('microsoft_entra_client_id', None),
                    microsoft_entra_client_secret=d.get('microsoft_entra_client_secret', None),
+                   microsoft_entra_client_secret_plaintext=d.get('microsoft_entra_client_secret_plaintext',
+                                                                 None),
                    microsoft_entra_tenant_id=d.get('microsoft_entra_tenant_id', None),
                    openai_api_base=d.get('openai_api_base', None),
                    openai_api_key=d.get('openai_api_key', None),
+                   openai_api_key_plaintext=d.get('openai_api_key_plaintext', None),
                    openai_api_type=d.get('openai_api_type', None),
                    openai_api_version=d.get('openai_api_version', None),
                    openai_deployment_name=d.get('openai_deployment_name', None),
@@ -1240,19 +1384,29 @@ class OpenAiConfig:
 
 @dataclass
 class PaLmConfig:
-    palm_api_key: str
-    """The Databricks secret key reference for a PaLM API key."""
+    palm_api_key: Optional[str] = None
+    """The Databricks secret key reference for a PaLM API key. If you prefer to paste your API key
+    directly, see `palm_api_key_plaintext`. You must provide an API key using one of the following
+    fields: `palm_api_key` or `palm_api_key_plaintext`."""
+
+    palm_api_key_plaintext: Optional[str] = None
+    """The PaLM API key provided as a plaintext string. If you prefer to reference your key using
+    Databricks Secrets, see `palm_api_key`. You must provide an API key using one of the following
+    fields: `palm_api_key` or `palm_api_key_plaintext`."""
 
     def as_dict(self) -> dict:
         """Serializes the PaLmConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.palm_api_key is not None: body['palm_api_key'] = self.palm_api_key
+        if self.palm_api_key_plaintext is not None:
+            body['palm_api_key_plaintext'] = self.palm_api_key_plaintext
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> PaLmConfig:
         """Deserializes the PaLmConfig from a dictionary."""
-        return cls(palm_api_key=d.get('palm_api_key', None))
+        return cls(palm_api_key=d.get('palm_api_key', None),
+                   palm_api_key_plaintext=d.get('palm_api_key_plaintext', None))
 
 
 @dataclass
@@ -1584,11 +1738,10 @@ class ServedEntityInput:
     external_model: Optional[ExternalModel] = None
     """The external model to be served. NOTE: Only one of external_model and (entity_name,
     entity_version, workload_size, workload_type, and scale_to_zero_enabled) can be specified with
-    the latter set being used for custom model serving for a Databricks registered model. When an
-    external_model is present, the served entities list can only have one served_entity object. For
-    an existing endpoint with external_model, it can not be updated to an endpoint without
+    the latter set being used for custom model serving for a Databricks registered model. For an
+    existing endpoint with external_model, it cannot be updated to an endpoint without
     external_model. If the endpoint is created without external_model, users cannot update it to add
-    external_model later."""
+    external_model later. The task type of all external models within an endpoint must be the same."""
 
     instance_profile_arn: Optional[str] = None
     """ARN of the instance profile that the served entity uses to access AWS resources."""
@@ -2858,7 +3011,8 @@ class ServingEndpointsAPI:
             callback: Optional[Callable[[ServingEndpointDetailed], None]] = None) -> ServingEndpointDetailed:
         deadline = time.time() + timeout.total_seconds()
         target_states = (EndpointStateConfigUpdate.NOT_UPDATING, )
-        failure_states = (EndpointStateConfigUpdate.UPDATE_FAILED, )
+        failure_states = (EndpointStateConfigUpdate.UPDATE_FAILED, EndpointStateConfigUpdate.UPDATE_CANCELED,
+                          )
         status_message = 'polling...'
         attempt = 1
         while time.time() < deadline:

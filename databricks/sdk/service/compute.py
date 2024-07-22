@@ -4461,11 +4461,8 @@ class Library:
     """Specification of a CRAN library to be installed as part of the library"""
 
     egg: Optional[str] = None
-    """URI of the egg library to install. Supported URIs include Workspace paths, Unity Catalog Volumes
-    paths, and S3 URIs. For example: `{ "egg": "/Workspace/path/to/library.egg" }`, `{ "egg" :
-    "/Volumes/path/to/library.egg" }` or `{ "egg": "s3://my-bucket/library.egg" }`. If S3 is used,
-    please make sure the cluster has read access on the library. You may need to launch the cluster
-    with an IAM role to access the S3 URI."""
+    """Deprecated. URI of the egg library to install. Installing Python egg files is deprecated and is
+    not supported in Databricks Runtime 14.0 and above."""
 
     jar: Optional[str] = None
     """URI of the JAR library to install. Supported URIs include Workspace paths, Unity Catalog Volumes
@@ -4604,20 +4601,102 @@ class ListAvailableZonesResponse:
 
 
 @dataclass
+class ListClustersFilterBy:
+    cluster_sources: Optional[List[ClusterSource]] = None
+    """The source of cluster creation."""
+
+    cluster_states: Optional[List[State]] = None
+    """The current state of the clusters."""
+
+    is_pinned: Optional[bool] = None
+    """Whether the clusters are pinned or not."""
+
+    policy_id: Optional[str] = None
+    """The ID of the cluster policy used to create the cluster if applicable."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListClustersFilterBy into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.cluster_sources: body['cluster_sources'] = [v.value for v in self.cluster_sources]
+        if self.cluster_states: body['cluster_states'] = [v.value for v in self.cluster_states]
+        if self.is_pinned is not None: body['is_pinned'] = self.is_pinned
+        if self.policy_id is not None: body['policy_id'] = self.policy_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ListClustersFilterBy:
+        """Deserializes the ListClustersFilterBy from a dictionary."""
+        return cls(cluster_sources=_repeated_enum(d, 'cluster_sources', ClusterSource),
+                   cluster_states=_repeated_enum(d, 'cluster_states', State),
+                   is_pinned=d.get('is_pinned', None),
+                   policy_id=d.get('policy_id', None))
+
+
+@dataclass
 class ListClustersResponse:
     clusters: Optional[List[ClusterDetails]] = None
     """<needs content added>"""
+
+    next_page_token: Optional[str] = None
+    """This field represents the pagination token to retrieve the next page of results. If the value is
+    "", it means no further results for the request."""
+
+    prev_page_token: Optional[str] = None
+    """This field represents the pagination token to retrieve the previous page of results. If the
+    value is "", it means no further results for the request."""
 
     def as_dict(self) -> dict:
         """Serializes the ListClustersResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.clusters: body['clusters'] = [v.as_dict() for v in self.clusters]
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.prev_page_token is not None: body['prev_page_token'] = self.prev_page_token
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListClustersResponse:
         """Deserializes the ListClustersResponse from a dictionary."""
-        return cls(clusters=_repeated_dict(d, 'clusters', ClusterDetails))
+        return cls(clusters=_repeated_dict(d, 'clusters', ClusterDetails),
+                   next_page_token=d.get('next_page_token', None),
+                   prev_page_token=d.get('prev_page_token', None))
+
+
+@dataclass
+class ListClustersSortBy:
+    direction: Optional[ListClustersSortByDirection] = None
+    """The direction to sort by."""
+
+    field: Optional[ListClustersSortByField] = None
+    """The sorting criteria. By default, clusters are sorted by 3 columns from highest to lowest
+    precedence: cluster state, pinned or unpinned, then cluster name."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListClustersSortBy into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.direction is not None: body['direction'] = self.direction.value
+        if self.field is not None: body['field'] = self.field.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ListClustersSortBy:
+        """Deserializes the ListClustersSortBy from a dictionary."""
+        return cls(direction=_enum(d, 'direction', ListClustersSortByDirection),
+                   field=_enum(d, 'field', ListClustersSortByField))
+
+
+class ListClustersSortByDirection(Enum):
+    """The direction to sort by."""
+
+    ASC = 'ASC'
+    DESC = 'DESC'
+
+
+class ListClustersSortByField(Enum):
+    """The sorting criteria. By default, clusters are sorted by 3 columns from highest to lowest
+    precedence: cluster state, pinned or unpinned, then cluster name."""
+
+    CLUSTER_NAME = 'CLUSTER_NAME'
+    DEFAULT = 'DEFAULT'
 
 
 @dataclass
@@ -6174,9 +6253,8 @@ class ClustersAPI:
     restart an all-purpose cluster. Multiple users can share such clusters to do collaborative interactive
     analysis.
     
-    IMPORTANT: Databricks retains cluster configuration information for up to 200 all-purpose clusters
-    terminated in the last 30 days and up to 30 job clusters recently terminated by the job scheduler. To keep
-    an all-purpose cluster configuration even after it has been terminated for more than 30 days, an
+    IMPORTANT: Databricks retains cluster configuration information for terminated clusters for 30 days. To
+    keep an all-purpose cluster configuration even after it has been terminated for more than 30 days, an
     administrator can pin a cluster to the cluster list."""
 
     def __init__(self, api_client):
@@ -6263,7 +6341,7 @@ class ClustersAPI:
         if owner_username is not None: body['owner_username'] = owner_username
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        self._api.do('POST', '/api/2.0/clusters/change-owner', body=body, headers=headers)
+        self._api.do('POST', '/api/2.1/clusters/change-owner', body=body, headers=headers)
 
     def create(self,
                spark_version: str,
@@ -6462,7 +6540,7 @@ class ClustersAPI:
         if workload_type is not None: body['workload_type'] = workload_type.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        op_response = self._api.do('POST', '/api/2.0/clusters/create', body=body, headers=headers)
+        op_response = self._api.do('POST', '/api/2.1/clusters/create', body=body, headers=headers)
         return Wait(self.wait_get_cluster_running,
                     response=CreateClusterResponse.from_dict(op_response),
                     cluster_id=op_response['cluster_id'])
@@ -6546,7 +6624,7 @@ class ClustersAPI:
         if cluster_id is not None: body['cluster_id'] = cluster_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        op_response = self._api.do('POST', '/api/2.0/clusters/delete', body=body, headers=headers)
+        op_response = self._api.do('POST', '/api/2.1/clusters/delete', body=body, headers=headers)
         return Wait(self.wait_get_cluster_terminated,
                     response=DeleteClusterResponse.from_dict(op_response),
                     cluster_id=cluster_id)
@@ -6756,7 +6834,7 @@ class ClustersAPI:
         if workload_type is not None: body['workload_type'] = workload_type.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        op_response = self._api.do('POST', '/api/2.0/clusters/edit', body=body, headers=headers)
+        op_response = self._api.do('POST', '/api/2.1/clusters/edit', body=body, headers=headers)
         return Wait(self.wait_get_cluster_running,
                     response=EditClusterResponse.from_dict(op_response),
                     cluster_id=cluster_id)
@@ -6867,7 +6945,7 @@ class ClustersAPI:
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         while True:
-            json = self._api.do('POST', '/api/2.0/clusters/events', body=body, headers=headers)
+            json = self._api.do('POST', '/api/2.1/clusters/events', body=body, headers=headers)
             if 'events' in json:
                 for v in json['events']:
                     yield ClusterEvent.from_dict(v)
@@ -6891,7 +6969,7 @@ class ClustersAPI:
         if cluster_id is not None: query['cluster_id'] = cluster_id
         headers = {'Accept': 'application/json', }
 
-        res = self._api.do('GET', '/api/2.0/clusters/get', query=query, headers=headers)
+        res = self._api.do('GET', '/api/2.1/clusters/get', query=query, headers=headers)
         return ClusterDetails.from_dict(res)
 
     def get_permission_levels(self, cluster_id: str) -> GetClusterPermissionLevelsResponse:
@@ -6928,33 +7006,46 @@ class ClustersAPI:
         res = self._api.do('GET', f'/api/2.0/permissions/clusters/{cluster_id}', headers=headers)
         return ClusterPermissions.from_dict(res)
 
-    def list(self, *, can_use_client: Optional[str] = None) -> Iterator[ClusterDetails]:
-        """List all clusters.
+    def list(self,
+             *,
+             filter_by: Optional[ListClustersFilterBy] = None,
+             page_size: Optional[int] = None,
+             page_token: Optional[str] = None,
+             sort_by: Optional[ListClustersSortBy] = None) -> Iterator[ClusterDetails]:
+        """List clusters.
         
-        Return information about all pinned clusters, active clusters, up to 200 of the most recently
-        terminated all-purpose clusters in the past 30 days, and up to 30 of the most recently terminated job
-        clusters in the past 30 days.
+        Return information about all pinned and active clusters, and all clusters terminated within the last
+        30 days. Clusters terminated prior to this period are not included.
         
-        For example, if there is 1 pinned cluster, 4 active clusters, 45 terminated all-purpose clusters in
-        the past 30 days, and 50 terminated job clusters in the past 30 days, then this API returns the 1
-        pinned cluster, 4 active clusters, all 45 terminated all-purpose clusters, and the 30 most recently
-        terminated job clusters.
-        
-        :param can_use_client: str (optional)
-          Filter clusters based on what type of client it can be used for. Could be either NOTEBOOKS or JOBS.
-          No input for this field will get all clusters in the workspace without filtering on its supported
-          client
+        :param filter_by: :class:`ListClustersFilterBy` (optional)
+          Filters to apply to the list of clusters.
+        :param page_size: int (optional)
+          Use this field to specify the maximum number of results to be returned by the server. The server may
+          further constrain the maximum number of results returned in a single page.
+        :param page_token: str (optional)
+          Use next_page_token or prev_page_token returned from the previous request to list the next or
+          previous page of clusters respectively.
+        :param sort_by: :class:`ListClustersSortBy` (optional)
+          Sort the list of clusters by a specific criteria.
         
         :returns: Iterator over :class:`ClusterDetails`
         """
 
         query = {}
-        if can_use_client is not None: query['can_use_client'] = can_use_client
+        if filter_by is not None: query['filter_by'] = filter_by.as_dict()
+        if page_size is not None: query['page_size'] = page_size
+        if page_token is not None: query['page_token'] = page_token
+        if sort_by is not None: query['sort_by'] = sort_by.as_dict()
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET', '/api/2.0/clusters/list', query=query, headers=headers)
-        parsed = ListClustersResponse.from_dict(json).clusters
-        return parsed if parsed is not None else []
+        while True:
+            json = self._api.do('GET', '/api/2.1/clusters/list', query=query, headers=headers)
+            if 'clusters' in json:
+                for v in json['clusters']:
+                    yield ClusterDetails.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
 
     def list_node_types(self) -> ListNodeTypesResponse:
         """List node types.
@@ -6966,7 +7057,7 @@ class ClustersAPI:
 
         headers = {'Accept': 'application/json', }
 
-        res = self._api.do('GET', '/api/2.0/clusters/list-node-types', headers=headers)
+        res = self._api.do('GET', '/api/2.1/clusters/list-node-types', headers=headers)
         return ListNodeTypesResponse.from_dict(res)
 
     def list_zones(self) -> ListAvailableZonesResponse:
@@ -6980,7 +7071,7 @@ class ClustersAPI:
 
         headers = {'Accept': 'application/json', }
 
-        res = self._api.do('GET', '/api/2.0/clusters/list-zones', headers=headers)
+        res = self._api.do('GET', '/api/2.1/clusters/list-zones', headers=headers)
         return ListAvailableZonesResponse.from_dict(res)
 
     def permanent_delete(self, cluster_id: str):
@@ -7001,7 +7092,7 @@ class ClustersAPI:
         if cluster_id is not None: body['cluster_id'] = cluster_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        self._api.do('POST', '/api/2.0/clusters/permanent-delete', body=body, headers=headers)
+        self._api.do('POST', '/api/2.1/clusters/permanent-delete', body=body, headers=headers)
 
     def pin(self, cluster_id: str):
         """Pin cluster.
@@ -7018,7 +7109,7 @@ class ClustersAPI:
         if cluster_id is not None: body['cluster_id'] = cluster_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        self._api.do('POST', '/api/2.0/clusters/pin', body=body, headers=headers)
+        self._api.do('POST', '/api/2.1/clusters/pin', body=body, headers=headers)
 
     def resize(self,
                cluster_id: str,
@@ -7055,7 +7146,7 @@ class ClustersAPI:
         if num_workers is not None: body['num_workers'] = num_workers
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        op_response = self._api.do('POST', '/api/2.0/clusters/resize', body=body, headers=headers)
+        op_response = self._api.do('POST', '/api/2.1/clusters/resize', body=body, headers=headers)
         return Wait(self.wait_get_cluster_running,
                     response=ResizeClusterResponse.from_dict(op_response),
                     cluster_id=cluster_id)
@@ -7089,7 +7180,7 @@ class ClustersAPI:
         if restart_user is not None: body['restart_user'] = restart_user
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        op_response = self._api.do('POST', '/api/2.0/clusters/restart', body=body, headers=headers)
+        op_response = self._api.do('POST', '/api/2.1/clusters/restart', body=body, headers=headers)
         return Wait(self.wait_get_cluster_running,
                     response=RestartClusterResponse.from_dict(op_response),
                     cluster_id=cluster_id)
@@ -7134,7 +7225,7 @@ class ClustersAPI:
 
         headers = {'Accept': 'application/json', }
 
-        res = self._api.do('GET', '/api/2.0/clusters/spark-versions', headers=headers)
+        res = self._api.do('GET', '/api/2.1/clusters/spark-versions', headers=headers)
         return GetSparkVersionsResponse.from_dict(res)
 
     def start(self, cluster_id: str) -> Wait[ClusterDetails]:
@@ -7158,7 +7249,7 @@ class ClustersAPI:
         if cluster_id is not None: body['cluster_id'] = cluster_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        op_response = self._api.do('POST', '/api/2.0/clusters/start', body=body, headers=headers)
+        op_response = self._api.do('POST', '/api/2.1/clusters/start', body=body, headers=headers)
         return Wait(self.wait_get_cluster_running,
                     response=StartClusterResponse.from_dict(op_response),
                     cluster_id=cluster_id)
@@ -7182,7 +7273,7 @@ class ClustersAPI:
         if cluster_id is not None: body['cluster_id'] = cluster_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        self._api.do('POST', '/api/2.0/clusters/unpin', body=body, headers=headers)
+        self._api.do('POST', '/api/2.1/clusters/unpin', body=body, headers=headers)
 
     def update_permissions(
             self,
@@ -7209,7 +7300,8 @@ class ClustersAPI:
 
 
 class CommandExecutionAPI:
-    """This API allows execution of Python, Scala, SQL, or R commands on running Databricks Clusters."""
+    """This API allows execution of Python, Scala, SQL, or R commands on running Databricks Clusters. This API
+    only supports (classic) all-purpose clusters. Serverless compute is not supported."""
 
     def __init__(self, api_client):
         self._api = api_client
