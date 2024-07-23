@@ -480,7 +480,7 @@ class CreateJob:
     """Deployment information for jobs managed by external sources."""
 
     description: Optional[str] = None
-    """An optional description for the job. The maximum length is 1024 characters in UTF-8 encoding."""
+    """An optional description for the job. The maximum length is 27700 characters in UTF-8 encoding."""
 
     edit_mode: Optional[JobEditMode] = None
     """Edit mode of the job.
@@ -1601,7 +1601,7 @@ class JobSettings:
     """Deployment information for jobs managed by external sources."""
 
     description: Optional[str] = None
-    """An optional description for the job. The maximum length is 1024 characters in UTF-8 encoding."""
+    """An optional description for the job. The maximum length is 27700 characters in UTF-8 encoding."""
 
     edit_mode: Optional[JobEditMode] = None
     """Edit mode of the job.
@@ -2055,7 +2055,6 @@ class PeriodicTriggerConfigurationTimeUnit(Enum):
 
     DAYS = 'DAYS'
     HOURS = 'HOURS'
-    TIME_UNIT_UNSPECIFIED = 'TIME_UNIT_UNSPECIFIED'
     WEEKS = 'WEEKS'
 
 
@@ -5192,7 +5191,7 @@ class JobsAPI:
         :param deployment: :class:`JobDeployment` (optional)
           Deployment information for jobs managed by external sources.
         :param description: str (optional)
-          An optional description for the job. The maximum length is 1024 characters in UTF-8 encoding.
+          An optional description for the job. The maximum length is 27700 characters in UTF-8 encoding.
         :param edit_mode: :class:`JobEditMode` (optional)
           Edit mode of the job.
           

@@ -27,7 +27,7 @@ from databricks.sdk.service.compute import (ClusterPoliciesAPI, ClustersAPI,
                                             InstancePoolsAPI,
                                             InstanceProfilesAPI, LibrariesAPI,
                                             PolicyFamiliesAPI)
-from databricks.sdk.service.dashboards import LakeviewAPI
+from databricks.sdk.service.dashboards import GenieAPI, LakeviewAPI
 from databricks.sdk.service.files import DbfsAPI, FilesAPI
 from databricks.sdk.service.iam import (AccountAccessControlAPI,
                                         AccountAccessControlProxyAPI,
@@ -68,6 +68,7 @@ from databricks.sdk.service.settings import (AccountIpAccessListsAPI,
                                              EsmEnablementAccountAPI,
                                              IpAccessListsAPI,
                                              NetworkConnectivityAPI,
+                                             NotificationDestinationsAPI,
                                              PersonalComputeAPI,
                                              RestrictWorkspaceAdminsAPI,
                                              SettingsAPI, TokenManagementAPI,
@@ -75,11 +76,13 @@ from databricks.sdk.service.settings import (AccountIpAccessListsAPI,
 from databricks.sdk.service.sharing import (CleanRoomsAPI, ProvidersAPI,
                                             RecipientActivationAPI,
                                             RecipientsAPI, SharesAPI)
-from databricks.sdk.service.sql import (AlertsAPI, DashboardsAPI,
-                                        DashboardWidgetsAPI, DataSourcesAPI,
-                                        DbsqlPermissionsAPI, QueriesAPI,
+from databricks.sdk.service.sql import (AlertsAPI, AlertsLegacyAPI,
+                                        DashboardsAPI, DashboardWidgetsAPI,
+                                        DataSourcesAPI, DbsqlPermissionsAPI,
+                                        QueriesAPI, QueriesLegacyAPI,
                                         QueryHistoryAPI,
                                         QueryVisualizationsAPI,
+                                        QueryVisualizationsLegacyAPI,
                                         StatementExecutionAPI, WarehousesAPI)
 from databricks.sdk.service.vectorsearch import (VectorSearchEndpointsAPI,
                                                  VectorSearchIndexesAPI)
@@ -166,6 +169,7 @@ class WorkspaceClient:
         serving_endpoints = ServingEndpointsAPI(self._api_client)
         self._account_access_control_proxy = AccountAccessControlProxyAPI(self._api_client)
         self._alerts = AlertsAPI(self._api_client)
+        self._alerts_legacy = AlertsLegacyAPI(self._api_client)
         self._apps = AppsAPI(self._api_client)
         self._artifact_allowlists = ArtifactAllowlistsAPI(self._api_client)
         self._catalogs = CatalogsAPI(self._api_client)
@@ -190,6 +194,7 @@ class WorkspaceClient:
         self._external_locations = ExternalLocationsAPI(self._api_client)
         self._files = FilesAPI(self._api_client)
         self._functions = FunctionsAPI(self._api_client)
+        self._genie = GenieAPI(self._api_client)
         self._git_credentials = GitCredentialsAPI(self._api_client)
         self._global_init_scripts = GlobalInitScriptsAPI(self._api_client)
         self._grants = GrantsAPI(self._api_client)
@@ -203,6 +208,7 @@ class WorkspaceClient:
         self._metastores = MetastoresAPI(self._api_client)
         self._model_registry = ModelRegistryAPI(self._api_client)
         self._model_versions = ModelVersionsAPI(self._api_client)
+        self._notification_destinations = NotificationDestinationsAPI(self._api_client)
         self._online_tables = OnlineTablesAPI(self._api_client)
         self._permission_migration = PermissionMigrationAPI(self._api_client)
         self._permissions = PermissionsAPI(self._api_client)
@@ -219,8 +225,10 @@ class WorkspaceClient:
         self._providers = ProvidersAPI(self._api_client)
         self._quality_monitors = QualityMonitorsAPI(self._api_client)
         self._queries = QueriesAPI(self._api_client)
+        self._queries_legacy = QueriesLegacyAPI(self._api_client)
         self._query_history = QueryHistoryAPI(self._api_client)
         self._query_visualizations = QueryVisualizationsAPI(self._api_client)
+        self._query_visualizations_legacy = QueryVisualizationsLegacyAPI(self._api_client)
         self._recipient_activation = RecipientActivationAPI(self._api_client)
         self._recipients = RecipientsAPI(self._api_client)
         self._registered_models = RegisteredModelsAPI(self._api_client)
@@ -269,6 +277,11 @@ class WorkspaceClient:
     def alerts(self) -> AlertsAPI:
         """The alerts API can be used to perform CRUD operations on alerts."""
         return self._alerts
+
+    @property
+    def alerts_legacy(self) -> AlertsLegacyAPI:
+        """The alerts API can be used to perform CRUD operations on alerts."""
+        return self._alerts_legacy
 
     @property
     def apps(self) -> AppsAPI:
@@ -391,6 +404,11 @@ class WorkspaceClient:
         return self._functions
 
     @property
+    def genie(self) -> GenieAPI:
+        """Genie provides a no-code experience for business users, powered by AI/BI."""
+        return self._genie
+
+    @property
     def git_credentials(self) -> GitCredentialsAPI:
         """Registers personal access token for Databricks to do operations on behalf of the user."""
         return self._git_credentials
@@ -456,13 +474,18 @@ class WorkspaceClient:
         return self._model_versions
 
     @property
+    def notification_destinations(self) -> NotificationDestinationsAPI:
+        """The notification destinations API lets you programmatically manage a workspace's notification destinations."""
+        return self._notification_destinations
+
+    @property
     def online_tables(self) -> OnlineTablesAPI:
         """Online tables provide lower latency and higher QPS access to data from Delta tables."""
         return self._online_tables
 
     @property
     def permission_migration(self) -> PermissionMigrationAPI:
-        """This spec contains undocumented permission migration APIs used in https://github.com/databrickslabs/ucx."""
+        """APIs for migrating acl permissions, used only by the ucx tool: https://github.com/databrickslabs/ucx."""
         return self._permission_migration
 
     @property
@@ -527,18 +550,28 @@ class WorkspaceClient:
 
     @property
     def queries(self) -> QueriesAPI:
-        """These endpoints are used for CRUD operations on query definitions."""
+        """The queries API can be used to perform CRUD operations on queries."""
         return self._queries
 
     @property
+    def queries_legacy(self) -> QueriesLegacyAPI:
+        """These endpoints are used for CRUD operations on query definitions."""
+        return self._queries_legacy
+
+    @property
     def query_history(self) -> QueryHistoryAPI:
-        """Access the history of queries through SQL warehouses."""
+        """A service responsible for storing and retrieving the list of queries run against SQL endpoints, serverless compute, and DLT."""
         return self._query_history
 
     @property
     def query_visualizations(self) -> QueryVisualizationsAPI:
-        """This is an evolving API that facilitates the addition and removal of vizualisations from existing queries within the Databricks Workspace."""
+        """This is an evolving API that facilitates the addition and removal of visualizations from existing queries in the Databricks Workspace."""
         return self._query_visualizations
+
+    @property
+    def query_visualizations_legacy(self) -> QueryVisualizationsLegacyAPI:
+        """This is an evolving API that facilitates the addition and removal of vizualisations from existing queries within the Databricks Workspace."""
+        return self._query_visualizations_legacy
 
     @property
     def recipient_activation(self) -> RecipientActivationAPI:
@@ -742,7 +775,6 @@ class AccountClient:
         self._api_client = client.ApiClient(self._config)
         self._access_control = AccountAccessControlAPI(self._api_client)
         self._billable_usage = BillableUsageAPI(self._api_client)
-        self._budgets = BudgetsAPI(self._api_client)
         self._credentials = CredentialsAPI(self._api_client)
         self._custom_app_integration = CustomAppIntegrationAPI(self._api_client)
         self._encryption_keys = EncryptionKeysAPI(self._api_client)
@@ -765,6 +797,7 @@ class AccountClient:
         self._vpc_endpoints = VpcEndpointsAPI(self._api_client)
         self._workspace_assignment = WorkspaceAssignmentAPI(self._api_client)
         self._workspaces = WorkspacesAPI(self._api_client)
+        self._budgets = BudgetsAPI(self._api_client)
 
     @property
     def config(self) -> client.Config:
@@ -785,18 +818,13 @@ class AccountClient:
         return self._billable_usage
 
     @property
-    def budgets(self) -> BudgetsAPI:
-        """These APIs manage budget configuration including notifications for exceeding a budget for a period."""
-        return self._budgets
-
-    @property
     def credentials(self) -> CredentialsAPI:
         """These APIs manage credential configurations for this workspace."""
         return self._credentials
 
     @property
     def custom_app_integration(self) -> CustomAppIntegrationAPI:
-        """These APIs enable administrators to manage custom oauth app integrations, which is required for adding/using Custom OAuth App Integration like Tableau Cloud for Databricks in AWS cloud."""
+        """These APIs enable administrators to manage custom OAuth app integrations, which is required for adding/using Custom OAuth App Integration like Tableau Cloud for Databricks in AWS cloud."""
         return self._custom_app_integration
 
     @property
@@ -851,7 +879,7 @@ class AccountClient:
 
     @property
     def published_app_integration(self) -> PublishedAppIntegrationAPI:
-        """These APIs enable administrators to manage published oauth app integrations, which is required for adding/using Published OAuth App Integration like Tableau Desktop for Databricks in AWS cloud."""
+        """These APIs enable administrators to manage published OAuth app integrations, which is required for adding/using Published OAuth App Integration like Tableau Desktop for Databricks in AWS cloud."""
         return self._published_app_integration
 
     @property
@@ -898,6 +926,11 @@ class AccountClient:
     def workspaces(self) -> WorkspacesAPI:
         """These APIs manage workspaces for this account."""
         return self._workspaces
+
+    @property
+    def budgets(self) -> BudgetsAPI:
+        """These APIs manage budget configurations for this account."""
+        return self._budgets
 
     def get_workspace_client(self, workspace: Workspace) -> WorkspaceClient:
         """Constructs a ``WorkspaceClient`` for the given workspace.
