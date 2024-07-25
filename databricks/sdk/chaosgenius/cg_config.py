@@ -93,3 +93,19 @@ class CGConfig:
             return pd.DataFrame(
                 columns=["entity_type", "entity_id", "include_entity", "entity_config"]
             )
+
+    def get_ids(
+        self,
+        entity_type: Optional[str] = None,
+        entity_ids: Optional[list[str]] = None,
+        include_entity: Optional[str] = None,
+        entity_config_filter: Optional[dict] = None,
+    ) -> set[str]:
+        return set(
+            self.get(
+                entity_type=entity_type,
+                entity_ids=entity_ids,
+                include_entity=include_entity,
+                entity_config_filter=entity_config_filter,
+            )["entity_id"].values.tolist()
+        )
