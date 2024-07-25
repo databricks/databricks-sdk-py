@@ -96,8 +96,8 @@ class DataPuller:
     def _get_job_cluster_ids(self) -> set[str]:
         job_compute_id_list = self._spark_session.sql(
             "select compute_ids from system.workflow.job_task_run_timeline "
-            f"where period_start_time < from_unixtime({self._start_time//1000}) "
-            f"and period_start_time >= from_unixtime({self._end_time//1000}) "
+            f"where period_start_time >= from_unixtime({self._start_time//1000}) "
+            f"and period_start_time < from_unixtime({self._end_time//1000}) "
         )
         job_compute_id_list = (
             job_compute_id_list.select(
