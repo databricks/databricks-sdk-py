@@ -144,16 +144,16 @@ class DataPuller:
             except Exception:
                 self._logger.exception(f"Failed to get {name} ID {item_id}.")
 
-        self._logger.info("Removing clusters from customer config.")
+        self._logger.info("Removing items from customer config.")
         ids_to_remove = self._customer_config.get_ids(
             entity_type="cluster",
             include_entity="no",
             entity_config_filter={"workspace_id": self._workspace_id},
         )
-        self._logger.info(f"Clusters to be removed: {len(ids_to_remove)}.")
+        self._logger.info(f"Items to be removed: {len(ids_to_remove)}.")
 
         ids_to_remove = root_list_ids.union(config_ids).intersection(ids_to_remove)
-        self._logger.info(f"Actual clusters to be removed: {len(ids_to_remove)}.")
+        self._logger.info(f"Actual items to be removed: {len(ids_to_remove)}.")
 
         root_list = [
             i for i in root_list if getattr(i, id_attribute_name) not in ids_to_remove
