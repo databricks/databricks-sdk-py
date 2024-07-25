@@ -97,14 +97,14 @@ class DataPuller:
         self._logger.info("Getting workspace clusters.")
         cl = [i for i in self._workspace_client.clusters.list()]
         self._logger.info(f"Current cluster count: {len(cl)}")
-        
+
         logger.info("Getting compute IDs from job system tables.")
-        job_compute_id_list = spark_session.sql(
+        job_compute_id_list = self._spark_session.sql(
             "select compute_ids from system.workflow.job_task_run_timeline "
             f"where period_start_time < from_unixtime({self._start_time//1000}) "
             f"and period_start_time >= from_unixtime({self._end_time//1000}) "
         )
-        job_compute_id_list = compute_id_list.select(
+        job_compute_id_list = job_compute_id_list.select(
             explode(job_compute_id_list.compute_ids).alias("compute_id")
         ).distinct().toPandas()["compute_id"].values.tolist()
         job_ci_list = [
