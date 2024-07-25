@@ -3,7 +3,7 @@
 import datetime as dt
 import logging
 import json
-from typing import Optional, Union
+from typing import Callable, Optional, Union
 
 import pandas as pd
 from pyspark.sql.session import SparkSession
@@ -61,7 +61,7 @@ class DataPuller:
             },
         )
 
-        # TODO(KB): refactor into multiple files by  clusters, wh, etc
+        # TODO(KB): refactor into multiple files by clusters, wh, etc
         self._logger.info("Getting cluster list")
         self._cluster_list = self._get_full_cluster_list()
         self._logger.info(f"Total clusters: {len(self._cluster_list)}")
@@ -93,231 +93,125 @@ class DataPuller:
         self._add_status_entry("overall", status=status, data={"results": results})
         self._logger.info("Completed data pull.")
 
-    def _get_full_cluster_list(self) -> list[ClusterDetails]:
-        self._logger.info("Getting workspace clusters.")
-        cl = [i for i in self._workspace_client.clusters.list()]
-        self._logger.info(f"Current cluster count: {len(cl)}")
-
-        logger.info("Getting compute IDs from job system tables.")
+    def _get_job_cluster_ids(self) -> set[str]:
         job_compute_id_list = self._spark_session.sql(
             "select compute_ids from system.workflow.job_task_run_timeline "
             f"where period_start_time < from_unixtime({self._start_time//1000}) "
             f"and period_start_time >= from_unixtime({self._end_time//1000}) "
         )
-        job_compute_id_list = job_compute_id_list.select(
-            explode(job_compute_id_list.compute_ids).alias("compute_id")
-        ).distinct().toPandas()["compute_id"].values.tolist()
-        job_ci_list = [
-            i for i in job_compute_id_list if len(i.split("-")) == 3
-        ]
-        logger.info(f"Found {len(job_ci_list)} clusters from job tables.")
+        job_compute_id_list = (
+            job_compute_id_list.select(
+                explode(job_compute_id_list.compute_ids).alias("compute_id")
+            )
+            .distinct()
+            .toPandas()["compute_id"]
+            .values.tolist()
+        )
+        return set(i for i in job_compute_id_list if len(i.split("-")) == 3)
 
-        self._logger.info("Adding clusters from customer config.")
-        ci_add_l = self._customer_config.get(
-            entity_type="cluster",
+    def _generic_get_full_list(
+        self,
+        name: str,
+        root_list_getter: Callable,
+        root_item_getter: Callable,
+        id_attribute_name: str,
+        additional_ids: Optional[set] = None,
+    ) -> list:
+        self._logger.info(f"Getting {name}.")
+        root_list = [i for i in root_list_getter()]
+        root_list_ids = set(getattr(i, id_attribute_name) for i in root_list)
+        self._logger.info(f"Current count: {len(root_list_ids)}")
+
+        self._logger.info(f"Adding {name} from customer config.")
+        config_ids = self._customer_config.get_ids(
+            entity_type=name,
             include_entity="yes",
             entity_config_filter={"workspace_id": self._workspace_id},
         )
-        ci_add_l = ci_add_l["entity_id"].values.tolist()
-        
-        # add job clusters to add list
-        ci_add_l += job_ci_list
-        
-        self._logger.info(f"Num additional clusters: {len(ci_add_l)}.")
-        for ci in ci_add_l:
-            if ci not in [i.cluster_id for i in cl]:
-                self._logger.info(
-                    f"Additional cluster ID {ci} not in list. Getting info."
-                )
-                try:
-                    cl.append(self._workspace_client.clusters.get(ci))
-                except Exception:
-                    self._logger.exception(f"Failed to get cluster ID {ci}.")
+        self._logger.info(f"Found {len(config_ids)} items from customer config.")
 
-        self._logger.info(f"Current cluster count: {len(cl)}")
+        if additional_ids is not None:
+            self._logger.info("Adding additional IDs.")
+            config_ids = config_ids.union(additional_ids)
+            self._logger.info(f"Total count after additional items: {len(config_ids)}")
+
+        new_ids = root_list_ids.union(config_ids) - root_list_ids
+
+        for item_id in new_ids:
+            self._logger.info(f"New {name} ID {item_id} not in list. Getting info.")
+            try:
+                root_list.append(root_item_getter(item_id))
+            except Exception:
+                self._logger.exception(f"Failed to get {name} ID {item_id}.")
 
         self._logger.info("Removing clusters from customer config.")
-        ci_remove_l = self._customer_config.get(
+        ids_to_remove = self._customer_config.get_ids(
             entity_type="cluster",
             include_entity="no",
             entity_config_filter={"workspace_id": self._workspace_id},
         )
-        ci_remove_l = ci_remove_l["entity_id"].values.tolist()
-        self._logger.info(f"Clusters to be removed: {len(ci_remove_l)}.")
-        for ci in ci_remove_l:
-            for i, c in enumerate(cl):
-                if ci == c.cluster_id:
-                    self._logger.info(f"Removing cluster ID {ci}.")
-                    cl.pop(i)
-                    break
-        self._logger.info(f"Current cluster count: {len(cl)}")
-        return cl
+        self._logger.info(f"Clusters to be removed: {len(ids_to_remove)}.")
+
+        ids_to_remove = root_list_ids.union(config_ids).intersection(ids_to_remove)
+        self._logger.info(f"Actual clusters to be removed: {len(ids_to_remove)}.")
+
+        root_list = [
+            i for i in root_list if getattr(i, id_attribute_name) not in ids_to_remove
+        ]
+        self._logger.info(f"Current count: {len(root_list)}")
+
+        return root_list
+
+    def _get_full_cluster_list(self) -> list[ClusterDetails]:
+        self._logger.info("Getting workspace clusters.")
+
+        self._logger.info("Getting job cluster IDs.")
+        job_cluster_ids = self._get_job_cluster_ids()
+        self._logger.info(f"Total job cluster IDs: {len(job_cluster_ids)}")
+
+        return self._generic_get_full_list(
+            "cluster",
+            self._workspace_client.clusters.list,
+            self._workspace_client.clusters.get,
+            "cluster_id",
+            additional_ids=job_cluster_ids,
+        )
 
     def _get_full_instance_pool_info(self) -> list[InstancePoolAndStats]:
         self._logger.info("Getting workspace instance pools.")
-        ip_list = [i for i in self._workspace_client.instance_pools.list()]
-        self._logger.info(f"Current instance pool count: {len(ip_list)}")
-
-        self._logger.info("Adding instance pools from customer config.")
-        ip_add_l = self._customer_config.get(
-            entity_type="instance_pool",
-            include_entity="yes",
-            entity_config_filter={"workspace_id": self._workspace_id},
+        return self._generic_get_full_list(
+            "instance_pool",
+            self._workspace_client.instance_pools.list,
+            self._workspace_client.instance_pools.get,
+            "instance_pool_id",
         )
-        ip_add_l = ip_add_l["entity_id"].values.tolist()
-        self._logger.info(f"Num additional instance pools: {len(ip_add_l)}.")
-        for ip in ip_add_l:
-            if ip not in [i.instance_pool_id for i in ip_list]:
-                self._logger.info(
-                    f"Additional instance pool ID {ip} not in list. Getting info."
-                )
-                try:
-                    ip_list.append(self._workspace_client.instance_pools.get(ip))
-                except Exception:
-                    self._logger.exception(f"Failed to get instance pool ID {ip}.")
-
-        self._logger.info(f"Current instance pool count: {len(ip_list)}")
-
-        self._logger.info("Removing instance pools from customer config.")
-        ip_remove_l = self._customer_config.get(
-            entity_type="instance_pool",
-            include_entity="no",
-            entity_config_filter={"workspace_id": self._workspace_id},
-        )
-        ip_remove_l = ip_remove_l["entity_id"].values.tolist()
-        self._logger.info(f"Instance pools to be removed: {len(ip_remove_l)}.")
-        for ip in ip_remove_l:
-            for i, c in enumerate(ip_list):
-                if ip == c.instance_pool_id:
-                    self._logger.info(f"Removing instance pool ID {ip}.")
-                    ip_list.pop(i)
-                    break
-        self._logger.info(f"Current instance pool count: {len(ip_list)}")
-        return ip_list
 
     def _get_full_warehouse_info(self) -> list[EndpointInfo]:
         self._logger.info("Getting workspace warehouses.")
-        wh_list = [i for i in self._workspace_client.warehouses.list()]
-        self._logger.info(f"Current warehouse count: {len(wh_list)}")
-
-        self._logger.info("Adding warehouses from customer config.")
-        wh_add_l = self._customer_config.get(
-            entity_type="warehouse",
-            include_entity="yes",
-            entity_config_filter={"workspace_id": self._workspace_id},
+        return self._generic_get_full_list(
+            "warehouse",
+            self._workspace_client.warehouses.list,
+            self._workspace_client.warehouses.get,
+            "id",
         )
-        wh_add_l = wh_add_l["entity_id"].values.tolist()
-        self._logger.info(f"Num additional warehouses: {len(wh_add_l)}.")
-        for wh in wh_add_l:
-            if wh not in [i.id for i in wh_list]:
-                self._logger.info(
-                    f"Additional warehouse ID {wh} not in list. Getting info."
-                )
-                try:
-                    wh_list.append(self._workspace_client.warehouses.get(wh))
-                except Exception:
-                    self._logger.exception(f"Failed to get warehouse ID {wh}.")
-
-        self._logger.info(f"Current warehouse count: {len(wh_list)}")
-
-        self._logger.info("Removing warehouses from customer config.")
-        wh_remove_l = self._customer_config.get(
-            entity_type="warehouse",
-            include_entity="no",
-            entity_config_filter={"workspace_id": self._workspace_id},
-        )
-        wh_remove_l = wh_remove_l["entity_id"].values.tolist()
-        self._logger.info(f"Warehouses to be removed: {len(wh_remove_l)}.")
-        for wh in wh_remove_l:
-            for i, c in enumerate(wh_list):
-                if wh == c.id:
-                    self._logger.info(f"Removing warehouse ID {wh}.")
-                    wh_list.pop(i)
-                    break
-        self._logger.info(f"Current warehouse count: {len(wh_list)}")
-        return wh_list
 
     def _get_full_jobs_info(self) -> list[BaseJob]:
         self._logger.info("Getting workspace jobs.")
-        job_list = [i for i in self._workspace_client.jobs.list(expand_tasks=True)]
-        self._logger.info(f"Current job count: {len(job_list)}")
-
-        self._logger.info("Adding jobs from customer config.")
-        job_add_l = self._customer_config.get(
-            entity_type="job",
-            include_entity="yes",
-            entity_config_filter={"workspace_id": self._workspace_id},
+        return self._generic_get_full_list(
+            "job",
+            self._workspace_client.jobs.list,
+            self._workspace_client.jobs.get,
+            "job_id",
         )
-        job_add_l = job_add_l["entity_id"].values.tolist()
-        self._logger.info(f"Num additional jobs: {len(job_add_l)}.")
-        for job in job_add_l:
-            if job not in [i.job_id for i in job_list]:
-                self._logger.info(f"Additional job ID {job} not in list. Getting info.")
-                try:
-                    job_list.append(self._workspace_client.jobs.get(job))
-                except Exception:
-                    self._logger.exception(f"Failed to get job ID {job}.")
-
-        self._logger.info(f"Current job count: {len(job_list)}")
-
-        self._logger.info("Removing jobs from customer config.")
-        job_remove_l = self._customer_config.get(
-            entity_type="job",
-            include_entity="no",
-            entity_config_filter={"workspace_id": self._workspace_id},
-        )
-        job_remove_l = job_remove_l["entity_id"].values.tolist()
-        self._logger.info(f"Jobs to be removed: {len(job_remove_l)}.")
-        for job in job_remove_l:
-            for i, c in enumerate(job_list):
-                if job == c.job_id:
-                    self._logger.info(f"Removing job ID {job}.")
-                    job_list.pop(i)
-                    break
-        self._logger.info(f"Current job count: {len(job_list)}")
-        return job_list
 
     def _get_full_user_info(self) -> list[User]:
         self._logger.info("Getting workspace users.")
-        user_list = [i for i in self._workspace_client.users.list()]
-        self._logger.info(f"Current user count: {len(user_list)}")
-
-        self._logger.info("Adding users from customer config.")
-        user_add_l = self._customer_config.get(
-            entity_type="user",
-            include_entity="yes",
-            entity_config_filter={"workspace_id": self._workspace_id},
+        return self._generic_get_full_list(
+            "user",
+            self._workspace_client.users.list,
+            self._workspace_client.users.get,
+            "id",
         )
-        user_add_l = user_add_l["entity_id"].values.tolist()
-        self._logger.info(f"Num additional users: {len(user_add_l)}.")
-        for user in user_add_l:
-            if user not in [i.id for i in user_list]:
-                self._logger.info(
-                    f"Additional user ID {user} not in list. Getting info."
-                )
-                try:
-                    user_list.append(self._workspace_client.users.get(user))
-                except Exception:
-                    self._logger.exception(f"Failed to get user ID {user}.")
-
-        self._logger.info(f"Current user count: {len(user_list)}")
-
-        self._logger.info("Removing users from customer config.")
-        user_remove_l = self._customer_config.get(
-            entity_type="user",
-            include_entity="no",
-            entity_config_filter={"workspace_id": self._workspace_id},
-        )
-        user_remove_l = user_remove_l["entity_id"].values.tolist()
-        self._logger.info(f"Users to be removed: {len(user_remove_l)}.")
-        for user in user_remove_l:
-            for i, c in enumerate(user_list):
-                if user == c.id:
-                    self._logger.info(f"Removing user ID {user}.")
-                    user_list.pop(i)
-                    break
-        self._logger.info(f"Current user count: {len(user_list)}")
-        return user_list
 
     def _get_start_end_time(self) -> tuple[int, int]:
         try:
