@@ -1,7 +1,9 @@
 import logging
 
 from databricks.sdk import AccountClient
-from databricks.sdk.chaosgenius import CustomerConfig, DataPuller, LogSparkDBHandler
+from databricks.sdk.chaosgenius.cg_config import CGConfig
+from databricks.sdk.chaosgenius.data_puller import DataPuller
+from databricks.sdk.chaosgenius.logger import LogSparkDBHandler
 from databricks.sdk.service import iam
 from pyspark.sql.session import SparkSession
 
@@ -13,17 +15,22 @@ def initiate_data_pull(
     client_secret: str,
     spark_session: SparkSession,
 ):
+    print("Initiating logging.")
     logger = logging.getLogger("client_data_pull_logger")
     logger.setLevel(logging.DEBUG)
 
+    print("Adding spark log handler.")
     spark_log_handler = LogSparkDBHandler(spark_session)
     logger.addHandler(spark_log_handler)
 
+    print("Adding stream log handler.")
     streamhandler = logging.StreamHandler()
     logger.addHandler(streamhandler)
 
+    print("Finished intializing logging.")
+
     logger.info(f"Initializing customer config: {account_id}")
-    customer_config = CustomerConfig(sparkSession=spark_session, logger=logger)
+    customer_config = CGConfig(sparkSession=spark_session, logger=logger)
 
     logger.info(f"Beginning pull for account ID: {account_id}")
 
@@ -80,7 +87,7 @@ def initiate_data_pull(
 
 def get_list_of_all_workspaces(
     logger: logging.Logger,
-    customer_config: CustomerConfig,
+    customer_config: CGConfig,
     account_client: AccountClient,
 ) -> list[tuple[str, str]]:
     logger.info("Getting list of all workspaces.")
@@ -124,7 +131,7 @@ def get_list_of_all_workspaces(
         remove = False
         index = None
         for i, (_, w_id) in enumerate(w_list):
-            if w_id_remove == w_id:
+            if int(w_id_remove) == w_id:
                 index = i
                 remove = True
                 break

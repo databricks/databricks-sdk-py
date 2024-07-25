@@ -6,9 +6,9 @@ import pandas as pd
 from pyspark.sql.session import SparkSession
 
 
-class CustomerConfig:
+class CGConfig:
     """
-    Customer Config class.
+    CG Config class.
 
     Entity type: workspace, cluster, warehouse, job etc
     Entity ID: ID of above
@@ -18,13 +18,13 @@ class CustomerConfig:
 
     def __init__(self, sparkSession: SparkSession, logger: Logger):
         self.logger = logger
-        self.logger.info("Creating customer config table.")
+        self.logger.info("Creating customer config table if not exists.")
         self.sparkSession = sparkSession
 
         try:
             sparkSession.sql(
                 """
-                CREATE TABLE IF NOT EXISTS chaosgenius.default.customer_config (
+                CREATE TABLE IF NOT EXISTS chaosgenius.default.chaosgenius_config (
                     entity_type string,
                     entity_id string,
                     include_entity string,
@@ -33,13 +33,14 @@ class CustomerConfig:
             """
             )
         except Exception:
-            self.logger.error("Unable to create customer config table.", exc_info=True)
+            self.logger.error("Unable to create config table.", exc_info=True)
 
     def get(
         self,
         entity_type: Optional[str] = None,
         entity_ids: Optional[list[str]] = None,
         include_entity: Optional[str] = None,
+        entity_config_filter: Optional[dict] = None,
     ) -> pd.DataFrame:
         try:
             where_query = ""
@@ -62,11 +63,31 @@ class CustomerConfig:
                 where_query += f"include_entity = '{include_entity}'"
 
             df = self.sparkSession.sql(
-                f"select * from chaosgenius.default.customer_config {where_query}"
+                f"select * from chaosgenius.default.chaosgenius_config {where_query}"
             ).toPandas()
+
+            if df.empty:
+                return pd.DataFrame(
+                    columns=[
+                        "entity_type",
+                        "entity_id",
+                        "include_entity",
+                        "entity_config",
+                    ]
+                )
+
             df["entity_config"] = (
                 df["entity_config"].replace("", "{}").apply(lambda x: json.loads(x))
             )
+            if entity_config_filter is not None:
+                df = df[
+                    df["entity_config"].apply(
+                        lambda x: all(
+                            item in x.items() for item in entity_config_filter.items()
+                        )
+                    )
+                ]
+            return df
         except Exception:
             self.logger.error("Unable to get config.", exc_info=True)
             return pd.DataFrame(
