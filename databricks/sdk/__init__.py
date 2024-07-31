@@ -4,9 +4,10 @@ from databricks.sdk import azure
 from databricks.sdk.credentials_provider import CredentialsStrategy
 from databricks.sdk.mixins.compute import ClustersExt
 from databricks.sdk.mixins.files import DbfsExt
+from databricks.sdk.mixins.jobs import JobsExt
 from databricks.sdk.mixins.workspace import WorkspaceExt
 from databricks.sdk.service.billing import (BillableUsageAPI, BudgetsAPI,
-                                            LogDeliveryAPI)
+                                            LogDeliveryAPI, UsageDashboardsAPI)
 from databricks.sdk.service.catalog import (AccountMetastoreAssignmentsAPI,
                                             AccountMetastoresAPI,
                                             AccountStorageCredentialsAPI,
@@ -202,7 +203,7 @@ class WorkspaceClient:
         self._instance_pools = InstancePoolsAPI(self._api_client)
         self._instance_profiles = InstanceProfilesAPI(self._api_client)
         self._ip_access_lists = IpAccessListsAPI(self._api_client)
-        self._jobs = JobsAPI(self._api_client)
+        self._jobs = JobsExt(self._api_client)
         self._lakeview = LakeviewAPI(self._api_client)
         self._libraries = LibrariesAPI(self._api_client)
         self._metastores = MetastoresAPI(self._api_client)
@@ -444,7 +445,7 @@ class WorkspaceClient:
         return self._ip_access_lists
 
     @property
-    def jobs(self) -> JobsAPI:
+    def jobs(self) -> JobsExt:
         """The Jobs API allows you to create, edit, and delete jobs."""
         return self._jobs
 
@@ -793,6 +794,7 @@ class AccountClient:
         self._settings = AccountSettingsAPI(self._api_client)
         self._storage = StorageAPI(self._api_client)
         self._storage_credentials = AccountStorageCredentialsAPI(self._api_client)
+        self._usage_dashboards = UsageDashboardsAPI(self._api_client)
         self._users = AccountUsersAPI(self._api_client)
         self._vpc_endpoints = VpcEndpointsAPI(self._api_client)
         self._workspace_assignment = WorkspaceAssignmentAPI(self._api_client)
@@ -906,6 +908,11 @@ class AccountClient:
     def storage_credentials(self) -> AccountStorageCredentialsAPI:
         """These APIs manage storage credentials for a particular metastore."""
         return self._storage_credentials
+
+    @property
+    def usage_dashboards(self) -> UsageDashboardsAPI:
+        """These APIs manage usage dashboards for this account."""
+        return self._usage_dashboards
 
     @property
     def users(self) -> AccountUsersAPI:
