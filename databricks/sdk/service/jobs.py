@@ -2614,6 +2614,9 @@ class Run:
     Note: dbt and SQL File tasks support only version-controlled sources. If dbt or SQL File tasks
     are used, `git_source` must be defined on the job."""
 
+    iterations: Optional[List[RunTask]] = None
+    """Only populated by for-each iterations. The parent for-each task is located in tasks array."""
+
     job_clusters: Optional[List[JobCluster]] = None
     """A list of job cluster specifications that can be shared and reused by tasks of this job.
     Libraries cannot be declared in a shared job cluster. You must declare dependent libraries in
@@ -2625,6 +2628,9 @@ class Run:
     job_parameters: Optional[List[JobParameter]] = None
     """Job-level parameters used in the run"""
 
+    next_page_token: Optional[str] = None
+    """A token that can be used to list the next page of sub-resources."""
+
     number_in_job: Optional[int] = None
     """A unique identifier for this job run. This is set to the same value as `run_id`."""
 
@@ -2634,6 +2640,9 @@ class Run:
 
     overriding_parameters: Optional[RunParameters] = None
     """The parameters used for this run."""
+
+    prev_page_token: Optional[str] = None
+    """A token that can be used to list the previous page of sub-resources."""
 
     queue_duration: Optional[int] = None
     """The time in milliseconds that the run has spent in the queue."""
@@ -2708,13 +2717,16 @@ class Run:
         if self.end_time is not None: body['end_time'] = self.end_time
         if self.execution_duration is not None: body['execution_duration'] = self.execution_duration
         if self.git_source: body['git_source'] = self.git_source.as_dict()
+        if self.iterations: body['iterations'] = [v.as_dict() for v in self.iterations]
         if self.job_clusters: body['job_clusters'] = [v.as_dict() for v in self.job_clusters]
         if self.job_id is not None: body['job_id'] = self.job_id
         if self.job_parameters: body['job_parameters'] = [v.as_dict() for v in self.job_parameters]
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         if self.number_in_job is not None: body['number_in_job'] = self.number_in_job
         if self.original_attempt_run_id is not None:
             body['original_attempt_run_id'] = self.original_attempt_run_id
         if self.overriding_parameters: body['overriding_parameters'] = self.overriding_parameters.as_dict()
+        if self.prev_page_token is not None: body['prev_page_token'] = self.prev_page_token
         if self.queue_duration is not None: body['queue_duration'] = self.queue_duration
         if self.repair_history: body['repair_history'] = [v.as_dict() for v in self.repair_history]
         if self.run_duration is not None: body['run_duration'] = self.run_duration
@@ -2743,12 +2755,15 @@ class Run:
                    end_time=d.get('end_time', None),
                    execution_duration=d.get('execution_duration', None),
                    git_source=_from_dict(d, 'git_source', GitSource),
+                   iterations=_repeated_dict(d, 'iterations', RunTask),
                    job_clusters=_repeated_dict(d, 'job_clusters', JobCluster),
                    job_id=d.get('job_id', None),
                    job_parameters=_repeated_dict(d, 'job_parameters', JobParameter),
+                   next_page_token=d.get('next_page_token', None),
                    number_in_job=d.get('number_in_job', None),
                    original_attempt_run_id=d.get('original_attempt_run_id', None),
                    overriding_parameters=_from_dict(d, 'overriding_parameters', RunParameters),
+                   prev_page_token=d.get('prev_page_token', None),
                    queue_duration=d.get('queue_duration', None),
                    repair_history=_repeated_dict(d, 'repair_history', RepairHistoryItem),
                    run_duration=d.get('run_duration', None),
@@ -5401,7 +5416,8 @@ class JobsAPI:
                 run_id: int,
                 *,
                 include_history: Optional[bool] = None,
-                include_resolved_values: Optional[bool] = None) -> Run:
+                include_resolved_values: Optional[bool] = None,
+                page_token: Optional[str] = None) -> Run:
         """Get a single job run.
         
         Retrieve the metadata of a run.
@@ -5412,6 +5428,9 @@ class JobsAPI:
           Whether to include the repair history in the response.
         :param include_resolved_values: bool (optional)
           Whether to include resolved parameter values in the response.
+        :param page_token: str (optional)
+          To list the next page or the previous page of job tasks, set this field to the value of the
+          `next_page_token` or `prev_page_token` returned in the GetJob response.
         
         :returns: :class:`Run`
         """
@@ -5419,6 +5438,7 @@ class JobsAPI:
         query = {}
         if include_history is not None: query['include_history'] = include_history
         if include_resolved_values is not None: query['include_resolved_values'] = include_resolved_values
+        if page_token is not None: query['page_token'] = page_token
         if run_id is not None: query['run_id'] = run_id
         headers = {'Accept': 'application/json', }
 
