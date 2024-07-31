@@ -32,7 +32,6 @@ class WorkspaceExt(WorkspaceAPI):
             for object_info in parent_list(path, notebooks_modified_after=notebooks_modified_after):
                 if recursive and object_info.object_type == ObjectType.DIRECTORY:
                     queue.append(object_info.path)
-                    continue
                 yield object_info
 
     def upload(self,
