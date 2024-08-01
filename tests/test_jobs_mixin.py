@@ -1,9 +1,11 @@
 import json
+import re
 
 from databricks.sdk import WorkspaceClient
 
+def make_path_pattern(run_id: int, page_token: str) -> str:
+    return re.compile(f'{re.escape("http://localhost/api/")}2.\d{re.escape(f"/jobs/runs/get?page_token={page_token}&run_id={run_id}")}')
 
-# Update API version after migration to API 2.2
 def test_get_run_pagination_with_tasks(config, requests_mock):
     run1 = {
         "tasks": [{
@@ -24,11 +26,11 @@ def test_get_run_pagination_with_tasks(config, requests_mock):
         "prev_page_token": "initialToken"
     }
     run3 = {"tasks": [{"run_id": 4}], "next_page_token": None, "prev_page_token": "tokenToSecondPage"}
-    requests_mock.get("http://localhost/api/2.1/jobs/runs/get?run_id=1337&page_token=initialToken",
+    requests_mock.get(make_path_pattern(1337, "initialToken"),
                       text=json.dumps(run1))
-    requests_mock.get("http://localhost/api/2.1/jobs/runs/get?run_id=1337&page_token=tokenToSecondPage",
+    requests_mock.get(make_path_pattern(1337, "tokenToSecondPage"),
                       text=json.dumps(run2))
-    requests_mock.get("http://localhost/api/2.1/jobs/runs/get?run_id=1337&page_token=tokenToThirdPage",
+    requests_mock.get(make_path_pattern(1337, "tokenToThirdPage"),
                       text=json.dumps(run3))
     w = WorkspaceClient(config=config)
 
@@ -46,7 +48,6 @@ def test_get_run_pagination_with_tasks(config, requests_mock):
         }, {
             'run_id': 4
         }],
-        "prev_page_token": "tokenToPreviousPage"
     }
 
 
@@ -85,11 +86,11 @@ def test_get_run_pagination_with_iterations(config, requests_mock):
         "next_page_token": None,
         "prev_page_token": "tokenToSecondPage"
     }
-    requests_mock.get("http://localhost/api/2.1/jobs/runs/get?run_id=1337&page_token=initialToken",
+    requests_mock.get(make_path_pattern(1337, "initialToken"),
                       text=json.dumps(run1))
-    requests_mock.get("http://localhost/api/2.1/jobs/runs/get?run_id=1337&page_token=tokenToSecondPage",
+    requests_mock.get(make_path_pattern(1337, "tokenToSecondPage"),
                       text=json.dumps(run2))
-    requests_mock.get("http://localhost/api/2.1/jobs/runs/get?run_id=1337&page_token=tokenToThirdPage",
+    requests_mock.get(make_path_pattern(1337, "tokenToThirdPage"),
                       text=json.dumps(run3))
     w = WorkspaceClient(config=config)
 
@@ -110,5 +111,4 @@ def test_get_run_pagination_with_iterations(config, requests_mock):
         }, {
             'run_id': 4
         }],
-        "prev_page_token": "tokenToPreviousPage"
     }
