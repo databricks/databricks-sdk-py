@@ -88,6 +88,7 @@ def test_runtime_auth_from_jobs(w, fresh_wheel_file, env_or_skip, random):
     instance_pool_id = env_or_skip('TEST_INSTANCE_POOL_ID')
 
     v = w.clusters.spark_versions()
+    # Need to install library in volume for DBR 15+
     lts_runtimes = [
         x for x in v.versions
         if 'LTS' in x.name and '-ml' not in x.key and '-photon' not in x.key and '-aarch64' not in x.key
