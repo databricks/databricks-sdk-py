@@ -12,7 +12,7 @@ from pathlib import Path
 import pytest
 
 from databricks.sdk.service.compute import (ClusterSpec, DataSecurityMode,
-                                            Library, ResultType)
+                                            Library, ResultType, SparkVersion)
 from databricks.sdk.service.jobs import NotebookTask, Task, ViewType
 from databricks.sdk.service.workspace import ImportFormat
 
@@ -84,19 +84,40 @@ def test_runtime_auth_from_interactive_on_uc(ucws, fresh_wheel_file, env_or_skip
         ucws.clusters.permanent_delete(interactive_cluster.cluster_id)
 
 
-def test_runtime_auth_from_jobs(w, fresh_wheel_file, env_or_skip, random):
-    instance_pool_id = env_or_skip('TEST_INSTANCE_POOL_ID')
-
+def _get_lts_versions(w) -> list[SparkVersion]:
     v = w.clusters.spark_versions()
-    # Need to install library in volume for DBR 15+
     lts_runtimes = [
         x for x in v.versions
         if 'LTS' in x.name and '-ml' not in x.key and '-photon' not in x.key and '-aarch64' not in x.key
     ]
+    return lts_runtimes
+
+
+def test_runtime_auth_from_jobs_volumes(ucws, fresh_wheel_file, env_or_skip, random, volume):
+    dbr_versions = [v for v in _get_lts_versions(ucws) if int(v.key.split('.')[0]) >= 15]
+
+    volume_wheel = f'{volume}/tmp/wheels/{random(10)}/{fresh_wheel_file.name}'
+    with fresh_wheel_file.open('rb') as f:
+        ucws.files.upload(volume_wheel, f)
+
+    lib = Library(whl=f'file:{volume_wheel}')
+    return _test_runtime_auth_from_jobs_inner(ucws, env_or_skip, random, dbr_versions, lib)
+
+
+def test_runtime_auth_from_jobs_dbfs(w, fresh_wheel_file, env_or_skip, random):
+    # Library installation from DBFS is not supported past DBR 14.3
+    dbr_versions = [v for v in _get_lts_versions(w) if int(v.key.split('.')[0]) < 15]
 
     dbfs_wheel = f'/tmp/wheels/{random(10)}/{fresh_wheel_file.name}'
     with fresh_wheel_file.open('rb') as f:
         w.dbfs.upload(dbfs_wheel, f)
+
+    lib = Library(whl=f'dbfs:{dbfs_wheel}')
+    return _test_runtime_auth_from_jobs_inner(w, env_or_skip, random, dbr_versions, lib)
+
+
+def _test_runtime_auth_from_jobs_inner(w, env_or_skip, random, dbr_versions, library):
+    instance_pool_id = env_or_skip('TEST_INSTANCE_POOL_ID')
 
     my_name = w.current_user.me().user_name
     notebook_path = f'/Users/{my_name}/notebook-native-auth'
@@ -110,13 +131,13 @@ print(me.user_name)''')
     w.workspace.upload(notebook_path, notebook_content, language=Language.PYTHON, overwrite=True)
 
     tasks = []
-    for v in lts_runtimes:
+    for v in dbr_versions:
         t = Task(task_key=f'test_{v.key.replace(".", "_")}',
                  notebook_task=NotebookTask(notebook_path=notebook_path),
                  new_cluster=ClusterSpec(spark_version=v.key,
                                          num_workers=1,
                                          instance_pool_id=instance_pool_id),
-                 libraries=[Library(whl=f'dbfs:{dbfs_wheel}')])
+                 libraries=[library])
         tasks.append(t)
 
     run = w.jobs.submit(run_name=f'Runtime Native Auth {random(10)}', tasks=tasks).result()
