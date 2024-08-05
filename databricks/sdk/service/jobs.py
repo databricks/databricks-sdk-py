@@ -1035,6 +1035,13 @@ class GitProvider(Enum):
     GIT_LAB = 'gitLab'
     GIT_LAB_ENTERPRISE_EDITION = 'gitLabEnterpriseEdition'
 
+    # [PROD-2302] The API treats this enum as case insensitive and the strictness here was causing failures
+    @classmethod
+    def _missing_(cls, value):
+        for member in cls:
+            if member.value.lower() == value.lower():
+                return member
+
 
 @dataclass
 class GitSnapshot:
