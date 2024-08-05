@@ -1,3 +1,18 @@
+# INFO
+
+This repo is Sync's fork of https://github.com/databricks/databricks-sdk-py/. It allows Sync to pull in commits / feature or create contributions to upstream that enhance both Sync's product offering and the Databricks ecosystem. 
+
+This repo is *public*.
+
+To release this repo:
+
+1. Locally (on your terminal) tag the commit you want to release with a version for example: git tag v0.0.29-sync.0
+2. Push this tag git push origin v0.0.29-sync.0
+3. Pushing the tag triggers an automated github action that looks for tags that start with v: https://github.com/synccomputingcode/databricks-sdk-py/blob/main/.github/workflows/release.yml#L6
+4. The actions run in github and create a draft release, with the release artifacts tied to it. https://github.com/synccomputingcode/databricks-sdk-py/releases/tag/untagged-327af053f51d1f4da444
+5. To make the release "real", edit it and publish it
+6. Then bump this the dependency inside of sync's codebase
+
 # Databricks SDK for Python (Beta)
 
 [![PyPI - Downloads](https://img.shields.io/pypi/dw/databricks-sdk)](https://pypistats.org/packages/databricks-sdk)
