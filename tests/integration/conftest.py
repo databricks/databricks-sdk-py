@@ -116,6 +116,14 @@ def volume(ucws, schema):
     ucws.volumes.delete(volume.full_name)
 
 
+@pytest.fixture()
+def workspace_dir(w, random):
+    directory = f'/Users/{w.current_user.me().user_name}/dir-{random(12)}'
+    w.workspace.mkdirs(directory)
+    yield directory
+    w.workspace.delete(directory, recursive=True)
+
+
 def _load_debug_env_if_runs_from_ide(key) -> bool:
     if not _is_in_debug():
         return False

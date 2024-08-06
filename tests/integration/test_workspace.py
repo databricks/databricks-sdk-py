@@ -3,11 +3,21 @@ import io
 from databricks.sdk.service.workspace import ImportFormat, Language
 
 
-def test_workspace_recursive_list(w, random):
+def test_workspace_recursive_list(w, workspace_dir, random):
+    # create a file in the directory
+    file = f'{workspace_dir}/file-{random(12)}.py'
+    w.workspace.upload(file, io.BytesIO(b'print(1)'))
+    # create a subdirectory
+    subdirectory = f'{workspace_dir}/subdir-{random(12)}'
+    w.workspace.mkdirs(subdirectory)
+    # create a file in the subdirectory
+    subfile = f'{subdirectory}/subfile-{random(12)}.py'
+    w.workspace.upload(subfile, io.BytesIO(b'print(2)'))
+    # list the directory recursively
     names = []
-    for i in w.workspace.list(f'/Users/{w.current_user.me().user_name}', recursive=True):
+    for i in w.workspace.list(workspace_dir, recursive=True):
         names.append(i.path)
-    assert len(names) > 0
+    assert len(names) == 2
 
 
 def test_workspace_upload_download_notebooks(w, random):
