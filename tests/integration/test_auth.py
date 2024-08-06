@@ -100,7 +100,7 @@ def test_runtime_auth_from_jobs_volumes(ucws, fresh_wheel_file, env_or_skip, ran
     with fresh_wheel_file.open('rb') as f:
         ucws.files.upload(volume_wheel, f)
 
-    lib = Library(whl=f'file:{volume_wheel}')
+    lib = Library(whl=volume_wheel)
     return _test_runtime_auth_from_jobs_inner(ucws, env_or_skip, random, dbr_versions, lib)
 
 
@@ -140,7 +140,8 @@ print(me.user_name)''')
                  libraries=[library])
         tasks.append(t)
 
-    run = w.jobs.submit(run_name=f'Runtime Native Auth {random(10)}', tasks=tasks).result()
+    waiter = w.jobs.submit(run_name=f'Runtime Native Auth {random(10)}', tasks=tasks)
+    run = waiter.result()
     for task_key, output in _task_outputs(w, run).items():
         assert my_name in output, f'{task_key} does not work with notebook native auth'
 
