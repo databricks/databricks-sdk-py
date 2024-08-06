@@ -136,7 +136,9 @@ print(me.user_name)''')
                  notebook_task=NotebookTask(notebook_path=notebook_path),
                  new_cluster=ClusterSpec(spark_version=v.key,
                                          num_workers=1,
-                                         instance_pool_id=instance_pool_id),
+                                         instance_pool_id=instance_pool_id,
+                                         # GCP uses "custom" data security mode by default, which does not support UC.
+                                         data_security_mode=DataSecurityMode.SINGLE_USER),
                  libraries=[library])
         tasks.append(t)
 
