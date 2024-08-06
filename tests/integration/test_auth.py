@@ -5,6 +5,7 @@ import re
 import shutil
 import subprocess
 import sys
+import typing
 import urllib.parse
 from functools import partial
 from pathlib import Path
@@ -84,7 +85,7 @@ def test_runtime_auth_from_interactive_on_uc(ucws, fresh_wheel_file, env_or_skip
         ucws.clusters.permanent_delete(interactive_cluster.cluster_id)
 
 
-def _get_lts_versions(w) -> list[SparkVersion]:
+def _get_lts_versions(w) -> typing.List[SparkVersion]:
     v = w.clusters.spark_versions()
     lts_runtimes = [
         x for x in v.versions
@@ -134,11 +135,12 @@ print(me.user_name)''')
     for v in dbr_versions:
         t = Task(task_key=f'test_{v.key.replace(".", "_")}',
                  notebook_task=NotebookTask(notebook_path=notebook_path),
-                 new_cluster=ClusterSpec(spark_version=v.key,
-                                         num_workers=1,
-                                         instance_pool_id=instance_pool_id,
-                                         # GCP uses "custom" data security mode by default, which does not support UC.
-                                         data_security_mode=DataSecurityMode.SINGLE_USER),
+                 new_cluster=ClusterSpec(
+                     spark_version=v.key,
+                     num_workers=1,
+                     instance_pool_id=instance_pool_id,
+                     # GCP uses "custom" data security mode by default, which does not support UC.
+                     data_security_mode=DataSecurityMode.SINGLE_USER),
                  libraries=[library])
         tasks.append(t)
 
