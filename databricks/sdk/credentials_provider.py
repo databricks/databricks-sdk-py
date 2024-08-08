@@ -606,9 +606,11 @@ def databricks_cli(cfg: 'Config') -> Optional[CredentialsProvider]:
     def inner() -> Dict[str, str]:
         token = token_source.token()
         return {'Authorization': f'{token.token_type} {token.access_token}'}
+        
+    def token() -> Token:
+        return token_source.token()
 
-    return OAuthCredentialsProvider(inner, token_source.token)
-
+    return OAuthCredentialsProvider(inner, token)
 
 class MetadataServiceTokenSource(Refreshable):
     """ Obtain the token granted by Databricks Metadata Service """
