@@ -60,6 +60,18 @@ def a(env_or_skip) -> AccountClient:
 
 
 @pytest.fixture(scope='session')
+def ucacct(env_or_skip) -> AccountClient:
+    _load_debug_env_if_runs_from_ide('ucacct')
+    env_or_skip("CLOUD_ENV")
+    account_client = AccountClient()
+    if not account_client.config.is_account_client:
+        pytest.skip("not Databricks Account client")
+    if 'TEST_METASTORE_ID' not in os.environ:
+        pytest.skip("not in Unity Catalog Workspace test env")
+    return account_client
+
+
+@pytest.fixture(scope='session')
 def w(env_or_skip) -> WorkspaceClient:
     _load_debug_env_if_runs_from_ide('workspace')
     env_or_skip("CLOUD_ENV")
@@ -102,6 +114,14 @@ def volume(ucws, schema):
     volume = ucws.volumes.create('main', schema.name, 'dbfs-test', VolumeType.MANAGED)
     yield '/Volumes/' + volume.full_name.replace(".", "/")
     ucws.volumes.delete(volume.full_name)
+
+
+@pytest.fixture()
+def workspace_dir(w, random):
+    directory = f'/Users/{w.current_user.me().user_name}/dir-{random(12)}'
+    w.workspace.mkdirs(directory)
+    yield directory
+    w.workspace.delete(directory, recursive=True)
 
 
 def _load_debug_env_if_runs_from_ide(key) -> bool:
