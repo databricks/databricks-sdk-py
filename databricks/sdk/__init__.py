@@ -5,8 +5,9 @@ from databricks.sdk.credentials_provider import CredentialsStrategy
 from databricks.sdk.mixins.compute import ClustersExt
 from databricks.sdk.mixins.files import DbfsExt
 from databricks.sdk.mixins.workspace import WorkspaceExt
+from databricks.sdk.service.apps import AppsAPI
 from databricks.sdk.service.billing import (BillableUsageAPI, BudgetsAPI,
-                                            LogDeliveryAPI)
+                                            LogDeliveryAPI, UsageDashboardsAPI)
 from databricks.sdk.service.catalog import (AccountMetastoreAssignmentsAPI,
                                             AccountMetastoresAPI,
                                             AccountStorageCredentialsAPI,
@@ -55,7 +56,7 @@ from databricks.sdk.service.provisioning import (CredentialsAPI,
                                                  NetworksAPI, PrivateAccessAPI,
                                                  StorageAPI, VpcEndpointsAPI,
                                                  Workspace, WorkspacesAPI)
-from databricks.sdk.service.serving import (AppsAPI, ServingEndpointsAPI,
+from databricks.sdk.service.serving import (ServingEndpointsAPI,
                                             ServingEndpointsDataPlaneAPI)
 from databricks.sdk.service.settings import (AccountIpAccessListsAPI,
                                              AccountSettingsAPI,
@@ -793,6 +794,7 @@ class AccountClient:
         self._settings = AccountSettingsAPI(self._api_client)
         self._storage = StorageAPI(self._api_client)
         self._storage_credentials = AccountStorageCredentialsAPI(self._api_client)
+        self._usage_dashboards = UsageDashboardsAPI(self._api_client)
         self._users = AccountUsersAPI(self._api_client)
         self._vpc_endpoints = VpcEndpointsAPI(self._api_client)
         self._workspace_assignment = WorkspaceAssignmentAPI(self._api_client)
@@ -906,6 +908,11 @@ class AccountClient:
     def storage_credentials(self) -> AccountStorageCredentialsAPI:
         """These APIs manage storage credentials for a particular metastore."""
         return self._storage_credentials
+
+    @property
+    def usage_dashboards(self) -> UsageDashboardsAPI:
+        """These APIs manage usage dashboards for this account."""
+        return self._usage_dashboards
 
     @property
     def users(self) -> AccountUsersAPI:

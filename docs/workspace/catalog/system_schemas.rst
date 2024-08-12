@@ -37,7 +37,7 @@
         
         
 
-    .. py:method:: list(metastore_id: str) -> Iterator[SystemSchemaInfo]
+    .. py:method:: list(metastore_id: str [, max_results: Optional[int], page_token: Optional[str]]) -> Iterator[SystemSchemaInfo]
 
         List system schemas.
         
@@ -46,6 +46,13 @@
         
         :param metastore_id: str
           The ID for the metastore in which the system schema resides.
+        :param max_results: int (optional)
+          Maximum number of schemas to return. - When set to 0, the page length is set to a server configured
+          value (recommended); - When set to a value greater than 0, the page length is the minimum of this
+          value and a server configured value; - When set to a value less than 0, an invalid parameter error
+          is returned; - If not set, all the schemas are returned (not recommended).
+        :param page_token: str (optional)
+          Opaque pagination token to go to next page based on previous query.
         
         :returns: Iterator over :class:`SystemSchemaInfo`
         
