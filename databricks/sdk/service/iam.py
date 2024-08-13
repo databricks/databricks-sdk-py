@@ -830,6 +830,7 @@ class PermissionLevel(Enum):
     CAN_MANAGE_PRODUCTION_VERSIONS = 'CAN_MANAGE_PRODUCTION_VERSIONS'
     CAN_MANAGE_RUN = 'CAN_MANAGE_RUN'
     CAN_MANAGE_STAGING_VERSIONS = 'CAN_MANAGE_STAGING_VERSIONS'
+    CAN_MONITOR = 'CAN_MONITOR'
     CAN_QUERY = 'CAN_QUERY'
     CAN_READ = 'CAN_READ'
     CAN_RESTART = 'CAN_RESTART'
@@ -890,9 +891,9 @@ class PermissionsRequest:
     """The id of the request object."""
 
     request_object_type: Optional[str] = None
-    """The type of the request object. Can be one of the following: authorization, clusters,
-    cluster-policies, directories, experiments, files, instance-pools, jobs, notebooks, pipelines,
-    registered-models, repos, serving-endpoints, or warehouses."""
+    """The type of the request object. Can be one of the following: alerts, authorization, clusters,
+    cluster-policies, dbsql-dashboards, directories, experiments, files, instance-pools, jobs,
+    notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or warehouses."""
 
     def as_dict(self) -> dict:
         """Serializes the PermissionsRequest into a dictionary suitable for use as a JSON request body."""
@@ -1139,8 +1140,10 @@ class UpdateRuleSetRequest:
 @dataclass
 class UpdateWorkspaceAssignments:
     permissions: Optional[List[WorkspacePermission]] = None
-    """Array of permissions assignments to update on the workspace. Note that excluding this field will
-    have the same effect as providing an empty list which will result in the deletion of all
+    """Array of permissions assignments to update on the workspace. Valid values are "USER" and "ADMIN"
+    (case-sensitive). If both "USER" and "ADMIN" are provided, "ADMIN" takes precedence. Other
+    values will be ignored. Note that excluding this field, or providing unsupported values, will
+    have the same effect as providing an empty list, which will result in the deletion of all
     permissions for the principal."""
 
     principal_id: Optional[int] = None
@@ -2539,6 +2542,8 @@ class PermissionsAPI:
     """Permissions API are used to create read, write, edit, update and manage access for various users on
     different objects and endpoints.
     
+    * **[Apps permissions](:service:apps)** — Manage which users can manage or use apps.
+    
     * **[Cluster permissions](:service:clusters)** — Manage which users can manage, restart, or attach to
     clusters.
     
@@ -2574,7 +2579,7 @@ class PermissionsAPI:
     * **[Token permissions](:service:tokenmanagement)** — Manage which users can create or use tokens.
     
     * **[Workspace object permissions](:service:workspace)** — Manage which users can read, run, edit, or
-    manage directories, files, and notebooks.
+    manage alerts, dbsql-dashboards, directories, files, notebooks and queries.
     
     For the mapping of the required permissions for specific actions or abilities and other important
     information, see [Access Control].
@@ -2594,9 +2599,9 @@ class PermissionsAPI:
         object.
         
         :param request_object_type: str
-          The type of the request object. Can be one of the following: authorization, clusters,
-          cluster-policies, directories, experiments, files, instance-pools, jobs, notebooks, pipelines,
-          registered-models, repos, serving-endpoints, or warehouses.
+          The type of the request object. Can be one of the following: alerts, authorization, clusters,
+          cluster-policies, dbsql-dashboards, directories, experiments, files, instance-pools, jobs,
+          notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or warehouses.
         :param request_object_id: str
           The id of the request object.
         
@@ -2642,9 +2647,9 @@ class PermissionsAPI:
         object.
         
         :param request_object_type: str
-          The type of the request object. Can be one of the following: authorization, clusters,
-          cluster-policies, directories, experiments, files, instance-pools, jobs, notebooks, pipelines,
-          registered-models, repos, serving-endpoints, or warehouses.
+          The type of the request object. Can be one of the following: alerts, authorization, clusters,
+          cluster-policies, dbsql-dashboards, directories, experiments, files, instance-pools, jobs,
+          notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or warehouses.
         :param request_object_id: str
           The id of the request object.
         :param access_control_list: List[:class:`AccessControlRequest`] (optional)
@@ -2673,9 +2678,9 @@ class PermissionsAPI:
         root object.
         
         :param request_object_type: str
-          The type of the request object. Can be one of the following: authorization, clusters,
-          cluster-policies, directories, experiments, files, instance-pools, jobs, notebooks, pipelines,
-          registered-models, repos, serving-endpoints, or warehouses.
+          The type of the request object. Can be one of the following: alerts, authorization, clusters,
+          cluster-policies, dbsql-dashboards, directories, experiments, files, instance-pools, jobs,
+          notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or warehouses.
         :param request_object_id: str
           The id of the request object.
         :param access_control_list: List[:class:`AccessControlRequest`] (optional)
@@ -3382,9 +3387,11 @@ class WorkspaceAssignmentAPI:
         :param principal_id: int
           The ID of the user, service principal, or group.
         :param permissions: List[:class:`WorkspacePermission`] (optional)
-          Array of permissions assignments to update on the workspace. Note that excluding this field will
-          have the same effect as providing an empty list which will result in the deletion of all permissions
-          for the principal.
+          Array of permissions assignments to update on the workspace. Valid values are "USER" and "ADMIN"
+          (case-sensitive). If both "USER" and "ADMIN" are provided, "ADMIN" takes precedence. Other values
+          will be ignored. Note that excluding this field, or providing unsupported values, will have the same
+          effect as providing an empty list, which will result in the deletion of all permissions for the
+          principal.
         
         :returns: :class:`PermissionAssignment`
         """

@@ -1483,26 +1483,6 @@ class DeleteWarehouseResponse:
 
 
 class Disposition(Enum):
-    """The fetch disposition provides two modes of fetching results: `INLINE` and `EXTERNAL_LINKS`.
-    
-    Statements executed with `INLINE` disposition will return result data inline, in `JSON_ARRAY`
-    format, in a series of chunks. If a given statement produces a result set with a size larger
-    than 25 MiB, that statement execution is aborted, and no result set will be available.
-    
-    **NOTE** Byte limits are computed based upon internal representations of the result set data,
-    and might not match the sizes visible in JSON responses.
-    
-    Statements executed with `EXTERNAL_LINKS` disposition will return result data as external links:
-    URLs that point to cloud storage internal to the workspace. Using `EXTERNAL_LINKS` disposition
-    allows statements to generate arbitrarily sized result sets for fetching up to 100 GiB. The
-    resulting links have two important properties:
-    
-    1. They point to resources _external_ to the Databricks compute; therefore any associated
-    authentication information (typically a personal access token, OAuth token, or similar) _must be
-    removed_ when fetching from these links.
-    
-    2. These are presigned URLs with a specific expiration, indicated in the response. The behavior
-    when attempting to use an expired link is cloud specific."""
 
     EXTERNAL_LINKS = 'EXTERNAL_LINKS'
     INLINE = 'INLINE'
@@ -2019,26 +1999,6 @@ class ExecuteStatementRequest:
     [`USE CATALOG`]: https://docs.databricks.com/sql/language-manual/sql-ref-syntax-ddl-use-catalog.html"""
 
     disposition: Optional[Disposition] = None
-    """The fetch disposition provides two modes of fetching results: `INLINE` and `EXTERNAL_LINKS`.
-    
-    Statements executed with `INLINE` disposition will return result data inline, in `JSON_ARRAY`
-    format, in a series of chunks. If a given statement produces a result set with a size larger
-    than 25 MiB, that statement execution is aborted, and no result set will be available.
-    
-    **NOTE** Byte limits are computed based upon internal representations of the result set data,
-    and might not match the sizes visible in JSON responses.
-    
-    Statements executed with `EXTERNAL_LINKS` disposition will return result data as external links:
-    URLs that point to cloud storage internal to the workspace. Using `EXTERNAL_LINKS` disposition
-    allows statements to generate arbitrarily sized result sets for fetching up to 100 GiB. The
-    resulting links have two important properties:
-    
-    1. They point to resources _external_ to the Databricks compute; therefore any associated
-    authentication information (typically a personal access token, OAuth token, or similar) _must be
-    removed_ when fetching from these links.
-    
-    2. These are presigned URLs with a specific expiration, indicated in the response. The behavior
-    when attempting to use an expired link is cloud specific."""
 
     format: Optional[Format] = None
     """Statement execution supports three result formats: `JSON_ARRAY` (default), `ARROW_STREAM`, and
@@ -2191,9 +2151,6 @@ class ExternalLink:
     which point a new `external_link` must be requested."""
 
     external_link: Optional[str] = None
-    """A presigned URL pointing to a chunk of result data, hosted by an external service, with a short
-    expiration time (<= 15 minutes). As this URL contains a temporary credential, it should be
-    considered sensitive and the client should not expose this URL in a log."""
 
     http_headers: Optional[Dict[str, str]] = None
     """HTTP headers that must be included with a GET request to the `external_link`. Each header is
@@ -4203,12 +4160,6 @@ class RestoreResponse:
 
 @dataclass
 class ResultData:
-    """Contains the result data of a single chunk when using `INLINE` disposition. When using
-    `EXTERNAL_LINKS` disposition, the array `external_links` is used instead to provide presigned
-    URLs to the result data in cloud storage. Exactly one of these alternatives is used. (While the
-    `external_links` array prepares the API to return multiple links in a single response. Currently
-    only a single link is returned.)"""
-
     byte_count: Optional[int] = None
     """The number of bytes in the result chunk. This field is not available when using `INLINE`
     disposition."""
@@ -4590,11 +4541,6 @@ class StatementResponse:
     """The result manifest provides schema and metadata for the result set."""
 
     result: Optional[ResultData] = None
-    """Contains the result data of a single chunk when using `INLINE` disposition. When using
-    `EXTERNAL_LINKS` disposition, the array `external_links` is used instead to provide presigned
-    URLs to the result data in cloud storage. Exactly one of these alternatives is used. (While the
-    `external_links` array prepares the API to return multiple links in a single response. Currently
-    only a single link is returned.)"""
 
     statement_id: Optional[str] = None
     """The statement ID is returned upon successfully submitting a SQL statement, and is a required
@@ -5304,6 +5250,7 @@ class WarehousePermissionLevel(Enum):
     """Permission level"""
 
     CAN_MANAGE = 'CAN_MANAGE'
+    CAN_MONITOR = 'CAN_MONITOR'
     CAN_USE = 'CAN_USE'
     IS_OWNER = 'IS_OWNER'
 
@@ -5646,7 +5593,10 @@ class AlertsLegacyAPI:
     notification destinations if the condition was met. Alerts can be scheduled using the `sql_task` type of
     the Jobs API, e.g. :method:jobs/create.
     
-    **Note**: A new version of the Databricks SQL API is now available. Please see the latest version."""
+    **Note**: A new version of the Databricks SQL API is now available. Please see the latest version. [Learn
+    more]
+    
+    [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -5664,7 +5614,9 @@ class AlertsLegacyAPI:
         condition of its result, and notifies users or notification destinations if the condition was met.
         
         **Note**: A new version of the Databricks SQL API is now available. Please use :method:alerts/create
-        instead.
+        instead. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :param name: str
           Name of the alert.
@@ -5698,7 +5650,9 @@ class AlertsLegacyAPI:
         queries and dashboards, alerts cannot be moved to the trash.
         
         **Note**: A new version of the Databricks SQL API is now available. Please use :method:alerts/delete
-        instead.
+        instead. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :param alert_id: str
         
@@ -5715,7 +5669,9 @@ class AlertsLegacyAPI:
         Gets an alert.
         
         **Note**: A new version of the Databricks SQL API is now available. Please use :method:alerts/get
-        instead.
+        instead. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :param alert_id: str
         
@@ -5733,7 +5689,9 @@ class AlertsLegacyAPI:
         Gets a list of alerts.
         
         **Note**: A new version of the Databricks SQL API is now available. Please use :method:alerts/list
-        instead.
+        instead. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :returns: Iterator over :class:`LegacyAlert`
         """
@@ -5755,7 +5713,9 @@ class AlertsLegacyAPI:
         Updates an alert.
         
         **Note**: A new version of the Databricks SQL API is now available. Please use :method:alerts/update
-        instead.
+        instead. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :param alert_id: str
         :param name: str
@@ -6055,7 +6015,9 @@ class DataSourcesAPI:
     advise you to use any text editor, REST client, or `grep` to search the response from this API for the
     name of your SQL warehouse as it appears in Databricks SQL.
     
-    **Note**: A new version of the Databricks SQL API is now available. Please see the latest version."""
+    **Note**: A new version of the Databricks SQL API is now available. [Learn more]
+    
+    [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -6068,7 +6030,9 @@ class DataSourcesAPI:
         queries against it.
         
         **Note**: A new version of the Databricks SQL API is now available. Please use :method:warehouses/list
-        instead.
+        instead. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :returns: Iterator over :class:`DataSource`
         """
@@ -6092,7 +6056,9 @@ class DbsqlPermissionsAPI:
     
     - `CAN_MANAGE`: Allows all actions: read, run, edit, delete, modify permissions (superset of `CAN_RUN`)
     
-    **Note**: A new version of the Databricks SQL API is now available. Please see the latest version."""
+    **Note**: A new version of the Databricks SQL API is now available. [Learn more]
+    
+    [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -6101,6 +6067,11 @@ class DbsqlPermissionsAPI:
         """Get object ACL.
         
         Gets a JSON representation of the access control list (ACL) for a specified object.
+        
+        **Note**: A new version of the Databricks SQL API is now available. Please use
+        :method:workspace/getpermissions instead. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :param object_type: :class:`ObjectTypePlural`
           The type of object permissions to check.
@@ -6126,6 +6097,11 @@ class DbsqlPermissionsAPI:
         
         Sets the access control list (ACL) for a specified object. This operation will complete rewrite the
         ACL.
+        
+        **Note**: A new version of the Databricks SQL API is now available. Please use
+        :method:workspace/setpermissions instead. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :param object_type: :class:`ObjectTypePlural`
           The type of object permission to set.
@@ -6156,7 +6132,9 @@ class DbsqlPermissionsAPI:
         Transfers ownership of a dashboard, query, or alert to an active user. Requires an admin API key.
         
         **Note**: A new version of the Databricks SQL API is now available. For queries and alerts, please use
-        :method:queries/update and :method:alerts/update respectively instead.
+        :method:queries/update and :method:alerts/update respectively instead. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :param object_type: :class:`OwnableObjectType`
           The type of object on which to change ownership.
@@ -6323,7 +6301,10 @@ class QueriesLegacyAPI:
     SQL warehouse, query text, name, description, tags, parameters, and visualizations. Queries can be
     scheduled using the `sql_task` type of the Jobs API, e.g. :method:jobs/create.
     
-    **Note**: A new version of the Databricks SQL API is now available. Please see the latest version."""
+    **Note**: A new version of the Databricks SQL API is now available. Please see the latest version. [Learn
+    more]
+    
+    [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -6350,7 +6331,9 @@ class QueriesLegacyAPI:
         **Note**: You cannot add a visualization until you create the query.
         
         **Note**: A new version of the Databricks SQL API is now available. Please use :method:queries/create
-        instead.
+        instead. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :param data_source_id: str (optional)
           Data source ID maps to the ID of the data source used by the resource and is distinct from the
@@ -6397,7 +6380,9 @@ class QueriesLegacyAPI:
         they cannot be used for alerts. The trash is deleted after 30 days.
         
         **Note**: A new version of the Databricks SQL API is now available. Please use :method:queries/delete
-        instead.
+        instead. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :param query_id: str
         
@@ -6415,7 +6400,9 @@ class QueriesLegacyAPI:
         authenticated user.
         
         **Note**: A new version of the Databricks SQL API is now available. Please use :method:queries/get
-        instead.
+        instead. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :param query_id: str
         
@@ -6441,7 +6428,9 @@ class QueriesLegacyAPI:
         degradation, or a temporary ban.
         
         **Note**: A new version of the Databricks SQL API is now available. Please use :method:queries/list
-        instead.
+        instead. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :param order: str (optional)
           Name of query attribute to order by. Default sort order is ascending. Append a dash (`-`) to order
@@ -6497,6 +6486,9 @@ class QueriesLegacyAPI:
         You can use restored queries for alerts.
         
         **Note**: A new version of the Databricks SQL API is now available. Please see the latest version.
+        [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :param query_id: str
         
@@ -6524,7 +6516,9 @@ class QueriesLegacyAPI:
         **Note**: You cannot undo this operation.
         
         **Note**: A new version of the Databricks SQL API is now available. Please use :method:queries/update
-        instead.
+        instead. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :param query_id: str
         :param data_source_id: str (optional)
@@ -6675,7 +6669,10 @@ class QueryVisualizationsLegacyAPI:
     """This is an evolving API that facilitates the addition and removal of vizualisations from existing queries
     within the Databricks Workspace. Data structures may change over time.
     
-    **Note**: A new version of the Databricks SQL API is now available. Please see the latest version."""
+    **Note**: A new version of the Databricks SQL API is now available. Please see the latest version. [Learn
+    more]
+    
+    [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -6692,7 +6689,9 @@ class QueryVisualizationsLegacyAPI:
         Creates visualization in the query.
         
         **Note**: A new version of the Databricks SQL API is now available. Please use
-        :method:queryvisualizations/create instead.
+        :method:queryvisualizations/create instead. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :param query_id: str
           The identifier returned by :method:queries/create
@@ -6725,7 +6724,9 @@ class QueryVisualizationsLegacyAPI:
         Removes a visualization from the query.
         
         **Note**: A new version of the Databricks SQL API is now available. Please use
-        :method:queryvisualizations/delete instead.
+        :method:queryvisualizations/delete instead. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :param id: str
           Widget ID returned by :method:queryvizualisations/create
@@ -6752,7 +6753,9 @@ class QueryVisualizationsLegacyAPI:
         Updates visualization in the query.
         
         **Note**: A new version of the Databricks SQL API is now available. Please use
-        :method:queryvisualizations/update instead.
+        :method:queryvisualizations/update instead. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :param id: str
           The UUID for this visualization.
@@ -6921,26 +6924,6 @@ class StatementExecutionAPI:
           
           [`USE CATALOG`]: https://docs.databricks.com/sql/language-manual/sql-ref-syntax-ddl-use-catalog.html
         :param disposition: :class:`Disposition` (optional)
-          The fetch disposition provides two modes of fetching results: `INLINE` and `EXTERNAL_LINKS`.
-          
-          Statements executed with `INLINE` disposition will return result data inline, in `JSON_ARRAY`
-          format, in a series of chunks. If a given statement produces a result set with a size larger than 25
-          MiB, that statement execution is aborted, and no result set will be available.
-          
-          **NOTE** Byte limits are computed based upon internal representations of the result set data, and
-          might not match the sizes visible in JSON responses.
-          
-          Statements executed with `EXTERNAL_LINKS` disposition will return result data as external links:
-          URLs that point to cloud storage internal to the workspace. Using `EXTERNAL_LINKS` disposition
-          allows statements to generate arbitrarily sized result sets for fetching up to 100 GiB. The
-          resulting links have two important properties:
-          
-          1. They point to resources _external_ to the Databricks compute; therefore any associated
-          authentication information (typically a personal access token, OAuth token, or similar) _must be
-          removed_ when fetching from these links.
-          
-          2. These are presigned URLs with a specific expiration, indicated in the response. The behavior when
-          attempting to use an expired link is cloud specific.
         :param format: :class:`Format` (optional)
           Statement execution supports three result formats: `JSON_ARRAY` (default), `ARROW_STREAM`, and
           `CSV`.

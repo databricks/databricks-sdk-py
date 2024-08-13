@@ -5,6 +5,7 @@ Dataclasses
 .. toctree::
    :maxdepth: 1
    
+   apps
    billing
    catalog
    compute
