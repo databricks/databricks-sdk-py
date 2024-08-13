@@ -1,6 +1,9 @@
 import os
 import platform
 import pytest
+import pathlib
+import random
+import string
 
 from subprocess import CompletedProcess
 from databricks.sdk import useragent
@@ -80,10 +83,33 @@ def test_config_copy_deep_copies_user_agent_other_info(config):
 
 
 def test_config_deep_copy(requests_mock, monkeypatch, mocker, tmp_path):
+    write_large_dummy_executable(tmp_path)
+    monkeypatch.setenv('PATH', tmp_path.as_posix())
+
     mocker.patch('subprocess.run',return_value=CompletedProcess(args=[], returncode=0, stdout=b'{\n  "access_token": "...",\n  "token_type": "Bearer",\n  "expiry": "2024-08-13T00:00:00.000000+00:00"\n}', stderr=b''))
     config = Config(host="https://abc123.azuredatabricks.net", auth_type="databricks-cli")
     config_copy = config.deep_copy()
     assert config_copy.host == config.host
+
+
+def write_large_dummy_executable(path: pathlib.Path):
+    cli = path.joinpath('databricks')
+
+    # Generate a long random string to inflate the file size.
+    random_string = ''.join(random.choice(string.ascii_letters) for i in range(1024 * 1024))
+    cli.write_text("""#!/bin/sh
+cat <<EOF
+{
+"access_token": "token",
+"token_type": "Bearer",
+"expiry": "2023-05-22T00:00:00.000000+00:00"
+}
+EOF
+exit 0
+""" + random_string)
+    cli.chmod(0o755)
+    assert cli.stat().st_size >= (1024 * 1024)
+    return cli
 
 
 def test_load_azure_tenant_id_404(requests_mock, monkeypatch):
