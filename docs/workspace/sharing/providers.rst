@@ -100,7 +100,7 @@
         :returns: :class:`ProviderInfo`
         
 
-    .. py:method:: list( [, data_provider_global_metastore_id: Optional[str]]) -> Iterator[ProviderInfo]
+    .. py:method:: list( [, data_provider_global_metastore_id: Optional[str], max_results: Optional[int], page_token: Optional[str]]) -> Iterator[ProviderInfo]
 
 
         Usage:
@@ -123,11 +123,21 @@
         :param data_provider_global_metastore_id: str (optional)
           If not provided, all providers will be returned. If no providers exist with this ID, no results will
           be returned.
+        :param max_results: int (optional)
+          Maximum number of providers to return. - when set to 0, the page length is set to a server
+          configured value (recommended); - when set to a value greater than 0, the page length is the minimum
+          of this value and a server configured value; - when set to a value less than 0, an invalid parameter
+          error is returned; - If not set, all valid providers are returned (not recommended). - Note: The
+          number of returned providers might be less than the specified max_results size, even zero. The only
+          definitive indication that no further providers can be fetched is when the next_page_token is unset
+          from the response.
+        :param page_token: str (optional)
+          Opaque pagination token to go to next page based on previous query.
         
         :returns: Iterator over :class:`ProviderInfo`
         
 
-    .. py:method:: list_shares(name: str) -> Iterator[ProviderShare]
+    .. py:method:: list_shares(name: str [, max_results: Optional[int], page_token: Optional[str]]) -> Iterator[ProviderShare]
 
 
         Usage:
@@ -162,6 +172,16 @@
         
         :param name: str
           Name of the provider in which to list shares.
+        :param max_results: int (optional)
+          Maximum number of shares to return. - when set to 0, the page length is set to a server configured
+          value (recommended); - when set to a value greater than 0, the page length is the minimum of this
+          value and a server configured value; - when set to a value less than 0, an invalid parameter error
+          is returned; - If not set, all valid shares are returned (not recommended). - Note: The number of
+          returned shares might be less than the specified max_results size, even zero. The only definitive
+          indication that no further shares can be fetched is when the next_page_token is unset from the
+          response.
+        :param page_token: str (optional)
+          Opaque pagination token to go to next page based on previous query.
         
         :returns: Iterator over :class:`ProviderShare`
         

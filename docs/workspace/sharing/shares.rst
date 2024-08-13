@@ -87,7 +87,7 @@
         :returns: :class:`ShareInfo`
         
 
-    .. py:method:: list() -> Iterator[ShareInfo]
+    .. py:method:: list( [, max_results: Optional[int], page_token: Optional[str]]) -> Iterator[ShareInfo]
 
 
         Usage:
@@ -95,20 +95,32 @@
         .. code-block::
 
             from databricks.sdk import WorkspaceClient
+            from databricks.sdk.service import sharing
             
             w = WorkspaceClient()
             
-            all = w.shares.list()
+            all = w.shares.list(sharing.ListSharesRequest())
 
         List shares.
         
         Gets an array of data object shares from the metastore. The caller must be a metastore admin or the
         owner of the share. There is no guarantee of a specific ordering of the elements in the array.
         
+        :param max_results: int (optional)
+          Maximum number of shares to return. - when set to 0, the page length is set to a server configured
+          value (recommended); - when set to a value greater than 0, the page length is the minimum of this
+          value and a server configured value; - when set to a value less than 0, an invalid parameter error
+          is returned; - If not set, all valid shares are returned (not recommended). - Note: The number of
+          returned shares might be less than the specified max_results size, even zero. The only definitive
+          indication that no further shares can be fetched is when the next_page_token is unset from the
+          response.
+        :param page_token: str (optional)
+          Opaque pagination token to go to next page based on previous query.
+        
         :returns: Iterator over :class:`ShareInfo`
         
 
-    .. py:method:: share_permissions(name: str) -> catalog.PermissionsList
+    .. py:method:: share_permissions(name: str [, max_results: Optional[int], page_token: Optional[str]]) -> catalog.PermissionsList
 
         Get permissions.
         
@@ -117,6 +129,16 @@
         
         :param name: str
           The name of the share.
+        :param max_results: int (optional)
+          Maximum number of permissions to return. - when set to 0, the page length is set to a server
+          configured value (recommended); - when set to a value greater than 0, the page length is the minimum
+          of this value and a server configured value; - when set to a value less than 0, an invalid parameter
+          error is returned; - If not set, all valid permissions are returned (not recommended). - Note: The
+          number of returned permissions might be less than the specified max_results size, even zero. The
+          only definitive indication that no further permissions can be fetched is when the next_page_token is
+          unset from the response.
+        :param page_token: str (optional)
+          Opaque pagination token to go to next page based on previous query.
         
         :returns: :class:`PermissionsList`
         
@@ -200,7 +222,7 @@
         :returns: :class:`ShareInfo`
         
 
-    .. py:method:: update_permissions(name: str [, changes: Optional[List[catalog.PermissionsChange]]])
+    .. py:method:: update_permissions(name: str [, changes: Optional[List[catalog.PermissionsChange]], max_results: Optional[int], page_token: Optional[str]])
 
         Update permissions.
         
@@ -214,6 +236,16 @@
           The name of the share.
         :param changes: List[:class:`PermissionsChange`] (optional)
           Array of permission changes.
+        :param max_results: int (optional)
+          Maximum number of permissions to return. - when set to 0, the page length is set to a server
+          configured value (recommended); - when set to a value greater than 0, the page length is the minimum
+          of this value and a server configured value; - when set to a value less than 0, an invalid parameter
+          error is returned; - If not set, all valid permissions are returned (not recommended). - Note: The
+          number of returned permissions might be less than the specified max_results size, even zero. The
+          only definitive indication that no further permissions can be fetched is when the next_page_token is
+          unset from the response.
+        :param page_token: str (optional)
+          Opaque pagination token to go to next page based on previous query.
         
         
         

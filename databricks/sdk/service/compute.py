@@ -2106,10 +2106,6 @@ class CreateInstancePoolResponse:
 
 @dataclass
 class CreatePolicy:
-    name: str
-    """Cluster Policy name requested by the user. This has to be unique. Length must be between 1 and
-    100 characters."""
-
     definition: Optional[str] = None
     """Policy definition document expressed in [Databricks Cluster Policy Definition Language].
     
@@ -2125,6 +2121,10 @@ class CreatePolicy:
     max_clusters_per_user: Optional[int] = None
     """Max number of clusters per user that can be active using this policy. If not present, there is
     no max limit."""
+
+    name: Optional[str] = None
+    """Cluster Policy name requested by the user. This has to be unique. Length must be between 1 and
+    100 characters."""
 
     policy_family_definition_overrides: Optional[str] = None
     """Policy definition JSON document expressed in [Databricks Policy Definition Language]. The JSON
@@ -2891,10 +2891,6 @@ class EditPolicy:
     policy_id: str
     """The ID of the policy to update."""
 
-    name: str
-    """Cluster Policy name requested by the user. This has to be unique. Length must be between 1 and
-    100 characters."""
-
     definition: Optional[str] = None
     """Policy definition document expressed in [Databricks Cluster Policy Definition Language].
     
@@ -2910,6 +2906,10 @@ class EditPolicy:
     max_clusters_per_user: Optional[int] = None
     """Max number of clusters per user that can be active using this policy. If not present, there is
     no max limit."""
+
+    name: Optional[str] = None
+    """Cluster Policy name requested by the user. This has to be unique. Length must be between 1 and
+    100 characters."""
 
     policy_family_definition_overrides: Optional[str] = None
     """Policy definition JSON document expressed in [Databricks Policy Definition Language]. The JSON
@@ -4784,12 +4784,12 @@ class ListPoliciesResponse:
 
 @dataclass
 class ListPolicyFamiliesResponse:
-    policy_families: List[PolicyFamily]
-    """List of policy families."""
-
     next_page_token: Optional[str] = None
     """A token that can be used to get the next page of results. If not present, there are no more
     results to show."""
+
+    policy_families: Optional[List[PolicyFamily]] = None
+    """List of policy families."""
 
     def as_dict(self) -> dict:
         """Serializes the ListPolicyFamiliesResponse into a dictionary suitable for use as a JSON request body."""
@@ -4812,6 +4812,7 @@ class ListSortColumn(Enum):
 
 
 class ListSortOrder(Enum):
+    """A generic ordering enum for list-based queries."""
 
     ASC = 'ASC'
     DESC = 'DESC'
@@ -5138,6 +5139,8 @@ class PinClusterResponse:
 
 @dataclass
 class Policy:
+    """Describes a Cluster Policy entity."""
+
     created_at_timestamp: Optional[int] = None
     """Creation time. The timestamp (in millisecond) when this Cluster Policy was created."""
 
@@ -5179,7 +5182,11 @@ class Policy:
     [Databricks Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html"""
 
     policy_family_id: Optional[str] = None
-    """ID of the policy family."""
+    """ID of the policy family. The cluster policy's policy definition inherits the policy family's
+    policy definition.
+    
+    Cannot be used with `definition`. Use `policy_family_definition_overrides` instead to customize
+    the policy definition."""
 
     policy_id: Optional[str] = None
     """Canonical unique identifier for the Cluster Policy."""
@@ -5219,19 +5226,19 @@ class Policy:
 
 @dataclass
 class PolicyFamily:
-    policy_family_id: str
-    """ID of the policy family."""
-
-    name: str
-    """Name of the policy family."""
-
-    description: str
-    """Human-readable description of the purpose of the policy family."""
-
-    definition: str
+    definition: Optional[str] = None
     """Policy definition document expressed in [Databricks Cluster Policy Definition Language].
     
     [Databricks Cluster Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html"""
+
+    description: Optional[str] = None
+    """Human-readable description of the purpose of the policy family."""
+
+    name: Optional[str] = None
+    """Name of the policy family."""
+
+    policy_family_id: Optional[str] = None
+    """Unique identifier for the policy family."""
 
     def as_dict(self) -> dict:
         """Serializes the PolicyFamily into a dictionary suitable for use as a JSON request body."""
@@ -5873,6 +5880,260 @@ class UnpinClusterResponse:
 
 
 @dataclass
+class UpdateCluster:
+    cluster_id: str
+    """ID of the cluster."""
+
+    update_mask: str
+    """Specifies which fields of the cluster will be updated. This is required in the POST request. The
+    update mask should be supplied as a single string. To specify multiple fields, separate them
+    with commas (no spaces). To delete a field from a cluster configuration, add it to the
+    `update_mask` string but omit it from the `cluster` object."""
+
+    cluster: Optional[UpdateClusterResource] = None
+    """The cluster to be updated."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateCluster into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.cluster: body['cluster'] = self.cluster.as_dict()
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        if self.update_mask is not None: body['update_mask'] = self.update_mask
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateCluster:
+        """Deserializes the UpdateCluster from a dictionary."""
+        return cls(cluster=_from_dict(d, 'cluster', UpdateClusterResource),
+                   cluster_id=d.get('cluster_id', None),
+                   update_mask=d.get('update_mask', None))
+
+
+@dataclass
+class UpdateClusterResource:
+    autoscale: Optional[AutoScale] = None
+    """Parameters needed in order to automatically scale clusters up and down based on load. Note:
+    autoscaling works best with DB runtime versions 3.0 or later."""
+
+    autotermination_minutes: Optional[int] = None
+    """Automatically terminates the cluster after it is inactive for this time in minutes. If not set,
+    this cluster will not be automatically terminated. If specified, the threshold must be between
+    10 and 10000 minutes. Users can also set this value to 0 to explicitly disable automatic
+    termination."""
+
+    aws_attributes: Optional[AwsAttributes] = None
+    """Attributes related to clusters running on Amazon Web Services. If not specified at cluster
+    creation, a set of default values will be used."""
+
+    azure_attributes: Optional[AzureAttributes] = None
+    """Attributes related to clusters running on Microsoft Azure. If not specified at cluster creation,
+    a set of default values will be used."""
+
+    cluster_log_conf: Optional[ClusterLogConf] = None
+    """The configuration for delivering spark logs to a long-term storage destination. Two kinds of
+    destinations (dbfs and s3) are supported. Only one destination can be specified for one cluster.
+    If the conf is given, the logs will be delivered to the destination every `5 mins`. The
+    destination of driver logs is `$destination/$clusterId/driver`, while the destination of
+    executor logs is `$destination/$clusterId/executor`."""
+
+    cluster_name: Optional[str] = None
+    """Cluster name requested by the user. This doesn't have to be unique. If not specified at
+    creation, the cluster name will be an empty string."""
+
+    custom_tags: Optional[Dict[str, str]] = None
+    """Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
+    instances and EBS volumes) with these tags in addition to `default_tags`. Notes:
+    
+    - Currently, Databricks allows at most 45 custom tags
+    
+    - Clusters can only reuse cloud resources if the resources' tags are a subset of the cluster
+    tags"""
+
+    data_security_mode: Optional[DataSecurityMode] = None
+    """Data security mode decides what data governance model to use when accessing data from a cluster.
+    
+    * `NONE`: No security isolation for multiple users sharing the cluster. Data governance features
+    are not available in this mode. * `SINGLE_USER`: A secure cluster that can only be exclusively
+    used by a single user specified in `single_user_name`. Most programming languages, cluster
+    features and data governance features are available in this mode. * `USER_ISOLATION`: A secure
+    cluster that can be shared by multiple users. Cluster users are fully isolated so that they
+    cannot see each other's data and credentials. Most data governance features are supported in
+    this mode. But programming languages and cluster features might be limited.
+    
+    The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
+    future Databricks Runtime versions:
+    
+    * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *
+    `LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy Passthrough on high
+    concurrency clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
+    Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This mode provides a way that
+    doesn’t have UC nor passthrough enabled."""
+
+    docker_image: Optional[DockerImage] = None
+
+    driver_instance_pool_id: Optional[str] = None
+    """The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster
+    uses the instance pool with id (instance_pool_id) if the driver pool is not assigned."""
+
+    driver_node_type_id: Optional[str] = None
+    """The node type of the Spark driver. Note that this field is optional; if unset, the driver node
+    type will be set as the same value as `node_type_id` defined above."""
+
+    enable_elastic_disk: Optional[bool] = None
+    """Autoscaling Local Storage: when enabled, this cluster will dynamically acquire additional disk
+    space when its Spark workers are running low on disk space. This feature requires specific AWS
+    permissions to function correctly - refer to the User Guide for more details."""
+
+    enable_local_disk_encryption: Optional[bool] = None
+    """Whether to enable LUKS on cluster VMs' local disks"""
+
+    gcp_attributes: Optional[GcpAttributes] = None
+    """Attributes related to clusters running on Google Cloud Platform. If not specified at cluster
+    creation, a set of default values will be used."""
+
+    init_scripts: Optional[List[InitScriptInfo]] = None
+    """The configuration for storing init scripts. Any number of destinations can be specified. The
+    scripts are executed sequentially in the order provided. If `cluster_log_conf` is specified,
+    init script logs are sent to `<destination>/<cluster-ID>/init_scripts`."""
+
+    instance_pool_id: Optional[str] = None
+    """The optional ID of the instance pool to which the cluster belongs."""
+
+    node_type_id: Optional[str] = None
+    """This field encodes, through a single value, the resources available to each of the Spark nodes
+    in this cluster. For example, the Spark nodes can be provisioned and optimized for memory or
+    compute intensive workloads. A list of available node types can be retrieved by using the
+    :method:clusters/listNodeTypes API call."""
+
+    num_workers: Optional[int] = None
+    """Number of worker nodes that this cluster should have. A cluster has one Spark Driver and
+    `num_workers` Executors for a total of `num_workers` + 1 Spark nodes.
+    
+    Note: When reading the properties of a cluster, this field reflects the desired number of
+    workers rather than the actual current number of workers. For instance, if a cluster is resized
+    from 5 to 10 workers, this field will immediately be updated to reflect the target size of 10
+    workers, whereas the workers listed in `spark_info` will gradually increase from 5 to 10 as the
+    new nodes are provisioned."""
+
+    policy_id: Optional[str] = None
+    """The ID of the cluster policy used to create the cluster if applicable."""
+
+    runtime_engine: Optional[RuntimeEngine] = None
+    """Decides which runtime engine to be use, e.g. Standard vs. Photon. If unspecified, the runtime
+    engine is inferred from spark_version."""
+
+    single_user_name: Optional[str] = None
+    """Single user name if data_security_mode is `SINGLE_USER`"""
+
+    spark_conf: Optional[Dict[str, str]] = None
+    """An object containing a set of optional, user-specified Spark configuration key-value pairs.
+    Users can also pass in a string of extra JVM options to the driver and the executors via
+    `spark.driver.extraJavaOptions` and `spark.executor.extraJavaOptions` respectively."""
+
+    spark_env_vars: Optional[Dict[str, str]] = None
+    """An object containing a set of optional, user-specified environment variable key-value pairs.
+    Please note that key-value pair of the form (X,Y) will be exported as is (i.e., `export X='Y'`)
+    while launching the driver and workers.
+    
+    In order to specify an additional set of `SPARK_DAEMON_JAVA_OPTS`, we recommend appending them
+    to `$SPARK_DAEMON_JAVA_OPTS` as shown in the example below. This ensures that all default
+    databricks managed environmental variables are included as well.
+    
+    Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m", "SPARK_LOCAL_DIRS":
+    "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS": "$SPARK_DAEMON_JAVA_OPTS
+    -Dspark.shuffle.service.enabled=true"}`"""
+
+    spark_version: Optional[str] = None
+    """The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of available Spark versions can
+    be retrieved by using the :method:clusters/sparkVersions API call."""
+
+    ssh_public_keys: Optional[List[str]] = None
+    """SSH public key contents that will be added to each Spark node in this cluster. The corresponding
+    private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can
+    be specified."""
+
+    workload_type: Optional[WorkloadType] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateClusterResource into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.autoscale: body['autoscale'] = self.autoscale.as_dict()
+        if self.autotermination_minutes is not None:
+            body['autotermination_minutes'] = self.autotermination_minutes
+        if self.aws_attributes: body['aws_attributes'] = self.aws_attributes.as_dict()
+        if self.azure_attributes: body['azure_attributes'] = self.azure_attributes.as_dict()
+        if self.cluster_log_conf: body['cluster_log_conf'] = self.cluster_log_conf.as_dict()
+        if self.cluster_name is not None: body['cluster_name'] = self.cluster_name
+        if self.custom_tags: body['custom_tags'] = self.custom_tags
+        if self.data_security_mode is not None: body['data_security_mode'] = self.data_security_mode.value
+        if self.docker_image: body['docker_image'] = self.docker_image.as_dict()
+        if self.driver_instance_pool_id is not None:
+            body['driver_instance_pool_id'] = self.driver_instance_pool_id
+        if self.driver_node_type_id is not None: body['driver_node_type_id'] = self.driver_node_type_id
+        if self.enable_elastic_disk is not None: body['enable_elastic_disk'] = self.enable_elastic_disk
+        if self.enable_local_disk_encryption is not None:
+            body['enable_local_disk_encryption'] = self.enable_local_disk_encryption
+        if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes.as_dict()
+        if self.init_scripts: body['init_scripts'] = [v.as_dict() for v in self.init_scripts]
+        if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
+        if self.num_workers is not None: body['num_workers'] = self.num_workers
+        if self.policy_id is not None: body['policy_id'] = self.policy_id
+        if self.runtime_engine is not None: body['runtime_engine'] = self.runtime_engine.value
+        if self.single_user_name is not None: body['single_user_name'] = self.single_user_name
+        if self.spark_conf: body['spark_conf'] = self.spark_conf
+        if self.spark_env_vars: body['spark_env_vars'] = self.spark_env_vars
+        if self.spark_version is not None: body['spark_version'] = self.spark_version
+        if self.ssh_public_keys: body['ssh_public_keys'] = [v for v in self.ssh_public_keys]
+        if self.workload_type: body['workload_type'] = self.workload_type.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateClusterResource:
+        """Deserializes the UpdateClusterResource from a dictionary."""
+        return cls(autoscale=_from_dict(d, 'autoscale', AutoScale),
+                   autotermination_minutes=d.get('autotermination_minutes', None),
+                   aws_attributes=_from_dict(d, 'aws_attributes', AwsAttributes),
+                   azure_attributes=_from_dict(d, 'azure_attributes', AzureAttributes),
+                   cluster_log_conf=_from_dict(d, 'cluster_log_conf', ClusterLogConf),
+                   cluster_name=d.get('cluster_name', None),
+                   custom_tags=d.get('custom_tags', None),
+                   data_security_mode=_enum(d, 'data_security_mode', DataSecurityMode),
+                   docker_image=_from_dict(d, 'docker_image', DockerImage),
+                   driver_instance_pool_id=d.get('driver_instance_pool_id', None),
+                   driver_node_type_id=d.get('driver_node_type_id', None),
+                   enable_elastic_disk=d.get('enable_elastic_disk', None),
+                   enable_local_disk_encryption=d.get('enable_local_disk_encryption', None),
+                   gcp_attributes=_from_dict(d, 'gcp_attributes', GcpAttributes),
+                   init_scripts=_repeated_dict(d, 'init_scripts', InitScriptInfo),
+                   instance_pool_id=d.get('instance_pool_id', None),
+                   node_type_id=d.get('node_type_id', None),
+                   num_workers=d.get('num_workers', None),
+                   policy_id=d.get('policy_id', None),
+                   runtime_engine=_enum(d, 'runtime_engine', RuntimeEngine),
+                   single_user_name=d.get('single_user_name', None),
+                   spark_conf=d.get('spark_conf', None),
+                   spark_env_vars=d.get('spark_env_vars', None),
+                   spark_version=d.get('spark_version', None),
+                   ssh_public_keys=d.get('ssh_public_keys', None),
+                   workload_type=_from_dict(d, 'workload_type', WorkloadType))
+
+
+@dataclass
+class UpdateClusterResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateClusterResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateClusterResponse:
+        """Deserializes the UpdateClusterResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class UpdateResponse:
 
     def as_dict(self) -> dict:
@@ -5960,21 +6221,18 @@ class ClusterPoliciesAPI:
         self._api = api_client
 
     def create(self,
-               name: str,
                *,
                definition: Optional[str] = None,
                description: Optional[str] = None,
                libraries: Optional[List[Library]] = None,
                max_clusters_per_user: Optional[int] = None,
+               name: Optional[str] = None,
                policy_family_definition_overrides: Optional[str] = None,
                policy_family_id: Optional[str] = None) -> CreatePolicyResponse:
         """Create a new policy.
         
         Creates a new policy with prescribed settings.
         
-        :param name: str
-          Cluster Policy name requested by the user. This has to be unique. Length must be between 1 and 100
-          characters.
         :param definition: str (optional)
           Policy definition document expressed in [Databricks Cluster Policy Definition Language].
           
@@ -5987,6 +6245,9 @@ class ClusterPoliciesAPI:
         :param max_clusters_per_user: int (optional)
           Max number of clusters per user that can be active using this policy. If not present, there is no
           max limit.
+        :param name: str (optional)
+          Cluster Policy name requested by the user. This has to be unique. Length must be between 1 and 100
+          characters.
         :param policy_family_definition_overrides: str (optional)
           Policy definition JSON document expressed in [Databricks Policy Definition Language]. The JSON
           document must be passed as a string and cannot be embedded in the requests.
@@ -6036,12 +6297,12 @@ class ClusterPoliciesAPI:
 
     def edit(self,
              policy_id: str,
-             name: str,
              *,
              definition: Optional[str] = None,
              description: Optional[str] = None,
              libraries: Optional[List[Library]] = None,
              max_clusters_per_user: Optional[int] = None,
+             name: Optional[str] = None,
              policy_family_definition_overrides: Optional[str] = None,
              policy_family_id: Optional[str] = None):
         """Update a cluster policy.
@@ -6051,9 +6312,6 @@ class ClusterPoliciesAPI:
         
         :param policy_id: str
           The ID of the policy to update.
-        :param name: str
-          Cluster Policy name requested by the user. This has to be unique. Length must be between 1 and 100
-          characters.
         :param definition: str (optional)
           Policy definition document expressed in [Databricks Cluster Policy Definition Language].
           
@@ -6066,6 +6324,9 @@ class ClusterPoliciesAPI:
         :param max_clusters_per_user: int (optional)
           Max number of clusters per user that can be active using this policy. If not present, there is no
           max limit.
+        :param name: str (optional)
+          Cluster Policy name requested by the user. This has to be unique. Length must be between 1 and 100
+          characters.
         :param policy_family_definition_overrides: str (optional)
           Policy definition JSON document expressed in [Databricks Policy Definition Language]. The JSON
           document must be passed as a string and cannot be embedded in the requests.
@@ -6103,7 +6364,7 @@ class ClusterPoliciesAPI:
         Get a cluster policy entity. Creation and editing is available to admins only.
         
         :param policy_id: str
-          Canonical unique identifier for the cluster policy.
+          Canonical unique identifier for the Cluster Policy.
         
         :returns: :class:`Policy`
         """
@@ -7275,6 +7536,57 @@ class ClustersAPI:
 
         self._api.do('POST', '/api/2.1/clusters/unpin', body=body, headers=headers)
 
+    def update(self,
+               cluster_id: str,
+               update_mask: str,
+               *,
+               cluster: Optional[UpdateClusterResource] = None) -> Wait[ClusterDetails]:
+        """Update cluster configuration (partial).
+        
+        Updates the configuration of a cluster to match the partial set of attributes and size. Denote which
+        fields to update using the `update_mask` field in the request body. A cluster can be updated if it is
+        in a `RUNNING` or `TERMINATED` state. If a cluster is updated while in a `RUNNING` state, it will be
+        restarted so that the new attributes can take effect. If a cluster is updated while in a `TERMINATED`
+        state, it will remain `TERMINATED`. The updated attributes will take effect the next time the cluster
+        is started using the `clusters/start` API. Attempts to update a cluster in any other state will be
+        rejected with an `INVALID_STATE` error code. Clusters created by the Databricks Jobs service cannot be
+        updated.
+        
+        :param cluster_id: str
+          ID of the cluster.
+        :param update_mask: str
+          Specifies which fields of the cluster will be updated. This is required in the POST request. The
+          update mask should be supplied as a single string. To specify multiple fields, separate them with
+          commas (no spaces). To delete a field from a cluster configuration, add it to the `update_mask`
+          string but omit it from the `cluster` object.
+        :param cluster: :class:`UpdateClusterResource` (optional)
+          The cluster to be updated.
+        
+        :returns:
+          Long-running operation waiter for :class:`ClusterDetails`.
+          See :method:wait_get_cluster_running for more details.
+        """
+        body = {}
+        if cluster is not None: body['cluster'] = cluster.as_dict()
+        if cluster_id is not None: body['cluster_id'] = cluster_id
+        if update_mask is not None: body['update_mask'] = update_mask
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        op_response = self._api.do('POST', '/api/2.1/clusters/update', body=body, headers=headers)
+        return Wait(self.wait_get_cluster_running,
+                    response=UpdateClusterResponse.from_dict(op_response),
+                    cluster_id=cluster_id)
+
+    def update_and_wait(
+        self,
+        cluster_id: str,
+        update_mask: str,
+        *,
+        cluster: Optional[UpdateClusterResource] = None,
+        timeout=timedelta(minutes=20)) -> ClusterDetails:
+        return self.update(cluster=cluster, cluster_id=cluster_id,
+                           update_mask=update_mask).result(timeout=timeout)
+
     def update_permissions(
             self,
             cluster_id: str,
@@ -8286,19 +8598,27 @@ class PolicyFamiliesAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def get(self, policy_family_id: str) -> PolicyFamily:
+    def get(self, policy_family_id: str, *, version: Optional[int] = None) -> PolicyFamily:
         """Get policy family information.
         
-        Retrieve the information for an policy family based on its identifier.
+        Retrieve the information for an policy family based on its identifier and version
         
         :param policy_family_id: str
+          The family ID about which to retrieve information.
+        :param version: int (optional)
+          The version number for the family to fetch. Defaults to the latest version.
         
         :returns: :class:`PolicyFamily`
         """
 
+        query = {}
+        if version is not None: query['version'] = version
         headers = {'Accept': 'application/json', }
 
-        res = self._api.do('GET', f'/api/2.0/policy-families/{policy_family_id}', headers=headers)
+        res = self._api.do('GET',
+                           f'/api/2.0/policy-families/{policy_family_id}',
+                           query=query,
+                           headers=headers)
         return PolicyFamily.from_dict(res)
 
     def list(self,
@@ -8307,10 +8627,11 @@ class PolicyFamiliesAPI:
              page_token: Optional[str] = None) -> Iterator[PolicyFamily]:
         """List policy families.
         
-        Retrieve a list of policy families. This API is paginated.
+        Returns the list of policy definition types available to use at their latest version. This API is
+        paginated.
         
         :param max_results: int (optional)
-          The max number of policy families to return.
+          Maximum number of policy families to return.
         :param page_token: str (optional)
           A token that can be used to get the next page of results.
         

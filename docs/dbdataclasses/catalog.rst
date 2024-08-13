@@ -647,6 +647,17 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: PARAM
       :value: "PARAM"
 
+.. py:class:: GetBindingsSecurableType
+
+   .. py:attribute:: CATALOG
+      :value: "CATALOG"
+
+   .. py:attribute:: EXTERNAL_LOCATION
+      :value: "EXTERNAL_LOCATION"
+
+   .. py:attribute:: STORAGE_CREDENTIAL
+      :value: "STORAGE_CREDENTIAL"
+
 .. autoclass:: GetMetastoreSummaryResponse
    :members:
    :undoc-members:
@@ -940,9 +951,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: ONLINE_PIPELINE_FAILED
       :value: "ONLINE_PIPELINE_FAILED"
 
-   .. py:attribute:: ONLINE_TABLE_STATE_UNSPECIFIED
-      :value: "ONLINE_TABLE_STATE_UNSPECIFIED"
-
    .. py:attribute:: ONLINE_TRIGGERED_UPDATE
       :value: "ONLINE_TRIGGERED_UPDATE"
 
@@ -1051,6 +1059,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: EXECUTE
       :value: "EXECUTE"
+
+   .. py:attribute:: MANAGE
+      :value: "MANAGE"
 
    .. py:attribute:: MANAGE_ALLOWLIST
       :value: "MANAGE_ALLOWLIST"
@@ -1303,6 +1314,17 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: UpdateAssignmentResponse
    :members:
    :undoc-members:
+
+.. py:class:: UpdateBindingsSecurableType
+
+   .. py:attribute:: CATALOG
+      :value: "CATALOG"
+
+   .. py:attribute:: EXTERNAL_LOCATION
+      :value: "EXTERNAL_LOCATION"
+
+   .. py:attribute:: STORAGE_CREDENTIAL
+      :value: "STORAGE_CREDENTIAL"
 
 .. autoclass:: UpdateCatalog
    :members:

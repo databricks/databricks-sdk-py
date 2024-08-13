@@ -15,7 +15,7 @@ from ._internal import Wait, _enum, _from_dict, _repeated_dict
 
 _LOG = logging.getLogger('databricks.sdk')
 
-from databricks.sdk.service import compute, iam
+from databricks.sdk.service import compute
 
 # all definitions in this file are in alphabetical order
 
@@ -469,7 +469,7 @@ class Continuous:
 
 @dataclass
 class CreateJob:
-    access_control_list: Optional[List[iam.AccessControlRequest]] = None
+    access_control_list: Optional[List[JobAccessControlRequest]] = None
     """List of permissions to set on the job."""
 
     continuous: Optional[Continuous] = None
@@ -603,7 +603,7 @@ class CreateJob:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateJob:
         """Deserializes the CreateJob from a dictionary."""
-        return cls(access_control_list=_repeated_dict(d, 'access_control_list', iam.AccessControlRequest),
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list', JobAccessControlRequest),
                    continuous=_from_dict(d, 'continuous', Continuous),
                    deployment=_from_dict(d, 'deployment', JobDeployment),
                    description=d.get('description', None),
@@ -4202,7 +4202,7 @@ class SqlTaskSubscription:
 
 @dataclass
 class SubmitRun:
-    access_control_list: Optional[List[iam.AccessControlRequest]] = None
+    access_control_list: Optional[List[JobAccessControlRequest]] = None
     """List of permissions to set on the job."""
 
     email_notifications: Optional[JobEmailNotifications] = None
@@ -4282,7 +4282,7 @@ class SubmitRun:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> SubmitRun:
         """Deserializes the SubmitRun from a dictionary."""
-        return cls(access_control_list=_repeated_dict(d, 'access_control_list', iam.AccessControlRequest),
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list', JobAccessControlRequest),
                    email_notifications=_from_dict(d, 'email_notifications', JobEmailNotifications),
                    environments=_repeated_dict(d, 'environments', JobEnvironment),
                    git_source=_from_dict(d, 'git_source', GitSource),
@@ -5171,7 +5171,7 @@ class JobsAPI:
 
     def create(self,
                *,
-               access_control_list: Optional[List[iam.AccessControlRequest]] = None,
+               access_control_list: Optional[List[JobAccessControlRequest]] = None,
                continuous: Optional[Continuous] = None,
                deployment: Optional[JobDeployment] = None,
                description: Optional[str] = None,
@@ -5198,7 +5198,7 @@ class JobsAPI:
         
         Create a new job.
         
-        :param access_control_list: List[:class:`AccessControlRequest`] (optional)
+        :param access_control_list: List[:class:`JobAccessControlRequest`] (optional)
           List of permissions to set on the job.
         :param continuous: :class:`Continuous` (optional)
           An optional continuous property for this job. The continuous property will ensure that there is
@@ -5946,7 +5946,7 @@ class JobsAPI:
 
     def submit(self,
                *,
-               access_control_list: Optional[List[iam.AccessControlRequest]] = None,
+               access_control_list: Optional[List[JobAccessControlRequest]] = None,
                email_notifications: Optional[JobEmailNotifications] = None,
                environments: Optional[List[JobEnvironment]] = None,
                git_source: Optional[GitSource] = None,
@@ -5965,7 +5965,7 @@ class JobsAPI:
         Runs submitted using this endpoint don’t display in the UI. Use the `jobs/runs/get` API to check the
         run state after the job is submitted.
         
-        :param access_control_list: List[:class:`AccessControlRequest`] (optional)
+        :param access_control_list: List[:class:`JobAccessControlRequest`] (optional)
           List of permissions to set on the job.
         :param email_notifications: :class:`JobEmailNotifications` (optional)
           An optional set of email addresses notified when the run begins or completes.
@@ -6040,7 +6040,7 @@ class JobsAPI:
     def submit_and_wait(
         self,
         *,
-        access_control_list: Optional[List[iam.AccessControlRequest]] = None,
+        access_control_list: Optional[List[JobAccessControlRequest]] = None,
         email_notifications: Optional[JobEmailNotifications] = None,
         environments: Optional[List[JobEnvironment]] = None,
         git_source: Optional[GitSource] = None,

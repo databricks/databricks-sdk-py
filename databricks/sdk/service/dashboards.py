@@ -208,7 +208,6 @@ class Dashboard:
 class DashboardView(Enum):
 
     DASHBOARD_VIEW_BASIC = 'DASHBOARD_VIEW_BASIC'
-    DASHBOARD_VIEW_FULL = 'DASHBOARD_VIEW_FULL'
 
 
 @dataclass
@@ -381,7 +380,9 @@ class GenieMessage:
     """MesssageStatus. The possible values are: * `FETCHING_METADATA`: Fetching metadata from the data
     sources. * `ASKING_AI`: Waiting for the LLM to respond to the users question. *
     `EXECUTING_QUERY`: Executing AI provided SQL query. Get the SQL query result by calling
-    [getMessageQueryResult](:method:genie/getMessageQueryResult) API. * `FAILED`: Generating a
+    [getMessageQueryResult](:method:genie/getMessageQueryResult) API. **Important: The message
+    status will stay in the `EXECUTING_QUERY` until a client calls
+    [getMessageQueryResult](:method:genie/getMessageQueryResult)**. * `FAILED`: Generating a
     response or the executing the query failed. Please see `error` field. * `COMPLETED`: Message
     processing is completed. Results are in the `attachments` field. Get the SQL query result by
     calling [getMessageQueryResult](:method:genie/getMessageQueryResult) API. * `SUBMITTED`: Message
@@ -612,7 +613,9 @@ class MessageStatus(Enum):
     """MesssageStatus. The possible values are: * `FETCHING_METADATA`: Fetching metadata from the data
     sources. * `ASKING_AI`: Waiting for the LLM to respond to the users question. *
     `EXECUTING_QUERY`: Executing AI provided SQL query. Get the SQL query result by calling
-    [getMessageQueryResult](:method:genie/getMessageQueryResult) API. * `FAILED`: Generating a
+    [getMessageQueryResult](:method:genie/getMessageQueryResult) API. **Important: The message
+    status will stay in the `EXECUTING_QUERY` until a client calls
+    [getMessageQueryResult](:method:genie/getMessageQueryResult)**. * `FAILED`: Generating a
     response or the executing the query failed. Please see `error` field. * `COMPLETED`: Message
     processing is completed. Results are in the `attachments` field. Get the SQL query result by
     calling [getMessageQueryResult](:method:genie/getMessageQueryResult) API. * `SUBMITTED`: Message
@@ -721,6 +724,8 @@ class QueryAttachment:
     description: Optional[str] = None
     """Description of the query"""
 
+    id: Optional[str] = None
+
     instruction_id: Optional[str] = None
     """If the query was created on an instruction (trusted asset) we link to the id"""
 
@@ -741,6 +746,7 @@ class QueryAttachment:
         """Serializes the QueryAttachment into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.description is not None: body['description'] = self.description
+        if self.id is not None: body['id'] = self.id
         if self.instruction_id is not None: body['instruction_id'] = self.instruction_id
         if self.instruction_title is not None: body['instruction_title'] = self.instruction_title
         if self.last_updated_timestamp is not None:
@@ -753,6 +759,7 @@ class QueryAttachment:
     def from_dict(cls, d: Dict[str, any]) -> QueryAttachment:
         """Deserializes the QueryAttachment from a dictionary."""
         return cls(description=d.get('description', None),
+                   id=d.get('id', None),
                    instruction_id=d.get('instruction_id', None),
                    instruction_title=d.get('instruction_title', None),
                    last_updated_timestamp=d.get('last_updated_timestamp', None),
@@ -960,16 +967,19 @@ class TextAttachment:
     content: Optional[str] = None
     """AI generated message"""
 
+    id: Optional[str] = None
+
     def as_dict(self) -> dict:
         """Serializes the TextAttachment into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.content is not None: body['content'] = self.content
+        if self.id is not None: body['id'] = self.id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> TextAttachment:
         """Deserializes the TextAttachment from a dictionary."""
-        return cls(content=d.get('content', None))
+        return cls(content=d.get('content', None), id=d.get('id', None))
 
 
 @dataclass
@@ -1505,8 +1515,7 @@ class LakeviewAPI:
           The flag to include dashboards located in the trash. If unspecified, only active dashboards will be
           returned.
         :param view: :class:`DashboardView` (optional)
-          Indicates whether to include all metadata from the dashboard in the response. If unset, the response
-          defaults to `DASHBOARD_VIEW_BASIC` which only includes summary metadata from the dashboard.
+          `DASHBOARD_VIEW_BASIC`only includes summary metadata from the dashboard.
         
         :returns: Iterator over :class:`Dashboard`
         """

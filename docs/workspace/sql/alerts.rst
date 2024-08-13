@@ -8,12 +8,8 @@
     periodically runs a query, evaluates a condition of its result, and notifies one or more users and/or
     notification destinations if the condition was met. Alerts can be scheduled using the `sql_task` type of
     the Jobs API, e.g. :method:jobs/create.
-    
-    **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
-    
-    [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
 
-    .. py:method:: create(name: str, options: AlertOptions, query_id: str [, parent: Optional[str], rearm: Optional[int]]) -> Alert
+    .. py:method:: create( [, alert: Optional[CreateAlertRequestAlert]]) -> Alert
 
 
         Usage:
@@ -29,60 +25,48 @@
             
             srcs = w.data_sources.list()
             
-            query = w.queries.create(name=f'sdk-{time.time_ns()}',
-                                     data_source_id=srcs[0].id,
-                                     description="test query from Go SDK",
-                                     query="SELECT 1")
+            query = w.queries.create(query=sql.CreateQueryRequestQuery(display_name=f'sdk-{time.time_ns()}',
+                                                                       warehouse_id=srcs[0].warehouse_id,
+                                                                       description="test query from Go SDK",
+                                                                       query_text="SELECT 1"))
             
-            alert = w.alerts.create(options=sql.AlertOptions(column="1", op="==", value="1"),
-                                    name=f'sdk-{time.time_ns()}',
-                                    query_id=query.id)
+            alert = w.alerts.create(
+                alert=sql.CreateAlertRequestAlert(condition=sql.AlertCondition(operand=sql.AlertConditionOperand(
+                    column=sql.AlertOperandColumn(name="1")),
+                                                                               op=sql.AlertOperator.EQUAL,
+                                                                               threshold=sql.AlertConditionThreshold(
+                                                                                   value=sql.AlertOperandValue(
+                                                                                       double_value=1))),
+                                                  display_name=f'sdk-{time.time_ns()}',
+                                                  query_id=query.id))
             
             # cleanup
-            w.queries.delete(query_id=query.id)
-            w.alerts.delete(alert_id=alert.id)
+            w.queries.delete(id=query.id)
+            w.alerts.delete(id=alert.id)
 
         Create an alert.
         
-        Creates an alert. An alert is a Databricks SQL object that periodically runs a query, evaluates a
-        condition of its result, and notifies users or notification destinations if the condition was met.
+        Creates an alert.
         
-        **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
-        
-        [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
-        
-        :param name: str
-          Name of the alert.
-        :param options: :class:`AlertOptions`
-          Alert configuration options.
-        :param query_id: str
-          Query ID.
-        :param parent: str (optional)
-          The identifier of the workspace folder containing the object.
-        :param rearm: int (optional)
-          Number of seconds after being triggered before the alert rearms itself and can be triggered again.
-          If `null`, alert will never be triggered again.
+        :param alert: :class:`CreateAlertRequestAlert` (optional)
         
         :returns: :class:`Alert`
         
 
-    .. py:method:: delete(alert_id: str)
+    .. py:method:: delete(id: str)
 
         Delete an alert.
         
-        Deletes an alert. Deleted alerts are no longer accessible and cannot be restored. **Note**: Unlike
-        queries and dashboards, alerts cannot be moved to the trash.
+        Moves an alert to the trash. Trashed alerts immediately disappear from searches and list views, and
+        can no longer trigger. You can restore a trashed alert through the UI. A trashed alert is permanently
+        deleted after 30 days.
         
-        **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
-        
-        [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
-        
-        :param alert_id: str
+        :param id: str
         
         
         
 
-    .. py:method:: get(alert_id: str) -> Alert
+    .. py:method:: get(id: str) -> Alert
 
 
         Usage:
@@ -98,35 +82,37 @@
             
             srcs = w.data_sources.list()
             
-            query = w.queries.create(name=f'sdk-{time.time_ns()}',
-                                     data_source_id=srcs[0].id,
-                                     description="test query from Go SDK",
-                                     query="SELECT 1")
+            query = w.queries.create(query=sql.CreateQueryRequestQuery(display_name=f'sdk-{time.time_ns()}',
+                                                                       warehouse_id=srcs[0].warehouse_id,
+                                                                       description="test query from Go SDK",
+                                                                       query_text="SELECT 1"))
             
-            alert = w.alerts.create(options=sql.AlertOptions(column="1", op="==", value="1"),
-                                    name=f'sdk-{time.time_ns()}',
-                                    query_id=query.id)
+            alert = w.alerts.create(
+                alert=sql.CreateAlertRequestAlert(condition=sql.AlertCondition(operand=sql.AlertConditionOperand(
+                    column=sql.AlertOperandColumn(name="1")),
+                                                                               op=sql.AlertOperator.EQUAL,
+                                                                               threshold=sql.AlertConditionThreshold(
+                                                                                   value=sql.AlertOperandValue(
+                                                                                       double_value=1))),
+                                                  display_name=f'sdk-{time.time_ns()}',
+                                                  query_id=query.id))
             
-            by_id = w.alerts.get(alert_id=alert.id)
+            by_id = w.alerts.get(id=alert.id)
             
             # cleanup
-            w.queries.delete(query_id=query.id)
-            w.alerts.delete(alert_id=alert.id)
+            w.queries.delete(id=query.id)
+            w.alerts.delete(id=alert.id)
 
         Get an alert.
         
         Gets an alert.
         
-        **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
-        
-        [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
-        
-        :param alert_id: str
+        :param id: str
         
         :returns: :class:`Alert`
         
 
-    .. py:method:: list() -> Iterator[Alert]
+    .. py:method:: list( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[ListAlertsResponseAlert]
 
 
         Usage:
@@ -134,23 +120,24 @@
         .. code-block::
 
             from databricks.sdk import WorkspaceClient
+            from databricks.sdk.service import sql
             
             w = WorkspaceClient()
             
-            all = w.alerts.list()
+            all = w.alerts.list(sql.ListAlertsRequest())
 
-        Get alerts.
+        List alerts.
         
-        Gets a list of alerts.
+        Gets a list of alerts accessible to the user, ordered by creation time. **Warning:** Calling this API
+        concurrently 10 or more times could result in throttling, service degradation, or a temporary ban.
         
-        **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+        :param page_size: int (optional)
+        :param page_token: str (optional)
         
-        [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
-        
-        :returns: Iterator over :class:`Alert`
+        :returns: Iterator over :class:`ListAlertsResponseAlert`
         
 
-    .. py:method:: update(alert_id: str, name: str, options: AlertOptions, query_id: str [, rearm: Optional[int]])
+    .. py:method:: update(id: str, update_mask: str [, alert: Optional[UpdateAlertRequestAlert]]) -> Alert
 
 
         Usage:
@@ -166,42 +153,39 @@
             
             srcs = w.data_sources.list()
             
-            query = w.queries.create(name=f'sdk-{time.time_ns()}',
-                                     data_source_id=srcs[0].id,
-                                     description="test query from Go SDK",
-                                     query="SELECT 1")
+            query = w.queries.create(query=sql.CreateQueryRequestQuery(display_name=f'sdk-{time.time_ns()}',
+                                                                       warehouse_id=srcs[0].warehouse_id,
+                                                                       description="test query from Go SDK",
+                                                                       query_text="SELECT 1"))
             
-            alert = w.alerts.create(options=sql.AlertOptions(column="1", op="==", value="1"),
-                                    name=f'sdk-{time.time_ns()}',
-                                    query_id=query.id)
+            alert = w.alerts.create(
+                alert=sql.CreateAlertRequestAlert(condition=sql.AlertCondition(operand=sql.AlertConditionOperand(
+                    column=sql.AlertOperandColumn(name="1")),
+                                                                               op=sql.AlertOperator.EQUAL,
+                                                                               threshold=sql.AlertConditionThreshold(
+                                                                                   value=sql.AlertOperandValue(
+                                                                                       double_value=1))),
+                                                  display_name=f'sdk-{time.time_ns()}',
+                                                  query_id=query.id))
             
-            w.alerts.update(options=sql.AlertOptions(column="1", op="==", value="1"),
-                            alert_id=alert.id,
-                            name=f'sdk-{time.time_ns()}',
-                            query_id=query.id)
+            _ = w.alerts.update(id=alert.id,
+                                alert=sql.UpdateAlertRequestAlert(display_name=f'sdk-{time.time_ns()}'),
+                                update_mask="display_name")
             
             # cleanup
-            w.queries.delete(query_id=query.id)
-            w.alerts.delete(alert_id=alert.id)
+            w.queries.delete(id=query.id)
+            w.alerts.delete(id=alert.id)
 
         Update an alert.
         
         Updates an alert.
         
-        **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+        :param id: str
+        :param update_mask: str
+          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
+          setting payload will be updated. The field mask needs to be supplied as single string. To specify
+          multiple fields in the field mask, use comma as the separator (no space).
+        :param alert: :class:`UpdateAlertRequestAlert` (optional)
         
-        [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
-        
-        :param alert_id: str
-        :param name: str
-          Name of the alert.
-        :param options: :class:`AlertOptions`
-          Alert configuration options.
-        :param query_id: str
-          Query ID.
-        :param rearm: int (optional)
-          Number of seconds after being triggered before the alert rearms itself and can be triggered again.
-          If `null`, alert will never be triggered again.
-        
-        
+        :returns: :class:`Alert`
         
