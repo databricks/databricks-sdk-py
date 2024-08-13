@@ -1,8 +1,8 @@
 import os
 import platform
-
 import pytest
 
+from subprocess import CompletedProcess
 from databricks.sdk import useragent
 from databricks.sdk.config import Config, with_product, with_user_agent_extra
 from databricks.sdk.version import __version__
@@ -77,6 +77,13 @@ def test_config_copy_deep_copies_user_agent_other_info(config):
     assert "blueprint/0.4.6" in config.user_agent
     assert "blueprint/0.4.6" in config_copy.user_agent
     useragent._reset_extra(original_extra)
+
+
+def test_config_deep_copy(requests_mock, monkeypatch, mocker, tmp_path):
+    mocker.patch('subprocess.run',return_value=CompletedProcess(args=[], returncode=0, stdout=b'{\n  "access_token": "...",\n  "token_type": "Bearer",\n  "expiry": "2024-08-13T00:00:00.000000+00:00"\n}', stderr=b''))
+    config = Config(host="https://abc123.azuredatabricks.net", auth_type="databricks-cli")
+    config_copy = config.deep_copy()
+    assert config_copy.host == config.host
 
 
 def test_load_azure_tenant_id_404(requests_mock, monkeypatch):
