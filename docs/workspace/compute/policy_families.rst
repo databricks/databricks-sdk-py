@@ -14,7 +14,7 @@
     policy family. Cluster policies created using a policy family inherit the policy family's policy
     definition.
 
-    .. py:method:: get(policy_family_id: str) -> PolicyFamily
+    .. py:method:: get(policy_family_id: str [, version: Optional[int]]) -> PolicyFamily
 
 
         Usage:
@@ -32,9 +32,12 @@
 
         Get policy family information.
         
-        Retrieve the information for an policy family based on its identifier.
+        Retrieve the information for an policy family based on its identifier and version
         
         :param policy_family_id: str
+          The family ID about which to retrieve information.
+        :param version: int (optional)
+          The version number for the family to fetch. Defaults to the latest version.
         
         :returns: :class:`PolicyFamily`
         
@@ -55,10 +58,11 @@
 
         List policy families.
         
-        Retrieve a list of policy families. This API is paginated.
+        Returns the list of policy definition types available to use at their latest version. This API is
+        paginated.
         
         :param max_results: int (optional)
-          The max number of policy families to return.
+          Maximum number of policy families to return.
         :param page_token: str (optional)
           A token that can be used to get the next page of results.
         

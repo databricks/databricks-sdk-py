@@ -18,7 +18,7 @@
     recipient follows the activation link to download the credential file, and then uses the credential file
     to establish a secure connection to receive the shared data. This sharing mode is called **open sharing**.
 
-    .. py:method:: create(name: str, authentication_type: AuthenticationType [, comment: Optional[str], data_recipient_global_metastore_id: Optional[str], ip_access_list: Optional[IpAccessList], owner: Optional[str], properties_kvpairs: Optional[SecurablePropertiesKvPairs], sharing_code: Optional[str]]) -> RecipientInfo
+    .. py:method:: create(name: str, authentication_type: AuthenticationType [, comment: Optional[str], data_recipient_global_metastore_id: Optional[str], expiration_time: Optional[int], ip_access_list: Optional[IpAccessList], owner: Optional[str], properties_kvpairs: Optional[SecurablePropertiesKvPairs], sharing_code: Optional[str]]) -> RecipientInfo
 
 
         Usage:
@@ -51,6 +51,8 @@
           The global Unity Catalog metastore id provided by the data recipient. This field is required when
           the __authentication_type__ is **DATABRICKS**. The identifier is of format
           __cloud__:__region__:__metastore-uuid__.
+        :param expiration_time: int (optional)
+          Expiration timestamp of the token, in epoch milliseconds.
         :param ip_access_list: :class:`IpAccessList` (optional)
           IP Access List
         :param owner: str (optional)
@@ -108,7 +110,7 @@
         :returns: :class:`RecipientInfo`
         
 
-    .. py:method:: list( [, data_recipient_global_metastore_id: Optional[str]]) -> Iterator[RecipientInfo]
+    .. py:method:: list( [, data_recipient_global_metastore_id: Optional[str], max_results: Optional[int], page_token: Optional[str]]) -> Iterator[RecipientInfo]
 
 
         Usage:
@@ -132,6 +134,16 @@
         :param data_recipient_global_metastore_id: str (optional)
           If not provided, all recipients will be returned. If no recipients exist with this ID, no results
           will be returned.
+        :param max_results: int (optional)
+          Maximum number of recipients to return. - when set to 0, the page length is set to a server
+          configured value (recommended); - when set to a value greater than 0, the page length is the minimum
+          of this value and a server configured value; - when set to a value less than 0, an invalid parameter
+          error is returned; - If not set, all valid recipients are returned (not recommended). - Note: The
+          number of returned recipients might be less than the specified max_results size, even zero. The only
+          definitive indication that no further recipients can be fetched is when the next_page_token is unset
+          from the response.
+        :param page_token: str (optional)
+          Opaque pagination token to go to next page based on previous query.
         
         :returns: Iterator over :class:`RecipientInfo`
         
@@ -171,7 +183,7 @@
         :returns: :class:`RecipientInfo`
         
 
-    .. py:method:: share_permissions(name: str) -> GetRecipientSharePermissionsResponse
+    .. py:method:: share_permissions(name: str [, max_results: Optional[int], page_token: Optional[str]]) -> GetRecipientSharePermissionsResponse
 
 
         Usage:
@@ -198,11 +210,21 @@
         
         :param name: str
           The name of the Recipient.
+        :param max_results: int (optional)
+          Maximum number of permissions to return. - when set to 0, the page length is set to a server
+          configured value (recommended); - when set to a value greater than 0, the page length is the minimum
+          of this value and a server configured value; - when set to a value less than 0, an invalid parameter
+          error is returned; - If not set, all valid permissions are returned (not recommended). - Note: The
+          number of returned permissions might be less than the specified max_results size, even zero. The
+          only definitive indication that no further permissions can be fetched is when the next_page_token is
+          unset from the response.
+        :param page_token: str (optional)
+          Opaque pagination token to go to next page based on previous query.
         
         :returns: :class:`GetRecipientSharePermissionsResponse`
         
 
-    .. py:method:: update(name: str [, comment: Optional[str], ip_access_list: Optional[IpAccessList], new_name: Optional[str], owner: Optional[str], properties_kvpairs: Optional[SecurablePropertiesKvPairs]])
+    .. py:method:: update(name: str [, comment: Optional[str], expiration_time: Optional[int], ip_access_list: Optional[IpAccessList], new_name: Optional[str], owner: Optional[str], properties_kvpairs: Optional[SecurablePropertiesKvPairs]])
 
 
         Usage:
@@ -232,6 +254,8 @@
           Name of the recipient.
         :param comment: str (optional)
           Description about the recipient.
+        :param expiration_time: int (optional)
+          Expiration timestamp of the token, in epoch milliseconds.
         :param ip_access_list: :class:`IpAccessList` (optional)
           IP Access List
         :param new_name: str (optional)

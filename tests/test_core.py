@@ -23,6 +23,7 @@ from databricks.sdk.credentials_provider import (CliTokenSource,
                                                  databricks_cli)
 from databricks.sdk.environments import (ENVIRONMENTS, AzureEnvironment, Cloud,
                                          DatabricksEnvironment)
+from databricks.sdk.oauth import Token
 from databricks.sdk.service.catalog import PermissionsChange
 from databricks.sdk.service.iam import AccessControlRequest
 from databricks.sdk.version import __version__
@@ -67,9 +68,14 @@ def test_databricks_cli_token_parse_expiry(date_string, expected):
 
 
 def write_small_dummy_executable(path: pathlib.Path):
-    cli = path.joinpath('databricks')
-    cli.write_text('#!/bin/sh\necho "hello world"\n')
-    cli.chmod(0o755)
+    if platform.system() == "Windows":
+        cli = path.joinpath('databricks.exe')
+        cli.touch()
+        cli.write_text('@echo off\necho "hello world"\n')
+    else:
+        cli = path.joinpath('databricks')
+        cli.write_text('#!/bin/sh\necho "hello world"\n')
+        cli.chmod(0o755)
     assert cli.stat().st_size < 1024
     return cli
 
@@ -133,9 +139,15 @@ def test_databricks_cli_token_source_installed_legacy_with_symlink(config, monke
     dir1.mkdir()
     dir2.mkdir()
 
-    (dir1 / "databricks").symlink_to(write_small_dummy_executable(dir2))
+    if platform.system() == 'Windows':
+        (dir1 / "databricks.exe").symlink_to(write_small_dummy_executable(dir2))
+    else:
+        (dir1 / "databricks").symlink_to(write_small_dummy_executable(dir2))
 
-    monkeypatch.setenv('PATH', dir1.as_posix())
+    path = pathlib.Path(dir1)
+    path = str(path)
+    monkeypatch.setenv('PATH', path)
+
     with pytest.raises(FileNotFoundError, match="version <0.100.0 detected"):
         DatabricksCliTokenSource(config)
 
@@ -175,10 +187,19 @@ def test_databricks_cli_credential_provider_installed_legacy(config, monkeypatch
     assert databricks_cli(config) == None
 
 
-def test_databricks_cli_credential_provider_installed_new(config, monkeypatch, tmp_path):
+def test_databricks_cli_credential_provider_installed_new(config, monkeypatch, tmp_path, mocker):
+    get_mock = mocker.patch('databricks.sdk.credentials_provider.CliTokenSource.refresh',
+                            return_value=Token(access_token='token',
+                                               token_type='Bearer',
+                                               expiry=datetime(2023, 5, 22, 0, 0, 0)))
     write_large_dummy_executable(tmp_path)
-    monkeypatch.setenv('PATH', str(os.pathsep).join([tmp_path.as_posix(), os.environ['PATH']]))
+    path = str(os.pathsep).join([tmp_path.as_posix(), os.environ['PATH']])
+    path = pathlib.Path(path)
+    path = str(path)
+    monkeypatch.setenv('PATH', path)
+
     assert databricks_cli(config) is not None
+    assert get_mock.call_count == 1
 
 
 def test_extra_and_upstream_user_agent(monkeypatch):
@@ -324,13 +345,13 @@ def test_shares(config, requests_mock):
 
 
 def test_deletes(config, requests_mock):
-    requests_mock.delete("http://localhost/api/2.0/preview/sql/alerts/alertid",
+    requests_mock.delete("http://localhost/api/2.0/sql/alerts/alertId",
                          request_headers={"User-Agent": config.user_agent},
                          text="null",
                          )
 
     w = WorkspaceClient(config=config)
-    res = w.alerts.delete(alert_id="alertId")
+    res = w.alerts.delete(id="alertId")
 
     assert requests_mock.call_count == 1
     assert requests_mock.called

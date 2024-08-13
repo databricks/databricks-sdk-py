@@ -147,7 +147,6 @@ class ClusterAutoRestartMessageMaintenanceWindow:
 
 class ClusterAutoRestartMessageMaintenanceWindowDayOfWeek(Enum):
 
-    DAY_OF_WEEK_UNSPECIFIED = 'DAY_OF_WEEK_UNSPECIFIED'
     FRIDAY = 'FRIDAY'
     MONDAY = 'MONDAY'
     SATURDAY = 'SATURDAY'
@@ -192,7 +191,6 @@ class ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency(Enum):
     SECOND_AND_FOURTH_OF_MONTH = 'SECOND_AND_FOURTH_OF_MONTH'
     SECOND_OF_MONTH = 'SECOND_OF_MONTH'
     THIRD_OF_MONTH = 'THIRD_OF_MONTH'
-    WEEK_DAY_FREQUENCY_UNSPECIFIED = 'WEEK_DAY_FREQUENCY_UNSPECIFIED'
 
 
 @dataclass
@@ -281,7 +279,7 @@ class ComplianceSecurityProfileSetting:
 class ComplianceStandard(Enum):
     """Compliance stardard for SHIELD customers"""
 
-    COMPLIANCE_STANDARD_UNSPECIFIED = 'COMPLIANCE_STANDARD_UNSPECIFIED'
+    CANADA_PROTECTED_B = 'CANADA_PROTECTED_B'
     CYBER_ESSENTIAL_PLUS = 'CYBER_ESSENTIAL_PLUS'
     FEDRAMP_HIGH = 'FEDRAMP_HIGH'
     FEDRAMP_IL5 = 'FEDRAMP_IL5'
@@ -291,6 +289,38 @@ class ComplianceStandard(Enum):
     ITAR_EAR = 'ITAR_EAR'
     NONE = 'NONE'
     PCI_DSS = 'PCI_DSS'
+
+
+@dataclass
+class Config:
+    email: Optional[EmailConfig] = None
+
+    generic_webhook: Optional[GenericWebhookConfig] = None
+
+    microsoft_teams: Optional[MicrosoftTeamsConfig] = None
+
+    pagerduty: Optional[PagerdutyConfig] = None
+
+    slack: Optional[SlackConfig] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the Config into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.email: body['email'] = self.email.as_dict()
+        if self.generic_webhook: body['generic_webhook'] = self.generic_webhook.as_dict()
+        if self.microsoft_teams: body['microsoft_teams'] = self.microsoft_teams.as_dict()
+        if self.pagerduty: body['pagerduty'] = self.pagerduty.as_dict()
+        if self.slack: body['slack'] = self.slack.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> Config:
+        """Deserializes the Config from a dictionary."""
+        return cls(email=_from_dict(d, 'email', EmailConfig),
+                   generic_webhook=_from_dict(d, 'generic_webhook', GenericWebhookConfig),
+                   microsoft_teams=_from_dict(d, 'microsoft_teams', MicrosoftTeamsConfig),
+                   pagerduty=_from_dict(d, 'pagerduty', PagerdutyConfig),
+                   slack=_from_dict(d, 'slack', SlackConfig))
 
 
 @dataclass
@@ -365,6 +395,27 @@ class CreateNetworkConnectivityConfigRequest:
     def from_dict(cls, d: Dict[str, any]) -> CreateNetworkConnectivityConfigRequest:
         """Deserializes the CreateNetworkConnectivityConfigRequest from a dictionary."""
         return cls(name=d.get('name', None), region=d.get('region', None))
+
+
+@dataclass
+class CreateNotificationDestinationRequest:
+    config: Optional[Config] = None
+    """The configuration for the notification destination. Must wrap EXACTLY one of the nested configs."""
+
+    display_name: Optional[str] = None
+    """The display name for the notification destination."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CreateNotificationDestinationRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.config: body['config'] = self.config.as_dict()
+        if self.display_name is not None: body['display_name'] = self.display_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> CreateNotificationDestinationRequest:
+        """Deserializes the CreateNotificationDestinationRequest from a dictionary."""
+        return cls(config=_from_dict(d, 'config', Config), display_name=d.get('display_name', None))
 
 
 @dataclass
@@ -705,6 +756,46 @@ class DeleteRestrictWorkspaceAdminsSettingResponse:
         return cls(etag=d.get('etag', None))
 
 
+class DestinationType(Enum):
+
+    EMAIL = 'EMAIL'
+    MICROSOFT_TEAMS = 'MICROSOFT_TEAMS'
+    PAGERDUTY = 'PAGERDUTY'
+    SLACK = 'SLACK'
+    WEBHOOK = 'WEBHOOK'
+
+
+@dataclass
+class EmailConfig:
+    addresses: Optional[List[str]] = None
+    """Email addresses to notify."""
+
+    def as_dict(self) -> dict:
+        """Serializes the EmailConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.addresses: body['addresses'] = [v for v in self.addresses]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> EmailConfig:
+        """Deserializes the EmailConfig from a dictionary."""
+        return cls(addresses=d.get('addresses', None))
+
+
+@dataclass
+class Empty:
+
+    def as_dict(self) -> dict:
+        """Serializes the Empty into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> Empty:
+        """Deserializes the Empty from a dictionary."""
+        return cls()
+
+
 @dataclass
 class EnhancedSecurityMonitoring:
     """SHIELD feature: ESM"""
@@ -921,6 +1012,48 @@ class FetchIpAccessListResponse:
 
 
 @dataclass
+class GenericWebhookConfig:
+    password: Optional[str] = None
+    """[Input-Only][Optional] Password for webhook."""
+
+    password_set: Optional[bool] = None
+    """[Output-Only] Whether password is set."""
+
+    url: Optional[str] = None
+    """[Input-Only] URL for webhook."""
+
+    url_set: Optional[bool] = None
+    """[Output-Only] Whether URL is set."""
+
+    username: Optional[str] = None
+    """[Input-Only][Optional] Username for webhook."""
+
+    username_set: Optional[bool] = None
+    """[Output-Only] Whether username is set."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GenericWebhookConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.password is not None: body['password'] = self.password
+        if self.password_set is not None: body['password_set'] = self.password_set
+        if self.url is not None: body['url'] = self.url
+        if self.url_set is not None: body['url_set'] = self.url_set
+        if self.username is not None: body['username'] = self.username
+        if self.username_set is not None: body['username_set'] = self.username_set
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> GenericWebhookConfig:
+        """Deserializes the GenericWebhookConfig from a dictionary."""
+        return cls(password=d.get('password', None),
+                   password_set=d.get('password_set', None),
+                   url=d.get('url', None),
+                   url_set=d.get('url_set', None),
+                   username=d.get('username', None),
+                   username_set=d.get('username_set', None))
+
+
+@dataclass
 class GetIpAccessListResponse:
     ip_access_list: Optional[IpAccessListInfo] = None
     """Definition of an IP Access list"""
@@ -1119,6 +1252,54 @@ class ListNetworkConnectivityConfigurationsResponse:
 
 
 @dataclass
+class ListNotificationDestinationsResponse:
+    next_page_token: Optional[str] = None
+    """Page token for next of results."""
+
+    results: Optional[List[ListNotificationDestinationsResult]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ListNotificationDestinationsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.results: body['results'] = [v.as_dict() for v in self.results]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ListNotificationDestinationsResponse:
+        """Deserializes the ListNotificationDestinationsResponse from a dictionary."""
+        return cls(next_page_token=d.get('next_page_token', None),
+                   results=_repeated_dict(d, 'results', ListNotificationDestinationsResult))
+
+
+@dataclass
+class ListNotificationDestinationsResult:
+    destination_type: Optional[DestinationType] = None
+    """[Output-only] The type of the notification destination. The type can not be changed once set."""
+
+    display_name: Optional[str] = None
+    """The display name for the notification destination."""
+
+    id: Optional[str] = None
+    """UUID identifying notification destination."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListNotificationDestinationsResult into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.destination_type is not None: body['destination_type'] = self.destination_type.value
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.id is not None: body['id'] = self.id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ListNotificationDestinationsResult:
+        """Deserializes the ListNotificationDestinationsResult from a dictionary."""
+        return cls(destination_type=_enum(d, 'destination_type', DestinationType),
+                   display_name=d.get('display_name', None),
+                   id=d.get('id', None))
+
+
+@dataclass
 class ListPublicTokensResponse:
     token_infos: Optional[List[PublicTokenInfo]] = None
     """The information for each token."""
@@ -1162,6 +1343,27 @@ class ListType(Enum):
 
     ALLOW = 'ALLOW'
     BLOCK = 'BLOCK'
+
+
+@dataclass
+class MicrosoftTeamsConfig:
+    url: Optional[str] = None
+    """[Input-Only] URL for Microsoft Teams."""
+
+    url_set: Optional[bool] = None
+    """[Output-Only] Whether URL is set."""
+
+    def as_dict(self) -> dict:
+        """Serializes the MicrosoftTeamsConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.url is not None: body['url'] = self.url
+        if self.url_set is not None: body['url_set'] = self.url_set
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> MicrosoftTeamsConfig:
+        """Deserializes the MicrosoftTeamsConfig from a dictionary."""
+        return cls(url=d.get('url', None), url_set=d.get('url_set', None))
 
 
 @dataclass
@@ -1451,6 +1653,61 @@ class NetworkConnectivityConfiguration:
 
 
 @dataclass
+class NotificationDestination:
+    config: Optional[Config] = None
+    """The configuration for the notification destination. Will be exactly one of the nested configs.
+    Only returns for users with workspace admin permissions."""
+
+    destination_type: Optional[DestinationType] = None
+    """[Output-only] The type of the notification destination. The type can not be changed once set."""
+
+    display_name: Optional[str] = None
+    """The display name for the notification destination."""
+
+    id: Optional[str] = None
+    """UUID identifying notification destination."""
+
+    def as_dict(self) -> dict:
+        """Serializes the NotificationDestination into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.config: body['config'] = self.config.as_dict()
+        if self.destination_type is not None: body['destination_type'] = self.destination_type.value
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.id is not None: body['id'] = self.id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> NotificationDestination:
+        """Deserializes the NotificationDestination from a dictionary."""
+        return cls(config=_from_dict(d, 'config', Config),
+                   destination_type=_enum(d, 'destination_type', DestinationType),
+                   display_name=d.get('display_name', None),
+                   id=d.get('id', None))
+
+
+@dataclass
+class PagerdutyConfig:
+    integration_key: Optional[str] = None
+    """[Input-Only] Integration key for PagerDuty."""
+
+    integration_key_set: Optional[bool] = None
+    """[Output-Only] Whether integration key is set."""
+
+    def as_dict(self) -> dict:
+        """Serializes the PagerdutyConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.integration_key is not None: body['integration_key'] = self.integration_key
+        if self.integration_key_set is not None: body['integration_key_set'] = self.integration_key_set
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> PagerdutyConfig:
+        """Deserializes the PagerdutyConfig from a dictionary."""
+        return cls(integration_key=d.get('integration_key', None),
+                   integration_key_set=d.get('integration_key_set', None))
+
+
+@dataclass
 class PartitionId:
     """Partition by workspace or account"""
 
@@ -1642,7 +1899,6 @@ class RestrictWorkspaceAdminsMessageStatus(Enum):
 
     ALLOW_ALL = 'ALLOW_ALL'
     RESTRICT_TOKENS_AND_JOB_RUN_AS = 'RESTRICT_TOKENS_AND_JOB_RUN_AS'
-    STATUS_UNSPECIFIED = 'STATUS_UNSPECIFIED'
 
 
 @dataclass
@@ -1724,6 +1980,27 @@ class SetStatusResponse:
     def from_dict(cls, d: Dict[str, any]) -> SetStatusResponse:
         """Deserializes the SetStatusResponse from a dictionary."""
         return cls()
+
+
+@dataclass
+class SlackConfig:
+    url: Optional[str] = None
+    """[Input-Only] URL for Slack destination."""
+
+    url_set: Optional[bool] = None
+    """[Output-Only] Whether URL is set."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SlackConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.url is not None: body['url'] = self.url
+        if self.url_set is not None: body['url_set'] = self.url_set
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> SlackConfig:
+        """Deserializes the SlackConfig from a dictionary."""
+        return cls(url=d.get('url', None), url_set=d.get('url_set', None))
 
 
 @dataclass
@@ -2187,6 +2464,32 @@ class UpdateIpAccessList:
                    ip_addresses=d.get('ip_addresses', None),
                    label=d.get('label', None),
                    list_type=_enum(d, 'list_type', ListType))
+
+
+@dataclass
+class UpdateNotificationDestinationRequest:
+    config: Optional[Config] = None
+    """The configuration for the notification destination. Must wrap EXACTLY one of the nested configs."""
+
+    display_name: Optional[str] = None
+    """The display name for the notification destination."""
+
+    id: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateNotificationDestinationRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.config: body['config'] = self.config.as_dict()
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.id is not None: body['id'] = self.id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateNotificationDestinationRequest:
+        """Deserializes the UpdateNotificationDestinationRequest from a dictionary."""
+        return cls(config=_from_dict(d, 'config', Config),
+                   display_name=d.get('display_name', None),
+                   id=d.get('id', None))
 
 
 @dataclass
@@ -3400,6 +3703,122 @@ class NetworkConnectivityAPI:
             if 'next_page_token' not in json or not json['next_page_token']:
                 return
             query['page_token'] = json['next_page_token']
+
+
+class NotificationDestinationsAPI:
+    """The notification destinations API lets you programmatically manage a workspace's notification
+    destinations. Notification destinations are used to send notifications for query alerts and jobs to
+    destinations outside of Databricks. Only workspace admins can create, update, and delete notification
+    destinations."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def create(self,
+               *,
+               config: Optional[Config] = None,
+               display_name: Optional[str] = None) -> NotificationDestination:
+        """Create a notification destination.
+        
+        Creates a notification destination. Requires workspace admin permissions.
+        
+        :param config: :class:`Config` (optional)
+          The configuration for the notification destination. Must wrap EXACTLY one of the nested configs.
+        :param display_name: str (optional)
+          The display name for the notification destination.
+        
+        :returns: :class:`NotificationDestination`
+        """
+        body = {}
+        if config is not None: body['config'] = config.as_dict()
+        if display_name is not None: body['display_name'] = display_name
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do('POST', '/api/2.0/notification-destinations', body=body, headers=headers)
+        return NotificationDestination.from_dict(res)
+
+    def delete(self, id: str):
+        """Delete a notification destination.
+        
+        Deletes a notification destination. Requires workspace admin permissions.
+        
+        :param id: str
+        
+        
+        """
+
+        headers = {'Accept': 'application/json', }
+
+        self._api.do('DELETE', f'/api/2.0/notification-destinations/{id}', headers=headers)
+
+    def get(self, id: str) -> NotificationDestination:
+        """Get a notification destination.
+        
+        Gets a notification destination.
+        
+        :param id: str
+        
+        :returns: :class:`NotificationDestination`
+        """
+
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do('GET', f'/api/2.0/notification-destinations/{id}', headers=headers)
+        return NotificationDestination.from_dict(res)
+
+    def list(self,
+             *,
+             page_size: Optional[int] = None,
+             page_token: Optional[str] = None) -> Iterator[ListNotificationDestinationsResult]:
+        """List notification destinations.
+        
+        Lists notification destinations.
+        
+        :param page_size: int (optional)
+        :param page_token: str (optional)
+        
+        :returns: Iterator over :class:`ListNotificationDestinationsResult`
+        """
+
+        query = {}
+        if page_size is not None: query['page_size'] = page_size
+        if page_token is not None: query['page_token'] = page_token
+        headers = {'Accept': 'application/json', }
+
+        while True:
+            json = self._api.do('GET', '/api/2.0/notification-destinations', query=query, headers=headers)
+            if 'results' in json:
+                for v in json['results']:
+                    yield ListNotificationDestinationsResult.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
+
+    def update(self,
+               id: str,
+               *,
+               config: Optional[Config] = None,
+               display_name: Optional[str] = None) -> NotificationDestination:
+        """Update a notification destination.
+        
+        Updates a notification destination. Requires workspace admin permissions. At least one field is
+        required in the request body.
+        
+        :param id: str
+        :param config: :class:`Config` (optional)
+          The configuration for the notification destination. Must wrap EXACTLY one of the nested configs.
+        :param display_name: str (optional)
+          The display name for the notification destination.
+        
+        :returns: :class:`NotificationDestination`
+        """
+        body = {}
+        if config is not None: body['config'] = config.as_dict()
+        if display_name is not None: body['display_name'] = display_name
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do('PATCH', f'/api/2.0/notification-destinations/{id}', body=body, headers=headers)
+        return NotificationDestination.from_dict(res)
 
 
 class PersonalComputeAPI:

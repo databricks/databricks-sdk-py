@@ -15,204 +15,412 @@ _LOG = logging.getLogger('databricks.sdk')
 
 
 @dataclass
-class Budget:
-    """Budget configuration to be created."""
+class ActionConfiguration:
+    action_configuration_id: Optional[str] = None
+    """Databricks action configuration ID."""
 
-    name: str
-    """Human-readable name of the budget."""
+    action_type: Optional[ActionConfigurationType] = None
+    """The type of the action."""
 
-    period: str
-    """Period length in years, months, weeks and/or days. Examples: `1 month`, `30 days`, `1 year, 2
-    months, 1 week, 2 days`"""
-
-    start_date: str
-    """Start date of the budget period calculation."""
-
-    target_amount: str
-    """Target amount of the budget per period in USD."""
-
-    filter: str
-    """SQL-like filter expression with workspaceId, SKU and tag. Usage in your account that matches
-    this expression will be counted in this budget.
-    
-    Supported properties on left-hand side of comparison: * `workspaceId` - the ID of the workspace
-    * `sku` - SKU of the cluster, e.g. `STANDARD_ALL_PURPOSE_COMPUTE` * `tag.tagName`, `tag.'tag
-    name'` - tag of the cluster
-    
-    Supported comparison operators: * `=` - equal * `!=` - not equal
-    
-    Supported logical operators: `AND`, `OR`.
-    
-    Examples: * `workspaceId=123 OR (sku='STANDARD_ALL_PURPOSE_COMPUTE' AND tag.'my tag'='my
-    value')` * `workspaceId!=456` * `sku='STANDARD_ALL_PURPOSE_COMPUTE' OR
-    sku='PREMIUM_ALL_PURPOSE_COMPUTE'` * `tag.name1='value1' AND tag.name2='value2'`"""
-
-    alerts: Optional[List[BudgetAlert]] = None
-
-    end_date: Optional[str] = None
-    """Optional end date of the budget."""
+    target: Optional[str] = None
+    """Target for the action. For example, an email address."""
 
     def as_dict(self) -> dict:
-        """Serializes the Budget into a dictionary suitable for use as a JSON request body."""
+        """Serializes the ActionConfiguration into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.alerts: body['alerts'] = [v.as_dict() for v in self.alerts]
-        if self.end_date is not None: body['end_date'] = self.end_date
-        if self.filter is not None: body['filter'] = self.filter
-        if self.name is not None: body['name'] = self.name
-        if self.period is not None: body['period'] = self.period
-        if self.start_date is not None: body['start_date'] = self.start_date
-        if self.target_amount is not None: body['target_amount'] = self.target_amount
+        if self.action_configuration_id is not None:
+            body['action_configuration_id'] = self.action_configuration_id
+        if self.action_type is not None: body['action_type'] = self.action_type.value
+        if self.target is not None: body['target'] = self.target
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> Budget:
-        """Deserializes the Budget from a dictionary."""
-        return cls(alerts=_repeated_dict(d, 'alerts', BudgetAlert),
-                   end_date=d.get('end_date', None),
-                   filter=d.get('filter', None),
-                   name=d.get('name', None),
-                   period=d.get('period', None),
-                   start_date=d.get('start_date', None),
-                   target_amount=d.get('target_amount', None))
+    def from_dict(cls, d: Dict[str, any]) -> ActionConfiguration:
+        """Deserializes the ActionConfiguration from a dictionary."""
+        return cls(action_configuration_id=d.get('action_configuration_id', None),
+                   action_type=_enum(d, 'action_type', ActionConfigurationType),
+                   target=d.get('target', None))
+
+
+class ActionConfigurationType(Enum):
+
+    EMAIL_NOTIFICATION = 'EMAIL_NOTIFICATION'
 
 
 @dataclass
-class BudgetAlert:
-    email_notifications: Optional[List[str]] = None
-    """List of email addresses to be notified when budget percentage is exceeded in the given period."""
+class AlertConfiguration:
+    action_configurations: Optional[List[ActionConfiguration]] = None
+    """Configured actions for this alert. These define what happens when an alert enters a triggered
+    state."""
 
-    min_percentage: Optional[int] = None
-    """Percentage of the target amount used in the currect period that will trigger a notification."""
+    alert_configuration_id: Optional[str] = None
+    """Databricks alert configuration ID."""
+
+    quantity_threshold: Optional[str] = None
+    """The threshold for the budget alert to determine if it is in a triggered state. The number is
+    evaluated based on `quantity_type`."""
+
+    quantity_type: Optional[AlertConfigurationQuantityType] = None
+    """The way to calculate cost for this budget alert. This is what `quantity_threshold` is measured
+    in."""
+
+    time_period: Optional[AlertConfigurationTimePeriod] = None
+    """The time window of usage data for the budget."""
+
+    trigger_type: Optional[AlertConfigurationTriggerType] = None
+    """The evaluation method to determine when this budget alert is in a triggered state."""
 
     def as_dict(self) -> dict:
-        """Serializes the BudgetAlert into a dictionary suitable for use as a JSON request body."""
+        """Serializes the AlertConfiguration into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.email_notifications: body['email_notifications'] = [v for v in self.email_notifications]
-        if self.min_percentage is not None: body['min_percentage'] = self.min_percentage
+        if self.action_configurations:
+            body['action_configurations'] = [v.as_dict() for v in self.action_configurations]
+        if self.alert_configuration_id is not None:
+            body['alert_configuration_id'] = self.alert_configuration_id
+        if self.quantity_threshold is not None: body['quantity_threshold'] = self.quantity_threshold
+        if self.quantity_type is not None: body['quantity_type'] = self.quantity_type.value
+        if self.time_period is not None: body['time_period'] = self.time_period.value
+        if self.trigger_type is not None: body['trigger_type'] = self.trigger_type.value
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> BudgetAlert:
-        """Deserializes the BudgetAlert from a dictionary."""
-        return cls(email_notifications=d.get('email_notifications', None),
-                   min_percentage=d.get('min_percentage', None))
+    def from_dict(cls, d: Dict[str, any]) -> AlertConfiguration:
+        """Deserializes the AlertConfiguration from a dictionary."""
+        return cls(action_configurations=_repeated_dict(d, 'action_configurations', ActionConfiguration),
+                   alert_configuration_id=d.get('alert_configuration_id', None),
+                   quantity_threshold=d.get('quantity_threshold', None),
+                   quantity_type=_enum(d, 'quantity_type', AlertConfigurationQuantityType),
+                   time_period=_enum(d, 'time_period', AlertConfigurationTimePeriod),
+                   trigger_type=_enum(d, 'trigger_type', AlertConfigurationTriggerType))
+
+
+class AlertConfigurationQuantityType(Enum):
+
+    LIST_PRICE_DOLLARS_USD = 'LIST_PRICE_DOLLARS_USD'
+
+
+class AlertConfigurationTimePeriod(Enum):
+
+    MONTH = 'MONTH'
+
+
+class AlertConfigurationTriggerType(Enum):
+
+    CUMULATIVE_SPENDING_EXCEEDED = 'CUMULATIVE_SPENDING_EXCEEDED'
 
 
 @dataclass
-class BudgetList:
-    """List of budgets."""
+class BudgetConfiguration:
+    account_id: Optional[str] = None
+    """Databricks account ID."""
 
-    budgets: Optional[List[BudgetWithStatus]] = None
+    alert_configurations: Optional[List[AlertConfiguration]] = None
+    """Alerts to configure when this budget is in a triggered state. Budgets must have exactly one
+    alert configuration."""
 
-    def as_dict(self) -> dict:
-        """Serializes the BudgetList into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.budgets: body['budgets'] = [v.as_dict() for v in self.budgets]
-        return body
+    budget_configuration_id: Optional[str] = None
+    """Databricks budget configuration ID."""
 
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> BudgetList:
-        """Deserializes the BudgetList from a dictionary."""
-        return cls(budgets=_repeated_dict(d, 'budgets', BudgetWithStatus))
+    create_time: Optional[int] = None
+    """Creation time of this budget configuration."""
 
+    display_name: Optional[str] = None
+    """Human-readable name of budget configuration. Max Length: 128"""
 
-@dataclass
-class BudgetWithStatus:
-    """Budget configuration with daily status."""
+    filter: Optional[BudgetConfigurationFilter] = None
+    """Configured filters for this budget. These are applied to your account's usage to limit the scope
+    of what is considered for this budget. Leave empty to include all usage for this account. All
+    provided filters must be matched for usage to be included."""
 
-    alerts: Optional[List[BudgetAlert]] = None
-
-    budget_id: Optional[str] = None
-
-    creation_time: Optional[str] = None
-
-    end_date: Optional[str] = None
-    """Optional end date of the budget."""
-
-    filter: Optional[str] = None
-    """SQL-like filter expression with workspaceId, SKU and tag. Usage in your account that matches
-    this expression will be counted in this budget.
-    
-    Supported properties on left-hand side of comparison: * `workspaceId` - the ID of the workspace
-    * `sku` - SKU of the cluster, e.g. `STANDARD_ALL_PURPOSE_COMPUTE` * `tag.tagName`, `tag.'tag
-    name'` - tag of the cluster
-    
-    Supported comparison operators: * `=` - equal * `!=` - not equal
-    
-    Supported logical operators: `AND`, `OR`.
-    
-    Examples: * `workspaceId=123 OR (sku='STANDARD_ALL_PURPOSE_COMPUTE' AND tag.'my tag'='my
-    value')` * `workspaceId!=456` * `sku='STANDARD_ALL_PURPOSE_COMPUTE' OR
-    sku='PREMIUM_ALL_PURPOSE_COMPUTE'` * `tag.name1='value1' AND tag.name2='value2'`"""
-
-    name: Optional[str] = None
-    """Human-readable name of the budget."""
-
-    period: Optional[str] = None
-    """Period length in years, months, weeks and/or days. Examples: `1 month`, `30 days`, `1 year, 2
-    months, 1 week, 2 days`"""
-
-    start_date: Optional[str] = None
-    """Start date of the budget period calculation."""
-
-    status_daily: Optional[List[BudgetWithStatusStatusDailyItem]] = None
-    """Amount used in the budget for each day (noncumulative)."""
-
-    target_amount: Optional[str] = None
-    """Target amount of the budget per period in USD."""
-
-    update_time: Optional[str] = None
+    update_time: Optional[int] = None
+    """Update time of this budget configuration."""
 
     def as_dict(self) -> dict:
-        """Serializes the BudgetWithStatus into a dictionary suitable for use as a JSON request body."""
+        """Serializes the BudgetConfiguration into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.alerts: body['alerts'] = [v.as_dict() for v in self.alerts]
-        if self.budget_id is not None: body['budget_id'] = self.budget_id
-        if self.creation_time is not None: body['creation_time'] = self.creation_time
-        if self.end_date is not None: body['end_date'] = self.end_date
-        if self.filter is not None: body['filter'] = self.filter
-        if self.name is not None: body['name'] = self.name
-        if self.period is not None: body['period'] = self.period
-        if self.start_date is not None: body['start_date'] = self.start_date
-        if self.status_daily: body['status_daily'] = [v.as_dict() for v in self.status_daily]
-        if self.target_amount is not None: body['target_amount'] = self.target_amount
+        if self.account_id is not None: body['account_id'] = self.account_id
+        if self.alert_configurations:
+            body['alert_configurations'] = [v.as_dict() for v in self.alert_configurations]
+        if self.budget_configuration_id is not None:
+            body['budget_configuration_id'] = self.budget_configuration_id
+        if self.create_time is not None: body['create_time'] = self.create_time
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.filter: body['filter'] = self.filter.as_dict()
         if self.update_time is not None: body['update_time'] = self.update_time
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> BudgetWithStatus:
-        """Deserializes the BudgetWithStatus from a dictionary."""
-        return cls(alerts=_repeated_dict(d, 'alerts', BudgetAlert),
-                   budget_id=d.get('budget_id', None),
-                   creation_time=d.get('creation_time', None),
-                   end_date=d.get('end_date', None),
-                   filter=d.get('filter', None),
-                   name=d.get('name', None),
-                   period=d.get('period', None),
-                   start_date=d.get('start_date', None),
-                   status_daily=_repeated_dict(d, 'status_daily', BudgetWithStatusStatusDailyItem),
-                   target_amount=d.get('target_amount', None),
+    def from_dict(cls, d: Dict[str, any]) -> BudgetConfiguration:
+        """Deserializes the BudgetConfiguration from a dictionary."""
+        return cls(account_id=d.get('account_id', None),
+                   alert_configurations=_repeated_dict(d, 'alert_configurations', AlertConfiguration),
+                   budget_configuration_id=d.get('budget_configuration_id', None),
+                   create_time=d.get('create_time', None),
+                   display_name=d.get('display_name', None),
+                   filter=_from_dict(d, 'filter', BudgetConfigurationFilter),
                    update_time=d.get('update_time', None))
 
 
 @dataclass
-class BudgetWithStatusStatusDailyItem:
-    amount: Optional[str] = None
-    """Amount used in this day in USD."""
+class BudgetConfigurationFilter:
+    tags: Optional[List[BudgetConfigurationFilterTagClause]] = None
+    """A list of tag keys and values that will limit the budget to usage that includes those specific
+    custom tags. Tags are case-sensitive and should be entered exactly as they appear in your usage
+    data."""
 
-    date: Optional[str] = None
+    workspace_id: Optional[BudgetConfigurationFilterWorkspaceIdClause] = None
+    """If provided, usage must match with the provided Databricks workspace IDs."""
 
     def as_dict(self) -> dict:
-        """Serializes the BudgetWithStatusStatusDailyItem into a dictionary suitable for use as a JSON request body."""
+        """Serializes the BudgetConfigurationFilter into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.amount is not None: body['amount'] = self.amount
-        if self.date is not None: body['date'] = self.date
+        if self.tags: body['tags'] = [v.as_dict() for v in self.tags]
+        if self.workspace_id: body['workspace_id'] = self.workspace_id.as_dict()
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> BudgetWithStatusStatusDailyItem:
-        """Deserializes the BudgetWithStatusStatusDailyItem from a dictionary."""
-        return cls(amount=d.get('amount', None), date=d.get('date', None))
+    def from_dict(cls, d: Dict[str, any]) -> BudgetConfigurationFilter:
+        """Deserializes the BudgetConfigurationFilter from a dictionary."""
+        return cls(tags=_repeated_dict(d, 'tags', BudgetConfigurationFilterTagClause),
+                   workspace_id=_from_dict(d, 'workspace_id', BudgetConfigurationFilterWorkspaceIdClause))
+
+
+@dataclass
+class BudgetConfigurationFilterClause:
+    operator: Optional[BudgetConfigurationFilterOperator] = None
+
+    values: Optional[List[str]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the BudgetConfigurationFilterClause into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.operator is not None: body['operator'] = self.operator.value
+        if self.values: body['values'] = [v for v in self.values]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> BudgetConfigurationFilterClause:
+        """Deserializes the BudgetConfigurationFilterClause from a dictionary."""
+        return cls(operator=_enum(d, 'operator', BudgetConfigurationFilterOperator),
+                   values=d.get('values', None))
+
+
+class BudgetConfigurationFilterOperator(Enum):
+
+    IN = 'IN'
+
+
+@dataclass
+class BudgetConfigurationFilterTagClause:
+    key: Optional[str] = None
+
+    value: Optional[BudgetConfigurationFilterClause] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the BudgetConfigurationFilterTagClause into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.key is not None: body['key'] = self.key
+        if self.value: body['value'] = self.value.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> BudgetConfigurationFilterTagClause:
+        """Deserializes the BudgetConfigurationFilterTagClause from a dictionary."""
+        return cls(key=d.get('key', None), value=_from_dict(d, 'value', BudgetConfigurationFilterClause))
+
+
+@dataclass
+class BudgetConfigurationFilterWorkspaceIdClause:
+    operator: Optional[BudgetConfigurationFilterOperator] = None
+
+    values: Optional[List[int]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the BudgetConfigurationFilterWorkspaceIdClause into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.operator is not None: body['operator'] = self.operator.value
+        if self.values: body['values'] = [v for v in self.values]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> BudgetConfigurationFilterWorkspaceIdClause:
+        """Deserializes the BudgetConfigurationFilterWorkspaceIdClause from a dictionary."""
+        return cls(operator=_enum(d, 'operator', BudgetConfigurationFilterOperator),
+                   values=d.get('values', None))
+
+
+@dataclass
+class CreateBillingUsageDashboardRequest:
+    dashboard_type: Optional[UsageDashboardType] = None
+    """Workspace level usage dashboard shows usage data for the specified workspace ID. Global level
+    usage dashboard shows usage data for all workspaces in the account."""
+
+    workspace_id: Optional[int] = None
+    """The workspace ID of the workspace in which the usage dashboard is created."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CreateBillingUsageDashboardRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.dashboard_type is not None: body['dashboard_type'] = self.dashboard_type.value
+        if self.workspace_id is not None: body['workspace_id'] = self.workspace_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> CreateBillingUsageDashboardRequest:
+        """Deserializes the CreateBillingUsageDashboardRequest from a dictionary."""
+        return cls(dashboard_type=_enum(d, 'dashboard_type', UsageDashboardType),
+                   workspace_id=d.get('workspace_id', None))
+
+
+@dataclass
+class CreateBillingUsageDashboardResponse:
+    dashboard_id: Optional[str] = None
+    """The unique id of the usage dashboard."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CreateBillingUsageDashboardResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.dashboard_id is not None: body['dashboard_id'] = self.dashboard_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> CreateBillingUsageDashboardResponse:
+        """Deserializes the CreateBillingUsageDashboardResponse from a dictionary."""
+        return cls(dashboard_id=d.get('dashboard_id', None))
+
+
+@dataclass
+class CreateBudgetConfigurationBudget:
+    account_id: Optional[str] = None
+    """Databricks account ID."""
+
+    alert_configurations: Optional[List[CreateBudgetConfigurationBudgetAlertConfigurations]] = None
+    """Alerts to configure when this budget is in a triggered state. Budgets must have exactly one
+    alert configuration."""
+
+    display_name: Optional[str] = None
+    """Human-readable name of budget configuration. Max Length: 128"""
+
+    filter: Optional[BudgetConfigurationFilter] = None
+    """Configured filters for this budget. These are applied to your account's usage to limit the scope
+    of what is considered for this budget. Leave empty to include all usage for this account. All
+    provided filters must be matched for usage to be included."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CreateBudgetConfigurationBudget into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.account_id is not None: body['account_id'] = self.account_id
+        if self.alert_configurations:
+            body['alert_configurations'] = [v.as_dict() for v in self.alert_configurations]
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.filter: body['filter'] = self.filter.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> CreateBudgetConfigurationBudget:
+        """Deserializes the CreateBudgetConfigurationBudget from a dictionary."""
+        return cls(account_id=d.get('account_id', None),
+                   alert_configurations=_repeated_dict(d, 'alert_configurations',
+                                                       CreateBudgetConfigurationBudgetAlertConfigurations),
+                   display_name=d.get('display_name', None),
+                   filter=_from_dict(d, 'filter', BudgetConfigurationFilter))
+
+
+@dataclass
+class CreateBudgetConfigurationBudgetActionConfigurations:
+    action_type: Optional[ActionConfigurationType] = None
+    """The type of the action."""
+
+    target: Optional[str] = None
+    """Target for the action. For example, an email address."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CreateBudgetConfigurationBudgetActionConfigurations into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.action_type is not None: body['action_type'] = self.action_type.value
+        if self.target is not None: body['target'] = self.target
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> CreateBudgetConfigurationBudgetActionConfigurations:
+        """Deserializes the CreateBudgetConfigurationBudgetActionConfigurations from a dictionary."""
+        return cls(action_type=_enum(d, 'action_type', ActionConfigurationType), target=d.get('target', None))
+
+
+@dataclass
+class CreateBudgetConfigurationBudgetAlertConfigurations:
+    action_configurations: Optional[List[CreateBudgetConfigurationBudgetActionConfigurations]] = None
+    """Configured actions for this alert. These define what happens when an alert enters a triggered
+    state."""
+
+    quantity_threshold: Optional[str] = None
+    """The threshold for the budget alert to determine if it is in a triggered state. The number is
+    evaluated based on `quantity_type`."""
+
+    quantity_type: Optional[AlertConfigurationQuantityType] = None
+    """The way to calculate cost for this budget alert. This is what `quantity_threshold` is measured
+    in."""
+
+    time_period: Optional[AlertConfigurationTimePeriod] = None
+    """The time window of usage data for the budget."""
+
+    trigger_type: Optional[AlertConfigurationTriggerType] = None
+    """The evaluation method to determine when this budget alert is in a triggered state."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CreateBudgetConfigurationBudgetAlertConfigurations into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.action_configurations:
+            body['action_configurations'] = [v.as_dict() for v in self.action_configurations]
+        if self.quantity_threshold is not None: body['quantity_threshold'] = self.quantity_threshold
+        if self.quantity_type is not None: body['quantity_type'] = self.quantity_type.value
+        if self.time_period is not None: body['time_period'] = self.time_period.value
+        if self.trigger_type is not None: body['trigger_type'] = self.trigger_type.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> CreateBudgetConfigurationBudgetAlertConfigurations:
+        """Deserializes the CreateBudgetConfigurationBudgetAlertConfigurations from a dictionary."""
+        return cls(action_configurations=_repeated_dict(d, 'action_configurations',
+                                                        CreateBudgetConfigurationBudgetActionConfigurations),
+                   quantity_threshold=d.get('quantity_threshold', None),
+                   quantity_type=_enum(d, 'quantity_type', AlertConfigurationQuantityType),
+                   time_period=_enum(d, 'time_period', AlertConfigurationTimePeriod),
+                   trigger_type=_enum(d, 'trigger_type', AlertConfigurationTriggerType))
+
+
+@dataclass
+class CreateBudgetConfigurationRequest:
+    budget: CreateBudgetConfigurationBudget
+    """Properties of the new budget configuration."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CreateBudgetConfigurationRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.budget: body['budget'] = self.budget.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> CreateBudgetConfigurationRequest:
+        """Deserializes the CreateBudgetConfigurationRequest from a dictionary."""
+        return cls(budget=_from_dict(d, 'budget', CreateBudgetConfigurationBudget))
+
+
+@dataclass
+class CreateBudgetConfigurationResponse:
+    budget: Optional[BudgetConfiguration] = None
+    """The created budget configuration."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CreateBudgetConfigurationResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.budget: body['budget'] = self.budget.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> CreateBudgetConfigurationResponse:
+        """Deserializes the CreateBudgetConfigurationResponse from a dictionary."""
+        return cls(budget=_from_dict(d, 'budget', BudgetConfiguration))
 
 
 @dataclass
@@ -316,16 +524,16 @@ class CreateLogDeliveryConfigurationParams:
 
 
 @dataclass
-class DeleteResponse:
+class DeleteBudgetConfigurationResponse:
 
     def as_dict(self) -> dict:
-        """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
+        """Serializes the DeleteBudgetConfigurationResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteResponse:
-        """Deserializes the DeleteResponse from a dictionary."""
+    def from_dict(cls, d: Dict[str, any]) -> DeleteBudgetConfigurationResponse:
+        """Deserializes the DeleteBudgetConfigurationResponse from a dictionary."""
         return cls()
 
 
@@ -359,6 +567,65 @@ class DownloadResponse:
     def from_dict(cls, d: Dict[str, any]) -> DownloadResponse:
         """Deserializes the DownloadResponse from a dictionary."""
         return cls(contents=d.get('contents', None))
+
+
+@dataclass
+class GetBillingUsageDashboardResponse:
+    dashboard_id: Optional[str] = None
+    """The unique id of the usage dashboard."""
+
+    dashboard_url: Optional[str] = None
+    """The URL of the usage dashboard."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GetBillingUsageDashboardResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.dashboard_id is not None: body['dashboard_id'] = self.dashboard_id
+        if self.dashboard_url is not None: body['dashboard_url'] = self.dashboard_url
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> GetBillingUsageDashboardResponse:
+        """Deserializes the GetBillingUsageDashboardResponse from a dictionary."""
+        return cls(dashboard_id=d.get('dashboard_id', None), dashboard_url=d.get('dashboard_url', None))
+
+
+@dataclass
+class GetBudgetConfigurationResponse:
+    budget: Optional[BudgetConfiguration] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the GetBudgetConfigurationResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.budget: body['budget'] = self.budget.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> GetBudgetConfigurationResponse:
+        """Deserializes the GetBudgetConfigurationResponse from a dictionary."""
+        return cls(budget=_from_dict(d, 'budget', BudgetConfiguration))
+
+
+@dataclass
+class ListBudgetConfigurationsResponse:
+    budgets: Optional[List[BudgetConfiguration]] = None
+
+    next_page_token: Optional[str] = None
+    """Token which can be sent as `page_token` to retrieve the next page of results. If this field is
+    omitted, there are no subsequent budgets."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListBudgetConfigurationsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.budgets: body['budgets'] = [v.as_dict() for v in self.budgets]
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ListBudgetConfigurationsResponse:
+        """Deserializes the ListBudgetConfigurationsResponse from a dictionary."""
+        return cls(budgets=_repeated_dict(d, 'budgets', BudgetConfiguration),
+                   next_page_token=d.get('next_page_token', None))
 
 
 class LogDeliveryConfigStatus(Enum):
@@ -586,6 +853,87 @@ class PatchStatusResponse:
 
 
 @dataclass
+class UpdateBudgetConfigurationBudget:
+    account_id: Optional[str] = None
+    """Databricks account ID."""
+
+    alert_configurations: Optional[List[AlertConfiguration]] = None
+    """Alerts to configure when this budget is in a triggered state. Budgets must have exactly one
+    alert configuration."""
+
+    budget_configuration_id: Optional[str] = None
+    """Databricks budget configuration ID."""
+
+    display_name: Optional[str] = None
+    """Human-readable name of budget configuration. Max Length: 128"""
+
+    filter: Optional[BudgetConfigurationFilter] = None
+    """Configured filters for this budget. These are applied to your account's usage to limit the scope
+    of what is considered for this budget. Leave empty to include all usage for this account. All
+    provided filters must be matched for usage to be included."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateBudgetConfigurationBudget into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.account_id is not None: body['account_id'] = self.account_id
+        if self.alert_configurations:
+            body['alert_configurations'] = [v.as_dict() for v in self.alert_configurations]
+        if self.budget_configuration_id is not None:
+            body['budget_configuration_id'] = self.budget_configuration_id
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.filter: body['filter'] = self.filter.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateBudgetConfigurationBudget:
+        """Deserializes the UpdateBudgetConfigurationBudget from a dictionary."""
+        return cls(account_id=d.get('account_id', None),
+                   alert_configurations=_repeated_dict(d, 'alert_configurations', AlertConfiguration),
+                   budget_configuration_id=d.get('budget_configuration_id', None),
+                   display_name=d.get('display_name', None),
+                   filter=_from_dict(d, 'filter', BudgetConfigurationFilter))
+
+
+@dataclass
+class UpdateBudgetConfigurationRequest:
+    budget: UpdateBudgetConfigurationBudget
+    """The updated budget. This will overwrite the budget specified by the budget ID."""
+
+    budget_id: Optional[str] = None
+    """The Databricks budget configuration ID."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateBudgetConfigurationRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.budget: body['budget'] = self.budget.as_dict()
+        if self.budget_id is not None: body['budget_id'] = self.budget_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateBudgetConfigurationRequest:
+        """Deserializes the UpdateBudgetConfigurationRequest from a dictionary."""
+        return cls(budget=_from_dict(d, 'budget', UpdateBudgetConfigurationBudget),
+                   budget_id=d.get('budget_id', None))
+
+
+@dataclass
+class UpdateBudgetConfigurationResponse:
+    budget: Optional[BudgetConfiguration] = None
+    """The updated budget."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateBudgetConfigurationResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.budget: body['budget'] = self.budget.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateBudgetConfigurationResponse:
+        """Deserializes the UpdateBudgetConfigurationResponse from a dictionary."""
+        return cls(budget=_from_dict(d, 'budget', BudgetConfiguration))
+
+
+@dataclass
 class UpdateLogDeliveryConfigurationStatusRequest:
     status: LogDeliveryConfigStatus
     """Status of log delivery configuration. Set to `ENABLED` (enabled) or `DISABLED` (disabled).
@@ -611,56 +959,10 @@ class UpdateLogDeliveryConfigurationStatusRequest:
                    status=_enum(d, 'status', LogDeliveryConfigStatus))
 
 
-@dataclass
-class UpdateResponse:
+class UsageDashboardType(Enum):
 
-    def as_dict(self) -> dict:
-        """Serializes the UpdateResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateResponse:
-        """Deserializes the UpdateResponse from a dictionary."""
-        return cls()
-
-
-@dataclass
-class WrappedBudget:
-    budget: Budget
-    """Budget configuration to be created."""
-
-    budget_id: Optional[str] = None
-    """Budget ID"""
-
-    def as_dict(self) -> dict:
-        """Serializes the WrappedBudget into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.budget: body['budget'] = self.budget.as_dict()
-        if self.budget_id is not None: body['budget_id'] = self.budget_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> WrappedBudget:
-        """Deserializes the WrappedBudget from a dictionary."""
-        return cls(budget=_from_dict(d, 'budget', Budget), budget_id=d.get('budget_id', None))
-
-
-@dataclass
-class WrappedBudgetWithStatus:
-    budget: BudgetWithStatus
-    """Budget configuration with daily status."""
-
-    def as_dict(self) -> dict:
-        """Serializes the WrappedBudgetWithStatus into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.budget: body['budget'] = self.budget.as_dict()
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> WrappedBudgetWithStatus:
-        """Deserializes the WrappedBudgetWithStatus from a dictionary."""
-        return cls(budget=_from_dict(d, 'budget', BudgetWithStatus))
+    USAGE_DASHBOARD_TYPE_GLOBAL = 'USAGE_DASHBOARD_TYPE_GLOBAL'
+    USAGE_DASHBOARD_TYPE_WORKSPACE = 'USAGE_DASHBOARD_TYPE_WORKSPACE'
 
 
 @dataclass
@@ -767,39 +1069,42 @@ class BillableUsageAPI:
 
 
 class BudgetsAPI:
-    """These APIs manage budget configuration including notifications for exceeding a budget for a period. They
-    can also retrieve the status of each budget."""
+    """These APIs manage budget configurations for this account. Budgets enable you to monitor usage across your
+    account. You can set up budgets to either track account-wide spending, or apply filters to track the
+    spending of specific teams, projects, or workspaces."""
 
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, budget: Budget) -> WrappedBudgetWithStatus:
-        """Create a new budget.
+    def create(self, budget: CreateBudgetConfigurationBudget) -> CreateBudgetConfigurationResponse:
+        """Create new budget.
         
-        Creates a new budget in the specified account.
+        Create a new budget configuration for an account. For full details, see
+        https://docs.databricks.com/en/admin/account-settings/budgets.html.
         
-        :param budget: :class:`Budget`
-          Budget configuration to be created.
+        :param budget: :class:`CreateBudgetConfigurationBudget`
+          Properties of the new budget configuration.
         
-        :returns: :class:`WrappedBudgetWithStatus`
+        :returns: :class:`CreateBudgetConfigurationResponse`
         """
         body = {}
         if budget is not None: body['budget'] = budget.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         res = self._api.do('POST',
-                           f'/api/2.0/accounts/{self._api.account_id}/budget',
+                           f'/api/2.1/accounts/{self._api.account_id}/budgets',
                            body=body,
                            headers=headers)
-        return WrappedBudgetWithStatus.from_dict(res)
+        return CreateBudgetConfigurationResponse.from_dict(res)
 
     def delete(self, budget_id: str):
         """Delete budget.
         
-        Deletes the budget specified by its UUID.
+        Deletes a budget configuration for an account. Both account and budget configuration are specified by
+        ID. This cannot be undone.
         
         :param budget_id: str
-          Budget ID
+          The Databricks budget configuration ID.
         
         
         """
@@ -807,63 +1112,78 @@ class BudgetsAPI:
         headers = {'Accept': 'application/json', }
 
         self._api.do('DELETE',
-                     f'/api/2.0/accounts/{self._api.account_id}/budget/{budget_id}',
+                     f'/api/2.1/accounts/{self._api.account_id}/budgets/{budget_id}',
                      headers=headers)
 
-    def get(self, budget_id: str) -> WrappedBudgetWithStatus:
-        """Get budget and its status.
+    def get(self, budget_id: str) -> GetBudgetConfigurationResponse:
+        """Get budget.
         
-        Gets the budget specified by its UUID, including noncumulative status for each day that the budget is
-        configured to include.
+        Gets a budget configuration for an account. Both account and budget configuration are specified by ID.
         
         :param budget_id: str
-          Budget ID
+          The Databricks budget configuration ID.
         
-        :returns: :class:`WrappedBudgetWithStatus`
+        :returns: :class:`GetBudgetConfigurationResponse`
         """
 
         headers = {'Accept': 'application/json', }
 
         res = self._api.do('GET',
-                           f'/api/2.0/accounts/{self._api.account_id}/budget/{budget_id}',
+                           f'/api/2.1/accounts/{self._api.account_id}/budgets/{budget_id}',
                            headers=headers)
-        return WrappedBudgetWithStatus.from_dict(res)
+        return GetBudgetConfigurationResponse.from_dict(res)
 
-    def list(self) -> Iterator[BudgetWithStatus]:
+    def list(self, *, page_token: Optional[str] = None) -> Iterator[BudgetConfiguration]:
         """Get all budgets.
         
-        Gets all budgets associated with this account, including noncumulative status for each day that the
-        budget is configured to include.
+        Gets all budgets associated with this account.
         
-        :returns: Iterator over :class:`BudgetWithStatus`
+        :param page_token: str (optional)
+          A page token received from a previous get all budget configurations call. This token can be used to
+          retrieve the subsequent page. Requests first page if absent.
+        
+        :returns: Iterator over :class:`BudgetConfiguration`
         """
 
+        query = {}
+        if page_token is not None: query['page_token'] = page_token
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET', f'/api/2.0/accounts/{self._api.account_id}/budget', headers=headers)
-        parsed = BudgetList.from_dict(json).budgets
-        return parsed if parsed is not None else []
+        while True:
+            json = self._api.do('GET',
+                                f'/api/2.1/accounts/{self._api.account_id}/budgets',
+                                query=query,
+                                headers=headers)
+            if 'budgets' in json:
+                for v in json['budgets']:
+                    yield BudgetConfiguration.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
 
-    def update(self, budget_id: str, budget: Budget):
+    def update(self, budget_id: str,
+               budget: UpdateBudgetConfigurationBudget) -> UpdateBudgetConfigurationResponse:
         """Modify budget.
         
-        Modifies a budget in this account. Budget properties are completely overwritten.
+        Updates a budget configuration for an account. Both account and budget configuration are specified by
+        ID.
         
         :param budget_id: str
-          Budget ID
-        :param budget: :class:`Budget`
-          Budget configuration to be created.
+          The Databricks budget configuration ID.
+        :param budget: :class:`UpdateBudgetConfigurationBudget`
+          The updated budget. This will overwrite the budget specified by the budget ID.
         
-        
+        :returns: :class:`UpdateBudgetConfigurationResponse`
         """
         body = {}
         if budget is not None: body['budget'] = budget.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        self._api.do('PATCH',
-                     f'/api/2.0/accounts/{self._api.account_id}/budget/{budget_id}',
-                     body=body,
-                     headers=headers)
+        res = self._api.do('PUT',
+                           f'/api/2.1/accounts/{self._api.account_id}/budgets/{budget_id}',
+                           body=body,
+                           headers=headers)
+        return UpdateBudgetConfigurationResponse.from_dict(res)
 
 
 class LogDeliveryAPI:
@@ -1037,3 +1357,67 @@ class LogDeliveryAPI:
                      f'/api/2.0/accounts/{self._api.account_id}/log-delivery/{log_delivery_configuration_id}',
                      body=body,
                      headers=headers)
+
+
+class UsageDashboardsAPI:
+    """These APIs manage usage dashboards for this account. Usage dashboards enable you to gain insights into
+    your usage with pre-built dashboards: visualize breakdowns, analyze tag attributions, and identify cost
+    drivers."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def create(self,
+               *,
+               dashboard_type: Optional[UsageDashboardType] = None,
+               workspace_id: Optional[int] = None) -> CreateBillingUsageDashboardResponse:
+        """Create new usage dashboard.
+        
+        Create a usage dashboard specified by workspaceId, accountId, and dashboard type.
+        
+        :param dashboard_type: :class:`UsageDashboardType` (optional)
+          Workspace level usage dashboard shows usage data for the specified workspace ID. Global level usage
+          dashboard shows usage data for all workspaces in the account.
+        :param workspace_id: int (optional)
+          The workspace ID of the workspace in which the usage dashboard is created.
+        
+        :returns: :class:`CreateBillingUsageDashboardResponse`
+        """
+        body = {}
+        if dashboard_type is not None: body['dashboard_type'] = dashboard_type.value
+        if workspace_id is not None: body['workspace_id'] = workspace_id
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do('POST',
+                           f'/api/2.0/accounts/{self._api.account_id}/dashboard',
+                           body=body,
+                           headers=headers)
+        return CreateBillingUsageDashboardResponse.from_dict(res)
+
+    def get(self,
+            *,
+            dashboard_type: Optional[UsageDashboardType] = None,
+            workspace_id: Optional[int] = None) -> GetBillingUsageDashboardResponse:
+        """Get usage dashboard.
+        
+        Get a usage dashboard specified by workspaceId, accountId, and dashboard type.
+        
+        :param dashboard_type: :class:`UsageDashboardType` (optional)
+          Workspace level usage dashboard shows usage data for the specified workspace ID. Global level usage
+          dashboard shows usage data for all workspaces in the account.
+        :param workspace_id: int (optional)
+          The workspace ID of the workspace in which the usage dashboard is created.
+        
+        :returns: :class:`GetBillingUsageDashboardResponse`
+        """
+
+        query = {}
+        if dashboard_type is not None: query['dashboard_type'] = dashboard_type.value
+        if workspace_id is not None: query['workspace_id'] = workspace_id
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do('GET',
+                           f'/api/2.0/accounts/{self._api.account_id}/dashboard',
+                           query=query,
+                           headers=headers)
+        return GetBillingUsageDashboardResponse.from_dict(res)

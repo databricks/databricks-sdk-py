@@ -15,7 +15,7 @@ from ._internal import Wait, _enum, _from_dict, _repeated_dict
 
 _LOG = logging.getLogger('databricks.sdk')
 
-from databricks.sdk.service import compute, iam
+from databricks.sdk.service import compute
 
 # all definitions in this file are in alphabetical order
 
@@ -469,7 +469,7 @@ class Continuous:
 
 @dataclass
 class CreateJob:
-    access_control_list: Optional[List[iam.AccessControlRequest]] = None
+    access_control_list: Optional[List[JobAccessControlRequest]] = None
     """List of permissions to set on the job."""
 
     continuous: Optional[Continuous] = None
@@ -480,7 +480,7 @@ class CreateJob:
     """Deployment information for jobs managed by external sources."""
 
     description: Optional[str] = None
-    """An optional description for the job. The maximum length is 1024 characters in UTF-8 encoding."""
+    """An optional description for the job. The maximum length is 27700 characters in UTF-8 encoding."""
 
     edit_mode: Optional[JobEditMode] = None
     """Edit mode of the job.
@@ -603,7 +603,7 @@ class CreateJob:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateJob:
         """Deserializes the CreateJob from a dictionary."""
-        return cls(access_control_list=_repeated_dict(d, 'access_control_list', iam.AccessControlRequest),
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list', JobAccessControlRequest),
                    continuous=_from_dict(d, 'continuous', Continuous),
                    deployment=_from_dict(d, 'deployment', JobDeployment),
                    description=d.get('description', None),
@@ -1601,7 +1601,7 @@ class JobSettings:
     """Deployment information for jobs managed by external sources."""
 
     description: Optional[str] = None
-    """An optional description for the job. The maximum length is 1024 characters in UTF-8 encoding."""
+    """An optional description for the job. The maximum length is 27700 characters in UTF-8 encoding."""
 
     edit_mode: Optional[JobEditMode] = None
     """Edit mode of the job.
@@ -2055,7 +2055,6 @@ class PeriodicTriggerConfigurationTimeUnit(Enum):
 
     DAYS = 'DAYS'
     HOURS = 'HOURS'
-    TIME_UNIT_UNSPECIFIED = 'TIME_UNIT_UNSPECIFIED'
     WEEKS = 'WEEKS'
 
 
@@ -2615,6 +2614,9 @@ class Run:
     Note: dbt and SQL File tasks support only version-controlled sources. If dbt or SQL File tasks
     are used, `git_source` must be defined on the job."""
 
+    iterations: Optional[List[RunTask]] = None
+    """Only populated by for-each iterations. The parent for-each task is located in tasks array."""
+
     job_clusters: Optional[List[JobCluster]] = None
     """A list of job cluster specifications that can be shared and reused by tasks of this job.
     Libraries cannot be declared in a shared job cluster. You must declare dependent libraries in
@@ -2626,6 +2628,9 @@ class Run:
     job_parameters: Optional[List[JobParameter]] = None
     """Job-level parameters used in the run"""
 
+    next_page_token: Optional[str] = None
+    """A token that can be used to list the next page of sub-resources."""
+
     number_in_job: Optional[int] = None
     """A unique identifier for this job run. This is set to the same value as `run_id`."""
 
@@ -2635,6 +2640,9 @@ class Run:
 
     overriding_parameters: Optional[RunParameters] = None
     """The parameters used for this run."""
+
+    prev_page_token: Optional[str] = None
+    """A token that can be used to list the previous page of sub-resources."""
 
     queue_duration: Optional[int] = None
     """The time in milliseconds that the run has spent in the queue."""
@@ -2709,13 +2717,16 @@ class Run:
         if self.end_time is not None: body['end_time'] = self.end_time
         if self.execution_duration is not None: body['execution_duration'] = self.execution_duration
         if self.git_source: body['git_source'] = self.git_source.as_dict()
+        if self.iterations: body['iterations'] = [v.as_dict() for v in self.iterations]
         if self.job_clusters: body['job_clusters'] = [v.as_dict() for v in self.job_clusters]
         if self.job_id is not None: body['job_id'] = self.job_id
         if self.job_parameters: body['job_parameters'] = [v.as_dict() for v in self.job_parameters]
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         if self.number_in_job is not None: body['number_in_job'] = self.number_in_job
         if self.original_attempt_run_id is not None:
             body['original_attempt_run_id'] = self.original_attempt_run_id
         if self.overriding_parameters: body['overriding_parameters'] = self.overriding_parameters.as_dict()
+        if self.prev_page_token is not None: body['prev_page_token'] = self.prev_page_token
         if self.queue_duration is not None: body['queue_duration'] = self.queue_duration
         if self.repair_history: body['repair_history'] = [v.as_dict() for v in self.repair_history]
         if self.run_duration is not None: body['run_duration'] = self.run_duration
@@ -2744,12 +2755,15 @@ class Run:
                    end_time=d.get('end_time', None),
                    execution_duration=d.get('execution_duration', None),
                    git_source=_from_dict(d, 'git_source', GitSource),
+                   iterations=_repeated_dict(d, 'iterations', RunTask),
                    job_clusters=_repeated_dict(d, 'job_clusters', JobCluster),
                    job_id=d.get('job_id', None),
                    job_parameters=_repeated_dict(d, 'job_parameters', JobParameter),
+                   next_page_token=d.get('next_page_token', None),
                    number_in_job=d.get('number_in_job', None),
                    original_attempt_run_id=d.get('original_attempt_run_id', None),
                    overriding_parameters=_from_dict(d, 'overriding_parameters', RunParameters),
+                   prev_page_token=d.get('prev_page_token', None),
                    queue_duration=d.get('queue_duration', None),
                    repair_history=_repeated_dict(d, 'repair_history', RepairHistoryItem),
                    run_duration=d.get('run_duration', None),
@@ -4188,7 +4202,7 @@ class SqlTaskSubscription:
 
 @dataclass
 class SubmitRun:
-    access_control_list: Optional[List[iam.AccessControlRequest]] = None
+    access_control_list: Optional[List[JobAccessControlRequest]] = None
     """List of permissions to set on the job."""
 
     email_notifications: Optional[JobEmailNotifications] = None
@@ -4268,7 +4282,7 @@ class SubmitRun:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> SubmitRun:
         """Deserializes the SubmitRun from a dictionary."""
-        return cls(access_control_list=_repeated_dict(d, 'access_control_list', iam.AccessControlRequest),
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list', JobAccessControlRequest),
                    email_notifications=_from_dict(d, 'email_notifications', JobEmailNotifications),
                    environments=_repeated_dict(d, 'environments', JobEnvironment),
                    git_source=_from_dict(d, 'git_source', GitSource),
@@ -5157,7 +5171,7 @@ class JobsAPI:
 
     def create(self,
                *,
-               access_control_list: Optional[List[iam.AccessControlRequest]] = None,
+               access_control_list: Optional[List[JobAccessControlRequest]] = None,
                continuous: Optional[Continuous] = None,
                deployment: Optional[JobDeployment] = None,
                description: Optional[str] = None,
@@ -5184,7 +5198,7 @@ class JobsAPI:
         
         Create a new job.
         
-        :param access_control_list: List[:class:`AccessControlRequest`] (optional)
+        :param access_control_list: List[:class:`JobAccessControlRequest`] (optional)
           List of permissions to set on the job.
         :param continuous: :class:`Continuous` (optional)
           An optional continuous property for this job. The continuous property will ensure that there is
@@ -5192,7 +5206,7 @@ class JobsAPI:
         :param deployment: :class:`JobDeployment` (optional)
           Deployment information for jobs managed by external sources.
         :param description: str (optional)
-          An optional description for the job. The maximum length is 1024 characters in UTF-8 encoding.
+          An optional description for the job. The maximum length is 27700 characters in UTF-8 encoding.
         :param edit_mode: :class:`JobEditMode` (optional)
           Edit mode of the job.
           
@@ -5402,7 +5416,8 @@ class JobsAPI:
                 run_id: int,
                 *,
                 include_history: Optional[bool] = None,
-                include_resolved_values: Optional[bool] = None) -> Run:
+                include_resolved_values: Optional[bool] = None,
+                page_token: Optional[str] = None) -> Run:
         """Get a single job run.
         
         Retrieve the metadata of a run.
@@ -5413,6 +5428,9 @@ class JobsAPI:
           Whether to include the repair history in the response.
         :param include_resolved_values: bool (optional)
           Whether to include resolved parameter values in the response.
+        :param page_token: str (optional)
+          To list the next page or the previous page of job tasks, set this field to the value of the
+          `next_page_token` or `prev_page_token` returned in the GetJob response.
         
         :returns: :class:`Run`
         """
@@ -5420,6 +5438,7 @@ class JobsAPI:
         query = {}
         if include_history is not None: query['include_history'] = include_history
         if include_resolved_values is not None: query['include_resolved_values'] = include_resolved_values
+        if page_token is not None: query['page_token'] = page_token
         if run_id is not None: query['run_id'] = run_id
         headers = {'Accept': 'application/json', }
 
@@ -5927,7 +5946,7 @@ class JobsAPI:
 
     def submit(self,
                *,
-               access_control_list: Optional[List[iam.AccessControlRequest]] = None,
+               access_control_list: Optional[List[JobAccessControlRequest]] = None,
                email_notifications: Optional[JobEmailNotifications] = None,
                environments: Optional[List[JobEnvironment]] = None,
                git_source: Optional[GitSource] = None,
@@ -5946,7 +5965,7 @@ class JobsAPI:
         Runs submitted using this endpoint don’t display in the UI. Use the `jobs/runs/get` API to check the
         run state after the job is submitted.
         
-        :param access_control_list: List[:class:`AccessControlRequest`] (optional)
+        :param access_control_list: List[:class:`JobAccessControlRequest`] (optional)
           List of permissions to set on the job.
         :param email_notifications: :class:`JobEmailNotifications` (optional)
           An optional set of email addresses notified when the run begins or completes.
@@ -6021,7 +6040,7 @@ class JobsAPI:
     def submit_and_wait(
         self,
         *,
-        access_control_list: Optional[List[iam.AccessControlRequest]] = None,
+        access_control_list: Optional[List[JobAccessControlRequest]] = None,
         email_notifications: Optional[JobEmailNotifications] = None,
         environments: Optional[List[JobEnvironment]] = None,
         git_source: Optional[GitSource] = None,

@@ -2418,6 +2418,13 @@ class FunctionParameterType(Enum):
     PARAM = 'PARAM'
 
 
+class GetBindingsSecurableType(Enum):
+
+    CATALOG = 'catalog'
+    EXTERNAL_LOCATION = 'external_location'
+    STORAGE_CREDENTIAL = 'storage_credential'
+
+
 @dataclass
 class GetMetastoreSummaryResponse:
     cloud: Optional[str] = None
@@ -2782,19 +2789,25 @@ class ListStorageCredentialsResponse:
 
 @dataclass
 class ListSystemSchemasResponse:
+    next_page_token: Optional[str] = None
+    """Opaque token to retrieve the next page of results. Absent if there are no more pages.
+    __page_token__ should be set to this value for the next request (for the next page of results)."""
+
     schemas: Optional[List[SystemSchemaInfo]] = None
     """An array of system schema information objects."""
 
     def as_dict(self) -> dict:
         """Serializes the ListSystemSchemasResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         if self.schemas: body['schemas'] = [v.as_dict() for v in self.schemas]
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListSystemSchemasResponse:
         """Deserializes the ListSystemSchemasResponse from a dictionary."""
-        return cls(schemas=_repeated_dict(d, 'schemas', SystemSchemaInfo))
+        return cls(next_page_token=d.get('next_page_token', None),
+                   schemas=_repeated_dict(d, 'schemas', SystemSchemaInfo))
 
 
 @dataclass
@@ -3019,6 +3032,9 @@ class MetastoreInfoDeltaSharingScope(Enum):
 
 @dataclass
 class ModelVersionInfo:
+    aliases: Optional[List[RegisteredModelAlias]] = None
+    """List of aliases associated with the model version"""
+
     browse_only: Optional[bool] = None
     """Indicates whether the principal is limited to retrieving metadata for the associated object
     through the BROWSE privilege when include_browse is enabled in the request."""
@@ -3079,6 +3095,7 @@ class ModelVersionInfo:
     def as_dict(self) -> dict:
         """Serializes the ModelVersionInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.aliases: body['aliases'] = [v.as_dict() for v in self.aliases]
         if self.browse_only is not None: body['browse_only'] = self.browse_only
         if self.catalog_name is not None: body['catalog_name'] = self.catalog_name
         if self.comment is not None: body['comment'] = self.comment
@@ -3103,7 +3120,8 @@ class ModelVersionInfo:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ModelVersionInfo:
         """Deserializes the ModelVersionInfo from a dictionary."""
-        return cls(browse_only=d.get('browse_only', None),
+        return cls(aliases=_repeated_dict(d, 'aliases', RegisteredModelAlias),
+                   browse_only=d.get('browse_only', None),
                    catalog_name=d.get('catalog_name', None),
                    comment=d.get('comment', None),
                    created_at=d.get('created_at', None),
@@ -3742,7 +3760,6 @@ class OnlineTableState(Enum):
     ONLINE_CONTINUOUS_UPDATE = 'ONLINE_CONTINUOUS_UPDATE'
     ONLINE_NO_PENDING_UPDATE = 'ONLINE_NO_PENDING_UPDATE'
     ONLINE_PIPELINE_FAILED = 'ONLINE_PIPELINE_FAILED'
-    ONLINE_TABLE_STATE_UNSPECIFIED = 'ONLINE_TABLE_STATE_UNSPECIFIED'
     ONLINE_TRIGGERED_UPDATE = 'ONLINE_TRIGGERED_UPDATE'
     ONLINE_UPDATING_PIPELINE_RESOURCES = 'ONLINE_UPDATING_PIPELINE_RESOURCES'
     PROVISIONING = 'PROVISIONING'
@@ -3935,6 +3952,7 @@ class Privilege(Enum):
     CREATE_VIEW = 'CREATE_VIEW'
     CREATE_VOLUME = 'CREATE_VOLUME'
     EXECUTE = 'EXECUTE'
+    MANAGE = 'MANAGE'
     MANAGE_ALLOWLIST = 'MANAGE_ALLOWLIST'
     MODIFY = 'MODIFY'
     READ_FILES = 'READ_FILES'
@@ -4849,6 +4867,13 @@ class UpdateAssignmentResponse:
         return cls()
 
 
+class UpdateBindingsSecurableType(Enum):
+
+    CATALOG = 'catalog'
+    EXTERNAL_LOCATION = 'external_location'
+    STORAGE_CREDENTIAL = 'storage_credential'
+
+
 @dataclass
 class UpdateCatalog:
     comment: Optional[str] = None
@@ -5492,8 +5517,8 @@ class UpdateWorkspaceBindingsParameters:
     securable_name: Optional[str] = None
     """The name of the securable."""
 
-    securable_type: Optional[str] = None
-    """The type of the securable."""
+    securable_type: Optional[UpdateBindingsSecurableType] = None
+    """The type of the securable to bind to a workspace."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateWorkspaceBindingsParameters into a dictionary suitable for use as a JSON request body."""
@@ -5501,7 +5526,7 @@ class UpdateWorkspaceBindingsParameters:
         if self.add: body['add'] = [v.as_dict() for v in self.add]
         if self.remove: body['remove'] = [v.as_dict() for v in self.remove]
         if self.securable_name is not None: body['securable_name'] = self.securable_name
-        if self.securable_type is not None: body['securable_type'] = self.securable_type
+        if self.securable_type is not None: body['securable_type'] = self.securable_type.value
         return body
 
     @classmethod
@@ -5510,7 +5535,7 @@ class UpdateWorkspaceBindingsParameters:
         return cls(add=_repeated_dict(d, 'add', WorkspaceBinding),
                    remove=_repeated_dict(d, 'remove', WorkspaceBinding),
                    securable_name=d.get('securable_name', None),
-                   securable_type=d.get('securable_type', None))
+                   securable_type=_enum(d, 'securable_type', UpdateBindingsSecurableType))
 
 
 @dataclass
@@ -5776,16 +5801,22 @@ class WorkspaceBindingsResponse:
     bindings: Optional[List[WorkspaceBinding]] = None
     """List of workspace bindings"""
 
+    next_page_token: Optional[str] = None
+    """Opaque token to retrieve the next page of results. Absent if there are no more pages.
+    __page_token__ should be set to this value for the next request (for the next page of results)."""
+
     def as_dict(self) -> dict:
         """Serializes the WorkspaceBindingsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.bindings: body['bindings'] = [v.as_dict() for v in self.bindings]
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> WorkspaceBindingsResponse:
         """Deserializes the WorkspaceBindingsResponse from a dictionary."""
-        return cls(bindings=_repeated_dict(d, 'bindings', WorkspaceBinding))
+        return cls(bindings=_repeated_dict(d, 'bindings', WorkspaceBinding),
+                   next_page_token=d.get('next_page_token', None))
 
 
 class AccountMetastoreAssignmentsAPI:
@@ -7325,7 +7356,8 @@ class ModelVersionsAPI:
             full_name: str,
             version: int,
             *,
-            include_browse: Optional[bool] = None) -> RegisteredModelInfo:
+            include_aliases: Optional[bool] = None,
+            include_browse: Optional[bool] = None) -> ModelVersionInfo:
         """Get a Model Version.
         
         Get a model version.
@@ -7338,14 +7370,17 @@ class ModelVersionsAPI:
           The three-level (fully qualified) name of the model version
         :param version: int
           The integer version number of the model version
+        :param include_aliases: bool (optional)
+          Whether to include aliases associated with the model version in the response
         :param include_browse: bool (optional)
           Whether to include model versions in the response for which the principal can only access selective
           metadata for
         
-        :returns: :class:`RegisteredModelInfo`
+        :returns: :class:`ModelVersionInfo`
         """
 
         query = {}
+        if include_aliases is not None: query['include_aliases'] = include_aliases
         if include_browse is not None: query['include_browse'] = include_browse
         headers = {'Accept': 'application/json', }
 
@@ -7353,9 +7388,13 @@ class ModelVersionsAPI:
                            f'/api/2.1/unity-catalog/models/{full_name}/versions/{version}',
                            query=query,
                            headers=headers)
-        return RegisteredModelInfo.from_dict(res)
+        return ModelVersionInfo.from_dict(res)
 
-    def get_by_alias(self, full_name: str, alias: str) -> ModelVersionInfo:
+    def get_by_alias(self,
+                     full_name: str,
+                     alias: str,
+                     *,
+                     include_aliases: Optional[bool] = None) -> ModelVersionInfo:
         """Get Model Version By Alias.
         
         Get a model version by alias.
@@ -7368,14 +7407,19 @@ class ModelVersionsAPI:
           The three-level (fully qualified) name of the registered model
         :param alias: str
           The name of the alias
+        :param include_aliases: bool (optional)
+          Whether to include aliases associated with the model version in the response
         
         :returns: :class:`ModelVersionInfo`
         """
 
+        query = {}
+        if include_aliases is not None: query['include_aliases'] = include_aliases
         headers = {'Accept': 'application/json', }
 
         res = self._api.do('GET',
                            f'/api/2.1/unity-catalog/models/{full_name}/aliases/{alias}',
+                           query=query,
                            headers=headers)
         return ModelVersionInfo.from_dict(res)
 
@@ -7971,7 +8015,11 @@ class RegisteredModelsAPI:
 
         self._api.do('DELETE', f'/api/2.1/unity-catalog/models/{full_name}/aliases/{alias}', headers=headers)
 
-    def get(self, full_name: str, *, include_browse: Optional[bool] = None) -> RegisteredModelInfo:
+    def get(self,
+            full_name: str,
+            *,
+            include_aliases: Optional[bool] = None,
+            include_browse: Optional[bool] = None) -> RegisteredModelInfo:
         """Get a Registered Model.
         
         Get a registered model.
@@ -7982,6 +8030,8 @@ class RegisteredModelsAPI:
         
         :param full_name: str
           The three-level (fully qualified) name of the registered model
+        :param include_aliases: bool (optional)
+          Whether to include registered model aliases in the response
         :param include_browse: bool (optional)
           Whether to include registered models in the response for which the principal can only access
           selective metadata for
@@ -7990,6 +8040,7 @@ class RegisteredModelsAPI:
         """
 
         query = {}
+        if include_aliases is not None: query['include_aliases'] = include_aliases
         if include_browse is not None: query['include_browse'] = include_browse
         headers = {'Accept': 'application/json', }
 
@@ -8172,7 +8223,7 @@ class SchemasAPI:
         res = self._api.do('POST', '/api/2.1/unity-catalog/schemas', body=body, headers=headers)
         return SchemaInfo.from_dict(res)
 
-    def delete(self, full_name: str):
+    def delete(self, full_name: str, *, force: Optional[bool] = None):
         """Delete a schema.
         
         Deletes the specified schema from the parent catalog. The caller must be the owner of the schema or an
@@ -8180,13 +8231,17 @@ class SchemasAPI:
         
         :param full_name: str
           Full name of the schema.
+        :param force: bool (optional)
+          Force deletion even if the schema is not empty.
         
         
         """
 
+        query = {}
+        if force is not None: query['force'] = force
         headers = {'Accept': 'application/json', }
 
-        self._api.do('DELETE', f'/api/2.1/unity-catalog/schemas/{full_name}', headers=headers)
+        self._api.do('DELETE', f'/api/2.1/unity-catalog/schemas/{full_name}', query=query, headers=headers)
 
     def get(self, full_name: str, *, include_browse: Optional[bool] = None) -> SchemaInfo:
         """Get a schema.
@@ -8632,7 +8687,11 @@ class SystemSchemasAPI:
                      f'/api/2.1/unity-catalog/metastores/{metastore_id}/systemschemas/{schema_name}',
                      headers=headers)
 
-    def list(self, metastore_id: str) -> Iterator[SystemSchemaInfo]:
+    def list(self,
+             metastore_id: str,
+             *,
+             max_results: Optional[int] = None,
+             page_token: Optional[str] = None) -> Iterator[SystemSchemaInfo]:
         """List system schemas.
         
         Gets an array of system schemas for a metastore. The caller must be an account admin or a metastore
@@ -8640,17 +8699,33 @@ class SystemSchemasAPI:
         
         :param metastore_id: str
           The ID for the metastore in which the system schema resides.
+        :param max_results: int (optional)
+          Maximum number of schemas to return. - When set to 0, the page length is set to a server configured
+          value (recommended); - When set to a value greater than 0, the page length is the minimum of this
+          value and a server configured value; - When set to a value less than 0, an invalid parameter error
+          is returned; - If not set, all the schemas are returned (not recommended).
+        :param page_token: str (optional)
+          Opaque pagination token to go to next page based on previous query.
         
         :returns: Iterator over :class:`SystemSchemaInfo`
         """
 
+        query = {}
+        if max_results is not None: query['max_results'] = max_results
+        if page_token is not None: query['page_token'] = page_token
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET',
-                            f'/api/2.1/unity-catalog/metastores/{metastore_id}/systemschemas',
-                            headers=headers)
-        parsed = ListSystemSchemasResponse.from_dict(json).schemas
-        return parsed if parsed is not None else []
+        while True:
+            json = self._api.do('GET',
+                                f'/api/2.1/unity-catalog/metastores/{metastore_id}/systemschemas',
+                                query=query,
+                                headers=headers)
+            if 'schemas' in json:
+                for v in json['schemas']:
+                    yield SystemSchemaInfo.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
 
 
 class TableConstraintsAPI:
@@ -9172,7 +9247,7 @@ class WorkspaceBindingsAPI:
     the new path (/api/2.1/unity-catalog/bindings/{securable_type}/{securable_name}) which introduces the
     ability to bind a securable in READ_ONLY mode (catalogs only).
     
-    Securables that support binding: - catalog"""
+    Securable types that support binding: - catalog - storage_credential - external_location"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -9196,26 +9271,48 @@ class WorkspaceBindingsAPI:
                            headers=headers)
         return CurrentWorkspaceBindings.from_dict(res)
 
-    def get_bindings(self, securable_type: str, securable_name: str) -> WorkspaceBindingsResponse:
+    def get_bindings(self,
+                     securable_type: GetBindingsSecurableType,
+                     securable_name: str,
+                     *,
+                     max_results: Optional[int] = None,
+                     page_token: Optional[str] = None) -> Iterator[WorkspaceBinding]:
         """Get securable workspace bindings.
         
         Gets workspace bindings of the securable. The caller must be a metastore admin or an owner of the
         securable.
         
-        :param securable_type: str
-          The type of the securable.
+        :param securable_type: :class:`GetBindingsSecurableType`
+          The type of the securable to bind to a workspace.
         :param securable_name: str
           The name of the securable.
+        :param max_results: int (optional)
+          Maximum number of workspace bindings to return. - When set to 0, the page length is set to a server
+          configured value (recommended); - When set to a value greater than 0, the page length is the minimum
+          of this value and a server configured value; - When set to a value less than 0, an invalid parameter
+          error is returned; - If not set, all the workspace bindings are returned (not recommended).
+        :param page_token: str (optional)
+          Opaque pagination token to go to next page based on previous query.
         
-        :returns: :class:`WorkspaceBindingsResponse`
+        :returns: Iterator over :class:`WorkspaceBinding`
         """
 
+        query = {}
+        if max_results is not None: query['max_results'] = max_results
+        if page_token is not None: query['page_token'] = page_token
         headers = {'Accept': 'application/json', }
 
-        res = self._api.do('GET',
-                           f'/api/2.1/unity-catalog/bindings/{securable_type}/{securable_name}',
-                           headers=headers)
-        return WorkspaceBindingsResponse.from_dict(res)
+        while True:
+            json = self._api.do('GET',
+                                f'/api/2.1/unity-catalog/bindings/{securable_type.value}/{securable_name}',
+                                query=query,
+                                headers=headers)
+            if 'bindings' in json:
+                for v in json['bindings']:
+                    yield WorkspaceBinding.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
 
     def update(self,
                name: str,
@@ -9248,7 +9345,7 @@ class WorkspaceBindingsAPI:
         return CurrentWorkspaceBindings.from_dict(res)
 
     def update_bindings(self,
-                        securable_type: str,
+                        securable_type: UpdateBindingsSecurableType,
                         securable_name: str,
                         *,
                         add: Optional[List[WorkspaceBinding]] = None,
@@ -9258,8 +9355,8 @@ class WorkspaceBindingsAPI:
         Updates workspace bindings of the securable. The caller must be a metastore admin or an owner of the
         securable.
         
-        :param securable_type: str
-          The type of the securable.
+        :param securable_type: :class:`UpdateBindingsSecurableType`
+          The type of the securable to bind to a workspace.
         :param securable_name: str
           The name of the securable.
         :param add: List[:class:`WorkspaceBinding`] (optional)
@@ -9275,7 +9372,7 @@ class WorkspaceBindingsAPI:
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         res = self._api.do('PATCH',
-                           f'/api/2.1/unity-catalog/bindings/{securable_type}/{securable_name}',
+                           f'/api/2.1/unity-catalog/bindings/{securable_type.value}/{securable_name}',
                            body=body,
                            headers=headers)
         return WorkspaceBindingsResponse.from_dict(res)

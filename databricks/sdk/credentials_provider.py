@@ -233,8 +233,7 @@ def _ensure_host_present(cfg: 'Config', token_source_for: Callable[[str], TokenS
     cfg.host = f"https://{resp.json()['properties']['workspaceUrl']}"
 
 
-@oauth_credentials_strategy('azure-client-secret',
-                            ['is_azure', 'azure_client_id', 'azure_client_secret', 'azure_tenant_id'])
+@oauth_credentials_strategy('azure-client-secret', ['is_azure', 'azure_client_id', 'azure_client_secret'])
 def azure_service_principal(cfg: 'Config') -> CredentialsProvider:
     """ Adds refreshed Azure Active Directory (AAD) Service Principal OAuth tokens
     to every request, while automatically resolving different Azure environment endpoints. """
@@ -248,6 +247,7 @@ def azure_service_principal(cfg: 'Config') -> CredentialsProvider:
                                  use_params=True)
 
     _ensure_host_present(cfg, token_source_for)
+    cfg.load_azure_tenant_id()
     logger.info("Configured AAD token for Service Principal (%s)", cfg.azure_client_id)
     inner = token_source_for(cfg.effective_azure_login_app_id)
     cloud = token_source_for(cfg.arm_environment.service_management_endpoint)
@@ -432,11 +432,13 @@ class CliTokenSource(Refreshable):
 class AzureCliTokenSource(CliTokenSource):
     """ Obtain the token granted by `az login` CLI command """
 
-    def __init__(self, resource: str, subscription: str = ""):
+    def __init__(self, resource: str, subscription: Optional[str] = None, tenant: Optional[str] = None):
         cmd = ["az", "account", "get-access-token", "--resource", resource, "--output", "json"]
-        if subscription != "":
+        if subscription is not None:
             cmd.append("--subscription")
             cmd.append(subscription)
+        if tenant:
+            cmd.extend(["--tenant", tenant])
         super().__init__(cmd=cmd,
                          token_type_field='tokenType',
                          access_token_field='accessToken',
@@ -464,8 +466,10 @@ class AzureCliTokenSource(CliTokenSource):
     @staticmethod
     def for_resource(cfg: 'Config', resource: str) -> 'AzureCliTokenSource':
         subscription = AzureCliTokenSource.get_subscription(cfg)
-        if subscription != "":
-            token_source = AzureCliTokenSource(resource, subscription)
+        if subscription is not None:
+            token_source = AzureCliTokenSource(resource,
+                                               subscription=subscription,
+                                               tenant=cfg.azure_tenant_id)
             try:
                 # This will fail if the user has access to the workspace, but not to the subscription
                 # itself.
@@ -475,25 +479,26 @@ class AzureCliTokenSource(CliTokenSource):
             except OSError:
                 logger.warning("Failed to get token for subscription. Using resource only token.")
 
-        token_source = AzureCliTokenSource(resource)
+        token_source = AzureCliTokenSource(resource, subscription=None, tenant=cfg.azure_tenant_id)
         token_source.token()
         return token_source
 
     @staticmethod
-    def get_subscription(cfg: 'Config') -> str:
+    def get_subscription(cfg: 'Config') -> Optional[str]:
         resource = cfg.azure_workspace_resource_id
         if resource is None or resource == "":
-            return ""
+            return None
         components = resource.split('/')
         if len(components) < 3:
             logger.warning("Invalid azure workspace resource ID")
-            return ""
+            return None
         return components[2]
 
 
 @credentials_strategy('azure-cli', ['is_azure'])
 def azure_cli(cfg: 'Config') -> Optional[CredentialsProvider]:
     """ Adds refreshed OAuth token granted by `az login` command to every request. """
+    cfg.load_azure_tenant_id()
     token_source = None
     mgmt_token_source = None
     try:
@@ -517,11 +522,6 @@ def azure_cli(cfg: 'Config') -> Optional[CredentialsProvider]:
 
     _ensure_host_present(cfg, lambda resource: AzureCliTokenSource.for_resource(cfg, resource))
     logger.info("Using Azure CLI authentication with AAD tokens")
-    if not cfg.is_account_client and AzureCliTokenSource.get_subscription(cfg) == "":
-        logger.warning(
-            "azure_workspace_resource_id field not provided. "
-            "It is recommended to specify this field in the Databricks configuration to avoid authentication errors."
-        )
 
     def inner() -> Dict[str, str]:
         token = token_source.token()
