@@ -4,23 +4,84 @@ Billing
 These dataclasses are used in the SDK to represent API requests and responses for services in the ``databricks.sdk.service.billing`` module.
 
 .. py:currentmodule:: databricks.sdk.service.billing
-.. autoclass:: Budget
+.. autoclass:: ActionConfiguration
    :members:
    :undoc-members:
 
-.. autoclass:: BudgetAlert
+.. py:class:: ActionConfigurationType
+
+   .. py:attribute:: EMAIL_NOTIFICATION
+      :value: "EMAIL_NOTIFICATION"
+
+.. autoclass:: AlertConfiguration
    :members:
    :undoc-members:
 
-.. autoclass:: BudgetList
+.. py:class:: AlertConfigurationQuantityType
+
+   .. py:attribute:: LIST_PRICE_DOLLARS_USD
+      :value: "LIST_PRICE_DOLLARS_USD"
+
+.. py:class:: AlertConfigurationTimePeriod
+
+   .. py:attribute:: MONTH
+      :value: "MONTH"
+
+.. py:class:: AlertConfigurationTriggerType
+
+   .. py:attribute:: CUMULATIVE_SPENDING_EXCEEDED
+      :value: "CUMULATIVE_SPENDING_EXCEEDED"
+
+.. autoclass:: BudgetConfiguration
    :members:
    :undoc-members:
 
-.. autoclass:: BudgetWithStatus
+.. autoclass:: BudgetConfigurationFilter
    :members:
    :undoc-members:
 
-.. autoclass:: BudgetWithStatusStatusDailyItem
+.. autoclass:: BudgetConfigurationFilterClause
+   :members:
+   :undoc-members:
+
+.. py:class:: BudgetConfigurationFilterOperator
+
+   .. py:attribute:: IN
+      :value: "IN"
+
+.. autoclass:: BudgetConfigurationFilterTagClause
+   :members:
+   :undoc-members:
+
+.. autoclass:: BudgetConfigurationFilterWorkspaceIdClause
+   :members:
+   :undoc-members:
+
+.. autoclass:: CreateBillingUsageDashboardRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: CreateBillingUsageDashboardResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: CreateBudgetConfigurationBudget
+   :members:
+   :undoc-members:
+
+.. autoclass:: CreateBudgetConfigurationBudgetActionConfigurations
+   :members:
+   :undoc-members:
+
+.. autoclass:: CreateBudgetConfigurationBudgetAlertConfigurations
+   :members:
+   :undoc-members:
+
+.. autoclass:: CreateBudgetConfigurationRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: CreateBudgetConfigurationResponse
    :members:
    :undoc-members:
 
@@ -28,7 +89,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: DeleteResponse
+.. autoclass:: DeleteBudgetConfigurationResponse
    :members:
    :undoc-members:
 
@@ -52,6 +113,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "USER_FAILURE"
 
 .. autoclass:: DownloadResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: GetBillingUsageDashboardResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: GetBudgetConfigurationResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListBudgetConfigurationsResponse
    :members:
    :undoc-members:
 
@@ -102,21 +175,29 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: UpdateBudgetConfigurationBudget
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateBudgetConfigurationRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateBudgetConfigurationResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: UpdateLogDeliveryConfigurationStatusRequest
    :members:
    :undoc-members:
 
-.. autoclass:: UpdateResponse
-   :members:
-   :undoc-members:
+.. py:class:: UsageDashboardType
 
-.. autoclass:: WrappedBudget
-   :members:
-   :undoc-members:
+   .. py:attribute:: USAGE_DASHBOARD_TYPE_GLOBAL
+      :value: "USAGE_DASHBOARD_TYPE_GLOBAL"
 
-.. autoclass:: WrappedBudgetWithStatus
-   :members:
-   :undoc-members:
+   .. py:attribute:: USAGE_DASHBOARD_TYPE_WORKSPACE
+      :value: "USAGE_DASHBOARD_TYPE_WORKSPACE"
 
 .. autoclass:: WrappedCreateLogDeliveryConfiguration
    :members:

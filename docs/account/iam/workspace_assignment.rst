@@ -15,7 +15,7 @@
         principal.
         
         :param workspace_id: int
-          The workspace ID.
+          The workspace ID for the account.
         :param principal_id: int
           The ID of the user, service principal, or group.
         
@@ -61,7 +61,7 @@
         :returns: Iterator over :class:`PermissionAssignment`
         
 
-    .. py:method:: update(workspace_id: int, principal_id: int, permissions: List[WorkspacePermission]) -> PermissionAssignment
+    .. py:method:: update(workspace_id: int, principal_id: int [, permissions: Optional[List[WorkspacePermission]]]) -> PermissionAssignment
 
 
         Usage:
@@ -92,13 +92,15 @@
         specified principal.
         
         :param workspace_id: int
-          The workspace ID.
+          The workspace ID for the account.
         :param principal_id: int
           The ID of the user, service principal, or group.
-        :param permissions: List[:class:`WorkspacePermission`]
-          Array of permissions assignments to update on the workspace. Note that excluding this field will
-          have the same effect as providing an empty list which will result in the deletion of all permissions
-          for the principal.
+        :param permissions: List[:class:`WorkspacePermission`] (optional)
+          Array of permissions assignments to update on the workspace. Valid values are "USER" and "ADMIN"
+          (case-sensitive). If both "USER" and "ADMIN" are provided, "ADMIN" takes precedence. Other values
+          will be ignored. Note that excluding this field, or providing unsupported values, will have the same
+          effect as providing an empty list, which will result in the deletion of all permissions for the
+          principal.
         
         :returns: :class:`PermissionAssignment`
         

@@ -63,7 +63,7 @@ class CreatePipeline:
     id: Optional[str] = None
     """Unique identifier for this pipeline."""
 
-    ingestion_definition: Optional[ManagedIngestionPipelineDefinition] = None
+    ingestion_definition: Optional[IngestionPipelineDefinition] = None
     """The configuration for a managed ingestion pipeline. These settings cannot be used with the
     'libraries', 'target' or 'catalog' settings."""
 
@@ -136,8 +136,7 @@ class CreatePipeline:
                    filters=_from_dict(d, 'filters', Filters),
                    gateway_definition=_from_dict(d, 'gateway_definition', IngestionGatewayPipelineDefinition),
                    id=d.get('id', None),
-                   ingestion_definition=_from_dict(d, 'ingestion_definition',
-                                                   ManagedIngestionPipelineDefinition),
+                   ingestion_definition=_from_dict(d, 'ingestion_definition', IngestionPipelineDefinition),
                    libraries=_repeated_dict(d, 'libraries', PipelineLibrary),
                    name=d.get('name', None),
                    notifications=_repeated_dict(d, 'notifications', Notifications),
@@ -277,7 +276,7 @@ class EditPipeline:
     id: Optional[str] = None
     """Unique identifier for this pipeline."""
 
-    ingestion_definition: Optional[ManagedIngestionPipelineDefinition] = None
+    ingestion_definition: Optional[IngestionPipelineDefinition] = None
     """The configuration for a managed ingestion pipeline. These settings cannot be used with the
     'libraries', 'target' or 'catalog' settings."""
 
@@ -355,8 +354,7 @@ class EditPipeline:
                    filters=_from_dict(d, 'filters', Filters),
                    gateway_definition=_from_dict(d, 'gateway_definition', IngestionGatewayPipelineDefinition),
                    id=d.get('id', None),
-                   ingestion_definition=_from_dict(d, 'ingestion_definition',
-                                                   ManagedIngestionPipelineDefinition),
+                   ingestion_definition=_from_dict(d, 'ingestion_definition', IngestionPipelineDefinition),
                    libraries=_repeated_dict(d, 'libraries', PipelineLibrary),
                    name=d.get('name', None),
                    notifications=_repeated_dict(d, 'notifications', Notifications),
@@ -590,7 +588,7 @@ class IngestionGatewayPipelineDefinition:
     """Required, Immutable. The name of the catalog for the gateway pipeline's storage location."""
 
     gateway_storage_name: Optional[str] = None
-    """Required. The Unity Catalog-compatible naming for the gateway storage location. This is the
+    """Optional. The Unity Catalog-compatible name for the gateway storage location. This is the
     destination to use for the data that is extracted by the gateway. Delta Live Tables system will
     automatically create the storage location under the catalog and schema."""
 
@@ -615,6 +613,41 @@ class IngestionGatewayPipelineDefinition:
                    gateway_storage_catalog=d.get('gateway_storage_catalog', None),
                    gateway_storage_name=d.get('gateway_storage_name', None),
                    gateway_storage_schema=d.get('gateway_storage_schema', None))
+
+
+@dataclass
+class IngestionPipelineDefinition:
+    connection_name: Optional[str] = None
+    """Immutable. The Unity Catalog connection this ingestion pipeline uses to communicate with the
+    source. Specify either ingestion_gateway_id or connection_name."""
+
+    ingestion_gateway_id: Optional[str] = None
+    """Immutable. Identifier for the ingestion gateway used by this ingestion pipeline to communicate
+    with the source. Specify either ingestion_gateway_id or connection_name."""
+
+    objects: Optional[List[IngestionConfig]] = None
+    """Required. Settings specifying tables to replicate and the destination for the replicated tables."""
+
+    table_configuration: Optional[TableSpecificConfig] = None
+    """Configuration settings to control the ingestion of tables. These settings are applied to all
+    tables in the pipeline."""
+
+    def as_dict(self) -> dict:
+        """Serializes the IngestionPipelineDefinition into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.connection_name is not None: body['connection_name'] = self.connection_name
+        if self.ingestion_gateway_id is not None: body['ingestion_gateway_id'] = self.ingestion_gateway_id
+        if self.objects: body['objects'] = [v.as_dict() for v in self.objects]
+        if self.table_configuration: body['table_configuration'] = self.table_configuration.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> IngestionPipelineDefinition:
+        """Deserializes the IngestionPipelineDefinition from a dictionary."""
+        return cls(connection_name=d.get('connection_name', None),
+                   ingestion_gateway_id=d.get('ingestion_gateway_id', None),
+                   objects=_repeated_dict(d, 'objects', IngestionConfig),
+                   table_configuration=_from_dict(d, 'table_configuration', TableSpecificConfig))
 
 
 @dataclass
@@ -691,41 +724,6 @@ class ListUpdatesResponse:
         return cls(next_page_token=d.get('next_page_token', None),
                    prev_page_token=d.get('prev_page_token', None),
                    updates=_repeated_dict(d, 'updates', UpdateInfo))
-
-
-@dataclass
-class ManagedIngestionPipelineDefinition:
-    connection_name: Optional[str] = None
-    """Immutable. The Unity Catalog connection this ingestion pipeline uses to communicate with the
-    source. Specify either ingestion_gateway_id or connection_name."""
-
-    ingestion_gateway_id: Optional[str] = None
-    """Immutable. Identifier for the ingestion gateway used by this ingestion pipeline to communicate
-    with the source. Specify either ingestion_gateway_id or connection_name."""
-
-    objects: Optional[List[IngestionConfig]] = None
-    """Required. Settings specifying tables to replicate and the destination for the replicated tables."""
-
-    table_configuration: Optional[TableSpecificConfig] = None
-    """Configuration settings to control the ingestion of tables. These settings are applied to all
-    tables in the pipeline."""
-
-    def as_dict(self) -> dict:
-        """Serializes the ManagedIngestionPipelineDefinition into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.connection_name is not None: body['connection_name'] = self.connection_name
-        if self.ingestion_gateway_id is not None: body['ingestion_gateway_id'] = self.ingestion_gateway_id
-        if self.objects: body['objects'] = [v.as_dict() for v in self.objects]
-        if self.table_configuration: body['table_configuration'] = self.table_configuration.as_dict()
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ManagedIngestionPipelineDefinition:
-        """Deserializes the ManagedIngestionPipelineDefinition from a dictionary."""
-        return cls(connection_name=d.get('connection_name', None),
-                   ingestion_gateway_id=d.get('ingestion_gateway_id', None),
-                   objects=_repeated_dict(d, 'objects', IngestionConfig),
-                   table_configuration=_from_dict(d, 'table_configuration', TableSpecificConfig))
 
 
 @dataclass
@@ -1003,6 +1001,9 @@ class PipelineCluster:
     """The node type of the Spark driver. Note that this field is optional; if unset, the driver node
     type will be set as the same value as `node_type_id` defined above."""
 
+    enable_local_disk_encryption: Optional[bool] = None
+    """Whether to enable local disk encryption for the cluster."""
+
     gcp_attributes: Optional[compute.GcpAttributes] = None
     """Attributes related to clusters running on Google Cloud Platform. If not specified at cluster
     creation, a set of default values will be used."""
@@ -1074,6 +1075,8 @@ class PipelineCluster:
         if self.driver_instance_pool_id is not None:
             body['driver_instance_pool_id'] = self.driver_instance_pool_id
         if self.driver_node_type_id is not None: body['driver_node_type_id'] = self.driver_node_type_id
+        if self.enable_local_disk_encryption is not None:
+            body['enable_local_disk_encryption'] = self.enable_local_disk_encryption
         if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes.as_dict()
         if self.init_scripts: body['init_scripts'] = [v.as_dict() for v in self.init_scripts]
         if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
@@ -1097,6 +1100,7 @@ class PipelineCluster:
                    custom_tags=d.get('custom_tags', None),
                    driver_instance_pool_id=d.get('driver_instance_pool_id', None),
                    driver_node_type_id=d.get('driver_node_type_id', None),
+                   enable_local_disk_encryption=d.get('enable_local_disk_encryption', None),
                    gcp_attributes=_from_dict(d, 'gcp_attributes', compute.GcpAttributes),
                    init_scripts=_repeated_dict(d, 'init_scripts', compute.InitScriptInfo),
                    instance_pool_id=d.get('instance_pool_id', None),
@@ -1244,6 +1248,9 @@ class PipelineLibrary:
     notebook: Optional[NotebookLibrary] = None
     """The path to a notebook that defines a pipeline and is stored in the Databricks workspace."""
 
+    whl: Optional[str] = None
+    """URI of the whl to be installed."""
+
     def as_dict(self) -> dict:
         """Serializes the PipelineLibrary into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1251,6 +1258,7 @@ class PipelineLibrary:
         if self.jar is not None: body['jar'] = self.jar
         if self.maven: body['maven'] = self.maven.as_dict()
         if self.notebook: body['notebook'] = self.notebook.as_dict()
+        if self.whl is not None: body['whl'] = self.whl
         return body
 
     @classmethod
@@ -1259,7 +1267,8 @@ class PipelineLibrary:
         return cls(file=_from_dict(d, 'file', FileLibrary),
                    jar=d.get('jar', None),
                    maven=_from_dict(d, 'maven', compute.MavenLibrary),
-                   notebook=_from_dict(d, 'notebook', NotebookLibrary))
+                   notebook=_from_dict(d, 'notebook', NotebookLibrary),
+                   whl=d.get('whl', None))
 
 
 @dataclass
@@ -1403,7 +1412,7 @@ class PipelineSpec:
     id: Optional[str] = None
     """Unique identifier for this pipeline."""
 
-    ingestion_definition: Optional[ManagedIngestionPipelineDefinition] = None
+    ingestion_definition: Optional[IngestionPipelineDefinition] = None
     """The configuration for a managed ingestion pipeline. These settings cannot be used with the
     'libraries', 'target' or 'catalog' settings."""
 
@@ -1472,8 +1481,7 @@ class PipelineSpec:
                    filters=_from_dict(d, 'filters', Filters),
                    gateway_definition=_from_dict(d, 'gateway_definition', IngestionGatewayPipelineDefinition),
                    id=d.get('id', None),
-                   ingestion_definition=_from_dict(d, 'ingestion_definition',
-                                                   ManagedIngestionPipelineDefinition),
+                   ingestion_definition=_from_dict(d, 'ingestion_definition', IngestionPipelineDefinition),
                    libraries=_repeated_dict(d, 'libraries', PipelineLibrary),
                    name=d.get('name', None),
                    notifications=_repeated_dict(d, 'notifications', Notifications),
@@ -1506,6 +1514,9 @@ class PipelineStateInfo:
     creator_user_name: Optional[str] = None
     """The username of the pipeline creator."""
 
+    health: Optional[PipelineStateInfoHealth] = None
+    """The health of a pipeline."""
+
     latest_updates: Optional[List[UpdateStateInfo]] = None
     """Status of the latest updates for the pipeline. Ordered with the newest update first."""
 
@@ -1527,6 +1538,7 @@ class PipelineStateInfo:
         body = {}
         if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
         if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
+        if self.health is not None: body['health'] = self.health.value
         if self.latest_updates: body['latest_updates'] = [v.as_dict() for v in self.latest_updates]
         if self.name is not None: body['name'] = self.name
         if self.pipeline_id is not None: body['pipeline_id'] = self.pipeline_id
@@ -1539,11 +1551,19 @@ class PipelineStateInfo:
         """Deserializes the PipelineStateInfo from a dictionary."""
         return cls(cluster_id=d.get('cluster_id', None),
                    creator_user_name=d.get('creator_user_name', None),
+                   health=_enum(d, 'health', PipelineStateInfoHealth),
                    latest_updates=_repeated_dict(d, 'latest_updates', UpdateStateInfo),
                    name=d.get('name', None),
                    pipeline_id=d.get('pipeline_id', None),
                    run_as_user_name=d.get('run_as_user_name', None),
                    state=_enum(d, 'state', PipelineState))
+
+
+class PipelineStateInfoHealth(Enum):
+    """The health of a pipeline."""
+
+    HEALTHY = 'HEALTHY'
+    UNHEALTHY = 'UNHEALTHY'
 
 
 @dataclass
@@ -1584,7 +1604,7 @@ class SchemaSpec:
     table_configuration: Optional[TableSpecificConfig] = None
     """Configuration settings to control the ingestion of tables. These settings are applied to all
     tables in this schema and override the table_configuration defined in the
-    ManagedIngestionPipelineDefinition object."""
+    IngestionPipelineDefinition object."""
 
     def as_dict(self) -> dict:
         """Serializes the SchemaSpec into a dictionary suitable for use as a JSON request body."""
@@ -1796,7 +1816,7 @@ class TableSpec:
 
     table_configuration: Optional[TableSpecificConfig] = None
     """Configuration settings to control the ingestion of tables. These settings override the
-    table_configuration defined in the ManagedIngestionPipelineDefinition object and the SchemaSpec."""
+    table_configuration defined in the IngestionPipelineDefinition object and the SchemaSpec."""
 
     def as_dict(self) -> dict:
         """Serializes the TableSpec into a dictionary suitable for use as a JSON request body."""
@@ -2090,7 +2110,7 @@ class PipelinesAPI:
                filters: Optional[Filters] = None,
                gateway_definition: Optional[IngestionGatewayPipelineDefinition] = None,
                id: Optional[str] = None,
-               ingestion_definition: Optional[ManagedIngestionPipelineDefinition] = None,
+               ingestion_definition: Optional[IngestionPipelineDefinition] = None,
                libraries: Optional[List[PipelineLibrary]] = None,
                name: Optional[str] = None,
                notifications: Optional[List[Notifications]] = None,
@@ -2131,7 +2151,7 @@ class PipelinesAPI:
           The definition of a gateway pipeline to support CDC.
         :param id: str (optional)
           Unique identifier for this pipeline.
-        :param ingestion_definition: :class:`ManagedIngestionPipelineDefinition` (optional)
+        :param ingestion_definition: :class:`IngestionPipelineDefinition` (optional)
           The configuration for a managed ingestion pipeline. These settings cannot be used with the
           'libraries', 'target' or 'catalog' settings.
         :param libraries: List[:class:`PipelineLibrary`] (optional)
@@ -2498,7 +2518,7 @@ class PipelinesAPI:
                filters: Optional[Filters] = None,
                gateway_definition: Optional[IngestionGatewayPipelineDefinition] = None,
                id: Optional[str] = None,
-               ingestion_definition: Optional[ManagedIngestionPipelineDefinition] = None,
+               ingestion_definition: Optional[IngestionPipelineDefinition] = None,
                libraries: Optional[List[PipelineLibrary]] = None,
                name: Optional[str] = None,
                notifications: Optional[List[Notifications]] = None,
@@ -2542,7 +2562,7 @@ class PipelinesAPI:
           The definition of a gateway pipeline to support CDC.
         :param id: str (optional)
           Unique identifier for this pipeline.
-        :param ingestion_definition: :class:`ManagedIngestionPipelineDefinition` (optional)
+        :param ingestion_definition: :class:`IngestionPipelineDefinition` (optional)
           The configuration for a managed ingestion pipeline. These settings cannot be used with the
           'libraries', 'target' or 'catalog' settings.
         :param libraries: List[:class:`PipelineLibrary`] (optional)

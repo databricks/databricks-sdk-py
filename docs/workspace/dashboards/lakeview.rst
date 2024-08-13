@@ -151,8 +151,7 @@
           The flag to include dashboards located in the trash. If unspecified, only active dashboards will be
           returned.
         :param view: :class:`DashboardView` (optional)
-          Indicates whether to include all metadata from the dashboard in the response. If unset, the response
-          defaults to `DASHBOARD_VIEW_BASIC` which only includes summary metadata from the dashboard.
+          `DASHBOARD_VIEW_BASIC`only includes summary metadata from the dashboard.
         
         :returns: Iterator over :class:`Dashboard`
         
