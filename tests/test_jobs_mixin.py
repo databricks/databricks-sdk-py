@@ -7,7 +7,7 @@ from databricks.sdk import WorkspaceClient
 
 def make_path_pattern(run_id: int, page_token: str) -> Pattern[str]:
     return re.compile(
-        f'{re.escape("http://localhost/api/")}2.\d{re.escape(f"/jobs/runs/get?page_token={page_token}&run_id={run_id}")}'
+        rf'{re.escape("http://localhost/api/")}2.\d{re.escape(f"/jobs/runs/get?page_token={page_token}&run_id={run_id}")}'
     )
 
 
