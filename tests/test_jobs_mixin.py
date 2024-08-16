@@ -1,6 +1,6 @@
 import json
 import re
-from re import Pattern
+from typing import Pattern
 
 from databricks.sdk import WorkspaceClient
 
