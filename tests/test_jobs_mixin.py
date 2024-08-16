@@ -12,25 +12,13 @@ def make_path_pattern(run_id: int, page_token: str) -> Pattern[str]:
 
 
 def test_get_run_with_no_pagination(config, requests_mock):
-    run1 = {
-        "tasks": [{
-            "run_id": 0
-        }, {
-            "run_id": 1
-        }],
-    }
+    run1 = {"tasks": [{"run_id": 0}, {"run_id": 1}], }
     requests_mock.get(make_path_pattern(1337, "initialToken"), text=json.dumps(run1))
     w = WorkspaceClient(config=config)
 
     run = w.jobs.get_run(1337, page_token="initialToken")
 
-    assert run.as_dict() == {
-        "tasks": [{
-            'run_id': 0
-        }, {
-            'run_id': 1
-        }],
-    }
+    assert run.as_dict() == {"tasks": [{'run_id': 0}, {'run_id': 1}], }
 
 
 def test_get_run_pagination_with_tasks(config, requests_mock):
