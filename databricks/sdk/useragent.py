@@ -21,7 +21,14 @@ _extra = []
 
 # Precompiled regex patterns
 alphanum_pattern = re.compile(r'^[a-zA-Z0-9_.+-]+$')
-semver_pattern = re.compile(r'^v?(\d+\.)?(\d+\.)?(\*|\d+)$')
+
+# official https://semver.org/ recommendation: https://regex101.com/r/Ly7O1x/
+# with addition of "x" wildcards for minor/patch versions. Also, patch version may be omitted.
+semver_pattern = re.compile(r"^"
+                            r"(?P<major>0|[1-9]\d*)\.(?P<minor>x|0|[1-9]\d*)(\.(?P<patch>x|0|[1-9x]\d*))?"
+                            r"(?:-(?P<pre_release>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)"
+                            r"(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?"
+                            r"(?:\+(?P<build>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$")
 
 
 def _match_alphanum(value):
