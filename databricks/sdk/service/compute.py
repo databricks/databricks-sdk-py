@@ -691,6 +691,35 @@ class ClusterAttributes:
 
 
 @dataclass
+class ClusterCompliance:
+    cluster_id: str
+    """Canonical unique identifier for a cluster."""
+
+    is_compliant: Optional[bool] = None
+    """Whether this cluster is in compliance with the latest version of its policy."""
+
+    violations: Optional[Dict[str, str]] = None
+    """An object containing key-value mappings representing the first 200 policy validation errors. The
+    keys indicate the path where the policy validation error is occurring. The values indicate an
+    error message describing the policy validation error."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ClusterCompliance into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        if self.is_compliant is not None: body['is_compliant'] = self.is_compliant
+        if self.violations: body['violations'] = self.violations
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ClusterCompliance:
+        """Deserializes the ClusterCompliance from a dictionary."""
+        return cls(cluster_id=d.get('cluster_id', None),
+                   is_compliant=d.get('is_compliant', None),
+                   violations=d.get('violations', None))
+
+
+@dataclass
 class ClusterDetails:
     autoscale: Optional[AutoScale] = None
     """Parameters needed in order to automatically scale clusters up and down based on load. Note:
@@ -1375,6 +1404,40 @@ class ClusterPolicyPermissionsRequest:
         return cls(access_control_list=_repeated_dict(d, 'access_control_list',
                                                       ClusterPolicyAccessControlRequest),
                    cluster_policy_id=d.get('cluster_policy_id', None))
+
+
+@dataclass
+class ClusterSettingsChange:
+    """Represents a change to the cluster settings required for the cluster to become compliant with
+    its policy."""
+
+    field: Optional[str] = None
+    """The field where this change would be made."""
+
+    new_value: Optional[str] = None
+    """The new value of this field after enforcing policy compliance (either a number, a boolean, or a
+    string) converted to a string. This is intended to be read by a human. The typed new value of
+    this field can be retrieved by reading the settings field in the API response."""
+
+    previous_value: Optional[str] = None
+    """The previous value of this field before enforcing policy compliance (either a number, a boolean,
+    or a string) converted to a string. This is intended to be read by a human. The type of the
+    field can be retrieved by reading the settings field in the API response."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ClusterSettingsChange into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.field is not None: body['field'] = self.field
+        if self.new_value is not None: body['new_value'] = self.new_value
+        if self.previous_value is not None: body['previous_value'] = self.previous_value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ClusterSettingsChange:
+        """Deserializes the ClusterSettingsChange from a dictionary."""
+        return cls(field=d.get('field', None),
+                   new_value=d.get('new_value', None),
+                   previous_value=d.get('previous_value', None))
 
 
 @dataclass
@@ -2983,6 +3046,52 @@ class EditResponse:
 
 
 @dataclass
+class EnforceClusterComplianceRequest:
+    cluster_id: str
+    """The ID of the cluster you want to enforce policy compliance on."""
+
+    validate_only: Optional[bool] = None
+    """If set, previews the changes that would be made to a cluster to enforce compliance but does not
+    update the cluster."""
+
+    def as_dict(self) -> dict:
+        """Serializes the EnforceClusterComplianceRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        if self.validate_only is not None: body['validate_only'] = self.validate_only
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> EnforceClusterComplianceRequest:
+        """Deserializes the EnforceClusterComplianceRequest from a dictionary."""
+        return cls(cluster_id=d.get('cluster_id', None), validate_only=d.get('validate_only', None))
+
+
+@dataclass
+class EnforceClusterComplianceResponse:
+    changes: Optional[List[ClusterSettingsChange]] = None
+    """A list of changes that have been made to the cluster settings for the cluster to become
+    compliant with its policy."""
+
+    has_changes: Optional[bool] = None
+    """Whether any changes have been made to the cluster settings for the cluster to become compliant
+    with its policy."""
+
+    def as_dict(self) -> dict:
+        """Serializes the EnforceClusterComplianceResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.changes: body['changes'] = [v.as_dict() for v in self.changes]
+        if self.has_changes is not None: body['has_changes'] = self.has_changes
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> EnforceClusterComplianceResponse:
+        """Deserializes the EnforceClusterComplianceResponse from a dictionary."""
+        return cls(changes=_repeated_dict(d, 'changes', ClusterSettingsChange),
+                   has_changes=d.get('has_changes', None))
+
+
+@dataclass
 class Environment:
     """The environment entity used to preserve serverless environment side panel and jobs' environment
     for non-notebook task. In this minimal environment spec, only pip dependencies are supported."""
@@ -3249,6 +3358,30 @@ class GcsStorageInfo:
     def from_dict(cls, d: Dict[str, any]) -> GcsStorageInfo:
         """Deserializes the GcsStorageInfo from a dictionary."""
         return cls(destination=d.get('destination', None))
+
+
+@dataclass
+class GetClusterComplianceResponse:
+    is_compliant: Optional[bool] = None
+    """Whether the cluster is compliant with its policy or not. Clusters could be out of compliance if
+    the policy was updated after the cluster was last edited."""
+
+    violations: Optional[Dict[str, str]] = None
+    """An object containing key-value mappings representing the first 200 policy validation errors. The
+    keys indicate the path where the policy validation error is occurring. The values indicate an
+    error message describing the policy validation error."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GetClusterComplianceResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.is_compliant is not None: body['is_compliant'] = self.is_compliant
+        if self.violations: body['violations'] = self.violations
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> GetClusterComplianceResponse:
+        """Deserializes the GetClusterComplianceResponse from a dictionary."""
+        return cls(is_compliant=d.get('is_compliant', None), violations=d.get('violations', None))
 
 
 @dataclass
@@ -4598,6 +4731,35 @@ class ListAvailableZonesResponse:
     def from_dict(cls, d: Dict[str, any]) -> ListAvailableZonesResponse:
         """Deserializes the ListAvailableZonesResponse from a dictionary."""
         return cls(default_zone=d.get('default_zone', None), zones=d.get('zones', None))
+
+
+@dataclass
+class ListClusterCompliancesResponse:
+    clusters: Optional[List[ClusterCompliance]] = None
+    """A list of clusters and their policy compliance statuses."""
+
+    next_page_token: Optional[str] = None
+    """This field represents the pagination token to retrieve the next page of results. If the value is
+    "", it means no further results for the request."""
+
+    prev_page_token: Optional[str] = None
+    """This field represents the pagination token to retrieve the previous page of results. If the
+    value is "", it means no further results for the request."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListClusterCompliancesResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.clusters: body['clusters'] = [v.as_dict() for v in self.clusters]
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.prev_page_token is not None: body['prev_page_token'] = self.prev_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ListClusterCompliancesResponse:
+        """Deserializes the ListClusterCompliancesResponse from a dictionary."""
+        return cls(clusters=_repeated_dict(d, 'clusters', ClusterCompliance),
+                   next_page_token=d.get('next_page_token', None),
+                   prev_page_token=d.get('prev_page_token', None))
 
 
 @dataclass
@@ -8582,6 +8744,116 @@ class LibrariesAPI:
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         self._api.do('POST', '/api/2.0/libraries/uninstall', body=body, headers=headers)
+
+
+class PolicyComplianceForClustersAPI:
+    """The policy compliance APIs allow you to view and manage the policy compliance status of clusters in your
+    workspace.
+    
+    A cluster is compliant with its policy if its configuration satisfies all its policy rules. Clusters could
+    be out of compliance if their policy was updated after the cluster was last edited.
+    
+    The get and list compliance APIs allow you to view the policy compliance status of a cluster. The enforce
+    compliance API allows you to update a cluster to be compliant with the current version of its policy."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def enforce_compliance(self,
+                           cluster_id: str,
+                           *,
+                           validate_only: Optional[bool] = None) -> EnforceClusterComplianceResponse:
+        """Enforce cluster policy compliance.
+        
+        Updates a cluster to be compliant with the current version of its policy. A cluster can be updated if
+        it is in a `RUNNING` or `TERMINATED` state.
+        
+        If a cluster is updated while in a `RUNNING` state, it will be restarted so that the new attributes
+        can take effect.
+        
+        If a cluster is updated while in a `TERMINATED` state, it will remain `TERMINATED`. The next time the
+        cluster is started, the new attributes will take effect.
+        
+        Clusters created by the Databricks Jobs, DLT, or Models services cannot be enforced by this API.
+        Instead, use the "Enforce job policy compliance" API to enforce policy compliance on jobs.
+        
+        :param cluster_id: str
+          The ID of the cluster you want to enforce policy compliance on.
+        :param validate_only: bool (optional)
+          If set, previews the changes that would be made to a cluster to enforce compliance but does not
+          update the cluster.
+        
+        :returns: :class:`EnforceClusterComplianceResponse`
+        """
+        body = {}
+        if cluster_id is not None: body['cluster_id'] = cluster_id
+        if validate_only is not None: body['validate_only'] = validate_only
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do('POST',
+                           '/api/2.0/policies/clusters/enforce-compliance',
+                           body=body,
+                           headers=headers)
+        return EnforceClusterComplianceResponse.from_dict(res)
+
+    def get_compliance(self, cluster_id: str) -> GetClusterComplianceResponse:
+        """Get cluster policy compliance.
+        
+        Returns the policy compliance status of a cluster. Clusters could be out of compliance if their policy
+        was updated after the cluster was last edited.
+        
+        :param cluster_id: str
+          The ID of the cluster to get the compliance status
+        
+        :returns: :class:`GetClusterComplianceResponse`
+        """
+
+        query = {}
+        if cluster_id is not None: query['cluster_id'] = cluster_id
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do('GET', '/api/2.0/policies/clusters/get-compliance', query=query, headers=headers)
+        return GetClusterComplianceResponse.from_dict(res)
+
+    def list_compliance(self,
+                        policy_id: str,
+                        *,
+                        page_size: Optional[int] = None,
+                        page_token: Optional[str] = None) -> Iterator[ClusterCompliance]:
+        """List cluster policy compliance.
+        
+        Returns the policy compliance status of all clusters that use a given policy. Clusters could be out of
+        compliance if their policy was updated after the cluster was last edited.
+        
+        :param policy_id: str
+          Canonical unique identifier for the cluster policy.
+        :param page_size: int (optional)
+          Use this field to specify the maximum number of results to be returned by the server. The server may
+          further constrain the maximum number of results returned in a single page.
+        :param page_token: str (optional)
+          A page token that can be used to navigate to the next page or previous page as returned by
+          `next_page_token` or `prev_page_token`.
+        
+        :returns: Iterator over :class:`ClusterCompliance`
+        """
+
+        query = {}
+        if page_size is not None: query['page_size'] = page_size
+        if page_token is not None: query['page_token'] = page_token
+        if policy_id is not None: query['policy_id'] = policy_id
+        headers = {'Accept': 'application/json', }
+
+        while True:
+            json = self._api.do('GET',
+                                '/api/2.0/policies/clusters/list-compliance',
+                                query=query,
+                                headers=headers)
+            if 'clusters' in json:
+                for v in json['clusters']:
+                    yield ClusterCompliance.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
 
 
 class PolicyFamiliesAPI:

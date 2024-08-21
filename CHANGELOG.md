@@ -1,5 +1,38 @@
 # Version changelog
 
+## [Release] Release v0.31.0
+
+### Bug Fixes
+
+ * Fixed regression introduced in v0.30.0 causing `ValueError: Invalid semantic version: 0.33.1+420240816190912` ([#729](https://github.com/databricks/databricks-sdk-py/pull/729)).
+
+
+### Internal Changes
+
+ * Escape single quotes in regex matchers ([#727](https://github.com/databricks/databricks-sdk-py/pull/727)).
+
+
+### API Changes:
+
+ * Added [w.policy_compliance_for_clusters](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/policy_compliance_for_clusters.html) workspace-level service.
+ * Added [w.policy_compliance_for_jobs](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/policy_compliance_for_jobs.html) workspace-level service.
+ * Added [w.resource_quotas](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/resource_quotas.html) workspace-level service.
+ * Added `databricks.sdk.service.catalog.GetQuotaRequest`, `databricks.sdk.service.catalog.GetQuotaResponse`, `databricks.sdk.service.catalog.ListQuotasRequest`, `databricks.sdk.service.catalog.ListQuotasResponse` and `databricks.sdk.service.catalog.QuotaInfo` dataclasses.
+ * Added `databricks.sdk.service.compute.ClusterCompliance`, `databricks.sdk.service.compute.ClusterSettingsChange`, `databricks.sdk.service.compute.EnforceClusterComplianceRequest`, `databricks.sdk.service.compute.EnforceClusterComplianceResponse`, `databricks.sdk.service.compute.GetClusterComplianceRequest`, `databricks.sdk.service.compute.GetClusterComplianceResponse`, `databricks.sdk.service.compute.ListClusterCompliancesRequest` and `databricks.sdk.service.compute.ListClusterCompliancesResponse` dataclasses.
+ * Added `databricks.sdk.service.jobs.EnforcePolicyComplianceForJobResponseJobClusterSettingsChange`, `databricks.sdk.service.jobs.EnforcePolicyComplianceRequest`, `databricks.sdk.service.jobs.EnforcePolicyComplianceResponse`, `databricks.sdk.service.jobs.GetPolicyComplianceRequest`, `databricks.sdk.service.jobs.GetPolicyComplianceResponse`, `databricks.sdk.service.jobs.JobCompliance`, `databricks.sdk.service.jobs.ListJobComplianceForPolicyResponse` and `databricks.sdk.service.jobs.ListJobComplianceRequest` dataclasses.
+ * Added `fallback` field for `databricks.sdk.service.catalog.CreateExternalLocation`.
+ * Added `fallback` field for `databricks.sdk.service.catalog.ExternalLocationInfo`.
+ * Added `fallback` field for `databricks.sdk.service.catalog.UpdateExternalLocation`.
+ * Added `job_run_id` field for `databricks.sdk.service.jobs.BaseRun`.
+ * Added `job_run_id` field for `databricks.sdk.service.jobs.Run`.
+ * Added `include_metrics` field for `databricks.sdk.service.sql.ListQueryHistoryRequest`.
+ * Added `statement_ids` field for `databricks.sdk.service.sql.QueryFilter`.
+ * Removed `databricks.sdk.service.sql.ContextFilter` dataclass.
+ * Removed `context_filter` field for `databricks.sdk.service.sql.QueryFilter`.
+ * Removed `pipeline_id` and `pipeline_update_id` fields for `databricks.sdk.service.sql.QuerySource`.
+
+OpenAPI SHA: 3eae49b444cac5a0118a3503e5b7ecef7f96527a, Date: 2024-08-21
+
 ## [Release] Release v0.30.0
 
 ### New Features and Improvements
