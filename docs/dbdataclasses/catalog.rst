@@ -249,8 +249,17 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: CONNECTION_BIGQUERY
       :value: "CONNECTION_BIGQUERY"
 
+   .. py:attribute:: CONNECTION_BUILTIN_HIVE_METASTORE
+      :value: "CONNECTION_BUILTIN_HIVE_METASTORE"
+
    .. py:attribute:: CONNECTION_DATABRICKS
       :value: "CONNECTION_DATABRICKS"
+
+   .. py:attribute:: CONNECTION_EXTERNAL_HIVE_METASTORE
+      :value: "CONNECTION_EXTERNAL_HIVE_METASTORE"
+
+   .. py:attribute:: CONNECTION_GLUE
+      :value: "CONNECTION_GLUE"
 
    .. py:attribute:: CONNECTION_MYSQL
       :value: "CONNECTION_MYSQL"
@@ -282,6 +291,12 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: DATABRICKS
       :value: "DATABRICKS"
+
+   .. py:attribute:: GLUE
+      :value: "GLUE"
+
+   .. py:attribute:: HIVE_METASTORE
+      :value: "HIVE_METASTORE"
 
    .. py:attribute:: MYSQL
       :value: "MYSQL"
@@ -672,6 +687,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: INTERNAL_AND_EXTERNAL
       :value: "INTERNAL_AND_EXTERNAL"
 
+.. autoclass:: GetQuotaResponse
+   :members:
+   :undoc-members:
+
 .. py:class:: IsolationMode
 
    Whether the current securable is accessible from all workspaces or a specific set of workspaces.
@@ -711,6 +730,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ListModelVersionsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListQuotasResponse
    :members:
    :undoc-members:
 
@@ -1146,6 +1169,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "STATE_UNSPECIFIED"
 
 .. autoclass:: ProvisioningStatus
+   :members:
+   :undoc-members:
+
+.. autoclass:: QuotaInfo
    :members:
    :undoc-members:
 

@@ -22,4 +22,12 @@ _ALL_OVERRIDES = [
                    message_matcher=re.compile(r'Job .* does not exist'),
                    custom_error=ResourceDoesNotExist,
                    ),
+    _ErrorOverride(debug_name="Job Runs InvalidParameterValue=>ResourceDoesNotExist",
+                   path_regex=re.compile(r'^/api/2\.\d/jobs/runs/get'),
+                   verb="GET",
+                   status_code_matcher=re.compile(r'^400$'),
+                   error_code_matcher=re.compile(r'INVALID_PARAMETER_VALUE'),
+                   message_matcher=re.compile(r'(Run .* does not exist|Run: .* in job: .* doesn\'t exist)'),
+                   custom_error=ResourceDoesNotExist,
+                   ),
 ]

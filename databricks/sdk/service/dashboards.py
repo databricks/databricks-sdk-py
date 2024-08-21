@@ -27,10 +27,11 @@ class CreateDashboardRequest:
 
     parent_path: Optional[str] = None
     """The workspace path of the folder containing the dashboard. Includes leading slash and no
-    trailing slash."""
+    trailing slash. This field is excluded in List Dashboards responses."""
 
     serialized_dashboard: Optional[str] = None
-    """The contents of the dashboard in serialized string form."""
+    """The contents of the dashboard in serialized string form. This field is excluded in List
+    Dashboards responses."""
 
     warehouse_id: Optional[str] = None
     """The warehouse ID used to run the dashboard."""
@@ -154,23 +155,26 @@ class Dashboard:
 
     etag: Optional[str] = None
     """The etag for the dashboard. Can be optionally provided on updates to ensure that the dashboard
-    has not been modified since the last read."""
+    has not been modified since the last read. This field is excluded in List Dashboards responses."""
 
     lifecycle_state: Optional[LifecycleState] = None
     """The state of the dashboard resource. Used for tracking trashed status."""
 
     parent_path: Optional[str] = None
     """The workspace path of the folder containing the dashboard. Includes leading slash and no
-    trailing slash."""
+    trailing slash. This field is excluded in List Dashboards responses."""
 
     path: Optional[str] = None
-    """The workspace path of the dashboard asset, including the file name."""
+    """The workspace path of the dashboard asset, including the file name. This field is excluded in
+    List Dashboards responses."""
 
     serialized_dashboard: Optional[str] = None
-    """The contents of the dashboard in serialized string form."""
+    """The contents of the dashboard in serialized string form. This field is excluded in List
+    Dashboards responses."""
 
     update_time: Optional[str] = None
-    """The timestamp of when the dashboard was last updated by the user."""
+    """The timestamp of when the dashboard was last updated by the user. This field is excluded in List
+    Dashboards responses."""
 
     warehouse_id: Optional[str] = None
     """The warehouse ID used to run the dashboard."""
@@ -1020,10 +1024,11 @@ class UpdateDashboardRequest:
 
     etag: Optional[str] = None
     """The etag for the dashboard. Can be optionally provided on updates to ensure that the dashboard
-    has not been modified since the last read."""
+    has not been modified since the last read. This field is excluded in List Dashboards responses."""
 
     serialized_dashboard: Optional[str] = None
-    """The contents of the dashboard in serialized string form."""
+    """The contents of the dashboard in serialized string form. This field is excluded in List
+    Dashboards responses."""
 
     warehouse_id: Optional[str] = None
     """The warehouse ID used to run the dashboard."""
@@ -1300,9 +1305,10 @@ class LakeviewAPI:
           The display name of the dashboard.
         :param parent_path: str (optional)
           The workspace path of the folder containing the dashboard. Includes leading slash and no trailing
-          slash.
+          slash. This field is excluded in List Dashboards responses.
         :param serialized_dashboard: str (optional)
-          The contents of the dashboard in serialized string form.
+          The contents of the dashboard in serialized string form. This field is excluded in List Dashboards
+          responses.
         :param warehouse_id: str (optional)
           The warehouse ID used to run the dashboard.
         
@@ -1714,9 +1720,10 @@ class LakeviewAPI:
           The display name of the dashboard.
         :param etag: str (optional)
           The etag for the dashboard. Can be optionally provided on updates to ensure that the dashboard has
-          not been modified since the last read.
+          not been modified since the last read. This field is excluded in List Dashboards responses.
         :param serialized_dashboard: str (optional)
-          The contents of the dashboard in serialized string form.
+          The contents of the dashboard in serialized string form. This field is excluded in List Dashboards
+          responses.
         :param warehouse_id: str (optional)
           The warehouse ID used to run the dashboard.
         
