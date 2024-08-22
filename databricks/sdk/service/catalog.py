@@ -849,7 +849,10 @@ class ConnectionInfoSecurableKind(Enum):
     """Kind of connection securable."""
 
     CONNECTION_BIGQUERY = 'CONNECTION_BIGQUERY'
+    CONNECTION_BUILTIN_HIVE_METASTORE = 'CONNECTION_BUILTIN_HIVE_METASTORE'
     CONNECTION_DATABRICKS = 'CONNECTION_DATABRICKS'
+    CONNECTION_EXTERNAL_HIVE_METASTORE = 'CONNECTION_EXTERNAL_HIVE_METASTORE'
+    CONNECTION_GLUE = 'CONNECTION_GLUE'
     CONNECTION_MYSQL = 'CONNECTION_MYSQL'
     CONNECTION_ONLINE_CATALOG = 'CONNECTION_ONLINE_CATALOG'
     CONNECTION_POSTGRESQL = 'CONNECTION_POSTGRESQL'
@@ -864,6 +867,8 @@ class ConnectionType(Enum):
 
     BIGQUERY = 'BIGQUERY'
     DATABRICKS = 'DATABRICKS'
+    GLUE = 'GLUE'
+    HIVE_METASTORE = 'HIVE_METASTORE'
     MYSQL = 'MYSQL'
     POSTGRESQL = 'POSTGRESQL'
     REDSHIFT = 'REDSHIFT'
@@ -1023,6 +1028,11 @@ class CreateExternalLocation:
     encryption_details: Optional[EncryptionDetails] = None
     """Encryption options that apply to clients connecting to cloud storage."""
 
+    fallback: Optional[bool] = None
+    """Indicates whether fallback mode is enabled for this external location. When fallback mode is
+    enabled, the access to the location falls back to cluster credentials if UC credentials are not
+    sufficient."""
+
     read_only: Optional[bool] = None
     """Indicates whether the external location is read-only."""
 
@@ -1036,6 +1046,7 @@ class CreateExternalLocation:
         if self.comment is not None: body['comment'] = self.comment
         if self.credential_name is not None: body['credential_name'] = self.credential_name
         if self.encryption_details: body['encryption_details'] = self.encryption_details.as_dict()
+        if self.fallback is not None: body['fallback'] = self.fallback
         if self.name is not None: body['name'] = self.name
         if self.read_only is not None: body['read_only'] = self.read_only
         if self.skip_validation is not None: body['skip_validation'] = self.skip_validation
@@ -1049,6 +1060,7 @@ class CreateExternalLocation:
                    comment=d.get('comment', None),
                    credential_name=d.get('credential_name', None),
                    encryption_details=_from_dict(d, 'encryption_details', EncryptionDetails),
+                   fallback=d.get('fallback', None),
                    name=d.get('name', None),
                    read_only=d.get('read_only', None),
                    skip_validation=d.get('skip_validation', None),
@@ -1974,6 +1986,11 @@ class ExternalLocationInfo:
     encryption_details: Optional[EncryptionDetails] = None
     """Encryption options that apply to clients connecting to cloud storage."""
 
+    fallback: Optional[bool] = None
+    """Indicates whether fallback mode is enabled for this external location. When fallback mode is
+    enabled, the access to the location falls back to cluster credentials if UC credentials are not
+    sufficient."""
+
     isolation_mode: Optional[IsolationMode] = None
     """Whether the current securable is accessible from all workspaces or a specific set of workspaces."""
 
@@ -2009,6 +2026,7 @@ class ExternalLocationInfo:
         if self.credential_id is not None: body['credential_id'] = self.credential_id
         if self.credential_name is not None: body['credential_name'] = self.credential_name
         if self.encryption_details: body['encryption_details'] = self.encryption_details.as_dict()
+        if self.fallback is not None: body['fallback'] = self.fallback
         if self.isolation_mode is not None: body['isolation_mode'] = self.isolation_mode.value
         if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
         if self.name is not None: body['name'] = self.name
@@ -2030,6 +2048,7 @@ class ExternalLocationInfo:
                    credential_id=d.get('credential_id', None),
                    credential_name=d.get('credential_name', None),
                    encryption_details=_from_dict(d, 'encryption_details', EncryptionDetails),
+                   fallback=d.get('fallback', None),
                    isolation_mode=_enum(d, 'isolation_mode', IsolationMode),
                    metastore_id=d.get('metastore_id', None),
                    name=d.get('name', None),
@@ -2544,6 +2563,23 @@ class GetMetastoreSummaryResponseDeltaSharingScope(Enum):
     INTERNAL_AND_EXTERNAL = 'INTERNAL_AND_EXTERNAL'
 
 
+@dataclass
+class GetQuotaResponse:
+    quota_info: Optional[QuotaInfo] = None
+    """The returned QuotaInfo."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GetQuotaResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.quota_info: body['quota_info'] = self.quota_info.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> GetQuotaResponse:
+        """Deserializes the GetQuotaResponse from a dictionary."""
+        return cls(quota_info=_from_dict(d, 'quota_info', QuotaInfo))
+
+
 class IsolationMode(Enum):
     """Whether the current securable is accessible from all workspaces or a specific set of workspaces."""
 
@@ -2717,6 +2753,29 @@ class ListModelVersionsResponse:
         """Deserializes the ListModelVersionsResponse from a dictionary."""
         return cls(model_versions=_repeated_dict(d, 'model_versions', ModelVersionInfo),
                    next_page_token=d.get('next_page_token', None))
+
+
+@dataclass
+class ListQuotasResponse:
+    next_page_token: Optional[str] = None
+    """Opaque token to retrieve the next page of results. Absent if there are no more pages.
+    __page_token__ should be set to this value for the next request."""
+
+    quotas: Optional[List[QuotaInfo]] = None
+    """An array of returned QuotaInfos."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListQuotasResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.quotas: body['quotas'] = [v.as_dict() for v in self.quotas]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ListQuotasResponse:
+        """Deserializes the ListQuotasResponse from a dictionary."""
+        return cls(next_page_token=d.get('next_page_token', None),
+                   quotas=_repeated_dict(d, 'quotas', QuotaInfo))
 
 
 @dataclass
@@ -4049,6 +4108,49 @@ class ProvisioningStatus:
 
 
 @dataclass
+class QuotaInfo:
+    last_refreshed_at: Optional[int] = None
+    """The timestamp that indicates when the quota count was last updated."""
+
+    parent_full_name: Optional[str] = None
+    """Name of the parent resource. Returns metastore ID if the parent is a metastore."""
+
+    parent_securable_type: Optional[SecurableType] = None
+    """The quota parent securable type."""
+
+    quota_count: Optional[int] = None
+    """The current usage of the resource quota."""
+
+    quota_limit: Optional[int] = None
+    """The current limit of the resource quota."""
+
+    quota_name: Optional[str] = None
+    """The name of the quota."""
+
+    def as_dict(self) -> dict:
+        """Serializes the QuotaInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.last_refreshed_at is not None: body['last_refreshed_at'] = self.last_refreshed_at
+        if self.parent_full_name is not None: body['parent_full_name'] = self.parent_full_name
+        if self.parent_securable_type is not None:
+            body['parent_securable_type'] = self.parent_securable_type.value
+        if self.quota_count is not None: body['quota_count'] = self.quota_count
+        if self.quota_limit is not None: body['quota_limit'] = self.quota_limit
+        if self.quota_name is not None: body['quota_name'] = self.quota_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> QuotaInfo:
+        """Deserializes the QuotaInfo from a dictionary."""
+        return cls(last_refreshed_at=d.get('last_refreshed_at', None),
+                   parent_full_name=d.get('parent_full_name', None),
+                   parent_securable_type=_enum(d, 'parent_securable_type', SecurableType),
+                   quota_count=d.get('quota_count', None),
+                   quota_limit=d.get('quota_limit', None),
+                   quota_name=d.get('quota_name', None))
+
+
+@dataclass
 class RegisteredModelAlias:
     """Registered model alias."""
 
@@ -4969,6 +5071,11 @@ class UpdateExternalLocation:
     encryption_details: Optional[EncryptionDetails] = None
     """Encryption options that apply to clients connecting to cloud storage."""
 
+    fallback: Optional[bool] = None
+    """Indicates whether fallback mode is enabled for this external location. When fallback mode is
+    enabled, the access to the location falls back to cluster credentials if UC credentials are not
+    sufficient."""
+
     force: Optional[bool] = None
     """Force update even if changing url invalidates dependent external tables or mounts."""
 
@@ -5000,6 +5107,7 @@ class UpdateExternalLocation:
         if self.comment is not None: body['comment'] = self.comment
         if self.credential_name is not None: body['credential_name'] = self.credential_name
         if self.encryption_details: body['encryption_details'] = self.encryption_details.as_dict()
+        if self.fallback is not None: body['fallback'] = self.fallback
         if self.force is not None: body['force'] = self.force
         if self.isolation_mode is not None: body['isolation_mode'] = self.isolation_mode.value
         if self.name is not None: body['name'] = self.name
@@ -5017,6 +5125,7 @@ class UpdateExternalLocation:
                    comment=d.get('comment', None),
                    credential_name=d.get('credential_name', None),
                    encryption_details=_from_dict(d, 'encryption_details', EncryptionDetails),
+                   fallback=d.get('fallback', None),
                    force=d.get('force', None),
                    isolation_mode=_enum(d, 'isolation_mode', IsolationMode),
                    name=d.get('name', None),
@@ -6597,6 +6706,7 @@ class ExternalLocationsAPI:
                access_point: Optional[str] = None,
                comment: Optional[str] = None,
                encryption_details: Optional[EncryptionDetails] = None,
+               fallback: Optional[bool] = None,
                read_only: Optional[bool] = None,
                skip_validation: Optional[bool] = None) -> ExternalLocationInfo:
         """Create an external location.
@@ -6617,6 +6727,10 @@ class ExternalLocationsAPI:
           User-provided free-form text description.
         :param encryption_details: :class:`EncryptionDetails` (optional)
           Encryption options that apply to clients connecting to cloud storage.
+        :param fallback: bool (optional)
+          Indicates whether fallback mode is enabled for this external location. When fallback mode is
+          enabled, the access to the location falls back to cluster credentials if UC credentials are not
+          sufficient.
         :param read_only: bool (optional)
           Indicates whether the external location is read-only.
         :param skip_validation: bool (optional)
@@ -6629,6 +6743,7 @@ class ExternalLocationsAPI:
         if comment is not None: body['comment'] = comment
         if credential_name is not None: body['credential_name'] = credential_name
         if encryption_details is not None: body['encryption_details'] = encryption_details.as_dict()
+        if fallback is not None: body['fallback'] = fallback
         if name is not None: body['name'] = name
         if read_only is not None: body['read_only'] = read_only
         if skip_validation is not None: body['skip_validation'] = skip_validation
@@ -6736,6 +6851,7 @@ class ExternalLocationsAPI:
                comment: Optional[str] = None,
                credential_name: Optional[str] = None,
                encryption_details: Optional[EncryptionDetails] = None,
+               fallback: Optional[bool] = None,
                force: Optional[bool] = None,
                isolation_mode: Optional[IsolationMode] = None,
                new_name: Optional[str] = None,
@@ -6759,6 +6875,10 @@ class ExternalLocationsAPI:
           Name of the storage credential used with this location.
         :param encryption_details: :class:`EncryptionDetails` (optional)
           Encryption options that apply to clients connecting to cloud storage.
+        :param fallback: bool (optional)
+          Indicates whether fallback mode is enabled for this external location. When fallback mode is
+          enabled, the access to the location falls back to cluster credentials if UC credentials are not
+          sufficient.
         :param force: bool (optional)
           Force update even if changing url invalidates dependent external tables or mounts.
         :param isolation_mode: :class:`IsolationMode` (optional)
@@ -6781,6 +6901,7 @@ class ExternalLocationsAPI:
         if comment is not None: body['comment'] = comment
         if credential_name is not None: body['credential_name'] = credential_name
         if encryption_details is not None: body['encryption_details'] = encryption_details.as_dict()
+        if fallback is not None: body['fallback'] = fallback
         if force is not None: body['force'] = force
         if isolation_mode is not None: body['isolation_mode'] = isolation_mode.value
         if new_name is not None: body['new_name'] = new_name
@@ -8176,6 +8297,78 @@ class RegisteredModelsAPI:
 
         res = self._api.do('PATCH', f'/api/2.1/unity-catalog/models/{full_name}', body=body, headers=headers)
         return RegisteredModelInfo.from_dict(res)
+
+
+class ResourceQuotasAPI:
+    """Unity Catalog enforces resource quotas on all securable objects, which limits the number of resources that
+    can be created. Quotas are expressed in terms of a resource type and a parent (for example, tables per
+    metastore or schemas per catalog). The resource quota APIs enable you to monitor your current usage and
+    limits. For more information on resource quotas see the [Unity Catalog documentation].
+    
+    [Unity Catalog documentation]: https://docs.databricks.com/en/data-governance/unity-catalog/index.html#resource-quotas"""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def get_quota(self, parent_securable_type: str, parent_full_name: str,
+                  quota_name: str) -> GetQuotaResponse:
+        """Get information for a single resource quota.
+        
+        The GetQuota API returns usage information for a single resource quota, defined as a child-parent
+        pair. This API also refreshes the quota count if it is out of date. Refreshes are triggered
+        asynchronously. The updated count might not be returned in the first call.
+        
+        :param parent_securable_type: str
+          Securable type of the quota parent.
+        :param parent_full_name: str
+          Full name of the parent resource. Provide the metastore ID if the parent is a metastore.
+        :param quota_name: str
+          Name of the quota. Follows the pattern of the quota type, with "-quota" added as a suffix.
+        
+        :returns: :class:`GetQuotaResponse`
+        """
+
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do(
+            'GET',
+            f'/api/2.1/unity-catalog/resource-quotas/{parent_securable_type}/{parent_full_name}/{quota_name}',
+            headers=headers)
+        return GetQuotaResponse.from_dict(res)
+
+    def list_quotas(self,
+                    *,
+                    max_results: Optional[int] = None,
+                    page_token: Optional[str] = None) -> Iterator[QuotaInfo]:
+        """List all resource quotas under a metastore.
+        
+        ListQuotas returns all quota values under the metastore. There are no SLAs on the freshness of the
+        counts returned. This API does not trigger a refresh of quota counts.
+        
+        :param max_results: int (optional)
+          The number of quotas to return.
+        :param page_token: str (optional)
+          Opaque token for the next page of results.
+        
+        :returns: Iterator over :class:`QuotaInfo`
+        """
+
+        query = {}
+        if max_results is not None: query['max_results'] = max_results
+        if page_token is not None: query['page_token'] = page_token
+        headers = {'Accept': 'application/json', }
+
+        while True:
+            json = self._api.do('GET',
+                                '/api/2.1/unity-catalog/resource-quotas/all-resource-quotas',
+                                query=query,
+                                headers=headers)
+            if 'quotas' in json:
+                for v in json['quotas']:
+                    yield QuotaInfo.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
 
 
 class SchemasAPI:

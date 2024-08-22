@@ -103,6 +103,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ClusterCompliance
+   :members:
+   :undoc-members:
+
 .. autoclass:: ClusterDetails
    :members:
    :undoc-members:
@@ -176,6 +180,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ClusterPolicyPermissionsRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: ClusterSettingsChange
    :members:
    :undoc-members:
 
@@ -443,6 +451,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: EnforceClusterComplianceRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: EnforceClusterComplianceResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: Environment
    :members:
    :undoc-members:
@@ -562,6 +578,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "PREEMPTIBLE_WITH_FALLBACK_GCP"
 
 .. autoclass:: GcsStorageInfo
+   :members:
+   :undoc-members:
+
+.. autoclass:: GetClusterComplianceResponse
    :members:
    :undoc-members:
 
@@ -814,6 +834,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ListAvailableZonesResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListClusterCompliancesResponse
    :members:
    :undoc-members:
 

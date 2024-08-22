@@ -601,68 +601,6 @@ class ColumnInfoTypeName(Enum):
 
 
 @dataclass
-class ContextFilter:
-    dbsql_alert_id: Optional[str] = None
-    """Databricks SQL Alert id"""
-
-    dbsql_dashboard_id: Optional[str] = None
-    """Databricks SQL Dashboard id"""
-
-    dbsql_query_id: Optional[str] = None
-    """Databricks SQL Query id"""
-
-    dbsql_session_id: Optional[str] = None
-    """Databricks SQL Query session id"""
-
-    job_id: Optional[str] = None
-    """Databricks Workflows id"""
-
-    job_run_id: Optional[str] = None
-    """Databricks Workflows task run id"""
-
-    lakeview_dashboard_id: Optional[str] = None
-    """Databricks Lakeview Dashboard id"""
-
-    notebook_cell_run_id: Optional[str] = None
-    """Databricks Notebook runnableCommandId"""
-
-    notebook_id: Optional[str] = None
-    """Databricks Notebook id"""
-
-    statement_ids: Optional[List[str]] = None
-    """Databricks Query History statement ids."""
-
-    def as_dict(self) -> dict:
-        """Serializes the ContextFilter into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.dbsql_alert_id is not None: body['dbsql_alert_id'] = self.dbsql_alert_id
-        if self.dbsql_dashboard_id is not None: body['dbsql_dashboard_id'] = self.dbsql_dashboard_id
-        if self.dbsql_query_id is not None: body['dbsql_query_id'] = self.dbsql_query_id
-        if self.dbsql_session_id is not None: body['dbsql_session_id'] = self.dbsql_session_id
-        if self.job_id is not None: body['job_id'] = self.job_id
-        if self.job_run_id is not None: body['job_run_id'] = self.job_run_id
-        if self.lakeview_dashboard_id is not None: body['lakeview_dashboard_id'] = self.lakeview_dashboard_id
-        if self.notebook_cell_run_id is not None: body['notebook_cell_run_id'] = self.notebook_cell_run_id
-        if self.notebook_id is not None: body['notebook_id'] = self.notebook_id
-        if self.statement_ids: body['statement_ids'] = [v for v in self.statement_ids]
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ContextFilter:
-        """Deserializes the ContextFilter from a dictionary."""
-        return cls(dbsql_alert_id=d.get('dbsql_alert_id', None),
-                   dbsql_dashboard_id=d.get('dbsql_dashboard_id', None),
-                   dbsql_query_id=d.get('dbsql_query_id', None),
-                   dbsql_session_id=d.get('dbsql_session_id', None),
-                   job_id=d.get('job_id', None),
-                   job_run_id=d.get('job_run_id', None),
-                   lakeview_dashboard_id=d.get('lakeview_dashboard_id', None),
-                   notebook_cell_run_id=d.get('notebook_cell_run_id', None),
-                   notebook_id=d.get('notebook_id', None),
-                   statement_ids=d.get('statement_ids', None))
-
-
-@dataclass
 class CreateAlert:
     name: str
     """Name of the alert."""
@@ -3434,11 +3372,11 @@ class QueryEditContent:
 
 @dataclass
 class QueryFilter:
-    context_filter: Optional[ContextFilter] = None
-    """Filter by one or more property describing where the query was generated"""
-
     query_start_time_range: Optional[TimeRange] = None
     """A range filter for query submitted time. The time range must be <= 30 days."""
+
+    statement_ids: Optional[List[str]] = None
+    """A list of statement IDs."""
 
     statuses: Optional[List[QueryStatus]] = None
 
@@ -3451,8 +3389,8 @@ class QueryFilter:
     def as_dict(self) -> dict:
         """Serializes the QueryFilter into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.context_filter: body['context_filter'] = self.context_filter.as_dict()
         if self.query_start_time_range: body['query_start_time_range'] = self.query_start_time_range.as_dict()
+        if self.statement_ids: body['statement_ids'] = [v for v in self.statement_ids]
         if self.statuses: body['statuses'] = [v.value for v in self.statuses]
         if self.user_ids: body['user_ids'] = [v for v in self.user_ids]
         if self.warehouse_ids: body['warehouse_ids'] = [v for v in self.warehouse_ids]
@@ -3461,8 +3399,8 @@ class QueryFilter:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> QueryFilter:
         """Deserializes the QueryFilter from a dictionary."""
-        return cls(context_filter=_from_dict(d, 'context_filter', ContextFilter),
-                   query_start_time_range=_from_dict(d, 'query_start_time_range', TimeRange),
+        return cls(query_start_time_range=_from_dict(d, 'query_start_time_range', TimeRange),
+                   statement_ids=d.get('statement_ids', None),
                    statuses=_repeated_enum(d, 'statuses', QueryStatus),
                    user_ids=d.get('user_ids', None),
                    warehouse_ids=d.get('warehouse_ids', None))
@@ -3944,12 +3882,6 @@ class QuerySource:
 
     notebook_id: Optional[str] = None
 
-    pipeline_id: Optional[str] = None
-    """Id associated with a DLT pipeline"""
-
-    pipeline_update_id: Optional[str] = None
-    """Id associated with a DLT update"""
-
     query_tags: Optional[str] = None
     """String provided by a customer that'll help them identify the query"""
 
@@ -3984,8 +3916,6 @@ class QuerySource:
         if self.job_id is not None: body['job_id'] = self.job_id
         if self.job_managed_by is not None: body['job_managed_by'] = self.job_managed_by.value
         if self.notebook_id is not None: body['notebook_id'] = self.notebook_id
-        if self.pipeline_id is not None: body['pipeline_id'] = self.pipeline_id
-        if self.pipeline_update_id is not None: body['pipeline_update_id'] = self.pipeline_update_id
         if self.query_tags is not None: body['query_tags'] = self.query_tags
         if self.run_id is not None: body['run_id'] = self.run_id
         if self.runnable_command_id is not None: body['runnable_command_id'] = self.runnable_command_id
@@ -4012,8 +3942,6 @@ class QuerySource:
                    job_id=d.get('job_id', None),
                    job_managed_by=_enum(d, 'job_managed_by', QuerySourceJobManager),
                    notebook_id=d.get('notebook_id', None),
-                   pipeline_id=d.get('pipeline_id', None),
-                   pipeline_update_id=d.get('pipeline_update_id', None),
                    query_tags=d.get('query_tags', None),
                    run_id=d.get('run_id', None),
                    runnable_command_id=d.get('runnable_command_id', None),
@@ -6558,8 +6486,8 @@ class QueriesLegacyAPI:
 
 
 class QueryHistoryAPI:
-    """A service responsible for storing and retrieving the list of queries run against SQL endpoints, serverless
-    compute, and DLT."""
+    """A service responsible for storing and retrieving the list of queries run against SQL endpoints and
+    serverless compute."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -6567,11 +6495,12 @@ class QueryHistoryAPI:
     def list(self,
              *,
              filter_by: Optional[QueryFilter] = None,
+             include_metrics: Optional[bool] = None,
              max_results: Optional[int] = None,
              page_token: Optional[str] = None) -> ListQueriesResponse:
         """List Queries.
         
-        List the history of queries through SQL warehouses, serverless compute, and DLT.
+        List the history of queries through SQL warehouses, and serverless compute.
         
         You can filter by user ID, warehouse ID, status, and time range. Most recently started queries are
         returned first (up to max_results in request). The pagination token returned in response can be used
@@ -6579,6 +6508,9 @@ class QueryHistoryAPI:
         
         :param filter_by: :class:`QueryFilter` (optional)
           A filter to limit query history results. This field is optional.
+        :param include_metrics: bool (optional)
+          Whether to include the query metrics with each query. Only use this for a small subset of queries
+          (max_results). Defaults to false.
         :param max_results: int (optional)
           Limit the number of results returned in one page. Must be less than 1000 and the default is 100.
         :param page_token: str (optional)
@@ -6591,6 +6523,7 @@ class QueryHistoryAPI:
 
         query = {}
         if filter_by is not None: query['filter_by'] = filter_by.as_dict()
+        if include_metrics is not None: query['include_metrics'] = include_metrics
         if max_results is not None: query['max_results'] = max_results
         if page_token is not None: query['page_token'] = page_token
         headers = {'Accept': 'application/json', }

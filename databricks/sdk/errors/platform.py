@@ -47,6 +47,10 @@ class DeadlineExceeded(DatabricksError):
     """the deadline expired before the operation could complete"""
 
 
+class InvalidState(BadRequest):
+    """unexpected state"""
+
+
 class InvalidParameterValue(BadRequest):
     """supplied value for a parameter was invalid"""
 
@@ -99,6 +103,7 @@ STATUS_CODE_MAPPING = {
 }
 
 ERROR_CODE_MAPPING = {
+    'INVALID_STATE': InvalidState,
     'INVALID_PARAMETER_VALUE': InvalidParameterValue,
     'RESOURCE_DOES_NOT_EXIST': ResourceDoesNotExist,
     'ABORTED': Aborted,

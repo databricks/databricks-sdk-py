@@ -17,9 +17,10 @@
           The display name of the dashboard.
         :param parent_path: str (optional)
           The workspace path of the folder containing the dashboard. Includes leading slash and no trailing
-          slash.
+          slash. This field is excluded in List Dashboards responses.
         :param serialized_dashboard: str (optional)
-          The contents of the dashboard in serialized string form.
+          The contents of the dashboard in serialized string form. This field is excluded in List Dashboards
+          responses.
         :param warehouse_id: str (optional)
           The warehouse ID used to run the dashboard.
         
@@ -257,9 +258,10 @@
           The display name of the dashboard.
         :param etag: str (optional)
           The etag for the dashboard. Can be optionally provided on updates to ensure that the dashboard has
-          not been modified since the last read.
+          not been modified since the last read. This field is excluded in List Dashboards responses.
         :param serialized_dashboard: str (optional)
-          The contents of the dashboard in serialized string form.
+          The contents of the dashboard in serialized string form. This field is excluded in List Dashboards
+          responses.
         :param warehouse_id: str (optional)
           The warehouse ID used to run the dashboard.
         

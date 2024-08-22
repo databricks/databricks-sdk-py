@@ -58,8 +58,8 @@ class BaseJob:
 class BaseRun:
     attempt_number: Optional[int] = None
     """The sequence number of this run attempt for a triggered job run. The initial attempt of a run
-    has an attempt_number of 0\. If the initial run attempt fails, and the job has a retry policy
-    (`max_retries` \> 0), subsequent runs are created with an `original_attempt_run_id` of the
+    has an attempt_number of 0. If the initial run attempt fails, and the job has a retry policy
+    (`max_retries` > 0), subsequent runs are created with an `original_attempt_run_id` of the
     original attempt’s ID and an incrementing `attempt_number`. Runs are retried only until they
     succeed, and the maximum `attempt_number` is the same as the `max_retries` value for the job."""
 
@@ -114,6 +114,11 @@ class BaseRun:
 
     job_parameters: Optional[List[JobParameter]] = None
     """Job-level parameters used in the run"""
+
+    job_run_id: Optional[int] = None
+    """ID of the job run that this run belongs to. For legacy and single-task job runs the field is
+    populated with the job run ID. For task runs, the field is populated with the ID of the job run
+    that the task run belongs to."""
 
     number_in_job: Optional[int] = None
     """A unique identifier for this job run. This is set to the same value as `run_id`."""
@@ -201,6 +206,7 @@ class BaseRun:
         if self.job_clusters: body['job_clusters'] = [v.as_dict() for v in self.job_clusters]
         if self.job_id is not None: body['job_id'] = self.job_id
         if self.job_parameters: body['job_parameters'] = [v.as_dict() for v in self.job_parameters]
+        if self.job_run_id is not None: body['job_run_id'] = self.job_run_id
         if self.number_in_job is not None: body['number_in_job'] = self.number_in_job
         if self.original_attempt_run_id is not None:
             body['original_attempt_run_id'] = self.original_attempt_run_id
@@ -236,6 +242,7 @@ class BaseRun:
                    job_clusters=_repeated_dict(d, 'job_clusters', JobCluster),
                    job_id=d.get('job_id', None),
                    job_parameters=_repeated_dict(d, 'job_parameters', JobParameter),
+                   job_run_id=d.get('job_run_id', None),
                    number_in_job=d.get('number_in_job', None),
                    original_attempt_run_id=d.get('original_attempt_run_id', None),
                    overriding_parameters=_from_dict(d, 'overriding_parameters', RunParameters),
@@ -828,6 +835,96 @@ class DeleteRunResponse:
 
 
 @dataclass
+class EnforcePolicyComplianceForJobResponseJobClusterSettingsChange:
+    """Represents a change to the job cluster's settings that would be required for the job clusters to
+    become compliant with their policies."""
+
+    field: Optional[str] = None
+    """The field where this change would be made, prepended with the job cluster key."""
+
+    new_value: Optional[str] = None
+    """The new value of this field after enforcing policy compliance (either a number, a boolean, or a
+    string) converted to a string. This is intended to be read by a human. The typed new value of
+    this field can be retrieved by reading the settings field in the API response."""
+
+    previous_value: Optional[str] = None
+    """The previous value of this field before enforcing policy compliance (either a number, a boolean,
+    or a string) converted to a string. This is intended to be read by a human. The type of the
+    field can be retrieved by reading the settings field in the API response."""
+
+    def as_dict(self) -> dict:
+        """Serializes the EnforcePolicyComplianceForJobResponseJobClusterSettingsChange into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.field is not None: body['field'] = self.field
+        if self.new_value is not None: body['new_value'] = self.new_value
+        if self.previous_value is not None: body['previous_value'] = self.previous_value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> EnforcePolicyComplianceForJobResponseJobClusterSettingsChange:
+        """Deserializes the EnforcePolicyComplianceForJobResponseJobClusterSettingsChange from a dictionary."""
+        return cls(field=d.get('field', None),
+                   new_value=d.get('new_value', None),
+                   previous_value=d.get('previous_value', None))
+
+
+@dataclass
+class EnforcePolicyComplianceRequest:
+    job_id: int
+    """The ID of the job you want to enforce policy compliance on."""
+
+    validate_only: Optional[bool] = None
+    """If set, previews changes made to the job to comply with its policy, but does not update the job."""
+
+    def as_dict(self) -> dict:
+        """Serializes the EnforcePolicyComplianceRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.job_id is not None: body['job_id'] = self.job_id
+        if self.validate_only is not None: body['validate_only'] = self.validate_only
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> EnforcePolicyComplianceRequest:
+        """Deserializes the EnforcePolicyComplianceRequest from a dictionary."""
+        return cls(job_id=d.get('job_id', None), validate_only=d.get('validate_only', None))
+
+
+@dataclass
+class EnforcePolicyComplianceResponse:
+    has_changes: Optional[bool] = None
+    """Whether any changes have been made to the job cluster settings for the job to become compliant
+    with its policies."""
+
+    job_cluster_changes: Optional[List[EnforcePolicyComplianceForJobResponseJobClusterSettingsChange]] = None
+    """A list of job cluster changes that have been made to the job’s cluster settings in order for
+    all job clusters to become compliant with their policies."""
+
+    settings: Optional[JobSettings] = None
+    """Updated job settings after policy enforcement. Policy enforcement only applies to job clusters
+    that are created when running the job (which are specified in new_cluster) and does not apply to
+    existing all-purpose clusters. Updated job settings are derived by applying policy default
+    values to the existing job clusters in order to satisfy policy requirements."""
+
+    def as_dict(self) -> dict:
+        """Serializes the EnforcePolicyComplianceResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.has_changes is not None: body['has_changes'] = self.has_changes
+        if self.job_cluster_changes:
+            body['job_cluster_changes'] = [v.as_dict() for v in self.job_cluster_changes]
+        if self.settings: body['settings'] = self.settings.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> EnforcePolicyComplianceResponse:
+        """Deserializes the EnforcePolicyComplianceResponse from a dictionary."""
+        return cls(has_changes=d.get('has_changes', None),
+                   job_cluster_changes=_repeated_dict(
+                       d, 'job_cluster_changes',
+                       EnforcePolicyComplianceForJobResponseJobClusterSettingsChange),
+                   settings=_from_dict(d, 'settings', JobSettings))
+
+
+@dataclass
 class ExportRunOutput:
     """Run was exported successfully."""
 
@@ -914,7 +1011,8 @@ class ForEachTask:
     """Configuration for the task that will be run for each element in the array"""
 
     concurrency: Optional[int] = None
-    """Controls the number of active iterations task runs. Default is 20, maximum allowed is 100."""
+    """An optional maximum allowed number of concurrent runs of the task. Set this value if you want to
+    be able to execute multiple runs of the task concurrently."""
 
     def as_dict(self) -> dict:
         """Serializes the ForEachTask into a dictionary suitable for use as a JSON request body."""
@@ -1022,6 +1120,32 @@ class GetJobPermissionLevelsResponse:
     def from_dict(cls, d: Dict[str, any]) -> GetJobPermissionLevelsResponse:
         """Deserializes the GetJobPermissionLevelsResponse from a dictionary."""
         return cls(permission_levels=_repeated_dict(d, 'permission_levels', JobPermissionsDescription))
+
+
+@dataclass
+class GetPolicyComplianceResponse:
+    is_compliant: Optional[bool] = None
+    """Whether the job is compliant with its policies or not. Jobs could be out of compliance if a
+    policy they are using was updated after the job was last edited and some of its job clusters no
+    longer comply with their updated policies."""
+
+    violations: Optional[Dict[str, str]] = None
+    """An object containing key-value mappings representing the first 200 policy validation errors. The
+    keys indicate the path where the policy validation error is occurring. An identifier for the job
+    cluster is prepended to the path. The values indicate an error message describing the policy
+    validation error."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GetPolicyComplianceResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.is_compliant is not None: body['is_compliant'] = self.is_compliant
+        if self.violations: body['violations'] = self.violations
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> GetPolicyComplianceResponse:
+        """Deserializes the GetPolicyComplianceResponse from a dictionary."""
+        return cls(is_compliant=d.get('is_compliant', None), violations=d.get('violations', None))
 
 
 class GitProvider(Enum):
@@ -1258,6 +1382,36 @@ class JobCluster:
         """Deserializes the JobCluster from a dictionary."""
         return cls(job_cluster_key=d.get('job_cluster_key', None),
                    new_cluster=_from_dict(d, 'new_cluster', compute.ClusterSpec))
+
+
+@dataclass
+class JobCompliance:
+    job_id: int
+    """Canonical unique identifier for a job."""
+
+    is_compliant: Optional[bool] = None
+    """Whether this job is in compliance with the latest version of its policy."""
+
+    violations: Optional[Dict[str, str]] = None
+    """An object containing key-value mappings representing the first 200 policy validation errors. The
+    keys indicate the path where the policy validation error is occurring. An identifier for the job
+    cluster is prepended to the path. The values indicate an error message describing the policy
+    validation error."""
+
+    def as_dict(self) -> dict:
+        """Serializes the JobCompliance into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.is_compliant is not None: body['is_compliant'] = self.is_compliant
+        if self.job_id is not None: body['job_id'] = self.job_id
+        if self.violations: body['violations'] = self.violations
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> JobCompliance:
+        """Deserializes the JobCompliance from a dictionary."""
+        return cls(is_compliant=d.get('is_compliant', None),
+                   job_id=d.get('job_id', None),
+                   violations=d.get('violations', None))
 
 
 @dataclass
@@ -1872,6 +2026,35 @@ class JobsHealthRules:
     def from_dict(cls, d: Dict[str, any]) -> JobsHealthRules:
         """Deserializes the JobsHealthRules from a dictionary."""
         return cls(rules=_repeated_dict(d, 'rules', JobsHealthRule))
+
+
+@dataclass
+class ListJobComplianceForPolicyResponse:
+    jobs: Optional[List[JobCompliance]] = None
+    """A list of jobs and their policy compliance statuses."""
+
+    next_page_token: Optional[str] = None
+    """This field represents the pagination token to retrieve the next page of results. If this field
+    is not in the response, it means no further results for the request."""
+
+    prev_page_token: Optional[str] = None
+    """This field represents the pagination token to retrieve the previous page of results. If this
+    field is not in the response, it means no further results for the request."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListJobComplianceForPolicyResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.jobs: body['jobs'] = [v.as_dict() for v in self.jobs]
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.prev_page_token is not None: body['prev_page_token'] = self.prev_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ListJobComplianceForPolicyResponse:
+        """Deserializes the ListJobComplianceForPolicyResponse from a dictionary."""
+        return cls(jobs=_repeated_dict(d, 'jobs', JobCompliance),
+                   next_page_token=d.get('next_page_token', None),
+                   prev_page_token=d.get('prev_page_token', None))
 
 
 @dataclass
@@ -2568,8 +2751,8 @@ class Run:
 
     attempt_number: Optional[int] = None
     """The sequence number of this run attempt for a triggered job run. The initial attempt of a run
-    has an attempt_number of 0\. If the initial run attempt fails, and the job has a retry policy
-    (`max_retries` \> 0), subsequent runs are created with an `original_attempt_run_id` of the
+    has an attempt_number of 0. If the initial run attempt fails, and the job has a retry policy
+    (`max_retries` > 0), subsequent runs are created with an `original_attempt_run_id` of the
     original attempt’s ID and an incrementing `attempt_number`. Runs are retried only until they
     succeed, and the maximum `attempt_number` is the same as the `max_retries` value for the job."""
 
@@ -2627,6 +2810,11 @@ class Run:
 
     job_parameters: Optional[List[JobParameter]] = None
     """Job-level parameters used in the run"""
+
+    job_run_id: Optional[int] = None
+    """ID of the job run that this run belongs to. For legacy and single-task job runs the field is
+    populated with the job run ID. For task runs, the field is populated with the ID of the job run
+    that the task run belongs to."""
 
     next_page_token: Optional[str] = None
     """A token that can be used to list the next page of sub-resources."""
@@ -2721,6 +2909,7 @@ class Run:
         if self.job_clusters: body['job_clusters'] = [v.as_dict() for v in self.job_clusters]
         if self.job_id is not None: body['job_id'] = self.job_id
         if self.job_parameters: body['job_parameters'] = [v.as_dict() for v in self.job_parameters]
+        if self.job_run_id is not None: body['job_run_id'] = self.job_run_id
         if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         if self.number_in_job is not None: body['number_in_job'] = self.number_in_job
         if self.original_attempt_run_id is not None:
@@ -2759,6 +2948,7 @@ class Run:
                    job_clusters=_repeated_dict(d, 'job_clusters', JobCluster),
                    job_id=d.get('job_id', None),
                    job_parameters=_repeated_dict(d, 'job_parameters', JobParameter),
+                   job_run_id=d.get('job_run_id', None),
                    next_page_token=d.get('next_page_token', None),
                    number_in_job=d.get('number_in_job', None),
                    original_attempt_run_id=d.get('original_attempt_run_id', None),
@@ -2832,7 +3022,8 @@ class RunForEachTask:
     """Configuration for the task that will be run for each element in the array"""
 
     concurrency: Optional[int] = None
-    """Controls the number of active iterations task runs. Default is 20, maximum allowed is 100."""
+    """An optional maximum allowed number of concurrent runs of the task. Set this value if you want to
+    be able to execute multiple runs of the task concurrently."""
 
     stats: Optional[ForEachStats] = None
     """Read only field. Populated for GetRun and ListRuns RPC calls and stores the execution stats of
@@ -3429,8 +3620,8 @@ class RunTask:
 
     attempt_number: Optional[int] = None
     """The sequence number of this run attempt for a triggered job run. The initial attempt of a run
-    has an attempt_number of 0\. If the initial run attempt fails, and the job has a retry policy
-    (`max_retries` \> 0), subsequent runs are created with an `original_attempt_run_id` of the
+    has an attempt_number of 0. If the initial run attempt fails, and the job has a retry policy
+    (`max_retries` > 0), subsequent runs are created with an `original_attempt_run_id` of the
     original attempt’s ID and an incrementing `attempt_number`. Runs are retried only until they
     succeed, and the maximum `attempt_number` is the same as the `max_retries` value for the job."""
 
@@ -6127,3 +6318,102 @@ class JobsAPI:
 
         res = self._api.do('PATCH', f'/api/2.0/permissions/jobs/{job_id}', body=body, headers=headers)
         return JobPermissions.from_dict(res)
+
+
+class PolicyComplianceForJobsAPI:
+    """The compliance APIs allow you to view and manage the policy compliance status of jobs in your workspace.
+    This API currently only supports compliance controls for cluster policies.
+    
+    A job is in compliance if its cluster configurations satisfy the rules of all their respective cluster
+    policies. A job could be out of compliance if a cluster policy it uses was updated after the job was last
+    edited. The job is considered out of compliance if any of its clusters no longer comply with their updated
+    policies.
+    
+    The get and list compliance APIs allow you to view the policy compliance status of a job. The enforce
+    compliance API allows you to update a job so that it becomes compliant with all of its policies."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def enforce_compliance(self,
+                           job_id: int,
+                           *,
+                           validate_only: Optional[bool] = None) -> EnforcePolicyComplianceResponse:
+        """Enforce job policy compliance.
+        
+        Updates a job so the job clusters that are created when running the job (specified in `new_cluster`)
+        are compliant with the current versions of their respective cluster policies. All-purpose clusters
+        used in the job will not be updated.
+        
+        :param job_id: int
+          The ID of the job you want to enforce policy compliance on.
+        :param validate_only: bool (optional)
+          If set, previews changes made to the job to comply with its policy, but does not update the job.
+        
+        :returns: :class:`EnforcePolicyComplianceResponse`
+        """
+        body = {}
+        if job_id is not None: body['job_id'] = job_id
+        if validate_only is not None: body['validate_only'] = validate_only
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do('POST', '/api/2.0/policies/jobs/enforce-compliance', body=body, headers=headers)
+        return EnforcePolicyComplianceResponse.from_dict(res)
+
+    def get_compliance(self, job_id: int) -> GetPolicyComplianceResponse:
+        """Get job policy compliance.
+        
+        Returns the policy compliance status of a job. Jobs could be out of compliance if a cluster policy
+        they use was updated after the job was last edited and some of its job clusters no longer comply with
+        their updated policies.
+        
+        :param job_id: int
+          The ID of the job whose compliance status you are requesting.
+        
+        :returns: :class:`GetPolicyComplianceResponse`
+        """
+
+        query = {}
+        if job_id is not None: query['job_id'] = job_id
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do('GET', '/api/2.0/policies/jobs/get-compliance', query=query, headers=headers)
+        return GetPolicyComplianceResponse.from_dict(res)
+
+    def list_compliance(self,
+                        policy_id: str,
+                        *,
+                        page_size: Optional[int] = None,
+                        page_token: Optional[str] = None) -> Iterator[JobCompliance]:
+        """List job policy compliance.
+        
+        Returns the policy compliance status of all jobs that use a given policy. Jobs could be out of
+        compliance if a cluster policy they use was updated after the job was last edited and its job clusters
+        no longer comply with the updated policy.
+        
+        :param policy_id: str
+          Canonical unique identifier for the cluster policy.
+        :param page_size: int (optional)
+          Use this field to specify the maximum number of results to be returned by the server. The server may
+          further constrain the maximum number of results returned in a single page.
+        :param page_token: str (optional)
+          A page token that can be used to navigate to the next page or previous page as returned by
+          `next_page_token` or `prev_page_token`.
+        
+        :returns: Iterator over :class:`JobCompliance`
+        """
+
+        query = {}
+        if page_size is not None: query['page_size'] = page_size
+        if page_token is not None: query['page_token'] = page_token
+        if policy_id is not None: query['policy_id'] = policy_id
+        headers = {'Accept': 'application/json', }
+
+        while True:
+            json = self._api.do('GET', '/api/2.0/policies/jobs/list-compliance', query=query, headers=headers)
+            if 'jobs' in json:
+                for v in json['jobs']:
+                    yield JobCompliance.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']

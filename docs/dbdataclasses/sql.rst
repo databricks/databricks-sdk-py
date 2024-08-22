@@ -189,10 +189,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: USER_DEFINED_TYPE
       :value: "USER_DEFINED_TYPE"
 
-.. autoclass:: ContextFilter
-   :members:
-   :undoc-members:
-
 .. autoclass:: CreateAlert
    :members:
    :undoc-members:
