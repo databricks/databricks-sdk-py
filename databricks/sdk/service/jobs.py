@@ -4902,6 +4902,8 @@ class TriggerType(Enum):
     RETRY = 'RETRY'
     RUN_JOB_TASK = 'RUN_JOB_TASK'
     TABLE = 'TABLE'
+    # [PROD-2364] this trigger type is missing from api docs and sdk
+    CONTINUOUS = 'CONTINUOUS'
 
 
 @dataclass
