@@ -18,7 +18,6 @@ def test_creating_ws_client_from_ac_client_does_not_override_config(a):
     wss = list(a.workspaces.list())
     if len(wss) == 0:
         pytest.skip("no workspaces")
-    a.get_workspace_client(wss[0])
-
-    # assert doesn't throw
-    wss = list(a.workspaces.list())
+    w = a.get_workspace_client(wss[0])
+    me = w.current_user.me()
+    assert me.user_name is not None
