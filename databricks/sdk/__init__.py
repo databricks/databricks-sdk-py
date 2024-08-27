@@ -5,8 +5,9 @@ from databricks.sdk.credentials_provider import CredentialsStrategy
 from databricks.sdk.mixins.compute import ClustersExt
 from databricks.sdk.mixins.files import DbfsExt
 from databricks.sdk.mixins.workspace import WorkspaceExt
+from databricks.sdk.service.apps import AppsAPI
 from databricks.sdk.service.billing import (BillableUsageAPI, BudgetsAPI,
-                                            LogDeliveryAPI)
+                                            LogDeliveryAPI, UsageDashboardsAPI)
 from databricks.sdk.service.catalog import (AccountMetastoreAssignmentsAPI,
                                             AccountMetastoresAPI,
                                             AccountStorageCredentialsAPI,
@@ -16,7 +17,8 @@ from databricks.sdk.service.catalog import (AccountMetastoreAssignmentsAPI,
                                             GrantsAPI, MetastoresAPI,
                                             ModelVersionsAPI, OnlineTablesAPI,
                                             QualityMonitorsAPI,
-                                            RegisteredModelsAPI, SchemasAPI,
+                                            RegisteredModelsAPI,
+                                            ResourceQuotasAPI, SchemasAPI,
                                             StorageCredentialsAPI,
                                             SystemSchemasAPI,
                                             TableConstraintsAPI, TablesAPI,
@@ -26,6 +28,7 @@ from databricks.sdk.service.compute import (ClusterPoliciesAPI, ClustersAPI,
                                             GlobalInitScriptsAPI,
                                             InstancePoolsAPI,
                                             InstanceProfilesAPI, LibrariesAPI,
+                                            PolicyComplianceForClustersAPI,
                                             PolicyFamiliesAPI)
 from databricks.sdk.service.dashboards import GenieAPI, LakeviewAPI
 from databricks.sdk.service.files import DbfsAPI, FilesAPI
@@ -37,7 +40,7 @@ from databricks.sdk.service.iam import (AccountAccessControlAPI,
                                         GroupsAPI, PermissionMigrationAPI,
                                         PermissionsAPI, ServicePrincipalsAPI,
                                         UsersAPI, WorkspaceAssignmentAPI)
-from databricks.sdk.service.jobs import JobsAPI
+from databricks.sdk.service.jobs import JobsAPI, PolicyComplianceForJobsAPI
 from databricks.sdk.service.marketplace import (
     ConsumerFulfillmentsAPI, ConsumerInstallationsAPI, ConsumerListingsAPI,
     ConsumerPersonalizationRequestsAPI, ConsumerProvidersAPI,
@@ -55,7 +58,7 @@ from databricks.sdk.service.provisioning import (CredentialsAPI,
                                                  NetworksAPI, PrivateAccessAPI,
                                                  StorageAPI, VpcEndpointsAPI,
                                                  Workspace, WorkspacesAPI)
-from databricks.sdk.service.serving import (AppsAPI, ServingEndpointsAPI,
+from databricks.sdk.service.serving import (ServingEndpointsAPI,
                                             ServingEndpointsDataPlaneAPI)
 from databricks.sdk.service.settings import (AccountIpAccessListsAPI,
                                              AccountSettingsAPI,
@@ -213,6 +216,8 @@ class WorkspaceClient:
         self._permission_migration = PermissionMigrationAPI(self._api_client)
         self._permissions = PermissionsAPI(self._api_client)
         self._pipelines = PipelinesAPI(self._api_client)
+        self._policy_compliance_for_clusters = PolicyComplianceForClustersAPI(self._api_client)
+        self._policy_compliance_for_jobs = PolicyComplianceForJobsAPI(self._api_client)
         self._policy_families = PolicyFamiliesAPI(self._api_client)
         self._provider_exchange_filters = ProviderExchangeFiltersAPI(self._api_client)
         self._provider_exchanges = ProviderExchangesAPI(self._api_client)
@@ -233,6 +238,7 @@ class WorkspaceClient:
         self._recipients = RecipientsAPI(self._api_client)
         self._registered_models = RegisteredModelsAPI(self._api_client)
         self._repos = ReposAPI(self._api_client)
+        self._resource_quotas = ResourceQuotasAPI(self._api_client)
         self._schemas = SchemasAPI(self._api_client)
         self._secrets = SecretsAPI(self._api_client)
         self._service_principals = ServicePrincipalsAPI(self._api_client)
@@ -499,6 +505,16 @@ class WorkspaceClient:
         return self._pipelines
 
     @property
+    def policy_compliance_for_clusters(self) -> PolicyComplianceForClustersAPI:
+        """The policy compliance APIs allow you to view and manage the policy compliance status of clusters in your workspace."""
+        return self._policy_compliance_for_clusters
+
+    @property
+    def policy_compliance_for_jobs(self) -> PolicyComplianceForJobsAPI:
+        """The compliance APIs allow you to view and manage the policy compliance status of jobs in your workspace."""
+        return self._policy_compliance_for_jobs
+
+    @property
     def policy_families(self) -> PolicyFamiliesAPI:
         """View available policy families."""
         return self._policy_families
@@ -560,7 +576,7 @@ class WorkspaceClient:
 
     @property
     def query_history(self) -> QueryHistoryAPI:
-        """A service responsible for storing and retrieving the list of queries run against SQL endpoints, serverless compute, and DLT."""
+        """A service responsible for storing and retrieving the list of queries run against SQL endpoints and serverless compute."""
         return self._query_history
 
     @property
@@ -592,6 +608,11 @@ class WorkspaceClient:
     def repos(self) -> ReposAPI:
         """The Repos API allows users to manage their git repos."""
         return self._repos
+
+    @property
+    def resource_quotas(self) -> ResourceQuotasAPI:
+        """Unity Catalog enforces resource quotas on all securable objects, which limits the number of resources that can be created."""
+        return self._resource_quotas
 
     @property
     def schemas(self) -> SchemasAPI:
@@ -793,6 +814,7 @@ class AccountClient:
         self._settings = AccountSettingsAPI(self._api_client)
         self._storage = StorageAPI(self._api_client)
         self._storage_credentials = AccountStorageCredentialsAPI(self._api_client)
+        self._usage_dashboards = UsageDashboardsAPI(self._api_client)
         self._users = AccountUsersAPI(self._api_client)
         self._vpc_endpoints = VpcEndpointsAPI(self._api_client)
         self._workspace_assignment = WorkspaceAssignmentAPI(self._api_client)
@@ -906,6 +928,11 @@ class AccountClient:
     def storage_credentials(self) -> AccountStorageCredentialsAPI:
         """These APIs manage storage credentials for a particular metastore."""
         return self._storage_credentials
+
+    @property
+    def usage_dashboards(self) -> UsageDashboardsAPI:
+        """These APIs manage usage dashboards for this account."""
+        return self._usage_dashboards
 
     @property
     def users(self) -> AccountUsersAPI:

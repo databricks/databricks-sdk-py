@@ -91,7 +91,7 @@
         
         
 
-    .. py:method:: get(full_name: str [, include_browse: Optional[bool]]) -> RegisteredModelInfo
+    .. py:method:: get(full_name: str [, include_aliases: Optional[bool], include_browse: Optional[bool]]) -> RegisteredModelInfo
 
         Get a Registered Model.
         
@@ -103,6 +103,8 @@
         
         :param full_name: str
           The three-level (fully qualified) name of the registered model
+        :param include_aliases: bool (optional)
+          Whether to include registered model aliases in the response
         :param include_browse: bool (optional)
           Whether to include registered models in the response for which the principal can only access
           selective metadata for

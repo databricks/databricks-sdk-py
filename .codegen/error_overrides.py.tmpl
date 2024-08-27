@@ -11,9 +11,9 @@ _ALL_OVERRIDES = [
         debug_name="{{.Name}}",
         path_regex=re.compile(r'{{.PathRegex}}'),
         verb="{{.Verb}}",
-        status_code_matcher=re.compile(r'{{.StatusCodeMatcher}}'),
-        error_code_matcher=re.compile(r'{{.ErrorCodeMatcher}}'),
-        message_matcher=re.compile(r'{{.MessageMatcher}}'),
+        status_code_matcher=re.compile(r'{{replaceAll "'" "\\'" .StatusCodeMatcher}}'),
+        error_code_matcher=re.compile(r'{{replaceAll "'" "\\'" .ErrorCodeMatcher}}'),
+        message_matcher=re.compile(r'{{replaceAll "'" "\\'" .MessageMatcher}}'),
         custom_error={{.OverrideErrorCode.PascalName}},
     ),
 {{- end }}

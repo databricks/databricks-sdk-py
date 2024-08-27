@@ -120,7 +120,7 @@
     .. py:method:: cancel_run_and_wait(run_id: int, timeout: datetime.timedelta = 0:20:00) -> Run
 
 
-    .. py:method:: create( [, access_control_list: Optional[List[iam.AccessControlRequest]], continuous: Optional[Continuous], deployment: Optional[JobDeployment], description: Optional[str], edit_mode: Optional[JobEditMode], email_notifications: Optional[JobEmailNotifications], environments: Optional[List[JobEnvironment]], format: Optional[Format], git_source: Optional[GitSource], health: Optional[JobsHealthRules], job_clusters: Optional[List[JobCluster]], max_concurrent_runs: Optional[int], name: Optional[str], notification_settings: Optional[JobNotificationSettings], parameters: Optional[List[JobParameterDefinition]], queue: Optional[QueueSettings], run_as: Optional[JobRunAs], schedule: Optional[CronSchedule], tags: Optional[Dict[str, str]], tasks: Optional[List[Task]], timeout_seconds: Optional[int], trigger: Optional[TriggerSettings], webhook_notifications: Optional[WebhookNotifications]]) -> CreateResponse
+    .. py:method:: create( [, access_control_list: Optional[List[JobAccessControlRequest]], continuous: Optional[Continuous], deployment: Optional[JobDeployment], description: Optional[str], edit_mode: Optional[JobEditMode], email_notifications: Optional[JobEmailNotifications], environments: Optional[List[JobEnvironment]], format: Optional[Format], git_source: Optional[GitSource], health: Optional[JobsHealthRules], job_clusters: Optional[List[JobCluster]], max_concurrent_runs: Optional[int], name: Optional[str], notification_settings: Optional[JobNotificationSettings], parameters: Optional[List[JobParameterDefinition]], queue: Optional[QueueSettings], run_as: Optional[JobRunAs], schedule: Optional[CronSchedule], tags: Optional[Dict[str, str]], tasks: Optional[List[Task]], timeout_seconds: Optional[int], trigger: Optional[TriggerSettings], webhook_notifications: Optional[WebhookNotifications]]) -> CreateResponse
 
 
         Usage:
@@ -156,7 +156,7 @@
         
         Create a new job.
         
-        :param access_control_list: List[:class:`AccessControlRequest`] (optional)
+        :param access_control_list: List[:class:`JobAccessControlRequest`] (optional)
           List of permissions to set on the job.
         :param continuous: :class:`Continuous` (optional)
           An optional continuous property for this job. The continuous property will ensure that there is
@@ -164,7 +164,7 @@
         :param deployment: :class:`JobDeployment` (optional)
           Deployment information for jobs managed by external sources.
         :param description: str (optional)
-          An optional description for the job. The maximum length is 1024 characters in UTF-8 encoding.
+          An optional description for the job. The maximum length is 27700 characters in UTF-8 encoding.
         :param edit_mode: :class:`JobEditMode` (optional)
           Edit mode of the job.
           
@@ -376,7 +376,7 @@
         :returns: :class:`JobPermissions`
         
 
-    .. py:method:: get_run(run_id: int [, include_history: Optional[bool], include_resolved_values: Optional[bool]]) -> Run
+    .. py:method:: get_run(run_id: int [, include_history: Optional[bool], include_resolved_values: Optional[bool], page_token: Optional[str]]) -> Run
 
 
         Usage:
@@ -418,6 +418,9 @@
           Whether to include the repair history in the response.
         :param include_resolved_values: bool (optional)
           Whether to include resolved parameter values in the response.
+        :param page_token: str (optional)
+          To list the next page or the previous page of job tasks, set this field to the value of the
+          `next_page_token` or `prev_page_token` returned in the GetJob response.
         
         :returns: :class:`Run`
         
@@ -924,7 +927,7 @@
         :returns: :class:`JobPermissions`
         
 
-    .. py:method:: submit( [, access_control_list: Optional[List[iam.AccessControlRequest]], email_notifications: Optional[JobEmailNotifications], environments: Optional[List[JobEnvironment]], git_source: Optional[GitSource], health: Optional[JobsHealthRules], idempotency_token: Optional[str], notification_settings: Optional[JobNotificationSettings], queue: Optional[QueueSettings], run_as: Optional[JobRunAs], run_name: Optional[str], tasks: Optional[List[SubmitTask]], timeout_seconds: Optional[int], webhook_notifications: Optional[WebhookNotifications]]) -> Wait[Run]
+    .. py:method:: submit( [, access_control_list: Optional[List[JobAccessControlRequest]], email_notifications: Optional[JobEmailNotifications], environments: Optional[List[JobEnvironment]], git_source: Optional[GitSource], health: Optional[JobsHealthRules], idempotency_token: Optional[str], notification_settings: Optional[JobNotificationSettings], queue: Optional[QueueSettings], run_as: Optional[JobRunAs], run_name: Optional[str], tasks: Optional[List[SubmitTask]], timeout_seconds: Optional[int], webhook_notifications: Optional[WebhookNotifications]]) -> Wait[Run]
 
 
         Usage:
@@ -960,7 +963,7 @@
         Runs submitted using this endpoint don’t display in the UI. Use the `jobs/runs/get` API to check the
         run state after the job is submitted.
         
-        :param access_control_list: List[:class:`AccessControlRequest`] (optional)
+        :param access_control_list: List[:class:`JobAccessControlRequest`] (optional)
           List of permissions to set on the job.
         :param email_notifications: :class:`JobEmailNotifications` (optional)
           An optional set of email addresses notified when the run begins or completes.
@@ -1011,7 +1014,7 @@
           See :method:wait_get_run_job_terminated_or_skipped for more details.
         
 
-    .. py:method:: submit_and_wait( [, access_control_list: Optional[List[iam.AccessControlRequest]], email_notifications: Optional[JobEmailNotifications], environments: Optional[List[JobEnvironment]], git_source: Optional[GitSource], health: Optional[JobsHealthRules], idempotency_token: Optional[str], notification_settings: Optional[JobNotificationSettings], queue: Optional[QueueSettings], run_as: Optional[JobRunAs], run_name: Optional[str], tasks: Optional[List[SubmitTask]], timeout_seconds: Optional[int], webhook_notifications: Optional[WebhookNotifications], timeout: datetime.timedelta = 0:20:00]) -> Run
+    .. py:method:: submit_and_wait( [, access_control_list: Optional[List[JobAccessControlRequest]], email_notifications: Optional[JobEmailNotifications], environments: Optional[List[JobEnvironment]], git_source: Optional[GitSource], health: Optional[JobsHealthRules], idempotency_token: Optional[str], notification_settings: Optional[JobNotificationSettings], queue: Optional[QueueSettings], run_as: Optional[JobRunAs], run_name: Optional[str], tasks: Optional[List[SubmitTask]], timeout_seconds: Optional[int], webhook_notifications: Optional[WebhookNotifications], timeout: datetime.timedelta = 0:20:00]) -> Run
 
 
     .. py:method:: update(job_id: int [, fields_to_remove: Optional[List[str]], new_settings: Optional[JobSettings]])

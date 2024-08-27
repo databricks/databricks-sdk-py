@@ -101,7 +101,7 @@
         
         
 
-    .. py:method:: execute_statement(statement: str, warehouse_id: str [, byte_limit: Optional[int], catalog: Optional[str], disposition: Optional[Disposition], format: Optional[Format], on_wait_timeout: Optional[ExecuteStatementRequestOnWaitTimeout], parameters: Optional[List[StatementParameterListItem]], row_limit: Optional[int], schema: Optional[str], wait_timeout: Optional[str]]) -> ExecuteStatementResponse
+    .. py:method:: execute_statement(statement: str, warehouse_id: str [, byte_limit: Optional[int], catalog: Optional[str], disposition: Optional[Disposition], format: Optional[Format], on_wait_timeout: Optional[ExecuteStatementRequestOnWaitTimeout], parameters: Optional[List[StatementParameterListItem]], row_limit: Optional[int], schema: Optional[str], wait_timeout: Optional[str]]) -> StatementResponse
 
         Execute a SQL statement.
         
@@ -122,26 +122,6 @@
           
           [`USE CATALOG`]: https://docs.databricks.com/sql/language-manual/sql-ref-syntax-ddl-use-catalog.html
         :param disposition: :class:`Disposition` (optional)
-          The fetch disposition provides two modes of fetching results: `INLINE` and `EXTERNAL_LINKS`.
-          
-          Statements executed with `INLINE` disposition will return result data inline, in `JSON_ARRAY`
-          format, in a series of chunks. If a given statement produces a result set with a size larger than 25
-          MiB, that statement execution is aborted, and no result set will be available.
-          
-          **NOTE** Byte limits are computed based upon internal representations of the result set data, and
-          might not match the sizes visible in JSON responses.
-          
-          Statements executed with `EXTERNAL_LINKS` disposition will return result data as external links:
-          URLs that point to cloud storage internal to the workspace. Using `EXTERNAL_LINKS` disposition
-          allows statements to generate arbitrarily sized result sets for fetching up to 100 GiB. The
-          resulting links have two important properties:
-          
-          1. They point to resources _external_ to the Databricks compute; therefore any associated
-          authentication information (typically a personal access token, OAuth token, or similar) _must be
-          removed_ when fetching from these links.
-          
-          2. These are presigned URLs with a specific expiration, indicated in the response. The behavior when
-          attempting to use an expired link is cloud specific.
         :param format: :class:`Format` (optional)
           Statement execution supports three result formats: `JSON_ARRAY` (default), `ARROW_STREAM`, and
           `CSV`.
@@ -229,10 +209,10 @@
           the statement takes longer to execute, `on_wait_timeout` determines what should happen after the
           timeout is reached.
         
-        :returns: :class:`ExecuteStatementResponse`
+        :returns: :class:`StatementResponse`
         
 
-    .. py:method:: get_statement(statement_id: str) -> GetStatementResponse
+    .. py:method:: get_statement(statement_id: str) -> StatementResponse
 
         Get status, manifest, and result first chunk.
         
@@ -248,7 +228,7 @@
           The statement ID is returned upon successfully submitting a SQL statement, and is a required
           reference for all subsequent calls.
         
-        :returns: :class:`GetStatementResponse`
+        :returns: :class:`StatementResponse`
         
 
     .. py:method:: get_statement_result_chunk_n(statement_id: str, chunk_index: int) -> ResultData

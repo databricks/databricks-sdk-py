@@ -9,6 +9,7 @@ Manage security settings for Accounts and Workspaces
 
    credentials_manager
    ip_access_lists
+   notification_destinations
    settings
    automatic_cluster_update
    compliance_security_profile

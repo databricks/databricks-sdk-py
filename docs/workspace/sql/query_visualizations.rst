@@ -4,56 +4,43 @@
 
 .. py:class:: QueryVisualizationsAPI
 
-    This is an evolving API that facilitates the addition and removal of vizualisations from existing queries
-    within the Databricks Workspace. Data structures may change over time.
+    This is an evolving API that facilitates the addition and removal of visualizations from existing queries
+    in the Databricks Workspace. Data structures can change over time.
 
-    .. py:method:: create(query_id: str, type: str, options: Any [, description: Optional[str], name: Optional[str]]) -> Visualization
+    .. py:method:: create( [, visualization: Optional[CreateVisualizationRequestVisualization]]) -> Visualization
 
-        Add visualization to a query.
+        Add a visualization to a query.
         
-        :param query_id: str
-          The identifier returned by :method:queries/create
-        :param type: str
-          The type of visualization: chart, table, pivot table, and so on.
-        :param options: Any
-          The options object varies widely from one visualization type to the next and is unsupported.
-          Databricks does not recommend modifying visualization settings in JSON.
-        :param description: str (optional)
-          A short description of this visualization. This is not displayed in the UI.
-        :param name: str (optional)
-          The name of the visualization that appears on dashboards and the query screen.
+        Adds a visualization to a query.
+        
+        :param visualization: :class:`CreateVisualizationRequestVisualization` (optional)
         
         :returns: :class:`Visualization`
         
 
     .. py:method:: delete(id: str)
 
-        Remove visualization.
+        Remove a visualization.
+        
+        Removes a visualization.
         
         :param id: str
-          Widget ID returned by :method:queryvizualisations/create
         
         
         
 
-    .. py:method:: update(id: str [, created_at: Optional[str], description: Optional[str], name: Optional[str], options: Optional[Any], query: Optional[Query], type: Optional[str], updated_at: Optional[str]]) -> Visualization
+    .. py:method:: update(id: str, update_mask: str [, visualization: Optional[UpdateVisualizationRequestVisualization]]) -> Visualization
 
-        Edit existing visualization.
+        Update a visualization.
+        
+        Updates a visualization.
         
         :param id: str
-          The UUID for this visualization.
-        :param created_at: str (optional)
-        :param description: str (optional)
-          A short description of this visualization. This is not displayed in the UI.
-        :param name: str (optional)
-          The name of the visualization that appears on dashboards and the query screen.
-        :param options: Any (optional)
-          The options object varies widely from one visualization type to the next and is unsupported.
-          Databricks does not recommend modifying visualization settings in JSON.
-        :param query: :class:`Query` (optional)
-        :param type: str (optional)
-          The type of visualization: chart, table, pivot table, and so on.
-        :param updated_at: str (optional)
+        :param update_mask: str
+          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
+          setting payload will be updated. The field mask needs to be supplied as single string. To specify
+          multiple fields in the field mask, use comma as the separator (no space).
+        :param visualization: :class:`UpdateVisualizationRequestVisualization` (optional)
         
         :returns: :class:`Visualization`
         

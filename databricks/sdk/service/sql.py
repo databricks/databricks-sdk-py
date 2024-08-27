@@ -601,68 +601,6 @@ class ColumnInfoTypeName(Enum):
 
 
 @dataclass
-class ContextFilter:
-    dbsql_alert_id: Optional[str] = None
-    """Databricks SQL Alert id"""
-
-    dbsql_dashboard_id: Optional[str] = None
-    """Databricks SQL Dashboard id"""
-
-    dbsql_query_id: Optional[str] = None
-    """Databricks SQL Query id"""
-
-    dbsql_session_id: Optional[str] = None
-    """Databricks SQL Query session id"""
-
-    job_id: Optional[str] = None
-    """Databricks Workflows id"""
-
-    job_run_id: Optional[str] = None
-    """Databricks Workflows task run id"""
-
-    lakeview_dashboard_id: Optional[str] = None
-    """Databricks Lakeview Dashboard id"""
-
-    notebook_cell_run_id: Optional[str] = None
-    """Databricks Notebook runnableCommandId"""
-
-    notebook_id: Optional[str] = None
-    """Databricks Notebook id"""
-
-    statement_ids: Optional[List[str]] = None
-    """Databricks Query History statement ids."""
-
-    def as_dict(self) -> dict:
-        """Serializes the ContextFilter into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.dbsql_alert_id is not None: body['dbsql_alert_id'] = self.dbsql_alert_id
-        if self.dbsql_dashboard_id is not None: body['dbsql_dashboard_id'] = self.dbsql_dashboard_id
-        if self.dbsql_query_id is not None: body['dbsql_query_id'] = self.dbsql_query_id
-        if self.dbsql_session_id is not None: body['dbsql_session_id'] = self.dbsql_session_id
-        if self.job_id is not None: body['job_id'] = self.job_id
-        if self.job_run_id is not None: body['job_run_id'] = self.job_run_id
-        if self.lakeview_dashboard_id is not None: body['lakeview_dashboard_id'] = self.lakeview_dashboard_id
-        if self.notebook_cell_run_id is not None: body['notebook_cell_run_id'] = self.notebook_cell_run_id
-        if self.notebook_id is not None: body['notebook_id'] = self.notebook_id
-        if self.statement_ids: body['statement_ids'] = [v for v in self.statement_ids]
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ContextFilter:
-        """Deserializes the ContextFilter from a dictionary."""
-        return cls(dbsql_alert_id=d.get('dbsql_alert_id', None),
-                   dbsql_dashboard_id=d.get('dbsql_dashboard_id', None),
-                   dbsql_query_id=d.get('dbsql_query_id', None),
-                   dbsql_session_id=d.get('dbsql_session_id', None),
-                   job_id=d.get('job_id', None),
-                   job_run_id=d.get('job_run_id', None),
-                   lakeview_dashboard_id=d.get('lakeview_dashboard_id', None),
-                   notebook_cell_run_id=d.get('notebook_cell_run_id', None),
-                   notebook_id=d.get('notebook_id', None),
-                   statement_ids=d.get('statement_ids', None))
-
-
-@dataclass
 class CreateAlert:
     name: str
     """Name of the alert."""
@@ -1483,26 +1421,6 @@ class DeleteWarehouseResponse:
 
 
 class Disposition(Enum):
-    """The fetch disposition provides two modes of fetching results: `INLINE` and `EXTERNAL_LINKS`.
-    
-    Statements executed with `INLINE` disposition will return result data inline, in `JSON_ARRAY`
-    format, in a series of chunks. If a given statement produces a result set with a size larger
-    than 25 MiB, that statement execution is aborted, and no result set will be available.
-    
-    **NOTE** Byte limits are computed based upon internal representations of the result set data,
-    and might not match the sizes visible in JSON responses.
-    
-    Statements executed with `EXTERNAL_LINKS` disposition will return result data as external links:
-    URLs that point to cloud storage internal to the workspace. Using `EXTERNAL_LINKS` disposition
-    allows statements to generate arbitrarily sized result sets for fetching up to 100 GiB. The
-    resulting links have two important properties:
-    
-    1. They point to resources _external_ to the Databricks compute; therefore any associated
-    authentication information (typically a personal access token, OAuth token, or similar) _must be
-    removed_ when fetching from these links.
-    
-    2. These are presigned URLs with a specific expiration, indicated in the response. The behavior
-    when attempting to use an expired link is cloud specific."""
 
     EXTERNAL_LINKS = 'EXTERNAL_LINKS'
     INLINE = 'INLINE'
@@ -2019,26 +1937,6 @@ class ExecuteStatementRequest:
     [`USE CATALOG`]: https://docs.databricks.com/sql/language-manual/sql-ref-syntax-ddl-use-catalog.html"""
 
     disposition: Optional[Disposition] = None
-    """The fetch disposition provides two modes of fetching results: `INLINE` and `EXTERNAL_LINKS`.
-    
-    Statements executed with `INLINE` disposition will return result data inline, in `JSON_ARRAY`
-    format, in a series of chunks. If a given statement produces a result set with a size larger
-    than 25 MiB, that statement execution is aborted, and no result set will be available.
-    
-    **NOTE** Byte limits are computed based upon internal representations of the result set data,
-    and might not match the sizes visible in JSON responses.
-    
-    Statements executed with `EXTERNAL_LINKS` disposition will return result data as external links:
-    URLs that point to cloud storage internal to the workspace. Using `EXTERNAL_LINKS` disposition
-    allows statements to generate arbitrarily sized result sets for fetching up to 100 GiB. The
-    resulting links have two important properties:
-    
-    1. They point to resources _external_ to the Databricks compute; therefore any associated
-    authentication information (typically a personal access token, OAuth token, or similar) _must be
-    removed_ when fetching from these links.
-    
-    2. These are presigned URLs with a specific expiration, indicated in the response. The behavior
-    when attempting to use an expired link is cloud specific."""
 
     format: Optional[Format] = None
     """Statement execution supports three result formats: `JSON_ARRAY` (default), `ARROW_STREAM`, and
@@ -2191,9 +2089,6 @@ class ExternalLink:
     which point a new `external_link` must be requested."""
 
     external_link: Optional[str] = None
-    """A presigned URL pointing to a chunk of result data, hosted by an external service, with a short
-    expiration time (<= 15 minutes). As this URL contains a temporary credential, it should be
-    considered sensitive and the client should not expose this URL in a log."""
 
     http_headers: Optional[Dict[str, str]] = None
     """HTTP headers that must be included with a GET request to the `external_link`. Each header is
@@ -3477,11 +3372,11 @@ class QueryEditContent:
 
 @dataclass
 class QueryFilter:
-    context_filter: Optional[ContextFilter] = None
-    """Filter by one or more property describing where the query was generated"""
-
     query_start_time_range: Optional[TimeRange] = None
     """A range filter for query submitted time. The time range must be <= 30 days."""
+
+    statement_ids: Optional[List[str]] = None
+    """A list of statement IDs."""
 
     statuses: Optional[List[QueryStatus]] = None
 
@@ -3494,8 +3389,8 @@ class QueryFilter:
     def as_dict(self) -> dict:
         """Serializes the QueryFilter into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.context_filter: body['context_filter'] = self.context_filter.as_dict()
         if self.query_start_time_range: body['query_start_time_range'] = self.query_start_time_range.as_dict()
+        if self.statement_ids: body['statement_ids'] = [v for v in self.statement_ids]
         if self.statuses: body['statuses'] = [v.value for v in self.statuses]
         if self.user_ids: body['user_ids'] = [v for v in self.user_ids]
         if self.warehouse_ids: body['warehouse_ids'] = [v for v in self.warehouse_ids]
@@ -3504,8 +3399,8 @@ class QueryFilter:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> QueryFilter:
         """Deserializes the QueryFilter from a dictionary."""
-        return cls(context_filter=_from_dict(d, 'context_filter', ContextFilter),
-                   query_start_time_range=_from_dict(d, 'query_start_time_range', TimeRange),
+        return cls(query_start_time_range=_from_dict(d, 'query_start_time_range', TimeRange),
+                   statement_ids=d.get('statement_ids', None),
                    statuses=_repeated_enum(d, 'statuses', QueryStatus),
                    user_ids=d.get('user_ids', None),
                    warehouse_ids=d.get('warehouse_ids', None))
@@ -3987,12 +3882,6 @@ class QuerySource:
 
     notebook_id: Optional[str] = None
 
-    pipeline_id: Optional[str] = None
-    """Id associated with a DLT pipeline"""
-
-    pipeline_update_id: Optional[str] = None
-    """Id associated with a DLT update"""
-
     query_tags: Optional[str] = None
     """String provided by a customer that'll help them identify the query"""
 
@@ -4027,8 +3916,6 @@ class QuerySource:
         if self.job_id is not None: body['job_id'] = self.job_id
         if self.job_managed_by is not None: body['job_managed_by'] = self.job_managed_by.value
         if self.notebook_id is not None: body['notebook_id'] = self.notebook_id
-        if self.pipeline_id is not None: body['pipeline_id'] = self.pipeline_id
-        if self.pipeline_update_id is not None: body['pipeline_update_id'] = self.pipeline_update_id
         if self.query_tags is not None: body['query_tags'] = self.query_tags
         if self.run_id is not None: body['run_id'] = self.run_id
         if self.runnable_command_id is not None: body['runnable_command_id'] = self.runnable_command_id
@@ -4055,8 +3942,6 @@ class QuerySource:
                    job_id=d.get('job_id', None),
                    job_managed_by=_enum(d, 'job_managed_by', QuerySourceJobManager),
                    notebook_id=d.get('notebook_id', None),
-                   pipeline_id=d.get('pipeline_id', None),
-                   pipeline_update_id=d.get('pipeline_update_id', None),
                    query_tags=d.get('query_tags', None),
                    run_id=d.get('run_id', None),
                    runnable_command_id=d.get('runnable_command_id', None),
@@ -4203,12 +4088,6 @@ class RestoreResponse:
 
 @dataclass
 class ResultData:
-    """Contains the result data of a single chunk when using `INLINE` disposition. When using
-    `EXTERNAL_LINKS` disposition, the array `external_links` is used instead to provide presigned
-    URLs to the result data in cloud storage. Exactly one of these alternatives is used. (While the
-    `external_links` array prepares the API to return multiple links in a single response. Currently
-    only a single link is returned.)"""
-
     byte_count: Optional[int] = None
     """The number of bytes in the result chunk. This field is not available when using `INLINE`
     disposition."""
@@ -4590,11 +4469,6 @@ class StatementResponse:
     """The result manifest provides schema and metadata for the result set."""
 
     result: Optional[ResultData] = None
-    """Contains the result data of a single chunk when using `INLINE` disposition. When using
-    `EXTERNAL_LINKS` disposition, the array `external_links` is used instead to provide presigned
-    URLs to the result data in cloud storage. Exactly one of these alternatives is used. (While the
-    `external_links` array prepares the API to return multiple links in a single response. Currently
-    only a single link is returned.)"""
 
     statement_id: Optional[str] = None
     """The statement ID is returned upon successfully submitting a SQL statement, and is a required
@@ -5304,6 +5178,7 @@ class WarehousePermissionLevel(Enum):
     """Permission level"""
 
     CAN_MANAGE = 'CAN_MANAGE'
+    CAN_MONITOR = 'CAN_MONITOR'
     CAN_USE = 'CAN_USE'
     IS_OWNER = 'IS_OWNER'
 
@@ -5646,7 +5521,10 @@ class AlertsLegacyAPI:
     notification destinations if the condition was met. Alerts can be scheduled using the `sql_task` type of
     the Jobs API, e.g. :method:jobs/create.
     
-    **Note**: A new version of the Databricks SQL API is now available. Please see the latest version."""
+    **Note**: A new version of the Databricks SQL API is now available. Please see the latest version. [Learn
+    more]
+    
+    [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -5664,7 +5542,9 @@ class AlertsLegacyAPI:
         condition of its result, and notifies users or notification destinations if the condition was met.
         
         **Note**: A new version of the Databricks SQL API is now available. Please use :method:alerts/create
-        instead.
+        instead. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :param name: str
           Name of the alert.
@@ -5698,7 +5578,9 @@ class AlertsLegacyAPI:
         queries and dashboards, alerts cannot be moved to the trash.
         
         **Note**: A new version of the Databricks SQL API is now available. Please use :method:alerts/delete
-        instead.
+        instead. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :param alert_id: str
         
@@ -5715,7 +5597,9 @@ class AlertsLegacyAPI:
         Gets an alert.
         
         **Note**: A new version of the Databricks SQL API is now available. Please use :method:alerts/get
-        instead.
+        instead. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :param alert_id: str
         
@@ -5733,7 +5617,9 @@ class AlertsLegacyAPI:
         Gets a list of alerts.
         
         **Note**: A new version of the Databricks SQL API is now available. Please use :method:alerts/list
-        instead.
+        instead. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :returns: Iterator over :class:`LegacyAlert`
         """
@@ -5755,7 +5641,9 @@ class AlertsLegacyAPI:
         Updates an alert.
         
         **Note**: A new version of the Databricks SQL API is now available. Please use :method:alerts/update
-        instead.
+        instead. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :param alert_id: str
         :param name: str
@@ -6055,7 +5943,9 @@ class DataSourcesAPI:
     advise you to use any text editor, REST client, or `grep` to search the response from this API for the
     name of your SQL warehouse as it appears in Databricks SQL.
     
-    **Note**: A new version of the Databricks SQL API is now available. Please see the latest version."""
+    **Note**: A new version of the Databricks SQL API is now available. [Learn more]
+    
+    [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -6068,7 +5958,9 @@ class DataSourcesAPI:
         queries against it.
         
         **Note**: A new version of the Databricks SQL API is now available. Please use :method:warehouses/list
-        instead.
+        instead. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :returns: Iterator over :class:`DataSource`
         """
@@ -6092,7 +5984,9 @@ class DbsqlPermissionsAPI:
     
     - `CAN_MANAGE`: Allows all actions: read, run, edit, delete, modify permissions (superset of `CAN_RUN`)
     
-    **Note**: A new version of the Databricks SQL API is now available. Please see the latest version."""
+    **Note**: A new version of the Databricks SQL API is now available. [Learn more]
+    
+    [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -6101,6 +5995,11 @@ class DbsqlPermissionsAPI:
         """Get object ACL.
         
         Gets a JSON representation of the access control list (ACL) for a specified object.
+        
+        **Note**: A new version of the Databricks SQL API is now available. Please use
+        :method:workspace/getpermissions instead. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :param object_type: :class:`ObjectTypePlural`
           The type of object permissions to check.
@@ -6126,6 +6025,11 @@ class DbsqlPermissionsAPI:
         
         Sets the access control list (ACL) for a specified object. This operation will complete rewrite the
         ACL.
+        
+        **Note**: A new version of the Databricks SQL API is now available. Please use
+        :method:workspace/setpermissions instead. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :param object_type: :class:`ObjectTypePlural`
           The type of object permission to set.
@@ -6156,7 +6060,9 @@ class DbsqlPermissionsAPI:
         Transfers ownership of a dashboard, query, or alert to an active user. Requires an admin API key.
         
         **Note**: A new version of the Databricks SQL API is now available. For queries and alerts, please use
-        :method:queries/update and :method:alerts/update respectively instead.
+        :method:queries/update and :method:alerts/update respectively instead. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :param object_type: :class:`OwnableObjectType`
           The type of object on which to change ownership.
@@ -6323,7 +6229,10 @@ class QueriesLegacyAPI:
     SQL warehouse, query text, name, description, tags, parameters, and visualizations. Queries can be
     scheduled using the `sql_task` type of the Jobs API, e.g. :method:jobs/create.
     
-    **Note**: A new version of the Databricks SQL API is now available. Please see the latest version."""
+    **Note**: A new version of the Databricks SQL API is now available. Please see the latest version. [Learn
+    more]
+    
+    [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -6350,7 +6259,9 @@ class QueriesLegacyAPI:
         **Note**: You cannot add a visualization until you create the query.
         
         **Note**: A new version of the Databricks SQL API is now available. Please use :method:queries/create
-        instead.
+        instead. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :param data_source_id: str (optional)
           Data source ID maps to the ID of the data source used by the resource and is distinct from the
@@ -6397,7 +6308,9 @@ class QueriesLegacyAPI:
         they cannot be used for alerts. The trash is deleted after 30 days.
         
         **Note**: A new version of the Databricks SQL API is now available. Please use :method:queries/delete
-        instead.
+        instead. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :param query_id: str
         
@@ -6415,7 +6328,9 @@ class QueriesLegacyAPI:
         authenticated user.
         
         **Note**: A new version of the Databricks SQL API is now available. Please use :method:queries/get
-        instead.
+        instead. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :param query_id: str
         
@@ -6441,7 +6356,9 @@ class QueriesLegacyAPI:
         degradation, or a temporary ban.
         
         **Note**: A new version of the Databricks SQL API is now available. Please use :method:queries/list
-        instead.
+        instead. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :param order: str (optional)
           Name of query attribute to order by. Default sort order is ascending. Append a dash (`-`) to order
@@ -6497,6 +6414,9 @@ class QueriesLegacyAPI:
         You can use restored queries for alerts.
         
         **Note**: A new version of the Databricks SQL API is now available. Please see the latest version.
+        [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :param query_id: str
         
@@ -6524,7 +6444,9 @@ class QueriesLegacyAPI:
         **Note**: You cannot undo this operation.
         
         **Note**: A new version of the Databricks SQL API is now available. Please use :method:queries/update
-        instead.
+        instead. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :param query_id: str
         :param data_source_id: str (optional)
@@ -6564,8 +6486,8 @@ class QueriesLegacyAPI:
 
 
 class QueryHistoryAPI:
-    """A service responsible for storing and retrieving the list of queries run against SQL endpoints, serverless
-    compute, and DLT."""
+    """A service responsible for storing and retrieving the list of queries run against SQL endpoints and
+    serverless compute."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -6573,11 +6495,12 @@ class QueryHistoryAPI:
     def list(self,
              *,
              filter_by: Optional[QueryFilter] = None,
+             include_metrics: Optional[bool] = None,
              max_results: Optional[int] = None,
              page_token: Optional[str] = None) -> ListQueriesResponse:
         """List Queries.
         
-        List the history of queries through SQL warehouses, serverless compute, and DLT.
+        List the history of queries through SQL warehouses, and serverless compute.
         
         You can filter by user ID, warehouse ID, status, and time range. Most recently started queries are
         returned first (up to max_results in request). The pagination token returned in response can be used
@@ -6585,6 +6508,9 @@ class QueryHistoryAPI:
         
         :param filter_by: :class:`QueryFilter` (optional)
           A filter to limit query history results. This field is optional.
+        :param include_metrics: bool (optional)
+          Whether to include the query metrics with each query. Only use this for a small subset of queries
+          (max_results). Defaults to false.
         :param max_results: int (optional)
           Limit the number of results returned in one page. Must be less than 1000 and the default is 100.
         :param page_token: str (optional)
@@ -6597,6 +6523,7 @@ class QueryHistoryAPI:
 
         query = {}
         if filter_by is not None: query['filter_by'] = filter_by.as_dict()
+        if include_metrics is not None: query['include_metrics'] = include_metrics
         if max_results is not None: query['max_results'] = max_results
         if page_token is not None: query['page_token'] = page_token
         headers = {'Accept': 'application/json', }
@@ -6675,7 +6602,10 @@ class QueryVisualizationsLegacyAPI:
     """This is an evolving API that facilitates the addition and removal of vizualisations from existing queries
     within the Databricks Workspace. Data structures may change over time.
     
-    **Note**: A new version of the Databricks SQL API is now available. Please see the latest version."""
+    **Note**: A new version of the Databricks SQL API is now available. Please see the latest version. [Learn
+    more]
+    
+    [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -6692,7 +6622,9 @@ class QueryVisualizationsLegacyAPI:
         Creates visualization in the query.
         
         **Note**: A new version of the Databricks SQL API is now available. Please use
-        :method:queryvisualizations/create instead.
+        :method:queryvisualizations/create instead. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :param query_id: str
           The identifier returned by :method:queries/create
@@ -6725,7 +6657,9 @@ class QueryVisualizationsLegacyAPI:
         Removes a visualization from the query.
         
         **Note**: A new version of the Databricks SQL API is now available. Please use
-        :method:queryvisualizations/delete instead.
+        :method:queryvisualizations/delete instead. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :param id: str
           Widget ID returned by :method:queryvizualisations/create
@@ -6752,7 +6686,9 @@ class QueryVisualizationsLegacyAPI:
         Updates visualization in the query.
         
         **Note**: A new version of the Databricks SQL API is now available. Please use
-        :method:queryvisualizations/update instead.
+        :method:queryvisualizations/update instead. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :param id: str
           The UUID for this visualization.
@@ -6921,26 +6857,6 @@ class StatementExecutionAPI:
           
           [`USE CATALOG`]: https://docs.databricks.com/sql/language-manual/sql-ref-syntax-ddl-use-catalog.html
         :param disposition: :class:`Disposition` (optional)
-          The fetch disposition provides two modes of fetching results: `INLINE` and `EXTERNAL_LINKS`.
-          
-          Statements executed with `INLINE` disposition will return result data inline, in `JSON_ARRAY`
-          format, in a series of chunks. If a given statement produces a result set with a size larger than 25
-          MiB, that statement execution is aborted, and no result set will be available.
-          
-          **NOTE** Byte limits are computed based upon internal representations of the result set data, and
-          might not match the sizes visible in JSON responses.
-          
-          Statements executed with `EXTERNAL_LINKS` disposition will return result data as external links:
-          URLs that point to cloud storage internal to the workspace. Using `EXTERNAL_LINKS` disposition
-          allows statements to generate arbitrarily sized result sets for fetching up to 100 GiB. The
-          resulting links have two important properties:
-          
-          1. They point to resources _external_ to the Databricks compute; therefore any associated
-          authentication information (typically a personal access token, OAuth token, or similar) _must be
-          removed_ when fetching from these links.
-          
-          2. These are presigned URLs with a specific expiration, indicated in the response. The behavior when
-          attempting to use an expired link is cloud specific.
         :param format: :class:`Format` (optional)
           Statement execution supports three result formats: `JSON_ARRAY` (default), `ARROW_STREAM`, and
           `CSV`.

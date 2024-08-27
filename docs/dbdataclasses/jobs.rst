@@ -111,6 +111,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: EnforcePolicyComplianceForJobResponseJobClusterSettingsChange
+   :members:
+   :undoc-members:
+
+.. autoclass:: EnforcePolicyComplianceRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: EnforcePolicyComplianceResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: ExportRunOutput
    :members:
    :undoc-members:
@@ -144,6 +156,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "SINGLE_TASK"
 
 .. autoclass:: GetJobPermissionLevelsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: GetPolicyComplianceResponse
    :members:
    :undoc-members:
 
@@ -194,6 +210,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: JobCluster
+   :members:
+   :undoc-members:
+
+.. autoclass:: JobCompliance
    :members:
    :undoc-members:
 
@@ -329,6 +349,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ListJobComplianceForPolicyResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListJobsResponse
    :members:
    :undoc-members:
@@ -364,9 +388,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: HOURS
       :value: "HOURS"
-
-   .. py:attribute:: TIME_UNIT_UNSPECIFIED
-      :value: "TIME_UNIT_UNSPECIFIED"
 
    .. py:attribute:: WEEKS
       :value: "WEEKS"

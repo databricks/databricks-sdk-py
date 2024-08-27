@@ -250,6 +250,46 @@ class BudgetConfigurationFilterWorkspaceIdClause:
 
 
 @dataclass
+class CreateBillingUsageDashboardRequest:
+    dashboard_type: Optional[UsageDashboardType] = None
+    """Workspace level usage dashboard shows usage data for the specified workspace ID. Global level
+    usage dashboard shows usage data for all workspaces in the account."""
+
+    workspace_id: Optional[int] = None
+    """The workspace ID of the workspace in which the usage dashboard is created."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CreateBillingUsageDashboardRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.dashboard_type is not None: body['dashboard_type'] = self.dashboard_type.value
+        if self.workspace_id is not None: body['workspace_id'] = self.workspace_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> CreateBillingUsageDashboardRequest:
+        """Deserializes the CreateBillingUsageDashboardRequest from a dictionary."""
+        return cls(dashboard_type=_enum(d, 'dashboard_type', UsageDashboardType),
+                   workspace_id=d.get('workspace_id', None))
+
+
+@dataclass
+class CreateBillingUsageDashboardResponse:
+    dashboard_id: Optional[str] = None
+    """The unique id of the usage dashboard."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CreateBillingUsageDashboardResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.dashboard_id is not None: body['dashboard_id'] = self.dashboard_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> CreateBillingUsageDashboardResponse:
+        """Deserializes the CreateBillingUsageDashboardResponse from a dictionary."""
+        return cls(dashboard_id=d.get('dashboard_id', None))
+
+
+@dataclass
 class CreateBudgetConfigurationBudget:
     account_id: Optional[str] = None
     """Databricks account ID."""
@@ -527,6 +567,27 @@ class DownloadResponse:
     def from_dict(cls, d: Dict[str, any]) -> DownloadResponse:
         """Deserializes the DownloadResponse from a dictionary."""
         return cls(contents=d.get('contents', None))
+
+
+@dataclass
+class GetBillingUsageDashboardResponse:
+    dashboard_id: Optional[str] = None
+    """The unique id of the usage dashboard."""
+
+    dashboard_url: Optional[str] = None
+    """The URL of the usage dashboard."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GetBillingUsageDashboardResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.dashboard_id is not None: body['dashboard_id'] = self.dashboard_id
+        if self.dashboard_url is not None: body['dashboard_url'] = self.dashboard_url
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> GetBillingUsageDashboardResponse:
+        """Deserializes the GetBillingUsageDashboardResponse from a dictionary."""
+        return cls(dashboard_id=d.get('dashboard_id', None), dashboard_url=d.get('dashboard_url', None))
 
 
 @dataclass
@@ -896,6 +957,12 @@ class UpdateLogDeliveryConfigurationStatusRequest:
         """Deserializes the UpdateLogDeliveryConfigurationStatusRequest from a dictionary."""
         return cls(log_delivery_configuration_id=d.get('log_delivery_configuration_id', None),
                    status=_enum(d, 'status', LogDeliveryConfigStatus))
+
+
+class UsageDashboardType(Enum):
+
+    USAGE_DASHBOARD_TYPE_GLOBAL = 'USAGE_DASHBOARD_TYPE_GLOBAL'
+    USAGE_DASHBOARD_TYPE_WORKSPACE = 'USAGE_DASHBOARD_TYPE_WORKSPACE'
 
 
 @dataclass
@@ -1290,3 +1357,67 @@ class LogDeliveryAPI:
                      f'/api/2.0/accounts/{self._api.account_id}/log-delivery/{log_delivery_configuration_id}',
                      body=body,
                      headers=headers)
+
+
+class UsageDashboardsAPI:
+    """These APIs manage usage dashboards for this account. Usage dashboards enable you to gain insights into
+    your usage with pre-built dashboards: visualize breakdowns, analyze tag attributions, and identify cost
+    drivers."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def create(self,
+               *,
+               dashboard_type: Optional[UsageDashboardType] = None,
+               workspace_id: Optional[int] = None) -> CreateBillingUsageDashboardResponse:
+        """Create new usage dashboard.
+        
+        Create a usage dashboard specified by workspaceId, accountId, and dashboard type.
+        
+        :param dashboard_type: :class:`UsageDashboardType` (optional)
+          Workspace level usage dashboard shows usage data for the specified workspace ID. Global level usage
+          dashboard shows usage data for all workspaces in the account.
+        :param workspace_id: int (optional)
+          The workspace ID of the workspace in which the usage dashboard is created.
+        
+        :returns: :class:`CreateBillingUsageDashboardResponse`
+        """
+        body = {}
+        if dashboard_type is not None: body['dashboard_type'] = dashboard_type.value
+        if workspace_id is not None: body['workspace_id'] = workspace_id
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do('POST',
+                           f'/api/2.0/accounts/{self._api.account_id}/dashboard',
+                           body=body,
+                           headers=headers)
+        return CreateBillingUsageDashboardResponse.from_dict(res)
+
+    def get(self,
+            *,
+            dashboard_type: Optional[UsageDashboardType] = None,
+            workspace_id: Optional[int] = None) -> GetBillingUsageDashboardResponse:
+        """Get usage dashboard.
+        
+        Get a usage dashboard specified by workspaceId, accountId, and dashboard type.
+        
+        :param dashboard_type: :class:`UsageDashboardType` (optional)
+          Workspace level usage dashboard shows usage data for the specified workspace ID. Global level usage
+          dashboard shows usage data for all workspaces in the account.
+        :param workspace_id: int (optional)
+          The workspace ID of the workspace in which the usage dashboard is created.
+        
+        :returns: :class:`GetBillingUsageDashboardResponse`
+        """
+
+        query = {}
+        if dashboard_type is not None: query['dashboard_type'] = dashboard_type.value
+        if workspace_id is not None: query['workspace_id'] = workspace_id
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do('GET',
+                           f'/api/2.0/accounts/{self._api.account_id}/dashboard',
+                           query=query,
+                           headers=headers)
+        return GetBillingUsageDashboardResponse.from_dict(res)

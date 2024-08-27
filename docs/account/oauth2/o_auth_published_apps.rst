@@ -15,7 +15,7 @@
         Get all the available published OAuth apps in Databricks.
         
         :param page_size: int (optional)
-          The max number of OAuth published apps to return.
+          The max number of OAuth published apps to return in one page.
         :param page_token: str (optional)
           A token that can be used to get the next page of results.
         
