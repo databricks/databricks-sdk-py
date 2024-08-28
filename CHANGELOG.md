@@ -1,5 +1,19 @@
 # Version changelog
 
+## [Release] Release v0.31.1
+
+### Bug Fixes
+
+ * Fix `DatabricksConfig.copy` when authenticated with OAuth ([#723](https://github.com/databricks/databricks-sdk-py/pull/723)).
+
+
+### Internal Changes
+
+ * Fix get_workspace_client test to match Go SDK behavior ([#738](https://github.com/databricks/databricks-sdk-py/pull/738)).
+ * Verify that `WorkspaceClient` created from `AccountClient` does actually work through integration tests ([#736](https://github.com/databricks/databricks-sdk-py/pull/736)).
+
+
+
 ## [Release] Release v0.31.0
 
 ### Bug Fixes
