@@ -1,5 +1,3 @@
-
-
 def test_get_workspace_client(ucacct, env_or_skip):
     # Need to switch to ucacct
     workspace_id = env_or_skip("TEST_WORKSPACE_ID")
