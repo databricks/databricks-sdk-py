@@ -23,8 +23,6 @@ def error_mapper(response: requests.Response, raw: dict) -> DatabricksError:
         # where there's a default exception class per HTTP status code, and we do
         # rely on Databricks platform exception mapper to do the right thing.
         return platform.STATUS_CODE_MAPPING[status_code](**raw)
-    if _is_private_link_redirect(response):
-        return _get_private_link_validation_error(response.url)
 
     # backwards-compatible error creation for cases like using older versions of
     # the SDK on way never releases of the platform.
