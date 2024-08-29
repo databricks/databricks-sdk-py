@@ -38,7 +38,9 @@ def test_private_link_error():
     resp = requests.Response()
     resp.url = 'https://databricks.com/login.html?error=private-link-validation-error'
     resp.request = requests.Request('GET', 'https://databricks.com/api/2.0/service').prepare()
-    err = errors.error_mapper(resp, {})
+    resp._content = b'{}'
+    resp.status_code = 200
+    err = errors._get_api_error(resp)
     assert errors.PrivateLinkValidationError == type(err)
 
 
