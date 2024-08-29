@@ -3,8 +3,8 @@ import logging
 import pathlib
 import platform
 import time
-from typing import Callable, List, Tuple, Union
 from pathlib import Path
+from typing import Callable, List, Tuple, Union
 
 import pytest
 
@@ -267,6 +267,7 @@ def test_files_api_delete_file(ucws, random, path_type):
             w.files.upload(target_file, f)
             w.files.delete(target_file)
 
+
 @pytest.mark.parametrize("path_type", [str, Path])
 def test_files_api_get_metadata(ucws, random, path_type):
     w = ucws
@@ -283,6 +284,7 @@ def test_files_api_get_metadata(ucws, random, path_type):
             assert m.content_length == 14
             assert m.last_modified is not None
 
+
 @pytest.mark.parametrize("path_type", [str, Path])
 def test_files_api_create_directory(ucws, random, path_type):
     w = ucws
@@ -293,6 +295,7 @@ def test_files_api_create_directory(ucws, random, path_type):
             target_directory = f'/Volumes/main/{schema}/{volume}/filesit-{random()}/'
             target_directory = path_type(target_directory)
             w.files.create_directory(target_directory)
+
 
 @pytest.mark.parametrize("path_type", [str, Path])
 def test_files_api_list_directory_contents(ucws, random, path_type):
@@ -310,6 +313,7 @@ def test_files_api_list_directory_contents(ucws, random, path_type):
             result = list(w.files.list_directory_contents(target_directory))
             assert len(result) == 3
 
+
 @pytest.mark.parametrize("path_type", [str, Path])
 def test_files_api_delete_directory(ucws, random, path_type):
     w = ucws
@@ -321,6 +325,7 @@ def test_files_api_delete_directory(ucws, random, path_type):
             target_directory = path_type(target_directory)
             w.files.create_directory(target_directory)
             w.files.delete_directory(target_directory)
+
 
 @pytest.mark.parametrize("path_type", [str, Path])
 def test_files_api_get_directory_metadata(ucws, random, path_type):

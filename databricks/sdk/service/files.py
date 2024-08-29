@@ -4,9 +4,8 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from typing import BinaryIO, Dict, Iterator, List, Optional
-
 from pathlib import Path
+from typing import BinaryIO, Dict, Iterator, List, Optional
 
 from ._internal import _escape_multi_segment_path_parameter, _repeated_dict
 
@@ -741,7 +740,11 @@ class DbfsAPI:
 
         self._api.do('POST', '/api/2.0/dbfs/put', body=body, headers=headers)
 
-    def read(self, path: str | Path, *, length: Optional[int] = None, offset: Optional[int] = None) -> ReadResponse:
+    def read(self,
+             path: str | Path,
+             *,
+             length: Optional[int] = None,
+             offset: Optional[int] = None) -> ReadResponse:
         """Get the contents of a file.
         
         Returns the contents of a file. If the file does not exist, this call throws an exception with
