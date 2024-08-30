@@ -1,6 +1,6 @@
 import http.client
 import json
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 import pytest
 import requests
@@ -43,7 +43,7 @@ def make_private_link_response() -> requests.Response:
 
 
 # This should be `(int, str, type)` but doesn't work in Python 3.7-3.8.
-base_subclass_test_cases: List[(int, str, type)] = [
+base_subclass_test_cases: List[Tuple[int, str, type]] = [
     (400, '', errors.BadRequest), (400, 'INVALID_PARAMETER_VALUE', errors.BadRequest),
     (400, 'INVALID_PARAMETER_VALUE', errors.InvalidParameterValue),
     (400, 'REQUEST_LIMIT_EXCEEDED', errors.TooManyRequests), (400, '', IOError),
