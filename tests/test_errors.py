@@ -1,7 +1,7 @@
+import http.client
 import json
 from typing import Optional
 
-import http.client
 import pytest
 import requests
 
