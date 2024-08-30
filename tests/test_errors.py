@@ -42,7 +42,8 @@ def make_private_link_response() -> requests.Response:
     return resp
 
 
-base_subclass_test_cases: list[(int, str, type)] = [
+# This should be `(int, str, type)` but doesn't work in Python 3.7-3.8.
+base_subclass_test_cases: list[(int, str, any)] = [
     (400, '', errors.BadRequest), (400, 'INVALID_PARAMETER_VALUE', errors.BadRequest),
     (400, 'INVALID_PARAMETER_VALUE', errors.InvalidParameterValue),
     (400, 'REQUEST_LIMIT_EXCEEDED', errors.TooManyRequests), (400, '', IOError),
