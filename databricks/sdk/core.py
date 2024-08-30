@@ -1,7 +1,5 @@
 import re
-import urllib.parse
 from datetime import timedelta
-from json import JSONDecodeError
 from types import TracebackType
 from typing import Any, BinaryIO, Iterator, Type
 from urllib.parse import urlencode
@@ -13,9 +11,9 @@ from .config import *
 # To preserve backwards compatibility (as these definitions were previously in this module)
 from .credentials_provider import *
 from .errors import DatabricksError, _get_api_error
+from .logger import RoundTripLogger
 from .oauth import retrieve_token
 from .retries import retried
-from .logger import RoundTripLogger
 
 __all__ = ['Config', 'DatabricksError']
 
@@ -278,7 +276,8 @@ class ApiClient:
     def _record_request_log(self, response: requests.Response, raw: bool = False) -> None:
         if not logger.isEnabledFor(logging.DEBUG):
             return
-        logger.debug(RoundTripLogger(response, self._cfg.debug_headers, self._debug_truncate_bytes, raw).generate())
+        logger.debug(
+            RoundTripLogger(response, self._cfg.debug_headers, self._debug_truncate_bytes, raw).generate())
 
 
 class StreamingResponse(BinaryIO):

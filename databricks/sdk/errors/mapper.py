@@ -4,8 +4,6 @@ from databricks.sdk.errors import platform
 from databricks.sdk.errors.base import DatabricksError
 
 from .overrides import _ALL_OVERRIDES
-from .private_link import (_get_private_link_validation_error,
-                           _is_private_link_redirect)
 
 
 def error_mapper(response: requests.Response, raw: dict) -> DatabricksError:

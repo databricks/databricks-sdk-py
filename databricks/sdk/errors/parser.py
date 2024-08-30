@@ -1,28 +1,31 @@
 import abc
 import json
 import logging
-from ..logger import RoundTripLogger
 import re
-import requests
 from typing import Optional
 
-from .mapper import error_mapper
+import requests
+
+from ..logger import RoundTripLogger
 from .base import DatabricksError
-from .private_link import _get_private_link_validation_error, _is_private_link_redirect
+from .mapper import error_mapper
+from .private_link import (_get_private_link_validation_error,
+                           _is_private_link_redirect)
 
 
 class _ErrorParser(abc.ABC):
     """A parser for errors from the Databricks REST API."""
+
     @abc.abstractmethod
     def parse_error(self, response: requests.Response, response_body: bytes) -> Optional[dict]:
         """Parses an error from the Databricks REST API. If the error cannot be parsed, returns None."""
-        pass
 
 
 class _StandardErrorParser(_ErrorParser):
     """
     Parses errors from the Databricks REST API using the standard error format.
     """
+
     def parse_error(self, response: requests.Response, response_body: bytes) -> Optional[dict]:
         try:
             payload_str = response_body.decode('utf-8')
@@ -48,7 +51,8 @@ class _StandardErrorParser(_ErrorParser):
         if detail:
             # Handle SCIM error message details
             # @see https://tools.ietf.org/html/rfc7644#section-3.7.3
-            error_args['message'] = f"{scim_type} {error_args.get('message', 'SCIM API Internal Error')}".strip(" ")
+            error_args[
+                'message'] = f"{scim_type} {error_args.get('message', 'SCIM API Internal Error')}".strip(" ")
             error_args['error_code'] = f"SCIM_{status}"
         return error_args
 
@@ -67,11 +71,7 @@ class _StringErrorParser(_ErrorParser):
             logging.debug('_StringErrorParser: unable to parse response as string')
             return None
         error_code, message = match.groups()
-        return {
-            'error_code': error_code,
-            'message': message,
-            'status': response.status_code,
-        }
+        return {'error_code': error_code, 'message': message, 'status': response.status_code, }
 
 
 class _HtmlErrorParser(_ErrorParser):
@@ -79,10 +79,7 @@ class _HtmlErrorParser(_ErrorParser):
     Parses errors from the Databricks REST API in HTML format.
     """
 
-    __HTML_ERROR_REGEXES = [
-        re.compile(r'<pre>(.*)</pre>'),
-        re.compile(r'<title>(.*)</title>'),
-    ]
+    __HTML_ERROR_REGEXES = [re.compile(r'<pre>(.*)</pre>'), re.compile(r'<title>(.*)</title>'), ]
 
     def parse_error(self, response: requests.Response, response_body: bytes) -> Optional[dict]:
         payload_str = response_body.decode('utf-8')
@@ -102,20 +99,16 @@ class _HtmlErrorParser(_ErrorParser):
 # A list of ErrorParsers that are tried in order to parse an API error from a response body. Most errors should be
 # parsable by the _StandardErrorParser, but additional parsers can be added here for specific error formats. The order
 # of the parsers is not important, as the set of errors that can be parsed by each parser should be disjoint.
-_error_parsers = [
-    _StandardErrorParser(),
-    _StringErrorParser(),
-    _HtmlErrorParser(),
-]
+_error_parsers = [_StandardErrorParser(), _StringErrorParser(), _HtmlErrorParser(), ]
 
 
 def _unknown_error(response: requests.Response) -> DatabricksError:
-    request_log = RoundTripLogger(response, debug_headers=True, debug_truncate_bytes=10*1024).generate()
+    request_log = RoundTripLogger(response, debug_headers=True, debug_truncate_bytes=10 * 1024).generate()
     return DatabricksError(
         'unable to parse response. This is likely a bug in the Databricks SDK for Python or the underlying '
         'API. Please report this issue with the following debugging information to the SDK issue tracker at '
-        f'https://github.com/databricks/databricks-sdk-go/issues. Request log:```{request_log}```''',
-    )
+        f'https://github.com/databricks/databricks-sdk-go/issues. Request log:```{request_log}```'
+        '', )
 
 
 def _get_api_error(response: requests.Response) -> Optional[DatabricksError]:

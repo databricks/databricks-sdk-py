@@ -1,9 +1,9 @@
 import re
-import requests
 import warnings
 from dataclasses import dataclass
 from typing import Dict, List, Optional
 
+import requests
 
 
 class ErrorDetail:
@@ -56,15 +56,23 @@ class DatabricksError(IOError):
         """
         # SCIM-specific parameters are deprecated
         if detail:
-            warnings.warn("The 'detail' parameter of DatabricksError is deprecated and will be removed in a future version.")
+            warnings.warn(
+                "The 'detail' parameter of DatabricksError is deprecated and will be removed in a future version."
+            )
         if scimType:
-            warnings.warn("The 'scimType' parameter of DatabricksError is deprecated and will be removed in a future version.")
+            warnings.warn(
+                "The 'scimType' parameter of DatabricksError is deprecated and will be removed in a future version."
+            )
         if status:
-            warnings.warn("The 'status' parameter of DatabricksError is deprecated and will be removed in a future version.")
+            warnings.warn(
+                "The 'status' parameter of DatabricksError is deprecated and will be removed in a future version."
+            )
 
         # API 1.2-specific parameters are deprecated
         if error:
-            warnings.warn("The 'error' parameter of DatabricksError is deprecated and will be removed in a future version.")
+            warnings.warn(
+                "The 'error' parameter of DatabricksError is deprecated and will be removed in a future version."
+            )
 
         if detail:
             # Handle SCIM error message details

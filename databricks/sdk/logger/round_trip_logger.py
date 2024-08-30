@@ -1,10 +1,17 @@
 import json
-import requests
-from typing import Dict, List
 import urllib.parse
+from typing import Dict, List
+
+import requests
+
 
 class RoundTripLogger:
-    def __init__(self, response: requests.Response, debug_headers: bool, debug_truncate_bytes: int, raw=False):
+
+    def __init__(self,
+                 response: requests.Response,
+                 debug_headers: bool,
+                 debug_truncate_bytes: int,
+                 raw=False):
         self._debug_headers = debug_headers
         self._debug_truncate_bytes = max(debug_truncate_bytes, 96)
         self._raw = raw
