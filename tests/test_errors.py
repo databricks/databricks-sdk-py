@@ -87,8 +87,14 @@ subclass_test_cases = [(fake_valid_response('GET', x[0], x[1], 'nope'), x[2], 'n
                           '/api/2.1/jobs/get'), errors.ResourceDoesNotExist, 'Job abcde does not exist'),
      (fake_valid_response('GET', 400, 'INVALID_PARAMETER_VALUE', 'Invalid spark version',
                           '/api/2.1/jobs/get'), errors.InvalidParameterValue, 'Invalid spark version'),
-     (fake_response('GET', 400, 'MALFORMED_REQUEST: vpc_endpoints malformed parameters: VPC Endpoint ... with use_case ... cannot be attached in ... list'), errors.BadRequest, 'vpc_endpoints malformed parameters: VPC Endpoint ... with use_case ... cannot be attached in ... list'),
-     (fake_response('GET', 400, '<pre>Worker environment not ready</pre>'), errors.BadRequest, 'Worker environment not ready'),
+     (fake_response(
+         'GET', 400,
+         'MALFORMED_REQUEST: vpc_endpoints malformed parameters: VPC Endpoint ... with use_case ... cannot be attached in ... list'
+     ), errors.BadRequest,
+      'vpc_endpoints malformed parameters: VPC Endpoint ... with use_case ... cannot be attached in ... list'
+      ),
+     (fake_response('GET', 400, '<pre>Worker environment not ready</pre>'), errors.BadRequest,
+      'Worker environment not ready'),
      (fake_response('GET', 400, 'this is not a real response'), errors.BadRequest,
       ('unable to parse response. This is likely a bug in the Databricks SDK for Python or the underlying API. '
        'Please report this issue with the following debugging information to the SDK issue tracker at '
