@@ -5,7 +5,15 @@ from typing import Dict, List
 import requests
 
 
-class RoundTripLogger:
+class RoundTrip:
+    """
+    A utility class for converting HTTP requests and responses to strings.
+
+    :param response: The response object to stringify.
+    :param debug_headers: Whether to include headers in the generated string.
+    :param debug_truncate_bytes: The maximum number of bytes to include in the generated string.
+    :param raw: Whether the response is a stream or not. If True, the response will not be logged directly.
+    """
 
     def __init__(self,
                  response: requests.Response,
@@ -18,6 +26,12 @@ class RoundTripLogger:
         self._response = response
 
     def generate(self) -> str:
+        """
+        Generate a string representation of the request and response. The string will include the request method, URL,
+        headers, and body, as well as the response status code, reason, headers, and body. Outgoing information
+        will be prefixed with `>`, and incoming information will be prefixed with `<`.
+        :return: A string representation of the request.
+        """
         request = self._response.request
         url = urllib.parse.urlparse(request.url)
         query = ''

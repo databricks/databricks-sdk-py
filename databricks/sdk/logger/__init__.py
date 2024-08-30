@@ -1,1 +1,1 @@
-from .round_trip_logger import RoundTripLogger
+from .round_trip_logger import RoundTrip

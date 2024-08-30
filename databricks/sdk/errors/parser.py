@@ -6,7 +6,7 @@ from typing import Optional
 
 import requests
 
-from ..logger import RoundTripLogger
+from ..logger import RoundTrip
 from .base import DatabricksError
 from .mapper import error_mapper
 from .private_link import (_get_private_link_validation_error,
@@ -112,9 +112,13 @@ _error_parsers = [_EmptyParser(), _StandardErrorParser(), _StringErrorParser(), 
 
 
 def _unknown_error(response: requests.Response) -> str:
-    request_log = RoundTripLogger(response, debug_headers=True, debug_truncate_bytes=10 * 1024).generate()
+    """A standard error message that can be shown when an API response cannot be parsed.
+
+    This error message includes a link to the issue tracker for the SDK for users to report the issue to us.
+    """
+    request_log = RoundTrip(response, debug_headers=True, debug_truncate_bytes=10 * 1024).generate()
     return (
-        'unable to parse response. This is likely a bug in the Databricks SDK for Python or the underlying '
+        'This is likely a bug in the Databricks SDK for Python or the underlying '
         'API. Please report this issue with the following debugging information to the SDK issue tracker at '
         f'https://github.com/databricks/databricks-sdk-go/issues. Request log:```{request_log}```')
 
@@ -131,7 +135,7 @@ def _get_api_error(response: requests.Response) -> Optional[DatabricksError]:
             error_args = parser.parse_error(response, content)
             if error_args:
                 return error_mapper(response, error_args)
-        return error_mapper(response, {'message': _unknown_error(response)})
+        return error_mapper(response, {'message': 'unable to parse response. ' + _unknown_error(response)})
 
     # Private link failures happen via a redirect to the login page. From a requests-perspective, the request
     # is successful, but the response is not what we expect. We need to handle this case separately.
