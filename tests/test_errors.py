@@ -1,6 +1,6 @@
 import http.client
 import json
-from typing import Optional, List
+from typing import List, Optional
 
 import pytest
 import requests
