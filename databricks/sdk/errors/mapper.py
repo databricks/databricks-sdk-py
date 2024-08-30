@@ -6,7 +6,7 @@ from databricks.sdk.errors.base import DatabricksError
 from .overrides import _ALL_OVERRIDES
 
 
-def error_mapper(response: requests.Response, raw: dict) -> DatabricksError:
+def _error_mapper(response: requests.Response, raw: dict) -> DatabricksError:
     for override in _ALL_OVERRIDES:
         if override.matches(response, raw):
             return override.custom_error(**raw)

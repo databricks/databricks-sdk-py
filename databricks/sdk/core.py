@@ -10,7 +10,7 @@ from .casing import Casing
 from .config import *
 # To preserve backwards compatibility (as these definitions were previously in this module)
 from .credentials_provider import *
-from .errors import DatabricksError, _get_api_error
+from .errors import DatabricksError, get_api_error
 from .logger import RoundTrip
 from .oauth import retrieve_token
 from .retries import retried
@@ -261,7 +261,7 @@ class ApiClient:
                                          stream=raw,
                                          timeout=self._http_timeout_seconds)
         self._record_request_log(response, raw=raw or data is not None or files is not None)
-        error = _get_api_error(response)
+        error = get_api_error(response)
         if error is not None:
             status_code = response.status_code
             is_http_unauthorized_or_forbidden = status_code in (401, 403)

@@ -104,6 +104,6 @@ subclass_test_cases = [(fake_valid_response('GET', x[0], x[1], 'nope'), x[2], 'n
        '< this is not a real response```')), ])
 def test_get_api_error(response, expected_error, expected_message):
     with pytest.raises(errors.DatabricksError) as e:
-        raise errors._get_api_error(response)
+        raise errors.get_api_error(response)
     assert isinstance(e.value, expected_error)
     assert str(e.value) == expected_message

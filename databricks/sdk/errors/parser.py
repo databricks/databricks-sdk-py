@@ -8,7 +8,7 @@ import requests
 
 from ..logger import RoundTrip
 from .base import DatabricksError
-from .mapper import error_mapper
+from .mapper import _error_mapper
 from .private_link import (_get_private_link_validation_error,
                            _is_private_link_redirect)
 
@@ -123,7 +123,7 @@ def _unknown_error(response: requests.Response) -> str:
         f'https://github.com/databricks/databricks-sdk-go/issues. Request log:```{request_log}```')
 
 
-def _get_api_error(response: requests.Response) -> Optional[DatabricksError]:
+def get_api_error(response: requests.Response) -> Optional[DatabricksError]:
     """
     Handles responses from the REST API and returns a DatabricksError if the response indicates an error.
     :param response: The response from the REST API.
@@ -132,10 +132,13 @@ def _get_api_error(response: requests.Response) -> Optional[DatabricksError]:
     if not response.ok:
         content = response.content
         for parser in _error_parsers:
-            error_args = parser.parse_error(response, content)
-            if error_args:
-                return error_mapper(response, error_args)
-        return error_mapper(response, {'message': 'unable to parse response. ' + _unknown_error(response)})
+            try:
+                error_args = parser.parse_error(response, content)
+                if error_args:
+                    return _error_mapper(response, error_args)
+            except Exception as e:
+                logging.debug(f'Error parsing response with {parser}, continuing', exc_info=e)
+        return _error_mapper(response, {'message': 'unable to parse response. ' + _unknown_error(response)})
 
     # Private link failures happen via a redirect to the login page. From a requests-perspective, the request
     # is successful, but the response is not what we expect. We need to handle this case separately.
