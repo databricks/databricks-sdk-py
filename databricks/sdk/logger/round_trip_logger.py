@@ -99,4 +99,6 @@ class RoundTripLogger:
             raw = self._recursive_marshal(tmp, max_bytes)
             return "\n".join([f'{prefix}{line}' for line in json.dumps(raw, indent=2).split("\n")])
         except json.JSONDecodeError:
-            return f'{prefix}[non-JSON document of {len(body)} bytes]'
+            to_log = self._only_n_bytes(body, self._debug_truncate_bytes)
+            log_lines = [prefix + x.strip('\r') for x in to_log.split("\n")]
+            return '\n'.join(log_lines)

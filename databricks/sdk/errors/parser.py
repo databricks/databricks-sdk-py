@@ -21,6 +21,15 @@ class _ErrorParser(abc.ABC):
         """Parses an error from the Databricks REST API. If the error cannot be parsed, returns None."""
 
 
+class _EmptyParser(_ErrorParser):
+    """A parser that handles empty responses."""
+
+    def parse_error(self, response: requests.Response, response_body: bytes) -> Optional[dict]:
+        if len(response_body) == 0:
+            return {'message': response.reason}
+        return None
+
+
 class _StandardErrorParser(_ErrorParser):
     """
     Parses errors from the Databricks REST API using the standard error format.
@@ -99,16 +108,15 @@ class _HtmlErrorParser(_ErrorParser):
 # A list of ErrorParsers that are tried in order to parse an API error from a response body. Most errors should be
 # parsable by the _StandardErrorParser, but additional parsers can be added here for specific error formats. The order
 # of the parsers is not important, as the set of errors that can be parsed by each parser should be disjoint.
-_error_parsers = [_StandardErrorParser(), _StringErrorParser(), _HtmlErrorParser(), ]
+_error_parsers = [_EmptyParser(), _StandardErrorParser(), _StringErrorParser(), _HtmlErrorParser(), ]
 
 
-def _unknown_error(response: requests.Response) -> DatabricksError:
+def _unknown_error(response: requests.Response) -> str:
     request_log = RoundTripLogger(response, debug_headers=True, debug_truncate_bytes=10 * 1024).generate()
-    return DatabricksError(
+    return (
         'unable to parse response. This is likely a bug in the Databricks SDK for Python or the underlying '
         'API. Please report this issue with the following debugging information to the SDK issue tracker at '
-        f'https://github.com/databricks/databricks-sdk-go/issues. Request log:```{request_log}```'
-        '', )
+        f'https://github.com/databricks/databricks-sdk-go/issues. Request log:```{request_log}```')
 
 
 def _get_api_error(response: requests.Response) -> Optional[DatabricksError]:
@@ -119,13 +127,11 @@ def _get_api_error(response: requests.Response) -> Optional[DatabricksError]:
     """
     if not response.ok:
         content = response.content
-        if len(content) == 0:
-            return DatabricksError(response.reason, status_code=response.status_code)
         for parser in _error_parsers:
             error_args = parser.parse_error(response, content)
             if error_args:
                 return error_mapper(response, error_args)
-        return _unknown_error(response)
+        return error_mapper(response, {'message': _unknown_error(response)})
 
     # Private link failures happen via a redirect to the login page. From a requests-perspective, the request
     # is successful, but the response is not what we expect. We need to handle this case separately.
