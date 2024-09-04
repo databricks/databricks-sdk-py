@@ -63,6 +63,7 @@ examples/account/users/patch_account_users.py linguist-generated=true
 examples/account/vpc_endpoints/create_vpc_endpoints.py linguist-generated=true
 examples/account/vpc_endpoints/get_vpc_endpoints.py linguist-generated=true
 examples/account/vpc_endpoints/list_vpc_endpoints.py linguist-generated=true
+examples/account/waiter/get_workspaces.py linguist-generated=true
 examples/account/workspace_assignment/list_workspace_assignment_on_aws.py linguist-generated=true
 examples/account/workspace_assignment/update_workspace_assignment_on_aws.py linguist-generated=true
 examples/account/workspaces/create_workspaces.py linguist-generated=true

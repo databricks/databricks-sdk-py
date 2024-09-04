@@ -1629,14 +1629,6 @@ class ServedModelInput:
     model_version: str
     """The version of the model in Databricks Model Registry or Unity Catalog to be served."""
 
-    workload_size: ServedModelInputWorkloadSize
-    """The workload size of the served model. The workload size corresponds to a range of provisioned
-    concurrency that the compute will autoscale between. A single unit of provisioned concurrency
-    can process one request at a time. Valid workload sizes are "Small" (4 - 4 provisioned
-    concurrency), "Medium" (8 - 16 provisioned concurrency), and "Large" (16 - 64 provisioned
-    concurrency). If scale-to-zero is enabled, the lower bound of the provisioned concurrency for
-    each workload size will be 0."""
-
     scale_to_zero_enabled: bool
     """Whether the compute resources for the served model should scale down to zero."""
 
@@ -1649,10 +1641,24 @@ class ServedModelInput:
     instance_profile_arn: Optional[str] = None
     """ARN of the instance profile that the served model will use to access AWS resources."""
 
+    max_provisioned_throughput: Optional[int] = None
+    """The maximum tokens per second that the endpoint can scale up to."""
+
+    min_provisioned_throughput: Optional[int] = None
+    """The minimum tokens per second that the endpoint can scale down to."""
+
     name: Optional[str] = None
     """The name of a served model. It must be unique across an endpoint. If not specified, this field
     will default to <model-name>-<model-version>. A served model name can consist of alphanumeric
     characters, dashes, and underscores."""
+
+    workload_size: Optional[ServedModelInputWorkloadSize] = None
+    """The workload size of the served model. The workload size corresponds to a range of provisioned
+    concurrency that the compute will autoscale between. A single unit of provisioned concurrency
+    can process one request at a time. Valid workload sizes are "Small" (4 - 4 provisioned
+    concurrency), "Medium" (8 - 16 provisioned concurrency), and "Large" (16 - 64 provisioned
+    concurrency). If scale-to-zero is enabled, the lower bound of the provisioned concurrency for
+    each workload size will be 0."""
 
     workload_type: Optional[ServedModelInputWorkloadType] = None
     """The workload type of the served model. The workload type selects which type of compute to use in
@@ -1667,6 +1673,10 @@ class ServedModelInput:
         body = {}
         if self.environment_vars: body['environment_vars'] = self.environment_vars
         if self.instance_profile_arn is not None: body['instance_profile_arn'] = self.instance_profile_arn
+        if self.max_provisioned_throughput is not None:
+            body['max_provisioned_throughput'] = self.max_provisioned_throughput
+        if self.min_provisioned_throughput is not None:
+            body['min_provisioned_throughput'] = self.min_provisioned_throughput
         if self.model_name is not None: body['model_name'] = self.model_name
         if self.model_version is not None: body['model_version'] = self.model_version
         if self.name is not None: body['name'] = self.name
@@ -1680,6 +1690,8 @@ class ServedModelInput:
         """Deserializes the ServedModelInput from a dictionary."""
         return cls(environment_vars=d.get('environment_vars', None),
                    instance_profile_arn=d.get('instance_profile_arn', None),
+                   max_provisioned_throughput=d.get('max_provisioned_throughput', None),
+                   min_provisioned_throughput=d.get('min_provisioned_throughput', None),
                    model_name=d.get('model_name', None),
                    model_version=d.get('model_version', None),
                    name=d.get('name', None),

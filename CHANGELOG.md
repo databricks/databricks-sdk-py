@@ -1,5 +1,37 @@
 # Version changelog
 
+## [Release] Release v0.32.0
+
+### Bug Fixes
+
+ * Handle non-JSON errors gracefully ([#741](https://github.com/databricks/databricks-sdk-py/pull/741)).
+
+
+### Documentation
+
+ * Add Data Plane access documentation ([#732](https://github.com/databricks/databricks-sdk-py/pull/732)).
+
+
+### Internal Changes
+
+ * Fix test_iam::test_scim_error_unmarshall integration test ([#743](https://github.com/databricks/databricks-sdk-py/pull/743)).
+
+
+### API Changes:
+
+ * Added `regenerate_dashboard()` method for [w.quality_monitors](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/quality_monitors.html) workspace-level service.
+ * Added `databricks.sdk.service.catalog.RegenerateDashboardRequest` and `databricks.sdk.service.catalog.RegenerateDashboardResponse` dataclasses.
+ * Added `databricks.sdk.service.jobs.QueueDetails`, `databricks.sdk.service.jobs.QueueDetailsCodeCode`, `databricks.sdk.service.jobs.RunLifecycleStateV2State`, `databricks.sdk.service.jobs.RunStatus`, `databricks.sdk.service.jobs.TerminationCodeCode`, `databricks.sdk.service.jobs.TerminationDetails` and `databricks.sdk.service.jobs.TerminationTypeType` dataclasses.
+ * Added `status` field for `databricks.sdk.service.jobs.BaseRun`.
+ * Added `status` field for `databricks.sdk.service.jobs.RepairHistoryItem`.
+ * Added `status` field for `databricks.sdk.service.jobs.Run`.
+ * Added `status` field for `databricks.sdk.service.jobs.RunTask`.
+ * Added `max_provisioned_throughput` and `min_provisioned_throughput` fields for `databricks.sdk.service.serving.ServedModelInput`.
+ * Added `columns_to_sync` field for `databricks.sdk.service.vectorsearch.DeltaSyncVectorIndexSpecRequest`.
+ * Changed `workload_size` field for `databricks.sdk.service.serving.ServedModelInput` to no longer be required.
+
+OpenAPI SHA: d05898328669a3f8ab0c2ecee37db2673d3ea3f7, Date: 2024-09-04
+
 ## [Release] Release v0.31.1
 
 ### Bug Fixes

@@ -171,7 +171,10 @@ class BaseRun:
     scheduled to run on a new cluster, this is the time the cluster creation call is issued."""
 
     state: Optional[RunState] = None
-    """The current state of the run."""
+    """Deprecated. Please use the `status` field instead."""
+
+    status: Optional[RunStatus] = None
+    """The current status of the run"""
 
     tasks: Optional[List[RunTask]] = None
     """The list of tasks performed by the run. Each task has its own `run_id` which you can use to call
@@ -222,6 +225,7 @@ class BaseRun:
         if self.setup_duration is not None: body['setup_duration'] = self.setup_duration
         if self.start_time is not None: body['start_time'] = self.start_time
         if self.state: body['state'] = self.state.as_dict()
+        if self.status: body['status'] = self.status.as_dict()
         if self.tasks: body['tasks'] = [v.as_dict() for v in self.tasks]
         if self.trigger is not None: body['trigger'] = self.trigger.value
         if self.trigger_info: body['trigger_info'] = self.trigger_info.as_dict()
@@ -257,6 +261,7 @@ class BaseRun:
                    setup_duration=d.get('setup_duration', None),
                    start_time=d.get('start_time', None),
                    state=_from_dict(d, 'state', RunState),
+                   status=_from_dict(d, 'status', RunStatus),
                    tasks=_repeated_dict(d, 'tasks', RunTask),
                    trigger=_enum(d, 'trigger', TriggerType),
                    trigger_info=_from_dict(d, 'trigger_info', TriggerInfo))
@@ -2315,6 +2320,44 @@ class PythonWheelTask:
 
 
 @dataclass
+class QueueDetails:
+    code: Optional[QueueDetailsCodeCode] = None
+    """The reason for queuing the run. * `ACTIVE_RUNS_LIMIT_REACHED`: The run was queued due to
+    reaching the workspace limit of active task runs. * `MAX_CONCURRENT_RUNS_REACHED`: The run was
+    queued due to reaching the per-job limit of concurrent job runs. *
+    `ACTIVE_RUN_JOB_TASKS_LIMIT_REACHED`: The run was queued due to reaching the workspace limit of
+    active run job tasks."""
+
+    message: Optional[str] = None
+    """A descriptive message with the queuing details. This field is unstructured, and its exact format
+    is subject to change."""
+
+    def as_dict(self) -> dict:
+        """Serializes the QueueDetails into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.code is not None: body['code'] = self.code.value
+        if self.message is not None: body['message'] = self.message
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> QueueDetails:
+        """Deserializes the QueueDetails from a dictionary."""
+        return cls(code=_enum(d, 'code', QueueDetailsCodeCode), message=d.get('message', None))
+
+
+class QueueDetailsCodeCode(Enum):
+    """The reason for queuing the run. * `ACTIVE_RUNS_LIMIT_REACHED`: The run was queued due to
+    reaching the workspace limit of active task runs. * `MAX_CONCURRENT_RUNS_REACHED`: The run was
+    queued due to reaching the per-job limit of concurrent job runs. *
+    `ACTIVE_RUN_JOB_TASKS_LIMIT_REACHED`: The run was queued due to reaching the workspace limit of
+    active run job tasks."""
+
+    ACTIVE_RUNS_LIMIT_REACHED = 'ACTIVE_RUNS_LIMIT_REACHED'
+    ACTIVE_RUN_JOB_TASKS_LIMIT_REACHED = 'ACTIVE_RUN_JOB_TASKS_LIMIT_REACHED'
+    MAX_CONCURRENT_RUNS_REACHED = 'MAX_CONCURRENT_RUNS_REACHED'
+
+
+@dataclass
 class QueueSettings:
     enabled: bool
     """If true, enable queueing for the job. This is a required field."""
@@ -2343,7 +2386,10 @@ class RepairHistoryItem:
     """The start time of the (repaired) run."""
 
     state: Optional[RunState] = None
-    """The current state of the run."""
+    """Deprecated. Please use the `status` field instead."""
+
+    status: Optional[RunStatus] = None
+    """The current status of the run"""
 
     task_run_ids: Optional[List[int]] = None
     """The run IDs of the task runs that ran as part of this repair history item."""
@@ -2358,6 +2404,7 @@ class RepairHistoryItem:
         if self.id is not None: body['id'] = self.id
         if self.start_time is not None: body['start_time'] = self.start_time
         if self.state: body['state'] = self.state.as_dict()
+        if self.status: body['status'] = self.status.as_dict()
         if self.task_run_ids: body['task_run_ids'] = [v for v in self.task_run_ids]
         if self.type is not None: body['type'] = self.type.value
         return body
@@ -2369,6 +2416,7 @@ class RepairHistoryItem:
                    id=d.get('id', None),
                    start_time=d.get('start_time', None),
                    state=_from_dict(d, 'state', RunState),
+                   status=_from_dict(d, 'status', RunStatus),
                    task_run_ids=d.get('task_run_ids', None),
                    type=_enum(d, 'type', RepairHistoryItemType))
 
@@ -2873,7 +2921,10 @@ class Run:
     scheduled to run on a new cluster, this is the time the cluster creation call is issued."""
 
     state: Optional[RunState] = None
-    """The current state of the run."""
+    """Deprecated. Please use the `status` field instead."""
+
+    status: Optional[RunStatus] = None
+    """The current status of the run"""
 
     tasks: Optional[List[RunTask]] = None
     """The list of tasks performed by the run. Each task has its own `run_id` which you can use to call
@@ -2927,6 +2978,7 @@ class Run:
         if self.setup_duration is not None: body['setup_duration'] = self.setup_duration
         if self.start_time is not None: body['start_time'] = self.start_time
         if self.state: body['state'] = self.state.as_dict()
+        if self.status: body['status'] = self.status.as_dict()
         if self.tasks: body['tasks'] = [v.as_dict() for v in self.tasks]
         if self.trigger is not None: body['trigger'] = self.trigger.value
         if self.trigger_info: body['trigger_info'] = self.trigger_info.as_dict()
@@ -2965,6 +3017,7 @@ class Run:
                    setup_duration=d.get('setup_duration', None),
                    start_time=d.get('start_time', None),
                    state=_from_dict(d, 'state', RunState),
+                   status=_from_dict(d, 'status', RunStatus),
                    tasks=_repeated_dict(d, 'tasks', RunTask),
                    trigger=_enum(d, 'trigger', TriggerType),
                    trigger_info=_from_dict(d, 'trigger_info', TriggerInfo))
@@ -3214,6 +3267,17 @@ class RunLifeCycleState(Enum):
     TERMINATED = 'TERMINATED'
     TERMINATING = 'TERMINATING'
     WAITING_FOR_RETRY = 'WAITING_FOR_RETRY'
+
+
+class RunLifecycleStateV2State(Enum):
+    """The current state of the run."""
+
+    BLOCKED = 'BLOCKED'
+    PENDING = 'PENDING'
+    QUEUED = 'QUEUED'
+    RUNNING = 'RUNNING'
+    TERMINATED = 'TERMINATED'
+    TERMINATING = 'TERMINATING'
 
 
 @dataclass
@@ -3610,6 +3674,36 @@ class RunState:
 
 
 @dataclass
+class RunStatus:
+    """The current status of the run"""
+
+    queue_details: Optional[QueueDetails] = None
+    """If the run was queued, details about the reason for queuing the run."""
+
+    state: Optional[RunLifecycleStateV2State] = None
+    """The current state of the run."""
+
+    termination_details: Optional[TerminationDetails] = None
+    """If the run is in a TERMINATING or TERMINATED state, details about the reason for terminating the
+    run."""
+
+    def as_dict(self) -> dict:
+        """Serializes the RunStatus into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.queue_details: body['queue_details'] = self.queue_details.as_dict()
+        if self.state is not None: body['state'] = self.state.value
+        if self.termination_details: body['termination_details'] = self.termination_details.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> RunStatus:
+        """Deserializes the RunStatus from a dictionary."""
+        return cls(queue_details=_from_dict(d, 'queue_details', QueueDetails),
+                   state=_enum(d, 'state', RunLifecycleStateV2State),
+                   termination_details=_from_dict(d, 'termination_details', TerminationDetails))
+
+
+@dataclass
 class RunTask:
     """Used when outputting a child run, in GetRun or ListRuns."""
 
@@ -3773,7 +3867,10 @@ class RunTask:
     scheduled to run on a new cluster, this is the time the cluster creation call is issued."""
 
     state: Optional[RunState] = None
-    """The current state of the run."""
+    """Deprecated. Please use the `status` field instead."""
+
+    status: Optional[RunStatus] = None
+    """The current status of the run"""
 
     timeout_seconds: Optional[int] = None
     """An optional timeout applied to each run of this job task. A value of `0` means no timeout."""
@@ -3821,6 +3918,7 @@ class RunTask:
         if self.sql_task: body['sql_task'] = self.sql_task.as_dict()
         if self.start_time is not None: body['start_time'] = self.start_time
         if self.state: body['state'] = self.state.as_dict()
+        if self.status: body['status'] = self.status.as_dict()
         if self.task_key is not None: body['task_key'] = self.task_key
         if self.timeout_seconds is not None: body['timeout_seconds'] = self.timeout_seconds
         if self.webhook_notifications: body['webhook_notifications'] = self.webhook_notifications.as_dict()
@@ -3864,6 +3962,7 @@ class RunTask:
                    sql_task=_from_dict(d, 'sql_task', SqlTask),
                    start_time=d.get('start_time', None),
                    state=_from_dict(d, 'state', RunState),
+                   status=_from_dict(d, 'status', RunStatus),
                    task_key=d.get('task_key', None),
                    timeout_seconds=d.get('timeout_seconds', None),
                    webhook_notifications=_from_dict(d, 'webhook_notifications', WebhookNotifications))
@@ -5025,6 +5124,149 @@ class TaskNotificationSettings:
         return cls(alert_on_last_attempt=d.get('alert_on_last_attempt', None),
                    no_alert_for_canceled_runs=d.get('no_alert_for_canceled_runs', None),
                    no_alert_for_skipped_runs=d.get('no_alert_for_skipped_runs', None))
+
+
+class TerminationCodeCode(Enum):
+    """The code indicates why the run was terminated. Additional codes might be introduced in future
+    releases. * `SUCCESS`: The run was completed successfully. * `CANCELED`: The run was canceled
+    during execution by the Databricks platform; for example, if the maximum run duration was
+    exceeded. * `SKIPPED`: Run was never executed, for example, if the upstream task run failed, the
+    dependency type condition was not met, or there were no material tasks to execute. *
+    `INTERNAL_ERROR`: The run encountered an unexpected error. Refer to the state message for
+    further details. * `DRIVER_ERROR`: The run encountered an error while communicating with the
+    Spark Driver. * `CLUSTER_ERROR`: The run failed due to a cluster error. Refer to the state
+    message for further details. * `REPOSITORY_CHECKOUT_FAILED`: Failed to complete the checkout due
+    to an error when communicating with the third party service. * `INVALID_CLUSTER_REQUEST`: The
+    run failed because it issued an invalid request to start the cluster. *
+    `WORKSPACE_RUN_LIMIT_EXCEEDED`: The workspace has reached the quota for the maximum number of
+    concurrent active runs. Consider scheduling the runs over a larger time frame. *
+    `FEATURE_DISABLED`: The run failed because it tried to access a feature unavailable for the
+    workspace. * `CLUSTER_REQUEST_LIMIT_EXCEEDED`: The number of cluster creation, start, and upsize
+    requests have exceeded the allotted rate limit. Consider spreading the run execution over a
+    larger time frame. * `STORAGE_ACCESS_ERROR`: The run failed due to an error when accessing the
+    customer blob storage. Refer to the state message for further details. * `RUN_EXECUTION_ERROR`:
+    The run was completed with task failures. For more details, refer to the state message or run
+    output. * `UNAUTHORIZED_ERROR`: The run failed due to a permission issue while accessing a
+    resource. Refer to the state message for further details. * `LIBRARY_INSTALLATION_ERROR`: The
+    run failed while installing the user-requested library. Refer to the state message for further
+    details. The causes might include, but are not limited to: The provided library is invalid,
+    there are insufficient permissions to install the library, and so forth. *
+    `MAX_CONCURRENT_RUNS_EXCEEDED`: The scheduled run exceeds the limit of maximum concurrent runs
+    set for the job. * `MAX_SPARK_CONTEXTS_EXCEEDED`: The run is scheduled on a cluster that has
+    already reached the maximum number of contexts it is configured to create. See: [Link]. *
+    `RESOURCE_NOT_FOUND`: A resource necessary for run execution does not exist. Refer to the state
+    message for further details. * `INVALID_RUN_CONFIGURATION`: The run failed due to an invalid
+    configuration. Refer to the state message for further details. * `CLOUD_FAILURE`: The run failed
+    due to a cloud provider issue. Refer to the state message for further details. *
+    `MAX_JOB_QUEUE_SIZE_EXCEEDED`: The run was skipped due to reaching the job level queue size
+    limit.
+    
+    [Link]: https://kb.databricks.com/en_US/notebooks/too-many-execution-contexts-are-open-right-now"""
+
+    CANCELED = 'CANCELED'
+    CLOUD_FAILURE = 'CLOUD_FAILURE'
+    CLUSTER_ERROR = 'CLUSTER_ERROR'
+    CLUSTER_REQUEST_LIMIT_EXCEEDED = 'CLUSTER_REQUEST_LIMIT_EXCEEDED'
+    DRIVER_ERROR = 'DRIVER_ERROR'
+    FEATURE_DISABLED = 'FEATURE_DISABLED'
+    INTERNAL_ERROR = 'INTERNAL_ERROR'
+    INVALID_CLUSTER_REQUEST = 'INVALID_CLUSTER_REQUEST'
+    INVALID_RUN_CONFIGURATION = 'INVALID_RUN_CONFIGURATION'
+    LIBRARY_INSTALLATION_ERROR = 'LIBRARY_INSTALLATION_ERROR'
+    MAX_CONCURRENT_RUNS_EXCEEDED = 'MAX_CONCURRENT_RUNS_EXCEEDED'
+    MAX_JOB_QUEUE_SIZE_EXCEEDED = 'MAX_JOB_QUEUE_SIZE_EXCEEDED'
+    MAX_SPARK_CONTEXTS_EXCEEDED = 'MAX_SPARK_CONTEXTS_EXCEEDED'
+    REPOSITORY_CHECKOUT_FAILED = 'REPOSITORY_CHECKOUT_FAILED'
+    RESOURCE_NOT_FOUND = 'RESOURCE_NOT_FOUND'
+    RUN_EXECUTION_ERROR = 'RUN_EXECUTION_ERROR'
+    SKIPPED = 'SKIPPED'
+    STORAGE_ACCESS_ERROR = 'STORAGE_ACCESS_ERROR'
+    SUCCESS = 'SUCCESS'
+    UNAUTHORIZED_ERROR = 'UNAUTHORIZED_ERROR'
+    WORKSPACE_RUN_LIMIT_EXCEEDED = 'WORKSPACE_RUN_LIMIT_EXCEEDED'
+
+
+@dataclass
+class TerminationDetails:
+    code: Optional[TerminationCodeCode] = None
+    """The code indicates why the run was terminated. Additional codes might be introduced in future
+    releases. * `SUCCESS`: The run was completed successfully. * `CANCELED`: The run was canceled
+    during execution by the Databricks platform; for example, if the maximum run duration was
+    exceeded. * `SKIPPED`: Run was never executed, for example, if the upstream task run failed, the
+    dependency type condition was not met, or there were no material tasks to execute. *
+    `INTERNAL_ERROR`: The run encountered an unexpected error. Refer to the state message for
+    further details. * `DRIVER_ERROR`: The run encountered an error while communicating with the
+    Spark Driver. * `CLUSTER_ERROR`: The run failed due to a cluster error. Refer to the state
+    message for further details. * `REPOSITORY_CHECKOUT_FAILED`: Failed to complete the checkout due
+    to an error when communicating with the third party service. * `INVALID_CLUSTER_REQUEST`: The
+    run failed because it issued an invalid request to start the cluster. *
+    `WORKSPACE_RUN_LIMIT_EXCEEDED`: The workspace has reached the quota for the maximum number of
+    concurrent active runs. Consider scheduling the runs over a larger time frame. *
+    `FEATURE_DISABLED`: The run failed because it tried to access a feature unavailable for the
+    workspace. * `CLUSTER_REQUEST_LIMIT_EXCEEDED`: The number of cluster creation, start, and upsize
+    requests have exceeded the allotted rate limit. Consider spreading the run execution over a
+    larger time frame. * `STORAGE_ACCESS_ERROR`: The run failed due to an error when accessing the
+    customer blob storage. Refer to the state message for further details. * `RUN_EXECUTION_ERROR`:
+    The run was completed with task failures. For more details, refer to the state message or run
+    output. * `UNAUTHORIZED_ERROR`: The run failed due to a permission issue while accessing a
+    resource. Refer to the state message for further details. * `LIBRARY_INSTALLATION_ERROR`: The
+    run failed while installing the user-requested library. Refer to the state message for further
+    details. The causes might include, but are not limited to: The provided library is invalid,
+    there are insufficient permissions to install the library, and so forth. *
+    `MAX_CONCURRENT_RUNS_EXCEEDED`: The scheduled run exceeds the limit of maximum concurrent runs
+    set for the job. * `MAX_SPARK_CONTEXTS_EXCEEDED`: The run is scheduled on a cluster that has
+    already reached the maximum number of contexts it is configured to create. See: [Link]. *
+    `RESOURCE_NOT_FOUND`: A resource necessary for run execution does not exist. Refer to the state
+    message for further details. * `INVALID_RUN_CONFIGURATION`: The run failed due to an invalid
+    configuration. Refer to the state message for further details. * `CLOUD_FAILURE`: The run failed
+    due to a cloud provider issue. Refer to the state message for further details. *
+    `MAX_JOB_QUEUE_SIZE_EXCEEDED`: The run was skipped due to reaching the job level queue size
+    limit.
+    
+    [Link]: https://kb.databricks.com/en_US/notebooks/too-many-execution-contexts-are-open-right-now"""
+
+    message: Optional[str] = None
+    """A descriptive message with the termination details. This field is unstructured and the format
+    might change."""
+
+    type: Optional[TerminationTypeType] = None
+    """* `SUCCESS`: The run terminated without any issues * `INTERNAL_ERROR`: An error occurred in the
+    Databricks platform. Please look at the [status page] or contact support if the issue persists.
+    * `CLIENT_ERROR`: The run was terminated because of an error caused by user input or the job
+    configuration. * `CLOUD_FAILURE`: The run was terminated because of an issue with your cloud
+    provider.
+    
+    [status page]: https://status.databricks.com/"""
+
+    def as_dict(self) -> dict:
+        """Serializes the TerminationDetails into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.code is not None: body['code'] = self.code.value
+        if self.message is not None: body['message'] = self.message
+        if self.type is not None: body['type'] = self.type.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> TerminationDetails:
+        """Deserializes the TerminationDetails from a dictionary."""
+        return cls(code=_enum(d, 'code', TerminationCodeCode),
+                   message=d.get('message', None),
+                   type=_enum(d, 'type', TerminationTypeType))
+
+
+class TerminationTypeType(Enum):
+    """* `SUCCESS`: The run terminated without any issues * `INTERNAL_ERROR`: An error occurred in the
+    Databricks platform. Please look at the [status page] or contact support if the issue persists.
+    * `CLIENT_ERROR`: The run was terminated because of an error caused by user input or the job
+    configuration. * `CLOUD_FAILURE`: The run was terminated because of an issue with your cloud
+    provider.
+    
+    [status page]: https://status.databricks.com/"""
+
+    CLIENT_ERROR = 'CLIENT_ERROR'
+    CLOUD_FAILURE = 'CLOUD_FAILURE'
+    INTERNAL_ERROR = 'INTERNAL_ERROR'
+    SUCCESS = 'SUCCESS'
 
 
 @dataclass

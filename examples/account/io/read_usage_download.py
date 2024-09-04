@@ -2,6 +2,6 @@ from databricks.sdk import AccountClient
 
 a = AccountClient()
 
-resp = a.billable_usage.download(start_month="2023-01", end_month="2023-02")
+resp = a.billable_usage.download(start_month="2024-08", end_month="2024-09")
 
 out = a.io.read(resp.contents)
