@@ -892,8 +892,8 @@ class PermissionsRequest:
 
     request_object_type: Optional[str] = None
     """The type of the request object. Can be one of the following: alerts, authorization, clusters,
-    cluster-policies, dbsql-dashboards, directories, experiments, files, instance-pools, jobs,
-    notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or warehouses."""
+    cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files, instance-pools,
+    jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or warehouses."""
 
     def as_dict(self) -> dict:
         """Serializes the PermissionsRequest into a dictionary suitable for use as a JSON request body."""
@@ -2600,8 +2600,8 @@ class PermissionsAPI:
         
         :param request_object_type: str
           The type of the request object. Can be one of the following: alerts, authorization, clusters,
-          cluster-policies, dbsql-dashboards, directories, experiments, files, instance-pools, jobs,
-          notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or warehouses.
+          cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files, instance-pools,
+          jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or warehouses.
         :param request_object_id: str
           The id of the request object.
         
@@ -2648,8 +2648,8 @@ class PermissionsAPI:
         
         :param request_object_type: str
           The type of the request object. Can be one of the following: alerts, authorization, clusters,
-          cluster-policies, dbsql-dashboards, directories, experiments, files, instance-pools, jobs,
-          notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or warehouses.
+          cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files, instance-pools,
+          jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or warehouses.
         :param request_object_id: str
           The id of the request object.
         :param access_control_list: List[:class:`AccessControlRequest`] (optional)
@@ -2679,8 +2679,8 @@ class PermissionsAPI:
         
         :param request_object_type: str
           The type of the request object. Can be one of the following: alerts, authorization, clusters,
-          cluster-policies, dbsql-dashboards, directories, experiments, files, instance-pools, jobs,
-          notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or warehouses.
+          cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files, instance-pools,
+          jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or warehouses.
         :param request_object_id: str
           The id of the request object.
         :param access_control_list: List[:class:`AccessControlRequest`] (optional)

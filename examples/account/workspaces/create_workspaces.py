@@ -15,12 +15,12 @@ role = a.credentials.create(
     aws_credentials=provisioning.CreateCredentialAwsCredentials(sts_role=provisioning.CreateCredentialStsRole(
         role_arn=os.environ["TEST_CROSSACCOUNT_ARN"])))
 
-created = a.workspaces.create(workspace_name=f'sdk-{time.time_ns()}',
-                              aws_region=os.environ["AWS_REGION"],
-                              credentials_id=role.credentials_id,
-                              storage_configuration_id=storage.storage_configuration_id).result()
+waiter = a.workspaces.create(workspace_name=f'sdk-{time.time_ns()}',
+                             aws_region=os.environ["AWS_REGION"],
+                             credentials_id=role.credentials_id,
+                             storage_configuration_id=storage.storage_configuration_id)
 
 # cleanup
 a.storage.delete(storage_configuration_id=storage.storage_configuration_id)
 a.credentials.delete(credentials_id=role.credentials_id)
-a.workspaces.delete(workspace_id=created.workspace_id)
+a.workspaces.delete(workspace_id=waiter.workspace_id)

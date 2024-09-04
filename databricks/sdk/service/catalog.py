@@ -1268,7 +1268,8 @@ class CreateMetastoreAssignment:
     """The unique ID of the metastore."""
 
     default_catalog_name: str
-    """The name of the default catalog in the metastore."""
+    """The name of the default catalog in the metastore. This field is depracted. Please use "Default
+    Namespace API" to configure the default catalog for a Databricks workspace."""
 
     workspace_id: Optional[int] = None
     """A workspace ID."""
@@ -4151,6 +4152,49 @@ class QuotaInfo:
 
 
 @dataclass
+class RegenerateDashboardRequest:
+    table_name: Optional[str] = None
+    """Full name of the table."""
+
+    warehouse_id: Optional[str] = None
+    """Optional argument to specify the warehouse for dashboard regeneration. If not specified, the
+    first running warehouse will be used."""
+
+    def as_dict(self) -> dict:
+        """Serializes the RegenerateDashboardRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.table_name is not None: body['table_name'] = self.table_name
+        if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> RegenerateDashboardRequest:
+        """Deserializes the RegenerateDashboardRequest from a dictionary."""
+        return cls(table_name=d.get('table_name', None), warehouse_id=d.get('warehouse_id', None))
+
+
+@dataclass
+class RegenerateDashboardResponse:
+    dashboard_id: Optional[str] = None
+    """Id of the regenerated monitoring dashboard."""
+
+    parent_folder: Optional[str] = None
+    """The directory where the regenerated dashboard is stored."""
+
+    def as_dict(self) -> dict:
+        """Serializes the RegenerateDashboardResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.dashboard_id is not None: body['dashboard_id'] = self.dashboard_id
+        if self.parent_folder is not None: body['parent_folder'] = self.parent_folder
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> RegenerateDashboardResponse:
+        """Deserializes the RegenerateDashboardResponse from a dictionary."""
+        return cls(dashboard_id=d.get('dashboard_id', None), parent_folder=d.get('parent_folder', None))
+
+
+@dataclass
 class RegisteredModelAlias:
     """Registered model alias."""
 
@@ -5220,7 +5264,8 @@ class UpdateMetastore:
 @dataclass
 class UpdateMetastoreAssignment:
     default_catalog_name: Optional[str] = None
-    """The name of the default catalog for the metastore."""
+    """The name of the default catalog in the metastore. This field is depracted. Please use "Default
+    Namespace API" to configure the default catalog for a Databricks workspace."""
 
     metastore_id: Optional[str] = None
     """The unique ID of the metastore."""
@@ -7208,7 +7253,8 @@ class MetastoresAPI:
         :param metastore_id: str
           The unique ID of the metastore.
         :param default_catalog_name: str
-          The name of the default catalog in the metastore.
+          The name of the default catalog in the metastore. This field is depracted. Please use "Default
+          Namespace API" to configure the default catalog for a Databricks workspace.
         
         
         """
@@ -7421,7 +7467,8 @@ class MetastoresAPI:
         :param workspace_id: int
           A workspace ID.
         :param default_catalog_name: str (optional)
-          The name of the default catalog for the metastore.
+          The name of the default catalog in the metastore. This field is depracted. Please use "Default
+          Namespace API" to configure the default catalog for a Databricks workspace.
         :param metastore_id: str (optional)
           The unique ID of the metastore.
         
@@ -7915,6 +7962,40 @@ class QualityMonitorsAPI:
                            f'/api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes',
                            headers=headers)
         return MonitorRefreshListResponse.from_dict(res)
+
+    def regenerate_dashboard(self,
+                             table_name: str,
+                             *,
+                             warehouse_id: Optional[str] = None) -> RegenerateDashboardResponse:
+        """Regenerate a monitoring dashboard.
+        
+        Regenerates the monitoring dashboard for the specified table.
+        
+        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
+        table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
+        - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema - be an
+        owner of the table
+        
+        The call must be made from the workspace where the monitor was created. The dashboard will be
+        regenerated in the assets directory that was specified when the monitor was created.
+        
+        :param table_name: str
+          Full name of the table.
+        :param warehouse_id: str (optional)
+          Optional argument to specify the warehouse for dashboard regeneration. If not specified, the first
+          running warehouse will be used.
+        
+        :returns: :class:`RegenerateDashboardResponse`
+        """
+        body = {}
+        if warehouse_id is not None: body['warehouse_id'] = warehouse_id
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do('POST',
+                           f'/api/2.1/quality-monitoring/tables/{table_name}/monitor/dashboard',
+                           body=body,
+                           headers=headers)
+        return RegenerateDashboardResponse.from_dict(res)
 
     def run_refresh(self, table_name: str) -> MonitorRefreshInfo:
         """Queue a metric refresh for a monitor.
