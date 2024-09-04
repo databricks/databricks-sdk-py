@@ -1176,6 +1176,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: RegenerateDashboardRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: RegenerateDashboardResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: RegisteredModelAlias
    :members:
    :undoc-members:

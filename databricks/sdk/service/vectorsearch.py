@@ -231,6 +231,11 @@ class DeleteIndexResponse:
 
 @dataclass
 class DeltaSyncVectorIndexSpecRequest:
+    columns_to_sync: Optional[List[str]] = None
+    """[Optional] Select the columns to sync with the vector index. If you leave this field blank, all
+    columns from the source table are synced with the index. The primary key column and embedding
+    source column or embedding vector column are always synced."""
+
     embedding_source_columns: Optional[List[EmbeddingSourceColumn]] = None
     """The columns that contain the embedding source."""
 
@@ -256,6 +261,7 @@ class DeltaSyncVectorIndexSpecRequest:
     def as_dict(self) -> dict:
         """Serializes the DeltaSyncVectorIndexSpecRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.columns_to_sync: body['columns_to_sync'] = [v for v in self.columns_to_sync]
         if self.embedding_source_columns:
             body['embedding_source_columns'] = [v.as_dict() for v in self.embedding_source_columns]
         if self.embedding_vector_columns:
@@ -269,7 +275,8 @@ class DeltaSyncVectorIndexSpecRequest:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> DeltaSyncVectorIndexSpecRequest:
         """Deserializes the DeltaSyncVectorIndexSpecRequest from a dictionary."""
-        return cls(embedding_source_columns=_repeated_dict(d, 'embedding_source_columns',
+        return cls(columns_to_sync=d.get('columns_to_sync', None),
+                   embedding_source_columns=_repeated_dict(d, 'embedding_source_columns',
                                                            EmbeddingSourceColumn),
                    embedding_vector_columns=_repeated_dict(d, 'embedding_vector_columns',
                                                            EmbeddingVectorColumn),

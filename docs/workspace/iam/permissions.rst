@@ -81,8 +81,8 @@
         
         :param request_object_type: str
           The type of the request object. Can be one of the following: alerts, authorization, clusters,
-          cluster-policies, dbsql-dashboards, directories, experiments, files, instance-pools, jobs,
-          notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or warehouses.
+          cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files, instance-pools,
+          jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or warehouses.
         :param request_object_id: str
           The id of the request object.
         
@@ -158,8 +158,8 @@
         
         :param request_object_type: str
           The type of the request object. Can be one of the following: alerts, authorization, clusters,
-          cluster-policies, dbsql-dashboards, directories, experiments, files, instance-pools, jobs,
-          notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or warehouses.
+          cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files, instance-pools,
+          jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or warehouses.
         :param request_object_id: str
           The id of the request object.
         :param access_control_list: List[:class:`AccessControlRequest`] (optional)
@@ -176,8 +176,8 @@
         
         :param request_object_type: str
           The type of the request object. Can be one of the following: alerts, authorization, clusters,
-          cluster-policies, dbsql-dashboards, directories, experiments, files, instance-pools, jobs,
-          notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or warehouses.
+          cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files, instance-pools,
+          jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or warehouses.
         :param request_object_id: str
           The id of the request object.
         :param access_control_list: List[:class:`AccessControlRequest`] (optional)
