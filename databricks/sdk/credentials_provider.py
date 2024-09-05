@@ -437,12 +437,26 @@ class AzureCliTokenSource(CliTokenSource):
         if subscription is not None:
             cmd.append("--subscription")
             cmd.append(subscription)
-        if tenant:
+        if tenant and not self.__is_cli_using_managed_identity():
             cmd.extend(["--tenant", tenant])
         super().__init__(cmd=cmd,
                          token_type_field='tokenType',
                          access_token_field='accessToken',
                          expiry_field='expiresOn')
+
+    @staticmethod
+    def __is_cli_using_managed_identity() -> bool:
+        """Checks whether the current CLI session is authenticated using managed identity."""
+        try:
+            out = subprocess.run(["az", "account", "show", "--output", "json"], capture_output=True, check=True)
+            account = json.loads(out.stdout.decode())
+            user = account.get("user")
+            if user is None:
+                return False
+            return user.get("type") == "servicePrincipal" and user.get("name") in ['systemAssignedIdentity', 'userAssignedIdentity']
+        except subprocess.CalledProcessError as e:
+            logger.debug("Failed to get account information from Azure CLI", exc_info=e)
+            return False
 
     def is_human_user(self) -> bool:
         """The UPN claim is the username of the user, but not the Service Principal.
