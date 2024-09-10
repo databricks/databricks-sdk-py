@@ -60,8 +60,9 @@ class _StandardErrorParser(_ErrorParser):
         if detail:
             # Handle SCIM error message details
             # @see https://tools.ietf.org/html/rfc7644#section-3.7.3
-            error_args[
-                'message'] = f"{scim_type} {error_args.get('message', 'SCIM API Internal Error')}".strip(" ")
+            if detail == "null":
+                detail = "SCIM API Internal Error"
+            error_args['message'] = f"{scim_type} {detail}".strip(" ")
             error_args['error_code'] = f"SCIM_{status}"
         return error_args
 
