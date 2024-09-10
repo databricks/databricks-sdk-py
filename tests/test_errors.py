@@ -110,13 +110,15 @@ subclass_test_cases = [(fake_valid_response('GET', x[0], x[1], 'nope'), x[2], 'n
        'https://github.com/databricks/databricks-sdk-go/issues. Request log:```GET /api/2.0/service\n'
        '< 400 Bad Request\n'
        '< this is not a real response```')),
-     [fake_response('GET', 404, json.dumps({
-         'detail': 'Group with id 1234 is not found',
-         'status': '404',
-         'schemas': [
-             'urn:ietf:params:scim:api:messages:2.0:Error'
-         ]
-     })), errors.NotFound, 'None Group with id 1234 is not found']])
+     [
+         fake_response(
+             'GET', 404,
+             json.dumps({
+                 'detail': 'Group with id 1234 is not found',
+                 'status': '404',
+                 'schemas': ['urn:ietf:params:scim:api:messages:2.0:Error']
+             })), errors.NotFound, 'None Group with id 1234 is not found'
+     ]])
 def test_get_api_error(response, expected_error, expected_message):
     with pytest.raises(errors.DatabricksError) as e:
         raise errors.get_api_error(response)
