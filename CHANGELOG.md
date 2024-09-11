@@ -1,5 +1,8 @@
 # Version changelog
 
+## [Release] Release v0.32.2
+
+
 ## [Release] Release v0.32.1
 
 ### Bug Fixes
