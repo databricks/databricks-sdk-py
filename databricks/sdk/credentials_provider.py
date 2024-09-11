@@ -448,12 +448,16 @@ class AzureCliTokenSource(CliTokenSource):
     def __is_cli_using_managed_identity() -> bool:
         """Checks whether the current CLI session is authenticated using managed identity."""
         try:
-            out = subprocess.run(["az", "account", "show", "--output", "json"], capture_output=True, check=True)
+            out = subprocess.run(["az", "account", "show", "--output", "json"],
+                                 capture_output=True,
+                                 check=True)
             account = json.loads(out.stdout.decode())
             user = account.get("user")
             if user is None:
                 return False
-            return user.get("type") == "servicePrincipal" and user.get("name") in ['systemAssignedIdentity', 'userAssignedIdentity']
+            return user.get("type") == "servicePrincipal" and user.get("name") in [
+                'systemAssignedIdentity', 'userAssignedIdentity'
+            ]
         except subprocess.CalledProcessError as e:
             logger.debug("Failed to get account information from Azure CLI", exc_info=e)
             return False
