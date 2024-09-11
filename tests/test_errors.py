@@ -124,3 +124,4 @@ def test_get_api_error(response, expected_error, expected_message):
         raise errors.get_api_error(response)
     assert isinstance(e.value, expected_error)
     assert str(e.value) == expected_message
+    assert e.value.message == expected_message
