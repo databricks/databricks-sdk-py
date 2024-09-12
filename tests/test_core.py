@@ -423,6 +423,11 @@ def test_deletes(config, requests_mock):
     },
      errors.TemporarilyUnavailable('errorMessage', error_code='TEMPORARILY_UNAVAILABLE',
                                    retry_after_secs=100)),
+    (404, {}, {
+        'scimType': 'scim type',
+        'detail': 'detail',
+        'status': 'status',
+    }, errors.NotFound('scim type detail', error_code='SCIM_status')),
 ])
 def test_error(config, requests_mock, status_code, headers, body, expected_error):
     client = ApiClient(config)
@@ -441,12 +446,6 @@ def test_error(config, requests_mock, status_code, headers, body, expected_error
         assert expected.reason == actual.reason
         assert expected.domain == actual.domain
         assert expected.metadata == actual.metadata
-
-
-def test_error_with_scimType():
-    args = {"detail": "detail", "scimType": "scim type"}
-    error = DatabricksError(**args)
-    assert str(error) == f"scim type detail"
 
 
 @contextlib.contextmanager
