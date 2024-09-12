@@ -167,7 +167,7 @@ class _DbfsIO(BinaryIO):
         return f"<_DbfsIO {self._path} {'read' if self.readable() else 'write'}=True>"
 
 
-class _VolumesIO(BinaryIO):
+class _FilesIO(BinaryIO):
 
     def __init__(self, api: files.FilesAPI, path: str, *, read: bool, write: bool, overwrite: bool):
         self._buffer = []
@@ -262,7 +262,7 @@ class _VolumesIO(BinaryIO):
         self.close()
 
     def __repr__(self) -> str:
-        return f"<_VolumesIO {self._path} {'read' if self.readable() else 'write'}=True>"
+        return f"<_FilesIO {self._path} {'read' if self.readable() else 'write'}=True>"
 
 
 class _Path(ABC):
@@ -398,7 +398,7 @@ class _LocalPath(_Path):
         return f'<_LocalPath {self._path}>'
 
 
-class _VolumesPath(_Path):
+class _FilesPath(_Path):
 
     def __init__(self, api: files.FilesAPI, src: Union[str, pathlib.Path]):
         self._path = pathlib.PurePosixPath(str(src).replace('dbfs:', '').replace('file:', ''))
@@ -411,7 +411,7 @@ class _VolumesPath(_Path):
         return False
 
     def child(self, path: str) -> Self:
-        return _VolumesPath(self._api, str(self._path / path))
+        return _FilesPath(self._api, str(self._path / path))
 
     def _is_dir(self) -> bool:
         try:
@@ -431,7 +431,7 @@ class _VolumesPath(_Path):
             return self.is_dir
 
     def open(self, *, read=False, write=False, overwrite=False) -> BinaryIO:
-        return _VolumesIO(self._api, self.as_string, read=read, write=write, overwrite=overwrite)
+        return _FilesIO(self._api, self.as_string, read=read, write=write, overwrite=overwrite)
 
     def list(self, *, recursive=False) -> Generator[files.FileInfo, None, None]:
         if not self.is_dir:
@@ -458,13 +458,13 @@ class _VolumesPath(_Path):
     def delete(self, *, recursive=False):
         if self.is_dir:
             for entry in self.list(recursive=False):
-                _VolumesPath(self._api, entry.path).delete(recursive=True)
+                _FilesPath(self._api, entry.path).delete(recursive=True)
             self._api.delete_directory(self.as_string)
         else:
             self._api.delete(self.as_string)
 
     def __repr__(self) -> str:
-        return f'<_VolumesPath {self._path}>'
+        return f'<_FilesPath {self._path}>'
 
 
 class _DbfsPath(_Path):
@@ -589,8 +589,8 @@ class DbfsExt(files.DbfsAPI):
                 'UC Volumes paths, not external locations or DBFS mount points.')
         if src.scheme == 'file':
             return _LocalPath(src.geturl())
-        if src.path.startswith('/Volumes'):
-            return _VolumesPath(self._files_api, src.geturl())
+        if src.path.startswith(('/Volumes', '/Models')):
+            return _FilesPath(self._files_api, src.geturl())
         return _DbfsPath(self._dbfs_api, src.geturl())
 
     def copy(self, src: str, dst: str, *, recursive=False, overwrite=False):
