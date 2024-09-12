@@ -1,116 +1,21 @@
-import abc
-import json
-import logging
-import re
-from typing import Optional, List
-
 import requests
+import logging
+from typing import Optional, List
 
 from ..logger import RoundTrip
 from .base import DatabricksError
 from .customizer import _ErrorCustomizer, _RetryAfterCustomizer
+from .deserializer import (_EmptyDeserializer, _ErrorDeserializer, _HtmlErrorDeserializer,
+                             _StandardErrorDeserializer, _StringErrorDeserializer)
 from .mapper import _error_mapper
 from .private_link import (_get_private_link_validation_error,
                            _is_private_link_redirect)
 
 
-class _ErrorParser(abc.ABC):
-    """A parser for errors from the Databricks REST API."""
-
-    @abc.abstractmethod
-    def parse_error(self, response: requests.Response, response_body: bytes) -> Optional[dict]:
-        """Parses an error from the Databricks REST API. If the error cannot be parsed, returns None."""
-
-
-class _EmptyParser(_ErrorParser):
-    """A parser that handles empty responses."""
-
-    def parse_error(self, response: requests.Response, response_body: bytes) -> Optional[dict]:
-        if len(response_body) == 0:
-            return {'message': response.reason}
-        return None
-
-
-class _StandardErrorParser(_ErrorParser):
-    """
-    Parses errors from the Databricks REST API using the standard error format.
-    """
-
-    def parse_error(self, response: requests.Response, response_body: bytes) -> Optional[dict]:
-        try:
-            payload_str = response_body.decode('utf-8')
-            resp: dict = json.loads(payload_str)
-        except json.JSONDecodeError as e:
-            logging.debug('_StandardErrorParser: unable to deserialize response as json', exc_info=e)
-            return None
-
-        error_args = {
-            'message': resp.get('message', 'request failed'),
-            'error_code': resp.get('error_code'),
-            'details': resp.get('details'),
-        }
-
-        # Handle API 1.2-style errors
-        if 'error' in resp:
-            error_args['message'] = resp['error']
-
-        # Handle SCIM Errors
-        detail = resp.get('detail')
-        status = resp.get('status')
-        scim_type = resp.get('scimType')
-        if detail:
-            # Handle SCIM error message details
-            # @see https://tools.ietf.org/html/rfc7644#section-3.7.3
-            if detail == "null":
-                detail = "SCIM API Internal Error"
-            error_args['message'] = f"{scim_type} {detail}".strip(" ")
-            error_args['error_code'] = f"SCIM_{status}"
-        return error_args
-
-
-class _StringErrorParser(_ErrorParser):
-    """
-    Parses errors from the Databricks REST API in the format "ERROR_CODE: MESSAGE".
-    """
-
-    __STRING_ERROR_REGEX = re.compile(r'([A-Z_]+): (.*)')
-
-    def parse_error(self, response: requests.Response, response_body: bytes) -> Optional[dict]:
-        payload_str = response_body.decode('utf-8')
-        match = self.__STRING_ERROR_REGEX.match(payload_str)
-        if not match:
-            logging.debug('_StringErrorParser: unable to parse response as string')
-            return None
-        error_code, message = match.groups()
-        return {'error_code': error_code, 'message': message, 'status': response.status_code, }
-
-
-class _HtmlErrorParser(_ErrorParser):
-    """
-    Parses errors from the Databricks REST API in HTML format.
-    """
-
-    __HTML_ERROR_REGEXES = [re.compile(r'<pre>(.*)</pre>'), re.compile(r'<title>(.*)</title>'), ]
-
-    def parse_error(self, response: requests.Response, response_body: bytes) -> Optional[dict]:
-        payload_str = response_body.decode('utf-8')
-        for regex in self.__HTML_ERROR_REGEXES:
-            match = regex.search(payload_str)
-            if match:
-                message = match.group(1) if match.group(1) else response.reason
-                return {
-                    'status': response.status_code,
-                    'message': message,
-                    'error_code': response.reason.upper().replace(' ', '_')
-                }
-        logging.debug('_HtmlErrorParser: no <pre> tag found in error response')
-        return None
-
-
 # A list of ErrorParsers that are tried in order to parse an API error from a response body. Most errors should be
 # parsable by the _StandardErrorParser, but additional parsers can be added here for specific error formats. The order
 # of the parsers is not important, as the set of errors that can be parsed by each parser should be disjoint.
-_error_parsers = [_EmptyParser(), _StandardErrorParser(), _StringErrorParser(), _HtmlErrorParser(), ]
+_error_parsers = [_EmptyDeserializer(), _StandardErrorDeserializer(), _StringErrorDeserializer(), _HtmlErrorDeserializer(), ]
 _error_customizers = [_RetryAfterCustomizer(), ]
 
 
@@ -128,7 +33,7 @@ def _unknown_error(response: requests.Response) -> str:
 
 class _Parser:
     def __init__(self,
-                 extra_error_parsers: Optional[List[_ErrorParser]] = None,
+                 extra_error_parsers: Optional[List[_ErrorDeserializer]] = None,
                  extra_error_customizers: Optional[List[_ErrorCustomizer]] = None):
         self._error_parsers = _error_parsers + extra_error_parsers
         self._error_customizers = _error_customizers + extra_error_customizers
