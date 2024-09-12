@@ -1,5 +1,4 @@
 import abc
-import functools
 import json
 import logging
 import re
@@ -9,6 +8,7 @@ import requests
 
 from ..logger import RoundTrip
 from .base import DatabricksError
+from .customizer import _ErrorCustomizer, _RetryAfterCustomizer
 from .mapper import _error_mapper
 from .private_link import (_get_private_link_validation_error,
                            _is_private_link_redirect)
@@ -21,13 +21,6 @@ class _ErrorParser(abc.ABC):
     def parse_error(self, response: requests.Response, response_body: bytes) -> Optional[dict]:
         """Parses an error from the Databricks REST API. If the error cannot be parsed, returns None."""
 
-
-class _ErrorCustomizer(abc.ABC):
-    """A customizer for errors from the Databricks REST API."""
-
-    @abc.abstractmethod
-    def customize_error(self, response: requests.Response, kwargs: dict):
-        """Customize the error constructor parameters."""
 
 class _EmptyParser(_ErrorParser):
     """A parser that handles empty responses."""
@@ -112,38 +105,6 @@ class _HtmlErrorParser(_ErrorParser):
                 }
         logging.debug('_HtmlErrorParser: no <pre> tag found in error response')
         return None
-
-
-class _RetryAfterCustomizer(_ErrorCustomizer):
-    _RETRY_AFTER_DEFAULT = 1
-
-    @classmethod
-    def _parse_retry_after(cls, response: requests.Response) -> Optional[int]:
-        retry_after = response.headers.get("Retry-After")
-        if retry_after is None:
-            logging.debug(f'No Retry-After header received in response with status code 429 or 503. Defaulting to {cls._RETRY_AFTER_DEFAULT}')
-            # 429 requests should include a `Retry-After` header, but if it's missing,
-            # we default to 1 second.
-            return cls._RETRY_AFTER_DEFAULT
-        # If the request is throttled, try parse the `Retry-After` header and sleep
-        # for the specified number of seconds. Note that this header can contain either
-        # an integer or a RFC1123 datetime string.
-        # See https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Retry-After
-        #
-        # For simplicity, we only try to parse it as an integer, as this is what Databricks
-        # platform returns. Otherwise, we fall back and don't sleep.
-        try:
-            return int(retry_after)
-        except ValueError:
-            logging.debug(f'Invalid Retry-After header received: {retry_after}. Defaulting to {cls._RETRY_AFTER_DEFAULT}')
-            # defaulting to 1 sleep second to make self._is_retryable() simpler
-            return cls._RETRY_AFTER_DEFAULT
-
-    def customize_error(self, response: requests.Response, kwargs: dict):
-        status_code = response.status_code
-        is_too_many_requests_or_unavailable = status_code in (429, 503)
-        if is_too_many_requests_or_unavailable:
-            kwargs['retry_after_secs'] = self._parse_retry_after(response)
 
 
 # A list of ErrorParsers that are tried in order to parse an API error from a response body. Most errors should be
