@@ -85,7 +85,6 @@ class DatabricksError(IOError):
             message = f"{scimType} {message}".strip(" ")
             error_code = f"SCIM_{status}"
         super().__init__(message if message else error)
-        self.message = message
         self.error_code = error_code
         self.retry_after_secs = retry_after_secs
         self.details = [ErrorDetail.from_dict(detail) for detail in details] if details else []

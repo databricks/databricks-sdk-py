@@ -1,8 +1,9 @@
 import abc
+import functools
 import json
 import logging
 import re
-from typing import Optional
+from typing import Optional, List
 
 import requests
 
@@ -20,6 +21,13 @@ class _ErrorParser(abc.ABC):
     def parse_error(self, response: requests.Response, response_body: bytes) -> Optional[dict]:
         """Parses an error from the Databricks REST API. If the error cannot be parsed, returns None."""
 
+
+class _ErrorCustomizer(abc.ABC):
+    """A customizer for errors from the Databricks REST API."""
+
+    @abc.abstractmethod
+    def customize_error(self, response: requests.Response, kwargs: dict):
+        """Customize the error constructor parameters."""
 
 class _EmptyParser(_ErrorParser):
     """A parser that handles empty responses."""
@@ -106,10 +114,43 @@ class _HtmlErrorParser(_ErrorParser):
         return None
 
 
+class _RetryAfterCustomizer(_ErrorCustomizer):
+    _RETRY_AFTER_DEFAULT = 1
+
+    @classmethod
+    def _parse_retry_after(cls, response: requests.Response) -> Optional[int]:
+        retry_after = response.headers.get("Retry-After")
+        if retry_after is None:
+            logging.debug(f'No Retry-After header received in response with status code 429 or 503. Defaulting to {cls._RETRY_AFTER_DEFAULT}')
+            # 429 requests should include a `Retry-After` header, but if it's missing,
+            # we default to 1 second.
+            return cls._RETRY_AFTER_DEFAULT
+        # If the request is throttled, try parse the `Retry-After` header and sleep
+        # for the specified number of seconds. Note that this header can contain either
+        # an integer or a RFC1123 datetime string.
+        # See https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Retry-After
+        #
+        # For simplicity, we only try to parse it as an integer, as this is what Databricks
+        # platform returns. Otherwise, we fall back and don't sleep.
+        try:
+            return int(retry_after)
+        except ValueError:
+            logging.debug(f'Invalid Retry-After header received: {retry_after}. Defaulting to {cls._RETRY_AFTER_DEFAULT}')
+            # defaulting to 1 sleep second to make self._is_retryable() simpler
+            return cls._RETRY_AFTER_DEFAULT
+
+    def customize_error(self, response: requests.Response, kwargs: dict):
+        status_code = response.status_code
+        is_too_many_requests_or_unavailable = status_code in (429, 503)
+        if is_too_many_requests_or_unavailable:
+            kwargs['retry_after_secs'] = self._parse_retry_after(response)
+
+
 # A list of ErrorParsers that are tried in order to parse an API error from a response body. Most errors should be
 # parsable by the _StandardErrorParser, but additional parsers can be added here for specific error formats. The order
 # of the parsers is not important, as the set of errors that can be parsed by each parser should be disjoint.
 _error_parsers = [_EmptyParser(), _StandardErrorParser(), _StringErrorParser(), _HtmlErrorParser(), ]
+_error_customizers = [_RetryAfterCustomizer(), ]
 
 
 def _unknown_error(response: requests.Response) -> str:
@@ -124,24 +165,33 @@ def _unknown_error(response: requests.Response) -> str:
         f'https://github.com/databricks/databricks-sdk-go/issues. Request log:```{request_log}```')
 
 
-def get_api_error(response: requests.Response) -> Optional[DatabricksError]:
-    """
-    Handles responses from the REST API and returns a DatabricksError if the response indicates an error.
-    :param response: The response from the REST API.
-    :return: A DatabricksError if the response indicates an error, otherwise None.
-    """
-    if not response.ok:
-        content = response.content
-        for parser in _error_parsers:
-            try:
-                error_args = parser.parse_error(response, content)
-                if error_args:
-                    return _error_mapper(response, error_args)
-            except Exception as e:
-                logging.debug(f'Error parsing response with {parser}, continuing', exc_info=e)
-        return _error_mapper(response, {'message': 'unable to parse response. ' + _unknown_error(response)})
+class _Parser:
+    def __init__(self,
+                 extra_error_parsers: Optional[List[_ErrorParser]] = None,
+                 extra_error_customizers: Optional[List[_ErrorCustomizer]] = None):
+        self._error_parsers = _error_parsers + extra_error_parsers
+        self._error_customizers = _error_customizers + extra_error_customizers
 
-    # Private link failures happen via a redirect to the login page. From a requests-perspective, the request
-    # is successful, but the response is not what we expect. We need to handle this case separately.
-    if _is_private_link_redirect(response):
-        return _get_private_link_validation_error(response.url)
+    def get_api_error(self, response: requests.Response) -> Optional[DatabricksError]:
+        """
+        Handles responses from the REST API and returns a DatabricksError if the response indicates an error.
+        :param response: The response from the REST API.
+        :return: A DatabricksError if the response indicates an error, otherwise None.
+        """
+        if not response.ok:
+            content = response.content
+            for parser in self._error_parsers:
+                try:
+                    error_args = parser.parse_error(response, content)
+                    if error_args:
+                        for customizer in self._error_customizers:
+                            customizer.customize_error(response, error_args)
+                        return _error_mapper(response, error_args)
+                except Exception as e:
+                    logging.debug(f'Error parsing response with {parser}, continuing', exc_info=e)
+            return _error_mapper(response, {'message': 'unable to parse response. ' + _unknown_error(response)})
+
+        # Private link failures happen via a redirect to the login page. From a requests-perspective, the request
+        # is successful, but the response is not what we expect. We need to handle this case separately.
+        if _is_private_link_redirect(response):
+            return _get_private_link_validation_error(response.url)

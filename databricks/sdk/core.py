@@ -10,7 +10,7 @@ from .casing import Casing
 from .config import *
 # To preserve backwards compatibility (as these definitions were previously in this module)
 from .credentials_provider import *
-from .errors import DatabricksError, get_api_error
+from .errors import DatabricksError, _Parser, _ErrorCustomizer
 from .logger import RoundTrip
 from .oauth import retrieve_token
 from .retries import retried
@@ -70,6 +70,8 @@ class ApiClient:
 
         # Default to 60 seconds
         self._http_timeout_seconds = cfg.http_timeout_seconds if cfg.http_timeout_seconds else 60
+
+        self._error_parser = _Parser(extra_error_customizers=[_AddDebugErrorCustomizer(cfg)])
 
     @property
     def account_id(self) -> str:
@@ -219,27 +221,6 @@ class ApiClient:
                 return f'matched {substring}'
         return None
 
-    @classmethod
-    def _parse_retry_after(cls, response: requests.Response) -> Optional[int]:
-        retry_after = response.headers.get("Retry-After")
-        if retry_after is None:
-            # 429 requests should include a `Retry-After` header, but if it's missing,
-            # we default to 1 second.
-            return cls._RETRY_AFTER_DEFAULT
-        # If the request is throttled, try parse the `Retry-After` header and sleep
-        # for the specified number of seconds. Note that this header can contain either
-        # an integer or a RFC1123 datetime string.
-        # See https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Retry-After
-        #
-        # For simplicity, we only try to parse it as an integer, as this is what Databricks
-        # platform returns. Otherwise, we fall back and don't sleep.
-        try:
-            return int(retry_after)
-        except ValueError:
-            logger.debug(f'Invalid Retry-After header received: {retry_after}. Defaulting to 1')
-            # defaulting to 1 sleep second to make self._is_retryable() simpler
-            return cls._RETRY_AFTER_DEFAULT
-
     def _perform(self,
                  method: str,
                  url: str,
@@ -261,15 +242,8 @@ class ApiClient:
                                          stream=raw,
                                          timeout=self._http_timeout_seconds)
         self._record_request_log(response, raw=raw or data is not None or files is not None)
-        error = get_api_error(response)
+        error = self._error_parser.get_api_error(response)
         if error is not None:
-            status_code = response.status_code
-            is_http_unauthorized_or_forbidden = status_code in (401, 403)
-            is_too_many_requests_or_unavailable = status_code in (429, 503)
-            if is_http_unauthorized_or_forbidden:
-                error.message = self._cfg.wrap_debug_info(error.message)
-            if is_too_many_requests_or_unavailable:
-                error.retry_after_secs = self._parse_retry_after(response)
             raise error from None
         return response
 
@@ -277,6 +251,18 @@ class ApiClient:
         if not logger.isEnabledFor(logging.DEBUG):
             return
         logger.debug(RoundTrip(response, self._cfg.debug_headers, self._debug_truncate_bytes, raw).generate())
+
+
+class _AddDebugErrorCustomizer(_ErrorCustomizer):
+    def __init__(self, cfg: Config):
+        self._cfg = cfg
+
+    def customize_error(self, response: requests.Response, kwargs: dict):
+        status_code = response.status_code
+        is_http_unauthorized_or_forbidden = status_code in (401, 403)
+        message = kwargs.get('message', 'request failed')
+        if is_http_unauthorized_or_forbidden:
+            kwargs['message'] = self._cfg.wrap_debug_info(message)
 
 
 class StreamingResponse(BinaryIO):
