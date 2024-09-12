@@ -120,7 +120,8 @@ subclass_test_cases = [(fake_valid_response('GET', x[0], x[1], 'nope'), x[2], 'n
              })), errors.NotFound, 'None Group with id 1234 is not found'
      ]])
 def test_get_api_error(response, expected_error, expected_message):
+    parser = errors._Parser()
     with pytest.raises(errors.DatabricksError) as e:
-        raise errors.get_api_error(response)
+        raise parser.get_api_error(response)
     assert isinstance(e.value, expected_error)
     assert str(e.value) == expected_message

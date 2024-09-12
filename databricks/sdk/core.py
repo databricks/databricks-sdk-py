@@ -10,7 +10,7 @@ from .casing import Casing
 from .config import *
 # To preserve backwards compatibility (as these definitions were previously in this module)
 from .credentials_provider import *
-from .errors import DatabricksError, _Parser, _ErrorCustomizer
+from .errors import DatabricksError, _ErrorCustomizer, _Parser
 from .logger import RoundTrip
 from .oauth import retrieve_token
 from .retries import retried
@@ -254,6 +254,7 @@ class ApiClient:
 
 
 class _AddDebugErrorCustomizer(_ErrorCustomizer):
+
     def __init__(self, cfg: Config):
         self._cfg = cfg
 

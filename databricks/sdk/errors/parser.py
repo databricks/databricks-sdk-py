@@ -1,21 +1,27 @@
-import requests
 import logging
-from typing import Optional, List
+from typing import List, Optional
+
+import requests
 
 from ..logger import RoundTrip
 from .base import DatabricksError
 from .customizer import _ErrorCustomizer, _RetryAfterCustomizer
-from .deserializer import (_EmptyDeserializer, _ErrorDeserializer, _HtmlErrorDeserializer,
-                             _StandardErrorDeserializer, _StringErrorDeserializer)
+from .deserializer import (_EmptyDeserializer, _ErrorDeserializer,
+                           _HtmlErrorDeserializer, _StandardErrorDeserializer,
+                           _StringErrorDeserializer)
 from .mapper import _error_mapper
 from .private_link import (_get_private_link_validation_error,
                            _is_private_link_redirect)
 
-
 # A list of ErrorParsers that are tried in order to parse an API error from a response body. Most errors should be
 # parsable by the _StandardErrorParser, but additional parsers can be added here for specific error formats. The order
 # of the parsers is not important, as the set of errors that can be parsed by each parser should be disjoint.
-_error_parsers = [_EmptyDeserializer(), _StandardErrorDeserializer(), _StringErrorDeserializer(), _HtmlErrorDeserializer(), ]
+_error_parsers = [
+    _EmptyDeserializer(),
+    _StandardErrorDeserializer(),
+    _StringErrorDeserializer(),
+    _HtmlErrorDeserializer(),
+]
 _error_customizers = [_RetryAfterCustomizer(), ]
 
 
@@ -32,11 +38,14 @@ def _unknown_error(response: requests.Response) -> str:
 
 
 class _Parser:
+
     def __init__(self,
                  extra_error_parsers: Optional[List[_ErrorDeserializer]] = None,
                  extra_error_customizers: Optional[List[_ErrorCustomizer]] = None):
-        self._error_parsers = _error_parsers + extra_error_parsers
-        self._error_customizers = _error_customizers + extra_error_customizers
+        self._error_parsers = _error_parsers + (extra_error_parsers
+                                                if extra_error_parsers is not None else [])
+        self._error_customizers = _error_customizers + (extra_error_customizers
+                                                        if extra_error_customizers is not None else [])
 
     def get_api_error(self, response: requests.Response) -> Optional[DatabricksError]:
         """
@@ -55,7 +64,8 @@ class _Parser:
                         return _error_mapper(response, error_args)
                 except Exception as e:
                     logging.debug(f'Error parsing response with {parser}, continuing', exc_info=e)
-            return _error_mapper(response, {'message': 'unable to parse response. ' + _unknown_error(response)})
+            return _error_mapper(response,
+                                 {'message': 'unable to parse response. ' + _unknown_error(response)})
 
         # Private link failures happen via a redirect to the login page. From a requests-perspective, the request
         # is successful, but the response is not what we expect. We need to handle this case separately.

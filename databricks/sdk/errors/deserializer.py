@@ -2,9 +2,10 @@ import abc
 import json
 import logging
 import re
-from typing import Optional, List
+from typing import Optional
 
 import requests
+
 
 class _ErrorDeserializer(abc.ABC):
     """A parser for errors from the Databricks REST API."""
@@ -97,5 +98,3 @@ class _HtmlErrorDeserializer(_ErrorDeserializer):
                 }
         logging.debug('_HtmlErrorParser: no <pre> tag found in error response')
         return None
-
-
