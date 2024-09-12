@@ -38,6 +38,12 @@ def _unknown_error(response: requests.Response) -> str:
 
 
 class _Parser:
+    """
+    A parser for errors from the Databricks REST API. It attempts to deserialize an error using a sequence of
+    deserializers, and then customizes the deserialized error using a sequence of customizers. If the error cannot be
+    deserialized, it returns a generic error with debugging information and instructions to report the issue to the SDK
+    issue tracker.
+    """
 
     def __init__(self,
                  extra_error_parsers: Optional[List[_ErrorDeserializer]] = None,

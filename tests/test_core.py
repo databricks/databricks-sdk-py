@@ -13,7 +13,7 @@ from typing import Iterator, List
 import pytest
 import requests
 
-from databricks.sdk import WorkspaceClient
+from databricks.sdk import WorkspaceClient, errors
 from databricks.sdk.core import (ApiClient, Config, DatabricksError,
                                  StreamingResponse)
 from databricks.sdk.credentials_provider import (CliTokenSource,
@@ -359,8 +359,8 @@ def test_deletes(config, requests_mock):
     assert res is None
 
 
-def test_error(config, requests_mock):
-    errorJson = {
+@pytest.mark.parametrize('status_code,headers,body,expected_error', [
+    (400, {}, {
         "message":
         "errorMessage",
         "details": [{
@@ -378,20 +378,69 @@ def test_error(config, requests_mock):
                 "etag": "wrong etag"
             }
         }],
-    }
-
+    },
+     errors.BadRequest('errorMessage',
+                       details=[{
+                           'type': DatabricksError._error_info_type,
+                           'reason': 'error reason',
+                           'domain': 'error domain',
+                           'metadata': {
+                               'etag': 'error etag'
+                           },
+                       }])),
+    (401, {}, {
+        'error_code': 'UNAUTHORIZED',
+        'message': 'errorMessage',
+    },
+     errors.Unauthenticated('errorMessage. Config: host=http://localhost, auth_type=noop',
+                            error_code='UNAUTHORIZED')),
+    (403, {}, {
+        'error_code': 'FORBIDDEN',
+        'message': 'errorMessage',
+    },
+     errors.PermissionDenied('errorMessage. Config: host=http://localhost, auth_type=noop',
+                             error_code='FORBIDDEN')),
+    (429, {}, {
+        'error_code': 'TOO_MANY_REQUESTS',
+        'message': 'errorMessage',
+    }, errors.TooManyRequests('errorMessage', error_code='TOO_MANY_REQUESTS', retry_after_secs=1)),
+    (429, {
+        'Retry-After': '100'
+    }, {
+        'error_code': 'TOO_MANY_REQUESTS',
+        'message': 'errorMessage',
+    }, errors.TooManyRequests('errorMessage', error_code='TOO_MANY_REQUESTS', retry_after_secs=100)),
+    (503, {}, {
+        'error_code': 'TEMPORARILY_UNAVAILABLE',
+        'message': 'errorMessage',
+    }, errors.TemporarilyUnavailable('errorMessage', error_code='TEMPORARILY_UNAVAILABLE',
+                                     retry_after_secs=1)),
+    (503, {
+        'Retry-After': '100'
+    }, {
+        'error_code': 'TEMPORARILY_UNAVAILABLE',
+        'message': 'errorMessage',
+    },
+     errors.TemporarilyUnavailable('errorMessage', error_code='TEMPORARILY_UNAVAILABLE',
+                                   retry_after_secs=100)),
+])
+def test_error(config, requests_mock, status_code, headers, body, expected_error):
     client = ApiClient(config)
-    requests_mock.get("/test", json=errorJson, status_code=400, )
+    requests_mock.get("/test", json=body, status_code=status_code, headers=headers)
     with pytest.raises(DatabricksError) as raised:
-        client.do("GET", "/test", headers={"test": "test"})
-
-    error_infos = raised.value.get_error_info()
-    assert len(error_infos) == 1
-    error_info = error_infos[0]
-    assert error_info.reason == "error reason"
-    assert error_info.domain == "error domain"
-    assert error_info.metadata["etag"] == "error etag"
-    assert error_info.type == DatabricksError._error_info_type
+        client._perform("GET", "http://localhost/test", headers={"test": "test"})
+    actual = raised.value
+    assert isinstance(actual, type(expected_error))
+    assert str(actual) == str(expected_error)
+    assert actual.error_code == expected_error.error_code
+    assert actual.retry_after_secs == expected_error.retry_after_secs
+    expected_error_infos, actual_error_infos = expected_error.get_error_info(), actual.get_error_info()
+    assert len(expected_error_infos) == len(actual_error_infos)
+    for expected, actual in zip(expected_error_infos, actual_error_infos):
+        assert expected.type == actual.type
+        assert expected.reason == actual.reason
+        assert expected.domain == actual.domain
+        assert expected.metadata == actual.metadata
 
 
 def test_error_with_scimType():

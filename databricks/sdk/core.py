@@ -254,6 +254,8 @@ class ApiClient:
 
 
 class _AddDebugErrorCustomizer(_ErrorCustomizer):
+    """An error customizer that adds debug information about the configuration to unauthenticated and
+    unauthorized errors."""
 
     def __init__(self, cfg: Config):
         self._cfg = cfg

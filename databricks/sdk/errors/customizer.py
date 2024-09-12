@@ -14,6 +14,8 @@ class _ErrorCustomizer(abc.ABC):
 
 
 class _RetryAfterCustomizer(_ErrorCustomizer):
+    """An error customizer that sets the retry_after_secs parameter based on the Retry-After header."""
+
     _RETRY_AFTER_DEFAULT = 1
 
     @classmethod
