@@ -146,9 +146,9 @@ class ApiClient:
            auth: Callable[[requests.PreparedRequest], requests.PreparedRequest] = None,
            response_headers: List[str] = None) -> Union[dict, BinaryIO]:
         print("Sending a Request")
-        print(self.cfg)
-        print(self.cfg.host)
-        print(self.cfg.auth_type)
+        print(self._cfg)
+        print(self._cfg.host)
+        print(self._cfg.auth_type)
         if headers is None:
             headers = {}
         if url is None:
