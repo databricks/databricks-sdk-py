@@ -13,15 +13,19 @@ from .mapper import _error_mapper
 from .private_link import (_get_private_link_validation_error,
                            _is_private_link_redirect)
 
-# A list of ErrorParsers that are tried in order to parse an API error from a response body. Most errors should be
-# parsable by the _StandardErrorParser, but additional parsers can be added here for specific error formats. The order
-# of the parsers is not important, as the set of errors that can be parsed by each parser should be disjoint.
-_error_parsers = [
+# A list of _ErrorDeserializers that are tried in order to parse an API error from a response body. Most errors should
+# be parsable by the _StandardErrorDeserializer, but additional parsers can be added here for specific error formats.
+# The order of the parsers is not important, as the set of errors that can be parsed by each parser should be disjoint.
+_error_deserializers = [
     _EmptyDeserializer(),
     _StandardErrorDeserializer(),
     _StringErrorDeserializer(),
     _HtmlErrorDeserializer(),
 ]
+
+# A list of _ErrorCustomizers that are applied to the error arguments after they are parsed. Customizers can modify the
+# error arguments in any way, including adding or removing fields. Customizers are applied in order, so later
+# customizers can override the changes made by earlier customizers.
 _error_customizers = [_RetryAfterCustomizer(), ]
 
 
@@ -46,10 +50,10 @@ class _Parser:
     """
 
     def __init__(self,
-                 extra_error_parsers: Optional[List[_ErrorDeserializer]] = None,
-                 extra_error_customizers: Optional[List[_ErrorCustomizer]] = None):
-        self._error_parsers = _error_parsers + (extra_error_parsers
-                                                if extra_error_parsers is not None else [])
+                 extra_error_parsers: List[_ErrorDeserializer] = [],
+                 extra_error_customizers: List[_ErrorCustomizer] = []):
+        self._error_parsers = _error_deserializers + (extra_error_parsers
+                                                      if extra_error_parsers is not None else [])
         self._error_customizers = _error_customizers + (extra_error_customizers
                                                         if extra_error_customizers is not None else [])
 
@@ -63,7 +67,7 @@ class _Parser:
             content = response.content
             for parser in self._error_parsers:
                 try:
-                    error_args = parser.parse_error(response, content)
+                    error_args = parser.deserialize_error(response, content)
                     if error_args:
                         for customizer in self._error_customizers:
                             customizer.customize_error(response, error_args)

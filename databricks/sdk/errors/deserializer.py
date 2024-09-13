@@ -11,14 +11,14 @@ class _ErrorDeserializer(abc.ABC):
     """A parser for errors from the Databricks REST API."""
 
     @abc.abstractmethod
-    def parse_error(self, response: requests.Response, response_body: bytes) -> Optional[dict]:
+    def deserialize_error(self, response: requests.Response, response_body: bytes) -> Optional[dict]:
         """Parses an error from the Databricks REST API. If the error cannot be parsed, returns None."""
 
 
 class _EmptyDeserializer(_ErrorDeserializer):
     """A parser that handles empty responses."""
 
-    def parse_error(self, response: requests.Response, response_body: bytes) -> Optional[dict]:
+    def deserialize_error(self, response: requests.Response, response_body: bytes) -> Optional[dict]:
         if len(response_body) == 0:
             return {'message': response.reason}
         return None
@@ -29,12 +29,18 @@ class _StandardErrorDeserializer(_ErrorDeserializer):
     Parses errors from the Databricks REST API using the standard error format.
     """
 
-    def parse_error(self, response: requests.Response, response_body: bytes) -> Optional[dict]:
+    def deserialize_error(self, response: requests.Response, response_body: bytes) -> Optional[dict]:
         try:
             payload_str = response_body.decode('utf-8')
-            resp: dict = json.loads(payload_str)
+            resp = json.loads(payload_str)
+        except UnicodeDecodeError as e:
+            logging.debug('_StandardErrorParser: unable to decode response using utf-8', exc_info=e)
+            return None
         except json.JSONDecodeError as e:
             logging.debug('_StandardErrorParser: unable to deserialize response as json', exc_info=e)
+            return None
+        if not isinstance(resp, dict):
+            logging.debug('_StandardErrorParser: response is valid JSON but not a dictionary')
             return None
 
         error_args = {
@@ -68,7 +74,7 @@ class _StringErrorDeserializer(_ErrorDeserializer):
 
     __STRING_ERROR_REGEX = re.compile(r'([A-Z_]+): (.*)')
 
-    def parse_error(self, response: requests.Response, response_body: bytes) -> Optional[dict]:
+    def deserialize_error(self, response: requests.Response, response_body: bytes) -> Optional[dict]:
         payload_str = response_body.decode('utf-8')
         match = self.__STRING_ERROR_REGEX.match(payload_str)
         if not match:
@@ -85,7 +91,7 @@ class _HtmlErrorDeserializer(_ErrorDeserializer):
 
     __HTML_ERROR_REGEXES = [re.compile(r'<pre>(.*)</pre>'), re.compile(r'<title>(.*)</title>'), ]
 
-    def parse_error(self, response: requests.Response, response_body: bytes) -> Optional[dict]:
+    def deserialize_error(self, response: requests.Response, response_body: bytes) -> Optional[dict]:
         payload_str = response_body.decode('utf-8')
         for regex in self.__HTML_ERROR_REGEXES:
             match = regex.search(payload_str)

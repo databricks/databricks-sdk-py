@@ -261,10 +261,8 @@ class _AddDebugErrorCustomizer(_ErrorCustomizer):
         self._cfg = cfg
 
     def customize_error(self, response: requests.Response, kwargs: dict):
-        status_code = response.status_code
-        is_http_unauthorized_or_forbidden = status_code in (401, 403)
-        message = kwargs.get('message', 'request failed')
-        if is_http_unauthorized_or_forbidden:
+        if response.status_code in (401, 403):
+            message = kwargs.get('message', 'request failed')
             kwargs['message'] = self._cfg.wrap_debug_info(message)
 
 
