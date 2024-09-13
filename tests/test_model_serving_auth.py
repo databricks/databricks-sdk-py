@@ -1,4 +1,3 @@
-
 from databricks.sdk.core import Config
 
 
