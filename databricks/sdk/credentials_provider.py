@@ -426,14 +426,24 @@ class CliTokenSource(Refreshable):
             raise IOError(f'cannot get access token: {message}') from e
 
 
-def _run_subprocess(popenargs, input=None, capture_output=True, timeout=None, check=False, **kwargs) -> subprocess.CompletedProcess[str]:
+def _run_subprocess(popenargs,
+                    input=None,
+                    capture_output=True,
+                    timeout=None,
+                    check=False,
+                    **kwargs) -> subprocess.CompletedProcess[str]:
     """Runs subprocess with given arguments.
     This handles OS-specific modifications that need to be made to the invocation of subprocess.run."""
     kwargs['shell'] = sys.platform.startswith('win')
     # windows requires shell=True to be able to execute 'az login' or other commands
     # cannot use shell=True all the time, as it breaks macOS
     logging.debug(f'Running command: {" ".join(popenargs)}')
-    return subprocess.run(popenargs, input=input, capture_output=capture_output, timeout=timeout, check=check, **kwargs)
+    return subprocess.run(popenargs,
+                          input=input,
+                          capture_output=capture_output,
+                          timeout=timeout,
+                          check=check,
+                          **kwargs)
 
 
 class AzureCliTokenSource(CliTokenSource):
