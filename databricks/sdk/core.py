@@ -83,8 +83,6 @@ class ApiClient:
 
     def _authenticate(self, r: requests.PreparedRequest) -> requests.PreparedRequest:
         headers = self._cfg.authenticate()
-        print("adding headers")
-        print(headers)
         for k, v in headers.items():
             r.headers[k] = v
         return r
@@ -145,10 +143,6 @@ class ApiClient:
            data=None,
            auth: Callable[[requests.PreparedRequest], requests.PreparedRequest] = None,
            response_headers: List[str] = None) -> Union[dict, BinaryIO]:
-        print("Sending a Request")
-        print(self._cfg)
-        print(self._cfg.host)
-        print(self._cfg.auth_type)
         if headers is None:
             headers = {}
         if url is None:

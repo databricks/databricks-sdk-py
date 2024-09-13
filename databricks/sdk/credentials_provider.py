@@ -11,7 +11,7 @@ import subprocess
 import sys
 import time
 from datetime import datetime
-from typing import Callable, Dict, List, Optional, Union
+from typing import Callable, Dict, List, Optional, Union, Tuple
 
 import google.auth
 import requests
@@ -740,7 +740,7 @@ class ModelServingAuthProvider():
                                    "Model Serving dependency failed") from e
 
     @classmethod
-    def get_databricks_host_token(cls) -> Optional[tuple[str, str]]:
+    def get_databricks_host_token(cls) -> Optional[Tuple[str, str]]:
         if not cls.should_fetch_model_serving_environment_oauth():
             return None
         MODEL_SERVING_HOST_ENV_VAR = "DATABRICKS_MODEL_SERVING_HOST_URL"
@@ -772,10 +772,7 @@ def model_serving_auth(cfg: 'Config') -> Optional[CredentialsProvider]:
         host, token = ModelServingAuthProvider.get_databricks_host_token()
         # If the host is not declared, then get the host from implicit credential info in the
         # model serving environment
-        print(cfg.host)
         if cfg.host is None:
-            print("SETTING DATABRICKS HOST")
-            print(cfg.host)
             cfg.host = host
         return {"Authorization": f"Bearer {token}"}
 
