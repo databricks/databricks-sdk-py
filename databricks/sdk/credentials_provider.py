@@ -741,6 +741,7 @@ class ModelServingAuthProvider():
 
     @classmethod
     def get_databricks_host_token(cls) -> Optional[tuple[str, str]]:
+        print("GETTING HERE")
         if not cls.should_fetch_model_serving_environment_oauth():
             return None
         MODEL_SERVING_HOST_ENV_VAR = "DATABRICKS_MODEL_SERVING_HOST_URL"
@@ -748,7 +749,11 @@ class ModelServingAuthProvider():
 
         # read from DB_MODEL_SERVING_HOST_ENV_VAR if available otherwise MODEL_SERVING_HOST_ENV_VAR
         host = os.environ.get(DB_MODEL_SERVING_HOST_ENV_VAR) or os.environ.get(MODEL_SERVING_HOST_ENV_VAR)
+        print("DATABRICKS SDK HOST")
+        print(host)
         token = cls.get_model_dependency_oauth_token()
+        print("DATABRICKS SDK TOKEN")
+        print(token)
         return (host, token)
 
 
@@ -769,8 +774,11 @@ def model_serving_auth(cfg: 'Config') -> Optional[CredentialsProvider]:
         host, token = ModelServingAuthProvider.get_databricks_host_token()
         # If the host is not declared, then get the host from implicit credential info in the
         # model serving environment
-        if cfg.host == None:
+        print(cfg.host)
+        if cfg.host is None:
+            print("SETTING DATABRICKS HOST")
             cfg.host = host
+        print(cfg.host)
         return {"Authorization": f"Bearer {token}"}
 
     return inner
