@@ -414,6 +414,7 @@ class CliTokenSource(Refreshable):
             is_windows = sys.platform.startswith('win')
             # windows requires shell=True to be able to execute 'az login' or other commands
             # cannot use shell=True all the time, as it breaks macOS
+            logging.debug(f'Running command: {' '.join(self._cmd)}')
             out = subprocess.run(self._cmd, capture_output=True, check=True, shell=is_windows)
             it = json.loads(out.stdout.decode())
             expires_on = self._parse_expiry(it[self._expiry_field])
@@ -448,9 +449,13 @@ class AzureCliTokenSource(CliTokenSource):
     def __is_cli_using_managed_identity() -> bool:
         """Checks whether the current CLI session is authenticated using managed identity."""
         try:
-            out = subprocess.run(["az", "account", "show", "--output", "json"],
+            cmd = ["az", "account", "show", "--output", "json"]
+            is_windows = sys.platform.startswith('win')
+            logging.debug(f'Running command: {' '.join(cmd)}')
+            out = subprocess.run(cmd,
                                  capture_output=True,
-                                 check=True)
+                                 check=True,
+                                 shell=is_windows)
             account = json.loads(out.stdout.decode())
             user = account.get("user")
             if user is None:
@@ -521,9 +526,9 @@ def azure_cli(cfg: 'Config') -> Optional[CredentialsProvider]:
     mgmt_token_source = None
     try:
         token_source = AzureCliTokenSource.for_resource(cfg, cfg.effective_azure_login_app_id)
-    except FileNotFoundError:
+    except FileNotFoundError as e:
         doc = 'https://docs.microsoft.com/en-us/cli/azure/?view=azure-cli-latest'
-        logger.debug(f'Most likely Azure CLI is not installed. See {doc} for details')
+        logger.debug(f'Most likely Azure CLI is not installed. See {doc} for details', exc_info=e)
         return None
     except OSError as e:
         logger.debug('skipping Azure CLI auth', exc_info=e)
