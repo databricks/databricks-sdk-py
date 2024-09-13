@@ -12,13 +12,20 @@ def fake_response(method: str,
                   status_code: int,
                   response_body: str,
                   path: Optional[str] = None) -> requests.Response:
+    return fake_raw_response(method, status_code, response_body.encode('utf-8'), path)
+
+
+def fake_raw_response(method: str,
+                      status_code: int,
+                      response_body: bytes,
+                      path: Optional[str] = None) -> requests.Response:
     resp = requests.Response()
     resp.status_code = status_code
     resp.reason = http.client.responses.get(status_code, '')
     if path is None:
         path = '/api/2.0/service'
     resp.request = requests.Request(method, f"https://databricks.com{path}").prepare()
-    resp._content = response_body.encode('utf-8')
+    resp._content = response_body
     return resp
 
 
@@ -110,17 +117,22 @@ subclass_test_cases = [(fake_valid_response('GET', x[0], x[1], 'nope'), x[2], 'n
        'https://github.com/databricks/databricks-sdk-go/issues. Request log:```GET /api/2.0/service\n'
        '< 400 Bad Request\n'
        '< this is not a real response```')),
-     [
-         fake_response(
-             'GET', 404,
-             json.dumps({
-                 'detail': 'Group with id 1234 is not found',
-                 'status': '404',
-                 'schemas': ['urn:ietf:params:scim:api:messages:2.0:Error']
-             })), errors.NotFound, 'None Group with id 1234 is not found'
-     ]])
+     (fake_response(
+         'GET', 404,
+         json.dumps({
+             'detail': 'Group with id 1234 is not found',
+             'status': '404',
+             'schemas': ['urn:ietf:params:scim:api:messages:2.0:Error']
+         })), errors.NotFound, 'None Group with id 1234 is not found'),
+     (fake_response('GET', 404, json.dumps("This is JSON but not a dictionary")), errors.NotFound,
+      'unable to parse response. This is likely a bug in the Databricks SDK for Python or the underlying API. Please report this issue with the following debugging information to the SDK issue tracker at https://github.com/databricks/databricks-sdk-go/issues. Request log:```GET /api/2.0/service\n< 404 Not Found\n< "This is JSON but not a dictionary"```'
+      ),
+     (fake_raw_response('GET', 404, b'\x80'), errors.NotFound,
+      'unable to parse response. This is likely a bug in the Databricks SDK for Python or the underlying API. Please report this issue with the following debugging information to the SDK issue tracker at https://github.com/databricks/databricks-sdk-go/issues. Request log:```GET /api/2.0/service\n< 404 Not Found\n< �```'
+      )])
 def test_get_api_error(response, expected_error, expected_message):
+    parser = errors._Parser()
     with pytest.raises(errors.DatabricksError) as e:
-        raise errors.get_api_error(response)
+        raise parser.get_api_error(response)
     assert isinstance(e.value, expected_error)
     assert str(e.value) == expected_message

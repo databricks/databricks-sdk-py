@@ -48,7 +48,8 @@ class RoundTrip:
             # Raw streams with `Transfer-Encoding: chunked` do not have `Content-Type` header
             sb.append("< [raw stream]")
         elif self._response.content:
-            sb.append(self._redacted_dump("< ", self._response.content.decode('utf-8')))
+            decoded = self._response.content.decode('utf-8', errors='replace')
+            sb.append(self._redacted_dump("< ", decoded))
         return '\n'.join(sb)
 
     @staticmethod
