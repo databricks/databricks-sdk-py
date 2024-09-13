@@ -92,11 +92,11 @@ class Config:
     def __init__(self,
                  *,
                  # Deprecated. Use credentials_strategy instead.
-                 credentials_provider: CredentialsStrategy = None,
-                 credentials_strategy: CredentialsStrategy = None,
+                 credentials_provider: Optional[CredentialsStrategy] = None,
+                 credentials_strategy: Optional[CredentialsStrategy] = None,
                  product=None,
                  product_version=None,
-                 clock: Clock = None,
+                 clock: Optional[Clock] = None,
                  **kwargs):
         self._header_factory = None
         self._inner = {}
