@@ -1,0 +1,7 @@
+{
+  "OAUTH_TOKEN": [
+    {
+      "oauthTokenValue": "databricks_sdk_unit_test_token_v2"
+    }
+  ]
+}

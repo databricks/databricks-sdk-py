@@ -698,6 +698,37 @@ def metadata_service(cfg: 'Config') -> Optional[CredentialsProvider]:
     return inner
 
 
+@credentials_strategy('model-serving', [])
+def model_serving_auth(cfg: 'Config') -> Optional[CredentialsProvider]:
+    # Check if we can import and can get the token
+    try:
+        from mlflow.legacy_databricks_cli.configure.provider import \
+            DatabricksModelServingConfigProvider
+        databricks_config = DatabricksModelServingConfigProvider().get_config()
+        if databricks_config is None or databricks_config.token is None:
+            raise ValueError("Unable to Authenticate using Model Serving Environment")
+    except Exception as e:
+        logger.info("Unable to use Databricks Model Serving Environment " + str(e))
+        return None
+
+    logger.info("Using Databricks Model Serving Authentication")
+
+    def inner() -> Dict[str, str]:
+        # Call here again to get the refreshed token
+        databricks_config = DatabricksModelServingConfigProvider().get_config()
+        if databricks_config is None:
+            logger.info(
+                "Unable to authenticate Databricks SDK with Databricks Model Serving Environment Auth")
+            return None
+        # If the host is not declared, then get the host from implicit credential info in the
+        # model serving environment
+        if cfg.host == None:
+            cfg.host = databricks_config.host
+        return {"Authorization": f"Bearer {databricks_config.token}"}
+
+    return inner
+
+
 class DefaultCredentials:
     """ Select the first applicable credential provider from the chain """
 
@@ -706,7 +737,7 @@ class DefaultCredentials:
         self._auth_providers = [
             pat_auth, basic_auth, metadata_service, oauth_service_principal, azure_service_principal,
             github_oidc_azure, azure_cli, external_browser, databricks_cli, runtime_native_auth,
-            google_credentials, google_id
+            google_credentials, google_id, model_serving_auth
         ]
 
     def auth_type(self) -> str:
