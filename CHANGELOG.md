@@ -1,5 +1,13 @@
 # Version changelog
 
+## [Release] Release v0.32.1
+
+### Bug Fixes
+
+ * Properly include message when handing SCIM errors ([#753](https://github.com/databricks/databricks-sdk-py/pull/753)).
+
+
+
 ## [Release] Release v0.32.0
 
 ### Bug Fixes

@@ -41,14 +41,14 @@ class WorkspaceClient:
     """
     The WorkspaceClient is a client for the workspace-level Databricks REST API.
     """
-    def __init__(self, *{{range $args}}, {{.}}: str = None{{end}},
-                 debug_truncate_bytes: int = None,
-                 debug_headers: bool = None,
+    def __init__(self, *{{range $args}}, {{.}}: Optional[str] = None{{end}},
+                 debug_truncate_bytes: Optional[int] = None,
+                 debug_headers: Optional[bool] = None,
                  product="unknown",
                  product_version="0.0.0",
-                 credentials_strategy: CredentialsStrategy = None,
-                 credentials_provider: CredentialsStrategy = None,
-                 config: client.Config = None):
+                 credentials_strategy: Optional[CredentialsStrategy] = None,
+                 credentials_provider: Optional[CredentialsStrategy] = None,
+                 config: Optional[client.Config] = None):
         if not config:
           config = client.Config({{range $args}}{{.}}={{.}}, {{end}}
             credentials_strategy=credentials_strategy,
@@ -110,14 +110,14 @@ class AccountClient:
     The AccountClient is a client for the account-level Databricks REST API.
     """
 
-    def __init__(self, *{{range $args}}, {{.}}: str = None{{end}},
-                 debug_truncate_bytes: int = None,
-                 debug_headers: bool = None,
+    def __init__(self, *{{range $args}}, {{.}}: Optional[str] = None{{end}},
+                 debug_truncate_bytes: Optional[int] = None,
+                 debug_headers: Optional[bool] = None,
                  product="unknown",
                  product_version="0.0.0",
-                 credentials_strategy: CredentialsStrategy = None,
-                 credentials_provider: CredentialsStrategy = None,
-                 config: client.Config = None):
+                 credentials_strategy: Optional[CredentialsStrategy] = None,
+                 credentials_provider: Optional[CredentialsStrategy] = None,
+                 config: Optional[client.Config] = None):
         if not config:
           config = client.Config({{range $args}}{{.}}={{.}}, {{end}}
             credentials_strategy=credentials_strategy,
