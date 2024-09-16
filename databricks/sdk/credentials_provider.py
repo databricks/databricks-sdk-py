@@ -702,53 +702,52 @@ def metadata_service(cfg: 'Config') -> Optional[CredentialsProvider]:
 class ModelServingAuthProvider():
     _MODEL_DEPENDENCY_OAUTH_TOKEN_FILE_PATH = "/var/credentials-secret/model-dependencies-oauth-token"
 
-    @classmethod
-    def is_in_databricks_model_serving_environment(cls) -> bool:
-        """
-        Check if the code is running in Databricks Model Serving environment.
-        The environment variable set by Databricks when starting the serving container.
-        """
-        val = (
-            os.environ.get("IS_IN_DB_MODEL_SERVING_ENV")
-            # Checking the old env var name for backward compatibility. The env var was renamed once
-            # to fix a model loading issue, but we still need to support it for a while.
-            or os.environ.get("IS_IN_DATABRICKS_MODEL_SERVING_ENV") or "false")
-        return val.lower() == "true"
+    def __init__(self):
+        self.expiry_time = -1
+        self.current_token = None
+        self.refresh_duration = 300 # 300 Seconds
 
-    @classmethod
-    def should_fetch_model_serving_environment_oauth(cls) -> bool:
+    def should_fetch_model_serving_environment_oauth(self) -> bool:
         """
         Check whether this is the model serving environment
         Additionally check if the oauth token file path exists
         """
-        return (cls.is_in_databricks_model_serving_environment()
-                and os.path.isfile(cls._MODEL_DEPENDENCY_OAUTH_TOKEN_FILE_PATH))
 
-    @classmethod
-    def get_model_dependency_oauth_token(cls, should_retry=True) -> str:
-        try:
-            with open(cls._MODEL_DEPENDENCY_OAUTH_TOKEN_FILE_PATH) as f:
-                oauth_dict = json.load(f)
-                return oauth_dict["OAUTH_TOKEN"][0]["oauthTokenValue"]
-        except Exception as e:
-            # sleep and retry in case of any race conditions with OAuth refreshing
-            if should_retry:
-                time.sleep(0.5)
-                return cls.get_model_dependency_oauth_token(should_retry=False)
-            else:
-                raise RuntimeError("Unable to read Oauth credentials from file mount for Databricks "
-                                   "Model Serving dependency failed") from e
+        is_in_model_serving_env = (os.environ.get("IS_IN_DB_MODEL_SERVING_ENV")
+                                   or os.environ.get("IS_IN_DATABRICKS_MODEL_SERVING_ENV") or "false")
+        print(os.environ.get("IS_IN_DATABRICKS_MODEL_SERVING_ENV"))
+        print(is_in_model_serving_env)
+        return (is_in_model_serving_env == "true"
+                and os.path.isfile(self.__class__._MODEL_DEPENDENCY_OAUTH_TOKEN_FILE_PATH))
 
-    @classmethod
-    def get_databricks_host_token(cls) -> Optional[Tuple[str, str]]:
-        if not cls.should_fetch_model_serving_environment_oauth():
+    def get_model_dependency_oauth_token(self, should_retry=True) -> str:
+        if self.current_token is not None and self.expiry_time > time.time():
+            return self.current_token
+        else:
+            try:
+                with open(self.__class__._MODEL_DEPENDENCY_OAUTH_TOKEN_FILE_PATH) as f:
+                    oauth_dict = json.load(f)
+                    self.current_token = oauth_dict["OAUTH_TOKEN"][0]["oauthTokenValue"]
+                    self.expiry_time = time.time() + self.refresh_duration
+            except Exception as e:
+                # sleep and retry in case of any race conditions with OAuth refreshing
+                if should_retry:
+                    time.sleep(0.5)
+                    return self.get_model_dependency_oauth_token(should_retry=False)
+                else:
+                    raise RuntimeError(
+                        "Unable to read OAuth credentials from the file mounted in Databricks Model Serving"
+                    ) from e
+            return self.current_token
+
+    def get_databricks_host_token(self) -> Optional[Tuple[str, str]]:
+        if not self.should_fetch_model_serving_environment_oauth():
             return None
-        MODEL_SERVING_HOST_ENV_VAR = "DATABRICKS_MODEL_SERVING_HOST_URL"
-        DB_MODEL_SERVING_HOST_ENV_VAR = "DB_MODEL_SERVING_HOST_URL"
 
         # read from DB_MODEL_SERVING_HOST_ENV_VAR if available otherwise MODEL_SERVING_HOST_ENV_VAR
-        host = os.environ.get(DB_MODEL_SERVING_HOST_ENV_VAR) or os.environ.get(MODEL_SERVING_HOST_ENV_VAR)
-        token = cls.get_model_dependency_oauth_token()
+        host = os.environ.get("DATABRICKS_MODEL_SERVING_HOST_URL") or os.environ.get(
+            "DB_MODEL_SERVING_HOST_URL")
+        token = self.get_model_dependency_oauth_token()
 
         return (host, token)
 
@@ -756,24 +755,21 @@ class ModelServingAuthProvider():
 @credentials_strategy('model-serving', [])
 def model_serving_auth(cfg: 'Config') -> Optional[CredentialsProvider]:
     try:
-        host, token = ModelServingAuthProvider.get_databricks_host_token()
+        model_serving_auth_provider = ModelServingAuthProvider()
+        host, token = model_serving_auth_provider.get_databricks_host_token()
         if token is None:
-            raise ValueError("Unable to Authenticate using Model Serving Environment")
+            raise ValueError("Unable to Authenticate using Model Serving Environment since the Token is None")
         if cfg.host is None:
             cfg.host = host
     except Exception as e:
-        logger.info("Unable to use Databricks Model Serving Environment " + str(e))
+        logger.warning("Unable to use Databricks Model Serving Environment", exc_info=e)
         return None
 
     logger.info("Using Databricks Model Serving Authentication")
 
     def inner() -> Dict[str, str]:
         # Call here again to get the refreshed token
-        host, token = ModelServingAuthProvider.get_databricks_host_token()
-        # If the host is not declared, then get the host from implicit credential info in the
-        # model serving environment
-        if cfg.host is None:
-            cfg.host = host
+        _, token = model_serving_auth_provider.get_databricks_host_token()
         return {"Authorization": f"Bearer {token}"}
 
     return inner
