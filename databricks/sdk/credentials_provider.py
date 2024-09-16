@@ -431,7 +431,7 @@ def _run_subprocess(popenargs,
                     capture_output=True,
                     timeout=None,
                     check=False,
-                    **kwargs) -> subprocess.CompletedProcess[str]:
+                    **kwargs) -> subprocess.CompletedProcess:
     """Runs subprocess with given arguments.
     This handles OS-specific modifications that need to be made to the invocation of subprocess.run."""
     kwargs['shell'] = sys.platform.startswith('win')
