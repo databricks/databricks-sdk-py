@@ -715,8 +715,6 @@ class ModelServingAuthProvider():
 
         is_in_model_serving_env = (os.environ.get("IS_IN_DB_MODEL_SERVING_ENV")
                                    or os.environ.get("IS_IN_DATABRICKS_MODEL_SERVING_ENV") or "false")
-        print(os.environ.get("IS_IN_DATABRICKS_MODEL_SERVING_ENV"))
-        print(is_in_model_serving_env)
         return (is_in_model_serving_env == "true"
                 and os.path.isfile(self.__class__._MODEL_DEPENDENCY_OAUTH_TOKEN_FILE_PATH))
 
