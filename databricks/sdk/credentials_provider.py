@@ -411,10 +411,7 @@ class CliTokenSource(Refreshable):
 
     def refresh(self) -> Token:
         try:
-            is_windows = sys.platform.startswith('win')
-            # windows requires shell=True to be able to execute 'az login' or other commands
-            # cannot use shell=True all the time, as it breaks macOS
-            out = subprocess.run(self._cmd, capture_output=True, check=True, shell=is_windows)
+            out = _run_subprocess(self._cmd, capture_output=True, check=True)
             it = json.loads(out.stdout.decode())
             expires_on = self._parse_expiry(it[self._expiry_field])
             return Token(access_token=it[self._access_token_field],
@@ -429,6 +426,26 @@ class CliTokenSource(Refreshable):
             raise IOError(f'cannot get access token: {message}') from e
 
 
+def _run_subprocess(popenargs,
+                    input=None,
+                    capture_output=True,
+                    timeout=None,
+                    check=False,
+                    **kwargs) -> subprocess.CompletedProcess:
+    """Runs subprocess with given arguments.
+    This handles OS-specific modifications that need to be made to the invocation of subprocess.run."""
+    kwargs['shell'] = sys.platform.startswith('win')
+    # windows requires shell=True to be able to execute 'az login' or other commands
+    # cannot use shell=True all the time, as it breaks macOS
+    logging.debug(f'Running command: {" ".join(popenargs)}')
+    return subprocess.run(popenargs,
+                          input=input,
+                          capture_output=capture_output,
+                          timeout=timeout,
+                          check=check,
+                          **kwargs)
+
+
 class AzureCliTokenSource(CliTokenSource):
     """ Obtain the token granted by `az login` CLI command """
 
@@ -437,12 +454,29 @@ class AzureCliTokenSource(CliTokenSource):
         if subscription is not None:
             cmd.append("--subscription")
             cmd.append(subscription)
-        if tenant:
+        if tenant and not self.__is_cli_using_managed_identity():
             cmd.extend(["--tenant", tenant])
         super().__init__(cmd=cmd,
                          token_type_field='tokenType',
                          access_token_field='accessToken',
                          expiry_field='expiresOn')
+
+    @staticmethod
+    def __is_cli_using_managed_identity() -> bool:
+        """Checks whether the current CLI session is authenticated using managed identity."""
+        try:
+            cmd = ["az", "account", "show", "--output", "json"]
+            out = _run_subprocess(cmd, capture_output=True, check=True)
+            account = json.loads(out.stdout.decode())
+            user = account.get("user")
+            if user is None:
+                return False
+            return user.get("type") == "servicePrincipal" and user.get("name") in [
+                'systemAssignedIdentity', 'userAssignedIdentity'
+            ]
+        except subprocess.CalledProcessError as e:
+            logger.debug("Failed to get account information from Azure CLI", exc_info=e)
+            return False
 
     def is_human_user(self) -> bool:
         """The UPN claim is the username of the user, but not the Service Principal.
