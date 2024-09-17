@@ -25,6 +25,9 @@ class CreatePipeline:
     allow_duplicate_names: Optional[bool] = None
     """If false, deployment will fail if name conflicts with that of another pipeline."""
 
+    budget_policy_id: Optional[str] = None
+    """Budget policy of this pipeline."""
+
     catalog: Optional[str] = None
     """A catalog in Unity Catalog to publish data from this pipeline to. If `target` is specified,
     tables in this pipeline are published to a `target` schema inside `catalog` (for example,
@@ -97,6 +100,7 @@ class CreatePipeline:
         """Serializes the CreatePipeline into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.allow_duplicate_names is not None: body['allow_duplicate_names'] = self.allow_duplicate_names
+        if self.budget_policy_id is not None: body['budget_policy_id'] = self.budget_policy_id
         if self.catalog is not None: body['catalog'] = self.catalog
         if self.channel is not None: body['channel'] = self.channel
         if self.clusters: body['clusters'] = [v.as_dict() for v in self.clusters]
@@ -124,6 +128,7 @@ class CreatePipeline:
     def from_dict(cls, d: Dict[str, any]) -> CreatePipeline:
         """Deserializes the CreatePipeline from a dictionary."""
         return cls(allow_duplicate_names=d.get('allow_duplicate_names', None),
+                   budget_policy_id=d.get('budget_policy_id', None),
                    catalog=d.get('catalog', None),
                    channel=d.get('channel', None),
                    clusters=_repeated_dict(d, 'clusters', PipelineCluster),
@@ -236,6 +241,9 @@ class EditPipeline:
     allow_duplicate_names: Optional[bool] = None
     """If false, deployment will fail if name has changed and conflicts the name of another pipeline."""
 
+    budget_policy_id: Optional[str] = None
+    """Budget policy of this pipeline."""
+
     catalog: Optional[str] = None
     """A catalog in Unity Catalog to publish data from this pipeline to. If `target` is specified,
     tables in this pipeline are published to a `target` schema inside `catalog` (for example,
@@ -313,6 +321,7 @@ class EditPipeline:
         """Serializes the EditPipeline into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.allow_duplicate_names is not None: body['allow_duplicate_names'] = self.allow_duplicate_names
+        if self.budget_policy_id is not None: body['budget_policy_id'] = self.budget_policy_id
         if self.catalog is not None: body['catalog'] = self.catalog
         if self.channel is not None: body['channel'] = self.channel
         if self.clusters: body['clusters'] = [v.as_dict() for v in self.clusters]
@@ -342,6 +351,7 @@ class EditPipeline:
     def from_dict(cls, d: Dict[str, any]) -> EditPipeline:
         """Deserializes the EditPipeline from a dictionary."""
         return cls(allow_duplicate_names=d.get('allow_duplicate_names', None),
+                   budget_policy_id=d.get('budget_policy_id', None),
                    catalog=d.get('catalog', None),
                    channel=d.get('channel', None),
                    clusters=_repeated_dict(d, 'clusters', PipelineCluster),
@@ -477,6 +487,9 @@ class GetPipelineResponse:
     creator_user_name: Optional[str] = None
     """The username of the pipeline creator."""
 
+    effective_budget_policy_id: Optional[str] = None
+    """Serverless budget policy ID of this pipeline."""
+
     health: Optional[GetPipelineResponseHealth] = None
     """The health of a pipeline."""
 
@@ -507,6 +520,8 @@ class GetPipelineResponse:
         if self.cause is not None: body['cause'] = self.cause
         if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
         if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
+        if self.effective_budget_policy_id is not None:
+            body['effective_budget_policy_id'] = self.effective_budget_policy_id
         if self.health is not None: body['health'] = self.health.value
         if self.last_modified is not None: body['last_modified'] = self.last_modified
         if self.latest_updates: body['latest_updates'] = [v.as_dict() for v in self.latest_updates]
@@ -523,6 +538,7 @@ class GetPipelineResponse:
         return cls(cause=d.get('cause', None),
                    cluster_id=d.get('cluster_id', None),
                    creator_user_name=d.get('creator_user_name', None),
+                   effective_budget_policy_id=d.get('effective_budget_policy_id', None),
                    health=_enum(d, 'health', GetPipelineResponseHealth),
                    last_modified=d.get('last_modified', None),
                    latest_updates=_repeated_dict(d, 'latest_updates', UpdateStateInfo),
@@ -1376,6 +1392,9 @@ class PipelinePermissionsRequest:
 
 @dataclass
 class PipelineSpec:
+    budget_policy_id: Optional[str] = None
+    """Budget policy of this pipeline."""
+
     catalog: Optional[str] = None
     """A catalog in Unity Catalog to publish data from this pipeline to. If `target` is specified,
     tables in this pipeline are published to a `target` schema inside `catalog` (for example,
@@ -1445,6 +1464,7 @@ class PipelineSpec:
     def as_dict(self) -> dict:
         """Serializes the PipelineSpec into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.budget_policy_id is not None: body['budget_policy_id'] = self.budget_policy_id
         if self.catalog is not None: body['catalog'] = self.catalog
         if self.channel is not None: body['channel'] = self.channel
         if self.clusters: body['clusters'] = [v.as_dict() for v in self.clusters]
@@ -1470,7 +1490,8 @@ class PipelineSpec:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> PipelineSpec:
         """Deserializes the PipelineSpec from a dictionary."""
-        return cls(catalog=d.get('catalog', None),
+        return cls(budget_policy_id=d.get('budget_policy_id', None),
+                   catalog=d.get('catalog', None),
                    channel=d.get('channel', None),
                    clusters=_repeated_dict(d, 'clusters', PipelineCluster),
                    configuration=d.get('configuration', None),
@@ -2098,6 +2119,7 @@ class PipelinesAPI:
     def create(self,
                *,
                allow_duplicate_names: Optional[bool] = None,
+               budget_policy_id: Optional[str] = None,
                catalog: Optional[str] = None,
                channel: Optional[str] = None,
                clusters: Optional[List[PipelineCluster]] = None,
@@ -2126,6 +2148,8 @@ class PipelinesAPI:
         
         :param allow_duplicate_names: bool (optional)
           If false, deployment will fail if name conflicts with that of another pipeline.
+        :param budget_policy_id: str (optional)
+          Budget policy of this pipeline.
         :param catalog: str (optional)
           A catalog in Unity Catalog to publish data from this pipeline to. If `target` is specified, tables
           in this pipeline are published to a `target` schema inside `catalog` (for example,
@@ -2176,6 +2200,7 @@ class PipelinesAPI:
         """
         body = {}
         if allow_duplicate_names is not None: body['allow_duplicate_names'] = allow_duplicate_names
+        if budget_policy_id is not None: body['budget_policy_id'] = budget_policy_id
         if catalog is not None: body['catalog'] = catalog
         if channel is not None: body['channel'] = channel
         if clusters is not None: body['clusters'] = [v.as_dict() for v in clusters]
@@ -2506,6 +2531,7 @@ class PipelinesAPI:
                pipeline_id: str,
                *,
                allow_duplicate_names: Optional[bool] = None,
+               budget_policy_id: Optional[str] = None,
                catalog: Optional[str] = None,
                channel: Optional[str] = None,
                clusters: Optional[List[PipelineCluster]] = None,
@@ -2535,6 +2561,8 @@ class PipelinesAPI:
           Unique identifier for this pipeline.
         :param allow_duplicate_names: bool (optional)
           If false, deployment will fail if name has changed and conflicts the name of another pipeline.
+        :param budget_policy_id: str (optional)
+          Budget policy of this pipeline.
         :param catalog: str (optional)
           A catalog in Unity Catalog to publish data from this pipeline to. If `target` is specified, tables
           in this pipeline are published to a `target` schema inside `catalog` (for example,
@@ -2587,6 +2615,7 @@ class PipelinesAPI:
         """
         body = {}
         if allow_duplicate_names is not None: body['allow_duplicate_names'] = allow_duplicate_names
+        if budget_policy_id is not None: body['budget_policy_id'] = budget_policy_id
         if catalog is not None: body['catalog'] = catalog
         if channel is not None: body['channel'] = channel
         if clusters is not None: body['clusters'] = [v.as_dict() for v in clusters]

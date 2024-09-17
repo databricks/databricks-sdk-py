@@ -505,7 +505,11 @@ class CreateJob:
     well as when this job is deleted."""
 
     environments: Optional[List[JobEnvironment]] = None
-    """A list of task execution environment specifications that can be referenced by tasks of this job."""
+    """A list of task execution environment specifications that can be referenced by serverless tasks
+    of this job. An environment is required to be present for serverless tasks. For serverless
+    notebook tasks, the environment is accessible in the notebook environment panel. For other
+    serverless tasks, the task environment is required to be specified using environment_key in the
+    task settings."""
 
     format: Optional[Format] = None
     """Used to tell what is the format of the job. This field is ignored in Create/Update/Reset calls.
@@ -553,12 +557,11 @@ class CreateJob:
     """The queue settings of the job."""
 
     run_as: Optional[JobRunAs] = None
-    """Write-only setting, available only in Create/Update/Reset and Submit calls. Specifies the user
-    or service principal that the job runs as. If not specified, the job runs as the user who
-    created the job.
+    """Write-only setting. Specifies the user, service principal or group that the job/pipeline runs
+    as. If not specified, the job/pipeline runs as the user who created the job/pipeline.
     
-    Only `user_name` or `service_principal_name` can be specified. If both are specified, an error
-    is thrown."""
+    Exactly one of `user_name`, `service_principal_name`, `group_name` should be specified. If not,
+    an error is thrown."""
 
     schedule: Optional[CronSchedule] = None
     """An optional periodic schedule for this job. The default behavior is that the job only runs when
@@ -1720,12 +1723,11 @@ class JobPermissionsRequest:
 
 @dataclass
 class JobRunAs:
-    """Write-only setting, available only in Create/Update/Reset and Submit calls. Specifies the user
-    or service principal that the job runs as. If not specified, the job runs as the user who
-    created the job.
+    """Write-only setting. Specifies the user, service principal or group that the job/pipeline runs
+    as. If not specified, the job/pipeline runs as the user who created the job/pipeline.
     
-    Only `user_name` or `service_principal_name` can be specified. If both are specified, an error
-    is thrown."""
+    Exactly one of `user_name`, `service_principal_name`, `group_name` should be specified. If not,
+    an error is thrown."""
 
     service_principal_name: Optional[str] = None
     """Application ID of an active service principal. Setting this field requires the
@@ -1773,7 +1775,11 @@ class JobSettings:
     well as when this job is deleted."""
 
     environments: Optional[List[JobEnvironment]] = None
-    """A list of task execution environment specifications that can be referenced by tasks of this job."""
+    """A list of task execution environment specifications that can be referenced by serverless tasks
+    of this job. An environment is required to be present for serverless tasks. For serverless
+    notebook tasks, the environment is accessible in the notebook environment panel. For other
+    serverless tasks, the task environment is required to be specified using environment_key in the
+    task settings."""
 
     format: Optional[Format] = None
     """Used to tell what is the format of the job. This field is ignored in Create/Update/Reset calls.
@@ -1821,12 +1827,11 @@ class JobSettings:
     """The queue settings of the job."""
 
     run_as: Optional[JobRunAs] = None
-    """Write-only setting, available only in Create/Update/Reset and Submit calls. Specifies the user
-    or service principal that the job runs as. If not specified, the job runs as the user who
-    created the job.
+    """Write-only setting. Specifies the user, service principal or group that the job/pipeline runs
+    as. If not specified, the job/pipeline runs as the user who created the job/pipeline.
     
-    Only `user_name` or `service_principal_name` can be specified. If both are specified, an error
-    is thrown."""
+    Exactly one of `user_name`, `service_principal_name`, `group_name` should be specified. If not,
+    an error is thrown."""
 
     schedule: Optional[CronSchedule] = None
     """An optional periodic schedule for this job. The default behavior is that the job only runs when
@@ -3617,9 +3622,11 @@ class RunResultState(Enum):
     reached. * `EXCLUDED`: The run was skipped because the necessary conditions were not met. *
     `SUCCESS_WITH_FAILURES`: The job run completed successfully with some failures; leaf tasks were
     successful. * `UPSTREAM_FAILED`: The run was skipped because of an upstream failure. *
-    `UPSTREAM_CANCELED`: The run was skipped because an upstream task was canceled."""
+    `UPSTREAM_CANCELED`: The run was skipped because an upstream task was canceled. * `DISABLED`:
+    The run was skipped because it was disabled explicitly by the user."""
 
     CANCELED = 'CANCELED'
+    DISABLED = 'DISABLED'
     EXCLUDED = 'EXCLUDED'
     FAILED = 'FAILED'
     MAXIMUM_CONCURRENT_RUNS_REACHED = 'MAXIMUM_CONCURRENT_RUNS_REACHED'
@@ -5649,7 +5656,10 @@ class JobsAPI:
           An optional set of email addresses that is notified when runs of this job begin or complete as well
           as when this job is deleted.
         :param environments: List[:class:`JobEnvironment`] (optional)
-          A list of task execution environment specifications that can be referenced by tasks of this job.
+          A list of task execution environment specifications that can be referenced by serverless tasks of
+          this job. An environment is required to be present for serverless tasks. For serverless notebook
+          tasks, the environment is accessible in the notebook environment panel. For other serverless tasks,
+          the task environment is required to be specified using environment_key in the task settings.
         :param format: :class:`Format` (optional)
           Used to tell what is the format of the job. This field is ignored in Create/Update/Reset calls. When
           using the Jobs API 2.1 this value is always set to `"MULTI_TASK"`.
@@ -5686,12 +5696,11 @@ class JobsAPI:
         :param queue: :class:`QueueSettings` (optional)
           The queue settings of the job.
         :param run_as: :class:`JobRunAs` (optional)
-          Write-only setting, available only in Create/Update/Reset and Submit calls. Specifies the user or
-          service principal that the job runs as. If not specified, the job runs as the user who created the
-          job.
+          Write-only setting. Specifies the user, service principal or group that the job/pipeline runs as. If
+          not specified, the job/pipeline runs as the user who created the job/pipeline.
           
-          Only `user_name` or `service_principal_name` can be specified. If both are specified, an error is
-          thrown.
+          Exactly one of `user_name`, `service_principal_name`, `group_name` should be specified. If not, an
+          error is thrown.
         :param schedule: :class:`CronSchedule` (optional)
           An optional periodic schedule for this job. The default behavior is that the job only runs when
           triggered by clicking “Run Now” in the Jobs UI or sending an API request to `runNow`.
