@@ -17,6 +17,7 @@ We are keen to hear feedback from you on these SDKs. Please `file GitHub issues 
    pagination
    logging
    dbutils
+   dataplane
    clients/workspace
    workspace/index
    clients/account
