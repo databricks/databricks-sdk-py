@@ -51,6 +51,22 @@ class AutomaticClusterUpdateSetting:
 
 
 @dataclass
+class BooleanMessage:
+    value: Optional[bool] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the BooleanMessage into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.value is not None: body['value'] = self.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> BooleanMessage:
+        """Deserializes the BooleanMessage from a dictionary."""
+        return cls(value=d.get('value', None))
+
+
+@dataclass
 class ClusterAutoRestartMessage:
     can_toggle: Optional[bool] = None
 
@@ -681,6 +697,54 @@ class DeleteDefaultNamespaceSettingResponse:
 
 
 @dataclass
+class DeleteDisableLegacyAccessResponse:
+    """The etag is returned."""
+
+    etag: str
+    """etag used for versioning. The response is at least as fresh as the eTag provided. This is used
+    for optimistic concurrency control as a way to help prevent simultaneous writes of a setting
+    overwriting each other. It is strongly suggested that systems make use of the etag in the read
+    -> delete pattern to perform setting deletions in order to avoid race conditions. That is, get
+    an etag from a GET request, and pass it with the DELETE request to identify the rule set version
+    you are deleting."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteDisableLegacyAccessResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.etag is not None: body['etag'] = self.etag
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteDisableLegacyAccessResponse:
+        """Deserializes the DeleteDisableLegacyAccessResponse from a dictionary."""
+        return cls(etag=d.get('etag', None))
+
+
+@dataclass
+class DeleteDisableLegacyFeaturesResponse:
+    """The etag is returned."""
+
+    etag: str
+    """etag used for versioning. The response is at least as fresh as the eTag provided. This is used
+    for optimistic concurrency control as a way to help prevent simultaneous writes of a setting
+    overwriting each other. It is strongly suggested that systems make use of the etag in the read
+    -> delete pattern to perform setting deletions in order to avoid race conditions. That is, get
+    an etag from a GET request, and pass it with the DELETE request to identify the rule set version
+    you are deleting."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteDisableLegacyFeaturesResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.etag is not None: body['etag'] = self.etag
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteDisableLegacyFeaturesResponse:
+        """Deserializes the DeleteDisableLegacyFeaturesResponse from a dictionary."""
+        return cls(etag=d.get('etag', None))
+
+
+@dataclass
 class DeleteNetworkConnectivityConfigurationResponse:
 
     def as_dict(self) -> dict:
@@ -763,6 +827,75 @@ class DestinationType(Enum):
     PAGERDUTY = 'PAGERDUTY'
     SLACK = 'SLACK'
     WEBHOOK = 'WEBHOOK'
+
+
+@dataclass
+class DisableLegacyAccess:
+    disable_legacy_access: BooleanMessage
+
+    etag: Optional[str] = None
+    """etag used for versioning. The response is at least as fresh as the eTag provided. This is used
+    for optimistic concurrency control as a way to help prevent simultaneous writes of a setting
+    overwriting each other. It is strongly suggested that systems make use of the etag in the read
+    -> update pattern to perform setting updates in order to avoid race conditions. That is, get an
+    etag from a GET request, and pass it with the PATCH request to identify the setting version you
+    are updating."""
+
+    setting_name: Optional[str] = None
+    """Name of the corresponding setting. This field is populated in the response, but it will not be
+    respected even if it's set in the request body. The setting name in the path parameter will be
+    respected instead. Setting name is required to be 'default' if the setting only has one instance
+    per workspace."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DisableLegacyAccess into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.disable_legacy_access: body['disable_legacy_access'] = self.disable_legacy_access.as_dict()
+        if self.etag is not None: body['etag'] = self.etag
+        if self.setting_name is not None: body['setting_name'] = self.setting_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DisableLegacyAccess:
+        """Deserializes the DisableLegacyAccess from a dictionary."""
+        return cls(disable_legacy_access=_from_dict(d, 'disable_legacy_access', BooleanMessage),
+                   etag=d.get('etag', None),
+                   setting_name=d.get('setting_name', None))
+
+
+@dataclass
+class DisableLegacyFeatures:
+    disable_legacy_features: BooleanMessage
+
+    etag: Optional[str] = None
+    """etag used for versioning. The response is at least as fresh as the eTag provided. This is used
+    for optimistic concurrency control as a way to help prevent simultaneous writes of a setting
+    overwriting each other. It is strongly suggested that systems make use of the etag in the read
+    -> update pattern to perform setting updates in order to avoid race conditions. That is, get an
+    etag from a GET request, and pass it with the PATCH request to identify the setting version you
+    are updating."""
+
+    setting_name: Optional[str] = None
+    """Name of the corresponding setting. This field is populated in the response, but it will not be
+    respected even if it's set in the request body. The setting name in the path parameter will be
+    respected instead. Setting name is required to be 'default' if the setting only has one instance
+    per workspace."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DisableLegacyFeatures into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.disable_legacy_features:
+            body['disable_legacy_features'] = self.disable_legacy_features.as_dict()
+        if self.etag is not None: body['etag'] = self.etag
+        if self.setting_name is not None: body['setting_name'] = self.setting_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DisableLegacyFeatures:
+        """Deserializes the DisableLegacyFeatures from a dictionary."""
+        return cls(disable_legacy_features=_from_dict(d, 'disable_legacy_features', BooleanMessage),
+                   etag=d.get('etag', None),
+                   setting_name=d.get('setting_name', None))
 
 
 @dataclass
@@ -2235,6 +2368,7 @@ class TokenPermissionsRequest:
 class TokenType(Enum):
     """The type of token request. As of now, only `AZURE_ACTIVE_DIRECTORY_TOKEN` is supported."""
 
+    ARCLIGHT_AZURE_EXCHANGE_TOKEN = 'ARCLIGHT_AZURE_EXCHANGE_TOKEN'
     AZURE_ACTIVE_DIRECTORY_TOKEN = 'AZURE_ACTIVE_DIRECTORY_TOKEN'
 
 
@@ -2363,6 +2497,66 @@ class UpdateDefaultNamespaceSettingRequest:
         return cls(allow_missing=d.get('allow_missing', None),
                    field_mask=d.get('field_mask', None),
                    setting=_from_dict(d, 'setting', DefaultNamespaceSetting))
+
+
+@dataclass
+class UpdateDisableLegacyAccessRequest:
+    """Details required to update a setting."""
+
+    allow_missing: bool
+    """This should always be set to true for Settings API. Added for AIP compliance."""
+
+    setting: DisableLegacyAccess
+
+    field_mask: str
+    """Field mask is required to be passed into the PATCH request. Field mask specifies which fields of
+    the setting payload will be updated. The field mask needs to be supplied as single string. To
+    specify multiple fields in the field mask, use comma as the separator (no space)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateDisableLegacyAccessRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.allow_missing is not None: body['allow_missing'] = self.allow_missing
+        if self.field_mask is not None: body['field_mask'] = self.field_mask
+        if self.setting: body['setting'] = self.setting.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateDisableLegacyAccessRequest:
+        """Deserializes the UpdateDisableLegacyAccessRequest from a dictionary."""
+        return cls(allow_missing=d.get('allow_missing', None),
+                   field_mask=d.get('field_mask', None),
+                   setting=_from_dict(d, 'setting', DisableLegacyAccess))
+
+
+@dataclass
+class UpdateDisableLegacyFeaturesRequest:
+    """Details required to update a setting."""
+
+    allow_missing: bool
+    """This should always be set to true for Settings API. Added for AIP compliance."""
+
+    setting: DisableLegacyFeatures
+
+    field_mask: str
+    """Field mask is required to be passed into the PATCH request. Field mask specifies which fields of
+    the setting payload will be updated. The field mask needs to be supplied as single string. To
+    specify multiple fields in the field mask, use comma as the separator (no space)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateDisableLegacyFeaturesRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.allow_missing is not None: body['allow_missing'] = self.allow_missing
+        if self.field_mask is not None: body['field_mask'] = self.field_mask
+        if self.setting: body['setting'] = self.setting.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateDisableLegacyFeaturesRequest:
+        """Deserializes the UpdateDisableLegacyFeaturesRequest from a dictionary."""
+        return cls(allow_missing=d.get('allow_missing', None),
+                   field_mask=d.get('field_mask', None),
+                   setting=_from_dict(d, 'setting', DisableLegacyFeatures))
 
 
 @dataclass
@@ -2791,6 +2985,7 @@ class AccountSettingsAPI:
         self._api = api_client
 
         self._csp_enablement_account = CspEnablementAccountAPI(self._api)
+        self._disable_legacy_features = DisableLegacyFeaturesAPI(self._api)
         self._esm_enablement_account = EsmEnablementAccountAPI(self._api)
         self._personal_compute = PersonalComputeAPI(self._api)
 
@@ -2798,6 +2993,11 @@ class AccountSettingsAPI:
     def csp_enablement_account(self) -> CspEnablementAccountAPI:
         """The compliance security profile settings at the account level control whether to enable it for new workspaces."""
         return self._csp_enablement_account
+
+    @property
+    def disable_legacy_features(self) -> DisableLegacyFeaturesAPI:
+        """Disable legacy features for new Databricks workspaces."""
+        return self._disable_legacy_features
 
     @property
     def esm_enablement_account(self) -> EsmEnablementAccountAPI:
@@ -3150,6 +3350,188 @@ class DefaultNamespaceAPI:
                            body=body,
                            headers=headers)
         return DefaultNamespaceSetting.from_dict(res)
+
+
+class DisableLegacyAccessAPI:
+    """'Disabling legacy access' has the following impacts:
+    
+    1. Disables direct access to the Hive Metastore. However, you can still access Hive Metastore through HMS
+    Federation. 2. Disables Fallback Mode (docs link) on any External Location access from the workspace. 3.
+    Alters DBFS path access to use External Location permissions in place of legacy credentials. 4. Enforces
+    Unity Catalog access on all path based access."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def delete(self, *, etag: Optional[str] = None) -> DeleteDisableLegacyAccessResponse:
+        """Delete Legacy Access Disablement Status.
+        
+        Deletes legacy access disablement status.
+        
+        :param etag: str (optional)
+          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
+          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
+          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
+          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
+          request, and pass it with the DELETE request to identify the rule set version you are deleting.
+        
+        :returns: :class:`DeleteDisableLegacyAccessResponse`
+        """
+
+        query = {}
+        if etag is not None: query['etag'] = etag
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do('DELETE',
+                           '/api/2.0/settings/types/disable_legacy_access/names/default',
+                           query=query,
+                           headers=headers)
+        return DeleteDisableLegacyAccessResponse.from_dict(res)
+
+    def get(self, *, etag: Optional[str] = None) -> DisableLegacyAccess:
+        """Retrieve Legacy Access Disablement Status.
+        
+        Retrieves legacy access disablement Status.
+        
+        :param etag: str (optional)
+          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
+          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
+          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
+          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
+          request, and pass it with the DELETE request to identify the rule set version you are deleting.
+        
+        :returns: :class:`DisableLegacyAccess`
+        """
+
+        query = {}
+        if etag is not None: query['etag'] = etag
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do('GET',
+                           '/api/2.0/settings/types/disable_legacy_access/names/default',
+                           query=query,
+                           headers=headers)
+        return DisableLegacyAccess.from_dict(res)
+
+    def update(self, allow_missing: bool, setting: DisableLegacyAccess,
+               field_mask: str) -> DisableLegacyAccess:
+        """Update Legacy Access Disablement Status.
+        
+        Updates legacy access disablement status.
+        
+        :param allow_missing: bool
+          This should always be set to true for Settings API. Added for AIP compliance.
+        :param setting: :class:`DisableLegacyAccess`
+        :param field_mask: str
+          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
+          setting payload will be updated. The field mask needs to be supplied as single string. To specify
+          multiple fields in the field mask, use comma as the separator (no space).
+        
+        :returns: :class:`DisableLegacyAccess`
+        """
+        body = {}
+        if allow_missing is not None: body['allow_missing'] = allow_missing
+        if field_mask is not None: body['field_mask'] = field_mask
+        if setting is not None: body['setting'] = setting.as_dict()
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do('PATCH',
+                           '/api/2.0/settings/types/disable_legacy_access/names/default',
+                           body=body,
+                           headers=headers)
+        return DisableLegacyAccess.from_dict(res)
+
+
+class DisableLegacyFeaturesAPI:
+    """Disable legacy features for new Databricks workspaces.
+    
+    For newly created workspaces: 1. Disables the use of DBFS root and mounts. 2. Hive Metastore will not be
+    provisioned. 3. Disables the use of ‘No-isolation clusters’. 4. Disables Databricks Runtime versions
+    prior to 13.3LTS."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def delete(self, *, etag: Optional[str] = None) -> DeleteDisableLegacyFeaturesResponse:
+        """Delete the disable legacy features setting.
+        
+        Deletes the disable legacy features setting.
+        
+        :param etag: str (optional)
+          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
+          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
+          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
+          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
+          request, and pass it with the DELETE request to identify the rule set version you are deleting.
+        
+        :returns: :class:`DeleteDisableLegacyFeaturesResponse`
+        """
+
+        query = {}
+        if etag is not None: query['etag'] = etag
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do(
+            'DELETE',
+            f'/api/2.0/accounts/{self._api.account_id}/settings/types/disable_legacy_features/names/default',
+            query=query,
+            headers=headers)
+        return DeleteDisableLegacyFeaturesResponse.from_dict(res)
+
+    def get(self, *, etag: Optional[str] = None) -> DisableLegacyFeatures:
+        """Get the disable legacy features setting.
+        
+        Gets the value of the disable legacy features setting.
+        
+        :param etag: str (optional)
+          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
+          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
+          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
+          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
+          request, and pass it with the DELETE request to identify the rule set version you are deleting.
+        
+        :returns: :class:`DisableLegacyFeatures`
+        """
+
+        query = {}
+        if etag is not None: query['etag'] = etag
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do(
+            'GET',
+            f'/api/2.0/accounts/{self._api.account_id}/settings/types/disable_legacy_features/names/default',
+            query=query,
+            headers=headers)
+        return DisableLegacyFeatures.from_dict(res)
+
+    def update(self, allow_missing: bool, setting: DisableLegacyFeatures,
+               field_mask: str) -> DisableLegacyFeatures:
+        """Update the disable legacy features setting.
+        
+        Updates the value of the disable legacy features setting.
+        
+        :param allow_missing: bool
+          This should always be set to true for Settings API. Added for AIP compliance.
+        :param setting: :class:`DisableLegacyFeatures`
+        :param field_mask: str
+          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
+          setting payload will be updated. The field mask needs to be supplied as single string. To specify
+          multiple fields in the field mask, use comma as the separator (no space).
+        
+        :returns: :class:`DisableLegacyFeatures`
+        """
+        body = {}
+        if allow_missing is not None: body['allow_missing'] = allow_missing
+        if field_mask is not None: body['field_mask'] = field_mask
+        if setting is not None: body['setting'] = setting.as_dict()
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do(
+            'PATCH',
+            f'/api/2.0/accounts/{self._api.account_id}/settings/types/disable_legacy_features/names/default',
+            body=body,
+            headers=headers)
+        return DisableLegacyFeatures.from_dict(res)
 
 
 class EnhancedSecurityMonitoringAPI:
@@ -4023,6 +4405,7 @@ class SettingsAPI:
         self._automatic_cluster_update = AutomaticClusterUpdateAPI(self._api)
         self._compliance_security_profile = ComplianceSecurityProfileAPI(self._api)
         self._default_namespace = DefaultNamespaceAPI(self._api)
+        self._disable_legacy_access = DisableLegacyAccessAPI(self._api)
         self._enhanced_security_monitoring = EnhancedSecurityMonitoringAPI(self._api)
         self._restrict_workspace_admins = RestrictWorkspaceAdminsAPI(self._api)
 
@@ -4040,6 +4423,11 @@ class SettingsAPI:
     def default_namespace(self) -> DefaultNamespaceAPI:
         """The default namespace setting API allows users to configure the default namespace for a Databricks workspace."""
         return self._default_namespace
+
+    @property
+    def disable_legacy_access(self) -> DisableLegacyAccessAPI:
+        """'Disabling legacy access' has the following impacts: 1."""
+        return self._disable_legacy_access
 
     @property
     def enhanced_security_monitoring(self) -> EnhancedSecurityMonitoringAPI:

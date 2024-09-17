@@ -504,29 +504,6 @@ class ChannelName(Enum):
 
 
 @dataclass
-class ClientCallContext:
-    """Client code that triggered the request"""
-
-    file_name: Optional[EncodedText] = None
-    """File name that contains the last line that triggered the request."""
-
-    line_number: Optional[int] = None
-    """Last line number within a file or notebook cell that triggered the request."""
-
-    def as_dict(self) -> dict:
-        """Serializes the ClientCallContext into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.file_name: body['file_name'] = self.file_name.as_dict()
-        if self.line_number is not None: body['line_number'] = self.line_number
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ClientCallContext:
-        """Deserializes the ClientCallContext from a dictionary."""
-        return cls(file_name=_from_dict(d, 'file_name', EncodedText), line_number=d.get('line_number', None))
-
-
-@dataclass
 class ColumnInfo:
     name: Optional[str] = None
     """The name of the column."""
@@ -1613,34 +1590,6 @@ class Empty:
     def from_dict(cls, d: Dict[str, any]) -> Empty:
         """Deserializes the Empty from a dictionary."""
         return cls()
-
-
-@dataclass
-class EncodedText:
-    encoding: Optional[EncodedTextEncoding] = None
-    """Carry text data in different form."""
-
-    text: Optional[str] = None
-    """text data"""
-
-    def as_dict(self) -> dict:
-        """Serializes the EncodedText into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.encoding is not None: body['encoding'] = self.encoding.value
-        if self.text is not None: body['text'] = self.text
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> EncodedText:
-        """Deserializes the EncodedText from a dictionary."""
-        return cls(encoding=_enum(d, 'encoding', EncodedTextEncoding), text=d.get('text', None))
-
-
-class EncodedTextEncoding(Enum):
-    """Carry text data in different form."""
-
-    BASE64 = 'BASE64'
-    PLAIN = 'PLAIN'
 
 
 @dataclass
@@ -3447,8 +3396,6 @@ class QueryInfo:
     query_id: Optional[str] = None
     """The query ID."""
 
-    query_source: Optional[QuerySource] = None
-
     query_start_time_ms: Optional[int] = None
     """The time the query started."""
 
@@ -3496,7 +3443,6 @@ class QueryInfo:
         if self.plans_state is not None: body['plans_state'] = self.plans_state.value
         if self.query_end_time_ms is not None: body['query_end_time_ms'] = self.query_end_time_ms
         if self.query_id is not None: body['query_id'] = self.query_id
-        if self.query_source: body['query_source'] = self.query_source.as_dict()
         if self.query_start_time_ms is not None: body['query_start_time_ms'] = self.query_start_time_ms
         if self.query_text is not None: body['query_text'] = self.query_text
         if self.rows_produced is not None: body['rows_produced'] = self.rows_produced
@@ -3524,7 +3470,6 @@ class QueryInfo:
                    plans_state=_enum(d, 'plans_state', PlansState),
                    query_end_time_ms=d.get('query_end_time_ms', None),
                    query_id=d.get('query_id', None),
-                   query_source=_from_dict(d, 'query_source', QuerySource),
                    query_start_time_ms=d.get('query_start_time_ms', None),
                    query_text=d.get('query_text', None),
                    rows_produced=d.get('rows_produced', None),
@@ -3841,176 +3786,6 @@ class QueryPostContent:
                    tags=d.get('tags', None))
 
 
-@dataclass
-class QuerySource:
-    alert_id: Optional[str] = None
-    """UUID"""
-
-    client_call_context: Optional[ClientCallContext] = None
-    """Client code that triggered the request"""
-
-    command_id: Optional[str] = None
-    """Id associated with a notebook cell"""
-
-    command_run_id: Optional[str] = None
-    """Id associated with a notebook run or execution"""
-
-    dashboard_id: Optional[str] = None
-    """UUID"""
-
-    dashboard_v3_id: Optional[str] = None
-    """UUID for Lakeview Dashboards, separate from DBSQL Dashboards (dashboard_id)"""
-
-    driver_info: Optional[QuerySourceDriverInfo] = None
-
-    entry_point: Optional[QuerySourceEntryPoint] = None
-    """Spark service that received and processed the query"""
-
-    genie_space_id: Optional[str] = None
-    """UUID for Genie space"""
-
-    is_cloud_fetch: Optional[bool] = None
-
-    is_databricks_sql_exec_api: Optional[bool] = None
-
-    job_id: Optional[str] = None
-
-    job_managed_by: Optional[QuerySourceJobManager] = None
-    """With background compute, jobs can be managed by different internal teams. When not specified,
-    not a background compute job When specified and the value is not JOBS, it is a background
-    compute job"""
-
-    notebook_id: Optional[str] = None
-
-    query_tags: Optional[str] = None
-    """String provided by a customer that'll help them identify the query"""
-
-    run_id: Optional[str] = None
-    """Id associated with a job run or execution"""
-
-    runnable_command_id: Optional[str] = None
-    """Id associated with a notebook cell run or execution"""
-
-    scheduled_by: Optional[QuerySourceTrigger] = None
-
-    serverless_channel_info: Optional[ServerlessChannelInfo] = None
-
-    source_query_id: Optional[str] = None
-    """UUID"""
-
-    def as_dict(self) -> dict:
-        """Serializes the QuerySource into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.alert_id is not None: body['alert_id'] = self.alert_id
-        if self.client_call_context: body['client_call_context'] = self.client_call_context.as_dict()
-        if self.command_id is not None: body['command_id'] = self.command_id
-        if self.command_run_id is not None: body['command_run_id'] = self.command_run_id
-        if self.dashboard_id is not None: body['dashboard_id'] = self.dashboard_id
-        if self.dashboard_v3_id is not None: body['dashboard_v3_id'] = self.dashboard_v3_id
-        if self.driver_info: body['driver_info'] = self.driver_info.as_dict()
-        if self.entry_point is not None: body['entry_point'] = self.entry_point.value
-        if self.genie_space_id is not None: body['genie_space_id'] = self.genie_space_id
-        if self.is_cloud_fetch is not None: body['is_cloud_fetch'] = self.is_cloud_fetch
-        if self.is_databricks_sql_exec_api is not None:
-            body['is_databricks_sql_exec_api'] = self.is_databricks_sql_exec_api
-        if self.job_id is not None: body['job_id'] = self.job_id
-        if self.job_managed_by is not None: body['job_managed_by'] = self.job_managed_by.value
-        if self.notebook_id is not None: body['notebook_id'] = self.notebook_id
-        if self.query_tags is not None: body['query_tags'] = self.query_tags
-        if self.run_id is not None: body['run_id'] = self.run_id
-        if self.runnable_command_id is not None: body['runnable_command_id'] = self.runnable_command_id
-        if self.scheduled_by is not None: body['scheduled_by'] = self.scheduled_by.value
-        if self.serverless_channel_info:
-            body['serverless_channel_info'] = self.serverless_channel_info.as_dict()
-        if self.source_query_id is not None: body['source_query_id'] = self.source_query_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> QuerySource:
-        """Deserializes the QuerySource from a dictionary."""
-        return cls(alert_id=d.get('alert_id', None),
-                   client_call_context=_from_dict(d, 'client_call_context', ClientCallContext),
-                   command_id=d.get('command_id', None),
-                   command_run_id=d.get('command_run_id', None),
-                   dashboard_id=d.get('dashboard_id', None),
-                   dashboard_v3_id=d.get('dashboard_v3_id', None),
-                   driver_info=_from_dict(d, 'driver_info', QuerySourceDriverInfo),
-                   entry_point=_enum(d, 'entry_point', QuerySourceEntryPoint),
-                   genie_space_id=d.get('genie_space_id', None),
-                   is_cloud_fetch=d.get('is_cloud_fetch', None),
-                   is_databricks_sql_exec_api=d.get('is_databricks_sql_exec_api', None),
-                   job_id=d.get('job_id', None),
-                   job_managed_by=_enum(d, 'job_managed_by', QuerySourceJobManager),
-                   notebook_id=d.get('notebook_id', None),
-                   query_tags=d.get('query_tags', None),
-                   run_id=d.get('run_id', None),
-                   runnable_command_id=d.get('runnable_command_id', None),
-                   scheduled_by=_enum(d, 'scheduled_by', QuerySourceTrigger),
-                   serverless_channel_info=_from_dict(d, 'serverless_channel_info', ServerlessChannelInfo),
-                   source_query_id=d.get('source_query_id', None))
-
-
-@dataclass
-class QuerySourceDriverInfo:
-    bi_tool_entry: Optional[str] = None
-
-    driver_name: Optional[str] = None
-
-    simba_branding_vendor: Optional[str] = None
-
-    version_number: Optional[str] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the QuerySourceDriverInfo into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.bi_tool_entry is not None: body['bi_tool_entry'] = self.bi_tool_entry
-        if self.driver_name is not None: body['driver_name'] = self.driver_name
-        if self.simba_branding_vendor is not None: body['simba_branding_vendor'] = self.simba_branding_vendor
-        if self.version_number is not None: body['version_number'] = self.version_number
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> QuerySourceDriverInfo:
-        """Deserializes the QuerySourceDriverInfo from a dictionary."""
-        return cls(bi_tool_entry=d.get('bi_tool_entry', None),
-                   driver_name=d.get('driver_name', None),
-                   simba_branding_vendor=d.get('simba_branding_vendor', None),
-                   version_number=d.get('version_number', None))
-
-
-class QuerySourceEntryPoint(Enum):
-    """Spark service that received and processed the query"""
-
-    DLT = 'DLT'
-    SPARK_CONNECT = 'SPARK_CONNECT'
-    THRIFT_SERVER = 'THRIFT_SERVER'
-
-
-class QuerySourceJobManager(Enum):
-    """Copied from elastic-spark-common/api/messages/manager.proto with enum values changed by 1 to
-    accommodate JOB_MANAGER_UNSPECIFIED"""
-
-    APP_SYSTEM_TABLE = 'APP_SYSTEM_TABLE'
-    AUTOML = 'AUTOML'
-    AUTO_MAINTENANCE = 'AUTO_MAINTENANCE'
-    CLEAN_ROOMS = 'CLEAN_ROOMS'
-    DATA_MONITORING = 'DATA_MONITORING'
-    DATA_SHARING = 'DATA_SHARING'
-    ENCRYPTION = 'ENCRYPTION'
-    FABRIC_CRAWLER = 'FABRIC_CRAWLER'
-    JOBS = 'JOBS'
-    LAKEVIEW = 'LAKEVIEW'
-    MANAGED_RAG = 'MANAGED_RAG'
-    SCHEDULED_MV_REFRESH = 'SCHEDULED_MV_REFRESH'
-    TESTING = 'TESTING'
-
-
-class QuerySourceTrigger(Enum):
-
-    MANUAL = 'MANUAL'
-    SCHEDULED = 'SCHEDULED'
-
-
 class QueryStatementType(Enum):
 
     ALTER = 'ALTER'
@@ -4226,23 +4001,6 @@ class RunAsRole(Enum):
 
     OWNER = 'owner'
     VIEWER = 'viewer'
-
-
-@dataclass
-class ServerlessChannelInfo:
-    name: Optional[ChannelName] = None
-    """Name of the Channel"""
-
-    def as_dict(self) -> dict:
-        """Serializes the ServerlessChannelInfo into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.name is not None: body['name'] = self.name.value
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ServerlessChannelInfo:
-        """Deserializes the ServerlessChannelInfo from a dictionary."""
-        return cls(name=_enum(d, 'name', ChannelName))
 
 
 @dataclass
@@ -6800,7 +6558,9 @@ class StatementExecutionAPI:
     are approximate, occur server-side, and cannot account for things such as caller delays and network
     latency from caller to service. - The system will auto-close a statement after one hour if the client
     stops polling and thus you must poll at least once an hour. - The results are only available for one hour
-    after success; polling does not extend this.
+    after success; polling does not extend this. - The SQL Execution API must be used for the entire lifecycle
+    of the statement. For example, you cannot use the Jobs API to execute the command, and then the SQL
+    Execution API to cancel it.
     
     [Apache Arrow Columnar]: https://arrow.apache.org/overview/
     [Databricks SQL Statement Execution API tutorial]: https://docs.databricks.com/sql/api/sql-execution-tutorial.html"""

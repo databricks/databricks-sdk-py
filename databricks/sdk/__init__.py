@@ -1,5 +1,3 @@
-from typing import Optional
-
 import databricks.sdk.core as client
 import databricks.sdk.dbutils as dbutils
 from databricks.sdk import azure
@@ -24,6 +22,7 @@ from databricks.sdk.service.catalog import (AccountMetastoreAssignmentsAPI,
                                             StorageCredentialsAPI,
                                             SystemSchemasAPI,
                                             TableConstraintsAPI, TablesAPI,
+                                            TemporaryTableCredentialsAPI,
                                             VolumesAPI, WorkspaceBindingsAPI)
 from databricks.sdk.service.compute import (ClusterPoliciesAPI, ClustersAPI,
                                             CommandExecutionAPI,
@@ -69,6 +68,8 @@ from databricks.sdk.service.settings import (AccountIpAccessListsAPI,
                                              CredentialsManagerAPI,
                                              CspEnablementAccountAPI,
                                              DefaultNamespaceAPI,
+                                             DisableLegacyAccessAPI,
+                                             DisableLegacyFeaturesAPI,
                                              EnhancedSecurityMonitoringAPI,
                                              EsmEnablementAccountAPI,
                                              IpAccessListsAPI,
@@ -253,6 +254,7 @@ class WorkspaceClient:
         self._system_schemas = SystemSchemasAPI(self._api_client)
         self._table_constraints = TableConstraintsAPI(self._api_client)
         self._tables = TablesAPI(self._api_client)
+        self._temporary_table_credentials = TemporaryTableCredentialsAPI(self._api_client)
         self._token_management = TokenManagementAPI(self._api_client)
         self._tokens = TokensAPI(self._api_client)
         self._users = UsersAPI(self._api_client)
@@ -675,6 +677,11 @@ class WorkspaceClient:
     def tables(self) -> TablesAPI:
         """A table resides in the third layer of Unity Catalog’s three-level namespace."""
         return self._tables
+
+    @property
+    def temporary_table_credentials(self) -> TemporaryTableCredentialsAPI:
+        """Temporary Table Credentials refer to short-lived, downscoped credentials used to access cloud storage locationswhere table data is stored in Databricks."""
+        return self._temporary_table_credentials
 
     @property
     def token_management(self) -> TokenManagementAPI:
