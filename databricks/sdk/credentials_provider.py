@@ -718,27 +718,29 @@ class ModelServingAuthProvider():
         is_in_model_serving_env = (os.environ.get("IS_IN_DB_MODEL_SERVING_ENV")
                                    or os.environ.get("IS_IN_DATABRICKS_MODEL_SERVING_ENV") or "false")
         return (is_in_model_serving_env == "true"
-                and os.path.isfile(self.__class__._MODEL_DEPENDENCY_OAUTH_TOKEN_FILE_PATH))
+                and os.path.isfile(self._MODEL_DEPENDENCY_OAUTH_TOKEN_FILE_PATH))
 
     def get_model_dependency_oauth_token(self, should_retry=True) -> str:
+        # Use Cached value if it is valid
         if self.current_token is not None and self.expiry_time > time.time():
             return self.current_token
-        else:
-            try:
-                with open(self.__class__._MODEL_DEPENDENCY_OAUTH_TOKEN_FILE_PATH) as f:
-                    oauth_dict = json.load(f)
-                    self.current_token = oauth_dict["OAUTH_TOKEN"][0]["oauthTokenValue"]
-                    self.expiry_time = time.time() + self.refresh_duration
-            except Exception as e:
-                # sleep and retry in case of any race conditions with OAuth refreshing
-                if should_retry:
-                    time.sleep(0.5)
-                    return self.get_model_dependency_oauth_token(should_retry=False)
-                else:
-                    raise RuntimeError(
-                        "Unable to read OAuth credentials from the file mounted in Databricks Model Serving"
-                    ) from e
-            return self.current_token
+
+        try:
+            with open(self._MODEL_DEPENDENCY_OAUTH_TOKEN_FILE_PATH) as f:
+                oauth_dict = json.load(f)
+                self.current_token = oauth_dict["OAUTH_TOKEN"][0]["oauthTokenValue"]
+                self.expiry_time = time.time() + self.refresh_duration
+        except Exception as e:
+            # sleep and retry in case of any race conditions with OAuth refreshing
+            if should_retry:
+                logger.warning("Unable to read oauth token on first attmept in Model Serving Environment", exc_info=e)
+                time.sleep(0.5)
+                return self.get_model_dependency_oauth_token(should_retry=False)
+            else:
+                raise RuntimeError(
+                    "Unable to read OAuth credentials from the file mounted in Databricks Model Serving"
+                ) from e
+        return self.current_token
 
     def get_databricks_host_token(self) -> Optional[Tuple[str, str]]:
         if not self.should_fetch_model_serving_environment_oauth():
@@ -756,6 +758,9 @@ class ModelServingAuthProvider():
 def model_serving_auth(cfg: 'Config') -> Optional[CredentialsProvider]:
     try:
         model_serving_auth_provider = ModelServingAuthProvider()
+        if not model_serving_auth_provider.should_fetch_model_serving_environment_oauth():
+            logger.debug("model-serving: Not in Databricks Model Serving, skipping")
+            return None
         host, token = model_serving_auth_provider.get_databricks_host_token()
         if token is None:
             raise ValueError(
