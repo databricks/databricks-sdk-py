@@ -699,6 +699,8 @@ def metadata_service(cfg: 'Config') -> Optional[CredentialsProvider]:
     return inner
 
 
+# This Code is derived from Mlflow DatabricksModelServingConfigProvider
+# https://github.com/mlflow/mlflow/blob/1219e3ef1aac7d337a618a352cd859b336cf5c81/mlflow/legacy_databricks_cli/configure/provider.py#L332
 class ModelServingAuthProvider():
     _MODEL_DEPENDENCY_OAUTH_TOKEN_FILE_PATH = "/var/credentials-secret/model-dependencies-oauth-token"
 
@@ -756,11 +758,13 @@ def model_serving_auth(cfg: 'Config') -> Optional[CredentialsProvider]:
         model_serving_auth_provider = ModelServingAuthProvider()
         host, token = model_serving_auth_provider.get_databricks_host_token()
         if token is None:
-            raise ValueError("Unable to Authenticate using Model Serving Environment since the Token is None")
+            raise ValueError(
+                "Got malformed auth (empty token) when fetching auth implicitly available in Model Serving Environment. Please contact Databricks support"
+            )
         if cfg.host is None:
             cfg.host = host
     except Exception as e:
-        logger.warning("Unable to use Databricks Model Serving Environment", exc_info=e)
+        logger.warning("Unable to get auth from Databricks Model Serving Environment", exc_info=e)
         return None
 
     logger.info("Using Databricks Model Serving Authentication")
