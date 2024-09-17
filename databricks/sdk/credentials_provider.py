@@ -733,7 +733,8 @@ class ModelServingAuthProvider():
         except Exception as e:
             # sleep and retry in case of any race conditions with OAuth refreshing
             if should_retry:
-                logger.warning("Unable to read oauth token on first attmept in Model Serving Environment", exc_info=e)
+                logger.warning("Unable to read oauth token on first attmept in Model Serving Environment",
+                               exc_info=e)
                 time.sleep(0.5)
                 return self.get_model_dependency_oauth_token(should_retry=False)
             else:
