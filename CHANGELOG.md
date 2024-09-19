@@ -1,5 +1,19 @@
 # Version changelog
 
+## [Release] Release v0.32.3
+
+### New Features and Improvements
+
+ * Integrate Databricks SDK with Model Serving Auth Provider ([#761](https://github.com/databricks/databricks-sdk-py/pull/761)).
+
+
+### Bug Fixes
+
+ * Add DataPlane docs to the index ([#764](https://github.com/databricks/databricks-sdk-py/pull/764)).
+ * `mypy` error: Skipping analyzing "google": module is installed, but missing library stubs or py.typed marker ([#769](https://github.com/databricks/databricks-sdk-py/pull/769)).
+
+
+
 ## [Release] Release v0.32.2
 
 ### New Features and Improvements
