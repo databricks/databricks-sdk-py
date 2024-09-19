@@ -13,7 +13,7 @@ import time
 from datetime import datetime
 from typing import Callable, Dict, List, Optional, Tuple, Union
 
-import google.auth
+import google.auth  # type: ignore
 import requests
 from google.auth import impersonated_credentials
 from google.auth.transport.requests import Request
