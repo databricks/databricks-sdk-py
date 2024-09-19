@@ -13,11 +13,11 @@ import time
 from datetime import datetime
 from typing import Callable, Dict, List, Optional, Tuple, Union
 
-import google.auth
+import google.auth  # type: ignore
 import requests
-from google.auth import impersonated_credentials
-from google.auth.transport.requests import Request
-from google.oauth2 import service_account
+from google.auth import impersonated_credentials  # type: ignore
+from google.auth.transport.requests import Request  # type: ignore
+from google.oauth2 import service_account  # type: ignore
 
 from .azure import add_sp_management_token, add_workspace_id_header
 from .oauth import (ClientCredentials, OAuthClient, Refreshable, Token,
