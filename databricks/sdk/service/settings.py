@@ -2247,6 +2247,9 @@ class TokenInfo:
     token_id: Optional[str] = None
     """ID of the token."""
 
+    workspace_id: Optional[int] = None
+    """If applicable, the ID of the workspace that the token was created in."""
+
     def as_dict(self) -> dict:
         """Serializes the TokenInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -2257,6 +2260,7 @@ class TokenInfo:
         if self.expiry_time is not None: body['expiry_time'] = self.expiry_time
         if self.owner_id is not None: body['owner_id'] = self.owner_id
         if self.token_id is not None: body['token_id'] = self.token_id
+        if self.workspace_id is not None: body['workspace_id'] = self.workspace_id
         return body
 
     @classmethod
@@ -2268,7 +2272,8 @@ class TokenInfo:
                    creation_time=d.get('creation_time', None),
                    expiry_time=d.get('expiry_time', None),
                    owner_id=d.get('owner_id', None),
-                   token_id=d.get('token_id', None))
+                   token_id=d.get('token_id', None),
+                   workspace_id=d.get('workspace_id', None))
 
 
 @dataclass

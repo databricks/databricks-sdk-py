@@ -82,6 +82,10 @@ class CreatePipeline:
     photon: Optional[bool] = None
     """Whether Photon is enabled for this pipeline."""
 
+    schema: Optional[str] = None
+    """The default schema (database) where tables are read from or published to. The presence of this
+    field implies that the pipeline is in direct publishing mode."""
+
     serverless: Optional[bool] = None
     """Whether serverless compute is enabled for this pipeline."""
 
@@ -118,6 +122,7 @@ class CreatePipeline:
         if self.name is not None: body['name'] = self.name
         if self.notifications: body['notifications'] = [v.as_dict() for v in self.notifications]
         if self.photon is not None: body['photon'] = self.photon
+        if self.schema is not None: body['schema'] = self.schema
         if self.serverless is not None: body['serverless'] = self.serverless
         if self.storage is not None: body['storage'] = self.storage
         if self.target is not None: body['target'] = self.target
@@ -146,6 +151,7 @@ class CreatePipeline:
                    name=d.get('name', None),
                    notifications=_repeated_dict(d, 'notifications', Notifications),
                    photon=d.get('photon', None),
+                   schema=d.get('schema', None),
                    serverless=d.get('serverless', None),
                    storage=d.get('storage', None),
                    target=d.get('target', None),
@@ -303,6 +309,10 @@ class EditPipeline:
     pipeline_id: Optional[str] = None
     """Unique identifier for this pipeline."""
 
+    schema: Optional[str] = None
+    """The default schema (database) where tables are read from or published to. The presence of this
+    field implies that the pipeline is in direct publishing mode."""
+
     serverless: Optional[bool] = None
     """Whether serverless compute is enabled for this pipeline."""
 
@@ -341,6 +351,7 @@ class EditPipeline:
         if self.notifications: body['notifications'] = [v.as_dict() for v in self.notifications]
         if self.photon is not None: body['photon'] = self.photon
         if self.pipeline_id is not None: body['pipeline_id'] = self.pipeline_id
+        if self.schema is not None: body['schema'] = self.schema
         if self.serverless is not None: body['serverless'] = self.serverless
         if self.storage is not None: body['storage'] = self.storage
         if self.target is not None: body['target'] = self.target
@@ -370,6 +381,7 @@ class EditPipeline:
                    notifications=_repeated_dict(d, 'notifications', Notifications),
                    photon=d.get('photon', None),
                    pipeline_id=d.get('pipeline_id', None),
+                   schema=d.get('schema', None),
                    serverless=d.get('serverless', None),
                    storage=d.get('storage', None),
                    target=d.get('target', None),
@@ -1447,6 +1459,10 @@ class PipelineSpec:
     photon: Optional[bool] = None
     """Whether Photon is enabled for this pipeline."""
 
+    schema: Optional[str] = None
+    """The default schema (database) where tables are read from or published to. The presence of this
+    field implies that the pipeline is in direct publishing mode."""
+
     serverless: Optional[bool] = None
     """Whether serverless compute is enabled for this pipeline."""
 
@@ -1481,6 +1497,7 @@ class PipelineSpec:
         if self.name is not None: body['name'] = self.name
         if self.notifications: body['notifications'] = [v.as_dict() for v in self.notifications]
         if self.photon is not None: body['photon'] = self.photon
+        if self.schema is not None: body['schema'] = self.schema
         if self.serverless is not None: body['serverless'] = self.serverless
         if self.storage is not None: body['storage'] = self.storage
         if self.target is not None: body['target'] = self.target
@@ -1507,6 +1524,7 @@ class PipelineSpec:
                    name=d.get('name', None),
                    notifications=_repeated_dict(d, 'notifications', Notifications),
                    photon=d.get('photon', None),
+                   schema=d.get('schema', None),
                    serverless=d.get('serverless', None),
                    storage=d.get('storage', None),
                    target=d.get('target', None),
@@ -2137,6 +2155,7 @@ class PipelinesAPI:
                name: Optional[str] = None,
                notifications: Optional[List[Notifications]] = None,
                photon: Optional[bool] = None,
+               schema: Optional[str] = None,
                serverless: Optional[bool] = None,
                storage: Optional[str] = None,
                target: Optional[str] = None,
@@ -2186,6 +2205,9 @@ class PipelinesAPI:
           List of notification settings for this pipeline.
         :param photon: bool (optional)
           Whether Photon is enabled for this pipeline.
+        :param schema: str (optional)
+          The default schema (database) where tables are read from or published to. The presence of this field
+          implies that the pipeline is in direct publishing mode.
         :param serverless: bool (optional)
           Whether serverless compute is enabled for this pipeline.
         :param storage: str (optional)
@@ -2218,6 +2240,7 @@ class PipelinesAPI:
         if name is not None: body['name'] = name
         if notifications is not None: body['notifications'] = [v.as_dict() for v in notifications]
         if photon is not None: body['photon'] = photon
+        if schema is not None: body['schema'] = schema
         if serverless is not None: body['serverless'] = serverless
         if storage is not None: body['storage'] = storage
         if target is not None: body['target'] = target
@@ -2549,6 +2572,7 @@ class PipelinesAPI:
                name: Optional[str] = None,
                notifications: Optional[List[Notifications]] = None,
                photon: Optional[bool] = None,
+               schema: Optional[str] = None,
                serverless: Optional[bool] = None,
                storage: Optional[str] = None,
                target: Optional[str] = None,
@@ -2601,6 +2625,9 @@ class PipelinesAPI:
           List of notification settings for this pipeline.
         :param photon: bool (optional)
           Whether Photon is enabled for this pipeline.
+        :param schema: str (optional)
+          The default schema (database) where tables are read from or published to. The presence of this field
+          implies that the pipeline is in direct publishing mode.
         :param serverless: bool (optional)
           Whether serverless compute is enabled for this pipeline.
         :param storage: str (optional)
@@ -2633,6 +2660,7 @@ class PipelinesAPI:
         if name is not None: body['name'] = name
         if notifications is not None: body['notifications'] = [v.as_dict() for v in notifications]
         if photon is not None: body['photon'] = photon
+        if schema is not None: body['schema'] = schema
         if serverless is not None: body['serverless'] = serverless
         if storage is not None: body['storage'] = storage
         if target is not None: body['target'] = target

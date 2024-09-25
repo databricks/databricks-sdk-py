@@ -1,3 +1,5 @@
+from typing import Optional
+
 import databricks.sdk.core as client
 import databricks.sdk.dbutils as dbutils
 from databricks.sdk import azure

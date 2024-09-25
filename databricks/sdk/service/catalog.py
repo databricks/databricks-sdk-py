@@ -9330,7 +9330,8 @@ class TablesAPI:
             full_name: str,
             *,
             include_browse: Optional[bool] = None,
-            include_delta_metadata: Optional[bool] = None) -> TableInfo:
+            include_delta_metadata: Optional[bool] = None,
+            include_manifest_capabilities: Optional[bool] = None) -> TableInfo:
         """Get a table.
         
         Gets a table from the metastore for a specific catalog and schema. The caller must satisfy one of the
@@ -9346,6 +9347,8 @@ class TablesAPI:
           for
         :param include_delta_metadata: bool (optional)
           Whether delta metadata should be included in the response.
+        :param include_manifest_capabilities: bool (optional)
+          Whether to include a manifest containing capabilities the table has.
         
         :returns: :class:`TableInfo`
         """
@@ -9353,6 +9356,8 @@ class TablesAPI:
         query = {}
         if include_browse is not None: query['include_browse'] = include_browse
         if include_delta_metadata is not None: query['include_delta_metadata'] = include_delta_metadata
+        if include_manifest_capabilities is not None:
+            query['include_manifest_capabilities'] = include_manifest_capabilities
         headers = {'Accept': 'application/json', }
 
         res = self._api.do('GET', f'/api/2.1/unity-catalog/tables/{full_name}', query=query, headers=headers)
@@ -9364,6 +9369,7 @@ class TablesAPI:
              *,
              include_browse: Optional[bool] = None,
              include_delta_metadata: Optional[bool] = None,
+             include_manifest_capabilities: Optional[bool] = None,
              max_results: Optional[int] = None,
              omit_columns: Optional[bool] = None,
              omit_properties: Optional[bool] = None,
@@ -9385,6 +9391,8 @@ class TablesAPI:
           for
         :param include_delta_metadata: bool (optional)
           Whether delta metadata should be included in the response.
+        :param include_manifest_capabilities: bool (optional)
+          Whether to include a manifest containing capabilities the table has.
         :param max_results: int (optional)
           Maximum number of tables to return. If not set, all the tables are returned (not recommended). -
           when set to a value greater than 0, the page length is the minimum of this value and a server
@@ -9404,6 +9412,8 @@ class TablesAPI:
         if catalog_name is not None: query['catalog_name'] = catalog_name
         if include_browse is not None: query['include_browse'] = include_browse
         if include_delta_metadata is not None: query['include_delta_metadata'] = include_delta_metadata
+        if include_manifest_capabilities is not None:
+            query['include_manifest_capabilities'] = include_manifest_capabilities
         if max_results is not None: query['max_results'] = max_results
         if omit_columns is not None: query['omit_columns'] = omit_columns
         if omit_properties is not None: query['omit_properties'] = omit_properties
@@ -9423,6 +9433,7 @@ class TablesAPI:
     def list_summaries(self,
                        catalog_name: str,
                        *,
+                       include_manifest_capabilities: Optional[bool] = None,
                        max_results: Optional[int] = None,
                        page_token: Optional[str] = None,
                        schema_name_pattern: Optional[str] = None,
@@ -9442,6 +9453,8 @@ class TablesAPI:
         
         :param catalog_name: str
           Name of parent catalog for tables of interest.
+        :param include_manifest_capabilities: bool (optional)
+          Whether to include a manifest containing capabilities the table has.
         :param max_results: int (optional)
           Maximum number of summaries for tables to return. If not set, the page length is set to a server
           configured value (10000, as of 1/5/2024). - when set to a value greater than 0, the page length is
@@ -9460,6 +9473,8 @@ class TablesAPI:
 
         query = {}
         if catalog_name is not None: query['catalog_name'] = catalog_name
+        if include_manifest_capabilities is not None:
+            query['include_manifest_capabilities'] = include_manifest_capabilities
         if max_results is not None: query['max_results'] = max_results
         if page_token is not None: query['page_token'] = page_token
         if schema_name_pattern is not None: query['schema_name_pattern'] = schema_name_pattern
