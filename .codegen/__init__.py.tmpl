@@ -9,6 +9,7 @@ from databricks.sdk.mixins.workspace import WorkspaceExt
 from databricks.sdk.service.{{.Package.Name}} import {{.PascalName}}API{{end}}
 from databricks.sdk.service.provisioning import Workspace
 from databricks.sdk import azure
+from typing import Optional
 
 {{$args := list "host" "account_id" "username" "password" "client_id" "client_secret"
   "token" "profile" "config_file" "azure_workspace_resource_id" "azure_client_secret"

@@ -1,5 +1,34 @@
 # Version changelog
 
+## [Release] Release v0.32.3
+
+### New Features and Improvements
+
+ * Integrate Databricks SDK with Model Serving Auth Provider ([#761](https://github.com/databricks/databricks-sdk-py/pull/761)).
+
+
+### Bug Fixes
+
+ * Add DataPlane docs to the index ([#764](https://github.com/databricks/databricks-sdk-py/pull/764)).
+ * `mypy` error: Skipping analyzing "google": module is installed, but missing library stubs or py.typed marker ([#769](https://github.com/databricks/databricks-sdk-py/pull/769)).
+
+
+
+## [Release] Release v0.32.2
+
+### New Features and Improvements
+
+ * Support Models in `dbutils.fs` operations ([#750](https://github.com/databricks/databricks-sdk-py/pull/750)).
+
+
+### Bug Fixes
+
+ * Do not specify --tenant flag when fetching managed identity access token from the CLI ([#748](https://github.com/databricks/databricks-sdk-py/pull/748)).
+ * Fix deserialization of 401/403 errors ([#758](https://github.com/databricks/databricks-sdk-py/pull/758)).
+ * Use correct optional typing in `WorkspaceClient` for `mypy` ([#760](https://github.com/databricks/databricks-sdk-py/pull/760)).
+
+
+
 ## [Release] Release v0.32.1
 
 ### Bug Fixes
