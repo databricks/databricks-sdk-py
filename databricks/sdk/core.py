@@ -1,7 +1,5 @@
 import re
-import urllib.parse
 from datetime import timedelta
-from json import JSONDecodeError
 from types import TracebackType
 from typing import Any, BinaryIO, Iterator, Type
 from urllib.parse import urlencode
@@ -12,8 +10,8 @@ from .casing import Casing
 from .config import *
 # To preserve backwards compatibility (as these definitions were previously in this module)
 from .credentials_provider import *
-from .errors import DatabricksError, error_mapper
-from .errors.private_link import _is_private_link_redirect
+from .errors import DatabricksError, _ErrorCustomizer, _Parser
+from .logger import RoundTrip
 from .oauth import retrieve_token
 from .retries import retried
 
@@ -72,6 +70,8 @@ class ApiClient:
 
         # Default to 60 seconds
         self._http_timeout_seconds = cfg.http_timeout_seconds if cfg.http_timeout_seconds else 60
+
+        self._error_parser = _Parser(extra_error_customizers=[_AddDebugErrorCustomizer(cfg)])
 
     @property
     def account_id(self) -> str:
@@ -221,27 +221,6 @@ class ApiClient:
                 return f'matched {substring}'
         return None
 
-    @classmethod
-    def _parse_retry_after(cls, response: requests.Response) -> Optional[int]:
-        retry_after = response.headers.get("Retry-After")
-        if retry_after is None:
-            # 429 requests should include a `Retry-After` header, but if it's missing,
-            # we default to 1 second.
-            return cls._RETRY_AFTER_DEFAULT
-        # If the request is throttled, try parse the `Retry-After` header and sleep
-        # for the specified number of seconds. Note that this header can contain either
-        # an integer or a RFC1123 datetime string.
-        # See https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Retry-After
-        #
-        # For simplicity, we only try to parse it as an integer, as this is what Databricks
-        # platform returns. Otherwise, we fall back and don't sleep.
-        try:
-            return int(retry_after)
-        except ValueError:
-            logger.debug(f'Invalid Retry-After header received: {retry_after}. Defaulting to 1')
-            # defaulting to 1 sleep second to make self._is_retryable() simpler
-            return cls._RETRY_AFTER_DEFAULT
-
     def _perform(self,
                  method: str,
                  url: str,
@@ -262,134 +241,29 @@ class ApiClient:
                                          auth=auth,
                                          stream=raw,
                                          timeout=self._http_timeout_seconds)
-        try:
-            self._record_request_log(response, raw=raw or data is not None or files is not None)
-            if not response.ok: # internally calls response.raise_for_status()
-                # TODO: experiment with traceback pruning for better readability
-                # See https://stackoverflow.com/a/58821552/277035
-                payload = response.json()
-                raise self._make_nicer_error(response=response, **payload) from None
-            # Private link failures happen via a redirect to the login page. From a requests-perspective, the request
-            # is successful, but the response is not what we expect. We need to handle this case separately.
-            if _is_private_link_redirect(response):
-                raise self._make_nicer_error(response=response) from None
-            return response
-        except requests.exceptions.JSONDecodeError:
-            message = self._make_sense_from_html(response.text)
-            if not message:
-                message = response.reason
-            raise self._make_nicer_error(response=response, message=message) from None
+        self._record_request_log(response, raw=raw or data is not None or files is not None)
+        error = self._error_parser.get_api_error(response)
+        if error is not None:
+            raise error from None
+        return response
 
-    @staticmethod
-    def _make_sense_from_html(txt: str) -> str:
-        matchers = [r'<pre>(.*)</pre>', r'<title>(.*)</title>']
-        for attempt in matchers:
-            expr = re.compile(attempt, re.MULTILINE)
-            match = expr.search(txt)
-            if not match:
-                continue
-            return match.group(1).strip()
-        return txt
-
-    def _make_nicer_error(self, *, response: requests.Response, **kwargs) -> DatabricksError:
-        status_code = response.status_code
-        message = kwargs.get('message', 'request failed')
-        is_http_unauthorized_or_forbidden = status_code in (401, 403)
-        is_too_many_requests_or_unavailable = status_code in (429, 503)
-        if is_http_unauthorized_or_forbidden:
-            message = self._cfg.wrap_debug_info(message)
-        if is_too_many_requests_or_unavailable:
-            kwargs['retry_after_secs'] = self._parse_retry_after(response)
-        kwargs['message'] = message
-        return error_mapper(response, kwargs)
-
-    def _record_request_log(self, response: requests.Response, raw=False):
+    def _record_request_log(self, response: requests.Response, raw: bool = False) -> None:
         if not logger.isEnabledFor(logging.DEBUG):
             return
-        request = response.request
-        url = urllib.parse.urlparse(request.url)
-        query = ''
-        if url.query:
-            query = f'?{urllib.parse.unquote(url.query)}'
-        sb = [f'{request.method} {urllib.parse.unquote(url.path)}{query}']
-        if self._cfg.debug_headers:
-            if self._cfg.host:
-                sb.append(f'> * Host: {self._cfg.host}')
-            for k, v in request.headers.items():
-                sb.append(f'> * {k}: {self._only_n_bytes(v, self._debug_truncate_bytes)}')
-        if request.body:
-            sb.append("> [raw stream]" if raw else self._redacted_dump("> ", request.body))
-        sb.append(f'< {response.status_code} {response.reason}')
-        if raw and response.headers.get('Content-Type', None) != 'application/json':
-            # Raw streams with `Transfer-Encoding: chunked` do not have `Content-Type` header
-            sb.append("< [raw stream]")
-        elif response.content:
-            sb.append(self._redacted_dump("< ", response.content))
-        logger.debug("\n".join(sb))
+        logger.debug(RoundTrip(response, self._cfg.debug_headers, self._debug_truncate_bytes, raw).generate())
 
-    @staticmethod
-    def _mask(m: Dict[str, any]):
-        for k in m:
-            if k in {'bytes_value', 'string_value', 'token_value', 'value', 'content'}:
-                m[k] = "**REDACTED**"
 
-    @staticmethod
-    def _map_keys(m: Dict[str, any]) -> List[str]:
-        keys = list(m.keys())
-        keys.sort()
-        return keys
+class _AddDebugErrorCustomizer(_ErrorCustomizer):
+    """An error customizer that adds debug information about the configuration to unauthenticated and
+    unauthorized errors."""
 
-    @staticmethod
-    def _only_n_bytes(j: str, num_bytes: int = 96) -> str:
-        diff = len(j.encode('utf-8')) - num_bytes
-        if diff > 0:
-            return f"{j[:num_bytes]}... ({diff} more bytes)"
-        return j
+    def __init__(self, cfg: Config):
+        self._cfg = cfg
 
-    def _recursive_marshal_dict(self, m, budget) -> dict:
-        out = {}
-        self._mask(m)
-        for k in sorted(m.keys()):
-            raw = self._recursive_marshal(m[k], budget)
-            out[k] = raw
-            budget -= len(str(raw))
-        return out
-
-    def _recursive_marshal_list(self, s, budget) -> list:
-        out = []
-        for i in range(len(s)):
-            if i > 0 >= budget:
-                out.append("... (%d additional elements)" % (len(s) - len(out)))
-                break
-            raw = self._recursive_marshal(s[i], budget)
-            out.append(raw)
-            budget -= len(str(raw))
-        return out
-
-    def _recursive_marshal(self, v: any, budget: int) -> any:
-        if isinstance(v, dict):
-            return self._recursive_marshal_dict(v, budget)
-        elif isinstance(v, list):
-            return self._recursive_marshal_list(v, budget)
-        elif isinstance(v, str):
-            return self._only_n_bytes(v, self._debug_truncate_bytes)
-        else:
-            return v
-
-    def _redacted_dump(self, prefix: str, body: str) -> str:
-        if len(body) == 0:
-            return ""
-        try:
-            # Unmarshal body into primitive types.
-            tmp = json.loads(body)
-            max_bytes = 96
-            if self._debug_truncate_bytes > max_bytes:
-                max_bytes = self._debug_truncate_bytes
-            # Re-marshal body taking redaction and character limit into account.
-            raw = self._recursive_marshal(tmp, max_bytes)
-            return "\n".join([f'{prefix}{line}' for line in json.dumps(raw, indent=2).split("\n")])
-        except JSONDecodeError:
-            return f'{prefix}[non-JSON document of {len(body)} bytes]'
+    def customize_error(self, response: requests.Response, kwargs: dict):
+        if response.status_code in (401, 403):
+            message = kwargs.get('message', 'request failed')
+            kwargs['message'] = self._cfg.wrap_debug_info(message)
 
 
 class StreamingResponse(BinaryIO):

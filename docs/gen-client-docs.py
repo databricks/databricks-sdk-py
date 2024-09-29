@@ -247,6 +247,7 @@ class Generator:
         Package("vectorsearch", "Vector Search", "Create and query Vector Search indexes"),
         Package("dashboards", "Dashboards", "Manage Lakeview dashboards"),
         Package("marketplace", "Marketplace", "Manage AI and analytics assets such as ML models, notebooks, applications in an open marketplace"),
+        Package("apps", "Apps", "Build custom applications on Databricks"),
     ]
 
     def __init__(self):

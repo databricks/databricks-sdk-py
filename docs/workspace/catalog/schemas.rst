@@ -49,7 +49,7 @@
         :returns: :class:`SchemaInfo`
         
 
-    .. py:method:: delete(full_name: str)
+    .. py:method:: delete(full_name: str [, force: Optional[bool]])
 
         Delete a schema.
         
@@ -58,6 +58,8 @@
         
         :param full_name: str
           Full name of the schema.
+        :param force: bool (optional)
+          Force deletion even if the schema is not empty.
         
         
         

@@ -21,9 +21,8 @@
     restart an all-purpose cluster. Multiple users can share such clusters to do collaborative interactive
     analysis.
     
-    IMPORTANT: Databricks retains cluster configuration information for up to 200 all-purpose clusters
-    terminated in the last 30 days and up to 30 job clusters recently terminated by the job scheduler. To keep
-    an all-purpose cluster configuration even after it has been terminated for more than 30 days, an
+    IMPORTANT: Databricks retains cluster configuration information for terminated clusters for 30 days. To
+    keep an all-purpose cluster configuration even after it has been terminated for more than 30 days, an
     administrator can pin a cluster to the cluster list.
 
     .. py:method:: change_owner(cluster_id: str, owner_username: str)
@@ -604,7 +603,7 @@
         :returns: :class:`ClusterPermissions`
         
 
-    .. py:method:: list( [, can_use_client: Optional[str]]) -> Iterator[ClusterDetails]
+    .. py:method:: list( [, filter_by: Optional[ListClustersFilterBy], page_size: Optional[int], page_token: Optional[str], sort_by: Optional[ListClustersSortBy]]) -> Iterator[ClusterDetails]
 
 
         Usage:
@@ -618,21 +617,21 @@
             
             all = w.clusters.list(compute.ListClustersRequest())
 
-        List all clusters.
+        List clusters.
         
-        Return information about all pinned clusters, active clusters, up to 200 of the most recently
-        terminated all-purpose clusters in the past 30 days, and up to 30 of the most recently terminated job
-        clusters in the past 30 days.
+        Return information about all pinned and active clusters, and all clusters terminated within the last
+        30 days. Clusters terminated prior to this period are not included.
         
-        For example, if there is 1 pinned cluster, 4 active clusters, 45 terminated all-purpose clusters in
-        the past 30 days, and 50 terminated job clusters in the past 30 days, then this API returns the 1
-        pinned cluster, 4 active clusters, all 45 terminated all-purpose clusters, and the 30 most recently
-        terminated job clusters.
-        
-        :param can_use_client: str (optional)
-          Filter clusters based on what type of client it can be used for. Could be either NOTEBOOKS or JOBS.
-          No input for this field will get all clusters in the workspace without filtering on its supported
-          client
+        :param filter_by: :class:`ListClustersFilterBy` (optional)
+          Filters to apply to the list of clusters.
+        :param page_size: int (optional)
+          Use this field to specify the maximum number of results to be returned by the server. The server may
+          further constrain the maximum number of results returned in a single page.
+        :param page_token: str (optional)
+          Use next_page_token or prev_page_token returned from the previous request to list the next or
+          previous page of clusters respectively.
+        :param sort_by: :class:`ListClustersSortBy` (optional)
+          Sort the list of clusters by a specific criteria.
         
         :returns: Iterator over :class:`ClusterDetails`
         
@@ -999,6 +998,37 @@
         
         
         
+
+    .. py:method:: update(cluster_id: str, update_mask: str [, cluster: Optional[UpdateClusterResource]]) -> Wait[ClusterDetails]
+
+        Update cluster configuration (partial).
+        
+        Updates the configuration of a cluster to match the partial set of attributes and size. Denote which
+        fields to update using the `update_mask` field in the request body. A cluster can be updated if it is
+        in a `RUNNING` or `TERMINATED` state. If a cluster is updated while in a `RUNNING` state, it will be
+        restarted so that the new attributes can take effect. If a cluster is updated while in a `TERMINATED`
+        state, it will remain `TERMINATED`. The updated attributes will take effect the next time the cluster
+        is started using the `clusters/start` API. Attempts to update a cluster in any other state will be
+        rejected with an `INVALID_STATE` error code. Clusters created by the Databricks Jobs service cannot be
+        updated.
+        
+        :param cluster_id: str
+          ID of the cluster.
+        :param update_mask: str
+          Specifies which fields of the cluster will be updated. This is required in the POST request. The
+          update mask should be supplied as a single string. To specify multiple fields, separate them with
+          commas (no spaces). To delete a field from a cluster configuration, add it to the `update_mask`
+          string but omit it from the `cluster` object.
+        :param cluster: :class:`UpdateClusterResource` (optional)
+          The cluster to be updated.
+        
+        :returns:
+          Long-running operation waiter for :class:`ClusterDetails`.
+          See :method:wait_get_cluster_running for more details.
+        
+
+    .. py:method:: update_and_wait(cluster_id: str, update_mask: str [, cluster: Optional[UpdateClusterResource], timeout: datetime.timedelta = 0:20:00]) -> ClusterDetails
+
 
     .. py:method:: update_permissions(cluster_id: str [, access_control_list: Optional[List[ClusterAccessControlRequest]]]) -> ClusterPermissions
 

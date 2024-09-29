@@ -16,9 +16,9 @@
     
     - `CAN_MANAGE`: Allows all actions: read, run, edit, delete, modify permissions (superset of `CAN_RUN`)
     
-    **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+    **Note**: A new version of the Databricks SQL API is now available. [Learn more]
     
-    [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
+    [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
     .. py:method:: get(object_type: ObjectTypePlural, object_id: str) -> GetResponse
 
@@ -26,9 +26,10 @@
         
         Gets a JSON representation of the access control list (ACL) for a specified object.
         
-        **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+        **Note**: A new version of the Databricks SQL API is now available. Please use
+        :method:workspace/getpermissions instead. [Learn more]
         
-        [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :param object_type: :class:`ObjectTypePlural`
           The type of object permissions to check.
@@ -45,9 +46,10 @@
         Sets the access control list (ACL) for a specified object. This operation will complete rewrite the
         ACL.
         
-        **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+        **Note**: A new version of the Databricks SQL API is now available. Please use
+        :method:workspace/setpermissions instead. [Learn more]
         
-        [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :param object_type: :class:`ObjectTypePlural`
           The type of object permission to set.
@@ -64,9 +66,10 @@
         
         Transfers ownership of a dashboard, query, or alert to an active user. Requires an admin API key.
         
-        **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+        **Note**: A new version of the Databricks SQL API is now available. For queries and alerts, please use
+        :method:queries/update and :method:alerts/update respectively instead. [Learn more]
         
-        [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :param object_type: :class:`OwnableObjectType`
           The type of object on which to change ownership.

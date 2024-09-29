@@ -9,6 +9,7 @@ from databricks.sdk.mixins.workspace import WorkspaceExt
 from databricks.sdk.service.{{.Package.Name}} import {{.PascalName}}API{{end}}
 from databricks.sdk.service.provisioning import Workspace
 from databricks.sdk import azure
+from typing import Optional
 
 {{$args := list "host" "account_id" "username" "password" "client_id" "client_secret"
   "token" "profile" "config_file" "azure_workspace_resource_id" "azure_client_secret"
@@ -41,14 +42,14 @@ class WorkspaceClient:
     """
     The WorkspaceClient is a client for the workspace-level Databricks REST API.
     """
-    def __init__(self, *{{range $args}}, {{.}}: str = None{{end}},
-                 debug_truncate_bytes: int = None,
-                 debug_headers: bool = None,
+    def __init__(self, *{{range $args}}, {{.}}: Optional[str] = None{{end}},
+                 debug_truncate_bytes: Optional[int] = None,
+                 debug_headers: Optional[bool] = None,
                  product="unknown",
                  product_version="0.0.0",
-                 credentials_strategy: CredentialsStrategy = None,
-                 credentials_provider: CredentialsStrategy = None,
-                 config: client.Config = None):
+                 credentials_strategy: Optional[CredentialsStrategy] = None,
+                 credentials_provider: Optional[CredentialsStrategy] = None,
+                 config: Optional[client.Config] = None):
         if not config:
           config = client.Config({{range $args}}{{.}}={{.}}, {{end}}
             credentials_strategy=credentials_strategy,
@@ -110,14 +111,14 @@ class AccountClient:
     The AccountClient is a client for the account-level Databricks REST API.
     """
 
-    def __init__(self, *{{range $args}}, {{.}}: str = None{{end}},
-                 debug_truncate_bytes: int = None,
-                 debug_headers: bool = None,
+    def __init__(self, *{{range $args}}, {{.}}: Optional[str] = None{{end}},
+                 debug_truncate_bytes: Optional[int] = None,
+                 debug_headers: Optional[bool] = None,
                  product="unknown",
                  product_version="0.0.0",
-                 credentials_strategy: CredentialsStrategy = None,
-                 credentials_provider: CredentialsStrategy = None,
-                 config: client.Config = None):
+                 credentials_strategy: Optional[CredentialsStrategy] = None,
+                 credentials_provider: Optional[CredentialsStrategy] = None,
+                 config: Optional[client.Config] = None):
         if not config:
           config = client.Config({{range $args}}{{.}}={{.}}, {{end}}
             credentials_strategy=credentials_strategy,

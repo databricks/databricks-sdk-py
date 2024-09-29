@@ -10,3 +10,4 @@ Configure different aspects of Databricks billing and usage.
    billable_usage
    budgets
    log_delivery
+   usage_dashboards

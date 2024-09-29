@@ -22,7 +22,7 @@
     If no policies exist in the workspace, the Policy drop-down doesn't appear. Only admin users can create,
     edit, and delete policies. Admin users also have access to all policies.
 
-    .. py:method:: create(name: str [, definition: Optional[str], description: Optional[str], libraries: Optional[List[Library]], max_clusters_per_user: Optional[int], policy_family_definition_overrides: Optional[str], policy_family_id: Optional[str]]) -> CreatePolicyResponse
+    .. py:method:: create( [, definition: Optional[str], description: Optional[str], libraries: Optional[List[Library]], max_clusters_per_user: Optional[int], name: Optional[str], policy_family_definition_overrides: Optional[str], policy_family_id: Optional[str]]) -> CreatePolicyResponse
 
 
         Usage:
@@ -51,9 +51,6 @@
         
         Creates a new policy with prescribed settings.
         
-        :param name: str
-          Cluster Policy name requested by the user. This has to be unique. Length must be between 1 and 100
-          characters.
         :param definition: str (optional)
           Policy definition document expressed in [Databricks Cluster Policy Definition Language].
           
@@ -66,6 +63,9 @@
         :param max_clusters_per_user: int (optional)
           Max number of clusters per user that can be active using this policy. If not present, there is no
           max limit.
+        :param name: str (optional)
+          Cluster Policy name requested by the user. This has to be unique. Length must be between 1 and 100
+          characters.
         :param policy_family_definition_overrides: str (optional)
           Policy definition JSON document expressed in [Databricks Policy Definition Language]. The JSON
           document must be passed as a string and cannot be embedded in the requests.
@@ -96,7 +96,7 @@
         
         
 
-    .. py:method:: edit(policy_id: str, name: str [, definition: Optional[str], description: Optional[str], libraries: Optional[List[Library]], max_clusters_per_user: Optional[int], policy_family_definition_overrides: Optional[str], policy_family_id: Optional[str]])
+    .. py:method:: edit(policy_id: str [, definition: Optional[str], description: Optional[str], libraries: Optional[List[Library]], max_clusters_per_user: Optional[int], name: Optional[str], policy_family_definition_overrides: Optional[str], policy_family_id: Optional[str]])
 
 
         Usage:
@@ -140,9 +140,6 @@
         
         :param policy_id: str
           The ID of the policy to update.
-        :param name: str
-          Cluster Policy name requested by the user. This has to be unique. Length must be between 1 and 100
-          characters.
         :param definition: str (optional)
           Policy definition document expressed in [Databricks Cluster Policy Definition Language].
           
@@ -155,6 +152,9 @@
         :param max_clusters_per_user: int (optional)
           Max number of clusters per user that can be active using this policy. If not present, there is no
           max limit.
+        :param name: str (optional)
+          Cluster Policy name requested by the user. This has to be unique. Length must be between 1 and 100
+          characters.
         :param policy_family_definition_overrides: str (optional)
           Policy definition JSON document expressed in [Databricks Policy Definition Language]. The JSON
           document must be passed as a string and cannot be embedded in the requests.
@@ -205,7 +205,7 @@
         Get a cluster policy entity. Creation and editing is available to admins only.
         
         :param policy_id: str
-          Canonical unique identifier for the cluster policy.
+          Canonical unique identifier for the Cluster Policy.
         
         :returns: :class:`Policy`
         
