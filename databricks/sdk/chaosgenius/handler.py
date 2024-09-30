@@ -1,6 +1,7 @@
 import logging
+from typing import Optional
 
-from databricks.sdk import AccountClient
+from databricks.sdk import AccountClient, WorkspaceClient
 from databricks.sdk.chaosgenius.cg_config import CGConfig
 from databricks.sdk.chaosgenius.data_puller import DataPuller
 from databricks.sdk.chaosgenius.logger import LogSparkDBHandler
@@ -14,7 +15,12 @@ def initiate_data_pull(
     client_id: str,
     client_secret: str,
     spark_session: SparkSession,
+    workspace_list: Optional[list[tuple[str, int, str]]] = None,
+    account_admin: bool = True,
 ):
+    if not account_admin and (workspace_list is None or len(workspace_list) == 0):
+        raise ValueError("If not account admin, workspace list must be provided.")
+
     print("Initiating logging.")
     logger = logging.getLogger("client_data_pull_logger")
     logger.setLevel(logging.DEBUG)
@@ -44,32 +50,51 @@ def initiate_data_pull(
     logger.info("Connected to account successfully.")
 
     logger.info("Getting SP ID")
-    sp_list = list(a.service_principals.list())
     principal_id = None
-    for sp in sp_list:
-        if sp.application_id == client_id:
-            principal_id = sp.id
-            break
-    if principal_id is None:
-        raise ValueError("PRINCIPAL ID is None.")
-    logger.info(f"SP ID is {principal_id}.")
+    if account_admin:
+        sp_list = list(a.service_principals.list())
+        for sp in sp_list:
+            if sp.application_id == client_id:
+                principal_id = sp.id
+                break
+        if principal_id is None:
+            raise ValueError("Unable to find principal ID of SP.")
+        logger.info(f"SP ID is {principal_id}.")
+    else:
+        logger.info("We are not account admin, skipping SP ID retrieval.")
 
-    w_list = get_list_of_all_workspaces(
-        logger=logger,
-        customer_config=customer_config,
-        account_client=a,
-    )
+    if account_admin:
+        w_list = get_list_of_all_workspaces(
+            logger=logger,
+            customer_config=customer_config,
+            account_client=a,
+        )
+        w_list = [(i, j, "") for i, j in w_list]
+    else:
+        w_list = workspace_list
+    # TODO: add workspaces from config in case not account admin
 
     logger.info("Looping through workspaces.")
-    for w_name, w_id in w_list:
+    for w_name, w_id, w_url in w_list:
         try:
-            logger.info(f"Updating permissions of SP for workspace {w_id} {w_name}.")
-            a.workspace_assignment.update(
-                workspace_id=w_id,
-                principal_id=principal_id,
-                permissions=[iam.WorkspacePermission.ADMIN],
-            )
-            w = a.get_workspace_client(a.workspaces.get(w_id))
+            if account_admin:
+                logger.info(
+                    f"Updating permissions of SP for workspace {w_id} {w_name}."
+                )
+                a.workspace_assignment.update(
+                    workspace_id=w_id,
+                    principal_id=principal_id,
+                    permissions=[iam.WorkspacePermission.ADMIN],
+                )
+                w = a.get_workspace_client(a.workspaces.get(w_id))
+            else:
+                logger.info("We are not account admin, skipping permission update.")
+                w = WorkspaceClient(
+                    host=w_url,
+                    client_id=client_id,
+                    client_secret=client_secret,
+                )
+
             logger.info(f"NEW RUN for workspace ID: {w_id}, {w_name}!!!!!")
             DataPuller(
                 workspace_id=str(w_id),
@@ -89,7 +114,7 @@ def get_list_of_all_workspaces(
     logger: logging.Logger,
     customer_config: CGConfig,
     account_client: AccountClient,
-) -> list[tuple[str, str]]:
+) -> list[tuple[str, int]]:
     logger.info("Getting list of all workspaces.")
     w_list = [
         (w.workspace_name, w.workspace_id) for w in account_client.workspaces.list()
@@ -142,3 +167,27 @@ def get_list_of_all_workspaces(
     logger.info(f"Current len of w_list: {len(w_list)}")
 
     return w_list
+
+
+def add_config_workspaces_to_list(
+    w_list: list[int],
+    logger: logging.Logger,
+    customer_config: CGConfig,
+) -> list[tuple[str, int]]:
+    w_list = set(w_list)
+    logger.info(f"Num initial workspaces: {len(w_list)}.")
+    additional_workspaces = set(customer_config.get(
+        entity_type="workspace",
+        include_entity="yes",
+    )["entity_id"].to_list())
+    logger.info(f"Num additional workspaces: {len(additional_workspaces)}.")
+    w_list = w_list.union(additional_workspaces)
+    logger.info(f"Num workspaces after adding: {len(w_list)}.")
+    w_to_remove = set(customer_config.get(
+        entity_type="workspace",
+        include_entity="no",
+    )["entity_id"].to_list())
+    logger.info(f"Num workspaces to remove: {len(w_to_remove)}.")
+    w_list = w_list.difference(w_to_remove)
+    logger.info(f"Num workspaces after removing: {len(w_list)}.")
+    return [("unknown_name", w) for w in w_list]
