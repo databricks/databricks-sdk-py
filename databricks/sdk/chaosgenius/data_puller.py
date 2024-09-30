@@ -144,6 +144,9 @@ class DataPuller:
             except Exception:
                 self._logger.exception(f"Failed to get {name} ID {item_id}.")
 
+        root_list_ids = set(getattr(i, id_attribute_name) for i in root_list)
+        self._logger.info(f"Current count of items: {len(root_list_ids)}")
+
         self._logger.info("Removing items from customer config.")
         ids_to_remove = self._customer_config.get_ids(
             entity_type="cluster",
@@ -152,7 +155,7 @@ class DataPuller:
         )
         self._logger.info(f"Items to be removed: {len(ids_to_remove)}.")
 
-        ids_to_remove = root_list_ids.union(config_ids).intersection(ids_to_remove)
+        ids_to_remove = root_list_ids.intersection(ids_to_remove)
         self._logger.info(f"Actual items to be removed: {len(ids_to_remove)}.")
 
         root_list = [

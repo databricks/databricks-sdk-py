@@ -1,4 +1,5 @@
 import logging
+from typing import Optional
 
 from databricks.sdk import AccountClient
 from databricks.sdk.chaosgenius.cg_config import CGConfig
@@ -14,6 +15,8 @@ def initiate_data_pull(
     client_id: str,
     client_secret: str,
     spark_session: SparkSession,
+    workspace_list: Optional[list[int]] = None,
+    account_admin: bool = True,
 ):
     print("Initiating logging.")
     logger = logging.getLogger("client_data_pull_logger")
@@ -54,21 +57,34 @@ def initiate_data_pull(
         raise ValueError("PRINCIPAL ID is None.")
     logger.info(f"SP ID is {principal_id}.")
 
-    w_list = get_list_of_all_workspaces(
-        logger=logger,
-        customer_config=customer_config,
-        account_client=a,
-    )
+    if workspace_list is None or len(workspace_list) == 0:
+        w_list = get_list_of_all_workspaces(
+            logger=logger,
+            customer_config=customer_config,
+            account_client=a,
+        )
+    else:
+        w_list = [
+            (w.workspace_name, w.workspace_id)
+            for w in a.workspaces.list()
+            if w.workspace_id in workspace_list
+        ]
 
     logger.info("Looping through workspaces.")
     for w_name, w_id in w_list:
         try:
-            logger.info(f"Updating permissions of SP for workspace {w_id} {w_name}.")
-            a.workspace_assignment.update(
-                workspace_id=w_id,
-                principal_id=principal_id,
-                permissions=[iam.WorkspacePermission.ADMIN],
-            )
+            if account_admin:
+                logger.info(
+                    f"Updating permissions of SP for workspace {w_id} {w_name}."
+                )
+                a.workspace_assignment.update(
+                    workspace_id=w_id,
+                    principal_id=principal_id,
+                    permissions=[iam.WorkspacePermission.ADMIN],
+                )
+            else:
+                logger.info("We are not account admin, skipping permission update.")
+
             w = a.get_workspace_client(a.workspaces.get(w_id))
             logger.info(f"NEW RUN for workspace ID: {w_id}, {w_name}!!!!!")
             DataPuller(
