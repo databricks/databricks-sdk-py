@@ -49,13 +49,16 @@ def initiate_data_pull(
     logger.info("Getting SP ID")
     sp_list = list(a.service_principals.list())
     principal_id = None
-    for sp in sp_list:
-        if sp.application_id == client_id:
-            principal_id = sp.id
-            break
-    if principal_id is None:
-        raise ValueError("PRINCIPAL ID is None.")
-    logger.info(f"SP ID is {principal_id}.")
+    if account_admin:
+        for sp in sp_list:
+            if sp.application_id == client_id:
+                principal_id = sp.id
+                break
+        if principal_id is None:
+            raise ValueError("Unable to find principal ID of SP.")
+        logger.info(f"SP ID is {principal_id}.")
+    else:
+        logger.info("We are not account admin, skipping SP ID retrieval.")
 
     if workspace_list is None or len(workspace_list) == 0:
         w_list = get_list_of_all_workspaces(
