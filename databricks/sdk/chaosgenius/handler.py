@@ -67,11 +67,11 @@ def initiate_data_pull(
             account_client=a,
         )
     else:
-        w_list = [
-            (w.workspace_name, w.workspace_id)
-            for w in a.workspaces.list()
-            if w.workspace_id in workspace_list
-        ]
+        w_list = add_config_workspaces_to_list(
+            w_list=workspace_list,
+            logger=logger,
+            customer_config=customer_config,
+        )
 
     logger.info("Looping through workspaces.")
     for w_name, w_id in w_list:
@@ -108,7 +108,7 @@ def get_list_of_all_workspaces(
     logger: logging.Logger,
     customer_config: CGConfig,
     account_client: AccountClient,
-) -> list[tuple[str, str]]:
+) -> list[tuple[str, int]]:
     logger.info("Getting list of all workspaces.")
     w_list = [
         (w.workspace_name, w.workspace_id) for w in account_client.workspaces.list()
@@ -161,3 +161,27 @@ def get_list_of_all_workspaces(
     logger.info(f"Current len of w_list: {len(w_list)}")
 
     return w_list
+
+
+def add_config_workspaces_to_list(
+    w_list: list[int],
+    logger: logging.Logger,
+    customer_config: CGConfig,
+) -> list[tuple[str, int]]:
+    w_list = set(w_list)
+    logger.info(f"Num initial workspaces: {len(w_list)}.")
+    additional_workspaces = set(customer_config.get(
+        entity_type="workspace",
+        include_entity="yes",
+    )["entity_id"].to_list())
+    logger.info(f"Num additional workspaces: {len(additional_workspaces)}.")
+    w_list = w_list.union(additional_workspaces)
+    logger.info(f"Num workspaces after adding: {len(w_list)}.")
+    w_to_remove = set(customer_config.get(
+        entity_type="workspace",
+        include_entity="no",
+    )["entity_id"].to_list())
+    logger.info(f"Num workspaces to remove: {len(w_to_remove)}.")
+    w_list = w_list.difference(w_to_remove)
+    logger.info(f"Num workspaces after removing: {len(w_list)}.")
+    return [("unknown_name", w) for w in w_list]
