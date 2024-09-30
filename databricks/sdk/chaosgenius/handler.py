@@ -47,9 +47,9 @@ def initiate_data_pull(
     logger.info("Connected to account successfully.")
 
     logger.info("Getting SP ID")
-    sp_list = list(a.service_principals.list())
     principal_id = None
     if account_admin:
+        sp_list = list(a.service_principals.list())
         for sp in sp_list:
             if sp.application_id == client_id:
                 principal_id = sp.id
