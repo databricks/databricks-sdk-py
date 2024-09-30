@@ -18,6 +18,9 @@ def initiate_data_pull(
     workspace_list: Optional[list[int]] = None,
     account_admin: bool = True,
 ):
+    if not account_admin and (workspace_list is None or len(workspace_list) == 0):
+        raise ValueError("If not account admin, workspace list must be provided.")
+
     print("Initiating logging.")
     logger = logging.getLogger("client_data_pull_logger")
     logger.setLevel(logging.DEBUG)
@@ -60,17 +63,17 @@ def initiate_data_pull(
     else:
         logger.info("We are not account admin, skipping SP ID retrieval.")
 
-    if workspace_list is None or len(workspace_list) == 0:
-        w_list = get_list_of_all_workspaces(
-            logger=logger,
-            customer_config=customer_config,
-            account_client=a,
-        )
-    else:
+    if not account_admin:
         w_list = add_config_workspaces_to_list(
             w_list=workspace_list,
             logger=logger,
             customer_config=customer_config,
+        )
+    else:
+        w_list = get_list_of_all_workspaces(
+            logger=logger,
+            customer_config=customer_config,
+            account_client=a,
         )
 
     logger.info("Looping through workspaces.")
