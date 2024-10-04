@@ -1,3 +1,7 @@
+import sys
+
+import pytest
+
 from databricks.sdk.core import Config
 
 
@@ -13,6 +17,7 @@ def test_open_ai_client(monkeypatch):
     assert client.api_key == "test_token"
 
 
+@pytest.mark.skipif(sys.version_info <= (3, 7), reason="Requires Python > 3.7")
 def test_langchain_open_ai_client(monkeypatch):
     from databricks.sdk import WorkspaceClient
 
