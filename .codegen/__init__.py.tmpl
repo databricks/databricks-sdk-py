@@ -5,6 +5,7 @@ from databricks.sdk.credentials_provider import CredentialsStrategy
 from databricks.sdk.mixins.files import DbfsExt
 from databricks.sdk.mixins.compute import ClustersExt
 from databricks.sdk.mixins.workspace import WorkspaceExt
+from databricks.sdk.mixins.open_ai_client import ServingEndpointsExt
 {{- range .Services}}
 from databricks.sdk.service.{{.Package.Name}} import {{.PascalName}}API{{end}}
 from databricks.sdk.service.provisioning import Workspace
@@ -17,7 +18,7 @@ from typing import Optional
   "google_credentials" "google_service_account" }}
 
 {{- define "api" -}}
-  {{- $mixins := dict "ClustersAPI" "ClustersExt" "DbfsAPI" "DbfsExt" "WorkspaceAPI" "WorkspaceExt" -}}
+  {{- $mixins := dict "ClustersAPI" "ClustersExt" "DbfsAPI" "DbfsExt" "WorkspaceAPI" "WorkspaceExt" "ServingEndpointsExt" "ServingEndpointsApi" -}}
   {{- $genApi := concat .PascalName "API" -}}
   {{- getOrDefault $mixins $genApi $genApi -}}
 {{- end -}}
