@@ -1,5 +1,5 @@
-import pytest
 from databricks.sdk.core import Config
+
 
 def test_open_ai_client(monkeypatch):
     from databricks.sdk import WorkspaceClient
