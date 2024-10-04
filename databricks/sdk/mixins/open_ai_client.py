@@ -15,7 +15,6 @@ class ServingEndpointsExt(ServingEndpointsAPI):
                 self.get_headers_func = get_headers_func
 
             def auth_flow(self, request: httpx.Request) -> httpx.Request:
-                print("Calling Authenticate")
                 auth_headers = self.get_headers_func()
                 request.headers["Authorization"] = auth_headers["Authorization"]
                 yield request
