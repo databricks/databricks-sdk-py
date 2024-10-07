@@ -38,7 +38,7 @@ def test_model_serving_auth(env_values, del_env_values, oauth_file_name, monkeyp
         oauth_file_name)
     mocker.patch('databricks.sdk.config.Config._known_file_config_loader')
 
-    cfg = Config(auth_type='model-serving')
+    cfg = Config()
 
     assert cfg.auth_type == 'model-serving'
     headers = cfg.authenticate()
@@ -62,7 +62,7 @@ def test_model_serving_auth_errors(env_values, oauth_file_name, monkeypatch):
         "databricks.sdk.credentials_provider.ModelServingAuthProvider._MODEL_DEPENDENCY_OAUTH_TOKEN_FILE_PATH",
         oauth_file_name)
 
-    Config(auth_type='model-serving')
+    Config()
 
 
 def test_model_serving_auth_refresh(monkeypatch, mocker):
@@ -76,7 +76,7 @@ def test_model_serving_auth_refresh(monkeypatch, mocker):
         "tests/testdata/model-serving-test-token")
     mocker.patch('databricks.sdk.config.Config._known_file_config_loader')
 
-    cfg = Config(auth_type='model-serving')
+    cfg = Config()
     assert cfg.auth_type == 'model-serving'
 
     current_time = time.time()
