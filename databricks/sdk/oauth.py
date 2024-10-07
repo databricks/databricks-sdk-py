@@ -539,7 +539,7 @@ class TokenCache:
                  client_id: str,
                  redirect_url: str = None,
                  client_secret: str = None,
-                 scopes: list[str] = None) -> None:
+                 scopes: List[str] = None) -> None:
         self._host = host
         self._client_id = client_id
         self._oidc_endpoints = oidc_endpoints
