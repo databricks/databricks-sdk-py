@@ -169,8 +169,8 @@ class Dashboard:
     trailing slash. This field is excluded in List Dashboards responses."""
 
     path: Optional[str] = None
-    """The workspace path of the dashboard asset, including the file name. This field is excluded in
-    List Dashboards responses."""
+    """The workspace path of the dashboard asset, including the file name. Exported dashboards always
+    have the file extension `.lvdash.json`. This field is excluded in List Dashboards responses."""
 
     serialized_dashboard: Optional[str] = None
     """The contents of the dashboard in serialized string form. This field is excluded in List

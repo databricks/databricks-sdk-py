@@ -34,6 +34,22 @@
         This setting requires a restart of clusters and SQL warehouses to take effect. Additionally, the default
         namespace only applies when using Unity Catalog-enabled compute.
 
+    .. py:property:: disable_legacy_access
+        :type: DisableLegacyAccessAPI
+
+        'Disabling legacy access' has the following impacts:
+        
+        1. Disables direct access to the Hive Metastore. However, you can still access Hive Metastore through HMS
+        Federation. 2. Disables Fallback Mode (docs link) on any External Location access from the workspace. 3.
+        Alters DBFS path access to use External Location permissions in place of legacy credentials. 4. Enforces
+        Unity Catalog access on all path based access.
+
+    .. py:property:: disable_legacy_dbfs
+        :type: DisableLegacyDbfsAPI
+
+        When this setting is on, access to DBFS root and DBFS mounts is disallowed (as well as creation of new
+        mounts). When the setting is off, all DBFS functionality is enabled
+
     .. py:property:: enhanced_security_monitoring
         :type: EnhancedSecurityMonitoringAPI
 

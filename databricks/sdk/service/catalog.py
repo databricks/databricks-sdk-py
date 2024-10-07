@@ -909,6 +909,7 @@ class ConnectionInfoSecurableKind(Enum):
     CONNECTION_DATABRICKS = 'CONNECTION_DATABRICKS'
     CONNECTION_EXTERNAL_HIVE_METASTORE = 'CONNECTION_EXTERNAL_HIVE_METASTORE'
     CONNECTION_GLUE = 'CONNECTION_GLUE'
+    CONNECTION_HTTP_BEARER = 'CONNECTION_HTTP_BEARER'
     CONNECTION_MYSQL = 'CONNECTION_MYSQL'
     CONNECTION_ONLINE_CATALOG = 'CONNECTION_ONLINE_CATALOG'
     CONNECTION_POSTGRESQL = 'CONNECTION_POSTGRESQL'
@@ -925,6 +926,7 @@ class ConnectionType(Enum):
     DATABRICKS = 'DATABRICKS'
     GLUE = 'GLUE'
     HIVE_METASTORE = 'HIVE_METASTORE'
+    HTTP = 'HTTP'
     MYSQL = 'MYSQL'
     POSTGRESQL = 'POSTGRESQL'
     REDSHIFT = 'REDSHIFT'
@@ -1676,6 +1678,7 @@ class CreateVolumeRequestContent:
 class CredentialType(Enum):
     """The type of credential."""
 
+    BEARER_TOKEN = 'BEARER_TOKEN'
     USERNAME_PASSWORD = 'USERNAME_PASSWORD'
 
 
@@ -2547,8 +2550,8 @@ class GenerateTemporaryTableCredentialResponse:
     https://docs.microsoft.com/en-us/rest/api/storageservices/create-user-delegation-sas"""
 
     expiration_time: Optional[int] = None
-    """Server time when the credential will expire, in unix epoch milliseconds since January 1, 1970 at
-    00:00:00 UTC. The API client is advised to cache the credential given this expiration time."""
+    """Server time when the credential will expire, in epoch milliseconds. The API client is advised to
+    cache the credential given this expiration time."""
 
     gcp_oauth_token: Optional[GcpOauthToken] = None
     """GCP temporary credentials for API authentication. Read more at

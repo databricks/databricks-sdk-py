@@ -721,6 +721,30 @@ class DeleteDisableLegacyAccessResponse:
 
 
 @dataclass
+class DeleteDisableLegacyDbfsResponse:
+    """The etag is returned."""
+
+    etag: str
+    """etag used for versioning. The response is at least as fresh as the eTag provided. This is used
+    for optimistic concurrency control as a way to help prevent simultaneous writes of a setting
+    overwriting each other. It is strongly suggested that systems make use of the etag in the read
+    -> delete pattern to perform setting deletions in order to avoid race conditions. That is, get
+    an etag from a GET request, and pass it with the DELETE request to identify the rule set version
+    you are deleting."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteDisableLegacyDbfsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.etag is not None: body['etag'] = self.etag
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteDisableLegacyDbfsResponse:
+        """Deserializes the DeleteDisableLegacyDbfsResponse from a dictionary."""
+        return cls(etag=d.get('etag', None))
+
+
+@dataclass
 class DeleteDisableLegacyFeaturesResponse:
     """The etag is returned."""
 
@@ -859,6 +883,40 @@ class DisableLegacyAccess:
     def from_dict(cls, d: Dict[str, any]) -> DisableLegacyAccess:
         """Deserializes the DisableLegacyAccess from a dictionary."""
         return cls(disable_legacy_access=_from_dict(d, 'disable_legacy_access', BooleanMessage),
+                   etag=d.get('etag', None),
+                   setting_name=d.get('setting_name', None))
+
+
+@dataclass
+class DisableLegacyDbfs:
+    disable_legacy_dbfs: BooleanMessage
+
+    etag: Optional[str] = None
+    """etag used for versioning. The response is at least as fresh as the eTag provided. This is used
+    for optimistic concurrency control as a way to help prevent simultaneous writes of a setting
+    overwriting each other. It is strongly suggested that systems make use of the etag in the read
+    -> update pattern to perform setting updates in order to avoid race conditions. That is, get an
+    etag from a GET request, and pass it with the PATCH request to identify the setting version you
+    are updating."""
+
+    setting_name: Optional[str] = None
+    """Name of the corresponding setting. This field is populated in the response, but it will not be
+    respected even if it's set in the request body. The setting name in the path parameter will be
+    respected instead. Setting name is required to be 'default' if the setting only has one instance
+    per workspace."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DisableLegacyDbfs into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.disable_legacy_dbfs: body['disable_legacy_dbfs'] = self.disable_legacy_dbfs.as_dict()
+        if self.etag is not None: body['etag'] = self.etag
+        if self.setting_name is not None: body['setting_name'] = self.setting_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DisableLegacyDbfs:
+        """Deserializes the DisableLegacyDbfs from a dictionary."""
+        return cls(disable_legacy_dbfs=_from_dict(d, 'disable_legacy_dbfs', BooleanMessage),
                    etag=d.get('etag', None),
                    setting_name=d.get('setting_name', None))
 
@@ -2535,6 +2593,36 @@ class UpdateDisableLegacyAccessRequest:
 
 
 @dataclass
+class UpdateDisableLegacyDbfsRequest:
+    """Details required to update a setting."""
+
+    allow_missing: bool
+    """This should always be set to true for Settings API. Added for AIP compliance."""
+
+    setting: DisableLegacyDbfs
+
+    field_mask: str
+    """Field mask is required to be passed into the PATCH request. Field mask specifies which fields of
+    the setting payload will be updated. The field mask needs to be supplied as single string. To
+    specify multiple fields in the field mask, use comma as the separator (no space)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateDisableLegacyDbfsRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.allow_missing is not None: body['allow_missing'] = self.allow_missing
+        if self.field_mask is not None: body['field_mask'] = self.field_mask
+        if self.setting: body['setting'] = self.setting.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateDisableLegacyDbfsRequest:
+        """Deserializes the UpdateDisableLegacyDbfsRequest from a dictionary."""
+        return cls(allow_missing=d.get('allow_missing', None),
+                   field_mask=d.get('field_mask', None),
+                   setting=_from_dict(d, 'setting', DisableLegacyDbfs))
+
+
+@dataclass
 class UpdateDisableLegacyFeaturesRequest:
     """Details required to update a setting."""
 
@@ -3445,6 +3533,91 @@ class DisableLegacyAccessAPI:
                            body=body,
                            headers=headers)
         return DisableLegacyAccess.from_dict(res)
+
+
+class DisableLegacyDbfsAPI:
+    """When this setting is on, access to DBFS root and DBFS mounts is disallowed (as well as creation of new
+    mounts). When the setting is off, all DBFS functionality is enabled"""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def delete(self, *, etag: Optional[str] = None) -> DeleteDisableLegacyDbfsResponse:
+        """Delete the disable legacy DBFS setting.
+        
+        Deletes the disable legacy DBFS setting for a workspace, reverting back to the default.
+        
+        :param etag: str (optional)
+          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
+          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
+          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
+          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
+          request, and pass it with the DELETE request to identify the rule set version you are deleting.
+        
+        :returns: :class:`DeleteDisableLegacyDbfsResponse`
+        """
+
+        query = {}
+        if etag is not None: query['etag'] = etag
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do('DELETE',
+                           '/api/2.0/settings/types/disable_legacy_dbfs/names/default',
+                           query=query,
+                           headers=headers)
+        return DeleteDisableLegacyDbfsResponse.from_dict(res)
+
+    def get(self, *, etag: Optional[str] = None) -> DisableLegacyDbfs:
+        """Get the disable legacy DBFS setting.
+        
+        Gets the disable legacy DBFS setting.
+        
+        :param etag: str (optional)
+          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
+          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
+          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
+          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
+          request, and pass it with the DELETE request to identify the rule set version you are deleting.
+        
+        :returns: :class:`DisableLegacyDbfs`
+        """
+
+        query = {}
+        if etag is not None: query['etag'] = etag
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do('GET',
+                           '/api/2.0/settings/types/disable_legacy_dbfs/names/default',
+                           query=query,
+                           headers=headers)
+        return DisableLegacyDbfs.from_dict(res)
+
+    def update(self, allow_missing: bool, setting: DisableLegacyDbfs, field_mask: str) -> DisableLegacyDbfs:
+        """Update the disable legacy DBFS setting.
+        
+        Updates the disable legacy DBFS setting for the workspace.
+        
+        :param allow_missing: bool
+          This should always be set to true for Settings API. Added for AIP compliance.
+        :param setting: :class:`DisableLegacyDbfs`
+        :param field_mask: str
+          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
+          setting payload will be updated. The field mask needs to be supplied as single string. To specify
+          multiple fields in the field mask, use comma as the separator (no space).
+        
+        :returns: :class:`DisableLegacyDbfs`
+        """
+        body = {}
+        if allow_missing is not None: body['allow_missing'] = allow_missing
+        if field_mask is not None: body['field_mask'] = field_mask
+        if setting is not None: body['setting'] = setting.as_dict()
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do('PATCH',
+                           '/api/2.0/settings/types/disable_legacy_dbfs/names/default',
+                           body=body,
+                           headers=headers)
+        return DisableLegacyDbfs.from_dict(res)
 
 
 class DisableLegacyFeaturesAPI:
@@ -4411,6 +4584,7 @@ class SettingsAPI:
         self._compliance_security_profile = ComplianceSecurityProfileAPI(self._api)
         self._default_namespace = DefaultNamespaceAPI(self._api)
         self._disable_legacy_access = DisableLegacyAccessAPI(self._api)
+        self._disable_legacy_dbfs = DisableLegacyDbfsAPI(self._api)
         self._enhanced_security_monitoring = EnhancedSecurityMonitoringAPI(self._api)
         self._restrict_workspace_admins = RestrictWorkspaceAdminsAPI(self._api)
 
@@ -4433,6 +4607,11 @@ class SettingsAPI:
     def disable_legacy_access(self) -> DisableLegacyAccessAPI:
         """'Disabling legacy access' has the following impacts: 1."""
         return self._disable_legacy_access
+
+    @property
+    def disable_legacy_dbfs(self) -> DisableLegacyDbfsAPI:
+        """When this setting is on, access to DBFS root and DBFS mounts is disallowed (as well as creation of new mounts)."""
+        return self._disable_legacy_dbfs
 
     @property
     def enhanced_security_monitoring(self) -> EnhancedSecurityMonitoringAPI:

@@ -2478,6 +2478,7 @@ class RepairRun:
     [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html"""
 
     pipeline_params: Optional[PipelineParams] = None
+    """Controls whether the pipeline should perform a full refresh"""
 
     python_named_params: Optional[Dict[str, str]] = None
 
@@ -3181,6 +3182,7 @@ class RunJobTask:
     [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html"""
 
     pipeline_params: Optional[PipelineParams] = None
+    """Controls whether the pipeline should perform a full refresh"""
 
     python_named_params: Optional[Dict[str, str]] = None
 
@@ -3340,6 +3342,7 @@ class RunNow:
     [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html"""
 
     pipeline_params: Optional[PipelineParams] = None
+    """Controls whether the pipeline should perform a full refresh"""
 
     python_named_params: Optional[Dict[str, str]] = None
 
@@ -3549,6 +3552,7 @@ class RunParameters:
     [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html"""
 
     pipeline_params: Optional[PipelineParams] = None
+    """Controls whether the pipeline should perform a full refresh"""
 
     python_named_params: Optional[Dict[str, str]] = None
 
@@ -6087,6 +6091,7 @@ class JobsAPI:
           [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
           [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
         :param pipeline_params: :class:`PipelineParams` (optional)
+          Controls whether the pipeline should perform a full refresh
         :param python_named_params: Dict[str,str] (optional)
         :param python_params: List[str] (optional)
           A list of parameters for jobs with Python tasks, for example `"python_params": ["john doe", "35"]`.
@@ -6276,6 +6281,7 @@ class JobsAPI:
           [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
           [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
         :param pipeline_params: :class:`PipelineParams` (optional)
+          Controls whether the pipeline should perform a full refresh
         :param python_named_params: Dict[str,str] (optional)
         :param python_params: List[str] (optional)
           A list of parameters for jobs with Python tasks, for example `"python_params": ["john doe", "35"]`.

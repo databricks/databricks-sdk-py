@@ -34,14 +34,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: AppDeploymentState
 
+   .. py:attribute:: CANCELLED
+      :value: "CANCELLED"
+
    .. py:attribute:: FAILED
       :value: "FAILED"
 
    .. py:attribute:: IN_PROGRESS
       :value: "IN_PROGRESS"
-
-   .. py:attribute:: STOPPED
-      :value: "STOPPED"
 
    .. py:attribute:: SUCCEEDED
       :value: "SUCCEEDED"
@@ -76,13 +76,97 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. py:class:: AppState
+.. autoclass:: AppResource
+   :members:
+   :undoc-members:
 
-   .. py:attribute:: CREATING
-      :value: "CREATING"
+.. autoclass:: AppResourceJob
+   :members:
+   :undoc-members:
 
-   .. py:attribute:: DELETED
-      :value: "DELETED"
+.. py:class:: AppResourceJobJobPermission
+
+   .. py:attribute:: CAN_MANAGE
+      :value: "CAN_MANAGE"
+
+   .. py:attribute:: CAN_MANAGE_RUN
+      :value: "CAN_MANAGE_RUN"
+
+   .. py:attribute:: CAN_VIEW
+      :value: "CAN_VIEW"
+
+   .. py:attribute:: IS_OWNER
+      :value: "IS_OWNER"
+
+.. autoclass:: AppResourceSecret
+   :members:
+   :undoc-members:
+
+.. py:class:: AppResourceSecretSecretPermission
+
+   Permission to grant on the secret scope. Supported permissions are: "READ", "WRITE", "MANAGE".
+
+   .. py:attribute:: MANAGE
+      :value: "MANAGE"
+
+   .. py:attribute:: READ
+      :value: "READ"
+
+   .. py:attribute:: WRITE
+      :value: "WRITE"
+
+.. autoclass:: AppResourceServingEndpoint
+   :members:
+   :undoc-members:
+
+.. py:class:: AppResourceServingEndpointServingEndpointPermission
+
+   .. py:attribute:: CAN_MANAGE
+      :value: "CAN_MANAGE"
+
+   .. py:attribute:: CAN_QUERY
+      :value: "CAN_QUERY"
+
+   .. py:attribute:: CAN_VIEW
+      :value: "CAN_VIEW"
+
+.. autoclass:: AppResourceSqlWarehouse
+   :members:
+   :undoc-members:
+
+.. py:class:: AppResourceSqlWarehouseSqlWarehousePermission
+
+   .. py:attribute:: CAN_MANAGE
+      :value: "CAN_MANAGE"
+
+   .. py:attribute:: CAN_USE
+      :value: "CAN_USE"
+
+   .. py:attribute:: IS_OWNER
+      :value: "IS_OWNER"
+
+.. py:class:: ApplicationState
+
+   .. py:attribute:: CRASHED
+      :value: "CRASHED"
+
+   .. py:attribute:: DEPLOYING
+      :value: "DEPLOYING"
+
+   .. py:attribute:: RUNNING
+      :value: "RUNNING"
+
+   .. py:attribute:: UNAVAILABLE
+      :value: "UNAVAILABLE"
+
+.. autoclass:: ApplicationStatus
+   :members:
+   :undoc-members:
+
+.. py:class:: ComputeState
+
+   .. py:attribute:: ACTIVE
+      :value: "ACTIVE"
 
    .. py:attribute:: DELETING
       :value: "DELETING"
@@ -90,16 +174,19 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: ERROR
       :value: "ERROR"
 
-   .. py:attribute:: IDLE
-      :value: "IDLE"
-
-   .. py:attribute:: RUNNING
-      :value: "RUNNING"
-
    .. py:attribute:: STARTING
       :value: "STARTING"
 
-.. autoclass:: AppStatus
+   .. py:attribute:: STOPPED
+      :value: "STOPPED"
+
+   .. py:attribute:: STOPPING
+      :value: "STOPPING"
+
+   .. py:attribute:: UPDATING
+      :value: "UPDATING"
+
+.. autoclass:: ComputeStatus
    :members:
    :undoc-members:
 
@@ -108,10 +195,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: CreateAppRequest
-   :members:
-   :undoc-members:
-
-.. autoclass:: DeleteResponse
    :members:
    :undoc-members:
 
@@ -132,10 +215,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: StopAppRequest
-   :members:
-   :undoc-members:
-
-.. autoclass:: StopAppResponse
    :members:
    :undoc-members:
 
