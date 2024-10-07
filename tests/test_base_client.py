@@ -1,11 +1,11 @@
 from http.server import BaseHTTPRequestHandler
-from typing import List, Iterator
+from typing import Iterator, List
 
 import pytest
 import requests
 
-from databricks.sdk._base_client import _BaseClient, _StreamingResponse
 from databricks.sdk import errors, useragent
+from databricks.sdk._base_client import _BaseClient, _StreamingResponse
 from databricks.sdk.core import DatabricksError
 
 from .clock import FakeClock
@@ -59,7 +59,7 @@ def test_streaming_response_read_closes(config):
 @pytest.mark.parametrize('status_code,headers,body,expected_error', [
     (400, {}, {
         "message":
-            "errorMessage",
+        "errorMessage",
         "details": [{
             "type": DatabricksError._error_info_type,
             "reason": "error reason",
@@ -88,13 +88,11 @@ def test_streaming_response_read_closes(config):
     (401, {}, {
         'error_code': 'UNAUTHORIZED',
         'message': 'errorMessage',
-    },
-     errors.Unauthenticated('errorMessage', error_code='UNAUTHORIZED')),
+    }, errors.Unauthenticated('errorMessage', error_code='UNAUTHORIZED')),
     (403, {}, {
         'error_code': 'FORBIDDEN',
         'message': 'errorMessage',
-    },
-     errors.PermissionDenied('errorMessage', error_code='FORBIDDEN')),
+    }, errors.PermissionDenied('errorMessage', error_code='FORBIDDEN')),
     (429, {}, {
         'error_code': 'TOO_MANY_REQUESTS',
         'message': 'errorMessage',
@@ -102,9 +100,9 @@ def test_streaming_response_read_closes(config):
     (429, {
         'Retry-After': '100'
     }, {
-         'error_code': 'TOO_MANY_REQUESTS',
-         'message': 'errorMessage',
-     }, errors.TooManyRequests('errorMessage', error_code='TOO_MANY_REQUESTS', retry_after_secs=100)),
+        'error_code': 'TOO_MANY_REQUESTS',
+        'message': 'errorMessage',
+    }, errors.TooManyRequests('errorMessage', error_code='TOO_MANY_REQUESTS', retry_after_secs=100)),
     (503, {}, {
         'error_code': 'TEMPORARILY_UNAVAILABLE',
         'message': 'errorMessage',
@@ -113,9 +111,9 @@ def test_streaming_response_read_closes(config):
     (503, {
         'Retry-After': '100'
     }, {
-         'error_code': 'TEMPORARILY_UNAVAILABLE',
-         'message': 'errorMessage',
-     },
+        'error_code': 'TEMPORARILY_UNAVAILABLE',
+        'message': 'errorMessage',
+    },
      errors.TemporarilyUnavailable('errorMessage', error_code='TEMPORARILY_UNAVAILABLE',
                                    retry_after_secs=100)),
     (404, {}, {
@@ -217,7 +215,7 @@ def test_http_retried_exceed_limit():
     with http_fixture_server(inner) as host:
         api_client = _BaseClient(retry_timeout_seconds=1, clock=FakeClock())
         with pytest.raises(TimeoutError):
-            res = api_client.do('GET', f'{host}/foo')
+            api_client.do('GET', f'{host}/foo')
 
     assert len(requests) == 1
 
@@ -278,5 +276,3 @@ def test_http_retried_on_connection_error():
         assert 'foo' in res
 
     assert len(requests) == 2
-
-

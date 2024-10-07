@@ -3,7 +3,6 @@ from datetime import timedelta
 from types import TracebackType
 from typing import (Any, BinaryIO, Callable, Dict, Iterable, Iterator, List,
                     Optional, Type, Union)
-import urllib.parse
 
 import requests
 import requests.adapters
