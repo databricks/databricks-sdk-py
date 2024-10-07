@@ -10,6 +10,7 @@ from typing import Dict, Iterable, Optional
 import requests
 
 from . import useragent
+from ._base_client import fix_host_if_needed
 from .clock import Clock, RealClock
 from .credentials_provider import CredentialsStrategy, DefaultCredentials
 from .environments import (ALL_ENVS, AzureEnvironment, Cloud,
@@ -17,7 +18,6 @@ from .environments import (ALL_ENVS, AzureEnvironment, Cloud,
 from .oauth import (OidcEndpoints, Token, get_account_endpoints,
                     get_azure_entra_id_workspace_endpoints,
                     get_workspace_endpoints)
-from ._base_client import fix_host_if_needed
 
 logger = logging.getLogger('databricks.sdk')
 

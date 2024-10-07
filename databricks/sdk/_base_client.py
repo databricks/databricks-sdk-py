@@ -6,6 +6,7 @@ from typing import (Any, BinaryIO, Callable, Dict, Iterable, Iterator, List,
 
 import requests
 import requests.adapters
+import urllib.parse
 
 from . import useragent
 from .casing import Casing
