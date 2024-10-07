@@ -1,4 +1,5 @@
 import logging
+import urllib.parse
 from datetime import timedelta
 from types import TracebackType
 from typing import (Any, BinaryIO, Callable, Dict, Iterable, Iterator, List,
@@ -6,7 +7,6 @@ from typing import (Any, BinaryIO, Callable, Dict, Iterable, Iterator, List,
 
 import requests
 import requests.adapters
-import urllib.parse
 
 from . import useragent
 from .casing import Casing
