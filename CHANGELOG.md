@@ -1,5 +1,29 @@
 # Version changelog
 
+## [Release] Release v0.34.0
+
+### Bug Fixes
+
+ * Fix Model Serving Test ([#781](https://github.com/databricks/databricks-sdk-py/pull/781)).
+ * Include package name for external types when deserializing responses ([#786](https://github.com/databricks/databricks-sdk-py/pull/786)).
+
+
+### Internal Changes
+
+ * Refactor ApiClient into `_BaseClient` and `ApiClient` ([#785](https://github.com/databricks/databricks-sdk-py/pull/785)).
+ * Update to latest OpenAPI spec ([#787](https://github.com/databricks/databricks-sdk-py/pull/787)).
+ * revert Support Models in `dbutils.fs` operations ([#750](https://github.com/databricks/databricks-sdk-py/pull/750)) ([#778](https://github.com/databricks/databricks-sdk-py/pull/778)).
+
+
+### API Changes:
+
+ * Added [w.disable_legacy_dbfs](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings/disable_legacy_dbfs.html) workspace-level service.
+ * Added `default_source_code_path` and `resources` fields for `databricks.sdk.service.apps.App`.
+ * Added `resources` field for `databricks.sdk.service.apps.CreateAppRequest`.
+ * Added `resources` field for `databricks.sdk.service.apps.UpdateAppRequest`.
+
+OpenAPI SHA: bc17b474818138f19b78a7bea0675707dead2b87, Date: 2024-10-07
+
 ## [Release] Release v0.33.0
 
 ### Internal Changes
