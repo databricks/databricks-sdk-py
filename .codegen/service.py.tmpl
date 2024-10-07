@@ -350,7 +350,7 @@ class {{.PascalName}}API:{{if .Description}}
           {{- else if .Response.MapValue -}}
             return res
           {{- else -}}
-            return {{.Response.PascalName}}.from_dict(res)
+            return {{template "type" .Response}}.from_dict(res)
           {{- end}}
         {{- end}}
 {{- end}}

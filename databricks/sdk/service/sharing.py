@@ -2496,7 +2496,7 @@ class SharesAPI:
                            f'/api/2.1/unity-catalog/shares/{name}/permissions',
                            query=query,
                            headers=headers)
-        return PermissionsList.from_dict(res)
+        return catalog.PermissionsList.from_dict(res)
 
     def update(self,
                name: str,
