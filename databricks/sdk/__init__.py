@@ -6,6 +6,7 @@ from databricks.sdk import azure
 from databricks.sdk.credentials_provider import CredentialsStrategy
 from databricks.sdk.mixins.compute import ClustersExt
 from databricks.sdk.mixins.files import DbfsExt
+from databricks.sdk.mixins.jobs import JobsExt
 from databricks.sdk.mixins.workspace import WorkspaceExt
 from databricks.sdk.service.apps import AppsAPI
 from databricks.sdk.service.billing import (BillableUsageAPI, BudgetsAPI,
@@ -211,7 +212,7 @@ class WorkspaceClient:
         self._instance_pools = InstancePoolsAPI(self._api_client)
         self._instance_profiles = InstanceProfilesAPI(self._api_client)
         self._ip_access_lists = IpAccessListsAPI(self._api_client)
-        self._jobs = JobsAPI(self._api_client)
+        self._jobs = JobsExt(self._api_client)
         self._lakeview = LakeviewAPI(self._api_client)
         self._libraries = LibrariesAPI(self._api_client)
         self._metastores = MetastoresAPI(self._api_client)
@@ -457,7 +458,7 @@ class WorkspaceClient:
         return self._ip_access_lists
 
     @property
-    def jobs(self) -> JobsAPI:
+    def jobs(self) -> JobsExt:
         """The Jobs API allows you to create, edit, and delete jobs."""
         return self._jobs
 
