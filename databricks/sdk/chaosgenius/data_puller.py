@@ -53,7 +53,7 @@ class DataPuller:
             "initializing",
             {
                 "workspace_id": self._workspace_id,
-                "pull_time": self._pull_time,
+                "pull_time": int(self._pull_time.timestamp() * 1000),
                 "end_time": self._end_time,
                 "save_to_csv": self._save_to_csv,
             },
