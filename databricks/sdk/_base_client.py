@@ -18,6 +18,25 @@ from .retries import retried
 logger = logging.getLogger('databricks.sdk')
 
 
+def fix_host_if_needed(host: Optional[str]) -> Optional[str]:
+    if not host:
+        return host
+
+    # Add a default scheme if it's missing
+    if '://' not in host:
+        host = 'https://' + host
+
+    o = urllib.parse.urlparse(host)
+    # remove trailing slash
+    path = o.path.rstrip('/')
+    # remove port if 443
+    netloc = o.netloc
+    if o.port == 443:
+        netloc = netloc.split(':')[0]
+
+    return urllib.parse.urlunparse((o.scheme, netloc, path, o.params, o.query, o.fragment))
+
+
 class _BaseClient:
 
     def __init__(self,

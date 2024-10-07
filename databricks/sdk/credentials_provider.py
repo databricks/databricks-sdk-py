@@ -197,19 +197,24 @@ def external_browser(cfg: 'Config') -> Optional[CredentialsProvider]:
         client_id = '6128a518-99a9-425b-8333-4cc94f04cacd'
     else:
         raise ValueError(f'local browser SSO is not supported')
-    oauth_client = OAuthClient(host=cfg.host,
-                               client_id=client_id,
-                               redirect_url='http://localhost:8020',
-                               client_secret=cfg.client_secret)
 
     # Load cached credentials from disk if they exist.
     # Note that these are local to the Python SDK and not reused by other SDKs.
-    token_cache = TokenCache(oauth_client)
+    oidc_endpoints = cfg.oidc_endpoints
+    token_cache = TokenCache(host=cfg.host,
+                             oidc_endpoints=oidc_endpoints,
+                             client_id=client_id,
+                             client_secret=cfg.client_secret,
+                             redirect_url='http://localhost:8020')
     credentials = token_cache.load()
     if credentials:
         # Force a refresh in case the loaded credentials are expired.
         credentials.token()
     else:
+        oauth_client = OAuthClient(oidc_endpoints=oidc_endpoints,
+                                   client_id=client_id,
+                                   redirect_url='http://localhost:8020',
+                                   client_secret=cfg.client_secret)
         consent = oauth_client.initiate_consent()
         if not consent:
             return None
