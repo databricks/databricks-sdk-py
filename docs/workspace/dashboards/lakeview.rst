@@ -20,7 +20,11 @@
           slash. This field is excluded in List Dashboards responses.
         :param serialized_dashboard: str (optional)
           The contents of the dashboard in serialized string form. This field is excluded in List Dashboards
-          responses.
+          responses. Use the [get dashboard API] to retrieve an example response, which includes the
+          `serialized_dashboard` field. This field provides the structure of the JSON string that represents
+          the dashboard's layout and components.
+          
+          [get dashboard API]: https://docs.databricks.com/api/workspace/lakeview/get
         :param warehouse_id: str (optional)
           The warehouse ID used to run the dashboard.
         
@@ -261,7 +265,11 @@
           not been modified since the last read. This field is excluded in List Dashboards responses.
         :param serialized_dashboard: str (optional)
           The contents of the dashboard in serialized string form. This field is excluded in List Dashboards
-          responses.
+          responses. Use the [get dashboard API] to retrieve an example response, which includes the
+          `serialized_dashboard` field. This field provides the structure of the JSON string that represents
+          the dashboard's layout and components.
+          
+          [get dashboard API]: https://docs.databricks.com/api/workspace/lakeview/get
         :param warehouse_id: str (optional)
           The warehouse ID used to run the dashboard.
         

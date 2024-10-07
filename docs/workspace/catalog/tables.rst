@@ -45,7 +45,7 @@
         :returns: :class:`TableExistsResponse`
         
 
-    .. py:method:: get(full_name: str [, include_browse: Optional[bool], include_delta_metadata: Optional[bool]]) -> TableInfo
+    .. py:method:: get(full_name: str [, include_browse: Optional[bool], include_delta_metadata: Optional[bool], include_manifest_capabilities: Optional[bool]]) -> TableInfo
 
 
         Usage:
@@ -94,11 +94,13 @@
           for
         :param include_delta_metadata: bool (optional)
           Whether delta metadata should be included in the response.
+        :param include_manifest_capabilities: bool (optional)
+          Whether to include a manifest containing capabilities the table has.
         
         :returns: :class:`TableInfo`
         
 
-    .. py:method:: list(catalog_name: str, schema_name: str [, include_browse: Optional[bool], include_delta_metadata: Optional[bool], max_results: Optional[int], omit_columns: Optional[bool], omit_properties: Optional[bool], page_token: Optional[str]]) -> Iterator[TableInfo]
+    .. py:method:: list(catalog_name: str, schema_name: str [, include_browse: Optional[bool], include_delta_metadata: Optional[bool], include_manifest_capabilities: Optional[bool], max_results: Optional[int], omit_columns: Optional[bool], omit_properties: Optional[bool], page_token: Optional[str]]) -> Iterator[TableInfo]
 
 
         Usage:
@@ -138,6 +140,8 @@
           for
         :param include_delta_metadata: bool (optional)
           Whether delta metadata should be included in the response.
+        :param include_manifest_capabilities: bool (optional)
+          Whether to include a manifest containing capabilities the table has.
         :param max_results: int (optional)
           Maximum number of tables to return. If not set, all the tables are returned (not recommended). -
           when set to a value greater than 0, the page length is the minimum of this value and a server
@@ -153,7 +157,7 @@
         :returns: Iterator over :class:`TableInfo`
         
 
-    .. py:method:: list_summaries(catalog_name: str [, max_results: Optional[int], page_token: Optional[str], schema_name_pattern: Optional[str], table_name_pattern: Optional[str]]) -> Iterator[TableSummary]
+    .. py:method:: list_summaries(catalog_name: str [, include_manifest_capabilities: Optional[bool], max_results: Optional[int], page_token: Optional[str], schema_name_pattern: Optional[str], table_name_pattern: Optional[str]]) -> Iterator[TableSummary]
 
 
         Usage:
@@ -192,6 +196,8 @@
         
         :param catalog_name: str
           Name of parent catalog for tables of interest.
+        :param include_manifest_capabilities: bool (optional)
+          Whether to include a manifest containing capabilities the table has.
         :param max_results: int (optional)
           Maximum number of summaries for tables to return. If not set, the page length is set to a server
           configured value (10000, as of 1/5/2024). - when set to a value greater than 0, the page length is

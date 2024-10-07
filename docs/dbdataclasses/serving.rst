@@ -8,6 +8,61 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: AiGatewayConfig
+   :members:
+   :undoc-members:
+
+.. autoclass:: AiGatewayGuardrailParameters
+   :members:
+   :undoc-members:
+
+.. autoclass:: AiGatewayGuardrailPiiBehavior
+   :members:
+   :undoc-members:
+
+.. py:class:: AiGatewayGuardrailPiiBehaviorBehavior
+
+   Behavior for PII filter. Currently only 'BLOCK' is supported. If 'BLOCK' is set for the input guardrail and the request contains PII, the request is not sent to the model server and 400 status code is returned; if 'BLOCK' is set for the output guardrail and the model response contains PII, the PII info in the response is redacted and 400 status code is returned.
+
+   .. py:attribute:: BLOCK
+      :value: "BLOCK"
+
+   .. py:attribute:: NONE
+      :value: "NONE"
+
+.. autoclass:: AiGatewayGuardrails
+   :members:
+   :undoc-members:
+
+.. autoclass:: AiGatewayInferenceTableConfig
+   :members:
+   :undoc-members:
+
+.. autoclass:: AiGatewayRateLimit
+   :members:
+   :undoc-members:
+
+.. py:class:: AiGatewayRateLimitKey
+
+   Key field for a rate limit. Currently, only 'user' and 'endpoint' are supported, with 'endpoint' being the default if not specified.
+
+   .. py:attribute:: ENDPOINT
+      :value: "ENDPOINT"
+
+   .. py:attribute:: USER
+      :value: "USER"
+
+.. py:class:: AiGatewayRateLimitRenewalPeriod
+
+   Renewal period field for a rate limit. Currently, only 'minute' is supported.
+
+   .. py:attribute:: MINUTE
+      :value: "MINUTE"
+
+.. autoclass:: AiGatewayUsageTrackingConfig
+   :members:
+   :undoc-members:
+
 .. autoclass:: AmazonBedrockConfig
    :members:
    :undoc-members:
@@ -223,6 +278,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: PayloadTable
+   :members:
+   :undoc-members:
+
+.. autoclass:: PutAiGatewayResponse
    :members:
    :undoc-members:
 

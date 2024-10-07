@@ -24,5 +24,6 @@ Configure data governance with Unity Catalog for metastores, catalogs, schemas, 
    system_schemas
    table_constraints
    tables
+   temporary_table_credentials
    volumes
    workspace_bindings
