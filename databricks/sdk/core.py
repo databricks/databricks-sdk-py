@@ -18,7 +18,6 @@ JWT_BEARER_GRANT_TYPE = "urn:ietf:params:oauth:grant-type:jwt-bearer"
 OIDC_TOKEN_PATH = "/oidc/v1/token"
 
 
-
 class ApiClient:
 
     def __init__(self, cfg: Config):

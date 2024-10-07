@@ -1,11 +1,8 @@
-import contextlib
-import functools
 import os
 import pathlib
 import platform
 import random
 import string
-import typing
 from datetime import datetime
 from http.server import BaseHTTPRequestHandler
 
@@ -25,8 +22,8 @@ from databricks.sdk.service.catalog import PermissionsChange
 from databricks.sdk.service.iam import AccessControlRequest
 from databricks.sdk.version import __version__
 
-from .fixture_server import http_fixture_server
 from .conftest import noop_credentials
+from .fixture_server import http_fixture_server
 
 
 def test_parse_dsn():
@@ -300,18 +297,20 @@ def test_deletes(config, requests_mock):
     assert res is None
 
 
-@pytest.mark.parametrize('status_code,headers,body,expected_error', [
-    (401, {}, {
+@pytest.mark.parametrize(
+    'status_code,headers,body,expected_error',
+    [(401, {}, {
         'error_code': 'UNAUTHORIZED',
         'message': 'errorMessage',
     },
-     errors.Unauthenticated('errorMessage. Config: host=http://localhost, auth_type=noop', error_code='UNAUTHORIZED')),
-    (403, {}, {
-        'error_code': 'FORBIDDEN',
-        'message': 'errorMessage',
-    },
-     errors.PermissionDenied('errorMessage. Config: host=http://localhost, auth_type=noop', error_code='FORBIDDEN')),
-])
+      errors.Unauthenticated('errorMessage. Config: host=http://localhost, auth_type=noop',
+                             error_code='UNAUTHORIZED')),
+     (403, {}, {
+         'error_code': 'FORBIDDEN',
+         'message': 'errorMessage',
+     },
+      errors.PermissionDenied('errorMessage. Config: host=http://localhost, auth_type=noop',
+                              error_code='FORBIDDEN')), ])
 def test_error(config, requests_mock, status_code, headers, body, expected_error):
     client = ApiClient(config)
     requests_mock.get("/test", json=body, status_code=status_code, headers=headers)

@@ -29,5 +29,3 @@ def http_fixture_server(handler: typing.Callable[[BaseHTTPRequestHandler], None]
         yield 'http://{0}:{1}'.format(*srv.server_address)
     finally:
         srv.shutdown()
-
-
