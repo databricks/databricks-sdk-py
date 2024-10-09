@@ -1862,8 +1862,8 @@ class ReposAPI:
              path_prefix: Optional[str] = None) -> Iterator[RepoInfo]:
         """Get repos.
         
-        Returns repos that the calling user has Manage permissions on. Results are paginated with each page
-        containing twenty repos.
+        Returns repos that the calling user has Manage permissions on. Use `next_page_token` to iterate
+        through additional pages.
         
         :param next_page_token: str (optional)
           Token used to get the next page of results. If not specified, returns the first page of results as

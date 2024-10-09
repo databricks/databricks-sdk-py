@@ -174,7 +174,10 @@
           An optional set of email addresses that is notified when runs of this job begin or complete as well
           as when this job is deleted.
         :param environments: List[:class:`JobEnvironment`] (optional)
-          A list of task execution environment specifications that can be referenced by tasks of this job.
+          A list of task execution environment specifications that can be referenced by serverless tasks of
+          this job. An environment is required to be present for serverless tasks. For serverless notebook
+          tasks, the environment is accessible in the notebook environment panel. For other serverless tasks,
+          the task environment is required to be specified using environment_key in the task settings.
         :param format: :class:`Format` (optional)
           Used to tell what is the format of the job. This field is ignored in Create/Update/Reset calls. When
           using the Jobs API 2.1 this value is always set to `"MULTI_TASK"`.
@@ -211,12 +214,11 @@
         :param queue: :class:`QueueSettings` (optional)
           The queue settings of the job.
         :param run_as: :class:`JobRunAs` (optional)
-          Write-only setting, available only in Create/Update/Reset and Submit calls. Specifies the user or
-          service principal that the job runs as. If not specified, the job runs as the user who created the
-          job.
+          Write-only setting. Specifies the user, service principal or group that the job/pipeline runs as. If
+          not specified, the job/pipeline runs as the user who created the job/pipeline.
           
-          Only `user_name` or `service_principal_name` can be specified. If both are specified, an error is
-          thrown.
+          Exactly one of `user_name`, `service_principal_name`, `group_name` should be specified. If not, an
+          error is thrown.
         :param schedule: :class:`CronSchedule` (optional)
           An optional periodic schedule for this job. The default behavior is that the job only runs when
           triggered by clicking “Run Now” in the Jobs UI or sending an API request to `runNow`.
@@ -679,6 +681,7 @@
           [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
           [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
         :param pipeline_params: :class:`PipelineParams` (optional)
+          Controls whether the pipeline should perform a full refresh
         :param python_named_params: Dict[str,str] (optional)
         :param python_params: List[str] (optional)
           A list of parameters for jobs with Python tasks, for example `"python_params": ["john doe", "35"]`.
@@ -868,6 +871,7 @@
           [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
           [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
         :param pipeline_params: :class:`PipelineParams` (optional)
+          Controls whether the pipeline should perform a full refresh
         :param python_named_params: Dict[str,str] (optional)
         :param python_params: List[str] (optional)
           A list of parameters for jobs with Python tasks, for example `"python_params": ["john doe", "35"]`.

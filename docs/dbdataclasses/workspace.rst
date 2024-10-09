@@ -23,7 +23,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: CreateCredentials
+.. autoclass:: CreateCredentialsRequest
    :members:
    :undoc-members:
 
@@ -31,7 +31,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: CreateRepo
+.. autoclass:: CreateRepoRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: CreateRepoResponse
    :members:
    :undoc-members:
 
@@ -56,6 +60,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: DeleteAclResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: DeleteCredentialsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: DeleteRepoResponse
    :members:
    :undoc-members:
 
@@ -108,6 +120,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: GetRepoPermissionLevelsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: GetRepoResponse
    :members:
    :undoc-members:
 
@@ -168,6 +184,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "SQL"
 
 .. autoclass:: ListAclsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListCredentialsResponse
    :members:
    :undoc-members:
 
@@ -306,15 +326,19 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: UpdateCredentials
+.. autoclass:: UpdateCredentialsRequest
    :members:
    :undoc-members:
 
-.. autoclass:: UpdateRepo
+.. autoclass:: UpdateCredentialsResponse
    :members:
    :undoc-members:
 
-.. autoclass:: UpdateResponse
+.. autoclass:: UpdateRepoRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateRepoResponse
    :members:
    :undoc-members:
 

@@ -14,6 +14,8 @@ Manage security settings for Accounts and Workspaces
    automatic_cluster_update
    compliance_security_profile
    default_namespace
+   disable_legacy_access
+   disable_legacy_dbfs
    enhanced_security_monitoring
    restrict_workspace_admins
    token_management

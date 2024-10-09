@@ -454,6 +454,9 @@ class CancelExecutionResponse:
 
 @dataclass
 class Channel:
+    """Configures the channel name and DBSQL version of the warehouse. CHANNEL_NAME_CUSTOM should be
+    chosen only when `dbsql_version` is specified."""
+
     dbsql_version: Optional[str] = None
 
     name: Optional[ChannelName] = None
@@ -499,7 +502,6 @@ class ChannelName(Enum):
     CHANNEL_NAME_CURRENT = 'CHANNEL_NAME_CURRENT'
     CHANNEL_NAME_CUSTOM = 'CHANNEL_NAME_CUSTOM'
     CHANNEL_NAME_PREVIEW = 'CHANNEL_NAME_PREVIEW'
-    CHANNEL_NAME_PREVIOUS = 'CHANNEL_NAME_PREVIOUS'
     CHANNEL_NAME_UNSPECIFIED = 'CHANNEL_NAME_UNSPECIFIED'
 
 
@@ -827,7 +829,8 @@ class CreateWarehouseRequest:
     """The amount of time in minutes that a SQL warehouse must be idle (i.e., no RUNNING queries)
     before it is automatically stopped.
     
-    Supported values: - Must be == 0 or >= 10 mins - 0 indicates no autostop.
+    Supported values: - Must be >= 0 mins for serverless warehouses - Must be == 0 or >= 10 mins for
+    non-serverless warehouses - 0 indicates no autostop.
     
     Defaults to 120 mins"""
 
@@ -6866,7 +6869,8 @@ class WarehousesAPI:
           The amount of time in minutes that a SQL warehouse must be idle (i.e., no RUNNING queries) before it
           is automatically stopped.
           
-          Supported values: - Must be == 0 or >= 10 mins - 0 indicates no autostop.
+          Supported values: - Must be >= 0 mins for serverless warehouses - Must be == 0 or >= 10 mins for
+          non-serverless warehouses - 0 indicates no autostop.
           
           Defaults to 120 mins
         :param channel: :class:`Channel` (optional)
