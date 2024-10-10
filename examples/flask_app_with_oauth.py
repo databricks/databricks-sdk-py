@@ -31,7 +31,7 @@ import argparse
 import logging
 import sys
 
-from databricks.sdk.oauth import OAuthClient
+from databricks.sdk.oauth import OAuthClient, OidcEndpoints, get_workspace_endpoints
 
 APP_NAME = "flask-demo"
 all_clusters_template = """<ul>
@@ -44,7 +44,7 @@ all_clusters_template = """<ul>
 </ul>"""
 
 
-def create_flask_app(oauth_client: OAuthClient):
+def create_flask_app(host: str, oidc_endpoints: OidcEndpoints, client_id: str, client_secret: str, redirect_url: str):
     """The create_flask_app function creates a Flask app that is enabled with OAuth.
 
     It initializes the app and web session secret keys with a randomly generated token. It defines two routes for
@@ -64,7 +64,7 @@ def create_flask_app(oauth_client: OAuthClient):
         the callback parameters, and redirects the user to the index page."""
         from databricks.sdk.oauth import Consent
 
-        consent = Consent.from_dict(oauth_client, session["consent"])
+        consent = Consent.from_dict(session["consent"], client_secret=client_secret)
         session["creds"] = consent.exchange_callback_parameters(request.args).as_dict()
         return redirect(url_for("index"))
 
@@ -73,17 +73,25 @@ def create_flask_app(oauth_client: OAuthClient):
         """The index page checks if the user has already authenticated and retrieves the user's credentials using
         the Databricks SDK WorkspaceClient. It then renders the template with the clusters' list."""
         if "creds" not in session:
+            oauth_client = OAuthClient(oidc_endpoints=oidc_endpoints,
+                                       client_id=client_id,
+                                       client_secret=client_secret,
+                                       redirect_url=redirect_url)
             consent = oauth_client.initiate_consent()
             session["consent"] = consent.as_dict()
-            return redirect(consent.auth_url)
+            return redirect(oidc_endpoints.authorization_endpoint)
 
         from databricks.sdk import WorkspaceClient
         from databricks.sdk.oauth import SessionCredentials
 
-        credentials_provider = SessionCredentials.from_dict(oauth_client, session["creds"])
-        workspace_client = WorkspaceClient(host=oauth_client.host,
+        credentials_strategy = SessionCredentials.from_dict(session["creds"],
+                                                            oidc_endpoints=oidc_endpoints,
+                                                            client_id=client_id,
+                                                            client_secret=client_secret,
+                                                            redirect_url=redirect_url)
+        workspace_client = WorkspaceClient(host=host,
                                            product=APP_NAME,
-                                           credentials_provider=credentials_provider,
+                                           credentials_strategy=credentials_strategy,
                                            )
 
         return render_template_string(all_clusters_template, w=workspace_client)
@@ -110,22 +118,6 @@ def register_custom_app(args: argparse.Namespace) -> tuple[str, str]:
     return custom_app.client_id, custom_app.client_secret
 
 
-def init_oauth_config(args) -> OAuthClient:
-    """Creates Databricks SDK configuration for OAuth"""
-    oauth_client = OAuthClient(host=args.host,
-                               client_id=args.client_id,
-                               client_secret=args.client_secret,
-                               redirect_url=f"http://localhost:{args.port}/callback",
-                               scopes=["all-apis"],
-                               )
-    if not oauth_client.client_id:
-        client_id, client_secret = register_custom_app(args)
-        oauth_client.client_id = client_id
-        oauth_client.client_secret = client_secret
-
-    return oauth_client
-
-
 def parse_arguments() -> argparse.Namespace:
     """Parses arguments for this demo"""
     parser = argparse.ArgumentParser(prog=APP_NAME, description=__doc__.strip())
@@ -145,8 +137,12 @@ if __name__ == "__main__":
     logging.getLogger("databricks.sdk").setLevel(logging.DEBUG)
 
     args = parse_arguments()
-    oauth_cfg = init_oauth_config(args)
-    app = create_flask_app(oauth_cfg)
+    oidc_endpoints = get_workspace_endpoints(args.host)
+    client_id, client_secret = args.client_id, args.client_secret
+    if not client_id:
+        client_id, client_secret = register_custom_app(args)
+    redirect_url=f"http://localhost:{args.port}/callback"
+    app = create_flask_app(args.host, oidc_endpoints, client_id, client_secret, redirect_url)
 
     app.run(
         host="localhost",
