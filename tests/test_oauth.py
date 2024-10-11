@@ -48,6 +48,9 @@ def test_account_oidc_endpoints(requests_mock):
 
 
 def test_account_oidc_endpoints_retry_on_429(requests_mock):
+    # It doesn't seem possible to use requests_mock to return different responses for the same request, e.g. when
+    # simulating a transient failure. Instead, the nth_request matcher increments a test-wide counter and only matches
+    # the nth request.
     request_count = 0
 
     def nth_request(n):
@@ -81,7 +84,7 @@ def test_account_oidc_endpoints_retry_on_429(requests_mock):
 
 
 def test_workspace_oidc_endpoints(requests_mock):
-    requests_mock.get("https://my-workspace.cloud.databricks.com/.well-known/oauth-authorization-server",
+    requests_mock.get("https://my-workspace.cloud.databricks.com/oidc/.well-known/oauth-authorization-server",
                       json={
                           "authorization_endpoint":
                           "https://my-workspace.cloud.databricks.com/oidc/oauth/authorize",
@@ -107,10 +110,10 @@ def test_workspace_oidc_endpoints_retry_on_429(requests_mock):
 
         return observe_request
 
-    requests_mock.get("https://my-workspace.cloud.databricks.com/.well-known/oauth-authorization-server",
+    requests_mock.get("https://my-workspace.cloud.databricks.com/oidc/.well-known/oauth-authorization-server",
                       additional_matcher=nth_request(0),
                       status_code=429)
-    requests_mock.get("https://my-workspace.cloud.databricks.com/.well-known/oauth-authorization-server",
+    requests_mock.get("https://my-workspace.cloud.databricks.com/oidc/.well-known/oauth-authorization-server",
                       additional_matcher=nth_request(1),
                       json={
                           "authorization_endpoint":
