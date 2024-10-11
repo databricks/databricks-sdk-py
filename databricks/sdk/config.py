@@ -121,9 +121,7 @@ class Config:
             self._set_inner_config(kwargs)
             self._load_from_env()
             self._known_file_config_loader()
-            updated_host = _fix_host_if_needed(self.host)
-            if updated_host:
-                self.host = updated_host
+            self._fix_host_if_needed()
             self._validate()
             self.init_auth()
             self._init_product(product, product_version)
@@ -255,7 +253,7 @@ class Config:
 
     @property
     def oidc_endpoints(self) -> Optional[OidcEndpoints]:
-        self.host = fix_host_if_needed(self.host)
+        self._fix_host_if_needed()
         if not self.host:
             return None
         if self.is_azure and self.azure_client_id:
@@ -335,6 +333,11 @@ class Config:
             attrs.append(v)
         cls._attributes = attrs
         return cls._attributes
+
+    def _fix_host_if_needed(self):
+        updated_host = _fix_host_if_needed(self.host)
+        if updated_host:
+            self.host = updated_host
 
     def load_azure_tenant_id(self):
         """[Internal] Load the Azure tenant ID from the Azure Databricks login page.
