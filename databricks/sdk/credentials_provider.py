@@ -201,11 +201,12 @@ def external_browser(cfg: 'Config') -> Optional[CredentialsProvider]:
     # Load cached credentials from disk if they exist.
     # Note that these are local to the Python SDK and not reused by other SDKs.
     oidc_endpoints = cfg.oidc_endpoints
+    redirect_url = 'http://localhost:8020'
     token_cache = TokenCache(host=cfg.host,
                              oidc_endpoints=oidc_endpoints,
                              client_id=client_id,
                              client_secret=client_secret,
-                             redirect_url='http://localhost:8020')
+                             redirect_url=redirect_url)
     credentials = token_cache.load()
     if credentials:
         # Force a refresh in case the loaded credentials are expired.
@@ -213,7 +214,7 @@ def external_browser(cfg: 'Config') -> Optional[CredentialsProvider]:
     else:
         oauth_client = OAuthClient(oidc_endpoints=oidc_endpoints,
                                    client_id=client_id,
-                                   redirect_url='http://localhost:8020',
+                                   redirect_url=redirect_url,
                                    client_secret=client_secret)
         consent = oauth_client.initiate_consent()
         if not consent:
