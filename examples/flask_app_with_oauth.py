@@ -31,7 +31,7 @@ import argparse
 import logging
 import sys
 
-from databricks.sdk.oauth import OAuthClient, OidcEndpoints, get_workspace_endpoints
+from databricks.sdk.oauth import OAuthClient, get_workspace_endpoints
 from databricks.sdk.service.compute import ListClustersFilterBy, State
 
 APP_NAME = "flask-demo"
@@ -114,7 +114,11 @@ def register_custom_app(args: argparse.Namespace) -> tuple[str, str]:
     account_client = AccountClient(profile=args.profile)
 
     custom_app = account_client.custom_app_integration.create(
-        name=APP_NAME, redirect_urls=[f"http://localhost:{args.port}/callback"], confidential=True,
+        name=APP_NAME,
+        redirect_urls=[
+            f"http://localhost:{args.port}/callback",
+        ],
+        confidential=True,
         scopes=["all-apis"],
     )
     logging.info(f"Created new custom app: "
