@@ -575,7 +575,7 @@ class TokenCache:
             with open(self.filename, 'r') as f:
                 raw = json.load(f)
                 return SessionCredentials.from_dict(raw,
-                                                    oidc_endpoints=self._oidc_endpoints,
+                                                    token_endpoint=self._oidc_endpoints.token_endpoint,
                                                     client_id=self._client_id,
                                                     client_secret=self._client_secret,
                                                     redirect_url=self._redirect_url)
