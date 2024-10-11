@@ -368,6 +368,10 @@ class Consent:
             'client_id': self._client_id,
         }
 
+    @property
+    def authorization_url(self) -> str:
+        return self._authorization_url
+
     @staticmethod
     def from_dict(raw: dict, client_secret: str = None) -> 'Consent':
         return Consent(raw['state'],

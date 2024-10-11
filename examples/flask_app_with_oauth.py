@@ -32,19 +32,20 @@ import logging
 import sys
 
 from databricks.sdk.oauth import OAuthClient, OidcEndpoints, get_workspace_endpoints
+from databricks.sdk.service.compute import ListClustersFilterBy, State
 
 APP_NAME = "flask-demo"
 all_clusters_template = """<ul>
-{% for cluster in w.clusters.list() -%}
+{% for cluster in clusters -%}
     <li><a 
         target="_blank" 
-        href="{{ w.config.host }}/#setting/clusters/{{ cluster.cluster_id }}/configuration">
+        href="{{ workspace_host }}/#setting/clusters/{{ cluster.cluster_id }}/configuration">
         {{ cluster.cluster_name }}</a> is {{ cluster.state }}</li>
 {% endfor %}
 </ul>"""
 
 
-def create_flask_app(host: str, oidc_endpoints: OidcEndpoints, client_id: str, client_secret: str, redirect_url: str):
+def create_flask_app(workspace_host: str, client_id: str, client_secret: str):
     """The create_flask_app function creates a Flask app that is enabled with OAuth.
 
     It initializes the app and web session secret keys with a randomly generated token. It defines two routes for
@@ -72,6 +73,9 @@ def create_flask_app(host: str, oidc_endpoints: OidcEndpoints, client_id: str, c
     def index():
         """The index page checks if the user has already authenticated and retrieves the user's credentials using
         the Databricks SDK WorkspaceClient. It then renders the template with the clusters' list."""
+        oidc_endpoints = get_workspace_endpoints(workspace_host)
+        port = request.environ.get("SERVER_PORT")
+        redirect_url=f"http://localhost:{port}/callback"
         if "creds" not in session:
             oauth_client = OAuthClient(oidc_endpoints=oidc_endpoints,
                                        client_id=client_id,
@@ -79,22 +83,24 @@ def create_flask_app(host: str, oidc_endpoints: OidcEndpoints, client_id: str, c
                                        redirect_url=redirect_url)
             consent = oauth_client.initiate_consent()
             session["consent"] = consent.as_dict()
-            return redirect(oidc_endpoints.authorization_endpoint)
+            return redirect(consent.authorization_url)
 
         from databricks.sdk import WorkspaceClient
         from databricks.sdk.oauth import SessionCredentials
 
         credentials_strategy = SessionCredentials.from_dict(session["creds"],
-                                                            oidc_endpoints=oidc_endpoints,
+                                                            token_endpoint=oidc_endpoints.token_endpoint,
                                                             client_id=client_id,
                                                             client_secret=client_secret,
                                                             redirect_url=redirect_url)
-        workspace_client = WorkspaceClient(host=host,
+        workspace_client = WorkspaceClient(host=workspace_host,
                                            product=APP_NAME,
                                            credentials_strategy=credentials_strategy,
                                            )
-
-        return render_template_string(all_clusters_template, w=workspace_client)
+        clusters = workspace_client.clusters.list(
+            filter_by=ListClustersFilterBy(cluster_states=[State.RUNNING, State.PENDING])
+        )
+        return render_template_string(all_clusters_template, workspace_host=workspace_host, clusters=clusters)
 
     return app
 
@@ -137,12 +143,10 @@ if __name__ == "__main__":
     logging.getLogger("databricks.sdk").setLevel(logging.DEBUG)
 
     args = parse_arguments()
-    oidc_endpoints = get_workspace_endpoints(args.host)
     client_id, client_secret = args.client_id, args.client_secret
     if not client_id:
         client_id, client_secret = register_custom_app(args)
-    redirect_url=f"http://localhost:{args.port}/callback"
-    app = create_flask_app(args.host, oidc_endpoints, client_id, client_secret, redirect_url)
+    app = create_flask_app(args.host, client_id, client_secret)
 
     app.run(
         host="localhost",
