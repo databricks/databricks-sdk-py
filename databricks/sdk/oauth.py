@@ -258,7 +258,7 @@ def get_workspace_endpoints(host: str, client: _BaseClient = _BaseClient()) -> O
     :return: The workspace's OIDC endpoints.
     """
     host = fix_host_if_needed(host)
-    oidc = f'{host}/.well-known/oauth-authorization-server'
+    oidc = f'{host}/oidc/.well-known/oauth-authorization-server'
     resp = client.do('GET', oidc)
     return OidcEndpoints.from_dict(resp)
 
@@ -284,11 +284,11 @@ class SessionCredentials(Refreshable):
 
     def __init__(self,
                  token: Token,
-                 oidc_endpoints: OidcEndpoints,
+                 token_endpoint: str,
                  client_id: str,
                  client_secret: str = None,
                  redirect_url: str = None):
-        self._oidc_endpoints = oidc_endpoints
+        self._token_endpoint = token_endpoint
         self._client_id = client_id
         self._client_secret = client_secret
         self._redirect_url = redirect_url
@@ -299,12 +299,12 @@ class SessionCredentials(Refreshable):
 
     @staticmethod
     def from_dict(raw: dict,
-                  oidc_endpoints: OidcEndpoints,
+                  token_endpoint: str,
                   client_id: str,
                   client_secret: str = None,
                   redirect_url: str = None) -> 'SessionCredentials':
         return SessionCredentials(token=Token.from_dict(raw['token']),
-                                  oidc_endpoints=oidc_endpoints,
+                                  token_endpoint=token_endpoint,
                                   client_id=client_id,
                                   client_secret=client_secret,
                                   redirect_url=redirect_url)
@@ -328,13 +328,13 @@ class SessionCredentials(Refreshable):
             raise ValueError('oauth2: token expired and refresh token is not set')
         params = {'grant_type': 'refresh_token', 'refresh_token': refresh_token}
         headers = {}
-        if 'microsoft' in self._oidc_endpoints.token_endpoint:
+        if 'microsoft' in self._token_endpoint:
             # Tokens issued for the 'Single-Page Application' client-type may
             # only be redeemed via cross-origin requests
             headers = {'Origin': self._redirect_url}
         return retrieve_token(client_id=self._client_id,
                               client_secret=self._client_secret,
-                              token_url=self._oidc_endpoints.token_endpoint,
+                              token_url=self._token_endpoint,
                               params=params,
                               use_params=True,
                               headers=headers)
@@ -345,14 +345,16 @@ class Consent:
     def __init__(self,
                  state: str,
                  verifier: str,
-                 oidc_endpoints: OidcEndpoints,
+                 authorization_url: str,
                  redirect_url: str,
+                 token_endpoint: str,
                  client_id: str,
                  client_secret: str = None) -> None:
         self._verifier = verifier
         self._state = state
-        self._oidc_endpoints = oidc_endpoints
+        self._authorization_url = authorization_url
         self._redirect_url = redirect_url
+        self._token_endpoint = token_endpoint
         self._client_id = client_id
         self._client_secret = client_secret
 
@@ -360,8 +362,9 @@ class Consent:
         return {
             'state': self._state,
             'verifier': self._verifier,
+            'authorization_url': self._authorization_url,
             'redirect_url': self._redirect_url,
-            'oidc_endpoints': self._oidc_endpoints.as_dict(),
+            'token_endpoint': self._token_endpoint,
             'client_id': self._client_id,
         }
 
@@ -369,8 +372,9 @@ class Consent:
     def from_dict(raw: dict, client_secret: str = None) -> 'Consent':
         return Consent(raw['state'],
                        raw['verifier'],
-                       oidc_endpoints=OidcEndpoints.from_dict(raw['oidc_endpoints']),
+                       authorization_url=raw['authorization_url'],
                        redirect_url=raw['redirect_url'],
+                       token_endpoint=raw['token_endpoint'],
                        client_id=raw['client_id'],
                        client_secret=client_secret)
 
@@ -379,8 +383,8 @@ class Consent:
         if redirect_url.hostname not in ('localhost', '127.0.0.1'):
             raise ValueError(f'cannot listen on {redirect_url.hostname}')
         feedback = []
-        logger.info(f'Opening {self._oidc_endpoints.authorization_endpoint} in a browser')
-        webbrowser.open_new(self._oidc_endpoints.authorization_endpoint)
+        logger.info(f'Opening {self._authorization_url} in a browser')
+        webbrowser.open_new(self._authorization_url)
         port = redirect_url.port
         handler_factory = functools.partial(_OAuthCallback, feedback)
         with HTTPServer(("localhost", port), handler_factory) as httpd:
@@ -412,11 +416,11 @@ class Consent:
             try:
                 token = retrieve_token(client_id=self._client_id,
                                        client_secret=self._client_secret,
-                                       token_url=self._oidc_endpoints.token_endpoint,
+                                       token_url=self._token_endpoint,
                                        params=params,
                                        headers=headers,
                                        use_params=True)
-                return SessionCredentials(token, self._oidc_endpoints, self._client_id, self._client_secret,
+                return SessionCredentials(token, self._token_endpoint, self._client_id, self._client_secret,
                                           self._redirect_url)
             except ValueError as e:
                 if NO_ORIGIN_FOR_SPA_CLIENT_ERROR in str(e):
@@ -481,11 +485,12 @@ class OAuthClient:
             'code_challenge': challenge,
             'code_challenge_method': 'S256'
         }
-        f'{self._oidc_endpoints.authorization_endpoint}?{urllib.parse.urlencode(params)}'
+        auth_url = f'{self._oidc_endpoints.authorization_endpoint}?{urllib.parse.urlencode(params)}'
         return Consent(state,
                        verifier,
-                       oidc_endpoints=self._oidc_endpoints,
+                       authorization_url=auth_url,
                        redirect_url=self.redirect_url,
+                       token_endpoint=self._oidc_endpoints.token_endpoint,
                        client_id=self._client_id,
                        client_secret=self._client_secret)
 

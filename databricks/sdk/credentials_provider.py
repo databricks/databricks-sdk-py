@@ -187,17 +187,16 @@ def oauth_service_principal(cfg: 'Config') -> Optional[CredentialsProvider]:
 def external_browser(cfg: 'Config') -> Optional[CredentialsProvider]:
     if cfg.auth_type != 'external-browser':
         return None
+    client_id, client_secret = None, None
     if cfg.client_id:
         client_id = cfg.client_id
-    elif cfg.is_aws:
+        client_secret = cfg.client_secret
+    elif cfg.azure_client_id:
+        client_id = cfg.azure_client
+        client_secret = cfg.azure_client_secret
+
+    if not client_id:
         client_id = 'databricks-cli'
-    elif cfg.is_azure:
-        # Use Azure AD app for cases when Azure CLI is not available on the machine.
-        # App has to be registered as Single-page multi-tenant to support PKCE
-        # TODO: temporary app ID, change it later.
-        client_id = '6128a518-99a9-425b-8333-4cc94f04cacd'
-    else:
-        raise ValueError(f'local browser SSO is not supported')
 
     # Load cached credentials from disk if they exist.
     # Note that these are local to the Python SDK and not reused by other SDKs.
@@ -205,7 +204,7 @@ def external_browser(cfg: 'Config') -> Optional[CredentialsProvider]:
     token_cache = TokenCache(host=cfg.host,
                              oidc_endpoints=oidc_endpoints,
                              client_id=client_id,
-                             client_secret=cfg.client_secret,
+                             client_secret=client_secret,
                              redirect_url='http://localhost:8020')
     credentials = token_cache.load()
     if credentials:
@@ -215,7 +214,7 @@ def external_browser(cfg: 'Config') -> Optional[CredentialsProvider]:
         oauth_client = OAuthClient(oidc_endpoints=oidc_endpoints,
                                    client_id=client_id,
                                    redirect_url='http://localhost:8020',
-                                   client_secret=cfg.client_secret)
+                                   client_secret=client_secret)
         consent = oauth_client.initiate_consent()
         if not consent:
             return None
