@@ -201,7 +201,8 @@ def external_browser(cfg: 'Config') -> Optional[CredentialsProvider]:
     oauth_client = OAuthClient(host=cfg.host,
                                client_id=client_id,
                                redirect_url='http://localhost:8020',
-                               client_secret=cfg.client_secret)
+                               client_secret=cfg.client_secret,
+                               account_id=cfg.account_id)
 
     # Load cached credentials from disk if they exist.
     # Note that these are local to the Python SDK and not reused by other SDKs.

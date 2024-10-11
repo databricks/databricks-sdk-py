@@ -359,7 +359,8 @@ class OAuthClient:
                  redirect_url: str,
                  *,
                  scopes: List[str] = None,
-                 client_secret: str = None):
+                 client_secret: str = None,
+                 account_id: str = None):
         # TODO: is it a circular dependency?..
         from .core import Config
         from .credentials_provider import credentials_strategy
@@ -368,7 +369,7 @@ class OAuthClient:
         def noop_credentials(_: any):
             return lambda: {}
 
-        config = Config(host=host, credentials_strategy=noop_credentials)
+        config = Config(host=host, credentials_strategy=noop_credentials, account_id=account_id)
         if not scopes:
             scopes = ['all-apis']
         oidc = config.oidc_endpoints
