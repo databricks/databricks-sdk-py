@@ -18,7 +18,7 @@ from .retries import retried
 logger = logging.getLogger('databricks.sdk')
 
 
-def fix_host_if_needed(host: Optional[str]) -> Optional[str]:
+def _fix_host_if_needed(host: Optional[str]) -> Optional[str]:
     if not host:
         return host
 

@@ -10,7 +10,7 @@ from typing import Dict, Iterable, Optional
 import requests
 
 from . import useragent
-from ._base_client import fix_host_if_needed
+from ._base_client import _fix_host_if_needed
 from .clock import Clock, RealClock
 from .credentials_provider import CredentialsStrategy, DefaultCredentials
 from .environments import (ALL_ENVS, AzureEnvironment, Cloud,
@@ -121,7 +121,7 @@ class Config:
             self._set_inner_config(kwargs)
             self._load_from_env()
             self._known_file_config_loader()
-            updated_host = fix_host_if_needed(self.host)
+            updated_host = _fix_host_if_needed(self.host)
             if updated_host:
                 self.host = updated_host
             self._validate()

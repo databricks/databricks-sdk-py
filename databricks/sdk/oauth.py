@@ -17,7 +17,7 @@ from typing import Any, Dict, List, Optional
 import requests
 import requests.auth
 
-from ._base_client import _BaseClient, fix_host_if_needed
+from ._base_client import _BaseClient, _fix_host_if_needed
 
 # Error code for PKCE flow in Azure Active Directory, that gets additional retry.
 # See https://stackoverflow.com/a/75466778/277035 for more info
@@ -245,7 +245,7 @@ def get_account_endpoints(host: str, account_id: str, client: _BaseClient = _Bas
     :param account_id: The account ID.
     :return: The account's OIDC endpoints.
     """
-    host = fix_host_if_needed(host)
+    host = _fix_host_if_needed(host)
     oidc = f'{host}/oidc/accounts/{account_id}/.well-known/oauth-authorization-server'
     resp = client.do('GET', oidc)
     return OidcEndpoints.from_dict(resp)
@@ -257,7 +257,7 @@ def get_workspace_endpoints(host: str, client: _BaseClient = _BaseClient()) -> O
     :param host: The Databricks workspace host.
     :return: The workspace's OIDC endpoints.
     """
-    host = fix_host_if_needed(host)
+    host = _fix_host_if_needed(host)
     oidc = f'{host}/oidc/.well-known/oauth-authorization-server'
     resp = client.do('GET', oidc)
     return OidcEndpoints.from_dict(resp)
@@ -271,7 +271,7 @@ def get_azure_entra_id_workspace_endpoints(host: str) -> Optional[OidcEndpoints]
     :return: The OIDC endpoints for the workspace's Azure Entra ID tenant.
     """
     # In Azure, this workspace endpoint redirects to the Entra ID authorization endpoint
-    host = fix_host_if_needed(host)
+    host = _fix_host_if_needed(host)
     res = requests.get(f'{host}/oidc/oauth2/v2.0/authorize', allow_redirects=False)
     real_auth_url = res.headers.get('location')
     if not real_auth_url:
