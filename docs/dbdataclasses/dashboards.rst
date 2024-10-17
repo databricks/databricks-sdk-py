@@ -166,6 +166,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: MESSAGE_UPDATED_WHILE_EXECUTING_EXCEPTION
       :value: "MESSAGE_UPDATED_WHILE_EXECUTING_EXCEPTION"
 
+   .. py:attribute:: NO_QUERY_TO_VISUALIZE_EXCEPTION
+      :value: "NO_QUERY_TO_VISUALIZE_EXCEPTION"
+
    .. py:attribute:: NO_TABLES_TO_QUERY_EXCEPTION
       :value: "NO_TABLES_TO_QUERY_EXCEPTION"
 

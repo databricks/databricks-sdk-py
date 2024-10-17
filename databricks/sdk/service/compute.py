@@ -7865,38 +7865,6 @@ class CommandExecutionAPI:
             attempt += 1
         raise TimeoutError(f'timed out after {timeout}: {status_message}')
 
-    def wait_context_status_command_execution_running(
-            self,
-            cluster_id: str,
-            context_id: str,
-            timeout=timedelta(minutes=20),
-            callback: Optional[Callable[[ContextStatusResponse], None]] = None) -> ContextStatusResponse:
-        deadline = time.time() + timeout.total_seconds()
-        target_states = (ContextStatus.RUNNING, )
-        failure_states = (ContextStatus.ERROR, )
-        status_message = 'polling...'
-        attempt = 1
-        while time.time() < deadline:
-            poll = self.context_status(cluster_id=cluster_id, context_id=context_id)
-            status = poll.status
-            status_message = f'current status: {status}'
-            if status in target_states:
-                return poll
-            if callback:
-                callback(poll)
-            if status in failure_states:
-                msg = f'failed to reach Running, got {status}: {status_message}'
-                raise OperationFailed(msg)
-            prefix = f"cluster_id={cluster_id}, context_id={context_id}"
-            sleep = attempt
-            if sleep > 10:
-                # sleep 10s max per attempt
-                sleep = 10
-            _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
-            time.sleep(sleep + random.random())
-            attempt += 1
-        raise TimeoutError(f'timed out after {timeout}: {status_message}')
-
     def wait_command_status_command_execution_finished_or_error(
             self,
             cluster_id: str,
@@ -7921,6 +7889,38 @@ class CommandExecutionAPI:
                 msg = f'failed to reach Finished or Error, got {status}: {status_message}'
                 raise OperationFailed(msg)
             prefix = f"cluster_id={cluster_id}, command_id={command_id}, context_id={context_id}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f'timed out after {timeout}: {status_message}')
+
+    def wait_context_status_command_execution_running(
+            self,
+            cluster_id: str,
+            context_id: str,
+            timeout=timedelta(minutes=20),
+            callback: Optional[Callable[[ContextStatusResponse], None]] = None) -> ContextStatusResponse:
+        deadline = time.time() + timeout.total_seconds()
+        target_states = (ContextStatus.RUNNING, )
+        failure_states = (ContextStatus.ERROR, )
+        status_message = 'polling...'
+        attempt = 1
+        while time.time() < deadline:
+            poll = self.context_status(cluster_id=cluster_id, context_id=context_id)
+            status = poll.status
+            status_message = f'current status: {status}'
+            if status in target_states:
+                return poll
+            if callback:
+                callback(poll)
+            if status in failure_states:
+                msg = f'failed to reach Running, got {status}: {status_message}'
+                raise OperationFailed(msg)
+            prefix = f"cluster_id={cluster_id}, context_id={context_id}"
             sleep = attempt
             if sleep > 10:
                 # sleep 10s max per attempt
