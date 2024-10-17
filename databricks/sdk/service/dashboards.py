@@ -607,6 +607,7 @@ class MessageErrorType(Enum):
     LOCAL_CONTEXT_EXCEEDED_EXCEPTION = 'LOCAL_CONTEXT_EXCEEDED_EXCEPTION'
     MESSAGE_DELETED_WHILE_EXECUTING_EXCEPTION = 'MESSAGE_DELETED_WHILE_EXECUTING_EXCEPTION'
     MESSAGE_UPDATED_WHILE_EXECUTING_EXCEPTION = 'MESSAGE_UPDATED_WHILE_EXECUTING_EXCEPTION'
+    NO_QUERY_TO_VISUALIZE_EXCEPTION = 'NO_QUERY_TO_VISUALIZE_EXCEPTION'
     NO_TABLES_TO_QUERY_EXCEPTION = 'NO_TABLES_TO_QUERY_EXCEPTION'
     RATE_LIMIT_EXCEEDED_GENERIC_EXCEPTION = 'RATE_LIMIT_EXCEEDED_GENERIC_EXCEPTION'
     RATE_LIMIT_EXCEEDED_SPECIFIED_WAIT_EXCEPTION = 'RATE_LIMIT_EXCEEDED_SPECIFIED_WAIT_EXCEPTION'
@@ -784,6 +785,9 @@ class QueryAttachment:
 
 @dataclass
 class Result:
+    is_truncated: Optional[bool] = None
+    """If result is truncated"""
+
     row_count: Optional[int] = None
     """Row count of the result"""
 
@@ -794,6 +798,7 @@ class Result:
     def as_dict(self) -> dict:
         """Serializes the Result into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.is_truncated is not None: body['is_truncated'] = self.is_truncated
         if self.row_count is not None: body['row_count'] = self.row_count
         if self.statement_id is not None: body['statement_id'] = self.statement_id
         return body
@@ -801,7 +806,9 @@ class Result:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> Result:
         """Deserializes the Result from a dictionary."""
-        return cls(row_count=d.get('row_count', None), statement_id=d.get('statement_id', None))
+        return cls(is_truncated=d.get('is_truncated', None),
+                   row_count=d.get('row_count', None),
+                   statement_id=d.get('statement_id', None))
 
 
 @dataclass

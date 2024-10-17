@@ -2,7 +2,7 @@
 ==========================================
 .. currentmodule:: databricks.sdk.service.serving
 
-.. py:class:: ServingEndpointsAPI
+.. py:class:: ServingEndpointsExt
 
     The Serving Endpoints API allows you to create, update, and delete model serving endpoints.
     
@@ -91,6 +91,12 @@
         
         :returns: :class:`ServingEndpointDetailed`
         
+
+    .. py:method:: get_langchain_chat_open_ai_client(model)
+
+
+    .. py:method:: get_open_ai_client()
+
 
     .. py:method:: get_open_api(name: str)
 

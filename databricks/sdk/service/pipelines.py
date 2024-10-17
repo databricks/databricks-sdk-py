@@ -587,6 +587,9 @@ class GetUpdateResponse:
 
 @dataclass
 class IngestionConfig:
+    report: Optional[ReportSpec] = None
+    """Select tables from a specific source report."""
+
     schema: Optional[SchemaSpec] = None
     """Select tables from a specific source schema."""
 
@@ -596,6 +599,7 @@ class IngestionConfig:
     def as_dict(self) -> dict:
         """Serializes the IngestionConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.report: body['report'] = self.report.as_dict()
         if self.schema: body['schema'] = self.schema.as_dict()
         if self.table: body['table'] = self.table.as_dict()
         return body
@@ -603,7 +607,9 @@ class IngestionConfig:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> IngestionConfig:
         """Deserializes the IngestionConfig from a dictionary."""
-        return cls(schema=_from_dict(d, 'schema', SchemaSpec), table=_from_dict(d, 'table', TableSpec))
+        return cls(report=_from_dict(d, 'report', ReportSpec),
+                   schema=_from_dict(d, 'schema', SchemaSpec),
+                   table=_from_dict(d, 'table', TableSpec))
 
 
 @dataclass
@@ -1625,6 +1631,44 @@ class PipelineTrigger:
 
 
 @dataclass
+class ReportSpec:
+    destination_catalog: Optional[str] = None
+    """Required. Destination catalog to store table."""
+
+    destination_schema: Optional[str] = None
+    """Required. Destination schema to store table."""
+
+    destination_table: Optional[str] = None
+    """Required. Destination table name. The pipeline fails if a table with that name already exists."""
+
+    source_url: Optional[str] = None
+    """Required. Report URL in the source system."""
+
+    table_configuration: Optional[TableSpecificConfig] = None
+    """Configuration settings to control the ingestion of tables. These settings override the
+    table_configuration defined in the IngestionPipelineDefinition object."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ReportSpec into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.destination_catalog is not None: body['destination_catalog'] = self.destination_catalog
+        if self.destination_schema is not None: body['destination_schema'] = self.destination_schema
+        if self.destination_table is not None: body['destination_table'] = self.destination_table
+        if self.source_url is not None: body['source_url'] = self.source_url
+        if self.table_configuration: body['table_configuration'] = self.table_configuration.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ReportSpec:
+        """Deserializes the ReportSpec from a dictionary."""
+        return cls(destination_catalog=d.get('destination_catalog', None),
+                   destination_schema=d.get('destination_schema', None),
+                   destination_table=d.get('destination_table', None),
+                   source_url=d.get('source_url', None),
+                   table_configuration=_from_dict(d, 'table_configuration', TableSpecificConfig))
+
+
+@dataclass
 class SchemaSpec:
     destination_catalog: Optional[str] = None
     """Required. Destination catalog to store tables."""
@@ -1841,7 +1885,7 @@ class TableSpec:
     """Required. Destination schema to store table."""
 
     destination_table: Optional[str] = None
-    """Optional. Destination table name. The pipeline fails If a table with that name already exists.
+    """Optional. Destination table name. The pipeline fails if a table with that name already exists.
     If not set, the source table name is used."""
 
     source_catalog: Optional[str] = None
@@ -1893,6 +1937,10 @@ class TableSpecificConfig:
     scd_type: Optional[TableSpecificConfigScdType] = None
     """The SCD type to use to ingest the table."""
 
+    sequence_by: Optional[List[str]] = None
+    """The column names specifying the logical order of events in the source data. Delta Live Tables
+    uses this sequencing to handle change events that arrive out of order."""
+
     def as_dict(self) -> dict:
         """Serializes the TableSpecificConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1900,6 +1948,7 @@ class TableSpecificConfig:
         if self.salesforce_include_formula_fields is not None:
             body['salesforce_include_formula_fields'] = self.salesforce_include_formula_fields
         if self.scd_type is not None: body['scd_type'] = self.scd_type.value
+        if self.sequence_by: body['sequence_by'] = [v for v in self.sequence_by]
         return body
 
     @classmethod
@@ -1907,7 +1956,8 @@ class TableSpecificConfig:
         """Deserializes the TableSpecificConfig from a dictionary."""
         return cls(primary_keys=d.get('primary_keys', None),
                    salesforce_include_formula_fields=d.get('salesforce_include_formula_fields', None),
-                   scd_type=_enum(d, 'scd_type', TableSpecificConfigScdType))
+                   scd_type=_enum(d, 'scd_type', TableSpecificConfigScdType),
+                   sequence_by=d.get('sequence_by', None))
 
 
 class TableSpecificConfigScdType(Enum):
@@ -2072,37 +2122,6 @@ class PipelinesAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def wait_get_pipeline_idle(
-            self,
-            pipeline_id: str,
-            timeout=timedelta(minutes=20),
-            callback: Optional[Callable[[GetPipelineResponse], None]] = None) -> GetPipelineResponse:
-        deadline = time.time() + timeout.total_seconds()
-        target_states = (PipelineState.IDLE, )
-        failure_states = (PipelineState.FAILED, )
-        status_message = 'polling...'
-        attempt = 1
-        while time.time() < deadline:
-            poll = self.get(pipeline_id=pipeline_id)
-            status = poll.state
-            status_message = poll.cause
-            if status in target_states:
-                return poll
-            if callback:
-                callback(poll)
-            if status in failure_states:
-                msg = f'failed to reach IDLE, got {status}: {status_message}'
-                raise OperationFailed(msg)
-            prefix = f"pipeline_id={pipeline_id}"
-            sleep = attempt
-            if sleep > 10:
-                # sleep 10s max per attempt
-                sleep = 10
-            _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
-            time.sleep(sleep + random.random())
-            attempt += 1
-        raise TimeoutError(f'timed out after {timeout}: {status_message}')
-
     def wait_get_pipeline_running(
             self,
             pipeline_id: str,
@@ -2123,6 +2142,37 @@ class PipelinesAPI:
                 callback(poll)
             if status in failure_states:
                 msg = f'failed to reach RUNNING, got {status}: {status_message}'
+                raise OperationFailed(msg)
+            prefix = f"pipeline_id={pipeline_id}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f'timed out after {timeout}: {status_message}')
+
+    def wait_get_pipeline_idle(
+            self,
+            pipeline_id: str,
+            timeout=timedelta(minutes=20),
+            callback: Optional[Callable[[GetPipelineResponse], None]] = None) -> GetPipelineResponse:
+        deadline = time.time() + timeout.total_seconds()
+        target_states = (PipelineState.IDLE, )
+        failure_states = (PipelineState.FAILED, )
+        status_message = 'polling...'
+        attempt = 1
+        while time.time() < deadline:
+            poll = self.get(pipeline_id=pipeline_id)
+            status = poll.state
+            status_message = poll.cause
+            if status in target_states:
+                return poll
+            if callback:
+                callback(poll)
+            if status in failure_states:
+                msg = f'failed to reach IDLE, got {status}: {status_message}'
                 raise OperationFailed(msg)
             prefix = f"pipeline_id={pipeline_id}"
             sleep = attempt
