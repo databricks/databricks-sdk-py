@@ -638,7 +638,7 @@ class WorkspaceClient:
         return self._service_principals
 
     @property
-    def serving_endpoints(self) -> ServingEndpointsAPI:
+    def serving_endpoints(self) -> ServingEndpointsExt:
         """The Serving Endpoints API allows you to create, update, and delete model serving endpoints."""
         return self._serving_endpoints
 

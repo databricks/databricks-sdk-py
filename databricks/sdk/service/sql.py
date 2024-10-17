@@ -72,6 +72,9 @@ class Alert:
     lifecycle_state: Optional[LifecycleState] = None
     """The workspace state of the alert. Used for tracking trashed status."""
 
+    notify_on_ok: Optional[bool] = None
+    """Whether to notify alert subscribers when alert returns back to normal."""
+
     owner_user_name: Optional[str] = None
     """The owner's username. This field is set to "Unavailable" if the user has been deleted."""
 
@@ -105,6 +108,7 @@ class Alert:
         if self.display_name is not None: body['display_name'] = self.display_name
         if self.id is not None: body['id'] = self.id
         if self.lifecycle_state is not None: body['lifecycle_state'] = self.lifecycle_state.value
+        if self.notify_on_ok is not None: body['notify_on_ok'] = self.notify_on_ok
         if self.owner_user_name is not None: body['owner_user_name'] = self.owner_user_name
         if self.parent_path is not None: body['parent_path'] = self.parent_path
         if self.query_id is not None: body['query_id'] = self.query_id
@@ -124,6 +128,7 @@ class Alert:
                    display_name=d.get('display_name', None),
                    id=d.get('id', None),
                    lifecycle_state=_enum(d, 'lifecycle_state', LifecycleState),
+                   notify_on_ok=d.get('notify_on_ok', None),
                    owner_user_name=d.get('owner_user_name', None),
                    parent_path=d.get('parent_path', None),
                    query_id=d.get('query_id', None),
@@ -652,6 +657,9 @@ class CreateAlertRequestAlert:
     display_name: Optional[str] = None
     """The display name of the alert."""
 
+    notify_on_ok: Optional[bool] = None
+    """Whether to notify alert subscribers when alert returns back to normal."""
+
     parent_path: Optional[str] = None
     """The workspace path of the folder containing the alert."""
 
@@ -669,6 +677,7 @@ class CreateAlertRequestAlert:
         if self.custom_body is not None: body['custom_body'] = self.custom_body
         if self.custom_subject is not None: body['custom_subject'] = self.custom_subject
         if self.display_name is not None: body['display_name'] = self.display_name
+        if self.notify_on_ok is not None: body['notify_on_ok'] = self.notify_on_ok
         if self.parent_path is not None: body['parent_path'] = self.parent_path
         if self.query_id is not None: body['query_id'] = self.query_id
         if self.seconds_to_retrigger is not None: body['seconds_to_retrigger'] = self.seconds_to_retrigger
@@ -681,6 +690,7 @@ class CreateAlertRequestAlert:
                    custom_body=d.get('custom_body', None),
                    custom_subject=d.get('custom_subject', None),
                    display_name=d.get('display_name', None),
+                   notify_on_ok=d.get('notify_on_ok', None),
                    parent_path=d.get('parent_path', None),
                    query_id=d.get('query_id', None),
                    seconds_to_retrigger=d.get('seconds_to_retrigger', None))
@@ -2696,6 +2706,9 @@ class ListAlertsResponseAlert:
     lifecycle_state: Optional[LifecycleState] = None
     """The workspace state of the alert. Used for tracking trashed status."""
 
+    notify_on_ok: Optional[bool] = None
+    """Whether to notify alert subscribers when alert returns back to normal."""
+
     owner_user_name: Optional[str] = None
     """The owner's username. This field is set to "Unavailable" if the user has been deleted."""
 
@@ -2726,6 +2739,7 @@ class ListAlertsResponseAlert:
         if self.display_name is not None: body['display_name'] = self.display_name
         if self.id is not None: body['id'] = self.id
         if self.lifecycle_state is not None: body['lifecycle_state'] = self.lifecycle_state.value
+        if self.notify_on_ok is not None: body['notify_on_ok'] = self.notify_on_ok
         if self.owner_user_name is not None: body['owner_user_name'] = self.owner_user_name
         if self.query_id is not None: body['query_id'] = self.query_id
         if self.seconds_to_retrigger is not None: body['seconds_to_retrigger'] = self.seconds_to_retrigger
@@ -2744,6 +2758,7 @@ class ListAlertsResponseAlert:
                    display_name=d.get('display_name', None),
                    id=d.get('id', None),
                    lifecycle_state=_enum(d, 'lifecycle_state', LifecycleState),
+                   notify_on_ok=d.get('notify_on_ok', None),
                    owner_user_name=d.get('owner_user_name', None),
                    query_id=d.get('query_id', None),
                    seconds_to_retrigger=d.get('seconds_to_retrigger', None),
@@ -4561,6 +4576,9 @@ class UpdateAlertRequestAlert:
     display_name: Optional[str] = None
     """The display name of the alert."""
 
+    notify_on_ok: Optional[bool] = None
+    """Whether to notify alert subscribers when alert returns back to normal."""
+
     owner_user_name: Optional[str] = None
     """The owner's username. This field is set to "Unavailable" if the user has been deleted."""
 
@@ -4578,6 +4596,7 @@ class UpdateAlertRequestAlert:
         if self.custom_body is not None: body['custom_body'] = self.custom_body
         if self.custom_subject is not None: body['custom_subject'] = self.custom_subject
         if self.display_name is not None: body['display_name'] = self.display_name
+        if self.notify_on_ok is not None: body['notify_on_ok'] = self.notify_on_ok
         if self.owner_user_name is not None: body['owner_user_name'] = self.owner_user_name
         if self.query_id is not None: body['query_id'] = self.query_id
         if self.seconds_to_retrigger is not None: body['seconds_to_retrigger'] = self.seconds_to_retrigger
@@ -4590,6 +4609,7 @@ class UpdateAlertRequestAlert:
                    custom_body=d.get('custom_body', None),
                    custom_subject=d.get('custom_subject', None),
                    display_name=d.get('display_name', None),
+                   notify_on_ok=d.get('notify_on_ok', None),
                    owner_user_name=d.get('owner_user_name', None),
                    query_id=d.get('query_id', None),
                    seconds_to_retrigger=d.get('seconds_to_retrigger', None))

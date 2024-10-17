@@ -1194,8 +1194,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: PROVISIONING
       :value: "PROVISIONING"
 
-   .. py:attribute:: STATE_UNSPECIFIED
-      :value: "STATE_UNSPECIFIED"
+   .. py:attribute:: UPDATING
+      :value: "UPDATING"
 
 .. autoclass:: ProvisioningStatus
    :members:
