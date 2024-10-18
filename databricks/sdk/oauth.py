@@ -473,8 +473,7 @@ class OAuthClient:
         self._scopes = scopes
 
     @staticmethod
-    def from_host(self,
-                  host: str,
+    def from_host(host: str,
                   client_id: str,
                   redirect_url: str,
                   *,
