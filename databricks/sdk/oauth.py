@@ -472,6 +472,29 @@ class OAuthClient:
         self._oidc_endpoints = oidc_endpoints
         self._scopes = scopes
 
+    @staticmethod
+    def from_host(self,
+                  host: str,
+                  client_id: str,
+                  redirect_url: str,
+                  *,
+                  scopes: List[str] = None,
+                  client_secret: str = None) -> 'OAuthClient':
+        from .core import Config
+        from .credentials_provider import credentials_strategy
+
+        @credentials_strategy('noop', [])
+        def noop_credentials(_: any):
+            return lambda: {}
+
+        config = Config(host=host, credentials_strategy=noop_credentials)
+        if not scopes:
+            scopes = ['all-apis']
+        oidc = config.oidc_endpoints
+        if not oidc:
+            raise ValueError(f'{host} does not support OAuth')
+        return OAuthClient(oidc, redirect_url, client_id, scopes, client_secret)
+
     def initiate_consent(self) -> Consent:
         state = secrets.token_urlsafe(16)
 
