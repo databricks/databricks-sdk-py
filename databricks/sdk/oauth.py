@@ -17,6 +17,8 @@ from typing import Any, Dict, List, Optional
 import requests
 import requests.auth
 
+from ._base_client import _BaseClient, _fix_host_if_needed
+
 # Error code for PKCE flow in Azure Active Directory, that gets additional retry.
 # See https://stackoverflow.com/a/75466778/277035 for more info
 NO_ORIGIN_FOR_SPA_CLIENT_ERROR = 'AADSTS9002327'
@@ -46,8 +48,24 @@ class IgnoreNetrcAuth(requests.auth.AuthBase):
 
 @dataclass
 class OidcEndpoints:
+    """
+    The endpoints used for OAuth-based authentication in Databricks.
+    """
+
     authorization_endpoint: str # ../v1/authorize
+    """The authorization endpoint for the OAuth flow. The user-agent should be directed to this endpoint in order for
+    the user to login and authorize the client for user-to-machine (U2M) flows."""
+
     token_endpoint: str # ../v1/token
+    """The token endpoint for the OAuth flow."""
+
+    @staticmethod
+    def from_dict(d: dict) -> 'OidcEndpoints':
+        return OidcEndpoints(authorization_endpoint=d.get('authorization_endpoint'),
+                             token_endpoint=d.get('token_endpoint'))
+
+    def as_dict(self) -> dict:
+        return {'authorization_endpoint': self.authorization_endpoint, 'token_endpoint': self.token_endpoint}
 
 
 @dataclass
@@ -220,18 +238,76 @@ class _OAuthCallback(BaseHTTPRequestHandler):
         self.wfile.write(b'You can close this tab.')
 
 
+def get_account_endpoints(host: str, account_id: str, client: _BaseClient = _BaseClient()) -> OidcEndpoints:
+    """
+    Get the OIDC endpoints for a given account.
+    :param host: The Databricks account host.
+    :param account_id: The account ID.
+    :return: The account's OIDC endpoints.
+    """
+    host = _fix_host_if_needed(host)
+    oidc = f'{host}/oidc/accounts/{account_id}/.well-known/oauth-authorization-server'
+    resp = client.do('GET', oidc)
+    return OidcEndpoints.from_dict(resp)
+
+
+def get_workspace_endpoints(host: str, client: _BaseClient = _BaseClient()) -> OidcEndpoints:
+    """
+    Get the OIDC endpoints for a given workspace.
+    :param host: The Databricks workspace host.
+    :return: The workspace's OIDC endpoints.
+    """
+    host = _fix_host_if_needed(host)
+    oidc = f'{host}/oidc/.well-known/oauth-authorization-server'
+    resp = client.do('GET', oidc)
+    return OidcEndpoints.from_dict(resp)
+
+
+def get_azure_entra_id_workspace_endpoints(host: str) -> Optional[OidcEndpoints]:
+    """
+    Get the Azure Entra ID endpoints for a given workspace. Can only be used when authenticating to Azure Databricks
+    using an application registered in Azure Entra ID.
+    :param host: The Databricks workspace host.
+    :return: The OIDC endpoints for the workspace's Azure Entra ID tenant.
+    """
+    # In Azure, this workspace endpoint redirects to the Entra ID authorization endpoint
+    host = _fix_host_if_needed(host)
+    res = requests.get(f'{host}/oidc/oauth2/v2.0/authorize', allow_redirects=False)
+    real_auth_url = res.headers.get('location')
+    if not real_auth_url:
+        return None
+    return OidcEndpoints(authorization_endpoint=real_auth_url,
+                         token_endpoint=real_auth_url.replace('/authorize', '/token'))
+
+
 class SessionCredentials(Refreshable):
 
-    def __init__(self, client: 'OAuthClient', token: Token):
-        self._client = client
+    def __init__(self,
+                 token: Token,
+                 token_endpoint: str,
+                 client_id: str,
+                 client_secret: str = None,
+                 redirect_url: str = None):
+        self._token_endpoint = token_endpoint
+        self._client_id = client_id
+        self._client_secret = client_secret
+        self._redirect_url = redirect_url
         super().__init__(token)
 
     def as_dict(self) -> dict:
         return {'token': self._token.as_dict()}
 
     @staticmethod
-    def from_dict(client: 'OAuthClient', raw: dict) -> 'SessionCredentials':
-        return SessionCredentials(client=client, token=Token.from_dict(raw['token']))
+    def from_dict(raw: dict,
+                  token_endpoint: str,
+                  client_id: str,
+                  client_secret: str = None,
+                  redirect_url: str = None) -> 'SessionCredentials':
+        return SessionCredentials(token=Token.from_dict(raw['token']),
+                                  token_endpoint=token_endpoint,
+                                  client_id=client_id,
+                                  client_secret=client_secret,
+                                  redirect_url=redirect_url)
 
     def auth_type(self):
         """Implementing CredentialsProvider protocol"""
@@ -252,13 +328,13 @@ class SessionCredentials(Refreshable):
             raise ValueError('oauth2: token expired and refresh token is not set')
         params = {'grant_type': 'refresh_token', 'refresh_token': refresh_token}
         headers = {}
-        if 'microsoft' in self._client.token_url:
+        if 'microsoft' in self._token_endpoint:
             # Tokens issued for the 'Single-Page Application' client-type may
             # only be redeemed via cross-origin requests
-            headers = {'Origin': self._client.redirect_url}
-        return retrieve_token(client_id=self._client.client_id,
-                              client_secret=self._client.client_secret,
-                              token_url=self._client.token_url,
+            headers = {'Origin': self._redirect_url}
+        return retrieve_token(client_id=self._client_id,
+                              client_secret=self._client_secret,
+                              token_url=self._token_endpoint,
                               params=params,
                               use_params=True,
                               headers=headers)
@@ -266,27 +342,53 @@ class SessionCredentials(Refreshable):
 
 class Consent:
 
-    def __init__(self, client: 'OAuthClient', state: str, verifier: str, auth_url: str = None) -> None:
-        self.auth_url = auth_url
-
+    def __init__(self,
+                 state: str,
+                 verifier: str,
+                 authorization_url: str,
+                 redirect_url: str,
+                 token_endpoint: str,
+                 client_id: str,
+                 client_secret: str = None) -> None:
         self._verifier = verifier
         self._state = state
-        self._client = client
+        self._authorization_url = authorization_url
+        self._redirect_url = redirect_url
+        self._token_endpoint = token_endpoint
+        self._client_id = client_id
+        self._client_secret = client_secret
 
     def as_dict(self) -> dict:
-        return {'state': self._state, 'verifier': self._verifier}
+        return {
+            'state': self._state,
+            'verifier': self._verifier,
+            'authorization_url': self._authorization_url,
+            'redirect_url': self._redirect_url,
+            'token_endpoint': self._token_endpoint,
+            'client_id': self._client_id,
+        }
+
+    @property
+    def authorization_url(self) -> str:
+        return self._authorization_url
 
     @staticmethod
-    def from_dict(client: 'OAuthClient', raw: dict) -> 'Consent':
-        return Consent(client, raw['state'], raw['verifier'])
+    def from_dict(raw: dict, client_secret: str = None) -> 'Consent':
+        return Consent(raw['state'],
+                       raw['verifier'],
+                       authorization_url=raw['authorization_url'],
+                       redirect_url=raw['redirect_url'],
+                       token_endpoint=raw['token_endpoint'],
+                       client_id=raw['client_id'],
+                       client_secret=client_secret)
 
     def launch_external_browser(self) -> SessionCredentials:
-        redirect_url = urllib.parse.urlparse(self._client.redirect_url)
+        redirect_url = urllib.parse.urlparse(self._redirect_url)
         if redirect_url.hostname not in ('localhost', '127.0.0.1'):
             raise ValueError(f'cannot listen on {redirect_url.hostname}')
         feedback = []
-        logger.info(f'Opening {self.auth_url} in a browser')
-        webbrowser.open_new(self.auth_url)
+        logger.info(f'Opening {self._authorization_url} in a browser')
+        webbrowser.open_new(self._authorization_url)
         port = redirect_url.port
         handler_factory = functools.partial(_OAuthCallback, feedback)
         with HTTPServer(("localhost", port), handler_factory) as httpd:
@@ -308,7 +410,7 @@ class Consent:
         if self._state != state:
             raise ValueError('state mismatch')
         params = {
-            'redirect_uri': self._client.redirect_url,
+            'redirect_uri': self._redirect_url,
             'grant_type': 'authorization_code',
             'code_verifier': self._verifier,
             'code': code
@@ -316,19 +418,20 @@ class Consent:
         headers = {}
         while True:
             try:
-                token = retrieve_token(client_id=self._client.client_id,
-                                       client_secret=self._client.client_secret,
-                                       token_url=self._client.token_url,
+                token = retrieve_token(client_id=self._client_id,
+                                       client_secret=self._client_secret,
+                                       token_url=self._token_endpoint,
                                        params=params,
                                        headers=headers,
                                        use_params=True)
-                return SessionCredentials(self._client, token)
+                return SessionCredentials(token, self._token_endpoint, self._client_id, self._client_secret,
+                                          self._redirect_url)
             except ValueError as e:
                 if NO_ORIGIN_FOR_SPA_CLIENT_ERROR in str(e):
                     # Retry in cases of 'Single-Page Application' client-type with
                     # 'Origin' header equal to client's redirect URL.
-                    headers['Origin'] = self._client.redirect_url
-                    msg = f'Retrying OAuth token exchange with {self._client.redirect_url} origin'
+                    headers['Origin'] = self._redirect_url
+                    msg = f'Retrying OAuth token exchange with {self._redirect_url} origin'
                     logger.debug(msg)
                     continue
                 raise e
@@ -354,13 +457,28 @@ class OAuthClient:
     """
 
     def __init__(self,
-                 host: str,
-                 client_id: str,
+                 oidc_endpoints: OidcEndpoints,
                  redirect_url: str,
-                 *,
+                 client_id: str,
                  scopes: List[str] = None,
                  client_secret: str = None):
-        # TODO: is it a circular dependency?..
+
+        if not scopes:
+            scopes = ['all-apis']
+
+        self.redirect_url = redirect_url
+        self._client_id = client_id
+        self._client_secret = client_secret
+        self._oidc_endpoints = oidc_endpoints
+        self._scopes = scopes
+
+    @staticmethod
+    def from_host(host: str,
+                  client_id: str,
+                  redirect_url: str,
+                  *,
+                  scopes: List[str] = None,
+                  client_secret: str = None) -> 'OAuthClient':
         from .core import Config
         from .credentials_provider import credentials_strategy
 
@@ -374,18 +492,7 @@ class OAuthClient:
         oidc = config.oidc_endpoints
         if not oidc:
             raise ValueError(f'{host} does not support OAuth')
-
-        self.host = host
-        self.redirect_url = redirect_url
-        self.client_id = client_id
-        self.client_secret = client_secret
-        self.token_url = oidc.token_endpoint
-        self.is_aws = config.is_aws
-        self.is_azure = config.is_azure
-        self.is_gcp = config.is_gcp
-
-        self._auth_url = oidc.authorization_endpoint
-        self._scopes = scopes
+        return OAuthClient(oidc, redirect_url, client_id, scopes, client_secret)
 
     def initiate_consent(self) -> Consent:
         state = secrets.token_urlsafe(16)
@@ -397,18 +504,24 @@ class OAuthClient:
 
         params = {
             'response_type': 'code',
-            'client_id': self.client_id,
+            'client_id': self._client_id,
             'redirect_uri': self.redirect_url,
             'scope': ' '.join(self._scopes),
             'state': state,
             'code_challenge': challenge,
             'code_challenge_method': 'S256'
         }
-        url = f'{self._auth_url}?{urllib.parse.urlencode(params)}'
-        return Consent(self, state, verifier, auth_url=url)
+        auth_url = f'{self._oidc_endpoints.authorization_endpoint}?{urllib.parse.urlencode(params)}'
+        return Consent(state,
+                       verifier,
+                       authorization_url=auth_url,
+                       redirect_url=self.redirect_url,
+                       token_endpoint=self._oidc_endpoints.token_endpoint,
+                       client_id=self._client_id,
+                       client_secret=self._client_secret)
 
     def __repr__(self) -> str:
-        return f'<OAuthClient {self.host} client_id={self.client_id}>'
+        return f'<OAuthClient client_id={self._client_id} token_url={self._oidc_endpoints.token_endpoint} auth_url={self._oidc_endpoints.authorization_endpoint}>'
 
 
 @dataclass
@@ -448,17 +561,28 @@ class ClientCredentials(Refreshable):
                               use_header=self.use_header)
 
 
-class TokenCache():
+class TokenCache:
     BASE_PATH = "~/.config/databricks-sdk-py/oauth"
 
-    def __init__(self, client: OAuthClient) -> None:
-        self.client = client
+    def __init__(self,
+                 host: str,
+                 oidc_endpoints: OidcEndpoints,
+                 client_id: str,
+                 redirect_url: str = None,
+                 client_secret: str = None,
+                 scopes: List[str] = None) -> None:
+        self._host = host
+        self._client_id = client_id
+        self._oidc_endpoints = oidc_endpoints
+        self._redirect_url = redirect_url
+        self._client_secret = client_secret
+        self._scopes = scopes or []
 
     @property
     def filename(self) -> str:
         # Include host, client_id, and scopes in the cache filename to make it unique.
         hash = hashlib.sha256()
-        for chunk in [self.client.host, self.client.client_id, ",".join(self.client._scopes), ]:
+        for chunk in [self._host, self._client_id, ",".join(self._scopes), ]:
             hash.update(chunk.encode('utf-8'))
         return os.path.expanduser(os.path.join(self.__class__.BASE_PATH, hash.hexdigest() + ".json"))
 
@@ -472,7 +596,11 @@ class TokenCache():
         try:
             with open(self.filename, 'r') as f:
                 raw = json.load(f)
-                return SessionCredentials.from_dict(self.client, raw)
+                return SessionCredentials.from_dict(raw,
+                                                    token_endpoint=self._oidc_endpoints.token_endpoint,
+                                                    client_id=self._client_id,
+                                                    client_secret=self._client_secret,
+                                                    redirect_url=self._redirect_url)
         except Exception:
             return None
 
