@@ -52,8 +52,7 @@
         :param metastore_id: str
           The unique ID of the metastore.
         :param default_catalog_name: str
-          The name of the default catalog in the metastore. This field is depracted. Please use "Default
-          Namespace API" to configure the default catalog for a Databricks workspace.
+          The name of the default catalog in the metastore.
         
         
         
@@ -89,9 +88,8 @@
         :param name: str
           The user-specified name of the metastore.
         :param region: str (optional)
-          Cloud region which the metastore serves (e.g., `us-west-2`, `westus`). The field can be omitted in
-          the __workspace-level__ __API__ but not in the __account-level__ __API__. If this field is omitted,
-          the region of the workspace receiving the request will be used.
+          Cloud region which the metastore serves (e.g., `us-west-2`, `westus`). If this field is omitted, the
+          region of the workspace receiving the request will be used.
         :param storage_root: str (optional)
           The storage root URL for metastore
         
@@ -306,8 +304,7 @@
         :param workspace_id: int
           A workspace ID.
         :param default_catalog_name: str (optional)
-          The name of the default catalog in the metastore. This field is depracted. Please use "Default
-          Namespace API" to configure the default catalog for a Databricks workspace.
+          The name of the default catalog for the metastore.
         :param metastore_id: str (optional)
           The unique ID of the metastore.
         

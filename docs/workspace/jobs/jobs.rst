@@ -120,7 +120,7 @@
     .. py:method:: cancel_run_and_wait(run_id: int, timeout: datetime.timedelta = 0:20:00) -> Run
 
 
-    .. py:method:: create( [, access_control_list: Optional[List[JobAccessControlRequest]], budget_policy_id: Optional[str], continuous: Optional[Continuous], deployment: Optional[JobDeployment], description: Optional[str], edit_mode: Optional[JobEditMode], email_notifications: Optional[JobEmailNotifications], environments: Optional[List[JobEnvironment]], format: Optional[Format], git_source: Optional[GitSource], health: Optional[JobsHealthRules], job_clusters: Optional[List[JobCluster]], max_concurrent_runs: Optional[int], name: Optional[str], notification_settings: Optional[JobNotificationSettings], parameters: Optional[List[JobParameterDefinition]], queue: Optional[QueueSettings], run_as: Optional[JobRunAs], schedule: Optional[CronSchedule], tags: Optional[Dict[str, str]], tasks: Optional[List[Task]], timeout_seconds: Optional[int], trigger: Optional[TriggerSettings], webhook_notifications: Optional[WebhookNotifications]]) -> CreateResponse
+    .. py:method:: create( [, access_control_list: Optional[List[iam.AccessControlRequest]], continuous: Optional[Continuous], deployment: Optional[JobDeployment], description: Optional[str], edit_mode: Optional[JobEditMode], email_notifications: Optional[JobEmailNotifications], environments: Optional[List[JobEnvironment]], format: Optional[Format], git_source: Optional[GitSource], health: Optional[JobsHealthRules], job_clusters: Optional[List[JobCluster]], max_concurrent_runs: Optional[int], name: Optional[str], notification_settings: Optional[JobNotificationSettings], parameters: Optional[List[JobParameterDefinition]], queue: Optional[QueueSettings], run_as: Optional[JobRunAs], schedule: Optional[CronSchedule], tags: Optional[Dict[str, str]], tasks: Optional[List[Task]], timeout_seconds: Optional[int], trigger: Optional[TriggerSettings], webhook_notifications: Optional[WebhookNotifications]]) -> CreateResponse
 
 
         Usage:
@@ -156,19 +156,15 @@
         
         Create a new job.
         
-        :param access_control_list: List[:class:`JobAccessControlRequest`] (optional)
+        :param access_control_list: List[:class:`AccessControlRequest`] (optional)
           List of permissions to set on the job.
-        :param budget_policy_id: str (optional)
-          The id of the user specified budget policy to use for this job. If not specified, a default budget
-          policy may be applied when creating or modifying the job. See `effective_budget_policy_id` for the
-          budget policy used by this workload.
         :param continuous: :class:`Continuous` (optional)
           An optional continuous property for this job. The continuous property will ensure that there is
           always one run executing. Only one of `schedule` and `continuous` can be used.
         :param deployment: :class:`JobDeployment` (optional)
           Deployment information for jobs managed by external sources.
         :param description: str (optional)
-          An optional description for the job. The maximum length is 27700 characters in UTF-8 encoding.
+          An optional description for the job. The maximum length is 1024 characters in UTF-8 encoding.
         :param edit_mode: :class:`JobEditMode` (optional)
           Edit mode of the job.
           
@@ -178,10 +174,7 @@
           An optional set of email addresses that is notified when runs of this job begin or complete as well
           as when this job is deleted.
         :param environments: List[:class:`JobEnvironment`] (optional)
-          A list of task execution environment specifications that can be referenced by serverless tasks of
-          this job. An environment is required to be present for serverless tasks. For serverless notebook
-          tasks, the environment is accessible in the notebook environment panel. For other serverless tasks,
-          the task environment is required to be specified using environment_key in the task settings.
+          A list of task execution environment specifications that can be referenced by tasks of this job.
         :param format: :class:`Format` (optional)
           Used to tell what is the format of the job. This field is ignored in Create/Update/Reset calls. When
           using the Jobs API 2.1 this value is always set to `"MULTI_TASK"`.
@@ -218,11 +211,12 @@
         :param queue: :class:`QueueSettings` (optional)
           The queue settings of the job.
         :param run_as: :class:`JobRunAs` (optional)
-          Write-only setting. Specifies the user, service principal or group that the job/pipeline runs as. If
-          not specified, the job/pipeline runs as the user who created the job/pipeline.
+          Write-only setting, available only in Create/Update/Reset and Submit calls. Specifies the user or
+          service principal that the job runs as. If not specified, the job runs as the user who created the
+          job.
           
-          Exactly one of `user_name`, `service_principal_name`, `group_name` should be specified. If not, an
-          error is thrown.
+          Only `user_name` or `service_principal_name` can be specified. If both are specified, an error is
+          thrown.
         :param schedule: :class:`CronSchedule` (optional)
           An optional periodic schedule for this job. The default behavior is that the job only runs when
           triggered by clicking “Run Now” in the Jobs UI or sending an API request to `runNow`.
@@ -382,7 +376,7 @@
         :returns: :class:`JobPermissions`
         
 
-    .. py:method:: get_run(run_id: int [, include_history: Optional[bool], include_resolved_values: Optional[bool], page_token: Optional[str]]) -> Run
+    .. py:method:: get_run(run_id: int [, include_history: Optional[bool], include_resolved_values: Optional[bool]]) -> Run
 
 
         Usage:
@@ -424,9 +418,6 @@
           Whether to include the repair history in the response.
         :param include_resolved_values: bool (optional)
           Whether to include resolved parameter values in the response.
-        :param page_token: str (optional)
-          To list the next page or the previous page of job tasks, set this field to the value of the
-          `next_page_token` or `prev_page_token` returned in the GetJob response.
         
         :returns: :class:`Run`
         
@@ -685,7 +676,6 @@
           [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
           [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
         :param pipeline_params: :class:`PipelineParams` (optional)
-          Controls whether the pipeline should perform a full refresh
         :param python_named_params: Dict[str,str] (optional)
         :param python_params: List[str] (optional)
           A list of parameters for jobs with Python tasks, for example `"python_params": ["john doe", "35"]`.
@@ -875,7 +865,6 @@
           [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
           [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
         :param pipeline_params: :class:`PipelineParams` (optional)
-          Controls whether the pipeline should perform a full refresh
         :param python_named_params: Dict[str,str] (optional)
         :param python_params: List[str] (optional)
           A list of parameters for jobs with Python tasks, for example `"python_params": ["john doe", "35"]`.
@@ -935,7 +924,7 @@
         :returns: :class:`JobPermissions`
         
 
-    .. py:method:: submit( [, access_control_list: Optional[List[JobAccessControlRequest]], budget_policy_id: Optional[str], email_notifications: Optional[JobEmailNotifications], environments: Optional[List[JobEnvironment]], git_source: Optional[GitSource], health: Optional[JobsHealthRules], idempotency_token: Optional[str], notification_settings: Optional[JobNotificationSettings], queue: Optional[QueueSettings], run_as: Optional[JobRunAs], run_name: Optional[str], tasks: Optional[List[SubmitTask]], timeout_seconds: Optional[int], webhook_notifications: Optional[WebhookNotifications]]) -> Wait[Run]
+    .. py:method:: submit( [, access_control_list: Optional[List[iam.AccessControlRequest]], condition_task: Optional[ConditionTask], dbt_task: Optional[DbtTask], email_notifications: Optional[JobEmailNotifications], git_source: Optional[GitSource], health: Optional[JobsHealthRules], idempotency_token: Optional[str], notebook_task: Optional[NotebookTask], notification_settings: Optional[JobNotificationSettings], pipeline_task: Optional[PipelineTask], python_wheel_task: Optional[PythonWheelTask], queue: Optional[QueueSettings], run_as: Optional[JobRunAs], run_job_task: Optional[RunJobTask], run_name: Optional[str], spark_jar_task: Optional[SparkJarTask], spark_python_task: Optional[SparkPythonTask], spark_submit_task: Optional[SparkSubmitTask], sql_task: Optional[SqlTask], tasks: Optional[List[SubmitTask]], timeout_seconds: Optional[int], webhook_notifications: Optional[WebhookNotifications]]) -> Wait[Run]
 
 
         Usage:
@@ -971,15 +960,16 @@
         Runs submitted using this endpoint don’t display in the UI. Use the `jobs/runs/get` API to check the
         run state after the job is submitted.
         
-        :param access_control_list: List[:class:`JobAccessControlRequest`] (optional)
+        :param access_control_list: List[:class:`AccessControlRequest`] (optional)
           List of permissions to set on the job.
-        :param budget_policy_id: str (optional)
-          The user specified id of the budget policy to use for this one-time run. If not specified, the run
-          will be not be attributed to any budget policy.
+        :param condition_task: :class:`ConditionTask` (optional)
+          If condition_task, specifies a condition with an outcome that can be used to control the execution
+          of other tasks. Does not require a cluster to execute and does not support retries or notifications.
+        :param dbt_task: :class:`DbtTask` (optional)
+          If dbt_task, indicates that this must execute a dbt task. It requires both Databricks SQL and the
+          ability to use a serverless or a pro SQL warehouse.
         :param email_notifications: :class:`JobEmailNotifications` (optional)
           An optional set of email addresses notified when the run begins or completes.
-        :param environments: List[:class:`JobEnvironment`] (optional)
-          A list of task execution environment specifications that can be referenced by tasks of this run.
         :param git_source: :class:`GitSource` (optional)
           An optional specification for a remote Git repository containing the source code used by tasks.
           Version-controlled source code is supported by notebook, dbt, Python script, and SQL File tasks.
@@ -1004,16 +994,47 @@
           For more information, see [How to ensure idempotency for jobs].
           
           [How to ensure idempotency for jobs]: https://kb.databricks.com/jobs/jobs-idempotency.html
+        :param notebook_task: :class:`NotebookTask` (optional)
+          If notebook_task, indicates that this task must run a notebook. This field may not be specified in
+          conjunction with spark_jar_task.
         :param notification_settings: :class:`JobNotificationSettings` (optional)
           Optional notification settings that are used when sending notifications to each of the
           `email_notifications` and `webhook_notifications` for this run.
+        :param pipeline_task: :class:`PipelineTask` (optional)
+          If pipeline_task, indicates that this task must execute a Pipeline.
+        :param python_wheel_task: :class:`PythonWheelTask` (optional)
+          If python_wheel_task, indicates that this job must execute a PythonWheel.
         :param queue: :class:`QueueSettings` (optional)
           The queue settings of the one-time run.
         :param run_as: :class:`JobRunAs` (optional)
           Specifies the user or service principal that the job runs as. If not specified, the job runs as the
           user who submits the request.
+        :param run_job_task: :class:`RunJobTask` (optional)
+          If run_job_task, indicates that this task must execute another job.
         :param run_name: str (optional)
           An optional name for the run. The default value is `Untitled`.
+        :param spark_jar_task: :class:`SparkJarTask` (optional)
+          If spark_jar_task, indicates that this task must run a JAR.
+        :param spark_python_task: :class:`SparkPythonTask` (optional)
+          If spark_python_task, indicates that this task must run a Python file.
+        :param spark_submit_task: :class:`SparkSubmitTask` (optional)
+          If `spark_submit_task`, indicates that this task must be launched by the spark submit script. This
+          task can run only on new clusters.
+          
+          In the `new_cluster` specification, `libraries` and `spark_conf` are not supported. Instead, use
+          `--jars` and `--py-files` to add Java and Python libraries and `--conf` to set the Spark
+          configurations.
+          
+          `master`, `deploy-mode`, and `executor-cores` are automatically configured by Databricks; you
+          _cannot_ specify them in parameters.
+          
+          By default, the Spark submit job uses all available memory (excluding reserved memory for Databricks
+          services). You can set `--driver-memory`, and `--executor-memory` to a smaller value to leave some
+          room for off-heap usage.
+          
+          The `--jars`, `--py-files`, `--files` arguments support DBFS and S3 paths.
+        :param sql_task: :class:`SqlTask` (optional)
+          If sql_task, indicates that this job must execute a SQL task.
         :param tasks: List[:class:`SubmitTask`] (optional)
         :param timeout_seconds: int (optional)
           An optional timeout applied to each run of this job. A value of `0` means no timeout.
@@ -1025,7 +1046,7 @@
           See :method:wait_get_run_job_terminated_or_skipped for more details.
         
 
-    .. py:method:: submit_and_wait( [, access_control_list: Optional[List[JobAccessControlRequest]], budget_policy_id: Optional[str], email_notifications: Optional[JobEmailNotifications], environments: Optional[List[JobEnvironment]], git_source: Optional[GitSource], health: Optional[JobsHealthRules], idempotency_token: Optional[str], notification_settings: Optional[JobNotificationSettings], queue: Optional[QueueSettings], run_as: Optional[JobRunAs], run_name: Optional[str], tasks: Optional[List[SubmitTask]], timeout_seconds: Optional[int], webhook_notifications: Optional[WebhookNotifications], timeout: datetime.timedelta = 0:20:00]) -> Run
+    .. py:method:: submit_and_wait( [, access_control_list: Optional[List[iam.AccessControlRequest]], condition_task: Optional[ConditionTask], dbt_task: Optional[DbtTask], email_notifications: Optional[JobEmailNotifications], git_source: Optional[GitSource], health: Optional[JobsHealthRules], idempotency_token: Optional[str], notebook_task: Optional[NotebookTask], notification_settings: Optional[JobNotificationSettings], pipeline_task: Optional[PipelineTask], python_wheel_task: Optional[PythonWheelTask], queue: Optional[QueueSettings], run_as: Optional[JobRunAs], run_job_task: Optional[RunJobTask], run_name: Optional[str], spark_jar_task: Optional[SparkJarTask], spark_python_task: Optional[SparkPythonTask], spark_submit_task: Optional[SparkSubmitTask], sql_task: Optional[SqlTask], tasks: Optional[List[SubmitTask]], timeout_seconds: Optional[int], webhook_notifications: Optional[WebhookNotifications], timeout: datetime.timedelta = 0:20:00]) -> Run
 
 
     .. py:method:: update(job_id: int [, fields_to_remove: Optional[List[str]], new_settings: Optional[JobSettings]])

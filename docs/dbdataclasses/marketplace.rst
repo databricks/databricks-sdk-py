@@ -29,6 +29,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: ASSET_TYPE_NOTEBOOK
       :value: "ASSET_TYPE_NOTEBOOK"
 
+   .. py:attribute:: ASSET_TYPE_UNSPECIFIED
+      :value: "ASSET_TYPE_UNSPECIFIED"
+
 .. autoclass:: BatchGetListingsResponse
    :members:
    :undoc-members:
@@ -285,6 +288,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: FILE_STATUS_STAGING
       :value: "FILE_STATUS_STAGING"
 
+.. py:class:: FilterType
+
+   .. py:attribute:: METASTORE
+      :value: "METASTORE"
+
 .. py:class:: FulfillmentType
 
    .. py:attribute:: INSTALL
@@ -445,6 +453,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: LISTING_TAG_TYPE_TASK
       :value: "LISTING_TAG_TYPE_TASK"
 
+   .. py:attribute:: LISTING_TAG_TYPE_UNSPECIFIED
+      :value: "LISTING_TAG_TYPE_UNSPECIFIED"
+
 .. py:class:: ListingType
 
    .. py:attribute:: PERSONALIZED
@@ -514,6 +525,20 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: SharedDataObject
    :members:
    :undoc-members:
+
+.. py:class:: SortBy
+
+   .. py:attribute:: SORT_BY_DATE
+      :value: "SORT_BY_DATE"
+
+   .. py:attribute:: SORT_BY_RELEVANCE
+      :value: "SORT_BY_RELEVANCE"
+
+   .. py:attribute:: SORT_BY_TITLE
+      :value: "SORT_BY_TITLE"
+
+   .. py:attribute:: SORT_BY_UNSPECIFIED
+      :value: "SORT_BY_UNSPECIFIED"
 
 .. autoclass:: TokenDetail
    :members:
@@ -586,3 +611,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: PUBLIC
       :value: "PUBLIC"
+
+.. autoclass:: VisibilityFilter
+   :members:
+   :undoc-members:

@@ -17,14 +17,9 @@
           The display name of the dashboard.
         :param parent_path: str (optional)
           The workspace path of the folder containing the dashboard. Includes leading slash and no trailing
-          slash. This field is excluded in List Dashboards responses.
+          slash.
         :param serialized_dashboard: str (optional)
-          The contents of the dashboard in serialized string form. This field is excluded in List Dashboards
-          responses. Use the [get dashboard API] to retrieve an example response, which includes the
-          `serialized_dashboard` field. This field provides the structure of the JSON string that represents
-          the dashboard's layout and components.
-          
-          [get dashboard API]: https://docs.databricks.com/api/workspace/lakeview/get
+          The contents of the dashboard in serialized string form.
         :param warehouse_id: str (optional)
           The warehouse ID used to run the dashboard.
         
@@ -143,24 +138,6 @@
         :returns: :class:`Subscription`
         
 
-    .. py:method:: list( [, page_size: Optional[int], page_token: Optional[str], show_trashed: Optional[bool], view: Optional[DashboardView]]) -> Iterator[Dashboard]
-
-        List dashboards.
-        
-        :param page_size: int (optional)
-          The number of dashboards to return per page.
-        :param page_token: str (optional)
-          A page token, received from a previous `ListDashboards` call. This token can be used to retrieve the
-          subsequent page.
-        :param show_trashed: bool (optional)
-          The flag to include dashboards located in the trash. If unspecified, only active dashboards will be
-          returned.
-        :param view: :class:`DashboardView` (optional)
-          `DASHBOARD_VIEW_BASIC`only includes summary metadata from the dashboard.
-        
-        :returns: Iterator over :class:`Dashboard`
-        
-
     .. py:method:: list_schedules(dashboard_id: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Schedule]
 
         List dashboard schedules.
@@ -262,14 +239,9 @@
           The display name of the dashboard.
         :param etag: str (optional)
           The etag for the dashboard. Can be optionally provided on updates to ensure that the dashboard has
-          not been modified since the last read. This field is excluded in List Dashboards responses.
+          not been modified since the last read.
         :param serialized_dashboard: str (optional)
-          The contents of the dashboard in serialized string form. This field is excluded in List Dashboards
-          responses. Use the [get dashboard API] to retrieve an example response, which includes the
-          `serialized_dashboard` field. This field provides the structure of the JSON string that represents
-          the dashboard's layout and components.
-          
-          [get dashboard API]: https://docs.databricks.com/api/workspace/lakeview/get
+          The contents of the dashboard in serialized string form.
         :param warehouse_id: str (optional)
           The warehouse ID used to run the dashboard.
         

@@ -30,7 +30,7 @@
         
         
 
-    .. py:method:: get(full_name: str, version: int [, include_aliases: Optional[bool], include_browse: Optional[bool]]) -> ModelVersionInfo
+    .. py:method:: get(full_name: str, version: int [, include_browse: Optional[bool]]) -> RegisteredModelInfo
 
         Get a Model Version.
         
@@ -44,16 +44,14 @@
           The three-level (fully qualified) name of the model version
         :param version: int
           The integer version number of the model version
-        :param include_aliases: bool (optional)
-          Whether to include aliases associated with the model version in the response
         :param include_browse: bool (optional)
           Whether to include model versions in the response for which the principal can only access selective
           metadata for
         
-        :returns: :class:`ModelVersionInfo`
+        :returns: :class:`RegisteredModelInfo`
         
 
-    .. py:method:: get_by_alias(full_name: str, alias: str [, include_aliases: Optional[bool]]) -> ModelVersionInfo
+    .. py:method:: get_by_alias(full_name: str, alias: str) -> ModelVersionInfo
 
         Get Model Version By Alias.
         
@@ -67,8 +65,6 @@
           The three-level (fully qualified) name of the registered model
         :param alias: str
           The name of the alias
-        :param include_aliases: bool (optional)
-          Whether to include aliases associated with the model version in the response
         
         :returns: :class:`ModelVersionInfo`
         

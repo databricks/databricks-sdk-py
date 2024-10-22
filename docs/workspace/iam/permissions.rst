@@ -7,8 +7,6 @@
     Permissions API are used to create read, write, edit, update and manage access for various users on
     different objects and endpoints.
     
-    * **[Apps permissions](:service:apps)** — Manage which users can manage or use apps.
-    
     * **[Cluster permissions](:service:clusters)** — Manage which users can manage, restart, or attach to
     clusters.
     
@@ -44,7 +42,7 @@
     * **[Token permissions](:service:tokenmanagement)** — Manage which users can create or use tokens.
     
     * **[Workspace object permissions](:service:workspace)** — Manage which users can read, run, edit, or
-    manage alerts, dbsql-dashboards, directories, files, notebooks and queries.
+    manage directories, files, and notebooks.
     
     For the mapping of the required permissions for specific actions or abilities and other important
     information, see [Access Control].
@@ -80,9 +78,9 @@
         object.
         
         :param request_object_type: str
-          The type of the request object. Can be one of the following: alerts, authorization, clusters,
-          cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files, instance-pools,
-          jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or warehouses.
+          The type of the request object. Can be one of the following: authorization, clusters,
+          cluster-policies, directories, experiments, files, instance-pools, jobs, notebooks, pipelines,
+          registered-models, repos, serving-endpoints, or warehouses.
         :param request_object_id: str
           The id of the request object.
         
@@ -157,9 +155,9 @@
         object.
         
         :param request_object_type: str
-          The type of the request object. Can be one of the following: alerts, authorization, clusters,
-          cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files, instance-pools,
-          jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or warehouses.
+          The type of the request object. Can be one of the following: authorization, clusters,
+          cluster-policies, directories, experiments, files, instance-pools, jobs, notebooks, pipelines,
+          registered-models, repos, serving-endpoints, or warehouses.
         :param request_object_id: str
           The id of the request object.
         :param access_control_list: List[:class:`AccessControlRequest`] (optional)
@@ -175,9 +173,9 @@
         root object.
         
         :param request_object_type: str
-          The type of the request object. Can be one of the following: alerts, authorization, clusters,
-          cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files, instance-pools,
-          jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or warehouses.
+          The type of the request object. Can be one of the following: authorization, clusters,
+          cluster-policies, directories, experiments, files, instance-pools, jobs, notebooks, pipelines,
+          registered-models, repos, serving-endpoints, or warehouses.
         :param request_object_id: str
           The id of the request object.
         :param access_control_list: List[:class:`AccessControlRequest`] (optional)

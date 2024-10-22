@@ -8,4 +8,3 @@ Use real-time inference for machine learning
    :maxdepth: 1
 
    serving_endpoints
-   serving_endpoints_data_plane
