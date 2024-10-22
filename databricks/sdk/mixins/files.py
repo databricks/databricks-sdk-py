@@ -724,7 +724,7 @@ class FilesExt(files.FilesAPI):
             body={'etags': etags})
         return
 
-    def _ps_multipart_upload_create_part_urls(self, session_token: str, page_token: str, page_size: int):
+    def multipart_upload_create_part_urls(self, session_token: str, *, page_token: str, page_size: int) -> MultipartUploadCreatePartUrlsResponse:
         """Request a set of presigned URLs for uploading parts of a file in a multipart upload session."""
 
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
@@ -762,7 +762,9 @@ class FilesExt(files.FilesAPI):
                 "Not all client-provided headers are populated") # TODO: Move to a dedicated exception type
 
         request_headers = {**presigned_url.headers, **headers}
-        self._api.do(presigned_url.method, presigned_url.url, headers=request_headers, data=data)
+        resp_headers = {}
+        resp = self._api.do(presigned_url.method, presigned_url.url, headers=request_headers, data=data, response_headers = resp_headers)
+        return (resp, resp_headers)
 
 
 class PresignedUrl:

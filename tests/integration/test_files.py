@@ -8,6 +8,7 @@ from typing import Callable, List, Tuple, Union
 import pytest
 
 from databricks.sdk.core import DatabricksError
+from databricks.sdk.mixins.files import MultipartUploadCreate, MultipartUploadCreatePartUrlsResponse
 from databricks.sdk.service.catalog import VolumeType
 
 
@@ -227,6 +228,35 @@ def test_files_api_upload_download(ucws, random):
             w.files.upload(target_file, f)
             with w.files.download(target_file).contents as f:
                 assert f.read() == b"some text data"
+
+def test_files_multipart_upload_download_baremetal(ucws, random):
+    w = ucws
+    schema = 'filesit-' + random()
+    volume = 'filesit-' + random()
+    with ResourceWithCleanup.create_schema(w, 'main', schema):
+        with ResourceWithCleanup.create_volume(w, 'main', schema, volume):
+            f = io.BytesIO(b"some text data")
+            target_file = f'/Volumes/main/{schema}/{volume}/filesit-with-?-and-#-{random()}.txt'
+
+            ## Create a session, upload the file in a single part, and then finalize the session
+            session: MultipartUploadCreate = w.files.multipart_upload_create(target_file)
+
+            url_page_one: MultipartUploadCreatePartUrlsResponse = w.files.multipart_upload_create_part_urls(session.session_token, page_size=1)
+
+            # Verify that a second page of URLs may be requested
+            w.files.multipart_upload_create_part_urls(session.session_token, page_token=url_page_one.next_page_token, page_size=1)
+
+
+            (part_upload_resp, part_upload_resp_headers) = w.files.execute_presigned_url_request(url_page_one.upload_part_urls[0], data=f)
+            print(part_upload_resp)
+            print(part_upload_resp_headers)
+
+            w.files.multipart_upload_complete(target_file, session.session_token, [part_upload_resp_headers["etag"]])
+
+            ## Download the file & assert that it's what we expect
+            with w.files.download(target_file).contents as f:
+                assert f.read() == b"some text data"
+
 
 
 def test_files_api_read_twice_from_one_download(ucws, random):
