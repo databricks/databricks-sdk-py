@@ -82,6 +82,12 @@ base_subclass_test_cases: List[Tuple[int, str,
 subclass_test_cases = [(fake_valid_response('GET', x[0], x[1], 'nope'), x[2], 'nope')
                        for x in base_subclass_test_cases]
 
+UNABLE_TO_PARSE_RESPONSE_ERROR = (
+    'unable to parse response. This is likely a bug in the Databricks SDK for Python or the underlying API. '
+    'Please report this issue with the following debugging information to the SDK issue tracker at '
+    'https://github.com/databricks/databricks-sdk-py/issues. Request log:```GET /api/2.0/service\n'
+    '< {status_code} {reason}\n< {response_body}```')
+
 
 @pytest.mark.parametrize(
     'response, expected_error, expected_message', subclass_test_cases +
@@ -112,11 +118,8 @@ subclass_test_cases = [(fake_valid_response('GET', x[0], x[1], 'nope'), x[2], 'n
      (fake_response('GET', 400, '<pre>Worker environment not ready</pre>'), errors.BadRequest,
       'Worker environment not ready'),
      (fake_response('GET', 400, 'this is not a real response'), errors.BadRequest,
-      ('unable to parse response. This is likely a bug in the Databricks SDK for Python or the underlying API. '
-       'Please report this issue with the following debugging information to the SDK issue tracker at '
-       'https://github.com/databricks/databricks-sdk-go/issues. Request log:```GET /api/2.0/service\n'
-       '< 400 Bad Request\n'
-       '< this is not a real response```')),
+      UNABLE_TO_PARSE_RESPONSE_ERROR.format(
+          status_code=400, reason='Bad Request', response_body='this is not a real response')),
      (fake_response(
          'GET', 404,
          json.dumps({
@@ -125,11 +128,10 @@ subclass_test_cases = [(fake_valid_response('GET', x[0], x[1], 'nope'), x[2], 'n
              'schemas': ['urn:ietf:params:scim:api:messages:2.0:Error']
          })), errors.NotFound, 'None Group with id 1234 is not found'),
      (fake_response('GET', 404, json.dumps("This is JSON but not a dictionary")), errors.NotFound,
-      'unable to parse response. This is likely a bug in the Databricks SDK for Python or the underlying API. Please report this issue with the following debugging information to the SDK issue tracker at https://github.com/databricks/databricks-sdk-go/issues. Request log:```GET /api/2.0/service\n< 404 Not Found\n< "This is JSON but not a dictionary"```'
-      ),
+      UNABLE_TO_PARSE_RESPONSE_ERROR.format(
+          status_code=404, reason='Not Found', response_body='"This is JSON but not a dictionary"')),
      (fake_raw_response('GET', 404, b'\x80'), errors.NotFound,
-      'unable to parse response. This is likely a bug in the Databricks SDK for Python or the underlying API. Please report this issue with the following debugging information to the SDK issue tracker at https://github.com/databricks/databricks-sdk-go/issues. Request log:```GET /api/2.0/service\n< 404 Not Found\n< �```'
-      )])
+      UNABLE_TO_PARSE_RESPONSE_ERROR.format(status_code=404, reason='Not Found', response_body='�'))])
 def test_get_api_error(response, expected_error, expected_message):
     parser = errors._Parser()
     with pytest.raises(errors.DatabricksError) as e:
