@@ -3861,6 +3861,9 @@ class Run:
     overriding_parameters: Optional[RunParameters] = None
     """The parameters used for this run."""
 
+    prev_page_token: Optional[str] = None
+    """A token that can be used to list the previous page of sub-resources."""
+
     queue_duration: Optional[int] = None
     """The time in milliseconds that the run has spent in the queue."""
 
@@ -3953,6 +3956,7 @@ class Run:
         if self.original_attempt_run_id is not None:
             body['original_attempt_run_id'] = self.original_attempt_run_id
         if self.overriding_parameters: body['overriding_parameters'] = self.overriding_parameters.as_dict()
+        if self.prev_page_token is not None: body['prev_page_token'] = self.prev_page_token
         if self.queue_duration is not None: body['queue_duration'] = self.queue_duration
         if self.repair_history: body['repair_history'] = [v.as_dict() for v in self.repair_history]
         if self.run_duration is not None: body['run_duration'] = self.run_duration
@@ -4035,6 +4039,7 @@ class Run:
                    number_in_job=d.get('number_in_job', None),
                    original_attempt_run_id=d.get('original_attempt_run_id', None),
                    overriding_parameters=_from_dict(d, 'overriding_parameters', RunParameters),
+                   prev_page_token=d.get('prev_page_token', None),
                    queue_duration=d.get('queue_duration', None),
                    repair_history=_repeated_dict(d, 'repair_history', RepairHistoryItem),
                    run_duration=d.get('run_duration', None),

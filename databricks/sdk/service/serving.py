@@ -657,6 +657,10 @@ class CreateServingEndpoint:
     config: Optional[EndpointCoreConfigInput] = None
     """The core config of the serving endpoint."""
 
+    ai_gateway: Optional[AiGatewayConfig] = None
+    """The AI Gateway configuration for the serving endpoint. NOTE: only external model endpoints are
+    supported as of now."""
+
     rate_limits: Optional[List[RateLimit]] = None
     """Rate limits to be applied to the serving endpoint. NOTE: this field is deprecated, please use AI
     Gateway to manage rate limits."""
@@ -2550,6 +2554,12 @@ class ServedModelInput:
     min_provisioned_throughput: Optional[int] = None
     """The minimum tokens per second that the endpoint can scale down to."""
 
+    max_provisioned_throughput: Optional[int] = None
+    """The maximum tokens per second that the endpoint can scale up to."""
+
+    min_provisioned_throughput: Optional[int] = None
+    """The minimum tokens per second that the endpoint can scale down to."""
+
     name: Optional[str] = None
     """The name of a served entity. It must be unique across an endpoint. A served entity name can
     consist of alphanumeric characters, dashes, and underscores. If not specified for an external
@@ -2563,6 +2573,14 @@ class ServedModelInput:
     "Medium" (8 - 16 provisioned concurrency), and "Large" (16 - 64 provisioned concurrency). If
     scale-to-zero is enabled, the lower bound of the provisioned concurrency for each workload size
     is 0."""
+
+    workload_size: Optional[ServedModelInputWorkloadSize] = None
+    """The workload size of the served model. The workload size corresponds to a range of provisioned
+    concurrency that the compute will autoscale between. A single unit of provisioned concurrency
+    can process one request at a time. Valid workload sizes are "Small" (4 - 4 provisioned
+    concurrency), "Medium" (8 - 16 provisioned concurrency), and "Large" (16 - 64 provisioned
+    concurrency). If scale-to-zero is enabled, the lower bound of the provisioned concurrency for
+    each workload size will be 0."""
 
     workload_type: Optional[ServedModelInputWorkloadType] = None
     """The workload type of the served entity. The workload type selects which type of compute to use
@@ -3413,6 +3431,9 @@ class ServingEndpointsAPI:
           throughput endpoints are currently supported.
         :param config: :class:`EndpointCoreConfigInput` (optional)
           The core config of the serving endpoint.
+        :param ai_gateway: :class:`AiGatewayConfig` (optional)
+          The AI Gateway configuration for the serving endpoint. NOTE: only external model endpoints are
+          supported as of now.
         :param rate_limits: List[:class:`RateLimit`] (optional)
           Rate limits to be applied to the serving endpoint. NOTE: this field is deprecated, please use AI
           Gateway to manage rate limits.

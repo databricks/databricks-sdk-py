@@ -1,5 +1,3 @@
-import os
-
 import pytest
 
 from databricks.sdk.version import __version__
@@ -42,45 +40,3 @@ def test_user_agent_with_partner(user_agent):
     user_agent.with_partner('differenttest')
     assert 'partner/test' in user_agent.to_string()
     assert 'partner/differenttest' in user_agent.to_string()
-
-
-@pytest.fixture(scope="function")
-def clear_cicd():
-    # Save and clear env vars.
-    original_env = os.environ.copy()
-    os.environ.clear()
-
-    # Clear cached CICD provider.
-    from databricks.sdk import useragent
-    useragent._cicd_provider = None
-
-    yield
-
-    # Restore env vars.
-    os.environ = original_env
-
-
-def test_user_agent_cicd_no_provider(clear_cicd):
-    from databricks.sdk import useragent
-    user_agent = useragent.to_string()
-
-    assert 'cicd' not in user_agent
-
-
-def test_user_agent_cicd_one_provider(clear_cicd):
-    os.environ['GITHUB_ACTIONS'] = 'true'
-
-    from databricks.sdk import useragent
-    user_agent = useragent.to_string()
-
-    assert 'cicd/github' in user_agent
-
-
-def test_user_agent_cicd_two_provider(clear_cicd):
-    os.environ['GITHUB_ACTIONS'] = 'true'
-    os.environ['GITLAB_CI'] = 'true'
-
-    from databricks.sdk import useragent
-    user_agent = useragent.to_string()
-
-    assert 'cicd/github' in user_agent

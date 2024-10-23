@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 from databricks.sdk.data_plane import DataPlaneService
 from databricks.sdk.oauth import Token
-from databricks.sdk.service.serving import DataPlaneInfo
+from databricks.sdk.service.oauth2 import DataPlaneInfo
 
 info = DataPlaneInfo(authorization_details="authDetails", endpoint_url="url")
 
