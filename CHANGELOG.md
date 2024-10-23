@@ -1,5 +1,25 @@
 # Version changelog
 
+## [Release] Release v0.36.0
+
+### Breaking Changes
+* `external_browser` now uses the `databricks-cli` app instead of the third-party "6128a518-99a9-425b-8333-4cc94f04cacd" application when performing the U2M login flow for Azure workspaces when a client ID is not otherwise specified. This matches the AWS behavior.
+* The signatures of several OAuth-related constructors have changed to support U2M OAuth with Azure Entra ID application registrations. See https://github.com/databricks/databricks-sdk-py/blob/main/examples/flask_app_with_oauth.py for examples of how to use these classes.
+  * `OAuthClient()`: renamed to `OAuthClient.from_host()`
+  * `SessionCredentials()` and `SessionCredentials.from_dict()`: now accepts `token_endpoint`, `client_id`, `client_secret`, and `refresh_url` as parameters, rather than accepting the `OAuthClient`.
+  * `TokenCache()`: now accepts `host`, `token_endpoint`, `client_id`, `client_secret`, and `refresh_url` as parameters, rather than accepting the `OAuthClient`.
+
+### Bug Fixes
+
+ * Decouple OAuth functionality from `Config` ([#784](https://github.com/databricks/databricks-sdk-py/pull/784)).
+
+
+### Release
+
+ * Release v0.35.0 ([#793](https://github.com/databricks/databricks-sdk-py/pull/793)).
+
+
+
 ## [Release] Release v0.35.0
 
 ### New Features and Improvements
