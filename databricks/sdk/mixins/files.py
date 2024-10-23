@@ -11,8 +11,8 @@ from collections import deque
 from enum import Enum
 from io import BytesIO
 from types import TracebackType
-from typing import (TYPE_CHECKING, AnyStr, BinaryIO, Generator, Iterable, Iterator, Type, Union)
-from typing import Dict, List, Optional
+from typing import (TYPE_CHECKING, AnyStr, BinaryIO, Dict, Generator, Iterable,
+                    Iterator, List, Optional, Type, Union)
 from urllib import parse
 
 from .._property import _cached_property
@@ -724,7 +724,8 @@ class FilesExt(files.FilesAPI):
             body={'etags': etags})
         return
 
-    def multipart_upload_create_part_urls(self, session_token: str, *, page_token: str, page_size: int) -> MultipartUploadCreatePartUrlsResponse:
+    def multipart_upload_create_part_urls(self, session_token: str, *, page_token: str,
+                                          page_size: int) -> MultipartUploadCreatePartUrlsResponse:
         """Request a set of presigned URLs for uploading parts of a file in a multipart upload session."""
 
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
@@ -763,7 +764,11 @@ class FilesExt(files.FilesAPI):
 
         request_headers = {**presigned_url.headers, **headers}
         resp_headers = {}
-        resp = self._api.do(presigned_url.method, presigned_url.url, headers=request_headers, data=data, response_headers = resp_headers)
+        resp = self._api.do(presigned_url.method,
+                            presigned_url.url,
+                            headers=request_headers,
+                            data=data,
+                            response_headers=resp_headers)
         return (resp, resp_headers)
 
 
