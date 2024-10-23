@@ -483,6 +483,9 @@ class CreateRecipient:
     when the __authentication_type__ is **DATABRICKS**. The identifier is of format
     __cloud__:__region__:__metastore-uuid__."""
 
+    expiration_time: Optional[int] = None
+    """Expiration timestamp of the token, in epoch milliseconds."""
+
     ip_access_list: Optional[IpAccessList] = None
     """IP Access List"""
 
@@ -503,6 +506,7 @@ class CreateRecipient:
         if self.comment is not None: body['comment'] = self.comment
         if self.data_recipient_global_metastore_id is not None:
             body['data_recipient_global_metastore_id'] = self.data_recipient_global_metastore_id
+        if self.expiration_time is not None: body['expiration_time'] = self.expiration_time
         if self.ip_access_list: body['ip_access_list'] = self.ip_access_list.as_dict()
         if self.name is not None: body['name'] = self.name
         if self.owner is not None: body['owner'] = self.owner
@@ -516,6 +520,7 @@ class CreateRecipient:
         return cls(authentication_type=_enum(d, 'authentication_type', AuthenticationType),
                    comment=d.get('comment', None),
                    data_recipient_global_metastore_id=d.get('data_recipient_global_metastore_id', None),
+                   expiration_time=d.get('expiration_time', None),
                    ip_access_list=_from_dict(d, 'ip_access_list', IpAccessList),
                    name=d.get('name', None),
                    owner=d.get('owner', None),
@@ -580,19 +585,25 @@ class GetActivationUrlInfoResponse:
 
 @dataclass
 class GetRecipientSharePermissionsResponse:
+    next_page_token: Optional[str] = None
+    """Opaque token to retrieve the next page of results. Absent if there are no more pages.
+    __page_token__ should be set to this value for the next request (for the next page of results)."""
+
     permissions_out: Optional[List[ShareToPrivilegeAssignment]] = None
     """An array of data share permissions for a recipient."""
 
     def as_dict(self) -> dict:
         """Serializes the GetRecipientSharePermissionsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         if self.permissions_out: body['permissions_out'] = [v.as_dict() for v in self.permissions_out]
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> GetRecipientSharePermissionsResponse:
         """Deserializes the GetRecipientSharePermissionsResponse from a dictionary."""
-        return cls(permissions_out=_repeated_dict(d, 'permissions_out', ShareToPrivilegeAssignment))
+        return cls(next_page_token=d.get('next_page_token', None),
+                   permissions_out=_repeated_dict(d, 'permissions_out', ShareToPrivilegeAssignment))
 
 
 @dataclass
@@ -637,70 +648,94 @@ class ListCleanRoomsResponse:
 
 @dataclass
 class ListProviderSharesResponse:
+    next_page_token: Optional[str] = None
+    """Opaque token to retrieve the next page of results. Absent if there are no more pages.
+    __page_token__ should be set to this value for the next request (for the next page of results)."""
+
     shares: Optional[List[ProviderShare]] = None
     """An array of provider shares."""
 
     def as_dict(self) -> dict:
         """Serializes the ListProviderSharesResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         if self.shares: body['shares'] = [v.as_dict() for v in self.shares]
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListProviderSharesResponse:
         """Deserializes the ListProviderSharesResponse from a dictionary."""
-        return cls(shares=_repeated_dict(d, 'shares', ProviderShare))
+        return cls(next_page_token=d.get('next_page_token', None),
+                   shares=_repeated_dict(d, 'shares', ProviderShare))
 
 
 @dataclass
 class ListProvidersResponse:
+    next_page_token: Optional[str] = None
+    """Opaque token to retrieve the next page of results. Absent if there are no more pages.
+    __page_token__ should be set to this value for the next request (for the next page of results)."""
+
     providers: Optional[List[ProviderInfo]] = None
     """An array of provider information objects."""
 
     def as_dict(self) -> dict:
         """Serializes the ListProvidersResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         if self.providers: body['providers'] = [v.as_dict() for v in self.providers]
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListProvidersResponse:
         """Deserializes the ListProvidersResponse from a dictionary."""
-        return cls(providers=_repeated_dict(d, 'providers', ProviderInfo))
+        return cls(next_page_token=d.get('next_page_token', None),
+                   providers=_repeated_dict(d, 'providers', ProviderInfo))
 
 
 @dataclass
 class ListRecipientsResponse:
+    next_page_token: Optional[str] = None
+    """Opaque token to retrieve the next page of results. Absent if there are no more pages.
+    __page_token__ should be set to this value for the next request (for the next page of results)."""
+
     recipients: Optional[List[RecipientInfo]] = None
     """An array of recipient information objects."""
 
     def as_dict(self) -> dict:
         """Serializes the ListRecipientsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         if self.recipients: body['recipients'] = [v.as_dict() for v in self.recipients]
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListRecipientsResponse:
         """Deserializes the ListRecipientsResponse from a dictionary."""
-        return cls(recipients=_repeated_dict(d, 'recipients', RecipientInfo))
+        return cls(next_page_token=d.get('next_page_token', None),
+                   recipients=_repeated_dict(d, 'recipients', RecipientInfo))
 
 
 @dataclass
 class ListSharesResponse:
+    next_page_token: Optional[str] = None
+    """Opaque token to retrieve the next page of results. Absent if there are no more pages.
+    __page_token__ should be set to this value for the next request (for the next page of results)."""
+
     shares: Optional[List[ShareInfo]] = None
     """An array of data share information objects."""
 
     def as_dict(self) -> dict:
         """Serializes the ListSharesResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         if self.shares: body['shares'] = [v.as_dict() for v in self.shares]
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListSharesResponse:
         """Deserializes the ListSharesResponse from a dictionary."""
-        return cls(shares=_repeated_dict(d, 'shares', ShareInfo))
+        return cls(next_page_token=d.get('next_page_token', None),
+                   shares=_repeated_dict(d, 'shares', ShareInfo))
 
 
 @dataclass
@@ -788,6 +823,7 @@ class Privilege(Enum):
     CREATE_VIEW = 'CREATE_VIEW'
     CREATE_VOLUME = 'CREATE_VOLUME'
     EXECUTE = 'EXECUTE'
+    MANAGE = 'MANAGE'
     MANAGE_ALLOWLIST = 'MANAGE_ALLOWLIST'
     MODIFY = 'MODIFY'
     READ_FILES = 'READ_FILES'
@@ -1525,6 +1561,9 @@ class UpdateRecipient:
     comment: Optional[str] = None
     """Description about the recipient."""
 
+    expiration_time: Optional[int] = None
+    """Expiration timestamp of the token, in epoch milliseconds."""
+
     ip_access_list: Optional[IpAccessList] = None
     """IP Access List"""
 
@@ -1546,6 +1585,7 @@ class UpdateRecipient:
         """Serializes the UpdateRecipient into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.comment is not None: body['comment'] = self.comment
+        if self.expiration_time is not None: body['expiration_time'] = self.expiration_time
         if self.ip_access_list: body['ip_access_list'] = self.ip_access_list.as_dict()
         if self.name is not None: body['name'] = self.name
         if self.new_name is not None: body['new_name'] = self.new_name
@@ -1557,6 +1597,7 @@ class UpdateRecipient:
     def from_dict(cls, d: Dict[str, any]) -> UpdateRecipient:
         """Deserializes the UpdateRecipient from a dictionary."""
         return cls(comment=d.get('comment', None),
+                   expiration_time=d.get('expiration_time', None),
                    ip_access_list=_from_dict(d, 'ip_access_list', IpAccessList),
                    name=d.get('name', None),
                    new_name=d.get('new_name', None),
@@ -1625,20 +1666,37 @@ class UpdateSharePermissions:
     changes: Optional[List[catalog.PermissionsChange]] = None
     """Array of permission changes."""
 
+    max_results: Optional[int] = None
+    """Maximum number of permissions to return. - when set to 0, the page length is set to a server
+    configured value (recommended); - when set to a value greater than 0, the page length is the
+    minimum of this value and a server configured value; - when set to a value less than 0, an
+    invalid parameter error is returned; - If not set, all valid permissions are returned (not
+    recommended). - Note: The number of returned permissions might be less than the specified
+    max_results size, even zero. The only definitive indication that no further permissions can be
+    fetched is when the next_page_token is unset from the response."""
+
     name: Optional[str] = None
     """The name of the share."""
+
+    page_token: Optional[str] = None
+    """Opaque pagination token to go to next page based on previous query."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateSharePermissions into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.changes: body['changes'] = [v.as_dict() for v in self.changes]
+        if self.max_results is not None: body['max_results'] = self.max_results
         if self.name is not None: body['name'] = self.name
+        if self.page_token is not None: body['page_token'] = self.page_token
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> UpdateSharePermissions:
         """Deserializes the UpdateSharePermissions from a dictionary."""
-        return cls(changes=_repeated_dict(d, 'changes', catalog.PermissionsChange), name=d.get('name', None))
+        return cls(changes=_repeated_dict(d, 'changes', catalog.PermissionsChange),
+                   max_results=d.get('max_results', None),
+                   name=d.get('name', None),
+                   page_token=d.get('page_token', None))
 
 
 class CleanRoomsAPI:
@@ -1864,7 +1922,11 @@ class ProvidersAPI:
         res = self._api.do('GET', f'/api/2.1/unity-catalog/providers/{name}', headers=headers)
         return ProviderInfo.from_dict(res)
 
-    def list(self, *, data_provider_global_metastore_id: Optional[str] = None) -> Iterator[ProviderInfo]:
+    def list(self,
+             *,
+             data_provider_global_metastore_id: Optional[str] = None,
+             max_results: Optional[int] = None,
+             page_token: Optional[str] = None) -> Iterator[ProviderInfo]:
         """List providers.
         
         Gets an array of available authentication providers. The caller must either be a metastore admin or
@@ -1874,6 +1936,16 @@ class ProvidersAPI:
         :param data_provider_global_metastore_id: str (optional)
           If not provided, all providers will be returned. If no providers exist with this ID, no results will
           be returned.
+        :param max_results: int (optional)
+          Maximum number of providers to return. - when set to 0, the page length is set to a server
+          configured value (recommended); - when set to a value greater than 0, the page length is the minimum
+          of this value and a server configured value; - when set to a value less than 0, an invalid parameter
+          error is returned; - If not set, all valid providers are returned (not recommended). - Note: The
+          number of returned providers might be less than the specified max_results size, even zero. The only
+          definitive indication that no further providers can be fetched is when the next_page_token is unset
+          from the response.
+        :param page_token: str (optional)
+          Opaque pagination token to go to next page based on previous query.
         
         :returns: Iterator over :class:`ProviderInfo`
         """
@@ -1881,13 +1953,24 @@ class ProvidersAPI:
         query = {}
         if data_provider_global_metastore_id is not None:
             query['data_provider_global_metastore_id'] = data_provider_global_metastore_id
+        if max_results is not None: query['max_results'] = max_results
+        if page_token is not None: query['page_token'] = page_token
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET', '/api/2.1/unity-catalog/providers', query=query, headers=headers)
-        parsed = ListProvidersResponse.from_dict(json).providers
-        return parsed if parsed is not None else []
+        while True:
+            json = self._api.do('GET', '/api/2.1/unity-catalog/providers', query=query, headers=headers)
+            if 'providers' in json:
+                for v in json['providers']:
+                    yield ProviderInfo.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
 
-    def list_shares(self, name: str) -> Iterator[ProviderShare]:
+    def list_shares(self,
+                    name: str,
+                    *,
+                    max_results: Optional[int] = None,
+                    page_token: Optional[str] = None) -> Iterator[ProviderShare]:
         """List shares by Provider.
         
         Gets an array of a specified provider's shares within the metastore where:
@@ -1896,13 +1979,29 @@ class ProvidersAPI:
         
         :param name: str
           Name of the provider in which to list shares.
+        :param max_results: int (optional)
+          Maximum number of shares to return. - when set to 0, the page length is set to a server configured
+          value (recommended); - when set to a value greater than 0, the page length is the minimum of this
+          value and a server configured value; - when set to a value less than 0, an invalid parameter error
+          is returned; - If not set, all valid shares are returned (not recommended). - Note: The number of
+          returned shares might be less than the specified max_results size, even zero. The only definitive
+          indication that no further shares can be fetched is when the next_page_token is unset from the
+          response.
+        :param page_token: str (optional)
+          Opaque pagination token to go to next page based on previous query.
         
         :returns: Iterator over :class:`ProviderShare`
         """
 
+        query = {}
+        if max_results is not None: query['max_results'] = max_results
+        if page_token is not None: query['page_token'] = page_token
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET', f'/api/2.1/unity-catalog/providers/{name}/shares', headers=headers)
+        json = self._api.do('GET',
+                            f'/api/2.1/unity-catalog/providers/{name}/shares',
+                            query=query,
+                            headers=headers)
         parsed = ListProviderSharesResponse.from_dict(json).shares
         return parsed if parsed is not None else []
 
@@ -2015,6 +2114,7 @@ class RecipientsAPI:
                *,
                comment: Optional[str] = None,
                data_recipient_global_metastore_id: Optional[str] = None,
+               expiration_time: Optional[int] = None,
                ip_access_list: Optional[IpAccessList] = None,
                owner: Optional[str] = None,
                properties_kvpairs: Optional[SecurablePropertiesKvPairs] = None,
@@ -2034,6 +2134,8 @@ class RecipientsAPI:
           The global Unity Catalog metastore id provided by the data recipient. This field is required when
           the __authentication_type__ is **DATABRICKS**. The identifier is of format
           __cloud__:__region__:__metastore-uuid__.
+        :param expiration_time: int (optional)
+          Expiration timestamp of the token, in epoch milliseconds.
         :param ip_access_list: :class:`IpAccessList` (optional)
           IP Access List
         :param owner: str (optional)
@@ -2051,6 +2153,7 @@ class RecipientsAPI:
         if comment is not None: body['comment'] = comment
         if data_recipient_global_metastore_id is not None:
             body['data_recipient_global_metastore_id'] = data_recipient_global_metastore_id
+        if expiration_time is not None: body['expiration_time'] = expiration_time
         if ip_access_list is not None: body['ip_access_list'] = ip_access_list.as_dict()
         if name is not None: body['name'] = name
         if owner is not None: body['owner'] = owner
@@ -2094,7 +2197,11 @@ class RecipientsAPI:
         res = self._api.do('GET', f'/api/2.1/unity-catalog/recipients/{name}', headers=headers)
         return RecipientInfo.from_dict(res)
 
-    def list(self, *, data_recipient_global_metastore_id: Optional[str] = None) -> Iterator[RecipientInfo]:
+    def list(self,
+             *,
+             data_recipient_global_metastore_id: Optional[str] = None,
+             max_results: Optional[int] = None,
+             page_token: Optional[str] = None) -> Iterator[RecipientInfo]:
         """List share recipients.
         
         Gets an array of all share recipients within the current metastore where:
@@ -2105,6 +2212,16 @@ class RecipientsAPI:
         :param data_recipient_global_metastore_id: str (optional)
           If not provided, all recipients will be returned. If no recipients exist with this ID, no results
           will be returned.
+        :param max_results: int (optional)
+          Maximum number of recipients to return. - when set to 0, the page length is set to a server
+          configured value (recommended); - when set to a value greater than 0, the page length is the minimum
+          of this value and a server configured value; - when set to a value less than 0, an invalid parameter
+          error is returned; - If not set, all valid recipients are returned (not recommended). - Note: The
+          number of returned recipients might be less than the specified max_results size, even zero. The only
+          definitive indication that no further recipients can be fetched is when the next_page_token is unset
+          from the response.
+        :param page_token: str (optional)
+          Opaque pagination token to go to next page based on previous query.
         
         :returns: Iterator over :class:`RecipientInfo`
         """
@@ -2112,11 +2229,18 @@ class RecipientsAPI:
         query = {}
         if data_recipient_global_metastore_id is not None:
             query['data_recipient_global_metastore_id'] = data_recipient_global_metastore_id
+        if max_results is not None: query['max_results'] = max_results
+        if page_token is not None: query['page_token'] = page_token
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET', '/api/2.1/unity-catalog/recipients', query=query, headers=headers)
-        parsed = ListRecipientsResponse.from_dict(json).recipients
-        return parsed if parsed is not None else []
+        while True:
+            json = self._api.do('GET', '/api/2.1/unity-catalog/recipients', query=query, headers=headers)
+            if 'recipients' in json:
+                for v in json['recipients']:
+                    yield RecipientInfo.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
 
     def rotate_token(self, name: str, existing_token_expire_in_seconds: int) -> RecipientInfo:
         """Rotate a token.
@@ -2144,7 +2268,11 @@ class RecipientsAPI:
                            headers=headers)
         return RecipientInfo.from_dict(res)
 
-    def share_permissions(self, name: str) -> GetRecipientSharePermissionsResponse:
+    def share_permissions(self,
+                          name: str,
+                          *,
+                          max_results: Optional[int] = None,
+                          page_token: Optional[str] = None) -> GetRecipientSharePermissionsResponse:
         """Get recipient share permissions.
         
         Gets the share permissions for the specified Recipient. The caller must be a metastore admin or the
@@ -2152,14 +2280,28 @@ class RecipientsAPI:
         
         :param name: str
           The name of the Recipient.
+        :param max_results: int (optional)
+          Maximum number of permissions to return. - when set to 0, the page length is set to a server
+          configured value (recommended); - when set to a value greater than 0, the page length is the minimum
+          of this value and a server configured value; - when set to a value less than 0, an invalid parameter
+          error is returned; - If not set, all valid permissions are returned (not recommended). - Note: The
+          number of returned permissions might be less than the specified max_results size, even zero. The
+          only definitive indication that no further permissions can be fetched is when the next_page_token is
+          unset from the response.
+        :param page_token: str (optional)
+          Opaque pagination token to go to next page based on previous query.
         
         :returns: :class:`GetRecipientSharePermissionsResponse`
         """
 
+        query = {}
+        if max_results is not None: query['max_results'] = max_results
+        if page_token is not None: query['page_token'] = page_token
         headers = {'Accept': 'application/json', }
 
         res = self._api.do('GET',
                            f'/api/2.1/unity-catalog/recipients/{name}/share-permissions',
+                           query=query,
                            headers=headers)
         return GetRecipientSharePermissionsResponse.from_dict(res)
 
@@ -2167,6 +2309,7 @@ class RecipientsAPI:
                name: str,
                *,
                comment: Optional[str] = None,
+               expiration_time: Optional[int] = None,
                ip_access_list: Optional[IpAccessList] = None,
                new_name: Optional[str] = None,
                owner: Optional[str] = None,
@@ -2181,6 +2324,8 @@ class RecipientsAPI:
           Name of the recipient.
         :param comment: str (optional)
           Description about the recipient.
+        :param expiration_time: int (optional)
+          Expiration timestamp of the token, in epoch milliseconds.
         :param ip_access_list: :class:`IpAccessList` (optional)
           IP Access List
         :param new_name: str (optional)
@@ -2196,6 +2341,7 @@ class RecipientsAPI:
         """
         body = {}
         if comment is not None: body['comment'] = comment
+        if expiration_time is not None: body['expiration_time'] = expiration_time
         if ip_access_list is not None: body['ip_access_list'] = ip_access_list.as_dict()
         if new_name is not None: body['new_name'] = new_name
         if owner is not None: body['owner'] = owner
@@ -2278,22 +2424,48 @@ class SharesAPI:
         res = self._api.do('GET', f'/api/2.1/unity-catalog/shares/{name}', query=query, headers=headers)
         return ShareInfo.from_dict(res)
 
-    def list(self) -> Iterator[ShareInfo]:
+    def list(self,
+             *,
+             max_results: Optional[int] = None,
+             page_token: Optional[str] = None) -> Iterator[ShareInfo]:
         """List shares.
         
         Gets an array of data object shares from the metastore. The caller must be a metastore admin or the
         owner of the share. There is no guarantee of a specific ordering of the elements in the array.
         
+        :param max_results: int (optional)
+          Maximum number of shares to return. - when set to 0, the page length is set to a server configured
+          value (recommended); - when set to a value greater than 0, the page length is the minimum of this
+          value and a server configured value; - when set to a value less than 0, an invalid parameter error
+          is returned; - If not set, all valid shares are returned (not recommended). - Note: The number of
+          returned shares might be less than the specified max_results size, even zero. The only definitive
+          indication that no further shares can be fetched is when the next_page_token is unset from the
+          response.
+        :param page_token: str (optional)
+          Opaque pagination token to go to next page based on previous query.
+        
         :returns: Iterator over :class:`ShareInfo`
         """
 
+        query = {}
+        if max_results is not None: query['max_results'] = max_results
+        if page_token is not None: query['page_token'] = page_token
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET', '/api/2.1/unity-catalog/shares', headers=headers)
-        parsed = ListSharesResponse.from_dict(json).shares
-        return parsed if parsed is not None else []
+        while True:
+            json = self._api.do('GET', '/api/2.1/unity-catalog/shares', query=query, headers=headers)
+            if 'shares' in json:
+                for v in json['shares']:
+                    yield ShareInfo.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
 
-    def share_permissions(self, name: str) -> catalog.PermissionsList:
+    def share_permissions(self,
+                          name: str,
+                          *,
+                          max_results: Optional[int] = None,
+                          page_token: Optional[str] = None) -> catalog.PermissionsList:
         """Get permissions.
         
         Gets the permissions for a data share from the metastore. The caller must be a metastore admin or the
@@ -2301,14 +2473,30 @@ class SharesAPI:
         
         :param name: str
           The name of the share.
+        :param max_results: int (optional)
+          Maximum number of permissions to return. - when set to 0, the page length is set to a server
+          configured value (recommended); - when set to a value greater than 0, the page length is the minimum
+          of this value and a server configured value; - when set to a value less than 0, an invalid parameter
+          error is returned; - If not set, all valid permissions are returned (not recommended). - Note: The
+          number of returned permissions might be less than the specified max_results size, even zero. The
+          only definitive indication that no further permissions can be fetched is when the next_page_token is
+          unset from the response.
+        :param page_token: str (optional)
+          Opaque pagination token to go to next page based on previous query.
         
         :returns: :class:`PermissionsList`
         """
 
+        query = {}
+        if max_results is not None: query['max_results'] = max_results
+        if page_token is not None: query['page_token'] = page_token
         headers = {'Accept': 'application/json', }
 
-        res = self._api.do('GET', f'/api/2.1/unity-catalog/shares/{name}/permissions', headers=headers)
-        return PermissionsList.from_dict(res)
+        res = self._api.do('GET',
+                           f'/api/2.1/unity-catalog/shares/{name}/permissions',
+                           query=query,
+                           headers=headers)
+        return catalog.PermissionsList.from_dict(res)
 
     def update(self,
                name: str,
@@ -2362,7 +2550,12 @@ class SharesAPI:
         res = self._api.do('PATCH', f'/api/2.1/unity-catalog/shares/{name}', body=body, headers=headers)
         return ShareInfo.from_dict(res)
 
-    def update_permissions(self, name: str, *, changes: Optional[List[catalog.PermissionsChange]] = None):
+    def update_permissions(self,
+                           name: str,
+                           *,
+                           changes: Optional[List[catalog.PermissionsChange]] = None,
+                           max_results: Optional[int] = None,
+                           page_token: Optional[str] = None):
         """Update permissions.
         
         Updates the permissions for a data share in the metastore. The caller must be a metastore admin or an
@@ -2375,11 +2568,28 @@ class SharesAPI:
           The name of the share.
         :param changes: List[:class:`PermissionsChange`] (optional)
           Array of permission changes.
+        :param max_results: int (optional)
+          Maximum number of permissions to return. - when set to 0, the page length is set to a server
+          configured value (recommended); - when set to a value greater than 0, the page length is the minimum
+          of this value and a server configured value; - when set to a value less than 0, an invalid parameter
+          error is returned; - If not set, all valid permissions are returned (not recommended). - Note: The
+          number of returned permissions might be less than the specified max_results size, even zero. The
+          only definitive indication that no further permissions can be fetched is when the next_page_token is
+          unset from the response.
+        :param page_token: str (optional)
+          Opaque pagination token to go to next page based on previous query.
         
         
         """
         body = {}
+        query = {}
         if changes is not None: body['changes'] = [v.as_dict() for v in changes]
+        if max_results is not None: query['max_results'] = max_results
+        if page_token is not None: query['page_token'] = page_token
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        self._api.do('PATCH', f'/api/2.1/unity-catalog/shares/{name}/permissions', body=body, headers=headers)
+        self._api.do('PATCH',
+                     f'/api/2.1/unity-catalog/shares/{name}/permissions',
+                     query=query,
+                     body=body,
+                     headers=headers)

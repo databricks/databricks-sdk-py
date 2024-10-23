@@ -247,6 +247,7 @@ class Generator:
         Package("vectorsearch", "Vector Search", "Create and query Vector Search indexes"),
         Package("dashboards", "Dashboards", "Manage Lakeview dashboards"),
         Package("marketplace", "Marketplace", "Manage AI and analytics assets such as ML models, notebooks, applications in an open marketplace"),
+        Package("apps", "Apps", "Build custom applications on Databricks"),
     ]
 
     def __init__(self):
@@ -258,7 +259,7 @@ class Generator:
                 return f.read()
         with open(f'{__dir__}/../.codegen/_openapi_sha') as f:
             sha = f.read().strip()
-        return subprocess.check_output(['deco', 'openapi', 'get', sha]).decode('utf-8')
+        return subprocess.check_output(['genkit', 'get', sha]).decode('utf-8')
 
     def _load_mapping(self) -> dict[str, Tag]:
         mapping = {}
@@ -341,8 +342,15 @@ class Generator:
                 continue
             if service_name in ignore_client_fields:
                 continue
-            class_doc = service_inst.__doc__
+
             class_name = service_inst.__class__.__name__
+
+            # Use original class docstring for mixin classes
+            if class_name.endswith('Ext'):
+                class_doc = service_inst.__class__.__base__.__doc__
+            else:        
+                class_doc = service_inst.__doc__
+
             print(f'Processing service {client_prefix}.{service_name}')
             all += self.service_docs(service_inst, client_prefix + "." + service_name)
 

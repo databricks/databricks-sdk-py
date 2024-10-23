@@ -9,14 +9,15 @@ import pathlib
 import platform
 import subprocess
 import sys
+import time
 from datetime import datetime
-from typing import Callable, Dict, List, Optional, Union
+from typing import Callable, Dict, List, Optional, Tuple, Union
 
-import google.auth
+import google.auth  # type: ignore
 import requests
-from google.auth import impersonated_credentials
-from google.auth.transport.requests import Request
-from google.oauth2 import service_account
+from google.auth import impersonated_credentials  # type: ignore
+from google.auth.transport.requests import Request  # type: ignore
+from google.oauth2 import service_account  # type: ignore
 
 from .azure import add_sp_management_token, add_workspace_id_header
 from .oauth import (ClientCredentials, OAuthClient, Refreshable, Token,
@@ -186,30 +187,35 @@ def oauth_service_principal(cfg: 'Config') -> Optional[CredentialsProvider]:
 def external_browser(cfg: 'Config') -> Optional[CredentialsProvider]:
     if cfg.auth_type != 'external-browser':
         return None
+    client_id, client_secret = None, None
     if cfg.client_id:
         client_id = cfg.client_id
-    elif cfg.is_aws:
+        client_secret = cfg.client_secret
+    elif cfg.azure_client_id:
+        client_id = cfg.azure_client
+        client_secret = cfg.azure_client_secret
+
+    if not client_id:
         client_id = 'databricks-cli'
-    elif cfg.is_azure:
-        # Use Azure AD app for cases when Azure CLI is not available on the machine.
-        # App has to be registered as Single-page multi-tenant to support PKCE
-        # TODO: temporary app ID, change it later.
-        client_id = '6128a518-99a9-425b-8333-4cc94f04cacd'
-    else:
-        raise ValueError(f'local browser SSO is not supported')
-    oauth_client = OAuthClient(host=cfg.host,
-                               client_id=client_id,
-                               redirect_url='http://localhost:8020',
-                               client_secret=cfg.client_secret)
 
     # Load cached credentials from disk if they exist.
     # Note that these are local to the Python SDK and not reused by other SDKs.
-    token_cache = TokenCache(oauth_client)
+    oidc_endpoints = cfg.oidc_endpoints
+    redirect_url = 'http://localhost:8020'
+    token_cache = TokenCache(host=cfg.host,
+                             oidc_endpoints=oidc_endpoints,
+                             client_id=client_id,
+                             client_secret=client_secret,
+                             redirect_url=redirect_url)
     credentials = token_cache.load()
     if credentials:
         # Force a refresh in case the loaded credentials are expired.
         credentials.token()
     else:
+        oauth_client = OAuthClient(oidc_endpoints=oidc_endpoints,
+                                   client_id=client_id,
+                                   redirect_url=redirect_url,
+                                   client_secret=client_secret)
         consent = oauth_client.initiate_consent()
         if not consent:
             return None
@@ -233,8 +239,7 @@ def _ensure_host_present(cfg: 'Config', token_source_for: Callable[[str], TokenS
     cfg.host = f"https://{resp.json()['properties']['workspaceUrl']}"
 
 
-@oauth_credentials_strategy('azure-client-secret',
-                            ['is_azure', 'azure_client_id', 'azure_client_secret', 'azure_tenant_id'])
+@oauth_credentials_strategy('azure-client-secret', ['is_azure', 'azure_client_id', 'azure_client_secret'])
 def azure_service_principal(cfg: 'Config') -> CredentialsProvider:
     """ Adds refreshed Azure Active Directory (AAD) Service Principal OAuth tokens
     to every request, while automatically resolving different Azure environment endpoints. """
@@ -248,6 +253,7 @@ def azure_service_principal(cfg: 'Config') -> CredentialsProvider:
                                  use_params=True)
 
     _ensure_host_present(cfg, token_source_for)
+    cfg.load_azure_tenant_id()
     logger.info("Configured AAD token for Service Principal (%s)", cfg.azure_client_id)
     inner = token_source_for(cfg.effective_azure_login_app_id)
     cloud = token_source_for(cfg.arm_environment.service_management_endpoint)
@@ -411,10 +417,7 @@ class CliTokenSource(Refreshable):
 
     def refresh(self) -> Token:
         try:
-            is_windows = sys.platform.startswith('win')
-            # windows requires shell=True to be able to execute 'az login' or other commands
-            # cannot use shell=True all the time, as it breaks macOS
-            out = subprocess.run(self._cmd, capture_output=True, check=True, shell=is_windows)
+            out = _run_subprocess(self._cmd, capture_output=True, check=True)
             it = json.loads(out.stdout.decode())
             expires_on = self._parse_expiry(it[self._expiry_field])
             return Token(access_token=it[self._access_token_field],
@@ -429,18 +432,57 @@ class CliTokenSource(Refreshable):
             raise IOError(f'cannot get access token: {message}') from e
 
 
+def _run_subprocess(popenargs,
+                    input=None,
+                    capture_output=True,
+                    timeout=None,
+                    check=False,
+                    **kwargs) -> subprocess.CompletedProcess:
+    """Runs subprocess with given arguments.
+    This handles OS-specific modifications that need to be made to the invocation of subprocess.run."""
+    kwargs['shell'] = sys.platform.startswith('win')
+    # windows requires shell=True to be able to execute 'az login' or other commands
+    # cannot use shell=True all the time, as it breaks macOS
+    logging.debug(f'Running command: {" ".join(popenargs)}')
+    return subprocess.run(popenargs,
+                          input=input,
+                          capture_output=capture_output,
+                          timeout=timeout,
+                          check=check,
+                          **kwargs)
+
+
 class AzureCliTokenSource(CliTokenSource):
     """ Obtain the token granted by `az login` CLI command """
 
-    def __init__(self, resource: str, subscription: str = ""):
+    def __init__(self, resource: str, subscription: Optional[str] = None, tenant: Optional[str] = None):
         cmd = ["az", "account", "get-access-token", "--resource", resource, "--output", "json"]
-        if subscription != "":
+        if subscription is not None:
             cmd.append("--subscription")
             cmd.append(subscription)
+        if tenant and not self.__is_cli_using_managed_identity():
+            cmd.extend(["--tenant", tenant])
         super().__init__(cmd=cmd,
                          token_type_field='tokenType',
                          access_token_field='accessToken',
                          expiry_field='expiresOn')
+
+    @staticmethod
+    def __is_cli_using_managed_identity() -> bool:
+        """Checks whether the current CLI session is authenticated using managed identity."""
+        try:
+            cmd = ["az", "account", "show", "--output", "json"]
+            out = _run_subprocess(cmd, capture_output=True, check=True)
+            account = json.loads(out.stdout.decode())
+            user = account.get("user")
+            if user is None:
+                return False
+            return user.get("type") == "servicePrincipal" and user.get("name") in [
+                'systemAssignedIdentity', 'userAssignedIdentity'
+            ]
+        except subprocess.CalledProcessError as e:
+            logger.debug("Failed to get account information from Azure CLI", exc_info=e)
+            return False
 
     def is_human_user(self) -> bool:
         """The UPN claim is the username of the user, but not the Service Principal.
@@ -464,8 +506,10 @@ class AzureCliTokenSource(CliTokenSource):
     @staticmethod
     def for_resource(cfg: 'Config', resource: str) -> 'AzureCliTokenSource':
         subscription = AzureCliTokenSource.get_subscription(cfg)
-        if subscription != "":
-            token_source = AzureCliTokenSource(resource, subscription)
+        if subscription is not None:
+            token_source = AzureCliTokenSource(resource,
+                                               subscription=subscription,
+                                               tenant=cfg.azure_tenant_id)
             try:
                 # This will fail if the user has access to the workspace, but not to the subscription
                 # itself.
@@ -475,25 +519,26 @@ class AzureCliTokenSource(CliTokenSource):
             except OSError:
                 logger.warning("Failed to get token for subscription. Using resource only token.")
 
-        token_source = AzureCliTokenSource(resource)
+        token_source = AzureCliTokenSource(resource, subscription=None, tenant=cfg.azure_tenant_id)
         token_source.token()
         return token_source
 
     @staticmethod
-    def get_subscription(cfg: 'Config') -> str:
+    def get_subscription(cfg: 'Config') -> Optional[str]:
         resource = cfg.azure_workspace_resource_id
         if resource is None or resource == "":
-            return ""
+            return None
         components = resource.split('/')
         if len(components) < 3:
             logger.warning("Invalid azure workspace resource ID")
-            return ""
+            return None
         return components[2]
 
 
 @credentials_strategy('azure-cli', ['is_azure'])
 def azure_cli(cfg: 'Config') -> Optional[CredentialsProvider]:
     """ Adds refreshed OAuth token granted by `az login` command to every request. """
+    cfg.load_azure_tenant_id()
     token_source = None
     mgmt_token_source = None
     try:
@@ -517,11 +562,6 @@ def azure_cli(cfg: 'Config') -> Optional[CredentialsProvider]:
 
     _ensure_host_present(cfg, lambda resource: AzureCliTokenSource.for_resource(cfg, resource))
     logger.info("Using Azure CLI authentication with AAD tokens")
-    if not cfg.is_account_client and AzureCliTokenSource.get_subscription(cfg) == "":
-        logger.warning(
-            "azure_workspace_resource_id field not provided. "
-            "It is recommended to specify this field in the Databricks configuration to avoid authentication errors."
-        )
 
     def inner() -> Dict[str, str]:
         token = token_source.token()
@@ -607,7 +647,10 @@ def databricks_cli(cfg: 'Config') -> Optional[CredentialsProvider]:
         token = token_source.token()
         return {'Authorization': f'{token.token_type} {token.access_token}'}
 
-    return OAuthCredentialsProvider(inner, token_source.token)
+    def token() -> Token:
+        return token_source.token()
+
+    return OAuthCredentialsProvider(inner, token)
 
 
 class MetadataServiceTokenSource(Refreshable):
@@ -661,6 +704,90 @@ def metadata_service(cfg: 'Config') -> Optional[CredentialsProvider]:
     return inner
 
 
+# This Code is derived from Mlflow DatabricksModelServingConfigProvider
+# https://github.com/mlflow/mlflow/blob/1219e3ef1aac7d337a618a352cd859b336cf5c81/mlflow/legacy_databricks_cli/configure/provider.py#L332
+class ModelServingAuthProvider():
+    _MODEL_DEPENDENCY_OAUTH_TOKEN_FILE_PATH = "/var/credentials-secret/model-dependencies-oauth-token"
+
+    def __init__(self):
+        self.expiry_time = -1
+        self.current_token = None
+        self.refresh_duration = 300 # 300 Seconds
+
+    def should_fetch_model_serving_environment_oauth(self) -> bool:
+        """
+        Check whether this is the model serving environment
+        Additionally check if the oauth token file path exists
+        """
+
+        is_in_model_serving_env = (os.environ.get("IS_IN_DB_MODEL_SERVING_ENV")
+                                   or os.environ.get("IS_IN_DATABRICKS_MODEL_SERVING_ENV") or "false")
+        return (is_in_model_serving_env == "true"
+                and os.path.isfile(self._MODEL_DEPENDENCY_OAUTH_TOKEN_FILE_PATH))
+
+    def get_model_dependency_oauth_token(self, should_retry=True) -> str:
+        # Use Cached value if it is valid
+        if self.current_token is not None and self.expiry_time > time.time():
+            return self.current_token
+
+        try:
+            with open(self._MODEL_DEPENDENCY_OAUTH_TOKEN_FILE_PATH) as f:
+                oauth_dict = json.load(f)
+                self.current_token = oauth_dict["OAUTH_TOKEN"][0]["oauthTokenValue"]
+                self.expiry_time = time.time() + self.refresh_duration
+        except Exception as e:
+            # sleep and retry in case of any race conditions with OAuth refreshing
+            if should_retry:
+                logger.warning("Unable to read oauth token on first attmept in Model Serving Environment",
+                               exc_info=e)
+                time.sleep(0.5)
+                return self.get_model_dependency_oauth_token(should_retry=False)
+            else:
+                raise RuntimeError(
+                    "Unable to read OAuth credentials from the file mounted in Databricks Model Serving"
+                ) from e
+        return self.current_token
+
+    def get_databricks_host_token(self) -> Optional[Tuple[str, str]]:
+        if not self.should_fetch_model_serving_environment_oauth():
+            return None
+
+        # read from DB_MODEL_SERVING_HOST_ENV_VAR if available otherwise MODEL_SERVING_HOST_ENV_VAR
+        host = os.environ.get("DATABRICKS_MODEL_SERVING_HOST_URL") or os.environ.get(
+            "DB_MODEL_SERVING_HOST_URL")
+        token = self.get_model_dependency_oauth_token()
+
+        return (host, token)
+
+
+@credentials_strategy('model-serving', [])
+def model_serving_auth(cfg: 'Config') -> Optional[CredentialsProvider]:
+    try:
+        model_serving_auth_provider = ModelServingAuthProvider()
+        if not model_serving_auth_provider.should_fetch_model_serving_environment_oauth():
+            logger.debug("model-serving: Not in Databricks Model Serving, skipping")
+            return None
+        host, token = model_serving_auth_provider.get_databricks_host_token()
+        if token is None:
+            raise ValueError(
+                "Got malformed auth (empty token) when fetching auth implicitly available in Model Serving Environment. Please contact Databricks support"
+            )
+        if cfg.host is None:
+            cfg.host = host
+    except Exception as e:
+        logger.warning("Unable to get auth from Databricks Model Serving Environment", exc_info=e)
+        return None
+
+    logger.info("Using Databricks Model Serving Authentication")
+
+    def inner() -> Dict[str, str]:
+        # Call here again to get the refreshed token
+        _, token = model_serving_auth_provider.get_databricks_host_token()
+        return {"Authorization": f"Bearer {token}"}
+
+    return inner
+
+
 class DefaultCredentials:
     """ Select the first applicable credential provider from the chain """
 
@@ -669,7 +796,7 @@ class DefaultCredentials:
         self._auth_providers = [
             pat_auth, basic_auth, metadata_service, oauth_service_principal, azure_service_principal,
             github_oidc_azure, azure_cli, external_browser, databricks_cli, runtime_native_auth,
-            google_credentials, google_id
+            google_credentials, google_id, model_serving_auth
         ]
 
     def auth_type(self) -> str:

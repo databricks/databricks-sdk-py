@@ -8,8 +8,12 @@ from typing import Dict, List, Any, Iterator, Type, Callable, Optional, BinaryIO
 import time
 import random
 import logging
+import requests
+
+from ..data_plane import DataPlaneService
 from ..errors import OperationTimeout, OperationFailed
 from ._internal import _enum, _from_dict, _repeated_dict, _repeated_enum, Wait, _escape_multi_segment_path_parameter
+from ..oauth import Token
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -100,12 +104,16 @@ class {{.PascalName}}{{if eq "List" .PascalName}}Request{{end}}:{{if .Descriptio
 	{{- end -}}
 {{- end -}}
 
-{{range .Services}} {{if not .IsDataPlane}}
+{{range .Services}}
 class {{.PascalName}}API:{{if .Description}}
     """{{.Comment "    " 110}}"""
     {{end}}
-    def __init__(self, api_client):
+    def __init__(self, api_client{{if .IsDataPlane}}, control_plane{{end}}):
         self._api = api_client
+        {{if .IsDataPlane -}}
+        self._control_plane = control_plane
+        self._data_plane_service = DataPlaneService()
+        {{end -}}
         {{range .Subservices}}
         self._{{.SnakeName}} = {{.PascalName}}API(self._api){{end}}
 
@@ -183,6 +191,9 @@ class {{.PascalName}}API:{{if .Description}}
         {{if .Request -}}
         {{template "method-serialize" .}}
         {{- end}}
+        {{- if .Service.IsDataPlane}}
+        {{template "data-plane" .}}
+        {{- end}}
         {{template "method-headers" . }}
         {{if .Response.HasHeaderField -}}
         {{template "method-response-headers" . }}
@@ -195,7 +206,27 @@ class {{.PascalName}}API:{{if .Description}}
         return self.{{template "safe-snake-name" .}}({{range $i, $x := .Request.Fields}}{{if $i}}, {{end}}{{template "safe-snake-name" .}}={{template "safe-snake-name" .}}{{end}}).result(timeout=timeout)
     {{end}}
     {{end -}}
-{{end}}
+{{- end}}
+
+{{define "data-plane" -}}
+        def info_getter():
+            response = self._control_plane.{{.Service.DataPlaneInfoMethod.SnakeName}}(
+                {{- range .Service.DataPlaneInfoMethod.Request.Fields }}
+                {{.SnakeName}} = {{.SnakeName}},
+                {{- end}}
+                )
+            if response.{{(index .DataPlaneInfoFields 0).SnakeName}} is None:
+            	raise Exception("Resource does not support direct Data Plane access")
+            return response{{range .DataPlaneInfoFields}}.{{.SnakeName}}{{end}}
+
+        get_params = [{{- range .Service.DataPlaneInfoMethod.Request.Fields }}{{.SnakeName}},{{end}}]
+        data_plane_details = self._data_plane_service.get_data_plane_details('{{.SnakeName}}', get_params, info_getter, self._api.get_oauth_token)
+        token = data_plane_details.token
+
+        def auth(r: requests.PreparedRequest) -> requests.PreparedRequest:
+            authorization = f"{token.token_type} {token.access_token}"
+            r.headers["Authorization"] = authorization
+            return r
 {{- end}}
 
 {{define "method-parameters" -}}
@@ -264,7 +295,7 @@ class {{.PascalName}}API:{{if .Description}}
         {{if .NeedsOffsetDedupe -}}
         # deduplicate items that may have been added during iteration
         seen = set()
-        {{- end}}{{if and .Pagination.Offset (not (eq .Path "/api/2.0/clusters/events")) }}
+        {{- end}}{{if and .Pagination.Offset (not (eq .Path "/api/2.1/clusters/events")) }}
         query['{{.Pagination.Offset.Name}}'] =
         {{- if eq .Pagination.Increment 1 -}}
           1
@@ -290,7 +321,7 @@ class {{.PascalName}}API:{{if .Description}}
           if '{{.Pagination.Token.Bind.Name}}' not in json or not json['{{.Pagination.Token.Bind.Name}}']:
             return
           {{if or (eq "GET" .Verb) (eq "HEAD" .Verb)}}query{{else}}body{{end}}['{{.Pagination.Token.PollField.Name}}'] = json['{{.Pagination.Token.Bind.Name}}']
-          {{- else if eq .Path "/api/2.0/clusters/events" -}}
+          {{- else if eq .Path "/api/2.1/clusters/events" -}}
           if 'next_page' not in json or not json['next_page']:
             return
           body = json['next_page']
@@ -319,25 +350,32 @@ class {{.PascalName}}API:{{if .Description}}
           {{- else if .Response.MapValue -}}
             return res
           {{- else -}}
-            return {{.Response.PascalName}}.from_dict(res)
+            return {{template "type" .Response}}.from_dict(res)
           {{- end}}
         {{- end}}
 {{- end}}
 
 {{define "method-do" -}}
-self._api.do('{{.Verb}}',
-  {{ template "path" . }}
-  {{if .Request}}
-      {{- if .Request.HasQueryField}}, query=query{{end}}
-      {{- if .Request.MapValue}}, body=contents
-      {{- else if .Request.HasJsonField}}, body=body{{end}}
-  {{end}}
-  , headers=headers
-  {{if .Response.HasHeaderField -}}
-  , response_headers=response_headers
-  {{- end}}
-  {{- if and .IsRequestByteStream .RequestBodyField }}, data={{template "safe-snake-name" .RequestBodyField}}{{ end }}
-  {{- if .IsResponseByteStream }}, raw=True{{ end }})
+    self._api.do('{{.Verb}}',
+    {{- if .Service.IsDataPlane -}}
+    url=data_plane_details.endpoint_url
+    {{- else -}}
+    {{ template "path" . }}
+    {{- end -}}
+    {{if .Request}}
+        {{- if .Request.HasQueryField}}, query=query{{end}}
+        {{- if .Request.MapValue}}, body=contents
+        {{- else if .Request.HasJsonField}}, body=body{{end}}
+    {{end}}
+    , headers=headers
+    {{if .Response.HasHeaderField -}}
+    , response_headers=response_headers
+    {{- end}}
+    {{- if and .IsRequestByteStream .RequestBodyField }}, data={{template "safe-snake-name" .RequestBodyField}}{{ end }}
+    {{- if .Service.IsDataPlane -}}
+    ,auth=auth
+    {{- end -}}
+    {{- if .IsResponseByteStream }}, raw=True{{ end }})
 {{- end}}
 
 {{- define "path" -}}

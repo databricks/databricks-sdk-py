@@ -1,20 +1,15 @@
-import contextlib
-import functools
 import os
 import pathlib
+import platform
 import random
 import string
-import typing
 from datetime import datetime
 from http.server import BaseHTTPRequestHandler
-from typing import Iterator, List
 
 import pytest
-import requests
 
-from databricks.sdk import WorkspaceClient
-from databricks.sdk.core import (ApiClient, Config, DatabricksError,
-                                 StreamingResponse)
+from databricks.sdk import WorkspaceClient, errors
+from databricks.sdk.core import ApiClient, Config, DatabricksError
 from databricks.sdk.credentials_provider import (CliTokenSource,
                                                  CredentialsProvider,
                                                  CredentialsStrategy,
@@ -22,11 +17,13 @@ from databricks.sdk.credentials_provider import (CliTokenSource,
                                                  databricks_cli)
 from databricks.sdk.environments import (ENVIRONMENTS, AzureEnvironment, Cloud,
                                          DatabricksEnvironment)
+from databricks.sdk.oauth import Token
 from databricks.sdk.service.catalog import PermissionsChange
 from databricks.sdk.service.iam import AccessControlRequest
+from databricks.sdk.version import __version__
 
-from .clock import FakeClock
 from .conftest import noop_credentials
+from .fixture_server import http_fixture_server
 
 
 def test_parse_dsn():
@@ -65,37 +62,16 @@ def test_databricks_cli_token_parse_expiry(date_string, expected):
 
 
 def write_small_dummy_executable(path: pathlib.Path):
-    cli = path.joinpath('databricks')
-    cli.write_text('#!/bin/sh\necho "hello world"\n')
-    cli.chmod(0o755)
+    if platform.system() == "Windows":
+        cli = path.joinpath('databricks.exe')
+        cli.touch()
+        cli.write_text('@echo off\necho "hello world"\n')
+    else:
+        cli = path.joinpath('databricks')
+        cli.write_text('#!/bin/sh\necho "hello world"\n')
+        cli.chmod(0o755)
     assert cli.stat().st_size < 1024
     return cli
-
-
-def test_streaming_response_read(config):
-    content = b"some initial binary data: \x00\x01"
-    response = StreamingResponse(DummyResponse([content]))
-    assert response.read() == content
-
-
-def test_streaming_response_read_partial(config):
-    content = b"some initial binary data: \x00\x01"
-    response = StreamingResponse(DummyResponse([content]))
-    assert response.read(8) == b"some ini"
-
-
-def test_streaming_response_read_full(config):
-    content = b"some initial binary data: \x00\x01"
-    response = StreamingResponse(DummyResponse([content, content]))
-    assert response.read() == content + content
-
-
-def test_streaming_response_read_closes(config):
-    content = b"some initial binary data: \x00\x01"
-    dummy_response = DummyResponse([content])
-    with StreamingResponse(dummy_response) as response:
-        assert response.read() == content
-    assert dummy_response.isClosed()
 
 
 def write_large_dummy_executable(path: pathlib.Path):
@@ -131,9 +107,15 @@ def test_databricks_cli_token_source_installed_legacy_with_symlink(config, monke
     dir1.mkdir()
     dir2.mkdir()
 
-    (dir1 / "databricks").symlink_to(write_small_dummy_executable(dir2))
+    if platform.system() == 'Windows':
+        (dir1 / "databricks.exe").symlink_to(write_small_dummy_executable(dir2))
+    else:
+        (dir1 / "databricks").symlink_to(write_small_dummy_executable(dir2))
 
-    monkeypatch.setenv('PATH', dir1.as_posix())
+    path = pathlib.Path(dir1)
+    path = str(path)
+    monkeypatch.setenv('PATH', path)
+
     with pytest.raises(FileNotFoundError, match="version <0.100.0 detected"):
         DatabricksCliTokenSource(config)
 
@@ -173,10 +155,43 @@ def test_databricks_cli_credential_provider_installed_legacy(config, monkeypatch
     assert databricks_cli(config) == None
 
 
-def test_databricks_cli_credential_provider_installed_new(config, monkeypatch, tmp_path):
+def test_databricks_cli_credential_provider_installed_new(config, monkeypatch, tmp_path, mocker):
+    get_mock = mocker.patch('databricks.sdk.credentials_provider.CliTokenSource.refresh',
+                            return_value=Token(access_token='token',
+                                               token_type='Bearer',
+                                               expiry=datetime(2023, 5, 22, 0, 0, 0)))
     write_large_dummy_executable(tmp_path)
-    monkeypatch.setenv('PATH', str(os.pathsep).join([tmp_path.as_posix(), os.environ['PATH']]))
+    path = str(os.pathsep).join([tmp_path.as_posix(), os.environ['PATH']])
+    path = pathlib.Path(path)
+    path = str(path)
+    monkeypatch.setenv('PATH', path)
+
     assert databricks_cli(config) is not None
+    assert get_mock.call_count == 1
+
+
+def test_extra_and_upstream_user_agent(monkeypatch):
+
+    class MockUname:
+
+        @property
+        def system(self):
+            return 'TestOS'
+
+    monkeypatch.setattr(platform, 'python_version', lambda: '3.0.0')
+    monkeypatch.setattr(platform, 'uname', MockUname)
+    monkeypatch.setenv('DATABRICKS_SDK_UPSTREAM', "upstream-product")
+    monkeypatch.setenv('DATABRICKS_SDK_UPSTREAM_VERSION', "0.0.1")
+    monkeypatch.setenv('DATABRICKS_RUNTIME_VERSION', "13.1 anything/else")
+
+    config = Config(host='http://localhost', username="something", password="something", product='test',
+                    product_version='0.0.0') \
+        .with_user_agent_extra('test-extra-1', '1') \
+        .with_user_agent_extra('test-extra-2', '2')
+
+    assert config.user_agent == (
+        f"test/0.0.0 databricks-sdk-py/{__version__} python/3.0.0 os/testos auth/basic test-extra-1/1 test-extra-2/2"
+        " upstream/upstream-product upstream-version/0.0.1 runtime/13.1-anything-else")
 
 
 def test_config_copy_shallow_copies_credential_provider():
@@ -243,36 +258,6 @@ def test_config_parsing_non_string_env_vars(monkeypatch):
     assert c.debug_truncate_bytes == 100
 
 
-class DummyResponse(requests.Response):
-    _content: Iterator[bytes]
-    _closed: bool = False
-
-    def __init__(self, content: List[bytes]) -> None:
-        super().__init__()
-        self._content = iter(content)
-
-    def iter_content(self, chunk_size: int = 1, decode_unicode=False) -> Iterator[bytes]:
-        return self._content
-
-    def close(self):
-        self._closed = True
-
-    def isClosed(self):
-        return self._closed
-
-
-def test_api_client_do_custom_headers(config, requests_mock):
-    client = ApiClient(config)
-    requests_mock.get("/test",
-                      json={"well": "done"},
-                      request_headers={
-                          "test": "test",
-                          "User-Agent": config.user_agent
-                      })
-    res = client.do("GET", "/test", headers={"test": "test"})
-    assert res == {"well": "done"}
-
-
 def test_access_control_list(config, requests_mock):
     requests_mock.post("http://localhost/api/2.1/jobs/create",
                        request_headers={"User-Agent": config.user_agent})
@@ -298,13 +283,13 @@ def test_shares(config, requests_mock):
 
 
 def test_deletes(config, requests_mock):
-    requests_mock.delete("http://localhost/api/2.0/preview/sql/alerts/alertid",
+    requests_mock.delete("http://localhost/api/2.0/sql/alerts/alertId",
                          request_headers={"User-Agent": config.user_agent},
                          text="null",
                          )
 
     w = WorkspaceClient(config=config)
-    res = w.alerts.delete(alert_id="alertId")
+    res = w.alerts.delete(id="alertId")
 
     assert requests_mock.call_count == 1
     assert requests_mock.called
@@ -312,197 +297,37 @@ def test_deletes(config, requests_mock):
     assert res is None
 
 
-def test_error(config, requests_mock):
-    errorJson = {
-        "message":
-        "errorMessage",
-        "details": [{
-            "type": DatabricksError._error_info_type,
-            "reason": "error reason",
-            "domain": "error domain",
-            "metadata": {
-                "etag": "error etag"
-            },
-        }, {
-            "type": "wrong type",
-            "reason": "wrong reason",
-            "domain": "wrong domain",
-            "metadata": {
-                "etag": "wrong etag"
-            }
-        }],
-    }
-
+@pytest.mark.parametrize(
+    'status_code,headers,body,expected_error',
+    [(401, {}, {
+        'error_code': 'UNAUTHORIZED',
+        'message': 'errorMessage',
+    },
+      errors.Unauthenticated('errorMessage. Config: host=http://localhost, auth_type=noop',
+                             error_code='UNAUTHORIZED')),
+     (403, {}, {
+         'error_code': 'FORBIDDEN',
+         'message': 'errorMessage',
+     },
+      errors.PermissionDenied('errorMessage. Config: host=http://localhost, auth_type=noop',
+                              error_code='FORBIDDEN')), ])
+def test_error(config, requests_mock, status_code, headers, body, expected_error):
     client = ApiClient(config)
-    requests_mock.get("/test", json=errorJson, status_code=400, )
+    requests_mock.get("/test", json=body, status_code=status_code, headers=headers)
     with pytest.raises(DatabricksError) as raised:
         client.do("GET", "/test", headers={"test": "test"})
-
-    error_infos = raised.value.get_error_info()
-    assert len(error_infos) == 1
-    error_info = error_infos[0]
-    assert error_info.reason == "error reason"
-    assert error_info.domain == "error domain"
-    assert error_info.metadata["etag"] == "error etag"
-    assert error_info.type == DatabricksError._error_info_type
-
-
-def test_error_with_scimType():
-    args = {"detail": "detail", "scimType": "scim type"}
-    error = DatabricksError(**args)
-    assert str(error) == f"scim type detail"
-
-
-@contextlib.contextmanager
-def http_fixture_server(handler: typing.Callable[[BaseHTTPRequestHandler], None]):
-    from http.server import HTTPServer
-    from threading import Thread
-
-    class _handler(BaseHTTPRequestHandler):
-
-        def __init__(self, handler: typing.Callable[[BaseHTTPRequestHandler], None], *args):
-            self._handler = handler
-            super().__init__(*args)
-
-        def __getattr__(self, item):
-            if 'do_' != item[0:3]:
-                raise AttributeError(f'method {item} not found')
-            return functools.partial(self._handler, self)
-
-    handler_factory = functools.partial(_handler, handler)
-    srv = HTTPServer(('localhost', 0), handler_factory)
-    t = Thread(target=srv.serve_forever)
-    try:
-        t.daemon = True
-        t.start()
-        yield 'http://{0}:{1}'.format(*srv.server_address)
-    finally:
-        srv.shutdown()
-
-
-@pytest.mark.parametrize('status_code,include_retry_after',
-                         ((429, False), (429, True), (503, False), (503, True)))
-def test_http_retry_after(status_code, include_retry_after):
-    requests = []
-
-    def inner(h: BaseHTTPRequestHandler):
-        if len(requests) == 0:
-            h.send_response(status_code)
-            if include_retry_after:
-                h.send_header('Retry-After', '1')
-            h.send_header('Content-Type', 'application/json')
-            h.end_headers()
-        else:
-            h.send_response(200)
-            h.send_header('Content-Type', 'application/json')
-            h.end_headers()
-            h.wfile.write(b'{"foo": 1}')
-        requests.append(h.requestline)
-
-    with http_fixture_server(inner) as host:
-        api_client = ApiClient(Config(host=host, token='_', clock=FakeClock()))
-        res = api_client.do('GET', '/foo')
-        assert 'foo' in res
-
-    assert len(requests) == 2
-
-
-def test_http_retry_after_wrong_format():
-    requests = []
-
-    def inner(h: BaseHTTPRequestHandler):
-        if len(requests) == 0:
-            h.send_response(429)
-            h.send_header('Retry-After', '1.58')
-            h.end_headers()
-        else:
-            h.send_response(200)
-            h.send_header('Content-Type', 'application/json')
-            h.end_headers()
-            h.wfile.write(b'{"foo": 1}')
-        requests.append(h.requestline)
-
-    with http_fixture_server(inner) as host:
-        api_client = ApiClient(Config(host=host, token='_', clock=FakeClock()))
-        res = api_client.do('GET', '/foo')
-        assert 'foo' in res
-
-    assert len(requests) == 2
-
-
-def test_http_retried_exceed_limit():
-    requests = []
-
-    def inner(h: BaseHTTPRequestHandler):
-        h.send_response(429)
-        h.send_header('Retry-After', '1')
-        h.end_headers()
-        requests.append(h.requestline)
-
-    with http_fixture_server(inner) as host:
-        api_client = ApiClient(Config(host=host, token='_', retry_timeout_seconds=1, clock=FakeClock()))
-        with pytest.raises(TimeoutError):
-            api_client.do('GET', '/foo')
-
-    assert len(requests) == 1
-
-
-def test_http_retried_on_match():
-    requests = []
-
-    def inner(h: BaseHTTPRequestHandler):
-        if len(requests) == 0:
-            h.send_response(400)
-            h.end_headers()
-            h.wfile.write(b'{"error_code": "abc", "message": "... ClusterNotReadyException ..."}')
-        else:
-            h.send_response(200)
-            h.end_headers()
-            h.wfile.write(b'{"foo": 1}')
-        requests.append(h.requestline)
-
-    with http_fixture_server(inner) as host:
-        api_client = ApiClient(Config(host=host, token='_', clock=FakeClock()))
-        res = api_client.do('GET', '/foo')
-        assert 'foo' in res
-
-    assert len(requests) == 2
-
-
-def test_http_not_retried_on_normal_errors():
-    requests = []
-
-    def inner(h: BaseHTTPRequestHandler):
-        if len(requests) == 0:
-            h.send_response(400)
-            h.end_headers()
-            h.wfile.write(b'{"error_code": "abc", "message": "something not found"}')
-        requests.append(h.requestline)
-
-    with http_fixture_server(inner) as host:
-        api_client = ApiClient(Config(host=host, token='_', clock=FakeClock()))
-        with pytest.raises(DatabricksError):
-            api_client.do('GET', '/foo')
-
-    assert len(requests) == 1
-
-
-def test_http_retried_on_connection_error():
-    requests = []
-
-    def inner(h: BaseHTTPRequestHandler):
-        if len(requests) > 0:
-            h.send_response(200)
-            h.end_headers()
-            h.wfile.write(b'{"foo": 1}')
-        requests.append(h.requestline)
-
-    with http_fixture_server(inner) as host:
-        api_client = ApiClient(Config(host=host, token='_', clock=FakeClock()))
-        res = api_client.do('GET', '/foo')
-        assert 'foo' in res
-
-    assert len(requests) == 2
+    actual = raised.value
+    assert isinstance(actual, type(expected_error))
+    assert str(actual) == str(expected_error)
+    assert actual.error_code == expected_error.error_code
+    assert actual.retry_after_secs == expected_error.retry_after_secs
+    expected_error_infos, actual_error_infos = expected_error.get_error_info(), actual.get_error_info()
+    assert len(expected_error_infos) == len(actual_error_infos)
+    for expected, actual in zip(expected_error_infos, actual_error_infos):
+        assert expected.type == actual.type
+        assert expected.reason == actual.reason
+        assert expected.domain == actual.domain
+        assert expected.metadata == actual.metadata
 
 
 def test_github_oidc_flow_works_with_azure(monkeypatch):

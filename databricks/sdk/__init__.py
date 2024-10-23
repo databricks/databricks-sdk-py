@@ -1,12 +1,16 @@
+from typing import Optional
+
 import databricks.sdk.core as client
 import databricks.sdk.dbutils as dbutils
 from databricks.sdk import azure
 from databricks.sdk.credentials_provider import CredentialsStrategy
 from databricks.sdk.mixins.compute import ClustersExt
 from databricks.sdk.mixins.files import DbfsExt
+from databricks.sdk.mixins.open_ai_client import ServingEndpointsExt
 from databricks.sdk.mixins.workspace import WorkspaceExt
+from databricks.sdk.service.apps import AppsAPI
 from databricks.sdk.service.billing import (BillableUsageAPI, BudgetsAPI,
-                                            LogDeliveryAPI)
+                                            LogDeliveryAPI, UsageDashboardsAPI)
 from databricks.sdk.service.catalog import (AccountMetastoreAssignmentsAPI,
                                             AccountMetastoresAPI,
                                             AccountStorageCredentialsAPI,
@@ -16,18 +20,21 @@ from databricks.sdk.service.catalog import (AccountMetastoreAssignmentsAPI,
                                             GrantsAPI, MetastoresAPI,
                                             ModelVersionsAPI, OnlineTablesAPI,
                                             QualityMonitorsAPI,
-                                            RegisteredModelsAPI, SchemasAPI,
+                                            RegisteredModelsAPI,
+                                            ResourceQuotasAPI, SchemasAPI,
                                             StorageCredentialsAPI,
                                             SystemSchemasAPI,
                                             TableConstraintsAPI, TablesAPI,
+                                            TemporaryTableCredentialsAPI,
                                             VolumesAPI, WorkspaceBindingsAPI)
 from databricks.sdk.service.compute import (ClusterPoliciesAPI, ClustersAPI,
                                             CommandExecutionAPI,
                                             GlobalInitScriptsAPI,
                                             InstancePoolsAPI,
                                             InstanceProfilesAPI, LibrariesAPI,
+                                            PolicyComplianceForClustersAPI,
                                             PolicyFamiliesAPI)
-from databricks.sdk.service.dashboards import LakeviewAPI
+from databricks.sdk.service.dashboards import GenieAPI, LakeviewAPI
 from databricks.sdk.service.files import DbfsAPI, FilesAPI
 from databricks.sdk.service.iam import (AccountAccessControlAPI,
                                         AccountAccessControlProxyAPI,
@@ -37,7 +44,7 @@ from databricks.sdk.service.iam import (AccountAccessControlAPI,
                                         GroupsAPI, PermissionMigrationAPI,
                                         PermissionsAPI, ServicePrincipalsAPI,
                                         UsersAPI, WorkspaceAssignmentAPI)
-from databricks.sdk.service.jobs import JobsAPI
+from databricks.sdk.service.jobs import JobsAPI, PolicyComplianceForJobsAPI
 from databricks.sdk.service.marketplace import (
     ConsumerFulfillmentsAPI, ConsumerInstallationsAPI, ConsumerListingsAPI,
     ConsumerPersonalizationRequestsAPI, ConsumerProvidersAPI,
@@ -55,7 +62,8 @@ from databricks.sdk.service.provisioning import (CredentialsAPI,
                                                  NetworksAPI, PrivateAccessAPI,
                                                  StorageAPI, VpcEndpointsAPI,
                                                  Workspace, WorkspacesAPI)
-from databricks.sdk.service.serving import AppsAPI, ServingEndpointsAPI
+from databricks.sdk.service.serving import (ServingEndpointsAPI,
+                                            ServingEndpointsDataPlaneAPI)
 from databricks.sdk.service.settings import (AccountIpAccessListsAPI,
                                              AccountSettingsAPI,
                                              AutomaticClusterUpdateAPI,
@@ -63,10 +71,14 @@ from databricks.sdk.service.settings import (AccountIpAccessListsAPI,
                                              CredentialsManagerAPI,
                                              CspEnablementAccountAPI,
                                              DefaultNamespaceAPI,
+                                             DisableLegacyAccessAPI,
+                                             DisableLegacyDbfsAPI,
+                                             DisableLegacyFeaturesAPI,
                                              EnhancedSecurityMonitoringAPI,
                                              EsmEnablementAccountAPI,
                                              IpAccessListsAPI,
                                              NetworkConnectivityAPI,
+                                             NotificationDestinationsAPI,
                                              PersonalComputeAPI,
                                              RestrictWorkspaceAdminsAPI,
                                              SettingsAPI, TokenManagementAPI,
@@ -74,11 +86,13 @@ from databricks.sdk.service.settings import (AccountIpAccessListsAPI,
 from databricks.sdk.service.sharing import (CleanRoomsAPI, ProvidersAPI,
                                             RecipientActivationAPI,
                                             RecipientsAPI, SharesAPI)
-from databricks.sdk.service.sql import (AlertsAPI, DashboardsAPI,
-                                        DashboardWidgetsAPI, DataSourcesAPI,
-                                        DbsqlPermissionsAPI, QueriesAPI,
+from databricks.sdk.service.sql import (AlertsAPI, AlertsLegacyAPI,
+                                        DashboardsAPI, DashboardWidgetsAPI,
+                                        DataSourcesAPI, DbsqlPermissionsAPI,
+                                        QueriesAPI, QueriesLegacyAPI,
                                         QueryHistoryAPI,
                                         QueryVisualizationsAPI,
+                                        QueryVisualizationsLegacyAPI,
                                         StatementExecutionAPI, WarehousesAPI)
 from databricks.sdk.service.vectorsearch import (VectorSearchEndpointsAPI,
                                                  VectorSearchIndexesAPI)
@@ -109,31 +123,31 @@ class WorkspaceClient:
 
     def __init__(self,
                  *,
-                 host: str = None,
-                 account_id: str = None,
-                 username: str = None,
-                 password: str = None,
-                 client_id: str = None,
-                 client_secret: str = None,
-                 token: str = None,
-                 profile: str = None,
-                 config_file: str = None,
-                 azure_workspace_resource_id: str = None,
-                 azure_client_secret: str = None,
-                 azure_client_id: str = None,
-                 azure_tenant_id: str = None,
-                 azure_environment: str = None,
-                 auth_type: str = None,
-                 cluster_id: str = None,
-                 google_credentials: str = None,
-                 google_service_account: str = None,
-                 debug_truncate_bytes: int = None,
-                 debug_headers: bool = None,
+                 host: Optional[str] = None,
+                 account_id: Optional[str] = None,
+                 username: Optional[str] = None,
+                 password: Optional[str] = None,
+                 client_id: Optional[str] = None,
+                 client_secret: Optional[str] = None,
+                 token: Optional[str] = None,
+                 profile: Optional[str] = None,
+                 config_file: Optional[str] = None,
+                 azure_workspace_resource_id: Optional[str] = None,
+                 azure_client_secret: Optional[str] = None,
+                 azure_client_id: Optional[str] = None,
+                 azure_tenant_id: Optional[str] = None,
+                 azure_environment: Optional[str] = None,
+                 auth_type: Optional[str] = None,
+                 cluster_id: Optional[str] = None,
+                 google_credentials: Optional[str] = None,
+                 google_service_account: Optional[str] = None,
+                 debug_truncate_bytes: Optional[int] = None,
+                 debug_headers: Optional[bool] = None,
                  product="unknown",
                  product_version="0.0.0",
-                 credentials_strategy: CredentialsStrategy = None,
-                 credentials_provider: CredentialsStrategy = None,
-                 config: client.Config = None):
+                 credentials_strategy: Optional[CredentialsStrategy] = None,
+                 credentials_provider: Optional[CredentialsStrategy] = None,
+                 config: Optional[client.Config] = None):
         if not config:
             config = client.Config(host=host,
                                    account_id=account_id,
@@ -162,8 +176,10 @@ class WorkspaceClient:
         self._config = config.copy()
         self._dbutils = _make_dbutils(self._config)
         self._api_client = client.ApiClient(self._config)
+        serving_endpoints = ServingEndpointsExt(self._api_client)
         self._account_access_control_proxy = AccountAccessControlProxyAPI(self._api_client)
         self._alerts = AlertsAPI(self._api_client)
+        self._alerts_legacy = AlertsLegacyAPI(self._api_client)
         self._apps = AppsAPI(self._api_client)
         self._artifact_allowlists = ArtifactAllowlistsAPI(self._api_client)
         self._catalogs = CatalogsAPI(self._api_client)
@@ -188,6 +204,7 @@ class WorkspaceClient:
         self._external_locations = ExternalLocationsAPI(self._api_client)
         self._files = FilesAPI(self._api_client)
         self._functions = FunctionsAPI(self._api_client)
+        self._genie = GenieAPI(self._api_client)
         self._git_credentials = GitCredentialsAPI(self._api_client)
         self._global_init_scripts = GlobalInitScriptsAPI(self._api_client)
         self._grants = GrantsAPI(self._api_client)
@@ -201,10 +218,13 @@ class WorkspaceClient:
         self._metastores = MetastoresAPI(self._api_client)
         self._model_registry = ModelRegistryAPI(self._api_client)
         self._model_versions = ModelVersionsAPI(self._api_client)
+        self._notification_destinations = NotificationDestinationsAPI(self._api_client)
         self._online_tables = OnlineTablesAPI(self._api_client)
         self._permission_migration = PermissionMigrationAPI(self._api_client)
         self._permissions = PermissionsAPI(self._api_client)
         self._pipelines = PipelinesAPI(self._api_client)
+        self._policy_compliance_for_clusters = PolicyComplianceForClustersAPI(self._api_client)
+        self._policy_compliance_for_jobs = PolicyComplianceForJobsAPI(self._api_client)
         self._policy_families = PolicyFamiliesAPI(self._api_client)
         self._provider_exchange_filters = ProviderExchangeFiltersAPI(self._api_client)
         self._provider_exchanges = ProviderExchangesAPI(self._api_client)
@@ -217,16 +237,20 @@ class WorkspaceClient:
         self._providers = ProvidersAPI(self._api_client)
         self._quality_monitors = QualityMonitorsAPI(self._api_client)
         self._queries = QueriesAPI(self._api_client)
+        self._queries_legacy = QueriesLegacyAPI(self._api_client)
         self._query_history = QueryHistoryAPI(self._api_client)
         self._query_visualizations = QueryVisualizationsAPI(self._api_client)
+        self._query_visualizations_legacy = QueryVisualizationsLegacyAPI(self._api_client)
         self._recipient_activation = RecipientActivationAPI(self._api_client)
         self._recipients = RecipientsAPI(self._api_client)
         self._registered_models = RegisteredModelsAPI(self._api_client)
         self._repos = ReposAPI(self._api_client)
+        self._resource_quotas = ResourceQuotasAPI(self._api_client)
         self._schemas = SchemasAPI(self._api_client)
         self._secrets = SecretsAPI(self._api_client)
         self._service_principals = ServicePrincipalsAPI(self._api_client)
-        self._serving_endpoints = ServingEndpointsAPI(self._api_client)
+        self._serving_endpoints = serving_endpoints
+        self._serving_endpoints_data_plane = ServingEndpointsDataPlaneAPI(self._api_client, serving_endpoints)
         self._settings = SettingsAPI(self._api_client)
         self._shares = SharesAPI(self._api_client)
         self._statement_execution = StatementExecutionAPI(self._api_client)
@@ -234,6 +258,7 @@ class WorkspaceClient:
         self._system_schemas = SystemSchemasAPI(self._api_client)
         self._table_constraints = TableConstraintsAPI(self._api_client)
         self._tables = TablesAPI(self._api_client)
+        self._temporary_table_credentials = TemporaryTableCredentialsAPI(self._api_client)
         self._token_management = TokenManagementAPI(self._api_client)
         self._tokens = TokensAPI(self._api_client)
         self._users = UsersAPI(self._api_client)
@@ -266,6 +291,11 @@ class WorkspaceClient:
     def alerts(self) -> AlertsAPI:
         """The alerts API can be used to perform CRUD operations on alerts."""
         return self._alerts
+
+    @property
+    def alerts_legacy(self) -> AlertsLegacyAPI:
+        """The alerts API can be used to perform CRUD operations on alerts."""
+        return self._alerts_legacy
 
     @property
     def apps(self) -> AppsAPI:
@@ -388,6 +418,11 @@ class WorkspaceClient:
         return self._functions
 
     @property
+    def genie(self) -> GenieAPI:
+        """Genie provides a no-code experience for business users, powered by AI/BI."""
+        return self._genie
+
+    @property
     def git_credentials(self) -> GitCredentialsAPI:
         """Registers personal access token for Databricks to do operations on behalf of the user."""
         return self._git_credentials
@@ -453,13 +488,18 @@ class WorkspaceClient:
         return self._model_versions
 
     @property
+    def notification_destinations(self) -> NotificationDestinationsAPI:
+        """The notification destinations API lets you programmatically manage a workspace's notification destinations."""
+        return self._notification_destinations
+
+    @property
     def online_tables(self) -> OnlineTablesAPI:
         """Online tables provide lower latency and higher QPS access to data from Delta tables."""
         return self._online_tables
 
     @property
     def permission_migration(self) -> PermissionMigrationAPI:
-        """This spec contains undocumented permission migration APIs used in https://github.com/databrickslabs/ucx."""
+        """APIs for migrating acl permissions, used only by the ucx tool: https://github.com/databrickslabs/ucx."""
         return self._permission_migration
 
     @property
@@ -471,6 +511,16 @@ class WorkspaceClient:
     def pipelines(self) -> PipelinesAPI:
         """The Delta Live Tables API allows you to create, edit, delete, start, and view details about pipelines."""
         return self._pipelines
+
+    @property
+    def policy_compliance_for_clusters(self) -> PolicyComplianceForClustersAPI:
+        """The policy compliance APIs allow you to view and manage the policy compliance status of clusters in your workspace."""
+        return self._policy_compliance_for_clusters
+
+    @property
+    def policy_compliance_for_jobs(self) -> PolicyComplianceForJobsAPI:
+        """The compliance APIs allow you to view and manage the policy compliance status of jobs in your workspace."""
+        return self._policy_compliance_for_jobs
 
     @property
     def policy_families(self) -> PolicyFamiliesAPI:
@@ -524,18 +574,28 @@ class WorkspaceClient:
 
     @property
     def queries(self) -> QueriesAPI:
-        """These endpoints are used for CRUD operations on query definitions."""
+        """The queries API can be used to perform CRUD operations on queries."""
         return self._queries
 
     @property
+    def queries_legacy(self) -> QueriesLegacyAPI:
+        """These endpoints are used for CRUD operations on query definitions."""
+        return self._queries_legacy
+
+    @property
     def query_history(self) -> QueryHistoryAPI:
-        """Access the history of queries through SQL warehouses."""
+        """A service responsible for storing and retrieving the list of queries run against SQL endpoints and serverless compute."""
         return self._query_history
 
     @property
     def query_visualizations(self) -> QueryVisualizationsAPI:
-        """This is an evolving API that facilitates the addition and removal of vizualisations from existing queries within the Databricks Workspace."""
+        """This is an evolving API that facilitates the addition and removal of visualizations from existing queries in the Databricks Workspace."""
         return self._query_visualizations
+
+    @property
+    def query_visualizations_legacy(self) -> QueryVisualizationsLegacyAPI:
+        """This is an evolving API that facilitates the addition and removal of vizualisations from existing queries within the Databricks Workspace."""
+        return self._query_visualizations_legacy
 
     @property
     def recipient_activation(self) -> RecipientActivationAPI:
@@ -558,6 +618,11 @@ class WorkspaceClient:
         return self._repos
 
     @property
+    def resource_quotas(self) -> ResourceQuotasAPI:
+        """Unity Catalog enforces resource quotas on all securable objects, which limits the number of resources that can be created."""
+        return self._resource_quotas
+
+    @property
     def schemas(self) -> SchemasAPI:
         """A schema (also called a database) is the second layer of Unity Catalog’s three-level namespace."""
         return self._schemas
@@ -573,9 +638,14 @@ class WorkspaceClient:
         return self._service_principals
 
     @property
-    def serving_endpoints(self) -> ServingEndpointsAPI:
+    def serving_endpoints(self) -> ServingEndpointsExt:
         """The Serving Endpoints API allows you to create, update, and delete model serving endpoints."""
         return self._serving_endpoints
+
+    @property
+    def serving_endpoints_data_plane(self) -> ServingEndpointsDataPlaneAPI:
+        """Serving endpoints DataPlane provides a set of operations to interact with data plane endpoints for Serving endpoints service."""
+        return self._serving_endpoints_data_plane
 
     @property
     def settings(self) -> SettingsAPI:
@@ -611,6 +681,11 @@ class WorkspaceClient:
     def tables(self) -> TablesAPI:
         """A table resides in the third layer of Unity Catalog’s three-level namespace."""
         return self._tables
+
+    @property
+    def temporary_table_credentials(self) -> TemporaryTableCredentialsAPI:
+        """Temporary Table Credentials refer to short-lived, downscoped credentials used to access cloud storage locationswhere table data is stored in Databricks."""
+        return self._temporary_table_credentials
 
     @property
     def token_management(self) -> TokenManagementAPI:
@@ -680,31 +755,31 @@ class AccountClient:
 
     def __init__(self,
                  *,
-                 host: str = None,
-                 account_id: str = None,
-                 username: str = None,
-                 password: str = None,
-                 client_id: str = None,
-                 client_secret: str = None,
-                 token: str = None,
-                 profile: str = None,
-                 config_file: str = None,
-                 azure_workspace_resource_id: str = None,
-                 azure_client_secret: str = None,
-                 azure_client_id: str = None,
-                 azure_tenant_id: str = None,
-                 azure_environment: str = None,
-                 auth_type: str = None,
-                 cluster_id: str = None,
-                 google_credentials: str = None,
-                 google_service_account: str = None,
-                 debug_truncate_bytes: int = None,
-                 debug_headers: bool = None,
+                 host: Optional[str] = None,
+                 account_id: Optional[str] = None,
+                 username: Optional[str] = None,
+                 password: Optional[str] = None,
+                 client_id: Optional[str] = None,
+                 client_secret: Optional[str] = None,
+                 token: Optional[str] = None,
+                 profile: Optional[str] = None,
+                 config_file: Optional[str] = None,
+                 azure_workspace_resource_id: Optional[str] = None,
+                 azure_client_secret: Optional[str] = None,
+                 azure_client_id: Optional[str] = None,
+                 azure_tenant_id: Optional[str] = None,
+                 azure_environment: Optional[str] = None,
+                 auth_type: Optional[str] = None,
+                 cluster_id: Optional[str] = None,
+                 google_credentials: Optional[str] = None,
+                 google_service_account: Optional[str] = None,
+                 debug_truncate_bytes: Optional[int] = None,
+                 debug_headers: Optional[bool] = None,
                  product="unknown",
                  product_version="0.0.0",
-                 credentials_strategy: CredentialsStrategy = None,
-                 credentials_provider: CredentialsStrategy = None,
-                 config: client.Config = None):
+                 credentials_strategy: Optional[CredentialsStrategy] = None,
+                 credentials_provider: Optional[CredentialsStrategy] = None,
+                 config: Optional[client.Config] = None):
         if not config:
             config = client.Config(host=host,
                                    account_id=account_id,
@@ -734,7 +809,6 @@ class AccountClient:
         self._api_client = client.ApiClient(self._config)
         self._access_control = AccountAccessControlAPI(self._api_client)
         self._billable_usage = BillableUsageAPI(self._api_client)
-        self._budgets = BudgetsAPI(self._api_client)
         self._credentials = CredentialsAPI(self._api_client)
         self._custom_app_integration = CustomAppIntegrationAPI(self._api_client)
         self._encryption_keys = EncryptionKeysAPI(self._api_client)
@@ -753,10 +827,12 @@ class AccountClient:
         self._settings = AccountSettingsAPI(self._api_client)
         self._storage = StorageAPI(self._api_client)
         self._storage_credentials = AccountStorageCredentialsAPI(self._api_client)
+        self._usage_dashboards = UsageDashboardsAPI(self._api_client)
         self._users = AccountUsersAPI(self._api_client)
         self._vpc_endpoints = VpcEndpointsAPI(self._api_client)
         self._workspace_assignment = WorkspaceAssignmentAPI(self._api_client)
         self._workspaces = WorkspacesAPI(self._api_client)
+        self._budgets = BudgetsAPI(self._api_client)
 
     @property
     def config(self) -> client.Config:
@@ -777,18 +853,13 @@ class AccountClient:
         return self._billable_usage
 
     @property
-    def budgets(self) -> BudgetsAPI:
-        """These APIs manage budget configuration including notifications for exceeding a budget for a period."""
-        return self._budgets
-
-    @property
     def credentials(self) -> CredentialsAPI:
         """These APIs manage credential configurations for this workspace."""
         return self._credentials
 
     @property
     def custom_app_integration(self) -> CustomAppIntegrationAPI:
-        """These APIs enable administrators to manage custom oauth app integrations, which is required for adding/using Custom OAuth App Integration like Tableau Cloud for Databricks in AWS cloud."""
+        """These APIs enable administrators to manage custom OAuth app integrations, which is required for adding/using Custom OAuth App Integration like Tableau Cloud for Databricks in AWS cloud."""
         return self._custom_app_integration
 
     @property
@@ -843,7 +914,7 @@ class AccountClient:
 
     @property
     def published_app_integration(self) -> PublishedAppIntegrationAPI:
-        """These APIs enable administrators to manage published oauth app integrations, which is required for adding/using Published OAuth App Integration like Tableau Desktop for Databricks in AWS cloud."""
+        """These APIs enable administrators to manage published OAuth app integrations, which is required for adding/using Published OAuth App Integration like Tableau Desktop for Databricks in AWS cloud."""
         return self._published_app_integration
 
     @property
@@ -872,6 +943,11 @@ class AccountClient:
         return self._storage_credentials
 
     @property
+    def usage_dashboards(self) -> UsageDashboardsAPI:
+        """These APIs manage usage dashboards for this account."""
+        return self._usage_dashboards
+
+    @property
     def users(self) -> AccountUsersAPI:
         """User identities recognized by Databricks and represented by email addresses."""
         return self._users
@@ -890,6 +966,11 @@ class AccountClient:
     def workspaces(self) -> WorkspacesAPI:
         """These APIs manage workspaces for this account."""
         return self._workspaces
+
+    @property
+    def budgets(self) -> BudgetsAPI:
+        """These APIs manage budget configurations for this account."""
+        return self._budgets
 
     def get_workspace_client(self, workspace: Workspace) -> WorkspaceClient:
         """Constructs a ``WorkspaceClient`` for the given workspace.

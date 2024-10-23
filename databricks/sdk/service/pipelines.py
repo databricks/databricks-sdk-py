@@ -25,6 +25,9 @@ class CreatePipeline:
     allow_duplicate_names: Optional[bool] = None
     """If false, deployment will fail if name conflicts with that of another pipeline."""
 
+    budget_policy_id: Optional[str] = None
+    """Budget policy of this pipeline."""
+
     catalog: Optional[str] = None
     """A catalog in Unity Catalog to publish data from this pipeline to. If `target` is specified,
     tables in this pipeline are published to a `target` schema inside `catalog` (for example,
@@ -63,7 +66,7 @@ class CreatePipeline:
     id: Optional[str] = None
     """Unique identifier for this pipeline."""
 
-    ingestion_definition: Optional[ManagedIngestionPipelineDefinition] = None
+    ingestion_definition: Optional[IngestionPipelineDefinition] = None
     """The configuration for a managed ingestion pipeline. These settings cannot be used with the
     'libraries', 'target' or 'catalog' settings."""
 
@@ -78,6 +81,10 @@ class CreatePipeline:
 
     photon: Optional[bool] = None
     """Whether Photon is enabled for this pipeline."""
+
+    schema: Optional[str] = None
+    """The default schema (database) where tables are read from or published to. The presence of this
+    field implies that the pipeline is in direct publishing mode."""
 
     serverless: Optional[bool] = None
     """Whether serverless compute is enabled for this pipeline."""
@@ -97,6 +104,7 @@ class CreatePipeline:
         """Serializes the CreatePipeline into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.allow_duplicate_names is not None: body['allow_duplicate_names'] = self.allow_duplicate_names
+        if self.budget_policy_id is not None: body['budget_policy_id'] = self.budget_policy_id
         if self.catalog is not None: body['catalog'] = self.catalog
         if self.channel is not None: body['channel'] = self.channel
         if self.clusters: body['clusters'] = [v.as_dict() for v in self.clusters]
@@ -114,6 +122,7 @@ class CreatePipeline:
         if self.name is not None: body['name'] = self.name
         if self.notifications: body['notifications'] = [v.as_dict() for v in self.notifications]
         if self.photon is not None: body['photon'] = self.photon
+        if self.schema is not None: body['schema'] = self.schema
         if self.serverless is not None: body['serverless'] = self.serverless
         if self.storage is not None: body['storage'] = self.storage
         if self.target is not None: body['target'] = self.target
@@ -124,6 +133,7 @@ class CreatePipeline:
     def from_dict(cls, d: Dict[str, any]) -> CreatePipeline:
         """Deserializes the CreatePipeline from a dictionary."""
         return cls(allow_duplicate_names=d.get('allow_duplicate_names', None),
+                   budget_policy_id=d.get('budget_policy_id', None),
                    catalog=d.get('catalog', None),
                    channel=d.get('channel', None),
                    clusters=_repeated_dict(d, 'clusters', PipelineCluster),
@@ -136,12 +146,12 @@ class CreatePipeline:
                    filters=_from_dict(d, 'filters', Filters),
                    gateway_definition=_from_dict(d, 'gateway_definition', IngestionGatewayPipelineDefinition),
                    id=d.get('id', None),
-                   ingestion_definition=_from_dict(d, 'ingestion_definition',
-                                                   ManagedIngestionPipelineDefinition),
+                   ingestion_definition=_from_dict(d, 'ingestion_definition', IngestionPipelineDefinition),
                    libraries=_repeated_dict(d, 'libraries', PipelineLibrary),
                    name=d.get('name', None),
                    notifications=_repeated_dict(d, 'notifications', Notifications),
                    photon=d.get('photon', None),
+                   schema=d.get('schema', None),
                    serverless=d.get('serverless', None),
                    storage=d.get('storage', None),
                    target=d.get('target', None),
@@ -237,6 +247,9 @@ class EditPipeline:
     allow_duplicate_names: Optional[bool] = None
     """If false, deployment will fail if name has changed and conflicts the name of another pipeline."""
 
+    budget_policy_id: Optional[str] = None
+    """Budget policy of this pipeline."""
+
     catalog: Optional[str] = None
     """A catalog in Unity Catalog to publish data from this pipeline to. If `target` is specified,
     tables in this pipeline are published to a `target` schema inside `catalog` (for example,
@@ -277,7 +290,7 @@ class EditPipeline:
     id: Optional[str] = None
     """Unique identifier for this pipeline."""
 
-    ingestion_definition: Optional[ManagedIngestionPipelineDefinition] = None
+    ingestion_definition: Optional[IngestionPipelineDefinition] = None
     """The configuration for a managed ingestion pipeline. These settings cannot be used with the
     'libraries', 'target' or 'catalog' settings."""
 
@@ -295,6 +308,10 @@ class EditPipeline:
 
     pipeline_id: Optional[str] = None
     """Unique identifier for this pipeline."""
+
+    schema: Optional[str] = None
+    """The default schema (database) where tables are read from or published to. The presence of this
+    field implies that the pipeline is in direct publishing mode."""
 
     serverless: Optional[bool] = None
     """Whether serverless compute is enabled for this pipeline."""
@@ -314,6 +331,7 @@ class EditPipeline:
         """Serializes the EditPipeline into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.allow_duplicate_names is not None: body['allow_duplicate_names'] = self.allow_duplicate_names
+        if self.budget_policy_id is not None: body['budget_policy_id'] = self.budget_policy_id
         if self.catalog is not None: body['catalog'] = self.catalog
         if self.channel is not None: body['channel'] = self.channel
         if self.clusters: body['clusters'] = [v.as_dict() for v in self.clusters]
@@ -333,6 +351,7 @@ class EditPipeline:
         if self.notifications: body['notifications'] = [v.as_dict() for v in self.notifications]
         if self.photon is not None: body['photon'] = self.photon
         if self.pipeline_id is not None: body['pipeline_id'] = self.pipeline_id
+        if self.schema is not None: body['schema'] = self.schema
         if self.serverless is not None: body['serverless'] = self.serverless
         if self.storage is not None: body['storage'] = self.storage
         if self.target is not None: body['target'] = self.target
@@ -343,6 +362,7 @@ class EditPipeline:
     def from_dict(cls, d: Dict[str, any]) -> EditPipeline:
         """Deserializes the EditPipeline from a dictionary."""
         return cls(allow_duplicate_names=d.get('allow_duplicate_names', None),
+                   budget_policy_id=d.get('budget_policy_id', None),
                    catalog=d.get('catalog', None),
                    channel=d.get('channel', None),
                    clusters=_repeated_dict(d, 'clusters', PipelineCluster),
@@ -355,13 +375,13 @@ class EditPipeline:
                    filters=_from_dict(d, 'filters', Filters),
                    gateway_definition=_from_dict(d, 'gateway_definition', IngestionGatewayPipelineDefinition),
                    id=d.get('id', None),
-                   ingestion_definition=_from_dict(d, 'ingestion_definition',
-                                                   ManagedIngestionPipelineDefinition),
+                   ingestion_definition=_from_dict(d, 'ingestion_definition', IngestionPipelineDefinition),
                    libraries=_repeated_dict(d, 'libraries', PipelineLibrary),
                    name=d.get('name', None),
                    notifications=_repeated_dict(d, 'notifications', Notifications),
                    photon=d.get('photon', None),
                    pipeline_id=d.get('pipeline_id', None),
+                   schema=d.get('schema', None),
                    serverless=d.get('serverless', None),
                    storage=d.get('storage', None),
                    target=d.get('target', None),
@@ -479,6 +499,9 @@ class GetPipelineResponse:
     creator_user_name: Optional[str] = None
     """The username of the pipeline creator."""
 
+    effective_budget_policy_id: Optional[str] = None
+    """Serverless budget policy ID of this pipeline."""
+
     health: Optional[GetPipelineResponseHealth] = None
     """The health of a pipeline."""
 
@@ -509,6 +532,8 @@ class GetPipelineResponse:
         if self.cause is not None: body['cause'] = self.cause
         if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
         if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
+        if self.effective_budget_policy_id is not None:
+            body['effective_budget_policy_id'] = self.effective_budget_policy_id
         if self.health is not None: body['health'] = self.health.value
         if self.last_modified is not None: body['last_modified'] = self.last_modified
         if self.latest_updates: body['latest_updates'] = [v.as_dict() for v in self.latest_updates]
@@ -525,6 +550,7 @@ class GetPipelineResponse:
         return cls(cause=d.get('cause', None),
                    cluster_id=d.get('cluster_id', None),
                    creator_user_name=d.get('creator_user_name', None),
+                   effective_budget_policy_id=d.get('effective_budget_policy_id', None),
                    health=_enum(d, 'health', GetPipelineResponseHealth),
                    last_modified=d.get('last_modified', None),
                    latest_updates=_repeated_dict(d, 'latest_updates', UpdateStateInfo),
@@ -561,6 +587,9 @@ class GetUpdateResponse:
 
 @dataclass
 class IngestionConfig:
+    report: Optional[ReportSpec] = None
+    """Select tables from a specific source report."""
+
     schema: Optional[SchemaSpec] = None
     """Select tables from a specific source schema."""
 
@@ -570,6 +599,7 @@ class IngestionConfig:
     def as_dict(self) -> dict:
         """Serializes the IngestionConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.report: body['report'] = self.report.as_dict()
         if self.schema: body['schema'] = self.schema.as_dict()
         if self.table: body['table'] = self.table.as_dict()
         return body
@@ -577,7 +607,9 @@ class IngestionConfig:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> IngestionConfig:
         """Deserializes the IngestionConfig from a dictionary."""
-        return cls(schema=_from_dict(d, 'schema', SchemaSpec), table=_from_dict(d, 'table', TableSpec))
+        return cls(report=_from_dict(d, 'report', ReportSpec),
+                   schema=_from_dict(d, 'schema', SchemaSpec),
+                   table=_from_dict(d, 'table', TableSpec))
 
 
 @dataclass
@@ -590,7 +622,7 @@ class IngestionGatewayPipelineDefinition:
     """Required, Immutable. The name of the catalog for the gateway pipeline's storage location."""
 
     gateway_storage_name: Optional[str] = None
-    """Required. The Unity Catalog-compatible naming for the gateway storage location. This is the
+    """Optional. The Unity Catalog-compatible name for the gateway storage location. This is the
     destination to use for the data that is extracted by the gateway. Delta Live Tables system will
     automatically create the storage location under the catalog and schema."""
 
@@ -615,6 +647,41 @@ class IngestionGatewayPipelineDefinition:
                    gateway_storage_catalog=d.get('gateway_storage_catalog', None),
                    gateway_storage_name=d.get('gateway_storage_name', None),
                    gateway_storage_schema=d.get('gateway_storage_schema', None))
+
+
+@dataclass
+class IngestionPipelineDefinition:
+    connection_name: Optional[str] = None
+    """Immutable. The Unity Catalog connection this ingestion pipeline uses to communicate with the
+    source. Specify either ingestion_gateway_id or connection_name."""
+
+    ingestion_gateway_id: Optional[str] = None
+    """Immutable. Identifier for the ingestion gateway used by this ingestion pipeline to communicate
+    with the source. Specify either ingestion_gateway_id or connection_name."""
+
+    objects: Optional[List[IngestionConfig]] = None
+    """Required. Settings specifying tables to replicate and the destination for the replicated tables."""
+
+    table_configuration: Optional[TableSpecificConfig] = None
+    """Configuration settings to control the ingestion of tables. These settings are applied to all
+    tables in the pipeline."""
+
+    def as_dict(self) -> dict:
+        """Serializes the IngestionPipelineDefinition into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.connection_name is not None: body['connection_name'] = self.connection_name
+        if self.ingestion_gateway_id is not None: body['ingestion_gateway_id'] = self.ingestion_gateway_id
+        if self.objects: body['objects'] = [v.as_dict() for v in self.objects]
+        if self.table_configuration: body['table_configuration'] = self.table_configuration.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> IngestionPipelineDefinition:
+        """Deserializes the IngestionPipelineDefinition from a dictionary."""
+        return cls(connection_name=d.get('connection_name', None),
+                   ingestion_gateway_id=d.get('ingestion_gateway_id', None),
+                   objects=_repeated_dict(d, 'objects', IngestionConfig),
+                   table_configuration=_from_dict(d, 'table_configuration', TableSpecificConfig))
 
 
 @dataclass
@@ -691,41 +758,6 @@ class ListUpdatesResponse:
         return cls(next_page_token=d.get('next_page_token', None),
                    prev_page_token=d.get('prev_page_token', None),
                    updates=_repeated_dict(d, 'updates', UpdateInfo))
-
-
-@dataclass
-class ManagedIngestionPipelineDefinition:
-    connection_name: Optional[str] = None
-    """Immutable. The Unity Catalog connection this ingestion pipeline uses to communicate with the
-    source. Specify either ingestion_gateway_id or connection_name."""
-
-    ingestion_gateway_id: Optional[str] = None
-    """Immutable. Identifier for the ingestion gateway used by this ingestion pipeline to communicate
-    with the source. Specify either ingestion_gateway_id or connection_name."""
-
-    objects: Optional[List[IngestionConfig]] = None
-    """Required. Settings specifying tables to replicate and the destination for the replicated tables."""
-
-    table_configuration: Optional[TableSpecificConfig] = None
-    """Configuration settings to control the ingestion of tables. These settings are applied to all
-    tables in the pipeline."""
-
-    def as_dict(self) -> dict:
-        """Serializes the ManagedIngestionPipelineDefinition into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.connection_name is not None: body['connection_name'] = self.connection_name
-        if self.ingestion_gateway_id is not None: body['ingestion_gateway_id'] = self.ingestion_gateway_id
-        if self.objects: body['objects'] = [v.as_dict() for v in self.objects]
-        if self.table_configuration: body['table_configuration'] = self.table_configuration.as_dict()
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ManagedIngestionPipelineDefinition:
-        """Deserializes the ManagedIngestionPipelineDefinition from a dictionary."""
-        return cls(connection_name=d.get('connection_name', None),
-                   ingestion_gateway_id=d.get('ingestion_gateway_id', None),
-                   objects=_repeated_dict(d, 'objects', IngestionConfig),
-                   table_configuration=_from_dict(d, 'table_configuration', TableSpecificConfig))
 
 
 @dataclass
@@ -1003,6 +1035,9 @@ class PipelineCluster:
     """The node type of the Spark driver. Note that this field is optional; if unset, the driver node
     type will be set as the same value as `node_type_id` defined above."""
 
+    enable_local_disk_encryption: Optional[bool] = None
+    """Whether to enable local disk encryption for the cluster."""
+
     gcp_attributes: Optional[compute.GcpAttributes] = None
     """Attributes related to clusters running on Google Cloud Platform. If not specified at cluster
     creation, a set of default values will be used."""
@@ -1074,6 +1109,8 @@ class PipelineCluster:
         if self.driver_instance_pool_id is not None:
             body['driver_instance_pool_id'] = self.driver_instance_pool_id
         if self.driver_node_type_id is not None: body['driver_node_type_id'] = self.driver_node_type_id
+        if self.enable_local_disk_encryption is not None:
+            body['enable_local_disk_encryption'] = self.enable_local_disk_encryption
         if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes.as_dict()
         if self.init_scripts: body['init_scripts'] = [v.as_dict() for v in self.init_scripts]
         if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
@@ -1097,6 +1134,7 @@ class PipelineCluster:
                    custom_tags=d.get('custom_tags', None),
                    driver_instance_pool_id=d.get('driver_instance_pool_id', None),
                    driver_node_type_id=d.get('driver_node_type_id', None),
+                   enable_local_disk_encryption=d.get('enable_local_disk_encryption', None),
                    gcp_attributes=_from_dict(d, 'gcp_attributes', compute.GcpAttributes),
                    init_scripts=_repeated_dict(d, 'init_scripts', compute.InitScriptInfo),
                    instance_pool_id=d.get('instance_pool_id', None),
@@ -1244,6 +1282,9 @@ class PipelineLibrary:
     notebook: Optional[NotebookLibrary] = None
     """The path to a notebook that defines a pipeline and is stored in the Databricks workspace."""
 
+    whl: Optional[str] = None
+    """URI of the whl to be installed."""
+
     def as_dict(self) -> dict:
         """Serializes the PipelineLibrary into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1251,6 +1292,7 @@ class PipelineLibrary:
         if self.jar is not None: body['jar'] = self.jar
         if self.maven: body['maven'] = self.maven.as_dict()
         if self.notebook: body['notebook'] = self.notebook.as_dict()
+        if self.whl is not None: body['whl'] = self.whl
         return body
 
     @classmethod
@@ -1259,7 +1301,8 @@ class PipelineLibrary:
         return cls(file=_from_dict(d, 'file', FileLibrary),
                    jar=d.get('jar', None),
                    maven=_from_dict(d, 'maven', compute.MavenLibrary),
-                   notebook=_from_dict(d, 'notebook', NotebookLibrary))
+                   notebook=_from_dict(d, 'notebook', NotebookLibrary),
+                   whl=d.get('whl', None))
 
 
 @dataclass
@@ -1367,6 +1410,9 @@ class PipelinePermissionsRequest:
 
 @dataclass
 class PipelineSpec:
+    budget_policy_id: Optional[str] = None
+    """Budget policy of this pipeline."""
+
     catalog: Optional[str] = None
     """A catalog in Unity Catalog to publish data from this pipeline to. If `target` is specified,
     tables in this pipeline are published to a `target` schema inside `catalog` (for example,
@@ -1403,7 +1449,7 @@ class PipelineSpec:
     id: Optional[str] = None
     """Unique identifier for this pipeline."""
 
-    ingestion_definition: Optional[ManagedIngestionPipelineDefinition] = None
+    ingestion_definition: Optional[IngestionPipelineDefinition] = None
     """The configuration for a managed ingestion pipeline. These settings cannot be used with the
     'libraries', 'target' or 'catalog' settings."""
 
@@ -1418,6 +1464,10 @@ class PipelineSpec:
 
     photon: Optional[bool] = None
     """Whether Photon is enabled for this pipeline."""
+
+    schema: Optional[str] = None
+    """The default schema (database) where tables are read from or published to. The presence of this
+    field implies that the pipeline is in direct publishing mode."""
 
     serverless: Optional[bool] = None
     """Whether serverless compute is enabled for this pipeline."""
@@ -1436,6 +1486,7 @@ class PipelineSpec:
     def as_dict(self) -> dict:
         """Serializes the PipelineSpec into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.budget_policy_id is not None: body['budget_policy_id'] = self.budget_policy_id
         if self.catalog is not None: body['catalog'] = self.catalog
         if self.channel is not None: body['channel'] = self.channel
         if self.clusters: body['clusters'] = [v.as_dict() for v in self.clusters]
@@ -1452,6 +1503,7 @@ class PipelineSpec:
         if self.name is not None: body['name'] = self.name
         if self.notifications: body['notifications'] = [v.as_dict() for v in self.notifications]
         if self.photon is not None: body['photon'] = self.photon
+        if self.schema is not None: body['schema'] = self.schema
         if self.serverless is not None: body['serverless'] = self.serverless
         if self.storage is not None: body['storage'] = self.storage
         if self.target is not None: body['target'] = self.target
@@ -1461,7 +1513,8 @@ class PipelineSpec:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> PipelineSpec:
         """Deserializes the PipelineSpec from a dictionary."""
-        return cls(catalog=d.get('catalog', None),
+        return cls(budget_policy_id=d.get('budget_policy_id', None),
+                   catalog=d.get('catalog', None),
                    channel=d.get('channel', None),
                    clusters=_repeated_dict(d, 'clusters', PipelineCluster),
                    configuration=d.get('configuration', None),
@@ -1472,12 +1525,12 @@ class PipelineSpec:
                    filters=_from_dict(d, 'filters', Filters),
                    gateway_definition=_from_dict(d, 'gateway_definition', IngestionGatewayPipelineDefinition),
                    id=d.get('id', None),
-                   ingestion_definition=_from_dict(d, 'ingestion_definition',
-                                                   ManagedIngestionPipelineDefinition),
+                   ingestion_definition=_from_dict(d, 'ingestion_definition', IngestionPipelineDefinition),
                    libraries=_repeated_dict(d, 'libraries', PipelineLibrary),
                    name=d.get('name', None),
                    notifications=_repeated_dict(d, 'notifications', Notifications),
                    photon=d.get('photon', None),
+                   schema=d.get('schema', None),
                    serverless=d.get('serverless', None),
                    storage=d.get('storage', None),
                    target=d.get('target', None),
@@ -1506,6 +1559,9 @@ class PipelineStateInfo:
     creator_user_name: Optional[str] = None
     """The username of the pipeline creator."""
 
+    health: Optional[PipelineStateInfoHealth] = None
+    """The health of a pipeline."""
+
     latest_updates: Optional[List[UpdateStateInfo]] = None
     """Status of the latest updates for the pipeline. Ordered with the newest update first."""
 
@@ -1527,6 +1583,7 @@ class PipelineStateInfo:
         body = {}
         if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
         if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
+        if self.health is not None: body['health'] = self.health.value
         if self.latest_updates: body['latest_updates'] = [v.as_dict() for v in self.latest_updates]
         if self.name is not None: body['name'] = self.name
         if self.pipeline_id is not None: body['pipeline_id'] = self.pipeline_id
@@ -1539,11 +1596,19 @@ class PipelineStateInfo:
         """Deserializes the PipelineStateInfo from a dictionary."""
         return cls(cluster_id=d.get('cluster_id', None),
                    creator_user_name=d.get('creator_user_name', None),
+                   health=_enum(d, 'health', PipelineStateInfoHealth),
                    latest_updates=_repeated_dict(d, 'latest_updates', UpdateStateInfo),
                    name=d.get('name', None),
                    pipeline_id=d.get('pipeline_id', None),
                    run_as_user_name=d.get('run_as_user_name', None),
                    state=_enum(d, 'state', PipelineState))
+
+
+class PipelineStateInfoHealth(Enum):
+    """The health of a pipeline."""
+
+    HEALTHY = 'HEALTHY'
+    UNHEALTHY = 'UNHEALTHY'
 
 
 @dataclass
@@ -1566,6 +1631,44 @@ class PipelineTrigger:
 
 
 @dataclass
+class ReportSpec:
+    destination_catalog: Optional[str] = None
+    """Required. Destination catalog to store table."""
+
+    destination_schema: Optional[str] = None
+    """Required. Destination schema to store table."""
+
+    destination_table: Optional[str] = None
+    """Required. Destination table name. The pipeline fails if a table with that name already exists."""
+
+    source_url: Optional[str] = None
+    """Required. Report URL in the source system."""
+
+    table_configuration: Optional[TableSpecificConfig] = None
+    """Configuration settings to control the ingestion of tables. These settings override the
+    table_configuration defined in the IngestionPipelineDefinition object."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ReportSpec into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.destination_catalog is not None: body['destination_catalog'] = self.destination_catalog
+        if self.destination_schema is not None: body['destination_schema'] = self.destination_schema
+        if self.destination_table is not None: body['destination_table'] = self.destination_table
+        if self.source_url is not None: body['source_url'] = self.source_url
+        if self.table_configuration: body['table_configuration'] = self.table_configuration.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ReportSpec:
+        """Deserializes the ReportSpec from a dictionary."""
+        return cls(destination_catalog=d.get('destination_catalog', None),
+                   destination_schema=d.get('destination_schema', None),
+                   destination_table=d.get('destination_table', None),
+                   source_url=d.get('source_url', None),
+                   table_configuration=_from_dict(d, 'table_configuration', TableSpecificConfig))
+
+
+@dataclass
 class SchemaSpec:
     destination_catalog: Optional[str] = None
     """Required. Destination catalog to store tables."""
@@ -1584,7 +1687,7 @@ class SchemaSpec:
     table_configuration: Optional[TableSpecificConfig] = None
     """Configuration settings to control the ingestion of tables. These settings are applied to all
     tables in this schema and override the table_configuration defined in the
-    ManagedIngestionPipelineDefinition object."""
+    IngestionPipelineDefinition object."""
 
     def as_dict(self) -> dict:
         """Serializes the SchemaSpec into a dictionary suitable for use as a JSON request body."""
@@ -1782,7 +1885,7 @@ class TableSpec:
     """Required. Destination schema to store table."""
 
     destination_table: Optional[str] = None
-    """Optional. Destination table name. The pipeline fails If a table with that name already exists.
+    """Optional. Destination table name. The pipeline fails if a table with that name already exists.
     If not set, the source table name is used."""
 
     source_catalog: Optional[str] = None
@@ -1796,7 +1899,7 @@ class TableSpec:
 
     table_configuration: Optional[TableSpecificConfig] = None
     """Configuration settings to control the ingestion of tables. These settings override the
-    table_configuration defined in the ManagedIngestionPipelineDefinition object and the SchemaSpec."""
+    table_configuration defined in the IngestionPipelineDefinition object and the SchemaSpec."""
 
     def as_dict(self) -> dict:
         """Serializes the TableSpec into a dictionary suitable for use as a JSON request body."""
@@ -1834,6 +1937,10 @@ class TableSpecificConfig:
     scd_type: Optional[TableSpecificConfigScdType] = None
     """The SCD type to use to ingest the table."""
 
+    sequence_by: Optional[List[str]] = None
+    """The column names specifying the logical order of events in the source data. Delta Live Tables
+    uses this sequencing to handle change events that arrive out of order."""
+
     def as_dict(self) -> dict:
         """Serializes the TableSpecificConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1841,6 +1948,7 @@ class TableSpecificConfig:
         if self.salesforce_include_formula_fields is not None:
             body['salesforce_include_formula_fields'] = self.salesforce_include_formula_fields
         if self.scd_type is not None: body['scd_type'] = self.scd_type.value
+        if self.sequence_by: body['sequence_by'] = [v for v in self.sequence_by]
         return body
 
     @classmethod
@@ -1848,7 +1956,8 @@ class TableSpecificConfig:
         """Deserializes the TableSpecificConfig from a dictionary."""
         return cls(primary_keys=d.get('primary_keys', None),
                    salesforce_include_formula_fields=d.get('salesforce_include_formula_fields', None),
-                   scd_type=_enum(d, 'scd_type', TableSpecificConfigScdType))
+                   scd_type=_enum(d, 'scd_type', TableSpecificConfigScdType),
+                   sequence_by=d.get('sequence_by', None))
 
 
 class TableSpecificConfigScdType(Enum):
@@ -2078,6 +2187,7 @@ class PipelinesAPI:
     def create(self,
                *,
                allow_duplicate_names: Optional[bool] = None,
+               budget_policy_id: Optional[str] = None,
                catalog: Optional[str] = None,
                channel: Optional[str] = None,
                clusters: Optional[List[PipelineCluster]] = None,
@@ -2090,11 +2200,12 @@ class PipelinesAPI:
                filters: Optional[Filters] = None,
                gateway_definition: Optional[IngestionGatewayPipelineDefinition] = None,
                id: Optional[str] = None,
-               ingestion_definition: Optional[ManagedIngestionPipelineDefinition] = None,
+               ingestion_definition: Optional[IngestionPipelineDefinition] = None,
                libraries: Optional[List[PipelineLibrary]] = None,
                name: Optional[str] = None,
                notifications: Optional[List[Notifications]] = None,
                photon: Optional[bool] = None,
+               schema: Optional[str] = None,
                serverless: Optional[bool] = None,
                storage: Optional[str] = None,
                target: Optional[str] = None,
@@ -2106,6 +2217,8 @@ class PipelinesAPI:
         
         :param allow_duplicate_names: bool (optional)
           If false, deployment will fail if name conflicts with that of another pipeline.
+        :param budget_policy_id: str (optional)
+          Budget policy of this pipeline.
         :param catalog: str (optional)
           A catalog in Unity Catalog to publish data from this pipeline to. If `target` is specified, tables
           in this pipeline are published to a `target` schema inside `catalog` (for example,
@@ -2131,7 +2244,7 @@ class PipelinesAPI:
           The definition of a gateway pipeline to support CDC.
         :param id: str (optional)
           Unique identifier for this pipeline.
-        :param ingestion_definition: :class:`ManagedIngestionPipelineDefinition` (optional)
+        :param ingestion_definition: :class:`IngestionPipelineDefinition` (optional)
           The configuration for a managed ingestion pipeline. These settings cannot be used with the
           'libraries', 'target' or 'catalog' settings.
         :param libraries: List[:class:`PipelineLibrary`] (optional)
@@ -2142,6 +2255,9 @@ class PipelinesAPI:
           List of notification settings for this pipeline.
         :param photon: bool (optional)
           Whether Photon is enabled for this pipeline.
+        :param schema: str (optional)
+          The default schema (database) where tables are read from or published to. The presence of this field
+          implies that the pipeline is in direct publishing mode.
         :param serverless: bool (optional)
           Whether serverless compute is enabled for this pipeline.
         :param storage: str (optional)
@@ -2156,6 +2272,7 @@ class PipelinesAPI:
         """
         body = {}
         if allow_duplicate_names is not None: body['allow_duplicate_names'] = allow_duplicate_names
+        if budget_policy_id is not None: body['budget_policy_id'] = budget_policy_id
         if catalog is not None: body['catalog'] = catalog
         if channel is not None: body['channel'] = channel
         if clusters is not None: body['clusters'] = [v.as_dict() for v in clusters]
@@ -2173,6 +2290,7 @@ class PipelinesAPI:
         if name is not None: body['name'] = name
         if notifications is not None: body['notifications'] = [v.as_dict() for v in notifications]
         if photon is not None: body['photon'] = photon
+        if schema is not None: body['schema'] = schema
         if serverless is not None: body['serverless'] = serverless
         if storage is not None: body['storage'] = storage
         if target is not None: body['target'] = target
@@ -2486,6 +2604,7 @@ class PipelinesAPI:
                pipeline_id: str,
                *,
                allow_duplicate_names: Optional[bool] = None,
+               budget_policy_id: Optional[str] = None,
                catalog: Optional[str] = None,
                channel: Optional[str] = None,
                clusters: Optional[List[PipelineCluster]] = None,
@@ -2498,11 +2617,12 @@ class PipelinesAPI:
                filters: Optional[Filters] = None,
                gateway_definition: Optional[IngestionGatewayPipelineDefinition] = None,
                id: Optional[str] = None,
-               ingestion_definition: Optional[ManagedIngestionPipelineDefinition] = None,
+               ingestion_definition: Optional[IngestionPipelineDefinition] = None,
                libraries: Optional[List[PipelineLibrary]] = None,
                name: Optional[str] = None,
                notifications: Optional[List[Notifications]] = None,
                photon: Optional[bool] = None,
+               schema: Optional[str] = None,
                serverless: Optional[bool] = None,
                storage: Optional[str] = None,
                target: Optional[str] = None,
@@ -2515,6 +2635,8 @@ class PipelinesAPI:
           Unique identifier for this pipeline.
         :param allow_duplicate_names: bool (optional)
           If false, deployment will fail if name has changed and conflicts the name of another pipeline.
+        :param budget_policy_id: str (optional)
+          Budget policy of this pipeline.
         :param catalog: str (optional)
           A catalog in Unity Catalog to publish data from this pipeline to. If `target` is specified, tables
           in this pipeline are published to a `target` schema inside `catalog` (for example,
@@ -2542,7 +2664,7 @@ class PipelinesAPI:
           The definition of a gateway pipeline to support CDC.
         :param id: str (optional)
           Unique identifier for this pipeline.
-        :param ingestion_definition: :class:`ManagedIngestionPipelineDefinition` (optional)
+        :param ingestion_definition: :class:`IngestionPipelineDefinition` (optional)
           The configuration for a managed ingestion pipeline. These settings cannot be used with the
           'libraries', 'target' or 'catalog' settings.
         :param libraries: List[:class:`PipelineLibrary`] (optional)
@@ -2553,6 +2675,9 @@ class PipelinesAPI:
           List of notification settings for this pipeline.
         :param photon: bool (optional)
           Whether Photon is enabled for this pipeline.
+        :param schema: str (optional)
+          The default schema (database) where tables are read from or published to. The presence of this field
+          implies that the pipeline is in direct publishing mode.
         :param serverless: bool (optional)
           Whether serverless compute is enabled for this pipeline.
         :param storage: str (optional)
@@ -2567,6 +2692,7 @@ class PipelinesAPI:
         """
         body = {}
         if allow_duplicate_names is not None: body['allow_duplicate_names'] = allow_duplicate_names
+        if budget_policy_id is not None: body['budget_policy_id'] = budget_policy_id
         if catalog is not None: body['catalog'] = catalog
         if channel is not None: body['channel'] = channel
         if clusters is not None: body['clusters'] = [v.as_dict() for v in clusters]
@@ -2584,6 +2710,7 @@ class PipelinesAPI:
         if name is not None: body['name'] = name
         if notifications is not None: body['notifications'] = [v.as_dict() for v in notifications]
         if photon is not None: body['photon'] = photon
+        if schema is not None: body['schema'] = schema
         if serverless is not None: body['serverless'] = serverless
         if storage is not None: body['storage'] = storage
         if target is not None: body['target'] = target

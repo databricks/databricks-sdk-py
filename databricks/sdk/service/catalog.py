@@ -275,6 +275,42 @@ class AssignResponse:
 
 
 @dataclass
+class AwsCredentials:
+    """AWS temporary credentials for API authentication. Read more at
+    https://docs.aws.amazon.com/STS/latest/APIReference/API_Credentials.html."""
+
+    access_key_id: Optional[str] = None
+    """The access key ID that identifies the temporary credentials."""
+
+    access_point: Optional[str] = None
+    """The Amazon Resource Name (ARN) of the S3 access point for temporary credentials related the
+    external location."""
+
+    secret_access_key: Optional[str] = None
+    """The secret access key that can be used to sign AWS API requests."""
+
+    session_token: Optional[str] = None
+    """The token that users must pass to AWS API to use the temporary credentials."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AwsCredentials into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.access_key_id is not None: body['access_key_id'] = self.access_key_id
+        if self.access_point is not None: body['access_point'] = self.access_point
+        if self.secret_access_key is not None: body['secret_access_key'] = self.secret_access_key
+        if self.session_token is not None: body['session_token'] = self.session_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> AwsCredentials:
+        """Deserializes the AwsCredentials from a dictionary."""
+        return cls(access_key_id=d.get('access_key_id', None),
+                   access_point=d.get('access_point', None),
+                   secret_access_key=d.get('secret_access_key', None),
+                   session_token=d.get('session_token', None))
+
+
+@dataclass
 class AwsIamRoleRequest:
     role_arn: str
     """The Amazon Resource Name (ARN) of the AWS IAM role for S3 data access."""
@@ -403,6 +439,26 @@ class AzureServicePrincipal:
         return cls(application_id=d.get('application_id', None),
                    client_secret=d.get('client_secret', None),
                    directory_id=d.get('directory_id', None))
+
+
+@dataclass
+class AzureUserDelegationSas:
+    """Azure temporary credentials for API authentication. Read more at
+    https://docs.microsoft.com/en-us/rest/api/storageservices/create-user-delegation-sas"""
+
+    sas_token: Optional[str] = None
+    """The signed URI (SAS Token) used to access blob services for a given path"""
+
+    def as_dict(self) -> dict:
+        """Serializes the AzureUserDelegationSas into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.sas_token is not None: body['sas_token'] = self.sas_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> AzureUserDelegationSas:
+        """Deserializes the AzureUserDelegationSas from a dictionary."""
+        return cls(sas_token=d.get('sas_token', None))
 
 
 @dataclass
@@ -849,7 +905,11 @@ class ConnectionInfoSecurableKind(Enum):
     """Kind of connection securable."""
 
     CONNECTION_BIGQUERY = 'CONNECTION_BIGQUERY'
+    CONNECTION_BUILTIN_HIVE_METASTORE = 'CONNECTION_BUILTIN_HIVE_METASTORE'
     CONNECTION_DATABRICKS = 'CONNECTION_DATABRICKS'
+    CONNECTION_EXTERNAL_HIVE_METASTORE = 'CONNECTION_EXTERNAL_HIVE_METASTORE'
+    CONNECTION_GLUE = 'CONNECTION_GLUE'
+    CONNECTION_HTTP_BEARER = 'CONNECTION_HTTP_BEARER'
     CONNECTION_MYSQL = 'CONNECTION_MYSQL'
     CONNECTION_ONLINE_CATALOG = 'CONNECTION_ONLINE_CATALOG'
     CONNECTION_POSTGRESQL = 'CONNECTION_POSTGRESQL'
@@ -864,6 +924,9 @@ class ConnectionType(Enum):
 
     BIGQUERY = 'BIGQUERY'
     DATABRICKS = 'DATABRICKS'
+    GLUE = 'GLUE'
+    HIVE_METASTORE = 'HIVE_METASTORE'
+    HTTP = 'HTTP'
     MYSQL = 'MYSQL'
     POSTGRESQL = 'POSTGRESQL'
     REDSHIFT = 'REDSHIFT'
@@ -1023,6 +1086,11 @@ class CreateExternalLocation:
     encryption_details: Optional[EncryptionDetails] = None
     """Encryption options that apply to clients connecting to cloud storage."""
 
+    fallback: Optional[bool] = None
+    """Indicates whether fallback mode is enabled for this external location. When fallback mode is
+    enabled, the access to the location falls back to cluster credentials if UC credentials are not
+    sufficient."""
+
     read_only: Optional[bool] = None
     """Indicates whether the external location is read-only."""
 
@@ -1036,6 +1104,7 @@ class CreateExternalLocation:
         if self.comment is not None: body['comment'] = self.comment
         if self.credential_name is not None: body['credential_name'] = self.credential_name
         if self.encryption_details: body['encryption_details'] = self.encryption_details.as_dict()
+        if self.fallback is not None: body['fallback'] = self.fallback
         if self.name is not None: body['name'] = self.name
         if self.read_only is not None: body['read_only'] = self.read_only
         if self.skip_validation is not None: body['skip_validation'] = self.skip_validation
@@ -1049,6 +1118,7 @@ class CreateExternalLocation:
                    comment=d.get('comment', None),
                    credential_name=d.get('credential_name', None),
                    encryption_details=_from_dict(d, 'encryption_details', EncryptionDetails),
+                   fallback=d.get('fallback', None),
                    name=d.get('name', None),
                    read_only=d.get('read_only', None),
                    skip_validation=d.get('skip_validation', None),
@@ -1074,9 +1144,6 @@ class CreateFunction:
     full_data_type: str
     """Pretty printed function data type."""
 
-    return_params: FunctionParameterInfos
-    """Table function return parameters."""
-
     routine_body: CreateFunctionRoutineBody
     """Function language. When **EXTERNAL** is used, the language of the routine function should be
     specified in the __external_language__ field, and the __return_params__ of the function cannot
@@ -1085,9 +1152,6 @@ class CreateFunction:
 
     routine_definition: str
     """Function body."""
-
-    routine_dependencies: DependencyList
-    """Function dependencies."""
 
     parameter_style: CreateFunctionParameterStyle
     """Function parameter style. **S** is the value for SQL."""
@@ -1118,6 +1182,12 @@ class CreateFunction:
 
     properties: Optional[str] = None
     """JSON-serialized key-value pair map, encoded (escaped) as a string."""
+
+    return_params: Optional[FunctionParameterInfos] = None
+    """Table function return parameters."""
+
+    routine_dependencies: Optional[DependencyList] = None
+    """Function dependencies."""
 
     sql_path: Optional[str] = None
     """List of schemes whose objects can be referenced without qualification."""
@@ -1256,7 +1326,8 @@ class CreateMetastoreAssignment:
     """The unique ID of the metastore."""
 
     default_catalog_name: str
-    """The name of the default catalog in the metastore."""
+    """The name of the default catalog in the metastore. This field is depracted. Please use "Default
+    Namespace API" to configure the default catalog for a Databricks workspace."""
 
     workspace_id: Optional[int] = None
     """A workspace ID."""
@@ -1607,6 +1678,7 @@ class CreateVolumeRequestContent:
 class CredentialType(Enum):
     """The type of credential."""
 
+    BEARER_TOKEN = 'BEARER_TOKEN'
     USERNAME_PASSWORD = 'USERNAME_PASSWORD'
 
 
@@ -1974,6 +2046,11 @@ class ExternalLocationInfo:
     encryption_details: Optional[EncryptionDetails] = None
     """Encryption options that apply to clients connecting to cloud storage."""
 
+    fallback: Optional[bool] = None
+    """Indicates whether fallback mode is enabled for this external location. When fallback mode is
+    enabled, the access to the location falls back to cluster credentials if UC credentials are not
+    sufficient."""
+
     isolation_mode: Optional[IsolationMode] = None
     """Whether the current securable is accessible from all workspaces or a specific set of workspaces."""
 
@@ -2009,6 +2086,7 @@ class ExternalLocationInfo:
         if self.credential_id is not None: body['credential_id'] = self.credential_id
         if self.credential_name is not None: body['credential_name'] = self.credential_name
         if self.encryption_details: body['encryption_details'] = self.encryption_details.as_dict()
+        if self.fallback is not None: body['fallback'] = self.fallback
         if self.isolation_mode is not None: body['isolation_mode'] = self.isolation_mode.value
         if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
         if self.name is not None: body['name'] = self.name
@@ -2030,6 +2108,7 @@ class ExternalLocationInfo:
                    credential_id=d.get('credential_id', None),
                    credential_name=d.get('credential_name', None),
                    encryption_details=_from_dict(d, 'encryption_details', EncryptionDetails),
+                   fallback=d.get('fallback', None),
                    isolation_mode=_enum(d, 'isolation_mode', IsolationMode),
                    metastore_id=d.get('metastore_id', None),
                    name=d.get('name', None),
@@ -2419,6 +2498,104 @@ class FunctionParameterType(Enum):
 
 
 @dataclass
+class GcpOauthToken:
+    """GCP temporary credentials for API authentication. Read more at
+    https://developers.google.com/identity/protocols/oauth2/service-account"""
+
+    oauth_token: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the GcpOauthToken into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.oauth_token is not None: body['oauth_token'] = self.oauth_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> GcpOauthToken:
+        """Deserializes the GcpOauthToken from a dictionary."""
+        return cls(oauth_token=d.get('oauth_token', None))
+
+
+@dataclass
+class GenerateTemporaryTableCredentialRequest:
+    operation: Optional[TableOperation] = None
+    """The operation performed against the table data, either READ or READ_WRITE. If READ_WRITE is
+    specified, the credentials returned will have write permissions, otherwise, it will be read
+    only."""
+
+    table_id: Optional[str] = None
+    """UUID of the table to read or write."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GenerateTemporaryTableCredentialRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.operation is not None: body['operation'] = self.operation.value
+        if self.table_id is not None: body['table_id'] = self.table_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> GenerateTemporaryTableCredentialRequest:
+        """Deserializes the GenerateTemporaryTableCredentialRequest from a dictionary."""
+        return cls(operation=_enum(d, 'operation', TableOperation), table_id=d.get('table_id', None))
+
+
+@dataclass
+class GenerateTemporaryTableCredentialResponse:
+    aws_temp_credentials: Optional[AwsCredentials] = None
+    """AWS temporary credentials for API authentication. Read more at
+    https://docs.aws.amazon.com/STS/latest/APIReference/API_Credentials.html."""
+
+    azure_user_delegation_sas: Optional[AzureUserDelegationSas] = None
+    """Azure temporary credentials for API authentication. Read more at
+    https://docs.microsoft.com/en-us/rest/api/storageservices/create-user-delegation-sas"""
+
+    expiration_time: Optional[int] = None
+    """Server time when the credential will expire, in epoch milliseconds. The API client is advised to
+    cache the credential given this expiration time."""
+
+    gcp_oauth_token: Optional[GcpOauthToken] = None
+    """GCP temporary credentials for API authentication. Read more at
+    https://developers.google.com/identity/protocols/oauth2/service-account"""
+
+    r2_temp_credentials: Optional[R2Credentials] = None
+    """R2 temporary credentials for API authentication. Read more at
+    https://developers.cloudflare.com/r2/api/s3/tokens/."""
+
+    url: Optional[str] = None
+    """The URL of the storage path accessible by the temporary credential."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GenerateTemporaryTableCredentialResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.aws_temp_credentials: body['aws_temp_credentials'] = self.aws_temp_credentials.as_dict()
+        if self.azure_user_delegation_sas:
+            body['azure_user_delegation_sas'] = self.azure_user_delegation_sas.as_dict()
+        if self.expiration_time is not None: body['expiration_time'] = self.expiration_time
+        if self.gcp_oauth_token: body['gcp_oauth_token'] = self.gcp_oauth_token.as_dict()
+        if self.r2_temp_credentials: body['r2_temp_credentials'] = self.r2_temp_credentials.as_dict()
+        if self.url is not None: body['url'] = self.url
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> GenerateTemporaryTableCredentialResponse:
+        """Deserializes the GenerateTemporaryTableCredentialResponse from a dictionary."""
+        return cls(aws_temp_credentials=_from_dict(d, 'aws_temp_credentials', AwsCredentials),
+                   azure_user_delegation_sas=_from_dict(d, 'azure_user_delegation_sas',
+                                                        AzureUserDelegationSas),
+                   expiration_time=d.get('expiration_time', None),
+                   gcp_oauth_token=_from_dict(d, 'gcp_oauth_token', GcpOauthToken),
+                   r2_temp_credentials=_from_dict(d, 'r2_temp_credentials', R2Credentials),
+                   url=d.get('url', None))
+
+
+class GetBindingsSecurableType(Enum):
+
+    CATALOG = 'catalog'
+    EXTERNAL_LOCATION = 'external_location'
+    STORAGE_CREDENTIAL = 'storage_credential'
+
+
+@dataclass
 class GetMetastoreSummaryResponse:
     cloud: Optional[str] = None
     """Cloud vendor of the metastore home shard (e.g., `aws`, `azure`, `gcp`)."""
@@ -2441,6 +2618,9 @@ class GetMetastoreSummaryResponse:
 
     delta_sharing_scope: Optional[GetMetastoreSummaryResponseDeltaSharingScope] = None
     """The scope of Delta Sharing enabled for the metastore."""
+
+    external_access_enabled: Optional[bool] = None
+    """Whether to allow non-DBR clients to directly access entities under the metastore."""
 
     global_metastore_id: Optional[str] = None
     """Globally unique metastore ID across clouds and regions, of the form `cloud:region:metastore_id`."""
@@ -2489,6 +2669,8 @@ class GetMetastoreSummaryResponse:
             body[
                 'delta_sharing_recipient_token_lifetime_in_seconds'] = self.delta_sharing_recipient_token_lifetime_in_seconds
         if self.delta_sharing_scope is not None: body['delta_sharing_scope'] = self.delta_sharing_scope.value
+        if self.external_access_enabled is not None:
+            body['external_access_enabled'] = self.external_access_enabled
         if self.global_metastore_id is not None: body['global_metastore_id'] = self.global_metastore_id
         if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
         if self.name is not None: body['name'] = self.name
@@ -2517,6 +2699,7 @@ class GetMetastoreSummaryResponse:
                        'delta_sharing_recipient_token_lifetime_in_seconds', None),
                    delta_sharing_scope=_enum(d, 'delta_sharing_scope',
                                              GetMetastoreSummaryResponseDeltaSharingScope),
+                   external_access_enabled=d.get('external_access_enabled', None),
                    global_metastore_id=d.get('global_metastore_id', None),
                    metastore_id=d.get('metastore_id', None),
                    name=d.get('name', None),
@@ -2535,6 +2718,23 @@ class GetMetastoreSummaryResponseDeltaSharingScope(Enum):
 
     INTERNAL = 'INTERNAL'
     INTERNAL_AND_EXTERNAL = 'INTERNAL_AND_EXTERNAL'
+
+
+@dataclass
+class GetQuotaResponse:
+    quota_info: Optional[QuotaInfo] = None
+    """The returned QuotaInfo."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GetQuotaResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.quota_info: body['quota_info'] = self.quota_info.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> GetQuotaResponse:
+        """Deserializes the GetQuotaResponse from a dictionary."""
+        return cls(quota_info=_from_dict(d, 'quota_info', QuotaInfo))
 
 
 class IsolationMode(Enum):
@@ -2713,6 +2913,29 @@ class ListModelVersionsResponse:
 
 
 @dataclass
+class ListQuotasResponse:
+    next_page_token: Optional[str] = None
+    """Opaque token to retrieve the next page of results. Absent if there are no more pages.
+    __page_token__ should be set to this value for the next request."""
+
+    quotas: Optional[List[QuotaInfo]] = None
+    """An array of returned QuotaInfos."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListQuotasResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.quotas: body['quotas'] = [v.as_dict() for v in self.quotas]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ListQuotasResponse:
+        """Deserializes the ListQuotasResponse from a dictionary."""
+        return cls(next_page_token=d.get('next_page_token', None),
+                   quotas=_repeated_dict(d, 'quotas', QuotaInfo))
+
+
+@dataclass
 class ListRegisteredModelsResponse:
     next_page_token: Optional[str] = None
     """Opaque token for pagination. Omitted if there are no more results. page_token should be set to
@@ -2782,19 +3005,25 @@ class ListStorageCredentialsResponse:
 
 @dataclass
 class ListSystemSchemasResponse:
+    next_page_token: Optional[str] = None
+    """Opaque token to retrieve the next page of results. Absent if there are no more pages.
+    __page_token__ should be set to this value for the next request (for the next page of results)."""
+
     schemas: Optional[List[SystemSchemaInfo]] = None
     """An array of system schema information objects."""
 
     def as_dict(self) -> dict:
         """Serializes the ListSystemSchemasResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         if self.schemas: body['schemas'] = [v.as_dict() for v in self.schemas]
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListSystemSchemasResponse:
         """Deserializes the ListSystemSchemasResponse from a dictionary."""
-        return cls(schemas=_repeated_dict(d, 'schemas', SystemSchemaInfo))
+        return cls(next_page_token=d.get('next_page_token', None),
+                   schemas=_repeated_dict(d, 'schemas', SystemSchemaInfo))
 
 
 @dataclass
@@ -2923,6 +3152,9 @@ class MetastoreInfo:
     delta_sharing_scope: Optional[MetastoreInfoDeltaSharingScope] = None
     """The scope of Delta Sharing enabled for the metastore."""
 
+    external_access_enabled: Optional[bool] = None
+    """Whether to allow non-DBR clients to directly access entities under the metastore."""
+
     global_metastore_id: Optional[str] = None
     """Globally unique metastore ID across clouds and regions, of the form `cloud:region:metastore_id`."""
 
@@ -2970,6 +3202,8 @@ class MetastoreInfo:
             body[
                 'delta_sharing_recipient_token_lifetime_in_seconds'] = self.delta_sharing_recipient_token_lifetime_in_seconds
         if self.delta_sharing_scope is not None: body['delta_sharing_scope'] = self.delta_sharing_scope.value
+        if self.external_access_enabled is not None:
+            body['external_access_enabled'] = self.external_access_enabled
         if self.global_metastore_id is not None: body['global_metastore_id'] = self.global_metastore_id
         if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
         if self.name is not None: body['name'] = self.name
@@ -2997,6 +3231,7 @@ class MetastoreInfo:
                    delta_sharing_recipient_token_lifetime_in_seconds=d.get(
                        'delta_sharing_recipient_token_lifetime_in_seconds', None),
                    delta_sharing_scope=_enum(d, 'delta_sharing_scope', MetastoreInfoDeltaSharingScope),
+                   external_access_enabled=d.get('external_access_enabled', None),
                    global_metastore_id=d.get('global_metastore_id', None),
                    metastore_id=d.get('metastore_id', None),
                    name=d.get('name', None),
@@ -3019,6 +3254,9 @@ class MetastoreInfoDeltaSharingScope(Enum):
 
 @dataclass
 class ModelVersionInfo:
+    aliases: Optional[List[RegisteredModelAlias]] = None
+    """List of aliases associated with the model version"""
+
     browse_only: Optional[bool] = None
     """Indicates whether the principal is limited to retrieving metadata for the associated object
     through the BROWSE privilege when include_browse is enabled in the request."""
@@ -3079,6 +3317,7 @@ class ModelVersionInfo:
     def as_dict(self) -> dict:
         """Serializes the ModelVersionInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.aliases: body['aliases'] = [v.as_dict() for v in self.aliases]
         if self.browse_only is not None: body['browse_only'] = self.browse_only
         if self.catalog_name is not None: body['catalog_name'] = self.catalog_name
         if self.comment is not None: body['comment'] = self.comment
@@ -3103,7 +3342,8 @@ class ModelVersionInfo:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ModelVersionInfo:
         """Deserializes the ModelVersionInfo from a dictionary."""
-        return cls(browse_only=d.get('browse_only', None),
+        return cls(aliases=_repeated_dict(d, 'aliases', RegisteredModelAlias),
+                   browse_only=d.get('browse_only', None),
                    catalog_name=d.get('catalog_name', None),
                    comment=d.get('comment', None),
                    created_at=d.get('created_at', None),
@@ -3625,10 +3865,15 @@ class OnlineTable:
     """Specification of the online table."""
 
     status: Optional[OnlineTableStatus] = None
-    """Online Table status"""
+    """Online Table data synchronization status"""
 
     table_serving_url: Optional[str] = None
     """Data serving REST API URL for this table"""
+
+    unity_catalog_provisioning_state: Optional[ProvisioningInfoState] = None
+    """The provisioning state of the online table entity in Unity Catalog. This is distinct from the
+    state of the data synchronization pipeline (i.e. the table may be in "ACTIVE" but the pipeline
+    may be in "PROVISIONING" as it runs asynchronously)."""
 
     def as_dict(self) -> dict:
         """Serializes the OnlineTable into a dictionary suitable for use as a JSON request body."""
@@ -3637,6 +3882,8 @@ class OnlineTable:
         if self.spec: body['spec'] = self.spec.as_dict()
         if self.status: body['status'] = self.status.as_dict()
         if self.table_serving_url is not None: body['table_serving_url'] = self.table_serving_url
+        if self.unity_catalog_provisioning_state is not None:
+            body['unity_catalog_provisioning_state'] = self.unity_catalog_provisioning_state.value
         return body
 
     @classmethod
@@ -3645,7 +3892,9 @@ class OnlineTable:
         return cls(name=d.get('name', None),
                    spec=_from_dict(d, 'spec', OnlineTableSpec),
                    status=_from_dict(d, 'status', OnlineTableStatus),
-                   table_serving_url=d.get('table_serving_url', None))
+                   table_serving_url=d.get('table_serving_url', None),
+                   unity_catalog_provisioning_state=_enum(d, 'unity_catalog_provisioning_state',
+                                                          ProvisioningInfoState))
 
 
 @dataclass
@@ -3742,7 +3991,6 @@ class OnlineTableState(Enum):
     ONLINE_CONTINUOUS_UPDATE = 'ONLINE_CONTINUOUS_UPDATE'
     ONLINE_NO_PENDING_UPDATE = 'ONLINE_NO_PENDING_UPDATE'
     ONLINE_PIPELINE_FAILED = 'ONLINE_PIPELINE_FAILED'
-    ONLINE_TABLE_STATE_UNSPECIFIED = 'ONLINE_TABLE_STATE_UNSPECIFIED'
     ONLINE_TRIGGERED_UPDATE = 'ONLINE_TRIGGERED_UPDATE'
     ONLINE_UPDATING_PIPELINE_RESOURCES = 'ONLINE_UPDATING_PIPELINE_RESOURCES'
     PROVISIONING = 'PROVISIONING'
@@ -3935,6 +4183,7 @@ class Privilege(Enum):
     CREATE_VIEW = 'CREATE_VIEW'
     CREATE_VOLUME = 'CREATE_VOLUME'
     EXECUTE = 'EXECUTE'
+    MANAGE = 'MANAGE'
     MANAGE_ALLOWLIST = 'MANAGE_ALLOWLIST'
     MODIFY = 'MODIFY'
     READ_FILES = 'READ_FILES'
@@ -4004,7 +4253,7 @@ class ProvisioningInfoState(Enum):
     DELETING = 'DELETING'
     FAILED = 'FAILED'
     PROVISIONING = 'PROVISIONING'
-    STATE_UNSPECIFIED = 'STATE_UNSPECIFIED'
+    UPDATING = 'UPDATING'
 
 
 @dataclass
@@ -4028,6 +4277,122 @@ class ProvisioningStatus:
         """Deserializes the ProvisioningStatus from a dictionary."""
         return cls(
             initial_pipeline_sync_progress=_from_dict(d, 'initial_pipeline_sync_progress', PipelineProgress))
+
+
+@dataclass
+class QuotaInfo:
+    last_refreshed_at: Optional[int] = None
+    """The timestamp that indicates when the quota count was last updated."""
+
+    parent_full_name: Optional[str] = None
+    """Name of the parent resource. Returns metastore ID if the parent is a metastore."""
+
+    parent_securable_type: Optional[SecurableType] = None
+    """The quota parent securable type."""
+
+    quota_count: Optional[int] = None
+    """The current usage of the resource quota."""
+
+    quota_limit: Optional[int] = None
+    """The current limit of the resource quota."""
+
+    quota_name: Optional[str] = None
+    """The name of the quota."""
+
+    def as_dict(self) -> dict:
+        """Serializes the QuotaInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.last_refreshed_at is not None: body['last_refreshed_at'] = self.last_refreshed_at
+        if self.parent_full_name is not None: body['parent_full_name'] = self.parent_full_name
+        if self.parent_securable_type is not None:
+            body['parent_securable_type'] = self.parent_securable_type.value
+        if self.quota_count is not None: body['quota_count'] = self.quota_count
+        if self.quota_limit is not None: body['quota_limit'] = self.quota_limit
+        if self.quota_name is not None: body['quota_name'] = self.quota_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> QuotaInfo:
+        """Deserializes the QuotaInfo from a dictionary."""
+        return cls(last_refreshed_at=d.get('last_refreshed_at', None),
+                   parent_full_name=d.get('parent_full_name', None),
+                   parent_securable_type=_enum(d, 'parent_securable_type', SecurableType),
+                   quota_count=d.get('quota_count', None),
+                   quota_limit=d.get('quota_limit', None),
+                   quota_name=d.get('quota_name', None))
+
+
+@dataclass
+class R2Credentials:
+    """R2 temporary credentials for API authentication. Read more at
+    https://developers.cloudflare.com/r2/api/s3/tokens/."""
+
+    access_key_id: Optional[str] = None
+    """The access key ID that identifies the temporary credentials."""
+
+    secret_access_key: Optional[str] = None
+    """The secret access key associated with the access key."""
+
+    session_token: Optional[str] = None
+    """The generated JWT that users must pass to use the temporary credentials."""
+
+    def as_dict(self) -> dict:
+        """Serializes the R2Credentials into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.access_key_id is not None: body['access_key_id'] = self.access_key_id
+        if self.secret_access_key is not None: body['secret_access_key'] = self.secret_access_key
+        if self.session_token is not None: body['session_token'] = self.session_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> R2Credentials:
+        """Deserializes the R2Credentials from a dictionary."""
+        return cls(access_key_id=d.get('access_key_id', None),
+                   secret_access_key=d.get('secret_access_key', None),
+                   session_token=d.get('session_token', None))
+
+
+@dataclass
+class RegenerateDashboardRequest:
+    table_name: Optional[str] = None
+    """Full name of the table."""
+
+    warehouse_id: Optional[str] = None
+    """Optional argument to specify the warehouse for dashboard regeneration. If not specified, the
+    first running warehouse will be used."""
+
+    def as_dict(self) -> dict:
+        """Serializes the RegenerateDashboardRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.table_name is not None: body['table_name'] = self.table_name
+        if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> RegenerateDashboardRequest:
+        """Deserializes the RegenerateDashboardRequest from a dictionary."""
+        return cls(table_name=d.get('table_name', None), warehouse_id=d.get('warehouse_id', None))
+
+
+@dataclass
+class RegenerateDashboardResponse:
+    dashboard_id: Optional[str] = None
+    """Id of the regenerated monitoring dashboard."""
+
+    parent_folder: Optional[str] = None
+    """The directory where the regenerated dashboard is stored."""
+
+    def as_dict(self) -> dict:
+        """Serializes the RegenerateDashboardResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.dashboard_id is not None: body['dashboard_id'] = self.dashboard_id
+        if self.parent_folder is not None: body['parent_folder'] = self.parent_folder
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> RegenerateDashboardResponse:
+        """Deserializes the RegenerateDashboardResponse from a dictionary."""
+        return cls(dashboard_id=d.get('dashboard_id', None), parent_folder=d.get('parent_folder', None))
 
 
 @dataclass
@@ -4732,6 +5097,12 @@ class TableInfo:
                    view_dependencies=_from_dict(d, 'view_dependencies', DependencyList))
 
 
+class TableOperation(Enum):
+
+    READ = 'READ'
+    READ_WRITE = 'READ_WRITE'
+
+
 @dataclass
 class TableRowFilter:
     function_name: str
@@ -4849,6 +5220,13 @@ class UpdateAssignmentResponse:
         return cls()
 
 
+class UpdateBindingsSecurableType(Enum):
+
+    CATALOG = 'catalog'
+    EXTERNAL_LOCATION = 'external_location'
+    STORAGE_CREDENTIAL = 'storage_credential'
+
+
 @dataclass
 class UpdateCatalog:
     comment: Optional[str] = None
@@ -4944,6 +5322,11 @@ class UpdateExternalLocation:
     encryption_details: Optional[EncryptionDetails] = None
     """Encryption options that apply to clients connecting to cloud storage."""
 
+    fallback: Optional[bool] = None
+    """Indicates whether fallback mode is enabled for this external location. When fallback mode is
+    enabled, the access to the location falls back to cluster credentials if UC credentials are not
+    sufficient."""
+
     force: Optional[bool] = None
     """Force update even if changing url invalidates dependent external tables or mounts."""
 
@@ -4975,6 +5358,7 @@ class UpdateExternalLocation:
         if self.comment is not None: body['comment'] = self.comment
         if self.credential_name is not None: body['credential_name'] = self.credential_name
         if self.encryption_details: body['encryption_details'] = self.encryption_details.as_dict()
+        if self.fallback is not None: body['fallback'] = self.fallback
         if self.force is not None: body['force'] = self.force
         if self.isolation_mode is not None: body['isolation_mode'] = self.isolation_mode.value
         if self.name is not None: body['name'] = self.name
@@ -4992,6 +5376,7 @@ class UpdateExternalLocation:
                    comment=d.get('comment', None),
                    credential_name=d.get('credential_name', None),
                    encryption_details=_from_dict(d, 'encryption_details', EncryptionDetails),
+                   fallback=d.get('fallback', None),
                    force=d.get('force', None),
                    isolation_mode=_enum(d, 'isolation_mode', IsolationMode),
                    name=d.get('name', None),
@@ -5086,7 +5471,8 @@ class UpdateMetastore:
 @dataclass
 class UpdateMetastoreAssignment:
     default_catalog_name: Optional[str] = None
-    """The name of the default catalog for the metastore."""
+    """The name of the default catalog in the metastore. This field is depracted. Please use "Default
+    Namespace API" to configure the default catalog for a Databricks workspace."""
 
     metastore_id: Optional[str] = None
     """The unique ID of the metastore."""
@@ -5492,8 +5878,8 @@ class UpdateWorkspaceBindingsParameters:
     securable_name: Optional[str] = None
     """The name of the securable."""
 
-    securable_type: Optional[str] = None
-    """The type of the securable."""
+    securable_type: Optional[UpdateBindingsSecurableType] = None
+    """The type of the securable to bind to a workspace."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateWorkspaceBindingsParameters into a dictionary suitable for use as a JSON request body."""
@@ -5501,7 +5887,7 @@ class UpdateWorkspaceBindingsParameters:
         if self.add: body['add'] = [v.as_dict() for v in self.add]
         if self.remove: body['remove'] = [v.as_dict() for v in self.remove]
         if self.securable_name is not None: body['securable_name'] = self.securable_name
-        if self.securable_type is not None: body['securable_type'] = self.securable_type
+        if self.securable_type is not None: body['securable_type'] = self.securable_type.value
         return body
 
     @classmethod
@@ -5510,7 +5896,7 @@ class UpdateWorkspaceBindingsParameters:
         return cls(add=_repeated_dict(d, 'add', WorkspaceBinding),
                    remove=_repeated_dict(d, 'remove', WorkspaceBinding),
                    securable_name=d.get('securable_name', None),
-                   securable_type=d.get('securable_type', None))
+                   securable_type=_enum(d, 'securable_type', UpdateBindingsSecurableType))
 
 
 @dataclass
@@ -5776,16 +6162,22 @@ class WorkspaceBindingsResponse:
     bindings: Optional[List[WorkspaceBinding]] = None
     """List of workspace bindings"""
 
+    next_page_token: Optional[str] = None
+    """Opaque token to retrieve the next page of results. Absent if there are no more pages.
+    __page_token__ should be set to this value for the next request (for the next page of results)."""
+
     def as_dict(self) -> dict:
         """Serializes the WorkspaceBindingsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.bindings: body['bindings'] = [v.as_dict() for v in self.bindings]
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> WorkspaceBindingsResponse:
         """Deserializes the WorkspaceBindingsResponse from a dictionary."""
-        return cls(bindings=_repeated_dict(d, 'bindings', WorkspaceBinding))
+        return cls(bindings=_repeated_dict(d, 'bindings', WorkspaceBinding),
+                   next_page_token=d.get('next_page_token', None))
 
 
 class AccountMetastoreAssignmentsAPI:
@@ -6566,6 +6958,7 @@ class ExternalLocationsAPI:
                access_point: Optional[str] = None,
                comment: Optional[str] = None,
                encryption_details: Optional[EncryptionDetails] = None,
+               fallback: Optional[bool] = None,
                read_only: Optional[bool] = None,
                skip_validation: Optional[bool] = None) -> ExternalLocationInfo:
         """Create an external location.
@@ -6586,6 +6979,10 @@ class ExternalLocationsAPI:
           User-provided free-form text description.
         :param encryption_details: :class:`EncryptionDetails` (optional)
           Encryption options that apply to clients connecting to cloud storage.
+        :param fallback: bool (optional)
+          Indicates whether fallback mode is enabled for this external location. When fallback mode is
+          enabled, the access to the location falls back to cluster credentials if UC credentials are not
+          sufficient.
         :param read_only: bool (optional)
           Indicates whether the external location is read-only.
         :param skip_validation: bool (optional)
@@ -6598,6 +6995,7 @@ class ExternalLocationsAPI:
         if comment is not None: body['comment'] = comment
         if credential_name is not None: body['credential_name'] = credential_name
         if encryption_details is not None: body['encryption_details'] = encryption_details.as_dict()
+        if fallback is not None: body['fallback'] = fallback
         if name is not None: body['name'] = name
         if read_only is not None: body['read_only'] = read_only
         if skip_validation is not None: body['skip_validation'] = skip_validation
@@ -6705,6 +7103,7 @@ class ExternalLocationsAPI:
                comment: Optional[str] = None,
                credential_name: Optional[str] = None,
                encryption_details: Optional[EncryptionDetails] = None,
+               fallback: Optional[bool] = None,
                force: Optional[bool] = None,
                isolation_mode: Optional[IsolationMode] = None,
                new_name: Optional[str] = None,
@@ -6728,6 +7127,10 @@ class ExternalLocationsAPI:
           Name of the storage credential used with this location.
         :param encryption_details: :class:`EncryptionDetails` (optional)
           Encryption options that apply to clients connecting to cloud storage.
+        :param fallback: bool (optional)
+          Indicates whether fallback mode is enabled for this external location. When fallback mode is
+          enabled, the access to the location falls back to cluster credentials if UC credentials are not
+          sufficient.
         :param force: bool (optional)
           Force update even if changing url invalidates dependent external tables or mounts.
         :param isolation_mode: :class:`IsolationMode` (optional)
@@ -6750,6 +7153,7 @@ class ExternalLocationsAPI:
         if comment is not None: body['comment'] = comment
         if credential_name is not None: body['credential_name'] = credential_name
         if encryption_details is not None: body['encryption_details'] = encryption_details.as_dict()
+        if fallback is not None: body['fallback'] = fallback
         if force is not None: body['force'] = force
         if isolation_mode is not None: body['isolation_mode'] = isolation_mode.value
         if new_name is not None: body['new_name'] = new_name
@@ -7056,7 +7460,8 @@ class MetastoresAPI:
         :param metastore_id: str
           The unique ID of the metastore.
         :param default_catalog_name: str
-          The name of the default catalog in the metastore.
+          The name of the default catalog in the metastore. This field is depracted. Please use "Default
+          Namespace API" to configure the default catalog for a Databricks workspace.
         
         
         """
@@ -7269,7 +7674,8 @@ class MetastoresAPI:
         :param workspace_id: int
           A workspace ID.
         :param default_catalog_name: str (optional)
-          The name of the default catalog for the metastore.
+          The name of the default catalog in the metastore. This field is depracted. Please use "Default
+          Namespace API" to configure the default catalog for a Databricks workspace.
         :param metastore_id: str (optional)
           The unique ID of the metastore.
         
@@ -7325,7 +7731,8 @@ class ModelVersionsAPI:
             full_name: str,
             version: int,
             *,
-            include_browse: Optional[bool] = None) -> RegisteredModelInfo:
+            include_aliases: Optional[bool] = None,
+            include_browse: Optional[bool] = None) -> ModelVersionInfo:
         """Get a Model Version.
         
         Get a model version.
@@ -7338,14 +7745,17 @@ class ModelVersionsAPI:
           The three-level (fully qualified) name of the model version
         :param version: int
           The integer version number of the model version
+        :param include_aliases: bool (optional)
+          Whether to include aliases associated with the model version in the response
         :param include_browse: bool (optional)
           Whether to include model versions in the response for which the principal can only access selective
           metadata for
         
-        :returns: :class:`RegisteredModelInfo`
+        :returns: :class:`ModelVersionInfo`
         """
 
         query = {}
+        if include_aliases is not None: query['include_aliases'] = include_aliases
         if include_browse is not None: query['include_browse'] = include_browse
         headers = {'Accept': 'application/json', }
 
@@ -7353,9 +7763,13 @@ class ModelVersionsAPI:
                            f'/api/2.1/unity-catalog/models/{full_name}/versions/{version}',
                            query=query,
                            headers=headers)
-        return RegisteredModelInfo.from_dict(res)
+        return ModelVersionInfo.from_dict(res)
 
-    def get_by_alias(self, full_name: str, alias: str) -> ModelVersionInfo:
+    def get_by_alias(self,
+                     full_name: str,
+                     alias: str,
+                     *,
+                     include_aliases: Optional[bool] = None) -> ModelVersionInfo:
         """Get Model Version By Alias.
         
         Get a model version by alias.
@@ -7368,14 +7782,19 @@ class ModelVersionsAPI:
           The three-level (fully qualified) name of the registered model
         :param alias: str
           The name of the alias
+        :param include_aliases: bool (optional)
+          Whether to include aliases associated with the model version in the response
         
         :returns: :class:`ModelVersionInfo`
         """
 
+        query = {}
+        if include_aliases is not None: query['include_aliases'] = include_aliases
         headers = {'Accept': 'application/json', }
 
         res = self._api.do('GET',
                            f'/api/2.1/unity-catalog/models/{full_name}/aliases/{alias}',
+                           query=query,
                            headers=headers)
         return ModelVersionInfo.from_dict(res)
 
@@ -7751,6 +8170,40 @@ class QualityMonitorsAPI:
                            headers=headers)
         return MonitorRefreshListResponse.from_dict(res)
 
+    def regenerate_dashboard(self,
+                             table_name: str,
+                             *,
+                             warehouse_id: Optional[str] = None) -> RegenerateDashboardResponse:
+        """Regenerate a monitoring dashboard.
+        
+        Regenerates the monitoring dashboard for the specified table.
+        
+        The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
+        table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
+        - **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema - be an
+        owner of the table
+        
+        The call must be made from the workspace where the monitor was created. The dashboard will be
+        regenerated in the assets directory that was specified when the monitor was created.
+        
+        :param table_name: str
+          Full name of the table.
+        :param warehouse_id: str (optional)
+          Optional argument to specify the warehouse for dashboard regeneration. If not specified, the first
+          running warehouse will be used.
+        
+        :returns: :class:`RegenerateDashboardResponse`
+        """
+        body = {}
+        if warehouse_id is not None: body['warehouse_id'] = warehouse_id
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do('POST',
+                           f'/api/2.1/quality-monitoring/tables/{table_name}/monitor/dashboard',
+                           body=body,
+                           headers=headers)
+        return RegenerateDashboardResponse.from_dict(res)
+
     def run_refresh(self, table_name: str) -> MonitorRefreshInfo:
         """Queue a metric refresh for a monitor.
         
@@ -7971,7 +8424,11 @@ class RegisteredModelsAPI:
 
         self._api.do('DELETE', f'/api/2.1/unity-catalog/models/{full_name}/aliases/{alias}', headers=headers)
 
-    def get(self, full_name: str, *, include_browse: Optional[bool] = None) -> RegisteredModelInfo:
+    def get(self,
+            full_name: str,
+            *,
+            include_aliases: Optional[bool] = None,
+            include_browse: Optional[bool] = None) -> RegisteredModelInfo:
         """Get a Registered Model.
         
         Get a registered model.
@@ -7982,6 +8439,8 @@ class RegisteredModelsAPI:
         
         :param full_name: str
           The three-level (fully qualified) name of the registered model
+        :param include_aliases: bool (optional)
+          Whether to include registered model aliases in the response
         :param include_browse: bool (optional)
           Whether to include registered models in the response for which the principal can only access
           selective metadata for
@@ -7990,6 +8449,7 @@ class RegisteredModelsAPI:
         """
 
         query = {}
+        if include_aliases is not None: query['include_aliases'] = include_aliases
         if include_browse is not None: query['include_browse'] = include_browse
         headers = {'Accept': 'application/json', }
 
@@ -8127,6 +8587,78 @@ class RegisteredModelsAPI:
         return RegisteredModelInfo.from_dict(res)
 
 
+class ResourceQuotasAPI:
+    """Unity Catalog enforces resource quotas on all securable objects, which limits the number of resources that
+    can be created. Quotas are expressed in terms of a resource type and a parent (for example, tables per
+    metastore or schemas per catalog). The resource quota APIs enable you to monitor your current usage and
+    limits. For more information on resource quotas see the [Unity Catalog documentation].
+    
+    [Unity Catalog documentation]: https://docs.databricks.com/en/data-governance/unity-catalog/index.html#resource-quotas"""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def get_quota(self, parent_securable_type: str, parent_full_name: str,
+                  quota_name: str) -> GetQuotaResponse:
+        """Get information for a single resource quota.
+        
+        The GetQuota API returns usage information for a single resource quota, defined as a child-parent
+        pair. This API also refreshes the quota count if it is out of date. Refreshes are triggered
+        asynchronously. The updated count might not be returned in the first call.
+        
+        :param parent_securable_type: str
+          Securable type of the quota parent.
+        :param parent_full_name: str
+          Full name of the parent resource. Provide the metastore ID if the parent is a metastore.
+        :param quota_name: str
+          Name of the quota. Follows the pattern of the quota type, with "-quota" added as a suffix.
+        
+        :returns: :class:`GetQuotaResponse`
+        """
+
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do(
+            'GET',
+            f'/api/2.1/unity-catalog/resource-quotas/{parent_securable_type}/{parent_full_name}/{quota_name}',
+            headers=headers)
+        return GetQuotaResponse.from_dict(res)
+
+    def list_quotas(self,
+                    *,
+                    max_results: Optional[int] = None,
+                    page_token: Optional[str] = None) -> Iterator[QuotaInfo]:
+        """List all resource quotas under a metastore.
+        
+        ListQuotas returns all quota values under the metastore. There are no SLAs on the freshness of the
+        counts returned. This API does not trigger a refresh of quota counts.
+        
+        :param max_results: int (optional)
+          The number of quotas to return.
+        :param page_token: str (optional)
+          Opaque token for the next page of results.
+        
+        :returns: Iterator over :class:`QuotaInfo`
+        """
+
+        query = {}
+        if max_results is not None: query['max_results'] = max_results
+        if page_token is not None: query['page_token'] = page_token
+        headers = {'Accept': 'application/json', }
+
+        while True:
+            json = self._api.do('GET',
+                                '/api/2.1/unity-catalog/resource-quotas/all-resource-quotas',
+                                query=query,
+                                headers=headers)
+            if 'quotas' in json:
+                for v in json['quotas']:
+                    yield QuotaInfo.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
+
+
 class SchemasAPI:
     """A schema (also called a database) is the second layer of Unity Catalog’s three-level namespace. A schema
     organizes tables, views and functions. To access (or list) a table or view in a schema, users must have
@@ -8172,7 +8704,7 @@ class SchemasAPI:
         res = self._api.do('POST', '/api/2.1/unity-catalog/schemas', body=body, headers=headers)
         return SchemaInfo.from_dict(res)
 
-    def delete(self, full_name: str):
+    def delete(self, full_name: str, *, force: Optional[bool] = None):
         """Delete a schema.
         
         Deletes the specified schema from the parent catalog. The caller must be the owner of the schema or an
@@ -8180,13 +8712,17 @@ class SchemasAPI:
         
         :param full_name: str
           Full name of the schema.
+        :param force: bool (optional)
+          Force deletion even if the schema is not empty.
         
         
         """
 
+        query = {}
+        if force is not None: query['force'] = force
         headers = {'Accept': 'application/json', }
 
-        self._api.do('DELETE', f'/api/2.1/unity-catalog/schemas/{full_name}', headers=headers)
+        self._api.do('DELETE', f'/api/2.1/unity-catalog/schemas/{full_name}', query=query, headers=headers)
 
     def get(self, full_name: str, *, include_browse: Optional[bool] = None) -> SchemaInfo:
         """Get a schema.
@@ -8632,7 +9168,11 @@ class SystemSchemasAPI:
                      f'/api/2.1/unity-catalog/metastores/{metastore_id}/systemschemas/{schema_name}',
                      headers=headers)
 
-    def list(self, metastore_id: str) -> Iterator[SystemSchemaInfo]:
+    def list(self,
+             metastore_id: str,
+             *,
+             max_results: Optional[int] = None,
+             page_token: Optional[str] = None) -> Iterator[SystemSchemaInfo]:
         """List system schemas.
         
         Gets an array of system schemas for a metastore. The caller must be an account admin or a metastore
@@ -8640,17 +9180,33 @@ class SystemSchemasAPI:
         
         :param metastore_id: str
           The ID for the metastore in which the system schema resides.
+        :param max_results: int (optional)
+          Maximum number of schemas to return. - When set to 0, the page length is set to a server configured
+          value (recommended); - When set to a value greater than 0, the page length is the minimum of this
+          value and a server configured value; - When set to a value less than 0, an invalid parameter error
+          is returned; - If not set, all the schemas are returned (not recommended).
+        :param page_token: str (optional)
+          Opaque pagination token to go to next page based on previous query.
         
         :returns: Iterator over :class:`SystemSchemaInfo`
         """
 
+        query = {}
+        if max_results is not None: query['max_results'] = max_results
+        if page_token is not None: query['page_token'] = page_token
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET',
-                            f'/api/2.1/unity-catalog/metastores/{metastore_id}/systemschemas',
-                            headers=headers)
-        parsed = ListSystemSchemasResponse.from_dict(json).schemas
-        return parsed if parsed is not None else []
+        while True:
+            json = self._api.do('GET',
+                                f'/api/2.1/unity-catalog/metastores/{metastore_id}/systemschemas',
+                                query=query,
+                                headers=headers)
+            if 'schemas' in json:
+                for v in json['schemas']:
+                    yield SystemSchemaInfo.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
 
 
 class TableConstraintsAPI:
@@ -8786,7 +9342,8 @@ class TablesAPI:
             full_name: str,
             *,
             include_browse: Optional[bool] = None,
-            include_delta_metadata: Optional[bool] = None) -> TableInfo:
+            include_delta_metadata: Optional[bool] = None,
+            include_manifest_capabilities: Optional[bool] = None) -> TableInfo:
         """Get a table.
         
         Gets a table from the metastore for a specific catalog and schema. The caller must satisfy one of the
@@ -8802,6 +9359,8 @@ class TablesAPI:
           for
         :param include_delta_metadata: bool (optional)
           Whether delta metadata should be included in the response.
+        :param include_manifest_capabilities: bool (optional)
+          Whether to include a manifest containing capabilities the table has.
         
         :returns: :class:`TableInfo`
         """
@@ -8809,6 +9368,8 @@ class TablesAPI:
         query = {}
         if include_browse is not None: query['include_browse'] = include_browse
         if include_delta_metadata is not None: query['include_delta_metadata'] = include_delta_metadata
+        if include_manifest_capabilities is not None:
+            query['include_manifest_capabilities'] = include_manifest_capabilities
         headers = {'Accept': 'application/json', }
 
         res = self._api.do('GET', f'/api/2.1/unity-catalog/tables/{full_name}', query=query, headers=headers)
@@ -8820,6 +9381,7 @@ class TablesAPI:
              *,
              include_browse: Optional[bool] = None,
              include_delta_metadata: Optional[bool] = None,
+             include_manifest_capabilities: Optional[bool] = None,
              max_results: Optional[int] = None,
              omit_columns: Optional[bool] = None,
              omit_properties: Optional[bool] = None,
@@ -8841,6 +9403,8 @@ class TablesAPI:
           for
         :param include_delta_metadata: bool (optional)
           Whether delta metadata should be included in the response.
+        :param include_manifest_capabilities: bool (optional)
+          Whether to include a manifest containing capabilities the table has.
         :param max_results: int (optional)
           Maximum number of tables to return. If not set, all the tables are returned (not recommended). -
           when set to a value greater than 0, the page length is the minimum of this value and a server
@@ -8860,6 +9424,8 @@ class TablesAPI:
         if catalog_name is not None: query['catalog_name'] = catalog_name
         if include_browse is not None: query['include_browse'] = include_browse
         if include_delta_metadata is not None: query['include_delta_metadata'] = include_delta_metadata
+        if include_manifest_capabilities is not None:
+            query['include_manifest_capabilities'] = include_manifest_capabilities
         if max_results is not None: query['max_results'] = max_results
         if omit_columns is not None: query['omit_columns'] = omit_columns
         if omit_properties is not None: query['omit_properties'] = omit_properties
@@ -8879,6 +9445,7 @@ class TablesAPI:
     def list_summaries(self,
                        catalog_name: str,
                        *,
+                       include_manifest_capabilities: Optional[bool] = None,
                        max_results: Optional[int] = None,
                        page_token: Optional[str] = None,
                        schema_name_pattern: Optional[str] = None,
@@ -8898,6 +9465,8 @@ class TablesAPI:
         
         :param catalog_name: str
           Name of parent catalog for tables of interest.
+        :param include_manifest_capabilities: bool (optional)
+          Whether to include a manifest containing capabilities the table has.
         :param max_results: int (optional)
           Maximum number of summaries for tables to return. If not set, the page length is set to a server
           configured value (10000, as of 1/5/2024). - when set to a value greater than 0, the page length is
@@ -8916,6 +9485,8 @@ class TablesAPI:
 
         query = {}
         if catalog_name is not None: query['catalog_name'] = catalog_name
+        if include_manifest_capabilities is not None:
+            query['include_manifest_capabilities'] = include_manifest_capabilities
         if max_results is not None: query['max_results'] = max_results
         if page_token is not None: query['page_token'] = page_token
         if schema_name_pattern is not None: query['schema_name_pattern'] = schema_name_pattern
@@ -8950,6 +9521,55 @@ class TablesAPI:
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         self._api.do('PATCH', f'/api/2.1/unity-catalog/tables/{full_name}', body=body, headers=headers)
+
+
+class TemporaryTableCredentialsAPI:
+    """Temporary Table Credentials refer to short-lived, downscoped credentials used to access cloud storage
+    locationswhere table data is stored in Databricks. These credentials are employed to provide secure and
+    time-limitedaccess to data in cloud environments such as AWS, Azure, and Google Cloud. Each cloud provider
+    has its own typeof credentials: AWS uses temporary session tokens via AWS Security Token Service (STS),
+    Azure utilizesShared Access Signatures (SAS) for its data storage services, and Google Cloud supports
+    temporary credentialsthrough OAuth 2.0.Temporary table credentials ensure that data access is limited in
+    scope and duration, reducing the risk ofunauthorized access or misuse. To use the temporary table
+    credentials API, a metastore admin needs to enable the external_access_enabled flag (off by default) at
+    the metastore level, and user needs to be granted the EXTERNAL USE SCHEMA permission at the schema level
+    by catalog admin. Note that EXTERNAL USE SCHEMA is a schema level permission that can only be granted by
+    catalog admin explicitly and is not included in schema ownership or ALL PRIVILEGES on the schema for
+    security reason."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def generate_temporary_table_credentials(
+            self,
+            *,
+            operation: Optional[TableOperation] = None,
+            table_id: Optional[str] = None) -> GenerateTemporaryTableCredentialResponse:
+        """Generate a temporary table credential.
+        
+        Get a short-lived credential for directly accessing the table data on cloud storage. The metastore
+        must have external_access_enabled flag set to true (default false). The caller must have
+        EXTERNAL_USE_SCHEMA privilege on the parent schema and this privilege can only be granted by catalog
+        owners.
+        
+        :param operation: :class:`TableOperation` (optional)
+          The operation performed against the table data, either READ or READ_WRITE. If READ_WRITE is
+          specified, the credentials returned will have write permissions, otherwise, it will be read only.
+        :param table_id: str (optional)
+          UUID of the table to read or write.
+        
+        :returns: :class:`GenerateTemporaryTableCredentialResponse`
+        """
+        body = {}
+        if operation is not None: body['operation'] = operation.value
+        if table_id is not None: body['table_id'] = table_id
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do('POST',
+                           '/api/2.0/unity-catalog/temporary-table-credentials',
+                           body=body,
+                           headers=headers)
+        return GenerateTemporaryTableCredentialResponse.from_dict(res)
 
 
 class VolumesAPI:
@@ -9172,7 +9792,7 @@ class WorkspaceBindingsAPI:
     the new path (/api/2.1/unity-catalog/bindings/{securable_type}/{securable_name}) which introduces the
     ability to bind a securable in READ_ONLY mode (catalogs only).
     
-    Securables that support binding: - catalog"""
+    Securable types that support binding: - catalog - storage_credential - external_location"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -9196,26 +9816,48 @@ class WorkspaceBindingsAPI:
                            headers=headers)
         return CurrentWorkspaceBindings.from_dict(res)
 
-    def get_bindings(self, securable_type: str, securable_name: str) -> WorkspaceBindingsResponse:
+    def get_bindings(self,
+                     securable_type: GetBindingsSecurableType,
+                     securable_name: str,
+                     *,
+                     max_results: Optional[int] = None,
+                     page_token: Optional[str] = None) -> Iterator[WorkspaceBinding]:
         """Get securable workspace bindings.
         
         Gets workspace bindings of the securable. The caller must be a metastore admin or an owner of the
         securable.
         
-        :param securable_type: str
-          The type of the securable.
+        :param securable_type: :class:`GetBindingsSecurableType`
+          The type of the securable to bind to a workspace.
         :param securable_name: str
           The name of the securable.
+        :param max_results: int (optional)
+          Maximum number of workspace bindings to return. - When set to 0, the page length is set to a server
+          configured value (recommended); - When set to a value greater than 0, the page length is the minimum
+          of this value and a server configured value; - When set to a value less than 0, an invalid parameter
+          error is returned; - If not set, all the workspace bindings are returned (not recommended).
+        :param page_token: str (optional)
+          Opaque pagination token to go to next page based on previous query.
         
-        :returns: :class:`WorkspaceBindingsResponse`
+        :returns: Iterator over :class:`WorkspaceBinding`
         """
 
+        query = {}
+        if max_results is not None: query['max_results'] = max_results
+        if page_token is not None: query['page_token'] = page_token
         headers = {'Accept': 'application/json', }
 
-        res = self._api.do('GET',
-                           f'/api/2.1/unity-catalog/bindings/{securable_type}/{securable_name}',
-                           headers=headers)
-        return WorkspaceBindingsResponse.from_dict(res)
+        while True:
+            json = self._api.do('GET',
+                                f'/api/2.1/unity-catalog/bindings/{securable_type.value}/{securable_name}',
+                                query=query,
+                                headers=headers)
+            if 'bindings' in json:
+                for v in json['bindings']:
+                    yield WorkspaceBinding.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
 
     def update(self,
                name: str,
@@ -9248,7 +9890,7 @@ class WorkspaceBindingsAPI:
         return CurrentWorkspaceBindings.from_dict(res)
 
     def update_bindings(self,
-                        securable_type: str,
+                        securable_type: UpdateBindingsSecurableType,
                         securable_name: str,
                         *,
                         add: Optional[List[WorkspaceBinding]] = None,
@@ -9258,8 +9900,8 @@ class WorkspaceBindingsAPI:
         Updates workspace bindings of the securable. The caller must be a metastore admin or an owner of the
         securable.
         
-        :param securable_type: str
-          The type of the securable.
+        :param securable_type: :class:`UpdateBindingsSecurableType`
+          The type of the securable to bind to a workspace.
         :param securable_name: str
           The name of the securable.
         :param add: List[:class:`WorkspaceBinding`] (optional)
@@ -9275,7 +9917,7 @@ class WorkspaceBindingsAPI:
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         res = self._api.do('PATCH',
-                           f'/api/2.1/unity-catalog/bindings/{securable_type}/{securable_name}',
+                           f'/api/2.1/unity-catalog/bindings/{securable_type.value}/{securable_name}',
                            body=body,
                            headers=headers)
         return WorkspaceBindingsResponse.from_dict(res)

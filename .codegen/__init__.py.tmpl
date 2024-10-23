@@ -5,10 +5,12 @@ from databricks.sdk.credentials_provider import CredentialsStrategy
 from databricks.sdk.mixins.files import DbfsExt
 from databricks.sdk.mixins.compute import ClustersExt
 from databricks.sdk.mixins.workspace import WorkspaceExt
-{{- range .Services}} {{if not .IsDataPlane}}
-from databricks.sdk.service.{{.Package.Name}} import {{.PascalName}}API{{end}}{{end}}
+from databricks.sdk.mixins.open_ai_client import ServingEndpointsExt
+{{- range .Services}}
+from databricks.sdk.service.{{.Package.Name}} import {{.PascalName}}API{{end}}
 from databricks.sdk.service.provisioning import Workspace
 from databricks.sdk import azure
+from typing import Optional
 
 {{$args := list "host" "account_id" "username" "password" "client_id" "client_secret"
   "token" "profile" "config_file" "azure_workspace_resource_id" "azure_client_secret"
@@ -16,7 +18,7 @@ from databricks.sdk import azure
   "google_credentials" "google_service_account" }}
 
 {{- define "api" -}}
-  {{- $mixins := dict "ClustersAPI" "ClustersExt" "DbfsAPI" "DbfsExt" "WorkspaceAPI" "WorkspaceExt" -}}
+  {{- $mixins := dict "ClustersAPI" "ClustersExt" "DbfsAPI" "DbfsExt" "WorkspaceAPI" "WorkspaceExt" "ServingEndpointsAPI" "ServingEndpointsExt" -}}
   {{- $genApi := concat .PascalName "API" -}}
   {{- getOrDefault $mixins $genApi $genApi -}}
 {{- end -}}
@@ -41,14 +43,14 @@ class WorkspaceClient:
     """
     The WorkspaceClient is a client for the workspace-level Databricks REST API.
     """
-    def __init__(self, *{{range $args}}, {{.}}: str = None{{end}},
-                 debug_truncate_bytes: int = None,
-                 debug_headers: bool = None,
+    def __init__(self, *{{range $args}}, {{.}}: Optional[str] = None{{end}},
+                 debug_truncate_bytes: Optional[int] = None,
+                 debug_headers: Optional[bool] = None,
                  product="unknown",
                  product_version="0.0.0",
-                 credentials_strategy: CredentialsStrategy = None,
-                 credentials_provider: CredentialsStrategy = None,
-                 config: client.Config = None):
+                 credentials_strategy: Optional[CredentialsStrategy] = None,
+                 credentials_provider: Optional[CredentialsStrategy] = None,
+                 config: Optional[client.Config] = None):
         if not config:
           config = client.Config({{range $args}}{{.}}={{.}}, {{end}}
             credentials_strategy=credentials_strategy,
@@ -61,8 +63,20 @@ class WorkspaceClient:
         self._dbutils = _make_dbutils(self._config)
         self._api_client = client.ApiClient(self._config)
 
-        {{- range .Services}}{{if and (not .IsAccounts) (not .HasParent) (not .IsDataPlane)}}
-        self._{{.SnakeName}} = {{template "api" .}}(self._api_client){{end -}}{{end}}
+        {{- range .Services}}{{if and (not .IsAccounts) (not .HasParent) .HasDataPlaneAPI (not .IsDataPlane)}}
+        {{.SnakeName}} = {{template "api" .}}(self._api_client){{end -}}{{end}}
+
+        {{- range .Services}}
+        {{- if and (not .IsAccounts) (not .HasParent)}}
+        {{- if .IsDataPlane}}
+        self._{{.SnakeName}} = {{template "api" .}}(self._api_client, {{.ControlPlaneService.SnakeName}})
+        {{- else if .HasDataPlaneAPI}}
+        self._{{.SnakeName}} = {{.SnakeName}}
+        {{- else}}
+        self._{{.SnakeName}} = {{template "api" .}}(self._api_client)
+        {{- end -}}
+        {{- end -}}
+        {{end}}
 
     @property
     def config(self) -> client.Config:
@@ -76,7 +90,7 @@ class WorkspaceClient:
     def dbutils(self) -> dbutils.RemoteDbUtils:
         return self._dbutils
 
-    {{- range .Services}}{{if and (not .IsAccounts) (not .HasParent) (not .IsDataPlane)}}
+    {{- range .Services}}{{if and (not .IsAccounts) (not .HasParent)}}
     @property
     def {{.SnakeName}}(self) -> {{template "api" .}}:
         {{if .Description}}"""{{.Summary}}"""{{end}}
@@ -98,14 +112,14 @@ class AccountClient:
     The AccountClient is a client for the account-level Databricks REST API.
     """
 
-    def __init__(self, *{{range $args}}, {{.}}: str = None{{end}},
-                 debug_truncate_bytes: int = None,
-                 debug_headers: bool = None,
+    def __init__(self, *{{range $args}}, {{.}}: Optional[str] = None{{end}},
+                 debug_truncate_bytes: Optional[int] = None,
+                 debug_headers: Optional[bool] = None,
                  product="unknown",
                  product_version="0.0.0",
-                 credentials_strategy: CredentialsStrategy = None,
-                 credentials_provider: CredentialsStrategy = None,
-                 config: client.Config = None):
+                 credentials_strategy: Optional[CredentialsStrategy] = None,
+                 credentials_provider: Optional[CredentialsStrategy] = None,
+                 config: Optional[client.Config] = None):
         if not config:
           config = client.Config({{range $args}}{{.}}={{.}}, {{end}}
             credentials_strategy=credentials_strategy,
@@ -117,8 +131,20 @@ class AccountClient:
         self._config = config.copy()
         self._api_client = client.ApiClient(self._config)
 
-        {{- range .Services}}{{if and .IsAccounts (not .HasParent) (not .IsDataPlane)}}
-        self._{{(.TrimPrefix "account").SnakeName}} = {{template "api" .}}(self._api_client){{end -}}{{end}}
+        {{- range .Services}}{{if and .IsAccounts (not .HasParent) .HasDataPlaneAPI (not .IsDataPlane)}}
+        {{(.TrimPrefix "account").SnakeName}} = {{template "api" .}}(self._api_client){{end -}}{{end}}
+
+        {{- range .Services}}
+        {{- if and .IsAccounts (not .HasParent)}}
+        {{- if .IsDataPlane}}
+        self._{{(.TrimPrefix "account").SnakeName}} = {{template "api" .}}(self._api_client, {{.ControlPlaneService.SnakeName}})
+        {{- else if .HasDataPlaneAPI}}
+        self._{{(.TrimPrefix "account").SnakeName}} = {{(.TrimPrefix "account").SnakeName}}
+        {{- else}}
+        self._{{(.TrimPrefix "account").SnakeName}} = {{template "api" .}}(self._api_client)
+        {{- end -}}
+        {{- end -}}
+        {{end}}
 
     @property
     def config(self) -> client.Config:
@@ -128,7 +154,7 @@ class AccountClient:
     def api_client(self) -> client.ApiClient:
         return self._api_client
 
-    {{- range .Services}}{{if and .IsAccounts (not .HasParent) (not .IsDataPlane)}}
+    {{- range .Services}}{{if and .IsAccounts (not .HasParent)}}
     @property
     def {{(.TrimPrefix "account").SnakeName}}(self) -> {{template "api" .}}:{{if .Description}}
         """{{.Summary}}"""{{end}}

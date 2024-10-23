@@ -51,6 +51,22 @@ class AutomaticClusterUpdateSetting:
 
 
 @dataclass
+class BooleanMessage:
+    value: Optional[bool] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the BooleanMessage into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.value is not None: body['value'] = self.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> BooleanMessage:
+        """Deserializes the BooleanMessage from a dictionary."""
+        return cls(value=d.get('value', None))
+
+
+@dataclass
 class ClusterAutoRestartMessage:
     can_toggle: Optional[bool] = None
 
@@ -147,7 +163,6 @@ class ClusterAutoRestartMessageMaintenanceWindow:
 
 class ClusterAutoRestartMessageMaintenanceWindowDayOfWeek(Enum):
 
-    DAY_OF_WEEK_UNSPECIFIED = 'DAY_OF_WEEK_UNSPECIFIED'
     FRIDAY = 'FRIDAY'
     MONDAY = 'MONDAY'
     SATURDAY = 'SATURDAY'
@@ -192,7 +207,6 @@ class ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency(Enum):
     SECOND_AND_FOURTH_OF_MONTH = 'SECOND_AND_FOURTH_OF_MONTH'
     SECOND_OF_MONTH = 'SECOND_OF_MONTH'
     THIRD_OF_MONTH = 'THIRD_OF_MONTH'
-    WEEK_DAY_FREQUENCY_UNSPECIFIED = 'WEEK_DAY_FREQUENCY_UNSPECIFIED'
 
 
 @dataclass
@@ -281,7 +295,7 @@ class ComplianceSecurityProfileSetting:
 class ComplianceStandard(Enum):
     """Compliance stardard for SHIELD customers"""
 
-    COMPLIANCE_STANDARD_UNSPECIFIED = 'COMPLIANCE_STANDARD_UNSPECIFIED'
+    CANADA_PROTECTED_B = 'CANADA_PROTECTED_B'
     CYBER_ESSENTIAL_PLUS = 'CYBER_ESSENTIAL_PLUS'
     FEDRAMP_HIGH = 'FEDRAMP_HIGH'
     FEDRAMP_IL5 = 'FEDRAMP_IL5'
@@ -291,6 +305,38 @@ class ComplianceStandard(Enum):
     ITAR_EAR = 'ITAR_EAR'
     NONE = 'NONE'
     PCI_DSS = 'PCI_DSS'
+
+
+@dataclass
+class Config:
+    email: Optional[EmailConfig] = None
+
+    generic_webhook: Optional[GenericWebhookConfig] = None
+
+    microsoft_teams: Optional[MicrosoftTeamsConfig] = None
+
+    pagerduty: Optional[PagerdutyConfig] = None
+
+    slack: Optional[SlackConfig] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the Config into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.email: body['email'] = self.email.as_dict()
+        if self.generic_webhook: body['generic_webhook'] = self.generic_webhook.as_dict()
+        if self.microsoft_teams: body['microsoft_teams'] = self.microsoft_teams.as_dict()
+        if self.pagerduty: body['pagerduty'] = self.pagerduty.as_dict()
+        if self.slack: body['slack'] = self.slack.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> Config:
+        """Deserializes the Config from a dictionary."""
+        return cls(email=_from_dict(d, 'email', EmailConfig),
+                   generic_webhook=_from_dict(d, 'generic_webhook', GenericWebhookConfig),
+                   microsoft_teams=_from_dict(d, 'microsoft_teams', MicrosoftTeamsConfig),
+                   pagerduty=_from_dict(d, 'pagerduty', PagerdutyConfig),
+                   slack=_from_dict(d, 'slack', SlackConfig))
 
 
 @dataclass
@@ -365,6 +411,27 @@ class CreateNetworkConnectivityConfigRequest:
     def from_dict(cls, d: Dict[str, any]) -> CreateNetworkConnectivityConfigRequest:
         """Deserializes the CreateNetworkConnectivityConfigRequest from a dictionary."""
         return cls(name=d.get('name', None), region=d.get('region', None))
+
+
+@dataclass
+class CreateNotificationDestinationRequest:
+    config: Optional[Config] = None
+    """The configuration for the notification destination. Must wrap EXACTLY one of the nested configs."""
+
+    display_name: Optional[str] = None
+    """The display name for the notification destination."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CreateNotificationDestinationRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.config: body['config'] = self.config.as_dict()
+        if self.display_name is not None: body['display_name'] = self.display_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> CreateNotificationDestinationRequest:
+        """Deserializes the CreateNotificationDestinationRequest from a dictionary."""
+        return cls(config=_from_dict(d, 'config', Config), display_name=d.get('display_name', None))
 
 
 @dataclass
@@ -630,6 +697,78 @@ class DeleteDefaultNamespaceSettingResponse:
 
 
 @dataclass
+class DeleteDisableLegacyAccessResponse:
+    """The etag is returned."""
+
+    etag: str
+    """etag used for versioning. The response is at least as fresh as the eTag provided. This is used
+    for optimistic concurrency control as a way to help prevent simultaneous writes of a setting
+    overwriting each other. It is strongly suggested that systems make use of the etag in the read
+    -> delete pattern to perform setting deletions in order to avoid race conditions. That is, get
+    an etag from a GET request, and pass it with the DELETE request to identify the rule set version
+    you are deleting."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteDisableLegacyAccessResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.etag is not None: body['etag'] = self.etag
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteDisableLegacyAccessResponse:
+        """Deserializes the DeleteDisableLegacyAccessResponse from a dictionary."""
+        return cls(etag=d.get('etag', None))
+
+
+@dataclass
+class DeleteDisableLegacyDbfsResponse:
+    """The etag is returned."""
+
+    etag: str
+    """etag used for versioning. The response is at least as fresh as the eTag provided. This is used
+    for optimistic concurrency control as a way to help prevent simultaneous writes of a setting
+    overwriting each other. It is strongly suggested that systems make use of the etag in the read
+    -> delete pattern to perform setting deletions in order to avoid race conditions. That is, get
+    an etag from a GET request, and pass it with the DELETE request to identify the rule set version
+    you are deleting."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteDisableLegacyDbfsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.etag is not None: body['etag'] = self.etag
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteDisableLegacyDbfsResponse:
+        """Deserializes the DeleteDisableLegacyDbfsResponse from a dictionary."""
+        return cls(etag=d.get('etag', None))
+
+
+@dataclass
+class DeleteDisableLegacyFeaturesResponse:
+    """The etag is returned."""
+
+    etag: str
+    """etag used for versioning. The response is at least as fresh as the eTag provided. This is used
+    for optimistic concurrency control as a way to help prevent simultaneous writes of a setting
+    overwriting each other. It is strongly suggested that systems make use of the etag in the read
+    -> delete pattern to perform setting deletions in order to avoid race conditions. That is, get
+    an etag from a GET request, and pass it with the DELETE request to identify the rule set version
+    you are deleting."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteDisableLegacyFeaturesResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.etag is not None: body['etag'] = self.etag
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteDisableLegacyFeaturesResponse:
+        """Deserializes the DeleteDisableLegacyFeaturesResponse from a dictionary."""
+        return cls(etag=d.get('etag', None))
+
+
+@dataclass
 class DeleteNetworkConnectivityConfigurationResponse:
 
     def as_dict(self) -> dict:
@@ -703,6 +842,149 @@ class DeleteRestrictWorkspaceAdminsSettingResponse:
     def from_dict(cls, d: Dict[str, any]) -> DeleteRestrictWorkspaceAdminsSettingResponse:
         """Deserializes the DeleteRestrictWorkspaceAdminsSettingResponse from a dictionary."""
         return cls(etag=d.get('etag', None))
+
+
+class DestinationType(Enum):
+
+    EMAIL = 'EMAIL'
+    MICROSOFT_TEAMS = 'MICROSOFT_TEAMS'
+    PAGERDUTY = 'PAGERDUTY'
+    SLACK = 'SLACK'
+    WEBHOOK = 'WEBHOOK'
+
+
+@dataclass
+class DisableLegacyAccess:
+    disable_legacy_access: BooleanMessage
+
+    etag: Optional[str] = None
+    """etag used for versioning. The response is at least as fresh as the eTag provided. This is used
+    for optimistic concurrency control as a way to help prevent simultaneous writes of a setting
+    overwriting each other. It is strongly suggested that systems make use of the etag in the read
+    -> update pattern to perform setting updates in order to avoid race conditions. That is, get an
+    etag from a GET request, and pass it with the PATCH request to identify the setting version you
+    are updating."""
+
+    setting_name: Optional[str] = None
+    """Name of the corresponding setting. This field is populated in the response, but it will not be
+    respected even if it's set in the request body. The setting name in the path parameter will be
+    respected instead. Setting name is required to be 'default' if the setting only has one instance
+    per workspace."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DisableLegacyAccess into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.disable_legacy_access: body['disable_legacy_access'] = self.disable_legacy_access.as_dict()
+        if self.etag is not None: body['etag'] = self.etag
+        if self.setting_name is not None: body['setting_name'] = self.setting_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DisableLegacyAccess:
+        """Deserializes the DisableLegacyAccess from a dictionary."""
+        return cls(disable_legacy_access=_from_dict(d, 'disable_legacy_access', BooleanMessage),
+                   etag=d.get('etag', None),
+                   setting_name=d.get('setting_name', None))
+
+
+@dataclass
+class DisableLegacyDbfs:
+    disable_legacy_dbfs: BooleanMessage
+
+    etag: Optional[str] = None
+    """etag used for versioning. The response is at least as fresh as the eTag provided. This is used
+    for optimistic concurrency control as a way to help prevent simultaneous writes of a setting
+    overwriting each other. It is strongly suggested that systems make use of the etag in the read
+    -> update pattern to perform setting updates in order to avoid race conditions. That is, get an
+    etag from a GET request, and pass it with the PATCH request to identify the setting version you
+    are updating."""
+
+    setting_name: Optional[str] = None
+    """Name of the corresponding setting. This field is populated in the response, but it will not be
+    respected even if it's set in the request body. The setting name in the path parameter will be
+    respected instead. Setting name is required to be 'default' if the setting only has one instance
+    per workspace."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DisableLegacyDbfs into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.disable_legacy_dbfs: body['disable_legacy_dbfs'] = self.disable_legacy_dbfs.as_dict()
+        if self.etag is not None: body['etag'] = self.etag
+        if self.setting_name is not None: body['setting_name'] = self.setting_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DisableLegacyDbfs:
+        """Deserializes the DisableLegacyDbfs from a dictionary."""
+        return cls(disable_legacy_dbfs=_from_dict(d, 'disable_legacy_dbfs', BooleanMessage),
+                   etag=d.get('etag', None),
+                   setting_name=d.get('setting_name', None))
+
+
+@dataclass
+class DisableLegacyFeatures:
+    disable_legacy_features: BooleanMessage
+
+    etag: Optional[str] = None
+    """etag used for versioning. The response is at least as fresh as the eTag provided. This is used
+    for optimistic concurrency control as a way to help prevent simultaneous writes of a setting
+    overwriting each other. It is strongly suggested that systems make use of the etag in the read
+    -> update pattern to perform setting updates in order to avoid race conditions. That is, get an
+    etag from a GET request, and pass it with the PATCH request to identify the setting version you
+    are updating."""
+
+    setting_name: Optional[str] = None
+    """Name of the corresponding setting. This field is populated in the response, but it will not be
+    respected even if it's set in the request body. The setting name in the path parameter will be
+    respected instead. Setting name is required to be 'default' if the setting only has one instance
+    per workspace."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DisableLegacyFeatures into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.disable_legacy_features:
+            body['disable_legacy_features'] = self.disable_legacy_features.as_dict()
+        if self.etag is not None: body['etag'] = self.etag
+        if self.setting_name is not None: body['setting_name'] = self.setting_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DisableLegacyFeatures:
+        """Deserializes the DisableLegacyFeatures from a dictionary."""
+        return cls(disable_legacy_features=_from_dict(d, 'disable_legacy_features', BooleanMessage),
+                   etag=d.get('etag', None),
+                   setting_name=d.get('setting_name', None))
+
+
+@dataclass
+class EmailConfig:
+    addresses: Optional[List[str]] = None
+    """Email addresses to notify."""
+
+    def as_dict(self) -> dict:
+        """Serializes the EmailConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.addresses: body['addresses'] = [v for v in self.addresses]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> EmailConfig:
+        """Deserializes the EmailConfig from a dictionary."""
+        return cls(addresses=d.get('addresses', None))
+
+
+@dataclass
+class Empty:
+
+    def as_dict(self) -> dict:
+        """Serializes the Empty into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> Empty:
+        """Deserializes the Empty from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -921,6 +1203,48 @@ class FetchIpAccessListResponse:
 
 
 @dataclass
+class GenericWebhookConfig:
+    password: Optional[str] = None
+    """[Input-Only][Optional] Password for webhook."""
+
+    password_set: Optional[bool] = None
+    """[Output-Only] Whether password is set."""
+
+    url: Optional[str] = None
+    """[Input-Only] URL for webhook."""
+
+    url_set: Optional[bool] = None
+    """[Output-Only] Whether URL is set."""
+
+    username: Optional[str] = None
+    """[Input-Only][Optional] Username for webhook."""
+
+    username_set: Optional[bool] = None
+    """[Output-Only] Whether username is set."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GenericWebhookConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.password is not None: body['password'] = self.password
+        if self.password_set is not None: body['password_set'] = self.password_set
+        if self.url is not None: body['url'] = self.url
+        if self.url_set is not None: body['url_set'] = self.url_set
+        if self.username is not None: body['username'] = self.username
+        if self.username_set is not None: body['username_set'] = self.username_set
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> GenericWebhookConfig:
+        """Deserializes the GenericWebhookConfig from a dictionary."""
+        return cls(password=d.get('password', None),
+                   password_set=d.get('password_set', None),
+                   url=d.get('url', None),
+                   url_set=d.get('url_set', None),
+                   username=d.get('username', None),
+                   username_set=d.get('username_set', None))
+
+
+@dataclass
 class GetIpAccessListResponse:
     ip_access_list: Optional[IpAccessListInfo] = None
     """Definition of an IP Access list"""
@@ -1119,6 +1443,54 @@ class ListNetworkConnectivityConfigurationsResponse:
 
 
 @dataclass
+class ListNotificationDestinationsResponse:
+    next_page_token: Optional[str] = None
+    """Page token for next of results."""
+
+    results: Optional[List[ListNotificationDestinationsResult]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ListNotificationDestinationsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.results: body['results'] = [v.as_dict() for v in self.results]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ListNotificationDestinationsResponse:
+        """Deserializes the ListNotificationDestinationsResponse from a dictionary."""
+        return cls(next_page_token=d.get('next_page_token', None),
+                   results=_repeated_dict(d, 'results', ListNotificationDestinationsResult))
+
+
+@dataclass
+class ListNotificationDestinationsResult:
+    destination_type: Optional[DestinationType] = None
+    """[Output-only] The type of the notification destination. The type can not be changed once set."""
+
+    display_name: Optional[str] = None
+    """The display name for the notification destination."""
+
+    id: Optional[str] = None
+    """UUID identifying notification destination."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListNotificationDestinationsResult into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.destination_type is not None: body['destination_type'] = self.destination_type.value
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.id is not None: body['id'] = self.id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ListNotificationDestinationsResult:
+        """Deserializes the ListNotificationDestinationsResult from a dictionary."""
+        return cls(destination_type=_enum(d, 'destination_type', DestinationType),
+                   display_name=d.get('display_name', None),
+                   id=d.get('id', None))
+
+
+@dataclass
 class ListPublicTokensResponse:
     token_infos: Optional[List[PublicTokenInfo]] = None
     """The information for each token."""
@@ -1162,6 +1534,27 @@ class ListType(Enum):
 
     ALLOW = 'ALLOW'
     BLOCK = 'BLOCK'
+
+
+@dataclass
+class MicrosoftTeamsConfig:
+    url: Optional[str] = None
+    """[Input-Only] URL for Microsoft Teams."""
+
+    url_set: Optional[bool] = None
+    """[Output-Only] Whether URL is set."""
+
+    def as_dict(self) -> dict:
+        """Serializes the MicrosoftTeamsConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.url is not None: body['url'] = self.url
+        if self.url_set is not None: body['url_set'] = self.url_set
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> MicrosoftTeamsConfig:
+        """Deserializes the MicrosoftTeamsConfig from a dictionary."""
+        return cls(url=d.get('url', None), url_set=d.get('url_set', None))
 
 
 @dataclass
@@ -1451,6 +1844,61 @@ class NetworkConnectivityConfiguration:
 
 
 @dataclass
+class NotificationDestination:
+    config: Optional[Config] = None
+    """The configuration for the notification destination. Will be exactly one of the nested configs.
+    Only returns for users with workspace admin permissions."""
+
+    destination_type: Optional[DestinationType] = None
+    """[Output-only] The type of the notification destination. The type can not be changed once set."""
+
+    display_name: Optional[str] = None
+    """The display name for the notification destination."""
+
+    id: Optional[str] = None
+    """UUID identifying notification destination."""
+
+    def as_dict(self) -> dict:
+        """Serializes the NotificationDestination into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.config: body['config'] = self.config.as_dict()
+        if self.destination_type is not None: body['destination_type'] = self.destination_type.value
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.id is not None: body['id'] = self.id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> NotificationDestination:
+        """Deserializes the NotificationDestination from a dictionary."""
+        return cls(config=_from_dict(d, 'config', Config),
+                   destination_type=_enum(d, 'destination_type', DestinationType),
+                   display_name=d.get('display_name', None),
+                   id=d.get('id', None))
+
+
+@dataclass
+class PagerdutyConfig:
+    integration_key: Optional[str] = None
+    """[Input-Only] Integration key for PagerDuty."""
+
+    integration_key_set: Optional[bool] = None
+    """[Output-Only] Whether integration key is set."""
+
+    def as_dict(self) -> dict:
+        """Serializes the PagerdutyConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.integration_key is not None: body['integration_key'] = self.integration_key
+        if self.integration_key_set is not None: body['integration_key_set'] = self.integration_key_set
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> PagerdutyConfig:
+        """Deserializes the PagerdutyConfig from a dictionary."""
+        return cls(integration_key=d.get('integration_key', None),
+                   integration_key_set=d.get('integration_key_set', None))
+
+
+@dataclass
 class PartitionId:
     """Partition by workspace or account"""
 
@@ -1642,7 +2090,6 @@ class RestrictWorkspaceAdminsMessageStatus(Enum):
 
     ALLOW_ALL = 'ALLOW_ALL'
     RESTRICT_TOKENS_AND_JOB_RUN_AS = 'RESTRICT_TOKENS_AND_JOB_RUN_AS'
-    STATUS_UNSPECIFIED = 'STATUS_UNSPECIFIED'
 
 
 @dataclass
@@ -1724,6 +2171,27 @@ class SetStatusResponse:
     def from_dict(cls, d: Dict[str, any]) -> SetStatusResponse:
         """Deserializes the SetStatusResponse from a dictionary."""
         return cls()
+
+
+@dataclass
+class SlackConfig:
+    url: Optional[str] = None
+    """[Input-Only] URL for Slack destination."""
+
+    url_set: Optional[bool] = None
+    """[Output-Only] Whether URL is set."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SlackConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.url is not None: body['url'] = self.url
+        if self.url_set is not None: body['url_set'] = self.url_set
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> SlackConfig:
+        """Deserializes the SlackConfig from a dictionary."""
+        return cls(url=d.get('url', None), url_set=d.get('url_set', None))
 
 
 @dataclass
@@ -1837,6 +2305,9 @@ class TokenInfo:
     token_id: Optional[str] = None
     """ID of the token."""
 
+    workspace_id: Optional[int] = None
+    """If applicable, the ID of the workspace that the token was created in."""
+
     def as_dict(self) -> dict:
         """Serializes the TokenInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1847,6 +2318,7 @@ class TokenInfo:
         if self.expiry_time is not None: body['expiry_time'] = self.expiry_time
         if self.owner_id is not None: body['owner_id'] = self.owner_id
         if self.token_id is not None: body['token_id'] = self.token_id
+        if self.workspace_id is not None: body['workspace_id'] = self.workspace_id
         return body
 
     @classmethod
@@ -1858,7 +2330,8 @@ class TokenInfo:
                    creation_time=d.get('creation_time', None),
                    expiry_time=d.get('expiry_time', None),
                    owner_id=d.get('owner_id', None),
-                   token_id=d.get('token_id', None))
+                   token_id=d.get('token_id', None),
+                   workspace_id=d.get('workspace_id', None))
 
 
 @dataclass
@@ -1958,6 +2431,7 @@ class TokenPermissionsRequest:
 class TokenType(Enum):
     """The type of token request. As of now, only `AZURE_ACTIVE_DIRECTORY_TOKEN` is supported."""
 
+    ARCLIGHT_AZURE_EXCHANGE_TOKEN = 'ARCLIGHT_AZURE_EXCHANGE_TOKEN'
     AZURE_ACTIVE_DIRECTORY_TOKEN = 'AZURE_ACTIVE_DIRECTORY_TOKEN'
 
 
@@ -2089,6 +2563,96 @@ class UpdateDefaultNamespaceSettingRequest:
 
 
 @dataclass
+class UpdateDisableLegacyAccessRequest:
+    """Details required to update a setting."""
+
+    allow_missing: bool
+    """This should always be set to true for Settings API. Added for AIP compliance."""
+
+    setting: DisableLegacyAccess
+
+    field_mask: str
+    """Field mask is required to be passed into the PATCH request. Field mask specifies which fields of
+    the setting payload will be updated. The field mask needs to be supplied as single string. To
+    specify multiple fields in the field mask, use comma as the separator (no space)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateDisableLegacyAccessRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.allow_missing is not None: body['allow_missing'] = self.allow_missing
+        if self.field_mask is not None: body['field_mask'] = self.field_mask
+        if self.setting: body['setting'] = self.setting.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateDisableLegacyAccessRequest:
+        """Deserializes the UpdateDisableLegacyAccessRequest from a dictionary."""
+        return cls(allow_missing=d.get('allow_missing', None),
+                   field_mask=d.get('field_mask', None),
+                   setting=_from_dict(d, 'setting', DisableLegacyAccess))
+
+
+@dataclass
+class UpdateDisableLegacyDbfsRequest:
+    """Details required to update a setting."""
+
+    allow_missing: bool
+    """This should always be set to true for Settings API. Added for AIP compliance."""
+
+    setting: DisableLegacyDbfs
+
+    field_mask: str
+    """Field mask is required to be passed into the PATCH request. Field mask specifies which fields of
+    the setting payload will be updated. The field mask needs to be supplied as single string. To
+    specify multiple fields in the field mask, use comma as the separator (no space)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateDisableLegacyDbfsRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.allow_missing is not None: body['allow_missing'] = self.allow_missing
+        if self.field_mask is not None: body['field_mask'] = self.field_mask
+        if self.setting: body['setting'] = self.setting.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateDisableLegacyDbfsRequest:
+        """Deserializes the UpdateDisableLegacyDbfsRequest from a dictionary."""
+        return cls(allow_missing=d.get('allow_missing', None),
+                   field_mask=d.get('field_mask', None),
+                   setting=_from_dict(d, 'setting', DisableLegacyDbfs))
+
+
+@dataclass
+class UpdateDisableLegacyFeaturesRequest:
+    """Details required to update a setting."""
+
+    allow_missing: bool
+    """This should always be set to true for Settings API. Added for AIP compliance."""
+
+    setting: DisableLegacyFeatures
+
+    field_mask: str
+    """Field mask is required to be passed into the PATCH request. Field mask specifies which fields of
+    the setting payload will be updated. The field mask needs to be supplied as single string. To
+    specify multiple fields in the field mask, use comma as the separator (no space)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateDisableLegacyFeaturesRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.allow_missing is not None: body['allow_missing'] = self.allow_missing
+        if self.field_mask is not None: body['field_mask'] = self.field_mask
+        if self.setting: body['setting'] = self.setting.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateDisableLegacyFeaturesRequest:
+        """Deserializes the UpdateDisableLegacyFeaturesRequest from a dictionary."""
+        return cls(allow_missing=d.get('allow_missing', None),
+                   field_mask=d.get('field_mask', None),
+                   setting=_from_dict(d, 'setting', DisableLegacyFeatures))
+
+
+@dataclass
 class UpdateEnhancedSecurityMonitoringSettingRequest:
     """Details required to update a setting."""
 
@@ -2187,6 +2751,32 @@ class UpdateIpAccessList:
                    ip_addresses=d.get('ip_addresses', None),
                    label=d.get('label', None),
                    list_type=_enum(d, 'list_type', ListType))
+
+
+@dataclass
+class UpdateNotificationDestinationRequest:
+    config: Optional[Config] = None
+    """The configuration for the notification destination. Must wrap EXACTLY one of the nested configs."""
+
+    display_name: Optional[str] = None
+    """The display name for the notification destination."""
+
+    id: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateNotificationDestinationRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.config: body['config'] = self.config.as_dict()
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.id is not None: body['id'] = self.id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateNotificationDestinationRequest:
+        """Deserializes the UpdateNotificationDestinationRequest from a dictionary."""
+        return cls(config=_from_dict(d, 'config', Config),
+                   display_name=d.get('display_name', None),
+                   id=d.get('id', None))
 
 
 @dataclass
@@ -2488,6 +3078,7 @@ class AccountSettingsAPI:
         self._api = api_client
 
         self._csp_enablement_account = CspEnablementAccountAPI(self._api)
+        self._disable_legacy_features = DisableLegacyFeaturesAPI(self._api)
         self._esm_enablement_account = EsmEnablementAccountAPI(self._api)
         self._personal_compute = PersonalComputeAPI(self._api)
 
@@ -2495,6 +3086,11 @@ class AccountSettingsAPI:
     def csp_enablement_account(self) -> CspEnablementAccountAPI:
         """The compliance security profile settings at the account level control whether to enable it for new workspaces."""
         return self._csp_enablement_account
+
+    @property
+    def disable_legacy_features(self) -> DisableLegacyFeaturesAPI:
+        """Disable legacy features for new Databricks workspaces."""
+        return self._disable_legacy_features
 
     @property
     def esm_enablement_account(self) -> EsmEnablementAccountAPI:
@@ -2847,6 +3443,273 @@ class DefaultNamespaceAPI:
                            body=body,
                            headers=headers)
         return DefaultNamespaceSetting.from_dict(res)
+
+
+class DisableLegacyAccessAPI:
+    """'Disabling legacy access' has the following impacts:
+    
+    1. Disables direct access to the Hive Metastore. However, you can still access Hive Metastore through HMS
+    Federation. 2. Disables Fallback Mode (docs link) on any External Location access from the workspace. 3.
+    Alters DBFS path access to use External Location permissions in place of legacy credentials. 4. Enforces
+    Unity Catalog access on all path based access."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def delete(self, *, etag: Optional[str] = None) -> DeleteDisableLegacyAccessResponse:
+        """Delete Legacy Access Disablement Status.
+        
+        Deletes legacy access disablement status.
+        
+        :param etag: str (optional)
+          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
+          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
+          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
+          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
+          request, and pass it with the DELETE request to identify the rule set version you are deleting.
+        
+        :returns: :class:`DeleteDisableLegacyAccessResponse`
+        """
+
+        query = {}
+        if etag is not None: query['etag'] = etag
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do('DELETE',
+                           '/api/2.0/settings/types/disable_legacy_access/names/default',
+                           query=query,
+                           headers=headers)
+        return DeleteDisableLegacyAccessResponse.from_dict(res)
+
+    def get(self, *, etag: Optional[str] = None) -> DisableLegacyAccess:
+        """Retrieve Legacy Access Disablement Status.
+        
+        Retrieves legacy access disablement Status.
+        
+        :param etag: str (optional)
+          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
+          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
+          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
+          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
+          request, and pass it with the DELETE request to identify the rule set version you are deleting.
+        
+        :returns: :class:`DisableLegacyAccess`
+        """
+
+        query = {}
+        if etag is not None: query['etag'] = etag
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do('GET',
+                           '/api/2.0/settings/types/disable_legacy_access/names/default',
+                           query=query,
+                           headers=headers)
+        return DisableLegacyAccess.from_dict(res)
+
+    def update(self, allow_missing: bool, setting: DisableLegacyAccess,
+               field_mask: str) -> DisableLegacyAccess:
+        """Update Legacy Access Disablement Status.
+        
+        Updates legacy access disablement status.
+        
+        :param allow_missing: bool
+          This should always be set to true for Settings API. Added for AIP compliance.
+        :param setting: :class:`DisableLegacyAccess`
+        :param field_mask: str
+          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
+          setting payload will be updated. The field mask needs to be supplied as single string. To specify
+          multiple fields in the field mask, use comma as the separator (no space).
+        
+        :returns: :class:`DisableLegacyAccess`
+        """
+        body = {}
+        if allow_missing is not None: body['allow_missing'] = allow_missing
+        if field_mask is not None: body['field_mask'] = field_mask
+        if setting is not None: body['setting'] = setting.as_dict()
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do('PATCH',
+                           '/api/2.0/settings/types/disable_legacy_access/names/default',
+                           body=body,
+                           headers=headers)
+        return DisableLegacyAccess.from_dict(res)
+
+
+class DisableLegacyDbfsAPI:
+    """When this setting is on, access to DBFS root and DBFS mounts is disallowed (as well as creation of new
+    mounts). When the setting is off, all DBFS functionality is enabled"""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def delete(self, *, etag: Optional[str] = None) -> DeleteDisableLegacyDbfsResponse:
+        """Delete the disable legacy DBFS setting.
+        
+        Deletes the disable legacy DBFS setting for a workspace, reverting back to the default.
+        
+        :param etag: str (optional)
+          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
+          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
+          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
+          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
+          request, and pass it with the DELETE request to identify the rule set version you are deleting.
+        
+        :returns: :class:`DeleteDisableLegacyDbfsResponse`
+        """
+
+        query = {}
+        if etag is not None: query['etag'] = etag
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do('DELETE',
+                           '/api/2.0/settings/types/disable_legacy_dbfs/names/default',
+                           query=query,
+                           headers=headers)
+        return DeleteDisableLegacyDbfsResponse.from_dict(res)
+
+    def get(self, *, etag: Optional[str] = None) -> DisableLegacyDbfs:
+        """Get the disable legacy DBFS setting.
+        
+        Gets the disable legacy DBFS setting.
+        
+        :param etag: str (optional)
+          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
+          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
+          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
+          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
+          request, and pass it with the DELETE request to identify the rule set version you are deleting.
+        
+        :returns: :class:`DisableLegacyDbfs`
+        """
+
+        query = {}
+        if etag is not None: query['etag'] = etag
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do('GET',
+                           '/api/2.0/settings/types/disable_legacy_dbfs/names/default',
+                           query=query,
+                           headers=headers)
+        return DisableLegacyDbfs.from_dict(res)
+
+    def update(self, allow_missing: bool, setting: DisableLegacyDbfs, field_mask: str) -> DisableLegacyDbfs:
+        """Update the disable legacy DBFS setting.
+        
+        Updates the disable legacy DBFS setting for the workspace.
+        
+        :param allow_missing: bool
+          This should always be set to true for Settings API. Added for AIP compliance.
+        :param setting: :class:`DisableLegacyDbfs`
+        :param field_mask: str
+          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
+          setting payload will be updated. The field mask needs to be supplied as single string. To specify
+          multiple fields in the field mask, use comma as the separator (no space).
+        
+        :returns: :class:`DisableLegacyDbfs`
+        """
+        body = {}
+        if allow_missing is not None: body['allow_missing'] = allow_missing
+        if field_mask is not None: body['field_mask'] = field_mask
+        if setting is not None: body['setting'] = setting.as_dict()
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do('PATCH',
+                           '/api/2.0/settings/types/disable_legacy_dbfs/names/default',
+                           body=body,
+                           headers=headers)
+        return DisableLegacyDbfs.from_dict(res)
+
+
+class DisableLegacyFeaturesAPI:
+    """Disable legacy features for new Databricks workspaces.
+    
+    For newly created workspaces: 1. Disables the use of DBFS root and mounts. 2. Hive Metastore will not be
+    provisioned. 3. Disables the use of ‘No-isolation clusters’. 4. Disables Databricks Runtime versions
+    prior to 13.3LTS."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def delete(self, *, etag: Optional[str] = None) -> DeleteDisableLegacyFeaturesResponse:
+        """Delete the disable legacy features setting.
+        
+        Deletes the disable legacy features setting.
+        
+        :param etag: str (optional)
+          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
+          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
+          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
+          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
+          request, and pass it with the DELETE request to identify the rule set version you are deleting.
+        
+        :returns: :class:`DeleteDisableLegacyFeaturesResponse`
+        """
+
+        query = {}
+        if etag is not None: query['etag'] = etag
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do(
+            'DELETE',
+            f'/api/2.0/accounts/{self._api.account_id}/settings/types/disable_legacy_features/names/default',
+            query=query,
+            headers=headers)
+        return DeleteDisableLegacyFeaturesResponse.from_dict(res)
+
+    def get(self, *, etag: Optional[str] = None) -> DisableLegacyFeatures:
+        """Get the disable legacy features setting.
+        
+        Gets the value of the disable legacy features setting.
+        
+        :param etag: str (optional)
+          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
+          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
+          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
+          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
+          request, and pass it with the DELETE request to identify the rule set version you are deleting.
+        
+        :returns: :class:`DisableLegacyFeatures`
+        """
+
+        query = {}
+        if etag is not None: query['etag'] = etag
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do(
+            'GET',
+            f'/api/2.0/accounts/{self._api.account_id}/settings/types/disable_legacy_features/names/default',
+            query=query,
+            headers=headers)
+        return DisableLegacyFeatures.from_dict(res)
+
+    def update(self, allow_missing: bool, setting: DisableLegacyFeatures,
+               field_mask: str) -> DisableLegacyFeatures:
+        """Update the disable legacy features setting.
+        
+        Updates the value of the disable legacy features setting.
+        
+        :param allow_missing: bool
+          This should always be set to true for Settings API. Added for AIP compliance.
+        :param setting: :class:`DisableLegacyFeatures`
+        :param field_mask: str
+          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
+          setting payload will be updated. The field mask needs to be supplied as single string. To specify
+          multiple fields in the field mask, use comma as the separator (no space).
+        
+        :returns: :class:`DisableLegacyFeatures`
+        """
+        body = {}
+        if allow_missing is not None: body['allow_missing'] = allow_missing
+        if field_mask is not None: body['field_mask'] = field_mask
+        if setting is not None: body['setting'] = setting.as_dict()
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do(
+            'PATCH',
+            f'/api/2.0/accounts/{self._api.account_id}/settings/types/disable_legacy_features/names/default',
+            body=body,
+            headers=headers)
+        return DisableLegacyFeatures.from_dict(res)
 
 
 class EnhancedSecurityMonitoringAPI:
@@ -3402,6 +4265,122 @@ class NetworkConnectivityAPI:
             query['page_token'] = json['next_page_token']
 
 
+class NotificationDestinationsAPI:
+    """The notification destinations API lets you programmatically manage a workspace's notification
+    destinations. Notification destinations are used to send notifications for query alerts and jobs to
+    destinations outside of Databricks. Only workspace admins can create, update, and delete notification
+    destinations."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def create(self,
+               *,
+               config: Optional[Config] = None,
+               display_name: Optional[str] = None) -> NotificationDestination:
+        """Create a notification destination.
+        
+        Creates a notification destination. Requires workspace admin permissions.
+        
+        :param config: :class:`Config` (optional)
+          The configuration for the notification destination. Must wrap EXACTLY one of the nested configs.
+        :param display_name: str (optional)
+          The display name for the notification destination.
+        
+        :returns: :class:`NotificationDestination`
+        """
+        body = {}
+        if config is not None: body['config'] = config.as_dict()
+        if display_name is not None: body['display_name'] = display_name
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do('POST', '/api/2.0/notification-destinations', body=body, headers=headers)
+        return NotificationDestination.from_dict(res)
+
+    def delete(self, id: str):
+        """Delete a notification destination.
+        
+        Deletes a notification destination. Requires workspace admin permissions.
+        
+        :param id: str
+        
+        
+        """
+
+        headers = {'Accept': 'application/json', }
+
+        self._api.do('DELETE', f'/api/2.0/notification-destinations/{id}', headers=headers)
+
+    def get(self, id: str) -> NotificationDestination:
+        """Get a notification destination.
+        
+        Gets a notification destination.
+        
+        :param id: str
+        
+        :returns: :class:`NotificationDestination`
+        """
+
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do('GET', f'/api/2.0/notification-destinations/{id}', headers=headers)
+        return NotificationDestination.from_dict(res)
+
+    def list(self,
+             *,
+             page_size: Optional[int] = None,
+             page_token: Optional[str] = None) -> Iterator[ListNotificationDestinationsResult]:
+        """List notification destinations.
+        
+        Lists notification destinations.
+        
+        :param page_size: int (optional)
+        :param page_token: str (optional)
+        
+        :returns: Iterator over :class:`ListNotificationDestinationsResult`
+        """
+
+        query = {}
+        if page_size is not None: query['page_size'] = page_size
+        if page_token is not None: query['page_token'] = page_token
+        headers = {'Accept': 'application/json', }
+
+        while True:
+            json = self._api.do('GET', '/api/2.0/notification-destinations', query=query, headers=headers)
+            if 'results' in json:
+                for v in json['results']:
+                    yield ListNotificationDestinationsResult.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
+
+    def update(self,
+               id: str,
+               *,
+               config: Optional[Config] = None,
+               display_name: Optional[str] = None) -> NotificationDestination:
+        """Update a notification destination.
+        
+        Updates a notification destination. Requires workspace admin permissions. At least one field is
+        required in the request body.
+        
+        :param id: str
+        :param config: :class:`Config` (optional)
+          The configuration for the notification destination. Must wrap EXACTLY one of the nested configs.
+        :param display_name: str (optional)
+          The display name for the notification destination.
+        
+        :returns: :class:`NotificationDestination`
+        """
+        body = {}
+        if config is not None: body['config'] = config.as_dict()
+        if display_name is not None: body['display_name'] = display_name
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do('PATCH', f'/api/2.0/notification-destinations/{id}', body=body, headers=headers)
+        return NotificationDestination.from_dict(res)
+
+
 class PersonalComputeAPI:
     """The Personal Compute enablement setting lets you control which users can use the Personal Compute default
     policy to create compute resources. By default all users in all workspaces have access (ON), but you can
@@ -3604,6 +4583,8 @@ class SettingsAPI:
         self._automatic_cluster_update = AutomaticClusterUpdateAPI(self._api)
         self._compliance_security_profile = ComplianceSecurityProfileAPI(self._api)
         self._default_namespace = DefaultNamespaceAPI(self._api)
+        self._disable_legacy_access = DisableLegacyAccessAPI(self._api)
+        self._disable_legacy_dbfs = DisableLegacyDbfsAPI(self._api)
         self._enhanced_security_monitoring = EnhancedSecurityMonitoringAPI(self._api)
         self._restrict_workspace_admins = RestrictWorkspaceAdminsAPI(self._api)
 
@@ -3621,6 +4602,16 @@ class SettingsAPI:
     def default_namespace(self) -> DefaultNamespaceAPI:
         """The default namespace setting API allows users to configure the default namespace for a Databricks workspace."""
         return self._default_namespace
+
+    @property
+    def disable_legacy_access(self) -> DisableLegacyAccessAPI:
+        """'Disabling legacy access' has the following impacts: 1."""
+        return self._disable_legacy_access
+
+    @property
+    def disable_legacy_dbfs(self) -> DisableLegacyDbfsAPI:
+        """When this setting is on, access to DBFS root and DBFS mounts is disallowed (as well as creation of new mounts)."""
+        return self._disable_legacy_dbfs
 
     @property
     def enhanced_security_monitoring(self) -> EnhancedSecurityMonitoringAPI:

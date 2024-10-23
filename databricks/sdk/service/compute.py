@@ -598,8 +598,13 @@ class ClusterAttributes:
     """The ID of the cluster policy used to create the cluster if applicable."""
 
     runtime_engine: Optional[RuntimeEngine] = None
-    """Decides which runtime engine to be use, e.g. Standard vs. Photon. If unspecified, the runtime
-    engine is inferred from spark_version."""
+    """Determines the cluster's runtime engine, either standard or Photon.
+    
+    This field is not compatible with legacy `spark_version` values that contain `-photon-`. Remove
+    `-photon-` from the `spark_version` and set `runtime_engine` to `PHOTON`.
+    
+    If left unspecified, the runtime engine defaults to standard unless the spark_version contains
+    -photon-, in which case Photon will be used."""
 
     single_user_name: Optional[str] = None
     """Single user name if data_security_mode is `SINGLE_USER`"""
@@ -688,6 +693,35 @@ class ClusterAttributes:
                    spark_version=d.get('spark_version', None),
                    ssh_public_keys=d.get('ssh_public_keys', None),
                    workload_type=_from_dict(d, 'workload_type', WorkloadType))
+
+
+@dataclass
+class ClusterCompliance:
+    cluster_id: str
+    """Canonical unique identifier for a cluster."""
+
+    is_compliant: Optional[bool] = None
+    """Whether this cluster is in compliance with the latest version of its policy."""
+
+    violations: Optional[Dict[str, str]] = None
+    """An object containing key-value mappings representing the first 200 policy validation errors. The
+    keys indicate the path where the policy validation error is occurring. The values indicate an
+    error message describing the policy validation error."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ClusterCompliance into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        if self.is_compliant is not None: body['is_compliant'] = self.is_compliant
+        if self.violations: body['violations'] = self.violations
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ClusterCompliance:
+        """Deserializes the ClusterCompliance from a dictionary."""
+        return cls(cluster_id=d.get('cluster_id', None),
+                   is_compliant=d.get('is_compliant', None),
+                   violations=d.get('violations', None))
 
 
 @dataclass
@@ -881,8 +915,13 @@ class ClusterDetails:
     """The ID of the cluster policy used to create the cluster if applicable."""
 
     runtime_engine: Optional[RuntimeEngine] = None
-    """Decides which runtime engine to be use, e.g. Standard vs. Photon. If unspecified, the runtime
-    engine is inferred from spark_version."""
+    """Determines the cluster's runtime engine, either standard or Photon.
+    
+    This field is not compatible with legacy `spark_version` values that contain `-photon-`. Remove
+    `-photon-` from the `spark_version` and set `runtime_engine` to `PHOTON`.
+    
+    If left unspecified, the runtime engine defaults to standard unless the spark_version contains
+    -photon-, in which case Photon will be used."""
 
     single_user_name: Optional[str] = None
     """Single user name if data_security_mode is `SINGLE_USER`"""
@@ -1406,6 +1445,40 @@ class ClusterPolicyPermissionsRequest:
 
 
 @dataclass
+class ClusterSettingsChange:
+    """Represents a change to the cluster settings required for the cluster to become compliant with
+    its policy."""
+
+    field: Optional[str] = None
+    """The field where this change would be made."""
+
+    new_value: Optional[str] = None
+    """The new value of this field after enforcing policy compliance (either a number, a boolean, or a
+    string) converted to a string. This is intended to be read by a human. The typed new value of
+    this field can be retrieved by reading the settings field in the API response."""
+
+    previous_value: Optional[str] = None
+    """The previous value of this field before enforcing policy compliance (either a number, a boolean,
+    or a string) converted to a string. This is intended to be read by a human. The type of the
+    field can be retrieved by reading the settings field in the API response."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ClusterSettingsChange into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.field is not None: body['field'] = self.field
+        if self.new_value is not None: body['new_value'] = self.new_value
+        if self.previous_value is not None: body['previous_value'] = self.previous_value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ClusterSettingsChange:
+        """Deserializes the ClusterSettingsChange from a dictionary."""
+        return cls(field=d.get('field', None),
+                   new_value=d.get('new_value', None),
+                   previous_value=d.get('previous_value', None))
+
+
+@dataclass
 class ClusterSize:
     autoscale: Optional[AutoScale] = None
     """Parameters needed in order to automatically scale clusters up and down based on load. Note:
@@ -1561,8 +1634,13 @@ class ClusterSpec:
     """The ID of the cluster policy used to create the cluster if applicable."""
 
     runtime_engine: Optional[RuntimeEngine] = None
-    """Decides which runtime engine to be use, e.g. Standard vs. Photon. If unspecified, the runtime
-    engine is inferred from spark_version."""
+    """Determines the cluster's runtime engine, either standard or Photon.
+    
+    This field is not compatible with legacy `spark_version` values that contain `-photon-`. Remove
+    `-photon-` from the `spark_version` and set `runtime_engine` to `PHOTON`.
+    
+    If left unspecified, the runtime engine defaults to standard unless the spark_version contains
+    -photon-, in which case Photon will be used."""
 
     single_user_name: Optional[str] = None
     """Single user name if data_security_mode is `SINGLE_USER`"""
@@ -1877,8 +1955,13 @@ class CreateCluster:
     """The ID of the cluster policy used to create the cluster if applicable."""
 
     runtime_engine: Optional[RuntimeEngine] = None
-    """Decides which runtime engine to be use, e.g. Standard vs. Photon. If unspecified, the runtime
-    engine is inferred from spark_version."""
+    """Determines the cluster's runtime engine, either standard or Photon.
+    
+    This field is not compatible with legacy `spark_version` values that contain `-photon-`. Remove
+    `-photon-` from the `spark_version` and set `runtime_engine` to `PHOTON`.
+    
+    If left unspecified, the runtime engine defaults to standard unless the spark_version contains
+    -photon-, in which case Photon will be used."""
 
     single_user_name: Optional[str] = None
     """Single user name if data_security_mode is `SINGLE_USER`"""
@@ -2134,10 +2217,6 @@ class CreateInstancePoolResponse:
 
 @dataclass
 class CreatePolicy:
-    name: str
-    """Cluster Policy name requested by the user. This has to be unique. Length must be between 1 and
-    100 characters."""
-
     definition: Optional[str] = None
     """Policy definition document expressed in [Databricks Cluster Policy Definition Language].
     
@@ -2153,6 +2232,10 @@ class CreatePolicy:
     max_clusters_per_user: Optional[int] = None
     """Max number of clusters per user that can be active using this policy. If not present, there is
     no max limit."""
+
+    name: Optional[str] = None
+    """Cluster Policy name requested by the user. This has to be unique. Length must be between 1 and
+    100 characters."""
 
     policy_family_definition_overrides: Optional[str] = None
     """Policy definition JSON document expressed in [Databricks Policy Definition Language]. The JSON
@@ -2724,8 +2807,13 @@ class EditCluster:
     """The ID of the cluster policy used to create the cluster if applicable."""
 
     runtime_engine: Optional[RuntimeEngine] = None
-    """Decides which runtime engine to be use, e.g. Standard vs. Photon. If unspecified, the runtime
-    engine is inferred from spark_version."""
+    """Determines the cluster's runtime engine, either standard or Photon.
+    
+    This field is not compatible with legacy `spark_version` values that contain `-photon-`. Remove
+    `-photon-` from the `spark_version` and set `runtime_engine` to `PHOTON`.
+    
+    If left unspecified, the runtime engine defaults to standard unless the spark_version contains
+    -photon-, in which case Photon will be used."""
 
     single_user_name: Optional[str] = None
     """Single user name if data_security_mode is `SINGLE_USER`"""
@@ -2919,10 +3007,6 @@ class EditPolicy:
     policy_id: str
     """The ID of the policy to update."""
 
-    name: str
-    """Cluster Policy name requested by the user. This has to be unique. Length must be between 1 and
-    100 characters."""
-
     definition: Optional[str] = None
     """Policy definition document expressed in [Databricks Cluster Policy Definition Language].
     
@@ -2938,6 +3022,10 @@ class EditPolicy:
     max_clusters_per_user: Optional[int] = None
     """Max number of clusters per user that can be active using this policy. If not present, there is
     no max limit."""
+
+    name: Optional[str] = None
+    """Cluster Policy name requested by the user. This has to be unique. Length must be between 1 and
+    100 characters."""
 
     policy_family_definition_overrides: Optional[str] = None
     """Policy definition JSON document expressed in [Databricks Policy Definition Language]. The JSON
@@ -3008,6 +3096,52 @@ class EditResponse:
     def from_dict(cls, d: Dict[str, any]) -> EditResponse:
         """Deserializes the EditResponse from a dictionary."""
         return cls()
+
+
+@dataclass
+class EnforceClusterComplianceRequest:
+    cluster_id: str
+    """The ID of the cluster you want to enforce policy compliance on."""
+
+    validate_only: Optional[bool] = None
+    """If set, previews the changes that would be made to a cluster to enforce compliance but does not
+    update the cluster."""
+
+    def as_dict(self) -> dict:
+        """Serializes the EnforceClusterComplianceRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        if self.validate_only is not None: body['validate_only'] = self.validate_only
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> EnforceClusterComplianceRequest:
+        """Deserializes the EnforceClusterComplianceRequest from a dictionary."""
+        return cls(cluster_id=d.get('cluster_id', None), validate_only=d.get('validate_only', None))
+
+
+@dataclass
+class EnforceClusterComplianceResponse:
+    changes: Optional[List[ClusterSettingsChange]] = None
+    """A list of changes that have been made to the cluster settings for the cluster to become
+    compliant with its policy."""
+
+    has_changes: Optional[bool] = None
+    """Whether any changes have been made to the cluster settings for the cluster to become compliant
+    with its policy."""
+
+    def as_dict(self) -> dict:
+        """Serializes the EnforceClusterComplianceResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.changes: body['changes'] = [v.as_dict() for v in self.changes]
+        if self.has_changes is not None: body['has_changes'] = self.has_changes
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> EnforceClusterComplianceResponse:
+        """Deserializes the EnforceClusterComplianceResponse from a dictionary."""
+        return cls(changes=_repeated_dict(d, 'changes', ClusterSettingsChange),
+                   has_changes=d.get('has_changes', None))
 
 
 @dataclass
@@ -3279,6 +3413,30 @@ class GcsStorageInfo:
     def from_dict(cls, d: Dict[str, any]) -> GcsStorageInfo:
         """Deserializes the GcsStorageInfo from a dictionary."""
         return cls(destination=d.get('destination', None))
+
+
+@dataclass
+class GetClusterComplianceResponse:
+    is_compliant: Optional[bool] = None
+    """Whether the cluster is compliant with its policy or not. Clusters could be out of compliance if
+    the policy was updated after the cluster was last edited."""
+
+    violations: Optional[Dict[str, str]] = None
+    """An object containing key-value mappings representing the first 200 policy validation errors. The
+    keys indicate the path where the policy validation error is occurring. The values indicate an
+    error message describing the policy validation error."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GetClusterComplianceResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.is_compliant is not None: body['is_compliant'] = self.is_compliant
+        if self.violations: body['violations'] = self.violations
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> GetClusterComplianceResponse:
+        """Deserializes the GetClusterComplianceResponse from a dictionary."""
+        return cls(is_compliant=d.get('is_compliant', None), violations=d.get('violations', None))
 
 
 @dataclass
@@ -4491,11 +4649,8 @@ class Library:
     """Specification of a CRAN library to be installed as part of the library"""
 
     egg: Optional[str] = None
-    """URI of the egg library to install. Supported URIs include Workspace paths, Unity Catalog Volumes
-    paths, and S3 URIs. For example: `{ "egg": "/Workspace/path/to/library.egg" }`, `{ "egg" :
-    "/Volumes/path/to/library.egg" }` or `{ "egg": "s3://my-bucket/library.egg" }`. If S3 is used,
-    please make sure the cluster has read access on the library. You may need to launch the cluster
-    with an IAM role to access the S3 URI."""
+    """Deprecated. URI of the egg library to install. Installing Python egg files is deprecated and is
+    not supported in Databricks Runtime 14.0 and above."""
 
     jar: Optional[str] = None
     """URI of the JAR library to install. Supported URIs include Workspace paths, Unity Catalog Volumes
@@ -4634,20 +4789,131 @@ class ListAvailableZonesResponse:
 
 
 @dataclass
+class ListClusterCompliancesResponse:
+    clusters: Optional[List[ClusterCompliance]] = None
+    """A list of clusters and their policy compliance statuses."""
+
+    next_page_token: Optional[str] = None
+    """This field represents the pagination token to retrieve the next page of results. If the value is
+    "", it means no further results for the request."""
+
+    prev_page_token: Optional[str] = None
+    """This field represents the pagination token to retrieve the previous page of results. If the
+    value is "", it means no further results for the request."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListClusterCompliancesResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.clusters: body['clusters'] = [v.as_dict() for v in self.clusters]
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.prev_page_token is not None: body['prev_page_token'] = self.prev_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ListClusterCompliancesResponse:
+        """Deserializes the ListClusterCompliancesResponse from a dictionary."""
+        return cls(clusters=_repeated_dict(d, 'clusters', ClusterCompliance),
+                   next_page_token=d.get('next_page_token', None),
+                   prev_page_token=d.get('prev_page_token', None))
+
+
+@dataclass
+class ListClustersFilterBy:
+    cluster_sources: Optional[List[ClusterSource]] = None
+    """The source of cluster creation."""
+
+    cluster_states: Optional[List[State]] = None
+    """The current state of the clusters."""
+
+    is_pinned: Optional[bool] = None
+    """Whether the clusters are pinned or not."""
+
+    policy_id: Optional[str] = None
+    """The ID of the cluster policy used to create the cluster if applicable."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListClustersFilterBy into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.cluster_sources: body['cluster_sources'] = [v.value for v in self.cluster_sources]
+        if self.cluster_states: body['cluster_states'] = [v.value for v in self.cluster_states]
+        if self.is_pinned is not None: body['is_pinned'] = self.is_pinned
+        if self.policy_id is not None: body['policy_id'] = self.policy_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ListClustersFilterBy:
+        """Deserializes the ListClustersFilterBy from a dictionary."""
+        return cls(cluster_sources=_repeated_enum(d, 'cluster_sources', ClusterSource),
+                   cluster_states=_repeated_enum(d, 'cluster_states', State),
+                   is_pinned=d.get('is_pinned', None),
+                   policy_id=d.get('policy_id', None))
+
+
+@dataclass
 class ListClustersResponse:
     clusters: Optional[List[ClusterDetails]] = None
     """<needs content added>"""
+
+    next_page_token: Optional[str] = None
+    """This field represents the pagination token to retrieve the next page of results. If the value is
+    "", it means no further results for the request."""
+
+    prev_page_token: Optional[str] = None
+    """This field represents the pagination token to retrieve the previous page of results. If the
+    value is "", it means no further results for the request."""
 
     def as_dict(self) -> dict:
         """Serializes the ListClustersResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.clusters: body['clusters'] = [v.as_dict() for v in self.clusters]
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.prev_page_token is not None: body['prev_page_token'] = self.prev_page_token
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListClustersResponse:
         """Deserializes the ListClustersResponse from a dictionary."""
-        return cls(clusters=_repeated_dict(d, 'clusters', ClusterDetails))
+        return cls(clusters=_repeated_dict(d, 'clusters', ClusterDetails),
+                   next_page_token=d.get('next_page_token', None),
+                   prev_page_token=d.get('prev_page_token', None))
+
+
+@dataclass
+class ListClustersSortBy:
+    direction: Optional[ListClustersSortByDirection] = None
+    """The direction to sort by."""
+
+    field: Optional[ListClustersSortByField] = None
+    """The sorting criteria. By default, clusters are sorted by 3 columns from highest to lowest
+    precedence: cluster state, pinned or unpinned, then cluster name."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListClustersSortBy into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.direction is not None: body['direction'] = self.direction.value
+        if self.field is not None: body['field'] = self.field.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ListClustersSortBy:
+        """Deserializes the ListClustersSortBy from a dictionary."""
+        return cls(direction=_enum(d, 'direction', ListClustersSortByDirection),
+                   field=_enum(d, 'field', ListClustersSortByField))
+
+
+class ListClustersSortByDirection(Enum):
+    """The direction to sort by."""
+
+    ASC = 'ASC'
+    DESC = 'DESC'
+
+
+class ListClustersSortByField(Enum):
+    """The sorting criteria. By default, clusters are sorted by 3 columns from highest to lowest
+    precedence: cluster state, pinned or unpinned, then cluster name."""
+
+    CLUSTER_NAME = 'CLUSTER_NAME'
+    DEFAULT = 'DEFAULT'
 
 
 @dataclass
@@ -4735,12 +5001,12 @@ class ListPoliciesResponse:
 
 @dataclass
 class ListPolicyFamiliesResponse:
-    policy_families: List[PolicyFamily]
-    """List of policy families."""
-
     next_page_token: Optional[str] = None
     """A token that can be used to get the next page of results. If not present, there are no more
     results to show."""
+
+    policy_families: Optional[List[PolicyFamily]] = None
+    """List of policy families."""
 
     def as_dict(self) -> dict:
         """Serializes the ListPolicyFamiliesResponse into a dictionary suitable for use as a JSON request body."""
@@ -4763,6 +5029,7 @@ class ListSortColumn(Enum):
 
 
 class ListSortOrder(Enum):
+    """A generic ordering enum for list-based queries."""
 
     ASC = 'ASC'
     DESC = 'DESC'
@@ -5089,6 +5356,8 @@ class PinClusterResponse:
 
 @dataclass
 class Policy:
+    """Describes a Cluster Policy entity."""
+
     created_at_timestamp: Optional[int] = None
     """Creation time. The timestamp (in millisecond) when this Cluster Policy was created."""
 
@@ -5130,7 +5399,11 @@ class Policy:
     [Databricks Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html"""
 
     policy_family_id: Optional[str] = None
-    """ID of the policy family."""
+    """ID of the policy family. The cluster policy's policy definition inherits the policy family's
+    policy definition.
+    
+    Cannot be used with `definition`. Use `policy_family_definition_overrides` instead to customize
+    the policy definition."""
 
     policy_id: Optional[str] = None
     """Canonical unique identifier for the Cluster Policy."""
@@ -5170,19 +5443,19 @@ class Policy:
 
 @dataclass
 class PolicyFamily:
-    policy_family_id: str
-    """ID of the policy family."""
-
-    name: str
-    """Name of the policy family."""
-
-    description: str
-    """Human-readable description of the purpose of the policy family."""
-
-    definition: str
+    definition: Optional[str] = None
     """Policy definition document expressed in [Databricks Cluster Policy Definition Language].
     
     [Databricks Cluster Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html"""
+
+    description: Optional[str] = None
+    """Human-readable description of the purpose of the policy family."""
+
+    name: Optional[str] = None
+    """Name of the policy family."""
+
+    policy_family_id: Optional[str] = None
+    """Unique identifier for the policy family."""
 
     def as_dict(self) -> dict:
         """Serializes the PolicyFamily into a dictionary suitable for use as a JSON request body."""
@@ -5429,8 +5702,13 @@ class Results:
 
 
 class RuntimeEngine(Enum):
-    """Decides which runtime engine to be use, e.g. Standard vs. Photon. If unspecified, the runtime
-    engine is inferred from spark_version."""
+    """Determines the cluster's runtime engine, either standard or Photon.
+    
+    This field is not compatible with legacy `spark_version` values that contain `-photon-`. Remove
+    `-photon-` from the `spark_version` and set `runtime_engine` to `PHOTON`.
+    
+    If left unspecified, the runtime engine defaults to standard unless the spark_version contains
+    -photon-, in which case Photon will be used."""
 
     NULL = 'NULL'
     PHOTON = 'PHOTON'
@@ -5825,6 +6103,265 @@ class UnpinClusterResponse:
 
 
 @dataclass
+class UpdateCluster:
+    cluster_id: str
+    """ID of the cluster."""
+
+    update_mask: str
+    """Specifies which fields of the cluster will be updated. This is required in the POST request. The
+    update mask should be supplied as a single string. To specify multiple fields, separate them
+    with commas (no spaces). To delete a field from a cluster configuration, add it to the
+    `update_mask` string but omit it from the `cluster` object."""
+
+    cluster: Optional[UpdateClusterResource] = None
+    """The cluster to be updated."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateCluster into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.cluster: body['cluster'] = self.cluster.as_dict()
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        if self.update_mask is not None: body['update_mask'] = self.update_mask
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateCluster:
+        """Deserializes the UpdateCluster from a dictionary."""
+        return cls(cluster=_from_dict(d, 'cluster', UpdateClusterResource),
+                   cluster_id=d.get('cluster_id', None),
+                   update_mask=d.get('update_mask', None))
+
+
+@dataclass
+class UpdateClusterResource:
+    autoscale: Optional[AutoScale] = None
+    """Parameters needed in order to automatically scale clusters up and down based on load. Note:
+    autoscaling works best with DB runtime versions 3.0 or later."""
+
+    autotermination_minutes: Optional[int] = None
+    """Automatically terminates the cluster after it is inactive for this time in minutes. If not set,
+    this cluster will not be automatically terminated. If specified, the threshold must be between
+    10 and 10000 minutes. Users can also set this value to 0 to explicitly disable automatic
+    termination."""
+
+    aws_attributes: Optional[AwsAttributes] = None
+    """Attributes related to clusters running on Amazon Web Services. If not specified at cluster
+    creation, a set of default values will be used."""
+
+    azure_attributes: Optional[AzureAttributes] = None
+    """Attributes related to clusters running on Microsoft Azure. If not specified at cluster creation,
+    a set of default values will be used."""
+
+    cluster_log_conf: Optional[ClusterLogConf] = None
+    """The configuration for delivering spark logs to a long-term storage destination. Two kinds of
+    destinations (dbfs and s3) are supported. Only one destination can be specified for one cluster.
+    If the conf is given, the logs will be delivered to the destination every `5 mins`. The
+    destination of driver logs is `$destination/$clusterId/driver`, while the destination of
+    executor logs is `$destination/$clusterId/executor`."""
+
+    cluster_name: Optional[str] = None
+    """Cluster name requested by the user. This doesn't have to be unique. If not specified at
+    creation, the cluster name will be an empty string."""
+
+    custom_tags: Optional[Dict[str, str]] = None
+    """Additional tags for cluster resources. Databricks will tag all cluster resources (e.g., AWS
+    instances and EBS volumes) with these tags in addition to `default_tags`. Notes:
+    
+    - Currently, Databricks allows at most 45 custom tags
+    
+    - Clusters can only reuse cloud resources if the resources' tags are a subset of the cluster
+    tags"""
+
+    data_security_mode: Optional[DataSecurityMode] = None
+    """Data security mode decides what data governance model to use when accessing data from a cluster.
+    
+    * `NONE`: No security isolation for multiple users sharing the cluster. Data governance features
+    are not available in this mode. * `SINGLE_USER`: A secure cluster that can only be exclusively
+    used by a single user specified in `single_user_name`. Most programming languages, cluster
+    features and data governance features are available in this mode. * `USER_ISOLATION`: A secure
+    cluster that can be shared by multiple users. Cluster users are fully isolated so that they
+    cannot see each other's data and credentials. Most data governance features are supported in
+    this mode. But programming languages and cluster features might be limited.
+    
+    The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
+    future Databricks Runtime versions:
+    
+    * `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *
+    `LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy Passthrough on high
+    concurrency clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy
+    Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This mode provides a way that
+    doesn’t have UC nor passthrough enabled."""
+
+    docker_image: Optional[DockerImage] = None
+
+    driver_instance_pool_id: Optional[str] = None
+    """The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster
+    uses the instance pool with id (instance_pool_id) if the driver pool is not assigned."""
+
+    driver_node_type_id: Optional[str] = None
+    """The node type of the Spark driver. Note that this field is optional; if unset, the driver node
+    type will be set as the same value as `node_type_id` defined above."""
+
+    enable_elastic_disk: Optional[bool] = None
+    """Autoscaling Local Storage: when enabled, this cluster will dynamically acquire additional disk
+    space when its Spark workers are running low on disk space. This feature requires specific AWS
+    permissions to function correctly - refer to the User Guide for more details."""
+
+    enable_local_disk_encryption: Optional[bool] = None
+    """Whether to enable LUKS on cluster VMs' local disks"""
+
+    gcp_attributes: Optional[GcpAttributes] = None
+    """Attributes related to clusters running on Google Cloud Platform. If not specified at cluster
+    creation, a set of default values will be used."""
+
+    init_scripts: Optional[List[InitScriptInfo]] = None
+    """The configuration for storing init scripts. Any number of destinations can be specified. The
+    scripts are executed sequentially in the order provided. If `cluster_log_conf` is specified,
+    init script logs are sent to `<destination>/<cluster-ID>/init_scripts`."""
+
+    instance_pool_id: Optional[str] = None
+    """The optional ID of the instance pool to which the cluster belongs."""
+
+    node_type_id: Optional[str] = None
+    """This field encodes, through a single value, the resources available to each of the Spark nodes
+    in this cluster. For example, the Spark nodes can be provisioned and optimized for memory or
+    compute intensive workloads. A list of available node types can be retrieved by using the
+    :method:clusters/listNodeTypes API call."""
+
+    num_workers: Optional[int] = None
+    """Number of worker nodes that this cluster should have. A cluster has one Spark Driver and
+    `num_workers` Executors for a total of `num_workers` + 1 Spark nodes.
+    
+    Note: When reading the properties of a cluster, this field reflects the desired number of
+    workers rather than the actual current number of workers. For instance, if a cluster is resized
+    from 5 to 10 workers, this field will immediately be updated to reflect the target size of 10
+    workers, whereas the workers listed in `spark_info` will gradually increase from 5 to 10 as the
+    new nodes are provisioned."""
+
+    policy_id: Optional[str] = None
+    """The ID of the cluster policy used to create the cluster if applicable."""
+
+    runtime_engine: Optional[RuntimeEngine] = None
+    """Determines the cluster's runtime engine, either standard or Photon.
+    
+    This field is not compatible with legacy `spark_version` values that contain `-photon-`. Remove
+    `-photon-` from the `spark_version` and set `runtime_engine` to `PHOTON`.
+    
+    If left unspecified, the runtime engine defaults to standard unless the spark_version contains
+    -photon-, in which case Photon will be used."""
+
+    single_user_name: Optional[str] = None
+    """Single user name if data_security_mode is `SINGLE_USER`"""
+
+    spark_conf: Optional[Dict[str, str]] = None
+    """An object containing a set of optional, user-specified Spark configuration key-value pairs.
+    Users can also pass in a string of extra JVM options to the driver and the executors via
+    `spark.driver.extraJavaOptions` and `spark.executor.extraJavaOptions` respectively."""
+
+    spark_env_vars: Optional[Dict[str, str]] = None
+    """An object containing a set of optional, user-specified environment variable key-value pairs.
+    Please note that key-value pair of the form (X,Y) will be exported as is (i.e., `export X='Y'`)
+    while launching the driver and workers.
+    
+    In order to specify an additional set of `SPARK_DAEMON_JAVA_OPTS`, we recommend appending them
+    to `$SPARK_DAEMON_JAVA_OPTS` as shown in the example below. This ensures that all default
+    databricks managed environmental variables are included as well.
+    
+    Example Spark environment variables: `{"SPARK_WORKER_MEMORY": "28000m", "SPARK_LOCAL_DIRS":
+    "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS": "$SPARK_DAEMON_JAVA_OPTS
+    -Dspark.shuffle.service.enabled=true"}`"""
+
+    spark_version: Optional[str] = None
+    """The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of available Spark versions can
+    be retrieved by using the :method:clusters/sparkVersions API call."""
+
+    ssh_public_keys: Optional[List[str]] = None
+    """SSH public key contents that will be added to each Spark node in this cluster. The corresponding
+    private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can
+    be specified."""
+
+    workload_type: Optional[WorkloadType] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateClusterResource into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.autoscale: body['autoscale'] = self.autoscale.as_dict()
+        if self.autotermination_minutes is not None:
+            body['autotermination_minutes'] = self.autotermination_minutes
+        if self.aws_attributes: body['aws_attributes'] = self.aws_attributes.as_dict()
+        if self.azure_attributes: body['azure_attributes'] = self.azure_attributes.as_dict()
+        if self.cluster_log_conf: body['cluster_log_conf'] = self.cluster_log_conf.as_dict()
+        if self.cluster_name is not None: body['cluster_name'] = self.cluster_name
+        if self.custom_tags: body['custom_tags'] = self.custom_tags
+        if self.data_security_mode is not None: body['data_security_mode'] = self.data_security_mode.value
+        if self.docker_image: body['docker_image'] = self.docker_image.as_dict()
+        if self.driver_instance_pool_id is not None:
+            body['driver_instance_pool_id'] = self.driver_instance_pool_id
+        if self.driver_node_type_id is not None: body['driver_node_type_id'] = self.driver_node_type_id
+        if self.enable_elastic_disk is not None: body['enable_elastic_disk'] = self.enable_elastic_disk
+        if self.enable_local_disk_encryption is not None:
+            body['enable_local_disk_encryption'] = self.enable_local_disk_encryption
+        if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes.as_dict()
+        if self.init_scripts: body['init_scripts'] = [v.as_dict() for v in self.init_scripts]
+        if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
+        if self.num_workers is not None: body['num_workers'] = self.num_workers
+        if self.policy_id is not None: body['policy_id'] = self.policy_id
+        if self.runtime_engine is not None: body['runtime_engine'] = self.runtime_engine.value
+        if self.single_user_name is not None: body['single_user_name'] = self.single_user_name
+        if self.spark_conf: body['spark_conf'] = self.spark_conf
+        if self.spark_env_vars: body['spark_env_vars'] = self.spark_env_vars
+        if self.spark_version is not None: body['spark_version'] = self.spark_version
+        if self.ssh_public_keys: body['ssh_public_keys'] = [v for v in self.ssh_public_keys]
+        if self.workload_type: body['workload_type'] = self.workload_type.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateClusterResource:
+        """Deserializes the UpdateClusterResource from a dictionary."""
+        return cls(autoscale=_from_dict(d, 'autoscale', AutoScale),
+                   autotermination_minutes=d.get('autotermination_minutes', None),
+                   aws_attributes=_from_dict(d, 'aws_attributes', AwsAttributes),
+                   azure_attributes=_from_dict(d, 'azure_attributes', AzureAttributes),
+                   cluster_log_conf=_from_dict(d, 'cluster_log_conf', ClusterLogConf),
+                   cluster_name=d.get('cluster_name', None),
+                   custom_tags=d.get('custom_tags', None),
+                   data_security_mode=_enum(d, 'data_security_mode', DataSecurityMode),
+                   docker_image=_from_dict(d, 'docker_image', DockerImage),
+                   driver_instance_pool_id=d.get('driver_instance_pool_id', None),
+                   driver_node_type_id=d.get('driver_node_type_id', None),
+                   enable_elastic_disk=d.get('enable_elastic_disk', None),
+                   enable_local_disk_encryption=d.get('enable_local_disk_encryption', None),
+                   gcp_attributes=_from_dict(d, 'gcp_attributes', GcpAttributes),
+                   init_scripts=_repeated_dict(d, 'init_scripts', InitScriptInfo),
+                   instance_pool_id=d.get('instance_pool_id', None),
+                   node_type_id=d.get('node_type_id', None),
+                   num_workers=d.get('num_workers', None),
+                   policy_id=d.get('policy_id', None),
+                   runtime_engine=_enum(d, 'runtime_engine', RuntimeEngine),
+                   single_user_name=d.get('single_user_name', None),
+                   spark_conf=d.get('spark_conf', None),
+                   spark_env_vars=d.get('spark_env_vars', None),
+                   spark_version=d.get('spark_version', None),
+                   ssh_public_keys=d.get('ssh_public_keys', None),
+                   workload_type=_from_dict(d, 'workload_type', WorkloadType))
+
+
+@dataclass
+class UpdateClusterResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateClusterResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateClusterResponse:
+        """Deserializes the UpdateClusterResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
 class UpdateResponse:
 
     def as_dict(self) -> dict:
@@ -5912,21 +6449,18 @@ class ClusterPoliciesAPI:
         self._api = api_client
 
     def create(self,
-               name: str,
                *,
                definition: Optional[str] = None,
                description: Optional[str] = None,
                libraries: Optional[List[Library]] = None,
                max_clusters_per_user: Optional[int] = None,
+               name: Optional[str] = None,
                policy_family_definition_overrides: Optional[str] = None,
                policy_family_id: Optional[str] = None) -> CreatePolicyResponse:
         """Create a new policy.
         
         Creates a new policy with prescribed settings.
         
-        :param name: str
-          Cluster Policy name requested by the user. This has to be unique. Length must be between 1 and 100
-          characters.
         :param definition: str (optional)
           Policy definition document expressed in [Databricks Cluster Policy Definition Language].
           
@@ -5939,6 +6473,9 @@ class ClusterPoliciesAPI:
         :param max_clusters_per_user: int (optional)
           Max number of clusters per user that can be active using this policy. If not present, there is no
           max limit.
+        :param name: str (optional)
+          Cluster Policy name requested by the user. This has to be unique. Length must be between 1 and 100
+          characters.
         :param policy_family_definition_overrides: str (optional)
           Policy definition JSON document expressed in [Databricks Policy Definition Language]. The JSON
           document must be passed as a string and cannot be embedded in the requests.
@@ -5988,12 +6525,12 @@ class ClusterPoliciesAPI:
 
     def edit(self,
              policy_id: str,
-             name: str,
              *,
              definition: Optional[str] = None,
              description: Optional[str] = None,
              libraries: Optional[List[Library]] = None,
              max_clusters_per_user: Optional[int] = None,
+             name: Optional[str] = None,
              policy_family_definition_overrides: Optional[str] = None,
              policy_family_id: Optional[str] = None):
         """Update a cluster policy.
@@ -6003,9 +6540,6 @@ class ClusterPoliciesAPI:
         
         :param policy_id: str
           The ID of the policy to update.
-        :param name: str
-          Cluster Policy name requested by the user. This has to be unique. Length must be between 1 and 100
-          characters.
         :param definition: str (optional)
           Policy definition document expressed in [Databricks Cluster Policy Definition Language].
           
@@ -6018,6 +6552,9 @@ class ClusterPoliciesAPI:
         :param max_clusters_per_user: int (optional)
           Max number of clusters per user that can be active using this policy. If not present, there is no
           max limit.
+        :param name: str (optional)
+          Cluster Policy name requested by the user. This has to be unique. Length must be between 1 and 100
+          characters.
         :param policy_family_definition_overrides: str (optional)
           Policy definition JSON document expressed in [Databricks Policy Definition Language]. The JSON
           document must be passed as a string and cannot be embedded in the requests.
@@ -6055,7 +6592,7 @@ class ClusterPoliciesAPI:
         Get a cluster policy entity. Creation and editing is available to admins only.
         
         :param policy_id: str
-          Canonical unique identifier for the cluster policy.
+          Canonical unique identifier for the Cluster Policy.
         
         :returns: :class:`Policy`
         """
@@ -6205,9 +6742,8 @@ class ClustersAPI:
     restart an all-purpose cluster. Multiple users can share such clusters to do collaborative interactive
     analysis.
     
-    IMPORTANT: Databricks retains cluster configuration information for up to 200 all-purpose clusters
-    terminated in the last 30 days and up to 30 job clusters recently terminated by the job scheduler. To keep
-    an all-purpose cluster configuration even after it has been terminated for more than 30 days, an
+    IMPORTANT: Databricks retains cluster configuration information for terminated clusters for 30 days. To
+    keep an all-purpose cluster configuration even after it has been terminated for more than 30 days, an
     administrator can pin a cluster to the cluster list."""
 
     def __init__(self, api_client):
@@ -6294,7 +6830,7 @@ class ClustersAPI:
         if owner_username is not None: body['owner_username'] = owner_username
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        self._api.do('POST', '/api/2.0/clusters/change-owner', body=body, headers=headers)
+        self._api.do('POST', '/api/2.1/clusters/change-owner', body=body, headers=headers)
 
     def create(self,
                spark_version: str,
@@ -6334,6 +6870,11 @@ class ClustersAPI:
         
         If Databricks acquires at least 85% of the requested on-demand nodes, cluster creation will succeed.
         Otherwise the cluster will terminate with an informative error message.
+        
+        Rather than authoring the cluster's JSON definition from scratch, Databricks recommends filling out
+        the [create compute UI] and then copying the generated JSON definition from the UI.
+        
+        [create compute UI]: https://docs.databricks.com/compute/configure.html
         
         :param spark_version: str
           The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of available Spark versions can be
@@ -6430,8 +6971,13 @@ class ClustersAPI:
         :param policy_id: str (optional)
           The ID of the cluster policy used to create the cluster if applicable.
         :param runtime_engine: :class:`RuntimeEngine` (optional)
-          Decides which runtime engine to be use, e.g. Standard vs. Photon. If unspecified, the runtime engine
-          is inferred from spark_version.
+          Determines the cluster's runtime engine, either standard or Photon.
+          
+          This field is not compatible with legacy `spark_version` values that contain `-photon-`. Remove
+          `-photon-` from the `spark_version` and set `runtime_engine` to `PHOTON`.
+          
+          If left unspecified, the runtime engine defaults to standard unless the spark_version contains
+          -photon-, in which case Photon will be used.
         :param single_user_name: str (optional)
           Single user name if data_security_mode is `SINGLE_USER`
         :param spark_conf: Dict[str,str] (optional)
@@ -6493,7 +7039,7 @@ class ClustersAPI:
         if workload_type is not None: body['workload_type'] = workload_type.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        op_response = self._api.do('POST', '/api/2.0/clusters/create', body=body, headers=headers)
+        op_response = self._api.do('POST', '/api/2.1/clusters/create', body=body, headers=headers)
         return Wait(self.wait_get_cluster_running,
                     response=CreateClusterResponse.from_dict(op_response),
                     cluster_id=op_response['cluster_id'])
@@ -6577,7 +7123,7 @@ class ClustersAPI:
         if cluster_id is not None: body['cluster_id'] = cluster_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        op_response = self._api.do('POST', '/api/2.0/clusters/delete', body=body, headers=headers)
+        op_response = self._api.do('POST', '/api/2.1/clusters/delete', body=body, headers=headers)
         return Wait(self.wait_get_cluster_terminated,
                     response=DeleteClusterResponse.from_dict(op_response),
                     cluster_id=cluster_id)
@@ -6724,8 +7270,13 @@ class ClustersAPI:
         :param policy_id: str (optional)
           The ID of the cluster policy used to create the cluster if applicable.
         :param runtime_engine: :class:`RuntimeEngine` (optional)
-          Decides which runtime engine to be use, e.g. Standard vs. Photon. If unspecified, the runtime engine
-          is inferred from spark_version.
+          Determines the cluster's runtime engine, either standard or Photon.
+          
+          This field is not compatible with legacy `spark_version` values that contain `-photon-`. Remove
+          `-photon-` from the `spark_version` and set `runtime_engine` to `PHOTON`.
+          
+          If left unspecified, the runtime engine defaults to standard unless the spark_version contains
+          -photon-, in which case Photon will be used.
         :param single_user_name: str (optional)
           Single user name if data_security_mode is `SINGLE_USER`
         :param spark_conf: Dict[str,str] (optional)
@@ -6787,7 +7338,7 @@ class ClustersAPI:
         if workload_type is not None: body['workload_type'] = workload_type.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        op_response = self._api.do('POST', '/api/2.0/clusters/edit', body=body, headers=headers)
+        op_response = self._api.do('POST', '/api/2.1/clusters/edit', body=body, headers=headers)
         return Wait(self.wait_get_cluster_running,
                     response=EditClusterResponse.from_dict(op_response),
                     cluster_id=cluster_id)
@@ -6898,7 +7449,7 @@ class ClustersAPI:
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         while True:
-            json = self._api.do('POST', '/api/2.0/clusters/events', body=body, headers=headers)
+            json = self._api.do('POST', '/api/2.1/clusters/events', body=body, headers=headers)
             if 'events' in json:
                 for v in json['events']:
                     yield ClusterEvent.from_dict(v)
@@ -6922,7 +7473,7 @@ class ClustersAPI:
         if cluster_id is not None: query['cluster_id'] = cluster_id
         headers = {'Accept': 'application/json', }
 
-        res = self._api.do('GET', '/api/2.0/clusters/get', query=query, headers=headers)
+        res = self._api.do('GET', '/api/2.1/clusters/get', query=query, headers=headers)
         return ClusterDetails.from_dict(res)
 
     def get_permission_levels(self, cluster_id: str) -> GetClusterPermissionLevelsResponse:
@@ -6959,33 +7510,46 @@ class ClustersAPI:
         res = self._api.do('GET', f'/api/2.0/permissions/clusters/{cluster_id}', headers=headers)
         return ClusterPermissions.from_dict(res)
 
-    def list(self, *, can_use_client: Optional[str] = None) -> Iterator[ClusterDetails]:
-        """List all clusters.
+    def list(self,
+             *,
+             filter_by: Optional[ListClustersFilterBy] = None,
+             page_size: Optional[int] = None,
+             page_token: Optional[str] = None,
+             sort_by: Optional[ListClustersSortBy] = None) -> Iterator[ClusterDetails]:
+        """List clusters.
         
-        Return information about all pinned clusters, active clusters, up to 200 of the most recently
-        terminated all-purpose clusters in the past 30 days, and up to 30 of the most recently terminated job
-        clusters in the past 30 days.
+        Return information about all pinned and active clusters, and all clusters terminated within the last
+        30 days. Clusters terminated prior to this period are not included.
         
-        For example, if there is 1 pinned cluster, 4 active clusters, 45 terminated all-purpose clusters in
-        the past 30 days, and 50 terminated job clusters in the past 30 days, then this API returns the 1
-        pinned cluster, 4 active clusters, all 45 terminated all-purpose clusters, and the 30 most recently
-        terminated job clusters.
-        
-        :param can_use_client: str (optional)
-          Filter clusters based on what type of client it can be used for. Could be either NOTEBOOKS or JOBS.
-          No input for this field will get all clusters in the workspace without filtering on its supported
-          client
+        :param filter_by: :class:`ListClustersFilterBy` (optional)
+          Filters to apply to the list of clusters.
+        :param page_size: int (optional)
+          Use this field to specify the maximum number of results to be returned by the server. The server may
+          further constrain the maximum number of results returned in a single page.
+        :param page_token: str (optional)
+          Use next_page_token or prev_page_token returned from the previous request to list the next or
+          previous page of clusters respectively.
+        :param sort_by: :class:`ListClustersSortBy` (optional)
+          Sort the list of clusters by a specific criteria.
         
         :returns: Iterator over :class:`ClusterDetails`
         """
 
         query = {}
-        if can_use_client is not None: query['can_use_client'] = can_use_client
+        if filter_by is not None: query['filter_by'] = filter_by.as_dict()
+        if page_size is not None: query['page_size'] = page_size
+        if page_token is not None: query['page_token'] = page_token
+        if sort_by is not None: query['sort_by'] = sort_by.as_dict()
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET', '/api/2.0/clusters/list', query=query, headers=headers)
-        parsed = ListClustersResponse.from_dict(json).clusters
-        return parsed if parsed is not None else []
+        while True:
+            json = self._api.do('GET', '/api/2.1/clusters/list', query=query, headers=headers)
+            if 'clusters' in json:
+                for v in json['clusters']:
+                    yield ClusterDetails.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
 
     def list_node_types(self) -> ListNodeTypesResponse:
         """List node types.
@@ -6997,7 +7561,7 @@ class ClustersAPI:
 
         headers = {'Accept': 'application/json', }
 
-        res = self._api.do('GET', '/api/2.0/clusters/list-node-types', headers=headers)
+        res = self._api.do('GET', '/api/2.1/clusters/list-node-types', headers=headers)
         return ListNodeTypesResponse.from_dict(res)
 
     def list_zones(self) -> ListAvailableZonesResponse:
@@ -7011,7 +7575,7 @@ class ClustersAPI:
 
         headers = {'Accept': 'application/json', }
 
-        res = self._api.do('GET', '/api/2.0/clusters/list-zones', headers=headers)
+        res = self._api.do('GET', '/api/2.1/clusters/list-zones', headers=headers)
         return ListAvailableZonesResponse.from_dict(res)
 
     def permanent_delete(self, cluster_id: str):
@@ -7032,7 +7596,7 @@ class ClustersAPI:
         if cluster_id is not None: body['cluster_id'] = cluster_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        self._api.do('POST', '/api/2.0/clusters/permanent-delete', body=body, headers=headers)
+        self._api.do('POST', '/api/2.1/clusters/permanent-delete', body=body, headers=headers)
 
     def pin(self, cluster_id: str):
         """Pin cluster.
@@ -7049,7 +7613,7 @@ class ClustersAPI:
         if cluster_id is not None: body['cluster_id'] = cluster_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        self._api.do('POST', '/api/2.0/clusters/pin', body=body, headers=headers)
+        self._api.do('POST', '/api/2.1/clusters/pin', body=body, headers=headers)
 
     def resize(self,
                cluster_id: str,
@@ -7086,7 +7650,7 @@ class ClustersAPI:
         if num_workers is not None: body['num_workers'] = num_workers
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        op_response = self._api.do('POST', '/api/2.0/clusters/resize', body=body, headers=headers)
+        op_response = self._api.do('POST', '/api/2.1/clusters/resize', body=body, headers=headers)
         return Wait(self.wait_get_cluster_running,
                     response=ResizeClusterResponse.from_dict(op_response),
                     cluster_id=cluster_id)
@@ -7120,7 +7684,7 @@ class ClustersAPI:
         if restart_user is not None: body['restart_user'] = restart_user
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        op_response = self._api.do('POST', '/api/2.0/clusters/restart', body=body, headers=headers)
+        op_response = self._api.do('POST', '/api/2.1/clusters/restart', body=body, headers=headers)
         return Wait(self.wait_get_cluster_running,
                     response=RestartClusterResponse.from_dict(op_response),
                     cluster_id=cluster_id)
@@ -7165,7 +7729,7 @@ class ClustersAPI:
 
         headers = {'Accept': 'application/json', }
 
-        res = self._api.do('GET', '/api/2.0/clusters/spark-versions', headers=headers)
+        res = self._api.do('GET', '/api/2.1/clusters/spark-versions', headers=headers)
         return GetSparkVersionsResponse.from_dict(res)
 
     def start(self, cluster_id: str) -> Wait[ClusterDetails]:
@@ -7189,7 +7753,7 @@ class ClustersAPI:
         if cluster_id is not None: body['cluster_id'] = cluster_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        op_response = self._api.do('POST', '/api/2.0/clusters/start', body=body, headers=headers)
+        op_response = self._api.do('POST', '/api/2.1/clusters/start', body=body, headers=headers)
         return Wait(self.wait_get_cluster_running,
                     response=StartClusterResponse.from_dict(op_response),
                     cluster_id=cluster_id)
@@ -7213,7 +7777,58 @@ class ClustersAPI:
         if cluster_id is not None: body['cluster_id'] = cluster_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        self._api.do('POST', '/api/2.0/clusters/unpin', body=body, headers=headers)
+        self._api.do('POST', '/api/2.1/clusters/unpin', body=body, headers=headers)
+
+    def update(self,
+               cluster_id: str,
+               update_mask: str,
+               *,
+               cluster: Optional[UpdateClusterResource] = None) -> Wait[ClusterDetails]:
+        """Update cluster configuration (partial).
+        
+        Updates the configuration of a cluster to match the partial set of attributes and size. Denote which
+        fields to update using the `update_mask` field in the request body. A cluster can be updated if it is
+        in a `RUNNING` or `TERMINATED` state. If a cluster is updated while in a `RUNNING` state, it will be
+        restarted so that the new attributes can take effect. If a cluster is updated while in a `TERMINATED`
+        state, it will remain `TERMINATED`. The updated attributes will take effect the next time the cluster
+        is started using the `clusters/start` API. Attempts to update a cluster in any other state will be
+        rejected with an `INVALID_STATE` error code. Clusters created by the Databricks Jobs service cannot be
+        updated.
+        
+        :param cluster_id: str
+          ID of the cluster.
+        :param update_mask: str
+          Specifies which fields of the cluster will be updated. This is required in the POST request. The
+          update mask should be supplied as a single string. To specify multiple fields, separate them with
+          commas (no spaces). To delete a field from a cluster configuration, add it to the `update_mask`
+          string but omit it from the `cluster` object.
+        :param cluster: :class:`UpdateClusterResource` (optional)
+          The cluster to be updated.
+        
+        :returns:
+          Long-running operation waiter for :class:`ClusterDetails`.
+          See :method:wait_get_cluster_running for more details.
+        """
+        body = {}
+        if cluster is not None: body['cluster'] = cluster.as_dict()
+        if cluster_id is not None: body['cluster_id'] = cluster_id
+        if update_mask is not None: body['update_mask'] = update_mask
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        op_response = self._api.do('POST', '/api/2.1/clusters/update', body=body, headers=headers)
+        return Wait(self.wait_get_cluster_running,
+                    response=UpdateClusterResponse.from_dict(op_response),
+                    cluster_id=cluster_id)
+
+    def update_and_wait(
+        self,
+        cluster_id: str,
+        update_mask: str,
+        *,
+        cluster: Optional[UpdateClusterResource] = None,
+        timeout=timedelta(minutes=20)) -> ClusterDetails:
+        return self.update(cluster=cluster, cluster_id=cluster_id,
+                           update_mask=update_mask).result(timeout=timeout)
 
     def update_permissions(
             self,
@@ -7240,7 +7855,8 @@ class ClustersAPI:
 
 
 class CommandExecutionAPI:
-    """This API allows execution of Python, Scala, SQL, or R commands on running Databricks Clusters."""
+    """This API allows execution of Python, Scala, SQL, or R commands on running Databricks Clusters. This API
+    only supports (classic) all-purpose clusters. Serverless compute is not supported."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -8211,6 +8827,116 @@ class LibrariesAPI:
         self._api.do('POST', '/api/2.0/libraries/uninstall', body=body, headers=headers)
 
 
+class PolicyComplianceForClustersAPI:
+    """The policy compliance APIs allow you to view and manage the policy compliance status of clusters in your
+    workspace.
+    
+    A cluster is compliant with its policy if its configuration satisfies all its policy rules. Clusters could
+    be out of compliance if their policy was updated after the cluster was last edited.
+    
+    The get and list compliance APIs allow you to view the policy compliance status of a cluster. The enforce
+    compliance API allows you to update a cluster to be compliant with the current version of its policy."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def enforce_compliance(self,
+                           cluster_id: str,
+                           *,
+                           validate_only: Optional[bool] = None) -> EnforceClusterComplianceResponse:
+        """Enforce cluster policy compliance.
+        
+        Updates a cluster to be compliant with the current version of its policy. A cluster can be updated if
+        it is in a `RUNNING` or `TERMINATED` state.
+        
+        If a cluster is updated while in a `RUNNING` state, it will be restarted so that the new attributes
+        can take effect.
+        
+        If a cluster is updated while in a `TERMINATED` state, it will remain `TERMINATED`. The next time the
+        cluster is started, the new attributes will take effect.
+        
+        Clusters created by the Databricks Jobs, DLT, or Models services cannot be enforced by this API.
+        Instead, use the "Enforce job policy compliance" API to enforce policy compliance on jobs.
+        
+        :param cluster_id: str
+          The ID of the cluster you want to enforce policy compliance on.
+        :param validate_only: bool (optional)
+          If set, previews the changes that would be made to a cluster to enforce compliance but does not
+          update the cluster.
+        
+        :returns: :class:`EnforceClusterComplianceResponse`
+        """
+        body = {}
+        if cluster_id is not None: body['cluster_id'] = cluster_id
+        if validate_only is not None: body['validate_only'] = validate_only
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do('POST',
+                           '/api/2.0/policies/clusters/enforce-compliance',
+                           body=body,
+                           headers=headers)
+        return EnforceClusterComplianceResponse.from_dict(res)
+
+    def get_compliance(self, cluster_id: str) -> GetClusterComplianceResponse:
+        """Get cluster policy compliance.
+        
+        Returns the policy compliance status of a cluster. Clusters could be out of compliance if their policy
+        was updated after the cluster was last edited.
+        
+        :param cluster_id: str
+          The ID of the cluster to get the compliance status
+        
+        :returns: :class:`GetClusterComplianceResponse`
+        """
+
+        query = {}
+        if cluster_id is not None: query['cluster_id'] = cluster_id
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do('GET', '/api/2.0/policies/clusters/get-compliance', query=query, headers=headers)
+        return GetClusterComplianceResponse.from_dict(res)
+
+    def list_compliance(self,
+                        policy_id: str,
+                        *,
+                        page_size: Optional[int] = None,
+                        page_token: Optional[str] = None) -> Iterator[ClusterCompliance]:
+        """List cluster policy compliance.
+        
+        Returns the policy compliance status of all clusters that use a given policy. Clusters could be out of
+        compliance if their policy was updated after the cluster was last edited.
+        
+        :param policy_id: str
+          Canonical unique identifier for the cluster policy.
+        :param page_size: int (optional)
+          Use this field to specify the maximum number of results to be returned by the server. The server may
+          further constrain the maximum number of results returned in a single page.
+        :param page_token: str (optional)
+          A page token that can be used to navigate to the next page or previous page as returned by
+          `next_page_token` or `prev_page_token`.
+        
+        :returns: Iterator over :class:`ClusterCompliance`
+        """
+
+        query = {}
+        if page_size is not None: query['page_size'] = page_size
+        if page_token is not None: query['page_token'] = page_token
+        if policy_id is not None: query['policy_id'] = policy_id
+        headers = {'Accept': 'application/json', }
+
+        while True:
+            json = self._api.do('GET',
+                                '/api/2.0/policies/clusters/list-compliance',
+                                query=query,
+                                headers=headers)
+            if 'clusters' in json:
+                for v in json['clusters']:
+                    yield ClusterCompliance.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
+
+
 class PolicyFamiliesAPI:
     """View available policy families. A policy family contains a policy definition providing best practices for
     configuring clusters for a particular use case.
@@ -8225,19 +8951,27 @@ class PolicyFamiliesAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def get(self, policy_family_id: str) -> PolicyFamily:
+    def get(self, policy_family_id: str, *, version: Optional[int] = None) -> PolicyFamily:
         """Get policy family information.
         
-        Retrieve the information for an policy family based on its identifier.
+        Retrieve the information for an policy family based on its identifier and version
         
         :param policy_family_id: str
+          The family ID about which to retrieve information.
+        :param version: int (optional)
+          The version number for the family to fetch. Defaults to the latest version.
         
         :returns: :class:`PolicyFamily`
         """
 
+        query = {}
+        if version is not None: query['version'] = version
         headers = {'Accept': 'application/json', }
 
-        res = self._api.do('GET', f'/api/2.0/policy-families/{policy_family_id}', headers=headers)
+        res = self._api.do('GET',
+                           f'/api/2.0/policy-families/{policy_family_id}',
+                           query=query,
+                           headers=headers)
         return PolicyFamily.from_dict(res)
 
     def list(self,
@@ -8246,10 +8980,11 @@ class PolicyFamiliesAPI:
              page_token: Optional[str] = None) -> Iterator[PolicyFamily]:
         """List policy families.
         
-        Retrieve a list of policy families. This API is paginated.
+        Returns the list of policy definition types available to use at their latest version. This API is
+        paginated.
         
         :param max_results: int (optional)
-          The max number of policy families to return.
+          Maximum number of policy families to return.
         :param page_token: str (optional)
           A token that can be used to get the next page of results.
         

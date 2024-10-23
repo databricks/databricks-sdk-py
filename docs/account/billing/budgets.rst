@@ -4,10 +4,11 @@
 
 .. py:class:: BudgetsAPI
 
-    These APIs manage budget configuration including notifications for exceeding a budget for a period. They
-    can also retrieve the status of each budget.
+    These APIs manage budget configurations for this account. Budgets enable you to monitor usage across your
+    account. You can set up budgets to either track account-wide spending, or apply filters to track the
+    spending of specific teams, projects, or workspaces.
 
-    .. py:method:: create(budget: Budget) -> WrappedBudgetWithStatus
+    .. py:method:: create(budget: CreateBudgetConfigurationBudget) -> CreateBudgetConfigurationResponse
 
 
         Usage:
@@ -21,40 +22,55 @@
             
             a = AccountClient()
             
-            created = a.budgets.create(budget=billing.Budget(
-                name=f'sdk-{time.time_ns()}',
-                filter="tag.tagName = 'all'",
-                period="1 month",
-                start_date="2022-01-01",
-                target_amount="100",
-                alerts=[billing.BudgetAlert(email_notifications=["admin@example.com"], min_percentage=50)]))
+            created = a.budgets.create(budget=billing.CreateBudgetConfigurationBudget(
+                display_name=f'sdk-{time.time_ns()}',
+                filter=billing.BudgetConfigurationFilter(tags=[
+                    billing.BudgetConfigurationFilterTagClause(key="tagName",
+                                                               value=billing.BudgetConfigurationFilterClause(
+                                                                   operator=billing.BudgetConfigurationFilterOperator.IN,
+                                                                   values=["all"]))
+                ]),
+                alert_configurations=[
+                    billing.CreateBudgetConfigurationBudgetAlertConfigurations(
+                        time_period=billing.AlertConfigurationTimePeriod.MONTH,
+                        quantity_type=billing.AlertConfigurationQuantityType.LIST_PRICE_DOLLARS_USD,
+                        trigger_type=billing.AlertConfigurationTriggerType.CUMULATIVE_SPENDING_EXCEEDED,
+                        quantity_threshold="100",
+                        action_configurations=[
+                            billing.CreateBudgetConfigurationBudgetActionConfigurations(
+                                action_type=billing.ActionConfigurationType.EMAIL_NOTIFICATION,
+                                target="admin@example.com")
+                        ])
+                ]))
             
             # cleanup
-            a.budgets.delete(budget_id=created.budget.budget_id)
+            a.budgets.delete(budget_id=created.budget.budget_configuration_id)
 
-        Create a new budget.
+        Create new budget.
         
-        Creates a new budget in the specified account.
+        Create a new budget configuration for an account. For full details, see
+        https://docs.databricks.com/en/admin/account-settings/budgets.html.
         
-        :param budget: :class:`Budget`
-          Budget configuration to be created.
+        :param budget: :class:`CreateBudgetConfigurationBudget`
+          Properties of the new budget configuration.
         
-        :returns: :class:`WrappedBudgetWithStatus`
+        :returns: :class:`CreateBudgetConfigurationResponse`
         
 
     .. py:method:: delete(budget_id: str)
 
         Delete budget.
         
-        Deletes the budget specified by its UUID.
+        Deletes a budget configuration for an account. Both account and budget configuration are specified by
+        ID. This cannot be undone.
         
         :param budget_id: str
-          Budget ID
+          The Databricks budget configuration ID.
         
         
         
 
-    .. py:method:: get(budget_id: str) -> WrappedBudgetWithStatus
+    .. py:method:: get(budget_id: str) -> GetBudgetConfigurationResponse
 
 
         Usage:
@@ -68,31 +84,43 @@
             
             a = AccountClient()
             
-            created = a.budgets.create(budget=billing.Budget(
-                name=f'sdk-{time.time_ns()}',
-                filter="tag.tagName = 'all'",
-                period="1 month",
-                start_date="2022-01-01",
-                target_amount="100",
-                alerts=[billing.BudgetAlert(email_notifications=["admin@example.com"], min_percentage=50)]))
+            created = a.budgets.create(budget=billing.CreateBudgetConfigurationBudget(
+                display_name=f'sdk-{time.time_ns()}',
+                filter=billing.BudgetConfigurationFilter(tags=[
+                    billing.BudgetConfigurationFilterTagClause(key="tagName",
+                                                               value=billing.BudgetConfigurationFilterClause(
+                                                                   operator=billing.BudgetConfigurationFilterOperator.IN,
+                                                                   values=["all"]))
+                ]),
+                alert_configurations=[
+                    billing.CreateBudgetConfigurationBudgetAlertConfigurations(
+                        time_period=billing.AlertConfigurationTimePeriod.MONTH,
+                        quantity_type=billing.AlertConfigurationQuantityType.LIST_PRICE_DOLLARS_USD,
+                        trigger_type=billing.AlertConfigurationTriggerType.CUMULATIVE_SPENDING_EXCEEDED,
+                        quantity_threshold="100",
+                        action_configurations=[
+                            billing.CreateBudgetConfigurationBudgetActionConfigurations(
+                                action_type=billing.ActionConfigurationType.EMAIL_NOTIFICATION,
+                                target="admin@example.com")
+                        ])
+                ]))
             
-            by_id = a.budgets.get(budget_id=created.budget.budget_id)
+            by_id = a.budgets.get(budget_id=created.budget.budget_configuration_id)
             
             # cleanup
-            a.budgets.delete(budget_id=created.budget.budget_id)
+            a.budgets.delete(budget_id=created.budget.budget_configuration_id)
 
-        Get budget and its status.
+        Get budget.
         
-        Gets the budget specified by its UUID, including noncumulative status for each day that the budget is
-        configured to include.
+        Gets a budget configuration for an account. Both account and budget configuration are specified by ID.
         
         :param budget_id: str
-          Budget ID
+          The Databricks budget configuration ID.
         
-        :returns: :class:`WrappedBudgetWithStatus`
+        :returns: :class:`GetBudgetConfigurationResponse`
         
 
-    .. py:method:: list() -> Iterator[BudgetWithStatus]
+    .. py:method:: list( [, page_token: Optional[str]]) -> Iterator[BudgetConfiguration]
 
 
         Usage:
@@ -100,20 +128,24 @@
         .. code-block::
 
             from databricks.sdk import AccountClient
+            from databricks.sdk.service import billing
             
             a = AccountClient()
             
-            all = a.budgets.list()
+            all = a.budgets.list(billing.ListBudgetConfigurationsRequest())
 
         Get all budgets.
         
-        Gets all budgets associated with this account, including noncumulative status for each day that the
-        budget is configured to include.
+        Gets all budgets associated with this account.
         
-        :returns: Iterator over :class:`BudgetWithStatus`
+        :param page_token: str (optional)
+          A page token received from a previous get all budget configurations call. This token can be used to
+          retrieve the subsequent page. Requests first page if absent.
+        
+        :returns: Iterator over :class:`BudgetConfiguration`
         
 
-    .. py:method:: update(budget_id: str, budget: Budget)
+    .. py:method:: update(budget_id: str, budget: UpdateBudgetConfigurationBudget) -> UpdateBudgetConfigurationResponse
 
 
         Usage:
@@ -127,36 +159,60 @@
             
             a = AccountClient()
             
-            created = a.budgets.create(budget=billing.Budget(
-                name=f'sdk-{time.time_ns()}',
-                filter="tag.tagName = 'all'",
-                period="1 month",
-                start_date="2022-01-01",
-                target_amount="100",
-                alerts=[billing.BudgetAlert(email_notifications=["admin@example.com"], min_percentage=50)]))
+            created = a.budgets.create(budget=billing.CreateBudgetConfigurationBudget(
+                display_name=f'sdk-{time.time_ns()}',
+                filter=billing.BudgetConfigurationFilter(tags=[
+                    billing.BudgetConfigurationFilterTagClause(key="tagName",
+                                                               value=billing.BudgetConfigurationFilterClause(
+                                                                   operator=billing.BudgetConfigurationFilterOperator.IN,
+                                                                   values=["all"]))
+                ]),
+                alert_configurations=[
+                    billing.CreateBudgetConfigurationBudgetAlertConfigurations(
+                        time_period=billing.AlertConfigurationTimePeriod.MONTH,
+                        quantity_type=billing.AlertConfigurationQuantityType.LIST_PRICE_DOLLARS_USD,
+                        trigger_type=billing.AlertConfigurationTriggerType.CUMULATIVE_SPENDING_EXCEEDED,
+                        quantity_threshold="100",
+                        action_configurations=[
+                            billing.CreateBudgetConfigurationBudgetActionConfigurations(
+                                action_type=billing.ActionConfigurationType.EMAIL_NOTIFICATION,
+                                target="admin@example.com")
+                        ])
+                ]))
             
-            a.budgets.update(budget_id=created.budget.budget_id,
-                             budget=billing.Budget(name=f'sdk-{time.time_ns()}',
-                                                   filter="tag.tagName = 'all'",
-                                                   period="1 month",
-                                                   start_date="2022-01-01",
-                                                   target_amount="100",
-                                                   alerts=[
-                                                       billing.BudgetAlert(email_notifications=["admin@example.com"],
-                                                                           min_percentage=70)
-                                                   ]))
+            _ = a.budgets.update(
+                budget_id=created.budget.budget_configuration_id,
+                budget=billing.UpdateBudgetConfigurationBudget(
+                    budget_configuration_id=created.budget.budget_configuration_id,
+                    display_name=f'sdk-{time.time_ns()}',
+                    filter=billing.BudgetConfigurationFilter(tags=[
+                        billing.BudgetConfigurationFilterTagClause(
+                            key="tagName",
+                            value=billing.BudgetConfigurationFilterClause(
+                                operator=billing.BudgetConfigurationFilterOperator.IN, values=["all"]))
+                    ]),
+                    alert_configurations=[
+                        billing.AlertConfiguration(
+                            alert_configuration_id=created.budget.alert_configurations[0].alert_configuration_id,
+                            time_period=billing.AlertConfigurationTimePeriod.MONTH,
+                            quantity_type=billing.AlertConfigurationQuantityType.LIST_PRICE_DOLLARS_USD,
+                            trigger_type=billing.AlertConfigurationTriggerType.CUMULATIVE_SPENDING_EXCEEDED,
+                            quantity_threshold="50",
+                            action_configurations=created.budget.alert_configurations[0].action_configurations)
+                    ]))
             
             # cleanup
-            a.budgets.delete(budget_id=created.budget.budget_id)
+            a.budgets.delete(budget_id=created.budget.budget_configuration_id)
 
         Modify budget.
         
-        Modifies a budget in this account. Budget properties are completely overwritten.
+        Updates a budget configuration for an account. Both account and budget configuration are specified by
+        ID.
         
         :param budget_id: str
-          Budget ID
-        :param budget: :class:`Budget`
-          Budget configuration to be created.
+          The Databricks budget configuration ID.
+        :param budget: :class:`UpdateBudgetConfigurationBudget`
+          The updated budget. This will overwrite the budget specified by the budget ID.
         
-        
+        :returns: :class:`UpdateBudgetConfigurationResponse`
         

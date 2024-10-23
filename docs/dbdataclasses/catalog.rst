@@ -65,6 +65,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: AwsCredentials
+   :members:
+   :undoc-members:
+
 .. autoclass:: AwsIamRoleRequest
    :members:
    :undoc-members:
@@ -82,6 +86,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: AzureServicePrincipal
+   :members:
+   :undoc-members:
+
+.. autoclass:: AzureUserDelegationSas
    :members:
    :undoc-members:
 
@@ -249,8 +257,20 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: CONNECTION_BIGQUERY
       :value: "CONNECTION_BIGQUERY"
 
+   .. py:attribute:: CONNECTION_BUILTIN_HIVE_METASTORE
+      :value: "CONNECTION_BUILTIN_HIVE_METASTORE"
+
    .. py:attribute:: CONNECTION_DATABRICKS
       :value: "CONNECTION_DATABRICKS"
+
+   .. py:attribute:: CONNECTION_EXTERNAL_HIVE_METASTORE
+      :value: "CONNECTION_EXTERNAL_HIVE_METASTORE"
+
+   .. py:attribute:: CONNECTION_GLUE
+      :value: "CONNECTION_GLUE"
+
+   .. py:attribute:: CONNECTION_HTTP_BEARER
+      :value: "CONNECTION_HTTP_BEARER"
 
    .. py:attribute:: CONNECTION_MYSQL
       :value: "CONNECTION_MYSQL"
@@ -282,6 +302,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: DATABRICKS
       :value: "DATABRICKS"
+
+   .. py:attribute:: GLUE
+      :value: "GLUE"
+
+   .. py:attribute:: HIVE_METASTORE
+      :value: "HIVE_METASTORE"
+
+   .. py:attribute:: HTTP
+      :value: "HTTP"
 
    .. py:attribute:: MYSQL
       :value: "MYSQL"
@@ -405,6 +434,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. py:class:: CredentialType
 
    The type of credential.
+
+   .. py:attribute:: BEARER_TOKEN
+      :value: "BEARER_TOKEN"
 
    .. py:attribute:: USERNAME_PASSWORD
       :value: "USERNAME_PASSWORD"
@@ -647,6 +679,29 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: PARAM
       :value: "PARAM"
 
+.. autoclass:: GcpOauthToken
+   :members:
+   :undoc-members:
+
+.. autoclass:: GenerateTemporaryTableCredentialRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: GenerateTemporaryTableCredentialResponse
+   :members:
+   :undoc-members:
+
+.. py:class:: GetBindingsSecurableType
+
+   .. py:attribute:: CATALOG
+      :value: "CATALOG"
+
+   .. py:attribute:: EXTERNAL_LOCATION
+      :value: "EXTERNAL_LOCATION"
+
+   .. py:attribute:: STORAGE_CREDENTIAL
+      :value: "STORAGE_CREDENTIAL"
+
 .. autoclass:: GetMetastoreSummaryResponse
    :members:
    :undoc-members:
@@ -660,6 +715,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: INTERNAL_AND_EXTERNAL
       :value: "INTERNAL_AND_EXTERNAL"
+
+.. autoclass:: GetQuotaResponse
+   :members:
+   :undoc-members:
 
 .. py:class:: IsolationMode
 
@@ -700,6 +759,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ListModelVersionsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListQuotasResponse
    :members:
    :undoc-members:
 
@@ -940,9 +1003,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: ONLINE_PIPELINE_FAILED
       :value: "ONLINE_PIPELINE_FAILED"
 
-   .. py:attribute:: ONLINE_TABLE_STATE_UNSPECIFIED
-      :value: "ONLINE_TABLE_STATE_UNSPECIFIED"
-
    .. py:attribute:: ONLINE_TRIGGERED_UPDATE
       :value: "ONLINE_TRIGGERED_UPDATE"
 
@@ -1052,6 +1112,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: EXECUTE
       :value: "EXECUTE"
 
+   .. py:attribute:: MANAGE
+      :value: "MANAGE"
+
    .. py:attribute:: MANAGE_ALLOWLIST
       :value: "MANAGE_ALLOWLIST"
 
@@ -1131,10 +1194,26 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: PROVISIONING
       :value: "PROVISIONING"
 
-   .. py:attribute:: STATE_UNSPECIFIED
-      :value: "STATE_UNSPECIFIED"
+   .. py:attribute:: UPDATING
+      :value: "UPDATING"
 
 .. autoclass:: ProvisioningStatus
+   :members:
+   :undoc-members:
+
+.. autoclass:: QuotaInfo
+   :members:
+   :undoc-members:
+
+.. autoclass:: R2Credentials
+   :members:
+   :undoc-members:
+
+.. autoclass:: RegenerateDashboardRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: RegenerateDashboardResponse
    :members:
    :undoc-members:
 
@@ -1258,6 +1337,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: TableOperation
+
+   .. py:attribute:: READ
+      :value: "READ"
+
+   .. py:attribute:: READ_WRITE
+      :value: "READ_WRITE"
+
 .. autoclass:: TableRowFilter
    :members:
    :undoc-members:
@@ -1303,6 +1390,17 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: UpdateAssignmentResponse
    :members:
    :undoc-members:
+
+.. py:class:: UpdateBindingsSecurableType
+
+   .. py:attribute:: CATALOG
+      :value: "CATALOG"
+
+   .. py:attribute:: EXTERNAL_LOCATION
+      :value: "EXTERNAL_LOCATION"
+
+   .. py:attribute:: STORAGE_CREDENTIAL
+      :value: "STORAGE_CREDENTIAL"
 
 .. autoclass:: UpdateCatalog
    :members:

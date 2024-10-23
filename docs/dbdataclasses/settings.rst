@@ -8,6 +8,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: BooleanMessage
+   :members:
+   :undoc-members:
+
 .. autoclass:: ClusterAutoRestartMessage
    :members:
    :undoc-members:
@@ -21,9 +25,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. py:class:: ClusterAutoRestartMessageMaintenanceWindowDayOfWeek
-
-   .. py:attribute:: DAY_OF_WEEK_UNSPECIFIED
-      :value: "DAY_OF_WEEK_UNSPECIFIED"
 
    .. py:attribute:: FRIDAY
       :value: "FRIDAY"
@@ -73,9 +74,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: THIRD_OF_MONTH
       :value: "THIRD_OF_MONTH"
 
-   .. py:attribute:: WEEK_DAY_FREQUENCY_UNSPECIFIED
-      :value: "WEEK_DAY_FREQUENCY_UNSPECIFIED"
-
 .. autoclass:: ClusterAutoRestartMessageMaintenanceWindowWindowStartTime
    :members:
    :undoc-members:
@@ -92,8 +90,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    Compliance stardard for SHIELD customers
 
-   .. py:attribute:: COMPLIANCE_STANDARD_UNSPECIFIED
-      :value: "COMPLIANCE_STANDARD_UNSPECIFIED"
+   .. py:attribute:: CANADA_PROTECTED_B
+      :value: "CANADA_PROTECTED_B"
 
    .. py:attribute:: CYBER_ESSENTIAL_PLUS
       :value: "CYBER_ESSENTIAL_PLUS"
@@ -122,6 +120,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: PCI_DSS
       :value: "PCI_DSS"
 
+.. autoclass:: Config
+   :members:
+   :undoc-members:
+
 .. autoclass:: CreateIpAccessList
    :members:
    :undoc-members:
@@ -131,6 +133,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: CreateNetworkConnectivityConfigRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: CreateNotificationDestinationRequest
    :members:
    :undoc-members:
 
@@ -186,6 +192,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: DeleteDisableLegacyAccessResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: DeleteDisableLegacyDbfsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: DeleteDisableLegacyFeaturesResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: DeleteNetworkConnectivityConfigurationResponse
    :members:
    :undoc-members:
@@ -199,6 +217,43 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: DeleteRestrictWorkspaceAdminsSettingResponse
+   :members:
+   :undoc-members:
+
+.. py:class:: DestinationType
+
+   .. py:attribute:: EMAIL
+      :value: "EMAIL"
+
+   .. py:attribute:: MICROSOFT_TEAMS
+      :value: "MICROSOFT_TEAMS"
+
+   .. py:attribute:: PAGERDUTY
+      :value: "PAGERDUTY"
+
+   .. py:attribute:: SLACK
+      :value: "SLACK"
+
+   .. py:attribute:: WEBHOOK
+      :value: "WEBHOOK"
+
+.. autoclass:: DisableLegacyAccess
+   :members:
+   :undoc-members:
+
+.. autoclass:: DisableLegacyDbfs
+   :members:
+   :undoc-members:
+
+.. autoclass:: DisableLegacyFeatures
+   :members:
+   :undoc-members:
+
+.. autoclass:: EmailConfig
+   :members:
+   :undoc-members:
+
+.. autoclass:: Empty
    :members:
    :undoc-members:
 
@@ -234,6 +289,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: GenericWebhookConfig
+   :members:
+   :undoc-members:
+
 .. autoclass:: GetIpAccessListResponse
    :members:
    :undoc-members:
@@ -266,6 +325,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ListNotificationDestinationsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListNotificationDestinationsResult
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListPublicTokensResponse
    :members:
    :undoc-members:
@@ -284,6 +351,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: BLOCK
       :value: "BLOCK"
+
+.. autoclass:: MicrosoftTeamsConfig
+   :members:
+   :undoc-members:
 
 .. autoclass:: NccAwsStableIpRule
    :members:
@@ -349,6 +420,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: NotificationDestination
+   :members:
+   :undoc-members:
+
+.. autoclass:: PagerdutyConfig
+   :members:
+   :undoc-members:
+
 .. autoclass:: PartitionId
    :members:
    :undoc-members:
@@ -395,9 +474,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: RESTRICT_TOKENS_AND_JOB_RUN_AS
       :value: "RESTRICT_TOKENS_AND_JOB_RUN_AS"
 
-   .. py:attribute:: STATUS_UNSPECIFIED
-      :value: "STATUS_UNSPECIFIED"
-
 .. autoclass:: RestrictWorkspaceAdminsSetting
    :members:
    :undoc-members:
@@ -411,6 +487,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: SetStatusResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: SlackConfig
    :members:
    :undoc-members:
 
@@ -457,6 +537,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    The type of token request. As of now, only `AZURE_ACTIVE_DIRECTORY_TOKEN` is supported.
 
+   .. py:attribute:: ARCLIGHT_AZURE_EXCHANGE_TOKEN
+      :value: "ARCLIGHT_AZURE_EXCHANGE_TOKEN"
+
    .. py:attribute:: AZURE_ACTIVE_DIRECTORY_TOKEN
       :value: "AZURE_ACTIVE_DIRECTORY_TOKEN"
 
@@ -476,6 +559,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: UpdateDisableLegacyAccessRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateDisableLegacyDbfsRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateDisableLegacyFeaturesRequest
+   :members:
+   :undoc-members:
+
 .. autoclass:: UpdateEnhancedSecurityMonitoringSettingRequest
    :members:
    :undoc-members:
@@ -485,6 +580,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: UpdateIpAccessList
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateNotificationDestinationRequest
    :members:
    :undoc-members:
 

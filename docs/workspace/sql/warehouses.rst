@@ -17,13 +17,18 @@
             import time
             
             from databricks.sdk import WorkspaceClient
+            from databricks.sdk.service import sql
             
             w = WorkspaceClient()
             
-            created = w.warehouses.create(name=f'sdk-{time.time_ns()}',
-                                          cluster_size="2X-Small",
-                                          max_num_clusters=1,
-                                          auto_stop_mins=10).result()
+            created = w.warehouses.create(
+                name=f'sdk-{time.time_ns()}',
+                cluster_size="2X-Small",
+                max_num_clusters=1,
+                auto_stop_mins=10,
+                tags=sql.EndpointTags(
+                    custom_tags=[sql.EndpointTagPair(key="Owner", value="eng-dev-ecosystem-team_at_databricks.com")
+                                 ])).result()
             
             # cleanup
             w.warehouses.delete(id=created.id)
@@ -36,7 +41,8 @@
           The amount of time in minutes that a SQL warehouse must be idle (i.e., no RUNNING queries) before it
           is automatically stopped.
           
-          Supported values: - Must be == 0 or >= 10 mins - 0 indicates no autostop.
+          Supported values: - Must be >= 0 mins for serverless warehouses - Must be == 0 or >= 10 mins for
+          non-serverless warehouses - 0 indicates no autostop.
           
           Defaults to 120 mins
         :param channel: :class:`Channel` (optional)
@@ -117,13 +123,18 @@
             import time
             
             from databricks.sdk import WorkspaceClient
+            from databricks.sdk.service import sql
             
             w = WorkspaceClient()
             
-            created = w.warehouses.create(name=f'sdk-{time.time_ns()}',
-                                          cluster_size="2X-Small",
-                                          max_num_clusters=1,
-                                          auto_stop_mins=10).result()
+            created = w.warehouses.create(
+                name=f'sdk-{time.time_ns()}',
+                cluster_size="2X-Small",
+                max_num_clusters=1,
+                auto_stop_mins=10,
+                tags=sql.EndpointTags(
+                    custom_tags=[sql.EndpointTagPair(key="Owner", value="eng-dev-ecosystem-team_at_databricks.com")
+                                 ])).result()
             
             _ = w.warehouses.edit(id=created.id,
                                   name=f'sdk-{time.time_ns()}',
@@ -213,13 +224,18 @@
             import time
             
             from databricks.sdk import WorkspaceClient
+            from databricks.sdk.service import sql
             
             w = WorkspaceClient()
             
-            created = w.warehouses.create(name=f'sdk-{time.time_ns()}',
-                                          cluster_size="2X-Small",
-                                          max_num_clusters=1,
-                                          auto_stop_mins=10).result()
+            created = w.warehouses.create(
+                name=f'sdk-{time.time_ns()}',
+                cluster_size="2X-Small",
+                max_num_clusters=1,
+                auto_stop_mins=10,
+                tags=sql.EndpointTags(
+                    custom_tags=[sql.EndpointTagPair(key="Owner", value="eng-dev-ecosystem-team_at_databricks.com")
+                                 ])).result()
             
             wh = w.warehouses.get(id=created.id)
             

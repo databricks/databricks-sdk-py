@@ -8,6 +8,61 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: AiGatewayConfig
+   :members:
+   :undoc-members:
+
+.. autoclass:: AiGatewayGuardrailParameters
+   :members:
+   :undoc-members:
+
+.. autoclass:: AiGatewayGuardrailPiiBehavior
+   :members:
+   :undoc-members:
+
+.. py:class:: AiGatewayGuardrailPiiBehaviorBehavior
+
+   Behavior for PII filter. Currently only 'BLOCK' is supported. If 'BLOCK' is set for the input guardrail and the request contains PII, the request is not sent to the model server and 400 status code is returned; if 'BLOCK' is set for the output guardrail and the model response contains PII, the PII info in the response is redacted and 400 status code is returned.
+
+   .. py:attribute:: BLOCK
+      :value: "BLOCK"
+
+   .. py:attribute:: NONE
+      :value: "NONE"
+
+.. autoclass:: AiGatewayGuardrails
+   :members:
+   :undoc-members:
+
+.. autoclass:: AiGatewayInferenceTableConfig
+   :members:
+   :undoc-members:
+
+.. autoclass:: AiGatewayRateLimit
+   :members:
+   :undoc-members:
+
+.. py:class:: AiGatewayRateLimitKey
+
+   Key field for a rate limit. Currently, only 'user' and 'endpoint' are supported, with 'endpoint' being the default if not specified.
+
+   .. py:attribute:: ENDPOINT
+      :value: "ENDPOINT"
+
+   .. py:attribute:: USER
+      :value: "USER"
+
+.. py:class:: AiGatewayRateLimitRenewalPeriod
+
+   Renewal period field for a rate limit. Currently, only 'minute' is supported.
+
+   .. py:attribute:: MINUTE
+      :value: "MINUTE"
+
+.. autoclass:: AiGatewayUsageTrackingConfig
+   :members:
+   :undoc-members:
+
 .. autoclass:: AmazonBedrockConfig
    :members:
    :undoc-members:
@@ -29,84 +84,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "COHERE"
 
 .. autoclass:: AnthropicConfig
-   :members:
-   :undoc-members:
-
-.. autoclass:: App
-   :members:
-   :undoc-members:
-
-.. autoclass:: AppDeployment
-   :members:
-   :undoc-members:
-
-.. autoclass:: AppDeploymentArtifacts
-   :members:
-   :undoc-members:
-
-.. py:class:: AppDeploymentMode
-
-   .. py:attribute:: AUTO_SYNC
-      :value: "AUTO_SYNC"
-
-   .. py:attribute:: MODE_UNSPECIFIED
-      :value: "MODE_UNSPECIFIED"
-
-   .. py:attribute:: SNAPSHOT
-      :value: "SNAPSHOT"
-
-.. py:class:: AppDeploymentState
-
-   .. py:attribute:: FAILED
-      :value: "FAILED"
-
-   .. py:attribute:: IN_PROGRESS
-      :value: "IN_PROGRESS"
-
-   .. py:attribute:: STATE_UNSPECIFIED
-      :value: "STATE_UNSPECIFIED"
-
-   .. py:attribute:: STOPPED
-      :value: "STOPPED"
-
-   .. py:attribute:: SUCCEEDED
-      :value: "SUCCEEDED"
-
-.. autoclass:: AppDeploymentStatus
-   :members:
-   :undoc-members:
-
-.. autoclass:: AppEnvironment
-   :members:
-   :undoc-members:
-
-.. py:class:: AppState
-
-   .. py:attribute:: CREATING
-      :value: "CREATING"
-
-   .. py:attribute:: DELETED
-      :value: "DELETED"
-
-   .. py:attribute:: DELETING
-      :value: "DELETING"
-
-   .. py:attribute:: ERROR
-      :value: "ERROR"
-
-   .. py:attribute:: IDLE
-      :value: "IDLE"
-
-   .. py:attribute:: RUNNING
-      :value: "RUNNING"
-
-   .. py:attribute:: STARTING
-      :value: "STARTING"
-
-   .. py:attribute:: STATE_UNSPECIFIED
-      :value: "STATE_UNSPECIFIED"
-
-.. autoclass:: AppStatus
    :members:
    :undoc-members:
 
@@ -144,14 +121,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "USER"
 
 .. autoclass:: CohereConfig
-   :members:
-   :undoc-members:
-
-.. autoclass:: CreateAppDeploymentRequest
-   :members:
-   :undoc-members:
-
-.. autoclass:: CreateAppRequest
    :members:
    :undoc-members:
 
@@ -212,6 +181,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: NOT_UPDATING
       :value: "NOT_UPDATING"
 
+   .. py:attribute:: UPDATE_CANCELED
+      :value: "UPDATE_CANCELED"
+
    .. py:attribute:: UPDATE_FAILED
       :value: "UPDATE_FAILED"
 
@@ -229,10 +201,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: EnvVariable
-   :members:
-   :undoc-members:
-
 .. autoclass:: ExportMetricsResponse
    :members:
    :undoc-members:
@@ -243,7 +211,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ExternalModelProvider
 
-   The name of the provider for the external model. Currently, the supported providers are 'ai21labs', 'anthropic', 'amazon-bedrock', 'cohere', 'databricks-model-serving', 'openai', and 'palm'.",
+   The name of the provider for the external model. Currently, the supported providers are 'ai21labs', 'anthropic', 'amazon-bedrock', 'cohere', 'databricks-model-serving', 'google-cloud-vertex-ai', 'openai', and 'palm'.",
 
    .. py:attribute:: AI21LABS
       :value: "AI21LABS"
@@ -259,6 +227,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: DATABRICKS_MODEL_SERVING
       :value: "DATABRICKS_MODEL_SERVING"
+
+   .. py:attribute:: GOOGLE_CLOUD_VERTEX_AI
+      :value: "GOOGLE_CLOUD_VERTEX_AI"
 
    .. py:attribute:: OPENAI
       :value: "OPENAI"
@@ -282,11 +253,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: ListAppDeploymentsResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: ListAppsResponse
+.. autoclass:: GoogleCloudVertexAiConfig
    :members:
    :undoc-members:
 
@@ -311,6 +278,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: PayloadTable
+   :members:
+   :undoc-members:
+
+.. autoclass:: PutAiGatewayResponse
    :members:
    :undoc-members:
 
@@ -506,23 +477,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: StartAppRequest
-   :members:
-   :undoc-members:
-
-.. autoclass:: StopAppRequest
-   :members:
-   :undoc-members:
-
-.. autoclass:: StopAppResponse
-   :members:
-   :undoc-members:
-
 .. autoclass:: TrafficConfig
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateAppRequest
    :members:
    :undoc-members:
 

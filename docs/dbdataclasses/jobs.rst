@@ -111,6 +111,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: EnforcePolicyComplianceForJobResponseJobClusterSettingsChange
+   :members:
+   :undoc-members:
+
+.. autoclass:: EnforcePolicyComplianceRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: EnforcePolicyComplianceResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: ExportRunOutput
    :members:
    :undoc-members:
@@ -144,6 +156,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "SINGLE_TASK"
 
 .. autoclass:: GetJobPermissionLevelsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: GetPolicyComplianceResponse
    :members:
    :undoc-members:
 
@@ -194,6 +210,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: JobCluster
+   :members:
+   :undoc-members:
+
+.. autoclass:: JobCompliance
    :members:
    :undoc-members:
 
@@ -329,6 +349,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ListJobComplianceForPolicyResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListJobsResponse
    :members:
    :undoc-members:
@@ -365,9 +389,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: HOURS
       :value: "HOURS"
 
-   .. py:attribute:: TIME_UNIT_UNSPECIFIED
-      :value: "TIME_UNIT_UNSPECIFIED"
-
    .. py:attribute:: WEEKS
       :value: "WEEKS"
 
@@ -382,6 +403,23 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: PythonWheelTask
    :members:
    :undoc-members:
+
+.. autoclass:: QueueDetails
+   :members:
+   :undoc-members:
+
+.. py:class:: QueueDetailsCodeCode
+
+   The reason for queuing the run. * `ACTIVE_RUNS_LIMIT_REACHED`: The run was queued due to reaching the workspace limit of active task runs. * `MAX_CONCURRENT_RUNS_REACHED`: The run was queued due to reaching the per-job limit of concurrent job runs. * `ACTIVE_RUN_JOB_TASKS_LIMIT_REACHED`: The run was queued due to reaching the workspace limit of active run job tasks.
+
+   .. py:attribute:: ACTIVE_RUNS_LIMIT_REACHED
+      :value: "ACTIVE_RUNS_LIMIT_REACHED"
+
+   .. py:attribute:: ACTIVE_RUN_JOB_TASKS_LIMIT_REACHED
+      :value: "ACTIVE_RUN_JOB_TASKS_LIMIT_REACHED"
+
+   .. py:attribute:: MAX_CONCURRENT_RUNS_REACHED
+      :value: "MAX_CONCURRENT_RUNS_REACHED"
 
 .. autoclass:: QueueSettings
    :members:
@@ -523,6 +561,28 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: WAITING_FOR_RETRY
       :value: "WAITING_FOR_RETRY"
 
+.. py:class:: RunLifecycleStateV2State
+
+   The current state of the run.
+
+   .. py:attribute:: BLOCKED
+      :value: "BLOCKED"
+
+   .. py:attribute:: PENDING
+      :value: "PENDING"
+
+   .. py:attribute:: QUEUED
+      :value: "QUEUED"
+
+   .. py:attribute:: RUNNING
+      :value: "RUNNING"
+
+   .. py:attribute:: TERMINATED
+      :value: "TERMINATED"
+
+   .. py:attribute:: TERMINATING
+      :value: "TERMINATING"
+
 .. autoclass:: RunNow
    :members:
    :undoc-members:
@@ -541,10 +601,13 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: RunResultState
 
-   A value indicating the run's result. The possible values are: * `SUCCESS`: The task completed successfully. * `FAILED`: The task completed with an error. * `TIMEDOUT`: The run was stopped after reaching the timeout. * `CANCELED`: The run was canceled at user request. * `MAXIMUM_CONCURRENT_RUNS_REACHED`: The run was skipped because the maximum concurrent runs were reached. * `EXCLUDED`: The run was skipped because the necessary conditions were not met. * `SUCCESS_WITH_FAILURES`: The job run completed successfully with some failures; leaf tasks were successful. * `UPSTREAM_FAILED`: The run was skipped because of an upstream failure. * `UPSTREAM_CANCELED`: The run was skipped because an upstream task was canceled.
+   A value indicating the run's result. The possible values are: * `SUCCESS`: The task completed successfully. * `FAILED`: The task completed with an error. * `TIMEDOUT`: The run was stopped after reaching the timeout. * `CANCELED`: The run was canceled at user request. * `MAXIMUM_CONCURRENT_RUNS_REACHED`: The run was skipped because the maximum concurrent runs were reached. * `EXCLUDED`: The run was skipped because the necessary conditions were not met. * `SUCCESS_WITH_FAILURES`: The job run completed successfully with some failures; leaf tasks were successful. * `UPSTREAM_FAILED`: The run was skipped because of an upstream failure. * `UPSTREAM_CANCELED`: The run was skipped because an upstream task was canceled. * `DISABLED`: The run was skipped because it was disabled explicitly by the user.
 
    .. py:attribute:: CANCELED
       :value: "CANCELED"
+
+   .. py:attribute:: DISABLED
+      :value: "DISABLED"
 
    .. py:attribute:: EXCLUDED
       :value: "EXCLUDED"
@@ -571,6 +634,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "UPSTREAM_FAILED"
 
 .. autoclass:: RunState
+   :members:
+   :undoc-members:
+
+.. autoclass:: RunStatus
    :members:
    :undoc-members:
 
@@ -729,6 +796,98 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: TaskNotificationSettings
    :members:
    :undoc-members:
+
+.. py:class:: TerminationCodeCode
+
+   The code indicates why the run was terminated. Additional codes might be introduced in future releases. * `SUCCESS`: The run was completed successfully. * `USER_CANCELED`: The run was successfully canceled during execution by a user. * `CANCELED`: The run was canceled during execution by the Databricks platform; for example, if the maximum run duration was exceeded. * `SKIPPED`: Run was never executed, for example, if the upstream task run failed, the dependency type condition was not met, or there were no material tasks to execute. * `INTERNAL_ERROR`: The run encountered an unexpected error. Refer to the state message for further details. * `DRIVER_ERROR`: The run encountered an error while communicating with the Spark Driver. * `CLUSTER_ERROR`: The run failed due to a cluster error. Refer to the state message for further details. * `REPOSITORY_CHECKOUT_FAILED`: Failed to complete the checkout due to an error when communicating with the third party service. * `INVALID_CLUSTER_REQUEST`: The run failed because it issued an invalid request to start the cluster. * `WORKSPACE_RUN_LIMIT_EXCEEDED`: The workspace has reached the quota for the maximum number of concurrent active runs. Consider scheduling the runs over a larger time frame. * `FEATURE_DISABLED`: The run failed because it tried to access a feature unavailable for the workspace. * `CLUSTER_REQUEST_LIMIT_EXCEEDED`: The number of cluster creation, start, and upsize requests have exceeded the allotted rate limit. Consider spreading the run execution over a larger time frame. * `STORAGE_ACCESS_ERROR`: The run failed due to an error when accessing the customer blob storage. Refer to the state message for further details. * `RUN_EXECUTION_ERROR`: The run was completed with task failures. For more details, refer to the state message or run output. * `UNAUTHORIZED_ERROR`: The run failed due to a permission issue while accessing a resource. Refer to the state message for further details. * `LIBRARY_INSTALLATION_ERROR`: The run failed while installing the user-requested library. Refer to the state message for further details. The causes might include, but are not limited to: The provided library is invalid, there are insufficient permissions to install the library, and so forth. * `MAX_CONCURRENT_RUNS_EXCEEDED`: The scheduled run exceeds the limit of maximum concurrent runs set for the job. * `MAX_SPARK_CONTEXTS_EXCEEDED`: The run is scheduled on a cluster that has already reached the maximum number of contexts it is configured to create. See: [Link]. * `RESOURCE_NOT_FOUND`: A resource necessary for run execution does not exist. Refer to the state message for further details. * `INVALID_RUN_CONFIGURATION`: The run failed due to an invalid configuration. Refer to the state message for further details. * `CLOUD_FAILURE`: The run failed due to a cloud provider issue. Refer to the state message for further details. * `MAX_JOB_QUEUE_SIZE_EXCEEDED`: The run was skipped due to reaching the job level queue size limit.
+   [Link]: https://kb.databricks.com/en_US/notebooks/too-many-execution-contexts-are-open-right-now
+
+   .. py:attribute:: CANCELED
+      :value: "CANCELED"
+
+   .. py:attribute:: CLOUD_FAILURE
+      :value: "CLOUD_FAILURE"
+
+   .. py:attribute:: CLUSTER_ERROR
+      :value: "CLUSTER_ERROR"
+
+   .. py:attribute:: CLUSTER_REQUEST_LIMIT_EXCEEDED
+      :value: "CLUSTER_REQUEST_LIMIT_EXCEEDED"
+
+   .. py:attribute:: DRIVER_ERROR
+      :value: "DRIVER_ERROR"
+
+   .. py:attribute:: FEATURE_DISABLED
+      :value: "FEATURE_DISABLED"
+
+   .. py:attribute:: INTERNAL_ERROR
+      :value: "INTERNAL_ERROR"
+
+   .. py:attribute:: INVALID_CLUSTER_REQUEST
+      :value: "INVALID_CLUSTER_REQUEST"
+
+   .. py:attribute:: INVALID_RUN_CONFIGURATION
+      :value: "INVALID_RUN_CONFIGURATION"
+
+   .. py:attribute:: LIBRARY_INSTALLATION_ERROR
+      :value: "LIBRARY_INSTALLATION_ERROR"
+
+   .. py:attribute:: MAX_CONCURRENT_RUNS_EXCEEDED
+      :value: "MAX_CONCURRENT_RUNS_EXCEEDED"
+
+   .. py:attribute:: MAX_JOB_QUEUE_SIZE_EXCEEDED
+      :value: "MAX_JOB_QUEUE_SIZE_EXCEEDED"
+
+   .. py:attribute:: MAX_SPARK_CONTEXTS_EXCEEDED
+      :value: "MAX_SPARK_CONTEXTS_EXCEEDED"
+
+   .. py:attribute:: REPOSITORY_CHECKOUT_FAILED
+      :value: "REPOSITORY_CHECKOUT_FAILED"
+
+   .. py:attribute:: RESOURCE_NOT_FOUND
+      :value: "RESOURCE_NOT_FOUND"
+
+   .. py:attribute:: RUN_EXECUTION_ERROR
+      :value: "RUN_EXECUTION_ERROR"
+
+   .. py:attribute:: SKIPPED
+      :value: "SKIPPED"
+
+   .. py:attribute:: STORAGE_ACCESS_ERROR
+      :value: "STORAGE_ACCESS_ERROR"
+
+   .. py:attribute:: SUCCESS
+      :value: "SUCCESS"
+
+   .. py:attribute:: UNAUTHORIZED_ERROR
+      :value: "UNAUTHORIZED_ERROR"
+
+   .. py:attribute:: USER_CANCELED
+      :value: "USER_CANCELED"
+
+   .. py:attribute:: WORKSPACE_RUN_LIMIT_EXCEEDED
+      :value: "WORKSPACE_RUN_LIMIT_EXCEEDED"
+
+.. autoclass:: TerminationDetails
+   :members:
+   :undoc-members:
+
+.. py:class:: TerminationTypeType
+
+   * `SUCCESS`: The run terminated without any issues * `INTERNAL_ERROR`: An error occurred in the Databricks platform. Please look at the [status page] or contact support if the issue persists. * `CLIENT_ERROR`: The run was terminated because of an error caused by user input or the job configuration. * `CLOUD_FAILURE`: The run was terminated because of an issue with your cloud provider.
+   [status page]: https://status.databricks.com/
+
+   .. py:attribute:: CLIENT_ERROR
+      :value: "CLIENT_ERROR"
+
+   .. py:attribute:: CLOUD_FAILURE
+      :value: "CLOUD_FAILURE"
+
+   .. py:attribute:: INTERNAL_ERROR
+      :value: "INTERNAL_ERROR"
+
+   .. py:attribute:: SUCCESS
+      :value: "SUCCESS"
 
 .. autoclass:: TriggerInfo
    :members:

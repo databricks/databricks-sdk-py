@@ -103,6 +103,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ClusterCompliance
+   :members:
+   :undoc-members:
+
 .. autoclass:: ClusterDetails
    :members:
    :undoc-members:
@@ -176,6 +180,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ClusterPolicyPermissionsRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: ClusterSettingsChange
    :members:
    :undoc-members:
 
@@ -443,6 +451,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: EnforceClusterComplianceRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: EnforceClusterComplianceResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: Environment
    :members:
    :undoc-members:
@@ -562,6 +578,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "PREEMPTIBLE_WITH_FALLBACK_GCP"
 
 .. autoclass:: GcsStorageInfo
+   :members:
+   :undoc-members:
+
+.. autoclass:: GetClusterComplianceResponse
    :members:
    :undoc-members:
 
@@ -817,9 +837,41 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ListClusterCompliancesResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListClustersFilterBy
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListClustersResponse
    :members:
    :undoc-members:
+
+.. autoclass:: ListClustersSortBy
+   :members:
+   :undoc-members:
+
+.. py:class:: ListClustersSortByDirection
+
+   The direction to sort by.
+
+   .. py:attribute:: ASC
+      :value: "ASC"
+
+   .. py:attribute:: DESC
+      :value: "DESC"
+
+.. py:class:: ListClustersSortByField
+
+   The sorting criteria. By default, clusters are sorted by 3 columns from highest to lowest precedence: cluster state, pinned or unpinned, then cluster name.
+
+   .. py:attribute:: CLUSTER_NAME
+      :value: "CLUSTER_NAME"
+
+   .. py:attribute:: DEFAULT
+      :value: "DEFAULT"
 
 .. autoclass:: ListGlobalInitScriptsResponse
    :members:
@@ -854,6 +906,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "POLICY_NAME"
 
 .. py:class:: ListSortOrder
+
+   A generic ordering enum for list-based queries.
 
    .. py:attribute:: ASC
       :value: "ASC"
@@ -968,7 +1022,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: RuntimeEngine
 
-   Decides which runtime engine to be use, e.g. Standard vs. Photon. If unspecified, the runtime engine is inferred from spark_version.
+   Determines the cluster's runtime engine, either standard or Photon.
+   This field is not compatible with legacy `spark_version` values that contain `-photon-`. Remove `-photon-` from the `spark_version` and set `runtime_engine` to `PHOTON`.
+   If left unspecified, the runtime engine defaults to standard unless the spark_version contains -photon-, in which case Photon will be used.
 
    .. py:attribute:: NULL
       :value: "NULL"
@@ -1305,6 +1361,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: UnpinClusterResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateCluster
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateClusterResource
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateClusterResponse
    :members:
    :undoc-members:
 

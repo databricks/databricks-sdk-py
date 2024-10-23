@@ -15,7 +15,7 @@ from ._internal import Wait, _enum, _from_dict, _repeated_dict
 
 _LOG = logging.getLogger('databricks.sdk')
 
-from databricks.sdk.service import compute, iam
+from databricks.sdk.service import compute
 
 # all definitions in this file are in alphabetical order
 
@@ -29,6 +29,12 @@ class BaseJob:
     """The creator user name. This field won’t be included in the response if the user has already
     been deleted."""
 
+    effective_budget_policy_id: Optional[str] = None
+    """The id of the budget policy used by this job for cost attribution purposes. This may be set
+    through (in order of precedence): 1. Budget admins through the account or workspace console 2.
+    Jobs UI in the job details page and Jobs API using `budget_policy_id` 3. Inferred default based
+    on accessible budget policies of the run_as identity on job creation or modification."""
+
     job_id: Optional[int] = None
     """The canonical identifier for this job."""
 
@@ -41,6 +47,8 @@ class BaseJob:
         body = {}
         if self.created_time is not None: body['created_time'] = self.created_time
         if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
+        if self.effective_budget_policy_id is not None:
+            body['effective_budget_policy_id'] = self.effective_budget_policy_id
         if self.job_id is not None: body['job_id'] = self.job_id
         if self.settings: body['settings'] = self.settings.as_dict()
         return body
@@ -50,6 +58,7 @@ class BaseJob:
         """Deserializes the BaseJob from a dictionary."""
         return cls(created_time=d.get('created_time', None),
                    creator_user_name=d.get('creator_user_name', None),
+                   effective_budget_policy_id=d.get('effective_budget_policy_id', None),
                    job_id=d.get('job_id', None),
                    settings=_from_dict(d, 'settings', JobSettings))
 
@@ -58,8 +67,8 @@ class BaseJob:
 class BaseRun:
     attempt_number: Optional[int] = None
     """The sequence number of this run attempt for a triggered job run. The initial attempt of a run
-    has an attempt_number of 0\. If the initial run attempt fails, and the job has a retry policy
-    (`max_retries` \> 0), subsequent runs are created with an `original_attempt_run_id` of the
+    has an attempt_number of 0. If the initial run attempt fails, and the job has a retry policy
+    (`max_retries` > 0), subsequent runs are created with an `original_attempt_run_id` of the
     original attempt’s ID and an incrementing `attempt_number`. Runs are retried only until they
     succeed, and the maximum `attempt_number` is the same as the `max_retries` value for the job."""
 
@@ -115,6 +124,11 @@ class BaseRun:
     job_parameters: Optional[List[JobParameter]] = None
     """Job-level parameters used in the run"""
 
+    job_run_id: Optional[int] = None
+    """ID of the job run that this run belongs to. For legacy and single-task job runs the field is
+    populated with the job run ID. For task runs, the field is populated with the ID of the job run
+    that the task run belongs to."""
+
     number_in_job: Optional[int] = None
     """A unique identifier for this job run. This is set to the same value as `run_id`."""
 
@@ -166,7 +180,10 @@ class BaseRun:
     scheduled to run on a new cluster, this is the time the cluster creation call is issued."""
 
     state: Optional[RunState] = None
-    """The current state of the run."""
+    """Deprecated. Please use the `status` field instead."""
+
+    status: Optional[RunStatus] = None
+    """The current status of the run"""
 
     tasks: Optional[List[RunTask]] = None
     """The list of tasks performed by the run. Each task has its own `run_id` which you can use to call
@@ -201,6 +218,7 @@ class BaseRun:
         if self.job_clusters: body['job_clusters'] = [v.as_dict() for v in self.job_clusters]
         if self.job_id is not None: body['job_id'] = self.job_id
         if self.job_parameters: body['job_parameters'] = [v.as_dict() for v in self.job_parameters]
+        if self.job_run_id is not None: body['job_run_id'] = self.job_run_id
         if self.number_in_job is not None: body['number_in_job'] = self.number_in_job
         if self.original_attempt_run_id is not None:
             body['original_attempt_run_id'] = self.original_attempt_run_id
@@ -216,6 +234,7 @@ class BaseRun:
         if self.setup_duration is not None: body['setup_duration'] = self.setup_duration
         if self.start_time is not None: body['start_time'] = self.start_time
         if self.state: body['state'] = self.state.as_dict()
+        if self.status: body['status'] = self.status.as_dict()
         if self.tasks: body['tasks'] = [v.as_dict() for v in self.tasks]
         if self.trigger is not None: body['trigger'] = self.trigger.value
         if self.trigger_info: body['trigger_info'] = self.trigger_info.as_dict()
@@ -236,6 +255,7 @@ class BaseRun:
                    job_clusters=_repeated_dict(d, 'job_clusters', JobCluster),
                    job_id=d.get('job_id', None),
                    job_parameters=_repeated_dict(d, 'job_parameters', JobParameter),
+                   job_run_id=d.get('job_run_id', None),
                    number_in_job=d.get('number_in_job', None),
                    original_attempt_run_id=d.get('original_attempt_run_id', None),
                    overriding_parameters=_from_dict(d, 'overriding_parameters', RunParameters),
@@ -250,6 +270,7 @@ class BaseRun:
                    setup_duration=d.get('setup_duration', None),
                    start_time=d.get('start_time', None),
                    state=_from_dict(d, 'state', RunState),
+                   status=_from_dict(d, 'status', RunStatus),
                    tasks=_repeated_dict(d, 'tasks', RunTask),
                    trigger=_enum(d, 'trigger', TriggerType),
                    trigger_info=_from_dict(d, 'trigger_info', TriggerInfo))
@@ -469,8 +490,13 @@ class Continuous:
 
 @dataclass
 class CreateJob:
-    access_control_list: Optional[List[iam.AccessControlRequest]] = None
+    access_control_list: Optional[List[JobAccessControlRequest]] = None
     """List of permissions to set on the job."""
+
+    budget_policy_id: Optional[str] = None
+    """The id of the user specified budget policy to use for this job. If not specified, a default
+    budget policy may be applied when creating or modifying the job. See
+    `effective_budget_policy_id` for the budget policy used by this workload."""
 
     continuous: Optional[Continuous] = None
     """An optional continuous property for this job. The continuous property will ensure that there is
@@ -480,7 +506,7 @@ class CreateJob:
     """Deployment information for jobs managed by external sources."""
 
     description: Optional[str] = None
-    """An optional description for the job. The maximum length is 1024 characters in UTF-8 encoding."""
+    """An optional description for the job. The maximum length is 27700 characters in UTF-8 encoding."""
 
     edit_mode: Optional[JobEditMode] = None
     """Edit mode of the job.
@@ -493,7 +519,11 @@ class CreateJob:
     well as when this job is deleted."""
 
     environments: Optional[List[JobEnvironment]] = None
-    """A list of task execution environment specifications that can be referenced by tasks of this job."""
+    """A list of task execution environment specifications that can be referenced by serverless tasks
+    of this job. An environment is required to be present for serverless tasks. For serverless
+    notebook tasks, the environment is accessible in the notebook environment panel. For other
+    serverless tasks, the task environment is required to be specified using environment_key in the
+    task settings."""
 
     format: Optional[Format] = None
     """Used to tell what is the format of the job. This field is ignored in Create/Update/Reset calls.
@@ -541,12 +571,11 @@ class CreateJob:
     """The queue settings of the job."""
 
     run_as: Optional[JobRunAs] = None
-    """Write-only setting, available only in Create/Update/Reset and Submit calls. Specifies the user
-    or service principal that the job runs as. If not specified, the job runs as the user who
-    created the job.
+    """Write-only setting. Specifies the user, service principal or group that the job/pipeline runs
+    as. If not specified, the job/pipeline runs as the user who created the job/pipeline.
     
-    Only `user_name` or `service_principal_name` can be specified. If both are specified, an error
-    is thrown."""
+    Exactly one of `user_name`, `service_principal_name`, `group_name` should be specified. If not,
+    an error is thrown."""
 
     schedule: Optional[CronSchedule] = None
     """An optional periodic schedule for this job. The default behavior is that the job only runs when
@@ -576,6 +605,7 @@ class CreateJob:
         body = {}
         if self.access_control_list:
             body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
+        if self.budget_policy_id is not None: body['budget_policy_id'] = self.budget_policy_id
         if self.continuous: body['continuous'] = self.continuous.as_dict()
         if self.deployment: body['deployment'] = self.deployment.as_dict()
         if self.description is not None: body['description'] = self.description
@@ -603,7 +633,8 @@ class CreateJob:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateJob:
         """Deserializes the CreateJob from a dictionary."""
-        return cls(access_control_list=_repeated_dict(d, 'access_control_list', iam.AccessControlRequest),
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list', JobAccessControlRequest),
+                   budget_policy_id=d.get('budget_policy_id', None),
                    continuous=_from_dict(d, 'continuous', Continuous),
                    deployment=_from_dict(d, 'deployment', JobDeployment),
                    description=d.get('description', None),
@@ -828,6 +859,96 @@ class DeleteRunResponse:
 
 
 @dataclass
+class EnforcePolicyComplianceForJobResponseJobClusterSettingsChange:
+    """Represents a change to the job cluster's settings that would be required for the job clusters to
+    become compliant with their policies."""
+
+    field: Optional[str] = None
+    """The field where this change would be made, prepended with the job cluster key."""
+
+    new_value: Optional[str] = None
+    """The new value of this field after enforcing policy compliance (either a number, a boolean, or a
+    string) converted to a string. This is intended to be read by a human. The typed new value of
+    this field can be retrieved by reading the settings field in the API response."""
+
+    previous_value: Optional[str] = None
+    """The previous value of this field before enforcing policy compliance (either a number, a boolean,
+    or a string) converted to a string. This is intended to be read by a human. The type of the
+    field can be retrieved by reading the settings field in the API response."""
+
+    def as_dict(self) -> dict:
+        """Serializes the EnforcePolicyComplianceForJobResponseJobClusterSettingsChange into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.field is not None: body['field'] = self.field
+        if self.new_value is not None: body['new_value'] = self.new_value
+        if self.previous_value is not None: body['previous_value'] = self.previous_value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> EnforcePolicyComplianceForJobResponseJobClusterSettingsChange:
+        """Deserializes the EnforcePolicyComplianceForJobResponseJobClusterSettingsChange from a dictionary."""
+        return cls(field=d.get('field', None),
+                   new_value=d.get('new_value', None),
+                   previous_value=d.get('previous_value', None))
+
+
+@dataclass
+class EnforcePolicyComplianceRequest:
+    job_id: int
+    """The ID of the job you want to enforce policy compliance on."""
+
+    validate_only: Optional[bool] = None
+    """If set, previews changes made to the job to comply with its policy, but does not update the job."""
+
+    def as_dict(self) -> dict:
+        """Serializes the EnforcePolicyComplianceRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.job_id is not None: body['job_id'] = self.job_id
+        if self.validate_only is not None: body['validate_only'] = self.validate_only
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> EnforcePolicyComplianceRequest:
+        """Deserializes the EnforcePolicyComplianceRequest from a dictionary."""
+        return cls(job_id=d.get('job_id', None), validate_only=d.get('validate_only', None))
+
+
+@dataclass
+class EnforcePolicyComplianceResponse:
+    has_changes: Optional[bool] = None
+    """Whether any changes have been made to the job cluster settings for the job to become compliant
+    with its policies."""
+
+    job_cluster_changes: Optional[List[EnforcePolicyComplianceForJobResponseJobClusterSettingsChange]] = None
+    """A list of job cluster changes that have been made to the job’s cluster settings in order for
+    all job clusters to become compliant with their policies."""
+
+    settings: Optional[JobSettings] = None
+    """Updated job settings after policy enforcement. Policy enforcement only applies to job clusters
+    that are created when running the job (which are specified in new_cluster) and does not apply to
+    existing all-purpose clusters. Updated job settings are derived by applying policy default
+    values to the existing job clusters in order to satisfy policy requirements."""
+
+    def as_dict(self) -> dict:
+        """Serializes the EnforcePolicyComplianceResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.has_changes is not None: body['has_changes'] = self.has_changes
+        if self.job_cluster_changes:
+            body['job_cluster_changes'] = [v.as_dict() for v in self.job_cluster_changes]
+        if self.settings: body['settings'] = self.settings.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> EnforcePolicyComplianceResponse:
+        """Deserializes the EnforcePolicyComplianceResponse from a dictionary."""
+        return cls(has_changes=d.get('has_changes', None),
+                   job_cluster_changes=_repeated_dict(
+                       d, 'job_cluster_changes',
+                       EnforcePolicyComplianceForJobResponseJobClusterSettingsChange),
+                   settings=_from_dict(d, 'settings', JobSettings))
+
+
+@dataclass
 class ExportRunOutput:
     """Run was exported successfully."""
 
@@ -914,7 +1035,8 @@ class ForEachTask:
     """Configuration for the task that will be run for each element in the array"""
 
     concurrency: Optional[int] = None
-    """Controls the number of active iterations task runs. Default is 20, maximum allowed is 100."""
+    """An optional maximum allowed number of concurrent runs of the task. Set this value if you want to
+    be able to execute multiple runs of the task concurrently."""
 
     def as_dict(self) -> dict:
         """Serializes the ForEachTask into a dictionary suitable for use as a JSON request body."""
@@ -1022,6 +1144,32 @@ class GetJobPermissionLevelsResponse:
     def from_dict(cls, d: Dict[str, any]) -> GetJobPermissionLevelsResponse:
         """Deserializes the GetJobPermissionLevelsResponse from a dictionary."""
         return cls(permission_levels=_repeated_dict(d, 'permission_levels', JobPermissionsDescription))
+
+
+@dataclass
+class GetPolicyComplianceResponse:
+    is_compliant: Optional[bool] = None
+    """Whether the job is compliant with its policies or not. Jobs could be out of compliance if a
+    policy they are using was updated after the job was last edited and some of its job clusters no
+    longer comply with their updated policies."""
+
+    violations: Optional[Dict[str, str]] = None
+    """An object containing key-value mappings representing the first 200 policy validation errors. The
+    keys indicate the path where the policy validation error is occurring. An identifier for the job
+    cluster is prepended to the path. The values indicate an error message describing the policy
+    validation error."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GetPolicyComplianceResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.is_compliant is not None: body['is_compliant'] = self.is_compliant
+        if self.violations: body['violations'] = self.violations
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> GetPolicyComplianceResponse:
+        """Deserializes the GetPolicyComplianceResponse from a dictionary."""
+        return cls(is_compliant=d.get('is_compliant', None), violations=d.get('violations', None))
 
 
 class GitProvider(Enum):
@@ -1136,6 +1284,12 @@ class Job:
     """The creator user name. This field won’t be included in the response if the user has already
     been deleted."""
 
+    effective_budget_policy_id: Optional[str] = None
+    """The id of the budget policy used by this job for cost attribution purposes. This may be set
+    through (in order of precedence): 1. Budget admins through the account or workspace console 2.
+    Jobs UI in the job details page and Jobs API using `budget_policy_id` 3. Inferred default based
+    on accessible budget policies of the run_as identity on job creation or modification."""
+
     job_id: Optional[int] = None
     """The canonical identifier for this job."""
 
@@ -1157,6 +1311,8 @@ class Job:
         body = {}
         if self.created_time is not None: body['created_time'] = self.created_time
         if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
+        if self.effective_budget_policy_id is not None:
+            body['effective_budget_policy_id'] = self.effective_budget_policy_id
         if self.job_id is not None: body['job_id'] = self.job_id
         if self.run_as_user_name is not None: body['run_as_user_name'] = self.run_as_user_name
         if self.settings: body['settings'] = self.settings.as_dict()
@@ -1167,6 +1323,7 @@ class Job:
         """Deserializes the Job from a dictionary."""
         return cls(created_time=d.get('created_time', None),
                    creator_user_name=d.get('creator_user_name', None),
+                   effective_budget_policy_id=d.get('effective_budget_policy_id', None),
                    job_id=d.get('job_id', None),
                    run_as_user_name=d.get('run_as_user_name', None),
                    settings=_from_dict(d, 'settings', JobSettings))
@@ -1268,6 +1425,36 @@ class JobCluster:
 
 
 @dataclass
+class JobCompliance:
+    job_id: int
+    """Canonical unique identifier for a job."""
+
+    is_compliant: Optional[bool] = None
+    """Whether this job is in compliance with the latest version of its policy."""
+
+    violations: Optional[Dict[str, str]] = None
+    """An object containing key-value mappings representing the first 200 policy validation errors. The
+    keys indicate the path where the policy validation error is occurring. An identifier for the job
+    cluster is prepended to the path. The values indicate an error message describing the policy
+    validation error."""
+
+    def as_dict(self) -> dict:
+        """Serializes the JobCompliance into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.is_compliant is not None: body['is_compliant'] = self.is_compliant
+        if self.job_id is not None: body['job_id'] = self.job_id
+        if self.violations: body['violations'] = self.violations
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> JobCompliance:
+        """Deserializes the JobCompliance from a dictionary."""
+        return cls(is_compliant=d.get('is_compliant', None),
+                   job_id=d.get('job_id', None),
+                   violations=d.get('violations', None))
+
+
+@dataclass
 class JobDeployment:
     kind: JobDeploymentKind
     """The kind of deployment that manages the job.
@@ -1310,7 +1497,8 @@ class JobEditMode(Enum):
 @dataclass
 class JobEmailNotifications:
     no_alert_for_skipped_runs: Optional[bool] = None
-    """If true, do not send email to recipients specified in `on_failure` if the run is skipped."""
+    """If true, do not send email to recipients specified in `on_failure` if the run is skipped. This
+    field is `deprecated`. Please use the `notification_settings.no_alert_for_skipped_runs` field."""
 
     on_duration_warning_threshold_exceeded: Optional[List[str]] = None
     """A list of email addresses to be notified when the duration of a run exceeds the threshold
@@ -1568,12 +1756,11 @@ class JobPermissionsRequest:
 
 @dataclass
 class JobRunAs:
-    """Write-only setting, available only in Create/Update/Reset and Submit calls. Specifies the user
-    or service principal that the job runs as. If not specified, the job runs as the user who
-    created the job.
+    """Write-only setting. Specifies the user, service principal or group that the job/pipeline runs
+    as. If not specified, the job/pipeline runs as the user who created the job/pipeline.
     
-    Only `user_name` or `service_principal_name` can be specified. If both are specified, an error
-    is thrown."""
+    Exactly one of `user_name`, `service_principal_name`, `group_name` should be specified. If not,
+    an error is thrown."""
 
     service_principal_name: Optional[str] = None
     """Application ID of an active service principal. Setting this field requires the
@@ -1600,6 +1787,11 @@ class JobRunAs:
 
 @dataclass
 class JobSettings:
+    budget_policy_id: Optional[str] = None
+    """The id of the user specified budget policy to use for this job. If not specified, a default
+    budget policy may be applied when creating or modifying the job. See
+    `effective_budget_policy_id` for the budget policy used by this workload."""
+
     continuous: Optional[Continuous] = None
     """An optional continuous property for this job. The continuous property will ensure that there is
     always one run executing. Only one of `schedule` and `continuous` can be used."""
@@ -1608,7 +1800,7 @@ class JobSettings:
     """Deployment information for jobs managed by external sources."""
 
     description: Optional[str] = None
-    """An optional description for the job. The maximum length is 1024 characters in UTF-8 encoding."""
+    """An optional description for the job. The maximum length is 27700 characters in UTF-8 encoding."""
 
     edit_mode: Optional[JobEditMode] = None
     """Edit mode of the job.
@@ -1621,7 +1813,11 @@ class JobSettings:
     well as when this job is deleted."""
 
     environments: Optional[List[JobEnvironment]] = None
-    """A list of task execution environment specifications that can be referenced by tasks of this job."""
+    """A list of task execution environment specifications that can be referenced by serverless tasks
+    of this job. An environment is required to be present for serverless tasks. For serverless
+    notebook tasks, the environment is accessible in the notebook environment panel. For other
+    serverless tasks, the task environment is required to be specified using environment_key in the
+    task settings."""
 
     format: Optional[Format] = None
     """Used to tell what is the format of the job. This field is ignored in Create/Update/Reset calls.
@@ -1669,12 +1865,11 @@ class JobSettings:
     """The queue settings of the job."""
 
     run_as: Optional[JobRunAs] = None
-    """Write-only setting, available only in Create/Update/Reset and Submit calls. Specifies the user
-    or service principal that the job runs as. If not specified, the job runs as the user who
-    created the job.
+    """Write-only setting. Specifies the user, service principal or group that the job/pipeline runs
+    as. If not specified, the job/pipeline runs as the user who created the job/pipeline.
     
-    Only `user_name` or `service_principal_name` can be specified. If both are specified, an error
-    is thrown."""
+    Exactly one of `user_name`, `service_principal_name`, `group_name` should be specified. If not,
+    an error is thrown."""
 
     schedule: Optional[CronSchedule] = None
     """An optional periodic schedule for this job. The default behavior is that the job only runs when
@@ -1702,6 +1897,7 @@ class JobSettings:
     def as_dict(self) -> dict:
         """Serializes the JobSettings into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.budget_policy_id is not None: body['budget_policy_id'] = self.budget_policy_id
         if self.continuous: body['continuous'] = self.continuous.as_dict()
         if self.deployment: body['deployment'] = self.deployment.as_dict()
         if self.description is not None: body['description'] = self.description
@@ -1729,7 +1925,8 @@ class JobSettings:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> JobSettings:
         """Deserializes the JobSettings from a dictionary."""
-        return cls(continuous=_from_dict(d, 'continuous', Continuous),
+        return cls(budget_policy_id=d.get('budget_policy_id', None),
+                   continuous=_from_dict(d, 'continuous', Continuous),
                    deployment=_from_dict(d, 'deployment', JobDeployment),
                    description=d.get('description', None),
                    edit_mode=_enum(d, 'edit_mode', JobEditMode),
@@ -1879,6 +2076,35 @@ class JobsHealthRules:
     def from_dict(cls, d: Dict[str, any]) -> JobsHealthRules:
         """Deserializes the JobsHealthRules from a dictionary."""
         return cls(rules=_repeated_dict(d, 'rules', JobsHealthRule))
+
+
+@dataclass
+class ListJobComplianceForPolicyResponse:
+    jobs: Optional[List[JobCompliance]] = None
+    """A list of jobs and their policy compliance statuses."""
+
+    next_page_token: Optional[str] = None
+    """This field represents the pagination token to retrieve the next page of results. If this field
+    is not in the response, it means no further results for the request."""
+
+    prev_page_token: Optional[str] = None
+    """This field represents the pagination token to retrieve the previous page of results. If this
+    field is not in the response, it means no further results for the request."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListJobComplianceForPolicyResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.jobs: body['jobs'] = [v.as_dict() for v in self.jobs]
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.prev_page_token is not None: body['prev_page_token'] = self.prev_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ListJobComplianceForPolicyResponse:
+        """Deserializes the ListJobComplianceForPolicyResponse from a dictionary."""
+        return cls(jobs=_repeated_dict(d, 'jobs', JobCompliance),
+                   next_page_token=d.get('next_page_token', None),
+                   prev_page_token=d.get('prev_page_token', None))
 
 
 @dataclass
@@ -2062,7 +2288,6 @@ class PeriodicTriggerConfigurationTimeUnit(Enum):
 
     DAYS = 'DAYS'
     HOURS = 'HOURS'
-    TIME_UNIT_UNSPECIFIED = 'TIME_UNIT_UNSPECIFIED'
     WEEKS = 'WEEKS'
 
 
@@ -2140,6 +2365,44 @@ class PythonWheelTask:
 
 
 @dataclass
+class QueueDetails:
+    code: Optional[QueueDetailsCodeCode] = None
+    """The reason for queuing the run. * `ACTIVE_RUNS_LIMIT_REACHED`: The run was queued due to
+    reaching the workspace limit of active task runs. * `MAX_CONCURRENT_RUNS_REACHED`: The run was
+    queued due to reaching the per-job limit of concurrent job runs. *
+    `ACTIVE_RUN_JOB_TASKS_LIMIT_REACHED`: The run was queued due to reaching the workspace limit of
+    active run job tasks."""
+
+    message: Optional[str] = None
+    """A descriptive message with the queuing details. This field is unstructured, and its exact format
+    is subject to change."""
+
+    def as_dict(self) -> dict:
+        """Serializes the QueueDetails into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.code is not None: body['code'] = self.code.value
+        if self.message is not None: body['message'] = self.message
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> QueueDetails:
+        """Deserializes the QueueDetails from a dictionary."""
+        return cls(code=_enum(d, 'code', QueueDetailsCodeCode), message=d.get('message', None))
+
+
+class QueueDetailsCodeCode(Enum):
+    """The reason for queuing the run. * `ACTIVE_RUNS_LIMIT_REACHED`: The run was queued due to
+    reaching the workspace limit of active task runs. * `MAX_CONCURRENT_RUNS_REACHED`: The run was
+    queued due to reaching the per-job limit of concurrent job runs. *
+    `ACTIVE_RUN_JOB_TASKS_LIMIT_REACHED`: The run was queued due to reaching the workspace limit of
+    active run job tasks."""
+
+    ACTIVE_RUNS_LIMIT_REACHED = 'ACTIVE_RUNS_LIMIT_REACHED'
+    ACTIVE_RUN_JOB_TASKS_LIMIT_REACHED = 'ACTIVE_RUN_JOB_TASKS_LIMIT_REACHED'
+    MAX_CONCURRENT_RUNS_REACHED = 'MAX_CONCURRENT_RUNS_REACHED'
+
+
+@dataclass
 class QueueSettings:
     enabled: bool
     """If true, enable queueing for the job. This is a required field."""
@@ -2168,7 +2431,10 @@ class RepairHistoryItem:
     """The start time of the (repaired) run."""
 
     state: Optional[RunState] = None
-    """The current state of the run."""
+    """Deprecated. Please use the `status` field instead."""
+
+    status: Optional[RunStatus] = None
+    """The current status of the run"""
 
     task_run_ids: Optional[List[int]] = None
     """The run IDs of the task runs that ran as part of this repair history item."""
@@ -2183,6 +2449,7 @@ class RepairHistoryItem:
         if self.id is not None: body['id'] = self.id
         if self.start_time is not None: body['start_time'] = self.start_time
         if self.state: body['state'] = self.state.as_dict()
+        if self.status: body['status'] = self.status.as_dict()
         if self.task_run_ids: body['task_run_ids'] = [v for v in self.task_run_ids]
         if self.type is not None: body['type'] = self.type.value
         return body
@@ -2194,6 +2461,7 @@ class RepairHistoryItem:
                    id=d.get('id', None),
                    start_time=d.get('start_time', None),
                    state=_from_dict(d, 'state', RunState),
+                   status=_from_dict(d, 'status', RunStatus),
                    task_run_ids=d.get('task_run_ids', None),
                    type=_enum(d, 'type', RepairHistoryItemType))
 
@@ -2249,6 +2517,7 @@ class RepairRun:
     [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html"""
 
     pipeline_params: Optional[PipelineParams] = None
+    """Controls whether the pipeline should perform a full refresh"""
 
     python_named_params: Optional[Dict[str, str]] = None
 
@@ -2576,8 +2845,8 @@ class Run:
 
     attempt_number: Optional[int] = None
     """The sequence number of this run attempt for a triggered job run. The initial attempt of a run
-    has an attempt_number of 0\. If the initial run attempt fails, and the job has a retry policy
-    (`max_retries` \> 0), subsequent runs are created with an `original_attempt_run_id` of the
+    has an attempt_number of 0. If the initial run attempt fails, and the job has a retry policy
+    (`max_retries` > 0), subsequent runs are created with an `original_attempt_run_id` of the
     original attempt’s ID and an incrementing `attempt_number`. Runs are retried only until they
     succeed, and the maximum `attempt_number` is the same as the `max_retries` value for the job."""
 
@@ -2622,6 +2891,9 @@ class Run:
     Note: dbt and SQL File tasks support only version-controlled sources. If dbt or SQL File tasks
     are used, `git_source` must be defined on the job."""
 
+    iterations: Optional[List[RunTask]] = None
+    """Only populated by for-each iterations. The parent for-each task is located in tasks array."""
+
     job_clusters: Optional[List[JobCluster]] = None
     """A list of job cluster specifications that can be shared and reused by tasks of this job.
     Libraries cannot be declared in a shared job cluster. You must declare dependent libraries in
@@ -2633,6 +2905,14 @@ class Run:
     job_parameters: Optional[List[JobParameter]] = None
     """Job-level parameters used in the run"""
 
+    job_run_id: Optional[int] = None
+    """ID of the job run that this run belongs to. For legacy and single-task job runs the field is
+    populated with the job run ID. For task runs, the field is populated with the ID of the job run
+    that the task run belongs to."""
+
+    next_page_token: Optional[str] = None
+    """A token that can be used to list the next page of sub-resources."""
+
     number_in_job: Optional[int] = None
     """A unique identifier for this job run. This is set to the same value as `run_id`."""
 
@@ -2642,6 +2922,9 @@ class Run:
 
     overriding_parameters: Optional[RunParameters] = None
     """The parameters used for this run."""
+
+    prev_page_token: Optional[str] = None
+    """A token that can be used to list the previous page of sub-resources."""
 
     queue_duration: Optional[int] = None
     """The time in milliseconds that the run has spent in the queue."""
@@ -2684,7 +2967,10 @@ class Run:
     scheduled to run on a new cluster, this is the time the cluster creation call is issued."""
 
     state: Optional[RunState] = None
-    """The current state of the run."""
+    """Deprecated. Please use the `status` field instead."""
+
+    status: Optional[RunStatus] = None
+    """The current status of the run"""
 
     tasks: Optional[List[RunTask]] = None
     """The list of tasks performed by the run. Each task has its own `run_id` which you can use to call
@@ -2716,13 +3002,17 @@ class Run:
         if self.end_time is not None: body['end_time'] = self.end_time
         if self.execution_duration is not None: body['execution_duration'] = self.execution_duration
         if self.git_source: body['git_source'] = self.git_source.as_dict()
+        if self.iterations: body['iterations'] = [v.as_dict() for v in self.iterations]
         if self.job_clusters: body['job_clusters'] = [v.as_dict() for v in self.job_clusters]
         if self.job_id is not None: body['job_id'] = self.job_id
         if self.job_parameters: body['job_parameters'] = [v.as_dict() for v in self.job_parameters]
+        if self.job_run_id is not None: body['job_run_id'] = self.job_run_id
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         if self.number_in_job is not None: body['number_in_job'] = self.number_in_job
         if self.original_attempt_run_id is not None:
             body['original_attempt_run_id'] = self.original_attempt_run_id
         if self.overriding_parameters: body['overriding_parameters'] = self.overriding_parameters.as_dict()
+        if self.prev_page_token is not None: body['prev_page_token'] = self.prev_page_token
         if self.queue_duration is not None: body['queue_duration'] = self.queue_duration
         if self.repair_history: body['repair_history'] = [v.as_dict() for v in self.repair_history]
         if self.run_duration is not None: body['run_duration'] = self.run_duration
@@ -2734,6 +3024,7 @@ class Run:
         if self.setup_duration is not None: body['setup_duration'] = self.setup_duration
         if self.start_time is not None: body['start_time'] = self.start_time
         if self.state: body['state'] = self.state.as_dict()
+        if self.status: body['status'] = self.status.as_dict()
         if self.tasks: body['tasks'] = [v.as_dict() for v in self.tasks]
         if self.trigger is not None: body['trigger'] = self.trigger.value
         if self.trigger_info: body['trigger_info'] = self.trigger_info.as_dict()
@@ -2751,12 +3042,16 @@ class Run:
                    end_time=d.get('end_time', None),
                    execution_duration=d.get('execution_duration', None),
                    git_source=_from_dict(d, 'git_source', GitSource),
+                   iterations=_repeated_dict(d, 'iterations', RunTask),
                    job_clusters=_repeated_dict(d, 'job_clusters', JobCluster),
                    job_id=d.get('job_id', None),
                    job_parameters=_repeated_dict(d, 'job_parameters', JobParameter),
+                   job_run_id=d.get('job_run_id', None),
+                   next_page_token=d.get('next_page_token', None),
                    number_in_job=d.get('number_in_job', None),
                    original_attempt_run_id=d.get('original_attempt_run_id', None),
                    overriding_parameters=_from_dict(d, 'overriding_parameters', RunParameters),
+                   prev_page_token=d.get('prev_page_token', None),
                    queue_duration=d.get('queue_duration', None),
                    repair_history=_repeated_dict(d, 'repair_history', RepairHistoryItem),
                    run_duration=d.get('run_duration', None),
@@ -2768,6 +3063,7 @@ class Run:
                    setup_duration=d.get('setup_duration', None),
                    start_time=d.get('start_time', None),
                    state=_from_dict(d, 'state', RunState),
+                   status=_from_dict(d, 'status', RunStatus),
                    tasks=_repeated_dict(d, 'tasks', RunTask),
                    trigger=_enum(d, 'trigger', TriggerType),
                    trigger_info=_from_dict(d, 'trigger_info', TriggerInfo))
@@ -2825,7 +3121,8 @@ class RunForEachTask:
     """Configuration for the task that will be run for each element in the array"""
 
     concurrency: Optional[int] = None
-    """Controls the number of active iterations task runs. Default is 20, maximum allowed is 100."""
+    """An optional maximum allowed number of concurrent runs of the task. Set this value if you want to
+    be able to execute multiple runs of the task concurrently."""
 
     stats: Optional[ForEachStats] = None
     """Read only field. Populated for GetRun and ListRuns RPC calls and stores the execution stats of
@@ -2924,6 +3221,7 @@ class RunJobTask:
     [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html"""
 
     pipeline_params: Optional[PipelineParams] = None
+    """Controls whether the pipeline should perform a full refresh"""
 
     python_named_params: Optional[Dict[str, str]] = None
 
@@ -3018,6 +3316,17 @@ class RunLifeCycleState(Enum):
     WAITING_FOR_RETRY = 'WAITING_FOR_RETRY'
 
 
+class RunLifecycleStateV2State(Enum):
+    """The current state of the run."""
+
+    BLOCKED = 'BLOCKED'
+    PENDING = 'PENDING'
+    QUEUED = 'QUEUED'
+    RUNNING = 'RUNNING'
+    TERMINATED = 'TERMINATED'
+    TERMINATING = 'TERMINATING'
+
+
 @dataclass
 class RunNow:
     job_id: int
@@ -3072,6 +3381,7 @@ class RunNow:
     [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html"""
 
     pipeline_params: Optional[PipelineParams] = None
+    """Controls whether the pipeline should perform a full refresh"""
 
     python_named_params: Optional[Dict[str, str]] = None
 
@@ -3281,6 +3591,7 @@ class RunParameters:
     [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html"""
 
     pipeline_params: Optional[PipelineParams] = None
+    """Controls whether the pipeline should perform a full refresh"""
 
     python_named_params: Optional[Dict[str, str]] = None
 
@@ -3355,9 +3666,11 @@ class RunResultState(Enum):
     reached. * `EXCLUDED`: The run was skipped because the necessary conditions were not met. *
     `SUCCESS_WITH_FAILURES`: The job run completed successfully with some failures; leaf tasks were
     successful. * `UPSTREAM_FAILED`: The run was skipped because of an upstream failure. *
-    `UPSTREAM_CANCELED`: The run was skipped because an upstream task was canceled."""
+    `UPSTREAM_CANCELED`: The run was skipped because an upstream task was canceled. * `DISABLED`:
+    The run was skipped because it was disabled explicitly by the user."""
 
     CANCELED = 'CANCELED'
+    DISABLED = 'DISABLED'
     EXCLUDED = 'EXCLUDED'
     FAILED = 'FAILED'
     MAXIMUM_CONCURRENT_RUNS_REACHED = 'MAXIMUM_CONCURRENT_RUNS_REACHED'
@@ -3412,6 +3725,36 @@ class RunState:
 
 
 @dataclass
+class RunStatus:
+    """The current status of the run"""
+
+    queue_details: Optional[QueueDetails] = None
+    """If the run was queued, details about the reason for queuing the run."""
+
+    state: Optional[RunLifecycleStateV2State] = None
+    """The current state of the run."""
+
+    termination_details: Optional[TerminationDetails] = None
+    """If the run is in a TERMINATING or TERMINATED state, details about the reason for terminating the
+    run."""
+
+    def as_dict(self) -> dict:
+        """Serializes the RunStatus into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.queue_details: body['queue_details'] = self.queue_details.as_dict()
+        if self.state is not None: body['state'] = self.state.value
+        if self.termination_details: body['termination_details'] = self.termination_details.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> RunStatus:
+        """Deserializes the RunStatus from a dictionary."""
+        return cls(queue_details=_from_dict(d, 'queue_details', QueueDetails),
+                   state=_enum(d, 'state', RunLifecycleStateV2State),
+                   termination_details=_from_dict(d, 'termination_details', TerminationDetails))
+
+
+@dataclass
 class RunTask:
     """Used when outputting a child run, in GetRun or ListRuns."""
 
@@ -3423,8 +3766,8 @@ class RunTask:
 
     attempt_number: Optional[int] = None
     """The sequence number of this run attempt for a triggered job run. The initial attempt of a run
-    has an attempt_number of 0\. If the initial run attempt fails, and the job has a retry policy
-    (`max_retries` \> 0), subsequent runs are created with an `original_attempt_run_id` of the
+    has an attempt_number of 0. If the initial run attempt fails, and the job has a retry policy
+    (`max_retries` > 0), subsequent runs are created with an `original_attempt_run_id` of the
     original attempt’s ID and an incrementing `attempt_number`. Runs are retried only until they
     succeed, and the maximum `attempt_number` is the same as the `max_retries` value for the job."""
 
@@ -3576,7 +3919,10 @@ class RunTask:
     scheduled to run on a new cluster, this is the time the cluster creation call is issued."""
 
     state: Optional[RunState] = None
-    """The current state of the run."""
+    """Deprecated. Please use the `status` field instead."""
+
+    status: Optional[RunStatus] = None
+    """The current status of the run"""
 
     timeout_seconds: Optional[int] = None
     """An optional timeout applied to each run of this job task. A value of `0` means no timeout."""
@@ -3624,6 +3970,7 @@ class RunTask:
         if self.sql_task: body['sql_task'] = self.sql_task.as_dict()
         if self.start_time is not None: body['start_time'] = self.start_time
         if self.state: body['state'] = self.state.as_dict()
+        if self.status: body['status'] = self.status.as_dict()
         if self.task_key is not None: body['task_key'] = self.task_key
         if self.timeout_seconds is not None: body['timeout_seconds'] = self.timeout_seconds
         if self.webhook_notifications: body['webhook_notifications'] = self.webhook_notifications.as_dict()
@@ -3667,6 +4014,7 @@ class RunTask:
                    sql_task=_from_dict(d, 'sql_task', SqlTask),
                    start_time=d.get('start_time', None),
                    state=_from_dict(d, 'state', RunState),
+                   status=_from_dict(d, 'status', RunStatus),
                    task_key=d.get('task_key', None),
                    timeout_seconds=d.get('timeout_seconds', None),
                    webhook_notifications=_from_dict(d, 'webhook_notifications', WebhookNotifications))
@@ -4196,8 +4544,12 @@ class SqlTaskSubscription:
 
 @dataclass
 class SubmitRun:
-    access_control_list: Optional[List[iam.AccessControlRequest]] = None
+    access_control_list: Optional[List[JobAccessControlRequest]] = None
     """List of permissions to set on the job."""
+
+    budget_policy_id: Optional[str] = None
+    """The user specified id of the budget policy to use for this one-time run. If not specified, the
+    run will be not be attributed to any budget policy."""
 
     email_notifications: Optional[JobEmailNotifications] = None
     """An optional set of email addresses notified when the run begins or completes."""
@@ -4259,6 +4611,7 @@ class SubmitRun:
         body = {}
         if self.access_control_list:
             body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
+        if self.budget_policy_id is not None: body['budget_policy_id'] = self.budget_policy_id
         if self.email_notifications: body['email_notifications'] = self.email_notifications.as_dict()
         if self.environments: body['environments'] = [v.as_dict() for v in self.environments]
         if self.git_source: body['git_source'] = self.git_source.as_dict()
@@ -4276,7 +4629,8 @@ class SubmitRun:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> SubmitRun:
         """Deserializes the SubmitRun from a dictionary."""
-        return cls(access_control_list=_repeated_dict(d, 'access_control_list', iam.AccessControlRequest),
+        return cls(access_control_list=_repeated_dict(d, 'access_control_list', JobAccessControlRequest),
+                   budget_policy_id=d.get('budget_policy_id', None),
                    email_notifications=_from_dict(d, 'email_notifications', JobEmailNotifications),
                    environments=_repeated_dict(d, 'environments', JobEnvironment),
                    git_source=_from_dict(d, 'git_source', GitSource),
@@ -4738,7 +5092,8 @@ class TaskDependency:
 @dataclass
 class TaskEmailNotifications:
     no_alert_for_skipped_runs: Optional[bool] = None
-    """If true, do not send email to recipients specified in `on_failure` if the run is skipped."""
+    """If true, do not send email to recipients specified in `on_failure` if the run is skipped. This
+    field is `deprecated`. Please use the `notification_settings.no_alert_for_skipped_runs` field."""
 
     on_duration_warning_threshold_exceeded: Optional[List[str]] = None
     """A list of email addresses to be notified when the duration of a run exceeds the threshold
@@ -4828,6 +5183,150 @@ class TaskNotificationSettings:
         return cls(alert_on_last_attempt=d.get('alert_on_last_attempt', None),
                    no_alert_for_canceled_runs=d.get('no_alert_for_canceled_runs', None),
                    no_alert_for_skipped_runs=d.get('no_alert_for_skipped_runs', None))
+
+
+class TerminationCodeCode(Enum):
+    """The code indicates why the run was terminated. Additional codes might be introduced in future
+    releases. * `SUCCESS`: The run was completed successfully. * `USER_CANCELED`: The run was
+    successfully canceled during execution by a user. * `CANCELED`: The run was canceled during
+    execution by the Databricks platform; for example, if the maximum run duration was exceeded. *
+    `SKIPPED`: Run was never executed, for example, if the upstream task run failed, the dependency
+    type condition was not met, or there were no material tasks to execute. * `INTERNAL_ERROR`: The
+    run encountered an unexpected error. Refer to the state message for further details. *
+    `DRIVER_ERROR`: The run encountered an error while communicating with the Spark Driver. *
+    `CLUSTER_ERROR`: The run failed due to a cluster error. Refer to the state message for further
+    details. * `REPOSITORY_CHECKOUT_FAILED`: Failed to complete the checkout due to an error when
+    communicating with the third party service. * `INVALID_CLUSTER_REQUEST`: The run failed because
+    it issued an invalid request to start the cluster. * `WORKSPACE_RUN_LIMIT_EXCEEDED`: The
+    workspace has reached the quota for the maximum number of concurrent active runs. Consider
+    scheduling the runs over a larger time frame. * `FEATURE_DISABLED`: The run failed because it
+    tried to access a feature unavailable for the workspace. * `CLUSTER_REQUEST_LIMIT_EXCEEDED`: The
+    number of cluster creation, start, and upsize requests have exceeded the allotted rate limit.
+    Consider spreading the run execution over a larger time frame. * `STORAGE_ACCESS_ERROR`: The run
+    failed due to an error when accessing the customer blob storage. Refer to the state message for
+    further details. * `RUN_EXECUTION_ERROR`: The run was completed with task failures. For more
+    details, refer to the state message or run output. * `UNAUTHORIZED_ERROR`: The run failed due to
+    a permission issue while accessing a resource. Refer to the state message for further details. *
+    `LIBRARY_INSTALLATION_ERROR`: The run failed while installing the user-requested library. Refer
+    to the state message for further details. The causes might include, but are not limited to: The
+    provided library is invalid, there are insufficient permissions to install the library, and so
+    forth. * `MAX_CONCURRENT_RUNS_EXCEEDED`: The scheduled run exceeds the limit of maximum
+    concurrent runs set for the job. * `MAX_SPARK_CONTEXTS_EXCEEDED`: The run is scheduled on a
+    cluster that has already reached the maximum number of contexts it is configured to create. See:
+    [Link]. * `RESOURCE_NOT_FOUND`: A resource necessary for run execution does not exist. Refer to
+    the state message for further details. * `INVALID_RUN_CONFIGURATION`: The run failed due to an
+    invalid configuration. Refer to the state message for further details. * `CLOUD_FAILURE`: The
+    run failed due to a cloud provider issue. Refer to the state message for further details. *
+    `MAX_JOB_QUEUE_SIZE_EXCEEDED`: The run was skipped due to reaching the job level queue size
+    limit.
+    
+    [Link]: https://kb.databricks.com/en_US/notebooks/too-many-execution-contexts-are-open-right-now"""
+
+    CANCELED = 'CANCELED'
+    CLOUD_FAILURE = 'CLOUD_FAILURE'
+    CLUSTER_ERROR = 'CLUSTER_ERROR'
+    CLUSTER_REQUEST_LIMIT_EXCEEDED = 'CLUSTER_REQUEST_LIMIT_EXCEEDED'
+    DRIVER_ERROR = 'DRIVER_ERROR'
+    FEATURE_DISABLED = 'FEATURE_DISABLED'
+    INTERNAL_ERROR = 'INTERNAL_ERROR'
+    INVALID_CLUSTER_REQUEST = 'INVALID_CLUSTER_REQUEST'
+    INVALID_RUN_CONFIGURATION = 'INVALID_RUN_CONFIGURATION'
+    LIBRARY_INSTALLATION_ERROR = 'LIBRARY_INSTALLATION_ERROR'
+    MAX_CONCURRENT_RUNS_EXCEEDED = 'MAX_CONCURRENT_RUNS_EXCEEDED'
+    MAX_JOB_QUEUE_SIZE_EXCEEDED = 'MAX_JOB_QUEUE_SIZE_EXCEEDED'
+    MAX_SPARK_CONTEXTS_EXCEEDED = 'MAX_SPARK_CONTEXTS_EXCEEDED'
+    REPOSITORY_CHECKOUT_FAILED = 'REPOSITORY_CHECKOUT_FAILED'
+    RESOURCE_NOT_FOUND = 'RESOURCE_NOT_FOUND'
+    RUN_EXECUTION_ERROR = 'RUN_EXECUTION_ERROR'
+    SKIPPED = 'SKIPPED'
+    STORAGE_ACCESS_ERROR = 'STORAGE_ACCESS_ERROR'
+    SUCCESS = 'SUCCESS'
+    UNAUTHORIZED_ERROR = 'UNAUTHORIZED_ERROR'
+    USER_CANCELED = 'USER_CANCELED'
+    WORKSPACE_RUN_LIMIT_EXCEEDED = 'WORKSPACE_RUN_LIMIT_EXCEEDED'
+
+
+@dataclass
+class TerminationDetails:
+    code: Optional[TerminationCodeCode] = None
+    """The code indicates why the run was terminated. Additional codes might be introduced in future
+    releases. * `SUCCESS`: The run was completed successfully. * `USER_CANCELED`: The run was
+    successfully canceled during execution by a user. * `CANCELED`: The run was canceled during
+    execution by the Databricks platform; for example, if the maximum run duration was exceeded. *
+    `SKIPPED`: Run was never executed, for example, if the upstream task run failed, the dependency
+    type condition was not met, or there were no material tasks to execute. * `INTERNAL_ERROR`: The
+    run encountered an unexpected error. Refer to the state message for further details. *
+    `DRIVER_ERROR`: The run encountered an error while communicating with the Spark Driver. *
+    `CLUSTER_ERROR`: The run failed due to a cluster error. Refer to the state message for further
+    details. * `REPOSITORY_CHECKOUT_FAILED`: Failed to complete the checkout due to an error when
+    communicating with the third party service. * `INVALID_CLUSTER_REQUEST`: The run failed because
+    it issued an invalid request to start the cluster. * `WORKSPACE_RUN_LIMIT_EXCEEDED`: The
+    workspace has reached the quota for the maximum number of concurrent active runs. Consider
+    scheduling the runs over a larger time frame. * `FEATURE_DISABLED`: The run failed because it
+    tried to access a feature unavailable for the workspace. * `CLUSTER_REQUEST_LIMIT_EXCEEDED`: The
+    number of cluster creation, start, and upsize requests have exceeded the allotted rate limit.
+    Consider spreading the run execution over a larger time frame. * `STORAGE_ACCESS_ERROR`: The run
+    failed due to an error when accessing the customer blob storage. Refer to the state message for
+    further details. * `RUN_EXECUTION_ERROR`: The run was completed with task failures. For more
+    details, refer to the state message or run output. * `UNAUTHORIZED_ERROR`: The run failed due to
+    a permission issue while accessing a resource. Refer to the state message for further details. *
+    `LIBRARY_INSTALLATION_ERROR`: The run failed while installing the user-requested library. Refer
+    to the state message for further details. The causes might include, but are not limited to: The
+    provided library is invalid, there are insufficient permissions to install the library, and so
+    forth. * `MAX_CONCURRENT_RUNS_EXCEEDED`: The scheduled run exceeds the limit of maximum
+    concurrent runs set for the job. * `MAX_SPARK_CONTEXTS_EXCEEDED`: The run is scheduled on a
+    cluster that has already reached the maximum number of contexts it is configured to create. See:
+    [Link]. * `RESOURCE_NOT_FOUND`: A resource necessary for run execution does not exist. Refer to
+    the state message for further details. * `INVALID_RUN_CONFIGURATION`: The run failed due to an
+    invalid configuration. Refer to the state message for further details. * `CLOUD_FAILURE`: The
+    run failed due to a cloud provider issue. Refer to the state message for further details. *
+    `MAX_JOB_QUEUE_SIZE_EXCEEDED`: The run was skipped due to reaching the job level queue size
+    limit.
+    
+    [Link]: https://kb.databricks.com/en_US/notebooks/too-many-execution-contexts-are-open-right-now"""
+
+    message: Optional[str] = None
+    """A descriptive message with the termination details. This field is unstructured and the format
+    might change."""
+
+    type: Optional[TerminationTypeType] = None
+    """* `SUCCESS`: The run terminated without any issues * `INTERNAL_ERROR`: An error occurred in the
+    Databricks platform. Please look at the [status page] or contact support if the issue persists.
+    * `CLIENT_ERROR`: The run was terminated because of an error caused by user input or the job
+    configuration. * `CLOUD_FAILURE`: The run was terminated because of an issue with your cloud
+    provider.
+    
+    [status page]: https://status.databricks.com/"""
+
+    def as_dict(self) -> dict:
+        """Serializes the TerminationDetails into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.code is not None: body['code'] = self.code.value
+        if self.message is not None: body['message'] = self.message
+        if self.type is not None: body['type'] = self.type.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> TerminationDetails:
+        """Deserializes the TerminationDetails from a dictionary."""
+        return cls(code=_enum(d, 'code', TerminationCodeCode),
+                   message=d.get('message', None),
+                   type=_enum(d, 'type', TerminationTypeType))
+
+
+class TerminationTypeType(Enum):
+    """* `SUCCESS`: The run terminated without any issues * `INTERNAL_ERROR`: An error occurred in the
+    Databricks platform. Please look at the [status page] or contact support if the issue persists.
+    * `CLIENT_ERROR`: The run was terminated because of an error caused by user input or the job
+    configuration. * `CLOUD_FAILURE`: The run was terminated because of an issue with your cloud
+    provider.
+    
+    [status page]: https://status.databricks.com/"""
+
+    CLIENT_ERROR = 'CLIENT_ERROR'
+    CLOUD_FAILURE = 'CLOUD_FAILURE'
+    INTERNAL_ERROR = 'INTERNAL_ERROR'
+    SUCCESS = 'SUCCESS'
 
 
 @dataclass
@@ -5167,7 +5666,8 @@ class JobsAPI:
 
     def create(self,
                *,
-               access_control_list: Optional[List[iam.AccessControlRequest]] = None,
+               access_control_list: Optional[List[JobAccessControlRequest]] = None,
+               budget_policy_id: Optional[str] = None,
                continuous: Optional[Continuous] = None,
                deployment: Optional[JobDeployment] = None,
                description: Optional[str] = None,
@@ -5194,15 +5694,19 @@ class JobsAPI:
         
         Create a new job.
         
-        :param access_control_list: List[:class:`AccessControlRequest`] (optional)
+        :param access_control_list: List[:class:`JobAccessControlRequest`] (optional)
           List of permissions to set on the job.
+        :param budget_policy_id: str (optional)
+          The id of the user specified budget policy to use for this job. If not specified, a default budget
+          policy may be applied when creating or modifying the job. See `effective_budget_policy_id` for the
+          budget policy used by this workload.
         :param continuous: :class:`Continuous` (optional)
           An optional continuous property for this job. The continuous property will ensure that there is
           always one run executing. Only one of `schedule` and `continuous` can be used.
         :param deployment: :class:`JobDeployment` (optional)
           Deployment information for jobs managed by external sources.
         :param description: str (optional)
-          An optional description for the job. The maximum length is 1024 characters in UTF-8 encoding.
+          An optional description for the job. The maximum length is 27700 characters in UTF-8 encoding.
         :param edit_mode: :class:`JobEditMode` (optional)
           Edit mode of the job.
           
@@ -5212,7 +5716,10 @@ class JobsAPI:
           An optional set of email addresses that is notified when runs of this job begin or complete as well
           as when this job is deleted.
         :param environments: List[:class:`JobEnvironment`] (optional)
-          A list of task execution environment specifications that can be referenced by tasks of this job.
+          A list of task execution environment specifications that can be referenced by serverless tasks of
+          this job. An environment is required to be present for serverless tasks. For serverless notebook
+          tasks, the environment is accessible in the notebook environment panel. For other serverless tasks,
+          the task environment is required to be specified using environment_key in the task settings.
         :param format: :class:`Format` (optional)
           Used to tell what is the format of the job. This field is ignored in Create/Update/Reset calls. When
           using the Jobs API 2.1 this value is always set to `"MULTI_TASK"`.
@@ -5249,12 +5756,11 @@ class JobsAPI:
         :param queue: :class:`QueueSettings` (optional)
           The queue settings of the job.
         :param run_as: :class:`JobRunAs` (optional)
-          Write-only setting, available only in Create/Update/Reset and Submit calls. Specifies the user or
-          service principal that the job runs as. If not specified, the job runs as the user who created the
-          job.
+          Write-only setting. Specifies the user, service principal or group that the job/pipeline runs as. If
+          not specified, the job/pipeline runs as the user who created the job/pipeline.
           
-          Only `user_name` or `service_principal_name` can be specified. If both are specified, an error is
-          thrown.
+          Exactly one of `user_name`, `service_principal_name`, `group_name` should be specified. If not, an
+          error is thrown.
         :param schedule: :class:`CronSchedule` (optional)
           An optional periodic schedule for this job. The default behavior is that the job only runs when
           triggered by clicking “Run Now” in the Jobs UI or sending an API request to `runNow`.
@@ -5278,6 +5784,7 @@ class JobsAPI:
         body = {}
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
+        if budget_policy_id is not None: body['budget_policy_id'] = budget_policy_id
         if continuous is not None: body['continuous'] = continuous.as_dict()
         if deployment is not None: body['deployment'] = deployment.as_dict()
         if description is not None: body['description'] = description
@@ -5412,7 +5919,8 @@ class JobsAPI:
                 run_id: int,
                 *,
                 include_history: Optional[bool] = None,
-                include_resolved_values: Optional[bool] = None) -> Run:
+                include_resolved_values: Optional[bool] = None,
+                page_token: Optional[str] = None) -> Run:
         """Get a single job run.
         
         Retrieve the metadata of a run.
@@ -5423,6 +5931,9 @@ class JobsAPI:
           Whether to include the repair history in the response.
         :param include_resolved_values: bool (optional)
           Whether to include resolved parameter values in the response.
+        :param page_token: str (optional)
+          To list the next page or the previous page of job tasks, set this field to the value of the
+          `next_page_token` or `prev_page_token` returned in the GetJob response.
         
         :returns: :class:`Run`
         """
@@ -5430,6 +5941,7 @@ class JobsAPI:
         query = {}
         if include_history is not None: query['include_history'] = include_history
         if include_resolved_values is not None: query['include_resolved_values'] = include_resolved_values
+        if page_token is not None: query['page_token'] = page_token
         if run_id is not None: query['run_id'] = run_id
         headers = {'Accept': 'application/json', }
 
@@ -5633,6 +6145,7 @@ class JobsAPI:
           [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
           [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
         :param pipeline_params: :class:`PipelineParams` (optional)
+          Controls whether the pipeline should perform a full refresh
         :param python_named_params: Dict[str,str] (optional)
         :param python_params: List[str] (optional)
           A list of parameters for jobs with Python tasks, for example `"python_params": ["john doe", "35"]`.
@@ -5822,6 +6335,7 @@ class JobsAPI:
           [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
           [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
         :param pipeline_params: :class:`PipelineParams` (optional)
+          Controls whether the pipeline should perform a full refresh
         :param python_named_params: Dict[str,str] (optional)
         :param python_params: List[str] (optional)
           A list of parameters for jobs with Python tasks, for example `"python_params": ["john doe", "35"]`.
@@ -5937,7 +6451,8 @@ class JobsAPI:
 
     def submit(self,
                *,
-               access_control_list: Optional[List[iam.AccessControlRequest]] = None,
+               access_control_list: Optional[List[JobAccessControlRequest]] = None,
+               budget_policy_id: Optional[str] = None,
                email_notifications: Optional[JobEmailNotifications] = None,
                environments: Optional[List[JobEnvironment]] = None,
                git_source: Optional[GitSource] = None,
@@ -5956,8 +6471,11 @@ class JobsAPI:
         Runs submitted using this endpoint don’t display in the UI. Use the `jobs/runs/get` API to check the
         run state after the job is submitted.
         
-        :param access_control_list: List[:class:`AccessControlRequest`] (optional)
+        :param access_control_list: List[:class:`JobAccessControlRequest`] (optional)
           List of permissions to set on the job.
+        :param budget_policy_id: str (optional)
+          The user specified id of the budget policy to use for this one-time run. If not specified, the run
+          will be not be attributed to any budget policy.
         :param email_notifications: :class:`JobEmailNotifications` (optional)
           An optional set of email addresses notified when the run begins or completes.
         :param environments: List[:class:`JobEnvironment`] (optional)
@@ -6009,6 +6527,7 @@ class JobsAPI:
         body = {}
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
+        if budget_policy_id is not None: body['budget_policy_id'] = budget_policy_id
         if email_notifications is not None: body['email_notifications'] = email_notifications.as_dict()
         if environments is not None: body['environments'] = [v.as_dict() for v in environments]
         if git_source is not None: body['git_source'] = git_source.as_dict()
@@ -6031,7 +6550,8 @@ class JobsAPI:
     def submit_and_wait(
         self,
         *,
-        access_control_list: Optional[List[iam.AccessControlRequest]] = None,
+        access_control_list: Optional[List[JobAccessControlRequest]] = None,
+        budget_policy_id: Optional[str] = None,
         email_notifications: Optional[JobEmailNotifications] = None,
         environments: Optional[List[JobEnvironment]] = None,
         git_source: Optional[GitSource] = None,
@@ -6046,6 +6566,7 @@ class JobsAPI:
         webhook_notifications: Optional[WebhookNotifications] = None,
         timeout=timedelta(minutes=20)) -> Run:
         return self.submit(access_control_list=access_control_list,
+                           budget_policy_id=budget_policy_id,
                            email_notifications=email_notifications,
                            environments=environments,
                            git_source=git_source,
@@ -6118,3 +6639,102 @@ class JobsAPI:
 
         res = self._api.do('PATCH', f'/api/2.0/permissions/jobs/{job_id}', body=body, headers=headers)
         return JobPermissions.from_dict(res)
+
+
+class PolicyComplianceForJobsAPI:
+    """The compliance APIs allow you to view and manage the policy compliance status of jobs in your workspace.
+    This API currently only supports compliance controls for cluster policies.
+    
+    A job is in compliance if its cluster configurations satisfy the rules of all their respective cluster
+    policies. A job could be out of compliance if a cluster policy it uses was updated after the job was last
+    edited. The job is considered out of compliance if any of its clusters no longer comply with their updated
+    policies.
+    
+    The get and list compliance APIs allow you to view the policy compliance status of a job. The enforce
+    compliance API allows you to update a job so that it becomes compliant with all of its policies."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def enforce_compliance(self,
+                           job_id: int,
+                           *,
+                           validate_only: Optional[bool] = None) -> EnforcePolicyComplianceResponse:
+        """Enforce job policy compliance.
+        
+        Updates a job so the job clusters that are created when running the job (specified in `new_cluster`)
+        are compliant with the current versions of their respective cluster policies. All-purpose clusters
+        used in the job will not be updated.
+        
+        :param job_id: int
+          The ID of the job you want to enforce policy compliance on.
+        :param validate_only: bool (optional)
+          If set, previews changes made to the job to comply with its policy, but does not update the job.
+        
+        :returns: :class:`EnforcePolicyComplianceResponse`
+        """
+        body = {}
+        if job_id is not None: body['job_id'] = job_id
+        if validate_only is not None: body['validate_only'] = validate_only
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do('POST', '/api/2.0/policies/jobs/enforce-compliance', body=body, headers=headers)
+        return EnforcePolicyComplianceResponse.from_dict(res)
+
+    def get_compliance(self, job_id: int) -> GetPolicyComplianceResponse:
+        """Get job policy compliance.
+        
+        Returns the policy compliance status of a job. Jobs could be out of compliance if a cluster policy
+        they use was updated after the job was last edited and some of its job clusters no longer comply with
+        their updated policies.
+        
+        :param job_id: int
+          The ID of the job whose compliance status you are requesting.
+        
+        :returns: :class:`GetPolicyComplianceResponse`
+        """
+
+        query = {}
+        if job_id is not None: query['job_id'] = job_id
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do('GET', '/api/2.0/policies/jobs/get-compliance', query=query, headers=headers)
+        return GetPolicyComplianceResponse.from_dict(res)
+
+    def list_compliance(self,
+                        policy_id: str,
+                        *,
+                        page_size: Optional[int] = None,
+                        page_token: Optional[str] = None) -> Iterator[JobCompliance]:
+        """List job policy compliance.
+        
+        Returns the policy compliance status of all jobs that use a given policy. Jobs could be out of
+        compliance if a cluster policy they use was updated after the job was last edited and its job clusters
+        no longer comply with the updated policy.
+        
+        :param policy_id: str
+          Canonical unique identifier for the cluster policy.
+        :param page_size: int (optional)
+          Use this field to specify the maximum number of results to be returned by the server. The server may
+          further constrain the maximum number of results returned in a single page.
+        :param page_token: str (optional)
+          A page token that can be used to navigate to the next page or previous page as returned by
+          `next_page_token` or `prev_page_token`.
+        
+        :returns: Iterator over :class:`JobCompliance`
+        """
+
+        query = {}
+        if page_size is not None: query['page_size'] = page_size
+        if page_token is not None: query['page_token'] = page_token
+        if policy_id is not None: query['policy_id'] = policy_id
+        headers = {'Accept': 'application/json', }
+
+        while True:
+            json = self._api.do('GET', '/api/2.0/policies/jobs/list-compliance', query=query, headers=headers)
+            if 'jobs' in json:
+                for v in json['jobs']:
+                    yield JobCompliance.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']

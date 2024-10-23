@@ -3,19 +3,21 @@ import copy
 import logging
 import os
 import pathlib
-import platform
 import sys
 import urllib.parse
-from typing import Dict, Iterable, List, Optional, Tuple
+from typing import Dict, Iterable, Optional
 
 import requests
 
+from . import useragent
+from ._base_client import _fix_host_if_needed
 from .clock import Clock, RealClock
 from .credentials_provider import CredentialsStrategy, DefaultCredentials
 from .environments import (ALL_ENVS, AzureEnvironment, Cloud,
                            DatabricksEnvironment, get_environment_for_hostname)
-from .oauth import OidcEndpoints, Token
-from .version import __version__
+from .oauth import (OidcEndpoints, Token, get_account_endpoints,
+                    get_azure_entra_id_workspace_endpoints,
+                    get_workspace_endpoints)
 
 logger = logging.getLogger('databricks.sdk')
 
@@ -44,30 +46,14 @@ class ConfigAttribute:
         return f"<ConfigAttribute '{self.name}' {self.transform.__name__}>"
 
 
-_DEFAULT_PRODUCT_NAME = 'unknown'
-_DEFAULT_PRODUCT_VERSION = '0.0.0'
-_STATIC_USER_AGENT: Tuple[str, str, List[str]] = (_DEFAULT_PRODUCT_NAME, _DEFAULT_PRODUCT_VERSION, [])
-
-
 def with_product(product: str, product_version: str):
     """[INTERNAL API] Change the product name and version used in the User-Agent header."""
-    global _STATIC_USER_AGENT
-    prev_product, prev_version, prev_other_info = _STATIC_USER_AGENT
-    logger.debug(f'Changing product from {prev_product}/{prev_version} to {product}/{product_version}')
-    _STATIC_USER_AGENT = product, product_version, prev_other_info
+    useragent.with_product(product, product_version)
 
 
 def with_user_agent_extra(key: str, value: str):
     """[INTERNAL API] Add extra metadata to the User-Agent header when developing a library."""
-    global _STATIC_USER_AGENT
-    product_name, product_version, other_info = _STATIC_USER_AGENT
-    for item in other_info:
-        if item.startswith(f"{key}/"):
-            # ensure that we don't have duplicates
-            other_info.remove(item)
-            break
-    other_info.append(f"{key}/{value}")
-    _STATIC_USER_AGENT = product_name, product_version, other_info
+    useragent.with_extra(key, value)
 
 
 class Config:
@@ -109,23 +95,14 @@ class Config:
     def __init__(self,
                  *,
                  # Deprecated. Use credentials_strategy instead.
-                 credentials_provider: CredentialsStrategy = None,
-                 credentials_strategy: CredentialsStrategy = None,
-                 product=_DEFAULT_PRODUCT_NAME,
-                 product_version=_DEFAULT_PRODUCT_VERSION,
-                 clock: Clock = None,
+                 credentials_provider: Optional[CredentialsStrategy] = None,
+                 credentials_strategy: Optional[CredentialsStrategy] = None,
+                 product=None,
+                 product_version=None,
+                 clock: Optional[Clock] = None,
                  **kwargs):
         self._header_factory = None
         self._inner = {}
-        # as in SDK for Go, pull information from global static user agent context,
-        # so that we can track additional metadata for mid-stream libraries, as well
-        # as for cases, when the downstream product is used as a library and is not
-        # configured with a proper product name and version.
-        static_product, static_version, _ = _STATIC_USER_AGENT
-        if product == _DEFAULT_PRODUCT_NAME:
-            product = static_product
-        if product_version == _DEFAULT_PRODUCT_VERSION:
-            product_version = static_version
         self._user_agent_other_info = []
         if credentials_strategy and credentials_provider:
             raise ValueError(
@@ -147,8 +124,7 @@ class Config:
             self._fix_host_if_needed()
             self._validate()
             self.init_auth()
-            self._product = product
-            self._product_version = product_version
+            self._init_product(product, product_version)
         except ValueError as e:
             message = self.wrap_debug_info(str(e))
             raise ValueError(message) from e
@@ -260,47 +236,19 @@ class Config:
     @property
     def user_agent(self):
         """ Returns User-Agent header used by this SDK """
-        py_version = platform.python_version()
-        os_name = platform.uname().system.lower()
 
-        ua = [
-            f"{self._product}/{self._product_version}", f"databricks-sdk-py/{__version__}",
-            f"python/{py_version}", f"os/{os_name}", f"auth/{self.auth_type}",
-        ]
-        if len(self._user_agent_other_info) > 0:
-            ua.append(' '.join(self._user_agent_other_info))
-        # as in SDK for Go, pull information from global static user agent context,
-        # so that we can track additional metadata for mid-stream libraries. this value
-        # is shared across all instances of Config objects intentionally.
-        _, _, static_info = _STATIC_USER_AGENT
-        if len(static_info) > 0:
-            ua.append(' '.join(static_info))
-        if len(self._upstream_user_agent) > 0:
-            ua.append(self._upstream_user_agent)
-        if 'DATABRICKS_RUNTIME_VERSION' in os.environ:
-            runtime_version = os.environ['DATABRICKS_RUNTIME_VERSION']
-            if runtime_version != '':
-                runtime_version = self._sanitize_header_value(runtime_version)
-                ua.append(f'runtime/{runtime_version}')
-
-        return ' '.join(ua)
-
-    @staticmethod
-    def _sanitize_header_value(value: str) -> str:
-        value = value.replace(' ', '-')
-        value = value.replace('/', '-')
-        return value
+        # global user agent includes SDK version, product name & version, platform info,
+        # and global extra info. Config can have specific extra info associated with it,
+        # such as an override product, auth type, and other user-defined information.
+        return useragent.to_string(self._product_info,
+                                   [("auth", self.auth_type)] + self._user_agent_other_info)
 
     @property
     def _upstream_user_agent(self) -> str:
-        product = os.environ.get('DATABRICKS_SDK_UPSTREAM', None)
-        product_version = os.environ.get('DATABRICKS_SDK_UPSTREAM_VERSION', None)
-        if product is not None and product_version is not None:
-            return f"upstream/{product} upstream-version/{product_version}"
-        return ""
+        return " ".join(f"{k}/{v}" for k, v in useragent._get_upstream_user_agent_info())
 
     def with_user_agent_extra(self, key: str, value: str) -> 'Config':
-        self._user_agent_other_info.append(f"{key}/{value}")
+        self._user_agent_other_info.append((key, value))
         return self
 
     @property
@@ -309,24 +257,10 @@ class Config:
         if not self.host:
             return None
         if self.is_azure and self.azure_client_id:
-            # Retrieve authorize endpoint to retrieve token endpoint after
-            res = requests.get(f'{self.host}/oidc/oauth2/v2.0/authorize', allow_redirects=False)
-            real_auth_url = res.headers.get('location')
-            if not real_auth_url:
-                return None
-            return OidcEndpoints(authorization_endpoint=real_auth_url,
-                                 token_endpoint=real_auth_url.replace('/authorize', '/token'))
+            return get_azure_entra_id_workspace_endpoints(self.host)
         if self.is_account_client and self.account_id:
-            prefix = f'{self.host}/oidc/accounts/{self.account_id}'
-            return OidcEndpoints(authorization_endpoint=f'{prefix}/v1/authorize',
-                                 token_endpoint=f'{prefix}/v1/token')
-        oidc = f'{self.host}/oidc/.well-known/oauth-authorization-server'
-        res = requests.get(oidc)
-        if res.status_code != 200:
-            return None
-        auth_metadata = res.json()
-        return OidcEndpoints(authorization_endpoint=auth_metadata.get('authorization_endpoint'),
-                             token_endpoint=auth_metadata.get('token_endpoint'))
+            return get_account_endpoints(self.host, self.account_id)
+        return get_workspace_endpoints(self.host)
 
     def debug_string(self) -> str:
         """ Returns log-friendly representation of configured attributes """
@@ -401,15 +335,36 @@ class Config:
         return cls._attributes
 
     def _fix_host_if_needed(self):
-        if not self.host:
+        updated_host = _fix_host_if_needed(self.host)
+        if updated_host:
+            self.host = updated_host
+
+    def load_azure_tenant_id(self):
+        """[Internal] Load the Azure tenant ID from the Azure Databricks login page.
+
+        If the tenant ID is already set, this method does nothing."""
+        if not self.is_azure or self.azure_tenant_id is not None or self.host is None:
             return
-        # fix url to remove trailing slash
-        o = urllib.parse.urlparse(self.host)
-        if not o.hostname:
-            # only hostname is specified
-            self.host = f"https://{self.host}"
-        else:
-            self.host = f"{o.scheme}://{o.netloc}"
+        login_url = f'{self.host}/aad/auth'
+        logger.debug(f'Loading tenant ID from {login_url}')
+        resp = requests.get(login_url, allow_redirects=False)
+        if resp.status_code // 100 != 3:
+            logger.debug(
+                f'Failed to get tenant ID from {login_url}: expected status code 3xx, got {resp.status_code}')
+            return
+        entra_id_endpoint = resp.headers.get('Location')
+        if entra_id_endpoint is None:
+            logger.debug(f'No Location header in response from {login_url}')
+            return
+        # The Location header has the following form: https://login.microsoftonline.com/<tenant-id>/oauth2/authorize?...
+        # The domain may change depending on the Azure cloud (e.g. login.microsoftonline.us for US Government cloud).
+        url = urllib.parse.urlparse(entra_id_endpoint)
+        path_segments = url.path.split('/')
+        if len(path_segments) < 2:
+            logger.debug(f'Invalid path in Location header: {url.path}')
+            return
+        self.azure_tenant_id = path_segments[1]
+        logger.debug(f'Loaded tenant ID: {self.azure_tenant_id}')
 
     def _set_inner_config(self, keyword_args: Dict[str, any]):
         for attr in self.attributes():
@@ -497,6 +452,13 @@ class Config:
                 raise ValueError('not configured')
         except ValueError as e:
             raise ValueError(f'{self._credentials_strategy.auth_type()} auth: {e}') from e
+
+    def _init_product(self, product, product_version):
+        if product is not None or product_version is not None:
+            default_product, default_version = useragent.product()
+            self._product_info = (product or default_product, product_version or default_version)
+        else:
+            self._product_info = None
 
     def __repr__(self):
         return f'<{self.debug_string()}>'

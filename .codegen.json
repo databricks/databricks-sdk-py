@@ -1,5 +1,6 @@
 {
   "formatter": "yapf -pri $FILENAMES && autoflake -i $FILENAMES && isort $FILENAMES",
+  "changelog_config": ".codegen/changelog_config.yml",
   "template_libraries": [
     ".codegen/lib.tmpl"
   ],

@@ -46,69 +46,211 @@ class AccessControl:
 
 @dataclass
 class Alert:
-    created_at: Optional[str] = None
-    """Timestamp when the alert was created."""
+    condition: Optional[AlertCondition] = None
+    """Trigger conditions of the alert."""
+
+    create_time: Optional[str] = None
+    """The timestamp indicating when the alert was created."""
+
+    custom_body: Optional[str] = None
+    """Custom body of alert notification, if it exists. See [here] for custom templating instructions.
+    
+    [here]: https://docs.databricks.com/sql/user/alerts/index.html"""
+
+    custom_subject: Optional[str] = None
+    """Custom subject of alert notification, if it exists. This can include email subject entries and
+    Slack notification headers, for example. See [here] for custom templating instructions.
+    
+    [here]: https://docs.databricks.com/sql/user/alerts/index.html"""
+
+    display_name: Optional[str] = None
+    """The display name of the alert."""
 
     id: Optional[str] = None
-    """Alert ID."""
+    """UUID identifying the alert."""
 
-    last_triggered_at: Optional[str] = None
-    """Timestamp when the alert was last triggered."""
+    lifecycle_state: Optional[LifecycleState] = None
+    """The workspace state of the alert. Used for tracking trashed status."""
 
-    name: Optional[str] = None
-    """Name of the alert."""
+    notify_on_ok: Optional[bool] = None
+    """Whether to notify alert subscribers when alert returns back to normal."""
 
-    options: Optional[AlertOptions] = None
-    """Alert configuration options."""
+    owner_user_name: Optional[str] = None
+    """The owner's username. This field is set to "Unavailable" if the user has been deleted."""
 
-    parent: Optional[str] = None
-    """The identifier of the workspace folder containing the object."""
+    parent_path: Optional[str] = None
+    """The workspace path of the folder containing the alert."""
 
-    query: Optional[AlertQuery] = None
+    query_id: Optional[str] = None
+    """UUID of the query attached to the alert."""
 
-    rearm: Optional[int] = None
-    """Number of seconds after being triggered before the alert rearms itself and can be triggered
-    again. If `null`, alert will never be triggered again."""
+    seconds_to_retrigger: Optional[int] = None
+    """Number of seconds an alert must wait after being triggered to rearm itself. After rearming, it
+    can be triggered again. If 0 or not specified, the alert will not be triggered again."""
 
     state: Optional[AlertState] = None
-    """State of the alert. Possible values are: `unknown` (yet to be evaluated), `triggered` (evaluated
-    and fulfilled trigger conditions), or `ok` (evaluated and did not fulfill trigger conditions)."""
+    """Current state of the alert's trigger status. This field is set to UNKNOWN if the alert has not
+    yet been evaluated or ran into an error during the last evaluation."""
 
-    updated_at: Optional[str] = None
-    """Timestamp when the alert was last updated."""
+    trigger_time: Optional[str] = None
+    """Timestamp when the alert was last triggered, if the alert has been triggered before."""
 
-    user: Optional[User] = None
+    update_time: Optional[str] = None
+    """The timestamp indicating when the alert was updated."""
 
     def as_dict(self) -> dict:
         """Serializes the Alert into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.created_at is not None: body['created_at'] = self.created_at
+        if self.condition: body['condition'] = self.condition.as_dict()
+        if self.create_time is not None: body['create_time'] = self.create_time
+        if self.custom_body is not None: body['custom_body'] = self.custom_body
+        if self.custom_subject is not None: body['custom_subject'] = self.custom_subject
+        if self.display_name is not None: body['display_name'] = self.display_name
         if self.id is not None: body['id'] = self.id
-        if self.last_triggered_at is not None: body['last_triggered_at'] = self.last_triggered_at
-        if self.name is not None: body['name'] = self.name
-        if self.options: body['options'] = self.options.as_dict()
-        if self.parent is not None: body['parent'] = self.parent
-        if self.query: body['query'] = self.query.as_dict()
-        if self.rearm is not None: body['rearm'] = self.rearm
+        if self.lifecycle_state is not None: body['lifecycle_state'] = self.lifecycle_state.value
+        if self.notify_on_ok is not None: body['notify_on_ok'] = self.notify_on_ok
+        if self.owner_user_name is not None: body['owner_user_name'] = self.owner_user_name
+        if self.parent_path is not None: body['parent_path'] = self.parent_path
+        if self.query_id is not None: body['query_id'] = self.query_id
+        if self.seconds_to_retrigger is not None: body['seconds_to_retrigger'] = self.seconds_to_retrigger
         if self.state is not None: body['state'] = self.state.value
-        if self.updated_at is not None: body['updated_at'] = self.updated_at
-        if self.user: body['user'] = self.user.as_dict()
+        if self.trigger_time is not None: body['trigger_time'] = self.trigger_time
+        if self.update_time is not None: body['update_time'] = self.update_time
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> Alert:
         """Deserializes the Alert from a dictionary."""
-        return cls(created_at=d.get('created_at', None),
+        return cls(condition=_from_dict(d, 'condition', AlertCondition),
+                   create_time=d.get('create_time', None),
+                   custom_body=d.get('custom_body', None),
+                   custom_subject=d.get('custom_subject', None),
+                   display_name=d.get('display_name', None),
                    id=d.get('id', None),
-                   last_triggered_at=d.get('last_triggered_at', None),
-                   name=d.get('name', None),
-                   options=_from_dict(d, 'options', AlertOptions),
-                   parent=d.get('parent', None),
-                   query=_from_dict(d, 'query', AlertQuery),
-                   rearm=d.get('rearm', None),
+                   lifecycle_state=_enum(d, 'lifecycle_state', LifecycleState),
+                   notify_on_ok=d.get('notify_on_ok', None),
+                   owner_user_name=d.get('owner_user_name', None),
+                   parent_path=d.get('parent_path', None),
+                   query_id=d.get('query_id', None),
+                   seconds_to_retrigger=d.get('seconds_to_retrigger', None),
                    state=_enum(d, 'state', AlertState),
-                   updated_at=d.get('updated_at', None),
-                   user=_from_dict(d, 'user', User))
+                   trigger_time=d.get('trigger_time', None),
+                   update_time=d.get('update_time', None))
+
+
+@dataclass
+class AlertCondition:
+    empty_result_state: Optional[AlertState] = None
+    """Alert state if result is empty."""
+
+    op: Optional[AlertOperator] = None
+    """Operator used for comparison in alert evaluation."""
+
+    operand: Optional[AlertConditionOperand] = None
+    """Name of the column from the query result to use for comparison in alert evaluation."""
+
+    threshold: Optional[AlertConditionThreshold] = None
+    """Threshold value used for comparison in alert evaluation."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AlertCondition into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.empty_result_state is not None: body['empty_result_state'] = self.empty_result_state.value
+        if self.op is not None: body['op'] = self.op.value
+        if self.operand: body['operand'] = self.operand.as_dict()
+        if self.threshold: body['threshold'] = self.threshold.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> AlertCondition:
+        """Deserializes the AlertCondition from a dictionary."""
+        return cls(empty_result_state=_enum(d, 'empty_result_state', AlertState),
+                   op=_enum(d, 'op', AlertOperator),
+                   operand=_from_dict(d, 'operand', AlertConditionOperand),
+                   threshold=_from_dict(d, 'threshold', AlertConditionThreshold))
+
+
+@dataclass
+class AlertConditionOperand:
+    column: Optional[AlertOperandColumn] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the AlertConditionOperand into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.column: body['column'] = self.column.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> AlertConditionOperand:
+        """Deserializes the AlertConditionOperand from a dictionary."""
+        return cls(column=_from_dict(d, 'column', AlertOperandColumn))
+
+
+@dataclass
+class AlertConditionThreshold:
+    value: Optional[AlertOperandValue] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the AlertConditionThreshold into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.value: body['value'] = self.value.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> AlertConditionThreshold:
+        """Deserializes the AlertConditionThreshold from a dictionary."""
+        return cls(value=_from_dict(d, 'value', AlertOperandValue))
+
+
+@dataclass
+class AlertOperandColumn:
+    name: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the AlertOperandColumn into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None: body['name'] = self.name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> AlertOperandColumn:
+        """Deserializes the AlertOperandColumn from a dictionary."""
+        return cls(name=d.get('name', None))
+
+
+@dataclass
+class AlertOperandValue:
+    bool_value: Optional[bool] = None
+
+    double_value: Optional[float] = None
+
+    string_value: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the AlertOperandValue into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.bool_value is not None: body['bool_value'] = self.bool_value
+        if self.double_value is not None: body['double_value'] = self.double_value
+        if self.string_value is not None: body['string_value'] = self.string_value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> AlertOperandValue:
+        """Deserializes the AlertOperandValue from a dictionary."""
+        return cls(bool_value=d.get('bool_value', None),
+                   double_value=d.get('double_value', None),
+                   string_value=d.get('string_value', None))
+
+
+class AlertOperator(Enum):
+
+    EQUAL = 'EQUAL'
+    GREATER_THAN = 'GREATER_THAN'
+    GREATER_THAN_OR_EQUAL = 'GREATER_THAN_OR_EQUAL'
+    IS_NULL = 'IS_NULL'
+    LESS_THAN = 'LESS_THAN'
+    LESS_THAN_OR_EQUAL = 'LESS_THAN_OR_EQUAL'
+    NOT_EQUAL = 'NOT_EQUAL'
 
 
 @dataclass
@@ -259,12 +401,10 @@ class AlertQuery:
 
 
 class AlertState(Enum):
-    """State of the alert. Possible values are: `unknown` (yet to be evaluated), `triggered` (evaluated
-    and fulfilled trigger conditions), or `ok` (evaluated and did not fulfill trigger conditions)."""
 
-    OK = 'ok'
-    TRIGGERED = 'triggered'
-    UNKNOWN = 'unknown'
+    OK = 'OK'
+    TRIGGERED = 'TRIGGERED'
+    UNKNOWN = 'UNKNOWN'
 
 
 @dataclass
@@ -319,6 +459,9 @@ class CancelExecutionResponse:
 
 @dataclass
 class Channel:
+    """Configures the channel name and DBSQL version of the warehouse. CHANNEL_NAME_CUSTOM should be
+    chosen only when `dbsql_version` is specified."""
+
     dbsql_version: Optional[str] = None
 
     name: Optional[ChannelName] = None
@@ -338,10 +481,10 @@ class Channel:
 
 @dataclass
 class ChannelInfo:
-    """Channel information for the SQL warehouse at the time of query execution"""
+    """Details about a Channel."""
 
     dbsql_version: Optional[str] = None
-    """DBSQL Version the channel is mapped to"""
+    """DB SQL Version the Channel is mapped to."""
 
     name: Optional[ChannelName] = None
     """Name of the channel"""
@@ -364,7 +507,6 @@ class ChannelName(Enum):
     CHANNEL_NAME_CURRENT = 'CHANNEL_NAME_CURRENT'
     CHANNEL_NAME_CUSTOM = 'CHANNEL_NAME_CUSTOM'
     CHANNEL_NAME_PREVIEW = 'CHANNEL_NAME_PREVIEW'
-    CHANNEL_NAME_PREVIOUS = 'CHANNEL_NAME_PREVIOUS'
     CHANNEL_NAME_UNSPECIFIED = 'CHANNEL_NAME_UNSPECIFIED'
 
 
@@ -481,12 +623,224 @@ class CreateAlert:
 
 
 @dataclass
+class CreateAlertRequest:
+    alert: Optional[CreateAlertRequestAlert] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the CreateAlertRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.alert: body['alert'] = self.alert.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> CreateAlertRequest:
+        """Deserializes the CreateAlertRequest from a dictionary."""
+        return cls(alert=_from_dict(d, 'alert', CreateAlertRequestAlert))
+
+
+@dataclass
+class CreateAlertRequestAlert:
+    condition: Optional[AlertCondition] = None
+    """Trigger conditions of the alert."""
+
+    custom_body: Optional[str] = None
+    """Custom body of alert notification, if it exists. See [here] for custom templating instructions.
+    
+    [here]: https://docs.databricks.com/sql/user/alerts/index.html"""
+
+    custom_subject: Optional[str] = None
+    """Custom subject of alert notification, if it exists. This can include email subject entries and
+    Slack notification headers, for example. See [here] for custom templating instructions.
+    
+    [here]: https://docs.databricks.com/sql/user/alerts/index.html"""
+
+    display_name: Optional[str] = None
+    """The display name of the alert."""
+
+    notify_on_ok: Optional[bool] = None
+    """Whether to notify alert subscribers when alert returns back to normal."""
+
+    parent_path: Optional[str] = None
+    """The workspace path of the folder containing the alert."""
+
+    query_id: Optional[str] = None
+    """UUID of the query attached to the alert."""
+
+    seconds_to_retrigger: Optional[int] = None
+    """Number of seconds an alert must wait after being triggered to rearm itself. After rearming, it
+    can be triggered again. If 0 or not specified, the alert will not be triggered again."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CreateAlertRequestAlert into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.condition: body['condition'] = self.condition.as_dict()
+        if self.custom_body is not None: body['custom_body'] = self.custom_body
+        if self.custom_subject is not None: body['custom_subject'] = self.custom_subject
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.notify_on_ok is not None: body['notify_on_ok'] = self.notify_on_ok
+        if self.parent_path is not None: body['parent_path'] = self.parent_path
+        if self.query_id is not None: body['query_id'] = self.query_id
+        if self.seconds_to_retrigger is not None: body['seconds_to_retrigger'] = self.seconds_to_retrigger
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> CreateAlertRequestAlert:
+        """Deserializes the CreateAlertRequestAlert from a dictionary."""
+        return cls(condition=_from_dict(d, 'condition', AlertCondition),
+                   custom_body=d.get('custom_body', None),
+                   custom_subject=d.get('custom_subject', None),
+                   display_name=d.get('display_name', None),
+                   notify_on_ok=d.get('notify_on_ok', None),
+                   parent_path=d.get('parent_path', None),
+                   query_id=d.get('query_id', None),
+                   seconds_to_retrigger=d.get('seconds_to_retrigger', None))
+
+
+@dataclass
+class CreateQueryRequest:
+    query: Optional[CreateQueryRequestQuery] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the CreateQueryRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.query: body['query'] = self.query.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> CreateQueryRequest:
+        """Deserializes the CreateQueryRequest from a dictionary."""
+        return cls(query=_from_dict(d, 'query', CreateQueryRequestQuery))
+
+
+@dataclass
+class CreateQueryRequestQuery:
+    apply_auto_limit: Optional[bool] = None
+    """Whether to apply a 1000 row limit to the query result."""
+
+    catalog: Optional[str] = None
+    """Name of the catalog where this query will be executed."""
+
+    description: Optional[str] = None
+    """General description that conveys additional information about this query such as usage notes."""
+
+    display_name: Optional[str] = None
+    """Display name of the query that appears in list views, widget headings, and on the query page."""
+
+    parameters: Optional[List[QueryParameter]] = None
+    """List of query parameter definitions."""
+
+    parent_path: Optional[str] = None
+    """Workspace path of the workspace folder containing the object."""
+
+    query_text: Optional[str] = None
+    """Text of the query to be run."""
+
+    run_as_mode: Optional[RunAsMode] = None
+    """Sets the "Run as" role for the object."""
+
+    schema: Optional[str] = None
+    """Name of the schema where this query will be executed."""
+
+    tags: Optional[List[str]] = None
+
+    warehouse_id: Optional[str] = None
+    """ID of the SQL warehouse attached to the query."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CreateQueryRequestQuery into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.apply_auto_limit is not None: body['apply_auto_limit'] = self.apply_auto_limit
+        if self.catalog is not None: body['catalog'] = self.catalog
+        if self.description is not None: body['description'] = self.description
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.parameters: body['parameters'] = [v.as_dict() for v in self.parameters]
+        if self.parent_path is not None: body['parent_path'] = self.parent_path
+        if self.query_text is not None: body['query_text'] = self.query_text
+        if self.run_as_mode is not None: body['run_as_mode'] = self.run_as_mode.value
+        if self.schema is not None: body['schema'] = self.schema
+        if self.tags: body['tags'] = [v for v in self.tags]
+        if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> CreateQueryRequestQuery:
+        """Deserializes the CreateQueryRequestQuery from a dictionary."""
+        return cls(apply_auto_limit=d.get('apply_auto_limit', None),
+                   catalog=d.get('catalog', None),
+                   description=d.get('description', None),
+                   display_name=d.get('display_name', None),
+                   parameters=_repeated_dict(d, 'parameters', QueryParameter),
+                   parent_path=d.get('parent_path', None),
+                   query_text=d.get('query_text', None),
+                   run_as_mode=_enum(d, 'run_as_mode', RunAsMode),
+                   schema=d.get('schema', None),
+                   tags=d.get('tags', None),
+                   warehouse_id=d.get('warehouse_id', None))
+
+
+@dataclass
+class CreateVisualizationRequest:
+    visualization: Optional[CreateVisualizationRequestVisualization] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the CreateVisualizationRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.visualization: body['visualization'] = self.visualization.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> CreateVisualizationRequest:
+        """Deserializes the CreateVisualizationRequest from a dictionary."""
+        return cls(visualization=_from_dict(d, 'visualization', CreateVisualizationRequestVisualization))
+
+
+@dataclass
+class CreateVisualizationRequestVisualization:
+    display_name: Optional[str] = None
+    """The display name of the visualization."""
+
+    query_id: Optional[str] = None
+    """UUID of the query that the visualization is attached to."""
+
+    serialized_options: Optional[str] = None
+    """The visualization options varies widely from one visualization type to the next and is
+    unsupported. Databricks does not recommend modifying visualization options directly."""
+
+    serialized_query_plan: Optional[str] = None
+    """The visualization query plan varies widely from one visualization type to the next and is
+    unsupported. Databricks does not recommend modifying the visualization query plan directly."""
+
+    type: Optional[str] = None
+    """The type of visualization: counter, table, funnel, and so on."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CreateVisualizationRequestVisualization into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.query_id is not None: body['query_id'] = self.query_id
+        if self.serialized_options is not None: body['serialized_options'] = self.serialized_options
+        if self.serialized_query_plan is not None: body['serialized_query_plan'] = self.serialized_query_plan
+        if self.type is not None: body['type'] = self.type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> CreateVisualizationRequestVisualization:
+        """Deserializes the CreateVisualizationRequestVisualization from a dictionary."""
+        return cls(display_name=d.get('display_name', None),
+                   query_id=d.get('query_id', None),
+                   serialized_options=d.get('serialized_options', None),
+                   serialized_query_plan=d.get('serialized_query_plan', None),
+                   type=d.get('type', None))
+
+
+@dataclass
 class CreateWarehouseRequest:
     auto_stop_mins: Optional[int] = None
     """The amount of time in minutes that a SQL warehouse must be idle (i.e., no RUNNING queries)
     before it is automatically stopped.
     
-    Supported values: - Must be == 0 or >= 10 mins - 0 indicates no autostop.
+    Supported values: - Must be >= 0 mins for serverless warehouses - Must be == 0 or >= 10 mins for
+    non-serverless warehouses - 0 indicates no autostop.
     
     Defaults to 120 mins"""
 
@@ -913,6 +1267,121 @@ class DataSource:
                    warehouse_id=d.get('warehouse_id', None))
 
 
+class DatePrecision(Enum):
+
+    DAY_PRECISION = 'DAY_PRECISION'
+    MINUTE_PRECISION = 'MINUTE_PRECISION'
+    SECOND_PRECISION = 'SECOND_PRECISION'
+
+
+@dataclass
+class DateRange:
+    start: str
+
+    end: str
+
+    def as_dict(self) -> dict:
+        """Serializes the DateRange into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.end is not None: body['end'] = self.end
+        if self.start is not None: body['start'] = self.start
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DateRange:
+        """Deserializes the DateRange from a dictionary."""
+        return cls(end=d.get('end', None), start=d.get('start', None))
+
+
+@dataclass
+class DateRangeValue:
+    date_range_value: Optional[DateRange] = None
+    """Manually specified date-time range value."""
+
+    dynamic_date_range_value: Optional[DateRangeValueDynamicDateRange] = None
+    """Dynamic date-time range value based on current date-time."""
+
+    precision: Optional[DatePrecision] = None
+    """Date-time precision to format the value into when the query is run. Defaults to DAY_PRECISION
+    (YYYY-MM-DD)."""
+
+    start_day_of_week: Optional[int] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the DateRangeValue into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.date_range_value: body['date_range_value'] = self.date_range_value.as_dict()
+        if self.dynamic_date_range_value is not None:
+            body['dynamic_date_range_value'] = self.dynamic_date_range_value.value
+        if self.precision is not None: body['precision'] = self.precision.value
+        if self.start_day_of_week is not None: body['start_day_of_week'] = self.start_day_of_week
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DateRangeValue:
+        """Deserializes the DateRangeValue from a dictionary."""
+        return cls(date_range_value=_from_dict(d, 'date_range_value', DateRange),
+                   dynamic_date_range_value=_enum(d, 'dynamic_date_range_value',
+                                                  DateRangeValueDynamicDateRange),
+                   precision=_enum(d, 'precision', DatePrecision),
+                   start_day_of_week=d.get('start_day_of_week', None))
+
+
+class DateRangeValueDynamicDateRange(Enum):
+
+    LAST_12_MONTHS = 'LAST_12_MONTHS'
+    LAST_14_DAYS = 'LAST_14_DAYS'
+    LAST_24_HOURS = 'LAST_24_HOURS'
+    LAST_30_DAYS = 'LAST_30_DAYS'
+    LAST_60_DAYS = 'LAST_60_DAYS'
+    LAST_7_DAYS = 'LAST_7_DAYS'
+    LAST_8_HOURS = 'LAST_8_HOURS'
+    LAST_90_DAYS = 'LAST_90_DAYS'
+    LAST_HOUR = 'LAST_HOUR'
+    LAST_MONTH = 'LAST_MONTH'
+    LAST_WEEK = 'LAST_WEEK'
+    LAST_YEAR = 'LAST_YEAR'
+    THIS_MONTH = 'THIS_MONTH'
+    THIS_WEEK = 'THIS_WEEK'
+    THIS_YEAR = 'THIS_YEAR'
+    TODAY = 'TODAY'
+    YESTERDAY = 'YESTERDAY'
+
+
+@dataclass
+class DateValue:
+    date_value: Optional[str] = None
+    """Manually specified date-time value."""
+
+    dynamic_date_value: Optional[DateValueDynamicDate] = None
+    """Dynamic date-time value based on current date-time."""
+
+    precision: Optional[DatePrecision] = None
+    """Date-time precision to format the value into when the query is run. Defaults to DAY_PRECISION
+    (YYYY-MM-DD)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DateValue into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.date_value is not None: body['date_value'] = self.date_value
+        if self.dynamic_date_value is not None: body['dynamic_date_value'] = self.dynamic_date_value.value
+        if self.precision is not None: body['precision'] = self.precision.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DateValue:
+        """Deserializes the DateValue from a dictionary."""
+        return cls(date_value=d.get('date_value', None),
+                   dynamic_date_value=_enum(d, 'dynamic_date_value', DateValueDynamicDate),
+                   precision=_enum(d, 'precision', DatePrecision))
+
+
+class DateValueDynamicDate(Enum):
+
+    NOW = 'NOW'
+    YESTERDAY = 'YESTERDAY'
+
+
 @dataclass
 class DeleteResponse:
 
@@ -942,26 +1411,6 @@ class DeleteWarehouseResponse:
 
 
 class Disposition(Enum):
-    """The fetch disposition provides two modes of fetching results: `INLINE` and `EXTERNAL_LINKS`.
-    
-    Statements executed with `INLINE` disposition will return result data inline, in `JSON_ARRAY`
-    format, in a series of chunks. If a given statement produces a result set with a size larger
-    than 25 MiB, that statement execution is aborted, and no result set will be available.
-    
-    **NOTE** Byte limits are computed based upon internal representations of the result set data,
-    and might not match the sizes visible in JSON responses.
-    
-    Statements executed with `EXTERNAL_LINKS` disposition will return result data as external links:
-    URLs that point to cloud storage internal to the workspace. Using `EXTERNAL_LINKS` disposition
-    allows statements to generate arbitrarily sized result sets for fetching up to 100 GiB. The
-    resulting links have two important properties:
-    
-    1. They point to resources _external_ to the Databricks compute; therefore any associated
-    authentication information (typically a personal access token, OAuth token, or similar) _must be
-    removed_ when fetching from these links.
-    
-    2. These are presigned URLs with a specific expiration, indicated in the response. The behavior
-    when attempting to use an expired link is cloud specific."""
 
     EXTERNAL_LINKS = 'EXTERNAL_LINKS'
     INLINE = 'INLINE'
@@ -1137,6 +1586,22 @@ class EditWarehouseResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> EditWarehouseResponse:
         """Deserializes the EditWarehouseResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
+class Empty:
+    """Represents an empty message, similar to google.protobuf.Empty, which is not available in the
+    firm right now."""
+
+    def as_dict(self) -> dict:
+        """Serializes the Empty into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> Empty:
+        """Deserializes the Empty from a dictionary."""
         return cls()
 
 
@@ -1385,6 +1850,33 @@ class EndpointTags:
 
 
 @dataclass
+class EnumValue:
+    enum_options: Optional[str] = None
+    """List of valid query parameter values, newline delimited."""
+
+    multi_values_options: Optional[MultiValuesOptions] = None
+    """If specified, allows multiple values to be selected for this parameter."""
+
+    values: Optional[List[str]] = None
+    """List of selected query parameter values."""
+
+    def as_dict(self) -> dict:
+        """Serializes the EnumValue into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.enum_options is not None: body['enum_options'] = self.enum_options
+        if self.multi_values_options: body['multi_values_options'] = self.multi_values_options.as_dict()
+        if self.values: body['values'] = [v for v in self.values]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> EnumValue:
+        """Deserializes the EnumValue from a dictionary."""
+        return cls(enum_options=d.get('enum_options', None),
+                   multi_values_options=_from_dict(d, 'multi_values_options', MultiValuesOptions),
+                   values=d.get('values', None))
+
+
+@dataclass
 class ExecuteStatementRequest:
     statement: str
     """The SQL statement to execute. The statement can optionally be parameterized, see `parameters`."""
@@ -1407,26 +1899,6 @@ class ExecuteStatementRequest:
     [`USE CATALOG`]: https://docs.databricks.com/sql/language-manual/sql-ref-syntax-ddl-use-catalog.html"""
 
     disposition: Optional[Disposition] = None
-    """The fetch disposition provides two modes of fetching results: `INLINE` and `EXTERNAL_LINKS`.
-    
-    Statements executed with `INLINE` disposition will return result data inline, in `JSON_ARRAY`
-    format, in a series of chunks. If a given statement produces a result set with a size larger
-    than 25 MiB, that statement execution is aborted, and no result set will be available.
-    
-    **NOTE** Byte limits are computed based upon internal representations of the result set data,
-    and might not match the sizes visible in JSON responses.
-    
-    Statements executed with `EXTERNAL_LINKS` disposition will return result data as external links:
-    URLs that point to cloud storage internal to the workspace. Using `EXTERNAL_LINKS` disposition
-    allows statements to generate arbitrarily sized result sets for fetching up to 100 GiB. The
-    resulting links have two important properties:
-    
-    1. They point to resources _external_ to the Databricks compute; therefore any associated
-    authentication information (typically a personal access token, OAuth token, or similar) _must be
-    removed_ when fetching from these links.
-    
-    2. These are presigned URLs with a specific expiration, indicated in the response. The behavior
-    when attempting to use an expired link is cloud specific."""
 
     format: Optional[Format] = None
     """Statement execution supports three result formats: `JSON_ARRAY` (default), `ARROW_STREAM`, and
@@ -1566,43 +2038,6 @@ class ExecuteStatementRequestOnWaitTimeout(Enum):
 
 
 @dataclass
-class ExecuteStatementResponse:
-    manifest: Optional[ResultManifest] = None
-    """The result manifest provides schema and metadata for the result set."""
-
-    result: Optional[ResultData] = None
-    """Contains the result data of a single chunk when using `INLINE` disposition. When using
-    `EXTERNAL_LINKS` disposition, the array `external_links` is used instead to provide presigned
-    URLs to the result data in cloud storage. Exactly one of these alternatives is used. (While the
-    `external_links` array prepares the API to return multiple links in a single response. Currently
-    only a single link is returned.)"""
-
-    statement_id: Optional[str] = None
-    """The statement ID is returned upon successfully submitting a SQL statement, and is a required
-    reference for all subsequent calls."""
-
-    status: Optional[StatementStatus] = None
-    """The status response includes execution state and if relevant, error information."""
-
-    def as_dict(self) -> dict:
-        """Serializes the ExecuteStatementResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.manifest: body['manifest'] = self.manifest.as_dict()
-        if self.result: body['result'] = self.result.as_dict()
-        if self.statement_id is not None: body['statement_id'] = self.statement_id
-        if self.status: body['status'] = self.status.as_dict()
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ExecuteStatementResponse:
-        """Deserializes the ExecuteStatementResponse from a dictionary."""
-        return cls(manifest=_from_dict(d, 'manifest', ResultManifest),
-                   result=_from_dict(d, 'result', ResultData),
-                   statement_id=d.get('statement_id', None),
-                   status=_from_dict(d, 'status', StatementStatus))
-
-
-@dataclass
 class ExternalLink:
     byte_count: Optional[int] = None
     """The number of bytes in the result chunk. This field is not available when using `INLINE`
@@ -1616,9 +2051,6 @@ class ExternalLink:
     which point a new `external_link` must be requested."""
 
     external_link: Optional[str] = None
-    """A presigned URL pointing to a chunk of result data, hosted by an external service, with a short
-    expiration time (<= 15 minutes). As this URL contains a temporary credential, it should be
-    considered sensitive and the client should not expose this URL in a log."""
 
     http_headers: Optional[Dict[str, str]] = None
     """HTTP headers that must be included with a GET request to the `external_link`. Each header is
@@ -1703,43 +2135,6 @@ class GetResponse:
         return cls(access_control_list=_repeated_dict(d, 'access_control_list', AccessControl),
                    object_id=d.get('object_id', None),
                    object_type=_enum(d, 'object_type', ObjectType))
-
-
-@dataclass
-class GetStatementResponse:
-    manifest: Optional[ResultManifest] = None
-    """The result manifest provides schema and metadata for the result set."""
-
-    result: Optional[ResultData] = None
-    """Contains the result data of a single chunk when using `INLINE` disposition. When using
-    `EXTERNAL_LINKS` disposition, the array `external_links` is used instead to provide presigned
-    URLs to the result data in cloud storage. Exactly one of these alternatives is used. (While the
-    `external_links` array prepares the API to return multiple links in a single response. Currently
-    only a single link is returned.)"""
-
-    statement_id: Optional[str] = None
-    """The statement ID is returned upon successfully submitting a SQL statement, and is a required
-    reference for all subsequent calls."""
-
-    status: Optional[StatementStatus] = None
-    """The status response includes execution state and if relevant, error information."""
-
-    def as_dict(self) -> dict:
-        """Serializes the GetStatementResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.manifest: body['manifest'] = self.manifest.as_dict()
-        if self.result: body['result'] = self.result.as_dict()
-        if self.statement_id is not None: body['statement_id'] = self.statement_id
-        if self.status: body['status'] = self.status.as_dict()
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> GetStatementResponse:
-        """Deserializes the GetStatementResponse from a dictionary."""
-        return cls(manifest=_from_dict(d, 'manifest', ResultManifest),
-                   result=_from_dict(d, 'result', ResultData),
-                   statement_id=d.get('statement_id', None),
-                   status=_from_dict(d, 'status', StatementStatus))
 
 
 @dataclass
@@ -1987,6 +2382,391 @@ class GetWorkspaceWarehouseConfigResponseSecurityPolicy(Enum):
     PASSTHROUGH = 'PASSTHROUGH'
 
 
+@dataclass
+class LegacyAlert:
+    created_at: Optional[str] = None
+    """Timestamp when the alert was created."""
+
+    id: Optional[str] = None
+    """Alert ID."""
+
+    last_triggered_at: Optional[str] = None
+    """Timestamp when the alert was last triggered."""
+
+    name: Optional[str] = None
+    """Name of the alert."""
+
+    options: Optional[AlertOptions] = None
+    """Alert configuration options."""
+
+    parent: Optional[str] = None
+    """The identifier of the workspace folder containing the object."""
+
+    query: Optional[AlertQuery] = None
+
+    rearm: Optional[int] = None
+    """Number of seconds after being triggered before the alert rearms itself and can be triggered
+    again. If `null`, alert will never be triggered again."""
+
+    state: Optional[LegacyAlertState] = None
+    """State of the alert. Possible values are: `unknown` (yet to be evaluated), `triggered` (evaluated
+    and fulfilled trigger conditions), or `ok` (evaluated and did not fulfill trigger conditions)."""
+
+    updated_at: Optional[str] = None
+    """Timestamp when the alert was last updated."""
+
+    user: Optional[User] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the LegacyAlert into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.created_at is not None: body['created_at'] = self.created_at
+        if self.id is not None: body['id'] = self.id
+        if self.last_triggered_at is not None: body['last_triggered_at'] = self.last_triggered_at
+        if self.name is not None: body['name'] = self.name
+        if self.options: body['options'] = self.options.as_dict()
+        if self.parent is not None: body['parent'] = self.parent
+        if self.query: body['query'] = self.query.as_dict()
+        if self.rearm is not None: body['rearm'] = self.rearm
+        if self.state is not None: body['state'] = self.state.value
+        if self.updated_at is not None: body['updated_at'] = self.updated_at
+        if self.user: body['user'] = self.user.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> LegacyAlert:
+        """Deserializes the LegacyAlert from a dictionary."""
+        return cls(created_at=d.get('created_at', None),
+                   id=d.get('id', None),
+                   last_triggered_at=d.get('last_triggered_at', None),
+                   name=d.get('name', None),
+                   options=_from_dict(d, 'options', AlertOptions),
+                   parent=d.get('parent', None),
+                   query=_from_dict(d, 'query', AlertQuery),
+                   rearm=d.get('rearm', None),
+                   state=_enum(d, 'state', LegacyAlertState),
+                   updated_at=d.get('updated_at', None),
+                   user=_from_dict(d, 'user', User))
+
+
+class LegacyAlertState(Enum):
+    """State of the alert. Possible values are: `unknown` (yet to be evaluated), `triggered` (evaluated
+    and fulfilled trigger conditions), or `ok` (evaluated and did not fulfill trigger conditions)."""
+
+    OK = 'ok'
+    TRIGGERED = 'triggered'
+    UNKNOWN = 'unknown'
+
+
+@dataclass
+class LegacyQuery:
+    can_edit: Optional[bool] = None
+    """Describes whether the authenticated user is allowed to edit the definition of this query."""
+
+    created_at: Optional[str] = None
+    """The timestamp when this query was created."""
+
+    data_source_id: Optional[str] = None
+    """Data source ID maps to the ID of the data source used by the resource and is distinct from the
+    warehouse ID. [Learn more]
+    
+    [Learn more]: https://docs.databricks.com/api/workspace/datasources/list"""
+
+    description: Optional[str] = None
+    """General description that conveys additional information about this query such as usage notes."""
+
+    id: Optional[str] = None
+    """Query ID."""
+
+    is_archived: Optional[bool] = None
+    """Indicates whether the query is trashed. Trashed queries can't be used in dashboards, or appear
+    in search results. If this boolean is `true`, the `options` property for this query includes a
+    `moved_to_trash_at` timestamp. Trashed queries are permanently deleted after 30 days."""
+
+    is_draft: Optional[bool] = None
+    """Whether the query is a draft. Draft queries only appear in list views for their owners.
+    Visualizations from draft queries cannot appear on dashboards."""
+
+    is_favorite: Optional[bool] = None
+    """Whether this query object appears in the current user's favorites list. This flag determines
+    whether the star icon for favorites is selected."""
+
+    is_safe: Optional[bool] = None
+    """Text parameter types are not safe from SQL injection for all types of data source. Set this
+    Boolean parameter to `true` if a query either does not use any text type parameters or uses a
+    data source type where text type parameters are handled safely."""
+
+    last_modified_by: Optional[User] = None
+
+    last_modified_by_id: Optional[int] = None
+    """The ID of the user who last saved changes to this query."""
+
+    latest_query_data_id: Optional[str] = None
+    """If there is a cached result for this query and user, this field includes the query result ID. If
+    this query uses parameters, this field is always null."""
+
+    name: Optional[str] = None
+    """The title of this query that appears in list views, widget headings, and on the query page."""
+
+    options: Optional[QueryOptions] = None
+
+    parent: Optional[str] = None
+    """The identifier of the workspace folder containing the object."""
+
+    permission_tier: Optional[PermissionLevel] = None
+    """* `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_EDIT`: Can edit the query
+    * `CAN_MANAGE`: Can manage the query"""
+
+    query: Optional[str] = None
+    """The text of the query to be run."""
+
+    query_hash: Optional[str] = None
+    """A SHA-256 hash of the query text along with the authenticated user ID."""
+
+    run_as_role: Optional[RunAsRole] = None
+    """Sets the **Run as** role for the object. Must be set to one of `"viewer"` (signifying "run as
+    viewer" behavior) or `"owner"` (signifying "run as owner" behavior)"""
+
+    tags: Optional[List[str]] = None
+
+    updated_at: Optional[str] = None
+    """The timestamp at which this query was last updated."""
+
+    user: Optional[User] = None
+
+    user_id: Optional[int] = None
+    """The ID of the user who owns the query."""
+
+    visualizations: Optional[List[LegacyVisualization]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the LegacyQuery into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.can_edit is not None: body['can_edit'] = self.can_edit
+        if self.created_at is not None: body['created_at'] = self.created_at
+        if self.data_source_id is not None: body['data_source_id'] = self.data_source_id
+        if self.description is not None: body['description'] = self.description
+        if self.id is not None: body['id'] = self.id
+        if self.is_archived is not None: body['is_archived'] = self.is_archived
+        if self.is_draft is not None: body['is_draft'] = self.is_draft
+        if self.is_favorite is not None: body['is_favorite'] = self.is_favorite
+        if self.is_safe is not None: body['is_safe'] = self.is_safe
+        if self.last_modified_by: body['last_modified_by'] = self.last_modified_by.as_dict()
+        if self.last_modified_by_id is not None: body['last_modified_by_id'] = self.last_modified_by_id
+        if self.latest_query_data_id is not None: body['latest_query_data_id'] = self.latest_query_data_id
+        if self.name is not None: body['name'] = self.name
+        if self.options: body['options'] = self.options.as_dict()
+        if self.parent is not None: body['parent'] = self.parent
+        if self.permission_tier is not None: body['permission_tier'] = self.permission_tier.value
+        if self.query is not None: body['query'] = self.query
+        if self.query_hash is not None: body['query_hash'] = self.query_hash
+        if self.run_as_role is not None: body['run_as_role'] = self.run_as_role.value
+        if self.tags: body['tags'] = [v for v in self.tags]
+        if self.updated_at is not None: body['updated_at'] = self.updated_at
+        if self.user: body['user'] = self.user.as_dict()
+        if self.user_id is not None: body['user_id'] = self.user_id
+        if self.visualizations: body['visualizations'] = [v.as_dict() for v in self.visualizations]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> LegacyQuery:
+        """Deserializes the LegacyQuery from a dictionary."""
+        return cls(can_edit=d.get('can_edit', None),
+                   created_at=d.get('created_at', None),
+                   data_source_id=d.get('data_source_id', None),
+                   description=d.get('description', None),
+                   id=d.get('id', None),
+                   is_archived=d.get('is_archived', None),
+                   is_draft=d.get('is_draft', None),
+                   is_favorite=d.get('is_favorite', None),
+                   is_safe=d.get('is_safe', None),
+                   last_modified_by=_from_dict(d, 'last_modified_by', User),
+                   last_modified_by_id=d.get('last_modified_by_id', None),
+                   latest_query_data_id=d.get('latest_query_data_id', None),
+                   name=d.get('name', None),
+                   options=_from_dict(d, 'options', QueryOptions),
+                   parent=d.get('parent', None),
+                   permission_tier=_enum(d, 'permission_tier', PermissionLevel),
+                   query=d.get('query', None),
+                   query_hash=d.get('query_hash', None),
+                   run_as_role=_enum(d, 'run_as_role', RunAsRole),
+                   tags=d.get('tags', None),
+                   updated_at=d.get('updated_at', None),
+                   user=_from_dict(d, 'user', User),
+                   user_id=d.get('user_id', None),
+                   visualizations=_repeated_dict(d, 'visualizations', LegacyVisualization))
+
+
+@dataclass
+class LegacyVisualization:
+    """The visualization description API changes frequently and is unsupported. You can duplicate a
+    visualization by copying description objects received _from the API_ and then using them to
+    create a new one with a POST request to the same endpoint. Databricks does not recommend
+    constructing ad-hoc visualizations entirely in JSON."""
+
+    created_at: Optional[str] = None
+
+    description: Optional[str] = None
+    """A short description of this visualization. This is not displayed in the UI."""
+
+    id: Optional[str] = None
+    """The UUID for this visualization."""
+
+    name: Optional[str] = None
+    """The name of the visualization that appears on dashboards and the query screen."""
+
+    options: Optional[Any] = None
+    """The options object varies widely from one visualization type to the next and is unsupported.
+    Databricks does not recommend modifying visualization settings in JSON."""
+
+    query: Optional[LegacyQuery] = None
+
+    type: Optional[str] = None
+    """The type of visualization: chart, table, pivot table, and so on."""
+
+    updated_at: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the LegacyVisualization into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.created_at is not None: body['created_at'] = self.created_at
+        if self.description is not None: body['description'] = self.description
+        if self.id is not None: body['id'] = self.id
+        if self.name is not None: body['name'] = self.name
+        if self.options: body['options'] = self.options
+        if self.query: body['query'] = self.query.as_dict()
+        if self.type is not None: body['type'] = self.type
+        if self.updated_at is not None: body['updated_at'] = self.updated_at
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> LegacyVisualization:
+        """Deserializes the LegacyVisualization from a dictionary."""
+        return cls(created_at=d.get('created_at', None),
+                   description=d.get('description', None),
+                   id=d.get('id', None),
+                   name=d.get('name', None),
+                   options=d.get('options', None),
+                   query=_from_dict(d, 'query', LegacyQuery),
+                   type=d.get('type', None),
+                   updated_at=d.get('updated_at', None))
+
+
+class LifecycleState(Enum):
+
+    ACTIVE = 'ACTIVE'
+    TRASHED = 'TRASHED'
+
+
+@dataclass
+class ListAlertsResponse:
+    next_page_token: Optional[str] = None
+
+    results: Optional[List[ListAlertsResponseAlert]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ListAlertsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.results: body['results'] = [v.as_dict() for v in self.results]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ListAlertsResponse:
+        """Deserializes the ListAlertsResponse from a dictionary."""
+        return cls(next_page_token=d.get('next_page_token', None),
+                   results=_repeated_dict(d, 'results', ListAlertsResponseAlert))
+
+
+@dataclass
+class ListAlertsResponseAlert:
+    condition: Optional[AlertCondition] = None
+    """Trigger conditions of the alert."""
+
+    create_time: Optional[str] = None
+    """The timestamp indicating when the alert was created."""
+
+    custom_body: Optional[str] = None
+    """Custom body of alert notification, if it exists. See [here] for custom templating instructions.
+    
+    [here]: https://docs.databricks.com/sql/user/alerts/index.html"""
+
+    custom_subject: Optional[str] = None
+    """Custom subject of alert notification, if it exists. This can include email subject entries and
+    Slack notification headers, for example. See [here] for custom templating instructions.
+    
+    [here]: https://docs.databricks.com/sql/user/alerts/index.html"""
+
+    display_name: Optional[str] = None
+    """The display name of the alert."""
+
+    id: Optional[str] = None
+    """UUID identifying the alert."""
+
+    lifecycle_state: Optional[LifecycleState] = None
+    """The workspace state of the alert. Used for tracking trashed status."""
+
+    notify_on_ok: Optional[bool] = None
+    """Whether to notify alert subscribers when alert returns back to normal."""
+
+    owner_user_name: Optional[str] = None
+    """The owner's username. This field is set to "Unavailable" if the user has been deleted."""
+
+    query_id: Optional[str] = None
+    """UUID of the query attached to the alert."""
+
+    seconds_to_retrigger: Optional[int] = None
+    """Number of seconds an alert must wait after being triggered to rearm itself. After rearming, it
+    can be triggered again. If 0 or not specified, the alert will not be triggered again."""
+
+    state: Optional[AlertState] = None
+    """Current state of the alert's trigger status. This field is set to UNKNOWN if the alert has not
+    yet been evaluated or ran into an error during the last evaluation."""
+
+    trigger_time: Optional[str] = None
+    """Timestamp when the alert was last triggered, if the alert has been triggered before."""
+
+    update_time: Optional[str] = None
+    """The timestamp indicating when the alert was updated."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListAlertsResponseAlert into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.condition: body['condition'] = self.condition.as_dict()
+        if self.create_time is not None: body['create_time'] = self.create_time
+        if self.custom_body is not None: body['custom_body'] = self.custom_body
+        if self.custom_subject is not None: body['custom_subject'] = self.custom_subject
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.id is not None: body['id'] = self.id
+        if self.lifecycle_state is not None: body['lifecycle_state'] = self.lifecycle_state.value
+        if self.notify_on_ok is not None: body['notify_on_ok'] = self.notify_on_ok
+        if self.owner_user_name is not None: body['owner_user_name'] = self.owner_user_name
+        if self.query_id is not None: body['query_id'] = self.query_id
+        if self.seconds_to_retrigger is not None: body['seconds_to_retrigger'] = self.seconds_to_retrigger
+        if self.state is not None: body['state'] = self.state.value
+        if self.trigger_time is not None: body['trigger_time'] = self.trigger_time
+        if self.update_time is not None: body['update_time'] = self.update_time
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ListAlertsResponseAlert:
+        """Deserializes the ListAlertsResponseAlert from a dictionary."""
+        return cls(condition=_from_dict(d, 'condition', AlertCondition),
+                   create_time=d.get('create_time', None),
+                   custom_body=d.get('custom_body', None),
+                   custom_subject=d.get('custom_subject', None),
+                   display_name=d.get('display_name', None),
+                   id=d.get('id', None),
+                   lifecycle_state=_enum(d, 'lifecycle_state', LifecycleState),
+                   notify_on_ok=d.get('notify_on_ok', None),
+                   owner_user_name=d.get('owner_user_name', None),
+                   query_id=d.get('query_id', None),
+                   seconds_to_retrigger=d.get('seconds_to_retrigger', None),
+                   state=_enum(d, 'state', AlertState),
+                   trigger_time=d.get('trigger_time', None),
+                   update_time=d.get('update_time', None))
+
+
 class ListOrder(Enum):
 
     CREATED_AT = 'created_at'
@@ -2017,6 +2797,118 @@ class ListQueriesResponse:
         return cls(has_next_page=d.get('has_next_page', None),
                    next_page_token=d.get('next_page_token', None),
                    res=_repeated_dict(d, 'res', QueryInfo))
+
+
+@dataclass
+class ListQueryObjectsResponse:
+    next_page_token: Optional[str] = None
+
+    results: Optional[List[ListQueryObjectsResponseQuery]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ListQueryObjectsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.results: body['results'] = [v.as_dict() for v in self.results]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ListQueryObjectsResponse:
+        """Deserializes the ListQueryObjectsResponse from a dictionary."""
+        return cls(next_page_token=d.get('next_page_token', None),
+                   results=_repeated_dict(d, 'results', ListQueryObjectsResponseQuery))
+
+
+@dataclass
+class ListQueryObjectsResponseQuery:
+    apply_auto_limit: Optional[bool] = None
+    """Whether to apply a 1000 row limit to the query result."""
+
+    catalog: Optional[str] = None
+    """Name of the catalog where this query will be executed."""
+
+    create_time: Optional[str] = None
+    """Timestamp when this query was created."""
+
+    description: Optional[str] = None
+    """General description that conveys additional information about this query such as usage notes."""
+
+    display_name: Optional[str] = None
+    """Display name of the query that appears in list views, widget headings, and on the query page."""
+
+    id: Optional[str] = None
+    """UUID identifying the query."""
+
+    last_modifier_user_name: Optional[str] = None
+    """Username of the user who last saved changes to this query."""
+
+    lifecycle_state: Optional[LifecycleState] = None
+    """Indicates whether the query is trashed."""
+
+    owner_user_name: Optional[str] = None
+    """Username of the user that owns the query."""
+
+    parameters: Optional[List[QueryParameter]] = None
+    """List of query parameter definitions."""
+
+    query_text: Optional[str] = None
+    """Text of the query to be run."""
+
+    run_as_mode: Optional[RunAsMode] = None
+    """Sets the "Run as" role for the object."""
+
+    schema: Optional[str] = None
+    """Name of the schema where this query will be executed."""
+
+    tags: Optional[List[str]] = None
+
+    update_time: Optional[str] = None
+    """Timestamp when this query was last updated."""
+
+    warehouse_id: Optional[str] = None
+    """ID of the SQL warehouse attached to the query."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListQueryObjectsResponseQuery into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.apply_auto_limit is not None: body['apply_auto_limit'] = self.apply_auto_limit
+        if self.catalog is not None: body['catalog'] = self.catalog
+        if self.create_time is not None: body['create_time'] = self.create_time
+        if self.description is not None: body['description'] = self.description
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.id is not None: body['id'] = self.id
+        if self.last_modifier_user_name is not None:
+            body['last_modifier_user_name'] = self.last_modifier_user_name
+        if self.lifecycle_state is not None: body['lifecycle_state'] = self.lifecycle_state.value
+        if self.owner_user_name is not None: body['owner_user_name'] = self.owner_user_name
+        if self.parameters: body['parameters'] = [v.as_dict() for v in self.parameters]
+        if self.query_text is not None: body['query_text'] = self.query_text
+        if self.run_as_mode is not None: body['run_as_mode'] = self.run_as_mode.value
+        if self.schema is not None: body['schema'] = self.schema
+        if self.tags: body['tags'] = [v for v in self.tags]
+        if self.update_time is not None: body['update_time'] = self.update_time
+        if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ListQueryObjectsResponseQuery:
+        """Deserializes the ListQueryObjectsResponseQuery from a dictionary."""
+        return cls(apply_auto_limit=d.get('apply_auto_limit', None),
+                   catalog=d.get('catalog', None),
+                   create_time=d.get('create_time', None),
+                   description=d.get('description', None),
+                   display_name=d.get('display_name', None),
+                   id=d.get('id', None),
+                   last_modifier_user_name=d.get('last_modifier_user_name', None),
+                   lifecycle_state=_enum(d, 'lifecycle_state', LifecycleState),
+                   owner_user_name=d.get('owner_user_name', None),
+                   parameters=_repeated_dict(d, 'parameters', QueryParameter),
+                   query_text=d.get('query_text', None),
+                   run_as_mode=_enum(d, 'run_as_mode', RunAsMode),
+                   schema=d.get('schema', None),
+                   tags=d.get('tags', None),
+                   update_time=d.get('update_time', None),
+                   warehouse_id=d.get('warehouse_id', None))
 
 
 @dataclass
@@ -2052,6 +2944,26 @@ class ListResponse:
 
 
 @dataclass
+class ListVisualizationsForQueryResponse:
+    next_page_token: Optional[str] = None
+
+    results: Optional[List[Visualization]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ListVisualizationsForQueryResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.results: body['results'] = [v.as_dict() for v in self.results]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ListVisualizationsForQueryResponse:
+        """Deserializes the ListVisualizationsForQueryResponse from a dictionary."""
+        return cls(next_page_token=d.get('next_page_token', None),
+                   results=_repeated_dict(d, 'results', Visualization))
+
+
+@dataclass
 class ListWarehousesResponse:
     warehouses: Optional[List[EndpointInfo]] = None
     """A list of warehouses and their configurations."""
@@ -2070,9 +2982,6 @@ class ListWarehousesResponse:
 
 @dataclass
 class MultiValuesOptions:
-    """If specified, allows multiple values to be selected for this parameter. Only applies to dropdown
-    list and query-based dropdown list parameters."""
-
     prefix: Optional[str] = None
     """Character that prefixes each selected parameter value."""
 
@@ -2096,6 +3005,22 @@ class MultiValuesOptions:
         return cls(prefix=d.get('prefix', None),
                    separator=d.get('separator', None),
                    suffix=d.get('suffix', None))
+
+
+@dataclass
+class NumericValue:
+    value: Optional[float] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the NumericValue into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.value is not None: body['value'] = self.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> NumericValue:
+        """Deserializes the NumericValue from a dictionary."""
+        return cls(value=d.get('value', None))
 
 
 class ObjectType(Enum):
@@ -2222,7 +3147,7 @@ class PermissionLevel(Enum):
 
 
 class PlansState(Enum):
-    """Whether plans exist for the execution, or the reason why they are missing"""
+    """Possible Reasons for which we have not saved plans in the database"""
 
     EMPTY = 'EMPTY'
     EXISTS = 'EXISTS'
@@ -2234,141 +3159,126 @@ class PlansState(Enum):
 
 @dataclass
 class Query:
-    can_edit: Optional[bool] = None
-    """Describes whether the authenticated user is allowed to edit the definition of this query."""
+    apply_auto_limit: Optional[bool] = None
+    """Whether to apply a 1000 row limit to the query result."""
 
-    created_at: Optional[str] = None
-    """The timestamp when this query was created."""
+    catalog: Optional[str] = None
+    """Name of the catalog where this query will be executed."""
 
-    data_source_id: Optional[str] = None
-    """Data source ID maps to the ID of the data source used by the resource and is distinct from the
-    warehouse ID. [Learn more]
-    
-    [Learn more]: https://docs.databricks.com/api/workspace/datasources/list"""
+    create_time: Optional[str] = None
+    """Timestamp when this query was created."""
 
     description: Optional[str] = None
     """General description that conveys additional information about this query such as usage notes."""
 
+    display_name: Optional[str] = None
+    """Display name of the query that appears in list views, widget headings, and on the query page."""
+
     id: Optional[str] = None
-    """Query ID."""
+    """UUID identifying the query."""
 
-    is_archived: Optional[bool] = None
-    """Indicates whether the query is trashed. Trashed queries can't be used in dashboards, or appear
-    in search results. If this boolean is `true`, the `options` property for this query includes a
-    `moved_to_trash_at` timestamp. Trashed queries are permanently deleted after 30 days."""
+    last_modifier_user_name: Optional[str] = None
+    """Username of the user who last saved changes to this query."""
 
-    is_draft: Optional[bool] = None
-    """Whether the query is a draft. Draft queries only appear in list views for their owners.
-    Visualizations from draft queries cannot appear on dashboards."""
+    lifecycle_state: Optional[LifecycleState] = None
+    """Indicates whether the query is trashed."""
 
-    is_favorite: Optional[bool] = None
-    """Whether this query object appears in the current user's favorites list. This flag determines
-    whether the star icon for favorites is selected."""
+    owner_user_name: Optional[str] = None
+    """Username of the user that owns the query."""
 
-    is_safe: Optional[bool] = None
-    """Text parameter types are not safe from SQL injection for all types of data source. Set this
-    Boolean parameter to `true` if a query either does not use any text type parameters or uses a
-    data source type where text type parameters are handled safely."""
+    parameters: Optional[List[QueryParameter]] = None
+    """List of query parameter definitions."""
 
-    last_modified_by: Optional[User] = None
+    parent_path: Optional[str] = None
+    """Workspace path of the workspace folder containing the object."""
 
-    last_modified_by_id: Optional[int] = None
-    """The ID of the user who last saved changes to this query."""
+    query_text: Optional[str] = None
+    """Text of the query to be run."""
 
-    latest_query_data_id: Optional[str] = None
-    """If there is a cached result for this query and user, this field includes the query result ID. If
-    this query uses parameters, this field is always null."""
+    run_as_mode: Optional[RunAsMode] = None
+    """Sets the "Run as" role for the object."""
 
-    name: Optional[str] = None
-    """The title of this query that appears in list views, widget headings, and on the query page."""
-
-    options: Optional[QueryOptions] = None
-
-    parent: Optional[str] = None
-    """The identifier of the workspace folder containing the object."""
-
-    permission_tier: Optional[PermissionLevel] = None
-    """* `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_EDIT`: Can edit the query
-    * `CAN_MANAGE`: Can manage the query"""
-
-    query: Optional[str] = None
-    """The text of the query to be run."""
-
-    query_hash: Optional[str] = None
-    """A SHA-256 hash of the query text along with the authenticated user ID."""
-
-    run_as_role: Optional[RunAsRole] = None
-    """Sets the **Run as** role for the object. Must be set to one of `"viewer"` (signifying "run as
-    viewer" behavior) or `"owner"` (signifying "run as owner" behavior)"""
+    schema: Optional[str] = None
+    """Name of the schema where this query will be executed."""
 
     tags: Optional[List[str]] = None
 
-    updated_at: Optional[str] = None
-    """The timestamp at which this query was last updated."""
+    update_time: Optional[str] = None
+    """Timestamp when this query was last updated."""
 
-    user: Optional[User] = None
-
-    user_id: Optional[int] = None
-    """The ID of the user who owns the query."""
-
-    visualizations: Optional[List[Visualization]] = None
+    warehouse_id: Optional[str] = None
+    """ID of the SQL warehouse attached to the query."""
 
     def as_dict(self) -> dict:
         """Serializes the Query into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.can_edit is not None: body['can_edit'] = self.can_edit
-        if self.created_at is not None: body['created_at'] = self.created_at
-        if self.data_source_id is not None: body['data_source_id'] = self.data_source_id
+        if self.apply_auto_limit is not None: body['apply_auto_limit'] = self.apply_auto_limit
+        if self.catalog is not None: body['catalog'] = self.catalog
+        if self.create_time is not None: body['create_time'] = self.create_time
         if self.description is not None: body['description'] = self.description
+        if self.display_name is not None: body['display_name'] = self.display_name
         if self.id is not None: body['id'] = self.id
-        if self.is_archived is not None: body['is_archived'] = self.is_archived
-        if self.is_draft is not None: body['is_draft'] = self.is_draft
-        if self.is_favorite is not None: body['is_favorite'] = self.is_favorite
-        if self.is_safe is not None: body['is_safe'] = self.is_safe
-        if self.last_modified_by: body['last_modified_by'] = self.last_modified_by.as_dict()
-        if self.last_modified_by_id is not None: body['last_modified_by_id'] = self.last_modified_by_id
-        if self.latest_query_data_id is not None: body['latest_query_data_id'] = self.latest_query_data_id
-        if self.name is not None: body['name'] = self.name
-        if self.options: body['options'] = self.options.as_dict()
-        if self.parent is not None: body['parent'] = self.parent
-        if self.permission_tier is not None: body['permission_tier'] = self.permission_tier.value
-        if self.query is not None: body['query'] = self.query
-        if self.query_hash is not None: body['query_hash'] = self.query_hash
-        if self.run_as_role is not None: body['run_as_role'] = self.run_as_role.value
+        if self.last_modifier_user_name is not None:
+            body['last_modifier_user_name'] = self.last_modifier_user_name
+        if self.lifecycle_state is not None: body['lifecycle_state'] = self.lifecycle_state.value
+        if self.owner_user_name is not None: body['owner_user_name'] = self.owner_user_name
+        if self.parameters: body['parameters'] = [v.as_dict() for v in self.parameters]
+        if self.parent_path is not None: body['parent_path'] = self.parent_path
+        if self.query_text is not None: body['query_text'] = self.query_text
+        if self.run_as_mode is not None: body['run_as_mode'] = self.run_as_mode.value
+        if self.schema is not None: body['schema'] = self.schema
         if self.tags: body['tags'] = [v for v in self.tags]
-        if self.updated_at is not None: body['updated_at'] = self.updated_at
-        if self.user: body['user'] = self.user.as_dict()
-        if self.user_id is not None: body['user_id'] = self.user_id
-        if self.visualizations: body['visualizations'] = [v.as_dict() for v in self.visualizations]
+        if self.update_time is not None: body['update_time'] = self.update_time
+        if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> Query:
         """Deserializes the Query from a dictionary."""
-        return cls(can_edit=d.get('can_edit', None),
-                   created_at=d.get('created_at', None),
-                   data_source_id=d.get('data_source_id', None),
+        return cls(apply_auto_limit=d.get('apply_auto_limit', None),
+                   catalog=d.get('catalog', None),
+                   create_time=d.get('create_time', None),
                    description=d.get('description', None),
+                   display_name=d.get('display_name', None),
                    id=d.get('id', None),
-                   is_archived=d.get('is_archived', None),
-                   is_draft=d.get('is_draft', None),
-                   is_favorite=d.get('is_favorite', None),
-                   is_safe=d.get('is_safe', None),
-                   last_modified_by=_from_dict(d, 'last_modified_by', User),
-                   last_modified_by_id=d.get('last_modified_by_id', None),
-                   latest_query_data_id=d.get('latest_query_data_id', None),
-                   name=d.get('name', None),
-                   options=_from_dict(d, 'options', QueryOptions),
-                   parent=d.get('parent', None),
-                   permission_tier=_enum(d, 'permission_tier', PermissionLevel),
-                   query=d.get('query', None),
-                   query_hash=d.get('query_hash', None),
-                   run_as_role=_enum(d, 'run_as_role', RunAsRole),
+                   last_modifier_user_name=d.get('last_modifier_user_name', None),
+                   lifecycle_state=_enum(d, 'lifecycle_state', LifecycleState),
+                   owner_user_name=d.get('owner_user_name', None),
+                   parameters=_repeated_dict(d, 'parameters', QueryParameter),
+                   parent_path=d.get('parent_path', None),
+                   query_text=d.get('query_text', None),
+                   run_as_mode=_enum(d, 'run_as_mode', RunAsMode),
+                   schema=d.get('schema', None),
                    tags=d.get('tags', None),
-                   updated_at=d.get('updated_at', None),
-                   user=_from_dict(d, 'user', User),
-                   user_id=d.get('user_id', None),
-                   visualizations=_repeated_dict(d, 'visualizations', Visualization))
+                   update_time=d.get('update_time', None),
+                   warehouse_id=d.get('warehouse_id', None))
+
+
+@dataclass
+class QueryBackedValue:
+    multi_values_options: Optional[MultiValuesOptions] = None
+    """If specified, allows multiple values to be selected for this parameter."""
+
+    query_id: Optional[str] = None
+    """UUID of the query that provides the parameter values."""
+
+    values: Optional[List[str]] = None
+    """List of selected query parameter values."""
+
+    def as_dict(self) -> dict:
+        """Serializes the QueryBackedValue into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.multi_values_options: body['multi_values_options'] = self.multi_values_options.as_dict()
+        if self.query_id is not None: body['query_id'] = self.query_id
+        if self.values: body['values'] = [v for v in self.values]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> QueryBackedValue:
+        """Deserializes the QueryBackedValue from a dictionary."""
+        return cls(multi_values_options=_from_dict(d, 'multi_values_options', MultiValuesOptions),
+                   query_id=d.get('query_id', None),
+                   values=d.get('values', None))
 
 
 @dataclass
@@ -2429,9 +3339,8 @@ class QueryEditContent:
 
 @dataclass
 class QueryFilter:
-    """A filter to limit query history results. This field is optional."""
-
     query_start_time_range: Optional[TimeRange] = None
+    """A range filter for query submitted time. The time range must be <= 30 days."""
 
     statement_ids: Optional[List[str]] = None
     """A list of statement IDs."""
@@ -2466,11 +3375,8 @@ class QueryFilter:
 
 @dataclass
 class QueryInfo:
-    can_subscribe_to_live_query: Optional[bool] = None
-    """Reserved for internal use."""
-
     channel_used: Optional[ChannelInfo] = None
-    """Channel information for the SQL warehouse at the time of query execution"""
+    """SQL Warehouse channel information at the time of query execution"""
 
     duration: Optional[int] = None
     """Total execution time of the statement ( excluding result fetch time )."""
@@ -2518,15 +3424,17 @@ class QueryInfo:
     """The number of results returned by the query."""
 
     spark_ui_url: Optional[str] = None
-    """URL to the query plan."""
+    """URL to the Spark UI query plan."""
 
     statement_type: Optional[QueryStatementType] = None
     """Type of statement for this query"""
 
     status: Optional[QueryStatus] = None
-    """Query status with one the following values: * `QUEUED`: Query has been received and queued. *
-    `RUNNING`: Query has started. * `CANCELED`: Query has been cancelled by the user. * `FAILED`:
-    Query has failed. * `FINISHED`: Query has completed."""
+    """Query status with one the following values:
+    
+    - `QUEUED`: Query has been received and queued. - `RUNNING`: Query has started. - `CANCELED`:
+    Query has been cancelled by the user. - `FAILED`: Query has failed. - `FINISHED`: Query has
+    completed."""
 
     user_id: Optional[int] = None
     """The ID of the user who ran the query."""
@@ -2540,8 +3448,6 @@ class QueryInfo:
     def as_dict(self) -> dict:
         """Serializes the QueryInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.can_subscribe_to_live_query is not None:
-            body['canSubscribeToLiveQuery'] = self.can_subscribe_to_live_query
         if self.channel_used: body['channel_used'] = self.channel_used.as_dict()
         if self.duration is not None: body['duration'] = self.duration
         if self.endpoint_id is not None: body['endpoint_id'] = self.endpoint_id
@@ -2569,8 +3475,7 @@ class QueryInfo:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> QueryInfo:
         """Deserializes the QueryInfo from a dictionary."""
-        return cls(can_subscribe_to_live_query=d.get('canSubscribeToLiveQuery', None),
-                   channel_used=_from_dict(d, 'channel_used', ChannelInfo),
+        return cls(channel_used=_from_dict(d, 'channel_used', ChannelInfo),
                    duration=d.get('duration', None),
                    endpoint_id=d.get('endpoint_id', None),
                    error_message=d.get('error_message', None),
@@ -2605,7 +3510,7 @@ class QueryList:
     page_size: Optional[int] = None
     """The number of queries per page."""
 
-    results: Optional[List[Query]] = None
+    results: Optional[List[LegacyQuery]] = None
     """List of queries returned."""
 
     def as_dict(self) -> dict:
@@ -2623,21 +3528,19 @@ class QueryList:
         return cls(count=d.get('count', None),
                    page=d.get('page', None),
                    page_size=d.get('page_size', None),
-                   results=_repeated_dict(d, 'results', Query))
+                   results=_repeated_dict(d, 'results', LegacyQuery))
 
 
 @dataclass
 class QueryMetrics:
-    """Metrics about query execution."""
+    """A query metric that encapsulates a set of measurements for a single query. Metrics come from the
+    driver and are stored in the history service database."""
 
     compilation_time_ms: Optional[int] = None
     """Time spent loading metadata and optimizing the query, in milliseconds."""
 
     execution_time_ms: Optional[int] = None
     """Time spent executing the query, in milliseconds."""
-
-    metadata_time_ms: Optional[int] = None
-    """Reserved for internal use."""
 
     network_sent_bytes: Optional[int] = None
     """Total amount of data sent over the network between executor nodes during shuffle, in bytes."""
@@ -2648,9 +3551,6 @@ class QueryMetrics:
 
     photon_total_time_ms: Optional[int] = None
     """Total execution time for all individual Photon query engine tasks in the query, in milliseconds."""
-
-    planning_time_ms: Optional[int] = None
-    """Reserved for internal use."""
 
     provisioning_queue_start_timestamp: Optional[int] = None
     """Timestamp of when the query was enqueued waiting for a cluster to be provisioned for the
@@ -2666,9 +3566,6 @@ class QueryMetrics:
     query_compilation_start_timestamp: Optional[int] = None
     """Timestamp of when the underlying compute started compilation of the query."""
 
-    query_execution_time_ms: Optional[int] = None
-    """Reserved for internal use."""
-
     read_bytes: Optional[int] = None
     """Total size of data read by the query, in bytes."""
 
@@ -2676,7 +3573,7 @@ class QueryMetrics:
     """Size of persistent data read from the cache, in bytes."""
 
     read_files_count: Optional[int] = None
-    """Number of files read after pruning."""
+    """Number of files read after pruning"""
 
     read_partitions_count: Optional[int] = None
     """Number of partitions read after pruning."""
@@ -2688,7 +3585,7 @@ class QueryMetrics:
     """Time spent fetching the query results after the execution finished, in milliseconds."""
 
     result_from_cache: Optional[bool] = None
-    """true if the query result was fetched from cache, false otherwise."""
+    """`true` if the query result was fetched from cache, `false` otherwise."""
 
     rows_produced_count: Optional[int] = None
     """Total number of rows returned by the query."""
@@ -2713,20 +3610,16 @@ class QueryMetrics:
         body = {}
         if self.compilation_time_ms is not None: body['compilation_time_ms'] = self.compilation_time_ms
         if self.execution_time_ms is not None: body['execution_time_ms'] = self.execution_time_ms
-        if self.metadata_time_ms is not None: body['metadata_time_ms'] = self.metadata_time_ms
         if self.network_sent_bytes is not None: body['network_sent_bytes'] = self.network_sent_bytes
         if self.overloading_queue_start_timestamp is not None:
             body['overloading_queue_start_timestamp'] = self.overloading_queue_start_timestamp
         if self.photon_total_time_ms is not None: body['photon_total_time_ms'] = self.photon_total_time_ms
-        if self.planning_time_ms is not None: body['planning_time_ms'] = self.planning_time_ms
         if self.provisioning_queue_start_timestamp is not None:
             body['provisioning_queue_start_timestamp'] = self.provisioning_queue_start_timestamp
         if self.pruned_bytes is not None: body['pruned_bytes'] = self.pruned_bytes
         if self.pruned_files_count is not None: body['pruned_files_count'] = self.pruned_files_count
         if self.query_compilation_start_timestamp is not None:
             body['query_compilation_start_timestamp'] = self.query_compilation_start_timestamp
-        if self.query_execution_time_ms is not None:
-            body['query_execution_time_ms'] = self.query_execution_time_ms
         if self.read_bytes is not None: body['read_bytes'] = self.read_bytes
         if self.read_cache_bytes is not None: body['read_cache_bytes'] = self.read_cache_bytes
         if self.read_files_count is not None: body['read_files_count'] = self.read_files_count
@@ -2747,16 +3640,13 @@ class QueryMetrics:
         """Deserializes the QueryMetrics from a dictionary."""
         return cls(compilation_time_ms=d.get('compilation_time_ms', None),
                    execution_time_ms=d.get('execution_time_ms', None),
-                   metadata_time_ms=d.get('metadata_time_ms', None),
                    network_sent_bytes=d.get('network_sent_bytes', None),
                    overloading_queue_start_timestamp=d.get('overloading_queue_start_timestamp', None),
                    photon_total_time_ms=d.get('photon_total_time_ms', None),
-                   planning_time_ms=d.get('planning_time_ms', None),
                    provisioning_queue_start_timestamp=d.get('provisioning_queue_start_timestamp', None),
                    pruned_bytes=d.get('pruned_bytes', None),
                    pruned_files_count=d.get('pruned_files_count', None),
                    query_compilation_start_timestamp=d.get('query_compilation_start_timestamp', None),
-                   query_execution_time_ms=d.get('query_execution_time_ms', None),
                    read_bytes=d.get('read_bytes', None),
                    read_cache_bytes=d.get('read_cache_bytes', None),
                    read_files_count=d.get('read_files_count', None),
@@ -2802,6 +3692,59 @@ class QueryOptions:
                    moved_to_trash_at=d.get('moved_to_trash_at', None),
                    parameters=_repeated_dict(d, 'parameters', Parameter),
                    schema=d.get('schema', None))
+
+
+@dataclass
+class QueryParameter:
+    date_range_value: Optional[DateRangeValue] = None
+    """Date-range query parameter value. Can only specify one of `dynamic_date_range_value` or
+    `date_range_value`."""
+
+    date_value: Optional[DateValue] = None
+    """Date query parameter value. Can only specify one of `dynamic_date_value` or `date_value`."""
+
+    enum_value: Optional[EnumValue] = None
+    """Dropdown query parameter value."""
+
+    name: Optional[str] = None
+    """Literal parameter marker that appears between double curly braces in the query text."""
+
+    numeric_value: Optional[NumericValue] = None
+    """Numeric query parameter value."""
+
+    query_backed_value: Optional[QueryBackedValue] = None
+    """Query-based dropdown query parameter value."""
+
+    text_value: Optional[TextValue] = None
+    """Text query parameter value."""
+
+    title: Optional[str] = None
+    """Text displayed in the user-facing parameter widget in the UI."""
+
+    def as_dict(self) -> dict:
+        """Serializes the QueryParameter into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.date_range_value: body['date_range_value'] = self.date_range_value.as_dict()
+        if self.date_value: body['date_value'] = self.date_value.as_dict()
+        if self.enum_value: body['enum_value'] = self.enum_value.as_dict()
+        if self.name is not None: body['name'] = self.name
+        if self.numeric_value: body['numeric_value'] = self.numeric_value.as_dict()
+        if self.query_backed_value: body['query_backed_value'] = self.query_backed_value.as_dict()
+        if self.text_value: body['text_value'] = self.text_value.as_dict()
+        if self.title is not None: body['title'] = self.title
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> QueryParameter:
+        """Deserializes the QueryParameter from a dictionary."""
+        return cls(date_range_value=_from_dict(d, 'date_range_value', DateRangeValue),
+                   date_value=_from_dict(d, 'date_value', DateValue),
+                   enum_value=_from_dict(d, 'enum_value', EnumValue),
+                   name=d.get('name', None),
+                   numeric_value=_from_dict(d, 'numeric_value', NumericValue),
+                   query_backed_value=_from_dict(d, 'query_backed_value', QueryBackedValue),
+                   text_value=_from_dict(d, 'text_value', TextValue),
+                   title=d.get('title', None))
 
 
 @dataclass
@@ -2862,7 +3805,6 @@ class QueryPostContent:
 
 
 class QueryStatementType(Enum):
-    """Type of statement for this query"""
 
     ALTER = 'ALTER'
     ANALYZE = 'ANALYZE'
@@ -2889,15 +3831,16 @@ class QueryStatementType(Enum):
 
 
 class QueryStatus(Enum):
-    """Query status with one the following values: * `QUEUED`: Query has been received and queued. *
-    `RUNNING`: Query has started. * `CANCELED`: Query has been cancelled by the user. * `FAILED`:
-    Query has failed. * `FINISHED`: Query has completed."""
+    """Statuses which are also used by OperationStatus in runtime"""
 
     CANCELED = 'CANCELED'
+    COMPILED = 'COMPILED'
+    COMPILING = 'COMPILING'
     FAILED = 'FAILED'
     FINISHED = 'FINISHED'
     QUEUED = 'QUEUED'
     RUNNING = 'RUNNING'
+    STARTED = 'STARTED'
 
 
 @dataclass
@@ -2938,12 +3881,6 @@ class RestoreResponse:
 
 @dataclass
 class ResultData:
-    """Contains the result data of a single chunk when using `INLINE` disposition. When using
-    `EXTERNAL_LINKS` disposition, the array `external_links` is used instead to provide presigned
-    URLs to the result data in cloud storage. Exactly one of these alternatives is used. (While the
-    `external_links` array prepares the API to return multiple links in a single response. Currently
-    only a single link is returned.)"""
-
     byte_count: Optional[int] = None
     """The number of bytes in the result chunk. This field is not available when using `INLINE`
     disposition."""
@@ -3068,6 +4005,12 @@ class ResultSchema:
     def from_dict(cls, d: Dict[str, any]) -> ResultSchema:
         """Deserializes the ResultSchema from a dictionary."""
         return cls(column_count=d.get('column_count', None), columns=_repeated_dict(d, 'columns', ColumnInfo))
+
+
+class RunAsMode(Enum):
+
+    OWNER = 'OWNER'
+    VIEWER = 'VIEWER'
 
 
 class RunAsRole(Enum):
@@ -3296,6 +4239,38 @@ class StatementParameterListItem:
         return cls(name=d.get('name', None), type=d.get('type', None), value=d.get('value', None))
 
 
+@dataclass
+class StatementResponse:
+    manifest: Optional[ResultManifest] = None
+    """The result manifest provides schema and metadata for the result set."""
+
+    result: Optional[ResultData] = None
+
+    statement_id: Optional[str] = None
+    """The statement ID is returned upon successfully submitting a SQL statement, and is a required
+    reference for all subsequent calls."""
+
+    status: Optional[StatementStatus] = None
+    """The status response includes execution state and if relevant, error information."""
+
+    def as_dict(self) -> dict:
+        """Serializes the StatementResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.manifest: body['manifest'] = self.manifest.as_dict()
+        if self.result: body['result'] = self.result.as_dict()
+        if self.statement_id is not None: body['statement_id'] = self.statement_id
+        if self.status: body['status'] = self.status.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> StatementResponse:
+        """Deserializes the StatementResponse from a dictionary."""
+        return cls(manifest=_from_dict(d, 'manifest', ResultManifest),
+                   result=_from_dict(d, 'result', ResultData),
+                   statement_id=d.get('statement_id', None),
+                   status=_from_dict(d, 'status', StatementStatus))
+
+
 class StatementState(Enum):
     """Statement execution state: - `PENDING`: waiting for warehouse - `RUNNING`: running -
     `SUCCEEDED`: execution was successful, result data available for fetch - `FAILED`: execution
@@ -3502,12 +4477,28 @@ class TerminationReasonType(Enum):
 
 
 @dataclass
+class TextValue:
+    value: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the TextValue into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.value is not None: body['value'] = self.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> TextValue:
+        """Deserializes the TextValue from a dictionary."""
+        return cls(value=d.get('value', None))
+
+
+@dataclass
 class TimeRange:
     end_time_ms: Optional[int] = None
-    """Limit results to queries that started before this time."""
+    """The end time in milliseconds."""
 
     start_time_ms: Optional[int] = None
-    """Limit results to queries that started after this time."""
+    """The start time in milliseconds."""
 
     def as_dict(self) -> dict:
         """Serializes the TimeRange into a dictionary suitable for use as a JSON request body."""
@@ -3540,6 +4531,184 @@ class TransferOwnershipObjectId:
 
 
 @dataclass
+class UpdateAlertRequest:
+    update_mask: str
+    """Field mask is required to be passed into the PATCH request. Field mask specifies which fields of
+    the setting payload will be updated. The field mask needs to be supplied as single string. To
+    specify multiple fields in the field mask, use comma as the separator (no space)."""
+
+    alert: Optional[UpdateAlertRequestAlert] = None
+
+    id: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateAlertRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.alert: body['alert'] = self.alert.as_dict()
+        if self.id is not None: body['id'] = self.id
+        if self.update_mask is not None: body['update_mask'] = self.update_mask
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateAlertRequest:
+        """Deserializes the UpdateAlertRequest from a dictionary."""
+        return cls(alert=_from_dict(d, 'alert', UpdateAlertRequestAlert),
+                   id=d.get('id', None),
+                   update_mask=d.get('update_mask', None))
+
+
+@dataclass
+class UpdateAlertRequestAlert:
+    condition: Optional[AlertCondition] = None
+    """Trigger conditions of the alert."""
+
+    custom_body: Optional[str] = None
+    """Custom body of alert notification, if it exists. See [here] for custom templating instructions.
+    
+    [here]: https://docs.databricks.com/sql/user/alerts/index.html"""
+
+    custom_subject: Optional[str] = None
+    """Custom subject of alert notification, if it exists. This can include email subject entries and
+    Slack notification headers, for example. See [here] for custom templating instructions.
+    
+    [here]: https://docs.databricks.com/sql/user/alerts/index.html"""
+
+    display_name: Optional[str] = None
+    """The display name of the alert."""
+
+    notify_on_ok: Optional[bool] = None
+    """Whether to notify alert subscribers when alert returns back to normal."""
+
+    owner_user_name: Optional[str] = None
+    """The owner's username. This field is set to "Unavailable" if the user has been deleted."""
+
+    query_id: Optional[str] = None
+    """UUID of the query attached to the alert."""
+
+    seconds_to_retrigger: Optional[int] = None
+    """Number of seconds an alert must wait after being triggered to rearm itself. After rearming, it
+    can be triggered again. If 0 or not specified, the alert will not be triggered again."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateAlertRequestAlert into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.condition: body['condition'] = self.condition.as_dict()
+        if self.custom_body is not None: body['custom_body'] = self.custom_body
+        if self.custom_subject is not None: body['custom_subject'] = self.custom_subject
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.notify_on_ok is not None: body['notify_on_ok'] = self.notify_on_ok
+        if self.owner_user_name is not None: body['owner_user_name'] = self.owner_user_name
+        if self.query_id is not None: body['query_id'] = self.query_id
+        if self.seconds_to_retrigger is not None: body['seconds_to_retrigger'] = self.seconds_to_retrigger
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateAlertRequestAlert:
+        """Deserializes the UpdateAlertRequestAlert from a dictionary."""
+        return cls(condition=_from_dict(d, 'condition', AlertCondition),
+                   custom_body=d.get('custom_body', None),
+                   custom_subject=d.get('custom_subject', None),
+                   display_name=d.get('display_name', None),
+                   notify_on_ok=d.get('notify_on_ok', None),
+                   owner_user_name=d.get('owner_user_name', None),
+                   query_id=d.get('query_id', None),
+                   seconds_to_retrigger=d.get('seconds_to_retrigger', None))
+
+
+@dataclass
+class UpdateQueryRequest:
+    update_mask: str
+    """Field mask is required to be passed into the PATCH request. Field mask specifies which fields of
+    the setting payload will be updated. The field mask needs to be supplied as single string. To
+    specify multiple fields in the field mask, use comma as the separator (no space)."""
+
+    id: Optional[str] = None
+
+    query: Optional[UpdateQueryRequestQuery] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateQueryRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.id is not None: body['id'] = self.id
+        if self.query: body['query'] = self.query.as_dict()
+        if self.update_mask is not None: body['update_mask'] = self.update_mask
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateQueryRequest:
+        """Deserializes the UpdateQueryRequest from a dictionary."""
+        return cls(id=d.get('id', None),
+                   query=_from_dict(d, 'query', UpdateQueryRequestQuery),
+                   update_mask=d.get('update_mask', None))
+
+
+@dataclass
+class UpdateQueryRequestQuery:
+    apply_auto_limit: Optional[bool] = None
+    """Whether to apply a 1000 row limit to the query result."""
+
+    catalog: Optional[str] = None
+    """Name of the catalog where this query will be executed."""
+
+    description: Optional[str] = None
+    """General description that conveys additional information about this query such as usage notes."""
+
+    display_name: Optional[str] = None
+    """Display name of the query that appears in list views, widget headings, and on the query page."""
+
+    owner_user_name: Optional[str] = None
+    """Username of the user that owns the query."""
+
+    parameters: Optional[List[QueryParameter]] = None
+    """List of query parameter definitions."""
+
+    query_text: Optional[str] = None
+    """Text of the query to be run."""
+
+    run_as_mode: Optional[RunAsMode] = None
+    """Sets the "Run as" role for the object."""
+
+    schema: Optional[str] = None
+    """Name of the schema where this query will be executed."""
+
+    tags: Optional[List[str]] = None
+
+    warehouse_id: Optional[str] = None
+    """ID of the SQL warehouse attached to the query."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateQueryRequestQuery into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.apply_auto_limit is not None: body['apply_auto_limit'] = self.apply_auto_limit
+        if self.catalog is not None: body['catalog'] = self.catalog
+        if self.description is not None: body['description'] = self.description
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.owner_user_name is not None: body['owner_user_name'] = self.owner_user_name
+        if self.parameters: body['parameters'] = [v.as_dict() for v in self.parameters]
+        if self.query_text is not None: body['query_text'] = self.query_text
+        if self.run_as_mode is not None: body['run_as_mode'] = self.run_as_mode.value
+        if self.schema is not None: body['schema'] = self.schema
+        if self.tags: body['tags'] = [v for v in self.tags]
+        if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateQueryRequestQuery:
+        """Deserializes the UpdateQueryRequestQuery from a dictionary."""
+        return cls(apply_auto_limit=d.get('apply_auto_limit', None),
+                   catalog=d.get('catalog', None),
+                   description=d.get('description', None),
+                   display_name=d.get('display_name', None),
+                   owner_user_name=d.get('owner_user_name', None),
+                   parameters=_repeated_dict(d, 'parameters', QueryParameter),
+                   query_text=d.get('query_text', None),
+                   run_as_mode=_enum(d, 'run_as_mode', RunAsMode),
+                   schema=d.get('schema', None),
+                   tags=d.get('tags', None),
+                   warehouse_id=d.get('warehouse_id', None))
+
+
+@dataclass
 class UpdateResponse:
 
     def as_dict(self) -> dict:
@@ -3551,6 +4720,67 @@ class UpdateResponse:
     def from_dict(cls, d: Dict[str, any]) -> UpdateResponse:
         """Deserializes the UpdateResponse from a dictionary."""
         return cls()
+
+
+@dataclass
+class UpdateVisualizationRequest:
+    update_mask: str
+    """Field mask is required to be passed into the PATCH request. Field mask specifies which fields of
+    the setting payload will be updated. The field mask needs to be supplied as single string. To
+    specify multiple fields in the field mask, use comma as the separator (no space)."""
+
+    id: Optional[str] = None
+
+    visualization: Optional[UpdateVisualizationRequestVisualization] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateVisualizationRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.id is not None: body['id'] = self.id
+        if self.update_mask is not None: body['update_mask'] = self.update_mask
+        if self.visualization: body['visualization'] = self.visualization.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateVisualizationRequest:
+        """Deserializes the UpdateVisualizationRequest from a dictionary."""
+        return cls(id=d.get('id', None),
+                   update_mask=d.get('update_mask', None),
+                   visualization=_from_dict(d, 'visualization', UpdateVisualizationRequestVisualization))
+
+
+@dataclass
+class UpdateVisualizationRequestVisualization:
+    display_name: Optional[str] = None
+    """The display name of the visualization."""
+
+    serialized_options: Optional[str] = None
+    """The visualization options varies widely from one visualization type to the next and is
+    unsupported. Databricks does not recommend modifying visualization options directly."""
+
+    serialized_query_plan: Optional[str] = None
+    """The visualization query plan varies widely from one visualization type to the next and is
+    unsupported. Databricks does not recommend modifying the visualization query plan directly."""
+
+    type: Optional[str] = None
+    """The type of visualization: counter, table, funnel, and so on."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateVisualizationRequestVisualization into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.serialized_options is not None: body['serialized_options'] = self.serialized_options
+        if self.serialized_query_plan is not None: body['serialized_query_plan'] = self.serialized_query_plan
+        if self.type is not None: body['type'] = self.type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateVisualizationRequestVisualization:
+        """Deserializes the UpdateVisualizationRequestVisualization from a dictionary."""
+        return cls(display_name=d.get('display_name', None),
+                   serialized_options=d.get('serialized_options', None),
+                   serialized_query_plan=d.get('serialized_query_plan', None),
+                   type=d.get('type', None))
 
 
 @dataclass
@@ -3577,57 +4807,56 @@ class User:
 
 @dataclass
 class Visualization:
-    """The visualization description API changes frequently and is unsupported. You can duplicate a
-    visualization by copying description objects received _from the API_ and then using them to
-    create a new one with a POST request to the same endpoint. Databricks does not recommend
-    constructing ad-hoc visualizations entirely in JSON."""
+    create_time: Optional[str] = None
+    """The timestamp indicating when the visualization was created."""
 
-    created_at: Optional[str] = None
-
-    description: Optional[str] = None
-    """A short description of this visualization. This is not displayed in the UI."""
+    display_name: Optional[str] = None
+    """The display name of the visualization."""
 
     id: Optional[str] = None
-    """The UUID for this visualization."""
+    """UUID identifying the visualization."""
 
-    name: Optional[str] = None
-    """The name of the visualization that appears on dashboards and the query screen."""
+    query_id: Optional[str] = None
+    """UUID of the query that the visualization is attached to."""
 
-    options: Optional[Any] = None
-    """The options object varies widely from one visualization type to the next and is unsupported.
-    Databricks does not recommend modifying visualization settings in JSON."""
+    serialized_options: Optional[str] = None
+    """The visualization options varies widely from one visualization type to the next and is
+    unsupported. Databricks does not recommend modifying visualization options directly."""
 
-    query: Optional[Query] = None
+    serialized_query_plan: Optional[str] = None
+    """The visualization query plan varies widely from one visualization type to the next and is
+    unsupported. Databricks does not recommend modifying the visualization query plan directly."""
 
     type: Optional[str] = None
-    """The type of visualization: chart, table, pivot table, and so on."""
+    """The type of visualization: counter, table, funnel, and so on."""
 
-    updated_at: Optional[str] = None
+    update_time: Optional[str] = None
+    """The timestamp indicating when the visualization was updated."""
 
     def as_dict(self) -> dict:
         """Serializes the Visualization into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.created_at is not None: body['created_at'] = self.created_at
-        if self.description is not None: body['description'] = self.description
+        if self.create_time is not None: body['create_time'] = self.create_time
+        if self.display_name is not None: body['display_name'] = self.display_name
         if self.id is not None: body['id'] = self.id
-        if self.name is not None: body['name'] = self.name
-        if self.options: body['options'] = self.options
-        if self.query: body['query'] = self.query.as_dict()
+        if self.query_id is not None: body['query_id'] = self.query_id
+        if self.serialized_options is not None: body['serialized_options'] = self.serialized_options
+        if self.serialized_query_plan is not None: body['serialized_query_plan'] = self.serialized_query_plan
         if self.type is not None: body['type'] = self.type
-        if self.updated_at is not None: body['updated_at'] = self.updated_at
+        if self.update_time is not None: body['update_time'] = self.update_time
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> Visualization:
         """Deserializes the Visualization from a dictionary."""
-        return cls(created_at=d.get('created_at', None),
-                   description=d.get('description', None),
+        return cls(create_time=d.get('create_time', None),
+                   display_name=d.get('display_name', None),
                    id=d.get('id', None),
-                   name=d.get('name', None),
-                   options=d.get('options', None),
-                   query=_from_dict(d, 'query', Query),
+                   query_id=d.get('query_id', None),
+                   serialized_options=d.get('serialized_options', None),
+                   serialized_query_plan=d.get('serialized_query_plan', None),
                    type=d.get('type', None),
-                   updated_at=d.get('updated_at', None))
+                   update_time=d.get('update_time', None))
 
 
 @dataclass
@@ -3730,6 +4959,7 @@ class WarehousePermissionLevel(Enum):
     """Permission level"""
 
     CAN_MANAGE = 'CAN_MANAGE'
+    CAN_MONITOR = 'CAN_MONITOR'
     CAN_USE = 'CAN_USE'
     IS_OWNER = 'IS_OWNER'
 
@@ -3842,7 +5072,7 @@ class Widget:
 
     options: Optional[WidgetOptions] = None
 
-    visualization: Optional[Visualization] = None
+    visualization: Optional[LegacyVisualization] = None
     """The visualization description API changes frequently and is unsupported. You can duplicate a
     visualization by copying description objects received _from the API_ and then using them to
     create a new one with a POST request to the same endpoint. Databricks does not recommend
@@ -3865,7 +5095,7 @@ class Widget:
         """Deserializes the Widget from a dictionary."""
         return cls(id=d.get('id', None),
                    options=_from_dict(d, 'options', WidgetOptions),
-                   visualization=_from_dict(d, 'visualization', Visualization),
+                   visualization=_from_dict(d, 'visualization', LegacyVisualization),
                    width=d.get('width', None))
 
 
@@ -3962,11 +5192,120 @@ class AlertsAPI:
     """The alerts API can be used to perform CRUD operations on alerts. An alert is a Databricks SQL object that
     periodically runs a query, evaluates a condition of its result, and notifies one or more users and/or
     notification destinations if the condition was met. Alerts can be scheduled using the `sql_task` type of
+    the Jobs API, e.g. :method:jobs/create."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def create(self, *, alert: Optional[CreateAlertRequestAlert] = None) -> Alert:
+        """Create an alert.
+        
+        Creates an alert.
+        
+        :param alert: :class:`CreateAlertRequestAlert` (optional)
+        
+        :returns: :class:`Alert`
+        """
+        body = {}
+        if alert is not None: body['alert'] = alert.as_dict()
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do('POST', '/api/2.0/sql/alerts', body=body, headers=headers)
+        return Alert.from_dict(res)
+
+    def delete(self, id: str):
+        """Delete an alert.
+        
+        Moves an alert to the trash. Trashed alerts immediately disappear from searches and list views, and
+        can no longer trigger. You can restore a trashed alert through the UI. A trashed alert is permanently
+        deleted after 30 days.
+        
+        :param id: str
+        
+        
+        """
+
+        headers = {'Accept': 'application/json', }
+
+        self._api.do('DELETE', f'/api/2.0/sql/alerts/{id}', headers=headers)
+
+    def get(self, id: str) -> Alert:
+        """Get an alert.
+        
+        Gets an alert.
+        
+        :param id: str
+        
+        :returns: :class:`Alert`
+        """
+
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do('GET', f'/api/2.0/sql/alerts/{id}', headers=headers)
+        return Alert.from_dict(res)
+
+    def list(self,
+             *,
+             page_size: Optional[int] = None,
+             page_token: Optional[str] = None) -> Iterator[ListAlertsResponseAlert]:
+        """List alerts.
+        
+        Gets a list of alerts accessible to the user, ordered by creation time. **Warning:** Calling this API
+        concurrently 10 or more times could result in throttling, service degradation, or a temporary ban.
+        
+        :param page_size: int (optional)
+        :param page_token: str (optional)
+        
+        :returns: Iterator over :class:`ListAlertsResponseAlert`
+        """
+
+        query = {}
+        if page_size is not None: query['page_size'] = page_size
+        if page_token is not None: query['page_token'] = page_token
+        headers = {'Accept': 'application/json', }
+
+        while True:
+            json = self._api.do('GET', '/api/2.0/sql/alerts', query=query, headers=headers)
+            if 'results' in json:
+                for v in json['results']:
+                    yield ListAlertsResponseAlert.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
+
+    def update(self, id: str, update_mask: str, *, alert: Optional[UpdateAlertRequestAlert] = None) -> Alert:
+        """Update an alert.
+        
+        Updates an alert.
+        
+        :param id: str
+        :param update_mask: str
+          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
+          setting payload will be updated. The field mask needs to be supplied as single string. To specify
+          multiple fields in the field mask, use comma as the separator (no space).
+        :param alert: :class:`UpdateAlertRequestAlert` (optional)
+        
+        :returns: :class:`Alert`
+        """
+        body = {}
+        if alert is not None: body['alert'] = alert.as_dict()
+        if update_mask is not None: body['update_mask'] = update_mask
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do('PATCH', f'/api/2.0/sql/alerts/{id}', body=body, headers=headers)
+        return Alert.from_dict(res)
+
+
+class AlertsLegacyAPI:
+    """The alerts API can be used to perform CRUD operations on alerts. An alert is a Databricks SQL object that
+    periodically runs a query, evaluates a condition of its result, and notifies one or more users and/or
+    notification destinations if the condition was met. Alerts can be scheduled using the `sql_task` type of
     the Jobs API, e.g. :method:jobs/create.
     
-    **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+    **Note**: A new version of the Databricks SQL API is now available. Please see the latest version. [Learn
+    more]
     
-    [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources"""
+    [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -3977,15 +5316,16 @@ class AlertsAPI:
                query_id: str,
                *,
                parent: Optional[str] = None,
-               rearm: Optional[int] = None) -> Alert:
+               rearm: Optional[int] = None) -> LegacyAlert:
         """Create an alert.
         
         Creates an alert. An alert is a Databricks SQL object that periodically runs a query, evaluates a
         condition of its result, and notifies users or notification destinations if the condition was met.
         
-        **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+        **Note**: A new version of the Databricks SQL API is now available. Please use :method:alerts/create
+        instead. [Learn more]
         
-        [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :param name: str
           Name of the alert.
@@ -3999,7 +5339,7 @@ class AlertsAPI:
           Number of seconds after being triggered before the alert rearms itself and can be triggered again.
           If `null`, alert will never be triggered again.
         
-        :returns: :class:`Alert`
+        :returns: :class:`LegacyAlert`
         """
         body = {}
         if name is not None: body['name'] = name
@@ -4010,7 +5350,7 @@ class AlertsAPI:
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         res = self._api.do('POST', '/api/2.0/preview/sql/alerts', body=body, headers=headers)
-        return Alert.from_dict(res)
+        return LegacyAlert.from_dict(res)
 
     def delete(self, alert_id: str):
         """Delete an alert.
@@ -4018,9 +5358,10 @@ class AlertsAPI:
         Deletes an alert. Deleted alerts are no longer accessible and cannot be restored. **Note**: Unlike
         queries and dashboards, alerts cannot be moved to the trash.
         
-        **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+        **Note**: A new version of the Databricks SQL API is now available. Please use :method:alerts/delete
+        instead. [Learn more]
         
-        [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :param alert_id: str
         
@@ -4031,41 +5372,43 @@ class AlertsAPI:
 
         self._api.do('DELETE', f'/api/2.0/preview/sql/alerts/{alert_id}', headers=headers)
 
-    def get(self, alert_id: str) -> Alert:
+    def get(self, alert_id: str) -> LegacyAlert:
         """Get an alert.
         
         Gets an alert.
         
-        **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+        **Note**: A new version of the Databricks SQL API is now available. Please use :method:alerts/get
+        instead. [Learn more]
         
-        [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :param alert_id: str
         
-        :returns: :class:`Alert`
+        :returns: :class:`LegacyAlert`
         """
 
         headers = {'Accept': 'application/json', }
 
         res = self._api.do('GET', f'/api/2.0/preview/sql/alerts/{alert_id}', headers=headers)
-        return Alert.from_dict(res)
+        return LegacyAlert.from_dict(res)
 
-    def list(self) -> Iterator[Alert]:
+    def list(self) -> Iterator[LegacyAlert]:
         """Get alerts.
         
         Gets a list of alerts.
         
-        **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+        **Note**: A new version of the Databricks SQL API is now available. Please use :method:alerts/list
+        instead. [Learn more]
         
-        [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
-        :returns: Iterator over :class:`Alert`
+        :returns: Iterator over :class:`LegacyAlert`
         """
 
         headers = {'Accept': 'application/json', }
 
         res = self._api.do('GET', '/api/2.0/preview/sql/alerts', headers=headers)
-        return [Alert.from_dict(v) for v in res]
+        return [LegacyAlert.from_dict(v) for v in res]
 
     def update(self,
                alert_id: str,
@@ -4078,9 +5421,10 @@ class AlertsAPI:
         
         Updates an alert.
         
-        **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+        **Note**: A new version of the Databricks SQL API is now available. Please use :method:alerts/update
+        instead. [Learn more]
         
-        [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :param alert_id: str
         :param name: str
@@ -4380,9 +5724,9 @@ class DataSourcesAPI:
     advise you to use any text editor, REST client, or `grep` to search the response from this API for the
     name of your SQL warehouse as it appears in Databricks SQL.
     
-    **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+    **Note**: A new version of the Databricks SQL API is now available. [Learn more]
     
-    [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources"""
+    [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -4394,9 +5738,10 @@ class DataSourcesAPI:
         API response are enumerated for clarity. However, you need only a SQL warehouse's `id` to create new
         queries against it.
         
-        **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+        **Note**: A new version of the Databricks SQL API is now available. Please use :method:warehouses/list
+        instead. [Learn more]
         
-        [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :returns: Iterator over :class:`DataSource`
         """
@@ -4420,9 +5765,9 @@ class DbsqlPermissionsAPI:
     
     - `CAN_MANAGE`: Allows all actions: read, run, edit, delete, modify permissions (superset of `CAN_RUN`)
     
-    **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+    **Note**: A new version of the Databricks SQL API is now available. [Learn more]
     
-    [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources"""
+    [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -4432,9 +5777,10 @@ class DbsqlPermissionsAPI:
         
         Gets a JSON representation of the access control list (ACL) for a specified object.
         
-        **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+        **Note**: A new version of the Databricks SQL API is now available. Please use
+        :method:workspace/getpermissions instead. [Learn more]
         
-        [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :param object_type: :class:`ObjectTypePlural`
           The type of object permissions to check.
@@ -4461,9 +5807,10 @@ class DbsqlPermissionsAPI:
         Sets the access control list (ACL) for a specified object. This operation will complete rewrite the
         ACL.
         
-        **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+        **Note**: A new version of the Databricks SQL API is now available. Please use
+        :method:workspace/setpermissions instead. [Learn more]
         
-        [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :param object_type: :class:`ObjectTypePlural`
           The type of object permission to set.
@@ -4493,9 +5840,10 @@ class DbsqlPermissionsAPI:
         
         Transfers ownership of a dashboard, query, or alert to an active user. Requires an admin API key.
         
-        **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+        **Note**: A new version of the Databricks SQL API is now available. For queries and alerts, please use
+        :method:queries/update and :method:alerts/update respectively instead. [Learn more]
         
-        [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :param object_type: :class:`OwnableObjectType`
           The type of object on which to change ownership.
@@ -4518,13 +5866,154 @@ class DbsqlPermissionsAPI:
 
 
 class QueriesAPI:
+    """The queries API can be used to perform CRUD operations on queries. A query is a Databricks SQL object that
+    includes the target SQL warehouse, query text, name, description, tags, and parameters. Queries can be
+    scheduled using the `sql_task` type of the Jobs API, e.g. :method:jobs/create."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def create(self, *, query: Optional[CreateQueryRequestQuery] = None) -> Query:
+        """Create a query.
+        
+        Creates a query.
+        
+        :param query: :class:`CreateQueryRequestQuery` (optional)
+        
+        :returns: :class:`Query`
+        """
+        body = {}
+        if query is not None: body['query'] = query.as_dict()
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do('POST', '/api/2.0/sql/queries', body=body, headers=headers)
+        return Query.from_dict(res)
+
+    def delete(self, id: str):
+        """Delete a query.
+        
+        Moves a query to the trash. Trashed queries immediately disappear from searches and list views, and
+        cannot be used for alerts. You can restore a trashed query through the UI. A trashed query is
+        permanently deleted after 30 days.
+        
+        :param id: str
+        
+        
+        """
+
+        headers = {'Accept': 'application/json', }
+
+        self._api.do('DELETE', f'/api/2.0/sql/queries/{id}', headers=headers)
+
+    def get(self, id: str) -> Query:
+        """Get a query.
+        
+        Gets a query.
+        
+        :param id: str
+        
+        :returns: :class:`Query`
+        """
+
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do('GET', f'/api/2.0/sql/queries/{id}', headers=headers)
+        return Query.from_dict(res)
+
+    def list(self,
+             *,
+             page_size: Optional[int] = None,
+             page_token: Optional[str] = None) -> Iterator[ListQueryObjectsResponseQuery]:
+        """List queries.
+        
+        Gets a list of queries accessible to the user, ordered by creation time. **Warning:** Calling this API
+        concurrently 10 or more times could result in throttling, service degradation, or a temporary ban.
+        
+        :param page_size: int (optional)
+        :param page_token: str (optional)
+        
+        :returns: Iterator over :class:`ListQueryObjectsResponseQuery`
+        """
+
+        query = {}
+        if page_size is not None: query['page_size'] = page_size
+        if page_token is not None: query['page_token'] = page_token
+        headers = {'Accept': 'application/json', }
+
+        while True:
+            json = self._api.do('GET', '/api/2.0/sql/queries', query=query, headers=headers)
+            if 'results' in json:
+                for v in json['results']:
+                    yield ListQueryObjectsResponseQuery.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
+
+    def list_visualizations(self,
+                            id: str,
+                            *,
+                            page_size: Optional[int] = None,
+                            page_token: Optional[str] = None) -> Iterator[Visualization]:
+        """List visualizations on a query.
+        
+        Gets a list of visualizations on a query.
+        
+        :param id: str
+        :param page_size: int (optional)
+        :param page_token: str (optional)
+        
+        :returns: Iterator over :class:`Visualization`
+        """
+
+        query = {}
+        if page_size is not None: query['page_size'] = page_size
+        if page_token is not None: query['page_token'] = page_token
+        headers = {'Accept': 'application/json', }
+
+        while True:
+            json = self._api.do('GET',
+                                f'/api/2.0/sql/queries/{id}/visualizations',
+                                query=query,
+                                headers=headers)
+            if 'results' in json:
+                for v in json['results']:
+                    yield Visualization.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
+
+    def update(self, id: str, update_mask: str, *, query: Optional[UpdateQueryRequestQuery] = None) -> Query:
+        """Update a query.
+        
+        Updates a query.
+        
+        :param id: str
+        :param update_mask: str
+          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
+          setting payload will be updated. The field mask needs to be supplied as single string. To specify
+          multiple fields in the field mask, use comma as the separator (no space).
+        :param query: :class:`UpdateQueryRequestQuery` (optional)
+        
+        :returns: :class:`Query`
+        """
+        body = {}
+        if query is not None: body['query'] = query.as_dict()
+        if update_mask is not None: body['update_mask'] = update_mask
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do('PATCH', f'/api/2.0/sql/queries/{id}', body=body, headers=headers)
+        return Query.from_dict(res)
+
+
+class QueriesLegacyAPI:
     """These endpoints are used for CRUD operations on query definitions. Query definitions include the target
     SQL warehouse, query text, name, description, tags, parameters, and visualizations. Queries can be
     scheduled using the `sql_task` type of the Jobs API, e.g. :method:jobs/create.
     
-    **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+    **Note**: A new version of the Databricks SQL API is now available. Please see the latest version. [Learn
+    more]
     
-    [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources"""
+    [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -4538,7 +6027,7 @@ class QueriesAPI:
                parent: Optional[str] = None,
                query: Optional[str] = None,
                run_as_role: Optional[RunAsRole] = None,
-               tags: Optional[List[str]] = None) -> Query:
+               tags: Optional[List[str]] = None) -> LegacyQuery:
         """Create a new query definition.
         
         Creates a new query definition. Queries created with this endpoint belong to the authenticated user
@@ -4550,9 +6039,10 @@ class QueriesAPI:
         
         **Note**: You cannot add a visualization until you create the query.
         
-        **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+        **Note**: A new version of the Databricks SQL API is now available. Please use :method:queries/create
+        instead. [Learn more]
         
-        [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :param data_source_id: str (optional)
           Data source ID maps to the ID of the data source used by the resource and is distinct from the
@@ -4576,7 +6066,7 @@ class QueriesAPI:
           viewer" behavior) or `"owner"` (signifying "run as owner" behavior)
         :param tags: List[str] (optional)
         
-        :returns: :class:`Query`
+        :returns: :class:`LegacyQuery`
         """
         body = {}
         if data_source_id is not None: body['data_source_id'] = data_source_id
@@ -4590,7 +6080,7 @@ class QueriesAPI:
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         res = self._api.do('POST', '/api/2.0/preview/sql/queries', body=body, headers=headers)
-        return Query.from_dict(res)
+        return LegacyQuery.from_dict(res)
 
     def delete(self, query_id: str):
         """Delete a query.
@@ -4598,9 +6088,10 @@ class QueriesAPI:
         Moves a query to the trash. Trashed queries immediately disappear from searches and list views, and
         they cannot be used for alerts. The trash is deleted after 30 days.
         
-        **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+        **Note**: A new version of the Databricks SQL API is now available. Please use :method:queries/delete
+        instead. [Learn more]
         
-        [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :param query_id: str
         
@@ -4611,32 +6102,33 @@ class QueriesAPI:
 
         self._api.do('DELETE', f'/api/2.0/preview/sql/queries/{query_id}', headers=headers)
 
-    def get(self, query_id: str) -> Query:
+    def get(self, query_id: str) -> LegacyQuery:
         """Get a query definition.
         
         Retrieve a query object definition along with contextual permissions information about the currently
         authenticated user.
         
-        **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+        **Note**: A new version of the Databricks SQL API is now available. Please use :method:queries/get
+        instead. [Learn more]
         
-        [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :param query_id: str
         
-        :returns: :class:`Query`
+        :returns: :class:`LegacyQuery`
         """
 
         headers = {'Accept': 'application/json', }
 
         res = self._api.do('GET', f'/api/2.0/preview/sql/queries/{query_id}', headers=headers)
-        return Query.from_dict(res)
+        return LegacyQuery.from_dict(res)
 
     def list(self,
              *,
              order: Optional[str] = None,
              page: Optional[int] = None,
              page_size: Optional[int] = None,
-             q: Optional[str] = None) -> Iterator[Query]:
+             q: Optional[str] = None) -> Iterator[LegacyQuery]:
         """Get a list of queries.
         
         Gets a list of queries. Optionally, this list can be filtered by a search term.
@@ -4644,9 +6136,10 @@ class QueriesAPI:
         **Warning**: Calling this API concurrently 10 or more times could result in throttling, service
         degradation, or a temporary ban.
         
-        **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+        **Note**: A new version of the Databricks SQL API is now available. Please use :method:queries/list
+        instead. [Learn more]
         
-        [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :param order: str (optional)
           Name of query attribute to order by. Default sort order is ascending. Append a dash (`-`) to order
@@ -4669,7 +6162,7 @@ class QueriesAPI:
         :param q: str (optional)
           Full text search term
         
-        :returns: Iterator over :class:`Query`
+        :returns: Iterator over :class:`LegacyQuery`
         """
 
         query = {}
@@ -4690,7 +6183,7 @@ class QueriesAPI:
                     if i in seen:
                         continue
                     seen.add(i)
-                    yield Query.from_dict(v)
+                    yield LegacyQuery.from_dict(v)
             if 'results' not in json or not json['results']:
                 return
             query['page'] += 1
@@ -4701,9 +6194,10 @@ class QueriesAPI:
         Restore a query that has been moved to the trash. A restored query appears in list views and searches.
         You can use restored queries for alerts.
         
-        **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+        **Note**: A new version of the Databricks SQL API is now available. Please see the latest version.
+        [Learn more]
         
-        [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :param query_id: str
         
@@ -4723,16 +6217,17 @@ class QueriesAPI:
                options: Optional[Any] = None,
                query: Optional[str] = None,
                run_as_role: Optional[RunAsRole] = None,
-               tags: Optional[List[str]] = None) -> Query:
+               tags: Optional[List[str]] = None) -> LegacyQuery:
         """Change a query definition.
         
         Modify this query definition.
         
         **Note**: You cannot undo this operation.
         
-        **Note**: A new version of the Databricks SQL API will soon be available. [Learn more]
+        **Note**: A new version of the Databricks SQL API is now available. Please use :method:queries/update
+        instead. [Learn more]
         
-        [Learn more]: https://docs.databricks.com/en/whats-coming.html#updates-to-the-databricks-sql-api-for-managing-queries-alerts-and-data-sources
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :param query_id: str
         :param data_source_id: str (optional)
@@ -4755,7 +6250,7 @@ class QueriesAPI:
           viewer" behavior) or `"owner"` (signifying "run as owner" behavior)
         :param tags: List[str] (optional)
         
-        :returns: :class:`Query`
+        :returns: :class:`LegacyQuery`
         """
         body = {}
         if data_source_id is not None: body['data_source_id'] = data_source_id
@@ -4768,11 +6263,12 @@ class QueriesAPI:
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         res = self._api.do('POST', f'/api/2.0/preview/sql/queries/{query_id}', body=body, headers=headers)
-        return Query.from_dict(res)
+        return LegacyQuery.from_dict(res)
 
 
 class QueryHistoryAPI:
-    """Access the history of queries through SQL warehouses."""
+    """A service responsible for storing and retrieving the list of queries run against SQL endpoints and
+    serverless compute."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -4782,25 +6278,28 @@ class QueryHistoryAPI:
              filter_by: Optional[QueryFilter] = None,
              include_metrics: Optional[bool] = None,
              max_results: Optional[int] = None,
-             page_token: Optional[str] = None) -> Iterator[QueryInfo]:
+             page_token: Optional[str] = None) -> ListQueriesResponse:
         """List Queries.
         
-        List the history of queries through SQL warehouses.
+        List the history of queries through SQL warehouses, and serverless compute.
         
-        You can filter by user ID, warehouse ID, status, and time range.
+        You can filter by user ID, warehouse ID, status, and time range. Most recently started queries are
+        returned first (up to max_results in request). The pagination token returned in response can be used
+        to list subsequent query statuses.
         
         :param filter_by: :class:`QueryFilter` (optional)
           A filter to limit query history results. This field is optional.
         :param include_metrics: bool (optional)
-          Whether to include metrics about query.
+          Whether to include the query metrics with each query. Only use this for a small subset of queries
+          (max_results). Defaults to false.
         :param max_results: int (optional)
-          Limit the number of results returned in one page. The default is 100.
+          Limit the number of results returned in one page. Must be less than 1000 and the default is 100.
         :param page_token: str (optional)
           A token that can be used to get the next page of results. The token can contains characters that
           need to be encoded before using it in a URL. For example, the character '+' needs to be replaced by
-          %2B.
+          %2B. This field is optional.
         
-        :returns: Iterator over :class:`QueryInfo`
+        :returns: :class:`ListQueriesResponse`
         """
 
         query = {}
@@ -4810,19 +6309,84 @@ class QueryHistoryAPI:
         if page_token is not None: query['page_token'] = page_token
         headers = {'Accept': 'application/json', }
 
-        while True:
-            json = self._api.do('GET', '/api/2.0/sql/history/queries', query=query, headers=headers)
-            if 'res' in json:
-                for v in json['res']:
-                    yield QueryInfo.from_dict(v)
-            if 'next_page_token' not in json or not json['next_page_token']:
-                return
-            query['page_token'] = json['next_page_token']
+        res = self._api.do('GET', '/api/2.0/sql/history/queries', query=query, headers=headers)
+        return ListQueriesResponse.from_dict(res)
 
 
 class QueryVisualizationsAPI:
+    """This is an evolving API that facilitates the addition and removal of visualizations from existing queries
+    in the Databricks Workspace. Data structures can change over time."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def create(self,
+               *,
+               visualization: Optional[CreateVisualizationRequestVisualization] = None) -> Visualization:
+        """Add a visualization to a query.
+        
+        Adds a visualization to a query.
+        
+        :param visualization: :class:`CreateVisualizationRequestVisualization` (optional)
+        
+        :returns: :class:`Visualization`
+        """
+        body = {}
+        if visualization is not None: body['visualization'] = visualization.as_dict()
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do('POST', '/api/2.0/sql/visualizations', body=body, headers=headers)
+        return Visualization.from_dict(res)
+
+    def delete(self, id: str):
+        """Remove a visualization.
+        
+        Removes a visualization.
+        
+        :param id: str
+        
+        
+        """
+
+        headers = {'Accept': 'application/json', }
+
+        self._api.do('DELETE', f'/api/2.0/sql/visualizations/{id}', headers=headers)
+
+    def update(self,
+               id: str,
+               update_mask: str,
+               *,
+               visualization: Optional[UpdateVisualizationRequestVisualization] = None) -> Visualization:
+        """Update a visualization.
+        
+        Updates a visualization.
+        
+        :param id: str
+        :param update_mask: str
+          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
+          setting payload will be updated. The field mask needs to be supplied as single string. To specify
+          multiple fields in the field mask, use comma as the separator (no space).
+        :param visualization: :class:`UpdateVisualizationRequestVisualization` (optional)
+        
+        :returns: :class:`Visualization`
+        """
+        body = {}
+        if update_mask is not None: body['update_mask'] = update_mask
+        if visualization is not None: body['visualization'] = visualization.as_dict()
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do('PATCH', f'/api/2.0/sql/visualizations/{id}', body=body, headers=headers)
+        return Visualization.from_dict(res)
+
+
+class QueryVisualizationsLegacyAPI:
     """This is an evolving API that facilitates the addition and removal of vizualisations from existing queries
-    within the Databricks Workspace. Data structures may change over time."""
+    within the Databricks Workspace. Data structures may change over time.
+    
+    **Note**: A new version of the Databricks SQL API is now available. Please see the latest version. [Learn
+    more]
+    
+    [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -4833,8 +6397,15 @@ class QueryVisualizationsAPI:
                options: Any,
                *,
                description: Optional[str] = None,
-               name: Optional[str] = None) -> Visualization:
+               name: Optional[str] = None) -> LegacyVisualization:
         """Add visualization to a query.
+        
+        Creates visualization in the query.
+        
+        **Note**: A new version of the Databricks SQL API is now available. Please use
+        :method:queryvisualizations/create instead. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :param query_id: str
           The identifier returned by :method:queries/create
@@ -4848,7 +6419,7 @@ class QueryVisualizationsAPI:
         :param name: str (optional)
           The name of the visualization that appears on dashboards and the query screen.
         
-        :returns: :class:`Visualization`
+        :returns: :class:`LegacyVisualization`
         """
         body = {}
         if description is not None: body['description'] = description
@@ -4859,10 +6430,17 @@ class QueryVisualizationsAPI:
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         res = self._api.do('POST', '/api/2.0/preview/sql/visualizations', body=body, headers=headers)
-        return Visualization.from_dict(res)
+        return LegacyVisualization.from_dict(res)
 
     def delete(self, id: str):
         """Remove visualization.
+        
+        Removes a visualization from the query.
+        
+        **Note**: A new version of the Databricks SQL API is now available. Please use
+        :method:queryvisualizations/delete instead. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :param id: str
           Widget ID returned by :method:queryvizualisations/create
@@ -4881,10 +6459,17 @@ class QueryVisualizationsAPI:
                description: Optional[str] = None,
                name: Optional[str] = None,
                options: Optional[Any] = None,
-               query: Optional[Query] = None,
+               query: Optional[LegacyQuery] = None,
                type: Optional[str] = None,
-               updated_at: Optional[str] = None) -> Visualization:
+               updated_at: Optional[str] = None) -> LegacyVisualization:
         """Edit existing visualization.
+        
+        Updates visualization in the query.
+        
+        **Note**: A new version of the Databricks SQL API is now available. Please use
+        :method:queryvisualizations/update instead. [Learn more]
+        
+        [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :param id: str
           The UUID for this visualization.
@@ -4896,12 +6481,12 @@ class QueryVisualizationsAPI:
         :param options: Any (optional)
           The options object varies widely from one visualization type to the next and is unsupported.
           Databricks does not recommend modifying visualization settings in JSON.
-        :param query: :class:`Query` (optional)
+        :param query: :class:`LegacyQuery` (optional)
         :param type: str (optional)
           The type of visualization: chart, table, pivot table, and so on.
         :param updated_at: str (optional)
         
-        :returns: :class:`Visualization`
+        :returns: :class:`LegacyVisualization`
         """
         body = {}
         if created_at is not None: body['created_at'] = created_at
@@ -4914,7 +6499,7 @@ class QueryVisualizationsAPI:
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         res = self._api.do('POST', f'/api/2.0/preview/sql/visualizations/{id}', body=body, headers=headers)
-        return Visualization.from_dict(res)
+        return LegacyVisualization.from_dict(res)
 
 
 class StatementExecutionAPI:
@@ -4996,7 +6581,9 @@ class StatementExecutionAPI:
     are approximate, occur server-side, and cannot account for things such as caller delays and network
     latency from caller to service. - The system will auto-close a statement after one hour if the client
     stops polling and thus you must poll at least once an hour. - The results are only available for one hour
-    after success; polling does not extend this.
+    after success; polling does not extend this. - The SQL Execution API must be used for the entire lifecycle
+    of the statement. For example, you cannot use the Jobs API to execute the command, and then the SQL
+    Execution API to cancel it.
     
     [Apache Arrow Columnar]: https://arrow.apache.org/overview/
     [Databricks SQL Statement Execution API tutorial]: https://docs.databricks.com/sql/api/sql-execution-tutorial.html"""
@@ -5033,7 +6620,7 @@ class StatementExecutionAPI:
                           parameters: Optional[List[StatementParameterListItem]] = None,
                           row_limit: Optional[int] = None,
                           schema: Optional[str] = None,
-                          wait_timeout: Optional[str] = None) -> ExecuteStatementResponse:
+                          wait_timeout: Optional[str] = None) -> StatementResponse:
         """Execute a SQL statement.
         
         :param statement: str
@@ -5053,26 +6640,6 @@ class StatementExecutionAPI:
           
           [`USE CATALOG`]: https://docs.databricks.com/sql/language-manual/sql-ref-syntax-ddl-use-catalog.html
         :param disposition: :class:`Disposition` (optional)
-          The fetch disposition provides two modes of fetching results: `INLINE` and `EXTERNAL_LINKS`.
-          
-          Statements executed with `INLINE` disposition will return result data inline, in `JSON_ARRAY`
-          format, in a series of chunks. If a given statement produces a result set with a size larger than 25
-          MiB, that statement execution is aborted, and no result set will be available.
-          
-          **NOTE** Byte limits are computed based upon internal representations of the result set data, and
-          might not match the sizes visible in JSON responses.
-          
-          Statements executed with `EXTERNAL_LINKS` disposition will return result data as external links:
-          URLs that point to cloud storage internal to the workspace. Using `EXTERNAL_LINKS` disposition
-          allows statements to generate arbitrarily sized result sets for fetching up to 100 GiB. The
-          resulting links have two important properties:
-          
-          1. They point to resources _external_ to the Databricks compute; therefore any associated
-          authentication information (typically a personal access token, OAuth token, or similar) _must be
-          removed_ when fetching from these links.
-          
-          2. These are presigned URLs with a specific expiration, indicated in the response. The behavior when
-          attempting to use an expired link is cloud specific.
         :param format: :class:`Format` (optional)
           Statement execution supports three result formats: `JSON_ARRAY` (default), `ARROW_STREAM`, and
           `CSV`.
@@ -5160,7 +6727,7 @@ class StatementExecutionAPI:
           the statement takes longer to execute, `on_wait_timeout` determines what should happen after the
           timeout is reached.
         
-        :returns: :class:`ExecuteStatementResponse`
+        :returns: :class:`StatementResponse`
         """
         body = {}
         if byte_limit is not None: body['byte_limit'] = byte_limit
@@ -5177,9 +6744,9 @@ class StatementExecutionAPI:
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         res = self._api.do('POST', '/api/2.0/sql/statements/', body=body, headers=headers)
-        return ExecuteStatementResponse.from_dict(res)
+        return StatementResponse.from_dict(res)
 
-    def get_statement(self, statement_id: str) -> GetStatementResponse:
+    def get_statement(self, statement_id: str) -> StatementResponse:
         """Get status, manifest, and result first chunk.
         
         This request can be used to poll for the statement's status. When the `status.state` field is
@@ -5194,13 +6761,13 @@ class StatementExecutionAPI:
           The statement ID is returned upon successfully submitting a SQL statement, and is a required
           reference for all subsequent calls.
         
-        :returns: :class:`GetStatementResponse`
+        :returns: :class:`StatementResponse`
         """
 
         headers = {'Accept': 'application/json', }
 
         res = self._api.do('GET', f'/api/2.0/sql/statements/{statement_id}', headers=headers)
-        return GetStatementResponse.from_dict(res)
+        return StatementResponse.from_dict(res)
 
     def get_statement_result_chunk_n(self, statement_id: str, chunk_index: int) -> ResultData:
         """Get result chunk by index.
@@ -5322,7 +6889,8 @@ class WarehousesAPI:
           The amount of time in minutes that a SQL warehouse must be idle (i.e., no RUNNING queries) before it
           is automatically stopped.
           
-          Supported values: - Must be == 0 or >= 10 mins - 0 indicates no autostop.
+          Supported values: - Must be >= 0 mins for serverless warehouses - Must be == 0 or >= 10 mins for
+          non-serverless warehouses - 0 indicates no autostop.
           
           Defaults to 120 mins
         :param channel: :class:`Channel` (optional)

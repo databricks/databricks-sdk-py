@@ -12,6 +12,49 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: AlertCondition
+   :members:
+   :undoc-members:
+
+.. autoclass:: AlertConditionOperand
+   :members:
+   :undoc-members:
+
+.. autoclass:: AlertConditionThreshold
+   :members:
+   :undoc-members:
+
+.. autoclass:: AlertOperandColumn
+   :members:
+   :undoc-members:
+
+.. autoclass:: AlertOperandValue
+   :members:
+   :undoc-members:
+
+.. py:class:: AlertOperator
+
+   .. py:attribute:: EQUAL
+      :value: "EQUAL"
+
+   .. py:attribute:: GREATER_THAN
+      :value: "GREATER_THAN"
+
+   .. py:attribute:: GREATER_THAN_OR_EQUAL
+      :value: "GREATER_THAN_OR_EQUAL"
+
+   .. py:attribute:: IS_NULL
+      :value: "IS_NULL"
+
+   .. py:attribute:: LESS_THAN
+      :value: "LESS_THAN"
+
+   .. py:attribute:: LESS_THAN_OR_EQUAL
+      :value: "LESS_THAN_OR_EQUAL"
+
+   .. py:attribute:: NOT_EQUAL
+      :value: "NOT_EQUAL"
+
 .. autoclass:: AlertOptions
    :members:
    :undoc-members:
@@ -34,8 +77,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. py:class:: AlertState
-
-   State of the alert. Possible values are: `unknown` (yet to be evaluated), `triggered` (evaluated and fulfilled trigger conditions), or `ok` (evaluated and did not fulfill trigger conditions).
 
    .. py:attribute:: OK
       :value: "OK"
@@ -72,9 +113,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: CHANNEL_NAME_PREVIEW
       :value: "CHANNEL_NAME_PREVIEW"
-
-   .. py:attribute:: CHANNEL_NAME_PREVIOUS
-      :value: "CHANNEL_NAME_PREVIOUS"
 
    .. py:attribute:: CHANNEL_NAME_UNSPECIFIED
       :value: "CHANNEL_NAME_UNSPECIFIED"
@@ -148,6 +186,30 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: CreateAlertRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: CreateAlertRequestAlert
+   :members:
+   :undoc-members:
+
+.. autoclass:: CreateQueryRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: CreateQueryRequestQuery
+   :members:
+   :undoc-members:
+
+.. autoclass:: CreateVisualizationRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: CreateVisualizationRequestVisualization
+   :members:
+   :undoc-members:
+
 .. autoclass:: CreateWarehouseRequest
    :members:
    :undoc-members:
@@ -193,6 +255,90 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: DatePrecision
+
+   .. py:attribute:: DAY_PRECISION
+      :value: "DAY_PRECISION"
+
+   .. py:attribute:: MINUTE_PRECISION
+      :value: "MINUTE_PRECISION"
+
+   .. py:attribute:: SECOND_PRECISION
+      :value: "SECOND_PRECISION"
+
+.. autoclass:: DateRange
+   :members:
+   :undoc-members:
+
+.. autoclass:: DateRangeValue
+   :members:
+   :undoc-members:
+
+.. py:class:: DateRangeValueDynamicDateRange
+
+   .. py:attribute:: LAST_12_MONTHS
+      :value: "LAST_12_MONTHS"
+
+   .. py:attribute:: LAST_14_DAYS
+      :value: "LAST_14_DAYS"
+
+   .. py:attribute:: LAST_24_HOURS
+      :value: "LAST_24_HOURS"
+
+   .. py:attribute:: LAST_30_DAYS
+      :value: "LAST_30_DAYS"
+
+   .. py:attribute:: LAST_60_DAYS
+      :value: "LAST_60_DAYS"
+
+   .. py:attribute:: LAST_7_DAYS
+      :value: "LAST_7_DAYS"
+
+   .. py:attribute:: LAST_8_HOURS
+      :value: "LAST_8_HOURS"
+
+   .. py:attribute:: LAST_90_DAYS
+      :value: "LAST_90_DAYS"
+
+   .. py:attribute:: LAST_HOUR
+      :value: "LAST_HOUR"
+
+   .. py:attribute:: LAST_MONTH
+      :value: "LAST_MONTH"
+
+   .. py:attribute:: LAST_WEEK
+      :value: "LAST_WEEK"
+
+   .. py:attribute:: LAST_YEAR
+      :value: "LAST_YEAR"
+
+   .. py:attribute:: THIS_MONTH
+      :value: "THIS_MONTH"
+
+   .. py:attribute:: THIS_WEEK
+      :value: "THIS_WEEK"
+
+   .. py:attribute:: THIS_YEAR
+      :value: "THIS_YEAR"
+
+   .. py:attribute:: TODAY
+      :value: "TODAY"
+
+   .. py:attribute:: YESTERDAY
+      :value: "YESTERDAY"
+
+.. autoclass:: DateValue
+   :members:
+   :undoc-members:
+
+.. py:class:: DateValueDynamicDate
+
+   .. py:attribute:: NOW
+      :value: "NOW"
+
+   .. py:attribute:: YESTERDAY
+      :value: "YESTERDAY"
+
 .. autoclass:: DeleteResponse
    :members:
    :undoc-members:
@@ -202,13 +348,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. py:class:: Disposition
-
-   The fetch disposition provides two modes of fetching results: `INLINE` and `EXTERNAL_LINKS`.
-   Statements executed with `INLINE` disposition will return result data inline, in `JSON_ARRAY` format, in a series of chunks. If a given statement produces a result set with a size larger than 25 MiB, that statement execution is aborted, and no result set will be available.
-   **NOTE** Byte limits are computed based upon internal representations of the result set data, and might not match the sizes visible in JSON responses.
-   Statements executed with `EXTERNAL_LINKS` disposition will return result data as external links: URLs that point to cloud storage internal to the workspace. Using `EXTERNAL_LINKS` disposition allows statements to generate arbitrarily sized result sets for fetching up to 100 GiB. The resulting links have two important properties:
-   1. They point to resources _external_ to the Databricks compute; therefore any associated authentication information (typically a personal access token, OAuth token, or similar) _must be removed_ when fetching from these links.
-   2. These are presigned URLs with a specific expiration, indicated in the response. The behavior when attempting to use an expired link is cloud specific.
 
    .. py:attribute:: EXTERNAL_LINKS
       :value: "EXTERNAL_LINKS"
@@ -238,6 +377,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "TYPE_UNSPECIFIED"
 
 .. autoclass:: EditWarehouseResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: Empty
    :members:
    :undoc-members:
 
@@ -274,6 +417,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: EnumValue
+   :members:
+   :undoc-members:
+
 .. autoclass:: ExecuteStatementRequest
    :members:
    :undoc-members:
@@ -287,10 +434,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: CONTINUE
       :value: "CONTINUE"
-
-.. autoclass:: ExecuteStatementResponse
-   :members:
-   :undoc-members:
 
 .. autoclass:: ExternalLink
    :members:
@@ -308,10 +451,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "JSON_ARRAY"
 
 .. autoclass:: GetResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: GetStatementResponse
    :members:
    :undoc-members:
 
@@ -353,6 +492,47 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: PASSTHROUGH
       :value: "PASSTHROUGH"
 
+.. autoclass:: LegacyAlert
+   :members:
+   :undoc-members:
+
+.. py:class:: LegacyAlertState
+
+   State of the alert. Possible values are: `unknown` (yet to be evaluated), `triggered` (evaluated and fulfilled trigger conditions), or `ok` (evaluated and did not fulfill trigger conditions).
+
+   .. py:attribute:: OK
+      :value: "OK"
+
+   .. py:attribute:: TRIGGERED
+      :value: "TRIGGERED"
+
+   .. py:attribute:: UNKNOWN
+      :value: "UNKNOWN"
+
+.. autoclass:: LegacyQuery
+   :members:
+   :undoc-members:
+
+.. autoclass:: LegacyVisualization
+   :members:
+   :undoc-members:
+
+.. py:class:: LifecycleState
+
+   .. py:attribute:: ACTIVE
+      :value: "ACTIVE"
+
+   .. py:attribute:: TRASHED
+      :value: "TRASHED"
+
+.. autoclass:: ListAlertsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListAlertsResponseAlert
+   :members:
+   :undoc-members:
+
 .. py:class:: ListOrder
 
    .. py:attribute:: CREATED_AT
@@ -365,7 +545,19 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ListQueryObjectsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListQueryObjectsResponseQuery
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListVisualizationsForQueryResponse
    :members:
    :undoc-members:
 
@@ -374,6 +566,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: MultiValuesOptions
+   :members:
+   :undoc-members:
+
+.. autoclass:: NumericValue
    :members:
    :undoc-members:
 
@@ -467,7 +663,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: PlansState
 
-   Whether plans exist for the execution, or the reason why they are missing
+   Possible Reasons for which we have not saved plans in the database
 
    .. py:attribute:: EMPTY
       :value: "EMPTY"
@@ -488,6 +684,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "UNKNOWN"
 
 .. autoclass:: Query
+   :members:
+   :undoc-members:
+
+.. autoclass:: QueryBackedValue
    :members:
    :undoc-members:
 
@@ -515,13 +715,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: QueryParameter
+   :members:
+   :undoc-members:
+
 .. autoclass:: QueryPostContent
    :members:
    :undoc-members:
 
 .. py:class:: QueryStatementType
-
-   Type of statement for this query
 
    .. py:attribute:: ALTER
       :value: "ALTER"
@@ -591,10 +793,16 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: QueryStatus
 
-   Query status with one the following values: * `QUEUED`: Query has been received and queued. * `RUNNING`: Query has started. * `CANCELED`: Query has been cancelled by the user. * `FAILED`: Query has failed. * `FINISHED`: Query has completed.
+   Statuses which are also used by OperationStatus in runtime
 
    .. py:attribute:: CANCELED
       :value: "CANCELED"
+
+   .. py:attribute:: COMPILED
+      :value: "COMPILED"
+
+   .. py:attribute:: COMPILING
+      :value: "COMPILING"
 
    .. py:attribute:: FAILED
       :value: "FAILED"
@@ -607,6 +815,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: RUNNING
       :value: "RUNNING"
+
+   .. py:attribute:: STARTED
+      :value: "STARTED"
 
 .. autoclass:: RepeatedEndpointConfPairs
    :members:
@@ -627,6 +838,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: ResultSchema
    :members:
    :undoc-members:
+
+.. py:class:: RunAsMode
+
+   .. py:attribute:: OWNER
+      :value: "OWNER"
+
+   .. py:attribute:: VIEWER
+      :value: "VIEWER"
 
 .. py:class:: RunAsRole
 
@@ -751,6 +970,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "STOPPING"
 
 .. autoclass:: StatementParameterListItem
+   :members:
+   :undoc-members:
+
+.. autoclass:: StatementResponse
    :members:
    :undoc-members:
 
@@ -1070,6 +1293,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: SUCCESS
       :value: "SUCCESS"
 
+.. autoclass:: TextValue
+   :members:
+   :undoc-members:
+
 .. autoclass:: TimeRange
    :members:
    :undoc-members:
@@ -1078,7 +1305,31 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: UpdateAlertRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateAlertRequestAlert
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateQueryRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateQueryRequestQuery
+   :members:
+   :undoc-members:
+
 .. autoclass:: UpdateResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateVisualizationRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateVisualizationRequestVisualization
    :members:
    :undoc-members:
 
@@ -1108,6 +1359,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: CAN_MANAGE
       :value: "CAN_MANAGE"
+
+   .. py:attribute:: CAN_MONITOR
+      :value: "CAN_MONITOR"
 
    .. py:attribute:: CAN_USE
       :value: "CAN_USE"

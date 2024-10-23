@@ -45,6 +45,7 @@ The SDK's internal HTTP client is robust and handles failures on different level
 - [Long-running operations](#long-running-operations)
 - [Paginated responses](#paginated-responses)
 - [Single-sign-on with OAuth](#single-sign-on-sso-with-oauth)
+- [User Agent Request Attribution](#user-agent-request-attribution)
 - [Error handling](#error-handling)
 - [Logging](#logging)
 - [Integration with `dbutils`](#interaction-with-dbutils)
@@ -522,6 +523,29 @@ logging.info(f'Created new custom app: '
              f'--client_id {custom_app.client_id} '
              f'--client_secret {custom_app.client_secret}')
 ```
+
+## User Agent Request Attribution<a id="user-agent-request-attribution"></a>
+
+The Databricks SDK for Python uses the `User-Agent` header to include request metadata along with each request. By default, this includes the version of the Python SDK, the version of the Python language used by your application, and the underlying operating system. To statically add additional metadata, you can use the `with_partner()` and `with_product()` functions in the `databricks.sdk.useragent` module. `with_partner()` can be used by partners to indicate that code using the Databricks SDK for Go should be attributed to a specific partner. Multiple partners can be registered at once. Partner names can contain any number, digit, `.`, `-`, `_` or `+`.
+
+```python
+from databricks.sdk import useragent
+useragent.with_product("partner-abc")
+useragent.with_partner("partner-xyz")
+```
+
+`with_product()` can be used to define the name and version of the product that is built with the Databricks SDK for Python. The product name has the same restrictions as the partner name above, and the product version must be a valid [SemVer](https://semver.org/). Subsequent calls to `with_product()` replace the original product with the new user-specified one.
+
+```go
+from databricks.sdk import useragent
+useragent.with_product("databricks-example-product", "1.2.0")
+```
+
+If both the `DATABRICKS_SDK_UPSTREAM` and `DATABRICKS_SDK_UPSTREAM_VERSION` environment variables are defined, these will also be included in the `User-Agent` header.
+
+If additional metadata needs to be specified that isn't already supported by the above interfaces, you can use the `with_user_agent_extra()` function to register arbitrary key-value pairs to include in the user agent. Multiple values associated with the same key are allowed. Keys have the same restrictions as the partner name above. Values must be either as described above or SemVer strings.
+
+Additional `User-Agent` information can be associated with different instances of `DatabricksConfig`. To add metadata to a specific instance of `DatabricksConfig`, use the `with_user_agent_extra()` method.
 
 ## Error handling<a id="error-handling"></a>
 

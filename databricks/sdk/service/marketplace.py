@@ -56,7 +56,6 @@ class AssetType(Enum):
     ASSET_TYPE_MEDIA = 'ASSET_TYPE_MEDIA'
     ASSET_TYPE_MODEL = 'ASSET_TYPE_MODEL'
     ASSET_TYPE_NOTEBOOK = 'ASSET_TYPE_NOTEBOOK'
-    ASSET_TYPE_UNSPECIFIED = 'ASSET_TYPE_UNSPECIFIED'
 
 
 @dataclass
@@ -804,11 +803,6 @@ class FileStatus(Enum):
     FILE_STATUS_STAGING = 'FILE_STATUS_STAGING'
 
 
-class FilterType(Enum):
-
-    METASTORE = 'METASTORE'
-
-
 class FulfillmentType(Enum):
 
     INSTALL = 'INSTALL'
@@ -1297,16 +1291,11 @@ class Listing:
 
     id: Optional[str] = None
 
-    provider_summary: Optional[ProviderListingSummaryInfo] = None
-    """we can not use just ProviderListingSummary since we already have same name on entity side of the
-    state"""
-
     def as_dict(self) -> dict:
         """Serializes the Listing into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.detail: body['detail'] = self.detail.as_dict()
         if self.id is not None: body['id'] = self.id
-        if self.provider_summary: body['provider_summary'] = self.provider_summary.as_dict()
         if self.summary: body['summary'] = self.summary.as_dict()
         return body
 
@@ -1315,7 +1304,6 @@ class Listing:
         """Deserializes the Listing from a dictionary."""
         return cls(detail=_from_dict(d, 'detail', ListingDetail),
                    id=d.get('id', None),
-                   provider_summary=_from_dict(d, 'provider_summary', ProviderListingSummaryInfo),
                    summary=_from_dict(d, 'summary', ListingSummary))
 
 
@@ -1461,23 +1449,18 @@ class ListingFulfillment:
 
 @dataclass
 class ListingSetting:
-    filters: Optional[List[VisibilityFilter]] = None
-    """filters are joined with `or` conjunction."""
-
     visibility: Optional[Visibility] = None
 
     def as_dict(self) -> dict:
         """Serializes the ListingSetting into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.filters: body['filters'] = [v.as_dict() for v in self.filters]
         if self.visibility is not None: body['visibility'] = self.visibility.value
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListingSetting:
         """Deserializes the ListingSetting from a dictionary."""
-        return cls(filters=_repeated_dict(d, 'filters', VisibilityFilter),
-                   visibility=_enum(d, 'visibility', Visibility))
+        return cls(visibility=_enum(d, 'visibility', Visibility))
 
 
 class ListingShareType(Enum):
@@ -1517,8 +1500,6 @@ class ListingSummary:
     """if a git repo is being created, a listing will be initialized with this field as opposed to a
     share"""
 
-    metastore_id: Optional[str] = None
-
     provider_id: Optional[str] = None
 
     provider_region: Optional[RegionInfo] = None
@@ -1552,7 +1533,6 @@ class ListingSummary:
         if self.exchange_ids: body['exchange_ids'] = [v for v in self.exchange_ids]
         if self.git_repo: body['git_repo'] = self.git_repo.as_dict()
         if self.listing_type is not None: body['listingType'] = self.listing_type.value
-        if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
         if self.name is not None: body['name'] = self.name
         if self.provider_id is not None: body['provider_id'] = self.provider_id
         if self.provider_region: body['provider_region'] = self.provider_region.as_dict()
@@ -1577,7 +1557,6 @@ class ListingSummary:
                    exchange_ids=d.get('exchange_ids', None),
                    git_repo=_from_dict(d, 'git_repo', RepoInfo),
                    listing_type=_enum(d, 'listingType', ListingType),
-                   metastore_id=d.get('metastore_id', None),
                    name=d.get('name', None),
                    provider_id=d.get('provider_id', None),
                    provider_region=_from_dict(d, 'provider_region', RegionInfo),
@@ -1617,7 +1596,6 @@ class ListingTagType(Enum):
 
     LISTING_TAG_TYPE_LANGUAGE = 'LISTING_TAG_TYPE_LANGUAGE'
     LISTING_TAG_TYPE_TASK = 'LISTING_TAG_TYPE_TASK'
-    LISTING_TAG_TYPE_UNSPECIFIED = 'LISTING_TAG_TYPE_UNSPECIFIED'
 
 
 class ListingType(Enum):
@@ -1734,37 +1712,6 @@ class ProviderAnalyticsDashboard:
 
 
 @dataclass
-class ProviderIconFile:
-    icon_file_id: Optional[str] = None
-
-    icon_file_path: Optional[str] = None
-
-    icon_type: Optional[ProviderIconType] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the ProviderIconFile into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.icon_file_id is not None: body['icon_file_id'] = self.icon_file_id
-        if self.icon_file_path is not None: body['icon_file_path'] = self.icon_file_path
-        if self.icon_type is not None: body['icon_type'] = self.icon_type.value
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ProviderIconFile:
-        """Deserializes the ProviderIconFile from a dictionary."""
-        return cls(icon_file_id=d.get('icon_file_id', None),
-                   icon_file_path=d.get('icon_file_path', None),
-                   icon_type=_enum(d, 'icon_type', ProviderIconType))
-
-
-class ProviderIconType(Enum):
-
-    DARK = 'DARK'
-    PRIMARY = 'PRIMARY'
-    PROVIDER_ICON_TYPE_UNSPECIFIED = 'PROVIDER_ICON_TYPE_UNSPECIFIED'
-
-
-@dataclass
 class ProviderInfo:
     name: str
 
@@ -1835,33 +1782,6 @@ class ProviderInfo:
                    published_by=d.get('published_by', None),
                    support_contact_email=d.get('support_contact_email', None),
                    term_of_service_link=d.get('term_of_service_link', None))
-
-
-@dataclass
-class ProviderListingSummaryInfo:
-    """we can not use just ProviderListingSummary since we already have same name on entity side of the
-    state"""
-
-    description: Optional[str] = None
-
-    icon_files: Optional[List[ProviderIconFile]] = None
-
-    name: Optional[str] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the ProviderListingSummaryInfo into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.description is not None: body['description'] = self.description
-        if self.icon_files: body['icon_files'] = [v.as_dict() for v in self.icon_files]
-        if self.name is not None: body['name'] = self.name
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ProviderListingSummaryInfo:
-        """Deserializes the ProviderListingSummaryInfo from a dictionary."""
-        return cls(description=d.get('description', None),
-                   icon_files=_repeated_dict(d, 'icon_files', ProviderIconFile),
-                   name=d.get('name', None))
 
 
 @dataclass
@@ -1994,14 +1914,6 @@ class SharedDataObject:
     def from_dict(cls, d: Dict[str, any]) -> SharedDataObject:
         """Deserializes the SharedDataObject from a dictionary."""
         return cls(data_object_type=d.get('data_object_type', None), name=d.get('name', None))
-
-
-class SortBy(Enum):
-
-    SORT_BY_DATE = 'SORT_BY_DATE'
-    SORT_BY_RELEVANCE = 'SORT_BY_RELEVANCE'
-    SORT_BY_TITLE = 'SORT_BY_TITLE'
-    SORT_BY_UNSPECIFIED = 'SORT_BY_UNSPECIFIED'
 
 
 @dataclass
@@ -2369,25 +2281,6 @@ class Visibility(Enum):
     PUBLIC = 'PUBLIC'
 
 
-@dataclass
-class VisibilityFilter:
-    filter_type: Optional[FilterType] = None
-
-    filter_value: Optional[str] = None
-
-    def as_dict(self) -> dict:
-        """Serializes the VisibilityFilter into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.filter_type is not None: body['filterType'] = self.filter_type.value
-        if self.filter_value is not None: body['filterValue'] = self.filter_value
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> VisibilityFilter:
-        """Deserializes the VisibilityFilter from a dictionary."""
-        return cls(filter_type=_enum(d, 'filterType', FilterType), filter_value=d.get('filterValue', None))
-
-
 class ConsumerFulfillmentsAPI:
     """Fulfillments are entities that allow consumers to preview installations."""
 
@@ -2667,14 +2560,12 @@ class ConsumerListingsAPI:
              *,
              assets: Optional[List[AssetType]] = None,
              categories: Optional[List[Category]] = None,
-             is_ascending: Optional[bool] = None,
              is_free: Optional[bool] = None,
              is_private_exchange: Optional[bool] = None,
              is_staff_pick: Optional[bool] = None,
              page_size: Optional[int] = None,
              page_token: Optional[str] = None,
              provider_ids: Optional[List[str]] = None,
-             sort_by: Optional[SortBy] = None,
              tags: Optional[List[ListingTag]] = None) -> Iterator[Listing]:
         """List listings.
         
@@ -2684,7 +2575,6 @@ class ConsumerListingsAPI:
           Matches any of the following asset types
         :param categories: List[:class:`Category`] (optional)
           Matches any of the following categories
-        :param is_ascending: bool (optional)
         :param is_free: bool (optional)
           Filters each listing based on if it is free.
         :param is_private_exchange: bool (optional)
@@ -2695,8 +2585,6 @@ class ConsumerListingsAPI:
         :param page_token: str (optional)
         :param provider_ids: List[str] (optional)
           Matches any of the following provider ids
-        :param sort_by: :class:`SortBy` (optional)
-          Criteria for sorting the resulting set of listings.
         :param tags: List[:class:`ListingTag`] (optional)
           Matches any of the following tags
         
@@ -2706,14 +2594,12 @@ class ConsumerListingsAPI:
         query = {}
         if assets is not None: query['assets'] = [v.value for v in assets]
         if categories is not None: query['categories'] = [v.value for v in categories]
-        if is_ascending is not None: query['is_ascending'] = is_ascending
         if is_free is not None: query['is_free'] = is_free
         if is_private_exchange is not None: query['is_private_exchange'] = is_private_exchange
         if is_staff_pick is not None: query['is_staff_pick'] = is_staff_pick
         if page_size is not None: query['page_size'] = page_size
         if page_token is not None: query['page_token'] = page_token
         if provider_ids is not None: query['provider_ids'] = [v for v in provider_ids]
-        if sort_by is not None: query['sort_by'] = sort_by.value
         if tags is not None: query['tags'] = [v.as_dict() for v in tags]
         headers = {'Accept': 'application/json', }
 
@@ -2731,13 +2617,11 @@ class ConsumerListingsAPI:
                *,
                assets: Optional[List[AssetType]] = None,
                categories: Optional[List[Category]] = None,
-               is_ascending: Optional[bool] = None,
                is_free: Optional[bool] = None,
                is_private_exchange: Optional[bool] = None,
                page_size: Optional[int] = None,
                page_token: Optional[str] = None,
-               provider_ids: Optional[List[str]] = None,
-               sort_by: Optional[SortBy] = None) -> Iterator[Listing]:
+               provider_ids: Optional[List[str]] = None) -> Iterator[Listing]:
         """Search listings.
         
         Search published listings in the Databricks Marketplace that the consumer has access to. This query
@@ -2749,14 +2633,12 @@ class ConsumerListingsAPI:
           Matches any of the following asset types
         :param categories: List[:class:`Category`] (optional)
           Matches any of the following categories
-        :param is_ascending: bool (optional)
         :param is_free: bool (optional)
         :param is_private_exchange: bool (optional)
         :param page_size: int (optional)
         :param page_token: str (optional)
         :param provider_ids: List[str] (optional)
           Matches any of the following provider ids
-        :param sort_by: :class:`SortBy` (optional)
         
         :returns: Iterator over :class:`Listing`
         """
@@ -2764,14 +2646,12 @@ class ConsumerListingsAPI:
         query = {}
         if assets is not None: query['assets'] = [v.value for v in assets]
         if categories is not None: query['categories'] = [v.value for v in categories]
-        if is_ascending is not None: query['is_ascending'] = is_ascending
         if is_free is not None: query['is_free'] = is_free
         if is_private_exchange is not None: query['is_private_exchange'] = is_private_exchange
         if page_size is not None: query['page_size'] = page_size
         if page_token is not None: query['page_token'] = page_token
         if provider_ids is not None: query['provider_ids'] = [v for v in provider_ids]
         if query is not None: query['query'] = query
-        if sort_by is not None: query['sort_by'] = sort_by.value
         headers = {'Accept': 'application/json', }
 
         while True:

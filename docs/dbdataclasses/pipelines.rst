@@ -97,6 +97,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: IngestionPipelineDefinition
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListPipelineEventsResponse
    :members:
    :undoc-members:
@@ -106,10 +110,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ListUpdatesResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: ManagedIngestionPipelineDefinition
    :members:
    :undoc-members:
 
@@ -251,7 +251,21 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: PipelineStateInfoHealth
+
+   The health of a pipeline.
+
+   .. py:attribute:: HEALTHY
+      :value: "HEALTHY"
+
+   .. py:attribute:: UNHEALTHY
+      :value: "UNHEALTHY"
+
 .. autoclass:: PipelineTrigger
+   :members:
+   :undoc-members:
+
+.. autoclass:: ReportSpec
    :members:
    :undoc-members:
 

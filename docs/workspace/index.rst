@@ -7,6 +7,7 @@ These APIs are available from WorkspaceClient
 .. toctree::
    :maxdepth: 1
 
+   apps/index
    catalog/index
    compute/index
    dashboards/index

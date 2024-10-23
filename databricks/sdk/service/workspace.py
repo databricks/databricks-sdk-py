@@ -64,11 +64,11 @@ class AzureKeyVaultSecretScopeMetadata:
 
 
 @dataclass
-class CreateCredentials:
+class CreateCredentialsRequest:
     git_provider: str
-    """Git provider. This field is case-insensitive. The available Git providers are gitHub,
-    bitbucketCloud, gitLab, azureDevOpsServices, gitHubEnterprise, bitbucketServer,
-    gitLabEnterpriseEdition and awsCodeCommit."""
+    """Git provider. This field is case-insensitive. The available Git providers are `gitHub`,
+    `bitbucketCloud`, `gitLab`, `azureDevOpsServices`, `gitHubEnterprise`, `bitbucketServer`,
+    `gitLabEnterpriseEdition` and `awsCodeCommit`."""
 
     git_username: Optional[str] = None
     """The username or email provided with your Git provider account, depending on which provider you
@@ -79,13 +79,12 @@ class CreateCredentials:
 
     personal_access_token: Optional[str] = None
     """The personal access token used to authenticate to the corresponding Git provider. For certain
-    providers, support may exist for other types of scoped access tokens. [Learn more]. The personal
-    access token used to authenticate to the corresponding Git
+    providers, support may exist for other types of scoped access tokens. [Learn more].
     
     [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html"""
 
     def as_dict(self) -> dict:
-        """Serializes the CreateCredentials into a dictionary suitable for use as a JSON request body."""
+        """Serializes the CreateCredentialsRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.git_provider is not None: body['git_provider'] = self.git_provider
         if self.git_username is not None: body['git_username'] = self.git_username
@@ -93,8 +92,8 @@ class CreateCredentials:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateCredentials:
-        """Deserializes the CreateCredentials from a dictionary."""
+    def from_dict(cls, d: Dict[str, any]) -> CreateCredentialsRequest:
+        """Deserializes the CreateCredentialsRequest from a dictionary."""
         return cls(git_provider=d.get('git_provider', None),
                    git_username=d.get('git_username', None),
                    personal_access_token=d.get('personal_access_token', None))
@@ -102,20 +101,15 @@ class CreateCredentials:
 
 @dataclass
 class CreateCredentialsResponse:
-    credential_id: Optional[int] = None
+    credential_id: int
     """ID of the credential object in the workspace."""
 
-    git_provider: Optional[str] = None
-    """Git provider. This field is case-insensitive. The available Git providers are gitHub,
-    bitbucketCloud, gitLab, azureDevOpsServices, gitHubEnterprise, bitbucketServer,
-    gitLabEnterpriseEdition and awsCodeCommit."""
+    git_provider: str
+    """The Git provider associated with the credential."""
 
     git_username: Optional[str] = None
-    """The username or email provided with your Git provider account, depending on which provider you
-    are using. For GitHub, GitHub Enterprise Server, or Azure DevOps Services, either email or
-    username may be used. For GitLab, GitLab Enterprise Edition, email must be used. For AWS
-    CodeCommit, BitBucket or BitBucket Server, username must be used. For all other providers please
-    see your provider's Personal Access Token authentication documentation to see what is supported."""
+    """The username or email provided with your Git provider account and associated with the
+    credential."""
 
     def as_dict(self) -> dict:
         """Serializes the CreateCredentialsResponse into a dictionary suitable for use as a JSON request body."""
@@ -134,25 +128,25 @@ class CreateCredentialsResponse:
 
 
 @dataclass
-class CreateRepo:
+class CreateRepoRequest:
     url: str
     """URL of the Git repository to be linked."""
 
     provider: str
-    """Git provider. This field is case-insensitive. The available Git providers are gitHub,
-    bitbucketCloud, gitLab, azureDevOpsServices, gitHubEnterprise, bitbucketServer,
-    gitLabEnterpriseEdition and awsCodeCommit."""
+    """Git provider. This field is case-insensitive. The available Git providers are `gitHub`,
+    `bitbucketCloud`, `gitLab`, `azureDevOpsServices`, `gitHubEnterprise`, `bitbucketServer`,
+    `gitLabEnterpriseEdition` and `awsCodeCommit`."""
 
     path: Optional[str] = None
     """Desired path for the repo in the workspace. Almost any path in the workspace can be chosen. If
-    repo is created in /Repos, path must be in the format /Repos/{folder}/{repo-name}."""
+    repo is created in `/Repos`, path must be in the format `/Repos/{folder}/{repo-name}`."""
 
     sparse_checkout: Optional[SparseCheckout] = None
     """If specified, the repo will be created with sparse checkout enabled. You cannot enable/disable
     sparse checkout after the repo is created."""
 
     def as_dict(self) -> dict:
-        """Serializes the CreateRepo into a dictionary suitable for use as a JSON request body."""
+        """Serializes the CreateRepoRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.path is not None: body['path'] = self.path
         if self.provider is not None: body['provider'] = self.provider
@@ -161,9 +155,56 @@ class CreateRepo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateRepo:
-        """Deserializes the CreateRepo from a dictionary."""
+    def from_dict(cls, d: Dict[str, any]) -> CreateRepoRequest:
+        """Deserializes the CreateRepoRequest from a dictionary."""
         return cls(path=d.get('path', None),
+                   provider=d.get('provider', None),
+                   sparse_checkout=_from_dict(d, 'sparse_checkout', SparseCheckout),
+                   url=d.get('url', None))
+
+
+@dataclass
+class CreateRepoResponse:
+    branch: Optional[str] = None
+    """Branch that the Git folder (repo) is checked out to."""
+
+    head_commit_id: Optional[str] = None
+    """SHA-1 hash representing the commit ID of the current HEAD of the Git folder (repo)."""
+
+    id: Optional[int] = None
+    """ID of the Git folder (repo) object in the workspace."""
+
+    path: Optional[str] = None
+    """Path of the Git folder (repo) in the workspace."""
+
+    provider: Optional[str] = None
+    """Git provider of the linked Git repository."""
+
+    sparse_checkout: Optional[SparseCheckout] = None
+    """Sparse checkout settings for the Git folder (repo)."""
+
+    url: Optional[str] = None
+    """URL of the linked Git repository."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CreateRepoResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.branch is not None: body['branch'] = self.branch
+        if self.head_commit_id is not None: body['head_commit_id'] = self.head_commit_id
+        if self.id is not None: body['id'] = self.id
+        if self.path is not None: body['path'] = self.path
+        if self.provider is not None: body['provider'] = self.provider
+        if self.sparse_checkout: body['sparse_checkout'] = self.sparse_checkout.as_dict()
+        if self.url is not None: body['url'] = self.url
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> CreateRepoResponse:
+        """Deserializes the CreateRepoResponse from a dictionary."""
+        return cls(branch=d.get('branch', None),
+                   head_commit_id=d.get('head_commit_id', None),
+                   id=d.get('id', None),
+                   path=d.get('path', None),
                    provider=d.get('provider', None),
                    sparse_checkout=_from_dict(d, 'sparse_checkout', SparseCheckout),
                    url=d.get('url', None))
@@ -219,20 +260,15 @@ class CreateScopeResponse:
 
 @dataclass
 class CredentialInfo:
-    credential_id: Optional[int] = None
+    credential_id: int
     """ID of the credential object in the workspace."""
 
     git_provider: Optional[str] = None
-    """Git provider. This field is case-insensitive. The available Git providers are gitHub,
-    gitHubOAuth, bitbucketCloud, gitLab, azureDevOpsServices, gitHubEnterprise, bitbucketServer,
-    gitLabEnterpriseEdition and awsCodeCommit."""
+    """The Git provider associated with the credential."""
 
     git_username: Optional[str] = None
-    """The username or email provided with your Git provider account, depending on which provider you
-    are using. For GitHub, GitHub Enterprise Server, or Azure DevOps Services, either email or
-    username may be used. For GitLab, GitLab Enterprise Edition, email must be used. For AWS
-    CodeCommit, BitBucket or BitBucket Server, username must be used. For all other providers please
-    see your provider's Personal Access Token authentication documentation to see what is supported."""
+    """The username or email provided with your Git provider account and associated with the
+    credential."""
 
     def as_dict(self) -> dict:
         """Serializes the CredentialInfo into a dictionary suitable for use as a JSON request body."""
@@ -305,6 +341,34 @@ class DeleteAclResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> DeleteAclResponse:
         """Deserializes the DeleteAclResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
+class DeleteCredentialsResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteCredentialsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteCredentialsResponse:
+        """Deserializes the DeleteCredentialsResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
+class DeleteRepoResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteRepoResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteRepoResponse:
+        """Deserializes the DeleteRepoResponse from a dictionary."""
         return cls()
 
 
@@ -422,18 +486,30 @@ class ExportResponse:
 
 @dataclass
 class GetCredentialsResponse:
-    credentials: Optional[List[CredentialInfo]] = None
+    credential_id: int
+    """ID of the credential object in the workspace."""
+
+    git_provider: Optional[str] = None
+    """The Git provider associated with the credential."""
+
+    git_username: Optional[str] = None
+    """The username or email provided with your Git provider account and associated with the
+    credential."""
 
     def as_dict(self) -> dict:
         """Serializes the GetCredentialsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.credentials: body['credentials'] = [v.as_dict() for v in self.credentials]
+        if self.credential_id is not None: body['credential_id'] = self.credential_id
+        if self.git_provider is not None: body['git_provider'] = self.git_provider
+        if self.git_username is not None: body['git_username'] = self.git_username
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> GetCredentialsResponse:
         """Deserializes the GetCredentialsResponse from a dictionary."""
-        return cls(credentials=_repeated_dict(d, 'credentials', CredentialInfo))
+        return cls(credential_id=d.get('credential_id', None),
+                   git_provider=d.get('git_provider', None),
+                   git_username=d.get('git_username', None))
 
 
 @dataclass
@@ -451,6 +527,53 @@ class GetRepoPermissionLevelsResponse:
     def from_dict(cls, d: Dict[str, any]) -> GetRepoPermissionLevelsResponse:
         """Deserializes the GetRepoPermissionLevelsResponse from a dictionary."""
         return cls(permission_levels=_repeated_dict(d, 'permission_levels', RepoPermissionsDescription))
+
+
+@dataclass
+class GetRepoResponse:
+    branch: Optional[str] = None
+    """Branch that the local version of the repo is checked out to."""
+
+    head_commit_id: Optional[str] = None
+    """SHA-1 hash representing the commit ID of the current HEAD of the repo."""
+
+    id: Optional[int] = None
+    """ID of the Git folder (repo) object in the workspace."""
+
+    path: Optional[str] = None
+    """Path of the Git folder (repo) in the workspace."""
+
+    provider: Optional[str] = None
+    """Git provider of the linked Git repository."""
+
+    sparse_checkout: Optional[SparseCheckout] = None
+    """Sparse checkout settings for the Git folder (repo)."""
+
+    url: Optional[str] = None
+    """URL of the linked Git repository."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GetRepoResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.branch is not None: body['branch'] = self.branch
+        if self.head_commit_id is not None: body['head_commit_id'] = self.head_commit_id
+        if self.id is not None: body['id'] = self.id
+        if self.path is not None: body['path'] = self.path
+        if self.provider is not None: body['provider'] = self.provider
+        if self.sparse_checkout: body['sparse_checkout'] = self.sparse_checkout.as_dict()
+        if self.url is not None: body['url'] = self.url
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> GetRepoResponse:
+        """Deserializes the GetRepoResponse from a dictionary."""
+        return cls(branch=d.get('branch', None),
+                   head_commit_id=d.get('head_commit_id', None),
+                   id=d.get('id', None),
+                   path=d.get('path', None),
+                   provider=d.get('provider', None),
+                   sparse_checkout=_from_dict(d, 'sparse_checkout', SparseCheckout),
+                   url=d.get('url', None))
 
 
 @dataclass
@@ -606,12 +729,30 @@ class ListAclsResponse:
 
 
 @dataclass
+class ListCredentialsResponse:
+    credentials: Optional[List[CredentialInfo]] = None
+    """List of credentials."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListCredentialsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.credentials: body['credentials'] = [v.as_dict() for v in self.credentials]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ListCredentialsResponse:
+        """Deserializes the ListCredentialsResponse from a dictionary."""
+        return cls(credentials=_repeated_dict(d, 'credentials', CredentialInfo))
+
+
+@dataclass
 class ListReposResponse:
     next_page_token: Optional[str] = None
-    """Token that can be specified as a query parameter to the GET /repos endpoint to retrieve the next
-    page of results."""
+    """Token that can be specified as a query parameter to the `GET /repos` endpoint to retrieve the
+    next page of results."""
 
     repos: Optional[List[RepoInfo]] = None
+    """List of Git folders (repos)."""
 
     def as_dict(self) -> dict:
         """Serializes the ListReposResponse into a dictionary suitable for use as a JSON request body."""
@@ -940,28 +1081,28 @@ class RepoAccessControlResponse:
 
 @dataclass
 class RepoInfo:
+    """Git folder (repo) information."""
+
     branch: Optional[str] = None
-    """Branch that the local version of the repo is checked out to."""
+    """Name of the current git branch of the git folder (repo)."""
 
     head_commit_id: Optional[str] = None
-    """SHA-1 hash representing the commit ID of the current HEAD of the repo."""
+    """Current git commit id of the git folder (repo)."""
 
     id: Optional[int] = None
-    """ID of the repo object in the workspace."""
+    """Id of the git folder (repo) in the Workspace."""
 
     path: Optional[str] = None
-    """Desired path for the repo in the workspace. Almost any path in the workspace can be chosen. If
-    repo is created in /Repos, path must be in the format /Repos/{folder}/{repo-name}."""
+    """Root path of the git folder (repo) in the Workspace."""
 
     provider: Optional[str] = None
-    """Git provider. This field is case-insensitive. The available Git providers are gitHub,
-    bitbucketCloud, gitLab, azureDevOpsServices, gitHubEnterprise, bitbucketServer,
-    gitLabEnterpriseEdition and awsCodeCommit."""
+    """Git provider of the remote git repository, e.g. `gitHub`."""
 
     sparse_checkout: Optional[SparseCheckout] = None
+    """Sparse checkout config for the git folder (repo)."""
 
     url: Optional[str] = None
-    """URL of the Git repository to be linked."""
+    """URL of the remote git repository."""
 
     def as_dict(self) -> dict:
         """Serializes the RepoInfo into a dictionary suitable for use as a JSON request body."""
@@ -1146,8 +1287,12 @@ class SecretScope:
 
 @dataclass
 class SparseCheckout:
+    """Sparse checkout configuration, it contains options like cone patterns."""
+
     patterns: Optional[List[str]] = None
-    """List of patterns to include for sparse checkout."""
+    """List of sparse checkout cone patterns, see [cone mode handling] for details.
+    
+    [cone mode handling]: https://git-scm.com/docs/git-sparse-checkout#_internalscone_mode_handling"""
 
     def as_dict(self) -> dict:
         """Serializes the SparseCheckout into a dictionary suitable for use as a JSON request body."""
@@ -1163,8 +1308,12 @@ class SparseCheckout:
 
 @dataclass
 class SparseCheckoutUpdate:
+    """Sparse checkout configuration, it contains options like cone patterns."""
+
     patterns: Optional[List[str]] = None
-    """List of patterns to include for sparse checkout."""
+    """List of sparse checkout cone patterns, see [cone mode handling] for details.
+    
+    [cone mode handling]: https://git-scm.com/docs/git-sparse-checkout#_internalscone_mode_handling"""
 
     def as_dict(self) -> dict:
         """Serializes the SparseCheckoutUpdate into a dictionary suitable for use as a JSON request body."""
@@ -1179,14 +1328,14 @@ class SparseCheckoutUpdate:
 
 
 @dataclass
-class UpdateCredentials:
+class UpdateCredentialsRequest:
+    git_provider: str
+    """Git provider. This field is case-insensitive. The available Git providers are `gitHub`,
+    `bitbucketCloud`, `gitLab`, `azureDevOpsServices`, `gitHubEnterprise`, `bitbucketServer`,
+    `gitLabEnterpriseEdition` and `awsCodeCommit`."""
+
     credential_id: Optional[int] = None
     """The ID for the corresponding credential to access."""
-
-    git_provider: Optional[str] = None
-    """Git provider. This field is case-insensitive. The available Git providers are gitHub,
-    bitbucketCloud, gitLab, azureDevOpsServices, gitHubEnterprise, bitbucketServer,
-    gitLabEnterpriseEdition and awsCodeCommit."""
 
     git_username: Optional[str] = None
     """The username or email provided with your Git provider account, depending on which provider you
@@ -1197,13 +1346,12 @@ class UpdateCredentials:
 
     personal_access_token: Optional[str] = None
     """The personal access token used to authenticate to the corresponding Git provider. For certain
-    providers, support may exist for other types of scoped access tokens. [Learn more]. The personal
-    access token used to authenticate to the corresponding Git
+    providers, support may exist for other types of scoped access tokens. [Learn more].
     
     [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html"""
 
     def as_dict(self) -> dict:
-        """Serializes the UpdateCredentials into a dictionary suitable for use as a JSON request body."""
+        """Serializes the UpdateCredentialsRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.credential_id is not None: body['credential_id'] = self.credential_id
         if self.git_provider is not None: body['git_provider'] = self.git_provider
@@ -1212,8 +1360,8 @@ class UpdateCredentials:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateCredentials:
-        """Deserializes the UpdateCredentials from a dictionary."""
+    def from_dict(cls, d: Dict[str, any]) -> UpdateCredentialsRequest:
+        """Deserializes the UpdateCredentialsRequest from a dictionary."""
         return cls(credential_id=d.get('credential_id', None),
                    git_provider=d.get('git_provider', None),
                    git_username=d.get('git_username', None),
@@ -1221,12 +1369,26 @@ class UpdateCredentials:
 
 
 @dataclass
-class UpdateRepo:
+class UpdateCredentialsResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateCredentialsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateCredentialsResponse:
+        """Deserializes the UpdateCredentialsResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
+class UpdateRepoRequest:
     branch: Optional[str] = None
     """Branch that the local version of the repo is checked out to."""
 
     repo_id: Optional[int] = None
-    """The ID for the corresponding repo to access."""
+    """ID of the Git folder (repo) object in the workspace."""
 
     sparse_checkout: Optional[SparseCheckoutUpdate] = None
     """If specified, update the sparse checkout settings. The update will fail if sparse checkout is
@@ -1238,7 +1400,7 @@ class UpdateRepo:
     branch instead of the detached HEAD."""
 
     def as_dict(self) -> dict:
-        """Serializes the UpdateRepo into a dictionary suitable for use as a JSON request body."""
+        """Serializes the UpdateRepoRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.branch is not None: body['branch'] = self.branch
         if self.repo_id is not None: body['repo_id'] = self.repo_id
@@ -1247,8 +1409,8 @@ class UpdateRepo:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateRepo:
-        """Deserializes the UpdateRepo from a dictionary."""
+    def from_dict(cls, d: Dict[str, any]) -> UpdateRepoRequest:
+        """Deserializes the UpdateRepoRequest from a dictionary."""
         return cls(branch=d.get('branch', None),
                    repo_id=d.get('repo_id', None),
                    sparse_checkout=_from_dict(d, 'sparse_checkout', SparseCheckoutUpdate),
@@ -1256,16 +1418,16 @@ class UpdateRepo:
 
 
 @dataclass
-class UpdateResponse:
+class UpdateRepoResponse:
 
     def as_dict(self) -> dict:
-        """Serializes the UpdateResponse into a dictionary suitable for use as a JSON request body."""
+        """Serializes the UpdateRepoResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateResponse:
-        """Deserializes the UpdateResponse from a dictionary."""
+    def from_dict(cls, d: Dict[str, any]) -> UpdateRepoResponse:
+        """Deserializes the UpdateRepoResponse from a dictionary."""
         return cls()
 
 
@@ -1471,9 +1633,9 @@ class GitCredentialsAPI:
         existing credentials, or the DELETE endpoint to delete existing credentials.
         
         :param git_provider: str
-          Git provider. This field is case-insensitive. The available Git providers are gitHub,
-          bitbucketCloud, gitLab, azureDevOpsServices, gitHubEnterprise, bitbucketServer,
-          gitLabEnterpriseEdition and awsCodeCommit.
+          Git provider. This field is case-insensitive. The available Git providers are `gitHub`,
+          `bitbucketCloud`, `gitLab`, `azureDevOpsServices`, `gitHubEnterprise`, `bitbucketServer`,
+          `gitLabEnterpriseEdition` and `awsCodeCommit`.
         :param git_username: str (optional)
           The username or email provided with your Git provider account, depending on which provider you are
           using. For GitHub, GitHub Enterprise Server, or Azure DevOps Services, either email or username may
@@ -1482,8 +1644,7 @@ class GitCredentialsAPI:
           Access Token authentication documentation to see what is supported.
         :param personal_access_token: str (optional)
           The personal access token used to authenticate to the corresponding Git provider. For certain
-          providers, support may exist for other types of scoped access tokens. [Learn more]. The personal
-          access token used to authenticate to the corresponding Git
+          providers, support may exist for other types of scoped access tokens. [Learn more].
           
           [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html
         
@@ -1509,11 +1670,11 @@ class GitCredentialsAPI:
         
         """
 
-        headers = {}
+        headers = {'Accept': 'application/json', }
 
         self._api.do('DELETE', f'/api/2.0/git-credentials/{credential_id}', headers=headers)
 
-    def get(self, credential_id: int) -> CredentialInfo:
+    def get(self, credential_id: int) -> GetCredentialsResponse:
         """Get a credential entry.
         
         Gets the Git credential with the specified credential ID.
@@ -1521,13 +1682,13 @@ class GitCredentialsAPI:
         :param credential_id: int
           The ID for the corresponding credential to access.
         
-        :returns: :class:`CredentialInfo`
+        :returns: :class:`GetCredentialsResponse`
         """
 
         headers = {'Accept': 'application/json', }
 
         res = self._api.do('GET', f'/api/2.0/git-credentials/{credential_id}', headers=headers)
-        return CredentialInfo.from_dict(res)
+        return GetCredentialsResponse.from_dict(res)
 
     def list(self) -> Iterator[CredentialInfo]:
         """Get Git credentials.
@@ -1540,13 +1701,13 @@ class GitCredentialsAPI:
         headers = {'Accept': 'application/json', }
 
         json = self._api.do('GET', '/api/2.0/git-credentials', headers=headers)
-        parsed = GetCredentialsResponse.from_dict(json).credentials
+        parsed = ListCredentialsResponse.from_dict(json).credentials
         return parsed if parsed is not None else []
 
     def update(self,
                credential_id: int,
+               git_provider: str,
                *,
-               git_provider: Optional[str] = None,
                git_username: Optional[str] = None,
                personal_access_token: Optional[str] = None):
         """Update a credential.
@@ -1555,10 +1716,10 @@ class GitCredentialsAPI:
         
         :param credential_id: int
           The ID for the corresponding credential to access.
-        :param git_provider: str (optional)
-          Git provider. This field is case-insensitive. The available Git providers are gitHub,
-          bitbucketCloud, gitLab, azureDevOpsServices, gitHubEnterprise, bitbucketServer,
-          gitLabEnterpriseEdition and awsCodeCommit.
+        :param git_provider: str
+          Git provider. This field is case-insensitive. The available Git providers are `gitHub`,
+          `bitbucketCloud`, `gitLab`, `azureDevOpsServices`, `gitHubEnterprise`, `bitbucketServer`,
+          `gitLabEnterpriseEdition` and `awsCodeCommit`.
         :param git_username: str (optional)
           The username or email provided with your Git provider account, depending on which provider you are
           using. For GitHub, GitHub Enterprise Server, or Azure DevOps Services, either email or username may
@@ -1567,8 +1728,7 @@ class GitCredentialsAPI:
           Access Token authentication documentation to see what is supported.
         :param personal_access_token: str (optional)
           The personal access token used to authenticate to the corresponding Git provider. For certain
-          providers, support may exist for other types of scoped access tokens. [Learn more]. The personal
-          access token used to authenticate to the corresponding Git
+          providers, support may exist for other types of scoped access tokens. [Learn more].
           
           [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html
         
@@ -1602,7 +1762,7 @@ class ReposAPI:
                provider: str,
                *,
                path: Optional[str] = None,
-               sparse_checkout: Optional[SparseCheckout] = None) -> RepoInfo:
+               sparse_checkout: Optional[SparseCheckout] = None) -> CreateRepoResponse:
         """Create a repo.
         
         Creates a repo in the workspace and links it to the remote Git repo specified. Note that repos created
@@ -1611,17 +1771,17 @@ class ReposAPI:
         :param url: str
           URL of the Git repository to be linked.
         :param provider: str
-          Git provider. This field is case-insensitive. The available Git providers are gitHub,
-          bitbucketCloud, gitLab, azureDevOpsServices, gitHubEnterprise, bitbucketServer,
-          gitLabEnterpriseEdition and awsCodeCommit.
+          Git provider. This field is case-insensitive. The available Git providers are `gitHub`,
+          `bitbucketCloud`, `gitLab`, `azureDevOpsServices`, `gitHubEnterprise`, `bitbucketServer`,
+          `gitLabEnterpriseEdition` and `awsCodeCommit`.
         :param path: str (optional)
           Desired path for the repo in the workspace. Almost any path in the workspace can be chosen. If repo
-          is created in /Repos, path must be in the format /Repos/{folder}/{repo-name}.
+          is created in `/Repos`, path must be in the format `/Repos/{folder}/{repo-name}`.
         :param sparse_checkout: :class:`SparseCheckout` (optional)
           If specified, the repo will be created with sparse checkout enabled. You cannot enable/disable
           sparse checkout after the repo is created.
         
-        :returns: :class:`RepoInfo`
+        :returns: :class:`CreateRepoResponse`
         """
         body = {}
         if path is not None: body['path'] = path
@@ -1631,7 +1791,7 @@ class ReposAPI:
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         res = self._api.do('POST', '/api/2.0/repos', body=body, headers=headers)
-        return RepoInfo.from_dict(res)
+        return CreateRepoResponse.from_dict(res)
 
     def delete(self, repo_id: int):
         """Delete a repo.
@@ -1639,30 +1799,30 @@ class ReposAPI:
         Deletes the specified repo.
         
         :param repo_id: int
-          The ID for the corresponding repo to access.
+          ID of the Git folder (repo) object in the workspace.
         
         
         """
 
-        headers = {}
+        headers = {'Accept': 'application/json', }
 
         self._api.do('DELETE', f'/api/2.0/repos/{repo_id}', headers=headers)
 
-    def get(self, repo_id: int) -> RepoInfo:
+    def get(self, repo_id: int) -> GetRepoResponse:
         """Get a repo.
         
         Returns the repo with the given repo ID.
         
         :param repo_id: int
-          The ID for the corresponding repo to access.
+          ID of the Git folder (repo) object in the workspace.
         
-        :returns: :class:`RepoInfo`
+        :returns: :class:`GetRepoResponse`
         """
 
         headers = {'Accept': 'application/json', }
 
         res = self._api.do('GET', f'/api/2.0/repos/{repo_id}', headers=headers)
-        return RepoInfo.from_dict(res)
+        return GetRepoResponse.from_dict(res)
 
     def get_permission_levels(self, repo_id: str) -> GetRepoPermissionLevelsResponse:
         """Get repo permission levels.
@@ -1702,15 +1862,16 @@ class ReposAPI:
              path_prefix: Optional[str] = None) -> Iterator[RepoInfo]:
         """Get repos.
         
-        Returns repos that the calling user has Manage permissions on. Results are paginated with each page
-        containing twenty repos.
+        Returns repos that the calling user has Manage permissions on. Use `next_page_token` to iterate
+        through additional pages.
         
         :param next_page_token: str (optional)
           Token used to get the next page of results. If not specified, returns the first page of results as
           well as a next page token if there are more results.
         :param path_prefix: str (optional)
-          Filters repos that have paths starting with the given path prefix. If not provided repos from /Repos
-          will be served.
+          Filters repos that have paths starting with the given path prefix. If not provided or when provided
+          an effectively empty prefix (`/` or `/Workspace`) Git folders (repos) from `/Workspace/Repos` will
+          be served.
         
         :returns: Iterator over :class:`RepoInfo`
         """
@@ -1764,7 +1925,7 @@ class ReposAPI:
         branch.
         
         :param repo_id: int
-          The ID for the corresponding repo to access.
+          ID of the Git folder (repo) object in the workspace.
         :param branch: str (optional)
           Branch that the local version of the repo is checked out to.
         :param sparse_checkout: :class:`SparseCheckoutUpdate` (optional)
