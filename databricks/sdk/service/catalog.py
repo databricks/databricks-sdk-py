@@ -909,6 +909,7 @@ class ConnectionInfoSecurableKind(Enum):
     CONNECTION_DATABRICKS = 'CONNECTION_DATABRICKS'
     CONNECTION_EXTERNAL_HIVE_METASTORE = 'CONNECTION_EXTERNAL_HIVE_METASTORE'
     CONNECTION_GLUE = 'CONNECTION_GLUE'
+    CONNECTION_HTTP_BEARER = 'CONNECTION_HTTP_BEARER'
     CONNECTION_MYSQL = 'CONNECTION_MYSQL'
     CONNECTION_ONLINE_CATALOG = 'CONNECTION_ONLINE_CATALOG'
     CONNECTION_POSTGRESQL = 'CONNECTION_POSTGRESQL'
@@ -925,6 +926,7 @@ class ConnectionType(Enum):
     DATABRICKS = 'DATABRICKS'
     GLUE = 'GLUE'
     HIVE_METASTORE = 'HIVE_METASTORE'
+    HTTP = 'HTTP'
     MYSQL = 'MYSQL'
     POSTGRESQL = 'POSTGRESQL'
     REDSHIFT = 'REDSHIFT'
@@ -1676,6 +1678,7 @@ class CreateVolumeRequestContent:
 class CredentialType(Enum):
     """The type of credential."""
 
+    BEARER_TOKEN = 'BEARER_TOKEN'
     USERNAME_PASSWORD = 'USERNAME_PASSWORD'
 
 
@@ -2547,8 +2550,8 @@ class GenerateTemporaryTableCredentialResponse:
     https://docs.microsoft.com/en-us/rest/api/storageservices/create-user-delegation-sas"""
 
     expiration_time: Optional[int] = None
-    """Server time when the credential will expire, in unix epoch milliseconds since January 1, 1970 at
-    00:00:00 UTC. The API client is advised to cache the credential given this expiration time."""
+    """Server time when the credential will expire, in epoch milliseconds. The API client is advised to
+    cache the credential given this expiration time."""
 
     gcp_oauth_token: Optional[GcpOauthToken] = None
     """GCP temporary credentials for API authentication. Read more at
@@ -3862,10 +3865,15 @@ class OnlineTable:
     """Specification of the online table."""
 
     status: Optional[OnlineTableStatus] = None
-    """Online Table status"""
+    """Online Table data synchronization status"""
 
     table_serving_url: Optional[str] = None
     """Data serving REST API URL for this table"""
+
+    unity_catalog_provisioning_state: Optional[ProvisioningInfoState] = None
+    """The provisioning state of the online table entity in Unity Catalog. This is distinct from the
+    state of the data synchronization pipeline (i.e. the table may be in "ACTIVE" but the pipeline
+    may be in "PROVISIONING" as it runs asynchronously)."""
 
     def as_dict(self) -> dict:
         """Serializes the OnlineTable into a dictionary suitable for use as a JSON request body."""
@@ -3874,6 +3882,8 @@ class OnlineTable:
         if self.spec: body['spec'] = self.spec.as_dict()
         if self.status: body['status'] = self.status.as_dict()
         if self.table_serving_url is not None: body['table_serving_url'] = self.table_serving_url
+        if self.unity_catalog_provisioning_state is not None:
+            body['unity_catalog_provisioning_state'] = self.unity_catalog_provisioning_state.value
         return body
 
     @classmethod
@@ -3882,7 +3892,9 @@ class OnlineTable:
         return cls(name=d.get('name', None),
                    spec=_from_dict(d, 'spec', OnlineTableSpec),
                    status=_from_dict(d, 'status', OnlineTableStatus),
-                   table_serving_url=d.get('table_serving_url', None))
+                   table_serving_url=d.get('table_serving_url', None),
+                   unity_catalog_provisioning_state=_enum(d, 'unity_catalog_provisioning_state',
+                                                          ProvisioningInfoState))
 
 
 @dataclass
@@ -4241,7 +4253,7 @@ class ProvisioningInfoState(Enum):
     DELETING = 'DELETING'
     FAILED = 'FAILED'
     PROVISIONING = 'PROVISIONING'
-    STATE_UNSPECIFIED = 'STATE_UNSPECIFIED'
+    UPDATING = 'UPDATING'
 
 
 @dataclass

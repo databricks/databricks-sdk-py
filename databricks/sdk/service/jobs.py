@@ -29,6 +29,12 @@ class BaseJob:
     """The creator user name. This field won’t be included in the response if the user has already
     been deleted."""
 
+    effective_budget_policy_id: Optional[str] = None
+    """The id of the budget policy used by this job for cost attribution purposes. This may be set
+    through (in order of precedence): 1. Budget admins through the account or workspace console 2.
+    Jobs UI in the job details page and Jobs API using `budget_policy_id` 3. Inferred default based
+    on accessible budget policies of the run_as identity on job creation or modification."""
+
     job_id: Optional[int] = None
     """The canonical identifier for this job."""
 
@@ -41,6 +47,8 @@ class BaseJob:
         body = {}
         if self.created_time is not None: body['created_time'] = self.created_time
         if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
+        if self.effective_budget_policy_id is not None:
+            body['effective_budget_policy_id'] = self.effective_budget_policy_id
         if self.job_id is not None: body['job_id'] = self.job_id
         if self.settings: body['settings'] = self.settings.as_dict()
         return body
@@ -50,6 +58,7 @@ class BaseJob:
         """Deserializes the BaseJob from a dictionary."""
         return cls(created_time=d.get('created_time', None),
                    creator_user_name=d.get('creator_user_name', None),
+                   effective_budget_policy_id=d.get('effective_budget_policy_id', None),
                    job_id=d.get('job_id', None),
                    settings=_from_dict(d, 'settings', JobSettings))
 
@@ -484,6 +493,11 @@ class CreateJob:
     access_control_list: Optional[List[JobAccessControlRequest]] = None
     """List of permissions to set on the job."""
 
+    budget_policy_id: Optional[str] = None
+    """The id of the user specified budget policy to use for this job. If not specified, a default
+    budget policy may be applied when creating or modifying the job. See
+    `effective_budget_policy_id` for the budget policy used by this workload."""
+
     continuous: Optional[Continuous] = None
     """An optional continuous property for this job. The continuous property will ensure that there is
     always one run executing. Only one of `schedule` and `continuous` can be used."""
@@ -591,6 +605,7 @@ class CreateJob:
         body = {}
         if self.access_control_list:
             body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
+        if self.budget_policy_id is not None: body['budget_policy_id'] = self.budget_policy_id
         if self.continuous: body['continuous'] = self.continuous.as_dict()
         if self.deployment: body['deployment'] = self.deployment.as_dict()
         if self.description is not None: body['description'] = self.description
@@ -619,6 +634,7 @@ class CreateJob:
     def from_dict(cls, d: Dict[str, any]) -> CreateJob:
         """Deserializes the CreateJob from a dictionary."""
         return cls(access_control_list=_repeated_dict(d, 'access_control_list', JobAccessControlRequest),
+                   budget_policy_id=d.get('budget_policy_id', None),
                    continuous=_from_dict(d, 'continuous', Continuous),
                    deployment=_from_dict(d, 'deployment', JobDeployment),
                    description=d.get('description', None),
@@ -1261,6 +1277,12 @@ class Job:
     """The creator user name. This field won’t be included in the response if the user has already
     been deleted."""
 
+    effective_budget_policy_id: Optional[str] = None
+    """The id of the budget policy used by this job for cost attribution purposes. This may be set
+    through (in order of precedence): 1. Budget admins through the account or workspace console 2.
+    Jobs UI in the job details page and Jobs API using `budget_policy_id` 3. Inferred default based
+    on accessible budget policies of the run_as identity on job creation or modification."""
+
     job_id: Optional[int] = None
     """The canonical identifier for this job."""
 
@@ -1282,6 +1304,8 @@ class Job:
         body = {}
         if self.created_time is not None: body['created_time'] = self.created_time
         if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
+        if self.effective_budget_policy_id is not None:
+            body['effective_budget_policy_id'] = self.effective_budget_policy_id
         if self.job_id is not None: body['job_id'] = self.job_id
         if self.run_as_user_name is not None: body['run_as_user_name'] = self.run_as_user_name
         if self.settings: body['settings'] = self.settings.as_dict()
@@ -1292,6 +1316,7 @@ class Job:
         """Deserializes the Job from a dictionary."""
         return cls(created_time=d.get('created_time', None),
                    creator_user_name=d.get('creator_user_name', None),
+                   effective_budget_policy_id=d.get('effective_budget_policy_id', None),
                    job_id=d.get('job_id', None),
                    run_as_user_name=d.get('run_as_user_name', None),
                    settings=_from_dict(d, 'settings', JobSettings))
@@ -1755,6 +1780,11 @@ class JobRunAs:
 
 @dataclass
 class JobSettings:
+    budget_policy_id: Optional[str] = None
+    """The id of the user specified budget policy to use for this job. If not specified, a default
+    budget policy may be applied when creating or modifying the job. See
+    `effective_budget_policy_id` for the budget policy used by this workload."""
+
     continuous: Optional[Continuous] = None
     """An optional continuous property for this job. The continuous property will ensure that there is
     always one run executing. Only one of `schedule` and `continuous` can be used."""
@@ -1860,6 +1890,7 @@ class JobSettings:
     def as_dict(self) -> dict:
         """Serializes the JobSettings into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.budget_policy_id is not None: body['budget_policy_id'] = self.budget_policy_id
         if self.continuous: body['continuous'] = self.continuous.as_dict()
         if self.deployment: body['deployment'] = self.deployment.as_dict()
         if self.description is not None: body['description'] = self.description
@@ -1887,7 +1918,8 @@ class JobSettings:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> JobSettings:
         """Deserializes the JobSettings from a dictionary."""
-        return cls(continuous=_from_dict(d, 'continuous', Continuous),
+        return cls(budget_policy_id=d.get('budget_policy_id', None),
+                   continuous=_from_dict(d, 'continuous', Continuous),
                    deployment=_from_dict(d, 'deployment', JobDeployment),
                    description=d.get('description', None),
                    edit_mode=_enum(d, 'edit_mode', JobEditMode),
@@ -2478,6 +2510,7 @@ class RepairRun:
     [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html"""
 
     pipeline_params: Optional[PipelineParams] = None
+    """Controls whether the pipeline should perform a full refresh"""
 
     python_named_params: Optional[Dict[str, str]] = None
 
@@ -3181,6 +3214,7 @@ class RunJobTask:
     [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html"""
 
     pipeline_params: Optional[PipelineParams] = None
+    """Controls whether the pipeline should perform a full refresh"""
 
     python_named_params: Optional[Dict[str, str]] = None
 
@@ -3340,6 +3374,7 @@ class RunNow:
     [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html"""
 
     pipeline_params: Optional[PipelineParams] = None
+    """Controls whether the pipeline should perform a full refresh"""
 
     python_named_params: Optional[Dict[str, str]] = None
 
@@ -3549,6 +3584,7 @@ class RunParameters:
     [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html"""
 
     pipeline_params: Optional[PipelineParams] = None
+    """Controls whether the pipeline should perform a full refresh"""
 
     python_named_params: Optional[Dict[str, str]] = None
 
@@ -4503,6 +4539,10 @@ class SubmitRun:
     access_control_list: Optional[List[JobAccessControlRequest]] = None
     """List of permissions to set on the job."""
 
+    budget_policy_id: Optional[str] = None
+    """The user specified id of the budget policy to use for this one-time run. If not specified, the
+    run will be not be attributed to any budget policy."""
+
     email_notifications: Optional[JobEmailNotifications] = None
     """An optional set of email addresses notified when the run begins or completes."""
 
@@ -4563,6 +4603,7 @@ class SubmitRun:
         body = {}
         if self.access_control_list:
             body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
+        if self.budget_policy_id is not None: body['budget_policy_id'] = self.budget_policy_id
         if self.email_notifications: body['email_notifications'] = self.email_notifications.as_dict()
         if self.environments: body['environments'] = [v.as_dict() for v in self.environments]
         if self.git_source: body['git_source'] = self.git_source.as_dict()
@@ -4581,6 +4622,7 @@ class SubmitRun:
     def from_dict(cls, d: Dict[str, any]) -> SubmitRun:
         """Deserializes the SubmitRun from a dictionary."""
         return cls(access_control_list=_repeated_dict(d, 'access_control_list', JobAccessControlRequest),
+                   budget_policy_id=d.get('budget_policy_id', None),
                    email_notifications=_from_dict(d, 'email_notifications', JobEmailNotifications),
                    environments=_repeated_dict(d, 'environments', JobEnvironment),
                    git_source=_from_dict(d, 'git_source', GitSource),
@@ -5615,6 +5657,7 @@ class JobsAPI:
     def create(self,
                *,
                access_control_list: Optional[List[JobAccessControlRequest]] = None,
+               budget_policy_id: Optional[str] = None,
                continuous: Optional[Continuous] = None,
                deployment: Optional[JobDeployment] = None,
                description: Optional[str] = None,
@@ -5643,6 +5686,10 @@ class JobsAPI:
         
         :param access_control_list: List[:class:`JobAccessControlRequest`] (optional)
           List of permissions to set on the job.
+        :param budget_policy_id: str (optional)
+          The id of the user specified budget policy to use for this job. If not specified, a default budget
+          policy may be applied when creating or modifying the job. See `effective_budget_policy_id` for the
+          budget policy used by this workload.
         :param continuous: :class:`Continuous` (optional)
           An optional continuous property for this job. The continuous property will ensure that there is
           always one run executing. Only one of `schedule` and `continuous` can be used.
@@ -5727,6 +5774,7 @@ class JobsAPI:
         body = {}
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
+        if budget_policy_id is not None: body['budget_policy_id'] = budget_policy_id
         if continuous is not None: body['continuous'] = continuous.as_dict()
         if deployment is not None: body['deployment'] = deployment.as_dict()
         if description is not None: body['description'] = description
@@ -6087,6 +6135,7 @@ class JobsAPI:
           [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
           [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
         :param pipeline_params: :class:`PipelineParams` (optional)
+          Controls whether the pipeline should perform a full refresh
         :param python_named_params: Dict[str,str] (optional)
         :param python_params: List[str] (optional)
           A list of parameters for jobs with Python tasks, for example `"python_params": ["john doe", "35"]`.
@@ -6276,6 +6325,7 @@ class JobsAPI:
           [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
           [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
         :param pipeline_params: :class:`PipelineParams` (optional)
+          Controls whether the pipeline should perform a full refresh
         :param python_named_params: Dict[str,str] (optional)
         :param python_params: List[str] (optional)
           A list of parameters for jobs with Python tasks, for example `"python_params": ["john doe", "35"]`.
@@ -6392,6 +6442,7 @@ class JobsAPI:
     def submit(self,
                *,
                access_control_list: Optional[List[JobAccessControlRequest]] = None,
+               budget_policy_id: Optional[str] = None,
                email_notifications: Optional[JobEmailNotifications] = None,
                environments: Optional[List[JobEnvironment]] = None,
                git_source: Optional[GitSource] = None,
@@ -6412,6 +6463,9 @@ class JobsAPI:
         
         :param access_control_list: List[:class:`JobAccessControlRequest`] (optional)
           List of permissions to set on the job.
+        :param budget_policy_id: str (optional)
+          The user specified id of the budget policy to use for this one-time run. If not specified, the run
+          will be not be attributed to any budget policy.
         :param email_notifications: :class:`JobEmailNotifications` (optional)
           An optional set of email addresses notified when the run begins or completes.
         :param environments: List[:class:`JobEnvironment`] (optional)
@@ -6463,6 +6517,7 @@ class JobsAPI:
         body = {}
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
+        if budget_policy_id is not None: body['budget_policy_id'] = budget_policy_id
         if email_notifications is not None: body['email_notifications'] = email_notifications.as_dict()
         if environments is not None: body['environments'] = [v.as_dict() for v in environments]
         if git_source is not None: body['git_source'] = git_source.as_dict()
@@ -6486,6 +6541,7 @@ class JobsAPI:
         self,
         *,
         access_control_list: Optional[List[JobAccessControlRequest]] = None,
+        budget_policy_id: Optional[str] = None,
         email_notifications: Optional[JobEmailNotifications] = None,
         environments: Optional[List[JobEnvironment]] = None,
         git_source: Optional[GitSource] = None,
@@ -6500,6 +6556,7 @@ class JobsAPI:
         webhook_notifications: Optional[WebhookNotifications] = None,
         timeout=timedelta(minutes=20)) -> Run:
         return self.submit(access_control_list=access_control_list,
+                           budget_policy_id=budget_policy_id,
                            email_notifications=email_notifications,
                            environments=environments,
                            git_source=git_source,

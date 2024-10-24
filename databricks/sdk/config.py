@@ -10,11 +10,14 @@ from typing import Dict, Iterable, Optional
 import requests
 
 from . import useragent
+from ._base_client import _fix_host_if_needed
 from .clock import Clock, RealClock
 from .credentials_provider import CredentialsStrategy, DefaultCredentials
 from .environments import (ALL_ENVS, AzureEnvironment, Cloud,
                            DatabricksEnvironment, get_environment_for_hostname)
-from .oauth import OidcEndpoints, Token
+from .oauth import (OidcEndpoints, Token, get_account_endpoints,
+                    get_azure_entra_id_workspace_endpoints,
+                    get_workspace_endpoints)
 
 logger = logging.getLogger('databricks.sdk')
 
@@ -254,24 +257,10 @@ class Config:
         if not self.host:
             return None
         if self.is_azure and self.azure_client_id:
-            # Retrieve authorize endpoint to retrieve token endpoint after
-            res = requests.get(f'{self.host}/oidc/oauth2/v2.0/authorize', allow_redirects=False)
-            real_auth_url = res.headers.get('location')
-            if not real_auth_url:
-                return None
-            return OidcEndpoints(authorization_endpoint=real_auth_url,
-                                 token_endpoint=real_auth_url.replace('/authorize', '/token'))
+            return get_azure_entra_id_workspace_endpoints(self.host)
         if self.is_account_client and self.account_id:
-            prefix = f'{self.host}/oidc/accounts/{self.account_id}'
-            return OidcEndpoints(authorization_endpoint=f'{prefix}/v1/authorize',
-                                 token_endpoint=f'{prefix}/v1/token')
-        oidc = f'{self.host}/oidc/.well-known/oauth-authorization-server'
-        res = requests.get(oidc)
-        if res.status_code != 200:
-            return None
-        auth_metadata = res.json()
-        return OidcEndpoints(authorization_endpoint=auth_metadata.get('authorization_endpoint'),
-                             token_endpoint=auth_metadata.get('token_endpoint'))
+            return get_account_endpoints(self.host, self.account_id)
+        return get_workspace_endpoints(self.host)
 
     def debug_string(self) -> str:
         """ Returns log-friendly representation of configured attributes """
@@ -346,22 +335,9 @@ class Config:
         return cls._attributes
 
     def _fix_host_if_needed(self):
-        if not self.host:
-            return
-
-        # Add a default scheme if it's missing
-        if '://' not in self.host:
-            self.host = 'https://' + self.host
-
-        o = urllib.parse.urlparse(self.host)
-        # remove trailing slash
-        path = o.path.rstrip('/')
-        # remove port if 443
-        netloc = o.netloc
-        if o.port == 443:
-            netloc = netloc.split(':')[0]
-
-        self.host = urllib.parse.urlunparse((o.scheme, netloc, path, o.params, o.query, o.fragment))
+        updated_host = _fix_host_if_needed(self.host)
+        if updated_host:
+            self.host = updated_host
 
     def load_azure_tenant_id(self):
         """[Internal] Load the Azure tenant ID from the Azure Databricks login page.

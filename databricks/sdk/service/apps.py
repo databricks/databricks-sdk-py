@@ -25,7 +25,8 @@ class App:
     It must be unique within the workspace."""
 
     active_deployment: Optional[AppDeployment] = None
-    """The active deployment of the app."""
+    """The active deployment of the app. A deployment is considered active when it has been deployed to
+    the app compute."""
 
     app_status: Optional[ApplicationStatus] = None
 
@@ -37,11 +38,19 @@ class App:
     creator: Optional[str] = None
     """The email of the user that created the app."""
 
+    default_source_code_path: Optional[str] = None
+    """The default workspace file system path of the source code from which app deployment are created.
+    This field tracks the workspace source code path of the last active deployment."""
+
     description: Optional[str] = None
     """The description of the app."""
 
     pending_deployment: Optional[AppDeployment] = None
-    """The pending deployment of the app."""
+    """The pending deployment of the app. A deployment is considered pending when it is being prepared
+    for deployment to the app compute."""
+
+    resources: Optional[List[AppResource]] = None
+    """Resources for the app."""
 
     service_principal_id: Optional[int] = None
 
@@ -64,9 +73,12 @@ class App:
         if self.compute_status: body['compute_status'] = self.compute_status.as_dict()
         if self.create_time is not None: body['create_time'] = self.create_time
         if self.creator is not None: body['creator'] = self.creator
+        if self.default_source_code_path is not None:
+            body['default_source_code_path'] = self.default_source_code_path
         if self.description is not None: body['description'] = self.description
         if self.name is not None: body['name'] = self.name
         if self.pending_deployment: body['pending_deployment'] = self.pending_deployment.as_dict()
+        if self.resources: body['resources'] = [v.as_dict() for v in self.resources]
         if self.service_principal_id is not None: body['service_principal_id'] = self.service_principal_id
         if self.service_principal_name is not None:
             body['service_principal_name'] = self.service_principal_name
@@ -83,9 +95,11 @@ class App:
                    compute_status=_from_dict(d, 'compute_status', ComputeStatus),
                    create_time=d.get('create_time', None),
                    creator=d.get('creator', None),
+                   default_source_code_path=d.get('default_source_code_path', None),
                    description=d.get('description', None),
                    name=d.get('name', None),
                    pending_deployment=_from_dict(d, 'pending_deployment', AppDeployment),
+                   resources=_repeated_dict(d, 'resources', AppResource),
                    service_principal_id=d.get('service_principal_id', None),
                    service_principal_name=d.get('service_principal_name', None),
                    update_time=d.get('update_time', None),
@@ -372,6 +386,170 @@ class AppPermissionsRequest:
                    app_name=d.get('app_name', None))
 
 
+@dataclass
+class AppResource:
+    name: str
+    """Name of the App Resource."""
+
+    description: Optional[str] = None
+    """Description of the App Resource."""
+
+    job: Optional[AppResourceJob] = None
+
+    secret: Optional[AppResourceSecret] = None
+
+    serving_endpoint: Optional[AppResourceServingEndpoint] = None
+
+    sql_warehouse: Optional[AppResourceSqlWarehouse] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the AppResource into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.description is not None: body['description'] = self.description
+        if self.job: body['job'] = self.job.as_dict()
+        if self.name is not None: body['name'] = self.name
+        if self.secret: body['secret'] = self.secret.as_dict()
+        if self.serving_endpoint: body['serving_endpoint'] = self.serving_endpoint.as_dict()
+        if self.sql_warehouse: body['sql_warehouse'] = self.sql_warehouse.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> AppResource:
+        """Deserializes the AppResource from a dictionary."""
+        return cls(description=d.get('description', None),
+                   job=_from_dict(d, 'job', AppResourceJob),
+                   name=d.get('name', None),
+                   secret=_from_dict(d, 'secret', AppResourceSecret),
+                   serving_endpoint=_from_dict(d, 'serving_endpoint', AppResourceServingEndpoint),
+                   sql_warehouse=_from_dict(d, 'sql_warehouse', AppResourceSqlWarehouse))
+
+
+@dataclass
+class AppResourceJob:
+    id: str
+    """Id of the job to grant permission on."""
+
+    permission: AppResourceJobJobPermission
+    """Permissions to grant on the Job. Supported permissions are: "CAN_MANAGE", "IS_OWNER",
+    "CAN_MANAGE_RUN", "CAN_VIEW"."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AppResourceJob into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.id is not None: body['id'] = self.id
+        if self.permission is not None: body['permission'] = self.permission.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> AppResourceJob:
+        """Deserializes the AppResourceJob from a dictionary."""
+        return cls(id=d.get('id', None), permission=_enum(d, 'permission', AppResourceJobJobPermission))
+
+
+class AppResourceJobJobPermission(Enum):
+
+    CAN_MANAGE = 'CAN_MANAGE'
+    CAN_MANAGE_RUN = 'CAN_MANAGE_RUN'
+    CAN_VIEW = 'CAN_VIEW'
+    IS_OWNER = 'IS_OWNER'
+
+
+@dataclass
+class AppResourceSecret:
+    scope: str
+    """Scope of the secret to grant permission on."""
+
+    key: str
+    """Key of the secret to grant permission on."""
+
+    permission: AppResourceSecretSecretPermission
+    """Permission to grant on the secret scope. For secrets, only one permission is allowed. Permission
+    must be one of: "READ", "WRITE", "MANAGE"."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AppResourceSecret into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.key is not None: body['key'] = self.key
+        if self.permission is not None: body['permission'] = self.permission.value
+        if self.scope is not None: body['scope'] = self.scope
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> AppResourceSecret:
+        """Deserializes the AppResourceSecret from a dictionary."""
+        return cls(key=d.get('key', None),
+                   permission=_enum(d, 'permission', AppResourceSecretSecretPermission),
+                   scope=d.get('scope', None))
+
+
+class AppResourceSecretSecretPermission(Enum):
+    """Permission to grant on the secret scope. Supported permissions are: "READ", "WRITE", "MANAGE"."""
+
+    MANAGE = 'MANAGE'
+    READ = 'READ'
+    WRITE = 'WRITE'
+
+
+@dataclass
+class AppResourceServingEndpoint:
+    name: str
+    """Name of the serving endpoint to grant permission on."""
+
+    permission: AppResourceServingEndpointServingEndpointPermission
+    """Permission to grant on the serving endpoint. Supported permissions are: "CAN_MANAGE",
+    "CAN_QUERY", "CAN_VIEW"."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AppResourceServingEndpoint into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None: body['name'] = self.name
+        if self.permission is not None: body['permission'] = self.permission.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> AppResourceServingEndpoint:
+        """Deserializes the AppResourceServingEndpoint from a dictionary."""
+        return cls(name=d.get('name', None),
+                   permission=_enum(d, 'permission', AppResourceServingEndpointServingEndpointPermission))
+
+
+class AppResourceServingEndpointServingEndpointPermission(Enum):
+
+    CAN_MANAGE = 'CAN_MANAGE'
+    CAN_QUERY = 'CAN_QUERY'
+    CAN_VIEW = 'CAN_VIEW'
+
+
+@dataclass
+class AppResourceSqlWarehouse:
+    id: str
+    """Id of the SQL warehouse to grant permission on."""
+
+    permission: AppResourceSqlWarehouseSqlWarehousePermission
+    """Permission to grant on the SQL warehouse. Supported permissions are: "CAN_MANAGE", "CAN_USE",
+    "IS_OWNER"."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AppResourceSqlWarehouse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.id is not None: body['id'] = self.id
+        if self.permission is not None: body['permission'] = self.permission.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> AppResourceSqlWarehouse:
+        """Deserializes the AppResourceSqlWarehouse from a dictionary."""
+        return cls(id=d.get('id', None),
+                   permission=_enum(d, 'permission', AppResourceSqlWarehouseSqlWarehousePermission))
+
+
+class AppResourceSqlWarehouseSqlWarehousePermission(Enum):
+
+    CAN_MANAGE = 'CAN_MANAGE'
+    CAN_USE = 'CAN_USE'
+    IS_OWNER = 'IS_OWNER'
+
+
 class ApplicationState(Enum):
 
     CRASHED = 'CRASHED'
@@ -478,17 +656,23 @@ class CreateAppRequest:
     description: Optional[str] = None
     """The description of the app."""
 
+    resources: Optional[List[AppResource]] = None
+    """Resources for the app."""
+
     def as_dict(self) -> dict:
         """Serializes the CreateAppRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.description is not None: body['description'] = self.description
         if self.name is not None: body['name'] = self.name
+        if self.resources: body['resources'] = [v.as_dict() for v in self.resources]
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateAppRequest:
         """Deserializes the CreateAppRequest from a dictionary."""
-        return cls(description=d.get('description', None), name=d.get('name', None))
+        return cls(description=d.get('description', None),
+                   name=d.get('name', None),
+                   resources=_repeated_dict(d, 'resources', AppResource))
 
 
 @dataclass
@@ -571,17 +755,23 @@ class UpdateAppRequest:
     description: Optional[str] = None
     """The description of the app."""
 
+    resources: Optional[List[AppResource]] = None
+    """Resources for the app."""
+
     def as_dict(self) -> dict:
         """Serializes the UpdateAppRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.description is not None: body['description'] = self.description
         if self.name is not None: body['name'] = self.name
+        if self.resources: body['resources'] = [v.as_dict() for v in self.resources]
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> UpdateAppRequest:
         """Deserializes the UpdateAppRequest from a dictionary."""
-        return cls(description=d.get('description', None), name=d.get('name', None))
+        return cls(description=d.get('description', None),
+                   name=d.get('name', None),
+                   resources=_repeated_dict(d, 'resources', AppResource))
 
 
 class AppsAPI:
@@ -597,7 +787,7 @@ class AppsAPI:
                             callback: Optional[Callable[[App], None]] = None) -> App:
         deadline = time.time() + timeout.total_seconds()
         target_states = (ComputeState.ACTIVE, )
-        failure_states = (ComputeState.ERROR, )
+        failure_states = (ComputeState.ERROR, ComputeState.STOPPED, )
         status_message = 'polling...'
         attempt = 1
         while time.time() < deadline:
@@ -689,7 +879,11 @@ class AppsAPI:
             attempt += 1
         raise TimeoutError(f'timed out after {timeout}: {status_message}')
 
-    def create(self, name: str, *, description: Optional[str] = None) -> Wait[App]:
+    def create(self,
+               name: str,
+               *,
+               description: Optional[str] = None,
+               resources: Optional[List[AppResource]] = None) -> Wait[App]:
         """Create an app.
         
         Creates a new app.
@@ -699,6 +893,8 @@ class AppsAPI:
           must be unique within the workspace.
         :param description: str (optional)
           The description of the app.
+        :param resources: List[:class:`AppResource`] (optional)
+          Resources for the app.
         
         :returns:
           Long-running operation waiter for :class:`App`.
@@ -707,6 +903,7 @@ class AppsAPI:
         body = {}
         if description is not None: body['description'] = description
         if name is not None: body['name'] = name
+        if resources is not None: body['resources'] = [v.as_dict() for v in resources]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         op_response = self._api.do('POST', '/api/2.0/apps', body=body, headers=headers)
@@ -716,8 +913,9 @@ class AppsAPI:
                         name: str,
                         *,
                         description: Optional[str] = None,
+                        resources: Optional[List[AppResource]] = None,
                         timeout=timedelta(minutes=20)) -> App:
-        return self.create(description=description, name=name).result(timeout=timeout)
+        return self.create(description=description, name=name, resources=resources).result(timeout=timeout)
 
     def delete(self, name: str) -> App:
         """Delete an app.
@@ -981,7 +1179,11 @@ class AppsAPI:
     def stop_and_wait(self, name: str, timeout=timedelta(minutes=20)) -> App:
         return self.stop(name=name).result(timeout=timeout)
 
-    def update(self, name: str, *, description: Optional[str] = None) -> App:
+    def update(self,
+               name: str,
+               *,
+               description: Optional[str] = None,
+               resources: Optional[List[AppResource]] = None) -> App:
         """Update an app.
         
         Updates the app with the supplied name.
@@ -991,11 +1193,14 @@ class AppsAPI:
           must be unique within the workspace.
         :param description: str (optional)
           The description of the app.
+        :param resources: List[:class:`AppResource`] (optional)
+          Resources for the app.
         
         :returns: :class:`App`
         """
         body = {}
         if description is not None: body['description'] = description
+        if resources is not None: body['resources'] = [v.as_dict() for v in resources]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         res = self._api.do('PATCH', f'/api/2.0/apps/{name}', body=body, headers=headers)
