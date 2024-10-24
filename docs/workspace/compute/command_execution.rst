@@ -4,8 +4,7 @@
 
 .. py:class:: CommandExecutionAPI
 
-    This API allows execution of Python, Scala, SQL, or R commands on running Databricks Clusters. This API
-    only supports (classic) all-purpose clusters. Serverless compute is not supported.
+    This API allows execution of Python, Scala, SQL, or R commands on running Databricks Clusters.
 
     .. py:method:: cancel( [, cluster_id: Optional[str], command_id: Optional[str], context_id: Optional[str]]) -> Wait[CommandStatusResponse]
 

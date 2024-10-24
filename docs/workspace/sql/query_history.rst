@@ -4,10 +4,9 @@
 
 .. py:class:: QueryHistoryAPI
 
-    A service responsible for storing and retrieving the list of queries run against SQL endpoints and
-    serverless compute.
+    Access the history of queries through SQL warehouses.
 
-    .. py:method:: list( [, filter_by: Optional[QueryFilter], include_metrics: Optional[bool], max_results: Optional[int], page_token: Optional[str]]) -> ListQueriesResponse
+    .. py:method:: list( [, filter_by: Optional[QueryFilter], include_metrics: Optional[bool], max_results: Optional[int], page_token: Optional[str]]) -> Iterator[QueryInfo]
 
 
         Usage:
@@ -24,23 +23,20 @@
 
         List Queries.
         
-        List the history of queries through SQL warehouses, and serverless compute.
+        List the history of queries through SQL warehouses.
         
-        You can filter by user ID, warehouse ID, status, and time range. Most recently started queries are
-        returned first (up to max_results in request). The pagination token returned in response can be used
-        to list subsequent query statuses.
+        You can filter by user ID, warehouse ID, status, and time range.
         
         :param filter_by: :class:`QueryFilter` (optional)
           A filter to limit query history results. This field is optional.
         :param include_metrics: bool (optional)
-          Whether to include the query metrics with each query. Only use this for a small subset of queries
-          (max_results). Defaults to false.
+          Whether to include metrics about query.
         :param max_results: int (optional)
-          Limit the number of results returned in one page. Must be less than 1000 and the default is 100.
+          Limit the number of results returned in one page. The default is 100.
         :param page_token: str (optional)
           A token that can be used to get the next page of results. The token can contains characters that
           need to be encoded before using it in a URL. For example, the character '+' needs to be replaced by
-          %2B. This field is optional.
+          %2B.
         
-        :returns: :class:`ListQueriesResponse`
+        :returns: Iterator over :class:`QueryInfo`
         

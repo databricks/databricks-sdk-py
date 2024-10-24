@@ -9,7 +9,7 @@
     notification destinations if the condition was met. Alerts can be scheduled using the `sql_task` type of
     the Jobs API, e.g. :method:jobs/create.
 
-    .. py:method:: create( [, alert: Optional[CreateAlertRequestAlert]]) -> Alert
+    .. py:method:: create(name: str, options: AlertOptions, query_id: str [, parent: Optional[str], rearm: Optional[int]]) -> Alert
 
 
         Usage:
@@ -46,27 +46,37 @@
 
         Create an alert.
         
-        Creates an alert.
+        Creates an alert. An alert is a Databricks SQL object that periodically runs a query, evaluates a
+        condition of its result, and notifies users or notification destinations if the condition was met.
         
-        :param alert: :class:`CreateAlertRequestAlert` (optional)
+        :param name: str
+          Name of the alert.
+        :param options: :class:`AlertOptions`
+          Alert configuration options.
+        :param query_id: str
+          Query ID.
+        :param parent: str (optional)
+          The identifier of the workspace folder containing the object.
+        :param rearm: int (optional)
+          Number of seconds after being triggered before the alert rearms itself and can be triggered again.
+          If `null`, alert will never be triggered again.
         
         :returns: :class:`Alert`
         
 
-    .. py:method:: delete(id: str)
+    .. py:method:: delete(alert_id: str)
 
         Delete an alert.
         
-        Moves an alert to the trash. Trashed alerts immediately disappear from searches and list views, and
-        can no longer trigger. You can restore a trashed alert through the UI. A trashed alert is permanently
-        deleted after 30 days.
+        Deletes an alert. Deleted alerts are no longer accessible and cannot be restored. **Note:** Unlike
+        queries and dashboards, alerts cannot be moved to the trash.
         
-        :param id: str
+        :param alert_id: str
         
         
         
 
-    .. py:method:: get(id: str) -> Alert
+    .. py:method:: get(alert_id: str) -> Alert
 
 
         Usage:
@@ -107,12 +117,12 @@
         
         Gets an alert.
         
-        :param id: str
+        :param alert_id: str
         
         :returns: :class:`Alert`
         
 
-    .. py:method:: list( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[ListAlertsResponseAlert]
+    .. py:method:: list() -> Iterator[Alert]
 
 
         Usage:
@@ -126,18 +136,14 @@
             
             all = w.alerts.list(sql.ListAlertsRequest())
 
-        List alerts.
+        Get alerts.
         
-        Gets a list of alerts accessible to the user, ordered by creation time. **Warning:** Calling this API
-        concurrently 10 or more times could result in throttling, service degradation, or a temporary ban.
+        Gets a list of alerts.
         
-        :param page_size: int (optional)
-        :param page_token: str (optional)
-        
-        :returns: Iterator over :class:`ListAlertsResponseAlert`
+        :returns: Iterator over :class:`Alert`
         
 
-    .. py:method:: update(id: str, update_mask: str [, alert: Optional[UpdateAlertRequestAlert]]) -> Alert
+    .. py:method:: update(alert_id: str, name: str, options: AlertOptions, query_id: str [, rearm: Optional[int]])
 
 
         Usage:
@@ -180,12 +186,16 @@
         
         Updates an alert.
         
-        :param id: str
-        :param update_mask: str
-          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
-          setting payload will be updated. The field mask needs to be supplied as single string. To specify
-          multiple fields in the field mask, use comma as the separator (no space).
-        :param alert: :class:`UpdateAlertRequestAlert` (optional)
+        :param alert_id: str
+        :param name: str
+          Name of the alert.
+        :param options: :class:`AlertOptions`
+          Alert configuration options.
+        :param query_id: str
+          Query ID.
+        :param rearm: int (optional)
+          Number of seconds after being triggered before the alert rearms itself and can be triggered again.
+          If `null`, alert will never be triggered again.
         
-        :returns: :class:`Alert`
+        
         
