@@ -107,6 +107,11 @@
         If Databricks acquires at least 85% of the requested on-demand nodes, cluster creation will succeed.
         Otherwise the cluster will terminate with an informative error message.
         
+        Rather than authoring the cluster's JSON definition from scratch, Databricks recommends filling out
+        the [create compute UI] and then copying the generated JSON definition from the UI.
+        
+        [create compute UI]: https://docs.databricks.com/compute/configure.html
+        
         :param spark_version: str
           The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of available Spark versions can be
           retrieved by using the :method:clusters/sparkVersions API call.
@@ -202,8 +207,13 @@
         :param policy_id: str (optional)
           The ID of the cluster policy used to create the cluster if applicable.
         :param runtime_engine: :class:`RuntimeEngine` (optional)
-          Decides which runtime engine to be use, e.g. Standard vs. Photon. If unspecified, the runtime engine
-          is inferred from spark_version.
+          Determines the cluster's runtime engine, either standard or Photon.
+          
+          This field is not compatible with legacy `spark_version` values that contain `-photon-`. Remove
+          `-photon-` from the `spark_version` and set `runtime_engine` to `PHOTON`.
+          
+          If left unspecified, the runtime engine defaults to standard unless the spark_version contains
+          -photon-, in which case Photon will be used.
         :param single_user_name: str (optional)
           Single user name if data_security_mode is `SINGLE_USER`
         :param spark_conf: Dict[str,str] (optional)
@@ -425,8 +435,13 @@
         :param policy_id: str (optional)
           The ID of the cluster policy used to create the cluster if applicable.
         :param runtime_engine: :class:`RuntimeEngine` (optional)
-          Decides which runtime engine to be use, e.g. Standard vs. Photon. If unspecified, the runtime engine
-          is inferred from spark_version.
+          Determines the cluster's runtime engine, either standard or Photon.
+          
+          This field is not compatible with legacy `spark_version` values that contain `-photon-`. Remove
+          `-photon-` from the `spark_version` and set `runtime_engine` to `PHOTON`.
+          
+          If left unspecified, the runtime engine defaults to standard unless the spark_version contains
+          -photon-, in which case Photon will be used.
         :param single_user_name: str (optional)
           Single user name if data_security_mode is `SINGLE_USER`
         :param spark_conf: Dict[str,str] (optional)

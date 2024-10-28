@@ -8,6 +8,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: BooleanMessage
+   :members:
+   :undoc-members:
+
 .. autoclass:: ClusterAutoRestartMessage
    :members:
    :undoc-members:
@@ -188,6 +192,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: DeleteDisableLegacyAccessResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: DeleteDisableLegacyDbfsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: DeleteDisableLegacyFeaturesResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: DeleteNetworkConnectivityConfigurationResponse
    :members:
    :undoc-members:
@@ -220,6 +236,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: WEBHOOK
       :value: "WEBHOOK"
+
+.. autoclass:: DisableLegacyAccess
+   :members:
+   :undoc-members:
+
+.. autoclass:: DisableLegacyDbfs
+   :members:
+   :undoc-members:
+
+.. autoclass:: DisableLegacyFeatures
+   :members:
+   :undoc-members:
 
 .. autoclass:: EmailConfig
    :members:
@@ -509,6 +537,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    The type of token request. As of now, only `AZURE_ACTIVE_DIRECTORY_TOKEN` is supported.
 
+   .. py:attribute:: ARCLIGHT_AZURE_EXCHANGE_TOKEN
+      :value: "ARCLIGHT_AZURE_EXCHANGE_TOKEN"
+
    .. py:attribute:: AZURE_ACTIVE_DIRECTORY_TOKEN
       :value: "AZURE_ACTIVE_DIRECTORY_TOKEN"
 
@@ -525,6 +556,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: UpdateDefaultNamespaceSettingRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateDisableLegacyAccessRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateDisableLegacyDbfsRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateDisableLegacyFeaturesRequest
    :members:
    :undoc-members:
 

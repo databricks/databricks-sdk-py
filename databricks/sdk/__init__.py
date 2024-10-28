@@ -6,6 +6,7 @@ from databricks.sdk import azure
 from databricks.sdk.credentials_provider import CredentialsStrategy
 from databricks.sdk.mixins.compute import ClustersExt
 from databricks.sdk.mixins.files import DbfsExt
+from databricks.sdk.mixins.open_ai_client import ServingEndpointsExt
 from databricks.sdk.mixins.workspace import WorkspaceExt
 from databricks.sdk.service.apps import AppsAPI
 from databricks.sdk.service.billing import (BillableUsageAPI, BudgetsAPI,
@@ -24,6 +25,7 @@ from databricks.sdk.service.catalog import (AccountMetastoreAssignmentsAPI,
                                             StorageCredentialsAPI,
                                             SystemSchemasAPI,
                                             TableConstraintsAPI, TablesAPI,
+                                            TemporaryTableCredentialsAPI,
                                             VolumesAPI, WorkspaceBindingsAPI)
 from databricks.sdk.service.compute import (ClusterPoliciesAPI, ClustersAPI,
                                             CommandExecutionAPI,
@@ -69,6 +71,9 @@ from databricks.sdk.service.settings import (AccountIpAccessListsAPI,
                                              CredentialsManagerAPI,
                                              CspEnablementAccountAPI,
                                              DefaultNamespaceAPI,
+                                             DisableLegacyAccessAPI,
+                                             DisableLegacyDbfsAPI,
+                                             DisableLegacyFeaturesAPI,
                                              EnhancedSecurityMonitoringAPI,
                                              EsmEnablementAccountAPI,
                                              IpAccessListsAPI,
@@ -171,7 +176,7 @@ class WorkspaceClient:
         self._config = config.copy()
         self._dbutils = _make_dbutils(self._config)
         self._api_client = client.ApiClient(self._config)
-        serving_endpoints = ServingEndpointsAPI(self._api_client)
+        serving_endpoints = ServingEndpointsExt(self._api_client)
         self._account_access_control_proxy = AccountAccessControlProxyAPI(self._api_client)
         self._alerts = AlertsAPI(self._api_client)
         self._alerts_legacy = AlertsLegacyAPI(self._api_client)
@@ -253,6 +258,7 @@ class WorkspaceClient:
         self._system_schemas = SystemSchemasAPI(self._api_client)
         self._table_constraints = TableConstraintsAPI(self._api_client)
         self._tables = TablesAPI(self._api_client)
+        self._temporary_table_credentials = TemporaryTableCredentialsAPI(self._api_client)
         self._token_management = TokenManagementAPI(self._api_client)
         self._tokens = TokensAPI(self._api_client)
         self._users = UsersAPI(self._api_client)
@@ -632,7 +638,7 @@ class WorkspaceClient:
         return self._service_principals
 
     @property
-    def serving_endpoints(self) -> ServingEndpointsAPI:
+    def serving_endpoints(self) -> ServingEndpointsExt:
         """The Serving Endpoints API allows you to create, update, and delete model serving endpoints."""
         return self._serving_endpoints
 
@@ -675,6 +681,11 @@ class WorkspaceClient:
     def tables(self) -> TablesAPI:
         """A table resides in the third layer of Unity Catalog’s three-level namespace."""
         return self._tables
+
+    @property
+    def temporary_table_credentials(self) -> TemporaryTableCredentialsAPI:
+        """Temporary Table Credentials refer to short-lived, downscoped credentials used to access cloud storage locationswhere table data is stored in Databricks."""
+        return self._temporary_table_credentials
 
     @property
     def token_management(self) -> TokenManagementAPI:

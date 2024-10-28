@@ -29,6 +29,12 @@ class BaseJob:
     """The creator user name. This field won’t be included in the response if the user has already
     been deleted."""
 
+    effective_budget_policy_id: Optional[str] = None
+    """The id of the budget policy used by this job for cost attribution purposes. This may be set
+    through (in order of precedence): 1. Budget admins through the account or workspace console 2.
+    Jobs UI in the job details page and Jobs API using `budget_policy_id` 3. Inferred default based
+    on accessible budget policies of the run_as identity on job creation or modification."""
+
     job_id: Optional[int] = None
     """The canonical identifier for this job."""
 
@@ -41,6 +47,8 @@ class BaseJob:
         body = {}
         if self.created_time is not None: body['created_time'] = self.created_time
         if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
+        if self.effective_budget_policy_id is not None:
+            body['effective_budget_policy_id'] = self.effective_budget_policy_id
         if self.job_id is not None: body['job_id'] = self.job_id
         if self.settings: body['settings'] = self.settings.as_dict()
         return body
@@ -50,6 +58,7 @@ class BaseJob:
         """Deserializes the BaseJob from a dictionary."""
         return cls(created_time=d.get('created_time', None),
                    creator_user_name=d.get('creator_user_name', None),
+                   effective_budget_policy_id=d.get('effective_budget_policy_id', None),
                    job_id=d.get('job_id', None),
                    settings=_from_dict(d, 'settings', JobSettings))
 
@@ -484,6 +493,11 @@ class CreateJob:
     access_control_list: Optional[List[JobAccessControlRequest]] = None
     """List of permissions to set on the job."""
 
+    budget_policy_id: Optional[str] = None
+    """The id of the user specified budget policy to use for this job. If not specified, a default
+    budget policy may be applied when creating or modifying the job. See
+    `effective_budget_policy_id` for the budget policy used by this workload."""
+
     continuous: Optional[Continuous] = None
     """An optional continuous property for this job. The continuous property will ensure that there is
     always one run executing. Only one of `schedule` and `continuous` can be used."""
@@ -505,7 +519,11 @@ class CreateJob:
     well as when this job is deleted."""
 
     environments: Optional[List[JobEnvironment]] = None
-    """A list of task execution environment specifications that can be referenced by tasks of this job."""
+    """A list of task execution environment specifications that can be referenced by serverless tasks
+    of this job. An environment is required to be present for serverless tasks. For serverless
+    notebook tasks, the environment is accessible in the notebook environment panel. For other
+    serverless tasks, the task environment is required to be specified using environment_key in the
+    task settings."""
 
     format: Optional[Format] = None
     """Used to tell what is the format of the job. This field is ignored in Create/Update/Reset calls.
@@ -553,12 +571,11 @@ class CreateJob:
     """The queue settings of the job."""
 
     run_as: Optional[JobRunAs] = None
-    """Write-only setting, available only in Create/Update/Reset and Submit calls. Specifies the user
-    or service principal that the job runs as. If not specified, the job runs as the user who
-    created the job.
+    """Write-only setting. Specifies the user, service principal or group that the job/pipeline runs
+    as. If not specified, the job/pipeline runs as the user who created the job/pipeline.
     
-    Only `user_name` or `service_principal_name` can be specified. If both are specified, an error
-    is thrown."""
+    Exactly one of `user_name`, `service_principal_name`, `group_name` should be specified. If not,
+    an error is thrown."""
 
     schedule: Optional[CronSchedule] = None
     """An optional periodic schedule for this job. The default behavior is that the job only runs when
@@ -588,6 +605,7 @@ class CreateJob:
         body = {}
         if self.access_control_list:
             body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
+        if self.budget_policy_id is not None: body['budget_policy_id'] = self.budget_policy_id
         if self.continuous: body['continuous'] = self.continuous.as_dict()
         if self.deployment: body['deployment'] = self.deployment.as_dict()
         if self.description is not None: body['description'] = self.description
@@ -616,6 +634,7 @@ class CreateJob:
     def from_dict(cls, d: Dict[str, any]) -> CreateJob:
         """Deserializes the CreateJob from a dictionary."""
         return cls(access_control_list=_repeated_dict(d, 'access_control_list', JobAccessControlRequest),
+                   budget_policy_id=d.get('budget_policy_id', None),
                    continuous=_from_dict(d, 'continuous', Continuous),
                    deployment=_from_dict(d, 'deployment', JobDeployment),
                    description=d.get('description', None),
@@ -1258,6 +1277,12 @@ class Job:
     """The creator user name. This field won’t be included in the response if the user has already
     been deleted."""
 
+    effective_budget_policy_id: Optional[str] = None
+    """The id of the budget policy used by this job for cost attribution purposes. This may be set
+    through (in order of precedence): 1. Budget admins through the account or workspace console 2.
+    Jobs UI in the job details page and Jobs API using `budget_policy_id` 3. Inferred default based
+    on accessible budget policies of the run_as identity on job creation or modification."""
+
     job_id: Optional[int] = None
     """The canonical identifier for this job."""
 
@@ -1279,6 +1304,8 @@ class Job:
         body = {}
         if self.created_time is not None: body['created_time'] = self.created_time
         if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
+        if self.effective_budget_policy_id is not None:
+            body['effective_budget_policy_id'] = self.effective_budget_policy_id
         if self.job_id is not None: body['job_id'] = self.job_id
         if self.run_as_user_name is not None: body['run_as_user_name'] = self.run_as_user_name
         if self.settings: body['settings'] = self.settings.as_dict()
@@ -1289,6 +1316,7 @@ class Job:
         """Deserializes the Job from a dictionary."""
         return cls(created_time=d.get('created_time', None),
                    creator_user_name=d.get('creator_user_name', None),
+                   effective_budget_policy_id=d.get('effective_budget_policy_id', None),
                    job_id=d.get('job_id', None),
                    run_as_user_name=d.get('run_as_user_name', None),
                    settings=_from_dict(d, 'settings', JobSettings))
@@ -1462,7 +1490,8 @@ class JobEditMode(Enum):
 @dataclass
 class JobEmailNotifications:
     no_alert_for_skipped_runs: Optional[bool] = None
-    """If true, do not send email to recipients specified in `on_failure` if the run is skipped."""
+    """If true, do not send email to recipients specified in `on_failure` if the run is skipped. This
+    field is `deprecated`. Please use the `notification_settings.no_alert_for_skipped_runs` field."""
 
     on_duration_warning_threshold_exceeded: Optional[List[str]] = None
     """A list of email addresses to be notified when the duration of a run exceeds the threshold
@@ -1720,12 +1749,11 @@ class JobPermissionsRequest:
 
 @dataclass
 class JobRunAs:
-    """Write-only setting, available only in Create/Update/Reset and Submit calls. Specifies the user
-    or service principal that the job runs as. If not specified, the job runs as the user who
-    created the job.
+    """Write-only setting. Specifies the user, service principal or group that the job/pipeline runs
+    as. If not specified, the job/pipeline runs as the user who created the job/pipeline.
     
-    Only `user_name` or `service_principal_name` can be specified. If both are specified, an error
-    is thrown."""
+    Exactly one of `user_name`, `service_principal_name`, `group_name` should be specified. If not,
+    an error is thrown."""
 
     service_principal_name: Optional[str] = None
     """Application ID of an active service principal. Setting this field requires the
@@ -1752,6 +1780,11 @@ class JobRunAs:
 
 @dataclass
 class JobSettings:
+    budget_policy_id: Optional[str] = None
+    """The id of the user specified budget policy to use for this job. If not specified, a default
+    budget policy may be applied when creating or modifying the job. See
+    `effective_budget_policy_id` for the budget policy used by this workload."""
+
     continuous: Optional[Continuous] = None
     """An optional continuous property for this job. The continuous property will ensure that there is
     always one run executing. Only one of `schedule` and `continuous` can be used."""
@@ -1773,7 +1806,11 @@ class JobSettings:
     well as when this job is deleted."""
 
     environments: Optional[List[JobEnvironment]] = None
-    """A list of task execution environment specifications that can be referenced by tasks of this job."""
+    """A list of task execution environment specifications that can be referenced by serverless tasks
+    of this job. An environment is required to be present for serverless tasks. For serverless
+    notebook tasks, the environment is accessible in the notebook environment panel. For other
+    serverless tasks, the task environment is required to be specified using environment_key in the
+    task settings."""
 
     format: Optional[Format] = None
     """Used to tell what is the format of the job. This field is ignored in Create/Update/Reset calls.
@@ -1821,12 +1858,11 @@ class JobSettings:
     """The queue settings of the job."""
 
     run_as: Optional[JobRunAs] = None
-    """Write-only setting, available only in Create/Update/Reset and Submit calls. Specifies the user
-    or service principal that the job runs as. If not specified, the job runs as the user who
-    created the job.
+    """Write-only setting. Specifies the user, service principal or group that the job/pipeline runs
+    as. If not specified, the job/pipeline runs as the user who created the job/pipeline.
     
-    Only `user_name` or `service_principal_name` can be specified. If both are specified, an error
-    is thrown."""
+    Exactly one of `user_name`, `service_principal_name`, `group_name` should be specified. If not,
+    an error is thrown."""
 
     schedule: Optional[CronSchedule] = None
     """An optional periodic schedule for this job. The default behavior is that the job only runs when
@@ -1854,6 +1890,7 @@ class JobSettings:
     def as_dict(self) -> dict:
         """Serializes the JobSettings into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.budget_policy_id is not None: body['budget_policy_id'] = self.budget_policy_id
         if self.continuous: body['continuous'] = self.continuous.as_dict()
         if self.deployment: body['deployment'] = self.deployment.as_dict()
         if self.description is not None: body['description'] = self.description
@@ -1881,7 +1918,8 @@ class JobSettings:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> JobSettings:
         """Deserializes the JobSettings from a dictionary."""
-        return cls(continuous=_from_dict(d, 'continuous', Continuous),
+        return cls(budget_policy_id=d.get('budget_policy_id', None),
+                   continuous=_from_dict(d, 'continuous', Continuous),
                    deployment=_from_dict(d, 'deployment', JobDeployment),
                    description=d.get('description', None),
                    edit_mode=_enum(d, 'edit_mode', JobEditMode),
@@ -2472,6 +2510,7 @@ class RepairRun:
     [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html"""
 
     pipeline_params: Optional[PipelineParams] = None
+    """Controls whether the pipeline should perform a full refresh"""
 
     python_named_params: Optional[Dict[str, str]] = None
 
@@ -3175,6 +3214,7 @@ class RunJobTask:
     [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html"""
 
     pipeline_params: Optional[PipelineParams] = None
+    """Controls whether the pipeline should perform a full refresh"""
 
     python_named_params: Optional[Dict[str, str]] = None
 
@@ -3334,6 +3374,7 @@ class RunNow:
     [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html"""
 
     pipeline_params: Optional[PipelineParams] = None
+    """Controls whether the pipeline should perform a full refresh"""
 
     python_named_params: Optional[Dict[str, str]] = None
 
@@ -3543,6 +3584,7 @@ class RunParameters:
     [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html"""
 
     pipeline_params: Optional[PipelineParams] = None
+    """Controls whether the pipeline should perform a full refresh"""
 
     python_named_params: Optional[Dict[str, str]] = None
 
@@ -3617,9 +3659,11 @@ class RunResultState(Enum):
     reached. * `EXCLUDED`: The run was skipped because the necessary conditions were not met. *
     `SUCCESS_WITH_FAILURES`: The job run completed successfully with some failures; leaf tasks were
     successful. * `UPSTREAM_FAILED`: The run was skipped because of an upstream failure. *
-    `UPSTREAM_CANCELED`: The run was skipped because an upstream task was canceled."""
+    `UPSTREAM_CANCELED`: The run was skipped because an upstream task was canceled. * `DISABLED`:
+    The run was skipped because it was disabled explicitly by the user."""
 
     CANCELED = 'CANCELED'
+    DISABLED = 'DISABLED'
     EXCLUDED = 'EXCLUDED'
     FAILED = 'FAILED'
     MAXIMUM_CONCURRENT_RUNS_REACHED = 'MAXIMUM_CONCURRENT_RUNS_REACHED'
@@ -4495,6 +4539,10 @@ class SubmitRun:
     access_control_list: Optional[List[JobAccessControlRequest]] = None
     """List of permissions to set on the job."""
 
+    budget_policy_id: Optional[str] = None
+    """The user specified id of the budget policy to use for this one-time run. If not specified, the
+    run will be not be attributed to any budget policy."""
+
     email_notifications: Optional[JobEmailNotifications] = None
     """An optional set of email addresses notified when the run begins or completes."""
 
@@ -4555,6 +4603,7 @@ class SubmitRun:
         body = {}
         if self.access_control_list:
             body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
+        if self.budget_policy_id is not None: body['budget_policy_id'] = self.budget_policy_id
         if self.email_notifications: body['email_notifications'] = self.email_notifications.as_dict()
         if self.environments: body['environments'] = [v.as_dict() for v in self.environments]
         if self.git_source: body['git_source'] = self.git_source.as_dict()
@@ -4573,6 +4622,7 @@ class SubmitRun:
     def from_dict(cls, d: Dict[str, any]) -> SubmitRun:
         """Deserializes the SubmitRun from a dictionary."""
         return cls(access_control_list=_repeated_dict(d, 'access_control_list', JobAccessControlRequest),
+                   budget_policy_id=d.get('budget_policy_id', None),
                    email_notifications=_from_dict(d, 'email_notifications', JobEmailNotifications),
                    environments=_repeated_dict(d, 'environments', JobEnvironment),
                    git_source=_from_dict(d, 'git_source', GitSource),
@@ -5034,7 +5084,8 @@ class TaskDependency:
 @dataclass
 class TaskEmailNotifications:
     no_alert_for_skipped_runs: Optional[bool] = None
-    """If true, do not send email to recipients specified in `on_failure` if the run is skipped."""
+    """If true, do not send email to recipients specified in `on_failure` if the run is skipped. This
+    field is `deprecated`. Please use the `notification_settings.no_alert_for_skipped_runs` field."""
 
     on_duration_warning_threshold_exceeded: Optional[List[str]] = None
     """A list of email addresses to be notified when the duration of a run exceeds the threshold
@@ -5128,36 +5179,36 @@ class TaskNotificationSettings:
 
 class TerminationCodeCode(Enum):
     """The code indicates why the run was terminated. Additional codes might be introduced in future
-    releases. * `SUCCESS`: The run was completed successfully. * `CANCELED`: The run was canceled
-    during execution by the Databricks platform; for example, if the maximum run duration was
-    exceeded. * `SKIPPED`: Run was never executed, for example, if the upstream task run failed, the
-    dependency type condition was not met, or there were no material tasks to execute. *
-    `INTERNAL_ERROR`: The run encountered an unexpected error. Refer to the state message for
-    further details. * `DRIVER_ERROR`: The run encountered an error while communicating with the
-    Spark Driver. * `CLUSTER_ERROR`: The run failed due to a cluster error. Refer to the state
-    message for further details. * `REPOSITORY_CHECKOUT_FAILED`: Failed to complete the checkout due
-    to an error when communicating with the third party service. * `INVALID_CLUSTER_REQUEST`: The
-    run failed because it issued an invalid request to start the cluster. *
-    `WORKSPACE_RUN_LIMIT_EXCEEDED`: The workspace has reached the quota for the maximum number of
-    concurrent active runs. Consider scheduling the runs over a larger time frame. *
-    `FEATURE_DISABLED`: The run failed because it tried to access a feature unavailable for the
-    workspace. * `CLUSTER_REQUEST_LIMIT_EXCEEDED`: The number of cluster creation, start, and upsize
-    requests have exceeded the allotted rate limit. Consider spreading the run execution over a
-    larger time frame. * `STORAGE_ACCESS_ERROR`: The run failed due to an error when accessing the
-    customer blob storage. Refer to the state message for further details. * `RUN_EXECUTION_ERROR`:
-    The run was completed with task failures. For more details, refer to the state message or run
-    output. * `UNAUTHORIZED_ERROR`: The run failed due to a permission issue while accessing a
-    resource. Refer to the state message for further details. * `LIBRARY_INSTALLATION_ERROR`: The
-    run failed while installing the user-requested library. Refer to the state message for further
-    details. The causes might include, but are not limited to: The provided library is invalid,
-    there are insufficient permissions to install the library, and so forth. *
-    `MAX_CONCURRENT_RUNS_EXCEEDED`: The scheduled run exceeds the limit of maximum concurrent runs
-    set for the job. * `MAX_SPARK_CONTEXTS_EXCEEDED`: The run is scheduled on a cluster that has
-    already reached the maximum number of contexts it is configured to create. See: [Link]. *
-    `RESOURCE_NOT_FOUND`: A resource necessary for run execution does not exist. Refer to the state
-    message for further details. * `INVALID_RUN_CONFIGURATION`: The run failed due to an invalid
-    configuration. Refer to the state message for further details. * `CLOUD_FAILURE`: The run failed
-    due to a cloud provider issue. Refer to the state message for further details. *
+    releases. * `SUCCESS`: The run was completed successfully. * `USER_CANCELED`: The run was
+    successfully canceled during execution by a user. * `CANCELED`: The run was canceled during
+    execution by the Databricks platform; for example, if the maximum run duration was exceeded. *
+    `SKIPPED`: Run was never executed, for example, if the upstream task run failed, the dependency
+    type condition was not met, or there were no material tasks to execute. * `INTERNAL_ERROR`: The
+    run encountered an unexpected error. Refer to the state message for further details. *
+    `DRIVER_ERROR`: The run encountered an error while communicating with the Spark Driver. *
+    `CLUSTER_ERROR`: The run failed due to a cluster error. Refer to the state message for further
+    details. * `REPOSITORY_CHECKOUT_FAILED`: Failed to complete the checkout due to an error when
+    communicating with the third party service. * `INVALID_CLUSTER_REQUEST`: The run failed because
+    it issued an invalid request to start the cluster. * `WORKSPACE_RUN_LIMIT_EXCEEDED`: The
+    workspace has reached the quota for the maximum number of concurrent active runs. Consider
+    scheduling the runs over a larger time frame. * `FEATURE_DISABLED`: The run failed because it
+    tried to access a feature unavailable for the workspace. * `CLUSTER_REQUEST_LIMIT_EXCEEDED`: The
+    number of cluster creation, start, and upsize requests have exceeded the allotted rate limit.
+    Consider spreading the run execution over a larger time frame. * `STORAGE_ACCESS_ERROR`: The run
+    failed due to an error when accessing the customer blob storage. Refer to the state message for
+    further details. * `RUN_EXECUTION_ERROR`: The run was completed with task failures. For more
+    details, refer to the state message or run output. * `UNAUTHORIZED_ERROR`: The run failed due to
+    a permission issue while accessing a resource. Refer to the state message for further details. *
+    `LIBRARY_INSTALLATION_ERROR`: The run failed while installing the user-requested library. Refer
+    to the state message for further details. The causes might include, but are not limited to: The
+    provided library is invalid, there are insufficient permissions to install the library, and so
+    forth. * `MAX_CONCURRENT_RUNS_EXCEEDED`: The scheduled run exceeds the limit of maximum
+    concurrent runs set for the job. * `MAX_SPARK_CONTEXTS_EXCEEDED`: The run is scheduled on a
+    cluster that has already reached the maximum number of contexts it is configured to create. See:
+    [Link]. * `RESOURCE_NOT_FOUND`: A resource necessary for run execution does not exist. Refer to
+    the state message for further details. * `INVALID_RUN_CONFIGURATION`: The run failed due to an
+    invalid configuration. Refer to the state message for further details. * `CLOUD_FAILURE`: The
+    run failed due to a cloud provider issue. Refer to the state message for further details. *
     `MAX_JOB_QUEUE_SIZE_EXCEEDED`: The run was skipped due to reaching the job level queue size
     limit.
     
@@ -5183,6 +5234,7 @@ class TerminationCodeCode(Enum):
     STORAGE_ACCESS_ERROR = 'STORAGE_ACCESS_ERROR'
     SUCCESS = 'SUCCESS'
     UNAUTHORIZED_ERROR = 'UNAUTHORIZED_ERROR'
+    USER_CANCELED = 'USER_CANCELED'
     WORKSPACE_RUN_LIMIT_EXCEEDED = 'WORKSPACE_RUN_LIMIT_EXCEEDED'
 
 
@@ -5190,36 +5242,36 @@ class TerminationCodeCode(Enum):
 class TerminationDetails:
     code: Optional[TerminationCodeCode] = None
     """The code indicates why the run was terminated. Additional codes might be introduced in future
-    releases. * `SUCCESS`: The run was completed successfully. * `CANCELED`: The run was canceled
-    during execution by the Databricks platform; for example, if the maximum run duration was
-    exceeded. * `SKIPPED`: Run was never executed, for example, if the upstream task run failed, the
-    dependency type condition was not met, or there were no material tasks to execute. *
-    `INTERNAL_ERROR`: The run encountered an unexpected error. Refer to the state message for
-    further details. * `DRIVER_ERROR`: The run encountered an error while communicating with the
-    Spark Driver. * `CLUSTER_ERROR`: The run failed due to a cluster error. Refer to the state
-    message for further details. * `REPOSITORY_CHECKOUT_FAILED`: Failed to complete the checkout due
-    to an error when communicating with the third party service. * `INVALID_CLUSTER_REQUEST`: The
-    run failed because it issued an invalid request to start the cluster. *
-    `WORKSPACE_RUN_LIMIT_EXCEEDED`: The workspace has reached the quota for the maximum number of
-    concurrent active runs. Consider scheduling the runs over a larger time frame. *
-    `FEATURE_DISABLED`: The run failed because it tried to access a feature unavailable for the
-    workspace. * `CLUSTER_REQUEST_LIMIT_EXCEEDED`: The number of cluster creation, start, and upsize
-    requests have exceeded the allotted rate limit. Consider spreading the run execution over a
-    larger time frame. * `STORAGE_ACCESS_ERROR`: The run failed due to an error when accessing the
-    customer blob storage. Refer to the state message for further details. * `RUN_EXECUTION_ERROR`:
-    The run was completed with task failures. For more details, refer to the state message or run
-    output. * `UNAUTHORIZED_ERROR`: The run failed due to a permission issue while accessing a
-    resource. Refer to the state message for further details. * `LIBRARY_INSTALLATION_ERROR`: The
-    run failed while installing the user-requested library. Refer to the state message for further
-    details. The causes might include, but are not limited to: The provided library is invalid,
-    there are insufficient permissions to install the library, and so forth. *
-    `MAX_CONCURRENT_RUNS_EXCEEDED`: The scheduled run exceeds the limit of maximum concurrent runs
-    set for the job. * `MAX_SPARK_CONTEXTS_EXCEEDED`: The run is scheduled on a cluster that has
-    already reached the maximum number of contexts it is configured to create. See: [Link]. *
-    `RESOURCE_NOT_FOUND`: A resource necessary for run execution does not exist. Refer to the state
-    message for further details. * `INVALID_RUN_CONFIGURATION`: The run failed due to an invalid
-    configuration. Refer to the state message for further details. * `CLOUD_FAILURE`: The run failed
-    due to a cloud provider issue. Refer to the state message for further details. *
+    releases. * `SUCCESS`: The run was completed successfully. * `USER_CANCELED`: The run was
+    successfully canceled during execution by a user. * `CANCELED`: The run was canceled during
+    execution by the Databricks platform; for example, if the maximum run duration was exceeded. *
+    `SKIPPED`: Run was never executed, for example, if the upstream task run failed, the dependency
+    type condition was not met, or there were no material tasks to execute. * `INTERNAL_ERROR`: The
+    run encountered an unexpected error. Refer to the state message for further details. *
+    `DRIVER_ERROR`: The run encountered an error while communicating with the Spark Driver. *
+    `CLUSTER_ERROR`: The run failed due to a cluster error. Refer to the state message for further
+    details. * `REPOSITORY_CHECKOUT_FAILED`: Failed to complete the checkout due to an error when
+    communicating with the third party service. * `INVALID_CLUSTER_REQUEST`: The run failed because
+    it issued an invalid request to start the cluster. * `WORKSPACE_RUN_LIMIT_EXCEEDED`: The
+    workspace has reached the quota for the maximum number of concurrent active runs. Consider
+    scheduling the runs over a larger time frame. * `FEATURE_DISABLED`: The run failed because it
+    tried to access a feature unavailable for the workspace. * `CLUSTER_REQUEST_LIMIT_EXCEEDED`: The
+    number of cluster creation, start, and upsize requests have exceeded the allotted rate limit.
+    Consider spreading the run execution over a larger time frame. * `STORAGE_ACCESS_ERROR`: The run
+    failed due to an error when accessing the customer blob storage. Refer to the state message for
+    further details. * `RUN_EXECUTION_ERROR`: The run was completed with task failures. For more
+    details, refer to the state message or run output. * `UNAUTHORIZED_ERROR`: The run failed due to
+    a permission issue while accessing a resource. Refer to the state message for further details. *
+    `LIBRARY_INSTALLATION_ERROR`: The run failed while installing the user-requested library. Refer
+    to the state message for further details. The causes might include, but are not limited to: The
+    provided library is invalid, there are insufficient permissions to install the library, and so
+    forth. * `MAX_CONCURRENT_RUNS_EXCEEDED`: The scheduled run exceeds the limit of maximum
+    concurrent runs set for the job. * `MAX_SPARK_CONTEXTS_EXCEEDED`: The run is scheduled on a
+    cluster that has already reached the maximum number of contexts it is configured to create. See:
+    [Link]. * `RESOURCE_NOT_FOUND`: A resource necessary for run execution does not exist. Refer to
+    the state message for further details. * `INVALID_RUN_CONFIGURATION`: The run failed due to an
+    invalid configuration. Refer to the state message for further details. * `CLOUD_FAILURE`: The
+    run failed due to a cloud provider issue. Refer to the state message for further details. *
     `MAX_JOB_QUEUE_SIZE_EXCEEDED`: The run was skipped due to reaching the job level queue size
     limit.
     
@@ -5605,6 +5657,7 @@ class JobsAPI:
     def create(self,
                *,
                access_control_list: Optional[List[JobAccessControlRequest]] = None,
+               budget_policy_id: Optional[str] = None,
                continuous: Optional[Continuous] = None,
                deployment: Optional[JobDeployment] = None,
                description: Optional[str] = None,
@@ -5633,6 +5686,10 @@ class JobsAPI:
         
         :param access_control_list: List[:class:`JobAccessControlRequest`] (optional)
           List of permissions to set on the job.
+        :param budget_policy_id: str (optional)
+          The id of the user specified budget policy to use for this job. If not specified, a default budget
+          policy may be applied when creating or modifying the job. See `effective_budget_policy_id` for the
+          budget policy used by this workload.
         :param continuous: :class:`Continuous` (optional)
           An optional continuous property for this job. The continuous property will ensure that there is
           always one run executing. Only one of `schedule` and `continuous` can be used.
@@ -5649,7 +5706,10 @@ class JobsAPI:
           An optional set of email addresses that is notified when runs of this job begin or complete as well
           as when this job is deleted.
         :param environments: List[:class:`JobEnvironment`] (optional)
-          A list of task execution environment specifications that can be referenced by tasks of this job.
+          A list of task execution environment specifications that can be referenced by serverless tasks of
+          this job. An environment is required to be present for serverless tasks. For serverless notebook
+          tasks, the environment is accessible in the notebook environment panel. For other serverless tasks,
+          the task environment is required to be specified using environment_key in the task settings.
         :param format: :class:`Format` (optional)
           Used to tell what is the format of the job. This field is ignored in Create/Update/Reset calls. When
           using the Jobs API 2.1 this value is always set to `"MULTI_TASK"`.
@@ -5686,12 +5746,11 @@ class JobsAPI:
         :param queue: :class:`QueueSettings` (optional)
           The queue settings of the job.
         :param run_as: :class:`JobRunAs` (optional)
-          Write-only setting, available only in Create/Update/Reset and Submit calls. Specifies the user or
-          service principal that the job runs as. If not specified, the job runs as the user who created the
-          job.
+          Write-only setting. Specifies the user, service principal or group that the job/pipeline runs as. If
+          not specified, the job/pipeline runs as the user who created the job/pipeline.
           
-          Only `user_name` or `service_principal_name` can be specified. If both are specified, an error is
-          thrown.
+          Exactly one of `user_name`, `service_principal_name`, `group_name` should be specified. If not, an
+          error is thrown.
         :param schedule: :class:`CronSchedule` (optional)
           An optional periodic schedule for this job. The default behavior is that the job only runs when
           triggered by clicking “Run Now” in the Jobs UI or sending an API request to `runNow`.
@@ -5715,6 +5774,7 @@ class JobsAPI:
         body = {}
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
+        if budget_policy_id is not None: body['budget_policy_id'] = budget_policy_id
         if continuous is not None: body['continuous'] = continuous.as_dict()
         if deployment is not None: body['deployment'] = deployment.as_dict()
         if description is not None: body['description'] = description
@@ -6075,6 +6135,7 @@ class JobsAPI:
           [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
           [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
         :param pipeline_params: :class:`PipelineParams` (optional)
+          Controls whether the pipeline should perform a full refresh
         :param python_named_params: Dict[str,str] (optional)
         :param python_params: List[str] (optional)
           A list of parameters for jobs with Python tasks, for example `"python_params": ["john doe", "35"]`.
@@ -6264,6 +6325,7 @@ class JobsAPI:
           [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
           [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
         :param pipeline_params: :class:`PipelineParams` (optional)
+          Controls whether the pipeline should perform a full refresh
         :param python_named_params: Dict[str,str] (optional)
         :param python_params: List[str] (optional)
           A list of parameters for jobs with Python tasks, for example `"python_params": ["john doe", "35"]`.
@@ -6380,6 +6442,7 @@ class JobsAPI:
     def submit(self,
                *,
                access_control_list: Optional[List[JobAccessControlRequest]] = None,
+               budget_policy_id: Optional[str] = None,
                email_notifications: Optional[JobEmailNotifications] = None,
                environments: Optional[List[JobEnvironment]] = None,
                git_source: Optional[GitSource] = None,
@@ -6400,6 +6463,9 @@ class JobsAPI:
         
         :param access_control_list: List[:class:`JobAccessControlRequest`] (optional)
           List of permissions to set on the job.
+        :param budget_policy_id: str (optional)
+          The user specified id of the budget policy to use for this one-time run. If not specified, the run
+          will be not be attributed to any budget policy.
         :param email_notifications: :class:`JobEmailNotifications` (optional)
           An optional set of email addresses notified when the run begins or completes.
         :param environments: List[:class:`JobEnvironment`] (optional)
@@ -6451,6 +6517,7 @@ class JobsAPI:
         body = {}
         if access_control_list is not None:
             body['access_control_list'] = [v.as_dict() for v in access_control_list]
+        if budget_policy_id is not None: body['budget_policy_id'] = budget_policy_id
         if email_notifications is not None: body['email_notifications'] = email_notifications.as_dict()
         if environments is not None: body['environments'] = [v.as_dict() for v in environments]
         if git_source is not None: body['git_source'] = git_source.as_dict()
@@ -6474,6 +6541,7 @@ class JobsAPI:
         self,
         *,
         access_control_list: Optional[List[JobAccessControlRequest]] = None,
+        budget_policy_id: Optional[str] = None,
         email_notifications: Optional[JobEmailNotifications] = None,
         environments: Optional[List[JobEnvironment]] = None,
         git_source: Optional[GitSource] = None,
@@ -6488,6 +6556,7 @@ class JobsAPI:
         webhook_notifications: Optional[WebhookNotifications] = None,
         timeout=timedelta(minutes=20)) -> Run:
         return self.submit(access_control_list=access_control_list,
+                           budget_policy_id=budget_policy_id,
                            email_notifications=email_notifications,
                            environments=environments,
                            git_source=git_source,

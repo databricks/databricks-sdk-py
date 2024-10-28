@@ -275,6 +275,42 @@ class AssignResponse:
 
 
 @dataclass
+class AwsCredentials:
+    """AWS temporary credentials for API authentication. Read more at
+    https://docs.aws.amazon.com/STS/latest/APIReference/API_Credentials.html."""
+
+    access_key_id: Optional[str] = None
+    """The access key ID that identifies the temporary credentials."""
+
+    access_point: Optional[str] = None
+    """The Amazon Resource Name (ARN) of the S3 access point for temporary credentials related the
+    external location."""
+
+    secret_access_key: Optional[str] = None
+    """The secret access key that can be used to sign AWS API requests."""
+
+    session_token: Optional[str] = None
+    """The token that users must pass to AWS API to use the temporary credentials."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AwsCredentials into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.access_key_id is not None: body['access_key_id'] = self.access_key_id
+        if self.access_point is not None: body['access_point'] = self.access_point
+        if self.secret_access_key is not None: body['secret_access_key'] = self.secret_access_key
+        if self.session_token is not None: body['session_token'] = self.session_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> AwsCredentials:
+        """Deserializes the AwsCredentials from a dictionary."""
+        return cls(access_key_id=d.get('access_key_id', None),
+                   access_point=d.get('access_point', None),
+                   secret_access_key=d.get('secret_access_key', None),
+                   session_token=d.get('session_token', None))
+
+
+@dataclass
 class AwsIamRoleRequest:
     role_arn: str
     """The Amazon Resource Name (ARN) of the AWS IAM role for S3 data access."""
@@ -403,6 +439,26 @@ class AzureServicePrincipal:
         return cls(application_id=d.get('application_id', None),
                    client_secret=d.get('client_secret', None),
                    directory_id=d.get('directory_id', None))
+
+
+@dataclass
+class AzureUserDelegationSas:
+    """Azure temporary credentials for API authentication. Read more at
+    https://docs.microsoft.com/en-us/rest/api/storageservices/create-user-delegation-sas"""
+
+    sas_token: Optional[str] = None
+    """The signed URI (SAS Token) used to access blob services for a given path"""
+
+    def as_dict(self) -> dict:
+        """Serializes the AzureUserDelegationSas into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.sas_token is not None: body['sas_token'] = self.sas_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> AzureUserDelegationSas:
+        """Deserializes the AzureUserDelegationSas from a dictionary."""
+        return cls(sas_token=d.get('sas_token', None))
 
 
 @dataclass
@@ -853,6 +909,7 @@ class ConnectionInfoSecurableKind(Enum):
     CONNECTION_DATABRICKS = 'CONNECTION_DATABRICKS'
     CONNECTION_EXTERNAL_HIVE_METASTORE = 'CONNECTION_EXTERNAL_HIVE_METASTORE'
     CONNECTION_GLUE = 'CONNECTION_GLUE'
+    CONNECTION_HTTP_BEARER = 'CONNECTION_HTTP_BEARER'
     CONNECTION_MYSQL = 'CONNECTION_MYSQL'
     CONNECTION_ONLINE_CATALOG = 'CONNECTION_ONLINE_CATALOG'
     CONNECTION_POSTGRESQL = 'CONNECTION_POSTGRESQL'
@@ -869,6 +926,7 @@ class ConnectionType(Enum):
     DATABRICKS = 'DATABRICKS'
     GLUE = 'GLUE'
     HIVE_METASTORE = 'HIVE_METASTORE'
+    HTTP = 'HTTP'
     MYSQL = 'MYSQL'
     POSTGRESQL = 'POSTGRESQL'
     REDSHIFT = 'REDSHIFT'
@@ -1086,9 +1144,6 @@ class CreateFunction:
     full_data_type: str
     """Pretty printed function data type."""
 
-    return_params: FunctionParameterInfos
-    """Table function return parameters."""
-
     routine_body: CreateFunctionRoutineBody
     """Function language. When **EXTERNAL** is used, the language of the routine function should be
     specified in the __external_language__ field, and the __return_params__ of the function cannot
@@ -1097,9 +1152,6 @@ class CreateFunction:
 
     routine_definition: str
     """Function body."""
-
-    routine_dependencies: DependencyList
-    """Function dependencies."""
 
     parameter_style: CreateFunctionParameterStyle
     """Function parameter style. **S** is the value for SQL."""
@@ -1130,6 +1182,12 @@ class CreateFunction:
 
     properties: Optional[str] = None
     """JSON-serialized key-value pair map, encoded (escaped) as a string."""
+
+    return_params: Optional[FunctionParameterInfos] = None
+    """Table function return parameters."""
+
+    routine_dependencies: Optional[DependencyList] = None
+    """Function dependencies."""
 
     sql_path: Optional[str] = None
     """List of schemes whose objects can be referenced without qualification."""
@@ -1620,6 +1678,7 @@ class CreateVolumeRequestContent:
 class CredentialType(Enum):
     """The type of credential."""
 
+    BEARER_TOKEN = 'BEARER_TOKEN'
     USERNAME_PASSWORD = 'USERNAME_PASSWORD'
 
 
@@ -2438,6 +2497,97 @@ class FunctionParameterType(Enum):
     PARAM = 'PARAM'
 
 
+@dataclass
+class GcpOauthToken:
+    """GCP temporary credentials for API authentication. Read more at
+    https://developers.google.com/identity/protocols/oauth2/service-account"""
+
+    oauth_token: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the GcpOauthToken into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.oauth_token is not None: body['oauth_token'] = self.oauth_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> GcpOauthToken:
+        """Deserializes the GcpOauthToken from a dictionary."""
+        return cls(oauth_token=d.get('oauth_token', None))
+
+
+@dataclass
+class GenerateTemporaryTableCredentialRequest:
+    operation: Optional[TableOperation] = None
+    """The operation performed against the table data, either READ or READ_WRITE. If READ_WRITE is
+    specified, the credentials returned will have write permissions, otherwise, it will be read
+    only."""
+
+    table_id: Optional[str] = None
+    """UUID of the table to read or write."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GenerateTemporaryTableCredentialRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.operation is not None: body['operation'] = self.operation.value
+        if self.table_id is not None: body['table_id'] = self.table_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> GenerateTemporaryTableCredentialRequest:
+        """Deserializes the GenerateTemporaryTableCredentialRequest from a dictionary."""
+        return cls(operation=_enum(d, 'operation', TableOperation), table_id=d.get('table_id', None))
+
+
+@dataclass
+class GenerateTemporaryTableCredentialResponse:
+    aws_temp_credentials: Optional[AwsCredentials] = None
+    """AWS temporary credentials for API authentication. Read more at
+    https://docs.aws.amazon.com/STS/latest/APIReference/API_Credentials.html."""
+
+    azure_user_delegation_sas: Optional[AzureUserDelegationSas] = None
+    """Azure temporary credentials for API authentication. Read more at
+    https://docs.microsoft.com/en-us/rest/api/storageservices/create-user-delegation-sas"""
+
+    expiration_time: Optional[int] = None
+    """Server time when the credential will expire, in epoch milliseconds. The API client is advised to
+    cache the credential given this expiration time."""
+
+    gcp_oauth_token: Optional[GcpOauthToken] = None
+    """GCP temporary credentials for API authentication. Read more at
+    https://developers.google.com/identity/protocols/oauth2/service-account"""
+
+    r2_temp_credentials: Optional[R2Credentials] = None
+    """R2 temporary credentials for API authentication. Read more at
+    https://developers.cloudflare.com/r2/api/s3/tokens/."""
+
+    url: Optional[str] = None
+    """The URL of the storage path accessible by the temporary credential."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GenerateTemporaryTableCredentialResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.aws_temp_credentials: body['aws_temp_credentials'] = self.aws_temp_credentials.as_dict()
+        if self.azure_user_delegation_sas:
+            body['azure_user_delegation_sas'] = self.azure_user_delegation_sas.as_dict()
+        if self.expiration_time is not None: body['expiration_time'] = self.expiration_time
+        if self.gcp_oauth_token: body['gcp_oauth_token'] = self.gcp_oauth_token.as_dict()
+        if self.r2_temp_credentials: body['r2_temp_credentials'] = self.r2_temp_credentials.as_dict()
+        if self.url is not None: body['url'] = self.url
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> GenerateTemporaryTableCredentialResponse:
+        """Deserializes the GenerateTemporaryTableCredentialResponse from a dictionary."""
+        return cls(aws_temp_credentials=_from_dict(d, 'aws_temp_credentials', AwsCredentials),
+                   azure_user_delegation_sas=_from_dict(d, 'azure_user_delegation_sas',
+                                                        AzureUserDelegationSas),
+                   expiration_time=d.get('expiration_time', None),
+                   gcp_oauth_token=_from_dict(d, 'gcp_oauth_token', GcpOauthToken),
+                   r2_temp_credentials=_from_dict(d, 'r2_temp_credentials', R2Credentials),
+                   url=d.get('url', None))
+
+
 class GetBindingsSecurableType(Enum):
 
     CATALOG = 'catalog'
@@ -2468,6 +2618,9 @@ class GetMetastoreSummaryResponse:
 
     delta_sharing_scope: Optional[GetMetastoreSummaryResponseDeltaSharingScope] = None
     """The scope of Delta Sharing enabled for the metastore."""
+
+    external_access_enabled: Optional[bool] = None
+    """Whether to allow non-DBR clients to directly access entities under the metastore."""
 
     global_metastore_id: Optional[str] = None
     """Globally unique metastore ID across clouds and regions, of the form `cloud:region:metastore_id`."""
@@ -2516,6 +2669,8 @@ class GetMetastoreSummaryResponse:
             body[
                 'delta_sharing_recipient_token_lifetime_in_seconds'] = self.delta_sharing_recipient_token_lifetime_in_seconds
         if self.delta_sharing_scope is not None: body['delta_sharing_scope'] = self.delta_sharing_scope.value
+        if self.external_access_enabled is not None:
+            body['external_access_enabled'] = self.external_access_enabled
         if self.global_metastore_id is not None: body['global_metastore_id'] = self.global_metastore_id
         if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
         if self.name is not None: body['name'] = self.name
@@ -2544,6 +2699,7 @@ class GetMetastoreSummaryResponse:
                        'delta_sharing_recipient_token_lifetime_in_seconds', None),
                    delta_sharing_scope=_enum(d, 'delta_sharing_scope',
                                              GetMetastoreSummaryResponseDeltaSharingScope),
+                   external_access_enabled=d.get('external_access_enabled', None),
                    global_metastore_id=d.get('global_metastore_id', None),
                    metastore_id=d.get('metastore_id', None),
                    name=d.get('name', None),
@@ -2996,6 +3152,9 @@ class MetastoreInfo:
     delta_sharing_scope: Optional[MetastoreInfoDeltaSharingScope] = None
     """The scope of Delta Sharing enabled for the metastore."""
 
+    external_access_enabled: Optional[bool] = None
+    """Whether to allow non-DBR clients to directly access entities under the metastore."""
+
     global_metastore_id: Optional[str] = None
     """Globally unique metastore ID across clouds and regions, of the form `cloud:region:metastore_id`."""
 
@@ -3043,6 +3202,8 @@ class MetastoreInfo:
             body[
                 'delta_sharing_recipient_token_lifetime_in_seconds'] = self.delta_sharing_recipient_token_lifetime_in_seconds
         if self.delta_sharing_scope is not None: body['delta_sharing_scope'] = self.delta_sharing_scope.value
+        if self.external_access_enabled is not None:
+            body['external_access_enabled'] = self.external_access_enabled
         if self.global_metastore_id is not None: body['global_metastore_id'] = self.global_metastore_id
         if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
         if self.name is not None: body['name'] = self.name
@@ -3070,6 +3231,7 @@ class MetastoreInfo:
                    delta_sharing_recipient_token_lifetime_in_seconds=d.get(
                        'delta_sharing_recipient_token_lifetime_in_seconds', None),
                    delta_sharing_scope=_enum(d, 'delta_sharing_scope', MetastoreInfoDeltaSharingScope),
+                   external_access_enabled=d.get('external_access_enabled', None),
                    global_metastore_id=d.get('global_metastore_id', None),
                    metastore_id=d.get('metastore_id', None),
                    name=d.get('name', None),
@@ -3703,10 +3865,15 @@ class OnlineTable:
     """Specification of the online table."""
 
     status: Optional[OnlineTableStatus] = None
-    """Online Table status"""
+    """Online Table data synchronization status"""
 
     table_serving_url: Optional[str] = None
     """Data serving REST API URL for this table"""
+
+    unity_catalog_provisioning_state: Optional[ProvisioningInfoState] = None
+    """The provisioning state of the online table entity in Unity Catalog. This is distinct from the
+    state of the data synchronization pipeline (i.e. the table may be in "ACTIVE" but the pipeline
+    may be in "PROVISIONING" as it runs asynchronously)."""
 
     def as_dict(self) -> dict:
         """Serializes the OnlineTable into a dictionary suitable for use as a JSON request body."""
@@ -3715,6 +3882,8 @@ class OnlineTable:
         if self.spec: body['spec'] = self.spec.as_dict()
         if self.status: body['status'] = self.status.as_dict()
         if self.table_serving_url is not None: body['table_serving_url'] = self.table_serving_url
+        if self.unity_catalog_provisioning_state is not None:
+            body['unity_catalog_provisioning_state'] = self.unity_catalog_provisioning_state.value
         return body
 
     @classmethod
@@ -3723,7 +3892,9 @@ class OnlineTable:
         return cls(name=d.get('name', None),
                    spec=_from_dict(d, 'spec', OnlineTableSpec),
                    status=_from_dict(d, 'status', OnlineTableStatus),
-                   table_serving_url=d.get('table_serving_url', None))
+                   table_serving_url=d.get('table_serving_url', None),
+                   unity_catalog_provisioning_state=_enum(d, 'unity_catalog_provisioning_state',
+                                                          ProvisioningInfoState))
 
 
 @dataclass
@@ -4082,7 +4253,7 @@ class ProvisioningInfoState(Enum):
     DELETING = 'DELETING'
     FAILED = 'FAILED'
     PROVISIONING = 'PROVISIONING'
-    STATE_UNSPECIFIED = 'STATE_UNSPECIFIED'
+    UPDATING = 'UPDATING'
 
 
 @dataclass
@@ -4149,6 +4320,36 @@ class QuotaInfo:
                    quota_count=d.get('quota_count', None),
                    quota_limit=d.get('quota_limit', None),
                    quota_name=d.get('quota_name', None))
+
+
+@dataclass
+class R2Credentials:
+    """R2 temporary credentials for API authentication. Read more at
+    https://developers.cloudflare.com/r2/api/s3/tokens/."""
+
+    access_key_id: Optional[str] = None
+    """The access key ID that identifies the temporary credentials."""
+
+    secret_access_key: Optional[str] = None
+    """The secret access key associated with the access key."""
+
+    session_token: Optional[str] = None
+    """The generated JWT that users must pass to use the temporary credentials."""
+
+    def as_dict(self) -> dict:
+        """Serializes the R2Credentials into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.access_key_id is not None: body['access_key_id'] = self.access_key_id
+        if self.secret_access_key is not None: body['secret_access_key'] = self.secret_access_key
+        if self.session_token is not None: body['session_token'] = self.session_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> R2Credentials:
+        """Deserializes the R2Credentials from a dictionary."""
+        return cls(access_key_id=d.get('access_key_id', None),
+                   secret_access_key=d.get('secret_access_key', None),
+                   session_token=d.get('session_token', None))
 
 
 @dataclass
@@ -4894,6 +5095,12 @@ class TableInfo:
                    updated_by=d.get('updated_by', None),
                    view_definition=d.get('view_definition', None),
                    view_dependencies=_from_dict(d, 'view_dependencies', DependencyList))
+
+
+class TableOperation(Enum):
+
+    READ = 'READ'
+    READ_WRITE = 'READ_WRITE'
 
 
 @dataclass
@@ -9135,7 +9342,8 @@ class TablesAPI:
             full_name: str,
             *,
             include_browse: Optional[bool] = None,
-            include_delta_metadata: Optional[bool] = None) -> TableInfo:
+            include_delta_metadata: Optional[bool] = None,
+            include_manifest_capabilities: Optional[bool] = None) -> TableInfo:
         """Get a table.
         
         Gets a table from the metastore for a specific catalog and schema. The caller must satisfy one of the
@@ -9151,6 +9359,8 @@ class TablesAPI:
           for
         :param include_delta_metadata: bool (optional)
           Whether delta metadata should be included in the response.
+        :param include_manifest_capabilities: bool (optional)
+          Whether to include a manifest containing capabilities the table has.
         
         :returns: :class:`TableInfo`
         """
@@ -9158,6 +9368,8 @@ class TablesAPI:
         query = {}
         if include_browse is not None: query['include_browse'] = include_browse
         if include_delta_metadata is not None: query['include_delta_metadata'] = include_delta_metadata
+        if include_manifest_capabilities is not None:
+            query['include_manifest_capabilities'] = include_manifest_capabilities
         headers = {'Accept': 'application/json', }
 
         res = self._api.do('GET', f'/api/2.1/unity-catalog/tables/{full_name}', query=query, headers=headers)
@@ -9169,6 +9381,7 @@ class TablesAPI:
              *,
              include_browse: Optional[bool] = None,
              include_delta_metadata: Optional[bool] = None,
+             include_manifest_capabilities: Optional[bool] = None,
              max_results: Optional[int] = None,
              omit_columns: Optional[bool] = None,
              omit_properties: Optional[bool] = None,
@@ -9190,6 +9403,8 @@ class TablesAPI:
           for
         :param include_delta_metadata: bool (optional)
           Whether delta metadata should be included in the response.
+        :param include_manifest_capabilities: bool (optional)
+          Whether to include a manifest containing capabilities the table has.
         :param max_results: int (optional)
           Maximum number of tables to return. If not set, all the tables are returned (not recommended). -
           when set to a value greater than 0, the page length is the minimum of this value and a server
@@ -9209,6 +9424,8 @@ class TablesAPI:
         if catalog_name is not None: query['catalog_name'] = catalog_name
         if include_browse is not None: query['include_browse'] = include_browse
         if include_delta_metadata is not None: query['include_delta_metadata'] = include_delta_metadata
+        if include_manifest_capabilities is not None:
+            query['include_manifest_capabilities'] = include_manifest_capabilities
         if max_results is not None: query['max_results'] = max_results
         if omit_columns is not None: query['omit_columns'] = omit_columns
         if omit_properties is not None: query['omit_properties'] = omit_properties
@@ -9228,6 +9445,7 @@ class TablesAPI:
     def list_summaries(self,
                        catalog_name: str,
                        *,
+                       include_manifest_capabilities: Optional[bool] = None,
                        max_results: Optional[int] = None,
                        page_token: Optional[str] = None,
                        schema_name_pattern: Optional[str] = None,
@@ -9247,6 +9465,8 @@ class TablesAPI:
         
         :param catalog_name: str
           Name of parent catalog for tables of interest.
+        :param include_manifest_capabilities: bool (optional)
+          Whether to include a manifest containing capabilities the table has.
         :param max_results: int (optional)
           Maximum number of summaries for tables to return. If not set, the page length is set to a server
           configured value (10000, as of 1/5/2024). - when set to a value greater than 0, the page length is
@@ -9265,6 +9485,8 @@ class TablesAPI:
 
         query = {}
         if catalog_name is not None: query['catalog_name'] = catalog_name
+        if include_manifest_capabilities is not None:
+            query['include_manifest_capabilities'] = include_manifest_capabilities
         if max_results is not None: query['max_results'] = max_results
         if page_token is not None: query['page_token'] = page_token
         if schema_name_pattern is not None: query['schema_name_pattern'] = schema_name_pattern
@@ -9299,6 +9521,55 @@ class TablesAPI:
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         self._api.do('PATCH', f'/api/2.1/unity-catalog/tables/{full_name}', body=body, headers=headers)
+
+
+class TemporaryTableCredentialsAPI:
+    """Temporary Table Credentials refer to short-lived, downscoped credentials used to access cloud storage
+    locationswhere table data is stored in Databricks. These credentials are employed to provide secure and
+    time-limitedaccess to data in cloud environments such as AWS, Azure, and Google Cloud. Each cloud provider
+    has its own typeof credentials: AWS uses temporary session tokens via AWS Security Token Service (STS),
+    Azure utilizesShared Access Signatures (SAS) for its data storage services, and Google Cloud supports
+    temporary credentialsthrough OAuth 2.0.Temporary table credentials ensure that data access is limited in
+    scope and duration, reducing the risk ofunauthorized access or misuse. To use the temporary table
+    credentials API, a metastore admin needs to enable the external_access_enabled flag (off by default) at
+    the metastore level, and user needs to be granted the EXTERNAL USE SCHEMA permission at the schema level
+    by catalog admin. Note that EXTERNAL USE SCHEMA is a schema level permission that can only be granted by
+    catalog admin explicitly and is not included in schema ownership or ALL PRIVILEGES on the schema for
+    security reason."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def generate_temporary_table_credentials(
+            self,
+            *,
+            operation: Optional[TableOperation] = None,
+            table_id: Optional[str] = None) -> GenerateTemporaryTableCredentialResponse:
+        """Generate a temporary table credential.
+        
+        Get a short-lived credential for directly accessing the table data on cloud storage. The metastore
+        must have external_access_enabled flag set to true (default false). The caller must have
+        EXTERNAL_USE_SCHEMA privilege on the parent schema and this privilege can only be granted by catalog
+        owners.
+        
+        :param operation: :class:`TableOperation` (optional)
+          The operation performed against the table data, either READ or READ_WRITE. If READ_WRITE is
+          specified, the credentials returned will have write permissions, otherwise, it will be read only.
+        :param table_id: str (optional)
+          UUID of the table to read or write.
+        
+        :returns: :class:`GenerateTemporaryTableCredentialResponse`
+        """
+        body = {}
+        if operation is not None: body['operation'] = operation.value
+        if table_id is not None: body['table_id'] = table_id
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do('POST',
+                           '/api/2.0/unity-catalog/temporary-table-credentials',
+                           body=body,
+                           headers=headers)
+        return GenerateTemporaryTableCredentialResponse.from_dict(res)
 
 
 class VolumesAPI:

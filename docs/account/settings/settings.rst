@@ -16,6 +16,15 @@
         This settings can be disabled so that new workspaces do not have compliance security profile enabled by
         default.
 
+    .. py:property:: disable_legacy_features
+        :type: DisableLegacyFeaturesAPI
+
+        Disable legacy features for new Databricks workspaces.
+        
+        For newly created workspaces: 1. Disables the use of DBFS root and mounts. 2. Hive Metastore will not be
+        provisioned. 3. Disables the use of ‘No-isolation clusters’. 4. Disables Databricks Runtime versions
+        prior to 13.3LTS.
+
     .. py:property:: esm_enablement_account
         :type: EsmEnablementAccountAPI
 

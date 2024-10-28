@@ -25,7 +25,12 @@ class App:
     It must be unique within the workspace."""
 
     active_deployment: Optional[AppDeployment] = None
-    """The active deployment of the app."""
+    """The active deployment of the app. A deployment is considered active when it has been deployed to
+    the app compute."""
+
+    app_status: Optional[ApplicationStatus] = None
+
+    compute_status: Optional[ComputeStatus] = None
 
     create_time: Optional[str] = None
     """The creation time of the app. Formatted timestamp in ISO 6801."""
@@ -33,17 +38,23 @@ class App:
     creator: Optional[str] = None
     """The email of the user that created the app."""
 
+    default_source_code_path: Optional[str] = None
+    """The default workspace file system path of the source code from which app deployment are created.
+    This field tracks the workspace source code path of the last active deployment."""
+
     description: Optional[str] = None
     """The description of the app."""
 
     pending_deployment: Optional[AppDeployment] = None
-    """The pending deployment of the app."""
+    """The pending deployment of the app. A deployment is considered pending when it is being prepared
+    for deployment to the app compute."""
+
+    resources: Optional[List[AppResource]] = None
+    """Resources for the app."""
 
     service_principal_id: Optional[int] = None
 
     service_principal_name: Optional[str] = None
-
-    status: Optional[AppStatus] = None
 
     update_time: Optional[str] = None
     """The update time of the app. Formatted timestamp in ISO 6801."""
@@ -58,15 +69,19 @@ class App:
         """Serializes the App into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.active_deployment: body['active_deployment'] = self.active_deployment.as_dict()
+        if self.app_status: body['app_status'] = self.app_status.as_dict()
+        if self.compute_status: body['compute_status'] = self.compute_status.as_dict()
         if self.create_time is not None: body['create_time'] = self.create_time
         if self.creator is not None: body['creator'] = self.creator
+        if self.default_source_code_path is not None:
+            body['default_source_code_path'] = self.default_source_code_path
         if self.description is not None: body['description'] = self.description
         if self.name is not None: body['name'] = self.name
         if self.pending_deployment: body['pending_deployment'] = self.pending_deployment.as_dict()
+        if self.resources: body['resources'] = [v.as_dict() for v in self.resources]
         if self.service_principal_id is not None: body['service_principal_id'] = self.service_principal_id
         if self.service_principal_name is not None:
             body['service_principal_name'] = self.service_principal_name
-        if self.status: body['status'] = self.status.as_dict()
         if self.update_time is not None: body['update_time'] = self.update_time
         if self.updater is not None: body['updater'] = self.updater
         if self.url is not None: body['url'] = self.url
@@ -76,14 +91,17 @@ class App:
     def from_dict(cls, d: Dict[str, any]) -> App:
         """Deserializes the App from a dictionary."""
         return cls(active_deployment=_from_dict(d, 'active_deployment', AppDeployment),
+                   app_status=_from_dict(d, 'app_status', ApplicationStatus),
+                   compute_status=_from_dict(d, 'compute_status', ComputeStatus),
                    create_time=d.get('create_time', None),
                    creator=d.get('creator', None),
+                   default_source_code_path=d.get('default_source_code_path', None),
                    description=d.get('description', None),
                    name=d.get('name', None),
                    pending_deployment=_from_dict(d, 'pending_deployment', AppDeployment),
+                   resources=_repeated_dict(d, 'resources', AppResource),
                    service_principal_id=d.get('service_principal_id', None),
                    service_principal_name=d.get('service_principal_name', None),
-                   status=_from_dict(d, 'status', AppStatus),
                    update_time=d.get('update_time', None),
                    updater=d.get('updater', None),
                    url=d.get('url', None))
@@ -162,13 +180,6 @@ class AppAccessControlResponse:
 
 @dataclass
 class AppDeployment:
-    source_code_path: str
-    """The workspace file system path of the source code used to create the app deployment. This is
-    different from `deployment_artifacts.source_code_path`, which is the path used by the deployed
-    app. The former refers to the original source code location of the app in the workspace during
-    deployment creation, whereas the latter provides a system generated stable snapshotted source
-    code path used by the deployment."""
-
     create_time: Optional[str] = None
     """The creation time of the deployment. Formatted timestamp in ISO 6801."""
 
@@ -183,6 +194,13 @@ class AppDeployment:
 
     mode: Optional[AppDeploymentMode] = None
     """The mode of which the deployment will manage the source code."""
+
+    source_code_path: Optional[str] = None
+    """The workspace file system path of the source code used to create the app deployment. This is
+    different from `deployment_artifacts.source_code_path`, which is the path used by the deployed
+    app. The former refers to the original source code location of the app in the workspace during
+    deployment creation, whereas the latter provides a system generated stable snapshotted source
+    code path used by the deployment."""
 
     status: Optional[AppDeploymentStatus] = None
     """Status and status message of the deployment"""
@@ -241,9 +259,9 @@ class AppDeploymentMode(Enum):
 
 class AppDeploymentState(Enum):
 
+    CANCELLED = 'CANCELLED'
     FAILED = 'FAILED'
     IN_PROGRESS = 'IN_PROGRESS'
-    STOPPED = 'STOPPED'
     SUCCEEDED = 'SUCCEEDED'
 
 
@@ -368,57 +386,254 @@ class AppPermissionsRequest:
                    app_name=d.get('app_name', None))
 
 
-class AppState(Enum):
+@dataclass
+class AppResource:
+    name: str
+    """Name of the App Resource."""
 
-    CREATING = 'CREATING'
-    DELETED = 'DELETED'
-    DELETING = 'DELETING'
-    ERROR = 'ERROR'
-    IDLE = 'IDLE'
-    RUNNING = 'RUNNING'
-    STARTING = 'STARTING'
+    description: Optional[str] = None
+    """Description of the App Resource."""
+
+    job: Optional[AppResourceJob] = None
+
+    secret: Optional[AppResourceSecret] = None
+
+    serving_endpoint: Optional[AppResourceServingEndpoint] = None
+
+    sql_warehouse: Optional[AppResourceSqlWarehouse] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the AppResource into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.description is not None: body['description'] = self.description
+        if self.job: body['job'] = self.job.as_dict()
+        if self.name is not None: body['name'] = self.name
+        if self.secret: body['secret'] = self.secret.as_dict()
+        if self.serving_endpoint: body['serving_endpoint'] = self.serving_endpoint.as_dict()
+        if self.sql_warehouse: body['sql_warehouse'] = self.sql_warehouse.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> AppResource:
+        """Deserializes the AppResource from a dictionary."""
+        return cls(description=d.get('description', None),
+                   job=_from_dict(d, 'job', AppResourceJob),
+                   name=d.get('name', None),
+                   secret=_from_dict(d, 'secret', AppResourceSecret),
+                   serving_endpoint=_from_dict(d, 'serving_endpoint', AppResourceServingEndpoint),
+                   sql_warehouse=_from_dict(d, 'sql_warehouse', AppResourceSqlWarehouse))
 
 
 @dataclass
-class AppStatus:
-    message: Optional[str] = None
-    """Message corresponding with the app state."""
+class AppResourceJob:
+    id: str
+    """Id of the job to grant permission on."""
 
-    state: Optional[AppState] = None
-    """State of the app."""
+    permission: AppResourceJobJobPermission
+    """Permissions to grant on the Job. Supported permissions are: "CAN_MANAGE", "IS_OWNER",
+    "CAN_MANAGE_RUN", "CAN_VIEW"."""
 
     def as_dict(self) -> dict:
-        """Serializes the AppStatus into a dictionary suitable for use as a JSON request body."""
+        """Serializes the AppResourceJob into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.id is not None: body['id'] = self.id
+        if self.permission is not None: body['permission'] = self.permission.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> AppResourceJob:
+        """Deserializes the AppResourceJob from a dictionary."""
+        return cls(id=d.get('id', None), permission=_enum(d, 'permission', AppResourceJobJobPermission))
+
+
+class AppResourceJobJobPermission(Enum):
+
+    CAN_MANAGE = 'CAN_MANAGE'
+    CAN_MANAGE_RUN = 'CAN_MANAGE_RUN'
+    CAN_VIEW = 'CAN_VIEW'
+    IS_OWNER = 'IS_OWNER'
+
+
+@dataclass
+class AppResourceSecret:
+    scope: str
+    """Scope of the secret to grant permission on."""
+
+    key: str
+    """Key of the secret to grant permission on."""
+
+    permission: AppResourceSecretSecretPermission
+    """Permission to grant on the secret scope. For secrets, only one permission is allowed. Permission
+    must be one of: "READ", "WRITE", "MANAGE"."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AppResourceSecret into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.key is not None: body['key'] = self.key
+        if self.permission is not None: body['permission'] = self.permission.value
+        if self.scope is not None: body['scope'] = self.scope
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> AppResourceSecret:
+        """Deserializes the AppResourceSecret from a dictionary."""
+        return cls(key=d.get('key', None),
+                   permission=_enum(d, 'permission', AppResourceSecretSecretPermission),
+                   scope=d.get('scope', None))
+
+
+class AppResourceSecretSecretPermission(Enum):
+    """Permission to grant on the secret scope. Supported permissions are: "READ", "WRITE", "MANAGE"."""
+
+    MANAGE = 'MANAGE'
+    READ = 'READ'
+    WRITE = 'WRITE'
+
+
+@dataclass
+class AppResourceServingEndpoint:
+    name: str
+    """Name of the serving endpoint to grant permission on."""
+
+    permission: AppResourceServingEndpointServingEndpointPermission
+    """Permission to grant on the serving endpoint. Supported permissions are: "CAN_MANAGE",
+    "CAN_QUERY", "CAN_VIEW"."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AppResourceServingEndpoint into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None: body['name'] = self.name
+        if self.permission is not None: body['permission'] = self.permission.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> AppResourceServingEndpoint:
+        """Deserializes the AppResourceServingEndpoint from a dictionary."""
+        return cls(name=d.get('name', None),
+                   permission=_enum(d, 'permission', AppResourceServingEndpointServingEndpointPermission))
+
+
+class AppResourceServingEndpointServingEndpointPermission(Enum):
+
+    CAN_MANAGE = 'CAN_MANAGE'
+    CAN_QUERY = 'CAN_QUERY'
+    CAN_VIEW = 'CAN_VIEW'
+
+
+@dataclass
+class AppResourceSqlWarehouse:
+    id: str
+    """Id of the SQL warehouse to grant permission on."""
+
+    permission: AppResourceSqlWarehouseSqlWarehousePermission
+    """Permission to grant on the SQL warehouse. Supported permissions are: "CAN_MANAGE", "CAN_USE",
+    "IS_OWNER"."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AppResourceSqlWarehouse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.id is not None: body['id'] = self.id
+        if self.permission is not None: body['permission'] = self.permission.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> AppResourceSqlWarehouse:
+        """Deserializes the AppResourceSqlWarehouse from a dictionary."""
+        return cls(id=d.get('id', None),
+                   permission=_enum(d, 'permission', AppResourceSqlWarehouseSqlWarehousePermission))
+
+
+class AppResourceSqlWarehouseSqlWarehousePermission(Enum):
+
+    CAN_MANAGE = 'CAN_MANAGE'
+    CAN_USE = 'CAN_USE'
+    IS_OWNER = 'IS_OWNER'
+
+
+class ApplicationState(Enum):
+
+    CRASHED = 'CRASHED'
+    DEPLOYING = 'DEPLOYING'
+    RUNNING = 'RUNNING'
+    UNAVAILABLE = 'UNAVAILABLE'
+
+
+@dataclass
+class ApplicationStatus:
+    message: Optional[str] = None
+    """Application status message"""
+
+    state: Optional[ApplicationState] = None
+    """State of the application."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ApplicationStatus into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.message is not None: body['message'] = self.message
         if self.state is not None: body['state'] = self.state.value
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> AppStatus:
-        """Deserializes the AppStatus from a dictionary."""
-        return cls(message=d.get('message', None), state=_enum(d, 'state', AppState))
+    def from_dict(cls, d: Dict[str, any]) -> ApplicationStatus:
+        """Deserializes the ApplicationStatus from a dictionary."""
+        return cls(message=d.get('message', None), state=_enum(d, 'state', ApplicationState))
+
+
+class ComputeState(Enum):
+
+    ACTIVE = 'ACTIVE'
+    DELETING = 'DELETING'
+    ERROR = 'ERROR'
+    STARTING = 'STARTING'
+    STOPPED = 'STOPPED'
+    STOPPING = 'STOPPING'
+    UPDATING = 'UPDATING'
+
+
+@dataclass
+class ComputeStatus:
+    message: Optional[str] = None
+    """Compute status message"""
+
+    state: Optional[ComputeState] = None
+    """State of the app compute."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ComputeStatus into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.message is not None: body['message'] = self.message
+        if self.state is not None: body['state'] = self.state.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ComputeStatus:
+        """Deserializes the ComputeStatus from a dictionary."""
+        return cls(message=d.get('message', None), state=_enum(d, 'state', ComputeState))
 
 
 @dataclass
 class CreateAppDeploymentRequest:
-    source_code_path: str
+    app_name: Optional[str] = None
+    """The name of the app."""
+
+    deployment_id: Optional[str] = None
+    """The unique id of the deployment."""
+
+    mode: Optional[AppDeploymentMode] = None
+    """The mode of which the deployment will manage the source code."""
+
+    source_code_path: Optional[str] = None
     """The workspace file system path of the source code used to create the app deployment. This is
     different from `deployment_artifacts.source_code_path`, which is the path used by the deployed
     app. The former refers to the original source code location of the app in the workspace during
     deployment creation, whereas the latter provides a system generated stable snapshotted source
     code path used by the deployment."""
 
-    app_name: Optional[str] = None
-    """The name of the app."""
-
-    mode: Optional[AppDeploymentMode] = None
-    """The mode of which the deployment will manage the source code."""
-
     def as_dict(self) -> dict:
         """Serializes the CreateAppDeploymentRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.app_name is not None: body['app_name'] = self.app_name
+        if self.deployment_id is not None: body['deployment_id'] = self.deployment_id
         if self.mode is not None: body['mode'] = self.mode.value
         if self.source_code_path is not None: body['source_code_path'] = self.source_code_path
         return body
@@ -427,6 +642,7 @@ class CreateAppDeploymentRequest:
     def from_dict(cls, d: Dict[str, any]) -> CreateAppDeploymentRequest:
         """Deserializes the CreateAppDeploymentRequest from a dictionary."""
         return cls(app_name=d.get('app_name', None),
+                   deployment_id=d.get('deployment_id', None),
                    mode=_enum(d, 'mode', AppDeploymentMode),
                    source_code_path=d.get('source_code_path', None))
 
@@ -440,31 +656,23 @@ class CreateAppRequest:
     description: Optional[str] = None
     """The description of the app."""
 
+    resources: Optional[List[AppResource]] = None
+    """Resources for the app."""
+
     def as_dict(self) -> dict:
         """Serializes the CreateAppRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.description is not None: body['description'] = self.description
         if self.name is not None: body['name'] = self.name
+        if self.resources: body['resources'] = [v.as_dict() for v in self.resources]
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateAppRequest:
         """Deserializes the CreateAppRequest from a dictionary."""
-        return cls(description=d.get('description', None), name=d.get('name', None))
-
-
-@dataclass
-class DeleteResponse:
-
-    def as_dict(self) -> dict:
-        """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteResponse:
-        """Deserializes the DeleteResponse from a dictionary."""
-        return cls()
+        return cls(description=d.get('description', None),
+                   name=d.get('name', None),
+                   resources=_repeated_dict(d, 'resources', AppResource))
 
 
 @dataclass
@@ -539,20 +747,6 @@ class StopAppRequest:
 
 
 @dataclass
-class StopAppResponse:
-
-    def as_dict(self) -> dict:
-        """Serializes the StopAppResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> StopAppResponse:
-        """Deserializes the StopAppResponse from a dictionary."""
-        return cls()
-
-
-@dataclass
 class UpdateAppRequest:
     name: str
     """The name of the app. The name must contain only lowercase alphanumeric characters and hyphens.
@@ -561,17 +755,23 @@ class UpdateAppRequest:
     description: Optional[str] = None
     """The description of the app."""
 
+    resources: Optional[List[AppResource]] = None
+    """Resources for the app."""
+
     def as_dict(self) -> dict:
         """Serializes the UpdateAppRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.description is not None: body['description'] = self.description
         if self.name is not None: body['name'] = self.name
+        if self.resources: body['resources'] = [v.as_dict() for v in self.resources]
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> UpdateAppRequest:
         """Deserializes the UpdateAppRequest from a dictionary."""
-        return cls(description=d.get('description', None), name=d.get('name', None))
+        return cls(description=d.get('description', None),
+                   name=d.get('name', None),
+                   resources=_repeated_dict(d, 'resources', AppResource))
 
 
 class AppsAPI:
@@ -581,27 +781,59 @@ class AppsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def wait_get_app_idle(self,
-                          name: str,
-                          timeout=timedelta(minutes=20),
-                          callback: Optional[Callable[[App], None]] = None) -> App:
+    def wait_get_app_active(self,
+                            name: str,
+                            timeout=timedelta(minutes=20),
+                            callback: Optional[Callable[[App], None]] = None) -> App:
         deadline = time.time() + timeout.total_seconds()
-        target_states = (AppState.IDLE, )
-        failure_states = (AppState.ERROR, )
+        target_states = (ComputeState.ACTIVE, )
+        failure_states = (ComputeState.ERROR, ComputeState.STOPPED, )
         status_message = 'polling...'
         attempt = 1
         while time.time() < deadline:
             poll = self.get(name=name)
-            status = poll.status.state
+            status = poll.compute_status.state
             status_message = f'current status: {status}'
-            if poll.status:
-                status_message = poll.status.message
+            if poll.compute_status:
+                status_message = poll.compute_status.message
             if status in target_states:
                 return poll
             if callback:
                 callback(poll)
             if status in failure_states:
-                msg = f'failed to reach IDLE, got {status}: {status_message}'
+                msg = f'failed to reach ACTIVE, got {status}: {status_message}'
+                raise OperationFailed(msg)
+            prefix = f"name={name}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f'timed out after {timeout}: {status_message}')
+
+    def wait_get_app_stopped(self,
+                             name: str,
+                             timeout=timedelta(minutes=20),
+                             callback: Optional[Callable[[App], None]] = None) -> App:
+        deadline = time.time() + timeout.total_seconds()
+        target_states = (ComputeState.STOPPED, )
+        failure_states = (ComputeState.ERROR, )
+        status_message = 'polling...'
+        attempt = 1
+        while time.time() < deadline:
+            poll = self.get(name=name)
+            status = poll.compute_status.state
+            status_message = f'current status: {status}'
+            if poll.compute_status:
+                status_message = poll.compute_status.message
+            if status in target_states:
+                return poll
+            if callback:
+                callback(poll)
+            if status in failure_states:
+                msg = f'failed to reach STOPPED, got {status}: {status_message}'
                 raise OperationFailed(msg)
             prefix = f"name={name}"
             sleep = attempt
@@ -647,7 +879,11 @@ class AppsAPI:
             attempt += 1
         raise TimeoutError(f'timed out after {timeout}: {status_message}')
 
-    def create(self, name: str, *, description: Optional[str] = None) -> Wait[App]:
+    def create(self,
+               name: str,
+               *,
+               description: Optional[str] = None,
+               resources: Optional[List[AppResource]] = None) -> Wait[App]:
         """Create an app.
         
         Creates a new app.
@@ -657,27 +893,31 @@ class AppsAPI:
           must be unique within the workspace.
         :param description: str (optional)
           The description of the app.
+        :param resources: List[:class:`AppResource`] (optional)
+          Resources for the app.
         
         :returns:
           Long-running operation waiter for :class:`App`.
-          See :method:wait_get_app_idle for more details.
+          See :method:wait_get_app_active for more details.
         """
         body = {}
         if description is not None: body['description'] = description
         if name is not None: body['name'] = name
+        if resources is not None: body['resources'] = [v.as_dict() for v in resources]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        op_response = self._api.do('POST', '/api/2.0/preview/apps', body=body, headers=headers)
-        return Wait(self.wait_get_app_idle, response=App.from_dict(op_response), name=op_response['name'])
+        op_response = self._api.do('POST', '/api/2.0/apps', body=body, headers=headers)
+        return Wait(self.wait_get_app_active, response=App.from_dict(op_response), name=op_response['name'])
 
     def create_and_wait(self,
                         name: str,
                         *,
                         description: Optional[str] = None,
+                        resources: Optional[List[AppResource]] = None,
                         timeout=timedelta(minutes=20)) -> App:
-        return self.create(description=description, name=name).result(timeout=timeout)
+        return self.create(description=description, name=name, resources=resources).result(timeout=timeout)
 
-    def delete(self, name: str):
+    def delete(self, name: str) -> App:
         """Delete an app.
         
         Deletes an app.
@@ -685,44 +925,49 @@ class AppsAPI:
         :param name: str
           The name of the app.
         
-        
+        :returns: :class:`App`
         """
 
         headers = {'Accept': 'application/json', }
 
-        self._api.do('DELETE', f'/api/2.0/preview/apps/{name}', headers=headers)
+        res = self._api.do('DELETE', f'/api/2.0/apps/{name}', headers=headers)
+        return App.from_dict(res)
 
     def deploy(self,
                app_name: str,
-               source_code_path: str,
                *,
-               mode: Optional[AppDeploymentMode] = None) -> Wait[AppDeployment]:
+               deployment_id: Optional[str] = None,
+               mode: Optional[AppDeploymentMode] = None,
+               source_code_path: Optional[str] = None) -> Wait[AppDeployment]:
         """Create an app deployment.
         
         Creates an app deployment for the app with the supplied name.
         
         :param app_name: str
           The name of the app.
-        :param source_code_path: str
+        :param deployment_id: str (optional)
+          The unique id of the deployment.
+        :param mode: :class:`AppDeploymentMode` (optional)
+          The mode of which the deployment will manage the source code.
+        :param source_code_path: str (optional)
           The workspace file system path of the source code used to create the app deployment. This is
           different from `deployment_artifacts.source_code_path`, which is the path used by the deployed app.
           The former refers to the original source code location of the app in the workspace during deployment
           creation, whereas the latter provides a system generated stable snapshotted source code path used by
           the deployment.
-        :param mode: :class:`AppDeploymentMode` (optional)
-          The mode of which the deployment will manage the source code.
         
         :returns:
           Long-running operation waiter for :class:`AppDeployment`.
           See :method:wait_get_deployment_app_succeeded for more details.
         """
         body = {}
+        if deployment_id is not None: body['deployment_id'] = deployment_id
         if mode is not None: body['mode'] = mode.value
         if source_code_path is not None: body['source_code_path'] = source_code_path
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         op_response = self._api.do('POST',
-                                   f'/api/2.0/preview/apps/{app_name}/deployments',
+                                   f'/api/2.0/apps/{app_name}/deployments',
                                    body=body,
                                    headers=headers)
         return Wait(self.wait_get_deployment_app_succeeded,
@@ -733,11 +978,14 @@ class AppsAPI:
     def deploy_and_wait(
         self,
         app_name: str,
-        source_code_path: str,
         *,
+        deployment_id: Optional[str] = None,
         mode: Optional[AppDeploymentMode] = None,
+        source_code_path: Optional[str] = None,
         timeout=timedelta(minutes=20)) -> AppDeployment:
-        return self.deploy(app_name=app_name, mode=mode,
+        return self.deploy(app_name=app_name,
+                           deployment_id=deployment_id,
+                           mode=mode,
                            source_code_path=source_code_path).result(timeout=timeout)
 
     def get(self, name: str) -> App:
@@ -753,7 +1001,7 @@ class AppsAPI:
 
         headers = {'Accept': 'application/json', }
 
-        res = self._api.do('GET', f'/api/2.0/preview/apps/{name}', headers=headers)
+        res = self._api.do('GET', f'/api/2.0/apps/{name}', headers=headers)
         return App.from_dict(res)
 
     def get_deployment(self, app_name: str, deployment_id: str) -> AppDeployment:
@@ -771,9 +1019,7 @@ class AppsAPI:
 
         headers = {'Accept': 'application/json', }
 
-        res = self._api.do('GET',
-                           f'/api/2.0/preview/apps/{app_name}/deployments/{deployment_id}',
-                           headers=headers)
+        res = self._api.do('GET', f'/api/2.0/apps/{app_name}/deployments/{deployment_id}', headers=headers)
         return AppDeployment.from_dict(res)
 
     def get_permission_levels(self, app_name: str) -> GetAppPermissionLevelsResponse:
@@ -827,7 +1073,7 @@ class AppsAPI:
         headers = {'Accept': 'application/json', }
 
         while True:
-            json = self._api.do('GET', '/api/2.0/preview/apps', query=query, headers=headers)
+            json = self._api.do('GET', '/api/2.0/apps', query=query, headers=headers)
             if 'apps' in json:
                 for v in json['apps']:
                     yield App.from_dict(v)
@@ -860,10 +1106,7 @@ class AppsAPI:
         headers = {'Accept': 'application/json', }
 
         while True:
-            json = self._api.do('GET',
-                                f'/api/2.0/preview/apps/{app_name}/deployments',
-                                query=query,
-                                headers=headers)
+            json = self._api.do('GET', f'/api/2.0/apps/{app_name}/deployments', query=query, headers=headers)
             if 'app_deployments' in json:
                 for v in json['app_deployments']:
                     yield AppDeployment.from_dict(v)
@@ -894,7 +1137,7 @@ class AppsAPI:
         res = self._api.do('PUT', f'/api/2.0/permissions/apps/{app_name}', body=body, headers=headers)
         return AppPermissions.from_dict(res)
 
-    def start(self, name: str) -> Wait[AppDeployment]:
+    def start(self, name: str) -> Wait[App]:
         """Start an app.
         
         Start the last active deployment of the app in the workspace.
@@ -903,22 +1146,19 @@ class AppsAPI:
           The name of the app.
         
         :returns:
-          Long-running operation waiter for :class:`AppDeployment`.
-          See :method:wait_get_deployment_app_succeeded for more details.
+          Long-running operation waiter for :class:`App`.
+          See :method:wait_get_app_active for more details.
         """
 
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        op_response = self._api.do('POST', f'/api/2.0/preview/apps/{name}/start', headers=headers)
-        return Wait(self.wait_get_deployment_app_succeeded,
-                    response=AppDeployment.from_dict(op_response),
-                    app_name=name,
-                    deployment_id=op_response['deployment_id'])
+        op_response = self._api.do('POST', f'/api/2.0/apps/{name}/start', headers=headers)
+        return Wait(self.wait_get_app_active, response=App.from_dict(op_response), name=op_response['name'])
 
-    def start_and_wait(self, name: str, timeout=timedelta(minutes=20)) -> AppDeployment:
+    def start_and_wait(self, name: str, timeout=timedelta(minutes=20)) -> App:
         return self.start(name=name).result(timeout=timeout)
 
-    def stop(self, name: str):
+    def stop(self, name: str) -> Wait[App]:
         """Stop an app.
         
         Stops the active deployment of the app in the workspace.
@@ -926,14 +1166,24 @@ class AppsAPI:
         :param name: str
           The name of the app.
         
-        
+        :returns:
+          Long-running operation waiter for :class:`App`.
+          See :method:wait_get_app_stopped for more details.
         """
 
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        self._api.do('POST', f'/api/2.0/preview/apps/{name}/stop', headers=headers)
+        op_response = self._api.do('POST', f'/api/2.0/apps/{name}/stop', headers=headers)
+        return Wait(self.wait_get_app_stopped, response=App.from_dict(op_response), name=op_response['name'])
 
-    def update(self, name: str, *, description: Optional[str] = None) -> App:
+    def stop_and_wait(self, name: str, timeout=timedelta(minutes=20)) -> App:
+        return self.stop(name=name).result(timeout=timeout)
+
+    def update(self,
+               name: str,
+               *,
+               description: Optional[str] = None,
+               resources: Optional[List[AppResource]] = None) -> App:
         """Update an app.
         
         Updates the app with the supplied name.
@@ -943,14 +1193,17 @@ class AppsAPI:
           must be unique within the workspace.
         :param description: str (optional)
           The description of the app.
+        :param resources: List[:class:`AppResource`] (optional)
+          Resources for the app.
         
         :returns: :class:`App`
         """
         body = {}
         if description is not None: body['description'] = description
+        if resources is not None: body['resources'] = [v.as_dict() for v in resources]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        res = self._api.do('PATCH', f'/api/2.0/preview/apps/{name}', body=body, headers=headers)
+        res = self._api.do('PATCH', f'/api/2.0/apps/{name}', body=body, headers=headers)
         return App.from_dict(res)
 
     def update_permissions(

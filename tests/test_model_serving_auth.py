@@ -12,30 +12,31 @@ default_auth_base_error_message = \
     "to configure credentials for your preferred authentication method"
 
 
-@pytest.mark.parametrize(
-    "env_values, oauth_file_name",
-    [([('IS_IN_DB_MODEL_SERVING_ENV', 'true'),
-       ('DB_MODEL_SERVING_HOST_URL', 'x')], "tests/testdata/model-serving-test-token"),
-     ([('IS_IN_DATABRICKS_MODEL_SERVING_ENV', 'true'),
-       ('DB_MODEL_SERVING_HOST_URL', 'x')], "tests/testdata/model-serving-test-token"),
-     ([('IS_IN_DB_MODEL_SERVING_ENV', 'true'),
-       ('DATABRICKS_MODEL_SERVING_HOST_URL', 'x')], "tests/testdata/model-serving-test-token"),
-     ([('IS_IN_DATABRICKS_MODEL_SERVING_ENV', 'true'),
-       ('DATABRICKS_MODEL_SERVING_HOST_URL', 'x')], "tests/testdata/model-serving-test-token"), ])
-def test_model_serving_auth(env_values, oauth_file_name, monkeypatch):
-    # Guarantee that the tests defaults to env variables rather than config file.
-    #
-    # TODO: this is hacky and we should find a better way to tell the config
-    # that it should not read from the config file.
-    monkeypatch.setenv('DATABRICKS_CONFIG_FILE', 'x')
-
+@pytest.mark.parametrize("env_values, del_env_values, oauth_file_name",
+                         [([
+                             ('IS_IN_DB_MODEL_SERVING_ENV', 'true'), ('DB_MODEL_SERVING_HOST_URL', 'x')
+                         ], ['DATABRICKS_MODEL_SERVING_HOST_URL'], "tests/testdata/model-serving-test-token"),
+                          ([('IS_IN_DATABRICKS_MODEL_SERVING_ENV', 'true'),
+                            ('DB_MODEL_SERVING_HOST_URL', 'x')], ['DATABRICKS_MODEL_SERVING_HOST_URL'],
+                           "tests/testdata/model-serving-test-token"),
+                          ([('IS_IN_DB_MODEL_SERVING_ENV', 'true'), ('DATABRICKS_MODEL_SERVING_HOST_URL', 'x')
+                            ], ['DB_MODEL_SERVING_HOST_URL'], "tests/testdata/model-serving-test-token"),
+                          ([('IS_IN_DATABRICKS_MODEL_SERVING_ENV', 'true'),
+                            ('DATABRICKS_MODEL_SERVING_HOST_URL', 'x')
+                            ], ['DB_MODEL_SERVING_HOST_URL'], "tests/testdata/model-serving-test-token"), ])
+def test_model_serving_auth(env_values, del_env_values, oauth_file_name, monkeypatch, mocker):
     ## In mlflow we check for these two environment variables to return the correct config
     for (env_name, env_value) in env_values:
         monkeypatch.setenv(env_name, env_value)
+
+    for (env_name) in del_env_values:
+        monkeypatch.delenv(env_name, raising=False)
+
     # patch mlflow to read the file from the test directory
     monkeypatch.setattr(
         "databricks.sdk.credentials_provider.ModelServingAuthProvider._MODEL_DEPENDENCY_OAUTH_TOKEN_FILE_PATH",
         oauth_file_name)
+    mocker.patch('databricks.sdk.config.Config._known_file_config_loader')
 
     cfg = Config()
 
@@ -70,13 +71,7 @@ def test_model_serving_auth_errors(env_values, oauth_file_name, monkeypatch):
     Config()
 
 
-def test_model_serving_auth_refresh(monkeypatch):
-    # Guarantee that the tests defaults to env variables rather than config file.
-    #
-    # TODO: this is hacky and we should find a better way to tell the config
-    # that it should not read from the config file.
-    monkeypatch.setenv('DATABRICKS_CONFIG_FILE', 'x')
-
+def test_model_serving_auth_refresh(monkeypatch, mocker):
     ## In mlflow we check for these two environment variables to return the correct config
     monkeypatch.setenv('IS_IN_DB_MODEL_SERVING_ENV', 'true')
     monkeypatch.setenv('DB_MODEL_SERVING_HOST_URL', 'x')
@@ -85,6 +80,7 @@ def test_model_serving_auth_refresh(monkeypatch):
     monkeypatch.setattr(
         "databricks.sdk.credentials_provider.ModelServingAuthProvider._MODEL_DEPENDENCY_OAUTH_TOKEN_FILE_PATH",
         "tests/testdata/model-serving-test-token")
+    mocker.patch('databricks.sdk.config.Config._known_file_config_loader')
 
     cfg = Config()
     assert cfg.auth_type == 'model-serving'
