@@ -23,6 +23,12 @@ default_auth_base_error_message = \
      ([('IS_IN_DATABRICKS_MODEL_SERVING_ENV', 'true'),
        ('DATABRICKS_MODEL_SERVING_HOST_URL', 'x')], "tests/testdata/model-serving-test-token"), ])
 def test_model_serving_auth(env_values, oauth_file_name, monkeypatch):
+    # Guarantee that the tests defaults to env variables rather than config file.
+    #
+    # TODO: this is hacky and we should find a better way to tell the config
+    # that it should not read from the config file.
+    monkeypatch.setenv('DATABRICKS_CONFIG_FILE', 'x')
+
     ## In mlflow we check for these two environment variables to return the correct config
     for (env_name, env_value) in env_values:
         monkeypatch.setenv(env_name, env_value)
@@ -49,6 +55,12 @@ def test_model_serving_auth(env_values, oauth_file_name, monkeypatch):
 ])
 @raises(default_auth_base_error_message)
 def test_model_serving_auth_errors(env_values, oauth_file_name, monkeypatch):
+    # Guarantee that the tests defaults to env variables rather than config file.
+    #
+    # TODO: this is hacky and we should find a better way to tell the config
+    # that it should not read from the config file.
+    monkeypatch.setenv('DATABRICKS_CONFIG_FILE', 'x')
+
     for (env_name, env_value) in env_values:
         monkeypatch.setenv(env_name, env_value)
     monkeypatch.setattr(
@@ -59,6 +71,12 @@ def test_model_serving_auth_errors(env_values, oauth_file_name, monkeypatch):
 
 
 def test_model_serving_auth_refresh(monkeypatch):
+    # Guarantee that the tests defaults to env variables rather than config file.
+    #
+    # TODO: this is hacky and we should find a better way to tell the config
+    # that it should not read from the config file.
+    monkeypatch.setenv('DATABRICKS_CONFIG_FILE', 'x')
+
     ## In mlflow we check for these two environment variables to return the correct config
     monkeypatch.setenv('IS_IN_DB_MODEL_SERVING_ENV', 'true')
     monkeypatch.setenv('DB_MODEL_SERVING_HOST_URL', 'x')
