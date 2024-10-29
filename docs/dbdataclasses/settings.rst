@@ -4,6 +4,33 @@ Settings
 These dataclasses are used in the SDK to represent API requests and responses for services in the ``databricks.sdk.service.settings`` module.
 
 .. py:currentmodule:: databricks.sdk.service.settings
+.. autoclass:: AibiDashboardEmbeddingAccessPolicy
+   :members:
+   :undoc-members:
+
+.. py:class:: AibiDashboardEmbeddingAccessPolicyAccessPolicyType
+
+   .. py:attribute:: ALLOW_ALL_DOMAINS
+      :value: "ALLOW_ALL_DOMAINS"
+
+   .. py:attribute:: ALLOW_APPROVED_DOMAINS
+      :value: "ALLOW_APPROVED_DOMAINS"
+
+   .. py:attribute:: DENY_ALL_DOMAINS
+      :value: "DENY_ALL_DOMAINS"
+
+.. autoclass:: AibiDashboardEmbeddingAccessPolicySetting
+   :members:
+   :undoc-members:
+
+.. autoclass:: AibiDashboardEmbeddingApprovedDomains
+   :members:
+   :undoc-members:
+
+.. autoclass:: AibiDashboardEmbeddingApprovedDomainsSetting
+   :members:
+   :undoc-members:
+
 .. autoclass:: AutomaticClusterUpdateSetting
    :members:
    :undoc-members:
@@ -542,6 +569,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: AZURE_ACTIVE_DIRECTORY_TOKEN
       :value: "AZURE_ACTIVE_DIRECTORY_TOKEN"
+
+.. autoclass:: UpdateAibiDashboardEmbeddingAccessPolicySettingRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest
+   :members:
+   :undoc-members:
 
 .. autoclass:: UpdateAutomaticClusterUpdateSettingRequest
    :members:

@@ -6579,11 +6579,10 @@ class StatementExecutionAPI:
     outstanding statement might have already completed execution when the cancel request arrives. Polling for
     status until a terminal state is reached is a reliable way to determine the final state. - Wait timeouts
     are approximate, occur server-side, and cannot account for things such as caller delays and network
-    latency from caller to service. - The system will auto-close a statement after one hour if the client
-    stops polling and thus you must poll at least once an hour. - The results are only available for one hour
-    after success; polling does not extend this. - The SQL Execution API must be used for the entire lifecycle
-    of the statement. For example, you cannot use the Jobs API to execute the command, and then the SQL
-    Execution API to cancel it.
+    latency from caller to service. - To guarantee that the statement is kept alive, you must poll at least
+    once every 15 minutes. - The results are only available for one hour after success; polling does not
+    extend this. - The SQL Execution API must be used for the entire lifecycle of the statement. For example,
+    you cannot use the Jobs API to execute the command, and then the SQL Execution API to cancel it.
     
     [Apache Arrow Columnar]: https://arrow.apache.org/overview/
     [Databricks SQL Statement Execution API tutorial]: https://docs.databricks.com/sql/api/sql-execution-tutorial.html"""

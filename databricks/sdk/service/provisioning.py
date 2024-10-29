@@ -412,6 +412,9 @@ class CreateWorkspaceRequest:
     gke_config: Optional[GkeConfig] = None
     """The configurations for the GKE cluster of a Databricks workspace."""
 
+    is_no_public_ip_enabled: Optional[bool] = None
+    """Whether no public IP is enabled for the workspace."""
+
     location: Optional[str] = None
     """The Google Cloud region of the workspace data plane in your Google account. For example,
     `us-east4`."""
@@ -460,6 +463,8 @@ class CreateWorkspaceRequest:
         if self.gcp_managed_network_config:
             body['gcp_managed_network_config'] = self.gcp_managed_network_config.as_dict()
         if self.gke_config: body['gke_config'] = self.gke_config.as_dict()
+        if self.is_no_public_ip_enabled is not None:
+            body['is_no_public_ip_enabled'] = self.is_no_public_ip_enabled
         if self.location is not None: body['location'] = self.location
         if self.managed_services_customer_managed_key_id is not None:
             body['managed_services_customer_managed_key_id'] = self.managed_services_customer_managed_key_id
@@ -486,6 +491,7 @@ class CreateWorkspaceRequest:
                    gcp_managed_network_config=_from_dict(d, 'gcp_managed_network_config',
                                                          GcpManagedNetworkConfig),
                    gke_config=_from_dict(d, 'gke_config', GkeConfig),
+                   is_no_public_ip_enabled=d.get('is_no_public_ip_enabled', None),
                    location=d.get('location', None),
                    managed_services_customer_managed_key_id=d.get('managed_services_customer_managed_key_id',
                                                                   None),
@@ -1466,6 +1472,9 @@ class Workspace:
     gke_config: Optional[GkeConfig] = None
     """The configurations for the GKE cluster of a Databricks workspace."""
 
+    is_no_public_ip_enabled: Optional[bool] = None
+    """Whether no public IP is enabled for the workspace."""
+
     location: Optional[str] = None
     """The Google Cloud region of the workspace data plane in your Google account (for example,
     `us-east4`)."""
@@ -1527,6 +1536,8 @@ class Workspace:
         if self.gcp_managed_network_config:
             body['gcp_managed_network_config'] = self.gcp_managed_network_config.as_dict()
         if self.gke_config: body['gke_config'] = self.gke_config.as_dict()
+        if self.is_no_public_ip_enabled is not None:
+            body['is_no_public_ip_enabled'] = self.is_no_public_ip_enabled
         if self.location is not None: body['location'] = self.location
         if self.managed_services_customer_managed_key_id is not None:
             body['managed_services_customer_managed_key_id'] = self.managed_services_customer_managed_key_id
@@ -1560,6 +1571,7 @@ class Workspace:
                    gcp_managed_network_config=_from_dict(d, 'gcp_managed_network_config',
                                                          GcpManagedNetworkConfig),
                    gke_config=_from_dict(d, 'gke_config', GkeConfig),
+                   is_no_public_ip_enabled=d.get('is_no_public_ip_enabled', None),
                    location=d.get('location', None),
                    managed_services_customer_managed_key_id=d.get('managed_services_customer_managed_key_id',
                                                                   None),
@@ -2399,6 +2411,7 @@ class WorkspacesAPI:
                deployment_name: Optional[str] = None,
                gcp_managed_network_config: Optional[GcpManagedNetworkConfig] = None,
                gke_config: Optional[GkeConfig] = None,
+               is_no_public_ip_enabled: Optional[bool] = None,
                location: Optional[str] = None,
                managed_services_customer_managed_key_id: Optional[str] = None,
                network_id: Optional[str] = None,
@@ -2477,6 +2490,8 @@ class WorkspacesAPI:
           [calculate subnet sizes for a new workspace]: https://docs.gcp.databricks.com/administration-guide/cloud-configurations/gcp/network-sizing.html
         :param gke_config: :class:`GkeConfig` (optional)
           The configurations for the GKE cluster of a Databricks workspace.
+        :param is_no_public_ip_enabled: bool (optional)
+          Whether no public IP is enabled for the workspace.
         :param location: str (optional)
           The Google Cloud region of the workspace data plane in your Google account. For example, `us-east4`.
         :param managed_services_customer_managed_key_id: str (optional)
@@ -2519,6 +2534,7 @@ class WorkspacesAPI:
         if gcp_managed_network_config is not None:
             body['gcp_managed_network_config'] = gcp_managed_network_config.as_dict()
         if gke_config is not None: body['gke_config'] = gke_config.as_dict()
+        if is_no_public_ip_enabled is not None: body['is_no_public_ip_enabled'] = is_no_public_ip_enabled
         if location is not None: body['location'] = location
         if managed_services_customer_managed_key_id is not None:
             body['managed_services_customer_managed_key_id'] = managed_services_customer_managed_key_id
@@ -2552,6 +2568,7 @@ class WorkspacesAPI:
         deployment_name: Optional[str] = None,
         gcp_managed_network_config: Optional[GcpManagedNetworkConfig] = None,
         gke_config: Optional[GkeConfig] = None,
+        is_no_public_ip_enabled: Optional[bool] = None,
         location: Optional[str] = None,
         managed_services_customer_managed_key_id: Optional[str] = None,
         network_id: Optional[str] = None,
@@ -2568,6 +2585,7 @@ class WorkspacesAPI:
                            deployment_name=deployment_name,
                            gcp_managed_network_config=gcp_managed_network_config,
                            gke_config=gke_config,
+                           is_no_public_ip_enabled=is_no_public_ip_enabled,
                            location=location,
                            managed_services_customer_managed_key_id=managed_services_customer_managed_key_id,
                            network_id=network_id,

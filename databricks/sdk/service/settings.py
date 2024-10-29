@@ -15,6 +15,122 @@ _LOG = logging.getLogger('databricks.sdk')
 
 
 @dataclass
+class AibiDashboardEmbeddingAccessPolicy:
+    access_policy_type: AibiDashboardEmbeddingAccessPolicyAccessPolicyType
+
+    def as_dict(self) -> dict:
+        """Serializes the AibiDashboardEmbeddingAccessPolicy into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.access_policy_type is not None: body['access_policy_type'] = self.access_policy_type.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> AibiDashboardEmbeddingAccessPolicy:
+        """Deserializes the AibiDashboardEmbeddingAccessPolicy from a dictionary."""
+        return cls(access_policy_type=_enum(d, 'access_policy_type',
+                                            AibiDashboardEmbeddingAccessPolicyAccessPolicyType))
+
+
+class AibiDashboardEmbeddingAccessPolicyAccessPolicyType(Enum):
+
+    ALLOW_ALL_DOMAINS = 'ALLOW_ALL_DOMAINS'
+    ALLOW_APPROVED_DOMAINS = 'ALLOW_APPROVED_DOMAINS'
+    DENY_ALL_DOMAINS = 'DENY_ALL_DOMAINS'
+
+
+@dataclass
+class AibiDashboardEmbeddingAccessPolicySetting:
+    aibi_dashboard_embedding_access_policy: AibiDashboardEmbeddingAccessPolicy
+
+    etag: Optional[str] = None
+    """etag used for versioning. The response is at least as fresh as the eTag provided. This is used
+    for optimistic concurrency control as a way to help prevent simultaneous writes of a setting
+    overwriting each other. It is strongly suggested that systems make use of the etag in the read
+    -> update pattern to perform setting updates in order to avoid race conditions. That is, get an
+    etag from a GET request, and pass it with the PATCH request to identify the setting version you
+    are updating."""
+
+    setting_name: Optional[str] = None
+    """Name of the corresponding setting. This field is populated in the response, but it will not be
+    respected even if it's set in the request body. The setting name in the path parameter will be
+    respected instead. Setting name is required to be 'default' if the setting only has one instance
+    per workspace."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AibiDashboardEmbeddingAccessPolicySetting into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.aibi_dashboard_embedding_access_policy:
+            body[
+                'aibi_dashboard_embedding_access_policy'] = self.aibi_dashboard_embedding_access_policy.as_dict(
+                )
+        if self.etag is not None: body['etag'] = self.etag
+        if self.setting_name is not None: body['setting_name'] = self.setting_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> AibiDashboardEmbeddingAccessPolicySetting:
+        """Deserializes the AibiDashboardEmbeddingAccessPolicySetting from a dictionary."""
+        return cls(aibi_dashboard_embedding_access_policy=_from_dict(
+            d, 'aibi_dashboard_embedding_access_policy', AibiDashboardEmbeddingAccessPolicy),
+                   etag=d.get('etag', None),
+                   setting_name=d.get('setting_name', None))
+
+
+@dataclass
+class AibiDashboardEmbeddingApprovedDomains:
+    approved_domains: Optional[List[str]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the AibiDashboardEmbeddingApprovedDomains into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.approved_domains: body['approved_domains'] = [v for v in self.approved_domains]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> AibiDashboardEmbeddingApprovedDomains:
+        """Deserializes the AibiDashboardEmbeddingApprovedDomains from a dictionary."""
+        return cls(approved_domains=d.get('approved_domains', None))
+
+
+@dataclass
+class AibiDashboardEmbeddingApprovedDomainsSetting:
+    aibi_dashboard_embedding_approved_domains: AibiDashboardEmbeddingApprovedDomains
+
+    etag: Optional[str] = None
+    """etag used for versioning. The response is at least as fresh as the eTag provided. This is used
+    for optimistic concurrency control as a way to help prevent simultaneous writes of a setting
+    overwriting each other. It is strongly suggested that systems make use of the etag in the read
+    -> update pattern to perform setting updates in order to avoid race conditions. That is, get an
+    etag from a GET request, and pass it with the PATCH request to identify the setting version you
+    are updating."""
+
+    setting_name: Optional[str] = None
+    """Name of the corresponding setting. This field is populated in the response, but it will not be
+    respected even if it's set in the request body. The setting name in the path parameter will be
+    respected instead. Setting name is required to be 'default' if the setting only has one instance
+    per workspace."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AibiDashboardEmbeddingApprovedDomainsSetting into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.aibi_dashboard_embedding_approved_domains:
+            body[
+                'aibi_dashboard_embedding_approved_domains'] = self.aibi_dashboard_embedding_approved_domains.as_dict(
+                )
+        if self.etag is not None: body['etag'] = self.etag
+        if self.setting_name is not None: body['setting_name'] = self.setting_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> AibiDashboardEmbeddingApprovedDomainsSetting:
+        """Deserializes the AibiDashboardEmbeddingApprovedDomainsSetting from a dictionary."""
+        return cls(aibi_dashboard_embedding_approved_domains=_from_dict(
+            d, 'aibi_dashboard_embedding_approved_domains', AibiDashboardEmbeddingApprovedDomains),
+                   etag=d.get('etag', None),
+                   setting_name=d.get('setting_name', None))
+
+
+@dataclass
 class AutomaticClusterUpdateSetting:
     automatic_cluster_update_workspace: ClusterAutoRestartMessage
 
@@ -2299,6 +2415,9 @@ class TokenInfo:
     expiry_time: Optional[int] = None
     """Timestamp when the token expires."""
 
+    last_used_day: Optional[int] = None
+    """Approximate timestamp for the day the token was last used. Accurate up to 1 day."""
+
     owner_id: Optional[int] = None
     """User ID of the user that owns the token."""
 
@@ -2316,6 +2435,7 @@ class TokenInfo:
         if self.created_by_username is not None: body['created_by_username'] = self.created_by_username
         if self.creation_time is not None: body['creation_time'] = self.creation_time
         if self.expiry_time is not None: body['expiry_time'] = self.expiry_time
+        if self.last_used_day is not None: body['last_used_day'] = self.last_used_day
         if self.owner_id is not None: body['owner_id'] = self.owner_id
         if self.token_id is not None: body['token_id'] = self.token_id
         if self.workspace_id is not None: body['workspace_id'] = self.workspace_id
@@ -2329,6 +2449,7 @@ class TokenInfo:
                    created_by_username=d.get('created_by_username', None),
                    creation_time=d.get('creation_time', None),
                    expiry_time=d.get('expiry_time', None),
+                   last_used_day=d.get('last_used_day', None),
                    owner_id=d.get('owner_id', None),
                    token_id=d.get('token_id', None),
                    workspace_id=d.get('workspace_id', None))
@@ -2433,6 +2554,66 @@ class TokenType(Enum):
 
     ARCLIGHT_AZURE_EXCHANGE_TOKEN = 'ARCLIGHT_AZURE_EXCHANGE_TOKEN'
     AZURE_ACTIVE_DIRECTORY_TOKEN = 'AZURE_ACTIVE_DIRECTORY_TOKEN'
+
+
+@dataclass
+class UpdateAibiDashboardEmbeddingAccessPolicySettingRequest:
+    """Details required to update a setting."""
+
+    allow_missing: bool
+    """This should always be set to true for Settings API. Added for AIP compliance."""
+
+    setting: AibiDashboardEmbeddingAccessPolicySetting
+
+    field_mask: str
+    """Field mask is required to be passed into the PATCH request. Field mask specifies which fields of
+    the setting payload will be updated. The field mask needs to be supplied as single string. To
+    specify multiple fields in the field mask, use comma as the separator (no space)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateAibiDashboardEmbeddingAccessPolicySettingRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.allow_missing is not None: body['allow_missing'] = self.allow_missing
+        if self.field_mask is not None: body['field_mask'] = self.field_mask
+        if self.setting: body['setting'] = self.setting.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateAibiDashboardEmbeddingAccessPolicySettingRequest:
+        """Deserializes the UpdateAibiDashboardEmbeddingAccessPolicySettingRequest from a dictionary."""
+        return cls(allow_missing=d.get('allow_missing', None),
+                   field_mask=d.get('field_mask', None),
+                   setting=_from_dict(d, 'setting', AibiDashboardEmbeddingAccessPolicySetting))
+
+
+@dataclass
+class UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest:
+    """Details required to update a setting."""
+
+    allow_missing: bool
+    """This should always be set to true for Settings API. Added for AIP compliance."""
+
+    setting: AibiDashboardEmbeddingApprovedDomainsSetting
+
+    field_mask: str
+    """Field mask is required to be passed into the PATCH request. Field mask specifies which fields of
+    the setting payload will be updated. The field mask needs to be supplied as single string. To
+    specify multiple fields in the field mask, use comma as the separator (no space)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.allow_missing is not None: body['allow_missing'] = self.allow_missing
+        if self.field_mask is not None: body['field_mask'] = self.field_mask
+        if self.setting: body['setting'] = self.setting.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest:
+        """Deserializes the UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest from a dictionary."""
+        return cls(allow_missing=d.get('allow_missing', None),
+                   field_mask=d.get('field_mask', None),
+                   setting=_from_dict(d, 'setting', AibiDashboardEmbeddingApprovedDomainsSetting))
 
 
 @dataclass
@@ -3101,6 +3282,130 @@ class AccountSettingsAPI:
     def personal_compute(self) -> PersonalComputeAPI:
         """The Personal Compute enablement setting lets you control which users can use the Personal Compute default policy to create compute resources."""
         return self._personal_compute
+
+
+class AibiDashboardEmbeddingAccessPolicyAPI:
+    """Controls whether AI/BI published dashboard embedding is enabled, conditionally enabled, or disabled at the
+    workspace level. By default, this setting is conditionally enabled (ALLOW_APPROVED_DOMAINS)."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def get(self, *, etag: Optional[str] = None) -> AibiDashboardEmbeddingAccessPolicySetting:
+        """Retrieve the AI/BI dashboard embedding access policy.
+        
+        Retrieves the AI/BI dashboard embedding access policy. The default setting is ALLOW_APPROVED_DOMAINS,
+        permitting AI/BI dashboards to be embedded on approved domains.
+        
+        :param etag: str (optional)
+          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
+          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
+          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
+          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
+          request, and pass it with the DELETE request to identify the rule set version you are deleting.
+        
+        :returns: :class:`AibiDashboardEmbeddingAccessPolicySetting`
+        """
+
+        query = {}
+        if etag is not None: query['etag'] = etag
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do('GET',
+                           '/api/2.0/settings/types/aibi_dash_embed_ws_acc_policy/names/default',
+                           query=query,
+                           headers=headers)
+        return AibiDashboardEmbeddingAccessPolicySetting.from_dict(res)
+
+    def update(self, allow_missing: bool, setting: AibiDashboardEmbeddingAccessPolicySetting,
+               field_mask: str) -> AibiDashboardEmbeddingAccessPolicySetting:
+        """Update the AI/BI dashboard embedding access policy.
+        
+        Updates the AI/BI dashboard embedding access policy at the workspace level.
+        
+        :param allow_missing: bool
+          This should always be set to true for Settings API. Added for AIP compliance.
+        :param setting: :class:`AibiDashboardEmbeddingAccessPolicySetting`
+        :param field_mask: str
+          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
+          setting payload will be updated. The field mask needs to be supplied as single string. To specify
+          multiple fields in the field mask, use comma as the separator (no space).
+        
+        :returns: :class:`AibiDashboardEmbeddingAccessPolicySetting`
+        """
+        body = {}
+        if allow_missing is not None: body['allow_missing'] = allow_missing
+        if field_mask is not None: body['field_mask'] = field_mask
+        if setting is not None: body['setting'] = setting.as_dict()
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do('PATCH',
+                           '/api/2.0/settings/types/aibi_dash_embed_ws_acc_policy/names/default',
+                           body=body,
+                           headers=headers)
+        return AibiDashboardEmbeddingAccessPolicySetting.from_dict(res)
+
+
+class AibiDashboardEmbeddingApprovedDomainsAPI:
+    """Controls the list of domains approved to host the embedded AI/BI dashboards. The approved domains list
+    can't be mutated when the current access policy is not set to ALLOW_APPROVED_DOMAINS."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def get(self, *, etag: Optional[str] = None) -> AibiDashboardEmbeddingApprovedDomainsSetting:
+        """Retrieve the list of domains approved to host embedded AI/BI dashboards.
+        
+        Retrieves the list of domains approved to host embedded AI/BI dashboards.
+        
+        :param etag: str (optional)
+          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
+          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
+          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
+          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
+          request, and pass it with the DELETE request to identify the rule set version you are deleting.
+        
+        :returns: :class:`AibiDashboardEmbeddingApprovedDomainsSetting`
+        """
+
+        query = {}
+        if etag is not None: query['etag'] = etag
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do('GET',
+                           '/api/2.0/settings/types/aibi_dash_embed_ws_apprvd_domains/names/default',
+                           query=query,
+                           headers=headers)
+        return AibiDashboardEmbeddingApprovedDomainsSetting.from_dict(res)
+
+    def update(self, allow_missing: bool, setting: AibiDashboardEmbeddingApprovedDomainsSetting,
+               field_mask: str) -> AibiDashboardEmbeddingApprovedDomainsSetting:
+        """Update the list of domains approved to host embedded AI/BI dashboards.
+        
+        Updates the list of domains approved to host embedded AI/BI dashboards. This update will fail if the
+        current workspace access policy is not ALLOW_APPROVED_DOMAINS.
+        
+        :param allow_missing: bool
+          This should always be set to true for Settings API. Added for AIP compliance.
+        :param setting: :class:`AibiDashboardEmbeddingApprovedDomainsSetting`
+        :param field_mask: str
+          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
+          setting payload will be updated. The field mask needs to be supplied as single string. To specify
+          multiple fields in the field mask, use comma as the separator (no space).
+        
+        :returns: :class:`AibiDashboardEmbeddingApprovedDomainsSetting`
+        """
+        body = {}
+        if allow_missing is not None: body['allow_missing'] = allow_missing
+        if field_mask is not None: body['field_mask'] = field_mask
+        if setting is not None: body['setting'] = setting.as_dict()
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do('PATCH',
+                           '/api/2.0/settings/types/aibi_dash_embed_ws_apprvd_domains/names/default',
+                           body=body,
+                           headers=headers)
+        return AibiDashboardEmbeddingApprovedDomainsSetting.from_dict(res)
 
 
 class AutomaticClusterUpdateAPI:
@@ -4580,6 +4885,8 @@ class SettingsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
+        self._aibi_dashboard_embedding_access_policy = AibiDashboardEmbeddingAccessPolicyAPI(self._api)
+        self._aibi_dashboard_embedding_approved_domains = AibiDashboardEmbeddingApprovedDomainsAPI(self._api)
         self._automatic_cluster_update = AutomaticClusterUpdateAPI(self._api)
         self._compliance_security_profile = ComplianceSecurityProfileAPI(self._api)
         self._default_namespace = DefaultNamespaceAPI(self._api)
@@ -4587,6 +4894,16 @@ class SettingsAPI:
         self._disable_legacy_dbfs = DisableLegacyDbfsAPI(self._api)
         self._enhanced_security_monitoring = EnhancedSecurityMonitoringAPI(self._api)
         self._restrict_workspace_admins = RestrictWorkspaceAdminsAPI(self._api)
+
+    @property
+    def aibi_dashboard_embedding_access_policy(self) -> AibiDashboardEmbeddingAccessPolicyAPI:
+        """Controls whether AI/BI published dashboard embedding is enabled, conditionally enabled, or disabled at the workspace level."""
+        return self._aibi_dashboard_embedding_access_policy
+
+    @property
+    def aibi_dashboard_embedding_approved_domains(self) -> AibiDashboardEmbeddingApprovedDomainsAPI:
+        """Controls the list of domains approved to host the embedded AI/BI dashboards."""
+        return self._aibi_dashboard_embedding_approved_domains
 
     @property
     def automatic_cluster_update(self) -> AutomaticClusterUpdateAPI:
