@@ -1,20 +1,6 @@
 {
-  "formatter": "yapf -pri $FILENAMES && autoflake -i $FILENAMES && isort $FILENAMES",
+  "mode": "py_v0",
   "changelog_config": ".codegen/changelog_config.yml",
-  "template_libraries": [
-    ".codegen/lib.tmpl"
-  ],
-  "packages": {
-    ".codegen/service.py.tmpl": "databricks/sdk/service/{{.Name}}.py"
-  },
-  "batch": {
-    ".codegen/__init__.py.tmpl": "databricks/sdk/__init__.py",
-    ".codegen/error_mapping.py.tmpl": "databricks/sdk/errors/platform.py",
-    ".codegen/error_overrides.py.tmpl": "databricks/sdk/errors/overrides.py"
-  },
-  "samples": {
-    ".codegen/example.py.tmpl": "examples/{{if .IsAccount}}account{{else}}workspace{{end}}/{{.Service.SnakeName}}/{{.Method.SnakeName}}_{{.SnakeName}}.py"
-  },
   "version": {
     "databricks/sdk/version.py": "__version__ = '$VERSION'"
   },
@@ -28,6 +14,7 @@
       "pip install '.[dev]'"
     ],
     "post_generate": [
+      "make fmt",
       "pytest -m 'not integration' --cov=databricks --cov-report html tests",
       "pip install .",
       "python docs/gen-client-docs.py"
