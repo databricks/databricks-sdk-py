@@ -1444,29 +1444,6 @@ class CreateMonitor:
 
 
 @dataclass
-class CreateOnlineTableRequest:
-    """Online Table information."""
-
-    name: Optional[str] = None
-    """Full three-part (catalog, schema, table) name of the table."""
-
-    spec: Optional[OnlineTableSpec] = None
-    """Specification of the online table."""
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateOnlineTableRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.name is not None: body['name'] = self.name
-        if self.spec: body['spec'] = self.spec.as_dict()
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateOnlineTableRequest:
-        """Deserializes the CreateOnlineTableRequest from a dictionary."""
-        return cls(name=d.get('name', None), spec=_from_dict(d, 'spec', OnlineTableSpec))
-
-
-@dataclass
 class CreateRegisteredModelRequest:
     catalog_name: str
     """The name of the catalog where the schema and the registered model reside"""
@@ -7924,26 +7901,19 @@ class OnlineTablesAPI:
             attempt += 1
         raise TimeoutError(f'timed out after {timeout}: {status_message}')
 
-    def create(self,
-               *,
-               name: Optional[str] = None,
-               spec: Optional[OnlineTableSpec] = None) -> Wait[OnlineTable]:
+    def create(self, *, table: Optional[OnlineTable] = None) -> Wait[OnlineTable]:
         """Create an Online Table.
         
         Create a new Online Table.
         
-        :param name: str (optional)
-          Full three-part (catalog, schema, table) name of the table.
-        :param spec: :class:`OnlineTableSpec` (optional)
-          Specification of the online table.
+        :param table: :class:`OnlineTable` (optional)
+          Online Table information.
         
         :returns:
           Long-running operation waiter for :class:`OnlineTable`.
           See :method:wait_get_online_table_active for more details.
         """
-        body = {}
-        if name is not None: body['name'] = name
-        if spec is not None: body['spec'] = spec.as_dict()
+        body = table
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         op_response = self._api.do('POST', '/api/2.0/online-tables', body=body, headers=headers)
@@ -7953,10 +7923,9 @@ class OnlineTablesAPI:
 
     def create_and_wait(self,
                         *,
-                        name: Optional[str] = None,
-                        spec: Optional[OnlineTableSpec] = None,
+                        table: Optional[OnlineTable] = None,
                         timeout=timedelta(minutes=20)) -> OnlineTable:
-        return self.create(name=name, spec=spec).result(timeout=timeout)
+        return self.create(table=table).result(timeout=timeout)
 
     def delete(self, name: str):
         """Delete an Online Table.

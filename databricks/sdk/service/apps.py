@@ -612,70 +612,6 @@ class ComputeStatus:
 
 
 @dataclass
-class CreateAppDeploymentRequest:
-    app_name: Optional[str] = None
-    """The name of the app."""
-
-    deployment_id: Optional[str] = None
-    """The unique id of the deployment."""
-
-    mode: Optional[AppDeploymentMode] = None
-    """The mode of which the deployment will manage the source code."""
-
-    source_code_path: Optional[str] = None
-    """The workspace file system path of the source code used to create the app deployment. This is
-    different from `deployment_artifacts.source_code_path`, which is the path used by the deployed
-    app. The former refers to the original source code location of the app in the workspace during
-    deployment creation, whereas the latter provides a system generated stable snapshotted source
-    code path used by the deployment."""
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateAppDeploymentRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.app_name is not None: body['app_name'] = self.app_name
-        if self.deployment_id is not None: body['deployment_id'] = self.deployment_id
-        if self.mode is not None: body['mode'] = self.mode.value
-        if self.source_code_path is not None: body['source_code_path'] = self.source_code_path
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateAppDeploymentRequest:
-        """Deserializes the CreateAppDeploymentRequest from a dictionary."""
-        return cls(app_name=d.get('app_name', None),
-                   deployment_id=d.get('deployment_id', None),
-                   mode=_enum(d, 'mode', AppDeploymentMode),
-                   source_code_path=d.get('source_code_path', None))
-
-
-@dataclass
-class CreateAppRequest:
-    name: str
-    """The name of the app. The name must contain only lowercase alphanumeric characters and hyphens.
-    It must be unique within the workspace."""
-
-    description: Optional[str] = None
-    """The description of the app."""
-
-    resources: Optional[List[AppResource]] = None
-    """Resources for the app."""
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateAppRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.description is not None: body['description'] = self.description
-        if self.name is not None: body['name'] = self.name
-        if self.resources: body['resources'] = [v.as_dict() for v in self.resources]
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateAppRequest:
-        """Deserializes the CreateAppRequest from a dictionary."""
-        return cls(description=d.get('description', None),
-                   name=d.get('name', None),
-                   resources=_repeated_dict(d, 'resources', AppResource))
-
-
-@dataclass
 class GetAppPermissionLevelsResponse:
     permission_levels: Optional[List[AppPermissionsDescription]] = None
     """Specific permission levels"""
@@ -744,34 +680,6 @@ class StartAppRequest:
 class StopAppRequest:
     name: Optional[str] = None
     """The name of the app."""
-
-
-@dataclass
-class UpdateAppRequest:
-    name: str
-    """The name of the app. The name must contain only lowercase alphanumeric characters and hyphens.
-    It must be unique within the workspace."""
-
-    description: Optional[str] = None
-    """The description of the app."""
-
-    resources: Optional[List[AppResource]] = None
-    """Resources for the app."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateAppRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.description is not None: body['description'] = self.description
-        if self.name is not None: body['name'] = self.name
-        if self.resources: body['resources'] = [v.as_dict() for v in self.resources]
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateAppRequest:
-        """Deserializes the UpdateAppRequest from a dictionary."""
-        return cls(description=d.get('description', None),
-                   name=d.get('name', None),
-                   resources=_repeated_dict(d, 'resources', AppResource))
 
 
 class AppsAPI:
@@ -879,43 +787,25 @@ class AppsAPI:
             attempt += 1
         raise TimeoutError(f'timed out after {timeout}: {status_message}')
 
-    def create(self,
-               name: str,
-               *,
-               description: Optional[str] = None,
-               resources: Optional[List[AppResource]] = None) -> Wait[App]:
+    def create(self, *, app: Optional[App] = None) -> Wait[App]:
         """Create an app.
         
         Creates a new app.
         
-        :param name: str
-          The name of the app. The name must contain only lowercase alphanumeric characters and hyphens. It
-          must be unique within the workspace.
-        :param description: str (optional)
-          The description of the app.
-        :param resources: List[:class:`AppResource`] (optional)
-          Resources for the app.
+        :param app: :class:`App` (optional)
         
         :returns:
           Long-running operation waiter for :class:`App`.
           See :method:wait_get_app_active for more details.
         """
-        body = {}
-        if description is not None: body['description'] = description
-        if name is not None: body['name'] = name
-        if resources is not None: body['resources'] = [v.as_dict() for v in resources]
+        body = app
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         op_response = self._api.do('POST', '/api/2.0/apps', body=body, headers=headers)
         return Wait(self.wait_get_app_active, response=App.from_dict(op_response), name=op_response['name'])
 
-    def create_and_wait(self,
-                        name: str,
-                        *,
-                        description: Optional[str] = None,
-                        resources: Optional[List[AppResource]] = None,
-                        timeout=timedelta(minutes=20)) -> App:
-        return self.create(description=description, name=name, resources=resources).result(timeout=timeout)
+    def create_and_wait(self, *, app: Optional[App] = None, timeout=timedelta(minutes=20)) -> App:
+        return self.create(app=app).result(timeout=timeout)
 
     def delete(self, name: str) -> App:
         """Delete an app.
@@ -933,37 +823,20 @@ class AppsAPI:
         res = self._api.do('DELETE', f'/api/2.0/apps/{name}', headers=headers)
         return App.from_dict(res)
 
-    def deploy(self,
-               app_name: str,
-               *,
-               deployment_id: Optional[str] = None,
-               mode: Optional[AppDeploymentMode] = None,
-               source_code_path: Optional[str] = None) -> Wait[AppDeployment]:
+    def deploy(self, app_name: str, *, app_deployment: Optional[AppDeployment] = None) -> Wait[AppDeployment]:
         """Create an app deployment.
         
         Creates an app deployment for the app with the supplied name.
         
         :param app_name: str
           The name of the app.
-        :param deployment_id: str (optional)
-          The unique id of the deployment.
-        :param mode: :class:`AppDeploymentMode` (optional)
-          The mode of which the deployment will manage the source code.
-        :param source_code_path: str (optional)
-          The workspace file system path of the source code used to create the app deployment. This is
-          different from `deployment_artifacts.source_code_path`, which is the path used by the deployed app.
-          The former refers to the original source code location of the app in the workspace during deployment
-          creation, whereas the latter provides a system generated stable snapshotted source code path used by
-          the deployment.
+        :param app_deployment: :class:`AppDeployment` (optional)
         
         :returns:
           Long-running operation waiter for :class:`AppDeployment`.
           See :method:wait_get_deployment_app_succeeded for more details.
         """
-        body = {}
-        if deployment_id is not None: body['deployment_id'] = deployment_id
-        if mode is not None: body['mode'] = mode.value
-        if source_code_path is not None: body['source_code_path'] = source_code_path
+        body = app_deployment
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         op_response = self._api.do('POST',
@@ -975,18 +848,12 @@ class AppsAPI:
                     app_name=app_name,
                     deployment_id=op_response['deployment_id'])
 
-    def deploy_and_wait(
-        self,
-        app_name: str,
-        *,
-        deployment_id: Optional[str] = None,
-        mode: Optional[AppDeploymentMode] = None,
-        source_code_path: Optional[str] = None,
-        timeout=timedelta(minutes=20)) -> AppDeployment:
-        return self.deploy(app_name=app_name,
-                           deployment_id=deployment_id,
-                           mode=mode,
-                           source_code_path=source_code_path).result(timeout=timeout)
+    def deploy_and_wait(self,
+                        app_name: str,
+                        *,
+                        app_deployment: Optional[AppDeployment] = None,
+                        timeout=timedelta(minutes=20)) -> AppDeployment:
+        return self.deploy(app_deployment=app_deployment, app_name=app_name).result(timeout=timeout)
 
     def get(self, name: str) -> App:
         """Get an app.
@@ -1179,28 +1046,18 @@ class AppsAPI:
     def stop_and_wait(self, name: str, timeout=timedelta(minutes=20)) -> App:
         return self.stop(name=name).result(timeout=timeout)
 
-    def update(self,
-               name: str,
-               *,
-               description: Optional[str] = None,
-               resources: Optional[List[AppResource]] = None) -> App:
+    def update(self, name: str, *, app: Optional[App] = None) -> App:
         """Update an app.
         
         Updates the app with the supplied name.
         
         :param name: str
-          The name of the app. The name must contain only lowercase alphanumeric characters and hyphens. It
-          must be unique within the workspace.
-        :param description: str (optional)
-          The description of the app.
-        :param resources: List[:class:`AppResource`] (optional)
-          Resources for the app.
+          The name of the app.
+        :param app: :class:`App` (optional)
         
         :returns: :class:`App`
         """
-        body = {}
-        if description is not None: body['description'] = description
-        if resources is not None: body['resources'] = [v.as_dict() for v in resources]
+        body = app
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         res = self._api.do('PATCH', f'/api/2.0/apps/{name}', body=body, headers=headers)

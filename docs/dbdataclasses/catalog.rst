@@ -403,10 +403,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: CreateOnlineTableRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: CreateRegisteredModelRequest
    :members:
    :undoc-members:

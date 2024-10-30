@@ -240,6 +240,9 @@ class {{.PascalName}}API:{{if .Description}}
 {{- end}}
 
 {{define "method-serialize" -}}
+        {{if and .Request.HasJsonField .RequestBodyField -}}
+        body = {{template "safe-snake-name" .RequestBodyField}}
+        {{- else -}}
         {{if or .Request.HasJsonField .Request.HasQueryField -}}
         {{if .Request.HasJsonField}}body = {}{{end}}{{if .Request.HasQueryField}}
         query = {}{{end}}
@@ -248,6 +251,7 @@ class {{.PascalName}}API:{{if .Description}}
         if {{template "safe-snake-name" .}} is not None: query['{{.Name}}'] = {{template "method-param-bind" .}}{{end}}
         {{- if .IsJson }}
         if {{template "safe-snake-name" .}} is not None: body['{{.Name}}'] = {{template "method-param-bind" .}}{{end}}
+        {{- end}}
         {{- end}}
         {{- end}}
         {{- end}}
