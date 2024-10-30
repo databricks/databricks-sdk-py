@@ -22,8 +22,8 @@ from ..service import files
 from ..service._internal import _escape_multi_segment_path_parameter
 from ..service.files import DownloadResponse
 
-_FILES_MIXIN_DEBUG_ENABLED = True
-_FILES_MIXIN_ENABLE_UNSUPPORTED_FEATURES = True
+_FILES_MIXIN_DEBUG_ENABLED = False
+_FILES_MIXIN_ENABLE_UNSUPPORTED_FEATURES = False
 
 if TYPE_CHECKING:
     from _typeshed import Self
