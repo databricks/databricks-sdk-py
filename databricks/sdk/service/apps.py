@@ -813,38 +813,6 @@ class AppsAPI:
             attempt += 1
         raise TimeoutError(f'timed out after {timeout}: {status_message}')
 
-    def wait_get_app_stopped(self,
-                             name: str,
-                             timeout=timedelta(minutes=20),
-                             callback: Optional[Callable[[App], None]] = None) -> App:
-        deadline = time.time() + timeout.total_seconds()
-        target_states = (ComputeState.STOPPED, )
-        failure_states = (ComputeState.ERROR, )
-        status_message = 'polling...'
-        attempt = 1
-        while time.time() < deadline:
-            poll = self.get(name=name)
-            status = poll.compute_status.state
-            status_message = f'current status: {status}'
-            if poll.compute_status:
-                status_message = poll.compute_status.message
-            if status in target_states:
-                return poll
-            if callback:
-                callback(poll)
-            if status in failure_states:
-                msg = f'failed to reach STOPPED, got {status}: {status_message}'
-                raise OperationFailed(msg)
-            prefix = f"name={name}"
-            sleep = attempt
-            if sleep > 10:
-                # sleep 10s max per attempt
-                sleep = 10
-            _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
-            time.sleep(sleep + random.random())
-            attempt += 1
-        raise TimeoutError(f'timed out after {timeout}: {status_message}')
-
     def wait_get_deployment_app_succeeded(
             self,
             app_name: str,
@@ -870,6 +838,38 @@ class AppsAPI:
                 msg = f'failed to reach SUCCEEDED, got {status}: {status_message}'
                 raise OperationFailed(msg)
             prefix = f"app_name={app_name}, deployment_id={deployment_id}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f'timed out after {timeout}: {status_message}')
+
+    def wait_get_app_stopped(self,
+                             name: str,
+                             timeout=timedelta(minutes=20),
+                             callback: Optional[Callable[[App], None]] = None) -> App:
+        deadline = time.time() + timeout.total_seconds()
+        target_states = (ComputeState.STOPPED, )
+        failure_states = (ComputeState.ERROR, )
+        status_message = 'polling...'
+        attempt = 1
+        while time.time() < deadline:
+            poll = self.get(name=name)
+            status = poll.compute_status.state
+            status_message = f'current status: {status}'
+            if poll.compute_status:
+                status_message = poll.compute_status.message
+            if status in target_states:
+                return poll
+            if callback:
+                callback(poll)
+            if status in failure_states:
+                msg = f'failed to reach STOPPED, got {status}: {status_message}'
+                raise OperationFailed(msg)
+            prefix = f"name={name}"
             sleep = attempt
             if sleep > 10:
                 # sleep 10s max per attempt
