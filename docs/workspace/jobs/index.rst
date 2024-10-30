@@ -8,4 +8,3 @@ Schedule automated jobs on Databricks Workspaces
    :maxdepth: 1
 
    jobs
-   policy_compliance_for_jobs

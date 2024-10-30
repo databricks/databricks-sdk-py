@@ -5,7 +5,7 @@ import databricks.sdk.dbutils as dbutils
 from databricks.sdk import azure
 from databricks.sdk.credentials_provider import CredentialsStrategy
 from databricks.sdk.mixins.compute import ClustersExt
-from databricks.sdk.mixins.files import DbfsExt
+from databricks.sdk.mixins.files import DbfsExt, FilesExt
 from databricks.sdk.mixins.open_ai_client import ServingEndpointsExt
 from databricks.sdk.mixins.workspace import WorkspaceExt
 from databricks.sdk.service.apps import AppsAPI
@@ -202,7 +202,7 @@ class WorkspaceClient:
         self._dbsql_permissions = DbsqlPermissionsAPI(self._api_client)
         self._experiments = ExperimentsAPI(self._api_client)
         self._external_locations = ExternalLocationsAPI(self._api_client)
-        self._files = FilesAPI(self._api_client)
+        self._files = FilesExt(self._api_client)
         self._functions = FunctionsAPI(self._api_client)
         self._genie = GenieAPI(self._api_client)
         self._git_credentials = GitCredentialsAPI(self._api_client)
@@ -408,7 +408,7 @@ class WorkspaceClient:
         return self._external_locations
 
     @property
-    def files(self) -> FilesAPI:
+    def files(self) -> FilesExt:
         """The Files API is a standard HTTP API that allows you to read, write, list, and delete files and directories by referring to their URI."""
         return self._files
 

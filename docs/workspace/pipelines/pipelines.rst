@@ -15,7 +15,7 @@
     also enforce data quality with Delta Live Tables expectations. Expectations allow you to define expected
     data quality and specify how to handle records that fail those expectations.
 
-    .. py:method:: create( [, allow_duplicate_names: Optional[bool], budget_policy_id: Optional[str], catalog: Optional[str], channel: Optional[str], clusters: Optional[List[PipelineCluster]], configuration: Optional[Dict[str, str]], continuous: Optional[bool], deployment: Optional[PipelineDeployment], development: Optional[bool], dry_run: Optional[bool], edition: Optional[str], filters: Optional[Filters], gateway_definition: Optional[IngestionGatewayPipelineDefinition], id: Optional[str], ingestion_definition: Optional[IngestionPipelineDefinition], libraries: Optional[List[PipelineLibrary]], name: Optional[str], notifications: Optional[List[Notifications]], photon: Optional[bool], schema: Optional[str], serverless: Optional[bool], storage: Optional[str], target: Optional[str], trigger: Optional[PipelineTrigger]]) -> CreatePipelineResponse
+    .. py:method:: create( [, allow_duplicate_names: Optional[bool], catalog: Optional[str], channel: Optional[str], clusters: Optional[List[PipelineCluster]], configuration: Optional[Dict[str, str]], continuous: Optional[bool], deployment: Optional[PipelineDeployment], development: Optional[bool], dry_run: Optional[bool], edition: Optional[str], filters: Optional[Filters], gateway_definition: Optional[IngestionGatewayPipelineDefinition], id: Optional[str], ingestion_definition: Optional[ManagedIngestionPipelineDefinition], libraries: Optional[List[PipelineLibrary]], name: Optional[str], notifications: Optional[List[Notifications]], photon: Optional[bool], serverless: Optional[bool], storage: Optional[str], target: Optional[str], trigger: Optional[PipelineTrigger]]) -> CreatePipelineResponse
 
 
         Usage:
@@ -55,8 +55,6 @@
         
         :param allow_duplicate_names: bool (optional)
           If false, deployment will fail if name conflicts with that of another pipeline.
-        :param budget_policy_id: str (optional)
-          Budget policy of this pipeline.
         :param catalog: str (optional)
           A catalog in Unity Catalog to publish data from this pipeline to. If `target` is specified, tables
           in this pipeline are published to a `target` schema inside `catalog` (for example,
@@ -82,7 +80,7 @@
           The definition of a gateway pipeline to support CDC.
         :param id: str (optional)
           Unique identifier for this pipeline.
-        :param ingestion_definition: :class:`IngestionPipelineDefinition` (optional)
+        :param ingestion_definition: :class:`ManagedIngestionPipelineDefinition` (optional)
           The configuration for a managed ingestion pipeline. These settings cannot be used with the
           'libraries', 'target' or 'catalog' settings.
         :param libraries: List[:class:`PipelineLibrary`] (optional)
@@ -93,9 +91,6 @@
           List of notification settings for this pipeline.
         :param photon: bool (optional)
           Whether Photon is enabled for this pipeline.
-        :param schema: str (optional)
-          The default schema (database) where tables are read from or published to. The presence of this field
-          implies that the pipeline is in direct publishing mode.
         :param serverless: bool (optional)
           Whether serverless compute is enabled for this pipeline.
         :param storage: str (optional)
@@ -376,7 +371,7 @@
     .. py:method:: stop_and_wait(pipeline_id: str, timeout: datetime.timedelta = 0:20:00) -> GetPipelineResponse
 
 
-    .. py:method:: update(pipeline_id: str [, allow_duplicate_names: Optional[bool], budget_policy_id: Optional[str], catalog: Optional[str], channel: Optional[str], clusters: Optional[List[PipelineCluster]], configuration: Optional[Dict[str, str]], continuous: Optional[bool], deployment: Optional[PipelineDeployment], development: Optional[bool], edition: Optional[str], expected_last_modified: Optional[int], filters: Optional[Filters], gateway_definition: Optional[IngestionGatewayPipelineDefinition], id: Optional[str], ingestion_definition: Optional[IngestionPipelineDefinition], libraries: Optional[List[PipelineLibrary]], name: Optional[str], notifications: Optional[List[Notifications]], photon: Optional[bool], schema: Optional[str], serverless: Optional[bool], storage: Optional[str], target: Optional[str], trigger: Optional[PipelineTrigger]])
+    .. py:method:: update(pipeline_id: str [, allow_duplicate_names: Optional[bool], catalog: Optional[str], channel: Optional[str], clusters: Optional[List[PipelineCluster]], configuration: Optional[Dict[str, str]], continuous: Optional[bool], deployment: Optional[PipelineDeployment], development: Optional[bool], edition: Optional[str], expected_last_modified: Optional[int], filters: Optional[Filters], gateway_definition: Optional[IngestionGatewayPipelineDefinition], id: Optional[str], ingestion_definition: Optional[ManagedIngestionPipelineDefinition], libraries: Optional[List[PipelineLibrary]], name: Optional[str], notifications: Optional[List[Notifications]], photon: Optional[bool], serverless: Optional[bool], storage: Optional[str], target: Optional[str], trigger: Optional[PipelineTrigger]])
 
 
         Usage:
@@ -430,8 +425,6 @@
           Unique identifier for this pipeline.
         :param allow_duplicate_names: bool (optional)
           If false, deployment will fail if name has changed and conflicts the name of another pipeline.
-        :param budget_policy_id: str (optional)
-          Budget policy of this pipeline.
         :param catalog: str (optional)
           A catalog in Unity Catalog to publish data from this pipeline to. If `target` is specified, tables
           in this pipeline are published to a `target` schema inside `catalog` (for example,
@@ -459,7 +452,7 @@
           The definition of a gateway pipeline to support CDC.
         :param id: str (optional)
           Unique identifier for this pipeline.
-        :param ingestion_definition: :class:`IngestionPipelineDefinition` (optional)
+        :param ingestion_definition: :class:`ManagedIngestionPipelineDefinition` (optional)
           The configuration for a managed ingestion pipeline. These settings cannot be used with the
           'libraries', 'target' or 'catalog' settings.
         :param libraries: List[:class:`PipelineLibrary`] (optional)
@@ -470,9 +463,6 @@
           List of notification settings for this pipeline.
         :param photon: bool (optional)
           Whether Photon is enabled for this pipeline.
-        :param schema: str (optional)
-          The default schema (database) where tables are read from or published to. The presence of this field
-          implies that the pipeline is in direct publishing mode.
         :param serverless: bool (optional)
           Whether serverless compute is enabled for this pipeline.
         :param storage: str (optional)

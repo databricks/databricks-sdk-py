@@ -14,5 +14,4 @@ Use and configure compute for Databricks
    instance_pools
    instance_profiles
    libraries
-   policy_compliance_for_clusters
    policy_families

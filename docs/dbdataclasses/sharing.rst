@@ -265,9 +265,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: EXECUTE
       :value: "EXECUTE"
 
-   .. py:attribute:: MANAGE
-      :value: "MANAGE"
-
    .. py:attribute:: MANAGE_ALLOWLIST
       :value: "MANAGE_ALLOWLIST"
 
@@ -291,6 +288,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: SET_SHARE_PERMISSION
       :value: "SET_SHARE_PERMISSION"
+
+   .. py:attribute:: SINGLE_USER_ACCESS
+      :value: "SINGLE_USER_ACCESS"
 
    .. py:attribute:: USAGE
       :value: "USAGE"

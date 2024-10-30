@@ -11,6 +11,5 @@ Manage security settings for Accounts and Workspaces
    network_connectivity
    settings
    csp_enablement_account
-   disable_legacy_features
    esm_enablement_account
    personal_compute

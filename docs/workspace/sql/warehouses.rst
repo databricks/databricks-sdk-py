@@ -41,8 +41,7 @@
           The amount of time in minutes that a SQL warehouse must be idle (i.e., no RUNNING queries) before it
           is automatically stopped.
           
-          Supported values: - Must be >= 0 mins for serverless warehouses - Must be == 0 or >= 10 mins for
-          non-serverless warehouses - 0 indicates no autostop.
+          Supported values: - Must be == 0 or >= 10 mins - 0 indicates no autostop.
           
           Defaults to 120 mins
         :param channel: :class:`Channel` (optional)
