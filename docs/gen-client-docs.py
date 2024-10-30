@@ -248,6 +248,7 @@ class Generator:
         Package("dashboards", "Dashboards", "Manage Lakeview dashboards"),
         Package("marketplace", "Marketplace", "Manage AI and analytics assets such as ML models, notebooks, applications in an open marketplace"),
         Package("apps", "Apps", "Build custom applications on Databricks"),
+        Package("cleanrooms", "Clean Rooms", "Manage clean rooms and their assets and task runs"),
     ]
 
     def __init__(self):
@@ -375,13 +376,19 @@ class Generator:
 
     def write_dataclass_docs(self):
         self._make_folder_if_not_exists(f'{__dir__}/dbdataclasses')
+        all_packages = []
         for pkg in self.packages:
-            module = importlib.import_module(f'databricks.sdk.service.{pkg.name}')
+            try:
+                module = importlib.import_module(f'databricks.sdk.service.{pkg.name}')
+            except ModuleNotFoundError:
+                print(f'No module found for {pkg.name}, continuing')
+                continue
+            all_packages.append(pkg.name)
             all_members = [name for name, _ in inspect.getmembers(module, predicate=self._should_document)]
             doc = DataclassesDoc(package=pkg, dataclasses=sorted(all_members))
             with open(f'{__dir__}/dbdataclasses/{pkg.name}.rst', 'w') as f:
                 f.write(doc.as_rst())
-        all = "\n   ".join(sorted([p.name for p in self.packages]))
+        all = "\n   ".join(sorted(all_packages))
         with open(f'{__dir__}/dbdataclasses/index.rst', 'w') as f:
             f.write(f'''
 Dataclasses
