@@ -2,7 +2,7 @@
 ==================
 .. currentmodule:: databricks.sdk.service.files
 
-.. py:class:: FilesAPI
+.. py:class:: FilesExt
 
     The Files API is a standard HTTP API that allows you to read, write, list, and delete files and
     directories by referring to their URI. The API makes working with file content as raw bytes easier and
@@ -60,16 +60,16 @@
         
         
 
-    .. py:method:: download(file_path: str) -> DownloadResponse
+    .. py:method:: download(file_path: str [, start_byte_offset: Optional[int], if_unmodified_since_timestamp: Optional[datetime]]) -> DownloadResponse
 
         Download a file.
-        
+
         Downloads a file of up to 5 GiB. The file contents are the response body. This is a standard HTTP file
         download, not a JSON RPC.
-        
+
         :param file_path: str
           The absolute path of the file.
-        
+
         :returns: :class:`DownloadResponse`
         
 

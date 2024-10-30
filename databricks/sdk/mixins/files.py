@@ -760,7 +760,7 @@ class SeekableDownloadBinaryIO(BufferedIOBase):
     def detach(self):
         raise UnsupportedOperation("Detaching from the buffer is not supported")
 
-    def read(self, __size = -1, /):
+    def read(self, __size = -1):
         # Read and return up to size bytes. If omitted, None, or Negative, data is read until EOF is reached
         # Empty bytes object returned if stream is EOF
         self._ensure_open_stream()
@@ -768,7 +768,7 @@ class SeekableDownloadBinaryIO(BufferedIOBase):
         self._current_pos_of_underlying_stream += len(out)
         return out
 
-    def read1(self, __size = ...):
+    def read1(self, __size = -1):
         # Read and return up to size bytes, with at most one read() system call
         self._ensure_open_stream()
         out = self._underlying_stream.read1(__size)
@@ -829,7 +829,7 @@ class SeekableDownloadBinaryIO(BufferedIOBase):
         self._current_pos_of_underlying_stream += len(out)
         return out
 
-    def seek(self, __offset, __whence = os.SEEK_SET, /):
+    def seek(self, __offset, __whence = os.SEEK_SET):
         """
         Change the stream position to the given byte offset, which may necessitate closing the existing client connection and opening a new one.
 
