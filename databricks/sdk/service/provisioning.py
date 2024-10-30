@@ -639,6 +639,35 @@ class ErrorType(Enum):
 
 
 @dataclass
+class ExternalCustomerInfo:
+    authoritative_user_email: Optional[str] = None
+    """Email of the authoritative user."""
+
+    authoritative_user_full_name: Optional[str] = None
+    """The authoritative user full name."""
+
+    customer_name: Optional[str] = None
+    """The legal entity name for the external workspace"""
+
+    def as_dict(self) -> dict:
+        """Serializes the ExternalCustomerInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.authoritative_user_email is not None:
+            body['authoritative_user_email'] = self.authoritative_user_email
+        if self.authoritative_user_full_name is not None:
+            body['authoritative_user_full_name'] = self.authoritative_user_full_name
+        if self.customer_name is not None: body['customer_name'] = self.customer_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ExternalCustomerInfo:
+        """Deserializes the ExternalCustomerInfo from a dictionary."""
+        return cls(authoritative_user_email=d.get('authoritative_user_email', None),
+                   authoritative_user_full_name=d.get('authoritative_user_full_name', None),
+                   customer_name=d.get('customer_name', None))
+
+
+@dataclass
 class GcpKeyInfo:
     kms_key_id: str
     """The GCP KMS key's resource name"""
@@ -1449,6 +1478,10 @@ class Workspace:
     
     This value must be unique across all non-deleted deployments across all AWS regions."""
 
+    external_customer_info: Optional[ExternalCustomerInfo] = None
+    """If this workspace is for a external customer, then external_customer_info is populated. If this
+    workspace is not for a external customer, then external_customer_info is empty."""
+
     gcp_managed_network_config: Optional[GcpManagedNetworkConfig] = None
     """The network settings for the workspace. The configurations are only for Databricks-managed VPCs.
     It is ignored if you specify a customer-managed VPC in the `network_id` field.", All the IP
@@ -1533,6 +1566,7 @@ class Workspace:
         if self.credentials_id is not None: body['credentials_id'] = self.credentials_id
         if self.custom_tags: body['custom_tags'] = self.custom_tags
         if self.deployment_name is not None: body['deployment_name'] = self.deployment_name
+        if self.external_customer_info: body['external_customer_info'] = self.external_customer_info.as_dict()
         if self.gcp_managed_network_config:
             body['gcp_managed_network_config'] = self.gcp_managed_network_config.as_dict()
         if self.gke_config: body['gke_config'] = self.gke_config.as_dict()
@@ -1568,6 +1602,7 @@ class Workspace:
                    credentials_id=d.get('credentials_id', None),
                    custom_tags=d.get('custom_tags', None),
                    deployment_name=d.get('deployment_name', None),
+                   external_customer_info=_from_dict(d, 'external_customer_info', ExternalCustomerInfo),
                    gcp_managed_network_config=_from_dict(d, 'gcp_managed_network_config',
                                                          GcpManagedNetworkConfig),
                    gke_config=_from_dict(d, 'gke_config', GkeConfig),

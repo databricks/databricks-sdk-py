@@ -3,11 +3,15 @@
 from __future__ import annotations
 
 import logging
+import random
+import time
 from dataclasses import dataclass
+from datetime import timedelta
 from enum import Enum
-from typing import Dict, Iterator, List, Optional
+from typing import Callable, Dict, Iterator, List, Optional
 
-from ._internal import _enum, _from_dict, _repeated_dict, _repeated_enum
+from ..errors import OperationFailed
+from ._internal import Wait, _enum, _from_dict, _repeated_dict, _repeated_enum
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -7890,7 +7894,40 @@ class OnlineTablesAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, *, name: Optional[str] = None, spec: Optional[OnlineTableSpec] = None) -> OnlineTable:
+    def wait_get_online_table_active(self,
+                                     name: str,
+                                     timeout=timedelta(minutes=20),
+                                     callback: Optional[Callable[[OnlineTable], None]] = None) -> OnlineTable:
+        deadline = time.time() + timeout.total_seconds()
+        target_states = (ProvisioningInfoState.ACTIVE, )
+        failure_states = (ProvisioningInfoState.FAILED, )
+        status_message = 'polling...'
+        attempt = 1
+        while time.time() < deadline:
+            poll = self.get(name=name)
+            status = poll.unity_catalog_provisioning_state
+            status_message = f'current status: {status}'
+            if status in target_states:
+                return poll
+            if callback:
+                callback(poll)
+            if status in failure_states:
+                msg = f'failed to reach ACTIVE, got {status}: {status_message}'
+                raise OperationFailed(msg)
+            prefix = f"name={name}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f'timed out after {timeout}: {status_message}')
+
+    def create(self,
+               *,
+               name: Optional[str] = None,
+               spec: Optional[OnlineTableSpec] = None) -> Wait[OnlineTable]:
         """Create an Online Table.
         
         Create a new Online Table.
@@ -7900,15 +7937,26 @@ class OnlineTablesAPI:
         :param spec: :class:`OnlineTableSpec` (optional)
           Specification of the online table.
         
-        :returns: :class:`OnlineTable`
+        :returns:
+          Long-running operation waiter for :class:`OnlineTable`.
+          See :method:wait_get_online_table_active for more details.
         """
         body = {}
         if name is not None: body['name'] = name
         if spec is not None: body['spec'] = spec.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        res = self._api.do('POST', '/api/2.0/online-tables', body=body, headers=headers)
-        return OnlineTable.from_dict(res)
+        op_response = self._api.do('POST', '/api/2.0/online-tables', body=body, headers=headers)
+        return Wait(self.wait_get_online_table_active,
+                    response=OnlineTable.from_dict(op_response),
+                    name=op_response['name'])
+
+    def create_and_wait(self,
+                        *,
+                        name: Optional[str] = None,
+                        spec: Optional[OnlineTableSpec] = None,
+                        timeout=timedelta(minutes=20)) -> OnlineTable:
+        return self.create(name=name, spec=spec).result(timeout=timeout)
 
     def delete(self, name: str):
         """Delete an Online Table.

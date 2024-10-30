@@ -6,7 +6,7 @@
 
     Online tables provide lower latency and higher QPS access to data from Delta tables.
 
-    .. py:method:: create( [, name: Optional[str], spec: Optional[OnlineTableSpec]]) -> OnlineTable
+    .. py:method:: create( [, name: Optional[str], spec: Optional[OnlineTableSpec]]) -> Wait[OnlineTable]
 
         Create an Online Table.
 
@@ -17,7 +17,12 @@ Create a new Online Table.
 :param spec: :class:`OnlineTableSpec` (optional)
   Specification of the online table.
 
-:returns: :class:`OnlineTable`
+:returns:
+  Long-running operation waiter for :class:`OnlineTable`.
+  See :method:wait_get_online_table_active for more details.
+
+
+    .. py:method:: create_and_wait( [, name: Optional[str], spec: Optional[OnlineTableSpec], timeout: datetime.timedelta = 0:20:00]) -> OnlineTable
 
 
     .. py:method:: delete(name: str)
@@ -44,3 +49,6 @@ Get information about an existing online table and its status.
   Full three-part (catalog, schema, table) name of the table.
 
 :returns: :class:`OnlineTable`
+
+
+    .. py:method:: wait_get_online_table_active(name: str, timeout: datetime.timedelta = 0:20:00, callback: Optional[Callable[[OnlineTable], None]]) -> OnlineTable
