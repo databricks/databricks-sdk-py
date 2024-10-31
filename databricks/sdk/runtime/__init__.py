@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import logging
 from typing import Dict, Optional, Union, cast
+from databricks.sdk.errors import DatabricksError
 
 logger = logging.getLogger('databricks.sdk')
 is_local_implementation = True
@@ -73,6 +74,19 @@ def init_runtime_legacy_auth():
         return None, None
 
 
+def _is_unexpected_exception_loading_user_namespace(e: Exception) -> bool:
+    # The dbruntime module is not present outside of DBR
+    if isinstance(e, ImportError):
+        return False
+    # In notebooks, the UserNamespaceInitializer works, but the notebook context is not propagated to
+    # spawned Python subprocesses, resulting in this class throwing an
+    # pyspark.errors.exceptions.base.PySparkRuntimeError. The SDK does not depend on PySpark, so we
+    # need to check the type and module name directly.
+    if type(e).__name__  == 'PySparkRuntimeError' and e.__module__ == 'pyspark.errors.exceptions.base':
+        return False
+    return True
+
+
 try:
     # Internal implementation
     # Separated from above for backward compatibility
@@ -85,7 +99,9 @@ try:
             continue
         _globals[var] = userNamespaceGlobals[var]
     is_local_implementation = False
-except ImportError:
+except Exception as e:
+    if _is_unexpected_exception_loading_user_namespace(e):
+        raise DatabricksError(f"Failed to initialize runtime globals") from e
     # OSS implementation
     is_local_implementation = True
 
