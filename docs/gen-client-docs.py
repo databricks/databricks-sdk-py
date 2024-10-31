@@ -248,6 +248,7 @@ class Generator:
         Package("dashboards", "Dashboards", "Manage Lakeview dashboards"),
         Package("marketplace", "Marketplace", "Manage AI and analytics assets such as ML models, notebooks, applications in an open marketplace"),
         Package("apps", "Apps", "Build custom applications on Databricks"),
+        Package("cleanrooms", "Clean Rooms", "Manage clean rooms and their assets and task runs"),
     ]
 
     def __init__(self):
@@ -259,7 +260,7 @@ class Generator:
                 return f.read()
         with open(f'{__dir__}/../.codegen/_openapi_sha') as f:
             sha = f.read().strip()
-        return subprocess.check_output(['deco', 'openapi', 'get', sha]).decode('utf-8')
+        return subprocess.check_output(['genkit', 'get', sha]).decode('utf-8')
 
     def _load_mapping(self) -> dict[str, Tag]:
         mapping = {}
@@ -342,8 +343,15 @@ class Generator:
                 continue
             if service_name in ignore_client_fields:
                 continue
-            class_doc = service_inst.__doc__
+
             class_name = service_inst.__class__.__name__
+
+            # Use original class docstring for mixin classes
+            if class_name.endswith('Ext'):
+                class_doc = service_inst.__class__.__base__.__doc__
+            else:        
+                class_doc = service_inst.__doc__
+
             print(f'Processing service {client_prefix}.{service_name}')
             all += self.service_docs(service_inst, client_prefix + "." + service_name)
 
@@ -368,13 +376,19 @@ class Generator:
 
     def write_dataclass_docs(self):
         self._make_folder_if_not_exists(f'{__dir__}/dbdataclasses')
+        all_packages = []
         for pkg in self.packages:
-            module = importlib.import_module(f'databricks.sdk.service.{pkg.name}')
+            try:
+                module = importlib.import_module(f'databricks.sdk.service.{pkg.name}')
+            except ModuleNotFoundError:
+                print(f'No module found for {pkg.name}, continuing')
+                continue
+            all_packages.append(pkg.name)
             all_members = [name for name, _ in inspect.getmembers(module, predicate=self._should_document)]
             doc = DataclassesDoc(package=pkg, dataclasses=sorted(all_members))
             with open(f'{__dir__}/dbdataclasses/{pkg.name}.rst', 'w') as f:
                 f.write(doc.as_rst())
-        all = "\n   ".join(sorted([p.name for p in self.packages]))
+        all = "\n   ".join(sorted(all_packages))
         with open(f'{__dir__}/dbdataclasses/index.rst', 'w') as f:
             f.write(f'''
 Dataclasses

@@ -1,21 +1,15 @@
-import contextlib
-import functools
 import os
 import pathlib
 import platform
 import random
 import string
-import typing
 from datetime import datetime
 from http.server import BaseHTTPRequestHandler
-from typing import Iterator, List
 
 import pytest
-import requests
 
-from databricks.sdk import WorkspaceClient
-from databricks.sdk.core import (ApiClient, Config, DatabricksError,
-                                 StreamingResponse)
+from databricks.sdk import WorkspaceClient, errors
+from databricks.sdk.core import ApiClient, Config, DatabricksError
 from databricks.sdk.credentials_provider import (CliTokenSource,
                                                  CredentialsProvider,
                                                  CredentialsStrategy,
@@ -28,8 +22,8 @@ from databricks.sdk.service.catalog import PermissionsChange
 from databricks.sdk.service.iam import AccessControlRequest
 from databricks.sdk.version import __version__
 
-from .clock import FakeClock
 from .conftest import noop_credentials
+from .fixture_server import http_fixture_server
 
 
 def test_parse_dsn():
@@ -78,32 +72,6 @@ def write_small_dummy_executable(path: pathlib.Path):
         cli.chmod(0o755)
     assert cli.stat().st_size < 1024
     return cli
-
-
-def test_streaming_response_read(config):
-    content = b"some initial binary data: \x00\x01"
-    response = StreamingResponse(DummyResponse([content]))
-    assert response.read() == content
-
-
-def test_streaming_response_read_partial(config):
-    content = b"some initial binary data: \x00\x01"
-    response = StreamingResponse(DummyResponse([content]))
-    assert response.read(8) == b"some ini"
-
-
-def test_streaming_response_read_full(config):
-    content = b"some initial binary data: \x00\x01"
-    response = StreamingResponse(DummyResponse([content, content]))
-    assert response.read() == content + content
-
-
-def test_streaming_response_read_closes(config):
-    content = b"some initial binary data: \x00\x01"
-    dummy_response = DummyResponse([content])
-    with StreamingResponse(dummy_response) as response:
-        assert response.read() == content
-    assert dummy_response.isClosed()
 
 
 def write_large_dummy_executable(path: pathlib.Path):
@@ -290,36 +258,6 @@ def test_config_parsing_non_string_env_vars(monkeypatch):
     assert c.debug_truncate_bytes == 100
 
 
-class DummyResponse(requests.Response):
-    _content: Iterator[bytes]
-    _closed: bool = False
-
-    def __init__(self, content: List[bytes]) -> None:
-        super().__init__()
-        self._content = iter(content)
-
-    def iter_content(self, chunk_size: int = 1, decode_unicode=False) -> Iterator[bytes]:
-        return self._content
-
-    def close(self):
-        self._closed = True
-
-    def isClosed(self):
-        return self._closed
-
-
-def test_api_client_do_custom_headers(config, requests_mock):
-    client = ApiClient(config)
-    requests_mock.get("/test",
-                      json={"well": "done"},
-                      request_headers={
-                          "test": "test",
-                          "User-Agent": config.user_agent
-                      })
-    res = client.do("GET", "/test", headers={"test": "test"})
-    assert res == {"well": "done"}
-
-
 def test_access_control_list(config, requests_mock):
     requests_mock.post("http://localhost/api/2.1/jobs/create",
                        request_headers={"User-Agent": config.user_agent})
@@ -359,197 +297,37 @@ def test_deletes(config, requests_mock):
     assert res is None
 
 
-def test_error(config, requests_mock):
-    errorJson = {
-        "message":
-        "errorMessage",
-        "details": [{
-            "type": DatabricksError._error_info_type,
-            "reason": "error reason",
-            "domain": "error domain",
-            "metadata": {
-                "etag": "error etag"
-            },
-        }, {
-            "type": "wrong type",
-            "reason": "wrong reason",
-            "domain": "wrong domain",
-            "metadata": {
-                "etag": "wrong etag"
-            }
-        }],
-    }
-
+@pytest.mark.parametrize(
+    'status_code,headers,body,expected_error',
+    [(401, {}, {
+        'error_code': 'UNAUTHORIZED',
+        'message': 'errorMessage',
+    },
+      errors.Unauthenticated('errorMessage. Config: host=http://localhost, auth_type=noop',
+                             error_code='UNAUTHORIZED')),
+     (403, {}, {
+         'error_code': 'FORBIDDEN',
+         'message': 'errorMessage',
+     },
+      errors.PermissionDenied('errorMessage. Config: host=http://localhost, auth_type=noop',
+                              error_code='FORBIDDEN')), ])
+def test_error(config, requests_mock, status_code, headers, body, expected_error):
     client = ApiClient(config)
-    requests_mock.get("/test", json=errorJson, status_code=400, )
+    requests_mock.get("/test", json=body, status_code=status_code, headers=headers)
     with pytest.raises(DatabricksError) as raised:
         client.do("GET", "/test", headers={"test": "test"})
-
-    error_infos = raised.value.get_error_info()
-    assert len(error_infos) == 1
-    error_info = error_infos[0]
-    assert error_info.reason == "error reason"
-    assert error_info.domain == "error domain"
-    assert error_info.metadata["etag"] == "error etag"
-    assert error_info.type == DatabricksError._error_info_type
-
-
-def test_error_with_scimType():
-    args = {"detail": "detail", "scimType": "scim type"}
-    error = DatabricksError(**args)
-    assert str(error) == f"scim type detail"
-
-
-@contextlib.contextmanager
-def http_fixture_server(handler: typing.Callable[[BaseHTTPRequestHandler], None]):
-    from http.server import HTTPServer
-    from threading import Thread
-
-    class _handler(BaseHTTPRequestHandler):
-
-        def __init__(self, handler: typing.Callable[[BaseHTTPRequestHandler], None], *args):
-            self._handler = handler
-            super().__init__(*args)
-
-        def __getattr__(self, item):
-            if 'do_' != item[0:3]:
-                raise AttributeError(f'method {item} not found')
-            return functools.partial(self._handler, self)
-
-    handler_factory = functools.partial(_handler, handler)
-    srv = HTTPServer(('localhost', 0), handler_factory)
-    t = Thread(target=srv.serve_forever)
-    try:
-        t.daemon = True
-        t.start()
-        yield 'http://{0}:{1}'.format(*srv.server_address)
-    finally:
-        srv.shutdown()
-
-
-@pytest.mark.parametrize('status_code,include_retry_after',
-                         ((429, False), (429, True), (503, False), (503, True)))
-def test_http_retry_after(status_code, include_retry_after):
-    requests = []
-
-    def inner(h: BaseHTTPRequestHandler):
-        if len(requests) == 0:
-            h.send_response(status_code)
-            if include_retry_after:
-                h.send_header('Retry-After', '1')
-            h.send_header('Content-Type', 'application/json')
-            h.end_headers()
-        else:
-            h.send_response(200)
-            h.send_header('Content-Type', 'application/json')
-            h.end_headers()
-            h.wfile.write(b'{"foo": 1}')
-        requests.append(h.requestline)
-
-    with http_fixture_server(inner) as host:
-        api_client = ApiClient(Config(host=host, token='_', clock=FakeClock()))
-        res = api_client.do('GET', '/foo')
-        assert 'foo' in res
-
-    assert len(requests) == 2
-
-
-def test_http_retry_after_wrong_format():
-    requests = []
-
-    def inner(h: BaseHTTPRequestHandler):
-        if len(requests) == 0:
-            h.send_response(429)
-            h.send_header('Retry-After', '1.58')
-            h.end_headers()
-        else:
-            h.send_response(200)
-            h.send_header('Content-Type', 'application/json')
-            h.end_headers()
-            h.wfile.write(b'{"foo": 1}')
-        requests.append(h.requestline)
-
-    with http_fixture_server(inner) as host:
-        api_client = ApiClient(Config(host=host, token='_', clock=FakeClock()))
-        res = api_client.do('GET', '/foo')
-        assert 'foo' in res
-
-    assert len(requests) == 2
-
-
-def test_http_retried_exceed_limit():
-    requests = []
-
-    def inner(h: BaseHTTPRequestHandler):
-        h.send_response(429)
-        h.send_header('Retry-After', '1')
-        h.end_headers()
-        requests.append(h.requestline)
-
-    with http_fixture_server(inner) as host:
-        api_client = ApiClient(Config(host=host, token='_', retry_timeout_seconds=1, clock=FakeClock()))
-        with pytest.raises(TimeoutError):
-            api_client.do('GET', '/foo')
-
-    assert len(requests) == 1
-
-
-def test_http_retried_on_match():
-    requests = []
-
-    def inner(h: BaseHTTPRequestHandler):
-        if len(requests) == 0:
-            h.send_response(400)
-            h.end_headers()
-            h.wfile.write(b'{"error_code": "abc", "message": "... ClusterNotReadyException ..."}')
-        else:
-            h.send_response(200)
-            h.end_headers()
-            h.wfile.write(b'{"foo": 1}')
-        requests.append(h.requestline)
-
-    with http_fixture_server(inner) as host:
-        api_client = ApiClient(Config(host=host, token='_', clock=FakeClock()))
-        res = api_client.do('GET', '/foo')
-        assert 'foo' in res
-
-    assert len(requests) == 2
-
-
-def test_http_not_retried_on_normal_errors():
-    requests = []
-
-    def inner(h: BaseHTTPRequestHandler):
-        if len(requests) == 0:
-            h.send_response(400)
-            h.end_headers()
-            h.wfile.write(b'{"error_code": "abc", "message": "something not found"}')
-        requests.append(h.requestline)
-
-    with http_fixture_server(inner) as host:
-        api_client = ApiClient(Config(host=host, token='_', clock=FakeClock()))
-        with pytest.raises(DatabricksError):
-            api_client.do('GET', '/foo')
-
-    assert len(requests) == 1
-
-
-def test_http_retried_on_connection_error():
-    requests = []
-
-    def inner(h: BaseHTTPRequestHandler):
-        if len(requests) > 0:
-            h.send_response(200)
-            h.end_headers()
-            h.wfile.write(b'{"foo": 1}')
-        requests.append(h.requestline)
-
-    with http_fixture_server(inner) as host:
-        api_client = ApiClient(Config(host=host, token='_', clock=FakeClock()))
-        res = api_client.do('GET', '/foo')
-        assert 'foo' in res
-
-    assert len(requests) == 2
+    actual = raised.value
+    assert isinstance(actual, type(expected_error))
+    assert str(actual) == str(expected_error)
+    assert actual.error_code == expected_error.error_code
+    assert actual.retry_after_secs == expected_error.retry_after_secs
+    expected_error_infos, actual_error_infos = expected_error.get_error_info(), actual.get_error_info()
+    assert len(expected_error_infos) == len(actual_error_infos)
+    for expected, actual in zip(expected_error_infos, actual_error_infos):
+        assert expected.type == actual.type
+        assert expected.reason == actual.reason
+        assert expected.domain == actual.domain
+        assert expected.metadata == actual.metadata
 
 
 def test_github_oidc_flow_works_with_azure(monkeypatch):

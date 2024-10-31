@@ -27,10 +27,15 @@ class CreateDashboardRequest:
 
     parent_path: Optional[str] = None
     """The workspace path of the folder containing the dashboard. Includes leading slash and no
-    trailing slash."""
+    trailing slash. This field is excluded in List Dashboards responses."""
 
     serialized_dashboard: Optional[str] = None
-    """The contents of the dashboard in serialized string form."""
+    """The contents of the dashboard in serialized string form. This field is excluded in List
+    Dashboards responses. Use the [get dashboard API] to retrieve an example response, which
+    includes the `serialized_dashboard` field. This field provides the structure of the JSON string
+    that represents the dashboard's layout and components.
+    
+    [get dashboard API]: https://docs.databricks.com/api/workspace/lakeview/get"""
 
     warehouse_id: Optional[str] = None
     """The warehouse ID used to run the dashboard."""
@@ -154,23 +159,30 @@ class Dashboard:
 
     etag: Optional[str] = None
     """The etag for the dashboard. Can be optionally provided on updates to ensure that the dashboard
-    has not been modified since the last read."""
+    has not been modified since the last read. This field is excluded in List Dashboards responses."""
 
     lifecycle_state: Optional[LifecycleState] = None
     """The state of the dashboard resource. Used for tracking trashed status."""
 
     parent_path: Optional[str] = None
     """The workspace path of the folder containing the dashboard. Includes leading slash and no
-    trailing slash."""
+    trailing slash. This field is excluded in List Dashboards responses."""
 
     path: Optional[str] = None
-    """The workspace path of the dashboard asset, including the file name."""
+    """The workspace path of the dashboard asset, including the file name. Exported dashboards always
+    have the file extension `.lvdash.json`. This field is excluded in List Dashboards responses."""
 
     serialized_dashboard: Optional[str] = None
-    """The contents of the dashboard in serialized string form."""
+    """The contents of the dashboard in serialized string form. This field is excluded in List
+    Dashboards responses. Use the [get dashboard API] to retrieve an example response, which
+    includes the `serialized_dashboard` field. This field provides the structure of the JSON string
+    that represents the dashboard's layout and components.
+    
+    [get dashboard API]: https://docs.databricks.com/api/workspace/lakeview/get"""
 
     update_time: Optional[str] = None
-    """The timestamp of when the dashboard was last updated by the user."""
+    """The timestamp of when the dashboard was last updated by the user. This field is excluded in List
+    Dashboards responses."""
 
     warehouse_id: Optional[str] = None
     """The warehouse ID used to run the dashboard."""
@@ -378,8 +390,9 @@ class GenieMessage:
 
     status: Optional[MessageStatus] = None
     """MesssageStatus. The possible values are: * `FETCHING_METADATA`: Fetching metadata from the data
-    sources. * `ASKING_AI`: Waiting for the LLM to respond to the users question. *
-    `EXECUTING_QUERY`: Executing AI provided SQL query. Get the SQL query result by calling
+    sources. * `FILTERING_CONTEXT`: Running smart context step to determine relevant context. *
+    `ASKING_AI`: Waiting for the LLM to respond to the users question. * `EXECUTING_QUERY`:
+    Executing AI provided SQL query. Get the SQL query result by calling
     [getMessageQueryResult](:method:genie/getMessageQueryResult) API. **Important: The message
     status will stay in the `EXECUTING_QUERY` until a client calls
     [getMessageQueryResult](:method:genie/getMessageQueryResult)**. * `FAILED`: Generating a
@@ -594,6 +607,7 @@ class MessageErrorType(Enum):
     LOCAL_CONTEXT_EXCEEDED_EXCEPTION = 'LOCAL_CONTEXT_EXCEEDED_EXCEPTION'
     MESSAGE_DELETED_WHILE_EXECUTING_EXCEPTION = 'MESSAGE_DELETED_WHILE_EXECUTING_EXCEPTION'
     MESSAGE_UPDATED_WHILE_EXECUTING_EXCEPTION = 'MESSAGE_UPDATED_WHILE_EXECUTING_EXCEPTION'
+    NO_QUERY_TO_VISUALIZE_EXCEPTION = 'NO_QUERY_TO_VISUALIZE_EXCEPTION'
     NO_TABLES_TO_QUERY_EXCEPTION = 'NO_TABLES_TO_QUERY_EXCEPTION'
     RATE_LIMIT_EXCEEDED_GENERIC_EXCEPTION = 'RATE_LIMIT_EXCEEDED_GENERIC_EXCEPTION'
     RATE_LIMIT_EXCEEDED_SPECIFIED_WAIT_EXCEPTION = 'RATE_LIMIT_EXCEEDED_SPECIFIED_WAIT_EXCEPTION'
@@ -611,8 +625,9 @@ class MessageErrorType(Enum):
 
 class MessageStatus(Enum):
     """MesssageStatus. The possible values are: * `FETCHING_METADATA`: Fetching metadata from the data
-    sources. * `ASKING_AI`: Waiting for the LLM to respond to the users question. *
-    `EXECUTING_QUERY`: Executing AI provided SQL query. Get the SQL query result by calling
+    sources. * `FILTERING_CONTEXT`: Running smart context step to determine relevant context. *
+    `ASKING_AI`: Waiting for the LLM to respond to the users question. * `EXECUTING_QUERY`:
+    Executing AI provided SQL query. Get the SQL query result by calling
     [getMessageQueryResult](:method:genie/getMessageQueryResult) API. **Important: The message
     status will stay in the `EXECUTING_QUERY` until a client calls
     [getMessageQueryResult](:method:genie/getMessageQueryResult)**. * `FAILED`: Generating a
@@ -628,6 +643,7 @@ class MessageStatus(Enum):
     EXECUTING_QUERY = 'EXECUTING_QUERY'
     FAILED = 'FAILED'
     FETCHING_METADATA = 'FETCHING_METADATA'
+    FILTERING_CONTEXT = 'FILTERING_CONTEXT'
     QUERY_RESULT_EXPIRED = 'QUERY_RESULT_EXPIRED'
     SUBMITTED = 'SUBMITTED'
 
@@ -769,6 +785,9 @@ class QueryAttachment:
 
 @dataclass
 class Result:
+    is_truncated: Optional[bool] = None
+    """If result is truncated"""
+
     row_count: Optional[int] = None
     """Row count of the result"""
 
@@ -779,6 +798,7 @@ class Result:
     def as_dict(self) -> dict:
         """Serializes the Result into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.is_truncated is not None: body['is_truncated'] = self.is_truncated
         if self.row_count is not None: body['row_count'] = self.row_count
         if self.statement_id is not None: body['statement_id'] = self.statement_id
         return body
@@ -786,7 +806,9 @@ class Result:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> Result:
         """Deserializes the Result from a dictionary."""
-        return cls(row_count=d.get('row_count', None), statement_id=d.get('statement_id', None))
+        return cls(is_truncated=d.get('is_truncated', None),
+                   row_count=d.get('row_count', None),
+                   statement_id=d.get('statement_id', None))
 
 
 @dataclass
@@ -1020,10 +1042,15 @@ class UpdateDashboardRequest:
 
     etag: Optional[str] = None
     """The etag for the dashboard. Can be optionally provided on updates to ensure that the dashboard
-    has not been modified since the last read."""
+    has not been modified since the last read. This field is excluded in List Dashboards responses."""
 
     serialized_dashboard: Optional[str] = None
-    """The contents of the dashboard in serialized string form."""
+    """The contents of the dashboard in serialized string form. This field is excluded in List
+    Dashboards responses. Use the [get dashboard API] to retrieve an example response, which
+    includes the `serialized_dashboard` field. This field provides the structure of the JSON string
+    that represents the dashboard's layout and components.
+    
+    [get dashboard API]: https://docs.databricks.com/api/workspace/lakeview/get"""
 
     warehouse_id: Optional[str] = None
     """The warehouse ID used to run the dashboard."""
@@ -1300,9 +1327,14 @@ class LakeviewAPI:
           The display name of the dashboard.
         :param parent_path: str (optional)
           The workspace path of the folder containing the dashboard. Includes leading slash and no trailing
-          slash.
+          slash. This field is excluded in List Dashboards responses.
         :param serialized_dashboard: str (optional)
-          The contents of the dashboard in serialized string form.
+          The contents of the dashboard in serialized string form. This field is excluded in List Dashboards
+          responses. Use the [get dashboard API] to retrieve an example response, which includes the
+          `serialized_dashboard` field. This field provides the structure of the JSON string that represents
+          the dashboard's layout and components.
+          
+          [get dashboard API]: https://docs.databricks.com/api/workspace/lakeview/get
         :param warehouse_id: str (optional)
           The warehouse ID used to run the dashboard.
         
@@ -1714,9 +1746,14 @@ class LakeviewAPI:
           The display name of the dashboard.
         :param etag: str (optional)
           The etag for the dashboard. Can be optionally provided on updates to ensure that the dashboard has
-          not been modified since the last read.
+          not been modified since the last read. This field is excluded in List Dashboards responses.
         :param serialized_dashboard: str (optional)
-          The contents of the dashboard in serialized string form.
+          The contents of the dashboard in serialized string form. This field is excluded in List Dashboards
+          responses. Use the [get dashboard API] to retrieve an example response, which includes the
+          `serialized_dashboard` field. This field provides the structure of the JSON string that represents
+          the dashboard's layout and components.
+          
+          [get dashboard API]: https://docs.databricks.com/api/workspace/lakeview/get
         :param warehouse_id: str (optional)
           The warehouse ID used to run the dashboard.
         

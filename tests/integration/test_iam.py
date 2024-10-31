@@ -1,5 +1,6 @@
 import pytest
 
+from databricks.sdk import errors
 from databricks.sdk.core import DatabricksError
 
 
@@ -13,7 +14,7 @@ def test_scim_error_unmarshall(w, random):
     with pytest.raises(DatabricksError) as exc_info:
         groups = w.groups.list(filter=random(12))
         next(groups)
-    assert 'Given filter operator is not supported' in str(exc_info.value)
+    assert isinstance(exc_info.value, errors.BadRequest)
 
 
 def test_scim_get_user_as_dict(w):

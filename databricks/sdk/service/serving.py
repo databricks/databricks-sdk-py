@@ -51,6 +51,222 @@ class Ai21LabsConfig:
 
 
 @dataclass
+class AiGatewayConfig:
+    guardrails: Optional[AiGatewayGuardrails] = None
+    """Configuration for AI Guardrails to prevent unwanted data and unsafe data in requests and
+    responses."""
+
+    inference_table_config: Optional[AiGatewayInferenceTableConfig] = None
+    """Configuration for payload logging using inference tables. Use these tables to monitor and audit
+    data being sent to and received from model APIs and to improve model quality."""
+
+    rate_limits: Optional[List[AiGatewayRateLimit]] = None
+    """Configuration for rate limits which can be set to limit endpoint traffic."""
+
+    usage_tracking_config: Optional[AiGatewayUsageTrackingConfig] = None
+    """Configuration to enable usage tracking using system tables. These tables allow you to monitor
+    operational usage on endpoints and their associated costs."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AiGatewayConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.guardrails: body['guardrails'] = self.guardrails.as_dict()
+        if self.inference_table_config: body['inference_table_config'] = self.inference_table_config.as_dict()
+        if self.rate_limits: body['rate_limits'] = [v.as_dict() for v in self.rate_limits]
+        if self.usage_tracking_config: body['usage_tracking_config'] = self.usage_tracking_config.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> AiGatewayConfig:
+        """Deserializes the AiGatewayConfig from a dictionary."""
+        return cls(guardrails=_from_dict(d, 'guardrails', AiGatewayGuardrails),
+                   inference_table_config=_from_dict(d, 'inference_table_config',
+                                                     AiGatewayInferenceTableConfig),
+                   rate_limits=_repeated_dict(d, 'rate_limits', AiGatewayRateLimit),
+                   usage_tracking_config=_from_dict(d, 'usage_tracking_config', AiGatewayUsageTrackingConfig))
+
+
+@dataclass
+class AiGatewayGuardrailParameters:
+    invalid_keywords: Optional[List[str]] = None
+    """List of invalid keywords. AI guardrail uses keyword or string matching to decide if the keyword
+    exists in the request or response content."""
+
+    pii: Optional[AiGatewayGuardrailPiiBehavior] = None
+    """Configuration for guardrail PII filter."""
+
+    safety: Optional[bool] = None
+    """Indicates whether the safety filter is enabled."""
+
+    valid_topics: Optional[List[str]] = None
+    """The list of allowed topics. Given a chat request, this guardrail flags the request if its topic
+    is not in the allowed topics."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AiGatewayGuardrailParameters into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.invalid_keywords: body['invalid_keywords'] = [v for v in self.invalid_keywords]
+        if self.pii: body['pii'] = self.pii.as_dict()
+        if self.safety is not None: body['safety'] = self.safety
+        if self.valid_topics: body['valid_topics'] = [v for v in self.valid_topics]
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> AiGatewayGuardrailParameters:
+        """Deserializes the AiGatewayGuardrailParameters from a dictionary."""
+        return cls(invalid_keywords=d.get('invalid_keywords', None),
+                   pii=_from_dict(d, 'pii', AiGatewayGuardrailPiiBehavior),
+                   safety=d.get('safety', None),
+                   valid_topics=d.get('valid_topics', None))
+
+
+@dataclass
+class AiGatewayGuardrailPiiBehavior:
+    behavior: AiGatewayGuardrailPiiBehaviorBehavior
+    """Behavior for PII filter. Currently only 'BLOCK' is supported. If 'BLOCK' is set for the input
+    guardrail and the request contains PII, the request is not sent to the model server and 400
+    status code is returned; if 'BLOCK' is set for the output guardrail and the model response
+    contains PII, the PII info in the response is redacted and 400 status code is returned."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AiGatewayGuardrailPiiBehavior into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.behavior is not None: body['behavior'] = self.behavior.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> AiGatewayGuardrailPiiBehavior:
+        """Deserializes the AiGatewayGuardrailPiiBehavior from a dictionary."""
+        return cls(behavior=_enum(d, 'behavior', AiGatewayGuardrailPiiBehaviorBehavior))
+
+
+class AiGatewayGuardrailPiiBehaviorBehavior(Enum):
+    """Behavior for PII filter. Currently only 'BLOCK' is supported. If 'BLOCK' is set for the input
+    guardrail and the request contains PII, the request is not sent to the model server and 400
+    status code is returned; if 'BLOCK' is set for the output guardrail and the model response
+    contains PII, the PII info in the response is redacted and 400 status code is returned."""
+
+    BLOCK = 'BLOCK'
+    NONE = 'NONE'
+
+
+@dataclass
+class AiGatewayGuardrails:
+    input: Optional[AiGatewayGuardrailParameters] = None
+    """Configuration for input guardrail filters."""
+
+    output: Optional[AiGatewayGuardrailParameters] = None
+    """Configuration for output guardrail filters."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AiGatewayGuardrails into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.input: body['input'] = self.input.as_dict()
+        if self.output: body['output'] = self.output.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> AiGatewayGuardrails:
+        """Deserializes the AiGatewayGuardrails from a dictionary."""
+        return cls(input=_from_dict(d, 'input', AiGatewayGuardrailParameters),
+                   output=_from_dict(d, 'output', AiGatewayGuardrailParameters))
+
+
+@dataclass
+class AiGatewayInferenceTableConfig:
+    catalog_name: Optional[str] = None
+    """The name of the catalog in Unity Catalog. Required when enabling inference tables. NOTE: On
+    update, you have to disable inference table first in order to change the catalog name."""
+
+    enabled: Optional[bool] = None
+    """Indicates whether the inference table is enabled."""
+
+    schema_name: Optional[str] = None
+    """The name of the schema in Unity Catalog. Required when enabling inference tables. NOTE: On
+    update, you have to disable inference table first in order to change the schema name."""
+
+    table_name_prefix: Optional[str] = None
+    """The prefix of the table in Unity Catalog. NOTE: On update, you have to disable inference table
+    first in order to change the prefix name."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AiGatewayInferenceTableConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.catalog_name is not None: body['catalog_name'] = self.catalog_name
+        if self.enabled is not None: body['enabled'] = self.enabled
+        if self.schema_name is not None: body['schema_name'] = self.schema_name
+        if self.table_name_prefix is not None: body['table_name_prefix'] = self.table_name_prefix
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> AiGatewayInferenceTableConfig:
+        """Deserializes the AiGatewayInferenceTableConfig from a dictionary."""
+        return cls(catalog_name=d.get('catalog_name', None),
+                   enabled=d.get('enabled', None),
+                   schema_name=d.get('schema_name', None),
+                   table_name_prefix=d.get('table_name_prefix', None))
+
+
+@dataclass
+class AiGatewayRateLimit:
+    calls: int
+    """Used to specify how many calls are allowed for a key within the renewal_period."""
+
+    renewal_period: AiGatewayRateLimitRenewalPeriod
+    """Renewal period field for a rate limit. Currently, only 'minute' is supported."""
+
+    key: Optional[AiGatewayRateLimitKey] = None
+    """Key field for a rate limit. Currently, only 'user' and 'endpoint' are supported, with 'endpoint'
+    being the default if not specified."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AiGatewayRateLimit into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.calls is not None: body['calls'] = self.calls
+        if self.key is not None: body['key'] = self.key.value
+        if self.renewal_period is not None: body['renewal_period'] = self.renewal_period.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> AiGatewayRateLimit:
+        """Deserializes the AiGatewayRateLimit from a dictionary."""
+        return cls(calls=d.get('calls', None),
+                   key=_enum(d, 'key', AiGatewayRateLimitKey),
+                   renewal_period=_enum(d, 'renewal_period', AiGatewayRateLimitRenewalPeriod))
+
+
+class AiGatewayRateLimitKey(Enum):
+    """Key field for a rate limit. Currently, only 'user' and 'endpoint' are supported, with 'endpoint'
+    being the default if not specified."""
+
+    ENDPOINT = 'endpoint'
+    USER = 'user'
+
+
+class AiGatewayRateLimitRenewalPeriod(Enum):
+    """Renewal period field for a rate limit. Currently, only 'minute' is supported."""
+
+    MINUTE = 'minute'
+
+
+@dataclass
+class AiGatewayUsageTrackingConfig:
+    enabled: Optional[bool] = None
+    """Whether to enable usage tracking."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AiGatewayUsageTrackingConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.enabled is not None: body['enabled'] = self.enabled
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> AiGatewayUsageTrackingConfig:
+        """Deserializes the AiGatewayUsageTrackingConfig from a dictionary."""
+        return cls(enabled=d.get('enabled', None))
+
+
+@dataclass
 class AmazonBedrockConfig:
     aws_region: str
     """The AWS region to use. Bedrock has to be enabled there."""
@@ -319,9 +535,13 @@ class CreateServingEndpoint:
     config: EndpointCoreConfigInput
     """The core config of the serving endpoint."""
 
+    ai_gateway: Optional[AiGatewayConfig] = None
+    """The AI Gateway configuration for the serving endpoint. NOTE: only external model endpoints are
+    supported as of now."""
+
     rate_limits: Optional[List[RateLimit]] = None
-    """Rate limits to be applied to the serving endpoint. NOTE: only external and foundation model
-    endpoints are supported as of now."""
+    """Rate limits to be applied to the serving endpoint. NOTE: this field is deprecated, please use AI
+    Gateway to manage rate limits."""
 
     route_optimized: Optional[bool] = None
     """Enable route optimization for the serving endpoint."""
@@ -332,6 +552,7 @@ class CreateServingEndpoint:
     def as_dict(self) -> dict:
         """Serializes the CreateServingEndpoint into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.ai_gateway: body['ai_gateway'] = self.ai_gateway.as_dict()
         if self.config: body['config'] = self.config.as_dict()
         if self.name is not None: body['name'] = self.name
         if self.rate_limits: body['rate_limits'] = [v.as_dict() for v in self.rate_limits]
@@ -342,7 +563,8 @@ class CreateServingEndpoint:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateServingEndpoint:
         """Deserializes the CreateServingEndpoint from a dictionary."""
-        return cls(config=_from_dict(d, 'config', EndpointCoreConfigInput),
+        return cls(ai_gateway=_from_dict(d, 'ai_gateway', AiGatewayConfig),
+                   config=_from_dict(d, 'config', EndpointCoreConfigInput),
                    name=d.get('name', None),
                    rate_limits=_repeated_dict(d, 'rate_limits', RateLimit),
                    route_optimized=d.get('route_optimized', None),
@@ -1120,6 +1342,42 @@ class PayloadTable:
 
 
 @dataclass
+class PutAiGatewayResponse:
+    guardrails: Optional[AiGatewayGuardrails] = None
+    """Configuration for AI Guardrails to prevent unwanted data and unsafe data in requests and
+    responses."""
+
+    inference_table_config: Optional[AiGatewayInferenceTableConfig] = None
+    """Configuration for payload logging using inference tables. Use these tables to monitor and audit
+    data being sent to and received from model APIs and to improve model quality ."""
+
+    rate_limits: Optional[List[AiGatewayRateLimit]] = None
+    """Configuration for rate limits which can be set to limit endpoint traffic."""
+
+    usage_tracking_config: Optional[AiGatewayUsageTrackingConfig] = None
+    """Configuration to enable usage tracking using system tables. These tables allow you to monitor
+    operational usage on endpoints and their associated costs."""
+
+    def as_dict(self) -> dict:
+        """Serializes the PutAiGatewayResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.guardrails: body['guardrails'] = self.guardrails.as_dict()
+        if self.inference_table_config: body['inference_table_config'] = self.inference_table_config.as_dict()
+        if self.rate_limits: body['rate_limits'] = [v.as_dict() for v in self.rate_limits]
+        if self.usage_tracking_config: body['usage_tracking_config'] = self.usage_tracking_config.as_dict()
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> PutAiGatewayResponse:
+        """Deserializes the PutAiGatewayResponse from a dictionary."""
+        return cls(guardrails=_from_dict(d, 'guardrails', AiGatewayGuardrails),
+                   inference_table_config=_from_dict(d, 'inference_table_config',
+                                                     AiGatewayInferenceTableConfig),
+                   rate_limits=_repeated_dict(d, 'rate_limits', AiGatewayRateLimit),
+                   usage_tracking_config=_from_dict(d, 'usage_tracking_config', AiGatewayUsageTrackingConfig))
+
+
+@dataclass
 class PutResponse:
     rate_limits: Optional[List[RateLimit]] = None
     """The list of endpoint rate limits."""
@@ -1629,14 +1887,6 @@ class ServedModelInput:
     model_version: str
     """The version of the model in Databricks Model Registry or Unity Catalog to be served."""
 
-    workload_size: ServedModelInputWorkloadSize
-    """The workload size of the served model. The workload size corresponds to a range of provisioned
-    concurrency that the compute will autoscale between. A single unit of provisioned concurrency
-    can process one request at a time. Valid workload sizes are "Small" (4 - 4 provisioned
-    concurrency), "Medium" (8 - 16 provisioned concurrency), and "Large" (16 - 64 provisioned
-    concurrency). If scale-to-zero is enabled, the lower bound of the provisioned concurrency for
-    each workload size will be 0."""
-
     scale_to_zero_enabled: bool
     """Whether the compute resources for the served model should scale down to zero."""
 
@@ -1649,10 +1899,24 @@ class ServedModelInput:
     instance_profile_arn: Optional[str] = None
     """ARN of the instance profile that the served model will use to access AWS resources."""
 
+    max_provisioned_throughput: Optional[int] = None
+    """The maximum tokens per second that the endpoint can scale up to."""
+
+    min_provisioned_throughput: Optional[int] = None
+    """The minimum tokens per second that the endpoint can scale down to."""
+
     name: Optional[str] = None
     """The name of a served model. It must be unique across an endpoint. If not specified, this field
     will default to <model-name>-<model-version>. A served model name can consist of alphanumeric
     characters, dashes, and underscores."""
+
+    workload_size: Optional[ServedModelInputWorkloadSize] = None
+    """The workload size of the served model. The workload size corresponds to a range of provisioned
+    concurrency that the compute will autoscale between. A single unit of provisioned concurrency
+    can process one request at a time. Valid workload sizes are "Small" (4 - 4 provisioned
+    concurrency), "Medium" (8 - 16 provisioned concurrency), and "Large" (16 - 64 provisioned
+    concurrency). If scale-to-zero is enabled, the lower bound of the provisioned concurrency for
+    each workload size will be 0."""
 
     workload_type: Optional[ServedModelInputWorkloadType] = None
     """The workload type of the served model. The workload type selects which type of compute to use in
@@ -1667,6 +1931,10 @@ class ServedModelInput:
         body = {}
         if self.environment_vars: body['environment_vars'] = self.environment_vars
         if self.instance_profile_arn is not None: body['instance_profile_arn'] = self.instance_profile_arn
+        if self.max_provisioned_throughput is not None:
+            body['max_provisioned_throughput'] = self.max_provisioned_throughput
+        if self.min_provisioned_throughput is not None:
+            body['min_provisioned_throughput'] = self.min_provisioned_throughput
         if self.model_name is not None: body['model_name'] = self.model_name
         if self.model_version is not None: body['model_version'] = self.model_version
         if self.name is not None: body['name'] = self.name
@@ -1680,6 +1948,8 @@ class ServedModelInput:
         """Deserializes the ServedModelInput from a dictionary."""
         return cls(environment_vars=d.get('environment_vars', None),
                    instance_profile_arn=d.get('instance_profile_arn', None),
+                   max_provisioned_throughput=d.get('max_provisioned_throughput', None),
+                   min_provisioned_throughput=d.get('min_provisioned_throughput', None),
                    model_name=d.get('model_name', None),
                    model_version=d.get('model_version', None),
                    name=d.get('name', None),
@@ -1893,6 +2163,10 @@ class ServerLogsResponse:
 
 @dataclass
 class ServingEndpoint:
+    ai_gateway: Optional[AiGatewayConfig] = None
+    """The AI Gateway configuration for the serving endpoint. NOTE: Only external model endpoints are
+    currently supported."""
+
     config: Optional[EndpointCoreConfigSummary] = None
     """The config that is currently being served by the endpoint."""
 
@@ -1924,6 +2198,7 @@ class ServingEndpoint:
     def as_dict(self) -> dict:
         """Serializes the ServingEndpoint into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.ai_gateway: body['ai_gateway'] = self.ai_gateway.as_dict()
         if self.config: body['config'] = self.config.as_dict()
         if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
         if self.creator is not None: body['creator'] = self.creator
@@ -1939,7 +2214,8 @@ class ServingEndpoint:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ServingEndpoint:
         """Deserializes the ServingEndpoint from a dictionary."""
-        return cls(config=_from_dict(d, 'config', EndpointCoreConfigSummary),
+        return cls(ai_gateway=_from_dict(d, 'ai_gateway', AiGatewayConfig),
+                   config=_from_dict(d, 'config', EndpointCoreConfigSummary),
                    creation_timestamp=d.get('creation_timestamp', None),
                    creator=d.get('creator', None),
                    id=d.get('id', None),
@@ -2023,6 +2299,10 @@ class ServingEndpointAccessControlResponse:
 
 @dataclass
 class ServingEndpointDetailed:
+    ai_gateway: Optional[AiGatewayConfig] = None
+    """The AI Gateway configuration for the serving endpoint. NOTE: Only external model endpoints are
+    currently supported."""
+
     config: Optional[EndpointCoreConfigOutput] = None
     """The config that is currently being served by the endpoint."""
 
@@ -2069,6 +2349,7 @@ class ServingEndpointDetailed:
     def as_dict(self) -> dict:
         """Serializes the ServingEndpointDetailed into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.ai_gateway: body['ai_gateway'] = self.ai_gateway.as_dict()
         if self.config: body['config'] = self.config.as_dict()
         if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
         if self.creator is not None: body['creator'] = self.creator
@@ -2089,7 +2370,8 @@ class ServingEndpointDetailed:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ServingEndpointDetailed:
         """Deserializes the ServingEndpointDetailed from a dictionary."""
-        return cls(config=_from_dict(d, 'config', EndpointCoreConfigOutput),
+        return cls(ai_gateway=_from_dict(d, 'ai_gateway', AiGatewayConfig),
+                   config=_from_dict(d, 'config', EndpointCoreConfigOutput),
                    creation_timestamp=d.get('creation_timestamp', None),
                    creator=d.get('creator', None),
                    data_plane_info=_from_dict(d, 'data_plane_info', ModelDataPlaneInfo),
@@ -2341,6 +2623,7 @@ class ServingEndpointsAPI:
                name: str,
                config: EndpointCoreConfigInput,
                *,
+               ai_gateway: Optional[AiGatewayConfig] = None,
                rate_limits: Optional[List[RateLimit]] = None,
                route_optimized: Optional[bool] = None,
                tags: Optional[List[EndpointTag]] = None) -> Wait[ServingEndpointDetailed]:
@@ -2351,9 +2634,12 @@ class ServingEndpointsAPI:
           workspace. An endpoint name can consist of alphanumeric characters, dashes, and underscores.
         :param config: :class:`EndpointCoreConfigInput`
           The core config of the serving endpoint.
+        :param ai_gateway: :class:`AiGatewayConfig` (optional)
+          The AI Gateway configuration for the serving endpoint. NOTE: only external model endpoints are
+          supported as of now.
         :param rate_limits: List[:class:`RateLimit`] (optional)
-          Rate limits to be applied to the serving endpoint. NOTE: only external and foundation model
-          endpoints are supported as of now.
+          Rate limits to be applied to the serving endpoint. NOTE: this field is deprecated, please use AI
+          Gateway to manage rate limits.
         :param route_optimized: bool (optional)
           Enable route optimization for the serving endpoint.
         :param tags: List[:class:`EndpointTag`] (optional)
@@ -2364,6 +2650,7 @@ class ServingEndpointsAPI:
           See :method:wait_get_serving_endpoint_not_updating for more details.
         """
         body = {}
+        if ai_gateway is not None: body['ai_gateway'] = ai_gateway.as_dict()
         if config is not None: body['config'] = config.as_dict()
         if name is not None: body['name'] = name
         if rate_limits is not None: body['rate_limits'] = [v.as_dict() for v in rate_limits]
@@ -2381,11 +2668,13 @@ class ServingEndpointsAPI:
         name: str,
         config: EndpointCoreConfigInput,
         *,
+        ai_gateway: Optional[AiGatewayConfig] = None,
         rate_limits: Optional[List[RateLimit]] = None,
         route_optimized: Optional[bool] = None,
         tags: Optional[List[EndpointTag]] = None,
         timeout=timedelta(minutes=20)) -> ServingEndpointDetailed:
-        return self.create(config=config,
+        return self.create(ai_gateway=ai_gateway,
+                           config=config,
                            name=name,
                            rate_limits=rate_limits,
                            route_optimized=route_optimized,
@@ -2551,8 +2840,8 @@ class ServingEndpointsAPI:
     def put(self, name: str, *, rate_limits: Optional[List[RateLimit]] = None) -> PutResponse:
         """Update rate limits of a serving endpoint.
         
-        Used to update the rate limits of a serving endpoint. NOTE: only external and foundation model
-        endpoints are supported as of now.
+        Used to update the rate limits of a serving endpoint. NOTE: Only foundation model endpoints are
+        currently supported. For external models, use AI Gateway to manage rate limits.
         
         :param name: str
           The name of the serving endpoint whose rate limits are being updated. This field is required.
@@ -2570,6 +2859,45 @@ class ServingEndpointsAPI:
                            body=body,
                            headers=headers)
         return PutResponse.from_dict(res)
+
+    def put_ai_gateway(
+            self,
+            name: str,
+            *,
+            guardrails: Optional[AiGatewayGuardrails] = None,
+            inference_table_config: Optional[AiGatewayInferenceTableConfig] = None,
+            rate_limits: Optional[List[AiGatewayRateLimit]] = None,
+            usage_tracking_config: Optional[AiGatewayUsageTrackingConfig] = None) -> PutAiGatewayResponse:
+        """Update AI Gateway of a serving endpoint.
+        
+        Used to update the AI Gateway of a serving endpoint. NOTE: Only external model endpoints are currently
+        supported.
+        
+        :param name: str
+          The name of the serving endpoint whose AI Gateway is being updated. This field is required.
+        :param guardrails: :class:`AiGatewayGuardrails` (optional)
+          Configuration for AI Guardrails to prevent unwanted data and unsafe data in requests and responses.
+        :param inference_table_config: :class:`AiGatewayInferenceTableConfig` (optional)
+          Configuration for payload logging using inference tables. Use these tables to monitor and audit data
+          being sent to and received from model APIs and to improve model quality.
+        :param rate_limits: List[:class:`AiGatewayRateLimit`] (optional)
+          Configuration for rate limits which can be set to limit endpoint traffic.
+        :param usage_tracking_config: :class:`AiGatewayUsageTrackingConfig` (optional)
+          Configuration to enable usage tracking using system tables. These tables allow you to monitor
+          operational usage on endpoints and their associated costs.
+        
+        :returns: :class:`PutAiGatewayResponse`
+        """
+        body = {}
+        if guardrails is not None: body['guardrails'] = guardrails.as_dict()
+        if inference_table_config is not None:
+            body['inference_table_config'] = inference_table_config.as_dict()
+        if rate_limits is not None: body['rate_limits'] = [v.as_dict() for v in rate_limits]
+        if usage_tracking_config is not None: body['usage_tracking_config'] = usage_tracking_config.as_dict()
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do('PUT', f'/api/2.0/serving-endpoints/{name}/ai-gateway', body=body, headers=headers)
+        return PutAiGatewayResponse.from_dict(res)
 
     def query(self,
               name: str,

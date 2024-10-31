@@ -114,15 +114,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: CHANNEL_NAME_PREVIEW
       :value: "CHANNEL_NAME_PREVIEW"
 
-   .. py:attribute:: CHANNEL_NAME_PREVIOUS
-      :value: "CHANNEL_NAME_PREVIOUS"
-
    .. py:attribute:: CHANNEL_NAME_UNSPECIFIED
       :value: "CHANNEL_NAME_UNSPECIFIED"
-
-.. autoclass:: ClientCallContext
-   :members:
-   :undoc-members:
 
 .. autoclass:: ColumnInfo
    :members:
@@ -188,10 +181,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: USER_DEFINED_TYPE
       :value: "USER_DEFINED_TYPE"
-
-.. autoclass:: ContextFilter
-   :members:
-   :undoc-members:
 
 .. autoclass:: CreateAlert
    :members:
@@ -394,20 +383,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: Empty
    :members:
    :undoc-members:
-
-.. autoclass:: EncodedText
-   :members:
-   :undoc-members:
-
-.. py:class:: EncodedTextEncoding
-
-   Carry text data in different form.
-
-   .. py:attribute:: BASE64
-      :value: "BASE64"
-
-   .. py:attribute:: PLAIN
-      :value: "PLAIN"
 
 .. autoclass:: EndpointConfPair
    :members:
@@ -748,78 +723,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: QuerySource
-   :members:
-   :undoc-members:
-
-.. autoclass:: QuerySourceDriverInfo
-   :members:
-   :undoc-members:
-
-.. py:class:: QuerySourceEntryPoint
-
-   Spark service that received and processed the query
-
-   .. py:attribute:: DLT
-      :value: "DLT"
-
-   .. py:attribute:: SPARK_CONNECT
-      :value: "SPARK_CONNECT"
-
-   .. py:attribute:: THRIFT_SERVER
-      :value: "THRIFT_SERVER"
-
-.. py:class:: QuerySourceJobManager
-
-   Copied from elastic-spark-common/api/messages/manager.proto with enum values changed by 1 to accommodate JOB_MANAGER_UNSPECIFIED
-
-   .. py:attribute:: APP_SYSTEM_TABLE
-      :value: "APP_SYSTEM_TABLE"
-
-   .. py:attribute:: AUTOML
-      :value: "AUTOML"
-
-   .. py:attribute:: AUTO_MAINTENANCE
-      :value: "AUTO_MAINTENANCE"
-
-   .. py:attribute:: CLEAN_ROOMS
-      :value: "CLEAN_ROOMS"
-
-   .. py:attribute:: DATA_MONITORING
-      :value: "DATA_MONITORING"
-
-   .. py:attribute:: DATA_SHARING
-      :value: "DATA_SHARING"
-
-   .. py:attribute:: ENCRYPTION
-      :value: "ENCRYPTION"
-
-   .. py:attribute:: FABRIC_CRAWLER
-      :value: "FABRIC_CRAWLER"
-
-   .. py:attribute:: JOBS
-      :value: "JOBS"
-
-   .. py:attribute:: LAKEVIEW
-      :value: "LAKEVIEW"
-
-   .. py:attribute:: MANAGED_RAG
-      :value: "MANAGED_RAG"
-
-   .. py:attribute:: SCHEDULED_MV_REFRESH
-      :value: "SCHEDULED_MV_REFRESH"
-
-   .. py:attribute:: TESTING
-      :value: "TESTING"
-
-.. py:class:: QuerySourceTrigger
-
-   .. py:attribute:: MANUAL
-      :value: "MANUAL"
-
-   .. py:attribute:: SCHEDULED
-      :value: "SCHEDULED"
-
 .. py:class:: QueryStatementType
 
    .. py:attribute:: ALTER
@@ -953,10 +856,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: VIEWER
       :value: "VIEWER"
-
-.. autoclass:: ServerlessChannelInfo
-   :members:
-   :undoc-members:
 
 .. autoclass:: ServiceError
    :members:

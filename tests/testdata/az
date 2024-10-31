@@ -1,7 +1,20 @@
 #!/bin/bash
 
-if [ -n "$WARN" ]; then
-    >&2 /bin/echo "WARNING: ${WARN}"
+# If the arguments are "account show", return the account details.
+if [ "$1" == "account" ] && [ "$2" == "show" ]; then
+    /bin/echo "{
+    \"environmentName\": \"AzureCloud\",
+    \"id\": \"aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee\",
+    \"isDefault\": true,
+    \"name\": \"Pay-As-You-Go\",
+    \"state\": \"Enabled\",
+    \"tenantId\": \"aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee\",
+    \"user\": {
+        \"name\": \"${AZ_USER_NAME:-testuser@databricks.com}\",
+        \"type\": \"${AZ_USER_TYPE:-user}\"
+    }
+}"
+    exit 0
 fi
 
 if [ "yes" == "$FAIL" ]; then
@@ -25,6 +38,21 @@ for arg in "$@"; do
         exit 1
     fi
 done
+
+# Add character to file at $COUNT if it is defined.
+if [ -n "$COUNT" ]; then
+    echo -n x >> "$COUNT"
+fi
+
+# If FAIL_IF_TENANT_ID_SET is set & --tenant-id is passed, fail.
+if [ -n "$FAIL_IF_TENANT_ID_SET" ]; then
+    for arg in "$@"; do
+        if [[ "$arg" == "--tenant" ]]; then
+            echo 1>&2 "ERROR: Tenant shouldn't be specified for managed identity account"
+            exit 1
+        fi
+    done
+fi
 
 # Macos
 EXP="$(/bin/date -v+${EXPIRE:=10S} +'%F %T' 2>/dev/null)"

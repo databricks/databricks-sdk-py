@@ -15,7 +15,7 @@
     To create external locations, you must be a metastore admin or a user with the
     **CREATE_EXTERNAL_LOCATION** privilege.
 
-    .. py:method:: create(name: str, url: str, credential_name: str [, access_point: Optional[str], comment: Optional[str], encryption_details: Optional[EncryptionDetails], read_only: Optional[bool], skip_validation: Optional[bool]]) -> ExternalLocationInfo
+    .. py:method:: create(name: str, url: str, credential_name: str [, access_point: Optional[str], comment: Optional[str], encryption_details: Optional[EncryptionDetails], fallback: Optional[bool], read_only: Optional[bool], skip_validation: Optional[bool]]) -> ExternalLocationInfo
 
 
         Usage:
@@ -63,6 +63,10 @@
           User-provided free-form text description.
         :param encryption_details: :class:`EncryptionDetails` (optional)
           Encryption options that apply to clients connecting to cloud storage.
+        :param fallback: bool (optional)
+          Indicates whether fallback mode is enabled for this external location. When fallback mode is
+          enabled, the access to the location falls back to cluster credentials if UC credentials are not
+          sufficient.
         :param read_only: bool (optional)
           Indicates whether the external location is read-only.
         :param skip_validation: bool (optional)
@@ -163,7 +167,7 @@
         :returns: Iterator over :class:`ExternalLocationInfo`
         
 
-    .. py:method:: update(name: str [, access_point: Optional[str], comment: Optional[str], credential_name: Optional[str], encryption_details: Optional[EncryptionDetails], force: Optional[bool], isolation_mode: Optional[IsolationMode], new_name: Optional[str], owner: Optional[str], read_only: Optional[bool], skip_validation: Optional[bool], url: Optional[str]]) -> ExternalLocationInfo
+    .. py:method:: update(name: str [, access_point: Optional[str], comment: Optional[str], credential_name: Optional[str], encryption_details: Optional[EncryptionDetails], fallback: Optional[bool], force: Optional[bool], isolation_mode: Optional[IsolationMode], new_name: Optional[str], owner: Optional[str], read_only: Optional[bool], skip_validation: Optional[bool], url: Optional[str]]) -> ExternalLocationInfo
 
 
         Usage:
@@ -210,6 +214,10 @@
           Name of the storage credential used with this location.
         :param encryption_details: :class:`EncryptionDetails` (optional)
           Encryption options that apply to clients connecting to cloud storage.
+        :param fallback: bool (optional)
+          Indicates whether fallback mode is enabled for this external location. When fallback mode is
+          enabled, the access to the location falls back to cluster credentials if UC credentials are not
+          sufficient.
         :param force: bool (optional)
           Force update even if changing url invalidates dependent external tables or mounts.
         :param isolation_mode: :class:`IsolationMode` (optional)

@@ -51,7 +51,7 @@ def _is_private_link_redirect(resp: requests.Response) -> bool:
     return parsed.path == '/login.html' and 'error=private-link-validation-error' in parsed.query
 
 
-def _get_private_link_validation_error(url: str) -> _PrivateLinkInfo:
+def _get_private_link_validation_error(url: str) -> PrivateLinkValidationError:
     parsed = parse.urlparse(url)
     env = get_environment_for_hostname(parsed.hostname)
     return PrivateLinkValidationError(message=_private_link_info_map[env.cloud].error_message(),

@@ -1,9 +1,12 @@
+from typing import Optional
+
 import databricks.sdk.core as client
 import databricks.sdk.dbutils as dbutils
 from databricks.sdk import azure
 from databricks.sdk.credentials_provider import CredentialsStrategy
 from databricks.sdk.mixins.compute import ClustersExt
 from databricks.sdk.mixins.files import DbfsExt
+from databricks.sdk.mixins.open_ai_client import ServingEndpointsExt
 from databricks.sdk.mixins.jobs import JobsExt
 from databricks.sdk.mixins.workspace import WorkspaceExt
 from databricks.sdk.service.apps import AppsAPI
@@ -18,16 +21,19 @@ from databricks.sdk.service.catalog import (AccountMetastoreAssignmentsAPI,
                                             GrantsAPI, MetastoresAPI,
                                             ModelVersionsAPI, OnlineTablesAPI,
                                             QualityMonitorsAPI,
-                                            RegisteredModelsAPI, SchemasAPI,
+                                            RegisteredModelsAPI,
+                                            ResourceQuotasAPI, SchemasAPI,
                                             StorageCredentialsAPI,
                                             SystemSchemasAPI,
                                             TableConstraintsAPI, TablesAPI,
+                                            TemporaryTableCredentialsAPI,
                                             VolumesAPI, WorkspaceBindingsAPI)
 from databricks.sdk.service.compute import (ClusterPoliciesAPI, ClustersAPI,
                                             CommandExecutionAPI,
                                             GlobalInitScriptsAPI,
                                             InstancePoolsAPI,
                                             InstanceProfilesAPI, LibrariesAPI,
+                                            PolicyComplianceForClustersAPI,
                                             PolicyFamiliesAPI)
 from databricks.sdk.service.dashboards import GenieAPI, LakeviewAPI
 from databricks.sdk.service.files import DbfsAPI, FilesAPI
@@ -39,7 +45,7 @@ from databricks.sdk.service.iam import (AccountAccessControlAPI,
                                         GroupsAPI, PermissionMigrationAPI,
                                         PermissionsAPI, ServicePrincipalsAPI,
                                         UsersAPI, WorkspaceAssignmentAPI)
-from databricks.sdk.service.jobs import JobsAPI
+from databricks.sdk.service.jobs import JobsAPI, PolicyComplianceForJobsAPI
 from databricks.sdk.service.marketplace import (
     ConsumerFulfillmentsAPI, ConsumerInstallationsAPI, ConsumerListingsAPI,
     ConsumerPersonalizationRequestsAPI, ConsumerProvidersAPI,
@@ -66,6 +72,9 @@ from databricks.sdk.service.settings import (AccountIpAccessListsAPI,
                                              CredentialsManagerAPI,
                                              CspEnablementAccountAPI,
                                              DefaultNamespaceAPI,
+                                             DisableLegacyAccessAPI,
+                                             DisableLegacyDbfsAPI,
+                                             DisableLegacyFeaturesAPI,
                                              EnhancedSecurityMonitoringAPI,
                                              EsmEnablementAccountAPI,
                                              IpAccessListsAPI,
@@ -115,31 +124,31 @@ class WorkspaceClient:
 
     def __init__(self,
                  *,
-                 host: str = None,
-                 account_id: str = None,
-                 username: str = None,
-                 password: str = None,
-                 client_id: str = None,
-                 client_secret: str = None,
-                 token: str = None,
-                 profile: str = None,
-                 config_file: str = None,
-                 azure_workspace_resource_id: str = None,
-                 azure_client_secret: str = None,
-                 azure_client_id: str = None,
-                 azure_tenant_id: str = None,
-                 azure_environment: str = None,
-                 auth_type: str = None,
-                 cluster_id: str = None,
-                 google_credentials: str = None,
-                 google_service_account: str = None,
-                 debug_truncate_bytes: int = None,
-                 debug_headers: bool = None,
+                 host: Optional[str] = None,
+                 account_id: Optional[str] = None,
+                 username: Optional[str] = None,
+                 password: Optional[str] = None,
+                 client_id: Optional[str] = None,
+                 client_secret: Optional[str] = None,
+                 token: Optional[str] = None,
+                 profile: Optional[str] = None,
+                 config_file: Optional[str] = None,
+                 azure_workspace_resource_id: Optional[str] = None,
+                 azure_client_secret: Optional[str] = None,
+                 azure_client_id: Optional[str] = None,
+                 azure_tenant_id: Optional[str] = None,
+                 azure_environment: Optional[str] = None,
+                 auth_type: Optional[str] = None,
+                 cluster_id: Optional[str] = None,
+                 google_credentials: Optional[str] = None,
+                 google_service_account: Optional[str] = None,
+                 debug_truncate_bytes: Optional[int] = None,
+                 debug_headers: Optional[bool] = None,
                  product="unknown",
                  product_version="0.0.0",
-                 credentials_strategy: CredentialsStrategy = None,
-                 credentials_provider: CredentialsStrategy = None,
-                 config: client.Config = None):
+                 credentials_strategy: Optional[CredentialsStrategy] = None,
+                 credentials_provider: Optional[CredentialsStrategy] = None,
+                 config: Optional[client.Config] = None):
         if not config:
             config = client.Config(host=host,
                                    account_id=account_id,
@@ -168,7 +177,7 @@ class WorkspaceClient:
         self._config = config.copy()
         self._dbutils = _make_dbutils(self._config)
         self._api_client = client.ApiClient(self._config)
-        serving_endpoints = ServingEndpointsAPI(self._api_client)
+        serving_endpoints = ServingEndpointsExt(self._api_client)
         self._account_access_control_proxy = AccountAccessControlProxyAPI(self._api_client)
         self._alerts = AlertsAPI(self._api_client)
         self._alerts_legacy = AlertsLegacyAPI(self._api_client)
@@ -215,6 +224,8 @@ class WorkspaceClient:
         self._permission_migration = PermissionMigrationAPI(self._api_client)
         self._permissions = PermissionsAPI(self._api_client)
         self._pipelines = PipelinesAPI(self._api_client)
+        self._policy_compliance_for_clusters = PolicyComplianceForClustersAPI(self._api_client)
+        self._policy_compliance_for_jobs = PolicyComplianceForJobsAPI(self._api_client)
         self._policy_families = PolicyFamiliesAPI(self._api_client)
         self._provider_exchange_filters = ProviderExchangeFiltersAPI(self._api_client)
         self._provider_exchanges = ProviderExchangesAPI(self._api_client)
@@ -235,6 +246,7 @@ class WorkspaceClient:
         self._recipients = RecipientsAPI(self._api_client)
         self._registered_models = RegisteredModelsAPI(self._api_client)
         self._repos = ReposAPI(self._api_client)
+        self._resource_quotas = ResourceQuotasAPI(self._api_client)
         self._schemas = SchemasAPI(self._api_client)
         self._secrets = SecretsAPI(self._api_client)
         self._service_principals = ServicePrincipalsAPI(self._api_client)
@@ -247,6 +259,7 @@ class WorkspaceClient:
         self._system_schemas = SystemSchemasAPI(self._api_client)
         self._table_constraints = TableConstraintsAPI(self._api_client)
         self._tables = TablesAPI(self._api_client)
+        self._temporary_table_credentials = TemporaryTableCredentialsAPI(self._api_client)
         self._token_management = TokenManagementAPI(self._api_client)
         self._tokens = TokensAPI(self._api_client)
         self._users = UsersAPI(self._api_client)
@@ -501,6 +514,16 @@ class WorkspaceClient:
         return self._pipelines
 
     @property
+    def policy_compliance_for_clusters(self) -> PolicyComplianceForClustersAPI:
+        """The policy compliance APIs allow you to view and manage the policy compliance status of clusters in your workspace."""
+        return self._policy_compliance_for_clusters
+
+    @property
+    def policy_compliance_for_jobs(self) -> PolicyComplianceForJobsAPI:
+        """The compliance APIs allow you to view and manage the policy compliance status of jobs in your workspace."""
+        return self._policy_compliance_for_jobs
+
+    @property
     def policy_families(self) -> PolicyFamiliesAPI:
         """View available policy families."""
         return self._policy_families
@@ -562,7 +585,7 @@ class WorkspaceClient:
 
     @property
     def query_history(self) -> QueryHistoryAPI:
-        """A service responsible for storing and retrieving the list of queries run against SQL endpoints, serverless compute, and DLT."""
+        """A service responsible for storing and retrieving the list of queries run against SQL endpoints and serverless compute."""
         return self._query_history
 
     @property
@@ -596,6 +619,11 @@ class WorkspaceClient:
         return self._repos
 
     @property
+    def resource_quotas(self) -> ResourceQuotasAPI:
+        """Unity Catalog enforces resource quotas on all securable objects, which limits the number of resources that can be created."""
+        return self._resource_quotas
+
+    @property
     def schemas(self) -> SchemasAPI:
         """A schema (also called a database) is the second layer of Unity Catalog’s three-level namespace."""
         return self._schemas
@@ -611,7 +639,7 @@ class WorkspaceClient:
         return self._service_principals
 
     @property
-    def serving_endpoints(self) -> ServingEndpointsAPI:
+    def serving_endpoints(self) -> ServingEndpointsExt:
         """The Serving Endpoints API allows you to create, update, and delete model serving endpoints."""
         return self._serving_endpoints
 
@@ -654,6 +682,11 @@ class WorkspaceClient:
     def tables(self) -> TablesAPI:
         """A table resides in the third layer of Unity Catalog’s three-level namespace."""
         return self._tables
+
+    @property
+    def temporary_table_credentials(self) -> TemporaryTableCredentialsAPI:
+        """Temporary Table Credentials refer to short-lived, downscoped credentials used to access cloud storage locationswhere table data is stored in Databricks."""
+        return self._temporary_table_credentials
 
     @property
     def token_management(self) -> TokenManagementAPI:
@@ -723,31 +756,31 @@ class AccountClient:
 
     def __init__(self,
                  *,
-                 host: str = None,
-                 account_id: str = None,
-                 username: str = None,
-                 password: str = None,
-                 client_id: str = None,
-                 client_secret: str = None,
-                 token: str = None,
-                 profile: str = None,
-                 config_file: str = None,
-                 azure_workspace_resource_id: str = None,
-                 azure_client_secret: str = None,
-                 azure_client_id: str = None,
-                 azure_tenant_id: str = None,
-                 azure_environment: str = None,
-                 auth_type: str = None,
-                 cluster_id: str = None,
-                 google_credentials: str = None,
-                 google_service_account: str = None,
-                 debug_truncate_bytes: int = None,
-                 debug_headers: bool = None,
+                 host: Optional[str] = None,
+                 account_id: Optional[str] = None,
+                 username: Optional[str] = None,
+                 password: Optional[str] = None,
+                 client_id: Optional[str] = None,
+                 client_secret: Optional[str] = None,
+                 token: Optional[str] = None,
+                 profile: Optional[str] = None,
+                 config_file: Optional[str] = None,
+                 azure_workspace_resource_id: Optional[str] = None,
+                 azure_client_secret: Optional[str] = None,
+                 azure_client_id: Optional[str] = None,
+                 azure_tenant_id: Optional[str] = None,
+                 azure_environment: Optional[str] = None,
+                 auth_type: Optional[str] = None,
+                 cluster_id: Optional[str] = None,
+                 google_credentials: Optional[str] = None,
+                 google_service_account: Optional[str] = None,
+                 debug_truncate_bytes: Optional[int] = None,
+                 debug_headers: Optional[bool] = None,
                  product="unknown",
                  product_version="0.0.0",
-                 credentials_strategy: CredentialsStrategy = None,
-                 credentials_provider: CredentialsStrategy = None,
-                 config: client.Config = None):
+                 credentials_strategy: Optional[CredentialsStrategy] = None,
+                 credentials_provider: Optional[CredentialsStrategy] = None,
+                 config: Optional[client.Config] = None):
         if not config:
             config = client.Config(host=host,
                                    account_id=account_id,

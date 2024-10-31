@@ -4143,10 +4143,16 @@ class ExperimentsAPI:
         """Get all artifacts.
         
         List artifacts for a run. Takes an optional `artifact_path` prefix. If it is specified, the response
-        contains only artifacts with the specified prefix.",
+        contains only artifacts with the specified prefix. This API does not support pagination when listing
+        artifacts in UC Volumes. A maximum of 1000 artifacts will be retrieved for UC Volumes. Please call
+        `/api/2.0/fs/directories{directory_path}` for listing artifacts in UC Volumes, which supports
+        pagination. See [List directory contents | Files API](/api/workspace/files/listdirectorycontents).
         
         :param page_token: str (optional)
-          Token indicating the page of artifact results to fetch
+          Token indicating the page of artifact results to fetch. `page_token` is not supported when listing
+          artifacts in UC Volumes. A maximum of 1000 artifacts will be retrieved for UC Volumes. Please call
+          `/api/2.0/fs/directories{directory_path}` for listing artifacts in UC Volumes, which supports
+          pagination. See [List directory contents | Files API](/api/workspace/files/listdirectorycontents).
         :param path: str (optional)
           Filter artifacts matching this path (a relative path from the root artifact directory).
         :param run_id: str (optional)

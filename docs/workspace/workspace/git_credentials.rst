@@ -33,9 +33,9 @@
         existing credentials, or the DELETE endpoint to delete existing credentials.
         
         :param git_provider: str
-          Git provider. This field is case-insensitive. The available Git providers are gitHub,
-          bitbucketCloud, gitLab, azureDevOpsServices, gitHubEnterprise, bitbucketServer,
-          gitLabEnterpriseEdition and awsCodeCommit.
+          Git provider. This field is case-insensitive. The available Git providers are `gitHub`,
+          `bitbucketCloud`, `gitLab`, `azureDevOpsServices`, `gitHubEnterprise`, `bitbucketServer`,
+          `gitLabEnterpriseEdition` and `awsCodeCommit`.
         :param git_username: str (optional)
           The username or email provided with your Git provider account, depending on which provider you are
           using. For GitHub, GitHub Enterprise Server, or Azure DevOps Services, either email or username may
@@ -44,8 +44,7 @@
           Access Token authentication documentation to see what is supported.
         :param personal_access_token: str (optional)
           The personal access token used to authenticate to the corresponding Git provider. For certain
-          providers, support may exist for other types of scoped access tokens. [Learn more]. The personal
-          access token used to authenticate to the corresponding Git
+          providers, support may exist for other types of scoped access tokens. [Learn more].
           
           [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html
         
@@ -64,7 +63,7 @@
         
         
 
-    .. py:method:: get(credential_id: int) -> CredentialInfo
+    .. py:method:: get(credential_id: int) -> GetCredentialsResponse
 
 
         Usage:
@@ -89,7 +88,7 @@
         :param credential_id: int
           The ID for the corresponding credential to access.
         
-        :returns: :class:`CredentialInfo`
+        :returns: :class:`GetCredentialsResponse`
         
 
     .. py:method:: list() -> Iterator[CredentialInfo]
@@ -112,7 +111,7 @@
         :returns: Iterator over :class:`CredentialInfo`
         
 
-    .. py:method:: update(credential_id: int [, git_provider: Optional[str], git_username: Optional[str], personal_access_token: Optional[str]])
+    .. py:method:: update(credential_id: int, git_provider: str [, git_username: Optional[str], personal_access_token: Optional[str]])
 
 
         Usage:
@@ -141,10 +140,10 @@
         
         :param credential_id: int
           The ID for the corresponding credential to access.
-        :param git_provider: str (optional)
-          Git provider. This field is case-insensitive. The available Git providers are gitHub,
-          bitbucketCloud, gitLab, azureDevOpsServices, gitHubEnterprise, bitbucketServer,
-          gitLabEnterpriseEdition and awsCodeCommit.
+        :param git_provider: str
+          Git provider. This field is case-insensitive. The available Git providers are `gitHub`,
+          `bitbucketCloud`, `gitLab`, `azureDevOpsServices`, `gitHubEnterprise`, `bitbucketServer`,
+          `gitLabEnterpriseEdition` and `awsCodeCommit`.
         :param git_username: str (optional)
           The username or email provided with your Git provider account, depending on which provider you are
           using. For GitHub, GitHub Enterprise Server, or Azure DevOps Services, either email or username may
@@ -153,8 +152,7 @@
           Access Token authentication documentation to see what is supported.
         :param personal_access_token: str (optional)
           The personal access token used to authenticate to the corresponding Git provider. For certain
-          providers, support may exist for other types of scoped access tokens. [Learn more]. The personal
-          access token used to authenticate to the corresponding Git
+          providers, support may exist for other types of scoped access tokens. [Learn more].
           
           [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html
         

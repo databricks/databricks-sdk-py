@@ -1,4 +1,5 @@
 import re
+import warnings
 from dataclasses import dataclass
 from typing import Dict, List, Optional
 
@@ -41,9 +42,38 @@ class DatabricksError(IOError):
                  retry_after_secs: int = None,
                  details: List[Dict[str, any]] = None,
                  **kwargs):
+        """
+
+        :param message:
+        :param error_code:
+        :param detail: [Deprecated]
+        :param status: [Deprecated]
+        :param scimType: [Deprecated]
+        :param error: [Deprecated]
+        :param retry_after_secs:
+        :param details:
+        :param kwargs:
+        """
+        # SCIM-specific parameters are deprecated
+        if detail:
+            warnings.warn(
+                "The 'detail' parameter of DatabricksError is deprecated and will be removed in a future version."
+            )
+        if scimType:
+            warnings.warn(
+                "The 'scimType' parameter of DatabricksError is deprecated and will be removed in a future version."
+            )
+        if status:
+            warnings.warn(
+                "The 'status' parameter of DatabricksError is deprecated and will be removed in a future version."
+            )
+
+        # API 1.2-specific parameters are deprecated
         if error:
-            # API 1.2 has different response format, let's adapt
-            message = error
+            warnings.warn(
+                "The 'error' parameter of DatabricksError is deprecated and will be removed in a future version."
+            )
+
         if detail:
             # Handle SCIM error message details
             # @see https://tools.ietf.org/html/rfc7644#section-3.7.3

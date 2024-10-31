@@ -52,7 +52,8 @@
         :param metastore_id: str
           The unique ID of the metastore.
         :param default_catalog_name: str
-          The name of the default catalog in the metastore.
+          The name of the default catalog in the metastore. This field is depracted. Please use "Default
+          Namespace API" to configure the default catalog for a Databricks workspace.
         
         
         
@@ -305,7 +306,8 @@
         :param workspace_id: int
           A workspace ID.
         :param default_catalog_name: str (optional)
-          The name of the default catalog for the metastore.
+          The name of the default catalog in the metastore. This field is depracted. Please use "Default
+          Namespace API" to configure the default catalog for a Databricks workspace.
         :param metastore_id: str (optional)
           The unique ID of the metastore.
         
