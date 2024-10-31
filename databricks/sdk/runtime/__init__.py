@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import logging
 from typing import Dict, Optional, Union, cast
+
 from databricks.sdk.errors import DatabricksError
 
 logger = logging.getLogger('databricks.sdk')
@@ -82,7 +83,7 @@ def _is_unexpected_exception_loading_user_namespace(e: Exception) -> bool:
     # spawned Python subprocesses, resulting in this class throwing an
     # pyspark.errors.exceptions.base.PySparkRuntimeError. The SDK does not depend on PySpark, so we
     # need to check the type and module name directly.
-    if type(e).__name__  == 'PySparkRuntimeError' and e.__module__ == 'pyspark.errors.exceptions.base':
+    if type(e).__name__ == 'PySparkRuntimeError' and e.__module__ == 'pyspark.errors.exceptions.base':
         return False
     return True
 
