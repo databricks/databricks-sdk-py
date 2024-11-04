@@ -787,7 +787,7 @@ class AppsAPI:
                             callback: Optional[Callable[[App], None]] = None) -> App:
         deadline = time.time() + timeout.total_seconds()
         target_states = (ComputeState.ACTIVE, )
-        failure_states = (ComputeState.ERROR, )
+        failure_states = (ComputeState.ERROR, ComputeState.STOPPED, )
         status_message = 'polling...'
         attempt = 1
         while time.time() < deadline:

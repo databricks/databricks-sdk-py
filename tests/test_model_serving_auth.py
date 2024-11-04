@@ -56,6 +56,12 @@ def test_model_serving_auth(env_values, del_env_values, oauth_file_name, monkeyp
 ])
 @raises(default_auth_base_error_message)
 def test_model_serving_auth_errors(env_values, oauth_file_name, monkeypatch):
+    # Guarantee that the tests defaults to env variables rather than config file.
+    #
+    # TODO: this is hacky and we should find a better way to tell the config
+    # that it should not read from the config file.
+    monkeypatch.setenv('DATABRICKS_CONFIG_FILE', 'x')
+
     for (env_name, env_value) in env_values:
         monkeypatch.setenv(env_name, env_value)
     monkeypatch.setattr(

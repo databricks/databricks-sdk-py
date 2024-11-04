@@ -1,5 +1,56 @@
 # Version changelog
 
+## [Release] Release v0.36.0
+
+### Breaking Changes
+* `external_browser` now uses the `databricks-cli` app instead of the third-party "6128a518-99a9-425b-8333-4cc94f04cacd" application when performing the U2M login flow for Azure workspaces when a client ID is not otherwise specified. This matches the AWS behavior.
+* The signatures of several OAuth-related constructors have changed to support U2M OAuth with Azure Entra ID application registrations. See https://github.com/databricks/databricks-sdk-py/blob/main/examples/flask_app_with_oauth.py for examples of how to use these classes.
+  * `OAuthClient()`: renamed to `OAuthClient.from_host()`
+  * `SessionCredentials()` and `SessionCredentials.from_dict()`: now accepts `token_endpoint`, `client_id`, `client_secret`, and `refresh_url` as parameters, rather than accepting the `OAuthClient`.
+  * `TokenCache()`: now accepts `host`, `token_endpoint`, `client_id`, `client_secret`, and `refresh_url` as parameters, rather than accepting the `OAuthClient`.
+
+### Bug Fixes
+
+ * Decouple OAuth functionality from `Config` ([#784](https://github.com/databricks/databricks-sdk-py/pull/784)).
+
+
+### Release
+
+ * Release v0.35.0 ([#793](https://github.com/databricks/databricks-sdk-py/pull/793)).
+
+
+
+## [Release] Release v0.35.0
+
+### New Features and Improvements
+
+ * Open AI Client Mixin ([#779](https://github.com/databricks/databricks-sdk-py/pull/779)).
+
+
+### Bug Fixes
+
+ * Update Serving Endpoint mixing template and docs generation logic ([#792](https://github.com/databricks/databricks-sdk-py/pull/792)).
+
+
+### API Changes:
+
+ * Added `databricks.sdk.service.pipelines.ReportSpec` dataclass.
+ * Added `unity_catalog_provisioning_state` field for `databricks.sdk.service.catalog.OnlineTable`.
+ * Added `is_truncated` field for `databricks.sdk.service.dashboards.Result`.
+ * Added `effective_budget_policy_id` field for `databricks.sdk.service.jobs.BaseJob`.
+ * Added `budget_policy_id` field for `databricks.sdk.service.jobs.CreateJob`.
+ * Added `effective_budget_policy_id` field for `databricks.sdk.service.jobs.Job`.
+ * Added `budget_policy_id` field for `databricks.sdk.service.jobs.JobSettings`.
+ * Added `budget_policy_id` field for `databricks.sdk.service.jobs.SubmitRun`.
+ * Added `report` field for `databricks.sdk.service.pipelines.IngestionConfig`.
+ * Added `sequence_by` field for `databricks.sdk.service.pipelines.TableSpecificConfig`.
+ * Added `notify_on_ok` field for `databricks.sdk.service.sql.Alert`.
+ * Added `notify_on_ok` field for `databricks.sdk.service.sql.CreateAlertRequestAlert`.
+ * Added `notify_on_ok` field for `databricks.sdk.service.sql.ListAlertsResponseAlert`.
+ * Added `notify_on_ok` field for `databricks.sdk.service.sql.UpdateAlertRequestAlert`.
+
+OpenAPI SHA: cf9c61453990df0f9453670f2fe68e1b128647a2, Date: 2024-10-14
+
 ## [Release] Release v0.34.0
 
 ### Bug Fixes

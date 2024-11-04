@@ -3865,10 +3865,15 @@ class OnlineTable:
     """Specification of the online table."""
 
     status: Optional[OnlineTableStatus] = None
-    """Online Table status"""
+    """Online Table data synchronization status"""
 
     table_serving_url: Optional[str] = None
     """Data serving REST API URL for this table"""
+
+    unity_catalog_provisioning_state: Optional[ProvisioningInfoState] = None
+    """The provisioning state of the online table entity in Unity Catalog. This is distinct from the
+    state of the data synchronization pipeline (i.e. the table may be in "ACTIVE" but the pipeline
+    may be in "PROVISIONING" as it runs asynchronously)."""
 
     def as_dict(self) -> dict:
         """Serializes the OnlineTable into a dictionary suitable for use as a JSON request body."""
@@ -3877,6 +3882,8 @@ class OnlineTable:
         if self.spec: body['spec'] = self.spec.as_dict()
         if self.status: body['status'] = self.status.as_dict()
         if self.table_serving_url is not None: body['table_serving_url'] = self.table_serving_url
+        if self.unity_catalog_provisioning_state is not None:
+            body['unity_catalog_provisioning_state'] = self.unity_catalog_provisioning_state.value
         return body
 
     @classmethod
@@ -3885,7 +3892,9 @@ class OnlineTable:
         return cls(name=d.get('name', None),
                    spec=_from_dict(d, 'spec', OnlineTableSpec),
                    status=_from_dict(d, 'status', OnlineTableStatus),
-                   table_serving_url=d.get('table_serving_url', None))
+                   table_serving_url=d.get('table_serving_url', None),
+                   unity_catalog_provisioning_state=_enum(d, 'unity_catalog_provisioning_state',
+                                                          ProvisioningInfoState))
 
 
 @dataclass
@@ -4244,7 +4253,7 @@ class ProvisioningInfoState(Enum):
     DELETING = 'DELETING'
     FAILED = 'FAILED'
     PROVISIONING = 'PROVISIONING'
-    STATE_UNSPECIFIED = 'STATE_UNSPECIFIED'
+    UPDATING = 'UPDATING'
 
 
 @dataclass
