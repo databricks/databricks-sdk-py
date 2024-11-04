@@ -19,8 +19,8 @@ code.
 
 ## How is this tested?
 
-Describe any testing you have done; especially if that testing is not part 
-of the unit test (e.g. local tests).
+Describe any tests you have done; especially if test tests are not part of
+the unit tests (e.g. local tests).
 
 **ALWAYS ANSWER THIS QUESTION:** Answer with "N/A" if tests are not applicable
 to your PR (e.g. if the PR only modifies comments). Do not be afraid of 
