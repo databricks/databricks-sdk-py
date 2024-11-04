@@ -2643,7 +2643,8 @@ class PermissionsAPI:
             access_control_list: Optional[List[AccessControlRequest]] = None) -> ObjectPermissions:
         """Set object permissions.
         
-        Sets permissions on an object. Objects can inherit permissions from their parent objects or root
+        Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
+        permissions if none are specified. Objects can inherit permissions from their parent objects or root
         object.
         
         :param request_object_type: str
@@ -3205,7 +3206,8 @@ class UsersAPI:
             access_control_list: Optional[List[PasswordAccessControlRequest]] = None) -> PasswordPermissions:
         """Set password permissions.
         
-        Sets permissions on all passwords. Passwords can inherit permissions from their root object.
+        Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
+        permissions if none are specified. Objects can inherit permissions from their root object.
         
         :param access_control_list: List[:class:`PasswordAccessControlRequest`] (optional)
         
