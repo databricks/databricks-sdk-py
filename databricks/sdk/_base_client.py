@@ -51,7 +51,7 @@ class _BaseClient:
                  extra_error_customizers: List[_ErrorCustomizer] = None,
                  debug_headers: bool = False,
                  clock: Clock = None,
-                 streaming_buffer_size: int = 1024 * 1024):  # 1MB
+                 streaming_buffer_size: int = 1024 * 1024): # 1MB
         """
         :param debug_truncate_bytes:
         :param retry_timeout_seconds:
