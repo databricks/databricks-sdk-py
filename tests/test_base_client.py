@@ -287,22 +287,19 @@ def test_http_retried_on_connection_error():
 def test_streaming_response_chunk_size(chunk_size, expected_chunks, data_size):
     test_data = b"0" * data_size
     content_chunks = []
-    
+
     mock_response = Mock(spec=requests.Response)
     def mock_iter_content(chunk_size):
-        # Simulate how requests would chunk the data
+        # Simulate how requests would chunk the data.
         for i in range(0, len(test_data), chunk_size):
             chunk = test_data[i:i + chunk_size]
-            content_chunks.append(chunk)  # Track chunks for verification
+            content_chunks.append(chunk)  # track chunks for verification
             yield chunk
-    
     mock_response.iter_content = mock_iter_content
-    
-    # Create streaming response and set chunk size
     stream = _StreamingResponse(mock_response)
     stream.set_chunk_size(chunk_size)
     
-    # Read all data
+    # Read all data one byte at a time.
     received_data = b""
     while True:
         chunk = stream.read(1) 
@@ -310,6 +307,6 @@ def test_streaming_response_chunk_size(chunk_size, expected_chunks, data_size):
             break
         received_data += chunk
     
-    assert received_data == test_data  # All data was received correctly
-    assert len(content_chunks) == expected_chunks  # Correct number of chunks
-    assert all(len(c) <= chunk_size for c in content_chunks)  # Chunks don't exceed size
+    assert received_data == test_data  # all data was received correctly
+    assert len(content_chunks) == expected_chunks  # correct number of chunks
+    assert all(len(c) <= chunk_size for c in content_chunks)  # chunks don't exceed size
