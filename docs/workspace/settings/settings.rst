@@ -6,6 +6,18 @@
 
     Workspace Settings API allows users to manage settings at the workspace level.
 
+    .. py:property:: aibi_dashboard_embedding_access_policy
+        :type: AibiDashboardEmbeddingAccessPolicyAPI
+
+        Controls whether AI/BI published dashboard embedding is enabled, conditionally enabled, or disabled at the
+        workspace level. By default, this setting is conditionally enabled (ALLOW_APPROVED_DOMAINS).
+
+    .. py:property:: aibi_dashboard_embedding_approved_domains
+        :type: AibiDashboardEmbeddingApprovedDomainsAPI
+
+        Controls the list of domains approved to host the embedded AI/BI dashboards. The approved domains list
+        can't be mutated when the current access policy is not set to ALLOW_APPROVED_DOMAINS.
+
     .. py:property:: automatic_cluster_update
         :type: AutomaticClusterUpdateAPI
 

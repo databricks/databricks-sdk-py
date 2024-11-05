@@ -143,7 +143,8 @@
 
         Set token permissions.
         
-        Sets permissions on all tokens. Tokens can inherit permissions from their root object.
+        Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
+        permissions if none are specified. Objects can inherit permissions from their root object.
         
         :param access_control_list: List[:class:`TokenAccessControlRequest`] (optional)
         
