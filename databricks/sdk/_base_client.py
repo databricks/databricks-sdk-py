@@ -50,7 +50,8 @@ class _BaseClient:
                  http_timeout_seconds: float = None,
                  extra_error_customizers: List[_ErrorCustomizer] = None,
                  debug_headers: bool = False,
-                 clock: Clock = None):
+                 clock: Clock = None,
+                 streaming_buffer_size: int = 1024 * 1024):  # 1MB
         """
         :param debug_truncate_bytes:
         :param retry_timeout_seconds:
@@ -68,6 +69,8 @@ class _BaseClient:
         :param extra_error_customizers:
         :param debug_headers: Whether to include debug headers in the request log.
         :param clock: Clock object to use for time-related operations.
+        :param streaming_buffer_size: The size of the buffer to use for streaming responses. If None, all the
+            response content is loaded into memory at once.
         """
 
         self._debug_truncate_bytes = debug_truncate_bytes or 96
@@ -78,6 +81,7 @@ class _BaseClient:
         self._clock = clock or RealClock()
         self._session = requests.Session()
         self._session.auth = self._authenticate
+        self._streaming_buffer_size = streaming_buffer_size
 
         # We don't use `max_retries` from HTTPAdapter to align with a more production-ready
         # retry strategy established in the Databricks SDK for Go. See _is_retryable and
@@ -158,7 +162,9 @@ class _BaseClient:
         for header in response_headers if response_headers else []:
             resp[header] = response.headers.get(Casing.to_header_case(header))
         if raw:
-            resp["contents"] = _StreamingResponse(response)
+            streaming_response = _StreamingResponse(response)
+            streaming_response.set_chunk_size(self._streaming_buffer_size)
+            resp["contents"] = streaming_response
             return resp
         if not len(response.content):
             return resp
@@ -283,6 +289,11 @@ class _StreamingResponse(BinaryIO):
         return False
 
     def read(self, n: int = -1) -> bytes:
+        """
+        Read up to n bytes from the response stream. If n is negative, read 
+        until the end of the stream. 
+        """
+
         self._open()
         read_everything = n < 0
         remaining_bytes = n
