@@ -4,18 +4,6 @@ Dashboards
 These dataclasses are used in the SDK to represent API requests and responses for services in the ``databricks.sdk.service.dashboards`` module.
 
 .. py:currentmodule:: databricks.sdk.service.dashboards
-.. autoclass:: CreateDashboardRequest
-   :members:
-   :undoc-members:
-
-.. autoclass:: CreateScheduleRequest
-   :members:
-   :undoc-members:
-
-.. autoclass:: CreateSubscriptionRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: CronSchedule
    :members:
    :undoc-members:
@@ -166,6 +154,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: MESSAGE_UPDATED_WHILE_EXECUTING_EXCEPTION
       :value: "MESSAGE_UPDATED_WHILE_EXECUTING_EXCEPTION"
 
+   .. py:attribute:: NO_DEPLOYMENTS_AVAILABLE_TO_WORKSPACE
+      :value: "NO_DEPLOYMENTS_AVAILABLE_TO_WORKSPACE"
+
    .. py:attribute:: NO_QUERY_TO_VISUALIZE_EXCEPTION
       :value: "NO_QUERY_TO_VISUALIZE_EXCEPTION"
 
@@ -296,13 +287,5 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: UnpublishDashboardResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateDashboardRequest
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateScheduleRequest
    :members:
    :undoc-members:

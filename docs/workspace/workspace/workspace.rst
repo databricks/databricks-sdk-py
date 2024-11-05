@@ -272,8 +272,9 @@
 
         Set workspace object permissions.
         
-        Sets permissions on a workspace object. Workspace objects can inherit permissions from their parent
-        objects or root object.
+        Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
+        permissions if none are specified. Objects can inherit permissions from their parent objects or root
+        object.
         
         :param workspace_object_type: str
           The workspace object type for which to get or manage permissions.

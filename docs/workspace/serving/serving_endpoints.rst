@@ -266,8 +266,8 @@
 
         Set serving endpoint permissions.
         
-        Sets permissions on a serving endpoint. Serving endpoints can inherit permissions from their root
-        object.
+        Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
+        permissions if none are specified. Objects can inherit permissions from their root object.
         
         :param serving_endpoint_id: str
           The serving endpoint for which to get or manage permissions.

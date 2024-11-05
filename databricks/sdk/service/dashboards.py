@@ -21,103 +21,6 @@ from databricks.sdk.service import sql
 
 
 @dataclass
-class CreateDashboardRequest:
-    display_name: str
-    """The display name of the dashboard."""
-
-    parent_path: Optional[str] = None
-    """The workspace path of the folder containing the dashboard. Includes leading slash and no
-    trailing slash. This field is excluded in List Dashboards responses."""
-
-    serialized_dashboard: Optional[str] = None
-    """The contents of the dashboard in serialized string form. This field is excluded in List
-    Dashboards responses. Use the [get dashboard API] to retrieve an example response, which
-    includes the `serialized_dashboard` field. This field provides the structure of the JSON string
-    that represents the dashboard's layout and components.
-    
-    [get dashboard API]: https://docs.databricks.com/api/workspace/lakeview/get"""
-
-    warehouse_id: Optional[str] = None
-    """The warehouse ID used to run the dashboard."""
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateDashboardRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.display_name is not None: body['display_name'] = self.display_name
-        if self.parent_path is not None: body['parent_path'] = self.parent_path
-        if self.serialized_dashboard is not None: body['serialized_dashboard'] = self.serialized_dashboard
-        if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateDashboardRequest:
-        """Deserializes the CreateDashboardRequest from a dictionary."""
-        return cls(display_name=d.get('display_name', None),
-                   parent_path=d.get('parent_path', None),
-                   serialized_dashboard=d.get('serialized_dashboard', None),
-                   warehouse_id=d.get('warehouse_id', None))
-
-
-@dataclass
-class CreateScheduleRequest:
-    cron_schedule: CronSchedule
-    """The cron expression describing the frequency of the periodic refresh for this schedule."""
-
-    dashboard_id: Optional[str] = None
-    """UUID identifying the dashboard to which the schedule belongs."""
-
-    display_name: Optional[str] = None
-    """The display name for schedule."""
-
-    pause_status: Optional[SchedulePauseStatus] = None
-    """The status indicates whether this schedule is paused or not."""
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateScheduleRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.cron_schedule: body['cron_schedule'] = self.cron_schedule.as_dict()
-        if self.dashboard_id is not None: body['dashboard_id'] = self.dashboard_id
-        if self.display_name is not None: body['display_name'] = self.display_name
-        if self.pause_status is not None: body['pause_status'] = self.pause_status.value
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateScheduleRequest:
-        """Deserializes the CreateScheduleRequest from a dictionary."""
-        return cls(cron_schedule=_from_dict(d, 'cron_schedule', CronSchedule),
-                   dashboard_id=d.get('dashboard_id', None),
-                   display_name=d.get('display_name', None),
-                   pause_status=_enum(d, 'pause_status', SchedulePauseStatus))
-
-
-@dataclass
-class CreateSubscriptionRequest:
-    subscriber: Subscriber
-    """Subscriber details for users and destinations to be added as subscribers to the schedule."""
-
-    dashboard_id: Optional[str] = None
-    """UUID identifying the dashboard to which the subscription belongs."""
-
-    schedule_id: Optional[str] = None
-    """UUID identifying the schedule to which the subscription belongs."""
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateSubscriptionRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.dashboard_id is not None: body['dashboard_id'] = self.dashboard_id
-        if self.schedule_id is not None: body['schedule_id'] = self.schedule_id
-        if self.subscriber: body['subscriber'] = self.subscriber.as_dict()
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateSubscriptionRequest:
-        """Deserializes the CreateSubscriptionRequest from a dictionary."""
-        return cls(dashboard_id=d.get('dashboard_id', None),
-                   schedule_id=d.get('schedule_id', None),
-                   subscriber=_from_dict(d, 'subscriber', Subscriber))
-
-
-@dataclass
 class CronSchedule:
     quartz_cron_expression: str
     """A cron expression using quartz syntax. EX: `0 0 8 * * ?` represents everyday at 8am. See [Cron
@@ -607,6 +510,7 @@ class MessageErrorType(Enum):
     LOCAL_CONTEXT_EXCEEDED_EXCEPTION = 'LOCAL_CONTEXT_EXCEEDED_EXCEPTION'
     MESSAGE_DELETED_WHILE_EXECUTING_EXCEPTION = 'MESSAGE_DELETED_WHILE_EXECUTING_EXCEPTION'
     MESSAGE_UPDATED_WHILE_EXECUTING_EXCEPTION = 'MESSAGE_UPDATED_WHILE_EXECUTING_EXCEPTION'
+    NO_DEPLOYMENTS_AVAILABLE_TO_WORKSPACE = 'NO_DEPLOYMENTS_AVAILABLE_TO_WORKSPACE'
     NO_QUERY_TO_VISUALIZE_EXCEPTION = 'NO_QUERY_TO_VISUALIZE_EXCEPTION'
     NO_TABLES_TO_QUERY_EXCEPTION = 'NO_TABLES_TO_QUERY_EXCEPTION'
     RATE_LIMIT_EXCEEDED_GENERIC_EXCEPTION = 'RATE_LIMIT_EXCEEDED_GENERIC_EXCEPTION'
@@ -839,6 +743,9 @@ class Schedule:
     update_time: Optional[str] = None
     """A timestamp indicating when the schedule was last updated."""
 
+    warehouse_id: Optional[str] = None
+    """The warehouse id to run the dashboard with for the schedule."""
+
     def as_dict(self) -> dict:
         """Serializes the Schedule into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -850,6 +757,7 @@ class Schedule:
         if self.pause_status is not None: body['pause_status'] = self.pause_status.value
         if self.schedule_id is not None: body['schedule_id'] = self.schedule_id
         if self.update_time is not None: body['update_time'] = self.update_time
+        if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
         return body
 
     @classmethod
@@ -862,7 +770,8 @@ class Schedule:
                    etag=d.get('etag', None),
                    pause_status=_enum(d, 'pause_status', SchedulePauseStatus),
                    schedule_id=d.get('schedule_id', None),
-                   update_time=d.get('update_time', None))
+                   update_time=d.get('update_time', None),
+                   warehouse_id=d.get('warehouse_id', None))
 
 
 class SchedulePauseStatus(Enum):
@@ -1030,93 +939,6 @@ class UnpublishDashboardResponse:
     def from_dict(cls, d: Dict[str, any]) -> UnpublishDashboardResponse:
         """Deserializes the UnpublishDashboardResponse from a dictionary."""
         return cls()
-
-
-@dataclass
-class UpdateDashboardRequest:
-    dashboard_id: Optional[str] = None
-    """UUID identifying the dashboard."""
-
-    display_name: Optional[str] = None
-    """The display name of the dashboard."""
-
-    etag: Optional[str] = None
-    """The etag for the dashboard. Can be optionally provided on updates to ensure that the dashboard
-    has not been modified since the last read. This field is excluded in List Dashboards responses."""
-
-    serialized_dashboard: Optional[str] = None
-    """The contents of the dashboard in serialized string form. This field is excluded in List
-    Dashboards responses. Use the [get dashboard API] to retrieve an example response, which
-    includes the `serialized_dashboard` field. This field provides the structure of the JSON string
-    that represents the dashboard's layout and components.
-    
-    [get dashboard API]: https://docs.databricks.com/api/workspace/lakeview/get"""
-
-    warehouse_id: Optional[str] = None
-    """The warehouse ID used to run the dashboard."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateDashboardRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.dashboard_id is not None: body['dashboard_id'] = self.dashboard_id
-        if self.display_name is not None: body['display_name'] = self.display_name
-        if self.etag is not None: body['etag'] = self.etag
-        if self.serialized_dashboard is not None: body['serialized_dashboard'] = self.serialized_dashboard
-        if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateDashboardRequest:
-        """Deserializes the UpdateDashboardRequest from a dictionary."""
-        return cls(dashboard_id=d.get('dashboard_id', None),
-                   display_name=d.get('display_name', None),
-                   etag=d.get('etag', None),
-                   serialized_dashboard=d.get('serialized_dashboard', None),
-                   warehouse_id=d.get('warehouse_id', None))
-
-
-@dataclass
-class UpdateScheduleRequest:
-    cron_schedule: CronSchedule
-    """The cron expression describing the frequency of the periodic refresh for this schedule."""
-
-    dashboard_id: Optional[str] = None
-    """UUID identifying the dashboard to which the schedule belongs."""
-
-    display_name: Optional[str] = None
-    """The display name for schedule."""
-
-    etag: Optional[str] = None
-    """The etag for the schedule. Must be left empty on create, must be provided on updates to ensure
-    that the schedule has not been modified since the last read, and can be optionally provided on
-    delete."""
-
-    pause_status: Optional[SchedulePauseStatus] = None
-    """The status indicates whether this schedule is paused or not."""
-
-    schedule_id: Optional[str] = None
-    """UUID identifying the schedule."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateScheduleRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.cron_schedule: body['cron_schedule'] = self.cron_schedule.as_dict()
-        if self.dashboard_id is not None: body['dashboard_id'] = self.dashboard_id
-        if self.display_name is not None: body['display_name'] = self.display_name
-        if self.etag is not None: body['etag'] = self.etag
-        if self.pause_status is not None: body['pause_status'] = self.pause_status.value
-        if self.schedule_id is not None: body['schedule_id'] = self.schedule_id
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateScheduleRequest:
-        """Deserializes the UpdateScheduleRequest from a dictionary."""
-        return cls(cron_schedule=_from_dict(d, 'cron_schedule', CronSchedule),
-                   dashboard_id=d.get('dashboard_id', None),
-                   display_name=d.get('display_name', None),
-                   etag=d.get('etag', None),
-                   pause_status=_enum(d, 'pause_status', SchedulePauseStatus),
-                   schedule_id=d.get('schedule_id', None))
 
 
 class GenieAPI:
@@ -1313,66 +1135,31 @@ class LakeviewAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self,
-               display_name: str,
-               *,
-               parent_path: Optional[str] = None,
-               serialized_dashboard: Optional[str] = None,
-               warehouse_id: Optional[str] = None) -> Dashboard:
+    def create(self, *, dashboard: Optional[Dashboard] = None) -> Dashboard:
         """Create dashboard.
         
         Create a draft dashboard.
         
-        :param display_name: str
-          The display name of the dashboard.
-        :param parent_path: str (optional)
-          The workspace path of the folder containing the dashboard. Includes leading slash and no trailing
-          slash. This field is excluded in List Dashboards responses.
-        :param serialized_dashboard: str (optional)
-          The contents of the dashboard in serialized string form. This field is excluded in List Dashboards
-          responses. Use the [get dashboard API] to retrieve an example response, which includes the
-          `serialized_dashboard` field. This field provides the structure of the JSON string that represents
-          the dashboard's layout and components.
-          
-          [get dashboard API]: https://docs.databricks.com/api/workspace/lakeview/get
-        :param warehouse_id: str (optional)
-          The warehouse ID used to run the dashboard.
+        :param dashboard: :class:`Dashboard` (optional)
         
         :returns: :class:`Dashboard`
         """
-        body = {}
-        if display_name is not None: body['display_name'] = display_name
-        if parent_path is not None: body['parent_path'] = parent_path
-        if serialized_dashboard is not None: body['serialized_dashboard'] = serialized_dashboard
-        if warehouse_id is not None: body['warehouse_id'] = warehouse_id
+        body = dashboard
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         res = self._api.do('POST', '/api/2.0/lakeview/dashboards', body=body, headers=headers)
         return Dashboard.from_dict(res)
 
-    def create_schedule(self,
-                        dashboard_id: str,
-                        cron_schedule: CronSchedule,
-                        *,
-                        display_name: Optional[str] = None,
-                        pause_status: Optional[SchedulePauseStatus] = None) -> Schedule:
+    def create_schedule(self, dashboard_id: str, *, schedule: Optional[Schedule] = None) -> Schedule:
         """Create dashboard schedule.
         
         :param dashboard_id: str
           UUID identifying the dashboard to which the schedule belongs.
-        :param cron_schedule: :class:`CronSchedule`
-          The cron expression describing the frequency of the periodic refresh for this schedule.
-        :param display_name: str (optional)
-          The display name for schedule.
-        :param pause_status: :class:`SchedulePauseStatus` (optional)
-          The status indicates whether this schedule is paused or not.
+        :param schedule: :class:`Schedule` (optional)
         
         :returns: :class:`Schedule`
         """
-        body = {}
-        if cron_schedule is not None: body['cron_schedule'] = cron_schedule.as_dict()
-        if display_name is not None: body['display_name'] = display_name
-        if pause_status is not None: body['pause_status'] = pause_status.value
+        body = schedule
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         res = self._api.do('POST',
@@ -1381,21 +1168,22 @@ class LakeviewAPI:
                            headers=headers)
         return Schedule.from_dict(res)
 
-    def create_subscription(self, dashboard_id: str, schedule_id: str,
-                            subscriber: Subscriber) -> Subscription:
+    def create_subscription(self,
+                            dashboard_id: str,
+                            schedule_id: str,
+                            *,
+                            subscription: Optional[Subscription] = None) -> Subscription:
         """Create schedule subscription.
         
         :param dashboard_id: str
           UUID identifying the dashboard to which the subscription belongs.
         :param schedule_id: str
           UUID identifying the schedule to which the subscription belongs.
-        :param subscriber: :class:`Subscriber`
-          Subscriber details for users and destinations to be added as subscribers to the schedule.
+        :param subscription: :class:`Subscription` (optional)
         
         :returns: :class:`Subscription`
         """
-        body = {}
-        if subscriber is not None: body['subscriber'] = subscriber.as_dict()
+        body = subscription
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         res = self._api.do(
@@ -1729,41 +1517,18 @@ class LakeviewAPI:
 
         self._api.do('DELETE', f'/api/2.0/lakeview/dashboards/{dashboard_id}/published', headers=headers)
 
-    def update(self,
-               dashboard_id: str,
-               *,
-               display_name: Optional[str] = None,
-               etag: Optional[str] = None,
-               serialized_dashboard: Optional[str] = None,
-               warehouse_id: Optional[str] = None) -> Dashboard:
+    def update(self, dashboard_id: str, *, dashboard: Optional[Dashboard] = None) -> Dashboard:
         """Update dashboard.
         
         Update a draft dashboard.
         
         :param dashboard_id: str
           UUID identifying the dashboard.
-        :param display_name: str (optional)
-          The display name of the dashboard.
-        :param etag: str (optional)
-          The etag for the dashboard. Can be optionally provided on updates to ensure that the dashboard has
-          not been modified since the last read. This field is excluded in List Dashboards responses.
-        :param serialized_dashboard: str (optional)
-          The contents of the dashboard in serialized string form. This field is excluded in List Dashboards
-          responses. Use the [get dashboard API] to retrieve an example response, which includes the
-          `serialized_dashboard` field. This field provides the structure of the JSON string that represents
-          the dashboard's layout and components.
-          
-          [get dashboard API]: https://docs.databricks.com/api/workspace/lakeview/get
-        :param warehouse_id: str (optional)
-          The warehouse ID used to run the dashboard.
+        :param dashboard: :class:`Dashboard` (optional)
         
         :returns: :class:`Dashboard`
         """
-        body = {}
-        if display_name is not None: body['display_name'] = display_name
-        if etag is not None: body['etag'] = etag
-        if serialized_dashboard is not None: body['serialized_dashboard'] = serialized_dashboard
-        if warehouse_id is not None: body['warehouse_id'] = warehouse_id
+        body = dashboard
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         res = self._api.do('PATCH',
@@ -1775,34 +1540,19 @@ class LakeviewAPI:
     def update_schedule(self,
                         dashboard_id: str,
                         schedule_id: str,
-                        cron_schedule: CronSchedule,
                         *,
-                        display_name: Optional[str] = None,
-                        etag: Optional[str] = None,
-                        pause_status: Optional[SchedulePauseStatus] = None) -> Schedule:
+                        schedule: Optional[Schedule] = None) -> Schedule:
         """Update dashboard schedule.
         
         :param dashboard_id: str
           UUID identifying the dashboard to which the schedule belongs.
         :param schedule_id: str
           UUID identifying the schedule.
-        :param cron_schedule: :class:`CronSchedule`
-          The cron expression describing the frequency of the periodic refresh for this schedule.
-        :param display_name: str (optional)
-          The display name for schedule.
-        :param etag: str (optional)
-          The etag for the schedule. Must be left empty on create, must be provided on updates to ensure that
-          the schedule has not been modified since the last read, and can be optionally provided on delete.
-        :param pause_status: :class:`SchedulePauseStatus` (optional)
-          The status indicates whether this schedule is paused or not.
+        :param schedule: :class:`Schedule` (optional)
         
         :returns: :class:`Schedule`
         """
-        body = {}
-        if cron_schedule is not None: body['cron_schedule'] = cron_schedule.as_dict()
-        if display_name is not None: body['display_name'] = display_name
-        if etag is not None: body['etag'] = etag
-        if pause_status is not None: body['pause_status'] = pause_status.value
+        body = schedule
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         res = self._api.do('PUT',

@@ -7,26 +7,20 @@
     Apps run directly on a customer’s Databricks instance, integrate with their data, use and extend
     Databricks services, and enable users to interact through single sign-on.
 
-    .. py:method:: create(name: str [, description: Optional[str], resources: Optional[List[AppResource]]]) -> Wait[App]
+    .. py:method:: create( [, app: Optional[App]]) -> Wait[App]
 
         Create an app.
         
         Creates a new app.
         
-        :param name: str
-          The name of the app. The name must contain only lowercase alphanumeric characters and hyphens. It
-          must be unique within the workspace.
-        :param description: str (optional)
-          The description of the app.
-        :param resources: List[:class:`AppResource`] (optional)
-          Resources for the app.
+        :param app: :class:`App` (optional)
         
         :returns:
           Long-running operation waiter for :class:`App`.
           See :method:wait_get_app_active for more details.
         
 
-    .. py:method:: create_and_wait(name: str [, description: Optional[str], resources: Optional[List[AppResource]], timeout: datetime.timedelta = 0:20:00]) -> App
+    .. py:method:: create_and_wait( [, app: Optional[App], timeout: datetime.timedelta = 0:20:00]) -> App
 
 
     .. py:method:: delete(name: str) -> App
@@ -41,7 +35,7 @@
         :returns: :class:`App`
         
 
-    .. py:method:: deploy(app_name: str [, deployment_id: Optional[str], mode: Optional[AppDeploymentMode], source_code_path: Optional[str]]) -> Wait[AppDeployment]
+    .. py:method:: deploy(app_name: str [, app_deployment: Optional[AppDeployment]]) -> Wait[AppDeployment]
 
         Create an app deployment.
         
@@ -49,23 +43,14 @@
         
         :param app_name: str
           The name of the app.
-        :param deployment_id: str (optional)
-          The unique id of the deployment.
-        :param mode: :class:`AppDeploymentMode` (optional)
-          The mode of which the deployment will manage the source code.
-        :param source_code_path: str (optional)
-          The workspace file system path of the source code used to create the app deployment. This is
-          different from `deployment_artifacts.source_code_path`, which is the path used by the deployed app.
-          The former refers to the original source code location of the app in the workspace during deployment
-          creation, whereas the latter provides a system generated stable snapshotted source code path used by
-          the deployment.
+        :param app_deployment: :class:`AppDeployment` (optional)
         
         :returns:
           Long-running operation waiter for :class:`AppDeployment`.
           See :method:wait_get_deployment_app_succeeded for more details.
         
 
-    .. py:method:: deploy_and_wait(app_name: str [, deployment_id: Optional[str], mode: Optional[AppDeploymentMode], source_code_path: Optional[str], timeout: datetime.timedelta = 0:20:00]) -> AppDeployment
+    .. py:method:: deploy_and_wait(app_name: str [, app_deployment: Optional[AppDeployment], timeout: datetime.timedelta = 0:20:00]) -> AppDeployment
 
 
     .. py:method:: get(name: str) -> App
@@ -152,7 +137,8 @@
 
         Set app permissions.
         
-        Sets permissions on an app. Apps can inherit permissions from their root object.
+        Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
+        permissions if none are specified. Objects can inherit permissions from their root object.
         
         :param app_name: str
           The app for which to get or manage permissions.
@@ -195,19 +181,15 @@
     .. py:method:: stop_and_wait(name: str, timeout: datetime.timedelta = 0:20:00) -> App
 
 
-    .. py:method:: update(name: str [, description: Optional[str], resources: Optional[List[AppResource]]]) -> App
+    .. py:method:: update(name: str [, app: Optional[App]]) -> App
 
         Update an app.
         
         Updates the app with the supplied name.
         
         :param name: str
-          The name of the app. The name must contain only lowercase alphanumeric characters and hyphens. It
-          must be unique within the workspace.
-        :param description: str (optional)
-          The description of the app.
-        :param resources: List[:class:`AppResource`] (optional)
-          Resources for the app.
+          The name of the app.
+        :param app: :class:`App` (optional)
         
         :returns: :class:`App`
         

@@ -615,6 +615,10 @@ class IngestionConfig:
 @dataclass
 class IngestionGatewayPipelineDefinition:
     connection_id: Optional[str] = None
+    """[Deprecated, use connection_name instead] Immutable. The Unity Catalog connection this gateway
+    pipeline uses to communicate with the source."""
+
+    connection_name: Optional[str] = None
     """Immutable. The Unity Catalog connection this gateway pipeline uses to communicate with the
     source."""
 
@@ -633,6 +637,7 @@ class IngestionGatewayPipelineDefinition:
         """Serializes the IngestionGatewayPipelineDefinition into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.connection_id is not None: body['connection_id'] = self.connection_id
+        if self.connection_name is not None: body['connection_name'] = self.connection_name
         if self.gateway_storage_catalog is not None:
             body['gateway_storage_catalog'] = self.gateway_storage_catalog
         if self.gateway_storage_name is not None: body['gateway_storage_name'] = self.gateway_storage_name
@@ -644,6 +649,7 @@ class IngestionGatewayPipelineDefinition:
     def from_dict(cls, d: Dict[str, any]) -> IngestionGatewayPipelineDefinition:
         """Deserializes the IngestionGatewayPipelineDefinition from a dictionary."""
         return cls(connection_id=d.get('connection_id', None),
+                   connection_name=d.get('connection_name', None),
                    gateway_storage_catalog=d.get('gateway_storage_catalog', None),
                    gateway_storage_name=d.get('gateway_storage_name', None),
                    gateway_storage_schema=d.get('gateway_storage_schema', None))
@@ -2122,37 +2128,6 @@ class PipelinesAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def wait_get_pipeline_idle(
-            self,
-            pipeline_id: str,
-            timeout=timedelta(minutes=20),
-            callback: Optional[Callable[[GetPipelineResponse], None]] = None) -> GetPipelineResponse:
-        deadline = time.time() + timeout.total_seconds()
-        target_states = (PipelineState.IDLE, )
-        failure_states = (PipelineState.FAILED, )
-        status_message = 'polling...'
-        attempt = 1
-        while time.time() < deadline:
-            poll = self.get(pipeline_id=pipeline_id)
-            status = poll.state
-            status_message = poll.cause
-            if status in target_states:
-                return poll
-            if callback:
-                callback(poll)
-            if status in failure_states:
-                msg = f'failed to reach IDLE, got {status}: {status_message}'
-                raise OperationFailed(msg)
-            prefix = f"pipeline_id={pipeline_id}"
-            sleep = attempt
-            if sleep > 10:
-                # sleep 10s max per attempt
-                sleep = 10
-            _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
-            time.sleep(sleep + random.random())
-            attempt += 1
-        raise TimeoutError(f'timed out after {timeout}: {status_message}')
-
     def wait_get_pipeline_running(
             self,
             pipeline_id: str,
@@ -2173,6 +2148,37 @@ class PipelinesAPI:
                 callback(poll)
             if status in failure_states:
                 msg = f'failed to reach RUNNING, got {status}: {status_message}'
+                raise OperationFailed(msg)
+            prefix = f"pipeline_id={pipeline_id}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f'timed out after {timeout}: {status_message}')
+
+    def wait_get_pipeline_idle(
+            self,
+            pipeline_id: str,
+            timeout=timedelta(minutes=20),
+            callback: Optional[Callable[[GetPipelineResponse], None]] = None) -> GetPipelineResponse:
+        deadline = time.time() + timeout.total_seconds()
+        target_states = (PipelineState.IDLE, )
+        failure_states = (PipelineState.FAILED, )
+        status_message = 'polling...'
+        attempt = 1
+        while time.time() < deadline:
+            poll = self.get(pipeline_id=pipeline_id)
+            status = poll.state
+            status_message = poll.cause
+            if status in target_states:
+                return poll
+            if callback:
+                callback(poll)
+            if status in failure_states:
+                msg = f'failed to reach IDLE, got {status}: {status_message}'
                 raise OperationFailed(msg)
             prefix = f"pipeline_id={pipeline_id}"
             sleep = attempt
@@ -2518,7 +2524,8 @@ class PipelinesAPI:
             access_control_list: Optional[List[PipelineAccessControlRequest]] = None) -> PipelinePermissions:
         """Set pipeline permissions.
         
-        Sets permissions on a pipeline. Pipelines can inherit permissions from their root object.
+        Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
+        permissions if none are specified. Objects can inherit permissions from their root object.
         
         :param pipeline_id: str
           The pipeline for which to get or manage permissions.
