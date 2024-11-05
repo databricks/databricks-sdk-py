@@ -1,5 +1,62 @@
 # Version changelog
 
+## [Release] Release v0.37.0
+
+### Bug Fixes
+
+ * Correctly generate classes with nested body fields ([#808](https://github.com/databricks/databricks-sdk-py/pull/808)).
+
+
+### Internal Changes
+
+ * Add `cleanrooms` package ([#806](https://github.com/databricks/databricks-sdk-py/pull/806)).
+ * Add test instructions for external contributors ([#804](https://github.com/databricks/databricks-sdk-py/pull/804)).
+ * Always write message for manual test execution ([#811](https://github.com/databricks/databricks-sdk-py/pull/811)).
+ * Automatically trigger integration tests on PR ([#800](https://github.com/databricks/databricks-sdk-py/pull/800)).
+ * Better isolate ML serving auth unit tests ([#803](https://github.com/databricks/databricks-sdk-py/pull/803)).
+ * Move templates in the code generator ([#809](https://github.com/databricks/databricks-sdk-py/pull/809)).
+
+
+### API Changes:
+
+ * Added [w.aibi_dashboard_embedding_access_policy](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings/aibi_dashboard_embedding_access_policy.html) workspace-level service and [w.aibi_dashboard_embedding_approved_domains](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings/aibi_dashboard_embedding_approved_domains.html) workspace-level service.
+ * Added [w.credentials](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/credentials.html) workspace-level service.
+ * Added `app_deployment` field for `databricks.sdk.service.apps.CreateAppDeploymentRequest`.
+ * Added `app` field for `databricks.sdk.service.apps.CreateAppRequest`.
+ * Added `app` field for `databricks.sdk.service.apps.UpdateAppRequest`.
+ * Added `table` field for `databricks.sdk.service.catalog.CreateOnlineTableRequest`.
+ * Added `azure_aad` field for `databricks.sdk.service.catalog.GenerateTemporaryTableCredentialResponse`.
+ * Added `full_name` field for `databricks.sdk.service.catalog.StorageCredentialInfo`.
+ * Added `dashboard` field for `databricks.sdk.service.dashboards.CreateDashboardRequest`.
+ * Added `schedule` field for `databricks.sdk.service.dashboards.CreateScheduleRequest`.
+ * Added `subscription` field for `databricks.sdk.service.dashboards.CreateSubscriptionRequest`.
+ * Added `warehouse_id` field for `databricks.sdk.service.dashboards.Schedule`.
+ * Added `dashboard` field for `databricks.sdk.service.dashboards.UpdateDashboardRequest`.
+ * Added `schedule` field for `databricks.sdk.service.dashboards.UpdateScheduleRequest`.
+ * Added `page_token` field for `databricks.sdk.service.oauth2.ListServicePrincipalSecretsRequest`.
+ * Added `next_page_token` field for `databricks.sdk.service.oauth2.ListServicePrincipalSecretsResponse`.
+ * Added `connection_name` field for `databricks.sdk.service.pipelines.IngestionGatewayPipelineDefinition`.
+ * Added `is_no_public_ip_enabled` field for `databricks.sdk.service.provisioning.CreateWorkspaceRequest`.
+ * Added `external_customer_info` and `is_no_public_ip_enabled` fields for `databricks.sdk.service.provisioning.Workspace`.
+ * Added `last_used_day` field for `databricks.sdk.service.settings.TokenInfo`.
+ * Changed `create()` method for [w.apps](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/apps.html) workspace-level service with new required argument order.
+ * Changed `execute_message_query()` method for [w.genie](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/genie.html) workspace-level service . New request type is `databricks.sdk.service.dashboards.GenieExecuteMessageQueryRequest` dataclass.
+ * Changed `execute_message_query()` method for [w.genie](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/genie.html) workspace-level service to type `execute_message_query()` method for [w.genie](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/genie.html) workspace-level service.
+ * Changed `create()`, `create_schedule()`, `create_subscription()` and `update_schedule()` methods for [w.lakeview](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/lakeview.html) workspace-level service with new required argument order.
+ * Removed [w.clean_rooms](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/clean_rooms.html) workspace-level service.
+ * Removed `deployment_id`, `mode` and `source_code_path` fields for `databricks.sdk.service.apps.CreateAppDeploymentRequest`.
+ * Removed `description`, `name` and `resources` fields for `databricks.sdk.service.apps.CreateAppRequest`.
+ * Removed `description` and `resources` fields for `databricks.sdk.service.apps.UpdateAppRequest`.
+ * Removed `name` and `spec` fields for `databricks.sdk.service.catalog.CreateOnlineTableRequest`.
+ * Removed `display_name`, `parent_path`, `serialized_dashboard` and `warehouse_id` fields for `databricks.sdk.service.dashboards.CreateDashboardRequest`.
+ * Removed `cron_schedule`, `display_name` and `pause_status` fields for `databricks.sdk.service.dashboards.CreateScheduleRequest`.
+ * Removed `subscriber` field for `databricks.sdk.service.dashboards.CreateSubscriptionRequest`.
+ * Removed `display_name`, `etag`, `serialized_dashboard` and `warehouse_id` fields for `databricks.sdk.service.dashboards.UpdateDashboardRequest`.
+ * Removed `cron_schedule`, `display_name`, `etag` and `pause_status` fields for `databricks.sdk.service.dashboards.UpdateScheduleRequest`.
+ * Removed `prev_page_token` field for `databricks.sdk.service.jobs.Run`.
+
+OpenAPI SHA: 5285ce76f81314f342c1702d5c2ad4ef42488781, Date: 2024-11-04
+
 ## [Release] Release v0.36.0
 
 ### Breaking Changes

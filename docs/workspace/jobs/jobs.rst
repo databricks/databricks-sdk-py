@@ -425,8 +425,8 @@
         :param include_resolved_values: bool (optional)
           Whether to include resolved parameter values in the response.
         :param page_token: str (optional)
-          To list the next page or the previous page of job tasks, set this field to the value of the
-          `next_page_token` or `prev_page_token` returned in the GetJob response.
+          To list the next page of job tasks, set this field to the value of the `next_page_token` returned in
+          the GetJob response.
         
         :returns: :class:`Run`
         
@@ -661,8 +661,9 @@
           in conjunction with notebook_params. The JSON representation of this field (for example
           `{"jar_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
           
-          Use [Task parameter variables](/jobs.html"#parameter-variables") to set parameters containing
-          information about job runs.
+          Use [Task parameter variables] to set parameters containing information about job runs.
+          
+          [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
         :param job_parameters: Dict[str,str] (optional)
           Job-level parameters used in the run. for example `"param": "overriding_val"`
         :param latest_repair_id: int (optional)
@@ -854,8 +855,9 @@
           in conjunction with notebook_params. The JSON representation of this field (for example
           `{"jar_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
           
-          Use [Task parameter variables](/jobs.html"#parameter-variables") to set parameters containing
-          information about job runs.
+          Use [Task parameter variables] to set parameters containing information about job runs.
+          
+          [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
         :param job_parameters: Dict[str,str] (optional)
           Job-level parameters used in the run. for example `"param": "overriding_val"`
         :param notebook_params: Dict[str,str] (optional)
@@ -926,7 +928,8 @@
 
         Set job permissions.
         
-        Sets permissions on a job. Jobs can inherit permissions from their root object.
+        Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
+        permissions if none are specified. Objects can inherit permissions from their root object.
         
         :param job_id: str
           The job for which to get or manage permissions.

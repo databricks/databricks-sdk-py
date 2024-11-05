@@ -2661,7 +2661,7 @@ class EbsVolumeType(Enum):
 @dataclass
 class EditCluster:
     cluster_id: str
-    """ID of the cluser"""
+    """ID of the cluster"""
 
     spark_version: str
     """The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of available Spark versions can
@@ -6645,7 +6645,8 @@ class ClusterPoliciesAPI:
     ) -> ClusterPolicyPermissions:
         """Set cluster policy permissions.
         
-        Sets permissions on a cluster policy. Cluster policies can inherit permissions from their root object.
+        Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
+        permissions if none are specified. Objects can inherit permissions from their root object.
         
         :param cluster_policy_id: str
           The cluster policy for which to get or manage permissions.
@@ -7145,7 +7146,7 @@ class ClustersAPI:
         Clusters created by the Databricks Jobs service cannot be edited.
         
         :param cluster_id: str
-          ID of the cluser
+          ID of the cluster
         :param spark_version: str
           The Spark version of the cluster, e.g. `3.3.x-scala2.11`. A list of available Spark versions can be
           retrieved by using the :method:clusters/sparkVersions API call.
@@ -7672,7 +7673,8 @@ class ClustersAPI:
             access_control_list: Optional[List[ClusterAccessControlRequest]] = None) -> ClusterPermissions:
         """Set cluster permissions.
         
-        Sets permissions on a cluster. Clusters can inherit permissions from their root object.
+        Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
+        permissions if none are specified. Objects can inherit permissions from their root object.
         
         :param cluster_id: str
           The cluster for which to get or manage permissions.
@@ -7865,6 +7867,38 @@ class CommandExecutionAPI:
             attempt += 1
         raise TimeoutError(f'timed out after {timeout}: {status_message}')
 
+    def wait_context_status_command_execution_running(
+            self,
+            cluster_id: str,
+            context_id: str,
+            timeout=timedelta(minutes=20),
+            callback: Optional[Callable[[ContextStatusResponse], None]] = None) -> ContextStatusResponse:
+        deadline = time.time() + timeout.total_seconds()
+        target_states = (ContextStatus.RUNNING, )
+        failure_states = (ContextStatus.ERROR, )
+        status_message = 'polling...'
+        attempt = 1
+        while time.time() < deadline:
+            poll = self.context_status(cluster_id=cluster_id, context_id=context_id)
+            status = poll.status
+            status_message = f'current status: {status}'
+            if status in target_states:
+                return poll
+            if callback:
+                callback(poll)
+            if status in failure_states:
+                msg = f'failed to reach Running, got {status}: {status_message}'
+                raise OperationFailed(msg)
+            prefix = f"cluster_id={cluster_id}, context_id={context_id}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f'timed out after {timeout}: {status_message}')
+
     def wait_command_status_command_execution_finished_or_error(
             self,
             cluster_id: str,
@@ -7889,38 +7923,6 @@ class CommandExecutionAPI:
                 msg = f'failed to reach Finished or Error, got {status}: {status_message}'
                 raise OperationFailed(msg)
             prefix = f"cluster_id={cluster_id}, command_id={command_id}, context_id={context_id}"
-            sleep = attempt
-            if sleep > 10:
-                # sleep 10s max per attempt
-                sleep = 10
-            _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
-            time.sleep(sleep + random.random())
-            attempt += 1
-        raise TimeoutError(f'timed out after {timeout}: {status_message}')
-
-    def wait_context_status_command_execution_running(
-            self,
-            cluster_id: str,
-            context_id: str,
-            timeout=timedelta(minutes=20),
-            callback: Optional[Callable[[ContextStatusResponse], None]] = None) -> ContextStatusResponse:
-        deadline = time.time() + timeout.total_seconds()
-        target_states = (ContextStatus.RUNNING, )
-        failure_states = (ContextStatus.ERROR, )
-        status_message = 'polling...'
-        attempt = 1
-        while time.time() < deadline:
-            poll = self.context_status(cluster_id=cluster_id, context_id=context_id)
-            status = poll.status
-            status_message = f'current status: {status}'
-            if status in target_states:
-                return poll
-            if callback:
-                callback(poll)
-            if status in failure_states:
-                msg = f'failed to reach Running, got {status}: {status_message}'
-                raise OperationFailed(msg)
-            prefix = f"cluster_id={cluster_id}, context_id={context_id}"
             sleep = attempt
             if sleep > 10:
                 # sleep 10s max per attempt
@@ -8515,7 +8517,8 @@ class InstancePoolsAPI:
     ) -> InstancePoolPermissions:
         """Set instance pool permissions.
         
-        Sets permissions on an instance pool. Instance pools can inherit permissions from their root object.
+        Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
+        permissions if none are specified. Objects can inherit permissions from their root object.
         
         :param instance_pool_id: str
           The instance pool for which to get or manage permissions.
