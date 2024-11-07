@@ -16,7 +16,7 @@ from databricks.sdk.service.catalog import (AccountMetastoreAssignmentsAPI,
                                             AccountMetastoresAPI,
                                             AccountStorageCredentialsAPI,
                                             ArtifactAllowlistsAPI, CatalogsAPI,
-                                            ConnectionsAPI,
+                                            ConnectionsAPI, CredentialsAPI,
                                             ExternalLocationsAPI, FunctionsAPI,
                                             GrantsAPI, MetastoresAPI,
                                             ModelVersionsAPI, OnlineTablesAPI,
@@ -65,26 +65,18 @@ from databricks.sdk.service.provisioning import (CredentialsAPI,
                                                  Workspace, WorkspacesAPI)
 from databricks.sdk.service.serving import (ServingEndpointsAPI,
                                             ServingEndpointsDataPlaneAPI)
-from databricks.sdk.service.settings import (AccountIpAccessListsAPI,
-                                             AccountSettingsAPI,
-                                             AutomaticClusterUpdateAPI,
-                                             ComplianceSecurityProfileAPI,
-                                             CredentialsManagerAPI,
-                                             CspEnablementAccountAPI,
-                                             DefaultNamespaceAPI,
-                                             DisableLegacyAccessAPI,
-                                             DisableLegacyDbfsAPI,
-                                             DisableLegacyFeaturesAPI,
-                                             EnhancedSecurityMonitoringAPI,
-                                             EsmEnablementAccountAPI,
-                                             IpAccessListsAPI,
-                                             NetworkConnectivityAPI,
-                                             NotificationDestinationsAPI,
-                                             PersonalComputeAPI,
-                                             RestrictWorkspaceAdminsAPI,
-                                             SettingsAPI, TokenManagementAPI,
-                                             TokensAPI, WorkspaceConfAPI)
-from databricks.sdk.service.sharing import (CleanRoomsAPI, ProvidersAPI,
+from databricks.sdk.service.settings import (
+    AccountIpAccessListsAPI, AccountSettingsAPI,
+    AibiDashboardEmbeddingAccessPolicyAPI,
+    AibiDashboardEmbeddingApprovedDomainsAPI, AutomaticClusterUpdateAPI,
+    ComplianceSecurityProfileAPI, CredentialsManagerAPI,
+    CspEnablementAccountAPI, DefaultNamespaceAPI, DisableLegacyAccessAPI,
+    DisableLegacyDbfsAPI, DisableLegacyFeaturesAPI,
+    EnhancedSecurityMonitoringAPI, EsmEnablementAccountAPI, IpAccessListsAPI,
+    NetworkConnectivityAPI, NotificationDestinationsAPI, PersonalComputeAPI,
+    RestrictWorkspaceAdminsAPI, SettingsAPI, TokenManagementAPI, TokensAPI,
+    WorkspaceConfAPI)
+from databricks.sdk.service.sharing import (ProvidersAPI,
                                             RecipientActivationAPI,
                                             RecipientsAPI, SharesAPI)
 from databricks.sdk.service.sql import (AlertsAPI, AlertsLegacyAPI,
@@ -184,7 +176,6 @@ class WorkspaceClient:
         self._apps = AppsAPI(self._api_client)
         self._artifact_allowlists = ArtifactAllowlistsAPI(self._api_client)
         self._catalogs = CatalogsAPI(self._api_client)
-        self._clean_rooms = CleanRoomsAPI(self._api_client)
         self._cluster_policies = ClusterPoliciesAPI(self._api_client)
         self._clusters = ClustersExt(self._api_client)
         self._command_execution = CommandExecutionAPI(self._api_client)
@@ -194,6 +185,7 @@ class WorkspaceClient:
         self._consumer_listings = ConsumerListingsAPI(self._api_client)
         self._consumer_personalization_requests = ConsumerPersonalizationRequestsAPI(self._api_client)
         self._consumer_providers = ConsumerProvidersAPI(self._api_client)
+        self._credentials = CredentialsAPI(self._api_client)
         self._credentials_manager = CredentialsManagerAPI(self._api_client)
         self._current_user = CurrentUserAPI(self._api_client)
         self._dashboard_widgets = DashboardWidgetsAPI(self._api_client)
@@ -314,11 +306,6 @@ class WorkspaceClient:
         return self._catalogs
 
     @property
-    def clean_rooms(self) -> CleanRoomsAPI:
-        """A clean room is a secure, privacy-protecting environment where two or more parties can share sensitive enterprise data, including customer data, for measurements, insights, activation and other use cases."""
-        return self._clean_rooms
-
-    @property
     def cluster_policies(self) -> ClusterPoliciesAPI:
         """You can use cluster policies to control users' ability to configure clusters based on a set of rules."""
         return self._cluster_policies
@@ -362,6 +349,11 @@ class WorkspaceClient:
     def consumer_providers(self) -> ConsumerProvidersAPI:
         """Providers are the entities that publish listings to the Marketplace."""
         return self._consumer_providers
+
+    @property
+    def credentials(self) -> CredentialsAPI:
+        """A credential represents an authentication and authorization mechanism for accessing services on your cloud tenant."""
+        return self._credentials
 
     @property
     def credentials_manager(self) -> CredentialsManagerAPI:
