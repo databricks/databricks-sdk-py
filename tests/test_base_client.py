@@ -1,3 +1,4 @@
+import random
 from http.server import BaseHTTPRequestHandler
 from typing import Iterator, List
 from unittest.mock import Mock
@@ -285,9 +286,10 @@ def test_http_retried_on_connection_error():
                           (200, 1, 100), # 100 / 200 bytes per chunk = 1 chunk
                           ])
 def test_streaming_response_chunk_size(chunk_size, expected_chunks, data_size):
-    test_data = b"0" * data_size
-    content_chunks = []
+    rng = random.Random(42)
+    test_data = bytes(rng.getrandbits(8) for _ in range(data_size))
 
+    content_chunks = []
     mock_response = Mock(spec=requests.Response)
 
     def mock_iter_content(chunk_size):
