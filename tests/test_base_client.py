@@ -1,5 +1,7 @@
+import random
 from http.server import BaseHTTPRequestHandler
 from typing import Iterator, List
+from unittest.mock import Mock
 
 import pytest
 import requests
@@ -276,3 +278,39 @@ def test_http_retried_on_connection_error():
         assert 'foo' in res
 
     assert len(requests) == 2
+
+
+@pytest.mark.parametrize('chunk_size,expected_chunks,data_size',
+                         [(5, 20, 100), # 100 / 5 bytes per chunk = 20 chunks
+                          (10, 10, 100), # 100 / 10 bytes per chunk = 10 chunks
+                          (200, 1, 100), # 100 / 200 bytes per chunk = 1 chunk
+                          ])
+def test_streaming_response_chunk_size(chunk_size, expected_chunks, data_size):
+    rng = random.Random(42)
+    test_data = bytes(rng.getrandbits(8) for _ in range(data_size))
+
+    content_chunks = []
+    mock_response = Mock(spec=requests.Response)
+
+    def mock_iter_content(chunk_size):
+        # Simulate how requests would chunk the data.
+        for i in range(0, len(test_data), chunk_size):
+            chunk = test_data[i:i + chunk_size]
+            content_chunks.append(chunk) # track chunks for verification
+            yield chunk
+
+    mock_response.iter_content = mock_iter_content
+    stream = _StreamingResponse(mock_response)
+    stream.set_chunk_size(chunk_size)
+
+    # Read all data one byte at a time.
+    received_data = b""
+    while True:
+        chunk = stream.read(1)
+        if not chunk:
+            break
+        received_data += chunk
+
+    assert received_data == test_data # all data was received correctly
+    assert len(content_chunks) == expected_chunks # correct number of chunks
+    assert all(len(c) <= chunk_size for c in content_chunks) # chunks don't exceed size
