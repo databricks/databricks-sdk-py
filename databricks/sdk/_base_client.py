@@ -69,8 +69,7 @@ class _BaseClient:
         :param extra_error_customizers:
         :param debug_headers: Whether to include debug headers in the request log.
         :param clock: Clock object to use for time-related operations.
-        :param streaming_buffer_size: The size of the buffer to use for streaming responses. If None, all the
-            response content is loaded into memory at once.
+        :param streaming_buffer_size: The size of the buffer to use for streaming responses (default: 1MB).
         """
 
         self._debug_truncate_bytes = debug_truncate_bytes or 96
