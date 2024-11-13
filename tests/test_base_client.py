@@ -317,10 +317,38 @@ def test_streaming_response_chunk_size(chunk_size, expected_chunks, data_size):
     assert all(len(c) <= chunk_size for c in content_chunks) # chunks don't exceed size
 
 
+def test_no_retry_on_non_seekable_stream():
+    requests = []
+
+    # Always respond with a response that triggers a retry.
+    def inner(h: BaseHTTPRequestHandler):
+        content_length = int(h.headers.get('Content-Length', 0))
+        if content_length > 0:
+            requests.append(h.rfile.read(content_length))
+        
+        h.send_response(429)  
+        h.send_header('Retry-After', '1')
+        h.end_headers()
+
+    stream = io.BytesIO(b"test data")
+    stream.seekable = lambda: False # makes the stream appear non-seekable
+
+    with http_fixture_server(inner) as host:
+        client = _BaseClient()
+        
+        # Should raise error immediately without retry.
+        with pytest.raises(DatabricksError):
+            client.do('POST', f'{host}/foo', data=stream)
+
+        # Verify that only one request was made (no retries).
+        assert len(requests) == 1
+        assert requests[0] == b"test data"
+
+
 def test_perform_resets_seekable_stream_on_error():
     received_data = []
 
-    # Response that triggers a retry.
+    # Always respond with a response that triggers a retry.
     def inner(h: BaseHTTPRequestHandler):
         content_length = int(h.headers.get('Content-Length', 0))
         if content_length > 0:
@@ -340,7 +368,7 @@ def test_perform_resets_seekable_stream_on_error():
         stream.read(4)
         assert stream.tell() == 4
 
-        # Call perform which should fail but reset the stream.
+        # Should fail but reset the stream.
         with pytest.raises(DatabricksError):
             client._perform('POST', f'{host}/foo', data=stream)
 
@@ -353,7 +381,7 @@ def test_perform_resets_seekable_stream_on_error():
 def test_perform_does_not_reset_nonseekable_stream_on_error():
     received_data = []
 
-    # Response that triggers a retry.
+    # Always respond with a response that triggers a retry.
     def inner(h: BaseHTTPRequestHandler):
         content_length = int(h.headers.get('Content-Length', 0))
         if content_length > 0:
@@ -374,7 +402,7 @@ def test_perform_does_not_reset_nonseekable_stream_on_error():
         stream.read(4)
         assert stream.tell() == 4
 
-        # Call perform which should fail but reset the stream.
+        # Should fail without resetting the stream.
         with pytest.raises(DatabricksError):
             client._perform('POST', f'{host}/foo', data=stream)
 
