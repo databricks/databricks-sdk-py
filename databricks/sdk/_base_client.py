@@ -1,3 +1,4 @@
+import io
 import logging
 import urllib.parse
 from datetime import timedelta
@@ -130,6 +131,14 @@ class _BaseClient:
         flattened = dict(flatten_dict(with_fixed_bools))
         return flattened
 
+    @staticmethod
+    def _is_seekable_stream(data) -> bool:
+        if data is None:
+            return False
+        if not isinstance(data, io.IOBase):
+            return False
+        return data.seekable()
+
     def do(self,
            method: str,
            url: str,
@@ -144,18 +153,25 @@ class _BaseClient:
         if headers is None:
             headers = {}
         headers['User-Agent'] = self._user_agent_base
-        retryable = retried(timeout=timedelta(seconds=self._retry_timeout_seconds),
-                            is_retryable=self._is_retryable,
-                            clock=self._clock)
-        response = retryable(self._perform)(method,
-                                            url,
-                                            query=query,
-                                            headers=headers,
-                                            body=body,
-                                            raw=raw,
-                                            files=files,
-                                            data=data,
-                                            auth=auth)
+
+        # Only retry if the request is not a stream or if the stream is seekable and
+        # we can rewind it. This is necessary to avoid bugs where the retry doesn't
+        # re-read already read data from the body.
+        call = self._perform
+        if data is None or self._is_seekable_stream(data):
+            call = retried(timeout=timedelta(seconds=self._retry_timeout_seconds),
+                           is_retryable=self._is_retryable,
+                           clock=self._clock)(call)
+
+        response = call(method,
+                        url,
+                        query=query,
+                        headers=headers,
+                        body=body,
+                        raw=raw,
+                        files=files,
+                        data=data,
+                        auth=auth)
 
         resp = dict()
         for header in response_headers if response_headers else []:
@@ -226,6 +242,12 @@ class _BaseClient:
                  files=None,
                  data=None,
                  auth: Callable[[requests.PreparedRequest], requests.PreparedRequest] = None):
+        # Keep track of the initial position of the stream so that we can rewind it if
+        # we need to retry the request.
+        initial_data_position = 0
+        if self._is_seekable_stream(data):
+            initial_data_position = data.tell()
+
         response = self._session.request(method,
                                          url,
                                          params=self._fix_query_string(query),
@@ -237,9 +259,15 @@ class _BaseClient:
                                          stream=raw,
                                          timeout=self._http_timeout_seconds)
         self._record_request_log(response, raw=raw or data is not None or files is not None)
+
         error = self._error_parser.get_api_error(response)
         if error is not None:
+            # If the request body is a seekable stream, rewind it so that it is ready
+            # to be read again in case of a retry.
+            if self._is_seekable_stream(data):
+                data.seek(initial_data_position)
             raise error from None
+
         return response
 
     def _record_request_log(self, response: requests.Response, raw: bool = False) -> None:

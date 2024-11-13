@@ -1,3 +1,4 @@
+import io
 import random
 from http.server import BaseHTTPRequestHandler
 from typing import Iterator, List
@@ -314,3 +315,70 @@ def test_streaming_response_chunk_size(chunk_size, expected_chunks, data_size):
     assert received_data == test_data # all data was received correctly
     assert len(content_chunks) == expected_chunks # correct number of chunks
     assert all(len(c) <= chunk_size for c in content_chunks) # chunks don't exceed size
+
+
+def test_perform_resets_seekable_stream_on_error():
+    received_data = []
+
+    # Response that triggers a retry.
+    def inner(h: BaseHTTPRequestHandler):
+        content_length = int(h.headers.get('Content-Length', 0))
+        if content_length > 0:
+            received_data.append(h.rfile.read(content_length))
+
+        h.send_response(429)
+        h.send_header('Retry-After', '1')
+        h.end_headers()
+
+    stream = io.BytesIO(b"0123456789") # seekable stream
+
+    with http_fixture_server(inner) as host:
+        client = _BaseClient()
+
+        # Read some data from the stream first to verify that the stream is
+        # reset to the correct position rather than to its beginning.
+        stream.read(4)
+        assert stream.tell() == 4
+
+        # Call perform which should fail but reset the stream.
+        with pytest.raises(DatabricksError):
+            client._perform('POST', f'{host}/foo', data=stream)
+
+        assert received_data == [b"456789"]
+
+        # Verify stream was reset to initial position.
+        assert stream.tell() == 4
+
+
+def test_perform_does_not_reset_nonseekable_stream_on_error():
+    received_data = []
+
+    # Response that triggers a retry.
+    def inner(h: BaseHTTPRequestHandler):
+        content_length = int(h.headers.get('Content-Length', 0))
+        if content_length > 0:
+            received_data.append(h.rfile.read(content_length))
+
+        h.send_response(429)
+        h.send_header('Retry-After', '1')
+        h.end_headers()
+
+    stream = io.BytesIO(b"0123456789")
+    stream.seekable = lambda: False # makes the stream appear non-seekable
+
+    with http_fixture_server(inner) as host:
+        client = _BaseClient()
+
+        # Read some data from the stream first to verify that the stream is
+        # reset to the correct position rather than to its beginning.
+        stream.read(4)
+        assert stream.tell() == 4
+
+        # Call perform which should fail but reset the stream.
+        with pytest.raises(DatabricksError):
+            client._perform('POST', f'{host}/foo', data=stream)
+
+        assert received_data == [b"456789"]
+
+        # Verify stream was NOT reset to initial position.
+        assert stream.tell() == 10 # EOF
