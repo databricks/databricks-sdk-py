@@ -325,8 +325,8 @@ def test_no_retry_on_non_seekable_stream():
         content_length = int(h.headers.get('Content-Length', 0))
         if content_length > 0:
             requests.append(h.rfile.read(content_length))
-        
-        h.send_response(429)  
+
+        h.send_response(429)
         h.send_header('Retry-After', '1')
         h.end_headers()
 
@@ -335,7 +335,7 @@ def test_no_retry_on_non_seekable_stream():
 
     with http_fixture_server(inner) as host:
         client = _BaseClient()
-        
+
         # Should raise error immediately without retry.
         with pytest.raises(DatabricksError):
             client.do('POST', f'{host}/foo', data=stream)
