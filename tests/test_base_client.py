@@ -389,7 +389,7 @@ def test_no_retry_on_non_seekable_stream():
     io.BytesIO(b"0123456789"), # BytesIO directly
     io.StringIO("0123456789"), # StringIO
 ])
-def test_resets_seekable_stream_on_retry(input_data):
+def test_reset_seekable_stream_on_retry(input_data):
     received_data = []
 
     # Retry two times before succeeding.
@@ -414,7 +414,7 @@ def test_resets_seekable_stream_on_retry(input_data):
         assert received_data == [b"0123456789", b"0123456789", b"0123456789"]
 
 
-def test_do_resets_seekable_stream_to_their_initial_position__onretry():
+def test_reset_seekable_stream_to_their_initial_position_on_retry():
     received_data = []
 
     # Retry two times before succeeding.
@@ -443,7 +443,7 @@ def test_do_resets_seekable_stream_to_their_initial_position__onretry():
         assert input_data.tell() == 10 # EOF
 
 
-def test_perform_does_not_reset_nonseekable_stream_on_retry():
+def test_do_not_reset_nonseekable_stream_on_retry():
     received_data = []
 
     # Always respond with a response that triggers a retry.
@@ -468,7 +468,7 @@ def test_perform_does_not_reset_nonseekable_stream_on_retry():
 
         # Should fail without resetting the stream.
         with pytest.raises(DatabricksError):
-            client._perform('POST', f'{host}/foo', data=stream)
+            client.do('POST', f'{host}/foo', data=stream)
 
         assert received_data == [b"456789"]
 
