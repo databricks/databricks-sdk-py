@@ -345,7 +345,7 @@ def test_no_retry_on_non_seekable_stream():
         assert requests[0] == b"test data"
 
 
-def test_perform_resets_seekable_stream_on_error():
+def test_perform_resets_seekable_stream_on_retry():
     received_data = []
 
     # Always respond with a response that triggers a retry.
@@ -360,13 +360,13 @@ def test_perform_resets_seekable_stream_on_error():
 
     stream = io.BytesIO(b"0123456789") # seekable stream
 
+    # Read some data from the stream first to verify that the stream is
+    # reset to the correct position rather than to its beginning.
+    stream.read(4)
+    assert stream.tell() == 4
+
     with http_fixture_server(inner) as host:
         client = _BaseClient()
-
-        # Read some data from the stream first to verify that the stream is
-        # reset to the correct position rather than to its beginning.
-        stream.read(4)
-        assert stream.tell() == 4
 
         # Should fail but reset the stream.
         with pytest.raises(DatabricksError):
@@ -378,7 +378,7 @@ def test_perform_resets_seekable_stream_on_error():
         assert stream.tell() == 4
 
 
-def test_perform_does_not_reset_nonseekable_stream_on_error():
+def test_perform_does_not_reset_nonseekable_stream_on_retry():
     received_data = []
 
     # Always respond with a response that triggers a retry.
@@ -394,13 +394,13 @@ def test_perform_does_not_reset_nonseekable_stream_on_error():
     stream = io.BytesIO(b"0123456789")
     stream.seekable = lambda: False # makes the stream appear non-seekable
 
+    # Read some data from the stream first to verify that the stream is
+    # reset to the correct position rather than to its beginning.
+    stream.read(4)
+    assert stream.tell() == 4
+
     with http_fixture_server(inner) as host:
         client = _BaseClient()
-
-        # Read some data from the stream first to verify that the stream is
-        # reset to the correct position rather than to its beginning.
-        stream.read(4)
-        assert stream.tell() == 4
 
         # Should fail without resetting the stream.
         with pytest.raises(DatabricksError):
