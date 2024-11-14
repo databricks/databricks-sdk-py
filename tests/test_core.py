@@ -370,14 +370,20 @@ def test_github_oidc_flow_works_with_azure(monkeypatch):
         assert {'Authorization': 'Taker this-is-it'} == headers
 
 
-@pytest.mark.parametrize(['azure_environment', 'expected'],
-                         [('PUBLIC', ENVIRONMENTS['PUBLIC']), ('USGOVERNMENT', ENVIRONMENTS['USGOVERNMENT']),
-                          ('CHINA', ENVIRONMENTS['CHINA']), ('public', ENVIRONMENTS['PUBLIC']),
-                          ('usgovernment', ENVIRONMENTS['USGOVERNMENT']), ('china', ENVIRONMENTS['CHINA']),
-                          # Kept for historical compatibility
-                          ('AzurePublicCloud', ENVIRONMENTS['PUBLIC']),
-                          ('AzureUSGovernment', ENVIRONMENTS['USGOVERNMENT']),
-                          ('AzureChinaCloud', ENVIRONMENTS['CHINA']), ])
+@pytest.mark.parametrize(
+    ['azure_environment', 'expected'],
+    [
+        ('PUBLIC', ENVIRONMENTS['PUBLIC']),
+        ('USGOVERNMENT', ENVIRONMENTS['USGOVERNMENT']),
+        ('CHINA', ENVIRONMENTS['CHINA']),
+        ('public', ENVIRONMENTS['PUBLIC']),
+        ('usgovernment', ENVIRONMENTS['USGOVERNMENT']),
+        ('china', ENVIRONMENTS['CHINA']),
+        # Kept for historical compatibility
+        ('AzurePublicCloud', ENVIRONMENTS['PUBLIC']),
+        ('AzureUSGovernment', ENVIRONMENTS['USGOVERNMENT']),
+        ('AzureChinaCloud', ENVIRONMENTS['CHINA']),
+    ])
 def test_azure_environment(azure_environment, expected):
     c = Config(credentials_strategy=noop_credentials,
                azure_workspace_resource_id='...',
