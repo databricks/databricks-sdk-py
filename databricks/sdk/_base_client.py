@@ -270,6 +270,9 @@ class _BaseClient:
         if error is not None:
             # If the request body is a seekable stream, rewind it so that it is ready
             # to be read again in case of a retry.
+            #
+            # TODO: This should be moved into a "before-retry" hook to avoid one
+            # unnecessary seek on the last failed retry before aborting.
             if self._is_seekable_stream(data):
                 data.seek(initial_data_position)
             raise error from None
