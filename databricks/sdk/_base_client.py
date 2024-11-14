@@ -154,6 +154,10 @@ class _BaseClient:
             headers = {}
         headers['User-Agent'] = self._user_agent_base
 
+        # Wrap strings and bytes in a seekable stream so that we can rewind them.
+        if isinstance(data, (str, bytes)):
+            data = io.BytesIO(data.encode('utf-8') if isinstance(data, str) else data)
+
         # Only retry if the request is not a stream or if the stream is seekable and
         # we can rewind it. This is necessary to avoid bugs where the retry doesn't
         # re-read already read data from the body.

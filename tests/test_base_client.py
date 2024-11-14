@@ -383,41 +383,64 @@ def test_no_retry_on_non_seekable_stream():
         assert requests[0] == b"test data"
 
 
-def test_perform_resets_seekable_stream_on_retry():
+@pytest.mark.parametrize('input_data', [
+    b"0123456789", # bytes -> BytesIO
+    "0123456789", # str -> BytesIO
+    io.BytesIO(b"0123456789"), # BytesIO directly
+    io.StringIO("0123456789"), # StringIO
+])
+def test_resets_seekable_stream_on_retry(input_data):
     received_data = []
 
-    # Always respond with a response that triggers a retry.
+    # Retry two times before succeeding.
     def inner(h: BaseHTTPRequestHandler):
+        if len(received_data) == 2:
+            h.send_response(200)
+            h.end_headers()
+        else:
+            h.send_response(429)
+            h.end_headers()
+
         content_length = int(h.headers.get('Content-Length', 0))
         if content_length > 0:
             received_data.append(h.rfile.read(content_length))
 
-        h.send_response(429)
-        h.send_header('Retry-After', '1')
-        h.end_headers()
+    with http_fixture_server(inner) as host:
+        client = _BaseClient()
 
-    stream = io.BytesIO(b"0123456789") # seekable stream
+        # Retries should reset the stream.
+        client.do('POST', f'{host}/foo', data=input_data)
 
-    # Read some data from the stream first to verify that the stream is
-    # reset to the correct position rather than to its beginning.
-    stream.read(4)
-    assert stream.tell() == 4
+        assert received_data == [b"0123456789", b"0123456789", b"0123456789"]
+
+
+def test_do_resets_seekable_stream_to_their_initial_position__onretry():
+    received_data = []
+
+    # Retry two times before succeeding.
+    def inner(h: BaseHTTPRequestHandler):
+        if len(received_data) == 2:
+            h.send_response(200)
+            h.end_headers()
+        else:
+            h.send_response(429)
+            h.end_headers()
+
+        content_length = int(h.headers.get('Content-Length', 0))
+        if content_length > 0:
+            received_data.append(h.rfile.read(content_length))
+
+    input_data = io.BytesIO(b"0123456789")
+    input_data.seek(4)
 
     with http_fixture_server(inner) as host:
         client = _BaseClient()
 
-        # Each call should fail and reset the stream.
-        with pytest.raises(DatabricksError):
-            client._perform('POST', f'{host}/foo', data=stream)
-        with pytest.raises(DatabricksError):
-            client._perform('POST', f'{host}/foo', data=stream)
-        with pytest.raises(DatabricksError):
-            client._perform('POST', f'{host}/foo', data=stream)
+        # Retries should reset the stream.
+        client.do('POST', f'{host}/foo', data=input_data)
 
         assert received_data == [b"456789", b"456789", b"456789"]
-
-        # Verify stream was reset to initial position.
-        assert stream.tell() == 4
+        assert input_data.tell() == 10 # EOF
 
 
 def test_perform_does_not_reset_nonseekable_stream_on_retry():
@@ -438,8 +461,7 @@ def test_perform_does_not_reset_nonseekable_stream_on_retry():
 
     # Read some data from the stream first to verify that the stream is
     # reset to the correct position rather than to its beginning.
-    stream.read(4)
-    assert stream.tell() == 4
+    stream.seek(4)
 
     with http_fixture_server(inner) as host:
         client = _BaseClient()
