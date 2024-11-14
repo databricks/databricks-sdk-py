@@ -357,12 +357,14 @@ def test_is_seekable_stream():
     assert client._is_seekable_stream(CustomSeekableStream())
 
 
-@pytest.mark.parametrize('input_data', [
-    b"0123456789", # bytes -> BytesIO
-    "0123456789", # str -> BytesIO
-    io.BytesIO(b"0123456789"), # BytesIO directly
-    io.StringIO("0123456789"), # StringIO
-])
+@pytest.mark.parametrize(
+    'input_data',
+    [
+        b"0123456789", # bytes -> BytesIO
+        "0123456789", # str -> BytesIO
+        io.BytesIO(b"0123456789"), # BytesIO directly
+        io.StringIO("0123456789"), # StringIO
+    ])
 def test_reset_seekable_stream_on_retry(input_data):
     received_data = []
 
