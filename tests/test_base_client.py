@@ -316,6 +316,37 @@ def test_streaming_response_chunk_size(chunk_size, expected_chunks, data_size):
     assert len(content_chunks) == expected_chunks # correct number of chunks
     assert all(len(c) <= chunk_size for c in content_chunks) # chunks don't exceed size
 
+def test_is_seekable_stream():
+    client = _BaseClient()
+
+    # Test various input types that are not streams.
+    assert not client._is_seekable_stream(None)  # None
+    assert not client._is_seekable_stream("string data")  # str
+    assert not client._is_seekable_stream(b"binary data")  # bytes
+    assert not client._is_seekable_stream(["list", "data"])  # list
+    assert not client._is_seekable_stream(42)  # int
+    
+    # Test non-seekable stream.
+    non_seekable = io.BytesIO(b"test data")
+    non_seekable.seekable = lambda: False
+    assert not client._is_seekable_stream(non_seekable)
+    
+    # Test seekable streams.
+    assert client._is_seekable_stream(io.BytesIO(b"test data"))  # BytesIO
+    assert client._is_seekable_stream(io.StringIO("test data"))  # StringIO
+    
+    # Test file objects.
+    with open(__file__, 'rb') as f:
+        assert client._is_seekable_stream(f)  # File object
+    
+    # Test custom seekable stream.
+    class CustomSeekableStream(io.IOBase):
+        def seekable(self): return True
+        def seek(self, offset, whence=0): return 0
+        def tell(self): return 0
+    
+    assert client._is_seekable_stream(CustomSeekableStream())
+
 
 def test_no_retry_on_non_seekable_stream():
     requests = []
@@ -368,11 +399,15 @@ def test_perform_resets_seekable_stream_on_retry():
     with http_fixture_server(inner) as host:
         client = _BaseClient()
 
-        # Should fail but reset the stream.
+        # Each call should fail and reset the stream.
+        with pytest.raises(DatabricksError):
+            client._perform('POST', f'{host}/foo', data=stream)
+        with pytest.raises(DatabricksError):
+            client._perform('POST', f'{host}/foo', data=stream)
         with pytest.raises(DatabricksError):
             client._perform('POST', f'{host}/foo', data=stream)
 
-        assert received_data == [b"456789"]
+        assert received_data == [b"456789", b"456789", b"456789"]
 
         # Verify stream was reset to initial position.
         assert stream.tell() == 4

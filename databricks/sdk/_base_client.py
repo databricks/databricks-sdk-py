@@ -157,11 +157,13 @@ class _BaseClient:
         # Only retry if the request is not a stream or if the stream is seekable and
         # we can rewind it. This is necessary to avoid bugs where the retry doesn't
         # re-read already read data from the body.
-        call = self._perform
-        if data is None or self._is_seekable_stream(data):
+        if data is not None and not self._is_seekable_stream(data):
+            logger.debug(f"Retry disabled for non-seekable stream: type={type(data)}")
+            call = self._perform
+        else:
             call = retried(timeout=timedelta(seconds=self._retry_timeout_seconds),
                            is_retryable=self._is_retryable,
-                           clock=self._clock)(call)
+                           clock=self._clock)(self._perform)
 
         response = call(method,
                         url,
