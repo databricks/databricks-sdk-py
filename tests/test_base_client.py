@@ -355,34 +355,6 @@ def test_is_seekable_stream():
     assert client._is_seekable_stream(CustomSeekableStream())
 
 
-def test_no_retry_on_non_seekable_stream():
-    requests = []
-
-    # Always respond with a response that triggers a retry.
-    def inner(h: BaseHTTPRequestHandler):
-        content_length = int(h.headers.get('Content-Length', 0))
-        if content_length > 0:
-            requests.append(h.rfile.read(content_length))
-
-        h.send_response(429)
-        h.send_header('Retry-After', '1')
-        h.end_headers()
-
-    stream = io.BytesIO(b"test data")
-    stream.seekable = lambda: False # makes the stream appear non-seekable
-
-    with http_fixture_server(inner) as host:
-        client = _BaseClient()
-
-        # Should raise error immediately without retry.
-        with pytest.raises(DatabricksError):
-            client.do('POST', f'{host}/foo', data=stream)
-
-        # Verify that only one request was made (no retries).
-        assert len(requests) == 1
-        assert requests[0] == b"test data"
-
-
 @pytest.mark.parametrize('input_data', [
     b"0123456789", # bytes -> BytesIO
     "0123456789", # str -> BytesIO
@@ -443,34 +415,29 @@ def test_reset_seekable_stream_to_their_initial_position_on_retry():
         assert input_data.tell() == 10 # EOF
 
 
-def test_do_not_reset_nonseekable_stream_on_retry():
-    received_data = []
+def test_no_retry_or_reset_on_non_seekable_stream():
+    requests = []
 
     # Always respond with a response that triggers a retry.
     def inner(h: BaseHTTPRequestHandler):
         content_length = int(h.headers.get('Content-Length', 0))
         if content_length > 0:
-            received_data.append(h.rfile.read(content_length))
+            requests.append(h.rfile.read(content_length))
 
         h.send_response(429)
         h.send_header('Retry-After', '1')
         h.end_headers()
 
-    stream = io.BytesIO(b"0123456789")
-    stream.seekable = lambda: False # makes the stream appear non-seekable
-
-    # Read some data from the stream first to verify that the stream is
-    # reset to the correct position rather than to its beginning.
-    stream.seek(4)
+    input_data = io.BytesIO(b"0123456789")
+    input_data.seekable = lambda: False # makes the stream appear non-seekable
 
     with http_fixture_server(inner) as host:
         client = _BaseClient()
 
-        # Should fail without resetting the stream.
+        # Should raise error immediately without retry.
         with pytest.raises(DatabricksError):
-            client.do('POST', f'{host}/foo', data=stream)
+            client.do('POST', f'{host}/foo', data=input_data)
 
-        assert received_data == [b"456789"]
-
-        # Verify stream was NOT reset to initial position.
-        assert stream.tell() == 10 # EOF
+        # Verify that only one request was made (no retries).
+        assert requests == [b"0123456789"]
+        assert input_data.tell() == 10 # EOF
