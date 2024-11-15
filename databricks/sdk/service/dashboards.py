@@ -1144,7 +1144,7 @@ class LakeviewAPI:
         
         :returns: :class:`Dashboard`
         """
-        body = dashboard
+        body = dashboard.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         res = self._api.do('POST', '/api/2.0/lakeview/dashboards', body=body, headers=headers)
@@ -1528,7 +1528,7 @@ class LakeviewAPI:
         
         :returns: :class:`Dashboard`
         """
-        body = dashboard
+        body = dashboard.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         res = self._api.do('PATCH',
