@@ -684,6 +684,7 @@ class ImportFormat(Enum):
     DBC = 'DBC'
     HTML = 'HTML'
     JUPYTER = 'JUPYTER'
+    RAW = 'RAW'
     R_MARKDOWN = 'R_MARKDOWN'
     SOURCE = 'SOURCE'
 
@@ -1799,7 +1800,7 @@ class ReposAPI:
         Deletes the specified repo.
         
         :param repo_id: int
-          ID of the Git folder (repo) object in the workspace.
+          The ID for the corresponding repo to delete.
         
         
         """

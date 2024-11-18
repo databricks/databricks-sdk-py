@@ -1269,7 +1269,7 @@ class LakeviewAPI:
         Get the current published dashboard.
         
         :param dashboard_id: str
-          UUID identifying the dashboard to be published.
+          UUID identifying the published dashboard.
         
         :returns: :class:`PublishedDashboard`
         """
@@ -1364,7 +1364,7 @@ class LakeviewAPI:
         """List dashboard schedules.
         
         :param dashboard_id: str
-          UUID identifying the dashboard to which the schedule belongs.
+          UUID identifying the dashboard to which the schedules belongs.
         :param page_size: int (optional)
           The number of schedules to return per page.
         :param page_token: str (optional)
@@ -1400,9 +1400,9 @@ class LakeviewAPI:
         """List schedule subscriptions.
         
         :param dashboard_id: str
-          UUID identifying the dashboard to which the subscription belongs.
+          UUID identifying the dashboard which the subscriptions belongs.
         :param schedule_id: str
-          UUID identifying the schedule to which the subscription belongs.
+          UUID identifying the schedule which the subscriptions belongs.
         :param page_size: int (optional)
           The number of subscriptions to return per page.
         :param page_token: str (optional)
@@ -1508,7 +1508,7 @@ class LakeviewAPI:
         Unpublish the dashboard.
         
         :param dashboard_id: str
-          UUID identifying the dashboard to be published.
+          UUID identifying the published dashboard.
         
         
         """

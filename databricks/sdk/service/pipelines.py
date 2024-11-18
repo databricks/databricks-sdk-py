@@ -61,7 +61,7 @@ class CreatePipeline:
     """Filters on which Pipeline packages to include in the deployed graph."""
 
     gateway_definition: Optional[IngestionGatewayPipelineDefinition] = None
-    """The definition of a gateway pipeline to support CDC."""
+    """The definition of a gateway pipeline to support change data capture."""
 
     id: Optional[str] = None
     """Unique identifier for this pipeline."""
@@ -81,6 +81,9 @@ class CreatePipeline:
 
     photon: Optional[bool] = None
     """Whether Photon is enabled for this pipeline."""
+
+    restart_window: Optional[RestartWindow] = None
+    """Restart window of this pipeline."""
 
     schema: Optional[str] = None
     """The default schema (database) where tables are read from or published to. The presence of this
@@ -122,6 +125,7 @@ class CreatePipeline:
         if self.name is not None: body['name'] = self.name
         if self.notifications: body['notifications'] = [v.as_dict() for v in self.notifications]
         if self.photon is not None: body['photon'] = self.photon
+        if self.restart_window: body['restart_window'] = self.restart_window.as_dict()
         if self.schema is not None: body['schema'] = self.schema
         if self.serverless is not None: body['serverless'] = self.serverless
         if self.storage is not None: body['storage'] = self.storage
@@ -151,6 +155,7 @@ class CreatePipeline:
                    name=d.get('name', None),
                    notifications=_repeated_dict(d, 'notifications', Notifications),
                    photon=d.get('photon', None),
+                   restart_window=_from_dict(d, 'restart_window', RestartWindow),
                    schema=d.get('schema', None),
                    serverless=d.get('serverless', None),
                    storage=d.get('storage', None),
@@ -285,7 +290,7 @@ class EditPipeline:
     """Filters on which Pipeline packages to include in the deployed graph."""
 
     gateway_definition: Optional[IngestionGatewayPipelineDefinition] = None
-    """The definition of a gateway pipeline to support CDC."""
+    """The definition of a gateway pipeline to support change data capture."""
 
     id: Optional[str] = None
     """Unique identifier for this pipeline."""
@@ -308,6 +313,9 @@ class EditPipeline:
 
     pipeline_id: Optional[str] = None
     """Unique identifier for this pipeline."""
+
+    restart_window: Optional[RestartWindow] = None
+    """Restart window of this pipeline."""
 
     schema: Optional[str] = None
     """The default schema (database) where tables are read from or published to. The presence of this
@@ -351,6 +359,7 @@ class EditPipeline:
         if self.notifications: body['notifications'] = [v.as_dict() for v in self.notifications]
         if self.photon is not None: body['photon'] = self.photon
         if self.pipeline_id is not None: body['pipeline_id'] = self.pipeline_id
+        if self.restart_window: body['restart_window'] = self.restart_window.as_dict()
         if self.schema is not None: body['schema'] = self.schema
         if self.serverless is not None: body['serverless'] = self.serverless
         if self.storage is not None: body['storage'] = self.storage
@@ -381,6 +390,7 @@ class EditPipeline:
                    notifications=_repeated_dict(d, 'notifications', Notifications),
                    photon=d.get('photon', None),
                    pipeline_id=d.get('pipeline_id', None),
+                   restart_window=_from_dict(d, 'restart_window', RestartWindow),
                    schema=d.get('schema', None),
                    serverless=d.get('serverless', None),
                    storage=d.get('storage', None),
@@ -588,13 +598,13 @@ class GetUpdateResponse:
 @dataclass
 class IngestionConfig:
     report: Optional[ReportSpec] = None
-    """Select tables from a specific source report."""
+    """Select a specific source report."""
 
     schema: Optional[SchemaSpec] = None
-    """Select tables from a specific source schema."""
+    """Select all tables from a specific source schema."""
 
     table: Optional[TableSpec] = None
-    """Select tables from a specific source table."""
+    """Select a specific source table."""
 
     def as_dict(self) -> dict:
         """Serializes the IngestionConfig into a dictionary suitable for use as a JSON request body."""
@@ -615,11 +625,11 @@ class IngestionConfig:
 @dataclass
 class IngestionGatewayPipelineDefinition:
     connection_id: Optional[str] = None
-    """[Deprecated, use connection_name instead] Immutable. The Unity Catalog connection this gateway
-    pipeline uses to communicate with the source."""
+    """[Deprecated, use connection_name instead] Immutable. The Unity Catalog connection that this
+    gateway pipeline uses to communicate with the source."""
 
     connection_name: Optional[str] = None
-    """Immutable. The Unity Catalog connection this gateway pipeline uses to communicate with the
+    """Immutable. The Unity Catalog connection that this gateway pipeline uses to communicate with the
     source."""
 
     gateway_storage_catalog: Optional[str] = None
@@ -658,12 +668,12 @@ class IngestionGatewayPipelineDefinition:
 @dataclass
 class IngestionPipelineDefinition:
     connection_name: Optional[str] = None
-    """Immutable. The Unity Catalog connection this ingestion pipeline uses to communicate with the
-    source. Specify either ingestion_gateway_id or connection_name."""
+    """Immutable. The Unity Catalog connection that this ingestion pipeline uses to communicate with
+    the source. This is used with connectors for applications like Salesforce, Workday, and so on."""
 
     ingestion_gateway_id: Optional[str] = None
-    """Immutable. Identifier for the ingestion gateway used by this ingestion pipeline to communicate
-    with the source. Specify either ingestion_gateway_id or connection_name."""
+    """Immutable. Identifier for the gateway that is used by this ingestion pipeline to communicate
+    with the source database. This is used with connectors to databases like SQL Server."""
 
     objects: Optional[List[IngestionConfig]] = None
     """Required. Settings specifying tables to replicate and the destination for the replicated tables."""
@@ -1450,7 +1460,7 @@ class PipelineSpec:
     """Filters on which Pipeline packages to include in the deployed graph."""
 
     gateway_definition: Optional[IngestionGatewayPipelineDefinition] = None
-    """The definition of a gateway pipeline to support CDC."""
+    """The definition of a gateway pipeline to support change data capture."""
 
     id: Optional[str] = None
     """Unique identifier for this pipeline."""
@@ -1470,6 +1480,9 @@ class PipelineSpec:
 
     photon: Optional[bool] = None
     """Whether Photon is enabled for this pipeline."""
+
+    restart_window: Optional[RestartWindow] = None
+    """Restart window of this pipeline."""
 
     schema: Optional[str] = None
     """The default schema (database) where tables are read from or published to. The presence of this
@@ -1509,6 +1522,7 @@ class PipelineSpec:
         if self.name is not None: body['name'] = self.name
         if self.notifications: body['notifications'] = [v.as_dict() for v in self.notifications]
         if self.photon is not None: body['photon'] = self.photon
+        if self.restart_window: body['restart_window'] = self.restart_window.as_dict()
         if self.schema is not None: body['schema'] = self.schema
         if self.serverless is not None: body['serverless'] = self.serverless
         if self.storage is not None: body['storage'] = self.storage
@@ -1536,6 +1550,7 @@ class PipelineSpec:
                    name=d.get('name', None),
                    notifications=_repeated_dict(d, 'notifications', Notifications),
                    photon=d.get('photon', None),
+                   restart_window=_from_dict(d, 'restart_window', RestartWindow),
                    schema=d.get('schema', None),
                    serverless=d.get('serverless', None),
                    storage=d.get('storage', None),
@@ -1672,6 +1687,50 @@ class ReportSpec:
                    destination_table=d.get('destination_table', None),
                    source_url=d.get('source_url', None),
                    table_configuration=_from_dict(d, 'table_configuration', TableSpecificConfig))
+
+
+@dataclass
+class RestartWindow:
+    start_hour: int
+    """An integer between 0 and 23 denoting the start hour for the restart window in the 24-hour day.
+    Continuous pipeline restart is triggered only within a five-hour window starting at this hour."""
+
+    days_of_week: Optional[RestartWindowDaysOfWeek] = None
+    """Days of week in which the restart is allowed to happen (within a five-hour window starting at
+    start_hour). If not specified all days of the week will be used."""
+
+    time_zone_id: Optional[str] = None
+    """Time zone id of restart window. See
+    https://docs.databricks.com/sql/language-manual/sql-ref-syntax-aux-conf-mgmt-set-timezone.html
+    for details. If not specified, UTC will be used."""
+
+    def as_dict(self) -> dict:
+        """Serializes the RestartWindow into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.days_of_week is not None: body['days_of_week'] = self.days_of_week.value
+        if self.start_hour is not None: body['start_hour'] = self.start_hour
+        if self.time_zone_id is not None: body['time_zone_id'] = self.time_zone_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> RestartWindow:
+        """Deserializes the RestartWindow from a dictionary."""
+        return cls(days_of_week=_enum(d, 'days_of_week', RestartWindowDaysOfWeek),
+                   start_hour=d.get('start_hour', None),
+                   time_zone_id=d.get('time_zone_id', None))
+
+
+class RestartWindowDaysOfWeek(Enum):
+    """Days of week in which the restart is allowed to happen (within a five-hour window starting at
+    start_hour). If not specified all days of the week will be used."""
+
+    FRIDAY = 'FRIDAY'
+    MONDAY = 'MONDAY'
+    SATURDAY = 'SATURDAY'
+    SUNDAY = 'SUNDAY'
+    THURSDAY = 'THURSDAY'
+    TUESDAY = 'TUESDAY'
+    WEDNESDAY = 'WEDNESDAY'
 
 
 @dataclass
@@ -2211,6 +2270,7 @@ class PipelinesAPI:
                name: Optional[str] = None,
                notifications: Optional[List[Notifications]] = None,
                photon: Optional[bool] = None,
+               restart_window: Optional[RestartWindow] = None,
                schema: Optional[str] = None,
                serverless: Optional[bool] = None,
                storage: Optional[str] = None,
@@ -2247,7 +2307,7 @@ class PipelinesAPI:
         :param filters: :class:`Filters` (optional)
           Filters on which Pipeline packages to include in the deployed graph.
         :param gateway_definition: :class:`IngestionGatewayPipelineDefinition` (optional)
-          The definition of a gateway pipeline to support CDC.
+          The definition of a gateway pipeline to support change data capture.
         :param id: str (optional)
           Unique identifier for this pipeline.
         :param ingestion_definition: :class:`IngestionPipelineDefinition` (optional)
@@ -2261,6 +2321,8 @@ class PipelinesAPI:
           List of notification settings for this pipeline.
         :param photon: bool (optional)
           Whether Photon is enabled for this pipeline.
+        :param restart_window: :class:`RestartWindow` (optional)
+          Restart window of this pipeline.
         :param schema: str (optional)
           The default schema (database) where tables are read from or published to. The presence of this field
           implies that the pipeline is in direct publishing mode.
@@ -2296,6 +2358,7 @@ class PipelinesAPI:
         if name is not None: body['name'] = name
         if notifications is not None: body['notifications'] = [v.as_dict() for v in notifications]
         if photon is not None: body['photon'] = photon
+        if restart_window is not None: body['restart_window'] = restart_window.as_dict()
         if schema is not None: body['schema'] = schema
         if serverless is not None: body['serverless'] = serverless
         if storage is not None: body['storage'] = storage
@@ -2629,6 +2692,7 @@ class PipelinesAPI:
                name: Optional[str] = None,
                notifications: Optional[List[Notifications]] = None,
                photon: Optional[bool] = None,
+               restart_window: Optional[RestartWindow] = None,
                schema: Optional[str] = None,
                serverless: Optional[bool] = None,
                storage: Optional[str] = None,
@@ -2668,7 +2732,7 @@ class PipelinesAPI:
         :param filters: :class:`Filters` (optional)
           Filters on which Pipeline packages to include in the deployed graph.
         :param gateway_definition: :class:`IngestionGatewayPipelineDefinition` (optional)
-          The definition of a gateway pipeline to support CDC.
+          The definition of a gateway pipeline to support change data capture.
         :param id: str (optional)
           Unique identifier for this pipeline.
         :param ingestion_definition: :class:`IngestionPipelineDefinition` (optional)
@@ -2682,6 +2746,8 @@ class PipelinesAPI:
           List of notification settings for this pipeline.
         :param photon: bool (optional)
           Whether Photon is enabled for this pipeline.
+        :param restart_window: :class:`RestartWindow` (optional)
+          Restart window of this pipeline.
         :param schema: str (optional)
           The default schema (database) where tables are read from or published to. The presence of this field
           implies that the pipeline is in direct publishing mode.
@@ -2717,6 +2783,7 @@ class PipelinesAPI:
         if name is not None: body['name'] = name
         if notifications is not None: body['notifications'] = [v.as_dict() for v in notifications]
         if photon is not None: body['photon'] = photon
+        if restart_window is not None: body['restart_window'] = restart_window.as_dict()
         if schema is not None: body['schema'] = schema
         if serverless is not None: body['serverless'] = serverless
         if storage is not None: body['storage'] = storage

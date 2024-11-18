@@ -115,7 +115,7 @@
         Gets a budget configuration for an account. Both account and budget configuration are specified by ID.
         
         :param budget_id: str
-          The Databricks budget configuration ID.
+          The budget configuration ID
         
         :returns: :class:`GetBudgetConfigurationResponse`
         

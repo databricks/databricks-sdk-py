@@ -1,5 +1,30 @@
 # Version changelog
 
+## [Release] Release v0.38.0
+
+### New Features and Improvements
+
+ * Read streams by 1MB chunks by default. ([#817](https://github.com/databricks/databricks-sdk-py/pull/817)).
+
+
+### Bug Fixes
+
+ * Rewind seekable streams before retrying ([#821](https://github.com/databricks/databricks-sdk-py/pull/821)).
+
+
+### Internal Changes
+
+ * Reformat SDK with YAPF 0.43. ([#822](https://github.com/databricks/databricks-sdk-py/pull/822)).
+ * Update Jobs GetRun API to support paginated responses for jobs and ForEach tasks ([#819](https://github.com/databricks/databricks-sdk-py/pull/819)).
+ * Update PR template ([#814](https://github.com/databricks/databricks-sdk-py/pull/814)).
+
+
+### API Changes:
+
+ * Added `databricks.sdk.service.apps`, `databricks.sdk.service.billing`, `databricks.sdk.service.catalog`, `databricks.sdk.service.compute`, `databricks.sdk.service.dashboards`, `databricks.sdk.service.files`, `databricks.sdk.service.iam`, `databricks.sdk.service.jobs`, `databricks.sdk.service.marketplace`, `databricks.sdk.service.ml`, `databricks.sdk.service.oauth2`, `databricks.sdk.service.pipelines`, `databricks.sdk.service.provisioning`, `databricks.sdk.service.serving`, `databricks.sdk.service.settings`, `databricks.sdk.service.sharing`, `databricks.sdk.service.sql`, `databricks.sdk.service.vectorsearch` and `databricks.sdk.service.workspace` packages.
+
+OpenAPI SHA: 2035bf5234753adfd080a79bff325dd4a5b90bc2, Date: 2024-11-15
+
 ## [Release] Release v0.37.0
 
 ### Bug Fixes
