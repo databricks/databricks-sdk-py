@@ -49,6 +49,7 @@
         Gets the Custom OAuth App Integration for the given integration id.
         
         :param integration_id: str
+          The OAuth app integration ID.
         
         :returns: :class:`GetCustomAppIntegrationOutput`
         

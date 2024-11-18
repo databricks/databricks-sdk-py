@@ -53,7 +53,7 @@
         Deletes a token, specified by its ID.
         
         :param token_id: str
-          The ID of the token to get.
+          The ID of the token to revoke.
         
         
         

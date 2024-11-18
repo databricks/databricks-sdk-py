@@ -1150,7 +1150,7 @@ class UpdateWorkspaceAssignments:
     """The ID of the user, service principal, or group."""
 
     workspace_id: Optional[int] = None
-    """The workspace ID for the account."""
+    """The workspace ID."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateWorkspaceAssignments into a dictionary suitable for use as a JSON request body."""
@@ -3385,7 +3385,7 @@ class WorkspaceAssignmentAPI:
         specified principal.
         
         :param workspace_id: int
-          The workspace ID for the account.
+          The workspace ID.
         :param principal_id: int
           The ID of the user, service principal, or group.
         :param permissions: List[:class:`WorkspacePermission`] (optional)
