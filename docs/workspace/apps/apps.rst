@@ -188,7 +188,8 @@
         Updates the app with the supplied name.
         
         :param name: str
-          The name of the app.
+          The name of the app. The name must contain only lowercase alphanumeric characters and hyphens. It
+          must be unique within the workspace.
         :param app: :class:`App` (optional)
         
         :returns: :class:`App`

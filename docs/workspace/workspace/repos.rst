@@ -62,7 +62,7 @@
         Deletes the specified repo.
         
         :param repo_id: int
-          ID of the Git folder (repo) object in the workspace.
+          The ID for the corresponding repo to delete.
         
         
         

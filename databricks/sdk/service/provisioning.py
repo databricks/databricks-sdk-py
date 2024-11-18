@@ -1245,6 +1245,10 @@ class UpdateWorkspaceRequest:
     customer-managed VPC. For failed workspaces only, you can switch from a Databricks-managed VPC
     to a customer-managed VPC by updating the workspace to add a network configuration ID."""
 
+    private_access_settings_id: Optional[str] = None
+    """The ID of the workspace's private access settings configuration object. This parameter is
+    available only for updating failed workspaces."""
+
     storage_configuration_id: Optional[str] = None
     """The ID of the workspace's storage configuration object. This parameter is available only for
     updating failed workspaces."""
@@ -1267,6 +1271,8 @@ class UpdateWorkspaceRequest:
         if self.network_connectivity_config_id is not None:
             body['network_connectivity_config_id'] = self.network_connectivity_config_id
         if self.network_id is not None: body['network_id'] = self.network_id
+        if self.private_access_settings_id is not None:
+            body['private_access_settings_id'] = self.private_access_settings_id
         if self.storage_configuration_id is not None:
             body['storage_configuration_id'] = self.storage_configuration_id
         if self.storage_customer_managed_key_id is not None:
@@ -1284,6 +1290,7 @@ class UpdateWorkspaceRequest:
                                                                   None),
                    network_connectivity_config_id=d.get('network_connectivity_config_id', None),
                    network_id=d.get('network_id', None),
+                   private_access_settings_id=d.get('private_access_settings_id', None),
                    storage_configuration_id=d.get('storage_configuration_id', None),
                    storage_customer_managed_key_id=d.get('storage_customer_managed_key_id', None),
                    workspace_id=d.get('workspace_id', None))
@@ -2706,6 +2713,7 @@ class WorkspacesAPI:
                managed_services_customer_managed_key_id: Optional[str] = None,
                network_connectivity_config_id: Optional[str] = None,
                network_id: Optional[str] = None,
+               private_access_settings_id: Optional[str] = None,
                storage_configuration_id: Optional[str] = None,
                storage_customer_managed_key_id: Optional[str] = None) -> Wait[Workspace]:
         """Update workspace configuration.
@@ -2824,6 +2832,9 @@ class WorkspacesAPI:
           The ID of the workspace's network configuration object. Used only if you already use a
           customer-managed VPC. For failed workspaces only, you can switch from a Databricks-managed VPC to a
           customer-managed VPC by updating the workspace to add a network configuration ID.
+        :param private_access_settings_id: str (optional)
+          The ID of the workspace's private access settings configuration object. This parameter is available
+          only for updating failed workspaces.
         :param storage_configuration_id: str (optional)
           The ID of the workspace's storage configuration object. This parameter is available only for
           updating failed workspaces.
@@ -2844,6 +2855,8 @@ class WorkspacesAPI:
         if network_connectivity_config_id is not None:
             body['network_connectivity_config_id'] = network_connectivity_config_id
         if network_id is not None: body['network_id'] = network_id
+        if private_access_settings_id is not None:
+            body['private_access_settings_id'] = private_access_settings_id
         if storage_configuration_id is not None: body['storage_configuration_id'] = storage_configuration_id
         if storage_customer_managed_key_id is not None:
             body['storage_customer_managed_key_id'] = storage_customer_managed_key_id
@@ -2867,6 +2880,7 @@ class WorkspacesAPI:
         managed_services_customer_managed_key_id: Optional[str] = None,
         network_connectivity_config_id: Optional[str] = None,
         network_id: Optional[str] = None,
+        private_access_settings_id: Optional[str] = None,
         storage_configuration_id: Optional[str] = None,
         storage_customer_managed_key_id: Optional[str] = None,
         timeout=timedelta(minutes=20)) -> Workspace:
@@ -2876,6 +2890,7 @@ class WorkspacesAPI:
                            managed_services_customer_managed_key_id=managed_services_customer_managed_key_id,
                            network_connectivity_config_id=network_connectivity_config_id,
                            network_id=network_id,
+                           private_access_settings_id=private_access_settings_id,
                            storage_configuration_id=storage_configuration_id,
                            storage_customer_managed_key_id=storage_customer_managed_key_id,
                            workspace_id=workspace_id).result(timeout=timeout)

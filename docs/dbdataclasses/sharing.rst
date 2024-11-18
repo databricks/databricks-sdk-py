@@ -262,6 +262,12 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    The type of the data object.
 
+   .. py:attribute:: FEATURE_SPEC
+      :value: "FEATURE_SPEC"
+
+   .. py:attribute:: FUNCTION
+      :value: "FUNCTION"
+
    .. py:attribute:: MATERIALIZED_VIEW
       :value: "MATERIALIZED_VIEW"
 
