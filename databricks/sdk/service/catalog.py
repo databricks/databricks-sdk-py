@@ -1180,7 +1180,6 @@ class CreateCredentialRequest:
     """Comment associated with the credential."""
 
     gcp_service_account_key: Optional[GcpServiceAccountKey] = None
-    """TODO(UC-978): Document GCP service account key usage for service credentials."""
 
     purpose: Optional[CredentialPurpose] = None
     """Indicates the purpose of the credential."""
@@ -2796,13 +2795,13 @@ class GcpServiceAccountKey:
     """GCP long-lived credential. GCP Service Account."""
 
     email: Optional[str] = None
-    """The email of the service account. [Create:REQ Update:OPT]."""
+    """The email of the service account."""
 
     private_key: Optional[str] = None
-    """The service account's RSA private key. [Create:REQ Update:OPT]"""
+    """The service account's RSA private key."""
 
     private_key_id: Optional[str] = None
-    """The ID of the service account's private key. [Create:REQ Update:OPT]"""
+    """The ID of the service account's private key."""
 
     def as_dict(self) -> dict:
         """Serializes the GcpServiceAccountKey into a dictionary suitable for use as a JSON request body."""
@@ -7541,7 +7540,6 @@ class CredentialsAPI:
         :param comment: str (optional)
           Comment associated with the credential.
         :param gcp_service_account_key: :class:`GcpServiceAccountKey` (optional)
-          TODO(UC-978): Document GCP service account key usage for service credentials.
         :param purpose: :class:`CredentialPurpose` (optional)
           Indicates the purpose of the credential.
         :param read_only: bool (optional)
