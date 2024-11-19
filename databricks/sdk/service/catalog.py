@@ -415,7 +415,7 @@ class AzureActiveDirectoryToken:
 class AzureManagedIdentity:
     """The Azure managed identity configuration."""
 
-    access_connector_id: Optional[str] = None
+    access_connector_id: str
     """The Azure resource ID of the Azure Databricks Access Connector. Use the format
     `/subscriptions/{guid}/resourceGroups/{rg-name}/providers/Microsoft.Databricks/accessConnectors/{connector-name}`."""
 
@@ -508,6 +508,8 @@ class AzureManagedIdentityResponse:
 
 @dataclass
 class AzureServicePrincipal:
+    """The Azure service principal configuration."""
+
     directory_id: str
     """The directory ID corresponding to the Azure Active Directory (AAD) tenant of the application."""
 
@@ -1161,21 +1163,30 @@ class CreateConnection:
 
 @dataclass
 class CreateCredentialRequest:
+    name: str
+    """The credential name. The name must be unique among storage and service credentials within the
+    metastore."""
+
     aws_iam_role: Optional[AwsIamRole] = None
     """The AWS IAM role configuration"""
 
     azure_managed_identity: Optional[AzureManagedIdentity] = None
     """The Azure managed identity configuration."""
 
+    azure_service_principal: Optional[AzureServicePrincipal] = None
+    """The Azure service principal configuration."""
+
     comment: Optional[str] = None
     """Comment associated with the credential."""
 
-    name: Optional[str] = None
-    """The credential name. The name must be unique among storage and service credentials within the
-    metastore."""
+    gcp_service_account_key: Optional[GcpServiceAccountKey] = None
 
     purpose: Optional[CredentialPurpose] = None
     """Indicates the purpose of the credential."""
+
+    read_only: Optional[bool] = None
+    """Whether the credential is usable only for read operations. Only applicable when purpose is
+    **STORAGE**."""
 
     skip_validation: Optional[bool] = None
     """Optional. Supplying true to this argument skips validation of the created set of credentials."""
@@ -1185,9 +1196,14 @@ class CreateCredentialRequest:
         body = {}
         if self.aws_iam_role: body['aws_iam_role'] = self.aws_iam_role.as_dict()
         if self.azure_managed_identity: body['azure_managed_identity'] = self.azure_managed_identity.as_dict()
+        if self.azure_service_principal:
+            body['azure_service_principal'] = self.azure_service_principal.as_dict()
         if self.comment is not None: body['comment'] = self.comment
+        if self.gcp_service_account_key:
+            body['gcp_service_account_key'] = self.gcp_service_account_key.as_dict()
         if self.name is not None: body['name'] = self.name
         if self.purpose is not None: body['purpose'] = self.purpose.value
+        if self.read_only is not None: body['read_only'] = self.read_only
         if self.skip_validation is not None: body['skip_validation'] = self.skip_validation
         return body
 
@@ -1196,9 +1212,12 @@ class CreateCredentialRequest:
         """Deserializes the CreateCredentialRequest from a dictionary."""
         return cls(aws_iam_role=_from_dict(d, 'aws_iam_role', AwsIamRole),
                    azure_managed_identity=_from_dict(d, 'azure_managed_identity', AzureManagedIdentity),
+                   azure_service_principal=_from_dict(d, 'azure_service_principal', AzureServicePrincipal),
                    comment=d.get('comment', None),
+                   gcp_service_account_key=_from_dict(d, 'gcp_service_account_key', GcpServiceAccountKey),
                    name=d.get('name', None),
                    purpose=_enum(d, 'purpose', CredentialPurpose),
+                   read_only=d.get('read_only', None),
                    skip_validation=d.get('skip_validation', None))
 
 
@@ -1796,6 +1815,9 @@ class CredentialInfo:
     azure_managed_identity: Optional[AzureManagedIdentity] = None
     """The Azure managed identity configuration."""
 
+    azure_service_principal: Optional[AzureServicePrincipal] = None
+    """The Azure service principal configuration."""
+
     comment: Optional[str] = None
     """Comment associated with the credential."""
 
@@ -1827,17 +1849,27 @@ class CredentialInfo:
     purpose: Optional[CredentialPurpose] = None
     """Indicates the purpose of the credential."""
 
+    read_only: Optional[bool] = None
+    """Whether the credential is usable only for read operations. Only applicable when purpose is
+    **STORAGE**."""
+
     updated_at: Optional[int] = None
     """Time at which this credential was last modified, in epoch milliseconds."""
 
     updated_by: Optional[str] = None
     """Username of user who last modified the credential."""
 
+    used_for_managed_storage: Optional[bool] = None
+    """Whether this credential is the current metastore's root storage credential. Only applicable when
+    purpose is **STORAGE**."""
+
     def as_dict(self) -> dict:
         """Serializes the CredentialInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.aws_iam_role: body['aws_iam_role'] = self.aws_iam_role.as_dict()
         if self.azure_managed_identity: body['azure_managed_identity'] = self.azure_managed_identity.as_dict()
+        if self.azure_service_principal:
+            body['azure_service_principal'] = self.azure_service_principal.as_dict()
         if self.comment is not None: body['comment'] = self.comment
         if self.created_at is not None: body['created_at'] = self.created_at
         if self.created_by is not None: body['created_by'] = self.created_by
@@ -1848,8 +1880,11 @@ class CredentialInfo:
         if self.name is not None: body['name'] = self.name
         if self.owner is not None: body['owner'] = self.owner
         if self.purpose is not None: body['purpose'] = self.purpose.value
+        if self.read_only is not None: body['read_only'] = self.read_only
         if self.updated_at is not None: body['updated_at'] = self.updated_at
         if self.updated_by is not None: body['updated_by'] = self.updated_by
+        if self.used_for_managed_storage is not None:
+            body['used_for_managed_storage'] = self.used_for_managed_storage
         return body
 
     @classmethod
@@ -1857,6 +1892,7 @@ class CredentialInfo:
         """Deserializes the CredentialInfo from a dictionary."""
         return cls(aws_iam_role=_from_dict(d, 'aws_iam_role', AwsIamRole),
                    azure_managed_identity=_from_dict(d, 'azure_managed_identity', AzureManagedIdentity),
+                   azure_service_principal=_from_dict(d, 'azure_service_principal', AzureServicePrincipal),
                    comment=d.get('comment', None),
                    created_at=d.get('created_at', None),
                    created_by=d.get('created_by', None),
@@ -1867,13 +1903,16 @@ class CredentialInfo:
                    name=d.get('name', None),
                    owner=d.get('owner', None),
                    purpose=_enum(d, 'purpose', CredentialPurpose),
+                   read_only=d.get('read_only', None),
                    updated_at=d.get('updated_at', None),
-                   updated_by=d.get('updated_by', None))
+                   updated_by=d.get('updated_by', None),
+                   used_for_managed_storage=d.get('used_for_managed_storage', None))
 
 
 class CredentialPurpose(Enum):
 
     SERVICE = 'SERVICE'
+    STORAGE = 'STORAGE'
 
 
 class CredentialType(Enum):
@@ -2752,6 +2791,35 @@ class GcpOauthToken:
 
 
 @dataclass
+class GcpServiceAccountKey:
+    """GCP long-lived credential. GCP Service Account."""
+
+    email: Optional[str] = None
+    """The email of the service account."""
+
+    private_key: Optional[str] = None
+    """The service account's RSA private key."""
+
+    private_key_id: Optional[str] = None
+    """The ID of the service account's private key."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GcpServiceAccountKey into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.email is not None: body['email'] = self.email
+        if self.private_key is not None: body['private_key'] = self.private_key
+        if self.private_key_id is not None: body['private_key_id'] = self.private_key_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> GcpServiceAccountKey:
+        """Deserializes the GcpServiceAccountKey from a dictionary."""
+        return cls(email=d.get('email', None),
+                   private_key=d.get('private_key', None),
+                   private_key_id=d.get('private_key_id', None))
+
+
+@dataclass
 class GenerateTemporaryServiceCredentialAzureOptions:
     """Options to customize the requested temporary credential"""
 
@@ -2774,11 +2842,11 @@ class GenerateTemporaryServiceCredentialAzureOptions:
 
 @dataclass
 class GenerateTemporaryServiceCredentialRequest:
+    credential_name: str
+    """The name of the service credential used to generate a temporary credential"""
+
     azure_options: Optional[GenerateTemporaryServiceCredentialAzureOptions] = None
     """Options to customize the requested temporary credential"""
-
-    credential_name: Optional[str] = None
-    """The name of the service credential used to generate a temporary credential"""
 
     def as_dict(self) -> dict:
         """Serializes the GenerateTemporaryServiceCredentialRequest into a dictionary suitable for use as a JSON request body."""
@@ -5661,11 +5729,15 @@ class UpdateCredentialRequest:
     azure_managed_identity: Optional[AzureManagedIdentity] = None
     """The Azure managed identity configuration."""
 
+    azure_service_principal: Optional[AzureServicePrincipal] = None
+    """The Azure service principal configuration."""
+
     comment: Optional[str] = None
     """Comment associated with the credential."""
 
     force: Optional[bool] = None
-    """Force update even if there are dependent services."""
+    """Force an update even if there are dependent services (when purpose is **SERVICE**) or dependent
+    external locations and external tables (when purpose is **STORAGE**)."""
 
     isolation_mode: Optional[IsolationMode] = None
     """Whether the current securable is accessible from all workspaces or a specific set of workspaces."""
@@ -5679,6 +5751,10 @@ class UpdateCredentialRequest:
     owner: Optional[str] = None
     """Username of current owner of credential."""
 
+    read_only: Optional[bool] = None
+    """Whether the credential is usable only for read operations. Only applicable when purpose is
+    **STORAGE**."""
+
     skip_validation: Optional[bool] = None
     """Supply true to this argument to skip validation of the updated credential."""
 
@@ -5687,12 +5763,15 @@ class UpdateCredentialRequest:
         body = {}
         if self.aws_iam_role: body['aws_iam_role'] = self.aws_iam_role.as_dict()
         if self.azure_managed_identity: body['azure_managed_identity'] = self.azure_managed_identity.as_dict()
+        if self.azure_service_principal:
+            body['azure_service_principal'] = self.azure_service_principal.as_dict()
         if self.comment is not None: body['comment'] = self.comment
         if self.force is not None: body['force'] = self.force
         if self.isolation_mode is not None: body['isolation_mode'] = self.isolation_mode.value
         if self.name_arg is not None: body['name_arg'] = self.name_arg
         if self.new_name is not None: body['new_name'] = self.new_name
         if self.owner is not None: body['owner'] = self.owner
+        if self.read_only is not None: body['read_only'] = self.read_only
         if self.skip_validation is not None: body['skip_validation'] = self.skip_validation
         return body
 
@@ -5701,12 +5780,14 @@ class UpdateCredentialRequest:
         """Deserializes the UpdateCredentialRequest from a dictionary."""
         return cls(aws_iam_role=_from_dict(d, 'aws_iam_role', AwsIamRole),
                    azure_managed_identity=_from_dict(d, 'azure_managed_identity', AzureManagedIdentity),
+                   azure_service_principal=_from_dict(d, 'azure_service_principal', AzureServicePrincipal),
                    comment=d.get('comment', None),
                    force=d.get('force', None),
                    isolation_mode=_enum(d, 'isolation_mode', IsolationMode),
                    name_arg=d.get('name_arg', None),
                    new_name=d.get('new_name', None),
                    owner=d.get('owner', None),
+                   read_only=d.get('read_only', None),
                    skip_validation=d.get('skip_validation', None))
 
 
@@ -6310,8 +6391,19 @@ class ValidateCredentialRequest:
     credential_name: Optional[str] = None
     """Required. The name of an existing credential or long-lived cloud credential to validate."""
 
+    external_location_name: Optional[str] = None
+    """The name of an existing external location to validate. Only applicable for storage credentials
+    (purpose is **STORAGE**.)"""
+
     purpose: Optional[CredentialPurpose] = None
     """The purpose of the credential. This should only be used when the credential is specified."""
+
+    read_only: Optional[bool] = None
+    """Whether the credential is only usable for read operations. Only applicable for storage
+    credentials (purpose is **STORAGE**.)"""
+
+    url: Optional[str] = None
+    """The external location url to validate. Only applicable when purpose is **STORAGE**."""
 
     def as_dict(self) -> dict:
         """Serializes the ValidateCredentialRequest into a dictionary suitable for use as a JSON request body."""
@@ -6319,7 +6411,11 @@ class ValidateCredentialRequest:
         if self.aws_iam_role: body['aws_iam_role'] = self.aws_iam_role.as_dict()
         if self.azure_managed_identity: body['azure_managed_identity'] = self.azure_managed_identity.as_dict()
         if self.credential_name is not None: body['credential_name'] = self.credential_name
+        if self.external_location_name is not None:
+            body['external_location_name'] = self.external_location_name
         if self.purpose is not None: body['purpose'] = self.purpose.value
+        if self.read_only is not None: body['read_only'] = self.read_only
+        if self.url is not None: body['url'] = self.url
         return body
 
     @classmethod
@@ -6328,24 +6424,33 @@ class ValidateCredentialRequest:
         return cls(aws_iam_role=_from_dict(d, 'aws_iam_role', AwsIamRole),
                    azure_managed_identity=_from_dict(d, 'azure_managed_identity', AzureManagedIdentity),
                    credential_name=d.get('credential_name', None),
-                   purpose=_enum(d, 'purpose', CredentialPurpose))
+                   external_location_name=d.get('external_location_name', None),
+                   purpose=_enum(d, 'purpose', CredentialPurpose),
+                   read_only=d.get('read_only', None),
+                   url=d.get('url', None))
 
 
 @dataclass
 class ValidateCredentialResponse:
+    is_dir: Optional[bool] = None
+    """Whether the tested location is a directory in cloud storage. Only applicable for when purpose is
+    **STORAGE**."""
+
     results: Optional[List[CredentialValidationResult]] = None
     """The results of the validation check."""
 
     def as_dict(self) -> dict:
         """Serializes the ValidateCredentialResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.is_dir is not None: body['isDir'] = self.is_dir
         if self.results: body['results'] = [v.as_dict() for v in self.results]
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ValidateCredentialResponse:
         """Deserializes the ValidateCredentialResponse from a dictionary."""
-        return cls(results=_repeated_dict(d, 'results', CredentialValidationResult))
+        return cls(is_dir=d.get('isDir', None),
+                   results=_repeated_dict(d, 'results', CredentialValidationResult))
 
 
 class ValidateCredentialResult(Enum):
@@ -7405,28 +7510,41 @@ class CredentialsAPI:
         self._api = api_client
 
     def create_credential(self,
+                          name: str,
                           *,
                           aws_iam_role: Optional[AwsIamRole] = None,
                           azure_managed_identity: Optional[AzureManagedIdentity] = None,
+                          azure_service_principal: Optional[AzureServicePrincipal] = None,
                           comment: Optional[str] = None,
-                          name: Optional[str] = None,
+                          gcp_service_account_key: Optional[GcpServiceAccountKey] = None,
                           purpose: Optional[CredentialPurpose] = None,
+                          read_only: Optional[bool] = None,
                           skip_validation: Optional[bool] = None) -> CredentialInfo:
         """Create a credential.
         
-        Creates a new credential.
+        Creates a new credential. The type of credential to be created is determined by the **purpose** field,
+        which should be either **SERVICE** or **STORAGE**.
         
+        The caller must be a metastore admin or have the metastore privilege **CREATE_STORAGE_CREDENTIAL** for
+        storage credentials, or **CREATE_SERVICE_CREDENTIAL** for service credentials.
+        
+        :param name: str
+          The credential name. The name must be unique among storage and service credentials within the
+          metastore.
         :param aws_iam_role: :class:`AwsIamRole` (optional)
           The AWS IAM role configuration
         :param azure_managed_identity: :class:`AzureManagedIdentity` (optional)
           The Azure managed identity configuration.
+        :param azure_service_principal: :class:`AzureServicePrincipal` (optional)
+          The Azure service principal configuration.
         :param comment: str (optional)
           Comment associated with the credential.
-        :param name: str (optional)
-          The credential name. The name must be unique among storage and service credentials within the
-          metastore.
+        :param gcp_service_account_key: :class:`GcpServiceAccountKey` (optional)
         :param purpose: :class:`CredentialPurpose` (optional)
           Indicates the purpose of the credential.
+        :param read_only: bool (optional)
+          Whether the credential is usable only for read operations. Only applicable when purpose is
+          **STORAGE**.
         :param skip_validation: bool (optional)
           Optional. Supplying true to this argument skips validation of the created set of credentials.
         
@@ -7436,9 +7554,14 @@ class CredentialsAPI:
         if aws_iam_role is not None: body['aws_iam_role'] = aws_iam_role.as_dict()
         if azure_managed_identity is not None:
             body['azure_managed_identity'] = azure_managed_identity.as_dict()
+        if azure_service_principal is not None:
+            body['azure_service_principal'] = azure_service_principal.as_dict()
         if comment is not None: body['comment'] = comment
+        if gcp_service_account_key is not None:
+            body['gcp_service_account_key'] = gcp_service_account_key.as_dict()
         if name is not None: body['name'] = name
         if purpose is not None: body['purpose'] = purpose.value
+        if read_only is not None: body['read_only'] = read_only
         if skip_validation is not None: body['skip_validation'] = skip_validation
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
@@ -7448,12 +7571,14 @@ class CredentialsAPI:
     def delete_credential(self, name_arg: str, *, force: Optional[bool] = None):
         """Delete a credential.
         
-        Deletes a credential from the metastore. The caller must be an owner of the credential.
+        Deletes a service or storage credential from the metastore. The caller must be an owner of the
+        credential.
         
         :param name_arg: str
           Name of the credential.
         :param force: bool (optional)
-          Force deletion even if there are dependent services.
+          Force an update even if there are dependent services (when purpose is **SERVICE**) or dependent
+          external locations and external tables (when purpose is **STORAGE**).
         
         
         """
@@ -7465,19 +7590,20 @@ class CredentialsAPI:
         self._api.do('DELETE', f'/api/2.1/unity-catalog/credentials/{name_arg}', query=query, headers=headers)
 
     def generate_temporary_service_credential(
-            self,
-            *,
-            azure_options: Optional[GenerateTemporaryServiceCredentialAzureOptions] = None,
-            credential_name: Optional[str] = None) -> TemporaryCredentials:
+        self,
+        credential_name: str,
+        *,
+        azure_options: Optional[GenerateTemporaryServiceCredentialAzureOptions] = None
+    ) -> TemporaryCredentials:
         """Generate a temporary service credential.
         
         Returns a set of temporary credentials generated using the specified service credential. The caller
         must be a metastore admin or have the metastore privilege **ACCESS** on the service credential.
         
+        :param credential_name: str
+          The name of the service credential used to generate a temporary credential
         :param azure_options: :class:`GenerateTemporaryServiceCredentialAzureOptions` (optional)
           Options to customize the requested temporary credential
-        :param credential_name: str (optional)
-          The name of the service credential used to generate a temporary credential
         
         :returns: :class:`TemporaryCredentials`
         """
@@ -7495,8 +7621,8 @@ class CredentialsAPI:
     def get_credential(self, name_arg: str) -> CredentialInfo:
         """Get a credential.
         
-        Gets a credential from the metastore. The caller must be a metastore admin, the owner of the
-        credential, or have any permission on the credential.
+        Gets a service or storage credential from the metastore. The caller must be a metastore admin, the
+        owner of the credential, or have any permission on the credential.
         
         :param name_arg: str
           Name of the credential.
@@ -7555,15 +7681,17 @@ class CredentialsAPI:
                           *,
                           aws_iam_role: Optional[AwsIamRole] = None,
                           azure_managed_identity: Optional[AzureManagedIdentity] = None,
+                          azure_service_principal: Optional[AzureServicePrincipal] = None,
                           comment: Optional[str] = None,
                           force: Optional[bool] = None,
                           isolation_mode: Optional[IsolationMode] = None,
                           new_name: Optional[str] = None,
                           owner: Optional[str] = None,
+                          read_only: Optional[bool] = None,
                           skip_validation: Optional[bool] = None) -> CredentialInfo:
         """Update a credential.
         
-        Updates a credential on the metastore.
+        Updates a service or storage credential on the metastore.
         
         The caller must be the owner of the credential or a metastore admin or have the `MANAGE` permission.
         If the caller is a metastore admin, only the __owner__ field can be changed.
@@ -7574,16 +7702,22 @@ class CredentialsAPI:
           The AWS IAM role configuration
         :param azure_managed_identity: :class:`AzureManagedIdentity` (optional)
           The Azure managed identity configuration.
+        :param azure_service_principal: :class:`AzureServicePrincipal` (optional)
+          The Azure service principal configuration.
         :param comment: str (optional)
           Comment associated with the credential.
         :param force: bool (optional)
-          Force update even if there are dependent services.
+          Force an update even if there are dependent services (when purpose is **SERVICE**) or dependent
+          external locations and external tables (when purpose is **STORAGE**).
         :param isolation_mode: :class:`IsolationMode` (optional)
           Whether the current securable is accessible from all workspaces or a specific set of workspaces.
         :param new_name: str (optional)
           New name of credential.
         :param owner: str (optional)
           Username of current owner of credential.
+        :param read_only: bool (optional)
+          Whether the credential is usable only for read operations. Only applicable when purpose is
+          **STORAGE**.
         :param skip_validation: bool (optional)
           Supply true to this argument to skip validation of the updated credential.
         
@@ -7593,11 +7727,14 @@ class CredentialsAPI:
         if aws_iam_role is not None: body['aws_iam_role'] = aws_iam_role.as_dict()
         if azure_managed_identity is not None:
             body['azure_managed_identity'] = azure_managed_identity.as_dict()
+        if azure_service_principal is not None:
+            body['azure_service_principal'] = azure_service_principal.as_dict()
         if comment is not None: body['comment'] = comment
         if force is not None: body['force'] = force
         if isolation_mode is not None: body['isolation_mode'] = isolation_mode.value
         if new_name is not None: body['new_name'] = new_name
         if owner is not None: body['owner'] = owner
+        if read_only is not None: body['read_only'] = read_only
         if skip_validation is not None: body['skip_validation'] = skip_validation
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
@@ -7612,14 +7749,25 @@ class CredentialsAPI:
                             aws_iam_role: Optional[AwsIamRole] = None,
                             azure_managed_identity: Optional[AzureManagedIdentity] = None,
                             credential_name: Optional[str] = None,
-                            purpose: Optional[CredentialPurpose] = None) -> ValidateCredentialResponse:
+                            external_location_name: Optional[str] = None,
+                            purpose: Optional[CredentialPurpose] = None,
+                            read_only: Optional[bool] = None,
+                            url: Optional[str] = None) -> ValidateCredentialResponse:
         """Validate a credential.
         
         Validates a credential.
         
-        Either the __credential_name__ or the cloud-specific credential must be provided.
+        For service credentials (purpose is **SERVICE**), either the __credential_name__ or the cloud-specific
+        credential must be provided.
         
-        The caller must be a metastore admin or the credential owner.
+        For storage credentials (purpose is **STORAGE**), at least one of __external_location_name__ and
+        __url__ need to be provided. If only one of them is provided, it will be used for validation. And if
+        both are provided, the __url__ will be used for validation, and __external_location_name__ will be
+        ignored when checking overlapping urls. Either the __credential_name__ or the cloud-specific
+        credential must be provided.
+        
+        The caller must be a metastore admin or the credential owner or have the required permission on the
+        metastore and the credential (e.g., **CREATE_EXTERNAL_LOCATION** when purpose is **STORAGE**).
         
         :param aws_iam_role: :class:`AwsIamRole` (optional)
           The AWS IAM role configuration
@@ -7627,8 +7775,16 @@ class CredentialsAPI:
           The Azure managed identity configuration.
         :param credential_name: str (optional)
           Required. The name of an existing credential or long-lived cloud credential to validate.
+        :param external_location_name: str (optional)
+          The name of an existing external location to validate. Only applicable for storage credentials
+          (purpose is **STORAGE**.)
         :param purpose: :class:`CredentialPurpose` (optional)
           The purpose of the credential. This should only be used when the credential is specified.
+        :param read_only: bool (optional)
+          Whether the credential is only usable for read operations. Only applicable for storage credentials
+          (purpose is **STORAGE**.)
+        :param url: str (optional)
+          The external location url to validate. Only applicable when purpose is **STORAGE**.
         
         :returns: :class:`ValidateCredentialResponse`
         """
@@ -7637,7 +7793,10 @@ class CredentialsAPI:
         if azure_managed_identity is not None:
             body['azure_managed_identity'] = azure_managed_identity.as_dict()
         if credential_name is not None: body['credential_name'] = credential_name
+        if external_location_name is not None: body['external_location_name'] = external_location_name
         if purpose is not None: body['purpose'] = purpose.value
+        if read_only is not None: body['read_only'] = read_only
+        if url is not None: body['url'] = url
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         res = self._api.do('POST', '/api/2.1/unity-catalog/validate-credentials', body=body, headers=headers)
@@ -8640,7 +8799,7 @@ class OnlineTablesAPI:
           Long-running operation waiter for :class:`OnlineTable`.
           See :method:wait_get_online_table_active for more details.
         """
-        body = table
+        body = table.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         op_response = self._api.do('POST', '/api/2.0/online-tables', body=body, headers=headers)
@@ -10128,6 +10287,7 @@ class TablesAPI:
              max_results: Optional[int] = None,
              omit_columns: Optional[bool] = None,
              omit_properties: Optional[bool] = None,
+             omit_username: Optional[bool] = None,
              page_token: Optional[str] = None) -> Iterator[TableInfo]:
         """List tables.
         
@@ -10157,6 +10317,9 @@ class TablesAPI:
           Whether to omit the columns of the table from the response or not.
         :param omit_properties: bool (optional)
           Whether to omit the properties of the table from the response or not.
+        :param omit_username: bool (optional)
+          Whether to omit the username of the table (e.g. owner, updated_by, created_by) from the response or
+          not.
         :param page_token: str (optional)
           Opaque token to send for the next page of results (pagination).
         
@@ -10172,6 +10335,7 @@ class TablesAPI:
         if max_results is not None: query['max_results'] = max_results
         if omit_columns is not None: query['omit_columns'] = omit_columns
         if omit_properties is not None: query['omit_properties'] = omit_properties
+        if omit_username is not None: query['omit_username'] = omit_username
         if page_token is not None: query['page_token'] = page_token
         if schema_name is not None: query['schema_name'] = schema_name
         headers = {'Accept': 'application/json', }

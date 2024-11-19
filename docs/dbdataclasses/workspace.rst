@@ -157,6 +157,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: JUPYTER
       :value: "JUPYTER"
 
+   .. py:attribute:: RAW
+      :value: "RAW"
+
    .. py:attribute:: R_MARKDOWN
       :value: "R_MARKDOWN"
 

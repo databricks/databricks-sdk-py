@@ -455,6 +455,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: SERVICE
       :value: "SERVICE"
 
+   .. py:attribute:: STORAGE
+      :value: "STORAGE"
+
 .. py:class:: CredentialType
 
    The type of credential.
@@ -712,6 +715,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "PARAM"
 
 .. autoclass:: GcpOauthToken
+   :members:
+   :undoc-members:
+
+.. autoclass:: GcpServiceAccountKey
    :members:
    :undoc-members:
 

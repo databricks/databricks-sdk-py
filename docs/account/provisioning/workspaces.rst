@@ -229,7 +229,7 @@
         :returns: Iterator over :class:`Workspace`
         
 
-    .. py:method:: update(workspace_id: int [, aws_region: Optional[str], credentials_id: Optional[str], custom_tags: Optional[Dict[str, str]], managed_services_customer_managed_key_id: Optional[str], network_connectivity_config_id: Optional[str], network_id: Optional[str], storage_configuration_id: Optional[str], storage_customer_managed_key_id: Optional[str]]) -> Wait[Workspace]
+    .. py:method:: update(workspace_id: int [, aws_region: Optional[str], credentials_id: Optional[str], custom_tags: Optional[Dict[str, str]], managed_services_customer_managed_key_id: Optional[str], network_connectivity_config_id: Optional[str], network_id: Optional[str], private_access_settings_id: Optional[str], storage_configuration_id: Optional[str], storage_customer_managed_key_id: Optional[str]]) -> Wait[Workspace]
 
 
         Usage:
@@ -372,6 +372,9 @@
           The ID of the workspace's network configuration object. Used only if you already use a
           customer-managed VPC. For failed workspaces only, you can switch from a Databricks-managed VPC to a
           customer-managed VPC by updating the workspace to add a network configuration ID.
+        :param private_access_settings_id: str (optional)
+          The ID of the workspace's private access settings configuration object. This parameter is available
+          only for updating failed workspaces.
         :param storage_configuration_id: str (optional)
           The ID of the workspace's storage configuration object. This parameter is available only for
           updating failed workspaces.
@@ -384,7 +387,7 @@
           See :method:wait_get_workspace_running for more details.
         
 
-    .. py:method:: update_and_wait(workspace_id: int [, aws_region: Optional[str], credentials_id: Optional[str], custom_tags: Optional[Dict[str, str]], managed_services_customer_managed_key_id: Optional[str], network_connectivity_config_id: Optional[str], network_id: Optional[str], storage_configuration_id: Optional[str], storage_customer_managed_key_id: Optional[str], timeout: datetime.timedelta = 0:20:00]) -> Workspace
+    .. py:method:: update_and_wait(workspace_id: int [, aws_region: Optional[str], credentials_id: Optional[str], custom_tags: Optional[Dict[str, str]], managed_services_customer_managed_key_id: Optional[str], network_connectivity_config_id: Optional[str], network_id: Optional[str], private_access_settings_id: Optional[str], storage_configuration_id: Optional[str], storage_customer_managed_key_id: Optional[str], timeout: datetime.timedelta = 0:20:00]) -> Workspace
 
 
     .. py:method:: wait_get_workspace_running(workspace_id: int, timeout: datetime.timedelta = 0:20:00, callback: Optional[Callable[[Workspace], None]]) -> Workspace

@@ -2943,6 +2943,7 @@ class UpdateNotificationDestinationRequest:
     """The display name for the notification destination."""
 
     id: Optional[str] = None
+    """UUID identifying notification destination."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateNotificationDestinationRequest into a dictionary suitable for use as a JSON request body."""
@@ -4670,6 +4671,7 @@ class NotificationDestinationsAPI:
         required in the request body.
         
         :param id: str
+          UUID identifying notification destination.
         :param config: :class:`Config` (optional)
           The configuration for the notification destination. Must wrap EXACTLY one of the nested configs.
         :param display_name: str (optional)
@@ -4984,7 +4986,7 @@ class TokenManagementAPI:
         Deletes a token, specified by its ID.
         
         :param token_id: str
-          The ID of the token to get.
+          The ID of the token to revoke.
         
         
         """

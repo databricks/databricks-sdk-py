@@ -984,6 +984,8 @@ class SharedDataObject:
 class SharedDataObjectDataObjectType(Enum):
     """The type of the data object."""
 
+    FEATURE_SPEC = 'FEATURE_SPEC'
+    FUNCTION = 'FUNCTION'
     MATERIALIZED_VIEW = 'MATERIALIZED_VIEW'
     MODEL = 'MODEL'
     NOTEBOOK_FILE = 'NOTEBOOK_FILE'

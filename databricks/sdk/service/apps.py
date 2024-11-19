@@ -52,6 +52,8 @@ class App:
     resources: Optional[List[AppResource]] = None
     """Resources for the app."""
 
+    service_principal_client_id: Optional[str] = None
+
     service_principal_id: Optional[int] = None
 
     service_principal_name: Optional[str] = None
@@ -79,6 +81,8 @@ class App:
         if self.name is not None: body['name'] = self.name
         if self.pending_deployment: body['pending_deployment'] = self.pending_deployment.as_dict()
         if self.resources: body['resources'] = [v.as_dict() for v in self.resources]
+        if self.service_principal_client_id is not None:
+            body['service_principal_client_id'] = self.service_principal_client_id
         if self.service_principal_id is not None: body['service_principal_id'] = self.service_principal_id
         if self.service_principal_name is not None:
             body['service_principal_name'] = self.service_principal_name
@@ -100,6 +104,7 @@ class App:
                    name=d.get('name', None),
                    pending_deployment=_from_dict(d, 'pending_deployment', AppDeployment),
                    resources=_repeated_dict(d, 'resources', AppResource),
+                   service_principal_client_id=d.get('service_principal_client_id', None),
                    service_principal_id=d.get('service_principal_id', None),
                    service_principal_name=d.get('service_principal_name', None),
                    update_time=d.get('update_time', None),
@@ -798,7 +803,7 @@ class AppsAPI:
           Long-running operation waiter for :class:`App`.
           See :method:wait_get_app_active for more details.
         """
-        body = app
+        body = app.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         op_response = self._api.do('POST', '/api/2.0/apps', body=body, headers=headers)
@@ -836,7 +841,7 @@ class AppsAPI:
           Long-running operation waiter for :class:`AppDeployment`.
           See :method:wait_get_deployment_app_succeeded for more details.
         """
-        body = app_deployment
+        body = app_deployment.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         op_response = self._api.do('POST',
@@ -1053,12 +1058,13 @@ class AppsAPI:
         Updates the app with the supplied name.
         
         :param name: str
-          The name of the app.
+          The name of the app. The name must contain only lowercase alphanumeric characters and hyphens. It
+          must be unique within the workspace.
         :param app: :class:`App` (optional)
         
         :returns: :class:`App`
         """
-        body = app
+        body = app.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         res = self._api.do('PATCH', f'/api/2.0/apps/{name}', body=body, headers=headers)

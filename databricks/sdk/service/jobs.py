@@ -574,8 +574,7 @@ class CreateJob:
     """Write-only setting. Specifies the user, service principal or group that the job/pipeline runs
     as. If not specified, the job/pipeline runs as the user who created the job/pipeline.
     
-    Exactly one of `user_name`, `service_principal_name`, `group_name` should be specified. If not,
-    an error is thrown."""
+    Either `user_name` or `service_principal_name` should be specified. If not, an error is thrown."""
 
     schedule: Optional[CronSchedule] = None
     """An optional periodic schedule for this job. The default behavior is that the job only runs when
@@ -1752,8 +1751,7 @@ class JobRunAs:
     """Write-only setting. Specifies the user, service principal or group that the job/pipeline runs
     as. If not specified, the job/pipeline runs as the user who created the job/pipeline.
     
-    Exactly one of `user_name`, `service_principal_name`, `group_name` should be specified. If not,
-    an error is thrown."""
+    Either `user_name` or `service_principal_name` should be specified. If not, an error is thrown."""
 
     service_principal_name: Optional[str] = None
     """Application ID of an active service principal. Setting this field requires the
@@ -1861,8 +1859,7 @@ class JobSettings:
     """Write-only setting. Specifies the user, service principal or group that the job/pipeline runs
     as. If not specified, the job/pipeline runs as the user who created the job/pipeline.
     
-    Exactly one of `user_name`, `service_principal_name`, `group_name` should be specified. If not,
-    an error is thrown."""
+    Either `user_name` or `service_principal_name` should be specified. If not, an error is thrown."""
 
     schedule: Optional[CronSchedule] = None
     """An optional periodic schedule for this job. The default behavior is that the job only runs when
@@ -3371,6 +3368,10 @@ class RunNow:
     [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
     [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html"""
 
+    only: Optional[List[str]] = None
+    """A list of task keys to run inside of the job. If this field is not provided, all tasks in the
+    job will be run."""
+
     pipeline_params: Optional[PipelineParams] = None
     """Controls whether the pipeline should perform a full refresh"""
 
@@ -3425,6 +3426,7 @@ class RunNow:
         if self.job_id is not None: body['job_id'] = self.job_id
         if self.job_parameters: body['job_parameters'] = self.job_parameters
         if self.notebook_params: body['notebook_params'] = self.notebook_params
+        if self.only: body['only'] = [v for v in self.only]
         if self.pipeline_params: body['pipeline_params'] = self.pipeline_params.as_dict()
         if self.python_named_params: body['python_named_params'] = self.python_named_params
         if self.python_params: body['python_params'] = [v for v in self.python_params]
@@ -3442,6 +3444,7 @@ class RunNow:
                    job_id=d.get('job_id', None),
                    job_parameters=d.get('job_parameters', None),
                    notebook_params=d.get('notebook_params', None),
+                   only=d.get('only', None),
                    pipeline_params=_from_dict(d, 'pipeline_params', PipelineParams),
                    python_named_params=d.get('python_named_params', None),
                    python_params=d.get('python_params', None),
@@ -5754,8 +5757,7 @@ class JobsAPI:
           Write-only setting. Specifies the user, service principal or group that the job/pipeline runs as. If
           not specified, the job/pipeline runs as the user who created the job/pipeline.
           
-          Exactly one of `user_name`, `service_principal_name`, `group_name` should be specified. If not, an
-          error is thrown.
+          Either `user_name` or `service_principal_name` should be specified. If not, an error is thrown.
         :param schedule: :class:`CronSchedule` (optional)
           An optional periodic schedule for this job. The default behavior is that the job only runs when
           triggered by clicking “Run Now” in the Jobs UI or sending an API request to `runNow`.
@@ -6275,6 +6277,7 @@ class JobsAPI:
                 jar_params: Optional[List[str]] = None,
                 job_parameters: Optional[Dict[str, str]] = None,
                 notebook_params: Optional[Dict[str, str]] = None,
+                only: Optional[List[str]] = None,
                 pipeline_params: Optional[PipelineParams] = None,
                 python_named_params: Optional[Dict[str, str]] = None,
                 python_params: Optional[List[str]] = None,
@@ -6331,6 +6334,9 @@ class JobsAPI:
           
           [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
           [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
+        :param only: List[str] (optional)
+          A list of task keys to run inside of the job. If this field is not provided, all tasks in the job
+          will be run.
         :param pipeline_params: :class:`PipelineParams` (optional)
           Controls whether the pipeline should perform a full refresh
         :param python_named_params: Dict[str,str] (optional)
@@ -6382,6 +6388,7 @@ class JobsAPI:
         if job_id is not None: body['job_id'] = job_id
         if job_parameters is not None: body['job_parameters'] = job_parameters
         if notebook_params is not None: body['notebook_params'] = notebook_params
+        if only is not None: body['only'] = [v for v in only]
         if pipeline_params is not None: body['pipeline_params'] = pipeline_params.as_dict()
         if python_named_params is not None: body['python_named_params'] = python_named_params
         if python_params is not None: body['python_params'] = [v for v in python_params]
@@ -6403,6 +6410,7 @@ class JobsAPI:
                          jar_params: Optional[List[str]] = None,
                          job_parameters: Optional[Dict[str, str]] = None,
                          notebook_params: Optional[Dict[str, str]] = None,
+                         only: Optional[List[str]] = None,
                          pipeline_params: Optional[PipelineParams] = None,
                          python_named_params: Optional[Dict[str, str]] = None,
                          python_params: Optional[List[str]] = None,
@@ -6416,6 +6424,7 @@ class JobsAPI:
                             job_id=job_id,
                             job_parameters=job_parameters,
                             notebook_params=notebook_params,
+                            only=only,
                             pipeline_params=pipeline_params,
                             python_named_params=python_named_params,
                             python_params=python_params,

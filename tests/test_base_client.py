@@ -1,3 +1,4 @@
+import io
 import random
 from http.server import BaseHTTPRequestHandler
 from typing import Iterator, List
@@ -316,3 +317,131 @@ def test_streaming_response_chunk_size(chunk_size, expected_chunks, data_size):
     assert received_data == test_data # all data was received correctly
     assert len(content_chunks) == expected_chunks # correct number of chunks
     assert all(len(c) <= chunk_size for c in content_chunks) # chunks don't exceed size
+
+
+def test_is_seekable_stream():
+    client = _BaseClient()
+
+    # Test various input types that are not streams.
+    assert not client._is_seekable_stream(None) # None
+    assert not client._is_seekable_stream("string data") # str
+    assert not client._is_seekable_stream(b"binary data") # bytes
+    assert not client._is_seekable_stream(["list", "data"]) # list
+    assert not client._is_seekable_stream(42) # int
+
+    # Test non-seekable stream.
+    non_seekable = io.BytesIO(b"test data")
+    non_seekable.seekable = lambda: False
+    assert not client._is_seekable_stream(non_seekable)
+
+    # Test seekable streams.
+    assert client._is_seekable_stream(io.BytesIO(b"test data")) # BytesIO
+    assert client._is_seekable_stream(io.StringIO("test data")) # StringIO
+
+    # Test file objects.
+    with open(__file__, 'rb') as f:
+        assert client._is_seekable_stream(f) # File object
+
+    # Test custom seekable stream.
+    class CustomSeekableStream(io.IOBase):
+
+        def seekable(self):
+            return True
+
+        def seek(self, offset, whence=0):
+            return 0
+
+        def tell(self):
+            return 0
+
+    assert client._is_seekable_stream(CustomSeekableStream())
+
+
+@pytest.mark.parametrize(
+    'input_data',
+    [
+        b"0123456789", # bytes -> BytesIO
+        "0123456789", # str -> BytesIO
+        io.BytesIO(b"0123456789"), # BytesIO directly
+        io.StringIO("0123456789"), # StringIO
+    ])
+def test_reset_seekable_stream_on_retry(input_data):
+    received_data = []
+
+    # Retry two times before succeeding.
+    def inner(h: BaseHTTPRequestHandler):
+        if len(received_data) == 2:
+            h.send_response(200)
+            h.end_headers()
+        else:
+            h.send_response(429)
+            h.end_headers()
+
+        content_length = int(h.headers.get('Content-Length', 0))
+        if content_length > 0:
+            received_data.append(h.rfile.read(content_length))
+
+    with http_fixture_server(inner) as host:
+        client = _BaseClient()
+
+        # Retries should reset the stream.
+        client.do('POST', f'{host}/foo', data=input_data)
+
+        assert received_data == [b"0123456789", b"0123456789", b"0123456789"]
+
+
+def test_reset_seekable_stream_to_their_initial_position_on_retry():
+    received_data = []
+
+    # Retry two times before succeeding.
+    def inner(h: BaseHTTPRequestHandler):
+        if len(received_data) == 2:
+            h.send_response(200)
+            h.end_headers()
+        else:
+            h.send_response(429)
+            h.end_headers()
+
+        content_length = int(h.headers.get('Content-Length', 0))
+        if content_length > 0:
+            received_data.append(h.rfile.read(content_length))
+
+    input_data = io.BytesIO(b"0123456789")
+    input_data.seek(4)
+
+    with http_fixture_server(inner) as host:
+        client = _BaseClient()
+
+        # Retries should reset the stream.
+        client.do('POST', f'{host}/foo', data=input_data)
+
+        assert received_data == [b"456789", b"456789", b"456789"]
+        assert input_data.tell() == 10 # EOF
+
+
+def test_no_retry_or_reset_on_non_seekable_stream():
+    requests = []
+
+    # Always respond with a response that triggers a retry.
+    def inner(h: BaseHTTPRequestHandler):
+        content_length = int(h.headers.get('Content-Length', 0))
+        if content_length > 0:
+            requests.append(h.rfile.read(content_length))
+
+        h.send_response(429)
+        h.send_header('Retry-After', '1')
+        h.end_headers()
+
+    input_data = io.BytesIO(b"0123456789")
+    input_data.seekable = lambda: False # makes the stream appear non-seekable
+
+    with http_fixture_server(inner) as host:
+        client = _BaseClient()
+
+        # Should raise error immediately without retry.
+        with pytest.raises(DatabricksError):
+            client.do('POST', f'{host}/foo', data=input_data)
+
+        # Verify that only one request was made (no retries).
+        assert requests == [b"0123456789"]
+        assert input_data.tell() == 10 # EOF
