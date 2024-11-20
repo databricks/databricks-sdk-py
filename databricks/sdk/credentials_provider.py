@@ -167,6 +167,7 @@ def oauth_service_principal(cfg: 'Config') -> Optional[CredentialsProvider]:
     oidc = cfg.oidc_endpoints
     if oidc is None:
         return None
+    
     token_source = ClientCredentials(client_id=cfg.client_id,
                                      client_secret=cfg.client_secret,
                                      token_url=oidc.token_endpoint,
@@ -210,16 +211,21 @@ def external_browser(cfg: 'Config') -> Optional[CredentialsProvider]:
     credentials = token_cache.load()
     if credentials:
         # Force a refresh in case the loaded credentials are expired.
-        credentials.token()
-    else:
-        oauth_client = OAuthClient(oidc_endpoints=oidc_endpoints,
-                                   client_id=client_id,
-                                   redirect_url=redirect_url,
-                                   client_secret=client_secret)
-        consent = oauth_client.initiate_consent()
-        if not consent:
-            return None
-        credentials = consent.launch_external_browser()
+        # If the refresh fails, rather than throw exception we will initiate a new OAuth login flow.
+        try:
+            credentials.token()
+            return credentials(cfg)
+        except Exception as e:
+            logger.warning(f'Failed to refresh cached token: {e}, will init new OAuth login flow')
+
+    oauth_client = OAuthClient(oidc_endpoints=oidc_endpoints,
+                               client_id=client_id,
+                               redirect_url=redirect_url,
+                               client_secret=client_secret)
+    consent = oauth_client.initiate_consent()
+    if not consent:
+        return None
+    credentials = consent.launch_external_browser()
     token_cache.save(credentials)
     return credentials(cfg)
 
