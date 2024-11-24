@@ -2,7 +2,7 @@
 ================
 .. currentmodule:: databricks.sdk.service.jobs
 
-.. py:class:: JobsAPI
+.. py:class:: JobsExt
 
     The Jobs API allows you to create, edit, and delete jobs.
     
@@ -221,8 +221,7 @@
           Write-only setting. Specifies the user, service principal or group that the job/pipeline runs as. If
           not specified, the job/pipeline runs as the user who created the job/pipeline.
           
-          Exactly one of `user_name`, `service_principal_name`, `group_name` should be specified. If not, an
-          error is thrown.
+          Either `user_name` or `service_principal_name` should be specified. If not, an error is thrown.
         :param schedule: :class:`CronSchedule` (optional)
           An optional periodic schedule for this job. The default behavior is that the job only runs when
           triggered by clicking “Run Now” in the Jobs UI or sending an API request to `runNow`.
@@ -382,7 +381,7 @@
         :returns: :class:`JobPermissions`
         
 
-    .. py:method:: get_run(run_id: int [, include_history: Optional[bool], include_resolved_values: Optional[bool], page_token: Optional[str]]) -> Run
+    .. py:method:: get_run(run_id: int [, include_history: bool, include_resolved_values: bool, page_token: str]) -> Run
 
 
         Usage:
@@ -414,10 +413,9 @@
             # cleanup
             w.jobs.delete_run(run_id=run.run_id)
 
-        Get a single job run.
         
-        Retrieve the metadata of a run.
-        
+        This method fetches the details of a run identified by `run_id`. If the run has multiple pages of tasks or iterations,
+        it will paginate through all pages and aggregate the results.
         :param run_id: int
           The canonical identifier of the run for which to retrieve the metadata. This field is required.
         :param include_history: bool (optional)
@@ -427,7 +425,6 @@
         :param page_token: str (optional)
           To list the next page or the previous page of job tasks, set this field to the value of the
           `next_page_token` or `prev_page_token` returned in the GetJob response.
-        
         :returns: :class:`Run`
         
 
@@ -661,8 +658,9 @@
           in conjunction with notebook_params. The JSON representation of this field (for example
           `{"jar_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
           
-          Use [Task parameter variables](/jobs.html"#parameter-variables") to set parameters containing
-          information about job runs.
+          Use [Task parameter variables] to set parameters containing information about job runs.
+          
+          [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
         :param job_parameters: Dict[str,str] (optional)
           Job-level parameters used in the run. for example `"param": "overriding_val"`
         :param latest_repair_id: int (optional)
@@ -791,7 +789,7 @@
         
         
 
-    .. py:method:: run_now(job_id: int [, dbt_commands: Optional[List[str]], idempotency_token: Optional[str], jar_params: Optional[List[str]], job_parameters: Optional[Dict[str, str]], notebook_params: Optional[Dict[str, str]], pipeline_params: Optional[PipelineParams], python_named_params: Optional[Dict[str, str]], python_params: Optional[List[str]], queue: Optional[QueueSettings], spark_submit_params: Optional[List[str]], sql_params: Optional[Dict[str, str]]]) -> Wait[Run]
+    .. py:method:: run_now(job_id: int [, dbt_commands: Optional[List[str]], idempotency_token: Optional[str], jar_params: Optional[List[str]], job_parameters: Optional[Dict[str, str]], notebook_params: Optional[Dict[str, str]], only: Optional[List[str]], pipeline_params: Optional[PipelineParams], python_named_params: Optional[Dict[str, str]], python_params: Optional[List[str]], queue: Optional[QueueSettings], spark_submit_params: Optional[List[str]], sql_params: Optional[Dict[str, str]]]) -> Wait[Run]
 
 
         Usage:
@@ -854,8 +852,9 @@
           in conjunction with notebook_params. The JSON representation of this field (for example
           `{"jar_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
           
-          Use [Task parameter variables](/jobs.html"#parameter-variables") to set parameters containing
-          information about job runs.
+          Use [Task parameter variables] to set parameters containing information about job runs.
+          
+          [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
         :param job_parameters: Dict[str,str] (optional)
           Job-level parameters used in the run. for example `"param": "overriding_val"`
         :param notebook_params: Dict[str,str] (optional)
@@ -874,6 +873,9 @@
           
           [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
           [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
+        :param only: List[str] (optional)
+          A list of task keys to run inside of the job. If this field is not provided, all tasks in the job
+          will be run.
         :param pipeline_params: :class:`PipelineParams` (optional)
           Controls whether the pipeline should perform a full refresh
         :param python_named_params: Dict[str,str] (optional)
@@ -919,14 +921,15 @@
           See :method:wait_get_run_job_terminated_or_skipped for more details.
         
 
-    .. py:method:: run_now_and_wait(job_id: int [, dbt_commands: Optional[List[str]], idempotency_token: Optional[str], jar_params: Optional[List[str]], job_parameters: Optional[Dict[str, str]], notebook_params: Optional[Dict[str, str]], pipeline_params: Optional[PipelineParams], python_named_params: Optional[Dict[str, str]], python_params: Optional[List[str]], queue: Optional[QueueSettings], spark_submit_params: Optional[List[str]], sql_params: Optional[Dict[str, str]], timeout: datetime.timedelta = 0:20:00]) -> Run
+    .. py:method:: run_now_and_wait(job_id: int [, dbt_commands: Optional[List[str]], idempotency_token: Optional[str], jar_params: Optional[List[str]], job_parameters: Optional[Dict[str, str]], notebook_params: Optional[Dict[str, str]], only: Optional[List[str]], pipeline_params: Optional[PipelineParams], python_named_params: Optional[Dict[str, str]], python_params: Optional[List[str]], queue: Optional[QueueSettings], spark_submit_params: Optional[List[str]], sql_params: Optional[Dict[str, str]], timeout: datetime.timedelta = 0:20:00]) -> Run
 
 
     .. py:method:: set_permissions(job_id: str [, access_control_list: Optional[List[JobAccessControlRequest]]]) -> JobPermissions
 
         Set job permissions.
         
-        Sets permissions on a job. Jobs can inherit permissions from their root object.
+        Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
+        permissions if none are specified. Objects can inherit permissions from their root object.
         
         :param job_id: str
           The job for which to get or manage permissions.

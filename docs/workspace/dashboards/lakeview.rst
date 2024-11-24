@@ -7,47 +7,29 @@
     These APIs provide specific management operations for Lakeview dashboards. Generic resource management can
     be done with Workspace API (import, export, get-status, list, delete).
 
-    .. py:method:: create(display_name: str [, parent_path: Optional[str], serialized_dashboard: Optional[str], warehouse_id: Optional[str]]) -> Dashboard
+    .. py:method:: create( [, dashboard: Optional[Dashboard]]) -> Dashboard
 
         Create dashboard.
         
         Create a draft dashboard.
         
-        :param display_name: str
-          The display name of the dashboard.
-        :param parent_path: str (optional)
-          The workspace path of the folder containing the dashboard. Includes leading slash and no trailing
-          slash. This field is excluded in List Dashboards responses.
-        :param serialized_dashboard: str (optional)
-          The contents of the dashboard in serialized string form. This field is excluded in List Dashboards
-          responses. Use the [get dashboard API] to retrieve an example response, which includes the
-          `serialized_dashboard` field. This field provides the structure of the JSON string that represents
-          the dashboard's layout and components.
-          
-          [get dashboard API]: https://docs.databricks.com/api/workspace/lakeview/get
-        :param warehouse_id: str (optional)
-          The warehouse ID used to run the dashboard.
+        :param dashboard: :class:`Dashboard` (optional)
         
         :returns: :class:`Dashboard`
         
 
-    .. py:method:: create_schedule(dashboard_id: str, cron_schedule: CronSchedule [, display_name: Optional[str], pause_status: Optional[SchedulePauseStatus]]) -> Schedule
+    .. py:method:: create_schedule(dashboard_id: str [, schedule: Optional[Schedule]]) -> Schedule
 
         Create dashboard schedule.
         
         :param dashboard_id: str
           UUID identifying the dashboard to which the schedule belongs.
-        :param cron_schedule: :class:`CronSchedule`
-          The cron expression describing the frequency of the periodic refresh for this schedule.
-        :param display_name: str (optional)
-          The display name for schedule.
-        :param pause_status: :class:`SchedulePauseStatus` (optional)
-          The status indicates whether this schedule is paused or not.
+        :param schedule: :class:`Schedule` (optional)
         
         :returns: :class:`Schedule`
         
 
-    .. py:method:: create_subscription(dashboard_id: str, schedule_id: str, subscriber: Subscriber) -> Subscription
+    .. py:method:: create_subscription(dashboard_id: str, schedule_id: str [, subscription: Optional[Subscription]]) -> Subscription
 
         Create schedule subscription.
         
@@ -55,8 +37,7 @@
           UUID identifying the dashboard to which the subscription belongs.
         :param schedule_id: str
           UUID identifying the schedule to which the subscription belongs.
-        :param subscriber: :class:`Subscriber`
-          Subscriber details for users and destinations to be added as subscribers to the schedule.
+        :param subscription: :class:`Subscription` (optional)
         
         :returns: :class:`Subscription`
         
@@ -112,7 +93,7 @@
         Get the current published dashboard.
         
         :param dashboard_id: str
-          UUID identifying the dashboard to be published.
+          UUID identifying the published dashboard.
         
         :returns: :class:`PublishedDashboard`
         
@@ -166,7 +147,7 @@
         List dashboard schedules.
         
         :param dashboard_id: str
-          UUID identifying the dashboard to which the schedule belongs.
+          UUID identifying the dashboard to which the schedules belongs.
         :param page_size: int (optional)
           The number of schedules to return per page.
         :param page_token: str (optional)
@@ -181,9 +162,9 @@
         List schedule subscriptions.
         
         :param dashboard_id: str
-          UUID identifying the dashboard to which the subscription belongs.
+          UUID identifying the dashboard which the subscriptions belongs.
         :param schedule_id: str
-          UUID identifying the schedule to which the subscription belongs.
+          UUID identifying the schedule which the subscriptions belongs.
         :param page_size: int (optional)
           The number of subscriptions to return per page.
         :param page_token: str (optional)
@@ -245,12 +226,12 @@
         Unpublish the dashboard.
         
         :param dashboard_id: str
-          UUID identifying the dashboard to be published.
+          UUID identifying the published dashboard.
         
         
         
 
-    .. py:method:: update(dashboard_id: str [, display_name: Optional[str], etag: Optional[str], serialized_dashboard: Optional[str], warehouse_id: Optional[str]]) -> Dashboard
+    .. py:method:: update(dashboard_id: str [, dashboard: Optional[Dashboard]]) -> Dashboard
 
         Update dashboard.
         
@@ -258,25 +239,12 @@
         
         :param dashboard_id: str
           UUID identifying the dashboard.
-        :param display_name: str (optional)
-          The display name of the dashboard.
-        :param etag: str (optional)
-          The etag for the dashboard. Can be optionally provided on updates to ensure that the dashboard has
-          not been modified since the last read. This field is excluded in List Dashboards responses.
-        :param serialized_dashboard: str (optional)
-          The contents of the dashboard in serialized string form. This field is excluded in List Dashboards
-          responses. Use the [get dashboard API] to retrieve an example response, which includes the
-          `serialized_dashboard` field. This field provides the structure of the JSON string that represents
-          the dashboard's layout and components.
-          
-          [get dashboard API]: https://docs.databricks.com/api/workspace/lakeview/get
-        :param warehouse_id: str (optional)
-          The warehouse ID used to run the dashboard.
+        :param dashboard: :class:`Dashboard` (optional)
         
         :returns: :class:`Dashboard`
         
 
-    .. py:method:: update_schedule(dashboard_id: str, schedule_id: str, cron_schedule: CronSchedule [, display_name: Optional[str], etag: Optional[str], pause_status: Optional[SchedulePauseStatus]]) -> Schedule
+    .. py:method:: update_schedule(dashboard_id: str, schedule_id: str [, schedule: Optional[Schedule]]) -> Schedule
 
         Update dashboard schedule.
         
@@ -284,15 +252,7 @@
           UUID identifying the dashboard to which the schedule belongs.
         :param schedule_id: str
           UUID identifying the schedule.
-        :param cron_schedule: :class:`CronSchedule`
-          The cron expression describing the frequency of the periodic refresh for this schedule.
-        :param display_name: str (optional)
-          The display name for schedule.
-        :param etag: str (optional)
-          The etag for the schedule. Must be left empty on create, must be provided on updates to ensure that
-          the schedule has not been modified since the last read, and can be optionally provided on delete.
-        :param pause_status: :class:`SchedulePauseStatus` (optional)
-          The status indicates whether this schedule is paused or not.
+        :param schedule: :class:`Schedule` (optional)
         
         :returns: :class:`Schedule`
         

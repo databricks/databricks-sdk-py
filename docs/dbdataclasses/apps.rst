@@ -190,14 +190,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: CreateAppDeploymentRequest
-   :members:
-   :undoc-members:
-
-.. autoclass:: CreateAppRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: GetAppPermissionLevelsResponse
    :members:
    :undoc-members:
@@ -215,9 +207,5 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: StopAppRequest
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateAppRequest
    :members:
    :undoc-members:

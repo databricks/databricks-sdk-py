@@ -69,11 +69,23 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: AwsIamRole
+   :members:
+   :undoc-members:
+
 .. autoclass:: AwsIamRoleRequest
    :members:
    :undoc-members:
 
 .. autoclass:: AwsIamRoleResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: AzureActiveDirectoryToken
+   :members:
+   :undoc-members:
+
+.. autoclass:: AzureManagedIdentity
    :members:
    :undoc-members:
 
@@ -246,6 +258,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: USER_DEFINED_TYPE
       :value: "USER_DEFINED_TYPE"
 
+   .. py:attribute:: VARIANT
+      :value: "VARIANT"
+
 .. autoclass:: ConnectionInfo
    :members:
    :undoc-members:
@@ -342,6 +357,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: CreateCredentialRequest
+   :members:
+   :undoc-members:
+
 .. autoclass:: CreateExternalLocation
    :members:
    :undoc-members:
@@ -373,7 +392,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: CreateFunctionSecurityType
 
-   Function security type.
+   The security type of the function.
 
    .. py:attribute:: DEFINER
       :value: "DEFINER"
@@ -403,10 +422,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: CreateOnlineTableRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: CreateRegisteredModelRequest
    :members:
    :undoc-members:
@@ -431,6 +446,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: CredentialInfo
+   :members:
+   :undoc-members:
+
+.. py:class:: CredentialPurpose
+
+   .. py:attribute:: SERVICE
+      :value: "SERVICE"
+
+   .. py:attribute:: STORAGE
+      :value: "STORAGE"
+
 .. py:class:: CredentialType
 
    The type of credential.
@@ -440,6 +467,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: USERNAME_PASSWORD
       :value: "USERNAME_PASSWORD"
+
+.. autoclass:: CredentialValidationResult
+   :members:
+   :undoc-members:
 
 .. autoclass:: CurrentWorkspaceBindings
    :members:
@@ -527,6 +558,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: DeleteAliasResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: DeleteCredentialResponse
    :members:
    :undoc-members:
 
@@ -636,7 +671,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: FunctionInfoSecurityType
 
-   Function security type.
+   The security type of the function.
 
    .. py:attribute:: DEFINER
       :value: "DEFINER"
@@ -683,6 +718,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: GcpServiceAccountKey
+   :members:
+   :undoc-members:
+
+.. autoclass:: GenerateTemporaryServiceCredentialAzureOptions
+   :members:
+   :undoc-members:
+
+.. autoclass:: GenerateTemporaryServiceCredentialRequest
+   :members:
+   :undoc-members:
+
 .. autoclass:: GenerateTemporaryTableCredentialRequest
    :members:
    :undoc-members:
@@ -698,6 +745,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: EXTERNAL_LOCATION
       :value: "EXTERNAL_LOCATION"
+
+   .. py:attribute:: SERVICE_CREDENTIAL
+      :value: "SERVICE_CREDENTIAL"
 
    .. py:attribute:: STORAGE_CREDENTIAL
       :value: "STORAGE_CREDENTIAL"
@@ -722,8 +772,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: IsolationMode
 
-   Whether the current securable is accessible from all workspaces or a specific set of workspaces.
-
    .. py:attribute:: ISOLATION_MODE_ISOLATED
       :value: "ISOLATION_MODE_ISOLATED"
 
@@ -743,6 +791,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ListConnectionsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListCredentialsResponse
    :members:
    :undoc-members:
 
@@ -1239,6 +1291,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: CONNECTION
       :value: "CONNECTION"
 
+   .. py:attribute:: CREDENTIAL
+      :value: "CREDENTIAL"
+
    .. py:attribute:: EXTERNAL_LOCATION
       :value: "EXTERNAL_LOCATION"
 
@@ -1379,6 +1434,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: VIEW
       :value: "VIEW"
 
+.. autoclass:: TemporaryCredentials
+   :members:
+   :undoc-members:
+
 .. autoclass:: TriggeredUpdateStatus
    :members:
    :undoc-members:
@@ -1399,6 +1458,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: EXTERNAL_LOCATION
       :value: "EXTERNAL_LOCATION"
 
+   .. py:attribute:: SERVICE_CREDENTIAL
+      :value: "SERVICE_CREDENTIAL"
+
    .. py:attribute:: STORAGE_CREDENTIAL
       :value: "STORAGE_CREDENTIAL"
 
@@ -1407,6 +1469,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: UpdateConnection
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateCredentialRequest
    :members:
    :undoc-members:
 
@@ -1475,6 +1541,27 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: UpdateWorkspaceBindingsParameters
    :members:
    :undoc-members:
+
+.. autoclass:: ValidateCredentialRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: ValidateCredentialResponse
+   :members:
+   :undoc-members:
+
+.. py:class:: ValidateCredentialResult
+
+   A enum represents the result of the file operation
+
+   .. py:attribute:: FAIL
+      :value: "FAIL"
+
+   .. py:attribute:: PASS
+      :value: "PASS"
+
+   .. py:attribute:: SKIP
+      :value: "SKIP"
 
 .. autoclass:: ValidateStorageCredential
    :members:

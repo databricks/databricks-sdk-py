@@ -92,7 +92,7 @@
         specified principal.
         
         :param workspace_id: int
-          The workspace ID for the account.
+          The workspace ID.
         :param principal_id: int
           The ID of the user, service principal, or group.
         :param permissions: List[:class:`WorkspacePermission`] (optional)

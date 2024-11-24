@@ -65,6 +65,7 @@
         required in the request body.
         
         :param id: str
+          UUID identifying notification destination.
         :param config: :class:`Config` (optional)
           The configuration for the notification destination. Must wrap EXACTLY one of the nested configs.
         :param display_name: str (optional)

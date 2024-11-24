@@ -1,3 +1,4 @@
+import io
 import logging
 import urllib.parse
 from datetime import timedelta
@@ -50,7 +51,8 @@ class _BaseClient:
                  http_timeout_seconds: float = None,
                  extra_error_customizers: List[_ErrorCustomizer] = None,
                  debug_headers: bool = False,
-                 clock: Clock = None):
+                 clock: Clock = None,
+                 streaming_buffer_size: int = 1024 * 1024): # 1MB
         """
         :param debug_truncate_bytes:
         :param retry_timeout_seconds:
@@ -68,6 +70,7 @@ class _BaseClient:
         :param extra_error_customizers:
         :param debug_headers: Whether to include debug headers in the request log.
         :param clock: Clock object to use for time-related operations.
+        :param streaming_buffer_size: The size of the buffer to use for streaming responses.
         """
 
         self._debug_truncate_bytes = debug_truncate_bytes or 96
@@ -78,6 +81,7 @@ class _BaseClient:
         self._clock = clock or RealClock()
         self._session = requests.Session()
         self._session.auth = self._authenticate
+        self._streaming_buffer_size = streaming_buffer_size
 
         # We don't use `max_retries` from HTTPAdapter to align with a more production-ready
         # retry strategy established in the Databricks SDK for Go. See _is_retryable and
@@ -127,6 +131,14 @@ class _BaseClient:
         flattened = dict(flatten_dict(with_fixed_bools))
         return flattened
 
+    @staticmethod
+    def _is_seekable_stream(data) -> bool:
+        if data is None:
+            return False
+        if not isinstance(data, io.IOBase):
+            return False
+        return data.seekable()
+
     def do(self,
            method: str,
            url: str,
@@ -141,24 +153,39 @@ class _BaseClient:
         if headers is None:
             headers = {}
         headers['User-Agent'] = self._user_agent_base
-        retryable = retried(timeout=timedelta(seconds=self._retry_timeout_seconds),
-                            is_retryable=self._is_retryable,
-                            clock=self._clock)
-        response = retryable(self._perform)(method,
-                                            url,
-                                            query=query,
-                                            headers=headers,
-                                            body=body,
-                                            raw=raw,
-                                            files=files,
-                                            data=data,
-                                            auth=auth)
+
+        # Wrap strings and bytes in a seekable stream so that we can rewind them.
+        if isinstance(data, (str, bytes)):
+            data = io.BytesIO(data.encode('utf-8') if isinstance(data, str) else data)
+
+        # Only retry if the request is not a stream or if the stream is seekable and
+        # we can rewind it. This is necessary to avoid bugs where the retry doesn't
+        # re-read already read data from the body.
+        if data is not None and not self._is_seekable_stream(data):
+            logger.debug(f"Retry disabled for non-seekable stream: type={type(data)}")
+            call = self._perform
+        else:
+            call = retried(timeout=timedelta(seconds=self._retry_timeout_seconds),
+                           is_retryable=self._is_retryable,
+                           clock=self._clock)(self._perform)
+
+        response = call(method,
+                        url,
+                        query=query,
+                        headers=headers,
+                        body=body,
+                        raw=raw,
+                        files=files,
+                        data=data,
+                        auth=auth)
 
         resp = dict()
         for header in response_headers if response_headers else []:
             resp[header] = response.headers.get(Casing.to_header_case(header))
         if raw:
-            resp["contents"] = _StreamingResponse(response)
+            streaming_response = _StreamingResponse(response)
+            streaming_response.set_chunk_size(self._streaming_buffer_size)
+            resp["contents"] = streaming_response
             return resp
         if not len(response.content):
             return resp
@@ -221,6 +248,12 @@ class _BaseClient:
                  files=None,
                  data=None,
                  auth: Callable[[requests.PreparedRequest], requests.PreparedRequest] = None):
+        # Keep track of the initial position of the stream so that we can rewind it if
+        # we need to retry the request.
+        initial_data_position = 0
+        if self._is_seekable_stream(data):
+            initial_data_position = data.tell()
+
         response = self._session.request(method,
                                          url,
                                          params=self._fix_query_string(query),
@@ -232,9 +265,18 @@ class _BaseClient:
                                          stream=raw,
                                          timeout=self._http_timeout_seconds)
         self._record_request_log(response, raw=raw or data is not None or files is not None)
+
         error = self._error_parser.get_api_error(response)
         if error is not None:
+            # If the request body is a seekable stream, rewind it so that it is ready
+            # to be read again in case of a retry.
+            #
+            # TODO: This should be moved into a "before-retry" hook to avoid one
+            # unnecessary seek on the last failed retry before aborting.
+            if self._is_seekable_stream(data):
+                data.seek(initial_data_position)
             raise error from None
+
         return response
 
     def _record_request_log(self, response: requests.Response, raw: bool = False) -> None:
@@ -283,6 +325,11 @@ class _StreamingResponse(BinaryIO):
         return False
 
     def read(self, n: int = -1) -> bytes:
+        """
+        Read up to n bytes from the response stream. If n is negative, read 
+        until the end of the stream. 
+        """
+
         self._open()
         read_everything = n < 0
         remaining_bytes = n

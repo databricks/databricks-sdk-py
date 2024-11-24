@@ -684,6 +684,7 @@ class ImportFormat(Enum):
     DBC = 'DBC'
     HTML = 'HTML'
     JUPYTER = 'JUPYTER'
+    RAW = 'RAW'
     R_MARKDOWN = 'R_MARKDOWN'
     SOURCE = 'SOURCE'
 
@@ -1799,7 +1800,7 @@ class ReposAPI:
         Deletes the specified repo.
         
         :param repo_id: int
-          ID of the Git folder (repo) object in the workspace.
+          The ID for the corresponding repo to delete.
         
         
         """
@@ -1897,7 +1898,8 @@ class ReposAPI:
             access_control_list: Optional[List[RepoAccessControlRequest]] = None) -> RepoPermissions:
         """Set repo permissions.
         
-        Sets permissions on a repo. Repos can inherit permissions from their root object.
+        Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
+        permissions if none are specified. Objects can inherit permissions from their root object.
         
         :param repo_id: str
           The repo for which to get or manage permissions.
@@ -2527,8 +2529,9 @@ class WorkspaceAPI:
     ) -> WorkspaceObjectPermissions:
         """Set workspace object permissions.
         
-        Sets permissions on a workspace object. Workspace objects can inherit permissions from their parent
-        objects or root object.
+        Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
+        permissions if none are specified. Objects can inherit permissions from their parent objects or root
+        object.
         
         :param workspace_object_type: str
           The workspace object type for which to get or manage permissions.

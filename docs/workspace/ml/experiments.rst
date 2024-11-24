@@ -578,7 +578,8 @@
 
         Set experiment permissions.
         
-        Sets permissions on an experiment. Experiments can inherit permissions from their root object.
+        Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
+        permissions if none are specified. Objects can inherit permissions from their root object.
         
         :param experiment_id: str
           The experiment for which to get or manage permissions.

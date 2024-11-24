@@ -389,19 +389,24 @@ class GetPublishedAppsOutput:
 
 @dataclass
 class ListServicePrincipalSecretsResponse:
+    next_page_token: Optional[str] = None
+    """A token, which can be sent as `page_token` to retrieve the next page."""
+
     secrets: Optional[List[SecretInfo]] = None
     """List of the secrets"""
 
     def as_dict(self) -> dict:
         """Serializes the ListServicePrincipalSecretsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         if self.secrets: body['secrets'] = [v.as_dict() for v in self.secrets]
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListServicePrincipalSecretsResponse:
         """Deserializes the ListServicePrincipalSecretsResponse from a dictionary."""
-        return cls(secrets=_repeated_dict(d, 'secrets', SecretInfo))
+        return cls(next_page_token=d.get('next_page_token', None),
+                   secrets=_repeated_dict(d, 'secrets', SecretInfo))
 
 
 @dataclass
@@ -661,6 +666,7 @@ class CustomAppIntegrationAPI:
         Gets the Custom OAuth App Integration for the given integration id.
         
         :param integration_id: str
+          The OAuth app integration ID.
         
         :returns: :class:`GetCustomAppIntegrationOutput`
         """
@@ -960,7 +966,7 @@ class ServicePrincipalSecretsAPI:
             f'/api/2.0/accounts/{self._api.account_id}/servicePrincipals/{service_principal_id}/credentials/secrets/{secret_id}',
             headers=headers)
 
-    def list(self, service_principal_id: int) -> Iterator[SecretInfo]:
+    def list(self, service_principal_id: int, *, page_token: Optional[str] = None) -> Iterator[SecretInfo]:
         """List service principal secrets.
         
         List all secrets associated with the given service principal. This operation only returns information
@@ -968,15 +974,30 @@ class ServicePrincipalSecretsAPI:
         
         :param service_principal_id: int
           The service principal ID.
+        :param page_token: str (optional)
+          An opaque page token which was the `next_page_token` in the response of the previous request to list
+          the secrets for this service principal. Provide this token to retrieve the next page of secret
+          entries. When providing a `page_token`, all other parameters provided to the request must match the
+          previous request. To list all of the secrets for a service principal, it is necessary to continue
+          requesting pages of entries until the response contains no `next_page_token`. Note that the number
+          of entries returned must not be used to determine when the listing is complete.
         
         :returns: Iterator over :class:`SecretInfo`
         """
 
+        query = {}
+        if page_token is not None: query['page_token'] = page_token
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do(
-            'GET',
-            f'/api/2.0/accounts/{self._api.account_id}/servicePrincipals/{service_principal_id}/credentials/secrets',
-            headers=headers)
-        parsed = ListServicePrincipalSecretsResponse.from_dict(json).secrets
-        return parsed if parsed is not None else []
+        while True:
+            json = self._api.do(
+                'GET',
+                f'/api/2.0/accounts/{self._api.account_id}/servicePrincipals/{service_principal_id}/credentials/secrets',
+                query=query,
+                headers=headers)
+            if 'secrets' in json:
+                for v in json['secrets']:
+                    yield SecretInfo.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']

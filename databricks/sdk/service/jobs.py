@@ -574,8 +574,7 @@ class CreateJob:
     """Write-only setting. Specifies the user, service principal or group that the job/pipeline runs
     as. If not specified, the job/pipeline runs as the user who created the job/pipeline.
     
-    Exactly one of `user_name`, `service_principal_name`, `group_name` should be specified. If not,
-    an error is thrown."""
+    Either `user_name` or `service_principal_name` should be specified. If not, an error is thrown."""
 
     schedule: Optional[CronSchedule] = None
     """An optional periodic schedule for this job. The default behavior is that the job only runs when
@@ -1752,8 +1751,7 @@ class JobRunAs:
     """Write-only setting. Specifies the user, service principal or group that the job/pipeline runs
     as. If not specified, the job/pipeline runs as the user who created the job/pipeline.
     
-    Exactly one of `user_name`, `service_principal_name`, `group_name` should be specified. If not,
-    an error is thrown."""
+    Either `user_name` or `service_principal_name` should be specified. If not, an error is thrown."""
 
     service_principal_name: Optional[str] = None
     """Application ID of an active service principal. Setting this field requires the
@@ -1861,8 +1859,7 @@ class JobSettings:
     """Write-only setting. Specifies the user, service principal or group that the job/pipeline runs
     as. If not specified, the job/pipeline runs as the user who created the job/pipeline.
     
-    Exactly one of `user_name`, `service_principal_name`, `group_name` should be specified. If not,
-    an error is thrown."""
+    Either `user_name` or `service_principal_name` should be specified. If not, an error is thrown."""
 
     schedule: Optional[CronSchedule] = None
     """An optional periodic schedule for this job. The default behavior is that the job only runs when
@@ -2482,8 +2479,9 @@ class RepairRun:
     be specified in conjunction with notebook_params. The JSON representation of this field (for
     example `{"jar_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
     
-    Use [Task parameter variables](/jobs.html\"#parameter-variables\") to set parameters containing
-    information about job runs."""
+    Use [Task parameter variables] to set parameters containing information about job runs.
+    
+    [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables"""
 
     job_parameters: Optional[Dict[str, str]] = None
     """Job-level parameters used in the run. for example `"param": "overriding_val"`"""
@@ -2916,9 +2914,6 @@ class Run:
     overriding_parameters: Optional[RunParameters] = None
     """The parameters used for this run."""
 
-    prev_page_token: Optional[str] = None
-    """A token that can be used to list the previous page of sub-resources."""
-
     queue_duration: Optional[int] = None
     """The time in milliseconds that the run has spent in the queue."""
 
@@ -3005,7 +3000,6 @@ class Run:
         if self.original_attempt_run_id is not None:
             body['original_attempt_run_id'] = self.original_attempt_run_id
         if self.overriding_parameters: body['overriding_parameters'] = self.overriding_parameters.as_dict()
-        if self.prev_page_token is not None: body['prev_page_token'] = self.prev_page_token
         if self.queue_duration is not None: body['queue_duration'] = self.queue_duration
         if self.repair_history: body['repair_history'] = [v.as_dict() for v in self.repair_history]
         if self.run_duration is not None: body['run_duration'] = self.run_duration
@@ -3044,7 +3038,6 @@ class Run:
                    number_in_job=d.get('number_in_job', None),
                    original_attempt_run_id=d.get('original_attempt_run_id', None),
                    overriding_parameters=_from_dict(d, 'overriding_parameters', RunParameters),
-                   prev_page_token=d.get('prev_page_token', None),
                    queue_duration=d.get('queue_duration', None),
                    repair_history=_repeated_dict(d, 'repair_history', RepairHistoryItem),
                    run_duration=d.get('run_duration', None),
@@ -3190,8 +3183,9 @@ class RunJobTask:
     be specified in conjunction with notebook_params. The JSON representation of this field (for
     example `{"jar_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
     
-    Use [Task parameter variables](/jobs.html\"#parameter-variables\") to set parameters containing
-    information about job runs."""
+    Use [Task parameter variables] to set parameters containing information about job runs.
+    
+    [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables"""
 
     job_parameters: Optional[Dict[str, str]] = None
     """Job-level parameters used to trigger the job."""
@@ -3350,8 +3344,9 @@ class RunNow:
     be specified in conjunction with notebook_params. The JSON representation of this field (for
     example `{"jar_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
     
-    Use [Task parameter variables](/jobs.html\"#parameter-variables\") to set parameters containing
-    information about job runs."""
+    Use [Task parameter variables] to set parameters containing information about job runs.
+    
+    [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables"""
 
     job_parameters: Optional[Dict[str, str]] = None
     """Job-level parameters used in the run. for example `"param": "overriding_val"`"""
@@ -3372,6 +3367,10 @@ class RunNow:
     
     [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
     [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html"""
+
+    only: Optional[List[str]] = None
+    """A list of task keys to run inside of the job. If this field is not provided, all tasks in the
+    job will be run."""
 
     pipeline_params: Optional[PipelineParams] = None
     """Controls whether the pipeline should perform a full refresh"""
@@ -3427,6 +3426,7 @@ class RunNow:
         if self.job_id is not None: body['job_id'] = self.job_id
         if self.job_parameters: body['job_parameters'] = self.job_parameters
         if self.notebook_params: body['notebook_params'] = self.notebook_params
+        if self.only: body['only'] = [v for v in self.only]
         if self.pipeline_params: body['pipeline_params'] = self.pipeline_params.as_dict()
         if self.python_named_params: body['python_named_params'] = self.python_named_params
         if self.python_params: body['python_params'] = [v for v in self.python_params]
@@ -3444,6 +3444,7 @@ class RunNow:
                    job_id=d.get('job_id', None),
                    job_parameters=d.get('job_parameters', None),
                    notebook_params=d.get('notebook_params', None),
+                   only=d.get('only', None),
                    pipeline_params=_from_dict(d, 'pipeline_params', PipelineParams),
                    python_named_params=d.get('python_named_params', None),
                    python_params=d.get('python_params', None),
@@ -3563,8 +3564,9 @@ class RunParameters:
     be specified in conjunction with notebook_params. The JSON representation of this field (for
     example `{"jar_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
     
-    Use [Task parameter variables](/jobs.html\"#parameter-variables\") to set parameters containing
-    information about job runs."""
+    Use [Task parameter variables] to set parameters containing information about job runs.
+    
+    [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables"""
 
     notebook_params: Optional[Dict[str, str]] = None
     """A map from keys to values for jobs with notebook task, for example `"notebook_params": {"name":
@@ -3774,13 +3776,13 @@ class RunTask:
     once the Jobs service has requested a cluster for the run."""
 
     condition_task: Optional[RunConditionTask] = None
-    """If condition_task, specifies a condition with an outcome that can be used to control the
-    execution of other tasks. Does not require a cluster to execute and does not support retries or
-    notifications."""
+    """The task evaluates a condition that can be used to control the execution of other tasks when the
+    `condition_task` field is present. The condition task does not require a cluster to execute and
+    does not support retries or notifications."""
 
     dbt_task: Optional[DbtTask] = None
-    """If dbt_task, indicates that this must execute a dbt task. It requires both Databricks SQL and
-    the ability to use a serverless or a pro SQL warehouse."""
+    """The task runs one or more dbt commands when the `dbt_task` field is present. The dbt task
+    requires both Databricks SQL and the ability to use a serverless or a pro SQL warehouse."""
 
     depends_on: Optional[List[TaskDependency]] = None
     """An optional array of objects specifying the dependency graph of the task. All tasks specified in
@@ -3815,7 +3817,8 @@ class RunTask:
     responding. We suggest running jobs and tasks on new clusters for greater reliability"""
 
     for_each_task: Optional[RunForEachTask] = None
-    """If for_each_task, indicates that this task must execute the nested task within it."""
+    """The task executes a nested task for every input provided when the `for_each_task` field is
+    present."""
 
     git_source: Optional[GitSource] = None
     """An optional specification for a remote Git repository containing the source code used by tasks.
@@ -3837,18 +3840,18 @@ class RunTask:
     """If new_cluster, a description of a new cluster that is created for each run."""
 
     notebook_task: Optional[NotebookTask] = None
-    """If notebook_task, indicates that this task must run a notebook. This field may not be specified
-    in conjunction with spark_jar_task."""
+    """The task runs a notebook when the `notebook_task` field is present."""
 
     notification_settings: Optional[TaskNotificationSettings] = None
     """Optional notification settings that are used when sending notifications to each of the
     `email_notifications` and `webhook_notifications` for this task run."""
 
     pipeline_task: Optional[PipelineTask] = None
-    """If pipeline_task, indicates that this task must execute a Pipeline."""
+    """The task triggers a pipeline update when the `pipeline_task` field is present. Only pipelines
+    configured to use triggered more are supported."""
 
     python_wheel_task: Optional[PythonWheelTask] = None
-    """If python_wheel_task, indicates that this job must execute a PythonWheel."""
+    """The task runs a Python wheel when the `python_wheel_task` field is present."""
 
     queue_duration: Optional[int] = None
     """The time in milliseconds that the run has spent in the queue."""
@@ -3868,7 +3871,7 @@ class RunTask:
     :method:jobs/create for a list of possible values."""
 
     run_job_task: Optional[RunJobTask] = None
-    """If run_job_task, indicates that this task must execute another job."""
+    """The task triggers another job when the `run_job_task` field is present."""
 
     run_page_url: Optional[str] = None
 
@@ -3880,14 +3883,14 @@ class RunTask:
     duration of a multitask job run is the value of the `run_duration` field."""
 
     spark_jar_task: Optional[SparkJarTask] = None
-    """If spark_jar_task, indicates that this task must run a JAR."""
+    """The task runs a JAR when the `spark_jar_task` field is present."""
 
     spark_python_task: Optional[SparkPythonTask] = None
-    """If spark_python_task, indicates that this task must run a Python file."""
+    """The task runs a Python file when the `spark_python_task` field is present."""
 
     spark_submit_task: Optional[SparkSubmitTask] = None
-    """If `spark_submit_task`, indicates that this task must be launched by the spark submit script.
-    This task can run only on new clusters.
+    """(Legacy) The task runs the spark-submit script when the `spark_submit_task` field is present.
+    This task can run only on new clusters and is not compatible with serverless compute.
     
     In the `new_cluster` specification, `libraries` and `spark_conf` are not supported. Instead, use
     `--jars` and `--py-files` to add Java and Python libraries and `--conf` to set the Spark
@@ -3903,7 +3906,8 @@ class RunTask:
     The `--jars`, `--py-files`, `--files` arguments support DBFS and S3 paths."""
 
     sql_task: Optional[SqlTask] = None
-    """If sql_task, indicates that this job must execute a SQL task."""
+    """The task runs a SQL query or file, or it refreshes a SQL alert or a legacy SQL dashboard when
+    the `sql_task` field is present."""
 
     start_time: Optional[int] = None
     """The time at which this run was started in epoch milliseconds (milliseconds since 1/1/1970 UTC).
@@ -4664,13 +4668,13 @@ class SubmitTask:
     used to reference the tasks to be updated or reset."""
 
     condition_task: Optional[ConditionTask] = None
-    """If condition_task, specifies a condition with an outcome that can be used to control the
-    execution of other tasks. Does not require a cluster to execute and does not support retries or
-    notifications."""
+    """The task evaluates a condition that can be used to control the execution of other tasks when the
+    `condition_task` field is present. The condition task does not require a cluster to execute and
+    does not support retries or notifications."""
 
     dbt_task: Optional[DbtTask] = None
-    """If dbt_task, indicates that this must execute a dbt task. It requires both Databricks SQL and
-    the ability to use a serverless or a pro SQL warehouse."""
+    """The task runs one or more dbt commands when the `dbt_task` field is present. The dbt task
+    requires both Databricks SQL and the ability to use a serverless or a pro SQL warehouse."""
 
     depends_on: Optional[List[TaskDependency]] = None
     """An optional array of objects specifying the dependency graph of the task. All tasks specified in
@@ -4694,7 +4698,8 @@ class SubmitTask:
     responding. We suggest running jobs and tasks on new clusters for greater reliability"""
 
     for_each_task: Optional[ForEachTask] = None
-    """If for_each_task, indicates that this task must execute the nested task within it."""
+    """The task executes a nested task for every input provided when the `for_each_task` field is
+    present."""
 
     health: Optional[JobsHealthRules] = None
     """An optional set of health rules that can be defined for this job."""
@@ -4707,18 +4712,18 @@ class SubmitTask:
     """If new_cluster, a description of a new cluster that is created for each run."""
 
     notebook_task: Optional[NotebookTask] = None
-    """If notebook_task, indicates that this task must run a notebook. This field may not be specified
-    in conjunction with spark_jar_task."""
+    """The task runs a notebook when the `notebook_task` field is present."""
 
     notification_settings: Optional[TaskNotificationSettings] = None
     """Optional notification settings that are used when sending notifications to each of the
     `email_notifications` and `webhook_notifications` for this task run."""
 
     pipeline_task: Optional[PipelineTask] = None
-    """If pipeline_task, indicates that this task must execute a Pipeline."""
+    """The task triggers a pipeline update when the `pipeline_task` field is present. Only pipelines
+    configured to use triggered more are supported."""
 
     python_wheel_task: Optional[PythonWheelTask] = None
-    """If python_wheel_task, indicates that this job must execute a PythonWheel."""
+    """The task runs a Python wheel when the `python_wheel_task` field is present."""
 
     run_if: Optional[RunIf] = None
     """An optional value indicating the condition that determines whether the task should be run once
@@ -4726,17 +4731,17 @@ class SubmitTask:
     :method:jobs/create for a list of possible values."""
 
     run_job_task: Optional[RunJobTask] = None
-    """If run_job_task, indicates that this task must execute another job."""
+    """The task triggers another job when the `run_job_task` field is present."""
 
     spark_jar_task: Optional[SparkJarTask] = None
-    """If spark_jar_task, indicates that this task must run a JAR."""
+    """The task runs a JAR when the `spark_jar_task` field is present."""
 
     spark_python_task: Optional[SparkPythonTask] = None
-    """If spark_python_task, indicates that this task must run a Python file."""
+    """The task runs a Python file when the `spark_python_task` field is present."""
 
     spark_submit_task: Optional[SparkSubmitTask] = None
-    """If `spark_submit_task`, indicates that this task must be launched by the spark submit script.
-    This task can run only on new clusters.
+    """(Legacy) The task runs the spark-submit script when the `spark_submit_task` field is present.
+    This task can run only on new clusters and is not compatible with serverless compute.
     
     In the `new_cluster` specification, `libraries` and `spark_conf` are not supported. Instead, use
     `--jars` and `--py-files` to add Java and Python libraries and `--conf` to set the Spark
@@ -4752,7 +4757,8 @@ class SubmitTask:
     The `--jars`, `--py-files`, `--files` arguments support DBFS and S3 paths."""
 
     sql_task: Optional[SqlTask] = None
-    """If sql_task, indicates that this job must execute a SQL task."""
+    """The task runs a SQL query or file, or it refreshes a SQL alert or a legacy SQL dashboard when
+    the `sql_task` field is present."""
 
     timeout_seconds: Optional[int] = None
     """An optional timeout applied to each run of this job task. A value of `0` means no timeout."""
@@ -4866,13 +4872,13 @@ class Task:
     used to reference the tasks to be updated or reset."""
 
     condition_task: Optional[ConditionTask] = None
-    """If condition_task, specifies a condition with an outcome that can be used to control the
-    execution of other tasks. Does not require a cluster to execute and does not support retries or
-    notifications."""
+    """The task evaluates a condition that can be used to control the execution of other tasks when the
+    `condition_task` field is present. The condition task does not require a cluster to execute and
+    does not support retries or notifications."""
 
     dbt_task: Optional[DbtTask] = None
-    """If dbt_task, indicates that this must execute a dbt task. It requires both Databricks SQL and
-    the ability to use a serverless or a pro SQL warehouse."""
+    """The task runs one or more dbt commands when the `dbt_task` field is present. The dbt task
+    requires both Databricks SQL and the ability to use a serverless or a pro SQL warehouse."""
 
     depends_on: Optional[List[TaskDependency]] = None
     """An optional array of objects specifying the dependency graph of the task. All tasks specified in
@@ -4900,7 +4906,8 @@ class Task:
     responding. We suggest running jobs and tasks on new clusters for greater reliability"""
 
     for_each_task: Optional[ForEachTask] = None
-    """If for_each_task, indicates that this task must execute the nested task within it."""
+    """The task executes a nested task for every input provided when the `for_each_task` field is
+    present."""
 
     health: Optional[JobsHealthRules] = None
     """An optional set of health rules that can be defined for this job."""
@@ -4927,18 +4934,18 @@ class Task:
     """If new_cluster, a description of a new cluster that is created for each run."""
 
     notebook_task: Optional[NotebookTask] = None
-    """If notebook_task, indicates that this task must run a notebook. This field may not be specified
-    in conjunction with spark_jar_task."""
+    """The task runs a notebook when the `notebook_task` field is present."""
 
     notification_settings: Optional[TaskNotificationSettings] = None
     """Optional notification settings that are used when sending notifications to each of the
     `email_notifications` and `webhook_notifications` for this task."""
 
     pipeline_task: Optional[PipelineTask] = None
-    """If pipeline_task, indicates that this task must execute a Pipeline."""
+    """The task triggers a pipeline update when the `pipeline_task` field is present. Only pipelines
+    configured to use triggered more are supported."""
 
     python_wheel_task: Optional[PythonWheelTask] = None
-    """If python_wheel_task, indicates that this job must execute a PythonWheel."""
+    """The task runs a Python wheel when the `python_wheel_task` field is present."""
 
     retry_on_timeout: Optional[bool] = None
     """An optional policy to specify whether to retry a job when it times out. The default behavior is
@@ -4954,17 +4961,17 @@ class Task:
     least one dependency failed * `ALL_FAILED`: ALl dependencies have failed"""
 
     run_job_task: Optional[RunJobTask] = None
-    """If run_job_task, indicates that this task must execute another job."""
+    """The task triggers another job when the `run_job_task` field is present."""
 
     spark_jar_task: Optional[SparkJarTask] = None
-    """If spark_jar_task, indicates that this task must run a JAR."""
+    """The task runs a JAR when the `spark_jar_task` field is present."""
 
     spark_python_task: Optional[SparkPythonTask] = None
-    """If spark_python_task, indicates that this task must run a Python file."""
+    """The task runs a Python file when the `spark_python_task` field is present."""
 
     spark_submit_task: Optional[SparkSubmitTask] = None
-    """If `spark_submit_task`, indicates that this task must be launched by the spark submit script.
-    This task can run only on new clusters.
+    """(Legacy) The task runs the spark-submit script when the `spark_submit_task` field is present.
+    This task can run only on new clusters and is not compatible with serverless compute.
     
     In the `new_cluster` specification, `libraries` and `spark_conf` are not supported. Instead, use
     `--jars` and `--py-files` to add Java and Python libraries and `--conf` to set the Spark
@@ -4980,7 +4987,8 @@ class Task:
     The `--jars`, `--py-files`, `--files` arguments support DBFS and S3 paths."""
 
     sql_task: Optional[SqlTask] = None
-    """If sql_task, indicates that this job must execute a SQL task."""
+    """The task runs a SQL query or file, or it refreshes a SQL alert or a legacy SQL dashboard when
+    the `sql_task` field is present."""
 
     timeout_seconds: Optional[int] = None
     """An optional timeout applied to each run of this job task. A value of `0` means no timeout."""
@@ -5749,8 +5757,7 @@ class JobsAPI:
           Write-only setting. Specifies the user, service principal or group that the job/pipeline runs as. If
           not specified, the job/pipeline runs as the user who created the job/pipeline.
           
-          Exactly one of `user_name`, `service_principal_name`, `group_name` should be specified. If not, an
-          error is thrown.
+          Either `user_name` or `service_principal_name` should be specified. If not, an error is thrown.
         :param schedule: :class:`CronSchedule` (optional)
           An optional periodic schedule for this job. The default behavior is that the job only runs when
           triggered by clicking “Run Now” in the Jobs UI or sending an API request to `runNow`.
@@ -5922,8 +5929,8 @@ class JobsAPI:
         :param include_resolved_values: bool (optional)
           Whether to include resolved parameter values in the response.
         :param page_token: str (optional)
-          To list the next page or the previous page of job tasks, set this field to the value of the
-          `next_page_token` or `prev_page_token` returned in the GetJob response.
+          To list the next page of job tasks, set this field to the value of the `next_page_token` returned in
+          the GetJob response.
         
         :returns: :class:`Run`
         """
@@ -6111,8 +6118,9 @@ class JobsAPI:
           in conjunction with notebook_params. The JSON representation of this field (for example
           `{"jar_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
           
-          Use [Task parameter variables](/jobs.html\"#parameter-variables\") to set parameters containing
-          information about job runs.
+          Use [Task parameter variables] to set parameters containing information about job runs.
+          
+          [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
         :param job_parameters: Dict[str,str] (optional)
           Job-level parameters used in the run. for example `"param": "overriding_val"`
         :param latest_repair_id: int (optional)
@@ -6269,6 +6277,7 @@ class JobsAPI:
                 jar_params: Optional[List[str]] = None,
                 job_parameters: Optional[Dict[str, str]] = None,
                 notebook_params: Optional[Dict[str, str]] = None,
+                only: Optional[List[str]] = None,
                 pipeline_params: Optional[PipelineParams] = None,
                 python_named_params: Optional[Dict[str, str]] = None,
                 python_params: Optional[List[str]] = None,
@@ -6304,8 +6313,9 @@ class JobsAPI:
           in conjunction with notebook_params. The JSON representation of this field (for example
           `{"jar_params":["john doe","35"]}`) cannot exceed 10,000 bytes.
           
-          Use [Task parameter variables](/jobs.html\"#parameter-variables\") to set parameters containing
-          information about job runs.
+          Use [Task parameter variables] to set parameters containing information about job runs.
+          
+          [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
         :param job_parameters: Dict[str,str] (optional)
           Job-level parameters used in the run. for example `"param": "overriding_val"`
         :param notebook_params: Dict[str,str] (optional)
@@ -6324,6 +6334,9 @@ class JobsAPI:
           
           [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables
           [dbutils.widgets.get]: https://docs.databricks.com/dev-tools/databricks-utils.html
+        :param only: List[str] (optional)
+          A list of task keys to run inside of the job. If this field is not provided, all tasks in the job
+          will be run.
         :param pipeline_params: :class:`PipelineParams` (optional)
           Controls whether the pipeline should perform a full refresh
         :param python_named_params: Dict[str,str] (optional)
@@ -6375,6 +6388,7 @@ class JobsAPI:
         if job_id is not None: body['job_id'] = job_id
         if job_parameters is not None: body['job_parameters'] = job_parameters
         if notebook_params is not None: body['notebook_params'] = notebook_params
+        if only is not None: body['only'] = [v for v in only]
         if pipeline_params is not None: body['pipeline_params'] = pipeline_params.as_dict()
         if python_named_params is not None: body['python_named_params'] = python_named_params
         if python_params is not None: body['python_params'] = [v for v in python_params]
@@ -6396,6 +6410,7 @@ class JobsAPI:
                          jar_params: Optional[List[str]] = None,
                          job_parameters: Optional[Dict[str, str]] = None,
                          notebook_params: Optional[Dict[str, str]] = None,
+                         only: Optional[List[str]] = None,
                          pipeline_params: Optional[PipelineParams] = None,
                          python_named_params: Optional[Dict[str, str]] = None,
                          python_params: Optional[List[str]] = None,
@@ -6409,6 +6424,7 @@ class JobsAPI:
                             job_id=job_id,
                             job_parameters=job_parameters,
                             notebook_params=notebook_params,
+                            only=only,
                             pipeline_params=pipeline_params,
                             python_named_params=python_named_params,
                             python_params=python_params,
@@ -6423,7 +6439,8 @@ class JobsAPI:
             access_control_list: Optional[List[JobAccessControlRequest]] = None) -> JobPermissions:
         """Set job permissions.
         
-        Sets permissions on a job. Jobs can inherit permissions from their root object.
+        Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
+        permissions if none are specified. Objects can inherit permissions from their root object.
         
         :param job_id: str
           The job for which to get or manage permissions.

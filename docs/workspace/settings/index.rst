@@ -11,6 +11,8 @@ Manage security settings for Accounts and Workspaces
    ip_access_lists
    notification_destinations
    settings
+   aibi_dashboard_embedding_access_policy
+   aibi_dashboard_embedding_approved_domains
    automatic_cluster_update
    compliance_security_profile
    default_namespace

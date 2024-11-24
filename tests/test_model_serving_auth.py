@@ -47,13 +47,16 @@ def test_model_serving_auth(env_values, del_env_values, oauth_file_name, monkeyp
     assert headers.get("Authorization") == 'Bearer databricks_sdk_unit_test_token'
 
 
-@pytest.mark.parametrize("env_values, oauth_file_name", [
-    ([], "invalid_file_name"), # Not in Model Serving and Invalid File Name
-    ([('IS_IN_DB_MODEL_SERVING_ENV', 'true')], "invalid_file_name"), # In Model Serving and Invalid File Name
-    ([('IS_IN_DATABRICKS_MODEL_SERVING_ENV', 'true')
-      ], "invalid_file_name"), # In Model Serving and Invalid File Name
-    ([], "tests/testdata/model-serving-test-token") # Not in Model Serving and Valid File Name
-])
+@pytest.mark.parametrize(
+    "env_values, oauth_file_name",
+    [
+        ([], "invalid_file_name"), # Not in Model Serving and Invalid File Name
+        ([('IS_IN_DB_MODEL_SERVING_ENV', 'true')
+          ], "invalid_file_name"), # In Model Serving and Invalid File Name
+        ([('IS_IN_DATABRICKS_MODEL_SERVING_ENV', 'true')
+          ], "invalid_file_name"), # In Model Serving and Invalid File Name
+        ([], "tests/testdata/model-serving-test-token") # Not in Model Serving and Valid File Name
+    ])
 @raises(default_auth_base_error_message)
 def test_model_serving_auth_errors(env_values, oauth_file_name, monkeypatch):
     # Guarantee that the tests defaults to env variables rather than config file.
