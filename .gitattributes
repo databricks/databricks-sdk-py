@@ -4,6 +4,7 @@ databricks/sdk/errors/platform.py linguist-generated=true
 databricks/sdk/service/apps.py linguist-generated=true
 databricks/sdk/service/billing.py linguist-generated=true
 databricks/sdk/service/catalog.py linguist-generated=true
+databricks/sdk/service/cleanrooms.py linguist-generated=true
 databricks/sdk/service/compute.py linguist-generated=true
 databricks/sdk/service/dashboards.py linguist-generated=true
 databricks/sdk/service/files.py linguist-generated=true

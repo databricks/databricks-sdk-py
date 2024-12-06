@@ -62,13 +62,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: PartitionSpecificationPartition
+   :members:
+   :undoc-members:
+
 .. autoclass:: PartitionValue
    :members:
    :undoc-members:
 
 .. py:class:: PartitionValueOp
-
-   The operator to apply for the value.
 
    .. py:attribute:: EQUAL
       :value: "EQUAL"
@@ -107,6 +109,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: CREATE_FOREIGN_CATALOG
       :value: "CREATE_FOREIGN_CATALOG"
+
+   .. py:attribute:: CREATE_FOREIGN_SECURABLE
+      :value: "CREATE_FOREIGN_SECURABLE"
 
    .. py:attribute:: CREATE_FUNCTION
       :value: "CREATE_FUNCTION"

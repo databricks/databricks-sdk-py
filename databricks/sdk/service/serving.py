@@ -43,6 +43,14 @@ class Ai21LabsConfig:
             body['ai21labs_api_key_plaintext'] = self.ai21labs_api_key_plaintext
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Ai21LabsConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.ai21labs_api_key is not None: body['ai21labs_api_key'] = self.ai21labs_api_key
+        if self.ai21labs_api_key_plaintext is not None:
+            body['ai21labs_api_key_plaintext'] = self.ai21labs_api_key_plaintext
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> Ai21LabsConfig:
         """Deserializes the Ai21LabsConfig from a dictionary."""
@@ -74,6 +82,15 @@ class AiGatewayConfig:
         if self.inference_table_config: body['inference_table_config'] = self.inference_table_config.as_dict()
         if self.rate_limits: body['rate_limits'] = [v.as_dict() for v in self.rate_limits]
         if self.usage_tracking_config: body['usage_tracking_config'] = self.usage_tracking_config.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AiGatewayConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.guardrails: body['guardrails'] = self.guardrails
+        if self.inference_table_config: body['inference_table_config'] = self.inference_table_config
+        if self.rate_limits: body['rate_limits'] = self.rate_limits
+        if self.usage_tracking_config: body['usage_tracking_config'] = self.usage_tracking_config
         return body
 
     @classmethod
@@ -111,6 +128,15 @@ class AiGatewayGuardrailParameters:
         if self.valid_topics: body['valid_topics'] = [v for v in self.valid_topics]
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AiGatewayGuardrailParameters into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.invalid_keywords: body['invalid_keywords'] = self.invalid_keywords
+        if self.pii: body['pii'] = self.pii
+        if self.safety is not None: body['safety'] = self.safety
+        if self.valid_topics: body['valid_topics'] = self.valid_topics
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> AiGatewayGuardrailParameters:
         """Deserializes the AiGatewayGuardrailParameters from a dictionary."""
@@ -132,6 +158,12 @@ class AiGatewayGuardrailPiiBehavior:
         """Serializes the AiGatewayGuardrailPiiBehavior into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.behavior is not None: body['behavior'] = self.behavior.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AiGatewayGuardrailPiiBehavior into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.behavior is not None: body['behavior'] = self.behavior
         return body
 
     @classmethod
@@ -165,6 +197,13 @@ class AiGatewayGuardrails:
         if self.output: body['output'] = self.output.as_dict()
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AiGatewayGuardrails into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.input: body['input'] = self.input
+        if self.output: body['output'] = self.output
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> AiGatewayGuardrails:
         """Deserializes the AiGatewayGuardrails from a dictionary."""
@@ -191,6 +230,15 @@ class AiGatewayInferenceTableConfig:
 
     def as_dict(self) -> dict:
         """Serializes the AiGatewayInferenceTableConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.catalog_name is not None: body['catalog_name'] = self.catalog_name
+        if self.enabled is not None: body['enabled'] = self.enabled
+        if self.schema_name is not None: body['schema_name'] = self.schema_name
+        if self.table_name_prefix is not None: body['table_name_prefix'] = self.table_name_prefix
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AiGatewayInferenceTableConfig into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.catalog_name is not None: body['catalog_name'] = self.catalog_name
         if self.enabled is not None: body['enabled'] = self.enabled
@@ -227,6 +275,14 @@ class AiGatewayRateLimit:
         if self.renewal_period is not None: body['renewal_period'] = self.renewal_period.value
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AiGatewayRateLimit into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.calls is not None: body['calls'] = self.calls
+        if self.key is not None: body['key'] = self.key
+        if self.renewal_period is not None: body['renewal_period'] = self.renewal_period
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> AiGatewayRateLimit:
         """Deserializes the AiGatewayRateLimit from a dictionary."""
@@ -256,6 +312,12 @@ class AiGatewayUsageTrackingConfig:
 
     def as_dict(self) -> dict:
         """Serializes the AiGatewayUsageTrackingConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.enabled is not None: body['enabled'] = self.enabled
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AiGatewayUsageTrackingConfig into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.enabled is not None: body['enabled'] = self.enabled
         return body
@@ -312,6 +374,19 @@ class AmazonBedrockConfig:
         if self.bedrock_provider is not None: body['bedrock_provider'] = self.bedrock_provider.value
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AmazonBedrockConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.aws_access_key_id is not None: body['aws_access_key_id'] = self.aws_access_key_id
+        if self.aws_access_key_id_plaintext is not None:
+            body['aws_access_key_id_plaintext'] = self.aws_access_key_id_plaintext
+        if self.aws_region is not None: body['aws_region'] = self.aws_region
+        if self.aws_secret_access_key is not None: body['aws_secret_access_key'] = self.aws_secret_access_key
+        if self.aws_secret_access_key_plaintext is not None:
+            body['aws_secret_access_key_plaintext'] = self.aws_secret_access_key_plaintext
+        if self.bedrock_provider is not None: body['bedrock_provider'] = self.bedrock_provider
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> AmazonBedrockConfig:
         """Deserializes the AmazonBedrockConfig from a dictionary."""
@@ -353,6 +428,14 @@ class AnthropicConfig:
             body['anthropic_api_key_plaintext'] = self.anthropic_api_key_plaintext
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AnthropicConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.anthropic_api_key is not None: body['anthropic_api_key'] = self.anthropic_api_key
+        if self.anthropic_api_key_plaintext is not None:
+            body['anthropic_api_key_plaintext'] = self.anthropic_api_key_plaintext
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> AnthropicConfig:
         """Deserializes the AnthropicConfig from a dictionary."""
@@ -379,6 +462,15 @@ class AutoCaptureConfigInput:
 
     def as_dict(self) -> dict:
         """Serializes the AutoCaptureConfigInput into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.catalog_name is not None: body['catalog_name'] = self.catalog_name
+        if self.enabled is not None: body['enabled'] = self.enabled
+        if self.schema_name is not None: body['schema_name'] = self.schema_name
+        if self.table_name_prefix is not None: body['table_name_prefix'] = self.table_name_prefix
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AutoCaptureConfigInput into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.catalog_name is not None: body['catalog_name'] = self.catalog_name
         if self.enabled is not None: body['enabled'] = self.enabled
@@ -421,6 +513,16 @@ class AutoCaptureConfigOutput:
         if self.table_name_prefix is not None: body['table_name_prefix'] = self.table_name_prefix
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AutoCaptureConfigOutput into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.catalog_name is not None: body['catalog_name'] = self.catalog_name
+        if self.enabled is not None: body['enabled'] = self.enabled
+        if self.schema_name is not None: body['schema_name'] = self.schema_name
+        if self.state: body['state'] = self.state
+        if self.table_name_prefix is not None: body['table_name_prefix'] = self.table_name_prefix
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> AutoCaptureConfigOutput:
         """Deserializes the AutoCaptureConfigOutput from a dictionary."""
@@ -441,6 +543,12 @@ class AutoCaptureState:
         if self.payload_table: body['payload_table'] = self.payload_table.as_dict()
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AutoCaptureState into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.payload_table: body['payload_table'] = self.payload_table
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> AutoCaptureState:
         """Deserializes the AutoCaptureState from a dictionary."""
@@ -454,6 +562,12 @@ class BuildLogsResponse:
 
     def as_dict(self) -> dict:
         """Serializes the BuildLogsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.logs is not None: body['logs'] = self.logs
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the BuildLogsResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.logs is not None: body['logs'] = self.logs
         return body
@@ -477,6 +591,13 @@ class ChatMessage:
         body = {}
         if self.content is not None: body['content'] = self.content
         if self.role is not None: body['role'] = self.role.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ChatMessage into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.content is not None: body['content'] = self.content
+        if self.role is not None: body['role'] = self.role
         return body
 
     @classmethod
@@ -511,6 +632,15 @@ class CohereConfig:
 
     def as_dict(self) -> dict:
         """Serializes the CohereConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.cohere_api_base is not None: body['cohere_api_base'] = self.cohere_api_base
+        if self.cohere_api_key is not None: body['cohere_api_key'] = self.cohere_api_key
+        if self.cohere_api_key_plaintext is not None:
+            body['cohere_api_key_plaintext'] = self.cohere_api_key_plaintext
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CohereConfig into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.cohere_api_base is not None: body['cohere_api_base'] = self.cohere_api_base
         if self.cohere_api_key is not None: body['cohere_api_key'] = self.cohere_api_key
@@ -560,6 +690,17 @@ class CreateServingEndpoint:
         if self.tags: body['tags'] = [v.as_dict() for v in self.tags]
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateServingEndpoint into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.ai_gateway: body['ai_gateway'] = self.ai_gateway
+        if self.config: body['config'] = self.config
+        if self.name is not None: body['name'] = self.name
+        if self.rate_limits: body['rate_limits'] = self.rate_limits
+        if self.route_optimized is not None: body['route_optimized'] = self.route_optimized
+        if self.tags: body['tags'] = self.tags
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateServingEndpoint:
         """Deserializes the CreateServingEndpoint from a dictionary."""
@@ -601,6 +742,16 @@ class DatabricksModelServingConfig:
             body['databricks_workspace_url'] = self.databricks_workspace_url
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DatabricksModelServingConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.databricks_api_token is not None: body['databricks_api_token'] = self.databricks_api_token
+        if self.databricks_api_token_plaintext is not None:
+            body['databricks_api_token_plaintext'] = self.databricks_api_token_plaintext
+        if self.databricks_workspace_url is not None:
+            body['databricks_workspace_url'] = self.databricks_workspace_url
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> DatabricksModelServingConfig:
         """Deserializes the DatabricksModelServingConfig from a dictionary."""
@@ -625,6 +776,14 @@ class DataframeSplitInput:
         if self.index: body['index'] = [v for v in self.index]
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DataframeSplitInput into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.columns: body['columns'] = self.columns
+        if self.data: body['data'] = self.data
+        if self.index: body['index'] = self.index
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> DataframeSplitInput:
         """Deserializes the DataframeSplitInput from a dictionary."""
@@ -636,6 +795,11 @@ class DeleteResponse:
 
     def as_dict(self) -> dict:
         """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -661,6 +825,14 @@ class EmbeddingsV1ResponseEmbeddingElement:
         if self.embedding: body['embedding'] = [v for v in self.embedding]
         if self.index is not None: body['index'] = self.index
         if self.object is not None: body['object'] = self.object.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EmbeddingsV1ResponseEmbeddingElement into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.embedding: body['embedding'] = self.embedding
+        if self.index is not None: body['index'] = self.index
+        if self.object is not None: body['object'] = self.object
         return body
 
     @classmethod
@@ -707,6 +879,16 @@ class EndpointCoreConfigInput:
         if self.traffic_config: body['traffic_config'] = self.traffic_config.as_dict()
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EndpointCoreConfigInput into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.auto_capture_config: body['auto_capture_config'] = self.auto_capture_config
+        if self.name is not None: body['name'] = self.name
+        if self.served_entities: body['served_entities'] = self.served_entities
+        if self.served_models: body['served_models'] = self.served_models
+        if self.traffic_config: body['traffic_config'] = self.traffic_config
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> EndpointCoreConfigInput:
         """Deserializes the EndpointCoreConfigInput from a dictionary."""
@@ -746,6 +928,16 @@ class EndpointCoreConfigOutput:
         if self.traffic_config: body['traffic_config'] = self.traffic_config.as_dict()
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EndpointCoreConfigOutput into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.auto_capture_config: body['auto_capture_config'] = self.auto_capture_config
+        if self.config_version is not None: body['config_version'] = self.config_version
+        if self.served_entities: body['served_entities'] = self.served_entities
+        if self.served_models: body['served_models'] = self.served_models
+        if self.traffic_config: body['traffic_config'] = self.traffic_config
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> EndpointCoreConfigOutput:
         """Deserializes the EndpointCoreConfigOutput from a dictionary."""
@@ -770,6 +962,13 @@ class EndpointCoreConfigSummary:
         body = {}
         if self.served_entities: body['served_entities'] = [v.as_dict() for v in self.served_entities]
         if self.served_models: body['served_models'] = [v.as_dict() for v in self.served_models]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EndpointCoreConfigSummary into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.served_entities: body['served_entities'] = self.served_entities
+        if self.served_models: body['served_models'] = self.served_models
         return body
 
     @classmethod
@@ -812,6 +1011,17 @@ class EndpointPendingConfig:
         if self.traffic_config: body['traffic_config'] = self.traffic_config.as_dict()
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EndpointPendingConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.auto_capture_config: body['auto_capture_config'] = self.auto_capture_config
+        if self.config_version is not None: body['config_version'] = self.config_version
+        if self.served_entities: body['served_entities'] = self.served_entities
+        if self.served_models: body['served_models'] = self.served_models
+        if self.start_time is not None: body['start_time'] = self.start_time
+        if self.traffic_config: body['traffic_config'] = self.traffic_config
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> EndpointPendingConfig:
         """Deserializes the EndpointPendingConfig from a dictionary."""
@@ -841,6 +1051,13 @@ class EndpointState:
         body = {}
         if self.config_update is not None: body['config_update'] = self.config_update.value
         if self.ready is not None: body['ready'] = self.ready.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EndpointState into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.config_update is not None: body['config_update'] = self.config_update
+        if self.ready is not None: body['ready'] = self.ready
         return body
 
     @classmethod
@@ -886,6 +1103,13 @@ class EndpointTag:
         if self.value is not None: body['value'] = self.value
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EndpointTag into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.key is not None: body['key'] = self.key
+        if self.value is not None: body['value'] = self.value
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> EndpointTag:
         """Deserializes the EndpointTag from a dictionary."""
@@ -898,6 +1122,12 @@ class ExportMetricsResponse:
 
     def as_dict(self) -> dict:
         """Serializes the ExportMetricsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.contents: body['contents'] = self.contents
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ExportMetricsResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.contents: body['contents'] = self.contents
         return body
@@ -963,6 +1193,24 @@ class ExternalModel:
         if self.task is not None: body['task'] = self.task
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ExternalModel into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.ai21labs_config: body['ai21labs_config'] = self.ai21labs_config
+        if self.amazon_bedrock_config: body['amazon_bedrock_config'] = self.amazon_bedrock_config
+        if self.anthropic_config: body['anthropic_config'] = self.anthropic_config
+        if self.cohere_config: body['cohere_config'] = self.cohere_config
+        if self.databricks_model_serving_config:
+            body['databricks_model_serving_config'] = self.databricks_model_serving_config
+        if self.google_cloud_vertex_ai_config:
+            body['google_cloud_vertex_ai_config'] = self.google_cloud_vertex_ai_config
+        if self.name is not None: body['name'] = self.name
+        if self.openai_config: body['openai_config'] = self.openai_config
+        if self.palm_config: body['palm_config'] = self.palm_config
+        if self.provider is not None: body['provider'] = self.provider
+        if self.task is not None: body['task'] = self.task
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ExternalModel:
         """Deserializes the ExternalModel from a dictionary."""
@@ -1015,6 +1263,14 @@ class ExternalModelUsageElement:
         if self.total_tokens is not None: body['total_tokens'] = self.total_tokens
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ExternalModelUsageElement into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.completion_tokens is not None: body['completion_tokens'] = self.completion_tokens
+        if self.prompt_tokens is not None: body['prompt_tokens'] = self.prompt_tokens
+        if self.total_tokens is not None: body['total_tokens'] = self.total_tokens
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ExternalModelUsageElement:
         """Deserializes the ExternalModelUsageElement from a dictionary."""
@@ -1046,6 +1302,15 @@ class FoundationModel:
         if self.name is not None: body['name'] = self.name
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the FoundationModel into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.description is not None: body['description'] = self.description
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.docs is not None: body['docs'] = self.docs
+        if self.name is not None: body['name'] = self.name
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> FoundationModel:
         """Deserializes the FoundationModel from a dictionary."""
@@ -1065,6 +1330,11 @@ class GetOpenApiResponse:
         body = {}
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetOpenApiResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> GetOpenApiResponse:
         """Deserializes the GetOpenApiResponse from a dictionary."""
@@ -1080,6 +1350,12 @@ class GetServingEndpointPermissionLevelsResponse:
         """Serializes the GetServingEndpointPermissionLevelsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetServingEndpointPermissionLevelsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.permission_levels: body['permission_levels'] = self.permission_levels
         return body
 
     @classmethod
@@ -1125,6 +1401,15 @@ class GoogleCloudVertexAiConfig:
         if self.region is not None: body['region'] = self.region
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GoogleCloudVertexAiConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.private_key is not None: body['private_key'] = self.private_key
+        if self.private_key_plaintext is not None: body['private_key_plaintext'] = self.private_key_plaintext
+        if self.project_id is not None: body['project_id'] = self.project_id
+        if self.region is not None: body['region'] = self.region
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> GoogleCloudVertexAiConfig:
         """Deserializes the GoogleCloudVertexAiConfig from a dictionary."""
@@ -1145,6 +1430,12 @@ class ListEndpointsResponse:
         if self.endpoints: body['endpoints'] = [v.as_dict() for v in self.endpoints]
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListEndpointsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.endpoints: body['endpoints'] = self.endpoints
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListEndpointsResponse:
         """Deserializes the ListEndpointsResponse from a dictionary."""
@@ -1160,6 +1451,12 @@ class ModelDataPlaneInfo:
         """Serializes the ModelDataPlaneInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.query_info: body['query_info'] = self.query_info.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ModelDataPlaneInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.query_info: body['query_info'] = self.query_info
         return body
 
     @classmethod
@@ -1243,6 +1540,28 @@ class OpenAiConfig:
         if self.openai_organization is not None: body['openai_organization'] = self.openai_organization
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the OpenAiConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.microsoft_entra_client_id is not None:
+            body['microsoft_entra_client_id'] = self.microsoft_entra_client_id
+        if self.microsoft_entra_client_secret is not None:
+            body['microsoft_entra_client_secret'] = self.microsoft_entra_client_secret
+        if self.microsoft_entra_client_secret_plaintext is not None:
+            body['microsoft_entra_client_secret_plaintext'] = self.microsoft_entra_client_secret_plaintext
+        if self.microsoft_entra_tenant_id is not None:
+            body['microsoft_entra_tenant_id'] = self.microsoft_entra_tenant_id
+        if self.openai_api_base is not None: body['openai_api_base'] = self.openai_api_base
+        if self.openai_api_key is not None: body['openai_api_key'] = self.openai_api_key
+        if self.openai_api_key_plaintext is not None:
+            body['openai_api_key_plaintext'] = self.openai_api_key_plaintext
+        if self.openai_api_type is not None: body['openai_api_type'] = self.openai_api_type
+        if self.openai_api_version is not None: body['openai_api_version'] = self.openai_api_version
+        if self.openai_deployment_name is not None:
+            body['openai_deployment_name'] = self.openai_deployment_name
+        if self.openai_organization is not None: body['openai_organization'] = self.openai_organization
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> OpenAiConfig:
         """Deserializes the OpenAiConfig from a dictionary."""
@@ -1280,6 +1599,14 @@ class PaLmConfig:
             body['palm_api_key_plaintext'] = self.palm_api_key_plaintext
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PaLmConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.palm_api_key is not None: body['palm_api_key'] = self.palm_api_key
+        if self.palm_api_key_plaintext is not None:
+            body['palm_api_key_plaintext'] = self.palm_api_key_plaintext
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> PaLmConfig:
         """Deserializes the PaLmConfig from a dictionary."""
@@ -1306,6 +1633,14 @@ class PatchServingEndpointTags:
         if self.name is not None: body['name'] = self.name
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PatchServingEndpointTags into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.add_tags: body['add_tags'] = self.add_tags
+        if self.delete_tags: body['delete_tags'] = self.delete_tags
+        if self.name is not None: body['name'] = self.name
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> PatchServingEndpointTags:
         """Deserializes the PatchServingEndpointTags from a dictionary."""
@@ -1327,6 +1662,14 @@ class PayloadTable:
 
     def as_dict(self) -> dict:
         """Serializes the PayloadTable into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None: body['name'] = self.name
+        if self.status is not None: body['status'] = self.status
+        if self.status_message is not None: body['status_message'] = self.status_message
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PayloadTable into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.name is not None: body['name'] = self.name
         if self.status is not None: body['status'] = self.status
@@ -1367,6 +1710,15 @@ class PutAiGatewayResponse:
         if self.usage_tracking_config: body['usage_tracking_config'] = self.usage_tracking_config.as_dict()
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PutAiGatewayResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.guardrails: body['guardrails'] = self.guardrails
+        if self.inference_table_config: body['inference_table_config'] = self.inference_table_config
+        if self.rate_limits: body['rate_limits'] = self.rate_limits
+        if self.usage_tracking_config: body['usage_tracking_config'] = self.usage_tracking_config
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> PutAiGatewayResponse:
         """Deserializes the PutAiGatewayResponse from a dictionary."""
@@ -1386,6 +1738,12 @@ class PutResponse:
         """Serializes the PutResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.rate_limits: body['rate_limits'] = [v.as_dict() for v in self.rate_limits]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PutResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.rate_limits: body['rate_limits'] = self.rate_limits
         return body
 
     @classmethod
@@ -1473,6 +1831,25 @@ class QueryEndpointInput:
         if self.temperature is not None: body['temperature'] = self.temperature
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the QueryEndpointInput into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.dataframe_records: body['dataframe_records'] = self.dataframe_records
+        if self.dataframe_split: body['dataframe_split'] = self.dataframe_split
+        if self.extra_params: body['extra_params'] = self.extra_params
+        if self.input: body['input'] = self.input
+        if self.inputs: body['inputs'] = self.inputs
+        if self.instances: body['instances'] = self.instances
+        if self.max_tokens is not None: body['max_tokens'] = self.max_tokens
+        if self.messages: body['messages'] = self.messages
+        if self.n is not None: body['n'] = self.n
+        if self.name is not None: body['name'] = self.name
+        if self.prompt: body['prompt'] = self.prompt
+        if self.stop: body['stop'] = self.stop
+        if self.stream is not None: body['stream'] = self.stream
+        if self.temperature is not None: body['temperature'] = self.temperature
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> QueryEndpointInput:
         """Deserializes the QueryEndpointInput from a dictionary."""
@@ -1543,6 +1920,20 @@ class QueryEndpointResponse:
         if self.usage: body['usage'] = self.usage.as_dict()
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the QueryEndpointResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.choices: body['choices'] = self.choices
+        if self.created is not None: body['created'] = self.created
+        if self.data: body['data'] = self.data
+        if self.id is not None: body['id'] = self.id
+        if self.model is not None: body['model'] = self.model
+        if self.object is not None: body['object'] = self.object
+        if self.predictions: body['predictions'] = self.predictions
+        if self.served_model_name is not None: body['served-model-name'] = self.served_model_name
+        if self.usage: body['usage'] = self.usage
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> QueryEndpointResponse:
         """Deserializes the QueryEndpointResponse from a dictionary."""
@@ -1586,6 +1977,14 @@ class RateLimit:
         if self.renewal_period is not None: body['renewal_period'] = self.renewal_period.value
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RateLimit into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.calls is not None: body['calls'] = self.calls
+        if self.key is not None: body['key'] = self.key
+        if self.renewal_period is not None: body['renewal_period'] = self.renewal_period
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> RateLimit:
         """Deserializes the RateLimit from a dictionary."""
@@ -1619,6 +2018,13 @@ class Route:
 
     def as_dict(self) -> dict:
         """Serializes the Route into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.served_model_name is not None: body['served_model_name'] = self.served_model_name
+        if self.traffic_percentage is not None: body['traffic_percentage'] = self.traffic_percentage
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Route into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.served_model_name is not None: body['served_model_name'] = self.served_model_name
         if self.traffic_percentage is not None: body['traffic_percentage'] = self.traffic_percentage
@@ -1698,6 +2104,24 @@ class ServedEntityInput:
         if self.entity_version is not None: body['entity_version'] = self.entity_version
         if self.environment_vars: body['environment_vars'] = self.environment_vars
         if self.external_model: body['external_model'] = self.external_model.as_dict()
+        if self.instance_profile_arn is not None: body['instance_profile_arn'] = self.instance_profile_arn
+        if self.max_provisioned_throughput is not None:
+            body['max_provisioned_throughput'] = self.max_provisioned_throughput
+        if self.min_provisioned_throughput is not None:
+            body['min_provisioned_throughput'] = self.min_provisioned_throughput
+        if self.name is not None: body['name'] = self.name
+        if self.scale_to_zero_enabled is not None: body['scale_to_zero_enabled'] = self.scale_to_zero_enabled
+        if self.workload_size is not None: body['workload_size'] = self.workload_size
+        if self.workload_type is not None: body['workload_type'] = self.workload_type
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ServedEntityInput into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.entity_name is not None: body['entity_name'] = self.entity_name
+        if self.entity_version is not None: body['entity_version'] = self.entity_version
+        if self.environment_vars: body['environment_vars'] = self.environment_vars
+        if self.external_model: body['external_model'] = self.external_model
         if self.instance_profile_arn is not None: body['instance_profile_arn'] = self.instance_profile_arn
         if self.max_provisioned_throughput is not None:
             body['max_provisioned_throughput'] = self.max_provisioned_throughput
@@ -1815,6 +2239,28 @@ class ServedEntityOutput:
         if self.workload_type is not None: body['workload_type'] = self.workload_type
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ServedEntityOutput into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
+        if self.creator is not None: body['creator'] = self.creator
+        if self.entity_name is not None: body['entity_name'] = self.entity_name
+        if self.entity_version is not None: body['entity_version'] = self.entity_version
+        if self.environment_vars: body['environment_vars'] = self.environment_vars
+        if self.external_model: body['external_model'] = self.external_model
+        if self.foundation_model: body['foundation_model'] = self.foundation_model
+        if self.instance_profile_arn is not None: body['instance_profile_arn'] = self.instance_profile_arn
+        if self.max_provisioned_throughput is not None:
+            body['max_provisioned_throughput'] = self.max_provisioned_throughput
+        if self.min_provisioned_throughput is not None:
+            body['min_provisioned_throughput'] = self.min_provisioned_throughput
+        if self.name is not None: body['name'] = self.name
+        if self.scale_to_zero_enabled is not None: body['scale_to_zero_enabled'] = self.scale_to_zero_enabled
+        if self.state: body['state'] = self.state
+        if self.workload_size is not None: body['workload_size'] = self.workload_size
+        if self.workload_type is not None: body['workload_type'] = self.workload_type
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ServedEntityOutput:
         """Deserializes the ServedEntityOutput from a dictionary."""
@@ -1865,6 +2311,16 @@ class ServedEntitySpec:
         if self.entity_version is not None: body['entity_version'] = self.entity_version
         if self.external_model: body['external_model'] = self.external_model.as_dict()
         if self.foundation_model: body['foundation_model'] = self.foundation_model.as_dict()
+        if self.name is not None: body['name'] = self.name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ServedEntitySpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.entity_name is not None: body['entity_name'] = self.entity_name
+        if self.entity_version is not None: body['entity_version'] = self.entity_version
+        if self.external_model: body['external_model'] = self.external_model
+        if self.foundation_model: body['foundation_model'] = self.foundation_model
         if self.name is not None: body['name'] = self.name
         return body
 
@@ -1941,6 +2397,23 @@ class ServedModelInput:
         if self.scale_to_zero_enabled is not None: body['scale_to_zero_enabled'] = self.scale_to_zero_enabled
         if self.workload_size is not None: body['workload_size'] = self.workload_size.value
         if self.workload_type is not None: body['workload_type'] = self.workload_type.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ServedModelInput into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.environment_vars: body['environment_vars'] = self.environment_vars
+        if self.instance_profile_arn is not None: body['instance_profile_arn'] = self.instance_profile_arn
+        if self.max_provisioned_throughput is not None:
+            body['max_provisioned_throughput'] = self.max_provisioned_throughput
+        if self.min_provisioned_throughput is not None:
+            body['min_provisioned_throughput'] = self.min_provisioned_throughput
+        if self.model_name is not None: body['model_name'] = self.model_name
+        if self.model_version is not None: body['model_version'] = self.model_version
+        if self.name is not None: body['name'] = self.name
+        if self.scale_to_zero_enabled is not None: body['scale_to_zero_enabled'] = self.scale_to_zero_enabled
+        if self.workload_size is not None: body['workload_size'] = self.workload_size
+        if self.workload_type is not None: body['workload_type'] = self.workload_type
         return body
 
     @classmethod
@@ -2051,6 +2524,22 @@ class ServedModelOutput:
         if self.workload_type is not None: body['workload_type'] = self.workload_type
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ServedModelOutput into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
+        if self.creator is not None: body['creator'] = self.creator
+        if self.environment_vars: body['environment_vars'] = self.environment_vars
+        if self.instance_profile_arn is not None: body['instance_profile_arn'] = self.instance_profile_arn
+        if self.model_name is not None: body['model_name'] = self.model_name
+        if self.model_version is not None: body['model_version'] = self.model_version
+        if self.name is not None: body['name'] = self.name
+        if self.scale_to_zero_enabled is not None: body['scale_to_zero_enabled'] = self.scale_to_zero_enabled
+        if self.state: body['state'] = self.state
+        if self.workload_size is not None: body['workload_size'] = self.workload_size
+        if self.workload_type is not None: body['workload_type'] = self.workload_type
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ServedModelOutput:
         """Deserializes the ServedModelOutput from a dictionary."""
@@ -2081,6 +2570,14 @@ class ServedModelSpec:
 
     def as_dict(self) -> dict:
         """Serializes the ServedModelSpec into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.model_name is not None: body['model_name'] = self.model_name
+        if self.model_version is not None: body['model_version'] = self.model_version
+        if self.name is not None: body['name'] = self.name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ServedModelSpec into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.model_name is not None: body['model_name'] = self.model_name
         if self.model_version is not None: body['model_version'] = self.model_version
@@ -2119,6 +2616,14 @@ class ServedModelState:
             body['deployment_state_message'] = self.deployment_state_message
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ServedModelState into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.deployment is not None: body['deployment'] = self.deployment
+        if self.deployment_state_message is not None:
+            body['deployment_state_message'] = self.deployment_state_message
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ServedModelState:
         """Deserializes the ServedModelState from a dictionary."""
@@ -2151,6 +2656,12 @@ class ServerLogsResponse:
 
     def as_dict(self) -> dict:
         """Serializes the ServerLogsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.logs is not None: body['logs'] = self.logs
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ServerLogsResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.logs is not None: body['logs'] = self.logs
         return body
@@ -2211,6 +2722,22 @@ class ServingEndpoint:
         if self.task is not None: body['task'] = self.task
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ServingEndpoint into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.ai_gateway: body['ai_gateway'] = self.ai_gateway
+        if self.config: body['config'] = self.config
+        if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
+        if self.creator is not None: body['creator'] = self.creator
+        if self.id is not None: body['id'] = self.id
+        if self.last_updated_timestamp is not None:
+            body['last_updated_timestamp'] = self.last_updated_timestamp
+        if self.name is not None: body['name'] = self.name
+        if self.state: body['state'] = self.state
+        if self.tags: body['tags'] = self.tags
+        if self.task is not None: body['task'] = self.task
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ServingEndpoint:
         """Deserializes the ServingEndpoint from a dictionary."""
@@ -2250,6 +2777,16 @@ class ServingEndpointAccessControlRequest:
         if self.user_name is not None: body['user_name'] = self.user_name
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ServingEndpointAccessControlRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.permission_level is not None: body['permission_level'] = self.permission_level
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
+        if self.user_name is not None: body['user_name'] = self.user_name
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ServingEndpointAccessControlRequest:
         """Deserializes the ServingEndpointAccessControlRequest from a dictionary."""
@@ -2280,6 +2817,17 @@ class ServingEndpointAccessControlResponse:
         """Serializes the ServingEndpointAccessControlResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.all_permissions: body['all_permissions'] = [v.as_dict() for v in self.all_permissions]
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
+        if self.user_name is not None: body['user_name'] = self.user_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ServingEndpointAccessControlResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.all_permissions: body['all_permissions'] = self.all_permissions
         if self.display_name is not None: body['display_name'] = self.display_name
         if self.group_name is not None: body['group_name'] = self.group_name
         if self.service_principal_name is not None:
@@ -2367,6 +2915,27 @@ class ServingEndpointDetailed:
         if self.task is not None: body['task'] = self.task
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ServingEndpointDetailed into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.ai_gateway: body['ai_gateway'] = self.ai_gateway
+        if self.config: body['config'] = self.config
+        if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
+        if self.creator is not None: body['creator'] = self.creator
+        if self.data_plane_info: body['data_plane_info'] = self.data_plane_info
+        if self.endpoint_url is not None: body['endpoint_url'] = self.endpoint_url
+        if self.id is not None: body['id'] = self.id
+        if self.last_updated_timestamp is not None:
+            body['last_updated_timestamp'] = self.last_updated_timestamp
+        if self.name is not None: body['name'] = self.name
+        if self.pending_config: body['pending_config'] = self.pending_config
+        if self.permission_level is not None: body['permission_level'] = self.permission_level
+        if self.route_optimized is not None: body['route_optimized'] = self.route_optimized
+        if self.state: body['state'] = self.state
+        if self.tags: body['tags'] = self.tags
+        if self.task is not None: body['task'] = self.task
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ServingEndpointDetailed:
         """Deserializes the ServingEndpointDetailed from a dictionary."""
@@ -2412,6 +2981,14 @@ class ServingEndpointPermission:
         if self.permission_level is not None: body['permission_level'] = self.permission_level.value
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ServingEndpointPermission into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.inherited is not None: body['inherited'] = self.inherited
+        if self.inherited_from_object: body['inherited_from_object'] = self.inherited_from_object
+        if self.permission_level is not None: body['permission_level'] = self.permission_level
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ServingEndpointPermission:
         """Deserializes the ServingEndpointPermission from a dictionary."""
@@ -2445,6 +3022,14 @@ class ServingEndpointPermissions:
         if self.object_type is not None: body['object_type'] = self.object_type
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ServingEndpointPermissions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.access_control_list: body['access_control_list'] = self.access_control_list
+        if self.object_id is not None: body['object_id'] = self.object_id
+        if self.object_type is not None: body['object_type'] = self.object_type
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ServingEndpointPermissions:
         """Deserializes the ServingEndpointPermissions from a dictionary."""
@@ -2466,6 +3051,13 @@ class ServingEndpointPermissionsDescription:
         body = {}
         if self.description is not None: body['description'] = self.description
         if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ServingEndpointPermissionsDescription into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.description is not None: body['description'] = self.description
+        if self.permission_level is not None: body['permission_level'] = self.permission_level
         return body
 
     @classmethod
@@ -2490,6 +3082,13 @@ class ServingEndpointPermissionsRequest:
         if self.serving_endpoint_id is not None: body['serving_endpoint_id'] = self.serving_endpoint_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ServingEndpointPermissionsRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.access_control_list: body['access_control_list'] = self.access_control_list
+        if self.serving_endpoint_id is not None: body['serving_endpoint_id'] = self.serving_endpoint_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ServingEndpointPermissionsRequest:
         """Deserializes the ServingEndpointPermissionsRequest from a dictionary."""
@@ -2507,6 +3106,12 @@ class TrafficConfig:
         """Serializes the TrafficConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.routes: body['routes'] = [v.as_dict() for v in self.routes]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TrafficConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.routes: body['routes'] = self.routes
         return body
 
     @classmethod
@@ -2539,6 +3144,16 @@ class V1ResponseChoiceElement:
         if self.index is not None: body['index'] = self.index
         if self.logprobs is not None: body['logprobs'] = self.logprobs
         if self.message: body['message'] = self.message.as_dict()
+        if self.text is not None: body['text'] = self.text
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the V1ResponseChoiceElement into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.finish_reason is not None: body['finishReason'] = self.finish_reason
+        if self.index is not None: body['index'] = self.index
+        if self.logprobs is not None: body['logprobs'] = self.logprobs
+        if self.message: body['message'] = self.message
         if self.text is not None: body['text'] = self.text
         return body
 

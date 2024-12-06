@@ -218,8 +218,8 @@
         :param queue: :class:`QueueSettings` (optional)
           The queue settings of the job.
         :param run_as: :class:`JobRunAs` (optional)
-          Write-only setting. Specifies the user, service principal or group that the job/pipeline runs as. If
-          not specified, the job/pipeline runs as the user who created the job/pipeline.
+          Write-only setting. Specifies the user or service principal that the job runs as. If not specified,
+          the job runs as the user who created the job.
           
           Either `user_name` or `service_principal_name` should be specified. If not, an error is thrown.
         :param schedule: :class:`CronSchedule` (optional)

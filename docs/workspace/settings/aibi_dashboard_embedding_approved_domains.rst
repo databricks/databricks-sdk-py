@@ -7,6 +7,23 @@
     Controls the list of domains approved to host the embedded AI/BI dashboards. The approved domains list
     can't be mutated when the current access policy is not set to ALLOW_APPROVED_DOMAINS.
 
+    .. py:method:: delete( [, etag: Optional[str]]) -> DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponse
+
+        Delete AI/BI dashboard embedding approved domains.
+        
+        Delete the list of domains approved to host embedded AI/BI dashboards, reverting back to the default
+        empty list.
+        
+        :param etag: str (optional)
+          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
+          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
+          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
+          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
+          request, and pass it with the DELETE request to identify the rule set version you are deleting.
+        
+        :returns: :class:`DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponse`
+        
+
     .. py:method:: get( [, etag: Optional[str]]) -> AibiDashboardEmbeddingApprovedDomainsSetting
 
         Retrieve the list of domains approved to host embedded AI/BI dashboards.
