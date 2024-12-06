@@ -27,7 +27,13 @@ jobs:
         downstream:
           - name: ucx
             org: databrickslabs
+          - name: remorph
+            org: databrickslabs
           - name: blueprint
+            org: databrickslabs
+          - name: lsql
+            org: databrickslabs
+          - name: pytester
             org: databrickslabs
     runs-on: ubuntu-latest
     steps:
