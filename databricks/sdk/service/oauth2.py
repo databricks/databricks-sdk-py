@@ -41,6 +41,16 @@ class CreateCustomAppIntegration:
         if self.token_access_policy: body['token_access_policy'] = self.token_access_policy.as_dict()
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateCustomAppIntegration into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.confidential is not None: body['confidential'] = self.confidential
+        if self.name is not None: body['name'] = self.name
+        if self.redirect_urls: body['redirect_urls'] = self.redirect_urls
+        if self.scopes: body['scopes'] = self.scopes
+        if self.token_access_policy: body['token_access_policy'] = self.token_access_policy
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateCustomAppIntegration:
         """Deserializes the CreateCustomAppIntegration from a dictionary."""
@@ -71,6 +81,14 @@ class CreateCustomAppIntegrationOutput:
         if self.integration_id is not None: body['integration_id'] = self.integration_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateCustomAppIntegrationOutput into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.client_id is not None: body['client_id'] = self.client_id
+        if self.client_secret is not None: body['client_secret'] = self.client_secret
+        if self.integration_id is not None: body['integration_id'] = self.integration_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateCustomAppIntegrationOutput:
         """Deserializes the CreateCustomAppIntegrationOutput from a dictionary."""
@@ -94,6 +112,13 @@ class CreatePublishedAppIntegration:
         if self.token_access_policy: body['token_access_policy'] = self.token_access_policy.as_dict()
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreatePublishedAppIntegration into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.app_id is not None: body['app_id'] = self.app_id
+        if self.token_access_policy: body['token_access_policy'] = self.token_access_policy
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreatePublishedAppIntegration:
         """Deserializes the CreatePublishedAppIntegration from a dictionary."""
@@ -108,6 +133,12 @@ class CreatePublishedAppIntegrationOutput:
 
     def as_dict(self) -> dict:
         """Serializes the CreatePublishedAppIntegrationOutput into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.integration_id is not None: body['integration_id'] = self.integration_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreatePublishedAppIntegrationOutput into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.integration_id is not None: body['integration_id'] = self.integration_id
         return body
@@ -149,6 +180,17 @@ class CreateServicePrincipalSecretResponse:
         if self.update_time is not None: body['update_time'] = self.update_time
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateServicePrincipalSecretResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.create_time is not None: body['create_time'] = self.create_time
+        if self.id is not None: body['id'] = self.id
+        if self.secret is not None: body['secret'] = self.secret
+        if self.secret_hash is not None: body['secret_hash'] = self.secret_hash
+        if self.status is not None: body['status'] = self.status
+        if self.update_time is not None: body['update_time'] = self.update_time
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateServicePrincipalSecretResponse:
         """Deserializes the CreateServicePrincipalSecretResponse from a dictionary."""
@@ -175,6 +217,13 @@ class DataPlaneInfo:
         if self.endpoint_url is not None: body['endpoint_url'] = self.endpoint_url
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DataPlaneInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.authorization_details is not None: body['authorization_details'] = self.authorization_details
+        if self.endpoint_url is not None: body['endpoint_url'] = self.endpoint_url
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> DataPlaneInfo:
         """Deserializes the DataPlaneInfo from a dictionary."""
@@ -187,6 +236,11 @@ class DeleteCustomAppIntegrationOutput:
 
     def as_dict(self) -> dict:
         """Serializes the DeleteCustomAppIntegrationOutput into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteCustomAppIntegrationOutput into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -204,6 +258,11 @@ class DeletePublishedAppIntegrationOutput:
         body = {}
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeletePublishedAppIntegrationOutput into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> DeletePublishedAppIntegrationOutput:
         """Deserializes the DeletePublishedAppIntegrationOutput from a dictionary."""
@@ -215,6 +274,11 @@ class DeleteResponse:
 
     def as_dict(self) -> dict:
         """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -267,6 +331,21 @@ class GetCustomAppIntegrationOutput:
         if self.token_access_policy: body['token_access_policy'] = self.token_access_policy.as_dict()
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetCustomAppIntegrationOutput into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.client_id is not None: body['client_id'] = self.client_id
+        if self.confidential is not None: body['confidential'] = self.confidential
+        if self.create_time is not None: body['create_time'] = self.create_time
+        if self.created_by is not None: body['created_by'] = self.created_by
+        if self.creator_username is not None: body['creator_username'] = self.creator_username
+        if self.integration_id is not None: body['integration_id'] = self.integration_id
+        if self.name is not None: body['name'] = self.name
+        if self.redirect_urls: body['redirect_urls'] = self.redirect_urls
+        if self.scopes: body['scopes'] = self.scopes
+        if self.token_access_policy: body['token_access_policy'] = self.token_access_policy
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> GetCustomAppIntegrationOutput:
         """Deserializes the GetCustomAppIntegrationOutput from a dictionary."""
@@ -293,6 +372,13 @@ class GetCustomAppIntegrationsOutput:
         """Serializes the GetCustomAppIntegrationsOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.apps: body['apps'] = [v.as_dict() for v in self.apps]
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetCustomAppIntegrationsOutput into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.apps: body['apps'] = self.apps
         if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         return body
 
@@ -332,6 +418,17 @@ class GetPublishedAppIntegrationOutput:
         if self.token_access_policy: body['token_access_policy'] = self.token_access_policy.as_dict()
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetPublishedAppIntegrationOutput into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.app_id is not None: body['app_id'] = self.app_id
+        if self.create_time is not None: body['create_time'] = self.create_time
+        if self.created_by is not None: body['created_by'] = self.created_by
+        if self.integration_id is not None: body['integration_id'] = self.integration_id
+        if self.name is not None: body['name'] = self.name
+        if self.token_access_policy: body['token_access_policy'] = self.token_access_policy
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> GetPublishedAppIntegrationOutput:
         """Deserializes the GetPublishedAppIntegrationOutput from a dictionary."""
@@ -354,6 +451,13 @@ class GetPublishedAppIntegrationsOutput:
         """Serializes the GetPublishedAppIntegrationsOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.apps: body['apps'] = [v.as_dict() for v in self.apps]
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetPublishedAppIntegrationsOutput into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.apps: body['apps'] = self.apps
         if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         return body
 
@@ -380,6 +484,13 @@ class GetPublishedAppsOutput:
         if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetPublishedAppsOutput into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.apps: body['apps'] = self.apps
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> GetPublishedAppsOutput:
         """Deserializes the GetPublishedAppsOutput from a dictionary."""
@@ -400,6 +511,13 @@ class ListServicePrincipalSecretsResponse:
         body = {}
         if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         if self.secrets: body['secrets'] = [v.as_dict() for v in self.secrets]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListServicePrincipalSecretsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.secrets: body['secrets'] = self.secrets
         return body
 
     @classmethod
@@ -446,6 +564,19 @@ class PublishedAppOutput:
         if self.scopes: body['scopes'] = [v for v in self.scopes]
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PublishedAppOutput into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.app_id is not None: body['app_id'] = self.app_id
+        if self.client_id is not None: body['client_id'] = self.client_id
+        if self.description is not None: body['description'] = self.description
+        if self.is_confidential_client is not None:
+            body['is_confidential_client'] = self.is_confidential_client
+        if self.name is not None: body['name'] = self.name
+        if self.redirect_urls: body['redirect_urls'] = self.redirect_urls
+        if self.scopes: body['scopes'] = self.scopes
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> PublishedAppOutput:
         """Deserializes the PublishedAppOutput from a dictionary."""
@@ -485,6 +616,16 @@ class SecretInfo:
         if self.update_time is not None: body['update_time'] = self.update_time
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SecretInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.create_time is not None: body['create_time'] = self.create_time
+        if self.id is not None: body['id'] = self.id
+        if self.secret_hash is not None: body['secret_hash'] = self.secret_hash
+        if self.status is not None: body['status'] = self.status
+        if self.update_time is not None: body['update_time'] = self.update_time
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> SecretInfo:
         """Deserializes the SecretInfo from a dictionary."""
@@ -505,6 +646,15 @@ class TokenAccessPolicy:
 
     def as_dict(self) -> dict:
         """Serializes the TokenAccessPolicy into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.access_token_ttl_in_minutes is not None:
+            body['access_token_ttl_in_minutes'] = self.access_token_ttl_in_minutes
+        if self.refresh_token_ttl_in_minutes is not None:
+            body['refresh_token_ttl_in_minutes'] = self.refresh_token_ttl_in_minutes
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TokenAccessPolicy into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.access_token_ttl_in_minutes is not None:
             body['access_token_ttl_in_minutes'] = self.access_token_ttl_in_minutes
@@ -537,6 +687,14 @@ class UpdateCustomAppIntegration:
         if self.token_access_policy: body['token_access_policy'] = self.token_access_policy.as_dict()
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateCustomAppIntegration into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.integration_id is not None: body['integration_id'] = self.integration_id
+        if self.redirect_urls: body['redirect_urls'] = self.redirect_urls
+        if self.token_access_policy: body['token_access_policy'] = self.token_access_policy
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> UpdateCustomAppIntegration:
         """Deserializes the UpdateCustomAppIntegration from a dictionary."""
@@ -550,6 +708,11 @@ class UpdateCustomAppIntegrationOutput:
 
     def as_dict(self) -> dict:
         """Serializes the UpdateCustomAppIntegrationOutput into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateCustomAppIntegrationOutput into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -573,6 +736,13 @@ class UpdatePublishedAppIntegration:
         if self.token_access_policy: body['token_access_policy'] = self.token_access_policy.as_dict()
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdatePublishedAppIntegration into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.integration_id is not None: body['integration_id'] = self.integration_id
+        if self.token_access_policy: body['token_access_policy'] = self.token_access_policy
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> UpdatePublishedAppIntegration:
         """Deserializes the UpdatePublishedAppIntegration from a dictionary."""
@@ -585,6 +755,11 @@ class UpdatePublishedAppIntegrationOutput:
 
     def as_dict(self) -> dict:
         """Serializes the UpdatePublishedAppIntegrationOutput into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdatePublishedAppIntegrationOutput into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 

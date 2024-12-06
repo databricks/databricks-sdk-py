@@ -64,8 +64,8 @@
 
         Download a file.
         
-        Downloads a file of up to 5 GiB. The file contents are the response body. This is a standard HTTP file
-        download, not a JSON RPC.
+        Downloads a file. The file contents are the response body. This is a standard HTTP file download, not
+        a JSON RPC. It supports the Range and If-Unmodified-Since HTTP headers.
         
         :param file_path: str
           The absolute path of the file.

@@ -281,13 +281,11 @@ def test_http_retried_on_connection_error():
     assert len(requests) == 2
 
 
-@pytest.mark.parametrize(
-    'chunk_size,expected_chunks,data_size',
-    [
-        (5, 20, 100), # 100 / 5 bytes per chunk = 20 chunks
-        (10, 10, 100), # 100 / 10 bytes per chunk = 10 chunks
-        (200, 1, 100), # 100 / 200 bytes per chunk = 1 chunk
-    ])
+@pytest.mark.parametrize('chunk_size,expected_chunks,data_size',
+                         [(5, 20, 100), # 100 / 5 bytes per chunk = 20 chunks
+                          (10, 10, 100), # 100 / 10 bytes per chunk = 10 chunks
+                          (200, 1, 100), # 100 / 200 bytes per chunk = 1 chunk
+                          ])
 def test_streaming_response_chunk_size(chunk_size, expected_chunks, data_size):
     rng = random.Random(42)
     test_data = bytes(rng.getrandbits(8) for _ in range(data_size))
@@ -357,14 +355,12 @@ def test_is_seekable_stream():
     assert client._is_seekable_stream(CustomSeekableStream())
 
 
-@pytest.mark.parametrize(
-    'input_data',
-    [
-        b"0123456789", # bytes -> BytesIO
-        "0123456789", # str -> BytesIO
-        io.BytesIO(b"0123456789"), # BytesIO directly
-        io.StringIO("0123456789"), # StringIO
-    ])
+@pytest.mark.parametrize('input_data', [
+    b"0123456789", # bytes -> BytesIO
+    "0123456789", # str -> BytesIO
+    io.BytesIO(b"0123456789"), # BytesIO directly
+    io.StringIO("0123456789"), # StringIO
+])
 def test_reset_seekable_stream_on_retry(input_data):
     received_data = []
 

@@ -8,6 +8,7 @@ Dataclasses
    apps
    billing
    catalog
+   cleanrooms
    compute
    dashboards
    files
