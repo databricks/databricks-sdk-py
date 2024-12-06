@@ -10,17 +10,16 @@ def test_token_cache_unique_filename_by_host():
     common_args = dict(client_id="abc",
                        redirect_url="http://localhost:8020",
                        oidc_endpoints=OidcEndpoints("http://localhost:1234", "http://localhost:1234"))
-    assert TokenCache(host="http://localhost:",
-                      **common_args).filename != TokenCache("https://bar.cloud.databricks.com",
-                                                            **common_args).filename
+    assert TokenCache(host="http://localhost:", **common_args).filename != TokenCache(
+        "https://bar.cloud.databricks.com", **common_args).filename
 
 
 def test_token_cache_unique_filename_by_client_id():
     common_args = dict(host="http://localhost:",
                        redirect_url="http://localhost:8020",
                        oidc_endpoints=OidcEndpoints("http://localhost:1234", "http://localhost:1234"))
-    assert TokenCache(client_id="abc", **common_args).filename != TokenCache(client_id="def",
-                                                                             **common_args).filename
+    assert TokenCache(client_id="abc", **common_args).filename != TokenCache(client_id="def", **
+                                                                             common_args).filename
 
 
 def test_token_cache_unique_filename_by_scopes():
@@ -28,8 +27,8 @@ def test_token_cache_unique_filename_by_scopes():
                        client_id="abc",
                        redirect_url="http://localhost:8020",
                        oidc_endpoints=OidcEndpoints("http://localhost:1234", "http://localhost:1234"))
-    assert TokenCache(scopes=["foo"], **common_args).filename != TokenCache(scopes=["bar"],
-                                                                            **common_args).filename
+    assert TokenCache(scopes=["foo"], **common_args).filename != TokenCache(scopes=["bar"], **
+                                                                            common_args).filename
 
 
 def test_account_oidc_endpoints(requests_mock):
