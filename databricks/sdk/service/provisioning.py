@@ -868,6 +868,22 @@ class GkeConfigConnectivityType(Enum):
     PUBLIC_NODE_PUBLIC_MASTER = 'PUBLIC_NODE_PUBLIC_MASTER'
 
 
+@dataclass
+class IdentityFederationInfo:
+    enable_identity_federation: Optional[bool] = None
+    """Status of identity federation for the workspace."""
+
+    def as_dict(self) -> dict:
+        body = {}
+        if self.enable_identity_federation is not None:
+            body['enable_identity_federation'] = self.enable_identity_federation
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> IdentityFederationInfo:
+        return cls(enable_identity_federation=d.get('enable_identity_federation', None))
+
+
 class KeyUseCase(Enum):
     """Possible values are: * `MANAGED_SERVICES`: Encrypts notebook and secret data in the control
     plane * `STORAGE`: Encrypts the workspace's root S3 bucket (root DBFS and system data) and,
@@ -1512,6 +1528,9 @@ class Workspace:
     gke_config: Optional[GkeConfig] = None
     """The configurations for the GKE cluster of a Databricks workspace."""
 
+    identity_federation_info: Optional[IdentityFederationInfo] = None
+    """The identity federation information for the workspace."""
+
     is_no_public_ip_enabled: Optional[bool] = None
     """Whether no public IP is enabled for the workspace."""
 
@@ -1577,6 +1596,8 @@ class Workspace:
         if self.gcp_managed_network_config:
             body['gcp_managed_network_config'] = self.gcp_managed_network_config.as_dict()
         if self.gke_config: body['gke_config'] = self.gke_config.as_dict()
+        if self.identity_federation_info is not None:
+            body['identity_federation_info'] = self.identity_federation_info.as_dict
         if self.is_no_public_ip_enabled is not None:
             body['is_no_public_ip_enabled'] = self.is_no_public_ip_enabled
         if self.location is not None: body['location'] = self.location
@@ -1613,6 +1634,7 @@ class Workspace:
                    gcp_managed_network_config=_from_dict(d, 'gcp_managed_network_config',
                                                          GcpManagedNetworkConfig),
                    gke_config=_from_dict(d, 'gke_config', GkeConfig),
+                   identity_federation_info=_from_dict(d, 'identity_federation_info', IdentityFederationInfo),
                    is_no_public_ip_enabled=d.get('is_no_public_ip_enabled', None),
                    location=d.get('location', None),
                    managed_services_customer_managed_key_id=d.get('managed_services_customer_managed_key_id',
