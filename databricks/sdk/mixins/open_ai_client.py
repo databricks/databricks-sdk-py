@@ -29,7 +29,7 @@ class ServingEndpointsExt(ServingEndpointsAPI):
             from openai import OpenAI
         except Exception:
             raise ImportError(
-                "Open AI is not installed. Please install the Databricks SDK with the following command `pip isntall databricks-sdk[openai]`"
+                "Open AI is not installed. Please install the Databricks SDK with the following command `pip install databricks-sdk[openai]`"
             )
 
         return OpenAI(
@@ -42,7 +42,7 @@ class ServingEndpointsExt(ServingEndpointsAPI):
             from langchain_openai import ChatOpenAI
         except Exception:
             raise ImportError(
-                "Langchain Open AI is not installed. Please install the Databricks SDK with the following command `pip isntall databricks-sdk[openai]` and ensure you are using python>3.7"
+                "Langchain Open AI is not installed. Please install the Databricks SDK with the following command `pip install databricks-sdk[openai]` and ensure you are using python>3.7"
             )
 
         return ChatOpenAI(

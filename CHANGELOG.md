@@ -1,5 +1,43 @@
 # Version changelog
 
+## [Release] Release v0.38.0
+
+### New Features and Improvements
+
+ * Read streams by 1MB chunks by default. ([#817](https://github.com/databricks/databricks-sdk-py/pull/817)).
+
+### Bug Fixes
+
+ * Rewind seekable streams before retrying ([#821](https://github.com/databricks/databricks-sdk-py/pull/821)).
+ * Properly serialize nested data classes. 
+
+### Internal Changes
+
+ * Reformat SDK with YAPF 0.43. ([#822](https://github.com/databricks/databricks-sdk-py/pull/822)).
+ * Update Jobs GetRun API to support paginated responses for jobs and ForEach tasks ([#819](https://github.com/databricks/databricks-sdk-py/pull/819)).
+
+### API Changes:
+
+ * Added `service_principal_client_id` field for `databricks.sdk.service.apps.App`.
+ * Added `azure_service_principal`, `gcp_service_account_key` and `read_only` fields for `databricks.sdk.service.catalog.CreateCredentialRequest`.
+ * Added `azure_service_principal`, `read_only` and `used_for_managed_storage` fields for `databricks.sdk.service.catalog.CredentialInfo`.
+ * Added `omit_username` field for `databricks.sdk.service.catalog.ListTablesRequest`.
+ * Added `azure_service_principal` and `read_only` fields for `databricks.sdk.service.catalog.UpdateCredentialRequest`.
+ * Added `external_location_name`, `read_only` and `url` fields for `databricks.sdk.service.catalog.ValidateCredentialRequest`.
+ * Added `is_dir` field for `databricks.sdk.service.catalog.ValidateCredentialResponse`.
+ * Added `only` field for `databricks.sdk.service.jobs.RunNow`.
+ * Added `restart_window` field for `databricks.sdk.service.pipelines.CreatePipeline`.
+ * Added `restart_window` field for `databricks.sdk.service.pipelines.EditPipeline`.
+ * Added `restart_window` field for `databricks.sdk.service.pipelines.PipelineSpec`.
+ * Added `private_access_settings_id` field for `databricks.sdk.service.provisioning.UpdateWorkspaceRequest`.
+ * Changed `create_credential()` and `generate_temporary_service_credential()` methods for [w.credentials](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/credentials.html) workspace-level service with new required argument order.
+ * Changed `access_connector_id` field for `databricks.sdk.service.catalog.AzureManagedIdentity` to be required.
+ * Changed `access_connector_id` field for `databricks.sdk.service.catalog.AzureManagedIdentity` to be required.
+ * Changed `name` field for `databricks.sdk.service.catalog.CreateCredentialRequest` to be required.
+ * Changed `credential_name` field for `databricks.sdk.service.catalog.GenerateTemporaryServiceCredentialRequest` to be required.
+
+OpenAPI SHA: f2385add116e3716c8a90a0b68e204deb40f996c, Date: 2024-11-15
+
 ## [Release] Release v0.37.0
 
 ### Bug Fixes
