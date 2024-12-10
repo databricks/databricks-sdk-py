@@ -215,8 +215,9 @@ def external_browser(cfg: 'Config') -> Optional[CredentialsProvider]:
         try:
             credentials.token()
             return credentials(cfg)
+        # TODO: we should ideally use more specific exceptions.
         except Exception as e:
-            logger.warning(f'Failed to refresh cached token: {e}, will init new OAuth login flow')
+            logger.warning(f'Failed to refresh cached token: {e}. Initiating new OAuth login flow')
 
     oauth_client = OAuthClient(oidc_endpoints=oidc_endpoints,
                                client_id=client_id,
