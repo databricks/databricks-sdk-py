@@ -90,6 +90,21 @@ class Activity:
         if self.user_id is not None: body['user_id'] = self.user_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Activity into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.activity_type is not None: body['activity_type'] = self.activity_type
+        if self.comment is not None: body['comment'] = self.comment
+        if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
+        if self.from_stage is not None: body['from_stage'] = self.from_stage
+        if self.id is not None: body['id'] = self.id
+        if self.last_updated_timestamp is not None:
+            body['last_updated_timestamp'] = self.last_updated_timestamp
+        if self.system_comment is not None: body['system_comment'] = self.system_comment
+        if self.to_stage is not None: body['to_stage'] = self.to_stage
+        if self.user_id is not None: body['user_id'] = self.user_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> Activity:
         """Deserializes the Activity from a dictionary."""
@@ -177,6 +192,17 @@ class ApproveTransitionRequest:
         if self.version is not None: body['version'] = self.version
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ApproveTransitionRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.archive_existing_versions is not None:
+            body['archive_existing_versions'] = self.archive_existing_versions
+        if self.comment is not None: body['comment'] = self.comment
+        if self.name is not None: body['name'] = self.name
+        if self.stage is not None: body['stage'] = self.stage
+        if self.version is not None: body['version'] = self.version
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ApproveTransitionRequest:
         """Deserializes the ApproveTransitionRequest from a dictionary."""
@@ -196,6 +222,12 @@ class ApproveTransitionRequestResponse:
         """Serializes the ApproveTransitionRequestResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.activity: body['activity'] = self.activity.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ApproveTransitionRequestResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.activity: body['activity'] = self.activity
         return body
 
     @classmethod
@@ -248,6 +280,18 @@ class CommentObject:
         if self.user_id is not None: body['user_id'] = self.user_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CommentObject into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.available_actions: body['available_actions'] = self.available_actions
+        if self.comment is not None: body['comment'] = self.comment
+        if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
+        if self.id is not None: body['id'] = self.id
+        if self.last_updated_timestamp is not None:
+            body['last_updated_timestamp'] = self.last_updated_timestamp
+        if self.user_id is not None: body['user_id'] = self.user_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CommentObject:
         """Deserializes the CommentObject from a dictionary."""
@@ -278,6 +322,14 @@ class CreateComment:
         if self.version is not None: body['version'] = self.version
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateComment into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.comment is not None: body['comment'] = self.comment
+        if self.name is not None: body['name'] = self.name
+        if self.version is not None: body['version'] = self.version
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateComment:
         """Deserializes the CreateComment from a dictionary."""
@@ -293,6 +345,12 @@ class CreateCommentResponse:
         """Serializes the CreateCommentResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.comment: body['comment'] = self.comment.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateCommentResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.comment: body['comment'] = self.comment
         return body
 
     @classmethod
@@ -324,6 +382,14 @@ class CreateExperiment:
         if self.tags: body['tags'] = [v.as_dict() for v in self.tags]
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateExperiment into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.artifact_location is not None: body['artifact_location'] = self.artifact_location
+        if self.name is not None: body['name'] = self.name
+        if self.tags: body['tags'] = self.tags
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateExperiment:
         """Deserializes the CreateExperiment from a dictionary."""
@@ -339,6 +405,12 @@ class CreateExperimentResponse:
 
     def as_dict(self) -> dict:
         """Serializes the CreateExperimentResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.experiment_id is not None: body['experiment_id'] = self.experiment_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateExperimentResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.experiment_id is not None: body['experiment_id'] = self.experiment_id
         return body
@@ -368,6 +440,14 @@ class CreateModelRequest:
         if self.tags: body['tags'] = [v.as_dict() for v in self.tags]
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateModelRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.description is not None: body['description'] = self.description
+        if self.name is not None: body['name'] = self.name
+        if self.tags: body['tags'] = self.tags
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateModelRequest:
         """Deserializes the CreateModelRequest from a dictionary."""
@@ -384,6 +464,12 @@ class CreateModelResponse:
         """Serializes the CreateModelResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.registered_model: body['registered_model'] = self.registered_model.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateModelResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.registered_model: body['registered_model'] = self.registered_model
         return body
 
     @classmethod
@@ -425,6 +511,17 @@ class CreateModelVersionRequest:
         if self.tags: body['tags'] = [v.as_dict() for v in self.tags]
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateModelVersionRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.description is not None: body['description'] = self.description
+        if self.name is not None: body['name'] = self.name
+        if self.run_id is not None: body['run_id'] = self.run_id
+        if self.run_link is not None: body['run_link'] = self.run_link
+        if self.source is not None: body['source'] = self.source
+        if self.tags: body['tags'] = self.tags
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateModelVersionRequest:
         """Deserializes the CreateModelVersionRequest from a dictionary."""
@@ -445,6 +542,12 @@ class CreateModelVersionResponse:
         """Serializes the CreateModelVersionResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.model_version: body['model_version'] = self.model_version.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateModelVersionResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.model_version: body['model_version'] = self.model_version
         return body
 
     @classmethod
@@ -515,6 +618,17 @@ class CreateRegistryWebhook:
         if self.status is not None: body['status'] = self.status.value
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateRegistryWebhook into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.description is not None: body['description'] = self.description
+        if self.events: body['events'] = self.events
+        if self.http_url_spec: body['http_url_spec'] = self.http_url_spec
+        if self.job_spec: body['job_spec'] = self.job_spec
+        if self.model_name is not None: body['model_name'] = self.model_name
+        if self.status is not None: body['status'] = self.status
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateRegistryWebhook:
         """Deserializes the CreateRegistryWebhook from a dictionary."""
@@ -550,6 +664,15 @@ class CreateRun:
         if self.user_id is not None: body['user_id'] = self.user_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateRun into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.experiment_id is not None: body['experiment_id'] = self.experiment_id
+        if self.start_time is not None: body['start_time'] = self.start_time
+        if self.tags: body['tags'] = self.tags
+        if self.user_id is not None: body['user_id'] = self.user_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateRun:
         """Deserializes the CreateRun from a dictionary."""
@@ -568,6 +691,12 @@ class CreateRunResponse:
         """Serializes the CreateRunResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.run: body['run'] = self.run.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateRunResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.run: body['run'] = self.run
         return body
 
     @classmethod
@@ -607,6 +736,15 @@ class CreateTransitionRequest:
         if self.version is not None: body['version'] = self.version
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateTransitionRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.comment is not None: body['comment'] = self.comment
+        if self.name is not None: body['name'] = self.name
+        if self.stage is not None: body['stage'] = self.stage
+        if self.version is not None: body['version'] = self.version
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateTransitionRequest:
         """Deserializes the CreateTransitionRequest from a dictionary."""
@@ -627,6 +765,12 @@ class CreateTransitionRequestResponse:
         if self.request: body['request'] = self.request.as_dict()
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateTransitionRequestResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.request: body['request'] = self.request
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateTransitionRequestResponse:
         """Deserializes the CreateTransitionRequestResponse from a dictionary."""
@@ -641,6 +785,12 @@ class CreateWebhookResponse:
         """Serializes the CreateWebhookResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.webhook: body['webhook'] = self.webhook.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateWebhookResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.webhook: body['webhook'] = self.webhook
         return body
 
     @classmethod
@@ -684,6 +834,17 @@ class Dataset:
         if self.source_type is not None: body['source_type'] = self.source_type
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Dataset into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.digest is not None: body['digest'] = self.digest
+        if self.name is not None: body['name'] = self.name
+        if self.profile is not None: body['profile'] = self.profile
+        if self.schema is not None: body['schema'] = self.schema
+        if self.source is not None: body['source'] = self.source
+        if self.source_type is not None: body['source_type'] = self.source_type
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> Dataset:
         """Deserializes the Dataset from a dictionary."""
@@ -710,6 +871,13 @@ class DatasetInput:
         if self.tags: body['tags'] = [v.as_dict() for v in self.tags]
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DatasetInput into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.dataset: body['dataset'] = self.dataset
+        if self.tags: body['tags'] = self.tags
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> DatasetInput:
         """Deserializes the DatasetInput from a dictionary."""
@@ -721,6 +889,11 @@ class DeleteCommentResponse:
 
     def as_dict(self) -> dict:
         """Serializes the DeleteCommentResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteCommentResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -741,6 +914,12 @@ class DeleteExperiment:
         if self.experiment_id is not None: body['experiment_id'] = self.experiment_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteExperiment into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.experiment_id is not None: body['experiment_id'] = self.experiment_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> DeleteExperiment:
         """Deserializes the DeleteExperiment from a dictionary."""
@@ -752,6 +931,11 @@ class DeleteExperimentResponse:
 
     def as_dict(self) -> dict:
         """Serializes the DeleteExperimentResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteExperimentResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -769,6 +953,11 @@ class DeleteModelResponse:
         body = {}
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteModelResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> DeleteModelResponse:
         """Deserializes the DeleteModelResponse from a dictionary."""
@@ -780,6 +969,11 @@ class DeleteModelTagResponse:
 
     def as_dict(self) -> dict:
         """Serializes the DeleteModelTagResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteModelTagResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -797,6 +991,11 @@ class DeleteModelVersionResponse:
         body = {}
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteModelVersionResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> DeleteModelVersionResponse:
         """Deserializes the DeleteModelVersionResponse from a dictionary."""
@@ -808,6 +1007,11 @@ class DeleteModelVersionTagResponse:
 
     def as_dict(self) -> dict:
         """Serializes the DeleteModelVersionTagResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteModelVersionTagResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -828,6 +1032,12 @@ class DeleteRun:
         if self.run_id is not None: body['run_id'] = self.run_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteRun into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.run_id is not None: body['run_id'] = self.run_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> DeleteRun:
         """Deserializes the DeleteRun from a dictionary."""
@@ -839,6 +1049,11 @@ class DeleteRunResponse:
 
     def as_dict(self) -> dict:
         """Serializes the DeleteRunResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteRunResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -869,6 +1084,14 @@ class DeleteRuns:
         if self.max_timestamp_millis is not None: body['max_timestamp_millis'] = self.max_timestamp_millis
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteRuns into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.experiment_id is not None: body['experiment_id'] = self.experiment_id
+        if self.max_runs is not None: body['max_runs'] = self.max_runs
+        if self.max_timestamp_millis is not None: body['max_timestamp_millis'] = self.max_timestamp_millis
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> DeleteRuns:
         """Deserializes the DeleteRuns from a dictionary."""
@@ -884,6 +1107,12 @@ class DeleteRunsResponse:
 
     def as_dict(self) -> dict:
         """Serializes the DeleteRunsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.runs_deleted is not None: body['runs_deleted'] = self.runs_deleted
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteRunsResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.runs_deleted is not None: body['runs_deleted'] = self.runs_deleted
         return body
@@ -909,6 +1138,13 @@ class DeleteTag:
         if self.run_id is not None: body['run_id'] = self.run_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteTag into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.key is not None: body['key'] = self.key
+        if self.run_id is not None: body['run_id'] = self.run_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> DeleteTag:
         """Deserializes the DeleteTag from a dictionary."""
@@ -923,6 +1159,11 @@ class DeleteTagResponse:
         body = {}
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteTagResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> DeleteTagResponse:
         """Deserializes the DeleteTagResponse from a dictionary."""
@@ -934,6 +1175,11 @@ class DeleteTransitionRequestResponse:
 
     def as_dict(self) -> dict:
         """Serializes the DeleteTransitionRequestResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteTransitionRequestResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -956,6 +1202,11 @@ class DeleteWebhookResponse:
 
     def as_dict(self) -> dict:
         """Serializes the DeleteWebhookResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteWebhookResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -1001,6 +1252,18 @@ class Experiment:
         if self.tags: body['tags'] = [v.as_dict() for v in self.tags]
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Experiment into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.artifact_location is not None: body['artifact_location'] = self.artifact_location
+        if self.creation_time is not None: body['creation_time'] = self.creation_time
+        if self.experiment_id is not None: body['experiment_id'] = self.experiment_id
+        if self.last_update_time is not None: body['last_update_time'] = self.last_update_time
+        if self.lifecycle_stage is not None: body['lifecycle_stage'] = self.lifecycle_stage
+        if self.name is not None: body['name'] = self.name
+        if self.tags: body['tags'] = self.tags
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> Experiment:
         """Deserializes the Experiment from a dictionary."""
@@ -1032,6 +1295,16 @@ class ExperimentAccessControlRequest:
         body = {}
         if self.group_name is not None: body['group_name'] = self.group_name
         if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
+        if self.user_name is not None: body['user_name'] = self.user_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ExperimentAccessControlRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.permission_level is not None: body['permission_level'] = self.permission_level
         if self.service_principal_name is not None:
             body['service_principal_name'] = self.service_principal_name
         if self.user_name is not None: body['user_name'] = self.user_name
@@ -1074,6 +1347,17 @@ class ExperimentAccessControlResponse:
         if self.user_name is not None: body['user_name'] = self.user_name
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ExperimentAccessControlResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.all_permissions: body['all_permissions'] = self.all_permissions
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
+        if self.user_name is not None: body['user_name'] = self.user_name
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ExperimentAccessControlResponse:
         """Deserializes the ExperimentAccessControlResponse from a dictionary."""
@@ -1099,6 +1383,14 @@ class ExperimentPermission:
         if self.inherited is not None: body['inherited'] = self.inherited
         if self.inherited_from_object: body['inherited_from_object'] = [v for v in self.inherited_from_object]
         if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ExperimentPermission into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.inherited is not None: body['inherited'] = self.inherited
+        if self.inherited_from_object: body['inherited_from_object'] = self.inherited_from_object
+        if self.permission_level is not None: body['permission_level'] = self.permission_level
         return body
 
     @classmethod
@@ -1134,6 +1426,14 @@ class ExperimentPermissions:
         if self.object_type is not None: body['object_type'] = self.object_type
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ExperimentPermissions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.access_control_list: body['access_control_list'] = self.access_control_list
+        if self.object_id is not None: body['object_id'] = self.object_id
+        if self.object_type is not None: body['object_type'] = self.object_type
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ExperimentPermissions:
         """Deserializes the ExperimentPermissions from a dictionary."""
@@ -1155,6 +1455,13 @@ class ExperimentPermissionsDescription:
         body = {}
         if self.description is not None: body['description'] = self.description
         if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ExperimentPermissionsDescription into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.description is not None: body['description'] = self.description
+        if self.permission_level is not None: body['permission_level'] = self.permission_level
         return body
 
     @classmethod
@@ -1179,6 +1486,13 @@ class ExperimentPermissionsRequest:
         if self.experiment_id is not None: body['experiment_id'] = self.experiment_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ExperimentPermissionsRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.access_control_list: body['access_control_list'] = self.access_control_list
+        if self.experiment_id is not None: body['experiment_id'] = self.experiment_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ExperimentPermissionsRequest:
         """Deserializes the ExperimentPermissionsRequest from a dictionary."""
@@ -1197,6 +1511,13 @@ class ExperimentTag:
 
     def as_dict(self) -> dict:
         """Serializes the ExperimentTag into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.key is not None: body['key'] = self.key
+        if self.value is not None: body['value'] = self.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ExperimentTag into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.key is not None: body['key'] = self.key
         if self.value is not None: body['value'] = self.value
@@ -1227,6 +1548,14 @@ class FileInfo:
         if self.path is not None: body['path'] = self.path
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the FileInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.file_size is not None: body['file_size'] = self.file_size
+        if self.is_dir is not None: body['is_dir'] = self.is_dir
+        if self.path is not None: body['path'] = self.path
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> FileInfo:
         """Deserializes the FileInfo from a dictionary."""
@@ -1244,6 +1573,12 @@ class GetExperimentPermissionLevelsResponse:
         if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetExperimentPermissionLevelsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.permission_levels: body['permission_levels'] = self.permission_levels
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> GetExperimentPermissionLevelsResponse:
         """Deserializes the GetExperimentPermissionLevelsResponse from a dictionary."""
@@ -1259,6 +1594,12 @@ class GetExperimentResponse:
         """Serializes the GetExperimentResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.experiment: body['experiment'] = self.experiment.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetExperimentResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.experiment: body['experiment'] = self.experiment
         return body
 
     @classmethod
@@ -1282,6 +1623,13 @@ class GetLatestVersionsRequest:
         if self.stages: body['stages'] = [v for v in self.stages]
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetLatestVersionsRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.name is not None: body['name'] = self.name
+        if self.stages: body['stages'] = self.stages
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> GetLatestVersionsRequest:
         """Deserializes the GetLatestVersionsRequest from a dictionary."""
@@ -1298,6 +1646,12 @@ class GetLatestVersionsResponse:
         """Serializes the GetLatestVersionsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.model_versions: body['model_versions'] = [v.as_dict() for v in self.model_versions]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetLatestVersionsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.model_versions: body['model_versions'] = self.model_versions
         return body
 
     @classmethod
@@ -1321,6 +1675,13 @@ class GetMetricHistoryResponse:
         if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetMetricHistoryResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.metrics: body['metrics'] = self.metrics
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> GetMetricHistoryResponse:
         """Deserializes the GetMetricHistoryResponse from a dictionary."""
@@ -1339,6 +1700,13 @@ class GetModelResponse:
             body['registered_model_databricks'] = self.registered_model_databricks.as_dict()
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetModelResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.registered_model_databricks:
+            body['registered_model_databricks'] = self.registered_model_databricks
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> GetModelResponse:
         """Deserializes the GetModelResponse from a dictionary."""
@@ -1352,6 +1720,12 @@ class GetModelVersionDownloadUriResponse:
 
     def as_dict(self) -> dict:
         """Serializes the GetModelVersionDownloadUriResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.artifact_uri is not None: body['artifact_uri'] = self.artifact_uri
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetModelVersionDownloadUriResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.artifact_uri is not None: body['artifact_uri'] = self.artifact_uri
         return body
@@ -1372,6 +1746,12 @@ class GetModelVersionResponse:
         if self.model_version: body['model_version'] = self.model_version.as_dict()
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetModelVersionResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.model_version: body['model_version'] = self.model_version
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> GetModelVersionResponse:
         """Deserializes the GetModelVersionResponse from a dictionary."""
@@ -1387,6 +1767,12 @@ class GetRegisteredModelPermissionLevelsResponse:
         """Serializes the GetRegisteredModelPermissionLevelsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetRegisteredModelPermissionLevelsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.permission_levels: body['permission_levels'] = self.permission_levels
         return body
 
     @classmethod
@@ -1405,6 +1791,12 @@ class GetRunResponse:
         """Serializes the GetRunResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.run: body['run'] = self.run.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetRunResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.run: body['run'] = self.run
         return body
 
     @classmethod
@@ -1444,6 +1836,16 @@ class HttpUrlSpec:
         if self.url is not None: body['url'] = self.url
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the HttpUrlSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.authorization is not None: body['authorization'] = self.authorization
+        if self.enable_ssl_verification is not None:
+            body['enable_ssl_verification'] = self.enable_ssl_verification
+        if self.secret is not None: body['secret'] = self.secret
+        if self.url is not None: body['url'] = self.url
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> HttpUrlSpec:
         """Deserializes the HttpUrlSpec from a dictionary."""
@@ -1473,6 +1875,14 @@ class HttpUrlSpecWithoutSecret:
         if self.url is not None: body['url'] = self.url
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the HttpUrlSpecWithoutSecret into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.enable_ssl_verification is not None:
+            body['enable_ssl_verification'] = self.enable_ssl_verification
+        if self.url is not None: body['url'] = self.url
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> HttpUrlSpecWithoutSecret:
         """Deserializes the HttpUrlSpecWithoutSecret from a dictionary."""
@@ -1489,6 +1899,13 @@ class InputTag:
 
     def as_dict(self) -> dict:
         """Serializes the InputTag into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.key is not None: body['key'] = self.key
+        if self.value is not None: body['value'] = self.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the InputTag into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.key is not None: body['key'] = self.key
         if self.value is not None: body['value'] = self.value
@@ -1520,6 +1937,14 @@ class JobSpec:
         if self.workspace_url is not None: body['workspace_url'] = self.workspace_url
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the JobSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.access_token is not None: body['access_token'] = self.access_token
+        if self.job_id is not None: body['job_id'] = self.job_id
+        if self.workspace_url is not None: body['workspace_url'] = self.workspace_url
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> JobSpec:
         """Deserializes the JobSpec from a dictionary."""
@@ -1540,6 +1965,13 @@ class JobSpecWithoutSecret:
 
     def as_dict(self) -> dict:
         """Serializes the JobSpecWithoutSecret into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.job_id is not None: body['job_id'] = self.job_id
+        if self.workspace_url is not None: body['workspace_url'] = self.workspace_url
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the JobSpecWithoutSecret into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.job_id is not None: body['job_id'] = self.job_id
         if self.workspace_url is not None: body['workspace_url'] = self.workspace_url
@@ -1570,6 +2002,14 @@ class ListArtifactsResponse:
         if self.root_uri is not None: body['root_uri'] = self.root_uri
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListArtifactsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.files: body['files'] = self.files
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.root_uri is not None: body['root_uri'] = self.root_uri
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListArtifactsResponse:
         """Deserializes the ListArtifactsResponse from a dictionary."""
@@ -1594,6 +2034,13 @@ class ListExperimentsResponse:
         if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListExperimentsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.experiments: body['experiments'] = self.experiments
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListExperimentsResponse:
         """Deserializes the ListExperimentsResponse from a dictionary."""
@@ -1613,6 +2060,13 @@ class ListModelsResponse:
         body = {}
         if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         if self.registered_models: body['registered_models'] = [v.as_dict() for v in self.registered_models]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListModelsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.registered_models: body['registered_models'] = self.registered_models
         return body
 
     @classmethod
@@ -1637,6 +2091,13 @@ class ListRegistryWebhooks:
         if self.webhooks: body['webhooks'] = [v.as_dict() for v in self.webhooks]
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListRegistryWebhooks into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.webhooks: body['webhooks'] = self.webhooks
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListRegistryWebhooks:
         """Deserializes the ListRegistryWebhooks from a dictionary."""
@@ -1653,6 +2114,12 @@ class ListTransitionRequestsResponse:
         """Serializes the ListTransitionRequestsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.requests: body['requests'] = [v.as_dict() for v in self.requests]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListTransitionRequestsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.requests: body['requests'] = self.requests
         return body
 
     @classmethod
@@ -1687,6 +2154,15 @@ class LogBatch:
         if self.tags: body['tags'] = [v.as_dict() for v in self.tags]
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the LogBatch into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.metrics: body['metrics'] = self.metrics
+        if self.params: body['params'] = self.params
+        if self.run_id is not None: body['run_id'] = self.run_id
+        if self.tags: body['tags'] = self.tags
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> LogBatch:
         """Deserializes the LogBatch from a dictionary."""
@@ -1701,6 +2177,11 @@ class LogBatchResponse:
 
     def as_dict(self) -> dict:
         """Serializes the LogBatchResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the LogBatchResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -1725,6 +2206,13 @@ class LogInputs:
         if self.run_id is not None: body['run_id'] = self.run_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the LogInputs into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.datasets: body['datasets'] = self.datasets
+        if self.run_id is not None: body['run_id'] = self.run_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> LogInputs:
         """Deserializes the LogInputs from a dictionary."""
@@ -1736,6 +2224,11 @@ class LogInputsResponse:
 
     def as_dict(self) -> dict:
         """Serializes the LogInputsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the LogInputsResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -1777,6 +2270,17 @@ class LogMetric:
         if self.value is not None: body['value'] = self.value
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the LogMetric into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.key is not None: body['key'] = self.key
+        if self.run_id is not None: body['run_id'] = self.run_id
+        if self.run_uuid is not None: body['run_uuid'] = self.run_uuid
+        if self.step is not None: body['step'] = self.step
+        if self.timestamp is not None: body['timestamp'] = self.timestamp
+        if self.value is not None: body['value'] = self.value
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> LogMetric:
         """Deserializes the LogMetric from a dictionary."""
@@ -1793,6 +2297,11 @@ class LogMetricResponse:
 
     def as_dict(self) -> dict:
         """Serializes the LogMetricResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the LogMetricResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -1817,6 +2326,13 @@ class LogModel:
         if self.run_id is not None: body['run_id'] = self.run_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the LogModel into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.model_json is not None: body['model_json'] = self.model_json
+        if self.run_id is not None: body['run_id'] = self.run_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> LogModel:
         """Deserializes the LogModel from a dictionary."""
@@ -1828,6 +2344,11 @@ class LogModelResponse:
 
     def as_dict(self) -> dict:
         """Serializes the LogModelResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the LogModelResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -1861,6 +2382,15 @@ class LogParam:
         if self.value is not None: body['value'] = self.value
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the LogParam into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.key is not None: body['key'] = self.key
+        if self.run_id is not None: body['run_id'] = self.run_id
+        if self.run_uuid is not None: body['run_uuid'] = self.run_uuid
+        if self.value is not None: body['value'] = self.value
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> LogParam:
         """Deserializes the LogParam from a dictionary."""
@@ -1875,6 +2405,11 @@ class LogParamResponse:
 
     def as_dict(self) -> dict:
         """Serializes the LogParamResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the LogParamResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -1900,6 +2435,15 @@ class Metric:
 
     def as_dict(self) -> dict:
         """Serializes the Metric into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.key is not None: body['key'] = self.key
+        if self.step is not None: body['step'] = self.step
+        if self.timestamp is not None: body['timestamp'] = self.timestamp
+        if self.value is not None: body['value'] = self.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Metric into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.key is not None: body['key'] = self.key
         if self.step is not None: body['step'] = self.step
@@ -1950,6 +2494,19 @@ class Model:
         if self.latest_versions: body['latest_versions'] = [v.as_dict() for v in self.latest_versions]
         if self.name is not None: body['name'] = self.name
         if self.tags: body['tags'] = [v.as_dict() for v in self.tags]
+        if self.user_id is not None: body['user_id'] = self.user_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Model into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
+        if self.description is not None: body['description'] = self.description
+        if self.last_updated_timestamp is not None:
+            body['last_updated_timestamp'] = self.last_updated_timestamp
+        if self.latest_versions: body['latest_versions'] = self.latest_versions
+        if self.name is not None: body['name'] = self.name
+        if self.tags: body['tags'] = self.tags
         if self.user_id is not None: body['user_id'] = self.user_id
         return body
 
@@ -2010,6 +2567,21 @@ class ModelDatabricks:
         if self.user_id is not None: body['user_id'] = self.user_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ModelDatabricks into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
+        if self.description is not None: body['description'] = self.description
+        if self.id is not None: body['id'] = self.id
+        if self.last_updated_timestamp is not None:
+            body['last_updated_timestamp'] = self.last_updated_timestamp
+        if self.latest_versions: body['latest_versions'] = self.latest_versions
+        if self.name is not None: body['name'] = self.name
+        if self.permission_level is not None: body['permission_level'] = self.permission_level
+        if self.tags: body['tags'] = self.tags
+        if self.user_id is not None: body['user_id'] = self.user_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ModelDatabricks:
         """Deserializes the ModelDatabricks from a dictionary."""
@@ -2034,6 +2606,13 @@ class ModelTag:
 
     def as_dict(self) -> dict:
         """Serializes the ModelTag into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.key is not None: body['key'] = self.key
+        if self.value is not None: body['value'] = self.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ModelTag into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.key is not None: body['key'] = self.key
         if self.value is not None: body['value'] = self.value
@@ -2102,6 +2681,25 @@ class ModelVersion:
         if self.status is not None: body['status'] = self.status.value
         if self.status_message is not None: body['status_message'] = self.status_message
         if self.tags: body['tags'] = [v.as_dict() for v in self.tags]
+        if self.user_id is not None: body['user_id'] = self.user_id
+        if self.version is not None: body['version'] = self.version
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ModelVersion into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
+        if self.current_stage is not None: body['current_stage'] = self.current_stage
+        if self.description is not None: body['description'] = self.description
+        if self.last_updated_timestamp is not None:
+            body['last_updated_timestamp'] = self.last_updated_timestamp
+        if self.name is not None: body['name'] = self.name
+        if self.run_id is not None: body['run_id'] = self.run_id
+        if self.run_link is not None: body['run_link'] = self.run_link
+        if self.source is not None: body['source'] = self.source
+        if self.status is not None: body['status'] = self.status
+        if self.status_message is not None: body['status_message'] = self.status_message
+        if self.tags: body['tags'] = self.tags
         if self.user_id is not None: body['user_id'] = self.user_id
         if self.version is not None: body['version'] = self.version
         return body
@@ -2205,6 +2803,26 @@ class ModelVersionDatabricks:
         if self.version is not None: body['version'] = self.version
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ModelVersionDatabricks into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
+        if self.current_stage is not None: body['current_stage'] = self.current_stage
+        if self.description is not None: body['description'] = self.description
+        if self.last_updated_timestamp is not None:
+            body['last_updated_timestamp'] = self.last_updated_timestamp
+        if self.name is not None: body['name'] = self.name
+        if self.permission_level is not None: body['permission_level'] = self.permission_level
+        if self.run_id is not None: body['run_id'] = self.run_id
+        if self.run_link is not None: body['run_link'] = self.run_link
+        if self.source is not None: body['source'] = self.source
+        if self.status is not None: body['status'] = self.status
+        if self.status_message is not None: body['status_message'] = self.status_message
+        if self.tags: body['tags'] = self.tags
+        if self.user_id is not None: body['user_id'] = self.user_id
+        if self.version is not None: body['version'] = self.version
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ModelVersionDatabricks:
         """Deserializes the ModelVersionDatabricks from a dictionary."""
@@ -2247,6 +2865,13 @@ class ModelVersionTag:
         if self.value is not None: body['value'] = self.value
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ModelVersionTag into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.key is not None: body['key'] = self.key
+        if self.value is not None: body['value'] = self.value
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ModelVersionTag:
         """Deserializes the ModelVersionTag from a dictionary."""
@@ -2263,6 +2888,13 @@ class Param:
 
     def as_dict(self) -> dict:
         """Serializes the Param into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.key is not None: body['key'] = self.key
+        if self.value is not None: body['value'] = self.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Param into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.key is not None: body['key'] = self.key
         if self.value is not None: body['value'] = self.value
@@ -2309,6 +2941,16 @@ class RegisteredModelAccessControlRequest:
         if self.user_name is not None: body['user_name'] = self.user_name
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RegisteredModelAccessControlRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.permission_level is not None: body['permission_level'] = self.permission_level
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
+        if self.user_name is not None: body['user_name'] = self.user_name
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> RegisteredModelAccessControlRequest:
         """Deserializes the RegisteredModelAccessControlRequest from a dictionary."""
@@ -2346,6 +2988,17 @@ class RegisteredModelAccessControlResponse:
         if self.user_name is not None: body['user_name'] = self.user_name
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RegisteredModelAccessControlResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.all_permissions: body['all_permissions'] = self.all_permissions
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
+        if self.user_name is not None: body['user_name'] = self.user_name
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> RegisteredModelAccessControlResponse:
         """Deserializes the RegisteredModelAccessControlResponse from a dictionary."""
@@ -2371,6 +3024,14 @@ class RegisteredModelPermission:
         if self.inherited is not None: body['inherited'] = self.inherited
         if self.inherited_from_object: body['inherited_from_object'] = [v for v in self.inherited_from_object]
         if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RegisteredModelPermission into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.inherited is not None: body['inherited'] = self.inherited
+        if self.inherited_from_object: body['inherited_from_object'] = self.inherited_from_object
+        if self.permission_level is not None: body['permission_level'] = self.permission_level
         return body
 
     @classmethod
@@ -2408,6 +3069,14 @@ class RegisteredModelPermissions:
         if self.object_type is not None: body['object_type'] = self.object_type
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RegisteredModelPermissions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.access_control_list: body['access_control_list'] = self.access_control_list
+        if self.object_id is not None: body['object_id'] = self.object_id
+        if self.object_type is not None: body['object_type'] = self.object_type
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> RegisteredModelPermissions:
         """Deserializes the RegisteredModelPermissions from a dictionary."""
@@ -2431,6 +3100,13 @@ class RegisteredModelPermissionsDescription:
         if self.permission_level is not None: body['permission_level'] = self.permission_level.value
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RegisteredModelPermissionsDescription into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.description is not None: body['description'] = self.description
+        if self.permission_level is not None: body['permission_level'] = self.permission_level
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> RegisteredModelPermissionsDescription:
         """Deserializes the RegisteredModelPermissionsDescription from a dictionary."""
@@ -2450,6 +3126,13 @@ class RegisteredModelPermissionsRequest:
         body = {}
         if self.access_control_list:
             body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
+        if self.registered_model_id is not None: body['registered_model_id'] = self.registered_model_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RegisteredModelPermissionsRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.access_control_list: body['access_control_list'] = self.access_control_list
         if self.registered_model_id is not None: body['registered_model_id'] = self.registered_model_id
         return body
 
@@ -2536,6 +3219,21 @@ class RegistryWebhook:
         if self.status is not None: body['status'] = self.status.value
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RegistryWebhook into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
+        if self.description is not None: body['description'] = self.description
+        if self.events: body['events'] = self.events
+        if self.http_url_spec: body['http_url_spec'] = self.http_url_spec
+        if self.id is not None: body['id'] = self.id
+        if self.job_spec: body['job_spec'] = self.job_spec
+        if self.last_updated_timestamp is not None:
+            body['last_updated_timestamp'] = self.last_updated_timestamp
+        if self.model_name is not None: body['model_name'] = self.model_name
+        if self.status is not None: body['status'] = self.status
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> RegistryWebhook:
         """Deserializes the RegistryWebhook from a dictionary."""
@@ -2611,6 +3309,15 @@ class RejectTransitionRequest:
         if self.version is not None: body['version'] = self.version
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RejectTransitionRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.comment is not None: body['comment'] = self.comment
+        if self.name is not None: body['name'] = self.name
+        if self.stage is not None: body['stage'] = self.stage
+        if self.version is not None: body['version'] = self.version
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> RejectTransitionRequest:
         """Deserializes the RejectTransitionRequest from a dictionary."""
@@ -2629,6 +3336,12 @@ class RejectTransitionRequestResponse:
         """Serializes the RejectTransitionRequestResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.activity: body['activity'] = self.activity.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RejectTransitionRequestResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.activity: body['activity'] = self.activity
         return body
 
     @classmethod
@@ -2652,6 +3365,13 @@ class RenameModelRequest:
         if self.new_name is not None: body['new_name'] = self.new_name
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RenameModelRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.name is not None: body['name'] = self.name
+        if self.new_name is not None: body['new_name'] = self.new_name
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> RenameModelRequest:
         """Deserializes the RenameModelRequest from a dictionary."""
@@ -2666,6 +3386,12 @@ class RenameModelResponse:
         """Serializes the RenameModelResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.registered_model: body['registered_model'] = self.registered_model.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RenameModelResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.registered_model: body['registered_model'] = self.registered_model
         return body
 
     @classmethod
@@ -2685,6 +3411,12 @@ class RestoreExperiment:
         if self.experiment_id is not None: body['experiment_id'] = self.experiment_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RestoreExperiment into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.experiment_id is not None: body['experiment_id'] = self.experiment_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> RestoreExperiment:
         """Deserializes the RestoreExperiment from a dictionary."""
@@ -2696,6 +3428,11 @@ class RestoreExperimentResponse:
 
     def as_dict(self) -> dict:
         """Serializes the RestoreExperimentResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RestoreExperimentResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -2716,6 +3453,12 @@ class RestoreRun:
         if self.run_id is not None: body['run_id'] = self.run_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RestoreRun into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.run_id is not None: body['run_id'] = self.run_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> RestoreRun:
         """Deserializes the RestoreRun from a dictionary."""
@@ -2727,6 +3470,11 @@ class RestoreRunResponse:
 
     def as_dict(self) -> dict:
         """Serializes the RestoreRunResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RestoreRunResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -2757,6 +3505,14 @@ class RestoreRuns:
         if self.min_timestamp_millis is not None: body['min_timestamp_millis'] = self.min_timestamp_millis
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RestoreRuns into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.experiment_id is not None: body['experiment_id'] = self.experiment_id
+        if self.max_runs is not None: body['max_runs'] = self.max_runs
+        if self.min_timestamp_millis is not None: body['min_timestamp_millis'] = self.min_timestamp_millis
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> RestoreRuns:
         """Deserializes the RestoreRuns from a dictionary."""
@@ -2772,6 +3528,12 @@ class RestoreRunsResponse:
 
     def as_dict(self) -> dict:
         """Serializes the RestoreRunsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.runs_restored is not None: body['runs_restored'] = self.runs_restored
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RestoreRunsResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.runs_restored is not None: body['runs_restored'] = self.runs_restored
         return body
@@ -2801,6 +3563,14 @@ class Run:
         if self.inputs: body['inputs'] = self.inputs.as_dict()
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Run into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.data: body['data'] = self.data
+        if self.info: body['info'] = self.info
+        if self.inputs: body['inputs'] = self.inputs
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> Run:
         """Deserializes the Run from a dictionary."""
@@ -2826,6 +3596,14 @@ class RunData:
         if self.metrics: body['metrics'] = [v.as_dict() for v in self.metrics]
         if self.params: body['params'] = [v.as_dict() for v in self.params]
         if self.tags: body['tags'] = [v.as_dict() for v in self.tags]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RunData into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.metrics: body['metrics'] = self.metrics
+        if self.params: body['params'] = self.params
+        if self.tags: body['tags'] = self.tags
         return body
 
     @classmethod
@@ -2883,6 +3661,20 @@ class RunInfo:
         if self.user_id is not None: body['user_id'] = self.user_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RunInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.artifact_uri is not None: body['artifact_uri'] = self.artifact_uri
+        if self.end_time is not None: body['end_time'] = self.end_time
+        if self.experiment_id is not None: body['experiment_id'] = self.experiment_id
+        if self.lifecycle_stage is not None: body['lifecycle_stage'] = self.lifecycle_stage
+        if self.run_id is not None: body['run_id'] = self.run_id
+        if self.run_uuid is not None: body['run_uuid'] = self.run_uuid
+        if self.start_time is not None: body['start_time'] = self.start_time
+        if self.status is not None: body['status'] = self.status
+        if self.user_id is not None: body['user_id'] = self.user_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> RunInfo:
         """Deserializes the RunInfo from a dictionary."""
@@ -2918,6 +3710,12 @@ class RunInputs:
         if self.dataset_inputs: body['dataset_inputs'] = [v.as_dict() for v in self.dataset_inputs]
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RunInputs into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.dataset_inputs: body['dataset_inputs'] = self.dataset_inputs
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> RunInputs:
         """Deserializes the RunInputs from a dictionary."""
@@ -2934,6 +3732,13 @@ class RunTag:
 
     def as_dict(self) -> dict:
         """Serializes the RunTag into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.key is not None: body['key'] = self.key
+        if self.value is not None: body['value'] = self.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RunTag into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.key is not None: body['key'] = self.key
         if self.value is not None: body['value'] = self.value
@@ -2975,6 +3780,16 @@ class SearchExperiments:
         if self.view_type is not None: body['view_type'] = self.view_type.value
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SearchExperiments into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.filter is not None: body['filter'] = self.filter
+        if self.max_results is not None: body['max_results'] = self.max_results
+        if self.order_by: body['order_by'] = self.order_by
+        if self.page_token is not None: body['page_token'] = self.page_token
+        if self.view_type is not None: body['view_type'] = self.view_type
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> SearchExperiments:
         """Deserializes the SearchExperiments from a dictionary."""
@@ -2998,6 +3813,13 @@ class SearchExperimentsResponse:
         """Serializes the SearchExperimentsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.experiments: body['experiments'] = [v.as_dict() for v in self.experiments]
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SearchExperimentsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.experiments: body['experiments'] = self.experiments
         if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         return body
 
@@ -3032,6 +3854,13 @@ class SearchModelVersionsResponse:
         if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SearchModelVersionsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.model_versions: body['model_versions'] = self.model_versions
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> SearchModelVersionsResponse:
         """Deserializes the SearchModelVersionsResponse from a dictionary."""
@@ -3052,6 +3881,13 @@ class SearchModelsResponse:
         body = {}
         if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         if self.registered_models: body['registered_models'] = [v.as_dict() for v in self.registered_models]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SearchModelsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.registered_models: body['registered_models'] = self.registered_models
         return body
 
     @classmethod
@@ -3105,6 +3941,17 @@ class SearchRuns:
         if self.run_view_type is not None: body['run_view_type'] = self.run_view_type.value
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SearchRuns into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.experiment_ids: body['experiment_ids'] = self.experiment_ids
+        if self.filter is not None: body['filter'] = self.filter
+        if self.max_results is not None: body['max_results'] = self.max_results
+        if self.order_by: body['order_by'] = self.order_by
+        if self.page_token is not None: body['page_token'] = self.page_token
+        if self.run_view_type is not None: body['run_view_type'] = self.run_view_type
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> SearchRuns:
         """Deserializes the SearchRuns from a dictionary."""
@@ -3129,6 +3976,13 @@ class SearchRunsResponse:
         body = {}
         if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         if self.runs: body['runs'] = [v.as_dict() for v in self.runs]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SearchRunsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.runs: body['runs'] = self.runs
         return body
 
     @classmethod
@@ -3166,6 +4020,14 @@ class SetExperimentTag:
         if self.value is not None: body['value'] = self.value
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SetExperimentTag into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.experiment_id is not None: body['experiment_id'] = self.experiment_id
+        if self.key is not None: body['key'] = self.key
+        if self.value is not None: body['value'] = self.value
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> SetExperimentTag:
         """Deserializes the SetExperimentTag from a dictionary."""
@@ -3179,6 +4041,11 @@ class SetExperimentTagResponse:
 
     def as_dict(self) -> dict:
         """Serializes the SetExperimentTagResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SetExperimentTagResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -3210,6 +4077,14 @@ class SetModelTagRequest:
         if self.value is not None: body['value'] = self.value
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SetModelTagRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.key is not None: body['key'] = self.key
+        if self.name is not None: body['name'] = self.name
+        if self.value is not None: body['value'] = self.value
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> SetModelTagRequest:
         """Deserializes the SetModelTagRequest from a dictionary."""
@@ -3221,6 +4096,11 @@ class SetModelTagResponse:
 
     def as_dict(self) -> dict:
         """Serializes the SetModelTagResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SetModelTagResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -3256,6 +4136,15 @@ class SetModelVersionTagRequest:
         if self.version is not None: body['version'] = self.version
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SetModelVersionTagRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.key is not None: body['key'] = self.key
+        if self.name is not None: body['name'] = self.name
+        if self.value is not None: body['value'] = self.value
+        if self.version is not None: body['version'] = self.version
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> SetModelVersionTagRequest:
         """Deserializes the SetModelVersionTagRequest from a dictionary."""
@@ -3270,6 +4159,11 @@ class SetModelVersionTagResponse:
 
     def as_dict(self) -> dict:
         """Serializes the SetModelVersionTagResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SetModelVersionTagResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -3305,6 +4199,15 @@ class SetTag:
         if self.value is not None: body['value'] = self.value
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SetTag into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.key is not None: body['key'] = self.key
+        if self.run_id is not None: body['run_id'] = self.run_id
+        if self.run_uuid is not None: body['run_uuid'] = self.run_uuid
+        if self.value is not None: body['value'] = self.value
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> SetTag:
         """Deserializes the SetTag from a dictionary."""
@@ -3319,6 +4222,11 @@ class SetTagResponse:
 
     def as_dict(self) -> dict:
         """Serializes the SetTagResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SetTagResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -3375,6 +4283,13 @@ class TestRegistryWebhook:
         if self.status_code is not None: body['status_code'] = self.status_code
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TestRegistryWebhook into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.body is not None: body['body'] = self.body
+        if self.status_code is not None: body['status_code'] = self.status_code
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> TestRegistryWebhook:
         """Deserializes the TestRegistryWebhook from a dictionary."""
@@ -3397,6 +4312,13 @@ class TestRegistryWebhookRequest:
         if self.id is not None: body['id'] = self.id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TestRegistryWebhookRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.event is not None: body['event'] = self.event
+        if self.id is not None: body['id'] = self.id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> TestRegistryWebhookRequest:
         """Deserializes the TestRegistryWebhookRequest from a dictionary."""
@@ -3412,6 +4334,12 @@ class TestRegistryWebhookResponse:
         """Serializes the TestRegistryWebhookResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.webhook: body['webhook'] = self.webhook.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TestRegistryWebhookResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.webhook: body['webhook'] = self.webhook
         return body
 
     @classmethod
@@ -3453,6 +4381,17 @@ class TransitionModelVersionStageDatabricks:
         if self.comment is not None: body['comment'] = self.comment
         if self.name is not None: body['name'] = self.name
         if self.stage is not None: body['stage'] = self.stage.value
+        if self.version is not None: body['version'] = self.version
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TransitionModelVersionStageDatabricks into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.archive_existing_versions is not None:
+            body['archive_existing_versions'] = self.archive_existing_versions
+        if self.comment is not None: body['comment'] = self.comment
+        if self.name is not None: body['name'] = self.name
+        if self.stage is not None: body['stage'] = self.stage
         if self.version is not None: body['version'] = self.version
         return body
 
@@ -3503,6 +4442,16 @@ class TransitionRequest:
         if self.user_id is not None: body['user_id'] = self.user_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TransitionRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.available_actions: body['available_actions'] = self.available_actions
+        if self.comment is not None: body['comment'] = self.comment
+        if self.creation_timestamp is not None: body['creation_timestamp'] = self.creation_timestamp
+        if self.to_stage is not None: body['to_stage'] = self.to_stage
+        if self.user_id is not None: body['user_id'] = self.user_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> TransitionRequest:
         """Deserializes the TransitionRequest from a dictionary."""
@@ -3521,6 +4470,12 @@ class TransitionStageResponse:
         """Serializes the TransitionStageResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.model_version: body['model_version'] = self.model_version.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TransitionStageResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.model_version: body['model_version'] = self.model_version
         return body
 
     @classmethod
@@ -3544,6 +4499,13 @@ class UpdateComment:
         if self.id is not None: body['id'] = self.id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateComment into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.comment is not None: body['comment'] = self.comment
+        if self.id is not None: body['id'] = self.id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> UpdateComment:
         """Deserializes the UpdateComment from a dictionary."""
@@ -3559,6 +4521,12 @@ class UpdateCommentResponse:
         """Serializes the UpdateCommentResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.comment: body['comment'] = self.comment.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateCommentResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.comment: body['comment'] = self.comment
         return body
 
     @classmethod
@@ -3582,6 +4550,13 @@ class UpdateExperiment:
         if self.new_name is not None: body['new_name'] = self.new_name
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateExperiment into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.experiment_id is not None: body['experiment_id'] = self.experiment_id
+        if self.new_name is not None: body['new_name'] = self.new_name
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> UpdateExperiment:
         """Deserializes the UpdateExperiment from a dictionary."""
@@ -3593,6 +4568,11 @@ class UpdateExperimentResponse:
 
     def as_dict(self) -> dict:
         """Serializes the UpdateExperimentResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateExperimentResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -3617,6 +4597,13 @@ class UpdateModelRequest:
         if self.name is not None: body['name'] = self.name
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateModelRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.description is not None: body['description'] = self.description
+        if self.name is not None: body['name'] = self.name
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> UpdateModelRequest:
         """Deserializes the UpdateModelRequest from a dictionary."""
@@ -3628,6 +4615,11 @@ class UpdateModelResponse:
 
     def as_dict(self) -> dict:
         """Serializes the UpdateModelResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateModelResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -3656,6 +4648,14 @@ class UpdateModelVersionRequest:
         if self.version is not None: body['version'] = self.version
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateModelVersionRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.description is not None: body['description'] = self.description
+        if self.name is not None: body['name'] = self.name
+        if self.version is not None: body['version'] = self.version
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> UpdateModelVersionRequest:
         """Deserializes the UpdateModelVersionRequest from a dictionary."""
@@ -3669,6 +4669,11 @@ class UpdateModelVersionResponse:
 
     def as_dict(self) -> dict:
         """Serializes the UpdateModelVersionResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateModelVersionResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -3740,6 +4745,17 @@ class UpdateRegistryWebhook:
         if self.status is not None: body['status'] = self.status.value
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateRegistryWebhook into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.description is not None: body['description'] = self.description
+        if self.events: body['events'] = self.events
+        if self.http_url_spec: body['http_url_spec'] = self.http_url_spec
+        if self.id is not None: body['id'] = self.id
+        if self.job_spec: body['job_spec'] = self.job_spec
+        if self.status is not None: body['status'] = self.status
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> UpdateRegistryWebhook:
         """Deserializes the UpdateRegistryWebhook from a dictionary."""
@@ -3775,6 +4791,15 @@ class UpdateRun:
         if self.status is not None: body['status'] = self.status.value
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateRun into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.end_time is not None: body['end_time'] = self.end_time
+        if self.run_id is not None: body['run_id'] = self.run_id
+        if self.run_uuid is not None: body['run_uuid'] = self.run_uuid
+        if self.status is not None: body['status'] = self.status
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> UpdateRun:
         """Deserializes the UpdateRun from a dictionary."""
@@ -3793,6 +4818,12 @@ class UpdateRunResponse:
         """Serializes the UpdateRunResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.run_info: body['run_info'] = self.run_info.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateRunResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.run_info: body['run_info'] = self.run_info
         return body
 
     @classmethod
@@ -3816,6 +4847,11 @@ class UpdateWebhookResponse:
 
     def as_dict(self) -> dict:
         """Serializes the UpdateWebhookResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateWebhookResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 

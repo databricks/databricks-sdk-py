@@ -28,6 +28,81 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: CleanRoomTaskRunLifeCycleState
+
+   Copied from elastic-spark-common/api/messages/runs.proto. Using the original definition to remove coupling with jobs API definition
+
+   .. py:attribute:: BLOCKED
+      :value: "BLOCKED"
+
+   .. py:attribute:: INTERNAL_ERROR
+      :value: "INTERNAL_ERROR"
+
+   .. py:attribute:: PENDING
+      :value: "PENDING"
+
+   .. py:attribute:: QUEUED
+      :value: "QUEUED"
+
+   .. py:attribute:: RUNNING
+      :value: "RUNNING"
+
+   .. py:attribute:: SKIPPED
+      :value: "SKIPPED"
+
+   .. py:attribute:: TERMINATED
+      :value: "TERMINATED"
+
+   .. py:attribute:: TERMINATING
+      :value: "TERMINATING"
+
+   .. py:attribute:: WAITING_FOR_RETRY
+      :value: "WAITING_FOR_RETRY"
+
+.. py:class:: CleanRoomTaskRunResultState
+
+   Copied from elastic-spark-common/api/messages/runs.proto. Using the original definition to avoid cyclic dependency.
+
+   .. py:attribute:: CANCELED
+      :value: "CANCELED"
+
+   .. py:attribute:: DISABLED
+      :value: "DISABLED"
+
+   .. py:attribute:: EVICTED
+      :value: "EVICTED"
+
+   .. py:attribute:: EXCLUDED
+      :value: "EXCLUDED"
+
+   .. py:attribute:: FAILED
+      :value: "FAILED"
+
+   .. py:attribute:: MAXIMUM_CONCURRENT_RUNS_REACHED
+      :value: "MAXIMUM_CONCURRENT_RUNS_REACHED"
+
+   .. py:attribute:: SUCCESS
+      :value: "SUCCESS"
+
+   .. py:attribute:: SUCCESS_WITH_FAILURES
+      :value: "SUCCESS_WITH_FAILURES"
+
+   .. py:attribute:: TIMEDOUT
+      :value: "TIMEDOUT"
+
+   .. py:attribute:: UPSTREAM_CANCELED
+      :value: "UPSTREAM_CANCELED"
+
+   .. py:attribute:: UPSTREAM_EVICTED
+      :value: "UPSTREAM_EVICTED"
+
+   .. py:attribute:: UPSTREAM_FAILED
+      :value: "UPSTREAM_FAILED"
+
+.. autoclass:: CleanRoomTaskRunState
+   :members:
+   :undoc-members:
+
 .. autoclass:: ClusterInstance
    :members:
    :undoc-members:
