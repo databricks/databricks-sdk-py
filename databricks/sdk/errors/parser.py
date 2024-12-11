@@ -13,6 +13,19 @@ from .mapper import _error_mapper
 from .private_link import (_get_private_link_validation_error,
                            _is_private_link_redirect)
 
+class _CatchAllErrorDeserializer:
+    """
+    A catch-all deserializer that sets the entire response body as the error message.
+    """
+
+    def deserialize_error(self, response: requests.Response, content: bytes) -> dict:
+        logging.warning('Unable to parse error with specific deserializers, using catch-all deserializer.')
+        return {
+            'message': content.decode('utf-8', errors='replace'),
+            'status_code': response.status_code,
+            'url': response.url
+        }
+
 # A list of _ErrorDeserializers that are tried in order to parse an API error from a response body. Most errors should
 # be parsable by the _StandardErrorDeserializer, but additional parsers can be added here for specific error formats.
 # The order of the parsers is not important, as the set of errors that can be parsed by each parser should be disjoint.
@@ -21,6 +34,7 @@ _error_deserializers = [
     _StandardErrorDeserializer(),
     _StringErrorDeserializer(),
     _HtmlErrorDeserializer(),
+    _CatchAllErrorDeserializer(),
 ]
 
 # A list of _ErrorCustomizers that are applied to the error arguments after they are parsed. Customizers can modify the
@@ -38,7 +52,7 @@ def _unknown_error(response: requests.Response) -> str:
     return (
         'This is likely a bug in the Databricks SDK for Python or the underlying '
         'API. Please report this issue with the following debugging information to the SDK issue tracker at '
-        f'https://github.com/databricks/databricks-sdk-go/issues. Request log:```{request_log}```')
+        f'https://github.com/databricks/databricks-sdk-py/issues. Request log:```{request_log}```')
 
 
 class _Parser:
