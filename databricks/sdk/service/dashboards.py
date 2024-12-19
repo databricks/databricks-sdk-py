@@ -711,12 +711,18 @@ class MigrateDashboardRequest:
     parent_path: Optional[str] = None
     """The workspace path of the folder to contain the migrated Lakeview dashboard."""
 
+    update_parameter_syntax: Optional[bool] = None
+    """Flag to indicate if mustache parameter syntax ({{ param }}) should be auto-updated to named
+    syntax (:param) when converting datasets in the dashboard."""
+
     def as_dict(self) -> dict:
         """Serializes the MigrateDashboardRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.display_name is not None: body['display_name'] = self.display_name
         if self.parent_path is not None: body['parent_path'] = self.parent_path
         if self.source_dashboard_id is not None: body['source_dashboard_id'] = self.source_dashboard_id
+        if self.update_parameter_syntax is not None:
+            body['update_parameter_syntax'] = self.update_parameter_syntax
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -725,6 +731,8 @@ class MigrateDashboardRequest:
         if self.display_name is not None: body['display_name'] = self.display_name
         if self.parent_path is not None: body['parent_path'] = self.parent_path
         if self.source_dashboard_id is not None: body['source_dashboard_id'] = self.source_dashboard_id
+        if self.update_parameter_syntax is not None:
+            body['update_parameter_syntax'] = self.update_parameter_syntax
         return body
 
     @classmethod
@@ -732,7 +740,8 @@ class MigrateDashboardRequest:
         """Deserializes the MigrateDashboardRequest from a dictionary."""
         return cls(display_name=d.get('display_name', None),
                    parent_path=d.get('parent_path', None),
-                   source_dashboard_id=d.get('source_dashboard_id', None))
+                   source_dashboard_id=d.get('source_dashboard_id', None),
+                   update_parameter_syntax=d.get('update_parameter_syntax', None))
 
 
 @dataclass
@@ -1759,7 +1768,8 @@ class LakeviewAPI:
                 source_dashboard_id: str,
                 *,
                 display_name: Optional[str] = None,
-                parent_path: Optional[str] = None) -> Dashboard:
+                parent_path: Optional[str] = None,
+                update_parameter_syntax: Optional[bool] = None) -> Dashboard:
         """Migrate dashboard.
         
         Migrates a classic SQL dashboard to Lakeview.
@@ -1770,6 +1780,9 @@ class LakeviewAPI:
           Display name for the new Lakeview dashboard.
         :param parent_path: str (optional)
           The workspace path of the folder to contain the migrated Lakeview dashboard.
+        :param update_parameter_syntax: bool (optional)
+          Flag to indicate if mustache parameter syntax ({{ param }}) should be auto-updated to named syntax
+          (:param) when converting datasets in the dashboard.
         
         :returns: :class:`Dashboard`
         """
@@ -1777,6 +1790,7 @@ class LakeviewAPI:
         if display_name is not None: body['display_name'] = display_name
         if parent_path is not None: body['parent_path'] = parent_path
         if source_dashboard_id is not None: body['source_dashboard_id'] = source_dashboard_id
+        if update_parameter_syntax is not None: body['update_parameter_syntax'] = update_parameter_syntax
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         res = self._api.do('POST', '/api/2.0/lakeview/dashboards/migrate', body=body, headers=headers)
