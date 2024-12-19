@@ -659,13 +659,19 @@ class ClusterAttributes:
     data_security_mode: Optional[DataSecurityMode] = None
     """Data security mode decides what data governance model to use when accessing data from a cluster.
     
-    * `NONE`: No security isolation for multiple users sharing the cluster. Data governance features
-    are not available in this mode. * `SINGLE_USER`: A secure cluster that can only be exclusively
-    used by a single user specified in `single_user_name`. Most programming languages, cluster
-    features and data governance features are available in this mode. * `USER_ISOLATION`: A secure
-    cluster that can be shared by multiple users. Cluster users are fully isolated so that they
-    cannot see each other's data and credentials. Most data governance features are supported in
-    this mode. But programming languages and cluster features might be limited.
+    The following modes can only be used with `kind`. * `DATA_SECURITY_MODE_AUTO`: Databricks will
+    choose the most appropriate access mode depending on your compute configuration. *
+    `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:
+    Alias for `SINGLE_USER`.
+    
+    The following modes can be used regardless of `kind`. * `NONE`: No security isolation for
+    multiple users sharing the cluster. Data governance features are not available in this mode. *
+    `SINGLE_USER`: A secure cluster that can only be exclusively used by a single user specified in
+    `single_user_name`. Most programming languages, cluster features and data governance features
+    are available in this mode. * `USER_ISOLATION`: A secure cluster that can be shared by multiple
+    users. Cluster users are fully isolated so that they cannot see each other's data and
+    credentials. Most data governance features are supported in this mode. But programming languages
+    and cluster features might be limited.
     
     The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
     future Databricks Runtime versions:
@@ -705,6 +711,20 @@ class ClusterAttributes:
 
     instance_pool_id: Optional[str] = None
     """The optional ID of the instance pool to which the cluster belongs."""
+
+    is_single_node: Optional[bool] = None
+    """This field can only be used with `kind`.
+    
+    When set to true, Databricks will automatically set single node related `custom_tags`,
+    `spark_conf`, and `num_workers`"""
+
+    kind: Optional[Kind] = None
+    """The kind of compute described by this compute specification.
+    
+    Depending on `kind`, different validations and default values will be applied.
+    
+    The first usage of this value is for the simple cluster form where it sets `kind =
+    CLASSIC_PREVIEW`."""
 
     node_type_id: Optional[str] = None
     """This field encodes, through a single value, the resources available to each of the Spark nodes
@@ -750,6 +770,12 @@ class ClusterAttributes:
     private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can
     be specified."""
 
+    use_ml_runtime: Optional[bool] = None
+    """This field can only be used with `kind`.
+    
+    `effective_spark_version` is determined by `spark_version` (DBR release), this field
+    `use_ml_runtime`, and whether `node_type_id` is gpu node or not."""
+
     workload_type: Optional[WorkloadType] = None
 
     def as_dict(self) -> dict:
@@ -773,6 +799,8 @@ class ClusterAttributes:
         if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes.as_dict()
         if self.init_scripts: body['init_scripts'] = [v.as_dict() for v in self.init_scripts]
         if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        if self.is_single_node is not None: body['is_single_node'] = self.is_single_node
+        if self.kind is not None: body['kind'] = self.kind.value
         if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
         if self.policy_id is not None: body['policy_id'] = self.policy_id
         if self.runtime_engine is not None: body['runtime_engine'] = self.runtime_engine.value
@@ -781,6 +809,7 @@ class ClusterAttributes:
         if self.spark_env_vars: body['spark_env_vars'] = self.spark_env_vars
         if self.spark_version is not None: body['spark_version'] = self.spark_version
         if self.ssh_public_keys: body['ssh_public_keys'] = [v for v in self.ssh_public_keys]
+        if self.use_ml_runtime is not None: body['use_ml_runtime'] = self.use_ml_runtime
         if self.workload_type: body['workload_type'] = self.workload_type.as_dict()
         return body
 
@@ -805,6 +834,8 @@ class ClusterAttributes:
         if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes
         if self.init_scripts: body['init_scripts'] = self.init_scripts
         if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        if self.is_single_node is not None: body['is_single_node'] = self.is_single_node
+        if self.kind is not None: body['kind'] = self.kind
         if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
         if self.policy_id is not None: body['policy_id'] = self.policy_id
         if self.runtime_engine is not None: body['runtime_engine'] = self.runtime_engine
@@ -813,6 +844,7 @@ class ClusterAttributes:
         if self.spark_env_vars: body['spark_env_vars'] = self.spark_env_vars
         if self.spark_version is not None: body['spark_version'] = self.spark_version
         if self.ssh_public_keys: body['ssh_public_keys'] = self.ssh_public_keys
+        if self.use_ml_runtime is not None: body['use_ml_runtime'] = self.use_ml_runtime
         if self.workload_type: body['workload_type'] = self.workload_type
         return body
 
@@ -834,6 +866,8 @@ class ClusterAttributes:
                    gcp_attributes=_from_dict(d, 'gcp_attributes', GcpAttributes),
                    init_scripts=_repeated_dict(d, 'init_scripts', InitScriptInfo),
                    instance_pool_id=d.get('instance_pool_id', None),
+                   is_single_node=d.get('is_single_node', None),
+                   kind=_enum(d, 'kind', Kind),
                    node_type_id=d.get('node_type_id', None),
                    policy_id=d.get('policy_id', None),
                    runtime_engine=_enum(d, 'runtime_engine', RuntimeEngine),
@@ -842,6 +876,7 @@ class ClusterAttributes:
                    spark_env_vars=d.get('spark_env_vars', None),
                    spark_version=d.get('spark_version', None),
                    ssh_public_keys=d.get('ssh_public_keys', None),
+                   use_ml_runtime=d.get('use_ml_runtime', None),
                    workload_type=_from_dict(d, 'workload_type', WorkloadType))
 
 
@@ -948,13 +983,19 @@ class ClusterDetails:
     data_security_mode: Optional[DataSecurityMode] = None
     """Data security mode decides what data governance model to use when accessing data from a cluster.
     
-    * `NONE`: No security isolation for multiple users sharing the cluster. Data governance features
-    are not available in this mode. * `SINGLE_USER`: A secure cluster that can only be exclusively
-    used by a single user specified in `single_user_name`. Most programming languages, cluster
-    features and data governance features are available in this mode. * `USER_ISOLATION`: A secure
-    cluster that can be shared by multiple users. Cluster users are fully isolated so that they
-    cannot see each other's data and credentials. Most data governance features are supported in
-    this mode. But programming languages and cluster features might be limited.
+    The following modes can only be used with `kind`. * `DATA_SECURITY_MODE_AUTO`: Databricks will
+    choose the most appropriate access mode depending on your compute configuration. *
+    `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:
+    Alias for `SINGLE_USER`.
+    
+    The following modes can be used regardless of `kind`. * `NONE`: No security isolation for
+    multiple users sharing the cluster. Data governance features are not available in this mode. *
+    `SINGLE_USER`: A secure cluster that can only be exclusively used by a single user specified in
+    `single_user_name`. Most programming languages, cluster features and data governance features
+    are available in this mode. * `USER_ISOLATION`: A secure cluster that can be shared by multiple
+    users. Cluster users are fully isolated so that they cannot see each other's data and
+    credentials. Most data governance features are supported in this mode. But programming languages
+    and cluster features might be limited.
     
     The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
     future Databricks Runtime versions:
@@ -1015,9 +1056,23 @@ class ClusterDetails:
     instance_pool_id: Optional[str] = None
     """The optional ID of the instance pool to which the cluster belongs."""
 
+    is_single_node: Optional[bool] = None
+    """This field can only be used with `kind`.
+    
+    When set to true, Databricks will automatically set single node related `custom_tags`,
+    `spark_conf`, and `num_workers`"""
+
     jdbc_port: Optional[int] = None
     """Port on which Spark JDBC server is listening, in the driver nod. No service will be listeningon
     on this port in executor nodes."""
+
+    kind: Optional[Kind] = None
+    """The kind of compute described by this compute specification.
+    
+    Depending on `kind`, different validations and default values will be applied.
+    
+    The first usage of this value is for the simple cluster form where it sets `kind =
+    CLASSIC_PREVIEW`."""
 
     last_restarted_time: Optional[int] = None
     """the timestamp that the cluster was started/restarted"""
@@ -1111,6 +1166,12 @@ class ClusterDetails:
     """Information about why the cluster was terminated. This field only appears when the cluster is in
     a `TERMINATING` or `TERMINATED` state."""
 
+    use_ml_runtime: Optional[bool] = None
+    """This field can only be used with `kind`.
+    
+    `effective_spark_version` is determined by `spark_version` (DBR release), this field
+    `use_ml_runtime`, and whether `node_type_id` is gpu node or not."""
+
     workload_type: Optional[WorkloadType] = None
 
     def as_dict(self) -> dict:
@@ -1144,7 +1205,9 @@ class ClusterDetails:
         if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes.as_dict()
         if self.init_scripts: body['init_scripts'] = [v.as_dict() for v in self.init_scripts]
         if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        if self.is_single_node is not None: body['is_single_node'] = self.is_single_node
         if self.jdbc_port is not None: body['jdbc_port'] = self.jdbc_port
+        if self.kind is not None: body['kind'] = self.kind.value
         if self.last_restarted_time is not None: body['last_restarted_time'] = self.last_restarted_time
         if self.last_state_loss_time is not None: body['last_state_loss_time'] = self.last_state_loss_time
         if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
@@ -1163,6 +1226,7 @@ class ClusterDetails:
         if self.state_message is not None: body['state_message'] = self.state_message
         if self.terminated_time is not None: body['terminated_time'] = self.terminated_time
         if self.termination_reason: body['termination_reason'] = self.termination_reason.as_dict()
+        if self.use_ml_runtime is not None: body['use_ml_runtime'] = self.use_ml_runtime
         if self.workload_type: body['workload_type'] = self.workload_type.as_dict()
         return body
 
@@ -1197,7 +1261,9 @@ class ClusterDetails:
         if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes
         if self.init_scripts: body['init_scripts'] = self.init_scripts
         if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        if self.is_single_node is not None: body['is_single_node'] = self.is_single_node
         if self.jdbc_port is not None: body['jdbc_port'] = self.jdbc_port
+        if self.kind is not None: body['kind'] = self.kind
         if self.last_restarted_time is not None: body['last_restarted_time'] = self.last_restarted_time
         if self.last_state_loss_time is not None: body['last_state_loss_time'] = self.last_state_loss_time
         if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
@@ -1216,6 +1282,7 @@ class ClusterDetails:
         if self.state_message is not None: body['state_message'] = self.state_message
         if self.terminated_time is not None: body['terminated_time'] = self.terminated_time
         if self.termination_reason: body['termination_reason'] = self.termination_reason
+        if self.use_ml_runtime is not None: body['use_ml_runtime'] = self.use_ml_runtime
         if self.workload_type: body['workload_type'] = self.workload_type
         return body
 
@@ -1247,7 +1314,9 @@ class ClusterDetails:
                    gcp_attributes=_from_dict(d, 'gcp_attributes', GcpAttributes),
                    init_scripts=_repeated_dict(d, 'init_scripts', InitScriptInfo),
                    instance_pool_id=d.get('instance_pool_id', None),
+                   is_single_node=d.get('is_single_node', None),
                    jdbc_port=d.get('jdbc_port', None),
+                   kind=_enum(d, 'kind', Kind),
                    last_restarted_time=d.get('last_restarted_time', None),
                    last_state_loss_time=d.get('last_state_loss_time', None),
                    node_type_id=d.get('node_type_id', None),
@@ -1266,6 +1335,7 @@ class ClusterDetails:
                    state_message=d.get('state_message', None),
                    terminated_time=d.get('terminated_time', None),
                    termination_reason=_from_dict(d, 'termination_reason', TerminationReason),
+                   use_ml_runtime=d.get('use_ml_runtime', None),
                    workload_type=_from_dict(d, 'workload_type', WorkloadType))
 
 
@@ -1870,13 +1940,19 @@ class ClusterSpec:
     data_security_mode: Optional[DataSecurityMode] = None
     """Data security mode decides what data governance model to use when accessing data from a cluster.
     
-    * `NONE`: No security isolation for multiple users sharing the cluster. Data governance features
-    are not available in this mode. * `SINGLE_USER`: A secure cluster that can only be exclusively
-    used by a single user specified in `single_user_name`. Most programming languages, cluster
-    features and data governance features are available in this mode. * `USER_ISOLATION`: A secure
-    cluster that can be shared by multiple users. Cluster users are fully isolated so that they
-    cannot see each other's data and credentials. Most data governance features are supported in
-    this mode. But programming languages and cluster features might be limited.
+    The following modes can only be used with `kind`. * `DATA_SECURITY_MODE_AUTO`: Databricks will
+    choose the most appropriate access mode depending on your compute configuration. *
+    `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:
+    Alias for `SINGLE_USER`.
+    
+    The following modes can be used regardless of `kind`. * `NONE`: No security isolation for
+    multiple users sharing the cluster. Data governance features are not available in this mode. *
+    `SINGLE_USER`: A secure cluster that can only be exclusively used by a single user specified in
+    `single_user_name`. Most programming languages, cluster features and data governance features
+    are available in this mode. * `USER_ISOLATION`: A secure cluster that can be shared by multiple
+    users. Cluster users are fully isolated so that they cannot see each other's data and
+    credentials. Most data governance features are supported in this mode. But programming languages
+    and cluster features might be limited.
     
     The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
     future Databricks Runtime versions:
@@ -1916,6 +1992,20 @@ class ClusterSpec:
 
     instance_pool_id: Optional[str] = None
     """The optional ID of the instance pool to which the cluster belongs."""
+
+    is_single_node: Optional[bool] = None
+    """This field can only be used with `kind`.
+    
+    When set to true, Databricks will automatically set single node related `custom_tags`,
+    `spark_conf`, and `num_workers`"""
+
+    kind: Optional[Kind] = None
+    """The kind of compute described by this compute specification.
+    
+    Depending on `kind`, different validations and default values will be applied.
+    
+    The first usage of this value is for the simple cluster form where it sets `kind =
+    CLASSIC_PREVIEW`."""
 
     node_type_id: Optional[str] = None
     """This field encodes, through a single value, the resources available to each of the Spark nodes
@@ -1975,6 +2065,12 @@ class ClusterSpec:
     private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can
     be specified."""
 
+    use_ml_runtime: Optional[bool] = None
+    """This field can only be used with `kind`.
+    
+    `effective_spark_version` is determined by `spark_version` (DBR release), this field
+    `use_ml_runtime`, and whether `node_type_id` is gpu node or not."""
+
     workload_type: Optional[WorkloadType] = None
 
     def as_dict(self) -> dict:
@@ -2001,6 +2097,8 @@ class ClusterSpec:
         if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes.as_dict()
         if self.init_scripts: body['init_scripts'] = [v.as_dict() for v in self.init_scripts]
         if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        if self.is_single_node is not None: body['is_single_node'] = self.is_single_node
+        if self.kind is not None: body['kind'] = self.kind.value
         if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
         if self.num_workers is not None: body['num_workers'] = self.num_workers
         if self.policy_id is not None: body['policy_id'] = self.policy_id
@@ -2010,6 +2108,7 @@ class ClusterSpec:
         if self.spark_env_vars: body['spark_env_vars'] = self.spark_env_vars
         if self.spark_version is not None: body['spark_version'] = self.spark_version
         if self.ssh_public_keys: body['ssh_public_keys'] = [v for v in self.ssh_public_keys]
+        if self.use_ml_runtime is not None: body['use_ml_runtime'] = self.use_ml_runtime
         if self.workload_type: body['workload_type'] = self.workload_type.as_dict()
         return body
 
@@ -2037,6 +2136,8 @@ class ClusterSpec:
         if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes
         if self.init_scripts: body['init_scripts'] = self.init_scripts
         if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        if self.is_single_node is not None: body['is_single_node'] = self.is_single_node
+        if self.kind is not None: body['kind'] = self.kind
         if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
         if self.num_workers is not None: body['num_workers'] = self.num_workers
         if self.policy_id is not None: body['policy_id'] = self.policy_id
@@ -2046,6 +2147,7 @@ class ClusterSpec:
         if self.spark_env_vars: body['spark_env_vars'] = self.spark_env_vars
         if self.spark_version is not None: body['spark_version'] = self.spark_version
         if self.ssh_public_keys: body['ssh_public_keys'] = self.ssh_public_keys
+        if self.use_ml_runtime is not None: body['use_ml_runtime'] = self.use_ml_runtime
         if self.workload_type: body['workload_type'] = self.workload_type
         return body
 
@@ -2069,6 +2171,8 @@ class ClusterSpec:
                    gcp_attributes=_from_dict(d, 'gcp_attributes', GcpAttributes),
                    init_scripts=_repeated_dict(d, 'init_scripts', InitScriptInfo),
                    instance_pool_id=d.get('instance_pool_id', None),
+                   is_single_node=d.get('is_single_node', None),
+                   kind=_enum(d, 'kind', Kind),
                    node_type_id=d.get('node_type_id', None),
                    num_workers=d.get('num_workers', None),
                    policy_id=d.get('policy_id', None),
@@ -2078,6 +2182,7 @@ class ClusterSpec:
                    spark_env_vars=d.get('spark_env_vars', None),
                    spark_version=d.get('spark_version', None),
                    ssh_public_keys=d.get('ssh_public_keys', None),
+                   use_ml_runtime=d.get('use_ml_runtime', None),
                    workload_type=_from_dict(d, 'workload_type', WorkloadType))
 
 
@@ -2251,13 +2356,19 @@ class CreateCluster:
     data_security_mode: Optional[DataSecurityMode] = None
     """Data security mode decides what data governance model to use when accessing data from a cluster.
     
-    * `NONE`: No security isolation for multiple users sharing the cluster. Data governance features
-    are not available in this mode. * `SINGLE_USER`: A secure cluster that can only be exclusively
-    used by a single user specified in `single_user_name`. Most programming languages, cluster
-    features and data governance features are available in this mode. * `USER_ISOLATION`: A secure
-    cluster that can be shared by multiple users. Cluster users are fully isolated so that they
-    cannot see each other's data and credentials. Most data governance features are supported in
-    this mode. But programming languages and cluster features might be limited.
+    The following modes can only be used with `kind`. * `DATA_SECURITY_MODE_AUTO`: Databricks will
+    choose the most appropriate access mode depending on your compute configuration. *
+    `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:
+    Alias for `SINGLE_USER`.
+    
+    The following modes can be used regardless of `kind`. * `NONE`: No security isolation for
+    multiple users sharing the cluster. Data governance features are not available in this mode. *
+    `SINGLE_USER`: A secure cluster that can only be exclusively used by a single user specified in
+    `single_user_name`. Most programming languages, cluster features and data governance features
+    are available in this mode. * `USER_ISOLATION`: A secure cluster that can be shared by multiple
+    users. Cluster users are fully isolated so that they cannot see each other's data and
+    credentials. Most data governance features are supported in this mode. But programming languages
+    and cluster features might be limited.
     
     The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
     future Databricks Runtime versions:
@@ -2297,6 +2408,20 @@ class CreateCluster:
 
     instance_pool_id: Optional[str] = None
     """The optional ID of the instance pool to which the cluster belongs."""
+
+    is_single_node: Optional[bool] = None
+    """This field can only be used with `kind`.
+    
+    When set to true, Databricks will automatically set single node related `custom_tags`,
+    `spark_conf`, and `num_workers`"""
+
+    kind: Optional[Kind] = None
+    """The kind of compute described by this compute specification.
+    
+    Depending on `kind`, different validations and default values will be applied.
+    
+    The first usage of this value is for the simple cluster form where it sets `kind =
+    CLASSIC_PREVIEW`."""
 
     node_type_id: Optional[str] = None
     """This field encodes, through a single value, the resources available to each of the Spark nodes
@@ -2352,6 +2477,12 @@ class CreateCluster:
     private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can
     be specified."""
 
+    use_ml_runtime: Optional[bool] = None
+    """This field can only be used with `kind`.
+    
+    `effective_spark_version` is determined by `spark_version` (DBR release), this field
+    `use_ml_runtime`, and whether `node_type_id` is gpu node or not."""
+
     workload_type: Optional[WorkloadType] = None
 
     def as_dict(self) -> dict:
@@ -2379,6 +2510,8 @@ class CreateCluster:
         if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes.as_dict()
         if self.init_scripts: body['init_scripts'] = [v.as_dict() for v in self.init_scripts]
         if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        if self.is_single_node is not None: body['is_single_node'] = self.is_single_node
+        if self.kind is not None: body['kind'] = self.kind.value
         if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
         if self.num_workers is not None: body['num_workers'] = self.num_workers
         if self.policy_id is not None: body['policy_id'] = self.policy_id
@@ -2388,6 +2521,7 @@ class CreateCluster:
         if self.spark_env_vars: body['spark_env_vars'] = self.spark_env_vars
         if self.spark_version is not None: body['spark_version'] = self.spark_version
         if self.ssh_public_keys: body['ssh_public_keys'] = [v for v in self.ssh_public_keys]
+        if self.use_ml_runtime is not None: body['use_ml_runtime'] = self.use_ml_runtime
         if self.workload_type: body['workload_type'] = self.workload_type.as_dict()
         return body
 
@@ -2416,6 +2550,8 @@ class CreateCluster:
         if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes
         if self.init_scripts: body['init_scripts'] = self.init_scripts
         if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        if self.is_single_node is not None: body['is_single_node'] = self.is_single_node
+        if self.kind is not None: body['kind'] = self.kind
         if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
         if self.num_workers is not None: body['num_workers'] = self.num_workers
         if self.policy_id is not None: body['policy_id'] = self.policy_id
@@ -2425,6 +2561,7 @@ class CreateCluster:
         if self.spark_env_vars: body['spark_env_vars'] = self.spark_env_vars
         if self.spark_version is not None: body['spark_version'] = self.spark_version
         if self.ssh_public_keys: body['ssh_public_keys'] = self.ssh_public_keys
+        if self.use_ml_runtime is not None: body['use_ml_runtime'] = self.use_ml_runtime
         if self.workload_type: body['workload_type'] = self.workload_type
         return body
 
@@ -2449,6 +2586,8 @@ class CreateCluster:
                    gcp_attributes=_from_dict(d, 'gcp_attributes', GcpAttributes),
                    init_scripts=_repeated_dict(d, 'init_scripts', InitScriptInfo),
                    instance_pool_id=d.get('instance_pool_id', None),
+                   is_single_node=d.get('is_single_node', None),
+                   kind=_enum(d, 'kind', Kind),
                    node_type_id=d.get('node_type_id', None),
                    num_workers=d.get('num_workers', None),
                    policy_id=d.get('policy_id', None),
@@ -2458,6 +2597,7 @@ class CreateCluster:
                    spark_env_vars=d.get('spark_env_vars', None),
                    spark_version=d.get('spark_version', None),
                    ssh_public_keys=d.get('ssh_public_keys', None),
+                   use_ml_runtime=d.get('use_ml_runtime', None),
                    workload_type=_from_dict(d, 'workload_type', WorkloadType))
 
 
@@ -2848,13 +2988,19 @@ class DataPlaneEventDetailsEventType(Enum):
 class DataSecurityMode(Enum):
     """Data security mode decides what data governance model to use when accessing data from a cluster.
     
-    * `NONE`: No security isolation for multiple users sharing the cluster. Data governance features
-    are not available in this mode. * `SINGLE_USER`: A secure cluster that can only be exclusively
-    used by a single user specified in `single_user_name`. Most programming languages, cluster
-    features and data governance features are available in this mode. * `USER_ISOLATION`: A secure
-    cluster that can be shared by multiple users. Cluster users are fully isolated so that they
-    cannot see each other's data and credentials. Most data governance features are supported in
-    this mode. But programming languages and cluster features might be limited.
+    The following modes can only be used with `kind`. * `DATA_SECURITY_MODE_AUTO`: Databricks will
+    choose the most appropriate access mode depending on your compute configuration. *
+    `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:
+    Alias for `SINGLE_USER`.
+    
+    The following modes can be used regardless of `kind`. * `NONE`: No security isolation for
+    multiple users sharing the cluster. Data governance features are not available in this mode. *
+    `SINGLE_USER`: A secure cluster that can only be exclusively used by a single user specified in
+    `single_user_name`. Most programming languages, cluster features and data governance features
+    are available in this mode. * `USER_ISOLATION`: A secure cluster that can be shared by multiple
+    users. Cluster users are fully isolated so that they cannot see each other's data and
+    credentials. Most data governance features are supported in this mode. But programming languages
+    and cluster features might be limited.
     
     The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
     future Databricks Runtime versions:
@@ -2865,6 +3011,9 @@ class DataSecurityMode(Enum):
     Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This mode provides a way that
     doesn’t have UC nor passthrough enabled."""
 
+    DATA_SECURITY_MODE_AUTO = 'DATA_SECURITY_MODE_AUTO'
+    DATA_SECURITY_MODE_DEDICATED = 'DATA_SECURITY_MODE_DEDICATED'
+    DATA_SECURITY_MODE_STANDARD = 'DATA_SECURITY_MODE_STANDARD'
     LEGACY_PASSTHROUGH = 'LEGACY_PASSTHROUGH'
     LEGACY_SINGLE_USER = 'LEGACY_SINGLE_USER'
     LEGACY_SINGLE_USER_STANDARD = 'LEGACY_SINGLE_USER_STANDARD'
@@ -3306,13 +3455,19 @@ class EditCluster:
     data_security_mode: Optional[DataSecurityMode] = None
     """Data security mode decides what data governance model to use when accessing data from a cluster.
     
-    * `NONE`: No security isolation for multiple users sharing the cluster. Data governance features
-    are not available in this mode. * `SINGLE_USER`: A secure cluster that can only be exclusively
-    used by a single user specified in `single_user_name`. Most programming languages, cluster
-    features and data governance features are available in this mode. * `USER_ISOLATION`: A secure
-    cluster that can be shared by multiple users. Cluster users are fully isolated so that they
-    cannot see each other's data and credentials. Most data governance features are supported in
-    this mode. But programming languages and cluster features might be limited.
+    The following modes can only be used with `kind`. * `DATA_SECURITY_MODE_AUTO`: Databricks will
+    choose the most appropriate access mode depending on your compute configuration. *
+    `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:
+    Alias for `SINGLE_USER`.
+    
+    The following modes can be used regardless of `kind`. * `NONE`: No security isolation for
+    multiple users sharing the cluster. Data governance features are not available in this mode. *
+    `SINGLE_USER`: A secure cluster that can only be exclusively used by a single user specified in
+    `single_user_name`. Most programming languages, cluster features and data governance features
+    are available in this mode. * `USER_ISOLATION`: A secure cluster that can be shared by multiple
+    users. Cluster users are fully isolated so that they cannot see each other's data and
+    credentials. Most data governance features are supported in this mode. But programming languages
+    and cluster features might be limited.
     
     The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
     future Databricks Runtime versions:
@@ -3352,6 +3507,20 @@ class EditCluster:
 
     instance_pool_id: Optional[str] = None
     """The optional ID of the instance pool to which the cluster belongs."""
+
+    is_single_node: Optional[bool] = None
+    """This field can only be used with `kind`.
+    
+    When set to true, Databricks will automatically set single node related `custom_tags`,
+    `spark_conf`, and `num_workers`"""
+
+    kind: Optional[Kind] = None
+    """The kind of compute described by this compute specification.
+    
+    Depending on `kind`, different validations and default values will be applied.
+    
+    The first usage of this value is for the simple cluster form where it sets `kind =
+    CLASSIC_PREVIEW`."""
 
     node_type_id: Optional[str] = None
     """This field encodes, through a single value, the resources available to each of the Spark nodes
@@ -3407,6 +3576,12 @@ class EditCluster:
     private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can
     be specified."""
 
+    use_ml_runtime: Optional[bool] = None
+    """This field can only be used with `kind`.
+    
+    `effective_spark_version` is determined by `spark_version` (DBR release), this field
+    `use_ml_runtime`, and whether `node_type_id` is gpu node or not."""
+
     workload_type: Optional[WorkloadType] = None
 
     def as_dict(self) -> dict:
@@ -3434,6 +3609,8 @@ class EditCluster:
         if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes.as_dict()
         if self.init_scripts: body['init_scripts'] = [v.as_dict() for v in self.init_scripts]
         if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        if self.is_single_node is not None: body['is_single_node'] = self.is_single_node
+        if self.kind is not None: body['kind'] = self.kind.value
         if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
         if self.num_workers is not None: body['num_workers'] = self.num_workers
         if self.policy_id is not None: body['policy_id'] = self.policy_id
@@ -3443,6 +3620,7 @@ class EditCluster:
         if self.spark_env_vars: body['spark_env_vars'] = self.spark_env_vars
         if self.spark_version is not None: body['spark_version'] = self.spark_version
         if self.ssh_public_keys: body['ssh_public_keys'] = [v for v in self.ssh_public_keys]
+        if self.use_ml_runtime is not None: body['use_ml_runtime'] = self.use_ml_runtime
         if self.workload_type: body['workload_type'] = self.workload_type.as_dict()
         return body
 
@@ -3471,6 +3649,8 @@ class EditCluster:
         if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes
         if self.init_scripts: body['init_scripts'] = self.init_scripts
         if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        if self.is_single_node is not None: body['is_single_node'] = self.is_single_node
+        if self.kind is not None: body['kind'] = self.kind
         if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
         if self.num_workers is not None: body['num_workers'] = self.num_workers
         if self.policy_id is not None: body['policy_id'] = self.policy_id
@@ -3480,6 +3660,7 @@ class EditCluster:
         if self.spark_env_vars: body['spark_env_vars'] = self.spark_env_vars
         if self.spark_version is not None: body['spark_version'] = self.spark_version
         if self.ssh_public_keys: body['ssh_public_keys'] = self.ssh_public_keys
+        if self.use_ml_runtime is not None: body['use_ml_runtime'] = self.use_ml_runtime
         if self.workload_type: body['workload_type'] = self.workload_type
         return body
 
@@ -3504,6 +3685,8 @@ class EditCluster:
                    gcp_attributes=_from_dict(d, 'gcp_attributes', GcpAttributes),
                    init_scripts=_repeated_dict(d, 'init_scripts', InitScriptInfo),
                    instance_pool_id=d.get('instance_pool_id', None),
+                   is_single_node=d.get('is_single_node', None),
+                   kind=_enum(d, 'kind', Kind),
                    node_type_id=d.get('node_type_id', None),
                    num_workers=d.get('num_workers', None),
                    policy_id=d.get('policy_id', None),
@@ -3513,6 +3696,7 @@ class EditCluster:
                    spark_env_vars=d.get('spark_env_vars', None),
                    spark_version=d.get('spark_version', None),
                    ssh_public_keys=d.get('ssh_public_keys', None),
+                   use_ml_runtime=d.get('use_ml_runtime', None),
                    workload_type=_from_dict(d, 'workload_type', WorkloadType))
 
 
@@ -5642,6 +5826,17 @@ class InstanceProfile:
                    is_meta_instance_profile=d.get('is_meta_instance_profile', None))
 
 
+class Kind(Enum):
+    """The kind of compute described by this compute specification.
+    
+    Depending on `kind`, different validations and default values will be applied.
+    
+    The first usage of this value is for the simple cluster form where it sets `kind =
+    CLASSIC_PREVIEW`."""
+
+    CLASSIC_PREVIEW = 'CLASSIC_PREVIEW'
+
+
 class Language(Enum):
 
     PYTHON = 'python'
@@ -7560,13 +7755,19 @@ class UpdateClusterResource:
     data_security_mode: Optional[DataSecurityMode] = None
     """Data security mode decides what data governance model to use when accessing data from a cluster.
     
-    * `NONE`: No security isolation for multiple users sharing the cluster. Data governance features
-    are not available in this mode. * `SINGLE_USER`: A secure cluster that can only be exclusively
-    used by a single user specified in `single_user_name`. Most programming languages, cluster
-    features and data governance features are available in this mode. * `USER_ISOLATION`: A secure
-    cluster that can be shared by multiple users. Cluster users are fully isolated so that they
-    cannot see each other's data and credentials. Most data governance features are supported in
-    this mode. But programming languages and cluster features might be limited.
+    The following modes can only be used with `kind`. * `DATA_SECURITY_MODE_AUTO`: Databricks will
+    choose the most appropriate access mode depending on your compute configuration. *
+    `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:
+    Alias for `SINGLE_USER`.
+    
+    The following modes can be used regardless of `kind`. * `NONE`: No security isolation for
+    multiple users sharing the cluster. Data governance features are not available in this mode. *
+    `SINGLE_USER`: A secure cluster that can only be exclusively used by a single user specified in
+    `single_user_name`. Most programming languages, cluster features and data governance features
+    are available in this mode. * `USER_ISOLATION`: A secure cluster that can be shared by multiple
+    users. Cluster users are fully isolated so that they cannot see each other's data and
+    credentials. Most data governance features are supported in this mode. But programming languages
+    and cluster features might be limited.
     
     The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
     future Databricks Runtime versions:
@@ -7606,6 +7807,20 @@ class UpdateClusterResource:
 
     instance_pool_id: Optional[str] = None
     """The optional ID of the instance pool to which the cluster belongs."""
+
+    is_single_node: Optional[bool] = None
+    """This field can only be used with `kind`.
+    
+    When set to true, Databricks will automatically set single node related `custom_tags`,
+    `spark_conf`, and `num_workers`"""
+
+    kind: Optional[Kind] = None
+    """The kind of compute described by this compute specification.
+    
+    Depending on `kind`, different validations and default values will be applied.
+    
+    The first usage of this value is for the simple cluster form where it sets `kind =
+    CLASSIC_PREVIEW`."""
 
     node_type_id: Optional[str] = None
     """This field encodes, through a single value, the resources available to each of the Spark nodes
@@ -7665,6 +7880,12 @@ class UpdateClusterResource:
     private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can
     be specified."""
 
+    use_ml_runtime: Optional[bool] = None
+    """This field can only be used with `kind`.
+    
+    `effective_spark_version` is determined by `spark_version` (DBR release), this field
+    `use_ml_runtime`, and whether `node_type_id` is gpu node or not."""
+
     workload_type: Optional[WorkloadType] = None
 
     def as_dict(self) -> dict:
@@ -7689,6 +7910,8 @@ class UpdateClusterResource:
         if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes.as_dict()
         if self.init_scripts: body['init_scripts'] = [v.as_dict() for v in self.init_scripts]
         if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        if self.is_single_node is not None: body['is_single_node'] = self.is_single_node
+        if self.kind is not None: body['kind'] = self.kind.value
         if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
         if self.num_workers is not None: body['num_workers'] = self.num_workers
         if self.policy_id is not None: body['policy_id'] = self.policy_id
@@ -7698,6 +7921,7 @@ class UpdateClusterResource:
         if self.spark_env_vars: body['spark_env_vars'] = self.spark_env_vars
         if self.spark_version is not None: body['spark_version'] = self.spark_version
         if self.ssh_public_keys: body['ssh_public_keys'] = [v for v in self.ssh_public_keys]
+        if self.use_ml_runtime is not None: body['use_ml_runtime'] = self.use_ml_runtime
         if self.workload_type: body['workload_type'] = self.workload_type.as_dict()
         return body
 
@@ -7723,6 +7947,8 @@ class UpdateClusterResource:
         if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes
         if self.init_scripts: body['init_scripts'] = self.init_scripts
         if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        if self.is_single_node is not None: body['is_single_node'] = self.is_single_node
+        if self.kind is not None: body['kind'] = self.kind
         if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
         if self.num_workers is not None: body['num_workers'] = self.num_workers
         if self.policy_id is not None: body['policy_id'] = self.policy_id
@@ -7732,6 +7958,7 @@ class UpdateClusterResource:
         if self.spark_env_vars: body['spark_env_vars'] = self.spark_env_vars
         if self.spark_version is not None: body['spark_version'] = self.spark_version
         if self.ssh_public_keys: body['ssh_public_keys'] = self.ssh_public_keys
+        if self.use_ml_runtime is not None: body['use_ml_runtime'] = self.use_ml_runtime
         if self.workload_type: body['workload_type'] = self.workload_type
         return body
 
@@ -7754,6 +7981,8 @@ class UpdateClusterResource:
                    gcp_attributes=_from_dict(d, 'gcp_attributes', GcpAttributes),
                    init_scripts=_repeated_dict(d, 'init_scripts', InitScriptInfo),
                    instance_pool_id=d.get('instance_pool_id', None),
+                   is_single_node=d.get('is_single_node', None),
+                   kind=_enum(d, 'kind', Kind),
                    node_type_id=d.get('node_type_id', None),
                    num_workers=d.get('num_workers', None),
                    policy_id=d.get('policy_id', None),
@@ -7763,6 +7992,7 @@ class UpdateClusterResource:
                    spark_env_vars=d.get('spark_env_vars', None),
                    spark_version=d.get('spark_version', None),
                    ssh_public_keys=d.get('ssh_public_keys', None),
+                   use_ml_runtime=d.get('use_ml_runtime', None),
                    workload_type=_from_dict(d, 'workload_type', WorkloadType))
 
 
@@ -8301,6 +8531,8 @@ class ClustersAPI:
                gcp_attributes: Optional[GcpAttributes] = None,
                init_scripts: Optional[List[InitScriptInfo]] = None,
                instance_pool_id: Optional[str] = None,
+               is_single_node: Optional[bool] = None,
+               kind: Optional[Kind] = None,
                node_type_id: Optional[str] = None,
                num_workers: Optional[int] = None,
                policy_id: Optional[str] = None,
@@ -8309,6 +8541,7 @@ class ClustersAPI:
                spark_conf: Optional[Dict[str, str]] = None,
                spark_env_vars: Optional[Dict[str, str]] = None,
                ssh_public_keys: Optional[List[str]] = None,
+               use_ml_runtime: Optional[bool] = None,
                workload_type: Optional[WorkloadType] = None) -> Wait[ClusterDetails]:
         """Create new cluster.
         
@@ -8364,13 +8597,19 @@ class ClustersAPI:
         :param data_security_mode: :class:`DataSecurityMode` (optional)
           Data security mode decides what data governance model to use when accessing data from a cluster.
           
-          * `NONE`: No security isolation for multiple users sharing the cluster. Data governance features are
-          not available in this mode. * `SINGLE_USER`: A secure cluster that can only be exclusively used by a
-          single user specified in `single_user_name`. Most programming languages, cluster features and data
-          governance features are available in this mode. * `USER_ISOLATION`: A secure cluster that can be
-          shared by multiple users. Cluster users are fully isolated so that they cannot see each other's data
-          and credentials. Most data governance features are supported in this mode. But programming languages
-          and cluster features might be limited.
+          The following modes can only be used with `kind`. * `DATA_SECURITY_MODE_AUTO`: Databricks will
+          choose the most appropriate access mode depending on your compute configuration. *
+          `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`: Alias
+          for `SINGLE_USER`.
+          
+          The following modes can be used regardless of `kind`. * `NONE`: No security isolation for multiple
+          users sharing the cluster. Data governance features are not available in this mode. * `SINGLE_USER`:
+          A secure cluster that can only be exclusively used by a single user specified in `single_user_name`.
+          Most programming languages, cluster features and data governance features are available in this
+          mode. * `USER_ISOLATION`: A secure cluster that can be shared by multiple users. Cluster users are
+          fully isolated so that they cannot see each other's data and credentials. Most data governance
+          features are supported in this mode. But programming languages and cluster features might be
+          limited.
           
           The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
           future Databricks Runtime versions:
@@ -8402,6 +8641,17 @@ class ClustersAPI:
           logs are sent to `<destination>/<cluster-ID>/init_scripts`.
         :param instance_pool_id: str (optional)
           The optional ID of the instance pool to which the cluster belongs.
+        :param is_single_node: bool (optional)
+          This field can only be used with `kind`.
+          
+          When set to true, Databricks will automatically set single node related `custom_tags`, `spark_conf`,
+          and `num_workers`
+        :param kind: :class:`Kind` (optional)
+          The kind of compute described by this compute specification.
+          
+          Depending on `kind`, different validations and default values will be applied.
+          
+          The first usage of this value is for the simple cluster form where it sets `kind = CLASSIC_PREVIEW`.
         :param node_type_id: str (optional)
           This field encodes, through a single value, the resources available to each of the Spark nodes in
           this cluster. For example, the Spark nodes can be provisioned and optimized for memory or compute
@@ -8448,6 +8698,11 @@ class ClustersAPI:
           SSH public key contents that will be added to each Spark node in this cluster. The corresponding
           private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can be
           specified.
+        :param use_ml_runtime: bool (optional)
+          This field can only be used with `kind`.
+          
+          `effective_spark_version` is determined by `spark_version` (DBR release), this field
+          `use_ml_runtime`, and whether `node_type_id` is gpu node or not.
         :param workload_type: :class:`WorkloadType` (optional)
         
         :returns:
@@ -8475,6 +8730,8 @@ class ClustersAPI:
         if gcp_attributes is not None: body['gcp_attributes'] = gcp_attributes.as_dict()
         if init_scripts is not None: body['init_scripts'] = [v.as_dict() for v in init_scripts]
         if instance_pool_id is not None: body['instance_pool_id'] = instance_pool_id
+        if is_single_node is not None: body['is_single_node'] = is_single_node
+        if kind is not None: body['kind'] = kind.value
         if node_type_id is not None: body['node_type_id'] = node_type_id
         if num_workers is not None: body['num_workers'] = num_workers
         if policy_id is not None: body['policy_id'] = policy_id
@@ -8484,6 +8741,7 @@ class ClustersAPI:
         if spark_env_vars is not None: body['spark_env_vars'] = spark_env_vars
         if spark_version is not None: body['spark_version'] = spark_version
         if ssh_public_keys is not None: body['ssh_public_keys'] = [v for v in ssh_public_keys]
+        if use_ml_runtime is not None: body['use_ml_runtime'] = use_ml_runtime
         if workload_type is not None: body['workload_type'] = workload_type.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
@@ -8514,6 +8772,8 @@ class ClustersAPI:
         gcp_attributes: Optional[GcpAttributes] = None,
         init_scripts: Optional[List[InitScriptInfo]] = None,
         instance_pool_id: Optional[str] = None,
+        is_single_node: Optional[bool] = None,
+        kind: Optional[Kind] = None,
         node_type_id: Optional[str] = None,
         num_workers: Optional[int] = None,
         policy_id: Optional[str] = None,
@@ -8522,6 +8782,7 @@ class ClustersAPI:
         spark_conf: Optional[Dict[str, str]] = None,
         spark_env_vars: Optional[Dict[str, str]] = None,
         ssh_public_keys: Optional[List[str]] = None,
+        use_ml_runtime: Optional[bool] = None,
         workload_type: Optional[WorkloadType] = None,
         timeout=timedelta(minutes=20)) -> ClusterDetails:
         return self.create(apply_policy_default_values=apply_policy_default_values,
@@ -8542,6 +8803,8 @@ class ClustersAPI:
                            gcp_attributes=gcp_attributes,
                            init_scripts=init_scripts,
                            instance_pool_id=instance_pool_id,
+                           is_single_node=is_single_node,
+                           kind=kind,
                            node_type_id=node_type_id,
                            num_workers=num_workers,
                            policy_id=policy_id,
@@ -8551,6 +8814,7 @@ class ClustersAPI:
                            spark_env_vars=spark_env_vars,
                            spark_version=spark_version,
                            ssh_public_keys=ssh_public_keys,
+                           use_ml_runtime=use_ml_runtime,
                            workload_type=workload_type).result(timeout=timeout)
 
     def delete(self, cluster_id: str) -> Wait[ClusterDetails]:
@@ -8600,6 +8864,8 @@ class ClustersAPI:
              gcp_attributes: Optional[GcpAttributes] = None,
              init_scripts: Optional[List[InitScriptInfo]] = None,
              instance_pool_id: Optional[str] = None,
+             is_single_node: Optional[bool] = None,
+             kind: Optional[Kind] = None,
              node_type_id: Optional[str] = None,
              num_workers: Optional[int] = None,
              policy_id: Optional[str] = None,
@@ -8608,6 +8874,7 @@ class ClustersAPI:
              spark_conf: Optional[Dict[str, str]] = None,
              spark_env_vars: Optional[Dict[str, str]] = None,
              ssh_public_keys: Optional[List[str]] = None,
+             use_ml_runtime: Optional[bool] = None,
              workload_type: Optional[WorkloadType] = None) -> Wait[ClusterDetails]:
         """Update cluster configuration.
         
@@ -8663,13 +8930,19 @@ class ClustersAPI:
         :param data_security_mode: :class:`DataSecurityMode` (optional)
           Data security mode decides what data governance model to use when accessing data from a cluster.
           
-          * `NONE`: No security isolation for multiple users sharing the cluster. Data governance features are
-          not available in this mode. * `SINGLE_USER`: A secure cluster that can only be exclusively used by a
-          single user specified in `single_user_name`. Most programming languages, cluster features and data
-          governance features are available in this mode. * `USER_ISOLATION`: A secure cluster that can be
-          shared by multiple users. Cluster users are fully isolated so that they cannot see each other's data
-          and credentials. Most data governance features are supported in this mode. But programming languages
-          and cluster features might be limited.
+          The following modes can only be used with `kind`. * `DATA_SECURITY_MODE_AUTO`: Databricks will
+          choose the most appropriate access mode depending on your compute configuration. *
+          `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`: Alias
+          for `SINGLE_USER`.
+          
+          The following modes can be used regardless of `kind`. * `NONE`: No security isolation for multiple
+          users sharing the cluster. Data governance features are not available in this mode. * `SINGLE_USER`:
+          A secure cluster that can only be exclusively used by a single user specified in `single_user_name`.
+          Most programming languages, cluster features and data governance features are available in this
+          mode. * `USER_ISOLATION`: A secure cluster that can be shared by multiple users. Cluster users are
+          fully isolated so that they cannot see each other's data and credentials. Most data governance
+          features are supported in this mode. But programming languages and cluster features might be
+          limited.
           
           The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
           future Databricks Runtime versions:
@@ -8701,6 +8974,17 @@ class ClustersAPI:
           logs are sent to `<destination>/<cluster-ID>/init_scripts`.
         :param instance_pool_id: str (optional)
           The optional ID of the instance pool to which the cluster belongs.
+        :param is_single_node: bool (optional)
+          This field can only be used with `kind`.
+          
+          When set to true, Databricks will automatically set single node related `custom_tags`, `spark_conf`,
+          and `num_workers`
+        :param kind: :class:`Kind` (optional)
+          The kind of compute described by this compute specification.
+          
+          Depending on `kind`, different validations and default values will be applied.
+          
+          The first usage of this value is for the simple cluster form where it sets `kind = CLASSIC_PREVIEW`.
         :param node_type_id: str (optional)
           This field encodes, through a single value, the resources available to each of the Spark nodes in
           this cluster. For example, the Spark nodes can be provisioned and optimized for memory or compute
@@ -8747,6 +9031,11 @@ class ClustersAPI:
           SSH public key contents that will be added to each Spark node in this cluster. The corresponding
           private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can be
           specified.
+        :param use_ml_runtime: bool (optional)
+          This field can only be used with `kind`.
+          
+          `effective_spark_version` is determined by `spark_version` (DBR release), this field
+          `use_ml_runtime`, and whether `node_type_id` is gpu node or not.
         :param workload_type: :class:`WorkloadType` (optional)
         
         :returns:
@@ -8774,6 +9063,8 @@ class ClustersAPI:
         if gcp_attributes is not None: body['gcp_attributes'] = gcp_attributes.as_dict()
         if init_scripts is not None: body['init_scripts'] = [v.as_dict() for v in init_scripts]
         if instance_pool_id is not None: body['instance_pool_id'] = instance_pool_id
+        if is_single_node is not None: body['is_single_node'] = is_single_node
+        if kind is not None: body['kind'] = kind.value
         if node_type_id is not None: body['node_type_id'] = node_type_id
         if num_workers is not None: body['num_workers'] = num_workers
         if policy_id is not None: body['policy_id'] = policy_id
@@ -8783,6 +9074,7 @@ class ClustersAPI:
         if spark_env_vars is not None: body['spark_env_vars'] = spark_env_vars
         if spark_version is not None: body['spark_version'] = spark_version
         if ssh_public_keys is not None: body['ssh_public_keys'] = [v for v in ssh_public_keys]
+        if use_ml_runtime is not None: body['use_ml_runtime'] = use_ml_runtime
         if workload_type is not None: body['workload_type'] = workload_type.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
@@ -8813,6 +9105,8 @@ class ClustersAPI:
         gcp_attributes: Optional[GcpAttributes] = None,
         init_scripts: Optional[List[InitScriptInfo]] = None,
         instance_pool_id: Optional[str] = None,
+        is_single_node: Optional[bool] = None,
+        kind: Optional[Kind] = None,
         node_type_id: Optional[str] = None,
         num_workers: Optional[int] = None,
         policy_id: Optional[str] = None,
@@ -8821,6 +9115,7 @@ class ClustersAPI:
         spark_conf: Optional[Dict[str, str]] = None,
         spark_env_vars: Optional[Dict[str, str]] = None,
         ssh_public_keys: Optional[List[str]] = None,
+        use_ml_runtime: Optional[bool] = None,
         workload_type: Optional[WorkloadType] = None,
         timeout=timedelta(minutes=20)) -> ClusterDetails:
         return self.edit(apply_policy_default_values=apply_policy_default_values,
@@ -8841,6 +9136,8 @@ class ClustersAPI:
                          gcp_attributes=gcp_attributes,
                          init_scripts=init_scripts,
                          instance_pool_id=instance_pool_id,
+                         is_single_node=is_single_node,
+                         kind=kind,
                          node_type_id=node_type_id,
                          num_workers=num_workers,
                          policy_id=policy_id,
@@ -8850,6 +9147,7 @@ class ClustersAPI:
                          spark_env_vars=spark_env_vars,
                          spark_version=spark_version,
                          ssh_public_keys=ssh_public_keys,
+                         use_ml_runtime=use_ml_runtime,
                          workload_type=workload_type).result(timeout=timeout)
 
     def events(self,

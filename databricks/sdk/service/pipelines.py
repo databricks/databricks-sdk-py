@@ -11,7 +11,7 @@ from enum import Enum
 from typing import Callable, Dict, Iterator, List, Optional
 
 from ..errors import OperationFailed
-from ._internal import Wait, _enum, _from_dict, _repeated_dict
+from ._internal import Wait, _enum, _from_dict, _repeated_dict, _repeated_enum
 
 _LOG = logging.getLogger('databricks.sdk')
 
@@ -2105,7 +2105,7 @@ class RestartWindow:
     """An integer between 0 and 23 denoting the start hour for the restart window in the 24-hour day.
     Continuous pipeline restart is triggered only within a five-hour window starting at this hour."""
 
-    days_of_week: Optional[RestartWindowDaysOfWeek] = None
+    days_of_week: Optional[List[RestartWindowDaysOfWeek]] = None
     """Days of week in which the restart is allowed to happen (within a five-hour window starting at
     start_hour). If not specified all days of the week will be used."""
 
@@ -2117,7 +2117,7 @@ class RestartWindow:
     def as_dict(self) -> dict:
         """Serializes the RestartWindow into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.days_of_week is not None: body['days_of_week'] = self.days_of_week.value
+        if self.days_of_week: body['days_of_week'] = [v.value for v in self.days_of_week]
         if self.start_hour is not None: body['start_hour'] = self.start_hour
         if self.time_zone_id is not None: body['time_zone_id'] = self.time_zone_id
         return body
@@ -2125,7 +2125,7 @@ class RestartWindow:
     def as_shallow_dict(self) -> dict:
         """Serializes the RestartWindow into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.days_of_week is not None: body['days_of_week'] = self.days_of_week
+        if self.days_of_week: body['days_of_week'] = self.days_of_week
         if self.start_hour is not None: body['start_hour'] = self.start_hour
         if self.time_zone_id is not None: body['time_zone_id'] = self.time_zone_id
         return body
@@ -2133,7 +2133,7 @@ class RestartWindow:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> RestartWindow:
         """Deserializes the RestartWindow from a dictionary."""
-        return cls(days_of_week=_enum(d, 'days_of_week', RestartWindowDaysOfWeek),
+        return cls(days_of_week=_repeated_enum(d, 'days_of_week', RestartWindowDaysOfWeek),
                    start_hour=d.get('start_hour', None),
                    time_zone_id=d.get('time_zone_id', None))
 

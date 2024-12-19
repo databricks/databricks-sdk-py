@@ -174,7 +174,7 @@
         :returns: Iterator over :class:`Subscription`
         
 
-    .. py:method:: migrate(source_dashboard_id: str [, display_name: Optional[str], parent_path: Optional[str]]) -> Dashboard
+    .. py:method:: migrate(source_dashboard_id: str [, display_name: Optional[str], parent_path: Optional[str], update_parameter_syntax: Optional[bool]]) -> Dashboard
 
         Migrate dashboard.
         
@@ -186,6 +186,9 @@
           Display name for the new Lakeview dashboard.
         :param parent_path: str (optional)
           The workspace path of the folder to contain the migrated Lakeview dashboard.
+        :param update_parameter_syntax: bool (optional)
+          Flag to indicate if mustache parameter syntax ({{ param }}) should be auto-updated to named syntax
+          (:param) when converting datasets in the dashboard.
         
         :returns: :class:`Dashboard`
         

@@ -209,7 +209,8 @@ class BaseRun:
     previously failed run. This occurs when you request to re-run the job in case of failures. *
     `RUN_JOB_TASK`: Indicates a run that is triggered using a Run Job task. * `FILE_ARRIVAL`:
     Indicates a run that is triggered by a file arrival. * `TABLE`: Indicates a run that is
-    triggered by a table update."""
+    triggered by a table update. * `CONTINUOUS_RESTART`: Indicates a run created by user to manually
+    restart a continuous job run."""
 
     trigger_info: Optional[TriggerInfo] = None
     """Additional details about what triggered the run"""
@@ -449,7 +450,7 @@ class CleanRoomTaskRunResultState(Enum):
 
 @dataclass
 class CleanRoomTaskRunState:
-    """Stores the run state of the clean room notebook V1 task."""
+    """Stores the run state of the clean rooms notebook task."""
 
     life_cycle_state: Optional[CleanRoomTaskRunLifeCycleState] = None
     """A value indicating the run's current lifecycle state. This field is always available in the
@@ -477,6 +478,48 @@ class CleanRoomTaskRunState:
         """Deserializes the CleanRoomTaskRunState from a dictionary."""
         return cls(life_cycle_state=_enum(d, 'life_cycle_state', CleanRoomTaskRunLifeCycleState),
                    result_state=_enum(d, 'result_state', CleanRoomTaskRunResultState))
+
+
+@dataclass
+class CleanRoomsNotebookTask:
+    clean_room_name: str
+    """The clean room that the notebook belongs to."""
+
+    notebook_name: str
+    """Name of the notebook being run."""
+
+    etag: Optional[str] = None
+    """Checksum to validate the freshness of the notebook resource (i.e. the notebook being run is the
+    latest version). It can be fetched by calling the :method:cleanroomassets/get API."""
+
+    notebook_base_parameters: Optional[Dict[str, str]] = None
+    """Base parameters to be used for the clean room notebook job."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CleanRoomsNotebookTask into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.clean_room_name is not None: body['clean_room_name'] = self.clean_room_name
+        if self.etag is not None: body['etag'] = self.etag
+        if self.notebook_base_parameters: body['notebook_base_parameters'] = self.notebook_base_parameters
+        if self.notebook_name is not None: body['notebook_name'] = self.notebook_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CleanRoomsNotebookTask into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.clean_room_name is not None: body['clean_room_name'] = self.clean_room_name
+        if self.etag is not None: body['etag'] = self.etag
+        if self.notebook_base_parameters: body['notebook_base_parameters'] = self.notebook_base_parameters
+        if self.notebook_name is not None: body['notebook_name'] = self.notebook_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> CleanRoomsNotebookTask:
+        """Deserializes the CleanRoomsNotebookTask from a dictionary."""
+        return cls(clean_room_name=d.get('clean_room_name', None),
+                   etag=d.get('etag', None),
+                   notebook_base_parameters=d.get('notebook_base_parameters', None),
+                   notebook_name=d.get('notebook_name', None))
 
 
 @dataclass
@@ -2526,11 +2569,11 @@ class JobsHealthMetric(Enum):
     
     * `RUN_DURATION_SECONDS`: Expected total time for a run in seconds. * `STREAMING_BACKLOG_BYTES`:
     An estimate of the maximum bytes of data waiting to be consumed across all streams. This metric
-    is in Private Preview. * `STREAMING_BACKLOG_RECORDS`: An estimate of the maximum offset lag
-    across all streams. This metric is in Private Preview. * `STREAMING_BACKLOG_SECONDS`: An
-    estimate of the maximum consumer delay across all streams. This metric is in Private Preview. *
+    is in Public Preview. * `STREAMING_BACKLOG_RECORDS`: An estimate of the maximum offset lag
+    across all streams. This metric is in Public Preview. * `STREAMING_BACKLOG_SECONDS`: An estimate
+    of the maximum consumer delay across all streams. This metric is in Public Preview. *
     `STREAMING_BACKLOG_FILES`: An estimate of the maximum number of outstanding files across all
-    streams. This metric is in Private Preview."""
+    streams. This metric is in Public Preview."""
 
     RUN_DURATION_SECONDS = 'RUN_DURATION_SECONDS'
     STREAMING_BACKLOG_BYTES = 'STREAMING_BACKLOG_BYTES'
@@ -2552,11 +2595,11 @@ class JobsHealthRule:
     
     * `RUN_DURATION_SECONDS`: Expected total time for a run in seconds. * `STREAMING_BACKLOG_BYTES`:
     An estimate of the maximum bytes of data waiting to be consumed across all streams. This metric
-    is in Private Preview. * `STREAMING_BACKLOG_RECORDS`: An estimate of the maximum offset lag
-    across all streams. This metric is in Private Preview. * `STREAMING_BACKLOG_SECONDS`: An
-    estimate of the maximum consumer delay across all streams. This metric is in Private Preview. *
+    is in Public Preview. * `STREAMING_BACKLOG_RECORDS`: An estimate of the maximum offset lag
+    across all streams. This metric is in Public Preview. * `STREAMING_BACKLOG_SECONDS`: An estimate
+    of the maximum consumer delay across all streams. This metric is in Public Preview. *
     `STREAMING_BACKLOG_FILES`: An estimate of the maximum number of outstanding files across all
-    streams. This metric is in Private Preview."""
+    streams. This metric is in Public Preview."""
 
     op: JobsHealthOperator
     """Specifies the operator used to compare the health metric value with the specified threshold."""
@@ -3711,7 +3754,8 @@ class Run:
     previously failed run. This occurs when you request to re-run the job in case of failures. *
     `RUN_JOB_TASK`: Indicates a run that is triggered using a Run Job task. * `FILE_ARRIVAL`:
     Indicates a run that is triggered by a file arrival. * `TABLE`: Indicates a run that is
-    triggered by a table update."""
+    triggered by a table update. * `CONTINUOUS_RESTART`: Indicates a run created by user to manually
+    restart a continuous job run."""
 
     trigger_info: Optional[TriggerInfo] = None
     """Additional details about what triggered the run"""
@@ -4653,6 +4697,11 @@ class RunTask:
     original attempt’s ID and an incrementing `attempt_number`. Runs are retried only until they
     succeed, and the maximum `attempt_number` is the same as the `max_retries` value for the job."""
 
+    clean_rooms_notebook_task: Optional[CleanRoomsNotebookTask] = None
+    """The task runs a [clean rooms] notebook when the `clean_rooms_notebook_task` field is present.
+    
+    [clean rooms]: https://docs.databricks.com/en/clean-rooms/index.html"""
+
     cleanup_duration: Optional[int] = None
     """The time in milliseconds it took to terminate the cluster and clean up any associated artifacts.
     The duration of a task run is the sum of the `setup_duration`, `execution_duration`, and the
@@ -4820,6 +4869,8 @@ class RunTask:
         """Serializes the RunTask into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.attempt_number is not None: body['attempt_number'] = self.attempt_number
+        if self.clean_rooms_notebook_task:
+            body['clean_rooms_notebook_task'] = self.clean_rooms_notebook_task.as_dict()
         if self.cleanup_duration is not None: body['cleanup_duration'] = self.cleanup_duration
         if self.cluster_instance: body['cluster_instance'] = self.cluster_instance.as_dict()
         if self.condition_task: body['condition_task'] = self.condition_task.as_dict()
@@ -4864,6 +4915,7 @@ class RunTask:
         """Serializes the RunTask into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.attempt_number is not None: body['attempt_number'] = self.attempt_number
+        if self.clean_rooms_notebook_task: body['clean_rooms_notebook_task'] = self.clean_rooms_notebook_task
         if self.cleanup_duration is not None: body['cleanup_duration'] = self.cleanup_duration
         if self.cluster_instance: body['cluster_instance'] = self.cluster_instance
         if self.condition_task: body['condition_task'] = self.condition_task
@@ -4908,6 +4960,8 @@ class RunTask:
     def from_dict(cls, d: Dict[str, any]) -> RunTask:
         """Deserializes the RunTask from a dictionary."""
         return cls(attempt_number=d.get('attempt_number', None),
+                   clean_rooms_notebook_task=_from_dict(d, 'clean_rooms_notebook_task',
+                                                        CleanRoomsNotebookTask),
                    cleanup_duration=d.get('cleanup_duration', None),
                    cluster_instance=_from_dict(d, 'cluster_instance', ClusterInstance),
                    condition_task=_from_dict(d, 'condition_task', RunConditionTask),
@@ -5753,6 +5807,11 @@ class SubmitTask:
     field is required and must be unique within its parent job. On Update or Reset, this field is
     used to reference the tasks to be updated or reset."""
 
+    clean_rooms_notebook_task: Optional[CleanRoomsNotebookTask] = None
+    """The task runs a [clean rooms] notebook when the `clean_rooms_notebook_task` field is present.
+    
+    [clean rooms]: https://docs.databricks.com/en/clean-rooms/index.html"""
+
     condition_task: Optional[ConditionTask] = None
     """The task evaluates a condition that can be used to control the execution of other tasks when the
     `condition_task` field is present. The condition task does not require a cluster to execute and
@@ -5857,6 +5916,8 @@ class SubmitTask:
     def as_dict(self) -> dict:
         """Serializes the SubmitTask into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.clean_rooms_notebook_task:
+            body['clean_rooms_notebook_task'] = self.clean_rooms_notebook_task.as_dict()
         if self.condition_task: body['condition_task'] = self.condition_task.as_dict()
         if self.dbt_task: body['dbt_task'] = self.dbt_task.as_dict()
         if self.depends_on: body['depends_on'] = [v.as_dict() for v in self.depends_on]
@@ -5886,6 +5947,7 @@ class SubmitTask:
     def as_shallow_dict(self) -> dict:
         """Serializes the SubmitTask into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.clean_rooms_notebook_task: body['clean_rooms_notebook_task'] = self.clean_rooms_notebook_task
         if self.condition_task: body['condition_task'] = self.condition_task
         if self.dbt_task: body['dbt_task'] = self.dbt_task
         if self.depends_on: body['depends_on'] = self.depends_on
@@ -5915,7 +5977,9 @@ class SubmitTask:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> SubmitTask:
         """Deserializes the SubmitTask from a dictionary."""
-        return cls(condition_task=_from_dict(d, 'condition_task', ConditionTask),
+        return cls(clean_rooms_notebook_task=_from_dict(d, 'clean_rooms_notebook_task',
+                                                        CleanRoomsNotebookTask),
+                   condition_task=_from_dict(d, 'condition_task', ConditionTask),
                    dbt_task=_from_dict(d, 'dbt_task', DbtTask),
                    depends_on=_repeated_dict(d, 'depends_on', TaskDependency),
                    description=d.get('description', None),
@@ -5996,6 +6060,11 @@ class Task:
     """A unique name for the task. This field is used to refer to this task from other tasks. This
     field is required and must be unique within its parent job. On Update or Reset, this field is
     used to reference the tasks to be updated or reset."""
+
+    clean_rooms_notebook_task: Optional[CleanRoomsNotebookTask] = None
+    """The task runs a [clean rooms] notebook when the `clean_rooms_notebook_task` field is present.
+    
+    [clean rooms]: https://docs.databricks.com/en/clean-rooms/index.html"""
 
     condition_task: Optional[ConditionTask] = None
     """The task evaluates a condition that can be used to control the execution of other tasks when the
@@ -6126,6 +6195,8 @@ class Task:
     def as_dict(self) -> dict:
         """Serializes the Task into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.clean_rooms_notebook_task:
+            body['clean_rooms_notebook_task'] = self.clean_rooms_notebook_task.as_dict()
         if self.condition_task: body['condition_task'] = self.condition_task.as_dict()
         if self.dbt_task: body['dbt_task'] = self.dbt_task.as_dict()
         if self.depends_on: body['depends_on'] = [v.as_dict() for v in self.depends_on]
@@ -6162,6 +6233,7 @@ class Task:
     def as_shallow_dict(self) -> dict:
         """Serializes the Task into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.clean_rooms_notebook_task: body['clean_rooms_notebook_task'] = self.clean_rooms_notebook_task
         if self.condition_task: body['condition_task'] = self.condition_task
         if self.dbt_task: body['dbt_task'] = self.dbt_task
         if self.depends_on: body['depends_on'] = self.depends_on
@@ -6198,7 +6270,9 @@ class Task:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> Task:
         """Deserializes the Task from a dictionary."""
-        return cls(condition_task=_from_dict(d, 'condition_task', ConditionTask),
+        return cls(clean_rooms_notebook_task=_from_dict(d, 'clean_rooms_notebook_task',
+                                                        CleanRoomsNotebookTask),
+                   condition_task=_from_dict(d, 'condition_task', ConditionTask),
                    dbt_task=_from_dict(d, 'dbt_task', DbtTask),
                    depends_on=_repeated_dict(d, 'depends_on', TaskDependency),
                    description=d.get('description', None),
@@ -6610,7 +6684,8 @@ class TriggerType(Enum):
     previously failed run. This occurs when you request to re-run the job in case of failures. *
     `RUN_JOB_TASK`: Indicates a run that is triggered using a Run Job task. * `FILE_ARRIVAL`:
     Indicates a run that is triggered by a file arrival. * `TABLE`: Indicates a run that is
-    triggered by a table update."""
+    triggered by a table update. * `CONTINUOUS_RESTART`: Indicates a run created by user to manually
+    restart a continuous job run."""
 
     FILE_ARRIVAL = 'FILE_ARRIVAL'
     ONE_TIME = 'ONE_TIME'

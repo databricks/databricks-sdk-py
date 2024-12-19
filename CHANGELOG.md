@@ -1,5 +1,24 @@
 # Version changelog
 
+## [Release] Release v0.40.0
+
+### API Changes:
+
+ * Added [a.account_federation_policy](https://databricks-sdk-py.readthedocs.io/en/latest/account/account_federation_policy.html) account-level service and [a.service_principal_federation_policy](https://databricks-sdk-py.readthedocs.io/en/latest/account/service_principal_federation_policy.html) account-level service.
+ * Added `is_single_node`, `kind` and `use_ml_runtime` fields for `databricks.sdk.service.compute.ClusterAttributes`.
+ * Added `is_single_node`, `kind` and `use_ml_runtime` fields for `databricks.sdk.service.compute.ClusterDetails`.
+ * Added `is_single_node`, `kind` and `use_ml_runtime` fields for `databricks.sdk.service.compute.ClusterSpec`.
+ * Added `is_single_node`, `kind` and `use_ml_runtime` fields for `databricks.sdk.service.compute.CreateCluster`.
+ * Added `is_single_node`, `kind` and `use_ml_runtime` fields for `databricks.sdk.service.compute.EditCluster`.
+ * Added `is_single_node`, `kind` and `use_ml_runtime` fields for `databricks.sdk.service.compute.UpdateClusterResource`.
+ * Added `update_parameter_syntax` field for `databricks.sdk.service.dashboards.MigrateDashboardRequest`.
+ * Added `clean_rooms_notebook_task` field for `databricks.sdk.service.jobs.RunTask`.
+ * Added `clean_rooms_notebook_task` field for `databricks.sdk.service.jobs.SubmitTask`.
+ * Added `clean_rooms_notebook_task` field for `databricks.sdk.service.jobs.Task`.
+ * Changed `days_of_week` field for `databricks.sdk.service.pipelines.RestartWindow` to type `databricks.sdk.service.pipelines.RestartWindowDaysOfWeekList` dataclass.
+
+OpenAPI SHA: a6a317df8327c9b1e5cb59a03a42ffa2aabeef6d, Date: 2024-12-16
+
 ## [Release] Release v0.39.0
 
 ### Bug Fixes

@@ -3704,8 +3704,8 @@ class GenerateTemporaryTableCredentialResponse:
 class GetBindingsSecurableType(Enum):
 
     CATALOG = 'catalog'
+    CREDENTIAL = 'credential'
     EXTERNAL_LOCATION = 'external_location'
-    SERVICE_CREDENTIAL = 'service_credential'
     STORAGE_CREDENTIAL = 'storage_credential'
 
 
@@ -7067,8 +7067,8 @@ class UpdateAssignmentResponse:
 class UpdateBindingsSecurableType(Enum):
 
     CATALOG = 'catalog'
+    CREDENTIAL = 'credential'
     EXTERNAL_LOCATION = 'external_location'
-    SERVICE_CREDENTIAL = 'service_credential'
     STORAGE_CREDENTIAL = 'storage_credential'
 
 

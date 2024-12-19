@@ -289,6 +289,60 @@ class DeleteResponse:
 
 
 @dataclass
+class FederationPolicy:
+    create_time: Optional[str] = None
+    """Creation time of the federation policy."""
+
+    description: Optional[str] = None
+    """Description of the federation policy."""
+
+    name: Optional[str] = None
+    """Name of the federation policy. The name must contain only lowercase alphanumeric characters,
+    numbers, and hyphens. It must be unique within the account."""
+
+    oidc_policy: Optional[OidcFederationPolicy] = None
+    """Specifies the policy to use for validating OIDC claims in your federated tokens."""
+
+    uid: Optional[str] = None
+    """Unique, immutable id of the federation policy."""
+
+    update_time: Optional[str] = None
+    """Last update time of the federation policy."""
+
+    def as_dict(self) -> dict:
+        """Serializes the FederationPolicy into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.create_time is not None: body['create_time'] = self.create_time
+        if self.description is not None: body['description'] = self.description
+        if self.name is not None: body['name'] = self.name
+        if self.oidc_policy: body['oidc_policy'] = self.oidc_policy.as_dict()
+        if self.uid is not None: body['uid'] = self.uid
+        if self.update_time is not None: body['update_time'] = self.update_time
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the FederationPolicy into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.create_time is not None: body['create_time'] = self.create_time
+        if self.description is not None: body['description'] = self.description
+        if self.name is not None: body['name'] = self.name
+        if self.oidc_policy: body['oidc_policy'] = self.oidc_policy
+        if self.uid is not None: body['uid'] = self.uid
+        if self.update_time is not None: body['update_time'] = self.update_time
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> FederationPolicy:
+        """Deserializes the FederationPolicy from a dictionary."""
+        return cls(create_time=d.get('create_time', None),
+                   description=d.get('description', None),
+                   name=d.get('name', None),
+                   oidc_policy=_from_dict(d, 'oidc_policy', OidcFederationPolicy),
+                   uid=d.get('uid', None),
+                   update_time=d.get('update_time', None))
+
+
+@dataclass
 class GetCustomAppIntegrationOutput:
     client_id: Optional[str] = None
     """The client id of the custom OAuth app"""
@@ -499,6 +553,33 @@ class GetPublishedAppsOutput:
 
 
 @dataclass
+class ListFederationPoliciesResponse:
+    next_page_token: Optional[str] = None
+
+    policies: Optional[List[FederationPolicy]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ListFederationPoliciesResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.policies: body['policies'] = [v.as_dict() for v in self.policies]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListFederationPoliciesResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.policies: body['policies'] = self.policies
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ListFederationPoliciesResponse:
+        """Deserializes the ListFederationPoliciesResponse from a dictionary."""
+        return cls(next_page_token=d.get('next_page_token', None),
+                   policies=_repeated_dict(d, 'policies', FederationPolicy))
+
+
+@dataclass
 class ListServicePrincipalSecretsResponse:
     next_page_token: Optional[str] = None
     """A token, which can be sent as `page_token` to retrieve the next page."""
@@ -525,6 +606,64 @@ class ListServicePrincipalSecretsResponse:
         """Deserializes the ListServicePrincipalSecretsResponse from a dictionary."""
         return cls(next_page_token=d.get('next_page_token', None),
                    secrets=_repeated_dict(d, 'secrets', SecretInfo))
+
+
+@dataclass
+class OidcFederationPolicy:
+    """Specifies the policy to use for validating OIDC claims in your federated tokens."""
+
+    audiences: Optional[List[str]] = None
+    """The allowed token audiences, as specified in the 'aud' claim of federated tokens. The audience
+    identifier is intended to represent the recipient of the token. Can be any non-empty string
+    value. As long as the audience in the token matches at least one audience in the policy, the
+    token is considered a match. If audiences is unspecified, defaults to your Databricks account
+    id."""
+
+    issuer: Optional[str] = None
+    """The required token issuer, as specified in the 'iss' claim of federated tokens."""
+
+    jwks_json: Optional[str] = None
+    """The public keys used to validate the signature of federated tokens, in JWKS format. If
+    unspecified (recommended), Databricks automatically fetches the public keys from your issuer’s
+    well known endpoint. Databricks strongly recommends relying on your issuer’s well known
+    endpoint for discovering public keys."""
+
+    subject: Optional[str] = None
+    """The required token subject, as specified in the subject claim of federated tokens. Must be
+    specified for service principal federation policies. Must not be specified for account
+    federation policies."""
+
+    subject_claim: Optional[str] = None
+    """The claim that contains the subject of the token. If unspecified, the default value is 'sub'."""
+
+    def as_dict(self) -> dict:
+        """Serializes the OidcFederationPolicy into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.audiences: body['audiences'] = [v for v in self.audiences]
+        if self.issuer is not None: body['issuer'] = self.issuer
+        if self.jwks_json is not None: body['jwks_json'] = self.jwks_json
+        if self.subject is not None: body['subject'] = self.subject
+        if self.subject_claim is not None: body['subject_claim'] = self.subject_claim
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the OidcFederationPolicy into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.audiences: body['audiences'] = self.audiences
+        if self.issuer is not None: body['issuer'] = self.issuer
+        if self.jwks_json is not None: body['jwks_json'] = self.jwks_json
+        if self.subject is not None: body['subject'] = self.subject
+        if self.subject_claim is not None: body['subject_claim'] = self.subject_claim
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> OidcFederationPolicy:
+        """Deserializes the OidcFederationPolicy from a dictionary."""
+        return cls(audiences=d.get('audiences', None),
+                   issuer=d.get('issuer', None),
+                   jwks_json=d.get('jwks_json', None),
+                   subject=d.get('subject', None),
+                   subject_claim=d.get('subject_claim', None))
 
 
 @dataclass
@@ -767,6 +906,158 @@ class UpdatePublishedAppIntegrationOutput:
     def from_dict(cls, d: Dict[str, any]) -> UpdatePublishedAppIntegrationOutput:
         """Deserializes the UpdatePublishedAppIntegrationOutput from a dictionary."""
         return cls()
+
+
+class AccountFederationPolicyAPI:
+    """These APIs manage account federation policies.
+    
+    Account federation policies allow users and service principals in your Databricks account to securely
+    access Databricks APIs using tokens from your trusted identity providers (IdPs).
+    
+    With token federation, your users and service principals can exchange tokens from your IdP for Databricks
+    OAuth tokens, which can be used to access Databricks APIs. Token federation eliminates the need to manage
+    Databricks secrets, and allows you to centralize management of token issuance policies in your IdP.
+    Databricks token federation is typically used in combination with [SCIM], so users in your IdP are
+    synchronized into your Databricks account.
+    
+    Token federation is configured in your Databricks account using an account federation policy. An account
+    federation policy specifies: * which IdP, or issuer, your Databricks account should accept tokens from *
+    how to determine which Databricks user, or subject, a token is issued for
+    
+    To configure a federation policy, you provide the following: * The required token __issuer__, as specified
+    in the “iss” claim of your tokens. The issuer is an https URL that identifies your IdP. * The allowed
+    token __audiences__, as specified in the “aud” claim of your tokens. This identifier is intended to
+    represent the recipient of the token. As long as the audience in the token matches at least one audience
+    in the policy, the token is considered a match. If unspecified, the default value is your Databricks
+    account id. * The __subject claim__, which indicates which token claim contains the Databricks username of
+    the user the token was issued for. If unspecified, the default value is “sub”. * Optionally, the
+    public keys used to validate the signature of your tokens, in JWKS format. If unspecified (recommended),
+    Databricks automatically fetches the public keys from your issuer’s well known endpoint. Databricks
+    strongly recommends relying on your issuer’s well known endpoint for discovering public keys.
+    
+    An example federation policy is: ``` issuer: "https://idp.mycompany.com/oidc" audiences: ["databricks"]
+    subject_claim: "sub" ```
+    
+    An example JWT token body that matches this policy and could be used to authenticate to Databricks as user
+    `username@mycompany.com` is: ``` { "iss": "https://idp.mycompany.com/oidc", "aud": "databricks", "sub":
+    "username@mycompany.com" } ```
+    
+    You may also need to configure your IdP to generate tokens for your users to exchange with Databricks, if
+    your users do not already have the ability to generate tokens that are compatible with your federation
+    policy.
+    
+    You do not need to configure an OAuth application in Databricks to use token federation.
+    
+    [SCIM]: https://docs.databricks.com/admin/users-groups/scim/index.html"""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def create(self,
+               *,
+               policy: Optional[FederationPolicy] = None,
+               policy_id: Optional[str] = None) -> FederationPolicy:
+        """Create account federation policy.
+        
+        :param policy: :class:`FederationPolicy` (optional)
+        :param policy_id: str (optional)
+          The identifier for the federation policy. If unspecified, the id will be assigned by Databricks.
+        
+        :returns: :class:`FederationPolicy`
+        """
+        body = policy.as_dict()
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do('POST',
+                           f'/api/2.0/accounts/{self._api.account_id}/federationPolicies',
+                           query=query,
+                           body=body,
+                           headers=headers)
+        return FederationPolicy.from_dict(res)
+
+    def delete(self, policy_id: str):
+        """Delete account federation policy.
+        
+        :param policy_id: str
+        
+        
+        """
+
+        headers = {'Accept': 'application/json', }
+
+        self._api.do('DELETE',
+                     f'/api/2.0/accounts/{self._api.account_id}/federationPolicies/{policy_id}',
+                     headers=headers)
+
+    def get(self, policy_id: str) -> FederationPolicy:
+        """Get account federation policy.
+        
+        :param policy_id: str
+        
+        :returns: :class:`FederationPolicy`
+        """
+
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do('GET',
+                           f'/api/2.0/accounts/{self._api.account_id}/federationPolicies/{policy_id}',
+                           headers=headers)
+        return FederationPolicy.from_dict(res)
+
+    def list(self,
+             *,
+             page_size: Optional[int] = None,
+             page_token: Optional[str] = None) -> Iterator[FederationPolicy]:
+        """List account federation policies.
+        
+        :param page_size: int (optional)
+        :param page_token: str (optional)
+        
+        :returns: Iterator over :class:`FederationPolicy`
+        """
+
+        query = {}
+        if page_size is not None: query['page_size'] = page_size
+        if page_token is not None: query['page_token'] = page_token
+        headers = {'Accept': 'application/json', }
+
+        while True:
+            json = self._api.do('GET',
+                                f'/api/2.0/accounts/{self._api.account_id}/federationPolicies',
+                                query=query,
+                                headers=headers)
+            if 'policies' in json:
+                for v in json['policies']:
+                    yield FederationPolicy.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
+
+    def update(self,
+               policy_id: str,
+               update_mask: str,
+               *,
+               policy: Optional[FederationPolicy] = None) -> FederationPolicy:
+        """Update account federation policy.
+        
+        :param policy_id: str
+        :param update_mask: str
+          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
+          setting payload will be updated. The field mask needs to be supplied as single string. To specify
+          multiple fields in the field mask, use comma as the separator (no space).
+        :param policy: :class:`FederationPolicy` (optional)
+        
+        :returns: :class:`FederationPolicy`
+        """
+        body = policy.as_dict()
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do('PATCH',
+                           f'/api/2.0/accounts/{self._api.account_id}/federationPolicies/{policy_id}',
+                           query=query,
+                           body=body,
+                           headers=headers)
+        return FederationPolicy.from_dict(res)
 
 
 class CustomAppIntegrationAPI:
@@ -1084,6 +1375,176 @@ class PublishedAppIntegrationAPI:
             f'/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integrations/{integration_id}',
             body=body,
             headers=headers)
+
+
+class ServicePrincipalFederationPolicyAPI:
+    """These APIs manage service principal federation policies.
+    
+    Service principal federation, also known as Workload Identity Federation, allows your automated workloads
+    running outside of Databricks to securely access Databricks APIs without the need for Databricks secrets.
+    With Workload Identity Federation, your application (or workload) authenticates to Databricks as a
+    Databricks service principal, using tokens provided by the workload runtime.
+    
+    Databricks strongly recommends using Workload Identity Federation to authenticate to Databricks from
+    automated workloads, over alternatives such as OAuth client secrets or Personal Access Tokens, whenever
+    possible. Workload Identity Federation is supported by many popular services, including Github Actions,
+    Azure DevOps, GitLab, Terraform Cloud, and Kubernetes clusters, among others.
+    
+    Workload identity federation is configured in your Databricks account using a service principal federation
+    policy. A service principal federation policy specifies: * which IdP, or issuer, the service principal is
+    allowed to authenticate from * which workload identity, or subject, is allowed to authenticate as the
+    Databricks service principal
+    
+    To configure a federation policy, you provide the following: * The required token __issuer__, as specified
+    in the “iss” claim of workload identity tokens. The issuer is an https URL that identifies the
+    workload identity provider. * The required token __subject__, as specified in the “sub” claim of
+    workload identity tokens. The subject uniquely identifies the workload in the workload runtime
+    environment. * The allowed token __audiences__, as specified in the “aud” claim of workload identity
+    tokens. The audience is intended to represent the recipient of the token. As long as the audience in the
+    token matches at least one audience in the policy, the token is considered a match. If unspecified, the
+    default value is your Databricks account id. * Optionally, the public keys used to validate the signature
+    of the workload identity tokens, in JWKS format. If unspecified (recommended), Databricks automatically
+    fetches the public keys from the issuer’s well known endpoint. Databricks strongly recommends relying on
+    the issuer’s well known endpoint for discovering public keys.
+    
+    An example service principal federation policy, for a Github Actions workload, is: ``` issuer:
+    "https://token.actions.githubusercontent.com" audiences: ["https://github.com/my-github-org"] subject:
+    "repo:my-github-org/my-repo:environment:prod" ```
+    
+    An example JWT token body that matches this policy and could be used to authenticate to Databricks is: ```
+    { "iss": "https://token.actions.githubusercontent.com", "aud": "https://github.com/my-github-org", "sub":
+    "repo:my-github-org/my-repo:environment:prod" } ```
+    
+    You may also need to configure the workload runtime to generate tokens for your workloads.
+    
+    You do not need to configure an OAuth application in Databricks to use token federation."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def create(self,
+               service_principal_id: int,
+               *,
+               policy: Optional[FederationPolicy] = None,
+               policy_id: Optional[str] = None) -> FederationPolicy:
+        """Create service principal federation policy.
+        
+        :param service_principal_id: int
+          The service principal id for the federation policy.
+        :param policy: :class:`FederationPolicy` (optional)
+        :param policy_id: str (optional)
+          The identifier for the federation policy. If unspecified, the id will be assigned by Databricks.
+        
+        :returns: :class:`FederationPolicy`
+        """
+        body = policy.as_dict()
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do(
+            'POST',
+            f'/api/2.0/accounts/{self._api.account_id}/servicePrincipals/{service_principal_id}/federationPolicies',
+            query=query,
+            body=body,
+            headers=headers)
+        return FederationPolicy.from_dict(res)
+
+    def delete(self, service_principal_id: int, policy_id: str):
+        """Delete service principal federation policy.
+        
+        :param service_principal_id: int
+          The service principal id for the federation policy.
+        :param policy_id: str
+        
+        
+        """
+
+        headers = {'Accept': 'application/json', }
+
+        self._api.do(
+            'DELETE',
+            f'/api/2.0/accounts/{self._api.account_id}/servicePrincipals/{service_principal_id}/federationPolicies/{policy_id}',
+            headers=headers)
+
+    def get(self, service_principal_id: int, policy_id: str) -> FederationPolicy:
+        """Get service principal federation policy.
+        
+        :param service_principal_id: int
+          The service principal id for the federation policy.
+        :param policy_id: str
+        
+        :returns: :class:`FederationPolicy`
+        """
+
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do(
+            'GET',
+            f'/api/2.0/accounts/{self._api.account_id}/servicePrincipals/{service_principal_id}/federationPolicies/{policy_id}',
+            headers=headers)
+        return FederationPolicy.from_dict(res)
+
+    def list(self,
+             service_principal_id: int,
+             *,
+             page_size: Optional[int] = None,
+             page_token: Optional[str] = None) -> Iterator[FederationPolicy]:
+        """List service principal federation policies.
+        
+        :param service_principal_id: int
+          The service principal id for the federation policy.
+        :param page_size: int (optional)
+        :param page_token: str (optional)
+        
+        :returns: Iterator over :class:`FederationPolicy`
+        """
+
+        query = {}
+        if page_size is not None: query['page_size'] = page_size
+        if page_token is not None: query['page_token'] = page_token
+        headers = {'Accept': 'application/json', }
+
+        while True:
+            json = self._api.do(
+                'GET',
+                f'/api/2.0/accounts/{self._api.account_id}/servicePrincipals/{service_principal_id}/federationPolicies',
+                query=query,
+                headers=headers)
+            if 'policies' in json:
+                for v in json['policies']:
+                    yield FederationPolicy.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
+
+    def update(self,
+               service_principal_id: int,
+               policy_id: str,
+               update_mask: str,
+               *,
+               policy: Optional[FederationPolicy] = None) -> FederationPolicy:
+        """Update service principal federation policy.
+        
+        :param service_principal_id: int
+          The service principal id for the federation policy.
+        :param policy_id: str
+        :param update_mask: str
+          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
+          setting payload will be updated. The field mask needs to be supplied as single string. To specify
+          multiple fields in the field mask, use comma as the separator (no space).
+        :param policy: :class:`FederationPolicy` (optional)
+        
+        :returns: :class:`FederationPolicy`
+        """
+        body = policy.as_dict()
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do(
+            'PATCH',
+            f'/api/2.0/accounts/{self._api.account_id}/servicePrincipals/{service_principal_id}/federationPolicies/{policy_id}',
+            query=query,
+            body=body,
+            headers=headers)
+        return FederationPolicy.from_dict(res)
 
 
 class ServicePrincipalSecretsAPI:

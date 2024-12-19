@@ -745,11 +745,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: CATALOG
       :value: "CATALOG"
 
+   .. py:attribute:: CREDENTIAL
+      :value: "CREDENTIAL"
+
    .. py:attribute:: EXTERNAL_LOCATION
       :value: "EXTERNAL_LOCATION"
-
-   .. py:attribute:: SERVICE_CREDENTIAL
-      :value: "SERVICE_CREDENTIAL"
 
    .. py:attribute:: STORAGE_CREDENTIAL
       :value: "STORAGE_CREDENTIAL"
@@ -1460,11 +1460,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: CATALOG
       :value: "CATALOG"
 
+   .. py:attribute:: CREDENTIAL
+      :value: "CREDENTIAL"
+
    .. py:attribute:: EXTERNAL_LOCATION
       :value: "EXTERNAL_LOCATION"
-
-   .. py:attribute:: SERVICE_CREDENTIAL
-      :value: "SERVICE_CREDENTIAL"
 
    .. py:attribute:: STORAGE_CREDENTIAL
       :value: "STORAGE_CREDENTIAL"
