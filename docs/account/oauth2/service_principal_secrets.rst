@@ -26,7 +26,7 @@
           The service principal ID.
         
         :returns: :class:`CreateServicePrincipalSecretResponse`
-        
+
 
     .. py:method:: delete(service_principal_id: int, secret_id: str)
 
@@ -39,8 +39,8 @@
         :param secret_id: str
           The secret ID.
         
-        
-        
+
+
 
     .. py:method:: list(service_principal_id: int [, page_token: Optional[str]]) -> Iterator[SecretInfo]
 
@@ -60,4 +60,3 @@
           of entries returned must not be used to determine when the listing is complete.
         
         :returns: Iterator over :class:`SecretInfo`
-        

@@ -26,7 +26,7 @@
           request, and pass it with the DELETE request to identify the rule set version you are deleting.
         
         :returns: :class:`DeletePersonalComputeSettingResponse`
-        
+
 
     .. py:method:: get( [, etag: Optional[str]]) -> PersonalComputeSetting
 
@@ -42,7 +42,7 @@
           request, and pass it with the DELETE request to identify the rule set version you are deleting.
         
         :returns: :class:`PersonalComputeSetting`
-        
+
 
     .. py:method:: update(allow_missing: bool, setting: PersonalComputeSetting, field_mask: str) -> PersonalComputeSetting
 
@@ -59,4 +59,3 @@
           multiple fields in the field mask, use comma as the separator (no space).
         
         :returns: :class:`PersonalComputeSetting`
-        

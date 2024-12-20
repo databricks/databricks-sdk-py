@@ -37,7 +37,7 @@
           Specification for Direct Vector Access Index. Required if `index_type` is `DIRECT_ACCESS`.
         
         :returns: :class:`CreateVectorIndexResponse`
-        
+
 
     .. py:method:: delete_data_vector_index(index_name: str, primary_keys: List[str]) -> DeleteDataVectorIndexResponse
 
@@ -51,7 +51,7 @@
           List of primary keys for the data to be deleted.
         
         :returns: :class:`DeleteDataVectorIndexResponse`
-        
+
 
     .. py:method:: delete_index(index_name: str)
 
@@ -62,8 +62,8 @@
         :param index_name: str
           Name of the index
         
-        
-        
+
+
 
     .. py:method:: get_index(index_name: str) -> VectorIndex
 
@@ -75,7 +75,7 @@
           Name of the index
         
         :returns: :class:`VectorIndex`
-        
+
 
     .. py:method:: list_indexes(endpoint_name: str [, page_token: Optional[str]]) -> Iterator[MiniVectorIndex]
 
@@ -89,7 +89,7 @@
           Token for pagination
         
         :returns: Iterator over :class:`MiniVectorIndex`
-        
+
 
     .. py:method:: query_index(index_name: str, columns: List[str] [, filters_json: Optional[str], num_results: Optional[int], query_text: Optional[str], query_type: Optional[str], query_vector: Optional[List[float]], score_threshold: Optional[float]]) -> QueryVectorIndexResponse
 
@@ -120,7 +120,7 @@
           Threshold for the approximate nearest neighbor search. Defaults to 0.0.
         
         :returns: :class:`QueryVectorIndexResponse`
-        
+
 
     .. py:method:: query_next_page(index_name: str [, endpoint_name: Optional[str], page_token: Optional[str]]) -> QueryVectorIndexResponse
 
@@ -137,7 +137,7 @@
           Page token returned from previous `QueryVectorIndex` or `QueryVectorIndexNextPage` API.
         
         :returns: :class:`QueryVectorIndexResponse`
-        
+
 
     .. py:method:: scan_index(index_name: str [, last_primary_key: Optional[str], num_results: Optional[int]]) -> ScanVectorIndexResponse
 
@@ -154,7 +154,7 @@
           Number of results to return. Defaults to 10.
         
         :returns: :class:`ScanVectorIndexResponse`
-        
+
 
     .. py:method:: sync_index(index_name: str)
 
@@ -165,8 +165,8 @@
         :param index_name: str
           Name of the vector index to synchronize. Must be a Delta Sync Index.
         
-        
-        
+
+
 
     .. py:method:: upsert_data_vector_index(index_name: str, inputs_json: str) -> UpsertDataVectorIndexResponse
 
@@ -180,4 +180,3 @@
           JSON string representing the data to be upserted.
         
         :returns: :class:`UpsertDataVectorIndexResponse`
-        

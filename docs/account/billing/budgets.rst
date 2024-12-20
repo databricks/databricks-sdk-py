@@ -55,7 +55,7 @@
           Properties of the new budget configuration.
         
         :returns: :class:`CreateBudgetConfigurationResponse`
-        
+
 
     .. py:method:: delete(budget_id: str)
 
@@ -67,8 +67,8 @@
         :param budget_id: str
           The Databricks budget configuration ID.
         
-        
-        
+
+
 
     .. py:method:: get(budget_id: str) -> GetBudgetConfigurationResponse
 
@@ -118,7 +118,7 @@
           The budget configuration ID
         
         :returns: :class:`GetBudgetConfigurationResponse`
-        
+
 
     .. py:method:: list( [, page_token: Optional[str]]) -> Iterator[BudgetConfiguration]
 
@@ -143,7 +143,7 @@
           retrieve the subsequent page. Requests first page if absent.
         
         :returns: Iterator over :class:`BudgetConfiguration`
-        
+
 
     .. py:method:: update(budget_id: str, budget: UpdateBudgetConfigurationBudget) -> UpdateBudgetConfigurationResponse
 
@@ -215,4 +215,3 @@
           The updated budget. This will overwrite the budget specified by the budget ID.
         
         :returns: :class:`UpdateBudgetConfigurationResponse`
-        

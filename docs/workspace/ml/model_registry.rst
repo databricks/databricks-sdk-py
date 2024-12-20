@@ -38,7 +38,7 @@
           User-provided comment on the action.
         
         :returns: :class:`ApproveTransitionRequestResponse`
-        
+
 
     .. py:method:: create_comment(name: str, version: str, comment: str) -> CreateCommentResponse
 
@@ -77,7 +77,7 @@
           User-provided comment on the action.
         
         :returns: :class:`CreateCommentResponse`
-        
+
 
     .. py:method:: create_model(name: str [, description: Optional[str], tags: Optional[List[ModelTag]]]) -> CreateModelResponse
 
@@ -108,7 +108,7 @@
           Additional metadata for registered model.
         
         :returns: :class:`CreateModelResponse`
-        
+
 
     .. py:method:: create_model_version(name: str, source: str [, description: Optional[str], run_id: Optional[str], run_link: Optional[str], tags: Optional[List[ModelVersionTag]]]) -> CreateModelVersionResponse
 
@@ -147,7 +147,7 @@
           Additional metadata for model version.
         
         :returns: :class:`CreateModelVersionResponse`
-        
+
 
     .. py:method:: create_transition_request(name: str, version: str, stage: Stage [, comment: Optional[str]]) -> CreateTransitionRequestResponse
 
@@ -173,7 +173,7 @@
           User-provided comment on the action.
         
         :returns: :class:`CreateTransitionRequestResponse`
-        
+
 
     .. py:method:: create_webhook(events: List[RegistryWebhookEvent] [, description: Optional[str], http_url_spec: Optional[HttpUrlSpec], job_spec: Optional[JobSpec], model_name: Optional[str], status: Optional[RegistryWebhookStatus]]) -> CreateWebhookResponse
 
@@ -247,7 +247,7 @@
           event.
         
         :returns: :class:`CreateWebhookResponse`
-        
+
 
     .. py:method:: delete_comment(id: str)
 
@@ -257,8 +257,8 @@
         
         :param id: str
         
-        
-        
+
+
 
     .. py:method:: delete_model(name: str)
 
@@ -269,8 +269,8 @@
         :param name: str
           Registered model unique name identifier.
         
-        
-        
+
+
 
     .. py:method:: delete_model_tag(name: str, key: str)
 
@@ -284,8 +284,8 @@
           Name of the tag. The name must be an exact match; wild-card deletion is not supported. Maximum size
           is 250 bytes.
         
-        
-        
+
+
 
     .. py:method:: delete_model_version(name: str, version: str)
 
@@ -298,8 +298,8 @@
         :param version: str
           Model version number
         
-        
-        
+
+
 
     .. py:method:: delete_model_version_tag(name: str, version: str, key: str)
 
@@ -315,8 +315,8 @@
           Name of the tag. The name must be an exact match; wild-card deletion is not supported. Maximum size
           is 250 bytes.
         
-        
-        
+
+
 
     .. py:method:: delete_transition_request(name: str, version: str, stage: DeleteTransitionRequestStage, creator: str [, comment: Optional[str]])
 
@@ -344,8 +344,8 @@
         :param comment: str (optional)
           User-provided comment on the action.
         
-        
-        
+
+
 
     .. py:method:: delete_webhook( [, id: Optional[str]])
 
@@ -358,8 +358,8 @@
         :param id: str (optional)
           Webhook ID required to delete a registry webhook.
         
-        
-        
+
+
 
     .. py:method:: get_latest_versions(name: str [, stages: Optional[List[str]]]) -> Iterator[ModelVersion]
 
@@ -373,7 +373,7 @@
           List of stages.
         
         :returns: Iterator over :class:`ModelVersion`
-        
+
 
     .. py:method:: get_model(name: str) -> GetModelResponse
 
@@ -404,7 +404,7 @@
           Registered model unique name identifier.
         
         :returns: :class:`GetModelResponse`
-        
+
 
     .. py:method:: get_model_version(name: str, version: str) -> GetModelVersionResponse
 
@@ -418,7 +418,7 @@
           Model version number
         
         :returns: :class:`GetModelVersionResponse`
-        
+
 
     .. py:method:: get_model_version_download_uri(name: str, version: str) -> GetModelVersionDownloadUriResponse
 
@@ -432,7 +432,7 @@
           Model version number
         
         :returns: :class:`GetModelVersionDownloadUriResponse`
-        
+
 
     .. py:method:: get_permission_levels(registered_model_id: str) -> GetRegisteredModelPermissionLevelsResponse
 
@@ -444,7 +444,7 @@
           The registered model for which to get or manage permissions.
         
         :returns: :class:`GetRegisteredModelPermissionLevelsResponse`
-        
+
 
     .. py:method:: get_permissions(registered_model_id: str) -> RegisteredModelPermissions
 
@@ -457,7 +457,7 @@
           The registered model for which to get or manage permissions.
         
         :returns: :class:`RegisteredModelPermissions`
-        
+
 
     .. py:method:: list_models( [, max_results: Optional[int], page_token: Optional[str]]) -> Iterator[Model]
 
@@ -483,7 +483,7 @@
           Pagination token to go to the next page based on a previous query.
         
         :returns: Iterator over :class:`Model`
-        
+
 
     .. py:method:: list_transition_requests(name: str, version: str) -> Iterator[Activity]
 
@@ -497,7 +497,7 @@
           Version of the model.
         
         :returns: Iterator over :class:`Activity`
-        
+
 
     .. py:method:: list_webhooks( [, events: Optional[List[RegistryWebhookEvent]], model_name: Optional[str], page_token: Optional[str]]) -> Iterator[RegistryWebhook]
 
@@ -529,7 +529,7 @@
           Token indicating the page of artifact results to fetch
         
         :returns: Iterator over :class:`RegistryWebhook`
-        
+
 
     .. py:method:: reject_transition_request(name: str, version: str, stage: Stage [, comment: Optional[str]]) -> RejectTransitionRequestResponse
 
@@ -555,7 +555,7 @@
           User-provided comment on the action.
         
         :returns: :class:`RejectTransitionRequestResponse`
-        
+
 
     .. py:method:: rename_model(name: str [, new_name: Optional[str]]) -> RenameModelResponse
 
@@ -569,7 +569,7 @@
           If provided, updates the name for this `registered_model`.
         
         :returns: :class:`RenameModelResponse`
-        
+
 
     .. py:method:: search_model_versions( [, filter: Optional[str], max_results: Optional[int], order_by: Optional[List[str]], page_token: Optional[str]]) -> Iterator[ModelVersion]
 
@@ -590,7 +590,7 @@
           Pagination token to go to next page based on previous search query.
         
         :returns: Iterator over :class:`ModelVersion`
-        
+
 
     .. py:method:: search_models( [, filter: Optional[str], max_results: Optional[int], order_by: Optional[List[str]], page_token: Optional[str]]) -> Iterator[Model]
 
@@ -612,7 +612,7 @@
           Pagination token to go to the next page based on a previous search query.
         
         :returns: Iterator over :class:`Model`
-        
+
 
     .. py:method:: set_model_tag(name: str, key: str, value: str)
 
@@ -630,8 +630,8 @@
           String value of the tag being logged. Maximum size depends on storage backend. All storage backends
           are guaranteed to support key values up to 5000 bytes in size.
         
-        
-        
+
+
 
     .. py:method:: set_model_version_tag(name: str, version: str, key: str, value: str)
 
@@ -651,8 +651,8 @@
           String value of the tag being logged. Maximum size depends on storage backend. All storage backends
           are guaranteed to support key values up to 5000 bytes in size.
         
-        
-        
+
+
 
     .. py:method:: set_permissions(registered_model_id: str [, access_control_list: Optional[List[RegisteredModelAccessControlRequest]]]) -> RegisteredModelPermissions
 
@@ -666,7 +666,7 @@
         :param access_control_list: List[:class:`RegisteredModelAccessControlRequest`] (optional)
         
         :returns: :class:`RegisteredModelPermissions`
-        
+
 
     .. py:method:: test_registry_webhook(id: str [, event: Optional[RegistryWebhookEvent]]) -> TestRegistryWebhookResponse
 
@@ -683,7 +683,7 @@
           test trigger uses a randomly chosen event associated with the webhook.
         
         :returns: :class:`TestRegistryWebhookResponse`
-        
+
 
     .. py:method:: transition_stage(name: str, version: str, stage: Stage, archive_existing_versions: bool [, comment: Optional[str]]) -> TransitionStageResponse
 
@@ -714,7 +714,7 @@
           User-provided comment on the action.
         
         :returns: :class:`TransitionStageResponse`
-        
+
 
     .. py:method:: update_comment(id: str, comment: str) -> UpdateCommentResponse
 
@@ -752,7 +752,7 @@
           User-provided comment on the action.
         
         :returns: :class:`UpdateCommentResponse`
-        
+
 
     .. py:method:: update_model(name: str [, description: Optional[str]])
 
@@ -784,8 +784,8 @@
         :param description: str (optional)
           If provided, updates the description for this `registered_model`.
         
-        
-        
+
+
 
     .. py:method:: update_model_version(name: str, version: str [, description: Optional[str]])
 
@@ -819,8 +819,8 @@
         :param description: str (optional)
           If provided, updates the description for this `registered_model`.
         
-        
-        
+
+
 
     .. py:method:: update_permissions(registered_model_id: str [, access_control_list: Optional[List[RegisteredModelAccessControlRequest]]]) -> RegisteredModelPermissions
 
@@ -834,7 +834,7 @@
         :param access_control_list: List[:class:`RegisteredModelAccessControlRequest`] (optional)
         
         :returns: :class:`RegisteredModelPermissions`
-        
+
 
     .. py:method:: update_webhook(id: str [, description: Optional[str], events: Optional[List[RegistryWebhookEvent]], http_url_spec: Optional[HttpUrlSpec], job_spec: Optional[JobSpec], status: Optional[RegistryWebhookStatus]])
 
@@ -909,5 +909,4 @@
           * `TEST_MODE`: Webhook can be triggered through the test endpoint, but is not triggered on a real
           event.
         
-        
-        
+

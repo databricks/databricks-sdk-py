@@ -21,7 +21,7 @@
           request, and pass it with the DELETE request to identify the rule set version you are deleting.
         
         :returns: :class:`AutomaticClusterUpdateSetting`
-        
+
 
     .. py:method:: update(allow_missing: bool, setting: AutomaticClusterUpdateSetting, field_mask: str) -> AutomaticClusterUpdateSetting
 
@@ -41,4 +41,3 @@
           multiple fields in the field mask, use comma as the separator (no space).
         
         :returns: :class:`AutomaticClusterUpdateSetting`
-        

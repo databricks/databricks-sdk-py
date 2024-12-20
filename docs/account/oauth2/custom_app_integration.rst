@@ -28,7 +28,7 @@
           Token access policy
         
         :returns: :class:`CreateCustomAppIntegrationOutput`
-        
+
 
     .. py:method:: delete(integration_id: str)
 
@@ -39,8 +39,8 @@
         
         :param integration_id: str
         
-        
-        
+
+
 
     .. py:method:: get(integration_id: str) -> GetCustomAppIntegrationOutput
 
@@ -52,7 +52,7 @@
           The OAuth app integration ID.
         
         :returns: :class:`GetCustomAppIntegrationOutput`
-        
+
 
     .. py:method:: list( [, include_creator_username: Optional[bool], page_size: Optional[int], page_token: Optional[str]]) -> Iterator[GetCustomAppIntegrationOutput]
 
@@ -65,7 +65,7 @@
         :param page_token: str (optional)
         
         :returns: Iterator over :class:`GetCustomAppIntegrationOutput`
-        
+
 
     .. py:method:: update(integration_id: str [, redirect_urls: Optional[List[str]], token_access_policy: Optional[TokenAccessPolicy]])
 
@@ -80,5 +80,4 @@
         :param token_access_policy: :class:`TokenAccessPolicy` (optional)
           Token access policy to be updated in the custom OAuth app integration
         
-        
-        
+

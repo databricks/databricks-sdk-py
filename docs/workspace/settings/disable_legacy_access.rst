@@ -25,7 +25,7 @@
           request, and pass it with the DELETE request to identify the rule set version you are deleting.
         
         :returns: :class:`DeleteDisableLegacyAccessResponse`
-        
+
 
     .. py:method:: get( [, etag: Optional[str]]) -> DisableLegacyAccess
 
@@ -41,7 +41,7 @@
           request, and pass it with the DELETE request to identify the rule set version you are deleting.
         
         :returns: :class:`DisableLegacyAccess`
-        
+
 
     .. py:method:: update(allow_missing: bool, setting: DisableLegacyAccess, field_mask: str) -> DisableLegacyAccess
 
@@ -58,4 +58,3 @@
           multiple fields in the field mask, use comma as the separator (no space).
         
         :returns: :class:`DisableLegacyAccess`
-        

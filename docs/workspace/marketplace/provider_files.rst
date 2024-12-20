@@ -18,7 +18,7 @@
         :param display_name: str (optional)
         
         :returns: :class:`CreateFileResponse`
-        
+
 
     .. py:method:: delete(file_id: str)
 
@@ -28,8 +28,8 @@
         
         :param file_id: str
         
-        
-        
+
+
 
     .. py:method:: get(file_id: str) -> GetFileResponse
 
@@ -40,7 +40,7 @@
         :param file_id: str
         
         :returns: :class:`GetFileResponse`
-        
+
 
     .. py:method:: list(file_parent: FileParent [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[FileInfo]
 
@@ -53,4 +53,3 @@
         :param page_token: str (optional)
         
         :returns: Iterator over :class:`FileInfo`
-        

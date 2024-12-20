@@ -49,7 +49,7 @@
           support up to 20 tags per request.
         
         :returns: :class:`CreateExperimentResponse`
-        
+
 
     .. py:method:: create_run( [, experiment_id: Optional[str], start_time: Optional[int], tags: Optional[List[RunTag]], user_id: Optional[str]]) -> CreateRunResponse
 
@@ -91,7 +91,7 @@
           a future MLflow release. Use 'mlflow.user' tag instead.
         
         :returns: :class:`CreateRunResponse`
-        
+
 
     .. py:method:: delete_experiment(experiment_id: str)
 
@@ -103,8 +103,8 @@
         :param experiment_id: str
           ID of the associated experiment.
         
-        
-        
+
+
 
     .. py:method:: delete_run(run_id: str)
 
@@ -115,8 +115,8 @@
         :param run_id: str
           ID of the run to delete.
         
-        
-        
+
+
 
     .. py:method:: delete_runs(experiment_id: str, max_timestamp_millis: int [, max_runs: Optional[int]]) -> DeleteRunsResponse
 
@@ -136,7 +136,7 @@
           value for max_runs is 10000.
         
         :returns: :class:`DeleteRunsResponse`
-        
+
 
     .. py:method:: delete_tag(run_id: str, key: str)
 
@@ -150,8 +150,8 @@
         :param key: str
           Name of the tag. Maximum size is 255 bytes. Must be provided.
         
-        
-        
+
+
 
     .. py:method:: get_by_name(experiment_name: str) -> GetExperimentResponse
 
@@ -169,7 +169,7 @@
           Name of the associated experiment.
         
         :returns: :class:`GetExperimentResponse`
-        
+
 
     .. py:method:: get_experiment(experiment_id: str) -> GetExperimentResponse
 
@@ -199,7 +199,7 @@
           ID of the associated experiment.
         
         :returns: :class:`GetExperimentResponse`
-        
+
 
     .. py:method:: get_history(metric_key: str [, max_results: Optional[int], page_token: Optional[str], run_id: Optional[str], run_uuid: Optional[str]]) -> Iterator[Metric]
 
@@ -221,7 +221,7 @@
           removed in a future MLflow version.
         
         :returns: Iterator over :class:`Metric`
-        
+
 
     .. py:method:: get_permission_levels(experiment_id: str) -> GetExperimentPermissionLevelsResponse
 
@@ -233,7 +233,7 @@
           The experiment for which to get or manage permissions.
         
         :returns: :class:`GetExperimentPermissionLevelsResponse`
-        
+
 
     .. py:method:: get_permissions(experiment_id: str) -> ExperimentPermissions
 
@@ -245,7 +245,7 @@
           The experiment for which to get or manage permissions.
         
         :returns: :class:`ExperimentPermissions`
-        
+
 
     .. py:method:: get_run(run_id: str [, run_uuid: Optional[str]]) -> GetRunResponse
 
@@ -263,7 +263,7 @@
           MLflow version.
         
         :returns: :class:`GetRunResponse`
-        
+
 
     .. py:method:: list_artifacts( [, page_token: Optional[str], path: Optional[str], run_id: Optional[str], run_uuid: Optional[str]]) -> Iterator[FileInfo]
 
@@ -289,7 +289,7 @@
           in a future MLflow version.
         
         :returns: Iterator over :class:`FileInfo`
-        
+
 
     .. py:method:: list_experiments( [, max_results: Optional[int], page_token: Optional[str], view_type: Optional[str]]) -> Iterator[Experiment]
 
@@ -319,7 +319,7 @@
           Qualifier for type of experiments to be returned. If unspecified, return only active experiments.
         
         :returns: Iterator over :class:`Experiment`
-        
+
 
     .. py:method:: log_batch( [, metrics: Optional[List[Metric]], params: Optional[List[Param]], run_id: Optional[str], tags: Optional[List[RunTag]]])
 
@@ -372,8 +372,8 @@
           Tags to log. A single request can contain up to 100 tags, and up to 1000 metrics, params, and tags
           in total.
         
-        
-        
+
+
 
     .. py:method:: log_inputs( [, datasets: Optional[List[DatasetInput]], run_id: Optional[str]])
 
@@ -386,8 +386,8 @@
         :param run_id: str (optional)
           ID of the run to log under
         
-        
-        
+
+
 
     .. py:method:: log_metric(key: str, value: float, timestamp: int [, run_id: Optional[str], run_uuid: Optional[str], step: Optional[int]])
 
@@ -411,8 +411,8 @@
         :param step: int (optional)
           Step at which to log the metric
         
-        
-        
+
+
 
     .. py:method:: log_model( [, model_json: Optional[str], run_id: Optional[str]])
 
@@ -425,8 +425,8 @@
         :param run_id: str (optional)
           ID of the run to log under
         
-        
-        
+
+
 
     .. py:method:: log_param(key: str, value: str [, run_id: Optional[str], run_uuid: Optional[str]])
 
@@ -446,8 +446,8 @@
           [Deprecated, use run_id instead] ID of the run under which to log the param. This field will be
           removed in a future MLflow version.
         
-        
-        
+
+
 
     .. py:method:: restore_experiment(experiment_id: str)
 
@@ -462,8 +462,8 @@
         :param experiment_id: str
           ID of the associated experiment.
         
-        
-        
+
+
 
     .. py:method:: restore_run(run_id: str)
 
@@ -474,8 +474,8 @@
         :param run_id: str
           ID of the run to restore.
         
-        
-        
+
+
 
     .. py:method:: restore_runs(experiment_id: str, min_timestamp_millis: int [, max_runs: Optional[int]]) -> RestoreRunsResponse
 
@@ -495,7 +495,7 @@
           value for max_runs is 10000.
         
         :returns: :class:`RestoreRunsResponse`
-        
+
 
     .. py:method:: search_experiments( [, filter: Optional[str], max_results: Optional[int], order_by: Optional[List[str]], page_token: Optional[str], view_type: Optional[SearchExperimentsViewType]]) -> Iterator[Experiment]
 
@@ -517,7 +517,7 @@
           Qualifier for type of experiments to be returned. If unspecified, return only active experiments.
         
         :returns: Iterator over :class:`Experiment`
-        
+
 
     .. py:method:: search_runs( [, experiment_ids: Optional[List[str]], filter: Optional[str], max_results: Optional[int], order_by: Optional[List[str]], page_token: Optional[str], run_view_type: Optional[SearchRunsRunViewType]]) -> Iterator[Run]
 
@@ -554,7 +554,7 @@
           Whether to display only active, only deleted, or all runs. Defaults to only active runs.
         
         :returns: Iterator over :class:`Run`
-        
+
 
     .. py:method:: set_experiment_tag(experiment_id: str, key: str, value: str)
 
@@ -571,8 +571,8 @@
           String value of the tag being logged. Maximum size depends on storage backend. All storage backends
           are guaranteed to support key values up to 5000 bytes in size.
         
-        
-        
+
+
 
     .. py:method:: set_permissions(experiment_id: str [, access_control_list: Optional[List[ExperimentAccessControlRequest]]]) -> ExperimentPermissions
 
@@ -586,7 +586,7 @@
         :param access_control_list: List[:class:`ExperimentAccessControlRequest`] (optional)
         
         :returns: :class:`ExperimentPermissions`
-        
+
 
     .. py:method:: set_tag(key: str, value: str [, run_id: Optional[str], run_uuid: Optional[str]])
 
@@ -606,8 +606,8 @@
           [Deprecated, use run_id instead] ID of the run under which to log the tag. This field will be
           removed in a future MLflow version.
         
-        
-        
+
+
 
     .. py:method:: update_experiment(experiment_id: str [, new_name: Optional[str]])
 
@@ -638,8 +638,8 @@
         :param new_name: str (optional)
           If provided, the experiment's name is changed to the new name. The new name must be unique.
         
-        
-        
+
+
 
     .. py:method:: update_permissions(experiment_id: str [, access_control_list: Optional[List[ExperimentAccessControlRequest]]]) -> ExperimentPermissions
 
@@ -652,7 +652,7 @@
         :param access_control_list: List[:class:`ExperimentAccessControlRequest`] (optional)
         
         :returns: :class:`ExperimentPermissions`
-        
+
 
     .. py:method:: update_run( [, end_time: Optional[int], run_id: Optional[str], run_uuid: Optional[str], status: Optional[UpdateRunStatus]]) -> UpdateRunResponse
 
@@ -694,4 +694,3 @@
           Updated status of the run.
         
         :returns: :class:`UpdateRunResponse`
-        

@@ -31,7 +31,7 @@
           request, and pass it with the DELETE request to identify the rule set version you are deleting.
         
         :returns: :class:`DeleteRestrictWorkspaceAdminsSettingResponse`
-        
+
 
     .. py:method:: get( [, etag: Optional[str]]) -> RestrictWorkspaceAdminsSetting
 
@@ -47,7 +47,7 @@
           request, and pass it with the DELETE request to identify the rule set version you are deleting.
         
         :returns: :class:`RestrictWorkspaceAdminsSetting`
-        
+
 
     .. py:method:: update(allow_missing: bool, setting: RestrictWorkspaceAdminsSetting, field_mask: str) -> RestrictWorkspaceAdminsSetting
 
@@ -67,4 +67,3 @@
           multiple fields in the field mask, use comma as the separator (no space).
         
         :returns: :class:`RestrictWorkspaceAdminsSetting`
-        

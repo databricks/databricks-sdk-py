@@ -21,7 +21,7 @@
           Token access policy
         
         :returns: :class:`CreatePublishedAppIntegrationOutput`
-        
+
 
     .. py:method:: delete(integration_id: str)
 
@@ -32,8 +32,8 @@
         
         :param integration_id: str
         
-        
-        
+
+
 
     .. py:method:: get(integration_id: str) -> GetPublishedAppIntegrationOutput
 
@@ -44,7 +44,7 @@
         :param integration_id: str
         
         :returns: :class:`GetPublishedAppIntegrationOutput`
-        
+
 
     .. py:method:: list( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[GetPublishedAppIntegrationOutput]
 
@@ -56,7 +56,7 @@
         :param page_token: str (optional)
         
         :returns: Iterator over :class:`GetPublishedAppIntegrationOutput`
-        
+
 
     .. py:method:: update(integration_id: str [, token_access_policy: Optional[TokenAccessPolicy]])
 
@@ -69,5 +69,4 @@
         :param token_access_policy: :class:`TokenAccessPolicy` (optional)
           Token access policy to be updated in the published OAuth app integration
         
-        
-        
+

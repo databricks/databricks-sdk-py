@@ -63,7 +63,7 @@
           If provided, only the permissions for the specified principal (user or group) are returned.
         
         :returns: :class:`PermissionsList`
-        
+
 
     .. py:method:: get_effective(securable_type: SecurableType, full_name: str [, principal: Optional[str]]) -> EffectivePermissionsList
 
@@ -115,7 +115,7 @@
           returned.
         
         :returns: :class:`EffectivePermissionsList`
-        
+
 
     .. py:method:: update(securable_type: SecurableType, full_name: str [, changes: Optional[List[PermissionsChange]]]) -> PermissionsList
 
@@ -173,4 +173,3 @@
           Array of permissions change objects.
         
         :returns: :class:`PermissionsList`
-        

@@ -21,7 +21,7 @@
         :param share_name: str (optional)
         
         :returns: :class:`Installation`
-        
+
 
     .. py:method:: delete(listing_id: str, installation_id: str)
 
@@ -32,8 +32,8 @@
         :param listing_id: str
         :param installation_id: str
         
-        
-        
+
+
 
     .. py:method:: list( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[InstallationDetail]
 
@@ -45,7 +45,7 @@
         :param page_token: str (optional)
         
         :returns: Iterator over :class:`InstallationDetail`
-        
+
 
     .. py:method:: list_listing_installations(listing_id: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[InstallationDetail]
 
@@ -58,7 +58,7 @@
         :param page_token: str (optional)
         
         :returns: Iterator over :class:`InstallationDetail`
-        
+
 
     .. py:method:: update(listing_id: str, installation_id: str, installation: InstallationDetail [, rotate_token: Optional[bool]]) -> UpdateInstallationResponse
 
@@ -75,4 +75,3 @@
         :param rotate_token: bool (optional)
         
         :returns: :class:`UpdateInstallationResponse`
-        

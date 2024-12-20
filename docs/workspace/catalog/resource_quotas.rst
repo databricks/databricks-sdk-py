@@ -27,7 +27,7 @@
           Name of the quota. Follows the pattern of the quota type, with "-quota" added as a suffix.
         
         :returns: :class:`GetQuotaResponse`
-        
+
 
     .. py:method:: list_quotas( [, max_results: Optional[int], page_token: Optional[str]]) -> Iterator[QuotaInfo]
 
@@ -42,4 +42,3 @@
           Opaque token for the next page of results.
         
         :returns: Iterator over :class:`QuotaInfo`
-        

@@ -49,7 +49,7 @@
           Root S3 bucket information.
         
         :returns: :class:`StorageConfiguration`
-        
+
 
     .. py:method:: delete(storage_configuration_id: str)
 
@@ -61,8 +61,8 @@
         :param storage_configuration_id: str
           Databricks Account API storage configuration ID.
         
-        
-        
+
+
 
     .. py:method:: get(storage_configuration_id: str) -> StorageConfiguration
 
@@ -91,7 +91,7 @@
           Databricks Account API storage configuration ID.
         
         :returns: :class:`StorageConfiguration`
-        
+
 
     .. py:method:: list() -> Iterator[StorageConfiguration]
 
@@ -111,4 +111,3 @@
         Gets a list of all Databricks storage configurations for your account, specified by ID.
         
         :returns: Iterator over :class:`StorageConfiguration`
-        

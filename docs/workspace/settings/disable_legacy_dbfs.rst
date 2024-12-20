@@ -21,7 +21,7 @@
           request, and pass it with the DELETE request to identify the rule set version you are deleting.
         
         :returns: :class:`DeleteDisableLegacyDbfsResponse`
-        
+
 
     .. py:method:: get( [, etag: Optional[str]]) -> DisableLegacyDbfs
 
@@ -37,7 +37,7 @@
           request, and pass it with the DELETE request to identify the rule set version you are deleting.
         
         :returns: :class:`DisableLegacyDbfs`
-        
+
 
     .. py:method:: update(allow_missing: bool, setting: DisableLegacyDbfs, field_mask: str) -> DisableLegacyDbfs
 
@@ -54,4 +54,3 @@
           multiple fields in the field mask, use comma as the separator (no space).
         
         :returns: :class:`DisableLegacyDbfs`
-        

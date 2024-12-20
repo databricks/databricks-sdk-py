@@ -15,7 +15,7 @@
         :param filter: :class:`ExchangeFilter`
         
         :returns: :class:`CreateExchangeFilterResponse`
-        
+
 
     .. py:method:: delete(id: str)
 
@@ -25,8 +25,8 @@
         
         :param id: str
         
-        
-        
+
+
 
     .. py:method:: list(exchange_id: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[ExchangeFilter]
 
@@ -39,7 +39,7 @@
         :param page_token: str (optional)
         
         :returns: Iterator over :class:`ExchangeFilter`
-        
+
 
     .. py:method:: update(id: str, filter: ExchangeFilter) -> UpdateExchangeFilterResponse
 
@@ -51,4 +51,3 @@
         :param filter: :class:`ExchangeFilter`
         
         :returns: :class:`UpdateExchangeFilterResponse`
-        

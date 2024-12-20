@@ -44,7 +44,7 @@
           The number of seconds before the token expires.
         
         :returns: :class:`CreateOboTokenResponse`
-        
+
 
     .. py:method:: delete(token_id: str)
 
@@ -55,8 +55,8 @@
         :param token_id: str
           The ID of the token to revoke.
         
-        
-        
+
+
 
     .. py:method:: get(token_id: str) -> GetTokenResponse
 
@@ -93,7 +93,7 @@
           The ID of the token to get.
         
         :returns: :class:`GetTokenResponse`
-        
+
 
     .. py:method:: get_permission_levels() -> GetTokenPermissionLevelsResponse
 
@@ -102,7 +102,7 @@
         Gets the permission levels that a user can have on an object.
         
         :returns: :class:`GetTokenPermissionLevelsResponse`
-        
+
 
     .. py:method:: get_permissions() -> TokenPermissions
 
@@ -111,7 +111,7 @@
         Gets the permissions of all tokens. Tokens can inherit permissions from their root object.
         
         :returns: :class:`TokenPermissions`
-        
+
 
     .. py:method:: list( [, created_by_id: Optional[int], created_by_username: Optional[str]]) -> Iterator[TokenInfo]
 
@@ -137,7 +137,7 @@
           Username of the user that created the token.
         
         :returns: Iterator over :class:`TokenInfo`
-        
+
 
     .. py:method:: set_permissions( [, access_control_list: Optional[List[TokenAccessControlRequest]]]) -> TokenPermissions
 
@@ -149,7 +149,7 @@
         :param access_control_list: List[:class:`TokenAccessControlRequest`] (optional)
         
         :returns: :class:`TokenPermissions`
-        
+
 
     .. py:method:: update_permissions( [, access_control_list: Optional[List[TokenAccessControlRequest]]]) -> TokenPermissions
 
@@ -160,4 +160,3 @@
         :param access_control_list: List[:class:`TokenAccessControlRequest`] (optional)
         
         :returns: :class:`TokenPermissions`
-        

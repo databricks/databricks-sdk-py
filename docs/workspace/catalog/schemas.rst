@@ -47,7 +47,7 @@
           Storage root URL for managed tables within schema.
         
         :returns: :class:`SchemaInfo`
-        
+
 
     .. py:method:: delete(full_name: str [, force: Optional[bool]])
 
@@ -61,8 +61,8 @@
         :param force: bool (optional)
           Force deletion even if the schema is not empty.
         
-        
-        
+
+
 
     .. py:method:: get(full_name: str [, include_browse: Optional[bool]]) -> SchemaInfo
 
@@ -99,7 +99,7 @@
           metadata for
         
         :returns: :class:`SchemaInfo`
-        
+
 
     .. py:method:: list(catalog_name: str [, include_browse: Optional[bool], max_results: Optional[int], page_token: Optional[str]]) -> Iterator[SchemaInfo]
 
@@ -142,7 +142,7 @@
           Opaque pagination token to go to next page based on previous query.
         
         :returns: Iterator over :class:`SchemaInfo`
-        
+
 
     .. py:method:: update(full_name: str [, comment: Optional[str], enable_predictive_optimization: Optional[EnablePredictiveOptimization], new_name: Optional[str], owner: Optional[str], properties: Optional[Dict[str, str]]]) -> SchemaInfo
 
@@ -188,4 +188,3 @@
           A map of key-value properties attached to the securable.
         
         :returns: :class:`SchemaInfo`
-        

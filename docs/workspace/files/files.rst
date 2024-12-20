@@ -30,8 +30,8 @@
         :param directory_path: str
           The absolute path of a directory.
         
-        
-        
+
+
 
     .. py:method:: delete(file_path: str)
 
@@ -42,8 +42,8 @@
         :param file_path: str
           The absolute path of the file.
         
-        
-        
+
+
 
     .. py:method:: delete_directory(directory_path: str)
 
@@ -57,8 +57,8 @@
         :param directory_path: str
           The absolute path of a directory.
         
-        
-        
+
+
 
     .. py:method:: download(file_path: str) -> DownloadResponse
 
@@ -71,7 +71,7 @@
           The absolute path of the file.
         
         :returns: :class:`DownloadResponse`
-        
+
 
     .. py:method:: get_directory_metadata(directory_path: str)
 
@@ -88,8 +88,8 @@
         :param directory_path: str
           The absolute path of a directory.
         
-        
-        
+
+
 
     .. py:method:: get_metadata(file_path: str) -> GetMetadataResponse
 
@@ -101,7 +101,7 @@
           The absolute path of the file.
         
         :returns: :class:`GetMetadataResponse`
-        
+
 
     .. py:method:: list_directory_contents(directory_path: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[DirectoryEntry]
 
@@ -131,7 +131,7 @@
           must not be used to determine when the listing is complete.
         
         :returns: Iterator over :class:`DirectoryEntry`
-        
+
 
     .. py:method:: upload(file_path: str, contents: BinaryIO [, overwrite: Optional[bool]])
 
@@ -148,5 +148,4 @@
         :param overwrite: bool (optional)
           If true, an existing file will be overwritten.
         
-        
-        
+

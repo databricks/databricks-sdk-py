@@ -56,4 +56,3 @@
           other chat/completions query fields.
         
         :returns: :class:`QueryEndpointResponse`
-        

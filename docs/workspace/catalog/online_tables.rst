@@ -18,7 +18,7 @@
         :returns:
           Long-running operation waiter for :class:`OnlineTable`.
           See :method:wait_get_online_table_active for more details.
-        
+
 
     .. py:method:: create_and_wait( [, table: Optional[OnlineTable], timeout: datetime.timedelta = 0:20:00]) -> OnlineTable
 
@@ -34,8 +34,8 @@
         :param name: str
           Full three-part (catalog, schema, table) name of the table.
         
-        
-        
+
+
 
     .. py:method:: get(name: str) -> OnlineTable
 
@@ -47,6 +47,6 @@
           Full three-part (catalog, schema, table) name of the table.
         
         :returns: :class:`OnlineTable`
-        
+
 
     .. py:method:: wait_get_online_table_active(name: str, timeout: datetime.timedelta = 0:20:00, callback: Optional[Callable[[OnlineTable], None]]) -> OnlineTable

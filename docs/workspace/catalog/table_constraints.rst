@@ -35,7 +35,7 @@
           __primary_key_constraint__, __foreign_key_constraint__, __named_table_constraint__.
         
         :returns: :class:`TableConstraint`
-        
+
 
     .. py:method:: delete(full_name: str, constraint_name: str, cascade: bool)
 
@@ -58,5 +58,4 @@
           If true, try deleting all child constraints of the current constraint. If false, reject this
           operation if the current constraint has any child constraints.
         
-        
-        
+

@@ -20,4 +20,3 @@
           The maximum number of permissions that will be migrated.
         
         :returns: :class:`MigratePermissionsResponse`
-        

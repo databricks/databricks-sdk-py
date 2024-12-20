@@ -25,8 +25,8 @@
         :param full_name: str
           Full name of the table.
         
-        
-        
+
+
 
     .. py:method:: exists(full_name: str) -> TableExistsResponse
 
@@ -43,7 +43,7 @@
           Full name of the table.
         
         :returns: :class:`TableExistsResponse`
-        
+
 
     .. py:method:: get(full_name: str [, include_browse: Optional[bool], include_delta_metadata: Optional[bool], include_manifest_capabilities: Optional[bool]]) -> TableInfo
 
@@ -98,7 +98,7 @@
           Whether to include a manifest containing capabilities the table has.
         
         :returns: :class:`TableInfo`
-        
+
 
     .. py:method:: list(catalog_name: str, schema_name: str [, include_browse: Optional[bool], include_delta_metadata: Optional[bool], include_manifest_capabilities: Optional[bool], max_results: Optional[int], omit_columns: Optional[bool], omit_properties: Optional[bool], omit_username: Optional[bool], page_token: Optional[str]]) -> Iterator[TableInfo]
 
@@ -158,7 +158,7 @@
           Opaque token to send for the next page of results (pagination).
         
         :returns: Iterator over :class:`TableInfo`
-        
+
 
     .. py:method:: list_summaries(catalog_name: str [, include_manifest_capabilities: Optional[bool], max_results: Optional[int], page_token: Optional[str], schema_name_pattern: Optional[str], table_name_pattern: Optional[str]]) -> Iterator[TableSummary]
 
@@ -215,7 +215,7 @@
           A sql LIKE pattern (% and _) for table names. All tables will be returned if not set or empty.
         
         :returns: Iterator over :class:`TableSummary`
-        
+
 
     .. py:method:: update(full_name: str [, owner: Optional[str]])
 
@@ -230,5 +230,4 @@
           Full name of the table.
         :param owner: str (optional)
         
-        
-        
+

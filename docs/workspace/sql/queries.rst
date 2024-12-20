@@ -39,7 +39,7 @@
         :param query: :class:`CreateQueryRequestQuery` (optional)
         
         :returns: :class:`Query`
-        
+
 
     .. py:method:: delete(id: str)
 
@@ -51,8 +51,8 @@
         
         :param id: str
         
-        
-        
+
+
 
     .. py:method:: get(id: str) -> Query
 
@@ -87,7 +87,7 @@
         :param id: str
         
         :returns: :class:`Query`
-        
+
 
     .. py:method:: list( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[ListQueryObjectsResponseQuery]
 
@@ -100,7 +100,7 @@
         :param page_token: str (optional)
         
         :returns: Iterator over :class:`ListQueryObjectsResponseQuery`
-        
+
 
     .. py:method:: list_visualizations(id: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Visualization]
 
@@ -113,7 +113,7 @@
         :param page_token: str (optional)
         
         :returns: Iterator over :class:`Visualization`
-        
+
 
     .. py:method:: update(id: str, update_mask: str [, query: Optional[UpdateQueryRequestQuery]]) -> Query
 
@@ -157,4 +157,3 @@
         :param query: :class:`UpdateQueryRequestQuery` (optional)
         
         :returns: :class:`Query`
-        
