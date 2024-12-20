@@ -64,7 +64,7 @@
           __authentication_type__ is **DATABRICKS**.
         
         :returns: :class:`RecipientInfo`
-        
+
 
     .. py:method:: delete(name: str)
 
@@ -75,8 +75,8 @@
         :param name: str
           Name of the recipient.
         
-        
-        
+
+
 
     .. py:method:: get(name: str) -> RecipientInfo
 
@@ -108,7 +108,7 @@
           Name of the recipient.
         
         :returns: :class:`RecipientInfo`
-        
+
 
     .. py:method:: list( [, data_recipient_global_metastore_id: Optional[str], max_results: Optional[int], page_token: Optional[str]]) -> Iterator[RecipientInfo]
 
@@ -146,7 +146,7 @@
           Opaque pagination token to go to next page based on previous query.
         
         :returns: Iterator over :class:`RecipientInfo`
-        
+
 
     .. py:method:: rotate_token(name: str, existing_token_expire_in_seconds: int) -> RecipientInfo
 
@@ -181,7 +181,7 @@
           the existing token immediately, negative number will return an error.
         
         :returns: :class:`RecipientInfo`
-        
+
 
     .. py:method:: share_permissions(name: str [, max_results: Optional[int], page_token: Optional[str]]) -> GetRecipientSharePermissionsResponse
 
@@ -222,7 +222,7 @@
           Opaque pagination token to go to next page based on previous query.
         
         :returns: :class:`GetRecipientSharePermissionsResponse`
-        
+
 
     .. py:method:: update(name: str [, comment: Optional[str], expiration_time: Optional[int], ip_access_list: Optional[IpAccessList], new_name: Optional[str], owner: Optional[str], properties_kvpairs: Optional[SecurablePropertiesKvPairs]])
 
@@ -267,5 +267,4 @@
           specified properties will override the existing properties. To add and remove properties, one would
           need to perform a read-modify-write.
         
-        
-        
+

@@ -21,8 +21,8 @@
         :param data: str
           The base64-encoded data to append to the stream. This has a limit of 1 MB.
         
-        
-        
+
+
 
     .. py:method:: close(handle: int)
 
@@ -34,8 +34,8 @@
         :param handle: int
           The handle on an open stream.
         
-        
-        
+
+
 
     .. py:method:: copy(src: str, dst: str [, recursive: bool = False, overwrite: bool = False])
 
@@ -60,7 +60,7 @@
           The flag that specifies whether to overwrite existing file/files.
         
         :returns: :class:`CreateResponse`
-        
+
 
     .. py:method:: delete(path: str [, recursive: bool = False])
 
@@ -106,22 +106,22 @@
           The path of the file or directory. The path should be the absolute DBFS path.
         
         :returns: :class:`FileInfo`
-        
+
 
     .. py:method:: list(path: str [, recursive: bool = False]) -> Iterator[files.FileInfo]
 
         List directory contents or file details.
-
+        
         List the contents of a directory, or details of the file. If the file or directory does not exist,
         this call throws an exception with `RESOURCE_DOES_NOT_EXIST`.
-
+        
         When calling list on a large directory, the list operation will time out after approximately 60
         seconds.
-
+        
         :param path: the DBFS or UC Volume path to list
         :param recursive: traverse deep into directory tree
         :returns iterator of metadata for every file
-        
+
 
     .. py:method:: mkdirs(path: str)
 
@@ -141,8 +141,8 @@
         :param destination_path: str
           The destination path of the file or directory. The path should be the absolute DBFS path.
         
-        
-        
+
+
 
     .. py:method:: move_(src: str, dst: str [, recursive: bool = False, overwrite: bool = False])
 
@@ -173,8 +173,8 @@
         :param overwrite: bool (optional)
           The flag that specifies whether to overwrite existing file/files.
         
-        
-        
+
+
 
     .. py:method:: read(path: str [, length: Optional[int], offset: Optional[int]]) -> ReadResponse
 
@@ -197,7 +197,7 @@
           The offset to read from in bytes.
         
         :returns: :class:`ReadResponse`
-        
+
 
     .. py:method:: upload(path: str, src: BinaryIO [, overwrite: bool = False])
 

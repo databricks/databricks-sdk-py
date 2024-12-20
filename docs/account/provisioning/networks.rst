@@ -52,7 +52,7 @@
           configurations.
         
         :returns: :class:`Network`
-        
+
 
     .. py:method:: delete(network_id: str)
 
@@ -66,8 +66,8 @@
         :param network_id: str
           Databricks Account API network configuration ID.
         
-        
-        
+
+
 
     .. py:method:: get(network_id: str) -> Network
 
@@ -98,7 +98,7 @@
           Databricks Account API network configuration ID.
         
         :returns: :class:`Network`
-        
+
 
     .. py:method:: list() -> Iterator[Network]
 
@@ -120,4 +120,3 @@
         This operation is available only if your account is on the E2 version of the platform.
         
         :returns: Iterator over :class:`Network`
-        

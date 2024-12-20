@@ -19,7 +19,7 @@
           The resource name for which assignable roles will be listed.
         
         :returns: :class:`GetAssignableRolesForResourceResponse`
-        
+
 
     .. py:method:: get_rule_set(name: str, etag: str) -> RuleSetResponse
 
@@ -39,7 +39,7 @@
           version you are updating.
         
         :returns: :class:`RuleSetResponse`
-        
+
 
     .. py:method:: update_rule_set(name: str, rule_set: RuleSetUpdateRequest) -> RuleSetResponse
 
@@ -53,4 +53,3 @@
         :param rule_set: :class:`RuleSetUpdateRequest`
         
         :returns: :class:`RuleSetResponse`
-        

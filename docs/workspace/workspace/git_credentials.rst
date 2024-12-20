@@ -49,7 +49,7 @@
           [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html
         
         :returns: :class:`CreateCredentialsResponse`
-        
+
 
     .. py:method:: delete(credential_id: int)
 
@@ -60,8 +60,8 @@
         :param credential_id: int
           The ID for the corresponding credential to access.
         
-        
-        
+
+
 
     .. py:method:: get(credential_id: int) -> GetCredentialsResponse
 
@@ -89,7 +89,7 @@
           The ID for the corresponding credential to access.
         
         :returns: :class:`GetCredentialsResponse`
-        
+
 
     .. py:method:: list() -> Iterator[CredentialInfo]
 
@@ -109,7 +109,7 @@
         Lists the calling user's Git credentials. One credential per user is supported.
         
         :returns: Iterator over :class:`CredentialInfo`
-        
+
 
     .. py:method:: update(credential_id: int, git_provider: str [, git_username: Optional[str], personal_access_token: Optional[str]])
 
@@ -156,5 +156,4 @@
           
           [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html
         
-        
-        
+

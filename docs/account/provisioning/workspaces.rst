@@ -148,7 +148,7 @@
         :returns:
           Long-running operation waiter for :class:`Workspace`.
           See :method:wait_get_workspace_running for more details.
-        
+
 
     .. py:method:: create_and_wait(workspace_name: str [, aws_region: Optional[str], cloud: Optional[str], cloud_resource_container: Optional[CloudResourceContainer], credentials_id: Optional[str], custom_tags: Optional[Dict[str, str]], deployment_name: Optional[str], gcp_managed_network_config: Optional[GcpManagedNetworkConfig], gke_config: Optional[GkeConfig], is_no_public_ip_enabled: Optional[bool], location: Optional[str], managed_services_customer_managed_key_id: Optional[str], network_id: Optional[str], pricing_tier: Optional[PricingTier], private_access_settings_id: Optional[str], storage_configuration_id: Optional[str], storage_customer_managed_key_id: Optional[str], timeout: datetime.timedelta = 0:20:00]) -> Workspace
 
@@ -167,8 +167,8 @@
         :param workspace_id: int
           Workspace ID.
         
-        
-        
+
+
 
     .. py:method:: get(workspace_id: int) -> Workspace
 
@@ -204,7 +204,7 @@
           Workspace ID.
         
         :returns: :class:`Workspace`
-        
+
 
     .. py:method:: list() -> Iterator[Workspace]
 
@@ -227,7 +227,7 @@
         custom plan that allows multiple workspaces per account.
         
         :returns: Iterator over :class:`Workspace`
-        
+
 
     .. py:method:: update(workspace_id: int [, aws_region: Optional[str], credentials_id: Optional[str], custom_tags: Optional[Dict[str, str]], managed_services_customer_managed_key_id: Optional[str], network_connectivity_config_id: Optional[str], network_id: Optional[str], private_access_settings_id: Optional[str], storage_configuration_id: Optional[str], storage_customer_managed_key_id: Optional[str]]) -> Wait[Workspace]
 
@@ -385,7 +385,7 @@
         :returns:
           Long-running operation waiter for :class:`Workspace`.
           See :method:wait_get_workspace_running for more details.
-        
+
 
     .. py:method:: update_and_wait(workspace_id: int [, aws_region: Optional[str], credentials_id: Optional[str], custom_tags: Optional[Dict[str, str]], managed_services_customer_managed_key_id: Optional[str], network_connectivity_config_id: Optional[str], network_id: Optional[str], private_access_settings_id: Optional[str], storage_configuration_id: Optional[str], storage_customer_managed_key_id: Optional[str], timeout: datetime.timedelta = 0:20:00]) -> Workspace
 

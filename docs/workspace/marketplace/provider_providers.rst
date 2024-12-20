@@ -15,7 +15,7 @@
         :param provider: :class:`ProviderInfo`
         
         :returns: :class:`CreateProviderResponse`
-        
+
 
     .. py:method:: delete(id: str)
 
@@ -25,8 +25,8 @@
         
         :param id: str
         
-        
-        
+
+
 
     .. py:method:: get(id: str) -> GetProviderResponse
 
@@ -37,7 +37,7 @@
         :param id: str
         
         :returns: :class:`GetProviderResponse`
-        
+
 
     .. py:method:: list( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[ProviderInfo]
 
@@ -49,7 +49,7 @@
         :param page_token: str (optional)
         
         :returns: Iterator over :class:`ProviderInfo`
-        
+
 
     .. py:method:: update(id: str, provider: ProviderInfo) -> UpdateProviderResponse
 
@@ -61,4 +61,3 @@
         :param provider: :class:`ProviderInfo`
         
         :returns: :class:`UpdateProviderResponse`
-        

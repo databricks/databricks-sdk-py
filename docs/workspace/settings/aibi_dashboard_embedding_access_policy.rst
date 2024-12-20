@@ -21,7 +21,7 @@
           request, and pass it with the DELETE request to identify the rule set version you are deleting.
         
         :returns: :class:`DeleteAibiDashboardEmbeddingAccessPolicySettingResponse`
-        
+
 
     .. py:method:: get( [, etag: Optional[str]]) -> AibiDashboardEmbeddingAccessPolicySetting
 
@@ -38,7 +38,7 @@
           request, and pass it with the DELETE request to identify the rule set version you are deleting.
         
         :returns: :class:`AibiDashboardEmbeddingAccessPolicySetting`
-        
+
 
     .. py:method:: update(allow_missing: bool, setting: AibiDashboardEmbeddingAccessPolicySetting, field_mask: str) -> AibiDashboardEmbeddingAccessPolicySetting
 
@@ -55,4 +55,3 @@
           multiple fields in the field mask, use comma as the separator (no space).
         
         :returns: :class:`AibiDashboardEmbeddingAccessPolicySetting`
-        

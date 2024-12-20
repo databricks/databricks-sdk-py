@@ -65,8 +65,8 @@
         :param job_id: int (optional)
           The canonical identifier of the job to cancel all runs of.
         
-        
-        
+
+
 
     .. py:method:: cancel_run(run_id: int) -> Wait[Run]
 
@@ -115,7 +115,7 @@
         :returns:
           Long-running operation waiter for :class:`Run`.
           See :method:wait_get_run_job_terminated_or_skipped for more details.
-        
+
 
     .. py:method:: cancel_run_and_wait(run_id: int, timeout: datetime.timedelta = 0:20:00) -> Run
 
@@ -241,7 +241,7 @@
           A collection of system notification IDs to notify when runs of this job begin or complete.
         
         :returns: :class:`CreateResponse`
-        
+
 
     .. py:method:: delete(job_id: int)
 
@@ -252,8 +252,8 @@
         :param job_id: int
           The canonical identifier of the job to delete. This field is required.
         
-        
-        
+
+
 
     .. py:method:: delete_run(run_id: int)
 
@@ -264,8 +264,8 @@
         :param run_id: int
           ID of the run to delete.
         
-        
-        
+
+
 
     .. py:method:: export_run(run_id: int [, views_to_export: Optional[ViewsToExport]]) -> ExportRunOutput
 
@@ -313,7 +313,7 @@
           Which views to export (CODE, DASHBOARDS, or ALL). Defaults to CODE.
         
         :returns: :class:`ExportRunOutput`
-        
+
 
     .. py:method:: get(job_id: int) -> Job
 
@@ -355,7 +355,7 @@
           The canonical identifier of the job to retrieve information about. This field is required.
         
         :returns: :class:`Job`
-        
+
 
     .. py:method:: get_permission_levels(job_id: str) -> GetJobPermissionLevelsResponse
 
@@ -367,7 +367,7 @@
           The job for which to get or manage permissions.
         
         :returns: :class:`GetJobPermissionLevelsResponse`
-        
+
 
     .. py:method:: get_permissions(job_id: str) -> JobPermissions
 
@@ -379,7 +379,7 @@
           The job for which to get or manage permissions.
         
         :returns: :class:`JobPermissions`
-        
+
 
     .. py:method:: get_run(run_id: int [, include_history: bool, include_resolved_values: bool, page_token: str]) -> Run
 
@@ -426,7 +426,7 @@
           To list the next page or the previous page of job tasks, set this field to the value of the
           `next_page_token` or `prev_page_token` returned in the GetJob response.
         :returns: :class:`Run`
-        
+
 
     .. py:method:: get_run_output(run_id: int) -> RunOutput
 
@@ -475,7 +475,7 @@
           The canonical identifier for the run.
         
         :returns: :class:`RunOutput`
-        
+
 
     .. py:method:: list( [, expand_tasks: Optional[bool], limit: Optional[int], name: Optional[str], offset: Optional[int], page_token: Optional[str]]) -> Iterator[BaseJob]
 
@@ -530,7 +530,7 @@
           previous page of jobs respectively.
         
         :returns: Iterator over :class:`BaseJob`
-        
+
 
     .. py:method:: list_runs( [, active_only: Optional[bool], completed_only: Optional[bool], expand_tasks: Optional[bool], job_id: Optional[int], limit: Optional[int], offset: Optional[int], page_token: Optional[str], run_type: Optional[RunType], start_time_from: Optional[int], start_time_to: Optional[int]]) -> Iterator[BaseRun]
 
@@ -600,7 +600,7 @@
           Can be combined with _start_time_from_ to filter by a time range.
         
         :returns: Iterator over :class:`BaseRun`
-        
+
 
     .. py:method:: repair_run(run_id: int [, dbt_commands: Optional[List[str]], jar_params: Optional[List[str]], job_parameters: Optional[Dict[str, str]], latest_repair_id: Optional[int], notebook_params: Optional[Dict[str, str]], pipeline_params: Optional[PipelineParams], python_named_params: Optional[Dict[str, str]], python_params: Optional[List[str]], rerun_all_failed_tasks: Optional[bool], rerun_dependent_tasks: Optional[bool], rerun_tasks: Optional[List[str]], spark_submit_params: Optional[List[str]], sql_params: Optional[Dict[str, str]]]) -> Wait[Run]
 
@@ -730,7 +730,7 @@
         :returns:
           Long-running operation waiter for :class:`Run`.
           See :method:wait_get_run_job_terminated_or_skipped for more details.
-        
+
 
     .. py:method:: repair_run_and_wait(run_id: int [, dbt_commands: Optional[List[str]], jar_params: Optional[List[str]], job_parameters: Optional[Dict[str, str]], latest_repair_id: Optional[int], notebook_params: Optional[Dict[str, str]], pipeline_params: Optional[PipelineParams], python_named_params: Optional[Dict[str, str]], python_params: Optional[List[str]], rerun_all_failed_tasks: Optional[bool], rerun_dependent_tasks: Optional[bool], rerun_tasks: Optional[List[str]], spark_submit_params: Optional[List[str]], sql_params: Optional[Dict[str, str]], timeout: datetime.timedelta = 0:20:00]) -> Run
 
@@ -786,8 +786,8 @@
           Changes to the field `JobBaseSettings.timeout_seconds` are applied to active runs. Changes to other
           fields are applied to future runs only.
         
-        
-        
+
+
 
     .. py:method:: run_now(job_id: int [, dbt_commands: Optional[List[str]], idempotency_token: Optional[str], jar_params: Optional[List[str]], job_parameters: Optional[Dict[str, str]], notebook_params: Optional[Dict[str, str]], only: Optional[List[str]], pipeline_params: Optional[PipelineParams], python_named_params: Optional[Dict[str, str]], python_params: Optional[List[str]], queue: Optional[QueueSettings], spark_submit_params: Optional[List[str]], sql_params: Optional[Dict[str, str]]]) -> Wait[Run]
 
@@ -919,7 +919,7 @@
         :returns:
           Long-running operation waiter for :class:`Run`.
           See :method:wait_get_run_job_terminated_or_skipped for more details.
-        
+
 
     .. py:method:: run_now_and_wait(job_id: int [, dbt_commands: Optional[List[str]], idempotency_token: Optional[str], jar_params: Optional[List[str]], job_parameters: Optional[Dict[str, str]], notebook_params: Optional[Dict[str, str]], only: Optional[List[str]], pipeline_params: Optional[PipelineParams], python_named_params: Optional[Dict[str, str]], python_params: Optional[List[str]], queue: Optional[QueueSettings], spark_submit_params: Optional[List[str]], sql_params: Optional[Dict[str, str]], timeout: datetime.timedelta = 0:20:00]) -> Run
 
@@ -936,7 +936,7 @@
         :param access_control_list: List[:class:`JobAccessControlRequest`] (optional)
         
         :returns: :class:`JobPermissions`
-        
+
 
     .. py:method:: submit( [, access_control_list: Optional[List[JobAccessControlRequest]], budget_policy_id: Optional[str], email_notifications: Optional[JobEmailNotifications], environments: Optional[List[JobEnvironment]], git_source: Optional[GitSource], health: Optional[JobsHealthRules], idempotency_token: Optional[str], notification_settings: Optional[JobNotificationSettings], queue: Optional[QueueSettings], run_as: Optional[JobRunAs], run_name: Optional[str], tasks: Optional[List[SubmitTask]], timeout_seconds: Optional[int], webhook_notifications: Optional[WebhookNotifications]]) -> Wait[Run]
 
@@ -1026,7 +1026,7 @@
         :returns:
           Long-running operation waiter for :class:`Run`.
           See :method:wait_get_run_job_terminated_or_skipped for more details.
-        
+
 
     .. py:method:: submit_and_wait( [, access_control_list: Optional[List[JobAccessControlRequest]], budget_policy_id: Optional[str], email_notifications: Optional[JobEmailNotifications], environments: Optional[List[JobEnvironment]], git_source: Optional[GitSource], health: Optional[JobsHealthRules], idempotency_token: Optional[str], notification_settings: Optional[JobNotificationSettings], queue: Optional[QueueSettings], run_as: Optional[JobRunAs], run_name: Optional[str], tasks: Optional[List[SubmitTask]], timeout_seconds: Optional[int], webhook_notifications: Optional[WebhookNotifications], timeout: datetime.timedelta = 0:20:00]) -> Run
 
@@ -1089,8 +1089,8 @@
           Changes to the field `JobSettings.timeout_seconds` are applied to active runs. Changes to other
           fields are applied to future runs only.
         
-        
-        
+
+
 
     .. py:method:: update_permissions(job_id: str [, access_control_list: Optional[List[JobAccessControlRequest]]]) -> JobPermissions
 
@@ -1103,6 +1103,6 @@
         :param access_control_list: List[:class:`JobAccessControlRequest`] (optional)
         
         :returns: :class:`JobPermissions`
-        
+
 
     .. py:method:: wait_get_run_job_terminated_or_skipped(run_id: int, timeout: datetime.timedelta = 0:20:00, callback: Optional[Callable[[Run], None]]) -> Run

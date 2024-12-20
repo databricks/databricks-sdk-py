@@ -63,7 +63,7 @@
           If the connection is read only.
         
         :returns: :class:`ConnectionInfo`
-        
+
 
     .. py:method:: delete(name: str)
 
@@ -74,8 +74,8 @@
         :param name: str
           The name of the connection to be deleted.
         
-        
-        
+
+
 
     .. py:method:: get(name: str) -> ConnectionInfo
 
@@ -126,7 +126,7 @@
           Name of the connection.
         
         :returns: :class:`ConnectionInfo`
-        
+
 
     .. py:method:: list( [, max_results: Optional[int], page_token: Optional[str]]) -> Iterator[ConnectionInfo]
 
@@ -155,7 +155,7 @@
           Opaque pagination token to go to next page based on previous query.
         
         :returns: Iterator over :class:`ConnectionInfo`
-        
+
 
     .. py:method:: update(name: str, options: Dict[str, str] [, new_name: Optional[str], owner: Optional[str]]) -> ConnectionInfo
 
@@ -210,4 +210,3 @@
           Username of current owner of the connection.
         
         :returns: :class:`ConnectionInfo`
-        

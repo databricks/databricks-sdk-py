@@ -27,7 +27,7 @@
           The name of the served model that build logs will be retrieved for. This field is required.
         
         :returns: :class:`BuildLogsResponse`
-        
+
 
     .. py:method:: create(name: str, config: EndpointCoreConfigInput [, ai_gateway: Optional[AiGatewayConfig], rate_limits: Optional[List[RateLimit]], route_optimized: Optional[bool], tags: Optional[List[EndpointTag]]]) -> Wait[ServingEndpointDetailed]
 
@@ -52,7 +52,7 @@
         :returns:
           Long-running operation waiter for :class:`ServingEndpointDetailed`.
           See :method:wait_get_serving_endpoint_not_updating for more details.
-        
+
 
     .. py:method:: create_and_wait(name: str, config: EndpointCoreConfigInput [, ai_gateway: Optional[AiGatewayConfig], rate_limits: Optional[List[RateLimit]], route_optimized: Optional[bool], tags: Optional[List[EndpointTag]], timeout: datetime.timedelta = 0:20:00]) -> ServingEndpointDetailed
 
@@ -64,8 +64,8 @@
         :param name: str
           The name of the serving endpoint. This field is required.
         
-        
-        
+
+
 
     .. py:method:: export_metrics(name: str) -> ExportMetricsResponse
 
@@ -78,7 +78,7 @@
           The name of the serving endpoint to retrieve metrics for. This field is required.
         
         :returns: :class:`ExportMetricsResponse`
-        
+
 
     .. py:method:: get(name: str) -> ServingEndpointDetailed
 
@@ -90,7 +90,7 @@
           The name of the serving endpoint. This field is required.
         
         :returns: :class:`ServingEndpointDetailed`
-        
+
 
     .. py:method:: get_langchain_chat_open_ai_client(model)
 
@@ -108,8 +108,8 @@
         :param name: str
           The name of the serving endpoint that the served model belongs to. This field is required.
         
-        
-        
+
+
 
     .. py:method:: get_permission_levels(serving_endpoint_id: str) -> GetServingEndpointPermissionLevelsResponse
 
@@ -121,7 +121,7 @@
           The serving endpoint for which to get or manage permissions.
         
         :returns: :class:`GetServingEndpointPermissionLevelsResponse`
-        
+
 
     .. py:method:: get_permissions(serving_endpoint_id: str) -> ServingEndpointPermissions
 
@@ -134,14 +134,14 @@
           The serving endpoint for which to get or manage permissions.
         
         :returns: :class:`ServingEndpointPermissions`
-        
+
 
     .. py:method:: list() -> Iterator[ServingEndpoint]
 
         Get all serving endpoints.
         
         :returns: Iterator over :class:`ServingEndpoint`
-        
+
 
     .. py:method:: logs(name: str, served_model_name: str) -> ServerLogsResponse
 
@@ -155,7 +155,7 @@
           The name of the served model that logs will be retrieved for. This field is required.
         
         :returns: :class:`ServerLogsResponse`
-        
+
 
     .. py:method:: patch(name: str [, add_tags: Optional[List[EndpointTag]], delete_tags: Optional[List[str]]]) -> Iterator[EndpointTag]
 
@@ -171,7 +171,7 @@
           List of tag keys to delete
         
         :returns: Iterator over :class:`EndpointTag`
-        
+
 
     .. py:method:: put(name: str [, rate_limits: Optional[List[RateLimit]]]) -> PutResponse
 
@@ -186,7 +186,7 @@
           The list of endpoint rate limits.
         
         :returns: :class:`PutResponse`
-        
+
 
     .. py:method:: put_ai_gateway(name: str [, guardrails: Optional[AiGatewayGuardrails], inference_table_config: Optional[AiGatewayInferenceTableConfig], rate_limits: Optional[List[AiGatewayRateLimit]], usage_tracking_config: Optional[AiGatewayUsageTrackingConfig]]) -> PutAiGatewayResponse
 
@@ -209,7 +209,7 @@
           operational usage on endpoints and their associated costs.
         
         :returns: :class:`PutAiGatewayResponse`
-        
+
 
     .. py:method:: query(name: str [, dataframe_records: Optional[List[Any]], dataframe_split: Optional[DataframeSplitInput], extra_params: Optional[Dict[str, str]], input: Optional[Any], inputs: Optional[Any], instances: Optional[List[Any]], max_tokens: Optional[int], messages: Optional[List[ChatMessage]], n: Optional[int], prompt: Optional[Any], stop: Optional[List[str]], stream: Optional[bool], temperature: Optional[float]]) -> QueryEndpointResponse
 
@@ -260,7 +260,7 @@
           other chat/completions query fields.
         
         :returns: :class:`QueryEndpointResponse`
-        
+
 
     .. py:method:: set_permissions(serving_endpoint_id: str [, access_control_list: Optional[List[ServingEndpointAccessControlRequest]]]) -> ServingEndpointPermissions
 
@@ -274,7 +274,7 @@
         :param access_control_list: List[:class:`ServingEndpointAccessControlRequest`] (optional)
         
         :returns: :class:`ServingEndpointPermissions`
-        
+
 
     .. py:method:: update_config(name: str [, auto_capture_config: Optional[AutoCaptureConfigInput], served_entities: Optional[List[ServedEntityInput]], served_models: Optional[List[ServedModelInput]], traffic_config: Optional[TrafficConfig]]) -> Wait[ServingEndpointDetailed]
 
@@ -300,7 +300,7 @@
         :returns:
           Long-running operation waiter for :class:`ServingEndpointDetailed`.
           See :method:wait_get_serving_endpoint_not_updating for more details.
-        
+
 
     .. py:method:: update_config_and_wait(name: str [, auto_capture_config: Optional[AutoCaptureConfigInput], served_entities: Optional[List[ServedEntityInput]], served_models: Optional[List[ServedModelInput]], traffic_config: Optional[TrafficConfig], timeout: datetime.timedelta = 0:20:00]) -> ServingEndpointDetailed
 
@@ -317,6 +317,6 @@
         :param access_control_list: List[:class:`ServingEndpointAccessControlRequest`] (optional)
         
         :returns: :class:`ServingEndpointPermissions`
-        
+
 
     .. py:method:: wait_get_serving_endpoint_not_updating(name: str, timeout: datetime.timedelta = 0:20:00, callback: Optional[Callable[[ServingEndpointDetailed], None]]) -> ServingEndpointDetailed

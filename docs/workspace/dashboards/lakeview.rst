@@ -16,7 +16,7 @@
         :param dashboard: :class:`Dashboard` (optional)
         
         :returns: :class:`Dashboard`
-        
+
 
     .. py:method:: create_schedule(dashboard_id: str [, schedule: Optional[Schedule]]) -> Schedule
 
@@ -27,7 +27,7 @@
         :param schedule: :class:`Schedule` (optional)
         
         :returns: :class:`Schedule`
-        
+
 
     .. py:method:: create_subscription(dashboard_id: str, schedule_id: str [, subscription: Optional[Subscription]]) -> Subscription
 
@@ -40,7 +40,7 @@
         :param subscription: :class:`Subscription` (optional)
         
         :returns: :class:`Subscription`
-        
+
 
     .. py:method:: delete_schedule(dashboard_id: str, schedule_id: str [, etag: Optional[str]])
 
@@ -54,8 +54,8 @@
           The etag for the schedule. Optionally, it can be provided to verify that the schedule has not been
           modified from its last retrieval.
         
-        
-        
+
+
 
     .. py:method:: delete_subscription(dashboard_id: str, schedule_id: str, subscription_id: str [, etag: Optional[str]])
 
@@ -71,8 +71,8 @@
           The etag for the subscription. Can be optionally provided to ensure that the subscription has not
           been modified since the last read.
         
-        
-        
+
+
 
     .. py:method:: get(dashboard_id: str) -> Dashboard
 
@@ -84,7 +84,7 @@
           UUID identifying the dashboard.
         
         :returns: :class:`Dashboard`
-        
+
 
     .. py:method:: get_published(dashboard_id: str) -> PublishedDashboard
 
@@ -96,7 +96,7 @@
           UUID identifying the published dashboard.
         
         :returns: :class:`PublishedDashboard`
-        
+
 
     .. py:method:: get_schedule(dashboard_id: str, schedule_id: str) -> Schedule
 
@@ -108,7 +108,7 @@
           UUID identifying the schedule.
         
         :returns: :class:`Schedule`
-        
+
 
     .. py:method:: get_subscription(dashboard_id: str, schedule_id: str, subscription_id: str) -> Subscription
 
@@ -122,7 +122,7 @@
           UUID identifying the subscription.
         
         :returns: :class:`Subscription`
-        
+
 
     .. py:method:: list( [, page_size: Optional[int], page_token: Optional[str], show_trashed: Optional[bool], view: Optional[DashboardView]]) -> Iterator[Dashboard]
 
@@ -140,7 +140,7 @@
           `DASHBOARD_VIEW_BASIC`only includes summary metadata from the dashboard.
         
         :returns: Iterator over :class:`Dashboard`
-        
+
 
     .. py:method:: list_schedules(dashboard_id: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Schedule]
 
@@ -155,7 +155,7 @@
           page.
         
         :returns: Iterator over :class:`Schedule`
-        
+
 
     .. py:method:: list_subscriptions(dashboard_id: str, schedule_id: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Subscription]
 
@@ -172,7 +172,7 @@
           page.
         
         :returns: Iterator over :class:`Subscription`
-        
+
 
     .. py:method:: migrate(source_dashboard_id: str [, display_name: Optional[str], parent_path: Optional[str], update_parameter_syntax: Optional[bool]]) -> Dashboard
 
@@ -191,7 +191,7 @@
           (:param) when converting datasets in the dashboard.
         
         :returns: :class:`Dashboard`
-        
+
 
     .. py:method:: publish(dashboard_id: str [, embed_credentials: Optional[bool], warehouse_id: Optional[str]]) -> PublishedDashboard
 
@@ -208,7 +208,7 @@
           The ID of the warehouse that can be used to override the warehouse which was set in the draft.
         
         :returns: :class:`PublishedDashboard`
-        
+
 
     .. py:method:: trash(dashboard_id: str)
 
@@ -219,8 +219,8 @@
         :param dashboard_id: str
           UUID identifying the dashboard.
         
-        
-        
+
+
 
     .. py:method:: unpublish(dashboard_id: str)
 
@@ -231,8 +231,8 @@
         :param dashboard_id: str
           UUID identifying the published dashboard.
         
-        
-        
+
+
 
     .. py:method:: update(dashboard_id: str [, dashboard: Optional[Dashboard]]) -> Dashboard
 
@@ -245,7 +245,7 @@
         :param dashboard: :class:`Dashboard` (optional)
         
         :returns: :class:`Dashboard`
-        
+
 
     .. py:method:: update_schedule(dashboard_id: str, schedule_id: str [, schedule: Optional[Schedule]]) -> Schedule
 
@@ -258,4 +258,3 @@
         :param schedule: :class:`Schedule` (optional)
         
         :returns: :class:`Schedule`
-        

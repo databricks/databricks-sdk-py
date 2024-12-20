@@ -109,7 +109,7 @@
           Which pipeline trigger to use. Deprecated: Use `continuous` instead.
         
         :returns: :class:`CreatePipelineResponse`
-        
+
 
     .. py:method:: delete(pipeline_id: str)
 
@@ -119,8 +119,8 @@
         
         :param pipeline_id: str
         
-        
-        
+
+
 
     .. py:method:: get(pipeline_id: str) -> GetPipelineResponse
 
@@ -162,7 +162,7 @@
         :param pipeline_id: str
         
         :returns: :class:`GetPipelineResponse`
-        
+
 
     .. py:method:: get_permission_levels(pipeline_id: str) -> GetPipelinePermissionLevelsResponse
 
@@ -174,7 +174,7 @@
           The pipeline for which to get or manage permissions.
         
         :returns: :class:`GetPipelinePermissionLevelsResponse`
-        
+
 
     .. py:method:: get_permissions(pipeline_id: str) -> PipelinePermissions
 
@@ -186,7 +186,7 @@
           The pipeline for which to get or manage permissions.
         
         :returns: :class:`PipelinePermissions`
-        
+
 
     .. py:method:: get_update(pipeline_id: str, update_id: str) -> GetUpdateResponse
 
@@ -200,7 +200,7 @@
           The ID of the update.
         
         :returns: :class:`GetUpdateResponse`
-        
+
 
     .. py:method:: list_pipeline_events(pipeline_id: str [, filter: Optional[str], max_results: Optional[int], order_by: Optional[List[str]], page_token: Optional[str]]) -> Iterator[PipelineEvent]
 
@@ -262,7 +262,7 @@
           this field is set.
         
         :returns: Iterator over :class:`PipelineEvent`
-        
+
 
     .. py:method:: list_pipelines( [, filter: Optional[str], max_results: Optional[int], order_by: Optional[List[str]], page_token: Optional[str]]) -> Iterator[PipelineStateInfo]
 
@@ -302,7 +302,7 @@
           Page token returned by previous call
         
         :returns: Iterator over :class:`PipelineStateInfo`
-        
+
 
     .. py:method:: list_updates(pipeline_id: str [, max_results: Optional[int], page_token: Optional[str], until_update_id: Optional[str]]) -> ListUpdatesResponse
 
@@ -320,7 +320,7 @@
           If present, returns updates until and including this update_id.
         
         :returns: :class:`ListUpdatesResponse`
-        
+
 
     .. py:method:: set_permissions(pipeline_id: str [, access_control_list: Optional[List[PipelineAccessControlRequest]]]) -> PipelinePermissions
 
@@ -334,7 +334,7 @@
         :param access_control_list: List[:class:`PipelineAccessControlRequest`] (optional)
         
         :returns: :class:`PipelinePermissions`
-        
+
 
     .. py:method:: start_update(pipeline_id: str [, cause: Optional[StartUpdateCause], full_refresh: Optional[bool], full_refresh_selection: Optional[List[str]], refresh_selection: Optional[List[str]], validate_only: Optional[bool]]) -> StartUpdateResponse
 
@@ -360,7 +360,7 @@
           or publish any datasets.
         
         :returns: :class:`StartUpdateResponse`
-        
+
 
     .. py:method:: stop(pipeline_id: str) -> Wait[GetPipelineResponse]
 
@@ -374,7 +374,7 @@
         :returns:
           Long-running operation waiter for :class:`GetPipelineResponse`.
           See :method:wait_get_pipeline_idle for more details.
-        
+
 
     .. py:method:: stop_and_wait(pipeline_id: str, timeout: datetime.timedelta = 0:20:00) -> GetPipelineResponse
 
@@ -488,8 +488,8 @@
         :param trigger: :class:`PipelineTrigger` (optional)
           Which pipeline trigger to use. Deprecated: Use `continuous` instead.
         
-        
-        
+
+
 
     .. py:method:: update_permissions(pipeline_id: str [, access_control_list: Optional[List[PipelineAccessControlRequest]]]) -> PipelinePermissions
 
@@ -502,7 +502,7 @@
         :param access_control_list: List[:class:`PipelineAccessControlRequest`] (optional)
         
         :returns: :class:`PipelinePermissions`
-        
+
 
     .. py:method:: wait_get_pipeline_idle(pipeline_id: str, timeout: datetime.timedelta = 0:20:00, callback: Optional[Callable[[GetPipelineResponse], None]]) -> GetPipelineResponse
 

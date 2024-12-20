@@ -51,7 +51,7 @@
         :param alert: :class:`CreateAlertRequestAlert` (optional)
         
         :returns: :class:`Alert`
-        
+
 
     .. py:method:: delete(id: str)
 
@@ -63,8 +63,8 @@
         
         :param id: str
         
-        
-        
+
+
 
     .. py:method:: get(id: str) -> Alert
 
@@ -110,7 +110,7 @@
         :param id: str
         
         :returns: :class:`Alert`
-        
+
 
     .. py:method:: list( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[ListAlertsResponseAlert]
 
@@ -135,7 +135,7 @@
         :param page_token: str (optional)
         
         :returns: Iterator over :class:`ListAlertsResponseAlert`
-        
+
 
     .. py:method:: update(id: str, update_mask: str [, alert: Optional[UpdateAlertRequestAlert]]) -> Alert
 
@@ -188,4 +188,3 @@
         :param alert: :class:`UpdateAlertRequestAlert` (optional)
         
         :returns: :class:`Alert`
-        

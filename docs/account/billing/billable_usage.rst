@@ -41,4 +41,3 @@
           false.
         
         :returns: :class:`DownloadResponse`
-        

@@ -20,7 +20,7 @@
         :returns:
           Long-running operation waiter for :class:`EndpointInfo`.
           See :method:wait_get_endpoint_vector_search_endpoint_online for more details.
-        
+
 
     .. py:method:: create_endpoint_and_wait(name: str, endpoint_type: EndpointType, timeout: datetime.timedelta = 0:20:00) -> EndpointInfo
 
@@ -32,8 +32,8 @@
         :param endpoint_name: str
           Name of the endpoint
         
-        
-        
+
+
 
     .. py:method:: get_endpoint(endpoint_name: str) -> EndpointInfo
 
@@ -43,7 +43,7 @@
           Name of the endpoint
         
         :returns: :class:`EndpointInfo`
-        
+
 
     .. py:method:: list_endpoints( [, page_token: Optional[str]]) -> Iterator[EndpointInfo]
 
@@ -53,6 +53,6 @@
           Token for pagination
         
         :returns: Iterator over :class:`EndpointInfo`
-        
+
 
     .. py:method:: wait_get_endpoint_vector_search_endpoint_online(endpoint_name: str, timeout: datetime.timedelta = 0:20:00, callback: Optional[Callable[[EndpointInfo], None]]) -> EndpointInfo

@@ -113,7 +113,7 @@
         :param log_delivery_configuration: :class:`CreateLogDeliveryConfigurationParams` (optional)
         
         :returns: :class:`WrappedLogDeliveryConfiguration`
-        
+
 
     .. py:method:: get(log_delivery_configuration_id: str) -> WrappedLogDeliveryConfiguration
 
@@ -161,7 +161,7 @@
           Databricks log delivery configuration ID
         
         :returns: :class:`WrappedLogDeliveryConfiguration`
-        
+
 
     .. py:method:: list( [, credentials_id: Optional[str], status: Optional[LogDeliveryConfigStatus], storage_configuration_id: Optional[str]]) -> Iterator[LogDeliveryConfiguration]
 
@@ -189,7 +189,7 @@
           Filter by storage configuration ID.
         
         :returns: Iterator over :class:`LogDeliveryConfiguration`
-        
+
 
     .. py:method:: patch_status(log_delivery_configuration_id: str, status: LogDeliveryConfigStatus)
 
@@ -208,5 +208,4 @@
           configuration](#operation/patch-log-delivery-config-status) later. Deletion of a configuration is
           not supported, so disable a log delivery configuration that is no longer needed.
         
-        
-        
+

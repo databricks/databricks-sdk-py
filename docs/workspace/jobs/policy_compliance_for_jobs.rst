@@ -29,7 +29,7 @@
           If set, previews changes made to the job to comply with its policy, but does not update the job.
         
         :returns: :class:`EnforcePolicyComplianceResponse`
-        
+
 
     .. py:method:: get_compliance(job_id: int) -> GetPolicyComplianceResponse
 
@@ -43,7 +43,7 @@
           The ID of the job whose compliance status you are requesting.
         
         :returns: :class:`GetPolicyComplianceResponse`
-        
+
 
     .. py:method:: list_compliance(policy_id: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[JobCompliance]
 
@@ -63,4 +63,3 @@
           `next_page_token` or `prev_page_token`.
         
         :returns: Iterator over :class:`JobCompliance`
-        

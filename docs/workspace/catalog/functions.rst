@@ -26,7 +26,7 @@
           Partial __FunctionInfo__ specifying the function to be created.
         
         :returns: :class:`FunctionInfo`
-        
+
 
     .. py:method:: delete(name: str [, force: Optional[bool]])
 
@@ -44,8 +44,8 @@
         :param force: bool (optional)
           Force deletion even if the function is notempty.
         
-        
-        
+
+
 
     .. py:method:: get(name: str [, include_browse: Optional[bool]]) -> FunctionInfo
 
@@ -66,7 +66,7 @@
           metadata for
         
         :returns: :class:`FunctionInfo`
-        
+
 
     .. py:method:: list(catalog_name: str, schema_name: str [, include_browse: Optional[bool], max_results: Optional[int], page_token: Optional[str]]) -> Iterator[FunctionInfo]
 
@@ -94,7 +94,7 @@
           Opaque pagination token to go to next page based on previous query.
         
         :returns: Iterator over :class:`FunctionInfo`
-        
+
 
     .. py:method:: update(name: str [, owner: Optional[str]]) -> FunctionInfo
 
@@ -114,4 +114,3 @@
           Username of current owner of function.
         
         :returns: :class:`FunctionInfo`
-        

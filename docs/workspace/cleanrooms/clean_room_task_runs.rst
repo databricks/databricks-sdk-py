@@ -22,4 +22,3 @@
           Opaque pagination token to go to next page based on previous query.
         
         :returns: Iterator over :class:`CleanRoomNotebookTaskRun`
-        

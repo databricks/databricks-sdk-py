@@ -22,7 +22,7 @@
         :returns:
           Long-running operation waiter for :class:`CommandStatusResponse`.
           See :method:wait_command_status_command_execution_cancelled for more details.
-        
+
 
     .. py:method:: cancel_and_wait( [, cluster_id: Optional[str], command_id: Optional[str], context_id: Optional[str], timeout: datetime.timedelta = 0:20:00]) -> CommandStatusResponse
 
@@ -40,7 +40,7 @@
         :param command_id: str
         
         :returns: :class:`CommandStatusResponse`
-        
+
 
     .. py:method:: context_status(cluster_id: str, context_id: str) -> ContextStatusResponse
 
@@ -52,7 +52,7 @@
         :param context_id: str
         
         :returns: :class:`ContextStatusResponse`
-        
+
 
     .. py:method:: create( [, cluster_id: Optional[str], language: Optional[Language]]) -> Wait[ContextStatusResponse]
 
@@ -88,7 +88,7 @@
         :returns:
           Long-running operation waiter for :class:`ContextStatusResponse`.
           See :method:wait_context_status_command_execution_running for more details.
-        
+
 
     .. py:method:: create_and_wait( [, cluster_id: Optional[str], language: Optional[Language], timeout: datetime.timedelta = 0:20:00]) -> ContextStatusResponse
 
@@ -102,8 +102,8 @@
         :param cluster_id: str
         :param context_id: str
         
-        
-        
+
+
 
     .. py:method:: execute( [, cluster_id: Optional[str], command: Optional[str], context_id: Optional[str], language: Optional[Language]]) -> Wait[CommandStatusResponse]
 
@@ -148,7 +148,7 @@
         :returns:
           Long-running operation waiter for :class:`CommandStatusResponse`.
           See :method:wait_command_status_command_execution_finished_or_error for more details.
-        
+
 
     .. py:method:: execute_and_wait( [, cluster_id: Optional[str], command: Optional[str], context_id: Optional[str], language: Optional[Language], timeout: datetime.timedelta = 0:20:00]) -> CommandStatusResponse
 

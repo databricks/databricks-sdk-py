@@ -82,7 +82,7 @@
           policy definition.
         
         :returns: :class:`CreatePolicyResponse`
-        
+
 
     .. py:method:: delete(policy_id: str)
 
@@ -93,8 +93,8 @@
         :param policy_id: str
           The ID of the policy to delete.
         
-        
-        
+
+
 
     .. py:method:: edit(policy_id: str [, definition: Optional[str], description: Optional[str], libraries: Optional[List[Library]], max_clusters_per_user: Optional[int], name: Optional[str], policy_family_definition_overrides: Optional[str], policy_family_id: Optional[str]])
 
@@ -170,8 +170,8 @@
           Cannot be used with `definition`. Use `policy_family_definition_overrides` instead to customize the
           policy definition.
         
-        
-        
+
+
 
     .. py:method:: get(policy_id: str) -> Policy
 
@@ -208,7 +208,7 @@
           Canonical unique identifier for the Cluster Policy.
         
         :returns: :class:`Policy`
-        
+
 
     .. py:method:: get_permission_levels(cluster_policy_id: str) -> GetClusterPolicyPermissionLevelsResponse
 
@@ -220,7 +220,7 @@
           The cluster policy for which to get or manage permissions.
         
         :returns: :class:`GetClusterPolicyPermissionLevelsResponse`
-        
+
 
     .. py:method:: get_permissions(cluster_policy_id: str) -> ClusterPolicyPermissions
 
@@ -233,7 +233,7 @@
           The cluster policy for which to get or manage permissions.
         
         :returns: :class:`ClusterPolicyPermissions`
-        
+
 
     .. py:method:: list( [, sort_column: Optional[ListSortColumn], sort_order: Optional[ListSortOrder]]) -> Iterator[Policy]
 
@@ -261,7 +261,7 @@
           - Sort result list in ascending order.
         
         :returns: Iterator over :class:`Policy`
-        
+
 
     .. py:method:: set_permissions(cluster_policy_id: str [, access_control_list: Optional[List[ClusterPolicyAccessControlRequest]]]) -> ClusterPolicyPermissions
 
@@ -275,7 +275,7 @@
         :param access_control_list: List[:class:`ClusterPolicyAccessControlRequest`] (optional)
         
         :returns: :class:`ClusterPolicyPermissions`
-        
+
 
     .. py:method:: update_permissions(cluster_policy_id: str [, access_control_list: Optional[List[ClusterPolicyAccessControlRequest]]]) -> ClusterPolicyPermissions
 
@@ -289,4 +289,3 @@
         :param access_control_list: List[:class:`ClusterPolicyAccessControlRequest`] (optional)
         
         :returns: :class:`ClusterPolicyPermissions`
-        

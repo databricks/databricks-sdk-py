@@ -53,7 +53,7 @@
           The schema of the List response.
         
         :returns: :class:`ServicePrincipal`
-        
+
 
     .. py:method:: delete(id: str)
 
@@ -64,8 +64,8 @@
         :param id: str
           Unique ID for a service principal in the Databricks account.
         
-        
-        
+
+
 
     .. py:method:: get(id: str) -> ServicePrincipal
 
@@ -95,7 +95,7 @@
           Unique ID for a service principal in the Databricks account.
         
         :returns: :class:`ServicePrincipal`
-        
+
 
     .. py:method:: list( [, attributes: Optional[str], count: Optional[int], excluded_attributes: Optional[str], filter: Optional[str], sort_by: Optional[str], sort_order: Optional[ListSortOrder], start_index: Optional[int]]) -> Iterator[ServicePrincipal]
 
@@ -144,7 +144,7 @@
           Specifies the index of the first result. First item is number 1.
         
         :returns: Iterator over :class:`ServicePrincipal`
-        
+
 
     .. py:method:: patch(id: str [, operations: Optional[List[Patch]], schemas: Optional[List[PatchSchema]]])
 
@@ -181,8 +181,8 @@
         :param schemas: List[:class:`PatchSchema`] (optional)
           The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
         
-        
-        
+
+
 
     .. py:method:: update(id: str [, active: Optional[bool], application_id: Optional[str], display_name: Optional[str], entitlements: Optional[List[ComplexValue]], external_id: Optional[str], groups: Optional[List[ComplexValue]], roles: Optional[List[ComplexValue]], schemas: Optional[List[ServicePrincipalSchema]]])
 
@@ -232,5 +232,4 @@
         :param schemas: List[:class:`ServicePrincipalSchema`] (optional)
           The schema of the List response.
         
-        
-        
+

@@ -70,7 +70,7 @@
           PrivateLink connections. Otherwise, specify `true`, which means that public access is enabled.
         
         :returns: :class:`PrivateAccessSettings`
-        
+
 
     .. py:method:: delete(private_access_settings_id: str)
 
@@ -87,8 +87,8 @@
         :param private_access_settings_id: str
           Databricks Account API private access settings ID.
         
-        
-        
+
+
 
     .. py:method:: get(private_access_settings_id: str) -> PrivateAccessSettings
 
@@ -126,7 +126,7 @@
           Databricks Account API private access settings ID.
         
         :returns: :class:`PrivateAccessSettings`
-        
+
 
     .. py:method:: list() -> Iterator[PrivateAccessSettings]
 
@@ -146,7 +146,7 @@
         Gets a list of all private access settings objects for an account, specified by ID.
         
         :returns: Iterator over :class:`PrivateAccessSettings`
-        
+
 
     .. py:method:: replace(private_access_settings_id: str, private_access_settings_name: str, region: str [, allowed_vpc_endpoint_ids: Optional[List[str]], private_access_level: Optional[PrivateAccessLevel], public_access_enabled: Optional[bool]])
 
@@ -222,5 +222,4 @@
           can optionally specify `false`, but only if you implement both the front-end and the back-end
           PrivateLink connections. Otherwise, specify `true`, which means that public access is enabled.
         
-        
-        
+

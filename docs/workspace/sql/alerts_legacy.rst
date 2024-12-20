@@ -39,7 +39,7 @@
           If `null`, alert will never be triggered again.
         
         :returns: :class:`LegacyAlert`
-        
+
 
     .. py:method:: delete(alert_id: str)
 
@@ -55,8 +55,8 @@
         
         :param alert_id: str
         
-        
-        
+
+
 
     .. py:method:: get(alert_id: str) -> LegacyAlert
 
@@ -72,7 +72,7 @@
         :param alert_id: str
         
         :returns: :class:`LegacyAlert`
-        
+
 
     .. py:method:: list() -> Iterator[LegacyAlert]
 
@@ -86,7 +86,7 @@
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
         
         :returns: Iterator over :class:`LegacyAlert`
-        
+
 
     .. py:method:: update(alert_id: str, name: str, options: AlertOptions, query_id: str [, rearm: Optional[int]])
 
@@ -110,5 +110,4 @@
           Number of seconds after being triggered before the alert rearms itself and can be triggered again.
           If `null`, alert will never be triggered again.
         
-        
-        
+

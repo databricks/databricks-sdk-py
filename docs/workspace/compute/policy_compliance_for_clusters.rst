@@ -36,7 +36,7 @@
           update the cluster.
         
         :returns: :class:`EnforceClusterComplianceResponse`
-        
+
 
     .. py:method:: get_compliance(cluster_id: str) -> GetClusterComplianceResponse
 
@@ -49,7 +49,7 @@
           The ID of the cluster to get the compliance status
         
         :returns: :class:`GetClusterComplianceResponse`
-        
+
 
     .. py:method:: list_compliance(policy_id: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[ClusterCompliance]
 
@@ -68,4 +68,3 @@
           `next_page_token` or `prev_page_token`.
         
         :returns: Iterator over :class:`ClusterCompliance`
-        

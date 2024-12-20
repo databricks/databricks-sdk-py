@@ -39,7 +39,7 @@
           If the lifetime is not specified, this token remains valid indefinitely.
         
         :returns: :class:`CreateTokenResponse`
-        
+
 
     .. py:method:: delete(token_id: str)
 
@@ -52,8 +52,8 @@
         :param token_id: str
           The ID of the token to be revoked.
         
-        
-        
+
+
 
     .. py:method:: list() -> Iterator[PublicTokenInfo]
 
@@ -73,4 +73,3 @@
         Lists all the valid tokens for a user-workspace pair.
         
         :returns: Iterator over :class:`PublicTokenInfo`
-        

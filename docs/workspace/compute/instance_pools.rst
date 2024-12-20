@@ -91,7 +91,7 @@
           be retrieved by using the :method:clusters/sparkVersions API call.
         
         :returns: :class:`CreateInstancePoolResponse`
-        
+
 
     .. py:method:: delete(instance_pool_id: str)
 
@@ -102,8 +102,8 @@
         :param instance_pool_id: str
           The instance pool to be terminated.
         
-        
-        
+
+
 
     .. py:method:: edit(instance_pool_id: str, instance_pool_name: str, node_type_id: str [, custom_tags: Optional[Dict[str, str]], idle_instance_autotermination_minutes: Optional[int], max_capacity: Optional[int], min_idle_instances: Optional[int]])
 
@@ -161,8 +161,8 @@
         :param min_idle_instances: int (optional)
           Minimum number of idle instances to keep in the instance pool
         
-        
-        
+
+
 
     .. py:method:: get(instance_pool_id: str) -> GetInstancePool
 
@@ -194,7 +194,7 @@
           The canonical unique identifier for the instance pool.
         
         :returns: :class:`GetInstancePool`
-        
+
 
     .. py:method:: get_permission_levels(instance_pool_id: str) -> GetInstancePoolPermissionLevelsResponse
 
@@ -206,7 +206,7 @@
           The instance pool for which to get or manage permissions.
         
         :returns: :class:`GetInstancePoolPermissionLevelsResponse`
-        
+
 
     .. py:method:: get_permissions(instance_pool_id: str) -> InstancePoolPermissions
 
@@ -219,7 +219,7 @@
           The instance pool for which to get or manage permissions.
         
         :returns: :class:`InstancePoolPermissions`
-        
+
 
     .. py:method:: list() -> Iterator[InstancePoolAndStats]
 
@@ -239,7 +239,7 @@
         Gets a list of instance pools with their statistics.
         
         :returns: Iterator over :class:`InstancePoolAndStats`
-        
+
 
     .. py:method:: set_permissions(instance_pool_id: str [, access_control_list: Optional[List[InstancePoolAccessControlRequest]]]) -> InstancePoolPermissions
 
@@ -253,7 +253,7 @@
         :param access_control_list: List[:class:`InstancePoolAccessControlRequest`] (optional)
         
         :returns: :class:`InstancePoolPermissions`
-        
+
 
     .. py:method:: update_permissions(instance_pool_id: str [, access_control_list: Optional[List[InstancePoolAccessControlRequest]]]) -> InstancePoolPermissions
 
@@ -267,4 +267,3 @@
         :param access_control_list: List[:class:`InstancePoolAccessControlRequest`] (optional)
         
         :returns: :class:`InstancePoolPermissions`
-        

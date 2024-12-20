@@ -51,8 +51,8 @@
         :param scope_backend_type: :class:`ScopeBackendType` (optional)
           The backend type the scope will be created with. If not specified, will default to `DATABRICKS`
         
-        
-        
+
+
 
     .. py:method:: delete_acl(scope: str, principal: str)
 
@@ -69,8 +69,8 @@
         :param principal: str
           The principal to remove an existing ACL from.
         
-        
-        
+
+
 
     .. py:method:: delete_scope(scope: str)
 
@@ -84,8 +84,8 @@
         :param scope: str
           Name of the scope to delete.
         
-        
-        
+
+
 
     .. py:method:: delete_secret(scope: str, key: str)
 
@@ -102,8 +102,8 @@
         :param key: str
           Name of the secret to delete.
         
-        
-        
+
+
 
     .. py:method:: get_acl(scope: str, principal: str) -> AclItem
 
@@ -121,7 +121,7 @@
           The principal to fetch ACL information for.
         
         :returns: :class:`AclItem`
-        
+
 
     .. py:method:: get_secret(scope: str, key: str) -> GetSecretResponse
 
@@ -143,7 +143,7 @@
           The key to fetch secret for.
         
         :returns: :class:`GetSecretResponse`
-        
+
 
     .. py:method:: list_acls(scope: str) -> Iterator[AclItem]
 
@@ -181,7 +181,7 @@
           The name of the scope to fetch ACL information from.
         
         :returns: Iterator over :class:`AclItem`
-        
+
 
     .. py:method:: list_scopes() -> Iterator[SecretScope]
 
@@ -203,7 +203,7 @@
         Throws `PERMISSION_DENIED` if the user does not have permission to make this API call.
         
         :returns: Iterator over :class:`SecretScope`
-        
+
 
     .. py:method:: list_secrets(scope: str) -> Iterator[SecretMetadata]
 
@@ -243,7 +243,7 @@
           The name of the scope to list secrets within.
         
         :returns: Iterator over :class:`SecretMetadata`
-        
+
 
     .. py:method:: put_acl(scope: str, principal: str, permission: AclPermission)
 
@@ -308,8 +308,8 @@
         :param permission: :class:`AclPermission`
           The permission level applied to the principal.
         
-        
-        
+
+
 
     .. py:method:: put_secret(scope: str, key: str [, bytes_value: Optional[str], string_value: Optional[str]])
 
@@ -363,5 +363,4 @@
         :param string_value: str (optional)
           If specified, note that the value will be stored in UTF-8 (MB4) form.
         
-        
-        
+

@@ -23,7 +23,7 @@
         :param credential_info: :class:`CreateStorageCredential` (optional)
         
         :returns: :class:`AccountsStorageCredentialInfo`
-        
+
 
     .. py:method:: delete(metastore_id: str, storage_credential_name: str [, force: Optional[bool]])
 
@@ -39,8 +39,8 @@
         :param force: bool (optional)
           Force deletion even if the Storage Credential is not empty. Default is false.
         
-        
-        
+
+
 
     .. py:method:: get(metastore_id: str, storage_credential_name: str) -> AccountsStorageCredentialInfo
 
@@ -55,7 +55,7 @@
           Name of the storage credential.
         
         :returns: :class:`AccountsStorageCredentialInfo`
-        
+
 
     .. py:method:: list(metastore_id: str) -> Iterator[StorageCredentialInfo]
 
@@ -67,7 +67,7 @@
           Unity Catalog metastore ID
         
         :returns: Iterator over :class:`StorageCredentialInfo`
-        
+
 
     .. py:method:: update(metastore_id: str, storage_credential_name: str [, credential_info: Optional[UpdateStorageCredential]]) -> AccountsStorageCredentialInfo
 
@@ -83,4 +83,3 @@
         :param credential_info: :class:`UpdateStorageCredential` (optional)
         
         :returns: :class:`AccountsStorageCredentialInfo`
-        

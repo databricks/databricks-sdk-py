@@ -26,7 +26,7 @@
         :returns:
           Long-running operation waiter for :class:`GenieMessage`.
           See :method:wait_get_message_genie_completed for more details.
-        
+
 
     .. py:method:: create_message_and_wait(space_id: str, conversation_id: str, content: str, timeout: datetime.timedelta = 0:20:00) -> GenieMessage
 
@@ -45,7 +45,7 @@
           Message ID
         
         :returns: :class:`GenieGetMessageQueryResultResponse`
-        
+
 
     .. py:method:: get_message(space_id: str, conversation_id: str, message_id: str) -> GenieMessage
 
@@ -61,7 +61,7 @@
           The ID associated with the target message from the identified conversation.
         
         :returns: :class:`GenieMessage`
-        
+
 
     .. py:method:: get_message_query_result(space_id: str, conversation_id: str, message_id: str) -> GenieGetMessageQueryResultResponse
 
@@ -78,7 +78,7 @@
           Message ID
         
         :returns: :class:`GenieGetMessageQueryResultResponse`
-        
+
 
     .. py:method:: start_conversation(space_id: str, content: str) -> Wait[GenieMessage]
 
@@ -94,7 +94,7 @@
         :returns:
           Long-running operation waiter for :class:`GenieMessage`.
           See :method:wait_get_message_genie_completed for more details.
-        
+
 
     .. py:method:: start_conversation_and_wait(space_id: str, content: str, timeout: datetime.timedelta = 0:20:00) -> GenieMessage
 

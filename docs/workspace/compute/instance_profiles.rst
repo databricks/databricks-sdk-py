@@ -54,8 +54,8 @@
           requested instance type is not supported in your requested availability zone”), you can pass this
           flag to skip the validation and forcibly add the instance profile.
         
-        
-        
+
+
 
     .. py:method:: edit(instance_profile_arn: str [, iam_role_arn: Optional[str], is_meta_instance_profile: Optional[bool]])
 
@@ -103,8 +103,8 @@
           wide range of roles. Therefore it should always be used with authorization. This field is optional,
           the default value is `false`.
         
-        
-        
+
+
 
     .. py:method:: list() -> Iterator[InstanceProfile]
 
@@ -126,7 +126,7 @@
         This API is available to all users.
         
         :returns: Iterator over :class:`InstanceProfile`
-        
+
 
     .. py:method:: remove(instance_profile_arn: str)
 
@@ -140,5 +140,4 @@
         :param instance_profile_arn: str
           The ARN of the instance profile to remove. This field is required.
         
-        
-        
+

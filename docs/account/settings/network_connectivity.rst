@@ -20,7 +20,7 @@
           attached to the network connectivity configuration.
         
         :returns: :class:`NetworkConnectivityConfiguration`
-        
+
 
     .. py:method:: create_private_endpoint_rule(network_connectivity_config_id: str, resource_id: str, group_id: CreatePrivateEndpointRuleRequestGroupId) -> NccAzurePrivateEndpointRule
 
@@ -45,7 +45,7 @@
           storage (root DBFS), you need two endpoints, one for `blob` and one for `dfs`.
         
         :returns: :class:`NccAzurePrivateEndpointRule`
-        
+
 
     .. py:method:: delete_network_connectivity_configuration(network_connectivity_config_id: str)
 
@@ -56,8 +56,8 @@
         :param network_connectivity_config_id: str
           Your Network Connectvity Configuration ID.
         
-        
-        
+
+
 
     .. py:method:: delete_private_endpoint_rule(network_connectivity_config_id: str, private_endpoint_rule_id: str) -> NccAzurePrivateEndpointRule
 
@@ -74,7 +74,7 @@
           Your private endpoint rule ID.
         
         :returns: :class:`NccAzurePrivateEndpointRule`
-        
+
 
     .. py:method:: get_network_connectivity_configuration(network_connectivity_config_id: str) -> NetworkConnectivityConfiguration
 
@@ -86,7 +86,7 @@
           Your Network Connectvity Configuration ID.
         
         :returns: :class:`NetworkConnectivityConfiguration`
-        
+
 
     .. py:method:: get_private_endpoint_rule(network_connectivity_config_id: str, private_endpoint_rule_id: str) -> NccAzurePrivateEndpointRule
 
@@ -100,7 +100,7 @@
           Your private endpoint rule ID.
         
         :returns: :class:`NccAzurePrivateEndpointRule`
-        
+
 
     .. py:method:: list_network_connectivity_configurations( [, page_token: Optional[str]]) -> Iterator[NetworkConnectivityConfiguration]
 
@@ -112,7 +112,7 @@
           Pagination token to go to next page based on previous query.
         
         :returns: Iterator over :class:`NetworkConnectivityConfiguration`
-        
+
 
     .. py:method:: list_private_endpoint_rules(network_connectivity_config_id: str [, page_token: Optional[str]]) -> Iterator[NccAzurePrivateEndpointRule]
 
@@ -126,4 +126,3 @@
           Pagination token to go to next page based on previous query.
         
         :returns: Iterator over :class:`NccAzurePrivateEndpointRule`
-        

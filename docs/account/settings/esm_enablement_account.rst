@@ -22,7 +22,7 @@
           request, and pass it with the DELETE request to identify the rule set version you are deleting.
         
         :returns: :class:`EsmEnablementAccountSetting`
-        
+
 
     .. py:method:: update(allow_missing: bool, setting: EsmEnablementAccountSetting, field_mask: str) -> EsmEnablementAccountSetting
 
@@ -39,4 +39,3 @@
           multiple fields in the field mask, use comma as the separator (no space).
         
         :returns: :class:`EsmEnablementAccountSetting`
-        

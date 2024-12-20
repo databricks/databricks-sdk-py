@@ -67,8 +67,7 @@ class PropertyDoc:
         if self.doc is not None:
             # This is a class doc, which comes with 4 indentation spaces. 
             # Here we are using the doc as property doc, which needs 8 indentation spaces.
-            formatted_doc = re.sub(r'\n', '\n    ', self.doc)
-            out.append(f'\n        {formatted_doc}')
+            out.append(f'\n{format_doc(self.doc, 8)}')
         return "\n".join(out)
 
 @dataclass
@@ -92,9 +91,14 @@ class MethodDoc:
         if usage != '':
             out.append(usage)
         if self.doc is not None:
-            out.append(f'        {self.doc}')
+            out.append(format_doc(self.doc, 8))
         return "\n".join(out)
 
+
+def format_doc(doc: str, indentation: int) -> str:
+    # Depending on the environment, the input docstring might be or not be indented.
+    # This function will make sure that the output docstring is consistently indented.
+    return ' ' * indentation + re.sub(rf'\n(?!$)( {{{indentation}}})?', '\n' + ' ' * indentation, doc)
 
 @dataclass
 class ServiceDoc:
@@ -113,7 +117,7 @@ class ServiceDoc:
         out = [
             title, '=' * len(title),
             f'.. currentmodule:: databricks.sdk.service.{self.tag.package.name}', '',
-            f'.. py:class:: {self.class_name}', '', f'    {self.doc}'
+            f'.. py:class:: {self.class_name}', '', format_doc(self.doc, 4)
         ]
         for m in self.methods:
             usage = self.usage_example(m)

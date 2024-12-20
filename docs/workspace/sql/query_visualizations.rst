@@ -16,7 +16,7 @@
         :param visualization: :class:`CreateVisualizationRequestVisualization` (optional)
         
         :returns: :class:`Visualization`
-        
+
 
     .. py:method:: delete(id: str)
 
@@ -26,8 +26,8 @@
         
         :param id: str
         
-        
-        
+
+
 
     .. py:method:: update(id: str, update_mask: str [, visualization: Optional[UpdateVisualizationRequestVisualization]]) -> Visualization
 
@@ -43,4 +43,3 @@
         :param visualization: :class:`UpdateVisualizationRequestVisualization` (optional)
         
         :returns: :class:`Visualization`
-        

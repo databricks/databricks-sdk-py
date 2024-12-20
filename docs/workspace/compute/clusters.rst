@@ -68,8 +68,8 @@
         :param owner_username: str
           New owner of the cluster_id after this RPC.
         
-        
-        
+
+
 
     .. py:method:: create(spark_version: str [, apply_policy_default_values: Optional[bool], autoscale: Optional[AutoScale], autotermination_minutes: Optional[int], aws_attributes: Optional[AwsAttributes], azure_attributes: Optional[AzureAttributes], clone_from: Optional[CloneCluster], cluster_log_conf: Optional[ClusterLogConf], cluster_name: Optional[str], custom_tags: Optional[Dict[str, str]], data_security_mode: Optional[DataSecurityMode], docker_image: Optional[DockerImage], driver_instance_pool_id: Optional[str], driver_node_type_id: Optional[str], enable_elastic_disk: Optional[bool], enable_local_disk_encryption: Optional[bool], gcp_attributes: Optional[GcpAttributes], init_scripts: Optional[List[InitScriptInfo]], instance_pool_id: Optional[str], is_single_node: Optional[bool], kind: Optional[Kind], node_type_id: Optional[str], num_workers: Optional[int], policy_id: Optional[str], runtime_engine: Optional[RuntimeEngine], single_user_name: Optional[str], spark_conf: Optional[Dict[str, str]], spark_env_vars: Optional[Dict[str, str]], ssh_public_keys: Optional[List[str]], use_ml_runtime: Optional[bool], workload_type: Optional[WorkloadType]]) -> Wait[ClusterDetails]
 
@@ -263,7 +263,7 @@
         :returns:
           Long-running operation waiter for :class:`ClusterDetails`.
           See :method:wait_get_cluster_running for more details.
-        
+
 
     .. py:method:: create_and_wait(spark_version: str [, apply_policy_default_values: Optional[bool], autoscale: Optional[AutoScale], autotermination_minutes: Optional[int], aws_attributes: Optional[AwsAttributes], azure_attributes: Optional[AzureAttributes], clone_from: Optional[CloneCluster], cluster_log_conf: Optional[ClusterLogConf], cluster_name: Optional[str], custom_tags: Optional[Dict[str, str]], data_security_mode: Optional[DataSecurityMode], docker_image: Optional[DockerImage], driver_instance_pool_id: Optional[str], driver_node_type_id: Optional[str], enable_elastic_disk: Optional[bool], enable_local_disk_encryption: Optional[bool], gcp_attributes: Optional[GcpAttributes], init_scripts: Optional[List[InitScriptInfo]], instance_pool_id: Optional[str], is_single_node: Optional[bool], kind: Optional[Kind], node_type_id: Optional[str], num_workers: Optional[int], policy_id: Optional[str], runtime_engine: Optional[RuntimeEngine], single_user_name: Optional[str], spark_conf: Optional[Dict[str, str]], spark_env_vars: Optional[Dict[str, str]], ssh_public_keys: Optional[List[str]], use_ml_runtime: Optional[bool], workload_type: Optional[WorkloadType], timeout: datetime.timedelta = 0:20:00]) -> ClusterDetails
 
@@ -309,7 +309,7 @@
         :returns:
           Long-running operation waiter for :class:`ClusterDetails`.
           See :method:wait_get_cluster_terminated for more details.
-        
+
 
     .. py:method:: delete_and_wait(cluster_id: str, timeout: datetime.timedelta = 0:20:00) -> ClusterDetails
 
@@ -513,7 +513,7 @@
         :returns:
           Long-running operation waiter for :class:`ClusterDetails`.
           See :method:wait_get_cluster_running for more details.
-        
+
 
     .. py:method:: edit_and_wait(cluster_id: str, spark_version: str [, apply_policy_default_values: Optional[bool], autoscale: Optional[AutoScale], autotermination_minutes: Optional[int], aws_attributes: Optional[AwsAttributes], azure_attributes: Optional[AzureAttributes], cluster_log_conf: Optional[ClusterLogConf], cluster_name: Optional[str], custom_tags: Optional[Dict[str, str]], data_security_mode: Optional[DataSecurityMode], docker_image: Optional[DockerImage], driver_instance_pool_id: Optional[str], driver_node_type_id: Optional[str], enable_elastic_disk: Optional[bool], enable_local_disk_encryption: Optional[bool], gcp_attributes: Optional[GcpAttributes], init_scripts: Optional[List[InitScriptInfo]], instance_pool_id: Optional[str], is_single_node: Optional[bool], kind: Optional[Kind], node_type_id: Optional[str], num_workers: Optional[int], policy_id: Optional[str], runtime_engine: Optional[RuntimeEngine], single_user_name: Optional[str], spark_conf: Optional[Dict[str, str]], spark_env_vars: Optional[Dict[str, str]], ssh_public_keys: Optional[List[str]], use_ml_runtime: Optional[bool], workload_type: Optional[WorkloadType], timeout: datetime.timedelta = 0:20:00]) -> ClusterDetails
 
@@ -596,7 +596,7 @@
           The start time in epoch milliseconds. If empty, returns events starting from the beginning of time.
         
         :returns: Iterator over :class:`ClusterEvent`
-        
+
 
     .. py:method:: get(cluster_id: str) -> ClusterDetails
 
@@ -636,7 +636,7 @@
           The cluster about which to retrieve information.
         
         :returns: :class:`ClusterDetails`
-        
+
 
     .. py:method:: get_permission_levels(cluster_id: str) -> GetClusterPermissionLevelsResponse
 
@@ -648,7 +648,7 @@
           The cluster for which to get or manage permissions.
         
         :returns: :class:`GetClusterPermissionLevelsResponse`
-        
+
 
     .. py:method:: get_permissions(cluster_id: str) -> ClusterPermissions
 
@@ -660,7 +660,7 @@
           The cluster for which to get or manage permissions.
         
         :returns: :class:`ClusterPermissions`
-        
+
 
     .. py:method:: list( [, filter_by: Optional[ListClustersFilterBy], page_size: Optional[int], page_token: Optional[str], sort_by: Optional[ListClustersSortBy]]) -> Iterator[ClusterDetails]
 
@@ -693,7 +693,7 @@
           Sort the list of clusters by a specific criteria.
         
         :returns: Iterator over :class:`ClusterDetails`
-        
+
 
     .. py:method:: list_node_types() -> ListNodeTypesResponse
 
@@ -713,7 +713,7 @@
         Returns a list of supported Spark node types. These node types can be used to launch a cluster.
         
         :returns: :class:`ListNodeTypesResponse`
-        
+
 
     .. py:method:: list_zones() -> ListAvailableZonesResponse
 
@@ -723,7 +723,7 @@
         zones can be used to launch a cluster.
         
         :returns: :class:`ListAvailableZonesResponse`
-        
+
 
     .. py:method:: permanent_delete(cluster_id: str)
 
@@ -738,8 +738,8 @@
         :param cluster_id: str
           The cluster to be deleted.
         
-        
-        
+
+
 
     .. py:method:: pin(cluster_id: str)
 
@@ -778,8 +778,8 @@
         :param cluster_id: str
           <needs content added>
         
-        
-        
+
+
 
     .. py:method:: resize(cluster_id: str [, autoscale: Optional[AutoScale], num_workers: Optional[int]]) -> Wait[ClusterDetails]
 
@@ -833,7 +833,7 @@
         :returns:
           Long-running operation waiter for :class:`ClusterDetails`.
           See :method:wait_get_cluster_running for more details.
-        
+
 
     .. py:method:: resize_and_wait(cluster_id: str [, autoscale: Optional[AutoScale], num_workers: Optional[int], timeout: datetime.timedelta = 0:20:00]) -> ClusterDetails
 
@@ -880,7 +880,7 @@
         :returns:
           Long-running operation waiter for :class:`ClusterDetails`.
           See :method:wait_get_cluster_running for more details.
-        
+
 
     .. py:method:: restart_and_wait(cluster_id: str [, restart_user: Optional[str], timeout: datetime.timedelta = 0:20:00]) -> ClusterDetails
 
@@ -899,7 +899,7 @@
             smallest = w.clusters.select_node_type(local_disk=True)
 
         Selects smallest available node type given the conditions.
-
+        
         :param min_memory_gb: int
         :param gb_per_core: int
         :param min_cores: int
@@ -913,9 +913,9 @@
         :param is_io_cache_enabled: bool
         :param support_port_forwarding: bool
         :param fleet: bool
-
-        :returns: `node_type` compatible string
         
+        :returns: `node_type` compatible string
+
 
     .. py:method:: select_spark_version(long_term_support: bool = False, beta: bool = False, latest: bool = True, ml: bool = False, genomics: bool = False, gpu: bool = False, scala: str = 2.12, spark_version: str, photon: bool = False, graviton: bool = False) -> str
 
@@ -931,7 +931,7 @@
             latest = w.clusters.select_spark_version(latest=True, long_term_support=True)
 
         Selects the latest Databricks Runtime Version.
-
+        
         :param long_term_support: bool
         :param beta: bool
         :param latest: bool
@@ -942,9 +942,9 @@
         :param spark_version: str
         :param photon: bool
         :param graviton: bool
-
-        :returns: `spark_version` compatible string
         
+        :returns: `spark_version` compatible string
+
 
     .. py:method:: set_permissions(cluster_id: str [, access_control_list: Optional[List[ClusterAccessControlRequest]]]) -> ClusterPermissions
 
@@ -958,7 +958,7 @@
         :param access_control_list: List[:class:`ClusterAccessControlRequest`] (optional)
         
         :returns: :class:`ClusterPermissions`
-        
+
 
     .. py:method:: spark_versions() -> GetSparkVersionsResponse
 
@@ -967,7 +967,7 @@
         Returns the list of available Spark versions. These versions can be used to launch a cluster.
         
         :returns: :class:`GetSparkVersionsResponse`
-        
+
 
     .. py:method:: start(cluster_id: str) -> Wait[ClusterDetails]
 
@@ -1013,7 +1013,7 @@
         :returns:
           Long-running operation waiter for :class:`ClusterDetails`.
           See :method:wait_get_cluster_running for more details.
-        
+
 
     .. py:method:: start_and_wait(cluster_id: str, timeout: datetime.timedelta = 0:20:00) -> ClusterDetails
 
@@ -1056,8 +1056,8 @@
         :param cluster_id: str
           <needs content added>
         
-        
-        
+
+
 
     .. py:method:: update(cluster_id: str, update_mask: str [, cluster: Optional[UpdateClusterResource]]) -> Wait[ClusterDetails]
 
@@ -1085,7 +1085,7 @@
         :returns:
           Long-running operation waiter for :class:`ClusterDetails`.
           See :method:wait_get_cluster_running for more details.
-        
+
 
     .. py:method:: update_and_wait(cluster_id: str, update_mask: str [, cluster: Optional[UpdateClusterResource], timeout: datetime.timedelta = 0:20:00]) -> ClusterDetails
 
@@ -1101,7 +1101,7 @@
         :param access_control_list: List[:class:`ClusterAccessControlRequest`] (optional)
         
         :returns: :class:`ClusterPermissions`
-        
+
 
     .. py:method:: wait_get_cluster_running(cluster_id: str, timeout: datetime.timedelta = 0:20:00, callback: Optional[Callable[[ClusterDetails], None]]) -> ClusterDetails
 

@@ -47,7 +47,7 @@
           This field is required when the __authentication_type__ is **TOKEN** or not provided.
         
         :returns: :class:`ProviderInfo`
-        
+
 
     .. py:method:: delete(name: str)
 
@@ -59,8 +59,8 @@
         :param name: str
           Name of the provider.
         
-        
-        
+
+
 
     .. py:method:: get(name: str) -> ProviderInfo
 
@@ -98,7 +98,7 @@
           Name of the provider.
         
         :returns: :class:`ProviderInfo`
-        
+
 
     .. py:method:: list( [, data_provider_global_metastore_id: Optional[str], max_results: Optional[int], page_token: Optional[str]]) -> Iterator[ProviderInfo]
 
@@ -135,7 +135,7 @@
           Opaque pagination token to go to next page based on previous query.
         
         :returns: Iterator over :class:`ProviderInfo`
-        
+
 
     .. py:method:: list_shares(name: str [, max_results: Optional[int], page_token: Optional[str]]) -> Iterator[ProviderShare]
 
@@ -184,7 +184,7 @@
           Opaque pagination token to go to next page based on previous query.
         
         :returns: Iterator over :class:`ProviderShare`
-        
+
 
     .. py:method:: update(name: str [, comment: Optional[str], new_name: Optional[str], owner: Optional[str], recipient_profile_str: Optional[str]]) -> ProviderInfo
 
@@ -231,4 +231,3 @@
           This field is required when the __authentication_type__ is **TOKEN** or not provided.
         
         :returns: :class:`ProviderInfo`
-        

@@ -56,7 +56,7 @@
           The identifier for the federation policy. If unspecified, the id will be assigned by Databricks.
         
         :returns: :class:`FederationPolicy`
-        
+
 
     .. py:method:: delete(service_principal_id: int, policy_id: str)
 
@@ -66,8 +66,8 @@
           The service principal id for the federation policy.
         :param policy_id: str
         
-        
-        
+
+
 
     .. py:method:: get(service_principal_id: int, policy_id: str) -> FederationPolicy
 
@@ -78,7 +78,7 @@
         :param policy_id: str
         
         :returns: :class:`FederationPolicy`
-        
+
 
     .. py:method:: list(service_principal_id: int [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[FederationPolicy]
 
@@ -90,7 +90,7 @@
         :param page_token: str (optional)
         
         :returns: Iterator over :class:`FederationPolicy`
-        
+
 
     .. py:method:: update(service_principal_id: int, policy_id: str, update_mask: str [, policy: Optional[FederationPolicy]]) -> FederationPolicy
 
@@ -106,4 +106,3 @@
         :param policy: :class:`FederationPolicy` (optional)
         
         :returns: :class:`FederationPolicy`
-        

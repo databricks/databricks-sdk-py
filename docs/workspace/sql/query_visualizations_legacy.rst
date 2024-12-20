@@ -36,7 +36,7 @@
           The name of the visualization that appears on dashboards and the query screen.
         
         :returns: :class:`LegacyVisualization`
-        
+
 
     .. py:method:: delete(id: str)
 
@@ -52,8 +52,8 @@
         :param id: str
           Widget ID returned by :method:queryvizualisations/create
         
-        
-        
+
+
 
     .. py:method:: update(id: str [, created_at: Optional[str], description: Optional[str], name: Optional[str], options: Optional[Any], query: Optional[LegacyQuery], type: Optional[str], updated_at: Optional[str]]) -> LegacyVisualization
 
@@ -82,4 +82,3 @@
         :param updated_at: str (optional)
         
         :returns: :class:`LegacyVisualization`
-        

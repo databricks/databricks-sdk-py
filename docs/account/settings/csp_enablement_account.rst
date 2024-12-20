@@ -25,7 +25,7 @@
           request, and pass it with the DELETE request to identify the rule set version you are deleting.
         
         :returns: :class:`CspEnablementAccountSetting`
-        
+
 
     .. py:method:: update(allow_missing: bool, setting: CspEnablementAccountSetting, field_mask: str) -> CspEnablementAccountSetting
 
@@ -42,4 +42,3 @@
           multiple fields in the field mask, use comma as the separator (no space).
         
         :returns: :class:`CspEnablementAccountSetting`
-        

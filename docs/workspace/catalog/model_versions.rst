@@ -27,8 +27,8 @@
         :param version: int
           The integer version number of the model version
         
-        
-        
+
+
 
     .. py:method:: get(full_name: str, version: int [, include_aliases: Optional[bool], include_browse: Optional[bool]]) -> ModelVersionInfo
 
@@ -51,7 +51,7 @@
           metadata for
         
         :returns: :class:`ModelVersionInfo`
-        
+
 
     .. py:method:: get_by_alias(full_name: str, alias: str [, include_aliases: Optional[bool]]) -> ModelVersionInfo
 
@@ -71,7 +71,7 @@
           Whether to include aliases associated with the model version in the response
         
         :returns: :class:`ModelVersionInfo`
-        
+
 
     .. py:method:: list(full_name: str [, include_browse: Optional[bool], max_results: Optional[int], page_token: Optional[str]]) -> Iterator[ModelVersionInfo]
 
@@ -104,7 +104,7 @@
           Opaque pagination token to go to next page based on previous query.
         
         :returns: Iterator over :class:`ModelVersionInfo`
-        
+
 
     .. py:method:: update(full_name: str, version: int [, comment: Optional[str]]) -> ModelVersionInfo
 
@@ -126,4 +126,3 @@
           The comment attached to the model version
         
         :returns: :class:`ModelVersionInfo`
-        

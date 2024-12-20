@@ -21,8 +21,8 @@
         :param activation_url: str
           The one time activation url. It also accepts activation token.
         
-        
-        
+
+
 
     .. py:method:: retrieve_token(activation_url: str) -> RetrieveTokenResponse
 
@@ -34,4 +34,3 @@
           The one time activation url. It also accepts activation token.
         
         :returns: :class:`RetrieveTokenResponse`
-        

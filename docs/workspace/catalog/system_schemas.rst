@@ -19,8 +19,8 @@
         :param schema_name: str
           Full name of the system schema.
         
-        
-        
+
+
 
     .. py:method:: enable(metastore_id: str, schema_name: str)
 
@@ -34,8 +34,8 @@
         :param schema_name: str
           Full name of the system schema.
         
-        
-        
+
+
 
     .. py:method:: list(metastore_id: str [, max_results: Optional[int], page_token: Optional[str]]) -> Iterator[SystemSchemaInfo]
 
@@ -55,4 +55,3 @@
           Opaque pagination token to go to next page based on previous query.
         
         :returns: Iterator over :class:`SystemSchemaInfo`
-        

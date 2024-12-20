@@ -18,7 +18,7 @@
           The artifact type of the allowlist.
         
         :returns: :class:`ArtifactAllowlistInfo`
-        
+
 
     .. py:method:: update(artifact_type: ArtifactType, artifact_matchers: List[ArtifactMatcher]) -> ArtifactAllowlistInfo
 
@@ -34,4 +34,3 @@
           A list of allowed artifact match patterns.
         
         :returns: :class:`ArtifactAllowlistInfo`
-        

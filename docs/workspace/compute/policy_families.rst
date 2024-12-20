@@ -40,7 +40,7 @@
           The version number for the family to fetch. Defaults to the latest version.
         
         :returns: :class:`PolicyFamily`
-        
+
 
     .. py:method:: list( [, max_results: Optional[int], page_token: Optional[str]]) -> Iterator[PolicyFamily]
 
@@ -67,4 +67,3 @@
           A token that can be used to get the next page of results.
         
         :returns: Iterator over :class:`PolicyFamily`
-        

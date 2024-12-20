@@ -22,4 +22,3 @@
           Array of scopes for the token request.
         
         :returns: :class:`ExchangeTokenResponse`
-        

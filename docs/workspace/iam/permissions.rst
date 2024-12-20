@@ -87,7 +87,7 @@
           The id of the request object.
         
         :returns: :class:`ObjectPermissions`
-        
+
 
     .. py:method:: get_permission_levels(request_object_type: str, request_object_id: str) -> GetPermissionLevelsResponse
 
@@ -119,7 +119,7 @@
           <needs content>
         
         :returns: :class:`GetPermissionLevelsResponse`
-        
+
 
     .. py:method:: set(request_object_type: str, request_object_id: str [, access_control_list: Optional[List[AccessControlRequest]]]) -> ObjectPermissions
 
@@ -166,7 +166,7 @@
         :param access_control_list: List[:class:`AccessControlRequest`] (optional)
         
         :returns: :class:`ObjectPermissions`
-        
+
 
     .. py:method:: update(request_object_type: str, request_object_id: str [, access_control_list: Optional[List[AccessControlRequest]]]) -> ObjectPermissions
 
@@ -184,4 +184,3 @@
         :param access_control_list: List[:class:`AccessControlRequest`] (optional)
         
         :returns: :class:`ObjectPermissions`
-        

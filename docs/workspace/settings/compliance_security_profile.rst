@@ -23,7 +23,7 @@
           request, and pass it with the DELETE request to identify the rule set version you are deleting.
         
         :returns: :class:`ComplianceSecurityProfileSetting`
-        
+
 
     .. py:method:: update(allow_missing: bool, setting: ComplianceSecurityProfileSetting, field_mask: str) -> ComplianceSecurityProfileSetting
 
@@ -43,4 +43,3 @@
           multiple fields in the field mask, use comma as the separator (no space).
         
         :returns: :class:`ComplianceSecurityProfileSetting`
-        

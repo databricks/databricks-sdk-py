@@ -14,7 +14,7 @@
         Lakeview dashboard id.
         
         :returns: :class:`ProviderAnalyticsDashboard`
-        
+
 
     .. py:method:: get() -> ListProviderAnalyticsDashboardResponse
 
@@ -23,7 +23,7 @@
         Get provider analytics dashboard.
         
         :returns: :class:`ListProviderAnalyticsDashboardResponse`
-        
+
 
     .. py:method:: get_latest_version() -> GetLatestVersionProviderAnalyticsDashboardResponse
 
@@ -32,7 +32,7 @@
         Get latest version of provider analytics dashboard.
         
         :returns: :class:`GetLatestVersionProviderAnalyticsDashboardResponse`
-        
+
 
     .. py:method:: update(id: str [, version: Optional[int]]) -> UpdateProviderAnalyticsDashboardResponse
 
@@ -47,4 +47,3 @@
           that it should be equal to latest version of the dashboard template
         
         :returns: :class:`UpdateProviderAnalyticsDashboardResponse`
-        

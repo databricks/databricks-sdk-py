@@ -17,7 +17,7 @@
         :param page_token: str (optional)
         
         :returns: Iterator over :class:`SharedDataObject`
-        
+
 
     .. py:method:: list(listing_id: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[ListingFulfillment]
 
@@ -33,4 +33,3 @@
         :param page_token: str (optional)
         
         :returns: Iterator over :class:`ListingFulfillment`
-        

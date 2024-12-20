@@ -63,7 +63,7 @@
           Email address of the Databricks user.
         
         :returns: :class:`User`
-        
+
 
     .. py:method:: delete(id: str)
 
@@ -90,8 +90,8 @@
         :param id: str
           Unique ID for a user in the Databricks workspace.
         
-        
-        
+
+
 
     .. py:method:: get(id: str [, attributes: Optional[str], count: Optional[int], excluded_attributes: Optional[str], filter: Optional[str], sort_by: Optional[str], sort_order: Optional[GetSortOrder], start_index: Optional[int]]) -> User
 
@@ -138,7 +138,7 @@
           Specifies the index of the first result. First item is number 1.
         
         :returns: :class:`User`
-        
+
 
     .. py:method:: get_permission_levels() -> GetPasswordPermissionLevelsResponse
 
@@ -147,7 +147,7 @@
         Gets the permission levels that a user can have on an object.
         
         :returns: :class:`GetPasswordPermissionLevelsResponse`
-        
+
 
     .. py:method:: get_permissions() -> PasswordPermissions
 
@@ -156,7 +156,7 @@
         Gets the permissions of all passwords. Passwords can inherit permissions from their root object.
         
         :returns: :class:`PasswordPermissions`
-        
+
 
     .. py:method:: list( [, attributes: Optional[str], count: Optional[int], excluded_attributes: Optional[str], filter: Optional[str], sort_by: Optional[str], sort_order: Optional[ListSortOrder], start_index: Optional[int]]) -> Iterator[User]
 
@@ -200,7 +200,7 @@
           Specifies the index of the first result. First item is number 1.
         
         :returns: Iterator over :class:`User`
-        
+
 
     .. py:method:: patch(id: str [, operations: Optional[List[Patch]], schemas: Optional[List[PatchSchema]]])
 
@@ -232,8 +232,8 @@
         :param schemas: List[:class:`PatchSchema`] (optional)
           The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
         
-        
-        
+
+
 
     .. py:method:: set_permissions( [, access_control_list: Optional[List[PasswordAccessControlRequest]]]) -> PasswordPermissions
 
@@ -245,7 +245,7 @@
         :param access_control_list: List[:class:`PasswordAccessControlRequest`] (optional)
         
         :returns: :class:`PasswordPermissions`
-        
+
 
     .. py:method:: update(id: str [, active: Optional[bool], display_name: Optional[str], emails: Optional[List[ComplexValue]], entitlements: Optional[List[ComplexValue]], external_id: Optional[str], groups: Optional[List[ComplexValue]], name: Optional[Name], roles: Optional[List[ComplexValue]], schemas: Optional[List[UserSchema]], user_name: Optional[str]])
 
@@ -296,8 +296,8 @@
         :param user_name: str (optional)
           Email address of the Databricks user.
         
-        
-        
+
+
 
     .. py:method:: update_permissions( [, access_control_list: Optional[List[PasswordAccessControlRequest]]]) -> PasswordPermissions
 
@@ -308,4 +308,3 @@
         :param access_control_list: List[:class:`PasswordAccessControlRequest`] (optional)
         
         :returns: :class:`PasswordPermissions`
-        

@@ -52,7 +52,7 @@
         :param aws_credentials: :class:`CreateCredentialAwsCredentials`
         
         :returns: :class:`Credential`
-        
+
 
     .. py:method:: delete(credentials_id: str)
 
@@ -64,8 +64,8 @@
         :param credentials_id: str
           Databricks Account API credential configuration ID
         
-        
-        
+
+
 
     .. py:method:: get(credentials_id: str) -> Credential
 
@@ -100,7 +100,7 @@
           Databricks Account API credential configuration ID
         
         :returns: :class:`Credential`
-        
+
 
     .. py:method:: list() -> Iterator[Credential]
 
@@ -120,4 +120,3 @@
         Gets all Databricks credential configurations associated with an account specified by ID.
         
         :returns: Iterator over :class:`Credential`
-        

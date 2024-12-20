@@ -23,7 +23,7 @@
           Query Vizualization ID returned by :method:queryvisualizations/create.
         
         :returns: :class:`Widget`
-        
+
 
     .. py:method:: delete(id: str)
 
@@ -32,8 +32,8 @@
         :param id: str
           Widget ID returned by :method:dashboardwidgets/create
         
-        
-        
+
+
 
     .. py:method:: update(id: str, dashboard_id: str, options: WidgetOptions, width: int [, text: Optional[str], visualization_id: Optional[str]]) -> Widget
 
@@ -53,4 +53,3 @@
           Query Vizualization ID returned by :method:queryvisualizations/create.
         
         :returns: :class:`Widget`
-        

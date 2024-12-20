@@ -33,4 +33,3 @@
           UUID of the table to read or write.
         
         :returns: :class:`GenerateTemporaryTableCredentialResponse`
-        

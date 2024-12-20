@@ -37,7 +37,7 @@
           Object ID. An ACL is returned for the object with this UUID.
         
         :returns: :class:`GetResponse`
-        
+
 
     .. py:method:: set(object_type: ObjectTypePlural, object_id: str [, access_control_list: Optional[List[AccessControl]]]) -> SetResponse
 
@@ -58,7 +58,7 @@
         :param access_control_list: List[:class:`AccessControl`] (optional)
         
         :returns: :class:`SetResponse`
-        
+
 
     .. py:method:: transfer_ownership(object_type: OwnableObjectType, object_id: TransferOwnershipObjectId [, new_owner: Optional[str]]) -> Success
 
@@ -79,4 +79,3 @@
           Email address for the new owner, who must exist in the workspace.
         
         :returns: :class:`Success`
-        
