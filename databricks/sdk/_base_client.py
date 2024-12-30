@@ -1,7 +1,7 @@
 import io
 import logging
-from abc import ABC, abstractmethod
 import urllib.parse
+from abc import ABC, abstractmethod
 from datetime import timedelta
 from types import TracebackType
 from typing import (Any, BinaryIO, Callable, Dict, Iterable, Iterator, List,
@@ -285,7 +285,9 @@ class _BaseClient:
             return
         logger.debug(RoundTrip(response, self._debug_headers, self._debug_truncate_bytes, raw).generate())
 
+
 class _RawResponse(ABC):
+
     @abstractmethod
     # follows Response signature: https://github.com/psf/requests/blob/main/src/requests/models.py#L799
     def iter_content(self, chunk_size: int = 1, decode_unicode: bool = False):
@@ -294,6 +296,7 @@ class _RawResponse(ABC):
     @abstractmethod
     def close(self):
         pass
+
 
 class _StreamingResponse(BinaryIO):
     _response: _RawResponse
