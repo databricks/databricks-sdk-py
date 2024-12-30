@@ -92,6 +92,10 @@ class Config:
     max_connections_per_pool: int = ConfigAttribute()
     databricks_environment: Optional[DatabricksEnvironment] = None
 
+    enable_experimental_files_api_client: bool = ConfigAttribute(env='DATABRICKS_ENABLE_EXPERIMENTAL_FILES_API_CLIENT')
+    files_api_client_download_max_total_recovers = None
+    files_api_client_download_max_total_recovers_without_progressing = 1
+
     def __init__(
             self,
             *,
