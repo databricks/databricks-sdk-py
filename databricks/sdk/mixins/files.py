@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import base64
+import logging
 import os
 import pathlib
 import platform
@@ -11,22 +12,24 @@ from collections import deque
 from collections.abc import Iterator
 from io import BytesIO
 from types import TracebackType
-from typing import (TYPE_CHECKING, AnyStr, BinaryIO, Generator, Iterable, Optional, Type, Union)
+from typing import (TYPE_CHECKING, AnyStr, BinaryIO, Generator, Iterable,
+                    Optional, Type, Union)
 from urllib import parse
+
 from requests import RequestException
 
-import logging
+from .._base_client import _RawResponse, _StreamingResponse
 from .._property import _cached_property
 from ..errors import NotFound
 from ..service import files
 from ..service._internal import _escape_multi_segment_path_parameter
 from ..service.files import DownloadResponse
-from .._base_client import _RawResponse, _StreamingResponse
 
 if TYPE_CHECKING:
     from _typeshed import Self
 
 _LOG = logging.getLogger(__name__)
+
 
 class _DbfsIO(BinaryIO):
     MAX_CHUNK_SIZE = 1024 * 1024
@@ -699,13 +702,17 @@ class FilesExt(files.FilesAPI):
 
         result = DownloadResponse.from_dict(res)
         if not isinstance(result.contents, _StreamingResponse):
-            raise Exception("Internal error: response contents is of unexpected type: " + type(result.contents).__name__)
+            raise Exception("Internal error: response contents is of unexpected type: " +
+                            type(result.contents).__name__)
 
         return result
 
     def _wrap_stream(self, file_path: str, downloadResponse: DownloadResponse):
         underlying_response = _ResilientIterator._extract_raw_response(downloadResponse)
-        return _ResilientResponse(self, file_path, downloadResponse.last_modified, offset=0,
+        return _ResilientResponse(self,
+                                  file_path,
+                                  downloadResponse.last_modified,
+                                  offset=0,
                                   underlying_response=underlying_response)
 
 
@@ -728,8 +735,8 @@ class _ResilientResponse(_RawResponse):
             raise ValueError('Decode unicode is not supported')
 
         iterator = self.underlying_response.iter_content(chunk_size=chunk_size, decode_unicode=False)
-        self.iterator = _ResilientIterator(iterator, self.file_path, self.file_last_modified,
-                                           self.offset, self.api, chunk_size)
+        self.iterator = _ResilientIterator(iterator, self.file_path, self.file_last_modified, self.offset,
+                                           self.api, chunk_size)
         return self.iterator
 
     def close(self):
@@ -761,7 +768,6 @@ class _ResilientIterator(Iterator):
         self._recovers_without_progressing_count: int = 0
         self._closed: bool = False
 
-
     def _should_recover(self) -> bool:
         if self._total_recovers_count == self._api._config.files_api_client_download_max_total_recovers:
             _LOG.debug("Total recovers limit exceeded")
@@ -773,7 +779,7 @@ class _ResilientIterator(Iterator):
 
     def _recover(self) -> bool:
         if not self._should_recover():
-            return False  # recover suppressed, rethrow original exception
+            return False # recover suppressed, rethrow original exception
 
         self._total_recovers_count += 1
         self._recovers_without_progressing_count += 1
@@ -784,13 +790,15 @@ class _ResilientIterator(Iterator):
             _LOG.debug("Trying to recover from offset " + str(self._offset))
 
             # following call includes all the required network retries
-            downloadResponse = self._api._download_raw_stream(self._file_path, self._offset, self._file_last_modified)
+            downloadResponse = self._api._download_raw_stream(self._file_path, self._offset,
+                                                              self._file_last_modified)
             underlying_response = _ResilientIterator._extract_raw_response(downloadResponse)
-            self._underlying_iterator = underlying_response.iter_content(chunk_size=self._chunk_size, decode_unicode=False)
+            self._underlying_iterator = underlying_response.iter_content(chunk_size=self._chunk_size,
+                                                                         decode_unicode=False)
             _LOG.debug("Recover succeeded")
             return True
         except:
-            return False  # recover failed, rethrow original exception
+            return False # recover failed, rethrow original exception
 
     def __next__(self):
         if self._closed:

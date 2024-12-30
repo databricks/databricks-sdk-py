@@ -1,32 +1,30 @@
+import logging
 import os
-import pytest
 import re
-from databricks.sdk import WorkspaceClient
-from databricks.sdk.core import Config
 from dataclasses import dataclass
-from requests import RequestException
 from typing import List, Union
 
-import logging
+import pytest
+from requests import RequestException
+
+from databricks.sdk import WorkspaceClient
+from databricks.sdk.core import Config
 
 logger = logging.getLogger(__name__)
 
 
 @dataclass
 class RequestData:
+
     def __init__(self, offset: int):
         self._offset: int = offset
 
 
 class DownloadTestCase:
-    def __init__(self,
-                 name: str,
-                 enable_new_client: bool,
-                 file_size: int,
-                 failure_at_absolute_offset: List[int],
-                 max_recovers_total: Union[int, None],
-                 max_recovers_without_progressing: Union[int, None],
-                 expected_success: bool,
+
+    def __init__(self, name: str, enable_new_client: bool, file_size: int,
+                 failure_at_absolute_offset: List[int], max_recovers_total: Union[int, None],
+                 max_recovers_without_progressing: Union[int, None], expected_success: bool,
                  expected_requested_offsets: List[int]):
         self.name = name
         self.enable_new_client = enable_new_client
@@ -67,7 +65,9 @@ class DownloadTestCase:
         for idx, requested_offset in enumerate(self.expected_requested_offsets):
             assert (requested_offset == received_requests[idx]._offset)
 
+
 class MockSession:
+
     def __init__(self, test_case: DownloadTestCase):
         self.test_case: DownloadTestCase = test_case
         self.received_requests: List[RequestData] = []
@@ -75,26 +75,24 @@ class MockSession:
         self.failure_pointer = 0
         self.last_modified = 'Thu, 28 Nov 2024 16:39:14 GMT'
 
-
     # following the signature of Session.request()
-    def request(
-            self,
-            method,
-            url,
-            params=None,
-            data=None,
-            headers=None,
-            cookies=None,
-            files=None,
-            auth=None,
-            timeout=None,
-            allow_redirects=True,
-            proxies=None,
-            hooks=None,
-            stream=None,
-            verify=None,
-            cert=None,
-            json=None):
+    def request(self,
+                method,
+                url,
+                params=None,
+                data=None,
+                headers=None,
+                cookies=None,
+                files=None,
+                auth=None,
+                timeout=None,
+                allow_redirects=True,
+                proxies=None,
+                hooks=None,
+                stream=None,
+                verify=None,
+                cert=None,
+                json=None):
         assert method == 'GET'
         assert stream == True
 
@@ -119,16 +117,19 @@ class MockSession:
         self.received_requests.append(RequestData(offset))
         return MockResponse(self, offset, MockRequest(url))
 
+
 # required only for correct logging
 class MockRequest:
+
     def __init__(self, url: str):
-        self.url  = url
+        self.url = url
         self.method = 'GET'
         self.headers = dict()
         self.body = None
 
 
 class MockResponse:
+
     def __init__(self, session: MockSession, offset: int, request: MockRequest):
         self.session = session
         self.offset = offset
@@ -148,11 +149,11 @@ class MockResponse:
 
 
 class MockIterator:
+
     def __init__(self, response: MockResponse, chunk_size: int):
         self.response = response
         self.chunk_size = chunk_size
         self.offset = 0
-
 
     def __next__(self):
         start_offset = self.response.offset + self.offset
@@ -161,8 +162,10 @@ class MockIterator:
 
         end_offset = start_offset + self.chunk_size # exclusive, might be out of range
 
-        if self.response.session.failure_pointer < len(self.response.session.test_case.failure_at_absolute_offset):
-            failure_after_byte = self.response.session.test_case.failure_at_absolute_offset[self.response.session.failure_pointer]
+        if self.response.session.failure_pointer < len(
+                self.response.session.test_case.failure_at_absolute_offset):
+            failure_after_byte = self.response.session.test_case.failure_at_absolute_offset[
+                self.response.session.failure_pointer]
             if failure_after_byte < end_offset:
                 self.response.session.failure_pointer += 1
                 raise RequestException("Fake error")
@@ -176,31 +179,28 @@ class MockIterator:
 
 
 class _Constants:
-    underlying_chunk_size = 1024 * 1024  # see ticket #832
+    underlying_chunk_size = 1024 * 1024 # see ticket #832
+
 
 @pytest.mark.parametrize(
     "test_case",
     [
-        DownloadTestCase(
-            name="Old client: no failures, file of 5 bytes",
-            enable_new_client=False,
-            file_size=5,
-            failure_at_absolute_offset=[],
-            max_recovers_total=0,
-            max_recovers_without_progressing=0,
-            expected_success=True,
-            expected_requested_offsets=[0]),
-
-        DownloadTestCase(
-            name="Old client: no failures, file of 1.5 chunks",
-            enable_new_client=False,
-            file_size=int(1.5 * _Constants.underlying_chunk_size),
-            failure_at_absolute_offset=[],
-            max_recovers_total=0,
-            max_recovers_without_progressing=0,
-            expected_success=True,
-            expected_requested_offsets=[0]),
-
+        DownloadTestCase(name="Old client: no failures, file of 5 bytes",
+                         enable_new_client=False,
+                         file_size=5,
+                         failure_at_absolute_offset=[],
+                         max_recovers_total=0,
+                         max_recovers_without_progressing=0,
+                         expected_success=True,
+                         expected_requested_offsets=[0]),
+        DownloadTestCase(name="Old client: no failures, file of 1.5 chunks",
+                         enable_new_client=False,
+                         file_size=int(1.5 * _Constants.underlying_chunk_size),
+                         failure_at_absolute_offset=[],
+                         max_recovers_total=0,
+                         max_recovers_without_progressing=0,
+                         expected_success=True,
+                         expected_requested_offsets=[0]),
         DownloadTestCase(
             name="Old client: failure",
             enable_new_client=False,
@@ -210,167 +210,129 @@ class _Constants:
             max_recovers_without_progressing=None, # unlimited but ignored
             expected_success=False,
             expected_requested_offsets=[0]),
-
-        DownloadTestCase(
-            name="New client: no failures, file of 5 bytes",
-            enable_new_client=True,
-            file_size=5,
-            failure_at_absolute_offset=[],
-            max_recovers_total=0,
-            max_recovers_without_progressing=0,
-            expected_success=True,
-            expected_requested_offsets=[0]),
-
-        DownloadTestCase(
-            name="New client: no failures, file of 1 Kb",
-            enable_new_client=True,
-            file_size=1024,
-            max_recovers_total=None,
-            max_recovers_without_progressing=None,
-            failure_at_absolute_offset=[],
-            expected_success=True,
-            expected_requested_offsets=[0]),
-
-        DownloadTestCase(
-            name="New client: no failures, file of 1.5 chunks",
-            enable_new_client=True,
-            file_size=int(1.5 * _Constants.underlying_chunk_size),
-            failure_at_absolute_offset=[],
-            max_recovers_total=0,
-            max_recovers_without_progressing=0,
-            expected_success=True,
-            expected_requested_offsets=[0]),
-
-        DownloadTestCase(
-            name="New client: no failures, file of 10 chunks",
-            enable_new_client=True,
-            file_size=10 * _Constants.underlying_chunk_size,
-            failure_at_absolute_offset=[],
-            max_recovers_total=0,
-            max_recovers_without_progressing=0,
-            expected_success=True,
-            expected_requested_offsets=[0]),
-
-        DownloadTestCase(
-            name="New client: recovers are disabled, first failure leads to download abort",
-            enable_new_client=True,
-            file_size=10000,
-            failure_at_absolute_offset=[5],
-            max_recovers_total=0,
-            max_recovers_without_progressing=0,
-            expected_success=False,
-            expected_requested_offsets=[0]),
-
+        DownloadTestCase(name="New client: no failures, file of 5 bytes",
+                         enable_new_client=True,
+                         file_size=5,
+                         failure_at_absolute_offset=[],
+                         max_recovers_total=0,
+                         max_recovers_without_progressing=0,
+                         expected_success=True,
+                         expected_requested_offsets=[0]),
+        DownloadTestCase(name="New client: no failures, file of 1 Kb",
+                         enable_new_client=True,
+                         file_size=1024,
+                         max_recovers_total=None,
+                         max_recovers_without_progressing=None,
+                         failure_at_absolute_offset=[],
+                         expected_success=True,
+                         expected_requested_offsets=[0]),
+        DownloadTestCase(name="New client: no failures, file of 1.5 chunks",
+                         enable_new_client=True,
+                         file_size=int(1.5 * _Constants.underlying_chunk_size),
+                         failure_at_absolute_offset=[],
+                         max_recovers_total=0,
+                         max_recovers_without_progressing=0,
+                         expected_success=True,
+                         expected_requested_offsets=[0]),
+        DownloadTestCase(name="New client: no failures, file of 10 chunks",
+                         enable_new_client=True,
+                         file_size=10 * _Constants.underlying_chunk_size,
+                         failure_at_absolute_offset=[],
+                         max_recovers_total=0,
+                         max_recovers_without_progressing=0,
+                         expected_success=True,
+                         expected_requested_offsets=[0]),
+        DownloadTestCase(name="New client: recovers are disabled, first failure leads to download abort",
+                         enable_new_client=True,
+                         file_size=10000,
+                         failure_at_absolute_offset=[5],
+                         max_recovers_total=0,
+                         max_recovers_without_progressing=0,
+                         expected_success=False,
+                         expected_requested_offsets=[0]),
         DownloadTestCase(
             name="New client: unlimited recovers allowed",
             enable_new_client=True,
             file_size=_Constants.underlying_chunk_size * 5,
             # causes errors on requesting the third chunk
             failure_at_absolute_offset=[
-                _Constants.underlying_chunk_size - 1,
-                _Constants.underlying_chunk_size - 1,
-                _Constants.underlying_chunk_size - 1,
-                _Constants.underlying_chunk_size + 1,
+                _Constants.underlying_chunk_size - 1, _Constants.underlying_chunk_size - 1,
+                _Constants.underlying_chunk_size - 1, _Constants.underlying_chunk_size + 1,
                 _Constants.underlying_chunk_size * 3,
-                ],
+            ],
             max_recovers_total=None,
             max_recovers_without_progressing=None,
             expected_success=True,
-            expected_requested_offsets=[0, 0, 0, 0, _Constants.underlying_chunk_size,
-                                        _Constants.underlying_chunk_size * 3]),
-
+            expected_requested_offsets=[
+                0, 0, 0, 0, _Constants.underlying_chunk_size, _Constants.underlying_chunk_size * 3
+            ]),
         DownloadTestCase(
             name="New client: we respect limit on total recovers when progressing",
             enable_new_client=True,
             file_size=_Constants.underlying_chunk_size * 10,
             failure_at_absolute_offset=[
                 1,
-                _Constants.underlying_chunk_size + 1,  # progressing
-                _Constants.underlying_chunk_size * 2 + 1,  # progressing
-                _Constants.underlying_chunk_size * 3 + 1  # progressing
+                _Constants.underlying_chunk_size + 1, # progressing
+                _Constants.underlying_chunk_size * 2 + 1, # progressing
+                _Constants.underlying_chunk_size * 3 + 1 # progressing
             ],
             max_recovers_total=3,
             max_recovers_without_progressing=None,
             expected_success=False,
             expected_requested_offsets=[
-                0,
-                0,
-                _Constants.underlying_chunk_size * 1,
-                _Constants.underlying_chunk_size * 2
+                0, 0, _Constants.underlying_chunk_size * 1, _Constants.underlying_chunk_size * 2
             ]),
-
-        DownloadTestCase(
-            name="New client: we respect limit on total recovers when not progressing",
-            enable_new_client=True,
-            file_size=_Constants.underlying_chunk_size * 10,
-            failure_at_absolute_offset=[
-                1,
-                1,
-                1,
-                1
-            ],
-            max_recovers_total=3,
-            max_recovers_without_progressing=None,
-            expected_success=False,
-            expected_requested_offsets=[0, 0, 0, 0]),
-
-        DownloadTestCase(
-            name="New client: we respect limit on non-progressing recovers",
-            enable_new_client=True,
-            file_size=_Constants.underlying_chunk_size * 2,
-            failure_at_absolute_offset=[
-                _Constants.underlying_chunk_size - 1,
-                _Constants.underlying_chunk_size - 1,
-                _Constants.underlying_chunk_size - 1,
-                _Constants.underlying_chunk_size - 1
-            ],
-            max_recovers_total=None,
-            max_recovers_without_progressing=3,
-            expected_success=False,
-            expected_requested_offsets=[0, 0, 0, 0]),
-
+        DownloadTestCase(name="New client: we respect limit on total recovers when not progressing",
+                         enable_new_client=True,
+                         file_size=_Constants.underlying_chunk_size * 10,
+                         failure_at_absolute_offset=[1, 1, 1, 1],
+                         max_recovers_total=3,
+                         max_recovers_without_progressing=None,
+                         expected_success=False,
+                         expected_requested_offsets=[0, 0, 0, 0]),
+        DownloadTestCase(name="New client: we respect limit on non-progressing recovers",
+                         enable_new_client=True,
+                         file_size=_Constants.underlying_chunk_size * 2,
+                         failure_at_absolute_offset=[
+                             _Constants.underlying_chunk_size - 1, _Constants.underlying_chunk_size - 1,
+                             _Constants.underlying_chunk_size - 1, _Constants.underlying_chunk_size - 1
+                         ],
+                         max_recovers_total=None,
+                         max_recovers_without_progressing=3,
+                         expected_success=False,
+                         expected_requested_offsets=[0, 0, 0, 0]),
         DownloadTestCase(
             name="New client: non-progressing recovers count is reset when progressing",
             enable_new_client=True,
             file_size=_Constants.underlying_chunk_size * 10,
             failure_at_absolute_offset=[
-                _Constants.underlying_chunk_size + 1,  # this recover is after progressing
-                _Constants.underlying_chunk_size + 1,  # this is not
-                _Constants.underlying_chunk_size * 2 + 1,  # this recover is after progressing
-                _Constants.underlying_chunk_size * 2 + 1,  # this is not
-                _Constants.underlying_chunk_size * 2 + 1,  # this is not, we abort here
+                _Constants.underlying_chunk_size + 1, # this recover is after progressing
+                _Constants.underlying_chunk_size + 1, # this is not
+                _Constants.underlying_chunk_size * 2 + 1, # this recover is after progressing
+                _Constants.underlying_chunk_size * 2 + 1, # this is not
+                _Constants.underlying_chunk_size * 2 + 1, # this is not, we abort here
             ],
             max_recovers_total=None,
             max_recovers_without_progressing=2,
             expected_success=False,
             expected_requested_offsets=[
-                0,
-                _Constants.underlying_chunk_size,
-                _Constants.underlying_chunk_size,
-                _Constants.underlying_chunk_size * 2,
-                _Constants.underlying_chunk_size * 2
+                0, _Constants.underlying_chunk_size, _Constants.underlying_chunk_size,
+                _Constants.underlying_chunk_size * 2, _Constants.underlying_chunk_size * 2
             ]),
-
-        DownloadTestCase(
-            name="New client: non-progressing recovers count is reset when progressing - 2",
-            enable_new_client=True,
-            file_size=_Constants.underlying_chunk_size * 10,
-            failure_at_absolute_offset=[
-                1,
-                _Constants.underlying_chunk_size + 1,
-                _Constants.underlying_chunk_size * 2 + 1,
-                _Constants.underlying_chunk_size * 3 + 1
-            ],
-            max_recovers_total=None,
-            max_recovers_without_progressing=1,
-            expected_success=True,
-            expected_requested_offsets=[
-                0,
-                0,
-                _Constants.underlying_chunk_size,
-                _Constants.underlying_chunk_size * 2,
-                _Constants.underlying_chunk_size * 3
-            ]),
+        DownloadTestCase(name="New client: non-progressing recovers count is reset when progressing - 2",
+                         enable_new_client=True,
+                         file_size=_Constants.underlying_chunk_size * 10,
+                         failure_at_absolute_offset=[
+                             1, _Constants.underlying_chunk_size + 1, _Constants.underlying_chunk_size * 2 +
+                             1, _Constants.underlying_chunk_size * 3 + 1
+                         ],
+                         max_recovers_total=None,
+                         max_recovers_without_progressing=1,
+                         expected_success=True,
+                         expected_requested_offsets=[
+                             0, 0, _Constants.underlying_chunk_size, _Constants.underlying_chunk_size * 2,
+                             _Constants.underlying_chunk_size * 3
+                         ]),
     ],
     ids=DownloadTestCase.to_string)
 def test_download_recover(config: Config, test_case: DownloadTestCase):
