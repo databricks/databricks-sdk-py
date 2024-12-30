@@ -5,7 +5,6 @@ from typing import Iterator, List
 from unittest.mock import Mock
 
 import pytest
-import requests
 
 from databricks.sdk import errors, useragent
 from databricks.sdk._base_client import (_BaseClient, _RawResponse,
