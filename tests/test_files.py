@@ -99,7 +99,8 @@ class MockSession:
         offset = 0
         if "Range" in headers:
             range = headers["Range"]
-            if match := re.search("^bytes=(\\d+)-$", range):
+            match = re.search("^bytes=(\\d+)-$", range)
+            if match:
                 offset = int(match.group(1))
             else:
                 raise Exception("Unexpected range header: " + range)
