@@ -1,5 +1,6 @@
 import io
 import logging
+from abc import ABC, abstractmethod
 import urllib.parse
 from datetime import timedelta
 from types import TracebackType
@@ -284,9 +285,18 @@ class _BaseClient:
             return
         logger.debug(RoundTrip(response, self._debug_headers, self._debug_truncate_bytes, raw).generate())
 
+class _RawResponse(ABC):
+    @abstractmethod
+    # follows Response signature: https://github.com/psf/requests/blob/main/src/requests/models.py#L799
+    def iter_content(self, chunk_size: int = 1, decode_unicode: bool = False):
+        pass
+
+    @abstractmethod
+    def close(self):
+        pass
 
 class _StreamingResponse(BinaryIO):
-    _response: requests.Response
+    _response: _RawResponse
     _buffer: bytes
     _content: Union[Iterator[bytes], None]
     _chunk_size: Union[int, None]
@@ -298,7 +308,7 @@ class _StreamingResponse(BinaryIO):
     def flush(self) -> int:
         pass
 
-    def __init__(self, response: requests.Response, chunk_size: Union[int, None] = None):
+    def __init__(self, response: _RawResponse, chunk_size: Union[int, None] = None):
         self._response = response
         self._buffer = b''
         self._content = None
@@ -308,7 +318,7 @@ class _StreamingResponse(BinaryIO):
         if self._closed:
             raise ValueError("I/O operation on closed file")
         if not self._content:
-            self._content = self._response.iter_content(chunk_size=self._chunk_size)
+            self._content = self._response.iter_content(chunk_size=self._chunk_size, decode_unicode=False)
 
     def __enter__(self) -> BinaryIO:
         self._open()
