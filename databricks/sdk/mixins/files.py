@@ -717,10 +717,6 @@ class FilesExt(files.FilesAPI):
 
 
 class _ResilientResponse(_RawResponse):
-    # _StreamingResponse uses two methods of the underlying response:
-    # - _response.iter_content(chunk_size=self._chunk_size)
-    # - _response.close
-    # we need to provide them and nothing else
 
     def __init__(self, api: FilesExt, file_path: str, file_last_modified: str, offset: int,
                  underlying_response: _RawResponse):
