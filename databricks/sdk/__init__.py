@@ -28,6 +28,9 @@ from databricks.sdk.service.catalog import (AccountMetastoreAssignmentsAPI,
                                             TableConstraintsAPI, TablesAPI,
                                             TemporaryTableCredentialsAPI,
                                             VolumesAPI, WorkspaceBindingsAPI)
+from databricks.sdk.service.cleanrooms import (CleanRoomAssetsAPI,
+                                               CleanRoomsAPI,
+                                               CleanRoomTaskRunsAPI)
 from databricks.sdk.service.compute import (ClusterPoliciesAPI, ClustersAPI,
                                             CommandExecutionAPI,
                                             GlobalInitScriptsAPI,
@@ -53,9 +56,11 @@ from databricks.sdk.service.marketplace import (
     ProviderListingsAPI, ProviderPersonalizationRequestsAPI,
     ProviderProviderAnalyticsDashboardsAPI, ProviderProvidersAPI)
 from databricks.sdk.service.ml import ExperimentsAPI, ModelRegistryAPI
-from databricks.sdk.service.oauth2 import (CustomAppIntegrationAPI,
+from databricks.sdk.service.oauth2 import (AccountFederationPolicyAPI,
+                                           CustomAppIntegrationAPI,
                                            OAuthPublishedAppsAPI,
                                            PublishedAppIntegrationAPI,
+                                           ServicePrincipalFederationPolicyAPI,
                                            ServicePrincipalSecretsAPI)
 from databricks.sdk.service.pipelines import PipelinesAPI
 from databricks.sdk.service.provisioning import (CredentialsAPI,
@@ -176,6 +181,9 @@ class WorkspaceClient:
         self._apps = AppsAPI(self._api_client)
         self._artifact_allowlists = ArtifactAllowlistsAPI(self._api_client)
         self._catalogs = CatalogsAPI(self._api_client)
+        self._clean_room_assets = CleanRoomAssetsAPI(self._api_client)
+        self._clean_room_task_runs = CleanRoomTaskRunsAPI(self._api_client)
+        self._clean_rooms = CleanRoomsAPI(self._api_client)
         self._cluster_policies = ClusterPoliciesAPI(self._api_client)
         self._clusters = ClustersExt(self._api_client)
         self._command_execution = CommandExecutionAPI(self._api_client)
@@ -304,6 +312,21 @@ class WorkspaceClient:
     def catalogs(self) -> CatalogsAPI:
         """A catalog is the first layer of Unity Catalog’s three-level namespace."""
         return self._catalogs
+
+    @property
+    def clean_room_assets(self) -> CleanRoomAssetsAPI:
+        """Clean room assets are data and code objects — Tables, volumes, and notebooks that are shared with the clean room."""
+        return self._clean_room_assets
+
+    @property
+    def clean_room_task_runs(self) -> CleanRoomTaskRunsAPI:
+        """Clean room task runs are the executions of notebooks in a clean room."""
+        return self._clean_room_task_runs
+
+    @property
+    def clean_rooms(self) -> CleanRoomsAPI:
+        """A clean room uses Delta Sharing and serverless compute to provide a secure and privacy-protecting environment where multiple parties can work together on sensitive enterprise data without direct access to each other’s data."""
+        return self._clean_rooms
 
     @property
     def cluster_policies(self) -> ClusterPoliciesAPI:
@@ -805,6 +828,7 @@ class AccountClient:
         self._credentials = CredentialsAPI(self._api_client)
         self._custom_app_integration = CustomAppIntegrationAPI(self._api_client)
         self._encryption_keys = EncryptionKeysAPI(self._api_client)
+        self._federation_policy = AccountFederationPolicyAPI(self._api_client)
         self._groups = AccountGroupsAPI(self._api_client)
         self._ip_access_lists = AccountIpAccessListsAPI(self._api_client)
         self._log_delivery = LogDeliveryAPI(self._api_client)
@@ -815,6 +839,7 @@ class AccountClient:
         self._o_auth_published_apps = OAuthPublishedAppsAPI(self._api_client)
         self._private_access = PrivateAccessAPI(self._api_client)
         self._published_app_integration = PublishedAppIntegrationAPI(self._api_client)
+        self._service_principal_federation_policy = ServicePrincipalFederationPolicyAPI(self._api_client)
         self._service_principal_secrets = ServicePrincipalSecretsAPI(self._api_client)
         self._service_principals = AccountServicePrincipalsAPI(self._api_client)
         self._settings = AccountSettingsAPI(self._api_client)
@@ -859,6 +884,11 @@ class AccountClient:
     def encryption_keys(self) -> EncryptionKeysAPI:
         """These APIs manage encryption key configurations for this workspace (optional)."""
         return self._encryption_keys
+
+    @property
+    def federation_policy(self) -> AccountFederationPolicyAPI:
+        """These APIs manage account federation policies."""
+        return self._federation_policy
 
     @property
     def groups(self) -> AccountGroupsAPI:
@@ -909,6 +939,11 @@ class AccountClient:
     def published_app_integration(self) -> PublishedAppIntegrationAPI:
         """These APIs enable administrators to manage published OAuth app integrations, which is required for adding/using Published OAuth App Integration like Tableau Desktop for Databricks in AWS cloud."""
         return self._published_app_integration
+
+    @property
+    def service_principal_federation_policy(self) -> ServicePrincipalFederationPolicyAPI:
+        """These APIs manage service principal federation policies."""
+        return self._service_principal_federation_policy
 
     @property
     def service_principal_secrets(self) -> ServicePrincipalSecretsAPI:

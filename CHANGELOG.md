@@ -1,5 +1,52 @@
 # Version changelog
 
+## [Release] Release v0.40.0
+
+### API Changes:
+
+ * Added [a.account_federation_policy](https://databricks-sdk-py.readthedocs.io/en/latest/account/account_federation_policy.html) account-level service and [a.service_principal_federation_policy](https://databricks-sdk-py.readthedocs.io/en/latest/account/service_principal_federation_policy.html) account-level service.
+ * Added `is_single_node`, `kind` and `use_ml_runtime` fields for `databricks.sdk.service.compute.ClusterAttributes`.
+ * Added `is_single_node`, `kind` and `use_ml_runtime` fields for `databricks.sdk.service.compute.ClusterDetails`.
+ * Added `is_single_node`, `kind` and `use_ml_runtime` fields for `databricks.sdk.service.compute.ClusterSpec`.
+ * Added `is_single_node`, `kind` and `use_ml_runtime` fields for `databricks.sdk.service.compute.CreateCluster`.
+ * Added `is_single_node`, `kind` and `use_ml_runtime` fields for `databricks.sdk.service.compute.EditCluster`.
+ * Added `is_single_node`, `kind` and `use_ml_runtime` fields for `databricks.sdk.service.compute.UpdateClusterResource`.
+ * Added `update_parameter_syntax` field for `databricks.sdk.service.dashboards.MigrateDashboardRequest`.
+ * Added `clean_rooms_notebook_task` field for `databricks.sdk.service.jobs.RunTask`.
+ * Added `clean_rooms_notebook_task` field for `databricks.sdk.service.jobs.SubmitTask`.
+ * Added `clean_rooms_notebook_task` field for `databricks.sdk.service.jobs.Task`.
+ * Changed `days_of_week` field for `databricks.sdk.service.pipelines.RestartWindow` to type `databricks.sdk.service.pipelines.RestartWindowDaysOfWeekList` dataclass.
+
+OpenAPI SHA: a6a317df8327c9b1e5cb59a03a42ffa2aabeef6d, Date: 2024-12-16
+
+## [Release] Release v0.39.0
+
+### Bug Fixes
+
+ * Update Changelog file ([#830](https://github.com/databricks/databricks-sdk-py/pull/830)).
+
+
+### Internal Changes
+
+ * Fix a couple of typos in open_ai_client.py ([#829](https://github.com/databricks/databricks-sdk-py/pull/829)).
+ * Update SDK to OpenAPI spec ([#834](https://github.com/databricks/databricks-sdk-py/pull/834)).
+
+
+### API Changes:
+
+ * Added `databricks.sdk.service.cleanrooms` package.
+ * Added `delete()` method for [w.aibi_dashboard_embedding_access_policy](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings/aibi_dashboard_embedding_access_policy.html) workspace-level service.
+ * Added `delete()` method for [w.aibi_dashboard_embedding_approved_domains](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings/aibi_dashboard_embedding_approved_domains.html) workspace-level service.
+ * Added `databricks_gcp_service_account` field for `databricks.sdk.service.catalog.CreateCredentialRequest`.
+ * Added `databricks_gcp_service_account` field for `databricks.sdk.service.catalog.CredentialInfo`.
+ * Added `gcp_options` field for `databricks.sdk.service.catalog.GenerateTemporaryServiceCredentialRequest`.
+ * Added `databricks_gcp_service_account` field for `databricks.sdk.service.catalog.UpdateCredentialRequest`.
+ * Added `cached_query_schema` field for `databricks.sdk.service.dashboards.QueryAttachment`.
+ * Added .
+ * Removed `gcp_service_account_key` field for `databricks.sdk.service.catalog.CreateCredentialRequest`.
+
+OpenAPI SHA: 7016dcbf2e011459416cf408ce21143bcc4b3a25, Date: 2024-12-05
+
 ## [Release] Release v0.38.0
 
 ### New Features and Improvements

@@ -28,6 +28,12 @@ class AwsCredentials:
         if self.sts_role: body['sts_role'] = self.sts_role.as_dict()
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AwsCredentials into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.sts_role: body['sts_role'] = self.sts_role
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> AwsCredentials:
         """Deserializes the AwsCredentials from a dictionary."""
@@ -60,6 +66,16 @@ class AwsKeyInfo:
             body['reuse_key_for_cluster_volumes'] = self.reuse_key_for_cluster_volumes
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AwsKeyInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.key_alias is not None: body['key_alias'] = self.key_alias
+        if self.key_arn is not None: body['key_arn'] = self.key_arn
+        if self.key_region is not None: body['key_region'] = self.key_region
+        if self.reuse_key_for_cluster_volumes is not None:
+            body['reuse_key_for_cluster_volumes'] = self.reuse_key_for_cluster_volumes
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> AwsKeyInfo:
         """Deserializes the AwsKeyInfo from a dictionary."""
@@ -84,6 +100,13 @@ class AzureWorkspaceInfo:
         if self.subscription_id is not None: body['subscription_id'] = self.subscription_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AzureWorkspaceInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.resource_group is not None: body['resource_group'] = self.resource_group
+        if self.subscription_id is not None: body['subscription_id'] = self.subscription_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> AzureWorkspaceInfo:
         """Deserializes the AzureWorkspaceInfo from a dictionary."""
@@ -102,6 +125,12 @@ class CloudResourceContainer:
         """Serializes the CloudResourceContainer into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.gcp: body['gcp'] = self.gcp.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CloudResourceContainer into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.gcp: body['gcp'] = self.gcp
         return body
 
     @classmethod
@@ -133,6 +162,15 @@ class CreateAwsKeyInfo:
             body['reuse_key_for_cluster_volumes'] = self.reuse_key_for_cluster_volumes
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateAwsKeyInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.key_alias is not None: body['key_alias'] = self.key_alias
+        if self.key_arn is not None: body['key_arn'] = self.key_arn
+        if self.reuse_key_for_cluster_volumes is not None:
+            body['reuse_key_for_cluster_volumes'] = self.reuse_key_for_cluster_volumes
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateAwsKeyInfo:
         """Deserializes the CreateAwsKeyInfo from a dictionary."""
@@ -149,6 +187,12 @@ class CreateCredentialAwsCredentials:
         """Serializes the CreateCredentialAwsCredentials into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.sts_role: body['sts_role'] = self.sts_role.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateCredentialAwsCredentials into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.sts_role: body['sts_role'] = self.sts_role
         return body
 
     @classmethod
@@ -171,6 +215,13 @@ class CreateCredentialRequest:
         if self.credentials_name is not None: body['credentials_name'] = self.credentials_name
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateCredentialRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.aws_credentials: body['aws_credentials'] = self.aws_credentials
+        if self.credentials_name is not None: body['credentials_name'] = self.credentials_name
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateCredentialRequest:
         """Deserializes the CreateCredentialRequest from a dictionary."""
@@ -185,6 +236,12 @@ class CreateCredentialStsRole:
 
     def as_dict(self) -> dict:
         """Serializes the CreateCredentialStsRole into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.role_arn is not None: body['role_arn'] = self.role_arn
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateCredentialStsRole into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.role_arn is not None: body['role_arn'] = self.role_arn
         return body
@@ -212,6 +269,14 @@ class CreateCustomerManagedKeyRequest:
         if self.use_cases: body['use_cases'] = [v.value for v in self.use_cases]
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateCustomerManagedKeyRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.aws_key_info: body['aws_key_info'] = self.aws_key_info
+        if self.gcp_key_info: body['gcp_key_info'] = self.gcp_key_info
+        if self.use_cases: body['use_cases'] = self.use_cases
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateCustomerManagedKeyRequest:
         """Deserializes the CreateCustomerManagedKeyRequest from a dictionary."""
@@ -227,6 +292,12 @@ class CreateGcpKeyInfo:
 
     def as_dict(self) -> dict:
         """Serializes the CreateGcpKeyInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.kms_key_id is not None: body['kms_key_id'] = self.kms_key_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateGcpKeyInfo into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.kms_key_id is not None: body['kms_key_id'] = self.kms_key_id
         return body
@@ -275,6 +346,17 @@ class CreateNetworkRequest:
         if self.vpc_id is not None: body['vpc_id'] = self.vpc_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateNetworkRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.gcp_network_info: body['gcp_network_info'] = self.gcp_network_info
+        if self.network_name is not None: body['network_name'] = self.network_name
+        if self.security_group_ids: body['security_group_ids'] = self.security_group_ids
+        if self.subnet_ids: body['subnet_ids'] = self.subnet_ids
+        if self.vpc_endpoints: body['vpc_endpoints'] = self.vpc_endpoints
+        if self.vpc_id is not None: body['vpc_id'] = self.vpc_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateNetworkRequest:
         """Deserializes the CreateNetworkRequest from a dictionary."""
@@ -298,6 +380,14 @@ class CreateStorageConfigurationRequest:
         """Serializes the CreateStorageConfigurationRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.root_bucket_info: body['root_bucket_info'] = self.root_bucket_info.as_dict()
+        if self.storage_configuration_name is not None:
+            body['storage_configuration_name'] = self.storage_configuration_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateStorageConfigurationRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.root_bucket_info: body['root_bucket_info'] = self.root_bucket_info
         if self.storage_configuration_name is not None:
             body['storage_configuration_name'] = self.storage_configuration_name
         return body
@@ -328,6 +418,15 @@ class CreateVpcEndpointRequest:
         body = {}
         if self.aws_vpc_endpoint_id is not None: body['aws_vpc_endpoint_id'] = self.aws_vpc_endpoint_id
         if self.gcp_vpc_endpoint_info: body['gcp_vpc_endpoint_info'] = self.gcp_vpc_endpoint_info.as_dict()
+        if self.region is not None: body['region'] = self.region
+        if self.vpc_endpoint_name is not None: body['vpc_endpoint_name'] = self.vpc_endpoint_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateVpcEndpointRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.aws_vpc_endpoint_id is not None: body['aws_vpc_endpoint_id'] = self.aws_vpc_endpoint_id
+        if self.gcp_vpc_endpoint_info: body['gcp_vpc_endpoint_info'] = self.gcp_vpc_endpoint_info
         if self.region is not None: body['region'] = self.region
         if self.vpc_endpoint_name is not None: body['vpc_endpoint_name'] = self.vpc_endpoint_name
         return body
@@ -479,6 +578,34 @@ class CreateWorkspaceRequest:
         if self.workspace_name is not None: body['workspace_name'] = self.workspace_name
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateWorkspaceRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.aws_region is not None: body['aws_region'] = self.aws_region
+        if self.cloud is not None: body['cloud'] = self.cloud
+        if self.cloud_resource_container: body['cloud_resource_container'] = self.cloud_resource_container
+        if self.credentials_id is not None: body['credentials_id'] = self.credentials_id
+        if self.custom_tags: body['custom_tags'] = self.custom_tags
+        if self.deployment_name is not None: body['deployment_name'] = self.deployment_name
+        if self.gcp_managed_network_config:
+            body['gcp_managed_network_config'] = self.gcp_managed_network_config
+        if self.gke_config: body['gke_config'] = self.gke_config
+        if self.is_no_public_ip_enabled is not None:
+            body['is_no_public_ip_enabled'] = self.is_no_public_ip_enabled
+        if self.location is not None: body['location'] = self.location
+        if self.managed_services_customer_managed_key_id is not None:
+            body['managed_services_customer_managed_key_id'] = self.managed_services_customer_managed_key_id
+        if self.network_id is not None: body['network_id'] = self.network_id
+        if self.pricing_tier is not None: body['pricing_tier'] = self.pricing_tier
+        if self.private_access_settings_id is not None:
+            body['private_access_settings_id'] = self.private_access_settings_id
+        if self.storage_configuration_id is not None:
+            body['storage_configuration_id'] = self.storage_configuration_id
+        if self.storage_customer_managed_key_id is not None:
+            body['storage_customer_managed_key_id'] = self.storage_customer_managed_key_id
+        if self.workspace_name is not None: body['workspace_name'] = self.workspace_name
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateWorkspaceRequest:
         """Deserializes the CreateWorkspaceRequest from a dictionary."""
@@ -529,6 +656,16 @@ class Credential:
         if self.credentials_name is not None: body['credentials_name'] = self.credentials_name
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Credential into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.account_id is not None: body['account_id'] = self.account_id
+        if self.aws_credentials: body['aws_credentials'] = self.aws_credentials
+        if self.creation_time is not None: body['creation_time'] = self.creation_time
+        if self.credentials_id is not None: body['credentials_id'] = self.credentials_id
+        if self.credentials_name is not None: body['credentials_name'] = self.credentials_name
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> Credential:
         """Deserializes the Credential from a dictionary."""
@@ -552,6 +689,12 @@ class CustomerFacingGcpCloudResourceContainer:
 
     def as_dict(self) -> dict:
         """Serializes the CustomerFacingGcpCloudResourceContainer into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.project_id is not None: body['project_id'] = self.project_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CustomerFacingGcpCloudResourceContainer into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.project_id is not None: body['project_id'] = self.project_id
         return body
@@ -592,6 +735,18 @@ class CustomerManagedKey:
         if self.use_cases: body['use_cases'] = [v.value for v in self.use_cases]
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CustomerManagedKey into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.account_id is not None: body['account_id'] = self.account_id
+        if self.aws_key_info: body['aws_key_info'] = self.aws_key_info
+        if self.creation_time is not None: body['creation_time'] = self.creation_time
+        if self.customer_managed_key_id is not None:
+            body['customer_managed_key_id'] = self.customer_managed_key_id
+        if self.gcp_key_info: body['gcp_key_info'] = self.gcp_key_info
+        if self.use_cases: body['use_cases'] = self.use_cases
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CustomerManagedKey:
         """Deserializes the CustomerManagedKey from a dictionary."""
@@ -608,6 +763,11 @@ class DeleteResponse:
 
     def as_dict(self) -> dict:
         """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -659,6 +819,16 @@ class ExternalCustomerInfo:
         if self.customer_name is not None: body['customer_name'] = self.customer_name
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ExternalCustomerInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.authoritative_user_email is not None:
+            body['authoritative_user_email'] = self.authoritative_user_email
+        if self.authoritative_user_full_name is not None:
+            body['authoritative_user_full_name'] = self.authoritative_user_full_name
+        if self.customer_name is not None: body['customer_name'] = self.customer_name
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ExternalCustomerInfo:
         """Deserializes the ExternalCustomerInfo from a dictionary."""
@@ -674,6 +844,12 @@ class GcpKeyInfo:
 
     def as_dict(self) -> dict:
         """Serializes the GcpKeyInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.kms_key_id is not None: body['kms_key_id'] = self.kms_key_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GcpKeyInfo into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.kms_key_id is not None: body['kms_key_id'] = self.kms_key_id
         return body
@@ -727,6 +903,16 @@ class GcpManagedNetworkConfig:
         if self.subnet_cidr is not None: body['subnet_cidr'] = self.subnet_cidr
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GcpManagedNetworkConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.gke_cluster_pod_ip_range is not None:
+            body['gke_cluster_pod_ip_range'] = self.gke_cluster_pod_ip_range
+        if self.gke_cluster_service_ip_range is not None:
+            body['gke_cluster_service_ip_range'] = self.gke_cluster_service_ip_range
+        if self.subnet_cidr is not None: body['subnet_cidr'] = self.subnet_cidr
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> GcpManagedNetworkConfig:
         """Deserializes the GcpManagedNetworkConfig from a dictionary."""
@@ -763,6 +949,17 @@ class GcpNetworkInfo:
 
     def as_dict(self) -> dict:
         """Serializes the GcpNetworkInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.network_project_id is not None: body['network_project_id'] = self.network_project_id
+        if self.pod_ip_range_name is not None: body['pod_ip_range_name'] = self.pod_ip_range_name
+        if self.service_ip_range_name is not None: body['service_ip_range_name'] = self.service_ip_range_name
+        if self.subnet_id is not None: body['subnet_id'] = self.subnet_id
+        if self.subnet_region is not None: body['subnet_region'] = self.subnet_region
+        if self.vpc_id is not None: body['vpc_id'] = self.vpc_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GcpNetworkInfo into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.network_project_id is not None: body['network_project_id'] = self.network_project_id
         if self.pod_ip_range_name is not None: body['pod_ip_range_name'] = self.pod_ip_range_name
@@ -812,6 +1009,16 @@ class GcpVpcEndpointInfo:
         if self.service_attachment_id is not None: body['service_attachment_id'] = self.service_attachment_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GcpVpcEndpointInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.endpoint_region is not None: body['endpoint_region'] = self.endpoint_region
+        if self.project_id is not None: body['project_id'] = self.project_id
+        if self.psc_connection_id is not None: body['psc_connection_id'] = self.psc_connection_id
+        if self.psc_endpoint_name is not None: body['psc_endpoint_name'] = self.psc_endpoint_name
+        if self.service_attachment_id is not None: body['service_attachment_id'] = self.service_attachment_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> GcpVpcEndpointInfo:
         """Deserializes the GcpVpcEndpointInfo from a dictionary."""
@@ -845,6 +1052,13 @@ class GkeConfig:
         """Serializes the GkeConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.connectivity_type is not None: body['connectivity_type'] = self.connectivity_type.value
+        if self.master_ip_range is not None: body['master_ip_range'] = self.master_ip_range
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GkeConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.connectivity_type is not None: body['connectivity_type'] = self.connectivity_type
         if self.master_ip_range is not None: body['master_ip_range'] = self.master_ip_range
         return body
 
@@ -940,6 +1154,24 @@ class Network:
         if self.workspace_id is not None: body['workspace_id'] = self.workspace_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Network into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.account_id is not None: body['account_id'] = self.account_id
+        if self.creation_time is not None: body['creation_time'] = self.creation_time
+        if self.error_messages: body['error_messages'] = self.error_messages
+        if self.gcp_network_info: body['gcp_network_info'] = self.gcp_network_info
+        if self.network_id is not None: body['network_id'] = self.network_id
+        if self.network_name is not None: body['network_name'] = self.network_name
+        if self.security_group_ids: body['security_group_ids'] = self.security_group_ids
+        if self.subnet_ids: body['subnet_ids'] = self.subnet_ids
+        if self.vpc_endpoints: body['vpc_endpoints'] = self.vpc_endpoints
+        if self.vpc_id is not None: body['vpc_id'] = self.vpc_id
+        if self.vpc_status is not None: body['vpc_status'] = self.vpc_status
+        if self.warning_messages: body['warning_messages'] = self.warning_messages
+        if self.workspace_id is not None: body['workspace_id'] = self.workspace_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> Network:
         """Deserializes the Network from a dictionary."""
@@ -974,6 +1206,13 @@ class NetworkHealth:
         if self.error_type is not None: body['error_type'] = self.error_type.value
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the NetworkHealth into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.error_message is not None: body['error_message'] = self.error_message
+        if self.error_type is not None: body['error_type'] = self.error_type
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> NetworkHealth:
         """Deserializes the NetworkHealth from a dictionary."""
@@ -1001,6 +1240,13 @@ class NetworkVpcEndpoints:
         if self.rest_api: body['rest_api'] = [v for v in self.rest_api]
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the NetworkVpcEndpoints into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.dataplane_relay: body['dataplane_relay'] = self.dataplane_relay
+        if self.rest_api: body['rest_api'] = self.rest_api
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> NetworkVpcEndpoints:
         """Deserializes the NetworkVpcEndpoints from a dictionary."""
@@ -1020,6 +1266,13 @@ class NetworkWarning:
         body = {}
         if self.warning_message is not None: body['warning_message'] = self.warning_message
         if self.warning_type is not None: body['warning_type'] = self.warning_type.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the NetworkWarning into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.warning_message is not None: body['warning_message'] = self.warning_message
+        if self.warning_type is not None: body['warning_type'] = self.warning_type
         return body
 
     @classmethod
@@ -1099,6 +1352,20 @@ class PrivateAccessSettings:
         if self.region is not None: body['region'] = self.region
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PrivateAccessSettings into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.account_id is not None: body['account_id'] = self.account_id
+        if self.allowed_vpc_endpoint_ids: body['allowed_vpc_endpoint_ids'] = self.allowed_vpc_endpoint_ids
+        if self.private_access_level is not None: body['private_access_level'] = self.private_access_level
+        if self.private_access_settings_id is not None:
+            body['private_access_settings_id'] = self.private_access_settings_id
+        if self.private_access_settings_name is not None:
+            body['private_access_settings_name'] = self.private_access_settings_name
+        if self.public_access_enabled is not None: body['public_access_enabled'] = self.public_access_enabled
+        if self.region is not None: body['region'] = self.region
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> PrivateAccessSettings:
         """Deserializes the PrivateAccessSettings from a dictionary."""
@@ -1119,6 +1386,11 @@ class ReplaceResponse:
         body = {}
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ReplaceResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ReplaceResponse:
         """Deserializes the ReplaceResponse from a dictionary."""
@@ -1134,6 +1406,12 @@ class RootBucketInfo:
 
     def as_dict(self) -> dict:
         """Serializes the RootBucketInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.bucket_name is not None: body['bucket_name'] = self.bucket_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RootBucketInfo into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.bucket_name is not None: body['bucket_name'] = self.bucket_name
         return body
@@ -1173,6 +1451,18 @@ class StorageConfiguration:
             body['storage_configuration_name'] = self.storage_configuration_name
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the StorageConfiguration into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.account_id is not None: body['account_id'] = self.account_id
+        if self.creation_time is not None: body['creation_time'] = self.creation_time
+        if self.root_bucket_info: body['root_bucket_info'] = self.root_bucket_info
+        if self.storage_configuration_id is not None:
+            body['storage_configuration_id'] = self.storage_configuration_id
+        if self.storage_configuration_name is not None:
+            body['storage_configuration_name'] = self.storage_configuration_name
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> StorageConfiguration:
         """Deserializes the StorageConfiguration from a dictionary."""
@@ -1199,6 +1489,13 @@ class StsRole:
         if self.role_arn is not None: body['role_arn'] = self.role_arn
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the StsRole into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.external_id is not None: body['external_id'] = self.external_id
+        if self.role_arn is not None: body['role_arn'] = self.role_arn
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> StsRole:
         """Deserializes the StsRole from a dictionary."""
@@ -1210,6 +1507,11 @@ class UpdateResponse:
 
     def as_dict(self) -> dict:
         """Serializes the UpdateResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -1262,6 +1564,26 @@ class UpdateWorkspaceRequest:
 
     def as_dict(self) -> dict:
         """Serializes the UpdateWorkspaceRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.aws_region is not None: body['aws_region'] = self.aws_region
+        if self.credentials_id is not None: body['credentials_id'] = self.credentials_id
+        if self.custom_tags: body['custom_tags'] = self.custom_tags
+        if self.managed_services_customer_managed_key_id is not None:
+            body['managed_services_customer_managed_key_id'] = self.managed_services_customer_managed_key_id
+        if self.network_connectivity_config_id is not None:
+            body['network_connectivity_config_id'] = self.network_connectivity_config_id
+        if self.network_id is not None: body['network_id'] = self.network_id
+        if self.private_access_settings_id is not None:
+            body['private_access_settings_id'] = self.private_access_settings_id
+        if self.storage_configuration_id is not None:
+            body['storage_configuration_id'] = self.storage_configuration_id
+        if self.storage_customer_managed_key_id is not None:
+            body['storage_customer_managed_key_id'] = self.storage_customer_managed_key_id
+        if self.workspace_id is not None: body['workspace_id'] = self.workspace_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateWorkspaceRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.aws_region is not None: body['aws_region'] = self.aws_region
         if self.credentials_id is not None: body['credentials_id'] = self.credentials_id
@@ -1349,6 +1671,19 @@ class UpsertPrivateAccessSettingsRequest:
         if self.region is not None: body['region'] = self.region
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpsertPrivateAccessSettingsRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.allowed_vpc_endpoint_ids: body['allowed_vpc_endpoint_ids'] = self.allowed_vpc_endpoint_ids
+        if self.private_access_level is not None: body['private_access_level'] = self.private_access_level
+        if self.private_access_settings_id is not None:
+            body['private_access_settings_id'] = self.private_access_settings_id
+        if self.private_access_settings_name is not None:
+            body['private_access_settings_name'] = self.private_access_settings_name
+        if self.public_access_enabled is not None: body['public_access_enabled'] = self.public_access_enabled
+        if self.region is not None: body['region'] = self.region
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> UpsertPrivateAccessSettingsRequest:
         """Deserializes the UpsertPrivateAccessSettingsRequest from a dictionary."""
@@ -1416,6 +1751,22 @@ class VpcEndpoint:
         if self.region is not None: body['region'] = self.region
         if self.state is not None: body['state'] = self.state
         if self.use_case is not None: body['use_case'] = self.use_case.value
+        if self.vpc_endpoint_id is not None: body['vpc_endpoint_id'] = self.vpc_endpoint_id
+        if self.vpc_endpoint_name is not None: body['vpc_endpoint_name'] = self.vpc_endpoint_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the VpcEndpoint into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.account_id is not None: body['account_id'] = self.account_id
+        if self.aws_account_id is not None: body['aws_account_id'] = self.aws_account_id
+        if self.aws_endpoint_service_id is not None:
+            body['aws_endpoint_service_id'] = self.aws_endpoint_service_id
+        if self.aws_vpc_endpoint_id is not None: body['aws_vpc_endpoint_id'] = self.aws_vpc_endpoint_id
+        if self.gcp_vpc_endpoint_info: body['gcp_vpc_endpoint_info'] = self.gcp_vpc_endpoint_info
+        if self.region is not None: body['region'] = self.region
+        if self.state is not None: body['state'] = self.state
+        if self.use_case is not None: body['use_case'] = self.use_case
         if self.vpc_endpoint_id is not None: body['vpc_endpoint_id'] = self.vpc_endpoint_id
         if self.vpc_endpoint_name is not None: body['vpc_endpoint_name'] = self.vpc_endpoint_name
         return body
@@ -1593,6 +1944,42 @@ class Workspace:
         if self.workspace_id is not None: body['workspace_id'] = self.workspace_id
         if self.workspace_name is not None: body['workspace_name'] = self.workspace_name
         if self.workspace_status is not None: body['workspace_status'] = self.workspace_status.value
+        if self.workspace_status_message is not None:
+            body['workspace_status_message'] = self.workspace_status_message
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Workspace into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.account_id is not None: body['account_id'] = self.account_id
+        if self.aws_region is not None: body['aws_region'] = self.aws_region
+        if self.azure_workspace_info: body['azure_workspace_info'] = self.azure_workspace_info
+        if self.cloud is not None: body['cloud'] = self.cloud
+        if self.cloud_resource_container: body['cloud_resource_container'] = self.cloud_resource_container
+        if self.creation_time is not None: body['creation_time'] = self.creation_time
+        if self.credentials_id is not None: body['credentials_id'] = self.credentials_id
+        if self.custom_tags: body['custom_tags'] = self.custom_tags
+        if self.deployment_name is not None: body['deployment_name'] = self.deployment_name
+        if self.external_customer_info: body['external_customer_info'] = self.external_customer_info
+        if self.gcp_managed_network_config:
+            body['gcp_managed_network_config'] = self.gcp_managed_network_config
+        if self.gke_config: body['gke_config'] = self.gke_config
+        if self.is_no_public_ip_enabled is not None:
+            body['is_no_public_ip_enabled'] = self.is_no_public_ip_enabled
+        if self.location is not None: body['location'] = self.location
+        if self.managed_services_customer_managed_key_id is not None:
+            body['managed_services_customer_managed_key_id'] = self.managed_services_customer_managed_key_id
+        if self.network_id is not None: body['network_id'] = self.network_id
+        if self.pricing_tier is not None: body['pricing_tier'] = self.pricing_tier
+        if self.private_access_settings_id is not None:
+            body['private_access_settings_id'] = self.private_access_settings_id
+        if self.storage_configuration_id is not None:
+            body['storage_configuration_id'] = self.storage_configuration_id
+        if self.storage_customer_managed_key_id is not None:
+            body['storage_customer_managed_key_id'] = self.storage_customer_managed_key_id
+        if self.workspace_id is not None: body['workspace_id'] = self.workspace_id
+        if self.workspace_name is not None: body['workspace_name'] = self.workspace_name
+        if self.workspace_status is not None: body['workspace_status'] = self.workspace_status
         if self.workspace_status_message is not None:
             body['workspace_status_message'] = self.workspace_status_message
         return body

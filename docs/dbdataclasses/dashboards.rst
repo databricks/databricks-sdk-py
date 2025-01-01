@@ -17,6 +17,59 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: DASHBOARD_VIEW_BASIC
       :value: "DASHBOARD_VIEW_BASIC"
 
+.. py:class:: DataType
+
+   .. py:attribute:: DATA_TYPE_ARRAY
+      :value: "DATA_TYPE_ARRAY"
+
+   .. py:attribute:: DATA_TYPE_BIG_INT
+      :value: "DATA_TYPE_BIG_INT"
+
+   .. py:attribute:: DATA_TYPE_BINARY
+      :value: "DATA_TYPE_BINARY"
+
+   .. py:attribute:: DATA_TYPE_BOOLEAN
+      :value: "DATA_TYPE_BOOLEAN"
+
+   .. py:attribute:: DATA_TYPE_DATE
+      :value: "DATA_TYPE_DATE"
+
+   .. py:attribute:: DATA_TYPE_DECIMAL
+      :value: "DATA_TYPE_DECIMAL"
+
+   .. py:attribute:: DATA_TYPE_DOUBLE
+      :value: "DATA_TYPE_DOUBLE"
+
+   .. py:attribute:: DATA_TYPE_FLOAT
+      :value: "DATA_TYPE_FLOAT"
+
+   .. py:attribute:: DATA_TYPE_INT
+      :value: "DATA_TYPE_INT"
+
+   .. py:attribute:: DATA_TYPE_INTERVAL
+      :value: "DATA_TYPE_INTERVAL"
+
+   .. py:attribute:: DATA_TYPE_MAP
+      :value: "DATA_TYPE_MAP"
+
+   .. py:attribute:: DATA_TYPE_SMALL_INT
+      :value: "DATA_TYPE_SMALL_INT"
+
+   .. py:attribute:: DATA_TYPE_STRING
+      :value: "DATA_TYPE_STRING"
+
+   .. py:attribute:: DATA_TYPE_STRUCT
+      :value: "DATA_TYPE_STRUCT"
+
+   .. py:attribute:: DATA_TYPE_TIMESTAMP
+      :value: "DATA_TYPE_TIMESTAMP"
+
+   .. py:attribute:: DATA_TYPE_TINY_INT
+      :value: "DATA_TYPE_TINY_INT"
+
+   .. py:attribute:: DATA_TYPE_VOID
+      :value: "DATA_TYPE_VOID"
+
 .. autoclass:: DeleteScheduleResponse
    :members:
    :undoc-members:
@@ -243,6 +296,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: QueryAttachment
+   :members:
+   :undoc-members:
+
+.. autoclass:: QuerySchema
+   :members:
+   :undoc-members:
+
+.. autoclass:: QuerySchemaColumn
    :members:
    :undoc-members:
 

@@ -53,6 +53,17 @@ class BaseJob:
         if self.settings: body['settings'] = self.settings.as_dict()
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the BaseJob into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.created_time is not None: body['created_time'] = self.created_time
+        if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
+        if self.effective_budget_policy_id is not None:
+            body['effective_budget_policy_id'] = self.effective_budget_policy_id
+        if self.job_id is not None: body['job_id'] = self.job_id
+        if self.settings: body['settings'] = self.settings
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> BaseJob:
         """Deserializes the BaseJob from a dictionary."""
@@ -198,7 +209,8 @@ class BaseRun:
     previously failed run. This occurs when you request to re-run the job in case of failures. *
     `RUN_JOB_TASK`: Indicates a run that is triggered using a Run Job task. * `FILE_ARRIVAL`:
     Indicates a run that is triggered by a file arrival. * `TABLE`: Indicates a run that is
-    triggered by a table update."""
+    triggered by a table update. * `CONTINUOUS_RESTART`: Indicates a run created by user to manually
+    restart a continuous job run."""
 
     trigger_info: Optional[TriggerInfo] = None
     """Additional details about what triggered the run"""
@@ -238,6 +250,43 @@ class BaseRun:
         if self.tasks: body['tasks'] = [v.as_dict() for v in self.tasks]
         if self.trigger is not None: body['trigger'] = self.trigger.value
         if self.trigger_info: body['trigger_info'] = self.trigger_info.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the BaseRun into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.attempt_number is not None: body['attempt_number'] = self.attempt_number
+        if self.cleanup_duration is not None: body['cleanup_duration'] = self.cleanup_duration
+        if self.cluster_instance: body['cluster_instance'] = self.cluster_instance
+        if self.cluster_spec: body['cluster_spec'] = self.cluster_spec
+        if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
+        if self.description is not None: body['description'] = self.description
+        if self.end_time is not None: body['end_time'] = self.end_time
+        if self.execution_duration is not None: body['execution_duration'] = self.execution_duration
+        if self.git_source: body['git_source'] = self.git_source
+        if self.job_clusters: body['job_clusters'] = self.job_clusters
+        if self.job_id is not None: body['job_id'] = self.job_id
+        if self.job_parameters: body['job_parameters'] = self.job_parameters
+        if self.job_run_id is not None: body['job_run_id'] = self.job_run_id
+        if self.number_in_job is not None: body['number_in_job'] = self.number_in_job
+        if self.original_attempt_run_id is not None:
+            body['original_attempt_run_id'] = self.original_attempt_run_id
+        if self.overriding_parameters: body['overriding_parameters'] = self.overriding_parameters
+        if self.queue_duration is not None: body['queue_duration'] = self.queue_duration
+        if self.repair_history: body['repair_history'] = self.repair_history
+        if self.run_duration is not None: body['run_duration'] = self.run_duration
+        if self.run_id is not None: body['run_id'] = self.run_id
+        if self.run_name is not None: body['run_name'] = self.run_name
+        if self.run_page_url is not None: body['run_page_url'] = self.run_page_url
+        if self.run_type is not None: body['run_type'] = self.run_type
+        if self.schedule: body['schedule'] = self.schedule
+        if self.setup_duration is not None: body['setup_duration'] = self.setup_duration
+        if self.start_time is not None: body['start_time'] = self.start_time
+        if self.state: body['state'] = self.state
+        if self.status: body['status'] = self.status
+        if self.tasks: body['tasks'] = self.tasks
+        if self.trigger is not None: body['trigger'] = self.trigger
+        if self.trigger_info: body['trigger_info'] = self.trigger_info
         return body
 
     @classmethod
@@ -292,6 +341,13 @@ class CancelAllRuns:
         if self.job_id is not None: body['job_id'] = self.job_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CancelAllRuns into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.all_queued_runs is not None: body['all_queued_runs'] = self.all_queued_runs
+        if self.job_id is not None: body['job_id'] = self.job_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CancelAllRuns:
         """Deserializes the CancelAllRuns from a dictionary."""
@@ -303,6 +359,11 @@ class CancelAllRunsResponse:
 
     def as_dict(self) -> dict:
         """Serializes the CancelAllRunsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CancelAllRunsResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -323,6 +384,12 @@ class CancelRun:
         if self.run_id is not None: body['run_id'] = self.run_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CancelRun into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.run_id is not None: body['run_id'] = self.run_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CancelRun:
         """Deserializes the CancelRun from a dictionary."""
@@ -337,10 +404,122 @@ class CancelRunResponse:
         body = {}
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CancelRunResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CancelRunResponse:
         """Deserializes the CancelRunResponse from a dictionary."""
         return cls()
+
+
+class CleanRoomTaskRunLifeCycleState(Enum):
+    """Copied from elastic-spark-common/api/messages/runs.proto. Using the original definition to
+    remove coupling with jobs API definition"""
+
+    BLOCKED = 'BLOCKED'
+    INTERNAL_ERROR = 'INTERNAL_ERROR'
+    PENDING = 'PENDING'
+    QUEUED = 'QUEUED'
+    RUNNING = 'RUNNING'
+    SKIPPED = 'SKIPPED'
+    TERMINATED = 'TERMINATED'
+    TERMINATING = 'TERMINATING'
+    WAITING_FOR_RETRY = 'WAITING_FOR_RETRY'
+
+
+class CleanRoomTaskRunResultState(Enum):
+    """Copied from elastic-spark-common/api/messages/runs.proto. Using the original definition to avoid
+    cyclic dependency."""
+
+    CANCELED = 'CANCELED'
+    DISABLED = 'DISABLED'
+    EVICTED = 'EVICTED'
+    EXCLUDED = 'EXCLUDED'
+    FAILED = 'FAILED'
+    MAXIMUM_CONCURRENT_RUNS_REACHED = 'MAXIMUM_CONCURRENT_RUNS_REACHED'
+    SUCCESS = 'SUCCESS'
+    SUCCESS_WITH_FAILURES = 'SUCCESS_WITH_FAILURES'
+    TIMEDOUT = 'TIMEDOUT'
+    UPSTREAM_CANCELED = 'UPSTREAM_CANCELED'
+    UPSTREAM_EVICTED = 'UPSTREAM_EVICTED'
+    UPSTREAM_FAILED = 'UPSTREAM_FAILED'
+
+
+@dataclass
+class CleanRoomTaskRunState:
+    """Stores the run state of the clean rooms notebook task."""
+
+    life_cycle_state: Optional[CleanRoomTaskRunLifeCycleState] = None
+    """A value indicating the run's current lifecycle state. This field is always available in the
+    response."""
+
+    result_state: Optional[CleanRoomTaskRunResultState] = None
+    """A value indicating the run's result. This field is only available for terminal lifecycle states."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CleanRoomTaskRunState into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.life_cycle_state is not None: body['life_cycle_state'] = self.life_cycle_state.value
+        if self.result_state is not None: body['result_state'] = self.result_state.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CleanRoomTaskRunState into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.life_cycle_state is not None: body['life_cycle_state'] = self.life_cycle_state
+        if self.result_state is not None: body['result_state'] = self.result_state
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> CleanRoomTaskRunState:
+        """Deserializes the CleanRoomTaskRunState from a dictionary."""
+        return cls(life_cycle_state=_enum(d, 'life_cycle_state', CleanRoomTaskRunLifeCycleState),
+                   result_state=_enum(d, 'result_state', CleanRoomTaskRunResultState))
+
+
+@dataclass
+class CleanRoomsNotebookTask:
+    clean_room_name: str
+    """The clean room that the notebook belongs to."""
+
+    notebook_name: str
+    """Name of the notebook being run."""
+
+    etag: Optional[str] = None
+    """Checksum to validate the freshness of the notebook resource (i.e. the notebook being run is the
+    latest version). It can be fetched by calling the :method:cleanroomassets/get API."""
+
+    notebook_base_parameters: Optional[Dict[str, str]] = None
+    """Base parameters to be used for the clean room notebook job."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CleanRoomsNotebookTask into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.clean_room_name is not None: body['clean_room_name'] = self.clean_room_name
+        if self.etag is not None: body['etag'] = self.etag
+        if self.notebook_base_parameters: body['notebook_base_parameters'] = self.notebook_base_parameters
+        if self.notebook_name is not None: body['notebook_name'] = self.notebook_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CleanRoomsNotebookTask into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.clean_room_name is not None: body['clean_room_name'] = self.clean_room_name
+        if self.etag is not None: body['etag'] = self.etag
+        if self.notebook_base_parameters: body['notebook_base_parameters'] = self.notebook_base_parameters
+        if self.notebook_name is not None: body['notebook_name'] = self.notebook_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> CleanRoomsNotebookTask:
+        """Deserializes the CleanRoomsNotebookTask from a dictionary."""
+        return cls(clean_room_name=d.get('clean_room_name', None),
+                   etag=d.get('etag', None),
+                   notebook_base_parameters=d.get('notebook_base_parameters', None),
+                   notebook_name=d.get('notebook_name', None))
 
 
 @dataclass
@@ -364,6 +543,13 @@ class ClusterInstance:
 
     def as_dict(self) -> dict:
         """Serializes the ClusterInstance into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        if self.spark_context_id is not None: body['spark_context_id'] = self.spark_context_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ClusterInstance into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
         if self.spark_context_id is not None: body['spark_context_id'] = self.spark_context_id
@@ -400,6 +586,15 @@ class ClusterSpec:
         if self.job_cluster_key is not None: body['job_cluster_key'] = self.job_cluster_key
         if self.libraries: body['libraries'] = [v.as_dict() for v in self.libraries]
         if self.new_cluster: body['new_cluster'] = self.new_cluster.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ClusterSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.existing_cluster_id is not None: body['existing_cluster_id'] = self.existing_cluster_id
+        if self.job_cluster_key is not None: body['job_cluster_key'] = self.job_cluster_key
+        if self.libraries: body['libraries'] = self.libraries
+        if self.new_cluster: body['new_cluster'] = self.new_cluster
         return body
 
     @classmethod
@@ -446,6 +641,14 @@ class ConditionTask:
         if self.right is not None: body['right'] = self.right
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ConditionTask into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.left is not None: body['left'] = self.left
+        if self.op is not None: body['op'] = self.op
+        if self.right is not None: body['right'] = self.right
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ConditionTask:
         """Deserializes the ConditionTask from a dictionary."""
@@ -480,6 +683,12 @@ class Continuous:
         """Serializes the Continuous into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.pause_status is not None: body['pause_status'] = self.pause_status.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Continuous into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.pause_status is not None: body['pause_status'] = self.pause_status
         return body
 
     @classmethod
@@ -571,8 +780,8 @@ class CreateJob:
     """The queue settings of the job."""
 
     run_as: Optional[JobRunAs] = None
-    """Write-only setting. Specifies the user, service principal or group that the job/pipeline runs
-    as. If not specified, the job/pipeline runs as the user who created the job/pipeline.
+    """Write-only setting. Specifies the user or service principal that the job runs as. If not
+    specified, the job runs as the user who created the job.
     
     Either `user_name` or `service_principal_name` should be specified. If not, an error is thrown."""
 
@@ -629,6 +838,35 @@ class CreateJob:
         if self.webhook_notifications: body['webhook_notifications'] = self.webhook_notifications.as_dict()
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateJob into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.access_control_list: body['access_control_list'] = self.access_control_list
+        if self.budget_policy_id is not None: body['budget_policy_id'] = self.budget_policy_id
+        if self.continuous: body['continuous'] = self.continuous
+        if self.deployment: body['deployment'] = self.deployment
+        if self.description is not None: body['description'] = self.description
+        if self.edit_mode is not None: body['edit_mode'] = self.edit_mode
+        if self.email_notifications: body['email_notifications'] = self.email_notifications
+        if self.environments: body['environments'] = self.environments
+        if self.format is not None: body['format'] = self.format
+        if self.git_source: body['git_source'] = self.git_source
+        if self.health: body['health'] = self.health
+        if self.job_clusters: body['job_clusters'] = self.job_clusters
+        if self.max_concurrent_runs is not None: body['max_concurrent_runs'] = self.max_concurrent_runs
+        if self.name is not None: body['name'] = self.name
+        if self.notification_settings: body['notification_settings'] = self.notification_settings
+        if self.parameters: body['parameters'] = self.parameters
+        if self.queue: body['queue'] = self.queue
+        if self.run_as: body['run_as'] = self.run_as
+        if self.schedule: body['schedule'] = self.schedule
+        if self.tags: body['tags'] = self.tags
+        if self.tasks: body['tasks'] = self.tasks
+        if self.timeout_seconds is not None: body['timeout_seconds'] = self.timeout_seconds
+        if self.trigger: body['trigger'] = self.trigger
+        if self.webhook_notifications: body['webhook_notifications'] = self.webhook_notifications
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateJob:
         """Deserializes the CreateJob from a dictionary."""
@@ -671,6 +909,12 @@ class CreateResponse:
         if self.job_id is not None: body['job_id'] = self.job_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.job_id is not None: body['job_id'] = self.job_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateResponse:
         """Deserializes the CreateResponse from a dictionary."""
@@ -703,6 +947,15 @@ class CronSchedule:
         if self.timezone_id is not None: body['timezone_id'] = self.timezone_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CronSchedule into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.pause_status is not None: body['pause_status'] = self.pause_status
+        if self.quartz_cron_expression is not None:
+            body['quartz_cron_expression'] = self.quartz_cron_expression
+        if self.timezone_id is not None: body['timezone_id'] = self.timezone_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CronSchedule:
         """Deserializes the CronSchedule from a dictionary."""
@@ -722,6 +975,13 @@ class DbtOutput:
 
     def as_dict(self) -> dict:
         """Serializes the DbtOutput into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.artifacts_headers: body['artifacts_headers'] = self.artifacts_headers
+        if self.artifacts_link is not None: body['artifacts_link'] = self.artifacts_link
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DbtOutput into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.artifacts_headers: body['artifacts_headers'] = self.artifacts_headers
         if self.artifacts_link is not None: body['artifacts_link'] = self.artifacts_link
@@ -783,6 +1043,18 @@ class DbtTask:
         if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DbtTask into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.catalog is not None: body['catalog'] = self.catalog
+        if self.commands: body['commands'] = self.commands
+        if self.profiles_directory is not None: body['profiles_directory'] = self.profiles_directory
+        if self.project_directory is not None: body['project_directory'] = self.project_directory
+        if self.schema is not None: body['schema'] = self.schema
+        if self.source is not None: body['source'] = self.source
+        if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> DbtTask:
         """Deserializes the DbtTask from a dictionary."""
@@ -806,6 +1078,12 @@ class DeleteJob:
         if self.job_id is not None: body['job_id'] = self.job_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteJob into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.job_id is not None: body['job_id'] = self.job_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> DeleteJob:
         """Deserializes the DeleteJob from a dictionary."""
@@ -817,6 +1095,11 @@ class DeleteResponse:
 
     def as_dict(self) -> dict:
         """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -837,6 +1120,12 @@ class DeleteRun:
         if self.run_id is not None: body['run_id'] = self.run_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteRun into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.run_id is not None: body['run_id'] = self.run_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> DeleteRun:
         """Deserializes the DeleteRun from a dictionary."""
@@ -848,6 +1137,11 @@ class DeleteRunResponse:
 
     def as_dict(self) -> dict:
         """Serializes the DeleteRunResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteRunResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -883,6 +1177,14 @@ class EnforcePolicyComplianceForJobResponseJobClusterSettingsChange:
         if self.previous_value is not None: body['previous_value'] = self.previous_value
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EnforcePolicyComplianceForJobResponseJobClusterSettingsChange into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.field is not None: body['field'] = self.field
+        if self.new_value is not None: body['new_value'] = self.new_value
+        if self.previous_value is not None: body['previous_value'] = self.previous_value
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> EnforcePolicyComplianceForJobResponseJobClusterSettingsChange:
         """Deserializes the EnforcePolicyComplianceForJobResponseJobClusterSettingsChange from a dictionary."""
@@ -901,6 +1203,13 @@ class EnforcePolicyComplianceRequest:
 
     def as_dict(self) -> dict:
         """Serializes the EnforcePolicyComplianceRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.job_id is not None: body['job_id'] = self.job_id
+        if self.validate_only is not None: body['validate_only'] = self.validate_only
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EnforcePolicyComplianceRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.job_id is not None: body['job_id'] = self.job_id
         if self.validate_only is not None: body['validate_only'] = self.validate_only
@@ -937,6 +1246,14 @@ class EnforcePolicyComplianceResponse:
         if self.settings: body['settings'] = self.settings.as_dict()
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EnforcePolicyComplianceResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.has_changes is not None: body['has_changes'] = self.has_changes
+        if self.job_cluster_changes: body['job_cluster_changes'] = self.job_cluster_changes
+        if self.settings: body['settings'] = self.settings
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> EnforcePolicyComplianceResponse:
         """Deserializes the EnforcePolicyComplianceResponse from a dictionary."""
@@ -961,6 +1278,12 @@ class ExportRunOutput:
         """Serializes the ExportRunOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.views: body['views'] = [v.as_dict() for v in self.views]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ExportRunOutput into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.views: body['views'] = self.views
         return body
 
     @classmethod
@@ -994,6 +1317,16 @@ class FileArrivalTriggerConfiguration:
             body['wait_after_last_change_seconds'] = self.wait_after_last_change_seconds
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the FileArrivalTriggerConfiguration into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.min_time_between_triggers_seconds is not None:
+            body['min_time_between_triggers_seconds'] = self.min_time_between_triggers_seconds
+        if self.url is not None: body['url'] = self.url
+        if self.wait_after_last_change_seconds is not None:
+            body['wait_after_last_change_seconds'] = self.wait_after_last_change_seconds
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> FileArrivalTriggerConfiguration:
         """Deserializes the FileArrivalTriggerConfiguration from a dictionary."""
@@ -1016,6 +1349,13 @@ class ForEachStats:
         if self.error_message_stats:
             body['error_message_stats'] = [v.as_dict() for v in self.error_message_stats]
         if self.task_run_stats: body['task_run_stats'] = self.task_run_stats.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ForEachStats into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.error_message_stats: body['error_message_stats'] = self.error_message_stats
+        if self.task_run_stats: body['task_run_stats'] = self.task_run_stats
         return body
 
     @classmethod
@@ -1045,6 +1385,14 @@ class ForEachTask:
         if self.task: body['task'] = self.task.as_dict()
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ForEachTask into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.concurrency is not None: body['concurrency'] = self.concurrency
+        if self.inputs is not None: body['inputs'] = self.inputs
+        if self.task: body['task'] = self.task
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ForEachTask:
         """Deserializes the ForEachTask from a dictionary."""
@@ -1066,6 +1414,14 @@ class ForEachTaskErrorMessageStats:
 
     def as_dict(self) -> dict:
         """Serializes the ForEachTaskErrorMessageStats into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.count is not None: body['count'] = self.count
+        if self.error_message is not None: body['error_message'] = self.error_message
+        if self.termination_category is not None: body['termination_category'] = self.termination_category
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ForEachTaskErrorMessageStats into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.count is not None: body['count'] = self.count
         if self.error_message is not None: body['error_message'] = self.error_message
@@ -1111,6 +1467,17 @@ class ForEachTaskTaskRunStats:
         if self.total_iterations is not None: body['total_iterations'] = self.total_iterations
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ForEachTaskTaskRunStats into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.active_iterations is not None: body['active_iterations'] = self.active_iterations
+        if self.completed_iterations is not None: body['completed_iterations'] = self.completed_iterations
+        if self.failed_iterations is not None: body['failed_iterations'] = self.failed_iterations
+        if self.scheduled_iterations is not None: body['scheduled_iterations'] = self.scheduled_iterations
+        if self.succeeded_iterations is not None: body['succeeded_iterations'] = self.succeeded_iterations
+        if self.total_iterations is not None: body['total_iterations'] = self.total_iterations
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ForEachTaskTaskRunStats:
         """Deserializes the ForEachTaskTaskRunStats from a dictionary."""
@@ -1139,6 +1506,12 @@ class GetJobPermissionLevelsResponse:
         if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetJobPermissionLevelsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.permission_levels: body['permission_levels'] = self.permission_levels
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> GetJobPermissionLevelsResponse:
         """Deserializes the GetJobPermissionLevelsResponse from a dictionary."""
@@ -1160,6 +1533,13 @@ class GetPolicyComplianceResponse:
 
     def as_dict(self) -> dict:
         """Serializes the GetPolicyComplianceResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.is_compliant is not None: body['is_compliant'] = self.is_compliant
+        if self.violations: body['violations'] = self.violations
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetPolicyComplianceResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.is_compliant is not None: body['is_compliant'] = self.is_compliant
         if self.violations: body['violations'] = self.violations
@@ -1195,6 +1575,12 @@ class GitSnapshot:
 
     def as_dict(self) -> dict:
         """Serializes the GitSnapshot into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.used_commit is not None: body['used_commit'] = self.used_commit
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GitSnapshot into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.used_commit is not None: body['used_commit'] = self.used_commit
         return body
@@ -1251,6 +1637,18 @@ class GitSource:
         if self.git_tag is not None: body['git_tag'] = self.git_tag
         if self.git_url is not None: body['git_url'] = self.git_url
         if self.job_source: body['job_source'] = self.job_source.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GitSource into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.git_branch is not None: body['git_branch'] = self.git_branch
+        if self.git_commit is not None: body['git_commit'] = self.git_commit
+        if self.git_provider is not None: body['git_provider'] = self.git_provider
+        if self.git_snapshot: body['git_snapshot'] = self.git_snapshot
+        if self.git_tag is not None: body['git_tag'] = self.git_tag
+        if self.git_url is not None: body['git_url'] = self.git_url
+        if self.job_source: body['job_source'] = self.job_source
         return body
 
     @classmethod
@@ -1310,6 +1708,18 @@ class Job:
         if self.settings: body['settings'] = self.settings.as_dict()
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Job into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.created_time is not None: body['created_time'] = self.created_time
+        if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
+        if self.effective_budget_policy_id is not None:
+            body['effective_budget_policy_id'] = self.effective_budget_policy_id
+        if self.job_id is not None: body['job_id'] = self.job_id
+        if self.run_as_user_name is not None: body['run_as_user_name'] = self.run_as_user_name
+        if self.settings: body['settings'] = self.settings
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> Job:
         """Deserializes the Job from a dictionary."""
@@ -1340,6 +1750,16 @@ class JobAccessControlRequest:
         body = {}
         if self.group_name is not None: body['group_name'] = self.group_name
         if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
+        if self.user_name is not None: body['user_name'] = self.user_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the JobAccessControlRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.permission_level is not None: body['permission_level'] = self.permission_level
         if self.service_principal_name is not None:
             body['service_principal_name'] = self.service_principal_name
         if self.user_name is not None: body['user_name'] = self.user_name
@@ -1382,6 +1802,17 @@ class JobAccessControlResponse:
         if self.user_name is not None: body['user_name'] = self.user_name
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the JobAccessControlResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.all_permissions: body['all_permissions'] = self.all_permissions
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
+        if self.user_name is not None: body['user_name'] = self.user_name
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> JobAccessControlResponse:
         """Deserializes the JobAccessControlResponse from a dictionary."""
@@ -1407,6 +1838,13 @@ class JobCluster:
         body = {}
         if self.job_cluster_key is not None: body['job_cluster_key'] = self.job_cluster_key
         if self.new_cluster: body['new_cluster'] = self.new_cluster.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the JobCluster into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.job_cluster_key is not None: body['job_cluster_key'] = self.job_cluster_key
+        if self.new_cluster: body['new_cluster'] = self.new_cluster
         return body
 
     @classmethod
@@ -1438,6 +1876,14 @@ class JobCompliance:
         if self.violations: body['violations'] = self.violations
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the JobCompliance into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.is_compliant is not None: body['is_compliant'] = self.is_compliant
+        if self.job_id is not None: body['job_id'] = self.job_id
+        if self.violations: body['violations'] = self.violations
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> JobCompliance:
         """Deserializes the JobCompliance from a dictionary."""
@@ -1460,6 +1906,13 @@ class JobDeployment:
         """Serializes the JobDeployment into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.kind is not None: body['kind'] = self.kind.value
+        if self.metadata_file_path is not None: body['metadata_file_path'] = self.metadata_file_path
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the JobDeployment into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.kind is not None: body['kind'] = self.kind
         if self.metadata_file_path is not None: body['metadata_file_path'] = self.metadata_file_path
         return body
 
@@ -1537,6 +1990,20 @@ class JobEmailNotifications:
         if self.on_success: body['on_success'] = [v for v in self.on_success]
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the JobEmailNotifications into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.no_alert_for_skipped_runs is not None:
+            body['no_alert_for_skipped_runs'] = self.no_alert_for_skipped_runs
+        if self.on_duration_warning_threshold_exceeded:
+            body['on_duration_warning_threshold_exceeded'] = self.on_duration_warning_threshold_exceeded
+        if self.on_failure: body['on_failure'] = self.on_failure
+        if self.on_start: body['on_start'] = self.on_start
+        if self.on_streaming_backlog_exceeded:
+            body['on_streaming_backlog_exceeded'] = self.on_streaming_backlog_exceeded
+        if self.on_success: body['on_success'] = self.on_success
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> JobEmailNotifications:
         """Deserializes the JobEmailNotifications from a dictionary."""
@@ -1565,6 +2032,13 @@ class JobEnvironment:
         if self.spec: body['spec'] = self.spec.as_dict()
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the JobEnvironment into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.environment_key is not None: body['environment_key'] = self.environment_key
+        if self.spec: body['spec'] = self.spec
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> JobEnvironment:
         """Deserializes the JobEnvironment from a dictionary."""
@@ -1584,6 +2058,15 @@ class JobNotificationSettings:
 
     def as_dict(self) -> dict:
         """Serializes the JobNotificationSettings into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.no_alert_for_canceled_runs is not None:
+            body['no_alert_for_canceled_runs'] = self.no_alert_for_canceled_runs
+        if self.no_alert_for_skipped_runs is not None:
+            body['no_alert_for_skipped_runs'] = self.no_alert_for_skipped_runs
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the JobNotificationSettings into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.no_alert_for_canceled_runs is not None:
             body['no_alert_for_canceled_runs'] = self.no_alert_for_canceled_runs
@@ -1617,6 +2100,14 @@ class JobParameter:
         if self.value is not None: body['value'] = self.value
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the JobParameter into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.default is not None: body['default'] = self.default
+        if self.name is not None: body['name'] = self.name
+        if self.value is not None: body['value'] = self.value
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> JobParameter:
         """Deserializes the JobParameter from a dictionary."""
@@ -1633,6 +2124,13 @@ class JobParameterDefinition:
 
     def as_dict(self) -> dict:
         """Serializes the JobParameterDefinition into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.default is not None: body['default'] = self.default
+        if self.name is not None: body['name'] = self.name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the JobParameterDefinition into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.default is not None: body['default'] = self.default
         if self.name is not None: body['name'] = self.name
@@ -1659,6 +2157,14 @@ class JobPermission:
         if self.inherited is not None: body['inherited'] = self.inherited
         if self.inherited_from_object: body['inherited_from_object'] = [v for v in self.inherited_from_object]
         if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the JobPermission into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.inherited is not None: body['inherited'] = self.inherited
+        if self.inherited_from_object: body['inherited_from_object'] = self.inherited_from_object
+        if self.permission_level is not None: body['permission_level'] = self.permission_level
         return body
 
     @classmethod
@@ -1695,6 +2201,14 @@ class JobPermissions:
         if self.object_type is not None: body['object_type'] = self.object_type
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the JobPermissions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.access_control_list: body['access_control_list'] = self.access_control_list
+        if self.object_id is not None: body['object_id'] = self.object_id
+        if self.object_type is not None: body['object_type'] = self.object_type
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> JobPermissions:
         """Deserializes the JobPermissions from a dictionary."""
@@ -1715,6 +2229,13 @@ class JobPermissionsDescription:
         body = {}
         if self.description is not None: body['description'] = self.description
         if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the JobPermissionsDescription into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.description is not None: body['description'] = self.description
+        if self.permission_level is not None: body['permission_level'] = self.permission_level
         return body
 
     @classmethod
@@ -1739,6 +2260,13 @@ class JobPermissionsRequest:
         if self.job_id is not None: body['job_id'] = self.job_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the JobPermissionsRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.access_control_list: body['access_control_list'] = self.access_control_list
+        if self.job_id is not None: body['job_id'] = self.job_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> JobPermissionsRequest:
         """Deserializes the JobPermissionsRequest from a dictionary."""
@@ -1748,8 +2276,8 @@ class JobPermissionsRequest:
 
 @dataclass
 class JobRunAs:
-    """Write-only setting. Specifies the user, service principal or group that the job/pipeline runs
-    as. If not specified, the job/pipeline runs as the user who created the job/pipeline.
+    """Write-only setting. Specifies the user or service principal that the job runs as. If not
+    specified, the job runs as the user who created the job.
     
     Either `user_name` or `service_principal_name` should be specified. If not, an error is thrown."""
 
@@ -1763,6 +2291,14 @@ class JobRunAs:
 
     def as_dict(self) -> dict:
         """Serializes the JobRunAs into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
+        if self.user_name is not None: body['user_name'] = self.user_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the JobRunAs into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.service_principal_name is not None:
             body['service_principal_name'] = self.service_principal_name
@@ -1856,8 +2392,8 @@ class JobSettings:
     """The queue settings of the job."""
 
     run_as: Optional[JobRunAs] = None
-    """Write-only setting. Specifies the user, service principal or group that the job/pipeline runs
-    as. If not specified, the job/pipeline runs as the user who created the job/pipeline.
+    """Write-only setting. Specifies the user or service principal that the job runs as. If not
+    specified, the job runs as the user who created the job.
     
     Either `user_name` or `service_principal_name` should be specified. If not, an error is thrown."""
 
@@ -1910,6 +2446,34 @@ class JobSettings:
         if self.timeout_seconds is not None: body['timeout_seconds'] = self.timeout_seconds
         if self.trigger: body['trigger'] = self.trigger.as_dict()
         if self.webhook_notifications: body['webhook_notifications'] = self.webhook_notifications.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the JobSettings into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.budget_policy_id is not None: body['budget_policy_id'] = self.budget_policy_id
+        if self.continuous: body['continuous'] = self.continuous
+        if self.deployment: body['deployment'] = self.deployment
+        if self.description is not None: body['description'] = self.description
+        if self.edit_mode is not None: body['edit_mode'] = self.edit_mode
+        if self.email_notifications: body['email_notifications'] = self.email_notifications
+        if self.environments: body['environments'] = self.environments
+        if self.format is not None: body['format'] = self.format
+        if self.git_source: body['git_source'] = self.git_source
+        if self.health: body['health'] = self.health
+        if self.job_clusters: body['job_clusters'] = self.job_clusters
+        if self.max_concurrent_runs is not None: body['max_concurrent_runs'] = self.max_concurrent_runs
+        if self.name is not None: body['name'] = self.name
+        if self.notification_settings: body['notification_settings'] = self.notification_settings
+        if self.parameters: body['parameters'] = self.parameters
+        if self.queue: body['queue'] = self.queue
+        if self.run_as: body['run_as'] = self.run_as
+        if self.schedule: body['schedule'] = self.schedule
+        if self.tags: body['tags'] = self.tags
+        if self.tasks: body['tasks'] = self.tasks
+        if self.timeout_seconds is not None: body['timeout_seconds'] = self.timeout_seconds
+        if self.trigger: body['trigger'] = self.trigger
+        if self.webhook_notifications: body['webhook_notifications'] = self.webhook_notifications
         return body
 
     @classmethod
@@ -1969,6 +2533,15 @@ class JobSource:
         if self.job_config_path is not None: body['job_config_path'] = self.job_config_path
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the JobSource into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.dirty_state is not None: body['dirty_state'] = self.dirty_state
+        if self.import_from_git_branch is not None:
+            body['import_from_git_branch'] = self.import_from_git_branch
+        if self.job_config_path is not None: body['job_config_path'] = self.job_config_path
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> JobSource:
         """Deserializes the JobSource from a dictionary."""
@@ -1996,11 +2569,11 @@ class JobsHealthMetric(Enum):
     
     * `RUN_DURATION_SECONDS`: Expected total time for a run in seconds. * `STREAMING_BACKLOG_BYTES`:
     An estimate of the maximum bytes of data waiting to be consumed across all streams. This metric
-    is in Private Preview. * `STREAMING_BACKLOG_RECORDS`: An estimate of the maximum offset lag
-    across all streams. This metric is in Private Preview. * `STREAMING_BACKLOG_SECONDS`: An
-    estimate of the maximum consumer delay across all streams. This metric is in Private Preview. *
+    is in Public Preview. * `STREAMING_BACKLOG_RECORDS`: An estimate of the maximum offset lag
+    across all streams. This metric is in Public Preview. * `STREAMING_BACKLOG_SECONDS`: An estimate
+    of the maximum consumer delay across all streams. This metric is in Public Preview. *
     `STREAMING_BACKLOG_FILES`: An estimate of the maximum number of outstanding files across all
-    streams. This metric is in Private Preview."""
+    streams. This metric is in Public Preview."""
 
     RUN_DURATION_SECONDS = 'RUN_DURATION_SECONDS'
     STREAMING_BACKLOG_BYTES = 'STREAMING_BACKLOG_BYTES'
@@ -2022,11 +2595,11 @@ class JobsHealthRule:
     
     * `RUN_DURATION_SECONDS`: Expected total time for a run in seconds. * `STREAMING_BACKLOG_BYTES`:
     An estimate of the maximum bytes of data waiting to be consumed across all streams. This metric
-    is in Private Preview. * `STREAMING_BACKLOG_RECORDS`: An estimate of the maximum offset lag
-    across all streams. This metric is in Private Preview. * `STREAMING_BACKLOG_SECONDS`: An
-    estimate of the maximum consumer delay across all streams. This metric is in Private Preview. *
+    is in Public Preview. * `STREAMING_BACKLOG_RECORDS`: An estimate of the maximum offset lag
+    across all streams. This metric is in Public Preview. * `STREAMING_BACKLOG_SECONDS`: An estimate
+    of the maximum consumer delay across all streams. This metric is in Public Preview. *
     `STREAMING_BACKLOG_FILES`: An estimate of the maximum number of outstanding files across all
-    streams. This metric is in Private Preview."""
+    streams. This metric is in Public Preview."""
 
     op: JobsHealthOperator
     """Specifies the operator used to compare the health metric value with the specified threshold."""
@@ -2039,6 +2612,14 @@ class JobsHealthRule:
         body = {}
         if self.metric is not None: body['metric'] = self.metric.value
         if self.op is not None: body['op'] = self.op.value
+        if self.value is not None: body['value'] = self.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the JobsHealthRule into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.metric is not None: body['metric'] = self.metric
+        if self.op is not None: body['op'] = self.op
         if self.value is not None: body['value'] = self.value
         return body
 
@@ -2060,6 +2641,12 @@ class JobsHealthRules:
         """Serializes the JobsHealthRules into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.rules: body['rules'] = [v.as_dict() for v in self.rules]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the JobsHealthRules into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.rules: body['rules'] = self.rules
         return body
 
     @classmethod
@@ -2085,6 +2672,14 @@ class ListJobComplianceForPolicyResponse:
         """Serializes the ListJobComplianceForPolicyResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.jobs: body['jobs'] = [v.as_dict() for v in self.jobs]
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.prev_page_token is not None: body['prev_page_token'] = self.prev_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListJobComplianceForPolicyResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.jobs: body['jobs'] = self.jobs
         if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         if self.prev_page_token is not None: body['prev_page_token'] = self.prev_page_token
         return body
@@ -2118,6 +2713,15 @@ class ListJobsResponse:
         body = {}
         if self.has_more is not None: body['has_more'] = self.has_more
         if self.jobs: body['jobs'] = [v.as_dict() for v in self.jobs]
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.prev_page_token is not None: body['prev_page_token'] = self.prev_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListJobsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.has_more is not None: body['has_more'] = self.has_more
+        if self.jobs: body['jobs'] = self.jobs
         if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         if self.prev_page_token is not None: body['prev_page_token'] = self.prev_page_token
         return body
@@ -2157,6 +2761,15 @@ class ListRunsResponse:
         if self.runs: body['runs'] = [v.as_dict() for v in self.runs]
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListRunsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.has_more is not None: body['has_more'] = self.has_more
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.prev_page_token is not None: body['prev_page_token'] = self.prev_page_token
+        if self.runs: body['runs'] = self.runs
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListRunsResponse:
         """Deserializes the ListRunsResponse from a dictionary."""
@@ -2180,6 +2793,13 @@ class NotebookOutput:
 
     def as_dict(self) -> dict:
         """Serializes the NotebookOutput into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.result is not None: body['result'] = self.result
+        if self.truncated is not None: body['truncated'] = self.truncated
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the NotebookOutput into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.result is not None: body['result'] = self.result
         if self.truncated is not None: body['truncated'] = self.truncated
@@ -2237,6 +2857,15 @@ class NotebookTask:
         if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the NotebookTask into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.base_parameters: body['base_parameters'] = self.base_parameters
+        if self.notebook_path is not None: body['notebook_path'] = self.notebook_path
+        if self.source is not None: body['source'] = self.source
+        if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> NotebookTask:
         """Deserializes the NotebookTask from a dictionary."""
@@ -2267,6 +2896,13 @@ class PeriodicTriggerConfiguration:
         if self.unit is not None: body['unit'] = self.unit.value
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PeriodicTriggerConfiguration into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.interval is not None: body['interval'] = self.interval
+        if self.unit is not None: body['unit'] = self.unit
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> PeriodicTriggerConfiguration:
         """Deserializes the PeriodicTriggerConfiguration from a dictionary."""
@@ -2292,6 +2928,12 @@ class PipelineParams:
         if self.full_refresh is not None: body['full_refresh'] = self.full_refresh
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PipelineParams into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.full_refresh is not None: body['full_refresh'] = self.full_refresh
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> PipelineParams:
         """Deserializes the PipelineParams from a dictionary."""
@@ -2308,6 +2950,13 @@ class PipelineTask:
 
     def as_dict(self) -> dict:
         """Serializes the PipelineTask into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.full_refresh is not None: body['full_refresh'] = self.full_refresh
+        if self.pipeline_id is not None: body['pipeline_id'] = self.pipeline_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PipelineTask into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.full_refresh is not None: body['full_refresh'] = self.full_refresh
         if self.pipeline_id is not None: body['pipeline_id'] = self.pipeline_id
@@ -2345,6 +2994,15 @@ class PythonWheelTask:
         if self.parameters: body['parameters'] = [v for v in self.parameters]
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PythonWheelTask into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.entry_point is not None: body['entry_point'] = self.entry_point
+        if self.named_parameters: body['named_parameters'] = self.named_parameters
+        if self.package_name is not None: body['package_name'] = self.package_name
+        if self.parameters: body['parameters'] = self.parameters
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> PythonWheelTask:
         """Deserializes the PythonWheelTask from a dictionary."""
@@ -2374,6 +3032,13 @@ class QueueDetails:
         if self.message is not None: body['message'] = self.message
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the QueueDetails into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.code is not None: body['code'] = self.code
+        if self.message is not None: body['message'] = self.message
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> QueueDetails:
         """Deserializes the QueueDetails from a dictionary."""
@@ -2399,6 +3064,12 @@ class QueueSettings:
 
     def as_dict(self) -> dict:
         """Serializes the QueueSettings into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.enabled is not None: body['enabled'] = self.enabled
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the QueueSettings into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.enabled is not None: body['enabled'] = self.enabled
         return body
@@ -2442,6 +3113,18 @@ class RepairHistoryItem:
         if self.status: body['status'] = self.status.as_dict()
         if self.task_run_ids: body['task_run_ids'] = [v for v in self.task_run_ids]
         if self.type is not None: body['type'] = self.type.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RepairHistoryItem into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.end_time is not None: body['end_time'] = self.end_time
+        if self.id is not None: body['id'] = self.id
+        if self.start_time is not None: body['start_time'] = self.start_time
+        if self.state: body['state'] = self.state
+        if self.status: body['status'] = self.status
+        if self.task_run_ids: body['task_run_ids'] = self.task_run_ids
+        if self.type is not None: body['type'] = self.type
         return body
 
     @classmethod
@@ -2580,6 +3263,26 @@ class RepairRun:
         if self.sql_params: body['sql_params'] = self.sql_params
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RepairRun into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.dbt_commands: body['dbt_commands'] = self.dbt_commands
+        if self.jar_params: body['jar_params'] = self.jar_params
+        if self.job_parameters: body['job_parameters'] = self.job_parameters
+        if self.latest_repair_id is not None: body['latest_repair_id'] = self.latest_repair_id
+        if self.notebook_params: body['notebook_params'] = self.notebook_params
+        if self.pipeline_params: body['pipeline_params'] = self.pipeline_params
+        if self.python_named_params: body['python_named_params'] = self.python_named_params
+        if self.python_params: body['python_params'] = self.python_params
+        if self.rerun_all_failed_tasks is not None:
+            body['rerun_all_failed_tasks'] = self.rerun_all_failed_tasks
+        if self.rerun_dependent_tasks is not None: body['rerun_dependent_tasks'] = self.rerun_dependent_tasks
+        if self.rerun_tasks: body['rerun_tasks'] = self.rerun_tasks
+        if self.run_id is not None: body['run_id'] = self.run_id
+        if self.spark_submit_params: body['spark_submit_params'] = self.spark_submit_params
+        if self.sql_params: body['sql_params'] = self.sql_params
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> RepairRun:
         """Deserializes the RepairRun from a dictionary."""
@@ -2613,6 +3316,12 @@ class RepairRunResponse:
         if self.repair_id is not None: body['repair_id'] = self.repair_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RepairRunResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.repair_id is not None: body['repair_id'] = self.repair_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> RepairRunResponse:
         """Deserializes the RepairRunResponse from a dictionary."""
@@ -2637,6 +3346,13 @@ class ResetJob:
         if self.new_settings: body['new_settings'] = self.new_settings.as_dict()
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ResetJob into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.job_id is not None: body['job_id'] = self.job_id
+        if self.new_settings: body['new_settings'] = self.new_settings
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ResetJob:
         """Deserializes the ResetJob from a dictionary."""
@@ -2648,6 +3364,11 @@ class ResetResponse:
 
     def as_dict(self) -> dict:
         """Serializes the ResetResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ResetResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -2670,6 +3391,13 @@ class ResolvedConditionTaskValues:
         if self.right is not None: body['right'] = self.right
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ResolvedConditionTaskValues into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.left is not None: body['left'] = self.left
+        if self.right is not None: body['right'] = self.right
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ResolvedConditionTaskValues:
         """Deserializes the ResolvedConditionTaskValues from a dictionary."""
@@ -2684,6 +3412,12 @@ class ResolvedDbtTaskValues:
         """Serializes the ResolvedDbtTaskValues into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.commands: body['commands'] = [v for v in self.commands]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ResolvedDbtTaskValues into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.commands: body['commands'] = self.commands
         return body
 
     @classmethod
@@ -2702,6 +3436,12 @@ class ResolvedNotebookTaskValues:
         if self.base_parameters: body['base_parameters'] = self.base_parameters
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ResolvedNotebookTaskValues into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.base_parameters: body['base_parameters'] = self.base_parameters
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ResolvedNotebookTaskValues:
         """Deserializes the ResolvedNotebookTaskValues from a dictionary."""
@@ -2714,6 +3454,12 @@ class ResolvedParamPairValues:
 
     def as_dict(self) -> dict:
         """Serializes the ResolvedParamPairValues into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.parameters: body['parameters'] = self.parameters
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ResolvedParamPairValues into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.parameters: body['parameters'] = self.parameters
         return body
@@ -2737,6 +3483,13 @@ class ResolvedPythonWheelTaskValues:
         if self.parameters: body['parameters'] = [v for v in self.parameters]
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ResolvedPythonWheelTaskValues into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.named_parameters: body['named_parameters'] = self.named_parameters
+        if self.parameters: body['parameters'] = self.parameters
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ResolvedPythonWheelTaskValues:
         """Deserializes the ResolvedPythonWheelTaskValues from a dictionary."""
@@ -2756,6 +3509,13 @@ class ResolvedRunJobTaskValues:
         if self.parameters: body['parameters'] = self.parameters
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ResolvedRunJobTaskValues into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.job_parameters: body['job_parameters'] = self.job_parameters
+        if self.parameters: body['parameters'] = self.parameters
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ResolvedRunJobTaskValues:
         """Deserializes the ResolvedRunJobTaskValues from a dictionary."""
@@ -2770,6 +3530,12 @@ class ResolvedStringParamsValues:
         """Serializes the ResolvedStringParamsValues into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.parameters: body['parameters'] = [v for v in self.parameters]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ResolvedStringParamsValues into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.parameters: body['parameters'] = self.parameters
         return body
 
     @classmethod
@@ -2813,6 +3579,21 @@ class ResolvedValues:
         if self.spark_python_task: body['spark_python_task'] = self.spark_python_task.as_dict()
         if self.spark_submit_task: body['spark_submit_task'] = self.spark_submit_task.as_dict()
         if self.sql_task: body['sql_task'] = self.sql_task.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ResolvedValues into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.condition_task: body['condition_task'] = self.condition_task
+        if self.dbt_task: body['dbt_task'] = self.dbt_task
+        if self.notebook_task: body['notebook_task'] = self.notebook_task
+        if self.python_wheel_task: body['python_wheel_task'] = self.python_wheel_task
+        if self.run_job_task: body['run_job_task'] = self.run_job_task
+        if self.simulation_task: body['simulation_task'] = self.simulation_task
+        if self.spark_jar_task: body['spark_jar_task'] = self.spark_jar_task
+        if self.spark_python_task: body['spark_python_task'] = self.spark_python_task
+        if self.spark_submit_task: body['spark_submit_task'] = self.spark_submit_task
+        if self.sql_task: body['sql_task'] = self.sql_task
         return body
 
     @classmethod
@@ -2973,7 +3754,8 @@ class Run:
     previously failed run. This occurs when you request to re-run the job in case of failures. *
     `RUN_JOB_TASK`: Indicates a run that is triggered using a Run Job task. * `FILE_ARRIVAL`:
     Indicates a run that is triggered by a file arrival. * `TABLE`: Indicates a run that is
-    triggered by a table update."""
+    triggered by a table update. * `CONTINUOUS_RESTART`: Indicates a run created by user to manually
+    restart a continuous job run."""
 
     trigger_info: Optional[TriggerInfo] = None
     """Additional details about what triggered the run"""
@@ -3015,6 +3797,45 @@ class Run:
         if self.tasks: body['tasks'] = [v.as_dict() for v in self.tasks]
         if self.trigger is not None: body['trigger'] = self.trigger.value
         if self.trigger_info: body['trigger_info'] = self.trigger_info.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Run into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.attempt_number is not None: body['attempt_number'] = self.attempt_number
+        if self.cleanup_duration is not None: body['cleanup_duration'] = self.cleanup_duration
+        if self.cluster_instance: body['cluster_instance'] = self.cluster_instance
+        if self.cluster_spec: body['cluster_spec'] = self.cluster_spec
+        if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
+        if self.description is not None: body['description'] = self.description
+        if self.end_time is not None: body['end_time'] = self.end_time
+        if self.execution_duration is not None: body['execution_duration'] = self.execution_duration
+        if self.git_source: body['git_source'] = self.git_source
+        if self.iterations: body['iterations'] = self.iterations
+        if self.job_clusters: body['job_clusters'] = self.job_clusters
+        if self.job_id is not None: body['job_id'] = self.job_id
+        if self.job_parameters: body['job_parameters'] = self.job_parameters
+        if self.job_run_id is not None: body['job_run_id'] = self.job_run_id
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.number_in_job is not None: body['number_in_job'] = self.number_in_job
+        if self.original_attempt_run_id is not None:
+            body['original_attempt_run_id'] = self.original_attempt_run_id
+        if self.overriding_parameters: body['overriding_parameters'] = self.overriding_parameters
+        if self.queue_duration is not None: body['queue_duration'] = self.queue_duration
+        if self.repair_history: body['repair_history'] = self.repair_history
+        if self.run_duration is not None: body['run_duration'] = self.run_duration
+        if self.run_id is not None: body['run_id'] = self.run_id
+        if self.run_name is not None: body['run_name'] = self.run_name
+        if self.run_page_url is not None: body['run_page_url'] = self.run_page_url
+        if self.run_type is not None: body['run_type'] = self.run_type
+        if self.schedule: body['schedule'] = self.schedule
+        if self.setup_duration is not None: body['setup_duration'] = self.setup_duration
+        if self.start_time is not None: body['start_time'] = self.start_time
+        if self.state: body['state'] = self.state
+        if self.status: body['status'] = self.status
+        if self.tasks: body['tasks'] = self.tasks
+        if self.trigger is not None: body['trigger'] = self.trigger
+        if self.trigger_info: body['trigger_info'] = self.trigger_info
         return body
 
     @classmethod
@@ -3089,6 +3910,15 @@ class RunConditionTask:
         if self.right is not None: body['right'] = self.right
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RunConditionTask into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.left is not None: body['left'] = self.left
+        if self.op is not None: body['op'] = self.op
+        if self.outcome is not None: body['outcome'] = self.outcome
+        if self.right is not None: body['right'] = self.right
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> RunConditionTask:
         """Deserializes the RunConditionTask from a dictionary."""
@@ -3121,6 +3951,15 @@ class RunForEachTask:
         if self.inputs is not None: body['inputs'] = self.inputs
         if self.stats: body['stats'] = self.stats.as_dict()
         if self.task: body['task'] = self.task.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RunForEachTask into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.concurrency is not None: body['concurrency'] = self.concurrency
+        if self.inputs is not None: body['inputs'] = self.inputs
+        if self.stats: body['stats'] = self.stats
+        if self.task: body['task'] = self.task
         return body
 
     @classmethod
@@ -3157,6 +3996,12 @@ class RunJobOutput:
 
     def as_dict(self) -> dict:
         """Serializes the RunJobOutput into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.run_id is not None: body['run_id'] = self.run_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RunJobOutput into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.run_id is not None: body['run_id'] = self.run_id
         return body
@@ -3261,6 +4106,21 @@ class RunJobTask:
         if self.python_named_params: body['python_named_params'] = self.python_named_params
         if self.python_params: body['python_params'] = [v for v in self.python_params]
         if self.spark_submit_params: body['spark_submit_params'] = [v for v in self.spark_submit_params]
+        if self.sql_params: body['sql_params'] = self.sql_params
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RunJobTask into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.dbt_commands: body['dbt_commands'] = self.dbt_commands
+        if self.jar_params: body['jar_params'] = self.jar_params
+        if self.job_id is not None: body['job_id'] = self.job_id
+        if self.job_parameters: body['job_parameters'] = self.job_parameters
+        if self.notebook_params: body['notebook_params'] = self.notebook_params
+        if self.pipeline_params: body['pipeline_params'] = self.pipeline_params
+        if self.python_named_params: body['python_named_params'] = self.python_named_params
+        if self.python_params: body['python_params'] = self.python_params
+        if self.spark_submit_params: body['spark_submit_params'] = self.spark_submit_params
         if self.sql_params: body['sql_params'] = self.sql_params
         return body
 
@@ -3435,6 +4295,24 @@ class RunNow:
         if self.sql_params: body['sql_params'] = self.sql_params
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RunNow into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.dbt_commands: body['dbt_commands'] = self.dbt_commands
+        if self.idempotency_token is not None: body['idempotency_token'] = self.idempotency_token
+        if self.jar_params: body['jar_params'] = self.jar_params
+        if self.job_id is not None: body['job_id'] = self.job_id
+        if self.job_parameters: body['job_parameters'] = self.job_parameters
+        if self.notebook_params: body['notebook_params'] = self.notebook_params
+        if self.only: body['only'] = self.only
+        if self.pipeline_params: body['pipeline_params'] = self.pipeline_params
+        if self.python_named_params: body['python_named_params'] = self.python_named_params
+        if self.python_params: body['python_params'] = self.python_params
+        if self.queue: body['queue'] = self.queue
+        if self.spark_submit_params: body['spark_submit_params'] = self.spark_submit_params
+        if self.sql_params: body['sql_params'] = self.sql_params
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> RunNow:
         """Deserializes the RunNow from a dictionary."""
@@ -3465,6 +4343,13 @@ class RunNowResponse:
 
     def as_dict(self) -> dict:
         """Serializes the RunNowResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.number_in_job is not None: body['number_in_job'] = self.number_in_job
+        if self.run_id is not None: body['run_id'] = self.run_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RunNowResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.number_in_job is not None: body['number_in_job'] = self.number_in_job
         if self.run_id is not None: body['run_id'] = self.run_id
@@ -3534,6 +4419,21 @@ class RunOutput:
         if self.notebook_output: body['notebook_output'] = self.notebook_output.as_dict()
         if self.run_job_output: body['run_job_output'] = self.run_job_output.as_dict()
         if self.sql_output: body['sql_output'] = self.sql_output.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RunOutput into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.dbt_output: body['dbt_output'] = self.dbt_output
+        if self.error is not None: body['error'] = self.error
+        if self.error_trace is not None: body['error_trace'] = self.error_trace
+        if self.info is not None: body['info'] = self.info
+        if self.logs is not None: body['logs'] = self.logs
+        if self.logs_truncated is not None: body['logs_truncated'] = self.logs_truncated
+        if self.metadata: body['metadata'] = self.metadata
+        if self.notebook_output: body['notebook_output'] = self.notebook_output
+        if self.run_job_output: body['run_job_output'] = self.run_job_output
+        if self.sql_output: body['sql_output'] = self.sql_output
         return body
 
     @classmethod
@@ -3640,6 +4540,19 @@ class RunParameters:
         if self.sql_params: body['sql_params'] = self.sql_params
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RunParameters into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.dbt_commands: body['dbt_commands'] = self.dbt_commands
+        if self.jar_params: body['jar_params'] = self.jar_params
+        if self.notebook_params: body['notebook_params'] = self.notebook_params
+        if self.pipeline_params: body['pipeline_params'] = self.pipeline_params
+        if self.python_named_params: body['python_named_params'] = self.python_named_params
+        if self.python_params: body['python_params'] = self.python_params
+        if self.spark_submit_params: body['spark_submit_params'] = self.spark_submit_params
+        if self.sql_params: body['sql_params'] = self.sql_params
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> RunParameters:
         """Deserializes the RunParameters from a dictionary."""
@@ -3709,6 +4622,17 @@ class RunState:
             body['user_cancelled_or_timedout'] = self.user_cancelled_or_timedout
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RunState into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.life_cycle_state is not None: body['life_cycle_state'] = self.life_cycle_state
+        if self.queue_reason is not None: body['queue_reason'] = self.queue_reason
+        if self.result_state is not None: body['result_state'] = self.result_state
+        if self.state_message is not None: body['state_message'] = self.state_message
+        if self.user_cancelled_or_timedout is not None:
+            body['user_cancelled_or_timedout'] = self.user_cancelled_or_timedout
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> RunState:
         """Deserializes the RunState from a dictionary."""
@@ -3741,6 +4665,14 @@ class RunStatus:
         if self.termination_details: body['termination_details'] = self.termination_details.as_dict()
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RunStatus into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.queue_details: body['queue_details'] = self.queue_details
+        if self.state is not None: body['state'] = self.state
+        if self.termination_details: body['termination_details'] = self.termination_details
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> RunStatus:
         """Deserializes the RunStatus from a dictionary."""
@@ -3764,6 +4696,11 @@ class RunTask:
     (`max_retries` > 0), subsequent runs are created with an `original_attempt_run_id` of the
     original attempt’s ID and an incrementing `attempt_number`. Runs are retried only until they
     succeed, and the maximum `attempt_number` is the same as the `max_retries` value for the job."""
+
+    clean_rooms_notebook_task: Optional[CleanRoomsNotebookTask] = None
+    """The task runs a [clean rooms] notebook when the `clean_rooms_notebook_task` field is present.
+    
+    [clean rooms]: https://docs.databricks.com/en/clean-rooms/index.html"""
 
     cleanup_duration: Optional[int] = None
     """The time in milliseconds it took to terminate the cluster and clean up any associated artifacts.
@@ -3932,6 +4869,8 @@ class RunTask:
         """Serializes the RunTask into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.attempt_number is not None: body['attempt_number'] = self.attempt_number
+        if self.clean_rooms_notebook_task:
+            body['clean_rooms_notebook_task'] = self.clean_rooms_notebook_task.as_dict()
         if self.cleanup_duration is not None: body['cleanup_duration'] = self.cleanup_duration
         if self.cluster_instance: body['cluster_instance'] = self.cluster_instance.as_dict()
         if self.condition_task: body['condition_task'] = self.condition_task.as_dict()
@@ -3972,10 +4911,57 @@ class RunTask:
         if self.webhook_notifications: body['webhook_notifications'] = self.webhook_notifications.as_dict()
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RunTask into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.attempt_number is not None: body['attempt_number'] = self.attempt_number
+        if self.clean_rooms_notebook_task: body['clean_rooms_notebook_task'] = self.clean_rooms_notebook_task
+        if self.cleanup_duration is not None: body['cleanup_duration'] = self.cleanup_duration
+        if self.cluster_instance: body['cluster_instance'] = self.cluster_instance
+        if self.condition_task: body['condition_task'] = self.condition_task
+        if self.dbt_task: body['dbt_task'] = self.dbt_task
+        if self.depends_on: body['depends_on'] = self.depends_on
+        if self.description is not None: body['description'] = self.description
+        if self.email_notifications: body['email_notifications'] = self.email_notifications
+        if self.end_time is not None: body['end_time'] = self.end_time
+        if self.environment_key is not None: body['environment_key'] = self.environment_key
+        if self.execution_duration is not None: body['execution_duration'] = self.execution_duration
+        if self.existing_cluster_id is not None: body['existing_cluster_id'] = self.existing_cluster_id
+        if self.for_each_task: body['for_each_task'] = self.for_each_task
+        if self.git_source: body['git_source'] = self.git_source
+        if self.job_cluster_key is not None: body['job_cluster_key'] = self.job_cluster_key
+        if self.libraries: body['libraries'] = self.libraries
+        if self.new_cluster: body['new_cluster'] = self.new_cluster
+        if self.notebook_task: body['notebook_task'] = self.notebook_task
+        if self.notification_settings: body['notification_settings'] = self.notification_settings
+        if self.pipeline_task: body['pipeline_task'] = self.pipeline_task
+        if self.python_wheel_task: body['python_wheel_task'] = self.python_wheel_task
+        if self.queue_duration is not None: body['queue_duration'] = self.queue_duration
+        if self.resolved_values: body['resolved_values'] = self.resolved_values
+        if self.run_duration is not None: body['run_duration'] = self.run_duration
+        if self.run_id is not None: body['run_id'] = self.run_id
+        if self.run_if is not None: body['run_if'] = self.run_if
+        if self.run_job_task: body['run_job_task'] = self.run_job_task
+        if self.run_page_url is not None: body['run_page_url'] = self.run_page_url
+        if self.setup_duration is not None: body['setup_duration'] = self.setup_duration
+        if self.spark_jar_task: body['spark_jar_task'] = self.spark_jar_task
+        if self.spark_python_task: body['spark_python_task'] = self.spark_python_task
+        if self.spark_submit_task: body['spark_submit_task'] = self.spark_submit_task
+        if self.sql_task: body['sql_task'] = self.sql_task
+        if self.start_time is not None: body['start_time'] = self.start_time
+        if self.state: body['state'] = self.state
+        if self.status: body['status'] = self.status
+        if self.task_key is not None: body['task_key'] = self.task_key
+        if self.timeout_seconds is not None: body['timeout_seconds'] = self.timeout_seconds
+        if self.webhook_notifications: body['webhook_notifications'] = self.webhook_notifications
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> RunTask:
         """Deserializes the RunTask from a dictionary."""
         return cls(attempt_number=d.get('attempt_number', None),
+                   clean_rooms_notebook_task=_from_dict(d, 'clean_rooms_notebook_task',
+                                                        CleanRoomsNotebookTask),
                    cleanup_duration=d.get('cleanup_duration', None),
                    cluster_instance=_from_dict(d, 'cluster_instance', ClusterInstance),
                    condition_task=_from_dict(d, 'condition_task', RunConditionTask),
@@ -4069,6 +5055,14 @@ class SparkJarTask:
         if self.parameters: body['parameters'] = [v for v in self.parameters]
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SparkJarTask into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.jar_uri is not None: body['jar_uri'] = self.jar_uri
+        if self.main_class_name is not None: body['main_class_name'] = self.main_class_name
+        if self.parameters: body['parameters'] = self.parameters
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> SparkJarTask:
         """Deserializes the SparkJarTask from a dictionary."""
@@ -4109,6 +5103,14 @@ class SparkPythonTask:
         if self.source is not None: body['source'] = self.source.value
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SparkPythonTask into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.parameters: body['parameters'] = self.parameters
+        if self.python_file is not None: body['python_file'] = self.python_file
+        if self.source is not None: body['source'] = self.source
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> SparkPythonTask:
         """Deserializes the SparkPythonTask from a dictionary."""
@@ -4130,6 +5132,12 @@ class SparkSubmitTask:
         """Serializes the SparkSubmitTask into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.parameters: body['parameters'] = [v for v in self.parameters]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SparkSubmitTask into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.parameters: body['parameters'] = self.parameters
         return body
 
     @classmethod
@@ -4169,6 +5177,16 @@ class SqlAlertOutput:
         if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SqlAlertOutput into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.alert_state is not None: body['alert_state'] = self.alert_state
+        if self.output_link is not None: body['output_link'] = self.output_link
+        if self.query_text is not None: body['query_text'] = self.query_text
+        if self.sql_statements: body['sql_statements'] = self.sql_statements
+        if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> SqlAlertOutput:
         """Deserializes the SqlAlertOutput from a dictionary."""
@@ -4203,6 +5221,13 @@ class SqlDashboardOutput:
         body = {}
         if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
         if self.widgets: body['widgets'] = [v.as_dict() for v in self.widgets]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SqlDashboardOutput into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
+        if self.widgets: body['widgets'] = self.widgets
         return body
 
     @classmethod
@@ -4247,6 +5272,18 @@ class SqlDashboardWidgetOutput:
         if self.widget_title is not None: body['widget_title'] = self.widget_title
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SqlDashboardWidgetOutput into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.end_time is not None: body['end_time'] = self.end_time
+        if self.error: body['error'] = self.error
+        if self.output_link is not None: body['output_link'] = self.output_link
+        if self.start_time is not None: body['start_time'] = self.start_time
+        if self.status is not None: body['status'] = self.status
+        if self.widget_id is not None: body['widget_id'] = self.widget_id
+        if self.widget_title is not None: body['widget_title'] = self.widget_title
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> SqlDashboardWidgetOutput:
         """Deserializes the SqlDashboardWidgetOutput from a dictionary."""
@@ -4287,6 +5324,14 @@ class SqlOutput:
         if self.query_output: body['query_output'] = self.query_output.as_dict()
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SqlOutput into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.alert_output: body['alert_output'] = self.alert_output
+        if self.dashboard_output: body['dashboard_output'] = self.dashboard_output
+        if self.query_output: body['query_output'] = self.query_output
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> SqlOutput:
         """Deserializes the SqlOutput from a dictionary."""
@@ -4302,6 +5347,12 @@ class SqlOutputError:
 
     def as_dict(self) -> dict:
         """Serializes the SqlOutputError into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.message is not None: body['message'] = self.message
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SqlOutputError into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.message is not None: body['message'] = self.message
         return body
@@ -4338,6 +5389,16 @@ class SqlQueryOutput:
         if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SqlQueryOutput into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.endpoint_id is not None: body['endpoint_id'] = self.endpoint_id
+        if self.output_link is not None: body['output_link'] = self.output_link
+        if self.query_text is not None: body['query_text'] = self.query_text
+        if self.sql_statements: body['sql_statements'] = self.sql_statements
+        if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> SqlQueryOutput:
         """Deserializes the SqlQueryOutput from a dictionary."""
@@ -4355,6 +5416,12 @@ class SqlStatementOutput:
 
     def as_dict(self) -> dict:
         """Serializes the SqlStatementOutput into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.lookup_key is not None: body['lookup_key'] = self.lookup_key
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SqlStatementOutput into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.lookup_key is not None: body['lookup_key'] = self.lookup_key
         return body
@@ -4399,6 +5466,17 @@ class SqlTask:
         if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SqlTask into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.alert: body['alert'] = self.alert
+        if self.dashboard: body['dashboard'] = self.dashboard
+        if self.file: body['file'] = self.file
+        if self.parameters: body['parameters'] = self.parameters
+        if self.query: body['query'] = self.query
+        if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> SqlTask:
         """Deserializes the SqlTask from a dictionary."""
@@ -4427,6 +5505,14 @@ class SqlTaskAlert:
         if self.alert_id is not None: body['alert_id'] = self.alert_id
         if self.pause_subscriptions is not None: body['pause_subscriptions'] = self.pause_subscriptions
         if self.subscriptions: body['subscriptions'] = [v.as_dict() for v in self.subscriptions]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SqlTaskAlert into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.alert_id is not None: body['alert_id'] = self.alert_id
+        if self.pause_subscriptions is not None: body['pause_subscriptions'] = self.pause_subscriptions
+        if self.subscriptions: body['subscriptions'] = self.subscriptions
         return body
 
     @classmethod
@@ -4460,6 +5546,15 @@ class SqlTaskDashboard:
         if self.subscriptions: body['subscriptions'] = [v.as_dict() for v in self.subscriptions]
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SqlTaskDashboard into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.custom_subject is not None: body['custom_subject'] = self.custom_subject
+        if self.dashboard_id is not None: body['dashboard_id'] = self.dashboard_id
+        if self.pause_subscriptions is not None: body['pause_subscriptions'] = self.pause_subscriptions
+        if self.subscriptions: body['subscriptions'] = self.subscriptions
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> SqlTaskDashboard:
         """Deserializes the SqlTaskDashboard from a dictionary."""
@@ -4491,6 +5586,13 @@ class SqlTaskFile:
         if self.source is not None: body['source'] = self.source.value
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SqlTaskFile into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.path is not None: body['path'] = self.path
+        if self.source is not None: body['source'] = self.source
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> SqlTaskFile:
         """Deserializes the SqlTaskFile from a dictionary."""
@@ -4504,6 +5606,12 @@ class SqlTaskQuery:
 
     def as_dict(self) -> dict:
         """Serializes the SqlTaskQuery into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.query_id is not None: body['query_id'] = self.query_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SqlTaskQuery into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.query_id is not None: body['query_id'] = self.query_id
         return body
@@ -4527,6 +5635,13 @@ class SqlTaskSubscription:
 
     def as_dict(self) -> dict:
         """Serializes the SqlTaskSubscription into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.destination_id is not None: body['destination_id'] = self.destination_id
+        if self.user_name is not None: body['user_name'] = self.user_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SqlTaskSubscription into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.destination_id is not None: body['destination_id'] = self.destination_id
         if self.user_name is not None: body['user_name'] = self.user_name
@@ -4622,6 +5737,25 @@ class SubmitRun:
         if self.webhook_notifications: body['webhook_notifications'] = self.webhook_notifications.as_dict()
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SubmitRun into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.access_control_list: body['access_control_list'] = self.access_control_list
+        if self.budget_policy_id is not None: body['budget_policy_id'] = self.budget_policy_id
+        if self.email_notifications: body['email_notifications'] = self.email_notifications
+        if self.environments: body['environments'] = self.environments
+        if self.git_source: body['git_source'] = self.git_source
+        if self.health: body['health'] = self.health
+        if self.idempotency_token is not None: body['idempotency_token'] = self.idempotency_token
+        if self.notification_settings: body['notification_settings'] = self.notification_settings
+        if self.queue: body['queue'] = self.queue
+        if self.run_as: body['run_as'] = self.run_as
+        if self.run_name is not None: body['run_name'] = self.run_name
+        if self.tasks: body['tasks'] = self.tasks
+        if self.timeout_seconds is not None: body['timeout_seconds'] = self.timeout_seconds
+        if self.webhook_notifications: body['webhook_notifications'] = self.webhook_notifications
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> SubmitRun:
         """Deserializes the SubmitRun from a dictionary."""
@@ -4654,6 +5788,12 @@ class SubmitRunResponse:
         if self.run_id is not None: body['run_id'] = self.run_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SubmitRunResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.run_id is not None: body['run_id'] = self.run_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> SubmitRunResponse:
         """Deserializes the SubmitRunResponse from a dictionary."""
@@ -4666,6 +5806,11 @@ class SubmitTask:
     """A unique name for the task. This field is used to refer to this task from other tasks. This
     field is required and must be unique within its parent job. On Update or Reset, this field is
     used to reference the tasks to be updated or reset."""
+
+    clean_rooms_notebook_task: Optional[CleanRoomsNotebookTask] = None
+    """The task runs a [clean rooms] notebook when the `clean_rooms_notebook_task` field is present.
+    
+    [clean rooms]: https://docs.databricks.com/en/clean-rooms/index.html"""
 
     condition_task: Optional[ConditionTask] = None
     """The task evaluates a condition that can be used to control the execution of other tasks when the
@@ -4771,6 +5916,8 @@ class SubmitTask:
     def as_dict(self) -> dict:
         """Serializes the SubmitTask into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.clean_rooms_notebook_task:
+            body['clean_rooms_notebook_task'] = self.clean_rooms_notebook_task.as_dict()
         if self.condition_task: body['condition_task'] = self.condition_task.as_dict()
         if self.dbt_task: body['dbt_task'] = self.dbt_task.as_dict()
         if self.depends_on: body['depends_on'] = [v.as_dict() for v in self.depends_on]
@@ -4797,10 +5944,42 @@ class SubmitTask:
         if self.webhook_notifications: body['webhook_notifications'] = self.webhook_notifications.as_dict()
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SubmitTask into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.clean_rooms_notebook_task: body['clean_rooms_notebook_task'] = self.clean_rooms_notebook_task
+        if self.condition_task: body['condition_task'] = self.condition_task
+        if self.dbt_task: body['dbt_task'] = self.dbt_task
+        if self.depends_on: body['depends_on'] = self.depends_on
+        if self.description is not None: body['description'] = self.description
+        if self.email_notifications: body['email_notifications'] = self.email_notifications
+        if self.environment_key is not None: body['environment_key'] = self.environment_key
+        if self.existing_cluster_id is not None: body['existing_cluster_id'] = self.existing_cluster_id
+        if self.for_each_task: body['for_each_task'] = self.for_each_task
+        if self.health: body['health'] = self.health
+        if self.libraries: body['libraries'] = self.libraries
+        if self.new_cluster: body['new_cluster'] = self.new_cluster
+        if self.notebook_task: body['notebook_task'] = self.notebook_task
+        if self.notification_settings: body['notification_settings'] = self.notification_settings
+        if self.pipeline_task: body['pipeline_task'] = self.pipeline_task
+        if self.python_wheel_task: body['python_wheel_task'] = self.python_wheel_task
+        if self.run_if is not None: body['run_if'] = self.run_if
+        if self.run_job_task: body['run_job_task'] = self.run_job_task
+        if self.spark_jar_task: body['spark_jar_task'] = self.spark_jar_task
+        if self.spark_python_task: body['spark_python_task'] = self.spark_python_task
+        if self.spark_submit_task: body['spark_submit_task'] = self.spark_submit_task
+        if self.sql_task: body['sql_task'] = self.sql_task
+        if self.task_key is not None: body['task_key'] = self.task_key
+        if self.timeout_seconds is not None: body['timeout_seconds'] = self.timeout_seconds
+        if self.webhook_notifications: body['webhook_notifications'] = self.webhook_notifications
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> SubmitTask:
         """Deserializes the SubmitTask from a dictionary."""
-        return cls(condition_task=_from_dict(d, 'condition_task', ConditionTask),
+        return cls(clean_rooms_notebook_task=_from_dict(d, 'clean_rooms_notebook_task',
+                                                        CleanRoomsNotebookTask),
+                   condition_task=_from_dict(d, 'condition_task', ConditionTask),
                    dbt_task=_from_dict(d, 'dbt_task', DbtTask),
                    depends_on=_repeated_dict(d, 'depends_on', TaskDependency),
                    description=d.get('description', None),
@@ -4855,6 +6034,17 @@ class TableUpdateTriggerConfiguration:
             body['wait_after_last_change_seconds'] = self.wait_after_last_change_seconds
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TableUpdateTriggerConfiguration into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.condition is not None: body['condition'] = self.condition
+        if self.min_time_between_triggers_seconds is not None:
+            body['min_time_between_triggers_seconds'] = self.min_time_between_triggers_seconds
+        if self.table_names: body['table_names'] = self.table_names
+        if self.wait_after_last_change_seconds is not None:
+            body['wait_after_last_change_seconds'] = self.wait_after_last_change_seconds
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> TableUpdateTriggerConfiguration:
         """Deserializes the TableUpdateTriggerConfiguration from a dictionary."""
@@ -4870,6 +6060,11 @@ class Task:
     """A unique name for the task. This field is used to refer to this task from other tasks. This
     field is required and must be unique within its parent job. On Update or Reset, this field is
     used to reference the tasks to be updated or reset."""
+
+    clean_rooms_notebook_task: Optional[CleanRoomsNotebookTask] = None
+    """The task runs a [clean rooms] notebook when the `clean_rooms_notebook_task` field is present.
+    
+    [clean rooms]: https://docs.databricks.com/en/clean-rooms/index.html"""
 
     condition_task: Optional[ConditionTask] = None
     """The task evaluates a condition that can be used to control the execution of other tasks when the
@@ -5000,6 +6195,8 @@ class Task:
     def as_dict(self) -> dict:
         """Serializes the Task into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.clean_rooms_notebook_task:
+            body['clean_rooms_notebook_task'] = self.clean_rooms_notebook_task.as_dict()
         if self.condition_task: body['condition_task'] = self.condition_task.as_dict()
         if self.dbt_task: body['dbt_task'] = self.dbt_task.as_dict()
         if self.depends_on: body['depends_on'] = [v.as_dict() for v in self.depends_on]
@@ -5033,10 +6230,49 @@ class Task:
         if self.webhook_notifications: body['webhook_notifications'] = self.webhook_notifications.as_dict()
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Task into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.clean_rooms_notebook_task: body['clean_rooms_notebook_task'] = self.clean_rooms_notebook_task
+        if self.condition_task: body['condition_task'] = self.condition_task
+        if self.dbt_task: body['dbt_task'] = self.dbt_task
+        if self.depends_on: body['depends_on'] = self.depends_on
+        if self.description is not None: body['description'] = self.description
+        if self.disable_auto_optimization is not None:
+            body['disable_auto_optimization'] = self.disable_auto_optimization
+        if self.email_notifications: body['email_notifications'] = self.email_notifications
+        if self.environment_key is not None: body['environment_key'] = self.environment_key
+        if self.existing_cluster_id is not None: body['existing_cluster_id'] = self.existing_cluster_id
+        if self.for_each_task: body['for_each_task'] = self.for_each_task
+        if self.health: body['health'] = self.health
+        if self.job_cluster_key is not None: body['job_cluster_key'] = self.job_cluster_key
+        if self.libraries: body['libraries'] = self.libraries
+        if self.max_retries is not None: body['max_retries'] = self.max_retries
+        if self.min_retry_interval_millis is not None:
+            body['min_retry_interval_millis'] = self.min_retry_interval_millis
+        if self.new_cluster: body['new_cluster'] = self.new_cluster
+        if self.notebook_task: body['notebook_task'] = self.notebook_task
+        if self.notification_settings: body['notification_settings'] = self.notification_settings
+        if self.pipeline_task: body['pipeline_task'] = self.pipeline_task
+        if self.python_wheel_task: body['python_wheel_task'] = self.python_wheel_task
+        if self.retry_on_timeout is not None: body['retry_on_timeout'] = self.retry_on_timeout
+        if self.run_if is not None: body['run_if'] = self.run_if
+        if self.run_job_task: body['run_job_task'] = self.run_job_task
+        if self.spark_jar_task: body['spark_jar_task'] = self.spark_jar_task
+        if self.spark_python_task: body['spark_python_task'] = self.spark_python_task
+        if self.spark_submit_task: body['spark_submit_task'] = self.spark_submit_task
+        if self.sql_task: body['sql_task'] = self.sql_task
+        if self.task_key is not None: body['task_key'] = self.task_key
+        if self.timeout_seconds is not None: body['timeout_seconds'] = self.timeout_seconds
+        if self.webhook_notifications: body['webhook_notifications'] = self.webhook_notifications
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> Task:
         """Deserializes the Task from a dictionary."""
-        return cls(condition_task=_from_dict(d, 'condition_task', ConditionTask),
+        return cls(clean_rooms_notebook_task=_from_dict(d, 'clean_rooms_notebook_task',
+                                                        CleanRoomsNotebookTask),
+                   condition_task=_from_dict(d, 'condition_task', ConditionTask),
                    dbt_task=_from_dict(d, 'dbt_task', DbtTask),
                    depends_on=_repeated_dict(d, 'depends_on', TaskDependency),
                    description=d.get('description', None),
@@ -5078,6 +6314,13 @@ class TaskDependency:
 
     def as_dict(self) -> dict:
         """Serializes the TaskDependency into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.outcome is not None: body['outcome'] = self.outcome
+        if self.task_key is not None: body['task_key'] = self.task_key
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TaskDependency into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.outcome is not None: body['outcome'] = self.outcome
         if self.task_key is not None: body['task_key'] = self.task_key
@@ -5140,6 +6383,20 @@ class TaskEmailNotifications:
         if self.on_success: body['on_success'] = [v for v in self.on_success]
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TaskEmailNotifications into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.no_alert_for_skipped_runs is not None:
+            body['no_alert_for_skipped_runs'] = self.no_alert_for_skipped_runs
+        if self.on_duration_warning_threshold_exceeded:
+            body['on_duration_warning_threshold_exceeded'] = self.on_duration_warning_threshold_exceeded
+        if self.on_failure: body['on_failure'] = self.on_failure
+        if self.on_start: body['on_start'] = self.on_start
+        if self.on_streaming_backlog_exceeded:
+            body['on_streaming_backlog_exceeded'] = self.on_streaming_backlog_exceeded
+        if self.on_success: body['on_success'] = self.on_success
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> TaskEmailNotifications:
         """Deserializes the TaskEmailNotifications from a dictionary."""
@@ -5169,6 +6426,16 @@ class TaskNotificationSettings:
 
     def as_dict(self) -> dict:
         """Serializes the TaskNotificationSettings into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.alert_on_last_attempt is not None: body['alert_on_last_attempt'] = self.alert_on_last_attempt
+        if self.no_alert_for_canceled_runs is not None:
+            body['no_alert_for_canceled_runs'] = self.no_alert_for_canceled_runs
+        if self.no_alert_for_skipped_runs is not None:
+            body['no_alert_for_skipped_runs'] = self.no_alert_for_skipped_runs
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TaskNotificationSettings into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.alert_on_last_attempt is not None: body['alert_on_last_attempt'] = self.alert_on_last_attempt
         if self.no_alert_for_canceled_runs is not None:
@@ -5306,6 +6573,14 @@ class TerminationDetails:
         if self.type is not None: body['type'] = self.type.value
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TerminationDetails into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.code is not None: body['code'] = self.code
+        if self.message is not None: body['message'] = self.message
+        if self.type is not None: body['type'] = self.type
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> TerminationDetails:
         """Deserializes the TerminationDetails from a dictionary."""
@@ -5342,6 +6617,12 @@ class TriggerInfo:
         if self.run_id is not None: body['run_id'] = self.run_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TriggerInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.run_id is not None: body['run_id'] = self.run_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> TriggerInfo:
         """Deserializes the TriggerInfo from a dictionary."""
@@ -5374,6 +6655,16 @@ class TriggerSettings:
         if self.table_update: body['table_update'] = self.table_update.as_dict()
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TriggerSettings into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.file_arrival: body['file_arrival'] = self.file_arrival
+        if self.pause_status is not None: body['pause_status'] = self.pause_status
+        if self.periodic: body['periodic'] = self.periodic
+        if self.table: body['table'] = self.table
+        if self.table_update: body['table_update'] = self.table_update
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> TriggerSettings:
         """Deserializes the TriggerSettings from a dictionary."""
@@ -5393,7 +6684,8 @@ class TriggerType(Enum):
     previously failed run. This occurs when you request to re-run the job in case of failures. *
     `RUN_JOB_TASK`: Indicates a run that is triggered using a Run Job task. * `FILE_ARRIVAL`:
     Indicates a run that is triggered by a file arrival. * `TABLE`: Indicates a run that is
-    triggered by a table update."""
+    triggered by a table update. * `CONTINUOUS_RESTART`: Indicates a run created by user to manually
+    restart a continuous job run."""
 
     FILE_ARRIVAL = 'FILE_ARRIVAL'
     ONE_TIME = 'ONE_TIME'
@@ -5432,6 +6724,14 @@ class UpdateJob:
         if self.new_settings: body['new_settings'] = self.new_settings.as_dict()
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateJob into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.fields_to_remove: body['fields_to_remove'] = self.fields_to_remove
+        if self.job_id is not None: body['job_id'] = self.job_id
+        if self.new_settings: body['new_settings'] = self.new_settings
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> UpdateJob:
         """Deserializes the UpdateJob from a dictionary."""
@@ -5445,6 +6745,11 @@ class UpdateResponse:
 
     def as_dict(self) -> dict:
         """Serializes the UpdateResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -5472,6 +6777,14 @@ class ViewItem:
         if self.content is not None: body['content'] = self.content
         if self.name is not None: body['name'] = self.name
         if self.type is not None: body['type'] = self.type.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ViewItem into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.content is not None: body['content'] = self.content
+        if self.name is not None: body['name'] = self.name
+        if self.type is not None: body['type'] = self.type
         return body
 
     @classmethod
@@ -5502,6 +6815,12 @@ class Webhook:
 
     def as_dict(self) -> dict:
         """Serializes the Webhook into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.id is not None: body['id'] = self.id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Webhook into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.id is not None: body['id'] = self.id
         return body
@@ -5551,6 +6870,18 @@ class WebhookNotifications:
         if self.on_streaming_backlog_exceeded:
             body['on_streaming_backlog_exceeded'] = [v.as_dict() for v in self.on_streaming_backlog_exceeded]
         if self.on_success: body['on_success'] = [v.as_dict() for v in self.on_success]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the WebhookNotifications into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.on_duration_warning_threshold_exceeded:
+            body['on_duration_warning_threshold_exceeded'] = self.on_duration_warning_threshold_exceeded
+        if self.on_failure: body['on_failure'] = self.on_failure
+        if self.on_start: body['on_start'] = self.on_start
+        if self.on_streaming_backlog_exceeded:
+            body['on_streaming_backlog_exceeded'] = self.on_streaming_backlog_exceeded
+        if self.on_success: body['on_success'] = self.on_success
         return body
 
     @classmethod
@@ -5754,8 +7085,8 @@ class JobsAPI:
         :param queue: :class:`QueueSettings` (optional)
           The queue settings of the job.
         :param run_as: :class:`JobRunAs` (optional)
-          Write-only setting. Specifies the user, service principal or group that the job/pipeline runs as. If
-          not specified, the job/pipeline runs as the user who created the job/pipeline.
+          Write-only setting. Specifies the user or service principal that the job runs as. If not specified,
+          the job runs as the user who created the job.
           
           Either `user_name` or `service_principal_name` should be specified. If not, an error is thrown.
         :param schedule: :class:`CronSchedule` (optional)
