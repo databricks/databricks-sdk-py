@@ -37,6 +37,19 @@ class ServingEndpointsExt(ServingEndpointsAPI):
             api_key="no-token", # Passing in a placeholder to pass validations, this will not be used
             http_client=self._get_authorized_http_client())
 
+    def get_async_open_ai_client(self):
+        try:
+            from openai import AsyncOpenAI
+        except Exception:
+            raise ImportError(
+                "Open AI is not installed. Please install the Databricks SDK with the following command `pip install databricks-sdk[openai]`"
+            )
+
+        return AsyncOpenAI(
+            base_url=self._api._cfg.host + "/serving-endpoints",
+            api_key="no-token", # Passing in a placeholder to pass validations, this will not be used
+            http_client=self._get_authorized_http_client())
+
     def get_langchain_chat_open_ai_client(self, model):
         try:
             from langchain_openai import ChatOpenAI
