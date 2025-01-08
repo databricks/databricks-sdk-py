@@ -5810,6 +5810,7 @@ class ProvisioningInfo:
 class ProvisioningInfoState(Enum):
 
     ACTIVE = 'ACTIVE'
+    DEGRADED = 'DEGRADED'
     DELETING = 'DELETING'
     FAILED = 'FAILED'
     PROVISIONING = 'PROVISIONING'

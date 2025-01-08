@@ -85,6 +85,14 @@ class CreatePipeline:
     restart_window: Optional[RestartWindow] = None
     """Restart window of this pipeline."""
 
+    run_as: Optional[RunAs] = None
+    """Write-only setting, available only in Create/Update calls. Specifies the user or service
+    principal that the pipeline runs as. If not specified, the pipeline runs as the user who created
+    the pipeline.
+    
+    Only `user_name` or `service_principal_name` can be specified. If both are specified, an error
+    is thrown."""
+
     schema: Optional[str] = None
     """The default schema (database) where tables are read from or published to. The presence of this
     field implies that the pipeline is in direct publishing mode."""
@@ -126,6 +134,7 @@ class CreatePipeline:
         if self.notifications: body['notifications'] = [v.as_dict() for v in self.notifications]
         if self.photon is not None: body['photon'] = self.photon
         if self.restart_window: body['restart_window'] = self.restart_window.as_dict()
+        if self.run_as: body['run_as'] = self.run_as.as_dict()
         if self.schema is not None: body['schema'] = self.schema
         if self.serverless is not None: body['serverless'] = self.serverless
         if self.storage is not None: body['storage'] = self.storage
@@ -156,6 +165,7 @@ class CreatePipeline:
         if self.notifications: body['notifications'] = self.notifications
         if self.photon is not None: body['photon'] = self.photon
         if self.restart_window: body['restart_window'] = self.restart_window
+        if self.run_as: body['run_as'] = self.run_as
         if self.schema is not None: body['schema'] = self.schema
         if self.serverless is not None: body['serverless'] = self.serverless
         if self.storage is not None: body['storage'] = self.storage
@@ -186,6 +196,7 @@ class CreatePipeline:
                    notifications=_repeated_dict(d, 'notifications', Notifications),
                    photon=d.get('photon', None),
                    restart_window=_from_dict(d, 'restart_window', RestartWindow),
+                   run_as=_from_dict(d, 'run_as', RunAs),
                    schema=d.get('schema', None),
                    serverless=d.get('serverless', None),
                    storage=d.get('storage', None),
@@ -275,6 +286,19 @@ class DataPlaneId:
     def from_dict(cls, d: Dict[str, any]) -> DataPlaneId:
         """Deserializes the DataPlaneId from a dictionary."""
         return cls(instance=d.get('instance', None), seq_no=d.get('seq_no', None))
+
+
+class DayOfWeek(Enum):
+    """Days of week in which the restart is allowed to happen (within a five-hour window starting at
+    start_hour). If not specified all days of the week will be used."""
+
+    FRIDAY = 'FRIDAY'
+    MONDAY = 'MONDAY'
+    SATURDAY = 'SATURDAY'
+    SUNDAY = 'SUNDAY'
+    THURSDAY = 'THURSDAY'
+    TUESDAY = 'TUESDAY'
+    WEDNESDAY = 'WEDNESDAY'
 
 
 @dataclass
@@ -373,6 +397,14 @@ class EditPipeline:
     restart_window: Optional[RestartWindow] = None
     """Restart window of this pipeline."""
 
+    run_as: Optional[RunAs] = None
+    """Write-only setting, available only in Create/Update calls. Specifies the user or service
+    principal that the pipeline runs as. If not specified, the pipeline runs as the user who created
+    the pipeline.
+    
+    Only `user_name` or `service_principal_name` can be specified. If both are specified, an error
+    is thrown."""
+
     schema: Optional[str] = None
     """The default schema (database) where tables are read from or published to. The presence of this
     field implies that the pipeline is in direct publishing mode."""
@@ -416,6 +448,7 @@ class EditPipeline:
         if self.photon is not None: body['photon'] = self.photon
         if self.pipeline_id is not None: body['pipeline_id'] = self.pipeline_id
         if self.restart_window: body['restart_window'] = self.restart_window.as_dict()
+        if self.run_as: body['run_as'] = self.run_as.as_dict()
         if self.schema is not None: body['schema'] = self.schema
         if self.serverless is not None: body['serverless'] = self.serverless
         if self.storage is not None: body['storage'] = self.storage
@@ -448,6 +481,7 @@ class EditPipeline:
         if self.photon is not None: body['photon'] = self.photon
         if self.pipeline_id is not None: body['pipeline_id'] = self.pipeline_id
         if self.restart_window: body['restart_window'] = self.restart_window
+        if self.run_as: body['run_as'] = self.run_as
         if self.schema is not None: body['schema'] = self.schema
         if self.serverless is not None: body['serverless'] = self.serverless
         if self.storage is not None: body['storage'] = self.storage
@@ -479,6 +513,7 @@ class EditPipeline:
                    photon=d.get('photon', None),
                    pipeline_id=d.get('pipeline_id', None),
                    restart_window=_from_dict(d, 'restart_window', RestartWindow),
+                   run_as=_from_dict(d, 'run_as', RunAs),
                    schema=d.get('schema', None),
                    serverless=d.get('serverless', None),
                    storage=d.get('storage', None),
@@ -2105,7 +2140,7 @@ class RestartWindow:
     """An integer between 0 and 23 denoting the start hour for the restart window in the 24-hour day.
     Continuous pipeline restart is triggered only within a five-hour window starting at this hour."""
 
-    days_of_week: Optional[List[RestartWindowDaysOfWeek]] = None
+    days_of_week: Optional[List[DayOfWeek]] = None
     """Days of week in which the restart is allowed to happen (within a five-hour window starting at
     start_hour). If not specified all days of the week will be used."""
 
@@ -2133,22 +2168,48 @@ class RestartWindow:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> RestartWindow:
         """Deserializes the RestartWindow from a dictionary."""
-        return cls(days_of_week=_repeated_enum(d, 'days_of_week', RestartWindowDaysOfWeek),
+        return cls(days_of_week=_repeated_enum(d, 'days_of_week', DayOfWeek),
                    start_hour=d.get('start_hour', None),
                    time_zone_id=d.get('time_zone_id', None))
 
 
-class RestartWindowDaysOfWeek(Enum):
-    """Days of week in which the restart is allowed to happen (within a five-hour window starting at
-    start_hour). If not specified all days of the week will be used."""
+@dataclass
+class RunAs:
+    """Write-only setting, available only in Create/Update calls. Specifies the user or service
+    principal that the pipeline runs as. If not specified, the pipeline runs as the user who created
+    the pipeline.
+    
+    Only `user_name` or `service_principal_name` can be specified. If both are specified, an error
+    is thrown."""
 
-    FRIDAY = 'FRIDAY'
-    MONDAY = 'MONDAY'
-    SATURDAY = 'SATURDAY'
-    SUNDAY = 'SUNDAY'
-    THURSDAY = 'THURSDAY'
-    TUESDAY = 'TUESDAY'
-    WEDNESDAY = 'WEDNESDAY'
+    service_principal_name: Optional[str] = None
+    """Application ID of an active service principal. Setting this field requires the
+    `servicePrincipal/user` role."""
+
+    user_name: Optional[str] = None
+    """The email of an active workspace user. Users can only set this field to their own email."""
+
+    def as_dict(self) -> dict:
+        """Serializes the RunAs into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
+        if self.user_name is not None: body['user_name'] = self.user_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RunAs into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
+        if self.user_name is not None: body['user_name'] = self.user_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> RunAs:
+        """Deserializes the RunAs from a dictionary."""
+        return cls(service_principal_name=d.get('service_principal_name', None),
+                   user_name=d.get('user_name', None))
 
 
 @dataclass
@@ -2791,6 +2852,7 @@ class PipelinesAPI:
                notifications: Optional[List[Notifications]] = None,
                photon: Optional[bool] = None,
                restart_window: Optional[RestartWindow] = None,
+               run_as: Optional[RunAs] = None,
                schema: Optional[str] = None,
                serverless: Optional[bool] = None,
                storage: Optional[str] = None,
@@ -2843,6 +2905,12 @@ class PipelinesAPI:
           Whether Photon is enabled for this pipeline.
         :param restart_window: :class:`RestartWindow` (optional)
           Restart window of this pipeline.
+        :param run_as: :class:`RunAs` (optional)
+          Write-only setting, available only in Create/Update calls. Specifies the user or service principal
+          that the pipeline runs as. If not specified, the pipeline runs as the user who created the pipeline.
+          
+          Only `user_name` or `service_principal_name` can be specified. If both are specified, an error is
+          thrown.
         :param schema: str (optional)
           The default schema (database) where tables are read from or published to. The presence of this field
           implies that the pipeline is in direct publishing mode.
@@ -2879,6 +2947,7 @@ class PipelinesAPI:
         if notifications is not None: body['notifications'] = [v.as_dict() for v in notifications]
         if photon is not None: body['photon'] = photon
         if restart_window is not None: body['restart_window'] = restart_window.as_dict()
+        if run_as is not None: body['run_as'] = run_as.as_dict()
         if schema is not None: body['schema'] = schema
         if serverless is not None: body['serverless'] = serverless
         if storage is not None: body['storage'] = storage
@@ -3213,6 +3282,7 @@ class PipelinesAPI:
                notifications: Optional[List[Notifications]] = None,
                photon: Optional[bool] = None,
                restart_window: Optional[RestartWindow] = None,
+               run_as: Optional[RunAs] = None,
                schema: Optional[str] = None,
                serverless: Optional[bool] = None,
                storage: Optional[str] = None,
@@ -3268,6 +3338,12 @@ class PipelinesAPI:
           Whether Photon is enabled for this pipeline.
         :param restart_window: :class:`RestartWindow` (optional)
           Restart window of this pipeline.
+        :param run_as: :class:`RunAs` (optional)
+          Write-only setting, available only in Create/Update calls. Specifies the user or service principal
+          that the pipeline runs as. If not specified, the pipeline runs as the user who created the pipeline.
+          
+          Only `user_name` or `service_principal_name` can be specified. If both are specified, an error is
+          thrown.
         :param schema: str (optional)
           The default schema (database) where tables are read from or published to. The presence of this field
           implies that the pipeline is in direct publishing mode.
@@ -3304,6 +3380,7 @@ class PipelinesAPI:
         if notifications is not None: body['notifications'] = [v.as_dict() for v in notifications]
         if photon is not None: body['photon'] = photon
         if restart_window is not None: body['restart_window'] = restart_window.as_dict()
+        if run_as is not None: body['run_as'] = run_as.as_dict()
         if schema is not None: body['schema'] = schema
         if serverless is not None: body['serverless'] = serverless
         if storage is not None: body['storage'] = storage

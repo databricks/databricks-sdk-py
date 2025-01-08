@@ -7,5 +7,6 @@
     "python.envFile": "${workspaceFolder}/.databricks/.databricks.env",
     "databricks.python.envFile": "${workspaceFolder}/.env",
     "jupyter.interactiveWindow.cellMarker.codeRegex": "^# COMMAND ----------|^# Databricks notebook source|^(#\\s*%%|#\\s*\\<codecell\\>|#\\s*In\\[\\d*?\\]|#\\s*In\\[ \\])",
-    "jupyter.interactiveWindow.cellMarker.default": "# COMMAND ----------"
+    "jupyter.interactiveWindow.cellMarker.default": "# COMMAND ----------",
+    "python.analysis.autoImportCompletions": true
 }

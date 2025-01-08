@@ -1,9 +1,26 @@
 import threading
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Callable, List
+from typing import Callable, List, Optional
 
 from databricks.sdk.oauth import Token
-from databricks.sdk.service.oauth2 import DataPlaneInfo
+
+
+@dataclass
+class DataPlaneInfo(ABC):
+    """
+    Abstract base class for DataPlane information.
+    """
+
+    @property
+    @abstractmethod
+    def url(self) -> str:
+        """Gets the URL for the DataPlane endpoint."""
+
+    @property
+    @abstractmethod
+    def token(self) -> Optional[str]:
+        """Gets the token for the DataPlane endpoint."""
 
 
 @dataclass
