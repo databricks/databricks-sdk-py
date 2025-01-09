@@ -1,3 +1,5 @@
+# Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
+
 from typing import Optional
 
 import databricks.sdk.core as client
