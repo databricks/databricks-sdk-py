@@ -3749,10 +3749,9 @@ class ServingEndpointsDataPlaneAPI:
     endpoints service."""
 
     def __init__(self, api_client, control_plane):
-        from ..data_plane import DataPlaneService
-
         self._api = api_client
         self._control_plane = control_plane
+        from ..data_plane import DataPlaneService
         self._data_plane_service = DataPlaneService()
 
     def query(self,
