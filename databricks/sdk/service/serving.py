@@ -12,7 +12,6 @@ from typing import Any, BinaryIO, Callable, Dict, Iterator, List, Optional
 
 import requests
 
-from ..data_plane import DataPlaneService
 from ..errors import OperationFailed
 from ._internal import Wait, _enum, _from_dict, _repeated_dict
 
@@ -3750,6 +3749,8 @@ class ServingEndpointsDataPlaneAPI:
     endpoints service."""
 
     def __init__(self, api_client, control_plane):
+        from ..data_plane import DataPlaneService
+
         self._api = api_client
         self._control_plane = control_plane
         self._data_plane_service = DataPlaneService()

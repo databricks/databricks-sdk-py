@@ -1,26 +1,8 @@
 import threading
-from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Callable, List, Optional
+from typing import Callable, List
 
 from databricks.sdk.oauth import Token
-
-
-@dataclass
-class DataPlaneInfo(ABC):
-    """
-    Abstract base class for DataPlane information.
-    """
-
-    @property
-    @abstractmethod
-    def url(self) -> str:
-        """Gets the URL for the DataPlane endpoint."""
-
-    @property
-    @abstractmethod
-    def token(self) -> Optional[str]:
-        """Gets the token for the DataPlane endpoint."""
 
 
 @dataclass
@@ -36,6 +18,7 @@ class DataPlaneDetails:
 
 class DataPlaneService:
     """Helper class to fetch and manage DataPlane details."""
+    from .service.serving import DataPlaneInfo
 
     def __init__(self):
         self._data_plane_info = {}
