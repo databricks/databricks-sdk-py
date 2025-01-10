@@ -1,4 +1,5 @@
 from typing import Optional
+import logging
 
 import databricks.sdk.core as client
 import databricks.sdk.dbutils as dbutils
@@ -97,6 +98,7 @@ from databricks.sdk.service.vectorsearch import (VectorSearchEndpointsAPI,
 from databricks.sdk.service.workspace import (GitCredentialsAPI, ReposAPI,
                                               SecretsAPI, WorkspaceAPI)
 
+_LOG = logging.getLogger(__name__)
 
 def _make_dbutils(config: client.Config):
     # We try to directly check if we are in runtime, instead of
@@ -116,6 +118,7 @@ def _make_dbutils(config: client.Config):
 
 def _make_files_client(apiClient: client.ApiClient, config: client.Config):
     if config.enable_experimental_files_api_client:
+        _LOG.info("Experimental Files API client is enabled")
         return FilesExt(apiClient, config)
     else:
         return FilesAPI(apiClient)
