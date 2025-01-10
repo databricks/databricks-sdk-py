@@ -1,5 +1,5 @@
-from typing import Optional
 import logging
+from typing import Optional
 
 import databricks.sdk.core as client
 import databricks.sdk.dbutils as dbutils
@@ -99,6 +99,7 @@ from databricks.sdk.service.workspace import (GitCredentialsAPI, ReposAPI,
                                               SecretsAPI, WorkspaceAPI)
 
 _LOG = logging.getLogger(__name__)
+
 
 def _make_dbutils(config: client.Config):
     # We try to directly check if we are in runtime, instead of
