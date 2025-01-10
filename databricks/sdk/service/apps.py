@@ -967,12 +967,14 @@ class AppsAPI:
             attempt += 1
         raise TimeoutError(f'timed out after {timeout}: {status_message}')
 
-    def create(self, *, app: Optional[App] = None) -> Wait[App]:
+    def create(self, *, app: Optional[App] = None, no_compute: Optional[bool] = None) -> Wait[App]:
         """Create an app.
         
         Creates a new app.
         
         :param app: :class:`App` (optional)
+        :param no_compute: bool (optional)
+          If true, the app will not be started after creation.
         
         :returns:
           Long-running operation waiter for :class:`App`.
@@ -981,11 +983,15 @@ class AppsAPI:
         body = app.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        op_response = self._api.do('POST', '/api/2.0/apps', body=body, headers=headers)
+        op_response = self._api.do('POST', '/api/2.0/apps', query=query, body=body, headers=headers)
         return Wait(self.wait_get_app_active, response=App.from_dict(op_response), name=op_response['name'])
 
-    def create_and_wait(self, *, app: Optional[App] = None, timeout=timedelta(minutes=20)) -> App:
-        return self.create(app=app).result(timeout=timeout)
+    def create_and_wait(self,
+                        *,
+                        app: Optional[App] = None,
+                        no_compute: Optional[bool] = None,
+                        timeout=timedelta(minutes=20)) -> App:
+        return self.create(app=app, no_compute=no_compute).result(timeout=timeout)
 
     def delete(self, name: str) -> App:
         """Delete an app.

@@ -12,13 +12,10 @@ from typing import Any, BinaryIO, Callable, Dict, Iterator, List, Optional
 
 import requests
 
-from ..data_plane import DataPlaneService
 from ..errors import OperationFailed
 from ._internal import Wait, _enum, _from_dict, _repeated_dict
 
 _LOG = logging.getLogger('databricks.sdk')
-
-from databricks.sdk.service import oauth2
 
 # all definitions in this file are in alphabetical order
 
@@ -710,6 +707,35 @@ class CreateServingEndpoint:
                    rate_limits=_repeated_dict(d, 'rate_limits', RateLimit),
                    route_optimized=d.get('route_optimized', None),
                    tags=_repeated_dict(d, 'tags', EndpointTag))
+
+
+@dataclass
+class DataPlaneInfo:
+    authorization_details: Optional[str] = None
+    """Authorization details as a string."""
+
+    endpoint_url: Optional[str] = None
+    """The URL of the endpoint for this operation in the dataplane."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DataPlaneInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.authorization_details is not None: body['authorization_details'] = self.authorization_details
+        if self.endpoint_url is not None: body['endpoint_url'] = self.endpoint_url
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DataPlaneInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.authorization_details is not None: body['authorization_details'] = self.authorization_details
+        if self.endpoint_url is not None: body['endpoint_url'] = self.endpoint_url
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DataPlaneInfo:
+        """Deserializes the DataPlaneInfo from a dictionary."""
+        return cls(authorization_details=d.get('authorization_details', None),
+                   endpoint_url=d.get('endpoint_url', None))
 
 
 @dataclass
@@ -1444,7 +1470,7 @@ class ListEndpointsResponse:
 
 @dataclass
 class ModelDataPlaneInfo:
-    query_info: Optional[oauth2.DataPlaneInfo] = None
+    query_info: Optional[DataPlaneInfo] = None
     """Information required to query DataPlane API 'query' endpoint."""
 
     def as_dict(self) -> dict:
@@ -1462,7 +1488,7 @@ class ModelDataPlaneInfo:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ModelDataPlaneInfo:
         """Deserializes the ModelDataPlaneInfo from a dictionary."""
-        return cls(query_info=_from_dict(d, 'query_info', oauth2.DataPlaneInfo))
+        return cls(query_info=_from_dict(d, 'query_info', DataPlaneInfo))
 
 
 @dataclass
@@ -3725,6 +3751,7 @@ class ServingEndpointsDataPlaneAPI:
     def __init__(self, api_client, control_plane):
         self._api = api_client
         self._control_plane = control_plane
+        from ..data_plane import DataPlaneService
         self._data_plane_service = DataPlaneService()
 
     def query(self,
