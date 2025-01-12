@@ -203,35 +203,6 @@ class CreateServicePrincipalSecretResponse:
 
 
 @dataclass
-class DataPlaneInfo:
-    authorization_details: Optional[str] = None
-    """Authorization details as a string."""
-
-    endpoint_url: Optional[str] = None
-    """The URL of the endpoint for this operation in the dataplane."""
-
-    def as_dict(self) -> dict:
-        """Serializes the DataPlaneInfo into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.authorization_details is not None: body['authorization_details'] = self.authorization_details
-        if self.endpoint_url is not None: body['endpoint_url'] = self.endpoint_url
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DataPlaneInfo into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.authorization_details is not None: body['authorization_details'] = self.authorization_details
-        if self.endpoint_url is not None: body['endpoint_url'] = self.endpoint_url
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DataPlaneInfo:
-        """Deserializes the DataPlaneInfo from a dictionary."""
-        return cls(authorization_details=d.get('authorization_details', None),
-                   endpoint_url=d.get('endpoint_url', None))
-
-
-@dataclass
 class DeleteCustomAppIntegrationOutput:
 
     def as_dict(self) -> dict:
@@ -297,8 +268,13 @@ class FederationPolicy:
     """Description of the federation policy."""
 
     name: Optional[str] = None
-    """Name of the federation policy. The name must contain only lowercase alphanumeric characters,
-    numbers, and hyphens. It must be unique within the account."""
+    """Resource name for the federation policy. Example values include
+    `accounts/<account-id>/federationPolicies/my-federation-policy` for Account Federation Policies,
+    and
+    `accounts/<account-id>/servicePrincipals/<service-principal-id>/federationPolicies/my-federation-policy`
+    for Service Principal Federation Policies. Typically an output parameter, which does not need to
+    be specified in create or update requests. If specified in a request, must match the value in
+    the request URL."""
 
     oidc_policy: Optional[OidcFederationPolicy] = None
     """Specifies the policy to use for validating OIDC claims in your federated tokens."""
@@ -961,7 +937,8 @@ class AccountFederationPolicyAPI:
         
         :param policy: :class:`FederationPolicy` (optional)
         :param policy_id: str (optional)
-          The identifier for the federation policy. If unspecified, the id will be assigned by Databricks.
+          The identifier for the federation policy. The identifier must contain only lowercase alphanumeric
+          characters, numbers, hyphens, and slashes. If unspecified, the id will be assigned by Databricks.
         
         :returns: :class:`FederationPolicy`
         """
@@ -979,6 +956,7 @@ class AccountFederationPolicyAPI:
         """Delete account federation policy.
         
         :param policy_id: str
+          The identifier for the federation policy.
         
         
         """
@@ -993,6 +971,7 @@ class AccountFederationPolicyAPI:
         """Get account federation policy.
         
         :param policy_id: str
+          The identifier for the federation policy.
         
         :returns: :class:`FederationPolicy`
         """
@@ -1035,17 +1014,20 @@ class AccountFederationPolicyAPI:
 
     def update(self,
                policy_id: str,
-               update_mask: str,
                *,
-               policy: Optional[FederationPolicy] = None) -> FederationPolicy:
+               policy: Optional[FederationPolicy] = None,
+               update_mask: Optional[str] = None) -> FederationPolicy:
         """Update account federation policy.
         
         :param policy_id: str
-        :param update_mask: str
-          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
-          setting payload will be updated. The field mask needs to be supplied as single string. To specify
-          multiple fields in the field mask, use comma as the separator (no space).
+          The identifier for the federation policy.
         :param policy: :class:`FederationPolicy` (optional)
+        :param update_mask: str (optional)
+          The field mask specifies which fields of the policy to update. To specify multiple fields in the
+          field mask, use comma as the separator (no space). The special value '*' indicates that all fields
+          should be updated (full replacement). If unspecified, all fields that are set in the policy provided
+          in the update request will overwrite the corresponding fields in the existing policy. Example value:
+          'description,oidc_policy.audiences'.
         
         :returns: :class:`FederationPolicy`
         """
@@ -1433,7 +1415,8 @@ class ServicePrincipalFederationPolicyAPI:
           The service principal id for the federation policy.
         :param policy: :class:`FederationPolicy` (optional)
         :param policy_id: str (optional)
-          The identifier for the federation policy. If unspecified, the id will be assigned by Databricks.
+          The identifier for the federation policy. The identifier must contain only lowercase alphanumeric
+          characters, numbers, hyphens, and slashes. If unspecified, the id will be assigned by Databricks.
         
         :returns: :class:`FederationPolicy`
         """
@@ -1454,6 +1437,7 @@ class ServicePrincipalFederationPolicyAPI:
         :param service_principal_id: int
           The service principal id for the federation policy.
         :param policy_id: str
+          The identifier for the federation policy.
         
         
         """
@@ -1471,6 +1455,7 @@ class ServicePrincipalFederationPolicyAPI:
         :param service_principal_id: int
           The service principal id for the federation policy.
         :param policy_id: str
+          The identifier for the federation policy.
         
         :returns: :class:`FederationPolicy`
         """
@@ -1519,19 +1504,22 @@ class ServicePrincipalFederationPolicyAPI:
     def update(self,
                service_principal_id: int,
                policy_id: str,
-               update_mask: str,
                *,
-               policy: Optional[FederationPolicy] = None) -> FederationPolicy:
+               policy: Optional[FederationPolicy] = None,
+               update_mask: Optional[str] = None) -> FederationPolicy:
         """Update service principal federation policy.
         
         :param service_principal_id: int
           The service principal id for the federation policy.
         :param policy_id: str
-        :param update_mask: str
-          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
-          setting payload will be updated. The field mask needs to be supplied as single string. To specify
-          multiple fields in the field mask, use comma as the separator (no space).
+          The identifier for the federation policy.
         :param policy: :class:`FederationPolicy` (optional)
+        :param update_mask: str (optional)
+          The field mask specifies which fields of the policy to update. To specify multiple fields in the
+          field mask, use comma as the separator (no space). The special value '*' indicates that all fields
+          should be updated (full replacement). If unspecified, all fields that are set in the policy provided
+          in the update request will overwrite the corresponding fields in the existing policy. Example value:
+          'description,oidc_policy.audiences'.
         
         :returns: :class:`FederationPolicy`
         """

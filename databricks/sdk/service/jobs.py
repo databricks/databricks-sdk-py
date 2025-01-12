@@ -35,6 +35,11 @@ class BaseJob:
     Jobs UI in the job details page and Jobs API using `budget_policy_id` 3. Inferred default based
     on accessible budget policies of the run_as identity on job creation or modification."""
 
+    has_more: Optional[bool] = None
+    """Indicates if the job has more sub-resources (`tasks`, `job_clusters`) that are not shown. They
+    can be accessed via :method:jobs/get endpoint. It is only relevant for API 2.2 :method:jobs/list
+    requests with `expand_tasks=true`."""
+
     job_id: Optional[int] = None
     """The canonical identifier for this job."""
 
@@ -49,6 +54,7 @@ class BaseJob:
         if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
         if self.effective_budget_policy_id is not None:
             body['effective_budget_policy_id'] = self.effective_budget_policy_id
+        if self.has_more is not None: body['has_more'] = self.has_more
         if self.job_id is not None: body['job_id'] = self.job_id
         if self.settings: body['settings'] = self.settings.as_dict()
         return body
@@ -60,6 +66,7 @@ class BaseJob:
         if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
         if self.effective_budget_policy_id is not None:
             body['effective_budget_policy_id'] = self.effective_budget_policy_id
+        if self.has_more is not None: body['has_more'] = self.has_more
         if self.job_id is not None: body['job_id'] = self.job_id
         if self.settings: body['settings'] = self.settings
         return body
@@ -70,6 +77,7 @@ class BaseJob:
         return cls(created_time=d.get('created_time', None),
                    creator_user_name=d.get('creator_user_name', None),
                    effective_budget_policy_id=d.get('effective_budget_policy_id', None),
+                   has_more=d.get('has_more', None),
                    job_id=d.get('job_id', None),
                    settings=_from_dict(d, 'settings', JobSettings))
 
@@ -124,10 +132,16 @@ class BaseRun:
     Note: dbt and SQL File tasks support only version-controlled sources. If dbt or SQL File tasks
     are used, `git_source` must be defined on the job."""
 
+    has_more: Optional[bool] = None
+    """Indicates if the run has more sub-resources (`tasks`, `job_clusters`) that are not shown. They
+    can be accessed via :method:jobs/getrun endpoint. It is only relevant for API 2.2
+    :method:jobs/listruns requests with `expand_tasks=true`."""
+
     job_clusters: Optional[List[JobCluster]] = None
     """A list of job cluster specifications that can be shared and reused by tasks of this job.
     Libraries cannot be declared in a shared job cluster. You must declare dependent libraries in
-    task settings."""
+    task settings. If more than 100 job clusters are available, you can paginate through them using
+    :method:jobs/getrun."""
 
     job_id: Optional[int] = None
     """The canonical identifier of the job that contains this run."""
@@ -198,7 +212,9 @@ class BaseRun:
 
     tasks: Optional[List[RunTask]] = None
     """The list of tasks performed by the run. Each task has its own `run_id` which you can use to call
-    `JobsGetOutput` to retrieve the run resutls."""
+    `JobsGetOutput` to retrieve the run resutls. If more than 100 tasks are available, you can
+    paginate through them using :method:jobs/getrun. Use the `next_page_token` field at the object
+    root to determine if more results are available."""
 
     trigger: Optional[TriggerType] = None
     """The type of trigger that fired this run.
@@ -227,6 +243,7 @@ class BaseRun:
         if self.end_time is not None: body['end_time'] = self.end_time
         if self.execution_duration is not None: body['execution_duration'] = self.execution_duration
         if self.git_source: body['git_source'] = self.git_source.as_dict()
+        if self.has_more is not None: body['has_more'] = self.has_more
         if self.job_clusters: body['job_clusters'] = [v.as_dict() for v in self.job_clusters]
         if self.job_id is not None: body['job_id'] = self.job_id
         if self.job_parameters: body['job_parameters'] = [v.as_dict() for v in self.job_parameters]
@@ -264,6 +281,7 @@ class BaseRun:
         if self.end_time is not None: body['end_time'] = self.end_time
         if self.execution_duration is not None: body['execution_duration'] = self.execution_duration
         if self.git_source: body['git_source'] = self.git_source
+        if self.has_more is not None: body['has_more'] = self.has_more
         if self.job_clusters: body['job_clusters'] = self.job_clusters
         if self.job_id is not None: body['job_id'] = self.job_id
         if self.job_parameters: body['job_parameters'] = self.job_parameters
@@ -301,6 +319,7 @@ class BaseRun:
                    end_time=d.get('end_time', None),
                    execution_duration=d.get('execution_duration', None),
                    git_source=_from_dict(d, 'git_source', GitSource),
+                   has_more=d.get('has_more', None),
                    job_clusters=_repeated_dict(d, 'job_clusters', JobCluster),
                    job_id=d.get('job_id', None),
                    job_parameters=_repeated_dict(d, 'job_parameters', JobParameter),
@@ -754,7 +773,8 @@ class CreateJob:
     job_clusters: Optional[List[JobCluster]] = None
     """A list of job cluster specifications that can be shared and reused by tasks of this job.
     Libraries cannot be declared in a shared job cluster. You must declare dependent libraries in
-    task settings."""
+    task settings. If more than 100 job clusters are available, you can paginate through them using
+    :method:jobs/get."""
 
     max_concurrent_runs: Optional[int] = None
     """An optional maximum allowed number of concurrent runs of the job. Set this value if you want to
@@ -795,7 +815,9 @@ class CreateJob:
     be added to the job."""
 
     tasks: Optional[List[Task]] = None
-    """A list of task specifications to be executed by this job."""
+    """A list of task specifications to be executed by this job. If more than 100 tasks are available,
+    you can paginate through them using :method:jobs/get. Use the `next_page_token` field at the
+    object root to determine if more results are available."""
 
     timeout_seconds: Optional[int] = None
     """An optional timeout applied to each run of this job. A value of `0` means no timeout."""
@@ -1680,8 +1702,16 @@ class Job:
     Jobs UI in the job details page and Jobs API using `budget_policy_id` 3. Inferred default based
     on accessible budget policies of the run_as identity on job creation or modification."""
 
+    has_more: Optional[bool] = None
+    """Indicates if the job has more sub-resources (`tasks`, `job_clusters`) that are not shown. They
+    can be accessed via :method:jobs/get endpoint. It is only relevant for API 2.2 :method:jobs/list
+    requests with `expand_tasks=true`."""
+
     job_id: Optional[int] = None
     """The canonical identifier for this job."""
+
+    next_page_token: Optional[str] = None
+    """A token that can be used to list the next page of sub-resources."""
 
     run_as_user_name: Optional[str] = None
     """The email of an active workspace user or the application ID of a service principal that the job
@@ -1703,7 +1733,9 @@ class Job:
         if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
         if self.effective_budget_policy_id is not None:
             body['effective_budget_policy_id'] = self.effective_budget_policy_id
+        if self.has_more is not None: body['has_more'] = self.has_more
         if self.job_id is not None: body['job_id'] = self.job_id
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         if self.run_as_user_name is not None: body['run_as_user_name'] = self.run_as_user_name
         if self.settings: body['settings'] = self.settings.as_dict()
         return body
@@ -1715,7 +1747,9 @@ class Job:
         if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
         if self.effective_budget_policy_id is not None:
             body['effective_budget_policy_id'] = self.effective_budget_policy_id
+        if self.has_more is not None: body['has_more'] = self.has_more
         if self.job_id is not None: body['job_id'] = self.job_id
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         if self.run_as_user_name is not None: body['run_as_user_name'] = self.run_as_user_name
         if self.settings: body['settings'] = self.settings
         return body
@@ -1726,7 +1760,9 @@ class Job:
         return cls(created_time=d.get('created_time', None),
                    creator_user_name=d.get('creator_user_name', None),
                    effective_budget_policy_id=d.get('effective_budget_policy_id', None),
+                   has_more=d.get('has_more', None),
                    job_id=d.get('job_id', None),
+                   next_page_token=d.get('next_page_token', None),
                    run_as_user_name=d.get('run_as_user_name', None),
                    settings=_from_dict(d, 'settings', JobSettings))
 
@@ -2366,7 +2402,8 @@ class JobSettings:
     job_clusters: Optional[List[JobCluster]] = None
     """A list of job cluster specifications that can be shared and reused by tasks of this job.
     Libraries cannot be declared in a shared job cluster. You must declare dependent libraries in
-    task settings."""
+    task settings. If more than 100 job clusters are available, you can paginate through them using
+    :method:jobs/get."""
 
     max_concurrent_runs: Optional[int] = None
     """An optional maximum allowed number of concurrent runs of the job. Set this value if you want to
@@ -2407,7 +2444,9 @@ class JobSettings:
     be added to the job."""
 
     tasks: Optional[List[Task]] = None
-    """A list of task specifications to be executed by this job."""
+    """A list of task specifications to be executed by this job. If more than 100 tasks are available,
+    you can paginate through them using :method:jobs/get. Use the `next_page_token` field at the
+    object root to determine if more results are available."""
 
     timeout_seconds: Optional[int] = None
     """An optional timeout applied to each run of this job. A value of `0` means no timeout."""
@@ -3663,13 +3702,19 @@ class Run:
     Note: dbt and SQL File tasks support only version-controlled sources. If dbt or SQL File tasks
     are used, `git_source` must be defined on the job."""
 
+    has_more: Optional[bool] = None
+    """Indicates if the run has more sub-resources (`tasks`, `job_clusters`) that are not shown. They
+    can be accessed via :method:jobs/getrun endpoint. It is only relevant for API 2.2
+    :method:jobs/listruns requests with `expand_tasks=true`."""
+
     iterations: Optional[List[RunTask]] = None
     """Only populated by for-each iterations. The parent for-each task is located in tasks array."""
 
     job_clusters: Optional[List[JobCluster]] = None
     """A list of job cluster specifications that can be shared and reused by tasks of this job.
     Libraries cannot be declared in a shared job cluster. You must declare dependent libraries in
-    task settings."""
+    task settings. If more than 100 job clusters are available, you can paginate through them using
+    :method:jobs/getrun."""
 
     job_id: Optional[int] = None
     """The canonical identifier of the job that contains this run."""
@@ -3743,7 +3788,9 @@ class Run:
 
     tasks: Optional[List[RunTask]] = None
     """The list of tasks performed by the run. Each task has its own `run_id` which you can use to call
-    `JobsGetOutput` to retrieve the run resutls."""
+    `JobsGetOutput` to retrieve the run resutls. If more than 100 tasks are available, you can
+    paginate through them using :method:jobs/getrun. Use the `next_page_token` field at the object
+    root to determine if more results are available."""
 
     trigger: Optional[TriggerType] = None
     """The type of trigger that fired this run.
@@ -3772,6 +3819,7 @@ class Run:
         if self.end_time is not None: body['end_time'] = self.end_time
         if self.execution_duration is not None: body['execution_duration'] = self.execution_duration
         if self.git_source: body['git_source'] = self.git_source.as_dict()
+        if self.has_more is not None: body['has_more'] = self.has_more
         if self.iterations: body['iterations'] = [v.as_dict() for v in self.iterations]
         if self.job_clusters: body['job_clusters'] = [v.as_dict() for v in self.job_clusters]
         if self.job_id is not None: body['job_id'] = self.job_id
@@ -3811,6 +3859,7 @@ class Run:
         if self.end_time is not None: body['end_time'] = self.end_time
         if self.execution_duration is not None: body['execution_duration'] = self.execution_duration
         if self.git_source: body['git_source'] = self.git_source
+        if self.has_more is not None: body['has_more'] = self.has_more
         if self.iterations: body['iterations'] = self.iterations
         if self.job_clusters: body['job_clusters'] = self.job_clusters
         if self.job_id is not None: body['job_id'] = self.job_id
@@ -3850,6 +3899,7 @@ class Run:
                    end_time=d.get('end_time', None),
                    execution_duration=d.get('execution_duration', None),
                    git_source=_from_dict(d, 'git_source', GitSource),
+                   has_more=d.get('has_more', None),
                    iterations=_repeated_dict(d, 'iterations', RunTask),
                    job_clusters=_repeated_dict(d, 'job_clusters', JobCluster),
                    job_id=d.get('job_id', None),
@@ -7066,6 +7116,7 @@ class JobsAPI:
         :param job_clusters: List[:class:`JobCluster`] (optional)
           A list of job cluster specifications that can be shared and reused by tasks of this job. Libraries
           cannot be declared in a shared job cluster. You must declare dependent libraries in task settings.
+          If more than 100 job clusters are available, you can paginate through them using :method:jobs/get.
         :param max_concurrent_runs: int (optional)
           An optional maximum allowed number of concurrent runs of the job. Set this value if you want to be
           able to execute multiple runs of the same job concurrently. This is useful for example if you
@@ -7097,7 +7148,9 @@ class JobsAPI:
           clusters, and are subject to the same limitations as cluster tags. A maximum of 25 tags can be added
           to the job.
         :param tasks: List[:class:`Task`] (optional)
-          A list of task specifications to be executed by this job.
+          A list of task specifications to be executed by this job. If more than 100 tasks are available, you
+          can paginate through them using :method:jobs/get. Use the `next_page_token` field at the object root
+          to determine if more results are available.
         :param timeout_seconds: int (optional)
           An optional timeout applied to each run of this job. A value of `0` means no timeout.
         :param trigger: :class:`TriggerSettings` (optional)
@@ -7193,19 +7246,28 @@ class JobsAPI:
         res = self._api.do('GET', '/api/2.1/jobs/runs/export', query=query, headers=headers)
         return ExportRunOutput.from_dict(res)
 
-    def get(self, job_id: int) -> Job:
+    def get(self, job_id: int, *, page_token: Optional[str] = None) -> Job:
         """Get a single job.
         
         Retrieves the details for a single job.
         
+        In Jobs API 2.2, requests for a single job support pagination of `tasks` and `job_clusters` when
+        either exceeds 100 elements. Use the `next_page_token` field to check for more results and pass its
+        value as the `page_token` in subsequent requests. Arrays with fewer than 100 elements in a page will
+        be empty on later pages.
+        
         :param job_id: int
           The canonical identifier of the job to retrieve information about. This field is required.
+        :param page_token: str (optional)
+          Use `next_page_token` returned from the previous GetJob to request the next page of the job's
+          sub-resources.
         
         :returns: :class:`Job`
         """
 
         query = {}
         if job_id is not None: query['job_id'] = job_id
+        if page_token is not None: query['page_token'] = page_token
         headers = {'Accept': 'application/json', }
 
         res = self._api.do('GET', '/api/2.1/jobs/get', query=query, headers=headers)
@@ -7251,7 +7313,12 @@ class JobsAPI:
                 page_token: Optional[str] = None) -> Run:
         """Get a single job run.
         
-        Retrieve the metadata of a run.
+        Retrieves the metadata of a run.
+        
+        In Jobs API 2.2, requests for a single job run support pagination of `tasks` and `job_clusters` when
+        either exceeds 100 elements. Use the `next_page_token` field to check for more results and pass its
+        value as the `page_token` in subsequent requests. Arrays with fewer than 100 elements in a page will
+        be empty on later pages.
         
         :param run_id: int
           The canonical identifier of the run for which to retrieve the metadata. This field is required.
@@ -7260,8 +7327,8 @@ class JobsAPI:
         :param include_resolved_values: bool (optional)
           Whether to include resolved parameter values in the response.
         :param page_token: str (optional)
-          To list the next page of job tasks, set this field to the value of the `next_page_token` returned in
-          the GetJob response.
+          Use `next_page_token` returned from the previous GetRun to request the next page of the run's
+          sub-resources.
         
         :returns: :class:`Run`
         """
@@ -7313,7 +7380,8 @@ class JobsAPI:
         Retrieves a list of jobs.
         
         :param expand_tasks: bool (optional)
-          Whether to include task and cluster details in the response.
+          Whether to include task and cluster details in the response. Note that in API 2.2, only the first
+          100 elements will be shown. Use :method:jobs/get to paginate through all tasks and clusters.
         :param limit: int (optional)
           The number of jobs to return. This value must be greater than 0 and less or equal to 100. The
           default value is 20.
@@ -7370,7 +7438,8 @@ class JobsAPI:
           If completed_only is `true`, only completed runs are included in the results; otherwise, lists both
           active and completed runs. This field cannot be `true` when active_only is `true`.
         :param expand_tasks: bool (optional)
-          Whether to include task and cluster details in the response.
+          Whether to include task and cluster details in the response. Note that in API 2.2, only the first
+          100 elements will be shown. Use :method:jobs/getrun to paginate through all tasks and clusters.
         :param job_id: int (optional)
           The job for which to list runs. If omitted, the Jobs service lists runs from all jobs.
         :param limit: int (optional)
