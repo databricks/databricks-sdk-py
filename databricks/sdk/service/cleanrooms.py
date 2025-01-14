@@ -312,6 +312,7 @@ class CleanRoomAssetNotebook:
 class CleanRoomAssetStatusEnum(Enum):
 
     ACTIVE = 'ACTIVE'
+    PENDING = 'PENDING'
     PERMISSION_DENIED = 'PERMISSION_DENIED'
 
 
@@ -443,7 +444,7 @@ class CleanRoomAssetVolumeLocalDetails:
 class CleanRoomCollaborator:
     """Publicly visible clean room collaborator."""
 
-    collaborator_alias: Optional[str] = None
+    collaborator_alias: str
     """Collaborator alias specified by the clean room creator. It is unique across all collaborators of
     this clean room, and used to derive multiple values internally such as catalog alias and clean
     room name for single metastore clean rooms. It should follow [UC securable naming requirements].
