@@ -1,9 +1,22 @@
 import json as js
+from dataclasses import dataclass
 from typing import Dict, Optional
 
-from databricks.sdk.service.serving import (ExternalFunctionRequestHttpMethod,
-                                            ExternalFunctionResponse,
-                                            ServingEndpointsAPI)
+from databricks.sdk.service.serving import ExternalFunctionRequestHttpMethod
+from databricks.sdk.service.serving import \
+    ExternalFunctionResponse as ExternalFunctionResponseAPI
+from databricks.sdk.service.serving import ServingEndpointsAPI
+
+
+@dataclass
+class ExternalFunctionResponse(ExternalFunctionResponseAPI):
+    text: Dict[str, any] = None
+    """The content of the response"""
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> 'ExternalFunctionResponse':
+        """Deserializes the ExternalFunctionResponse from a dictionary."""
+        return cls(status_code=200, text=d)
 
 
 class ServingEndpointsExt(ServingEndpointsAPI):
@@ -82,10 +95,14 @@ class ServingEndpointsExt(ServingEndpointsAPI):
         :returns: :class:`ExternalFunctionResponse`
         """
 
-        return super.http_request(connection_name=conn,
-                                  method=method,
-                                  path=path,
-                                  headers=js.dumps(headers),
-                                  json=js.dumps(json),
-                                  params=js.dumps(params),
-                                  )
+        body = {}
+        if conn is not None: body['connection_name'] = conn
+        if headers is not None: body['headers'] = js.dumps(headers)
+        if json is not None: body['json'] = js.dumps(json)
+        if method is not None: body['method'] = method.value
+        if params is not None: body['params'] = js.dumps(params)
+        if path is not None: body['path'] = path
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do('POST', '/api/2.0/external-function', body=body, headers=headers)
+        return ExternalFunctionResponse.from_dict(res)
