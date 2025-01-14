@@ -7,20 +7,22 @@
     Apps run directly on a customer’s Databricks instance, integrate with their data, use and extend
     Databricks services, and enable users to interact through single sign-on.
 
-    .. py:method:: create( [, app: Optional[App]]) -> Wait[App]
+    .. py:method:: create( [, app: Optional[App], no_compute: Optional[bool]]) -> Wait[App]
 
         Create an app.
         
         Creates a new app.
         
         :param app: :class:`App` (optional)
+        :param no_compute: bool (optional)
+          If true, the app will not be started after creation.
         
         :returns:
           Long-running operation waiter for :class:`App`.
           See :method:wait_get_app_active for more details.
         
 
-    .. py:method:: create_and_wait( [, app: Optional[App], timeout: datetime.timedelta = 0:20:00]) -> App
+    .. py:method:: create_and_wait( [, app: Optional[App], no_compute: Optional[bool], timeout: datetime.timedelta = 0:20:00]) -> App
 
 
     .. py:method:: delete(name: str) -> App

@@ -1,5 +1,5 @@
-``w.jobs``: Jobs
-================
+``w.jobs``: Jobs (latest)
+=========================
 .. currentmodule:: databricks.sdk.service.jobs
 
 .. py:class:: JobsExt
@@ -199,6 +199,7 @@
         :param job_clusters: List[:class:`JobCluster`] (optional)
           A list of job cluster specifications that can be shared and reused by tasks of this job. Libraries
           cannot be declared in a shared job cluster. You must declare dependent libraries in task settings.
+          If more than 100 job clusters are available, you can paginate through them using :method:jobs/get.
         :param max_concurrent_runs: int (optional)
           An optional maximum allowed number of concurrent runs of the job. Set this value if you want to be
           able to execute multiple runs of the same job concurrently. This is useful for example if you
@@ -230,7 +231,9 @@
           clusters, and are subject to the same limitations as cluster tags. A maximum of 25 tags can be added
           to the job.
         :param tasks: List[:class:`Task`] (optional)
-          A list of task specifications to be executed by this job.
+          A list of task specifications to be executed by this job. If more than 100 tasks are available, you
+          can paginate through them using :method:jobs/get. Use the `next_page_token` field at the object root
+          to determine if more results are available.
         :param timeout_seconds: int (optional)
           An optional timeout applied to each run of this job. A value of `0` means no timeout.
         :param trigger: :class:`TriggerSettings` (optional)
@@ -315,7 +318,7 @@
         :returns: :class:`ExportRunOutput`
         
 
-    .. py:method:: get(job_id: int) -> Job
+    .. py:method:: get(job_id: int [, page_token: Optional[str]]) -> Job
 
 
         Usage:
@@ -351,8 +354,16 @@
         
         Retrieves the details for a single job.
         
+        In Jobs API 2.2, requests for a single job support pagination of `tasks` and `job_clusters` when
+        either exceeds 100 elements. Use the `next_page_token` field to check for more results and pass its
+        value as the `page_token` in subsequent requests. Arrays with fewer than 100 elements in a page will
+        be empty on later pages.
+        
         :param job_id: int
           The canonical identifier of the job to retrieve information about. This field is required.
+        :param page_token: str (optional)
+          Use `next_page_token` returned from the previous GetJob to request the next page of the job's
+          sub-resources.
         
         :returns: :class:`Job`
         
@@ -516,7 +527,8 @@
         Retrieves a list of jobs.
         
         :param expand_tasks: bool (optional)
-          Whether to include task and cluster details in the response.
+          Whether to include task and cluster details in the response. Note that in API 2.2, only the first
+          100 elements will be shown. Use :method:jobs/get to paginate through all tasks and clusters.
         :param limit: int (optional)
           The number of jobs to return. This value must be greater than 0 and less or equal to 100. The
           default value is 20.
@@ -578,7 +590,8 @@
           If completed_only is `true`, only completed runs are included in the results; otherwise, lists both
           active and completed runs. This field cannot be `true` when active_only is `true`.
         :param expand_tasks: bool (optional)
-          Whether to include task and cluster details in the response.
+          Whether to include task and cluster details in the response. Note that in API 2.2, only the first
+          100 elements will be shown. Use :method:jobs/getrun to paginate through all tasks and clusters.
         :param job_id: int (optional)
           The job for which to list runs. If omitted, the Jobs service lists runs from all jobs.
         :param limit: int (optional)

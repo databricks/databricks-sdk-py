@@ -791,6 +791,10 @@ class UpdateCustomAppIntegration:
     redirect_urls: Optional[List[str]] = None
     """List of OAuth redirect urls to be updated in the custom OAuth app integration"""
 
+    scopes: Optional[List[str]] = None
+    """List of OAuth scopes to be updated in the custom OAuth app integration, similar to redirect URIs
+    this will fully replace the existing values instead of appending"""
+
     token_access_policy: Optional[TokenAccessPolicy] = None
     """Token access policy to be updated in the custom OAuth app integration"""
 
@@ -799,6 +803,7 @@ class UpdateCustomAppIntegration:
         body = {}
         if self.integration_id is not None: body['integration_id'] = self.integration_id
         if self.redirect_urls: body['redirect_urls'] = [v for v in self.redirect_urls]
+        if self.scopes: body['scopes'] = [v for v in self.scopes]
         if self.token_access_policy: body['token_access_policy'] = self.token_access_policy.as_dict()
         return body
 
@@ -807,6 +812,7 @@ class UpdateCustomAppIntegration:
         body = {}
         if self.integration_id is not None: body['integration_id'] = self.integration_id
         if self.redirect_urls: body['redirect_urls'] = self.redirect_urls
+        if self.scopes: body['scopes'] = self.scopes
         if self.token_access_policy: body['token_access_policy'] = self.token_access_policy
         return body
 
@@ -815,6 +821,7 @@ class UpdateCustomAppIntegration:
         """Deserializes the UpdateCustomAppIntegration from a dictionary."""
         return cls(integration_id=d.get('integration_id', None),
                    redirect_urls=d.get('redirect_urls', None),
+                   scopes=d.get('scopes', None),
                    token_access_policy=_from_dict(d, 'token_access_policy', TokenAccessPolicy))
 
 
@@ -1165,6 +1172,7 @@ class CustomAppIntegrationAPI:
                integration_id: str,
                *,
                redirect_urls: Optional[List[str]] = None,
+               scopes: Optional[List[str]] = None,
                token_access_policy: Optional[TokenAccessPolicy] = None):
         """Updates Custom OAuth App Integration.
         
@@ -1174,6 +1182,9 @@ class CustomAppIntegrationAPI:
         :param integration_id: str
         :param redirect_urls: List[str] (optional)
           List of OAuth redirect urls to be updated in the custom OAuth app integration
+        :param scopes: List[str] (optional)
+          List of OAuth scopes to be updated in the custom OAuth app integration, similar to redirect URIs
+          this will fully replace the existing values instead of appending
         :param token_access_policy: :class:`TokenAccessPolicy` (optional)
           Token access policy to be updated in the custom OAuth app integration
         
@@ -1181,6 +1192,7 @@ class CustomAppIntegrationAPI:
         """
         body = {}
         if redirect_urls is not None: body['redirect_urls'] = [v for v in redirect_urls]
+        if scopes is not None: body['scopes'] = [v for v in scopes]
         if token_access_policy is not None: body['token_access_policy'] = token_access_policy.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 

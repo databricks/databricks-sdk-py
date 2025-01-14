@@ -47,6 +47,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: RUNNING
       :value: "RUNNING"
 
+   .. py:attribute:: RUN_LIFE_CYCLE_STATE_UNSPECIFIED
+      :value: "RUN_LIFE_CYCLE_STATE_UNSPECIFIED"
+
    .. py:attribute:: SKIPPED
       :value: "SKIPPED"
 
@@ -81,6 +84,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: MAXIMUM_CONCURRENT_RUNS_REACHED
       :value: "MAXIMUM_CONCURRENT_RUNS_REACHED"
 
+   .. py:attribute:: RUN_RESULT_STATE_UNSPECIFIED
+      :value: "RUN_RESULT_STATE_UNSPECIFIED"
+
    .. py:attribute:: SUCCESS
       :value: "SUCCESS"
 
@@ -104,6 +110,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: CleanRoomsNotebookTask
+   :members:
+   :undoc-members:
+
+.. autoclass:: CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput
    :members:
    :undoc-members:
 
@@ -445,6 +455,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: NotebookTask
+   :members:
+   :undoc-members:
+
+.. autoclass:: OutputSchemaInfo
    :members:
    :undoc-members:
 

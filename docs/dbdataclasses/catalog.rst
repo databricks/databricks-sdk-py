@@ -1242,6 +1242,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: ACTIVE
       :value: "ACTIVE"
 
+   .. py:attribute:: DEGRADED
+      :value: "DEGRADED"
+
    .. py:attribute:: DELETING
       :value: "DELETING"
 

@@ -53,7 +53,8 @@
           The service principal id for the federation policy.
         :param policy: :class:`FederationPolicy` (optional)
         :param policy_id: str (optional)
-          The identifier for the federation policy. If unspecified, the id will be assigned by Databricks.
+          The identifier for the federation policy. The identifier must contain only lowercase alphanumeric
+          characters, numbers, hyphens, and slashes. If unspecified, the id will be assigned by Databricks.
         
         :returns: :class:`FederationPolicy`
         
@@ -65,6 +66,7 @@
         :param service_principal_id: int
           The service principal id for the federation policy.
         :param policy_id: str
+          The identifier for the federation policy.
         
         
         
@@ -76,6 +78,7 @@
         :param service_principal_id: int
           The service principal id for the federation policy.
         :param policy_id: str
+          The identifier for the federation policy.
         
         :returns: :class:`FederationPolicy`
         
@@ -92,18 +95,21 @@
         :returns: Iterator over :class:`FederationPolicy`
         
 
-    .. py:method:: update(service_principal_id: int, policy_id: str, update_mask: str [, policy: Optional[FederationPolicy]]) -> FederationPolicy
+    .. py:method:: update(service_principal_id: int, policy_id: str [, policy: Optional[FederationPolicy], update_mask: Optional[str]]) -> FederationPolicy
 
         Update service principal federation policy.
         
         :param service_principal_id: int
           The service principal id for the federation policy.
         :param policy_id: str
-        :param update_mask: str
-          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
-          setting payload will be updated. The field mask needs to be supplied as single string. To specify
-          multiple fields in the field mask, use comma as the separator (no space).
+          The identifier for the federation policy.
         :param policy: :class:`FederationPolicy` (optional)
+        :param update_mask: str (optional)
+          The field mask specifies which fields of the policy to update. To specify multiple fields in the
+          field mask, use comma as the separator (no space). The special value '*' indicates that all fields
+          should be updated (full replacement). If unspecified, all fields that are set in the policy provided
+          in the update request will overwrite the corresponding fields in the existing policy. Example value:
+          'description,oidc_policy.audiences'.
         
         :returns: :class:`FederationPolicy`
         

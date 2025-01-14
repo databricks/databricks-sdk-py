@@ -443,6 +443,7 @@ class CleanRoomTaskRunLifeCycleState(Enum):
     PENDING = 'PENDING'
     QUEUED = 'QUEUED'
     RUNNING = 'RUNNING'
+    RUN_LIFE_CYCLE_STATE_UNSPECIFIED = 'RUN_LIFE_CYCLE_STATE_UNSPECIFIED'
     SKIPPED = 'SKIPPED'
     TERMINATED = 'TERMINATED'
     TERMINATING = 'TERMINATING'
@@ -459,6 +460,7 @@ class CleanRoomTaskRunResultState(Enum):
     EXCLUDED = 'EXCLUDED'
     FAILED = 'FAILED'
     MAXIMUM_CONCURRENT_RUNS_REACHED = 'MAXIMUM_CONCURRENT_RUNS_REACHED'
+    RUN_RESULT_STATE_UNSPECIFIED = 'RUN_RESULT_STATE_UNSPECIFIED'
     SUCCESS = 'SUCCESS'
     SUCCESS_WITH_FAILURES = 'SUCCESS_WITH_FAILURES'
     TIMEDOUT = 'TIMEDOUT'
@@ -539,6 +541,42 @@ class CleanRoomsNotebookTask:
                    etag=d.get('etag', None),
                    notebook_base_parameters=d.get('notebook_base_parameters', None),
                    notebook_name=d.get('notebook_name', None))
+
+
+@dataclass
+class CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput:
+    clean_room_job_run_state: Optional[CleanRoomTaskRunState] = None
+    """The run state of the clean rooms notebook task."""
+
+    notebook_output: Optional[NotebookOutput] = None
+    """The notebook output for the clean room run"""
+
+    output_schema_info: Optional[OutputSchemaInfo] = None
+    """Information on how to access the output schema for the clean room run"""
+
+    def as_dict(self) -> dict:
+        """Serializes the CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.clean_room_job_run_state:
+            body['clean_room_job_run_state'] = self.clean_room_job_run_state.as_dict()
+        if self.notebook_output: body['notebook_output'] = self.notebook_output.as_dict()
+        if self.output_schema_info: body['output_schema_info'] = self.output_schema_info.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.clean_room_job_run_state: body['clean_room_job_run_state'] = self.clean_room_job_run_state
+        if self.notebook_output: body['notebook_output'] = self.notebook_output
+        if self.output_schema_info: body['output_schema_info'] = self.output_schema_info
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput:
+        """Deserializes the CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput from a dictionary."""
+        return cls(clean_room_job_run_state=_from_dict(d, 'clean_room_job_run_state', CleanRoomTaskRunState),
+                   notebook_output=_from_dict(d, 'notebook_output', NotebookOutput),
+                   output_schema_info=_from_dict(d, 'output_schema_info', OutputSchemaInfo))
 
 
 @dataclass
@@ -2914,6 +2952,42 @@ class NotebookTask:
                    warehouse_id=d.get('warehouse_id', None))
 
 
+@dataclass
+class OutputSchemaInfo:
+    """Stores the catalog name, schema name, and the output schema expiration time for the clean room
+    run."""
+
+    catalog_name: Optional[str] = None
+
+    expiration_time: Optional[int] = None
+    """The expiration time for the output schema as a Unix timestamp in milliseconds."""
+
+    schema_name: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the OutputSchemaInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.catalog_name is not None: body['catalog_name'] = self.catalog_name
+        if self.expiration_time is not None: body['expiration_time'] = self.expiration_time
+        if self.schema_name is not None: body['schema_name'] = self.schema_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the OutputSchemaInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.catalog_name is not None: body['catalog_name'] = self.catalog_name
+        if self.expiration_time is not None: body['expiration_time'] = self.expiration_time
+        if self.schema_name is not None: body['schema_name'] = self.schema_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> OutputSchemaInfo:
+        """Deserializes the OutputSchemaInfo from a dictionary."""
+        return cls(catalog_name=d.get('catalog_name', None),
+                   expiration_time=d.get('expiration_time', None),
+                   schema_name=d.get('schema_name', None))
+
+
 class PauseStatus(Enum):
 
     PAUSED = 'PAUSED'
@@ -4415,6 +4489,9 @@ class RunNowResponse:
 class RunOutput:
     """Run output was retrieved successfully."""
 
+    clean_rooms_notebook_output: Optional[CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput] = None
+    """The output of a clean rooms notebook task, if available"""
+
     dbt_output: Optional[DbtOutput] = None
     """The output of a dbt task, if available."""
 
@@ -4459,6 +4536,8 @@ class RunOutput:
     def as_dict(self) -> dict:
         """Serializes the RunOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.clean_rooms_notebook_output:
+            body['clean_rooms_notebook_output'] = self.clean_rooms_notebook_output.as_dict()
         if self.dbt_output: body['dbt_output'] = self.dbt_output.as_dict()
         if self.error is not None: body['error'] = self.error
         if self.error_trace is not None: body['error_trace'] = self.error_trace
@@ -4474,6 +4553,8 @@ class RunOutput:
     def as_shallow_dict(self) -> dict:
         """Serializes the RunOutput into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.clean_rooms_notebook_output:
+            body['clean_rooms_notebook_output'] = self.clean_rooms_notebook_output
         if self.dbt_output: body['dbt_output'] = self.dbt_output
         if self.error is not None: body['error'] = self.error
         if self.error_trace is not None: body['error_trace'] = self.error_trace
@@ -4489,7 +4570,9 @@ class RunOutput:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> RunOutput:
         """Deserializes the RunOutput from a dictionary."""
-        return cls(dbt_output=_from_dict(d, 'dbt_output', DbtOutput),
+        return cls(clean_rooms_notebook_output=_from_dict(d, 'clean_rooms_notebook_output',
+                                                          CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput),
+                   dbt_output=_from_dict(d, 'dbt_output', DbtOutput),
                    error=d.get('error', None),
                    error_trace=d.get('error_trace', None),
                    info=d.get('info', None),
