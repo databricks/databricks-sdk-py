@@ -48,7 +48,7 @@
           The name of the catalog.
         
         :returns: :class:`CurrentWorkspaceBindings`
-        
+
 
     .. py:method:: get_bindings(securable_type: GetBindingsSecurableType, securable_name: str [, max_results: Optional[int], page_token: Optional[str]]) -> Iterator[WorkspaceBinding]
 
@@ -70,7 +70,7 @@
           Opaque pagination token to go to next page based on previous query.
         
         :returns: Iterator over :class:`WorkspaceBinding`
-        
+
 
     .. py:method:: update(name: str [, assign_workspaces: Optional[List[int]], unassign_workspaces: Optional[List[int]]]) -> CurrentWorkspaceBindings
 
@@ -108,7 +108,7 @@
           A list of workspace IDs.
         
         :returns: :class:`CurrentWorkspaceBindings`
-        
+
 
     .. py:method:: update_bindings(securable_type: UpdateBindingsSecurableType, securable_name: str [, add: Optional[List[WorkspaceBinding]], remove: Optional[List[WorkspaceBinding]]]) -> WorkspaceBindingsResponse
 
@@ -127,4 +127,3 @@
           List of workspace bindings
         
         :returns: :class:`WorkspaceBindingsResponse`
-        

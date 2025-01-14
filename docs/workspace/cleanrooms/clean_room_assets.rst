@@ -22,7 +22,7 @@
           Metadata of the clean room asset
         
         :returns: :class:`CleanRoomAsset`
-        
+
 
     .. py:method:: delete(clean_room_name: str, asset_type: CleanRoomAssetAssetType, asset_full_name: str)
 
@@ -37,8 +37,8 @@
         :param asset_full_name: str
           The fully qualified name of the asset, it is same as the name field in CleanRoomAsset.
         
-        
-        
+
+
 
     .. py:method:: get(clean_room_name: str, asset_type: CleanRoomAssetAssetType, asset_full_name: str) -> CleanRoomAsset
 
@@ -54,7 +54,7 @@
           The fully qualified name of the asset, it is same as the name field in CleanRoomAsset.
         
         :returns: :class:`CleanRoomAsset`
-        
+
 
     .. py:method:: list(clean_room_name: str [, page_token: Optional[str]]) -> Iterator[CleanRoomAsset]
 
@@ -66,7 +66,7 @@
           Opaque pagination token to go to next page based on previous query.
         
         :returns: Iterator over :class:`CleanRoomAsset`
-        
+
 
     .. py:method:: update(clean_room_name: str, asset_type: CleanRoomAssetAssetType, name: str [, asset: Optional[CleanRoomAsset]]) -> CleanRoomAsset
 
@@ -91,4 +91,3 @@
           Metadata of the clean room asset
         
         :returns: :class:`CleanRoomAsset`
-        

@@ -32,7 +32,7 @@
           request, and pass it with the DELETE request to identify the rule set version you are deleting.
         
         :returns: :class:`DeleteDefaultNamespaceSettingResponse`
-        
+
 
     .. py:method:: get( [, etag: Optional[str]]) -> DefaultNamespaceSetting
 
@@ -48,7 +48,7 @@
           request, and pass it with the DELETE request to identify the rule set version you are deleting.
         
         :returns: :class:`DefaultNamespaceSetting`
-        
+
 
     .. py:method:: update(allow_missing: bool, setting: DefaultNamespaceSetting, field_mask: str) -> DefaultNamespaceSetting
 
@@ -77,4 +77,3 @@
           multiple fields in the field mask, use comma as the separator (no space).
         
         :returns: :class:`DefaultNamespaceSetting`
-        

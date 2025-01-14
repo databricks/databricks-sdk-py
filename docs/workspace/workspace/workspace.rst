@@ -27,8 +27,8 @@
           note this deleting directory is not atomic. If it fails in the middle, some of objects under this
           directory may be deleted and cannot be undone.
         
-        
-        
+
+
 
     .. py:method:: download(path: str [, format: ExportFormat]) -> BinaryIO
 
@@ -56,14 +56,14 @@
 
         
         Downloads notebook or file from the workspace
-
+        
         :param path:     location of the file or notebook on workspace.
         :param format:   By default, `ExportFormat.SOURCE`. If using `ExportFormat.AUTO` the `path`
-                         is imported or exported as either a workspace file or a notebook, depending
-                         on an analysis of the `item`’s extension and the header content provided in
-                         the request.
+                 is imported or exported as either a workspace file or a notebook, depending
+                 on an analysis of the `item`’s extension and the header content provided in
+                 the request.
         :return:         file-like `io.BinaryIO` of the `path` contents.
-        
+
 
     .. py:method:: export(path: str [, format: Optional[ExportFormat]]) -> ExportResponse
 
@@ -108,7 +108,7 @@
           Directory exports will include notebooks and workspace files.
         
         :returns: :class:`ExportResponse`
-        
+
 
     .. py:method:: get_permission_levels(workspace_object_type: str, workspace_object_id: str) -> GetWorkspaceObjectPermissionLevelsResponse
 
@@ -122,7 +122,7 @@
           The workspace object for which to get or manage permissions.
         
         :returns: :class:`GetWorkspaceObjectPermissionLevelsResponse`
-        
+
 
     .. py:method:: get_permissions(workspace_object_type: str, workspace_object_id: str) -> WorkspaceObjectPermissions
 
@@ -137,7 +137,7 @@
           The workspace object for which to get or manage permissions.
         
         :returns: :class:`WorkspaceObjectPermissions`
-        
+
 
     .. py:method:: get_status(path: str) -> ObjectInfo
 
@@ -165,7 +165,7 @@
           The absolute path of the notebook or directory.
         
         :returns: :class:`ObjectInfo`
-        
+
 
     .. py:method:: import_(path: str [, content: Optional[str], format: Optional[ImportFormat], language: Optional[Language], overwrite: Optional[bool]])
 
@@ -223,8 +223,8 @@
           The flag that specifies whether to overwrite existing object. It is `false` by default. For `DBC`
           format, `overwrite` is not supported since it may contain a directory.
         
-        
-        
+
+
 
     .. py:method:: list(path: str [, notebooks_modified_after: int, recursive: bool = False]) -> ObjectInfo
 
@@ -243,12 +243,12 @@
             assert len(names) > 0
 
         List workspace objects
-
+        
         :param recursive: bool
             Optionally invoke recursive traversal
-
-        :returns: Iterator of workspaceObjectInfo
         
+        :returns: Iterator of workspaceObjectInfo
+
 
     .. py:method:: mkdirs(path: str)
 
@@ -265,8 +265,8 @@
           The absolute path of the directory. If the parent directories do not exist, it will also create
           them. If the directory already exists, this command will do nothing and succeed.
         
-        
-        
+
+
 
     .. py:method:: set_permissions(workspace_object_type: str, workspace_object_id: str [, access_control_list: Optional[List[WorkspaceObjectAccessControlRequest]]]) -> WorkspaceObjectPermissions
 
@@ -283,7 +283,7 @@
         :param access_control_list: List[:class:`WorkspaceObjectAccessControlRequest`] (optional)
         
         :returns: :class:`WorkspaceObjectPermissions`
-        
+
 
     .. py:method:: update_permissions(workspace_object_type: str, workspace_object_id: str [, access_control_list: Optional[List[WorkspaceObjectAccessControlRequest]]]) -> WorkspaceObjectPermissions
 
@@ -299,7 +299,7 @@
         :param access_control_list: List[:class:`WorkspaceObjectAccessControlRequest`] (optional)
         
         :returns: :class:`WorkspaceObjectPermissions`
-        
+
 
     .. py:method:: upload(path: str, content: bytes [, format: ImportFormat, language: Language, overwrite: bool = False])
 
@@ -327,17 +327,16 @@
         
         Uploads a workspace object (for example, a notebook or file) or the contents of an entire
         directory (`DBC` format).
-
+        
         Errors:
          * `RESOURCE_ALREADY_EXISTS`: if `path` already exists no `overwrite=True`.
          * `INVALID_PARAMETER_VALUE`: if `format` and `content` values are not compatible.
-
+        
         :param path:     target location of the file on workspace.
         :param content:  the contents as either raw binary data `bytes` or a file-like the file-like `io.BinaryIO` of the `path` contents.
         :param format:   By default, `ImportFormat.SOURCE`. If using `ImportFormat.AUTO` the `path`
-                         is imported or exported as either a workspace file or a notebook, depending
-                         on an analysis of the `item`’s extension and the header content provided in
-                         the request. In addition, if the `path` is imported as a notebook, then
-                         the `item`’s extension is automatically removed.
+                 is imported or exported as either a workspace file or a notebook, depending
+                 on an analysis of the `item`’s extension and the header content provided in
+                 the request. In addition, if the `path` is imported as a notebook, then
+                 the `item`’s extension is automatically removed.
         :param language: Only required if using `ExportFormat.SOURCE`.
-        

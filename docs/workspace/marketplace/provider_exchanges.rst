@@ -16,7 +16,7 @@
         :param exchange_id: str
         
         :returns: :class:`AddExchangeForListingResponse`
-        
+
 
     .. py:method:: create(exchange: Exchange) -> CreateExchangeResponse
 
@@ -27,7 +27,7 @@
         :param exchange: :class:`Exchange`
         
         :returns: :class:`CreateExchangeResponse`
-        
+
 
     .. py:method:: delete(id: str)
 
@@ -37,8 +37,8 @@
         
         :param id: str
         
-        
-        
+
+
 
     .. py:method:: delete_listing_from_exchange(id: str)
 
@@ -48,8 +48,8 @@
         
         :param id: str
         
-        
-        
+
+
 
     .. py:method:: get(id: str) -> GetExchangeResponse
 
@@ -60,7 +60,7 @@
         :param id: str
         
         :returns: :class:`GetExchangeResponse`
-        
+
 
     .. py:method:: list( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Exchange]
 
@@ -72,7 +72,7 @@
         :param page_token: str (optional)
         
         :returns: Iterator over :class:`Exchange`
-        
+
 
     .. py:method:: list_exchanges_for_listing(listing_id: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[ExchangeListing]
 
@@ -85,7 +85,7 @@
         :param page_token: str (optional)
         
         :returns: Iterator over :class:`ExchangeListing`
-        
+
 
     .. py:method:: list_listings_for_exchange(exchange_id: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[ExchangeListing]
 
@@ -98,7 +98,7 @@
         :param page_token: str (optional)
         
         :returns: Iterator over :class:`ExchangeListing`
-        
+
 
     .. py:method:: update(id: str, exchange: Exchange) -> UpdateExchangeResponse
 
@@ -110,4 +110,3 @@
         :param exchange: :class:`Exchange`
         
         :returns: :class:`UpdateExchangeResponse`
-        

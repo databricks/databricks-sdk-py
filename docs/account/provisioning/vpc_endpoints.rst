@@ -52,7 +52,7 @@
           The AWS region in which this VPC endpoint object exists.
         
         :returns: :class:`VpcEndpoint`
-        
+
 
     .. py:method:: delete(vpc_endpoint_id: str)
 
@@ -70,8 +70,8 @@
         :param vpc_endpoint_id: str
           Databricks VPC endpoint ID.
         
-        
-        
+
+
 
     .. py:method:: get(vpc_endpoint_id: str) -> VpcEndpoint
 
@@ -108,7 +108,7 @@
           Databricks VPC endpoint ID.
         
         :returns: :class:`VpcEndpoint`
-        
+
 
     .. py:method:: list() -> Iterator[VpcEndpoint]
 
@@ -132,4 +132,3 @@
         [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
         
         :returns: Iterator over :class:`VpcEndpoint`
-        

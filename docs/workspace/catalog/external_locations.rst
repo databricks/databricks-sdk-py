@@ -73,7 +73,7 @@
           Skips validation of the storage credential associated with the external location.
         
         :returns: :class:`ExternalLocationInfo`
-        
+
 
     .. py:method:: delete(name: str [, force: Optional[bool]])
 
@@ -87,8 +87,8 @@
         :param force: bool (optional)
           Force deletion even if there are dependent external tables or mounts.
         
-        
-        
+
+
 
     .. py:method:: get(name: str [, include_browse: Optional[bool]]) -> ExternalLocationInfo
 
@@ -131,7 +131,7 @@
           selective metadata for
         
         :returns: :class:`ExternalLocationInfo`
-        
+
 
     .. py:method:: list( [, include_browse: Optional[bool], max_results: Optional[int], page_token: Optional[str]]) -> Iterator[ExternalLocationInfo]
 
@@ -165,7 +165,7 @@
           Opaque pagination token to go to next page based on previous query.
         
         :returns: Iterator over :class:`ExternalLocationInfo`
-        
+
 
     .. py:method:: update(name: str [, access_point: Optional[str], comment: Optional[str], credential_name: Optional[str], encryption_details: Optional[EncryptionDetails], fallback: Optional[bool], force: Optional[bool], isolation_mode: Optional[IsolationMode], new_name: Optional[str], owner: Optional[str], read_only: Optional[bool], skip_validation: Optional[bool], url: Optional[str]]) -> ExternalLocationInfo
 
@@ -233,4 +233,3 @@
           Path URL of the external location.
         
         :returns: :class:`ExternalLocationInfo`
-        

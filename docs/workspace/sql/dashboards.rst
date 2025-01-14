@@ -44,7 +44,7 @@
         :param tags: List[str] (optional)
         
         :returns: :class:`Dashboard`
-        
+
 
     .. py:method:: delete(dashboard_id: str)
 
@@ -73,8 +73,8 @@
         
         :param dashboard_id: str
         
-        
-        
+
+
 
     .. py:method:: get(dashboard_id: str) -> Dashboard
 
@@ -103,7 +103,7 @@
         :param dashboard_id: str
         
         :returns: :class:`Dashboard`
-        
+
 
     .. py:method:: list( [, order: Optional[ListOrder], page: Optional[int], page_size: Optional[int], q: Optional[str]]) -> Iterator[Dashboard]
 
@@ -136,7 +136,7 @@
           Full text search term.
         
         :returns: Iterator over :class:`Dashboard`
-        
+
 
     .. py:method:: restore(dashboard_id: str)
 
@@ -164,8 +164,8 @@
         
         :param dashboard_id: str
         
-        
-        
+
+
 
     .. py:method:: update(dashboard_id: str [, name: Optional[str], run_as_role: Optional[RunAsRole], tags: Optional[List[str]]]) -> Dashboard
 
@@ -185,4 +185,3 @@
         :param tags: List[str] (optional)
         
         :returns: :class:`Dashboard`
-        

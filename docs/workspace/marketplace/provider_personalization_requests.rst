@@ -18,7 +18,7 @@
         :param page_token: str (optional)
         
         :returns: Iterator over :class:`PersonalizationRequest`
-        
+
 
     .. py:method:: update(listing_id: str, request_id: str, status: PersonalizationRequestStatus [, reason: Optional[str], share: Optional[ShareInfo]]) -> UpdatePersonalizationRequestResponse
 
@@ -33,4 +33,3 @@
         :param share: :class:`ShareInfo` (optional)
         
         :returns: :class:`UpdatePersonalizationRequestResponse`
-        

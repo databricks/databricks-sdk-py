@@ -26,7 +26,7 @@
         this cluster via the API or the libraries UI.
         
         :returns: Iterator over :class:`ClusterLibraryStatuses`
-        
+
 
     .. py:method:: cluster_status(cluster_id: str) -> Iterator[LibraryFullStatus]
 
@@ -42,7 +42,7 @@
           Unique identifier of the cluster whose status should be retrieved.
         
         :returns: Iterator over :class:`LibraryFullStatus`
-        
+
 
     .. py:method:: install(cluster_id: str, libraries: List[Library])
 
@@ -56,8 +56,8 @@
         :param libraries: List[:class:`Library`]
           The libraries to install.
         
-        
-        
+
+
 
     .. py:method:: uninstall(cluster_id: str, libraries: List[Library])
 
@@ -71,5 +71,4 @@
         :param libraries: List[:class:`Library`]
           The libraries to uninstall.
         
-        
-        
+

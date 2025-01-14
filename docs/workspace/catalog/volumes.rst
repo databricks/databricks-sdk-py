@@ -85,7 +85,7 @@
           The storage location on the cloud
         
         :returns: :class:`VolumeInfo`
-        
+
 
     .. py:method:: delete(name: str)
 
@@ -100,8 +100,8 @@
         :param name: str
           The three-level (fully qualified) name of the volume
         
-        
-        
+
+
 
     .. py:method:: list(catalog_name: str, schema_name: str [, include_browse: Optional[bool], max_results: Optional[int], page_token: Optional[str]]) -> Iterator[VolumeInfo]
 
@@ -162,7 +162,7 @@
           page of results (pagination).
         
         :returns: Iterator over :class:`VolumeInfo`
-        
+
 
     .. py:method:: read(name: str [, include_browse: Optional[bool]]) -> VolumeInfo
 
@@ -224,7 +224,7 @@
           metadata for
         
         :returns: :class:`VolumeInfo`
-        
+
 
     .. py:method:: update(name: str [, comment: Optional[str], new_name: Optional[str], owner: Optional[str]]) -> VolumeInfo
 
@@ -293,4 +293,3 @@
           The identifier of the user who owns the volume
         
         :returns: :class:`VolumeInfo`
-        

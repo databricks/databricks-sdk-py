@@ -25,7 +25,7 @@
           request, and pass it with the DELETE request to identify the rule set version you are deleting.
         
         :returns: :class:`EnhancedSecurityMonitoringSetting`
-        
+
 
     .. py:method:: update(allow_missing: bool, setting: EnhancedSecurityMonitoringSetting, field_mask: str) -> EnhancedSecurityMonitoringSetting
 
@@ -45,4 +45,3 @@
           multiple fields in the field mask, use comma as the separator (no space).
         
         :returns: :class:`EnhancedSecurityMonitoringSetting`
-        

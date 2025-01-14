@@ -99,8 +99,8 @@
           The statement ID is returned upon successfully submitting a SQL statement, and is a required
           reference for all subsequent calls.
         
-        
-        
+
+
 
     .. py:method:: execute_statement(statement: str, warehouse_id: str [, byte_limit: Optional[int], catalog: Optional[str], disposition: Optional[Disposition], format: Optional[Format], on_wait_timeout: Optional[ExecuteStatementRequestOnWaitTimeout], parameters: Optional[List[StatementParameterListItem]], row_limit: Optional[int], schema: Optional[str], wait_timeout: Optional[str]]) -> StatementResponse
 
@@ -211,7 +211,7 @@
           timeout is reached.
         
         :returns: :class:`StatementResponse`
-        
+
 
     .. py:method:: get_statement(statement_id: str) -> StatementResponse
 
@@ -230,7 +230,7 @@
           reference for all subsequent calls.
         
         :returns: :class:`StatementResponse`
-        
+
 
     .. py:method:: get_statement_result_chunk_n(statement_id: str, chunk_index: int) -> ResultData
 
@@ -249,4 +249,3 @@
         :param chunk_index: int
         
         :returns: :class:`ResultData`
-        

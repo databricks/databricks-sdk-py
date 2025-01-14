@@ -18,7 +18,7 @@
         :returns:
           Long-running operation waiter for :class:`App`.
           See :method:wait_get_app_active for more details.
-        
+
 
     .. py:method:: create_and_wait( [, app: Optional[App], timeout: datetime.timedelta = 0:20:00]) -> App
 
@@ -33,7 +33,7 @@
           The name of the app.
         
         :returns: :class:`App`
-        
+
 
     .. py:method:: deploy(app_name: str [, app_deployment: Optional[AppDeployment]]) -> Wait[AppDeployment]
 
@@ -48,7 +48,7 @@
         :returns:
           Long-running operation waiter for :class:`AppDeployment`.
           See :method:wait_get_deployment_app_succeeded for more details.
-        
+
 
     .. py:method:: deploy_and_wait(app_name: str [, app_deployment: Optional[AppDeployment], timeout: datetime.timedelta = 0:20:00]) -> AppDeployment
 
@@ -63,7 +63,7 @@
           The name of the app.
         
         :returns: :class:`App`
-        
+
 
     .. py:method:: get_deployment(app_name: str, deployment_id: str) -> AppDeployment
 
@@ -77,7 +77,7 @@
           The unique id of the deployment.
         
         :returns: :class:`AppDeployment`
-        
+
 
     .. py:method:: get_permission_levels(app_name: str) -> GetAppPermissionLevelsResponse
 
@@ -89,7 +89,7 @@
           The app for which to get or manage permissions.
         
         :returns: :class:`GetAppPermissionLevelsResponse`
-        
+
 
     .. py:method:: get_permissions(app_name: str) -> AppPermissions
 
@@ -101,7 +101,7 @@
           The app for which to get or manage permissions.
         
         :returns: :class:`AppPermissions`
-        
+
 
     .. py:method:: list( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[App]
 
@@ -115,7 +115,7 @@
           Pagination token to go to the next page of apps. Requests first page if absent.
         
         :returns: Iterator over :class:`App`
-        
+
 
     .. py:method:: list_deployments(app_name: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[AppDeployment]
 
@@ -131,7 +131,7 @@
           Pagination token to go to the next page of apps. Requests first page if absent.
         
         :returns: Iterator over :class:`AppDeployment`
-        
+
 
     .. py:method:: set_permissions(app_name: str [, access_control_list: Optional[List[AppAccessControlRequest]]]) -> AppPermissions
 
@@ -145,7 +145,7 @@
         :param access_control_list: List[:class:`AppAccessControlRequest`] (optional)
         
         :returns: :class:`AppPermissions`
-        
+
 
     .. py:method:: start(name: str) -> Wait[App]
 
@@ -159,7 +159,7 @@
         :returns:
           Long-running operation waiter for :class:`App`.
           See :method:wait_get_app_active for more details.
-        
+
 
     .. py:method:: start_and_wait(name: str, timeout: datetime.timedelta = 0:20:00) -> App
 
@@ -176,7 +176,7 @@
         :returns:
           Long-running operation waiter for :class:`App`.
           See :method:wait_get_app_stopped for more details.
-        
+
 
     .. py:method:: stop_and_wait(name: str, timeout: datetime.timedelta = 0:20:00) -> App
 
@@ -193,7 +193,7 @@
         :param app: :class:`App` (optional)
         
         :returns: :class:`App`
-        
+
 
     .. py:method:: update_permissions(app_name: str [, access_control_list: Optional[List[AppAccessControlRequest]]]) -> AppPermissions
 
@@ -206,7 +206,7 @@
         :param access_control_list: List[:class:`AppAccessControlRequest`] (optional)
         
         :returns: :class:`AppPermissions`
-        
+
 
     .. py:method:: wait_get_app_active(name: str, timeout: datetime.timedelta = 0:20:00, callback: Optional[Callable[[App], None]]) -> App
 

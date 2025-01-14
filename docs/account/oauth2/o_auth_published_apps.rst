@@ -20,4 +20,3 @@
           A token that can be used to get the next page of results.
         
         :returns: Iterator over :class:`PublishedAppOutput`
-        

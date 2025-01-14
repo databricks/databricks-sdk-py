@@ -54,7 +54,7 @@
         :param tags: List[str] (optional)
         
         :returns: :class:`LegacyQuery`
-        
+
 
     .. py:method:: delete(query_id: str)
 
@@ -70,8 +70,8 @@
         
         :param query_id: str
         
-        
-        
+
+
 
     .. py:method:: get(query_id: str) -> LegacyQuery
 
@@ -88,7 +88,7 @@
         :param query_id: str
         
         :returns: :class:`LegacyQuery`
-        
+
 
     .. py:method:: list( [, order: Optional[str], page: Optional[int], page_size: Optional[int], q: Optional[str]]) -> Iterator[LegacyQuery]
 
@@ -126,7 +126,7 @@
           Full text search term
         
         :returns: Iterator over :class:`LegacyQuery`
-        
+
 
     .. py:method:: restore(query_id: str)
 
@@ -142,8 +142,8 @@
         
         :param query_id: str
         
-        
-        
+
+
 
     .. py:method:: update(query_id: str [, data_source_id: Optional[str], description: Optional[str], name: Optional[str], options: Optional[Any], query: Optional[str], run_as_role: Optional[RunAsRole], tags: Optional[List[str]]]) -> LegacyQuery
 
@@ -180,4 +180,3 @@
         :param tags: List[str] (optional)
         
         :returns: :class:`LegacyQuery`
-        

@@ -40,7 +40,7 @@
           Storage root URL for the share.
         
         :returns: :class:`ShareInfo`
-        
+
 
     .. py:method:: delete(name: str)
 
@@ -51,8 +51,8 @@
         :param name: str
           The name of the share.
         
-        
-        
+
+
 
     .. py:method:: get(name: str [, include_shared_data: Optional[bool]]) -> ShareInfo
 
@@ -85,7 +85,7 @@
           Query for data to include in the share.
         
         :returns: :class:`ShareInfo`
-        
+
 
     .. py:method:: list( [, max_results: Optional[int], page_token: Optional[str]]) -> Iterator[ShareInfo]
 
@@ -118,7 +118,7 @@
           Opaque pagination token to go to next page based on previous query.
         
         :returns: Iterator over :class:`ShareInfo`
-        
+
 
     .. py:method:: share_permissions(name: str [, max_results: Optional[int], page_token: Optional[str]]) -> catalog.PermissionsList
 
@@ -141,7 +141,7 @@
           Opaque pagination token to go to next page based on previous query.
         
         :returns: :class:`PermissionsList`
-        
+
 
     .. py:method:: update(name: str [, comment: Optional[str], new_name: Optional[str], owner: Optional[str], storage_root: Optional[str], updates: Optional[List[SharedDataObjectUpdate]]]) -> ShareInfo
 
@@ -220,7 +220,7 @@
           Array of shared data object updates.
         
         :returns: :class:`ShareInfo`
-        
+
 
     .. py:method:: update_permissions(name: str [, changes: Optional[List[catalog.PermissionsChange]], max_results: Optional[int], page_token: Optional[str]])
 
@@ -247,5 +247,4 @@
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
         
-        
-        
+

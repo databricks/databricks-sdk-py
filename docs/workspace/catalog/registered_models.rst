@@ -55,7 +55,7 @@
           The storage location on the cloud under which model version data files are stored
         
         :returns: :class:`RegisteredModelInfo`
-        
+
 
     .. py:method:: delete(full_name: str)
 
@@ -70,8 +70,8 @@
         :param full_name: str
           The three-level (fully qualified) name of the registered model
         
-        
-        
+
+
 
     .. py:method:: delete_alias(full_name: str, alias: str)
 
@@ -88,8 +88,8 @@
         :param alias: str
           The name of the alias
         
-        
-        
+
+
 
     .. py:method:: get(full_name: str [, include_aliases: Optional[bool], include_browse: Optional[bool]]) -> RegisteredModelInfo
 
@@ -110,7 +110,7 @@
           selective metadata for
         
         :returns: :class:`RegisteredModelInfo`
-        
+
 
     .. py:method:: list( [, catalog_name: Optional[str], include_browse: Optional[bool], max_results: Optional[int], page_token: Optional[str], schema_name: Optional[str]]) -> Iterator[RegisteredModelInfo]
 
@@ -154,7 +154,7 @@
           be specified.
         
         :returns: Iterator over :class:`RegisteredModelInfo`
-        
+
 
     .. py:method:: set_alias(full_name: str, alias: str, version_num: int) -> RegisteredModelAlias
 
@@ -174,7 +174,7 @@
           The version number of the model version to which the alias points
         
         :returns: :class:`RegisteredModelAlias`
-        
+
 
     .. py:method:: update(full_name: str [, comment: Optional[str], new_name: Optional[str], owner: Optional[str]]) -> RegisteredModelInfo
 
@@ -198,4 +198,3 @@
           The identifier of the user who owns the registered model
         
         :returns: :class:`RegisteredModelInfo`
-        

@@ -21,7 +21,7 @@
           The workspace ID of the workspace in which the usage dashboard is created.
         
         :returns: :class:`CreateBillingUsageDashboardResponse`
-        
+
 
     .. py:method:: get( [, dashboard_type: Optional[UsageDashboardType], workspace_id: Optional[int]]) -> GetBillingUsageDashboardResponse
 
@@ -36,4 +36,3 @@
           The workspace ID of the workspace in which the usage dashboard is created.
         
         :returns: :class:`GetBillingUsageDashboardResponse`
-        

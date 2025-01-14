@@ -21,7 +21,7 @@
           The display name for the notification destination.
         
         :returns: :class:`NotificationDestination`
-        
+
 
     .. py:method:: delete(id: str)
 
@@ -31,8 +31,8 @@
         
         :param id: str
         
-        
-        
+
+
 
     .. py:method:: get(id: str) -> NotificationDestination
 
@@ -43,7 +43,7 @@
         :param id: str
         
         :returns: :class:`NotificationDestination`
-        
+
 
     .. py:method:: list( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[ListNotificationDestinationsResult]
 
@@ -55,7 +55,7 @@
         :param page_token: str (optional)
         
         :returns: Iterator over :class:`ListNotificationDestinationsResult`
-        
+
 
     .. py:method:: update(id: str [, config: Optional[Config], display_name: Optional[str]]) -> NotificationDestination
 
@@ -72,4 +72,3 @@
           The display name for the notification destination.
         
         :returns: :class:`NotificationDestination`
-        

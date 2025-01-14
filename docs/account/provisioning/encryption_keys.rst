@@ -61,7 +61,7 @@
         :param gcp_key_info: :class:`CreateGcpKeyInfo` (optional)
         
         :returns: :class:`CustomerManagedKey`
-        
+
 
     .. py:method:: delete(customer_managed_key_id: str)
 
@@ -73,8 +73,8 @@
         :param customer_managed_key_id: str
           Databricks encryption key configuration ID.
         
-        
-        
+
+
 
     .. py:method:: get(customer_managed_key_id: str) -> CustomerManagedKey
 
@@ -118,7 +118,7 @@
           Databricks encryption key configuration ID.
         
         :returns: :class:`CustomerManagedKey`
-        
+
 
     .. py:method:: list() -> Iterator[CustomerManagedKey]
 
@@ -147,4 +147,3 @@
         This operation is available only if your account is on the E2 version of the platform.
         
         :returns: Iterator over :class:`CustomerManagedKey`
-        

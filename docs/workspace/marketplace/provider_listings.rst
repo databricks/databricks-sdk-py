@@ -16,7 +16,7 @@
         :param listing: :class:`Listing`
         
         :returns: :class:`CreateListingResponse`
-        
+
 
     .. py:method:: delete(id: str)
 
@@ -26,8 +26,8 @@
         
         :param id: str
         
-        
-        
+
+
 
     .. py:method:: get(id: str) -> GetListingResponse
 
@@ -38,7 +38,7 @@
         :param id: str
         
         :returns: :class:`GetListingResponse`
-        
+
 
     .. py:method:: list( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Listing]
 
@@ -50,7 +50,7 @@
         :param page_token: str (optional)
         
         :returns: Iterator over :class:`Listing`
-        
+
 
     .. py:method:: update(id: str, listing: Listing) -> UpdateListingResponse
 
@@ -62,4 +62,3 @@
         :param listing: :class:`Listing`
         
         :returns: :class:`UpdateListingResponse`
-        

@@ -15,7 +15,7 @@
         :param ids: List[str] (optional)
         
         :returns: :class:`BatchGetProvidersResponse`
-        
+
 
     .. py:method:: get(id: str) -> GetProviderResponse
 
@@ -26,7 +26,7 @@
         :param id: str
         
         :returns: :class:`GetProviderResponse`
-        
+
 
     .. py:method:: list( [, is_featured: Optional[bool], page_size: Optional[int], page_token: Optional[str]]) -> Iterator[ProviderInfo]
 
@@ -39,4 +39,3 @@
         :param page_token: str (optional)
         
         :returns: Iterator over :class:`ProviderInfo`
-        

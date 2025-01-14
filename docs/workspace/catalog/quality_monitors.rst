@@ -29,8 +29,8 @@
         :param refresh_id: str
           ID of the refresh.
         
-        
-        
+
+
 
     .. py:method:: create(table_name: str, assets_dir: str, output_schema_name: str [, baseline_table_name: Optional[str], custom_metrics: Optional[List[MonitorMetric]], data_classification_config: Optional[MonitorDataClassificationConfig], inference_log: Optional[MonitorInferenceLog], notifications: Optional[MonitorNotifications], schedule: Optional[MonitorCronSchedule], skip_builtin_dashboard: Optional[bool], slicing_exprs: Optional[List[str]], snapshot: Optional[MonitorSnapshot], time_series: Optional[MonitorTimeSeries], warehouse_id: Optional[str]]) -> MonitorInfo
 
@@ -81,7 +81,7 @@
           running warehouse will be used.
         
         :returns: :class:`MonitorInfo`
-        
+
 
     .. py:method:: delete(table_name: str)
 
@@ -102,8 +102,8 @@
         :param table_name: str
           Full name of the table.
         
-        
-        
+
+
 
     .. py:method:: get(table_name: str) -> MonitorInfo
 
@@ -124,7 +124,7 @@
           Full name of the table.
         
         :returns: :class:`MonitorInfo`
-        
+
 
     .. py:method:: get_refresh(table_name: str, refresh_id: str) -> MonitorRefreshInfo
 
@@ -145,7 +145,7 @@
           ID of the refresh.
         
         :returns: :class:`MonitorRefreshInfo`
-        
+
 
     .. py:method:: list_refreshes(table_name: str) -> MonitorRefreshListResponse
 
@@ -164,7 +164,7 @@
           Full name of the table.
         
         :returns: :class:`MonitorRefreshListResponse`
-        
+
 
     .. py:method:: regenerate_dashboard(table_name: str [, warehouse_id: Optional[str]]) -> RegenerateDashboardResponse
 
@@ -187,7 +187,7 @@
           running warehouse will be used.
         
         :returns: :class:`RegenerateDashboardResponse`
-        
+
 
     .. py:method:: run_refresh(table_name: str) -> MonitorRefreshInfo
 
@@ -207,7 +207,7 @@
           Full name of the table.
         
         :returns: :class:`MonitorRefreshInfo`
-        
+
 
     .. py:method:: update(table_name: str, output_schema_name: str [, baseline_table_name: Optional[str], custom_metrics: Optional[List[MonitorMetric]], dashboard_id: Optional[str], data_classification_config: Optional[MonitorDataClassificationConfig], inference_log: Optional[MonitorInferenceLog], notifications: Optional[MonitorNotifications], schedule: Optional[MonitorCronSchedule], slicing_exprs: Optional[List[str]], snapshot: Optional[MonitorSnapshot], time_series: Optional[MonitorTimeSeries]]) -> MonitorInfo
 
@@ -256,4 +256,3 @@
           Configuration for monitoring time series tables.
         
         :returns: :class:`MonitorInfo`
-        

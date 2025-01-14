@@ -61,7 +61,7 @@
           Supplying true to this argument skips validation of the created credential.
         
         :returns: :class:`StorageCredentialInfo`
-        
+
 
     .. py:method:: delete(name: str [, force: Optional[bool]])
 
@@ -75,8 +75,8 @@
         :param force: bool (optional)
           Force deletion even if there are dependent external locations or external tables.
         
-        
-        
+
+
 
     .. py:method:: get(name: str) -> StorageCredentialInfo
 
@@ -111,7 +111,7 @@
           Name of the storage credential.
         
         :returns: :class:`StorageCredentialInfo`
-        
+
 
     .. py:method:: list( [, max_results: Optional[int], page_token: Optional[str]]) -> Iterator[StorageCredentialInfo]
 
@@ -143,7 +143,7 @@
           Opaque pagination token to go to next page based on previous query.
         
         :returns: Iterator over :class:`StorageCredentialInfo`
-        
+
 
     .. py:method:: update(name: str [, aws_iam_role: Optional[AwsIamRoleRequest], azure_managed_identity: Optional[AzureManagedIdentityResponse], azure_service_principal: Optional[AzureServicePrincipal], cloudflare_api_token: Optional[CloudflareApiToken], comment: Optional[str], databricks_gcp_service_account: Optional[DatabricksGcpServiceAccountRequest], force: Optional[bool], isolation_mode: Optional[IsolationMode], new_name: Optional[str], owner: Optional[str], read_only: Optional[bool], skip_validation: Optional[bool]]) -> StorageCredentialInfo
 
@@ -203,7 +203,7 @@
           Supplying true to this argument skips validation of the updated credential.
         
         :returns: :class:`StorageCredentialInfo`
-        
+
 
     .. py:method:: validate( [, aws_iam_role: Optional[AwsIamRoleRequest], azure_managed_identity: Optional[AzureManagedIdentityRequest], azure_service_principal: Optional[AzureServicePrincipal], cloudflare_api_token: Optional[CloudflareApiToken], databricks_gcp_service_account: Optional[DatabricksGcpServiceAccountRequest], external_location_name: Optional[str], read_only: Optional[bool], storage_credential_name: Optional[str], url: Optional[str]]) -> ValidateStorageCredentialResponse
 
@@ -239,4 +239,3 @@
           The external location url to validate.
         
         :returns: :class:`ValidateStorageCredentialResponse`
-        

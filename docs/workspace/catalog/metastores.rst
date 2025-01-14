@@ -55,8 +55,8 @@
           The name of the default catalog in the metastore. This field is depracted. Please use "Default
           Namespace API" to configure the default catalog for a Databricks workspace.
         
-        
-        
+
+
 
     .. py:method:: create(name: str [, region: Optional[str], storage_root: Optional[str]]) -> MetastoreInfo
 
@@ -96,7 +96,7 @@
           The storage root URL for metastore
         
         :returns: :class:`MetastoreInfo`
-        
+
 
     .. py:method:: current() -> MetastoreAssignment
 
@@ -116,7 +116,7 @@
         Gets the metastore assignment for the workspace being accessed.
         
         :returns: :class:`MetastoreAssignment`
-        
+
 
     .. py:method:: delete(id: str [, force: Optional[bool]])
 
@@ -129,8 +129,8 @@
         :param force: bool (optional)
           Force deletion even if the metastore is not empty. Default is false.
         
-        
-        
+
+
 
     .. py:method:: get(id: str) -> MetastoreInfo
 
@@ -164,7 +164,7 @@
           Unique ID of the metastore.
         
         :returns: :class:`MetastoreInfo`
-        
+
 
     .. py:method:: list() -> Iterator[MetastoreInfo]
 
@@ -185,7 +185,7 @@
         to retrieve this info. There is no guarantee of a specific ordering of the elements in the array.
         
         :returns: Iterator over :class:`MetastoreInfo`
-        
+
 
     .. py:method:: summary() -> GetMetastoreSummaryResponse
 
@@ -206,7 +206,7 @@
         the cloud region, and the global metastore ID.
         
         :returns: :class:`GetMetastoreSummaryResponse`
-        
+
 
     .. py:method:: unassign(workspace_id: int, metastore_id: str)
 
@@ -242,8 +242,8 @@
         :param metastore_id: str
           Query for the ID of the metastore to delete.
         
-        
-        
+
+
 
     .. py:method:: update(id: str [, delta_sharing_organization_name: Optional[str], delta_sharing_recipient_token_lifetime_in_seconds: Optional[int], delta_sharing_scope: Optional[UpdateMetastoreDeltaSharingScope], new_name: Optional[str], owner: Optional[str], privilege_model_version: Optional[str], storage_root_credential_id: Optional[str]]) -> MetastoreInfo
 
@@ -292,7 +292,7 @@
           UUID of storage credential to access the metastore storage_root.
         
         :returns: :class:`MetastoreInfo`
-        
+
 
     .. py:method:: update_assignment(workspace_id: int [, default_catalog_name: Optional[str], metastore_id: Optional[str]])
 
@@ -311,5 +311,4 @@
         :param metastore_id: str (optional)
           The unique ID of the metastore.
         
-        
-        
+

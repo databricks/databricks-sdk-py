@@ -43,4 +43,3 @@
           %2B. This field is optional.
         
         :returns: :class:`ListQueriesResponse`
-        

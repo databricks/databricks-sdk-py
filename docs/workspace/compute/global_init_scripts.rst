@@ -56,7 +56,7 @@
           position and all later scripts have their positions incremented by 1.
         
         :returns: :class:`CreateResponse`
-        
+
 
     .. py:method:: delete(script_id: str)
 
@@ -67,8 +67,8 @@
         :param script_id: str
           The ID of the global init script.
         
-        
-        
+
+
 
     .. py:method:: get(script_id: str) -> GlobalInitScriptDetailsWithContent
 
@@ -102,7 +102,7 @@
           The ID of the global init script.
         
         :returns: :class:`GlobalInitScriptDetailsWithContent`
-        
+
 
     .. py:method:: list() -> Iterator[GlobalInitScriptDetails]
 
@@ -124,7 +124,7 @@
         script](:method:globalinitscripts/get) operation.
         
         :returns: Iterator over :class:`GlobalInitScriptDetails`
-        
+
 
     .. py:method:: update(script_id: str, name: str, script: str [, enabled: Optional[bool], position: Optional[int]])
 
@@ -176,5 +176,4 @@
           If an explicit position value conflicts with an existing script, your request succeeds, but the
           original script at that position and all later scripts have their positions incremented by 1.
         
-        
-        
+

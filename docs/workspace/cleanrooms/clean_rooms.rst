@@ -22,7 +22,7 @@
         :param clean_room: :class:`CleanRoom` (optional)
         
         :returns: :class:`CleanRoom`
-        
+
 
     .. py:method:: create_output_catalog(clean_room_name: str [, output_catalog: Optional[CleanRoomOutputCatalog]]) -> CreateCleanRoomOutputCatalogResponse
 
@@ -35,7 +35,7 @@
         :param output_catalog: :class:`CleanRoomOutputCatalog` (optional)
         
         :returns: :class:`CreateCleanRoomOutputCatalogResponse`
-        
+
 
     .. py:method:: delete(name: str)
 
@@ -48,8 +48,8 @@
         :param name: str
           Name of the clean room.
         
-        
-        
+
+
 
     .. py:method:: get(name: str) -> CleanRoom
 
@@ -60,7 +60,7 @@
         :param name: str
         
         :returns: :class:`CleanRoom`
-        
+
 
     .. py:method:: list( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[CleanRoom]
 
@@ -75,7 +75,7 @@
           Opaque pagination token to go to next page based on previous query.
         
         :returns: Iterator over :class:`CleanRoom`
-        
+
 
     .. py:method:: update(name: str [, clean_room: Optional[CleanRoom]]) -> CleanRoom
 
@@ -91,4 +91,3 @@
         :param clean_room: :class:`CleanRoom` (optional)
         
         :returns: :class:`CleanRoom`
-        

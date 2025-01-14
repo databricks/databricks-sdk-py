@@ -96,7 +96,7 @@
         :returns:
           Long-running operation waiter for :class:`GetWarehouseResponse`.
           See :method:wait_get_warehouse_running for more details.
-        
+
 
     .. py:method:: create_and_wait( [, auto_stop_mins: Optional[int], channel: Optional[Channel], cluster_size: Optional[str], creator_name: Optional[str], enable_photon: Optional[bool], enable_serverless_compute: Optional[bool], instance_profile_arn: Optional[str], max_num_clusters: Optional[int], min_num_clusters: Optional[int], name: Optional[str], spot_instance_policy: Optional[SpotInstancePolicy], tags: Optional[EndpointTags], warehouse_type: Optional[CreateWarehouseRequestWarehouseType], timeout: datetime.timedelta = 0:20:00]) -> GetWarehouseResponse
 
@@ -110,8 +110,8 @@
         :param id: str
           Required. Id of the SQL warehouse.
         
-        
-        
+
+
 
     .. py:method:: edit(id: str [, auto_stop_mins: Optional[int], channel: Optional[Channel], cluster_size: Optional[str], creator_name: Optional[str], enable_photon: Optional[bool], enable_serverless_compute: Optional[bool], instance_profile_arn: Optional[str], max_num_clusters: Optional[int], min_num_clusters: Optional[int], name: Optional[str], spot_instance_policy: Optional[SpotInstancePolicy], tags: Optional[EndpointTags], warehouse_type: Optional[EditWarehouseRequestWarehouseType]]) -> Wait[GetWarehouseResponse]
 
@@ -209,7 +209,7 @@
         :returns:
           Long-running operation waiter for :class:`GetWarehouseResponse`.
           See :method:wait_get_warehouse_running for more details.
-        
+
 
     .. py:method:: edit_and_wait(id: str [, auto_stop_mins: Optional[int], channel: Optional[Channel], cluster_size: Optional[str], creator_name: Optional[str], enable_photon: Optional[bool], enable_serverless_compute: Optional[bool], instance_profile_arn: Optional[str], max_num_clusters: Optional[int], min_num_clusters: Optional[int], name: Optional[str], spot_instance_policy: Optional[SpotInstancePolicy], tags: Optional[EndpointTags], warehouse_type: Optional[EditWarehouseRequestWarehouseType], timeout: datetime.timedelta = 0:20:00]) -> GetWarehouseResponse
 
@@ -250,7 +250,7 @@
           Required. Id of the SQL warehouse.
         
         :returns: :class:`GetWarehouseResponse`
-        
+
 
     .. py:method:: get_permission_levels(warehouse_id: str) -> GetWarehousePermissionLevelsResponse
 
@@ -262,7 +262,7 @@
           The SQL warehouse for which to get or manage permissions.
         
         :returns: :class:`GetWarehousePermissionLevelsResponse`
-        
+
 
     .. py:method:: get_permissions(warehouse_id: str) -> WarehousePermissions
 
@@ -275,7 +275,7 @@
           The SQL warehouse for which to get or manage permissions.
         
         :returns: :class:`WarehousePermissions`
-        
+
 
     .. py:method:: get_workspace_warehouse_config() -> GetWorkspaceWarehouseConfigResponse
 
@@ -284,7 +284,7 @@
         Gets the workspace level configuration that is shared by all SQL warehouses in a workspace.
         
         :returns: :class:`GetWorkspaceWarehouseConfigResponse`
-        
+
 
     .. py:method:: list( [, run_as_user_id: Optional[int]]) -> Iterator[EndpointInfo]
 
@@ -309,7 +309,7 @@
           from the session header is used.
         
         :returns: Iterator over :class:`EndpointInfo`
-        
+
 
     .. py:method:: set_permissions(warehouse_id: str [, access_control_list: Optional[List[WarehouseAccessControlRequest]]]) -> WarehousePermissions
 
@@ -323,7 +323,7 @@
         :param access_control_list: List[:class:`WarehouseAccessControlRequest`] (optional)
         
         :returns: :class:`WarehousePermissions`
-        
+
 
     .. py:method:: set_workspace_warehouse_config( [, channel: Optional[Channel], config_param: Optional[RepeatedEndpointConfPairs], data_access_config: Optional[List[EndpointConfPair]], enabled_warehouse_types: Optional[List[WarehouseTypePair]], global_param: Optional[RepeatedEndpointConfPairs], google_service_account: Optional[str], instance_profile_arn: Optional[str], security_policy: Optional[SetWorkspaceWarehouseConfigRequestSecurityPolicy], sql_configuration_parameters: Optional[RepeatedEndpointConfPairs]])
 
@@ -354,8 +354,8 @@
         :param sql_configuration_parameters: :class:`RepeatedEndpointConfPairs` (optional)
           SQL configuration parameters
         
-        
-        
+
+
 
     .. py:method:: start(id: str) -> Wait[GetWarehouseResponse]
 
@@ -369,7 +369,7 @@
         :returns:
           Long-running operation waiter for :class:`GetWarehouseResponse`.
           See :method:wait_get_warehouse_running for more details.
-        
+
 
     .. py:method:: start_and_wait(id: str, timeout: datetime.timedelta = 0:20:00) -> GetWarehouseResponse
 
@@ -386,7 +386,7 @@
         :returns:
           Long-running operation waiter for :class:`GetWarehouseResponse`.
           See :method:wait_get_warehouse_stopped for more details.
-        
+
 
     .. py:method:: stop_and_wait(id: str, timeout: datetime.timedelta = 0:20:00) -> GetWarehouseResponse
 
@@ -403,7 +403,7 @@
         :param access_control_list: List[:class:`WarehouseAccessControlRequest`] (optional)
         
         :returns: :class:`WarehousePermissions`
-        
+
 
     .. py:method:: wait_get_warehouse_running(id: str, timeout: datetime.timedelta = 0:20:00, callback: Optional[Callable[[GetWarehouseResponse], None]]) -> GetWarehouseResponse
 

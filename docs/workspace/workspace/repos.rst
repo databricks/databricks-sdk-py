@@ -53,7 +53,7 @@
           sparse checkout after the repo is created.
         
         :returns: :class:`CreateRepoResponse`
-        
+
 
     .. py:method:: delete(repo_id: int)
 
@@ -64,8 +64,8 @@
         :param repo_id: int
           The ID for the corresponding repo to delete.
         
-        
-        
+
+
 
     .. py:method:: get(repo_id: int) -> GetRepoResponse
 
@@ -97,7 +97,7 @@
           ID of the Git folder (repo) object in the workspace.
         
         :returns: :class:`GetRepoResponse`
-        
+
 
     .. py:method:: get_permission_levels(repo_id: str) -> GetRepoPermissionLevelsResponse
 
@@ -109,7 +109,7 @@
           The repo for which to get or manage permissions.
         
         :returns: :class:`GetRepoPermissionLevelsResponse`
-        
+
 
     .. py:method:: get_permissions(repo_id: str) -> RepoPermissions
 
@@ -121,7 +121,7 @@
           The repo for which to get or manage permissions.
         
         :returns: :class:`RepoPermissions`
-        
+
 
     .. py:method:: list( [, next_page_token: Optional[str], path_prefix: Optional[str]]) -> Iterator[RepoInfo]
 
@@ -151,7 +151,7 @@
           be served.
         
         :returns: Iterator over :class:`RepoInfo`
-        
+
 
     .. py:method:: set_permissions(repo_id: str [, access_control_list: Optional[List[RepoAccessControlRequest]]]) -> RepoPermissions
 
@@ -165,7 +165,7 @@
         :param access_control_list: List[:class:`RepoAccessControlRequest`] (optional)
         
         :returns: :class:`RepoPermissions`
-        
+
 
     .. py:method:: update(repo_id: int [, branch: Optional[str], sparse_checkout: Optional[SparseCheckoutUpdate], tag: Optional[str]])
 
@@ -206,8 +206,8 @@
           in a detached HEAD state. Before committing new changes, you must update the repo to a branch
           instead of the detached HEAD.
         
-        
-        
+
+
 
     .. py:method:: update_permissions(repo_id: str [, access_control_list: Optional[List[RepoAccessControlRequest]]]) -> RepoPermissions
 
@@ -220,4 +220,3 @@
         :param access_control_list: List[:class:`RepoAccessControlRequest`] (optional)
         
         :returns: :class:`RepoPermissions`
-        

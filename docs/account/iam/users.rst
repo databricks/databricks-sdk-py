@@ -66,7 +66,7 @@
           Email address of the Databricks user.
         
         :returns: :class:`User`
-        
+
 
     .. py:method:: delete(id: str)
 
@@ -93,8 +93,8 @@
         :param id: str
           Unique ID for a user in the Databricks account.
         
-        
-        
+
+
 
     .. py:method:: get(id: str [, attributes: Optional[str], count: Optional[int], excluded_attributes: Optional[str], filter: Optional[str], sort_by: Optional[str], sort_order: Optional[GetSortOrder], start_index: Optional[int]]) -> User
 
@@ -144,7 +144,7 @@
           Specifies the index of the first result. First item is number 1.
         
         :returns: :class:`User`
-        
+
 
     .. py:method:: list( [, attributes: Optional[str], count: Optional[int], excluded_attributes: Optional[str], filter: Optional[str], sort_by: Optional[str], sort_order: Optional[ListSortOrder], start_index: Optional[int]]) -> Iterator[User]
 
@@ -174,7 +174,7 @@
           Specifies the index of the first result. First item is number 1.
         
         :returns: Iterator over :class:`User`
-        
+
 
     .. py:method:: patch(id: str [, operations: Optional[List[Patch]], schemas: Optional[List[PatchSchema]]])
 
@@ -212,8 +212,8 @@
         :param schemas: List[:class:`PatchSchema`] (optional)
           The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
         
-        
-        
+
+
 
     .. py:method:: update(id: str [, active: Optional[bool], display_name: Optional[str], emails: Optional[List[ComplexValue]], entitlements: Optional[List[ComplexValue]], external_id: Optional[str], groups: Optional[List[ComplexValue]], name: Optional[Name], roles: Optional[List[ComplexValue]], schemas: Optional[List[UserSchema]], user_name: Optional[str]])
 
@@ -249,5 +249,4 @@
         :param user_name: str (optional)
           Email address of the Databricks user.
         
-        
-        
+

@@ -19,8 +19,8 @@
         :param principal_id: int
           The ID of the user, service principal, or group.
         
-        
-        
+
+
 
     .. py:method:: get(workspace_id: int) -> WorkspacePermissions
 
@@ -32,7 +32,7 @@
           The workspace ID.
         
         :returns: :class:`WorkspacePermissions`
-        
+
 
     .. py:method:: list(workspace_id: int) -> Iterator[PermissionAssignment]
 
@@ -59,7 +59,7 @@
           The workspace ID for the account.
         
         :returns: Iterator over :class:`PermissionAssignment`
-        
+
 
     .. py:method:: update(workspace_id: int, principal_id: int [, permissions: Optional[List[WorkspacePermission]]]) -> PermissionAssignment
 
@@ -103,4 +103,3 @@
           principal.
         
         :returns: :class:`PermissionAssignment`
-        

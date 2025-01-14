@@ -54,7 +54,7 @@
           Storage root URL for managed tables within catalog.
         
         :returns: :class:`CatalogInfo`
-        
+
 
     .. py:method:: delete(name: str [, force: Optional[bool]])
 
@@ -68,8 +68,8 @@
         :param force: bool (optional)
           Force deletion even if the catalog is not empty.
         
-        
-        
+
+
 
     .. py:method:: get(name: str [, include_browse: Optional[bool]]) -> CatalogInfo
 
@@ -103,7 +103,7 @@
           metadata for
         
         :returns: :class:`CatalogInfo`
-        
+
 
     .. py:method:: list( [, include_browse: Optional[bool], max_results: Optional[int], page_token: Optional[str]]) -> Iterator[CatalogInfo]
 
@@ -141,7 +141,7 @@
           Opaque pagination token to go to next page based on previous query.
         
         :returns: Iterator over :class:`CatalogInfo`
-        
+
 
     .. py:method:: update(name: str [, comment: Optional[str], enable_predictive_optimization: Optional[EnablePredictiveOptimization], isolation_mode: Optional[CatalogIsolationMode], new_name: Optional[str], owner: Optional[str], properties: Optional[Dict[str, str]]]) -> CatalogInfo
 
@@ -184,4 +184,3 @@
           A map of key-value properties attached to the securable.
         
         :returns: :class:`CatalogInfo`
-        

@@ -37,7 +37,7 @@
           The schema of the group.
         
         :returns: :class:`Group`
-        
+
 
     .. py:method:: delete(id: str)
 
@@ -48,8 +48,8 @@
         :param id: str
           Unique ID for a group in the Databricks account.
         
-        
-        
+
+
 
     .. py:method:: get(id: str) -> Group
 
@@ -61,7 +61,7 @@
           Unique ID for a group in the Databricks account.
         
         :returns: :class:`Group`
-        
+
 
     .. py:method:: list( [, attributes: Optional[str], count: Optional[int], excluded_attributes: Optional[str], filter: Optional[str], sort_by: Optional[str], sort_order: Optional[ListSortOrder], start_index: Optional[int]]) -> Iterator[Group]
 
@@ -90,7 +90,7 @@
           Specifies the index of the first result. First item is number 1.
         
         :returns: Iterator over :class:`Group`
-        
+
 
     .. py:method:: patch(id: str [, operations: Optional[List[Patch]], schemas: Optional[List[PatchSchema]]])
 
@@ -104,8 +104,8 @@
         :param schemas: List[:class:`PatchSchema`] (optional)
           The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
         
-        
-        
+
+
 
     .. py:method:: update(id: str [, display_name: Optional[str], entitlements: Optional[List[ComplexValue]], external_id: Optional[str], groups: Optional[List[ComplexValue]], members: Optional[List[ComplexValue]], meta: Optional[ResourceMeta], roles: Optional[List[ComplexValue]], schemas: Optional[List[GroupSchema]]])
 
@@ -132,5 +132,4 @@
         :param schemas: List[:class:`GroupSchema`] (optional)
           The schema of the group.
         
-        
-        
+

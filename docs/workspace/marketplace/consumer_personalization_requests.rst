@@ -23,7 +23,7 @@
         :param recipient_type: :class:`DeltaSharingRecipientType` (optional)
         
         :returns: :class:`CreatePersonalizationRequestResponse`
-        
+
 
     .. py:method:: get(listing_id: str) -> GetPersonalizationRequestResponse
 
@@ -35,7 +35,7 @@
         :param listing_id: str
         
         :returns: :class:`GetPersonalizationRequestResponse`
-        
+
 
     .. py:method:: list( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[PersonalizationRequest]
 
@@ -47,4 +47,3 @@
         :param page_token: str (optional)
         
         :returns: Iterator over :class:`PersonalizationRequest`
-        
