@@ -981,6 +981,8 @@ class AppsAPI:
           See :method:wait_get_app_active for more details.
         """
         body = app.as_dict()
+        query = {}
+        if no_compute is not None: query['no_compute'] = no_compute
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         op_response = self._api.do('POST', '/api/2.0/apps', query=query, body=body, headers=headers)
