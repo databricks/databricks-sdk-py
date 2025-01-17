@@ -950,6 +950,8 @@ class AccountFederationPolicyAPI:
         :returns: :class:`FederationPolicy`
         """
         body = policy.as_dict()
+        query = {}
+        if policy_id is not None: query['policy_id'] = policy_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         res = self._api.do('POST',
@@ -1039,6 +1041,8 @@ class AccountFederationPolicyAPI:
         :returns: :class:`FederationPolicy`
         """
         body = policy.as_dict()
+        query = {}
+        if update_mask is not None: query['update_mask'] = update_mask
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         res = self._api.do('PATCH',
@@ -1433,6 +1437,8 @@ class ServicePrincipalFederationPolicyAPI:
         :returns: :class:`FederationPolicy`
         """
         body = policy.as_dict()
+        query = {}
+        if policy_id is not None: query['policy_id'] = policy_id
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         res = self._api.do(
@@ -1536,6 +1542,8 @@ class ServicePrincipalFederationPolicyAPI:
         :returns: :class:`FederationPolicy`
         """
         body = policy.as_dict()
+        query = {}
+        if update_mask is not None: query['update_mask'] = update_mask
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         res = self._api.do(
