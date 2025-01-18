@@ -199,8 +199,8 @@ def external_browser(cfg: 'Config') -> Optional[CredentialsProvider]:
     if not client_id:
         client_id = 'databricks-cli'
 
-    # Load cached credentials from disk if they exist.
-    # Note that these are local to the Python SDK and not reused by other SDKs.
+    # Load cached credentials from disk if they exist. Note that these are 
+    # local to the Python SDK and not reused by other SDKs.
     oidc_endpoints = cfg.oidc_endpoints
     redirect_url = 'http://localhost:8020'
     token_cache = TokenCache(host=cfg.host,
@@ -210,10 +210,11 @@ def external_browser(cfg: 'Config') -> Optional[CredentialsProvider]:
                              redirect_url=redirect_url)
     credentials = token_cache.load()
     if credentials:
-        # Force a refresh in case the loaded credentials are expired.
-        # If the refresh fails, rather than throw exception we will initiate a new OAuth login flow.
         try:
-            credentials.token()
+            # Force a refresh in case the loaded credentials are expired.
+            # If the refresh fails, rather than throw exception we will 
+            # initiate a new OAuth login flow.
+            credentials.token()  # force a token refresh
             return credentials(cfg)
         # TODO: we should ideally use more specific exceptions.
         except Exception as e:
