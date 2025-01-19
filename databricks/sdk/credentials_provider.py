@@ -188,6 +188,7 @@ def oauth_service_principal(cfg: 'Config') -> Optional[CredentialsProvider]:
 def external_browser(cfg: 'Config') -> Optional[CredentialsProvider]:
     if cfg.auth_type != 'external-browser':
         return None
+
     client_id, client_secret = None, None
     if cfg.client_id:
         client_id = cfg.client_id
@@ -195,11 +196,10 @@ def external_browser(cfg: 'Config') -> Optional[CredentialsProvider]:
     elif cfg.azure_client_id:
         client_id = cfg.azure_client
         client_secret = cfg.azure_client_secret
-
     if not client_id:
         client_id = 'databricks-cli'
 
-    # Load cached credentials from disk if they exist. Note that these are 
+    # Load cached credentials from disk if they exist. Note that these are
     # local to the Python SDK and not reused by other SDKs.
     oidc_endpoints = cfg.oidc_endpoints
     redirect_url = 'http://localhost:8020'
@@ -211,12 +211,13 @@ def external_browser(cfg: 'Config') -> Optional[CredentialsProvider]:
     credentials = token_cache.load()
     if credentials:
         try:
-            # Force a refresh in case the loaded credentials are expired.
-            # If the refresh fails, rather than throw exception we will 
-            # initiate a new OAuth login flow.
-            credentials.token()  # force a token refresh
+            # Pro-actively refresh the loaded credentials. This is done
+            # to detect if the token is expired and needs to be refreshed
+            # by going through the OAuth login flow.
+            credentials.token()
+            token_cache.save(credentials)
             return credentials(cfg)
-        # TODO: we should ideally use more specific exceptions.
+        # TODO: We should ideally use more specific exceptions.
         except Exception as e:
             logger.warning(f'Failed to refresh cached token: {e}. Initiating new OAuth login flow')
 
@@ -227,6 +228,7 @@ def external_browser(cfg: 'Config') -> Optional[CredentialsProvider]:
     consent = oauth_client.initiate_consent()
     if not consent:
         return None
+
     credentials = consent.launch_external_browser()
     token_cache.save(credentials)
     return credentials(cfg)
