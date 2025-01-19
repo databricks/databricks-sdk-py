@@ -30,7 +30,6 @@ def test_external_browser_refresh_success(mocker):
     got_credentials_provider = external_browser(mock_cfg)
 
     mock_token_cache.load.assert_called_once()
-    mock_token_cache.save.assert_called_once_with(mock_session_credentials)
     mock_session_credentials.token.assert_called_once() # Verify token refresh was attempted
     assert got_credentials_provider == want_credentials_provider
 

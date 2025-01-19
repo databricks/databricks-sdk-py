@@ -215,7 +215,6 @@ def external_browser(cfg: 'Config') -> Optional[CredentialsProvider]:
             # to detect if the token is expired and needs to be refreshed
             # by going through the OAuth login flow.
             credentials.token()
-            token_cache.save(credentials)
             return credentials(cfg)
         # TODO: We should ideally use more specific exceptions.
         except Exception as e:
