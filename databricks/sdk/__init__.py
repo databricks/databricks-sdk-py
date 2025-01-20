@@ -1,5 +1,6 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
+import logging
 from typing import Optional
 
 import databricks.sdk.core as client
@@ -42,7 +43,8 @@ from databricks.sdk.service.compute import (ClusterPoliciesAPI, ClustersAPI,
                                             PolicyFamiliesAPI)
 from databricks.sdk.service.dashboards import GenieAPI, LakeviewAPI
 from databricks.sdk.service.files import DbfsAPI, FilesAPI
-from databricks.sdk.service.iam import (AccountAccessControlAPI,
+from databricks.sdk.service.iam import (AccessControlAPI,
+                                        AccountAccessControlAPI,
                                         AccountAccessControlProxyAPI,
                                         AccountGroupsAPI,
                                         AccountServicePrincipalsAPI,
@@ -99,6 +101,8 @@ from databricks.sdk.service.vectorsearch import (VectorSearchEndpointsAPI,
 from databricks.sdk.service.workspace import (GitCredentialsAPI, ReposAPI,
                                               SecretsAPI, WorkspaceAPI)
 
+_LOG = logging.getLogger(__name__)
+
 
 def _make_dbutils(config: client.Config):
     # We try to directly check if we are in runtime, instead of
@@ -118,6 +122,7 @@ def _make_dbutils(config: client.Config):
 
 def _make_files_client(apiClient: client.ApiClient, config: client.Config):
     if config.enable_experimental_files_api_client:
+        _LOG.info("Experimental Files API client is enabled")
         return FilesExt(apiClient, config)
     else:
         return FilesAPI(apiClient)
@@ -184,6 +189,7 @@ class WorkspaceClient:
         self._dbutils = _make_dbutils(self._config)
         self._api_client = client.ApiClient(self._config)
         serving_endpoints = ServingEndpointsExt(self._api_client)
+        self._access_control = AccessControlAPI(self._api_client)
         self._account_access_control_proxy = AccountAccessControlProxyAPI(self._api_client)
         self._alerts = AlertsAPI(self._api_client)
         self._alerts_legacy = AlertsLegacyAPI(self._api_client)
@@ -291,6 +297,11 @@ class WorkspaceClient:
     @property
     def dbutils(self) -> dbutils.RemoteDbUtils:
         return self._dbutils
+
+    @property
+    def access_control(self) -> AccessControlAPI:
+        """Rule based Access Control for Databricks Resources."""
+        return self._access_control
 
     @property
     def account_access_control_proxy(self) -> AccountAccessControlProxyAPI:

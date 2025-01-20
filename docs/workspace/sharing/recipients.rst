@@ -39,7 +39,7 @@
         Create a share recipient.
         
         Creates a new recipient with the delta sharing authentication type in the metastore. The caller must
-        be a metastore admin or has the **CREATE_RECIPIENT** privilege on the metastore.
+        be a metastore admin or have the **CREATE_RECIPIENT** privilege on the metastore.
         
         :param name: str
           Name of Recipient.
@@ -48,8 +48,8 @@
         :param comment: str (optional)
           Description about the recipient.
         :param data_recipient_global_metastore_id: str (optional)
-          The global Unity Catalog metastore id provided by the data recipient. This field is required when
-          the __authentication_type__ is **DATABRICKS**. The identifier is of format
+          The global Unity Catalog metastore id provided by the data recipient. This field is only present
+          when the __authentication_type__ is **DATABRICKS**. The identifier is of format
           __cloud__:__region__:__metastore-uuid__.
         :param expiration_time: int (optional)
           Expiration timestamp of the token, in epoch milliseconds.
@@ -58,9 +58,11 @@
         :param owner: str (optional)
           Username of the recipient owner.
         :param properties_kvpairs: :class:`SecurablePropertiesKvPairs` (optional)
-          Recipient properties as map of string key-value pairs.
+          Recipient properties as map of string key-value pairs. When provided in update request, the
+          specified properties will override the existing properties. To add and remove properties, one would
+          need to perform a read-modify-write.
         :param sharing_code: str (optional)
-          The one-time sharing code provided by the data recipient. This field is required when the
+          The one-time sharing code provided by the data recipient. This field is only present when the
           __authentication_type__ is **DATABRICKS**.
         
         :returns: :class:`RecipientInfo`
@@ -174,7 +176,7 @@
         The caller must be the owner of the recipient.
         
         :param name: str
-          The name of the recipient.
+          The name of the Recipient.
         :param existing_token_expire_in_seconds: int
           The expiration time of the bearer token in ISO 8601 format. This will set the expiration_time of
           existing token only to a smaller timestamp, it cannot extend the expiration_time. Use 0 to expire
@@ -224,7 +226,7 @@
         :returns: :class:`GetRecipientSharePermissionsResponse`
         
 
-    .. py:method:: update(name: str [, comment: Optional[str], expiration_time: Optional[int], ip_access_list: Optional[IpAccessList], new_name: Optional[str], owner: Optional[str], properties_kvpairs: Optional[SecurablePropertiesKvPairs]])
+    .. py:method:: update(name: str [, comment: Optional[str], expiration_time: Optional[int], ip_access_list: Optional[IpAccessList], new_name: Optional[str], owner: Optional[str], properties_kvpairs: Optional[SecurablePropertiesKvPairs]]) -> RecipientInfo
 
 
         Usage:
@@ -259,7 +261,7 @@
         :param ip_access_list: :class:`IpAccessList` (optional)
           IP Access List
         :param new_name: str (optional)
-          New name for the recipient.
+          New name for the recipient. .
         :param owner: str (optional)
           Username of the recipient owner.
         :param properties_kvpairs: :class:`SecurablePropertiesKvPairs` (optional)
@@ -267,5 +269,5 @@
           specified properties will override the existing properties. To add and remove properties, one would
           need to perform a read-modify-write.
         
-        
+        :returns: :class:`RecipientInfo`
         

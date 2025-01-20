@@ -381,8 +381,9 @@ class GenieMessage:
     status: Optional[MessageStatus] = None
     """MesssageStatus. The possible values are: * `FETCHING_METADATA`: Fetching metadata from the data
     sources. * `FILTERING_CONTEXT`: Running smart context step to determine relevant context. *
-    `ASKING_AI`: Waiting for the LLM to respond to the users question. * `EXECUTING_QUERY`:
-    Executing AI provided SQL query. Get the SQL query result by calling
+    `ASKING_AI`: Waiting for the LLM to respond to the users question. * `PENDING_WAREHOUSE`:
+    Waiting for warehouse before the SQL query can start executing. * `EXECUTING_QUERY`: Executing
+    AI provided SQL query. Get the SQL query result by calling
     [getMessageQueryResult](:method:genie/getMessageQueryResult) API. **Important: The message
     status will stay in the `EXECUTING_QUERY` until a client calls
     [getMessageQueryResult](:method:genie/getMessageQueryResult)**. * `FAILED`: Generating a
@@ -678,8 +679,9 @@ class MessageErrorType(Enum):
 class MessageStatus(Enum):
     """MesssageStatus. The possible values are: * `FETCHING_METADATA`: Fetching metadata from the data
     sources. * `FILTERING_CONTEXT`: Running smart context step to determine relevant context. *
-    `ASKING_AI`: Waiting for the LLM to respond to the users question. * `EXECUTING_QUERY`:
-    Executing AI provided SQL query. Get the SQL query result by calling
+    `ASKING_AI`: Waiting for the LLM to respond to the users question. * `PENDING_WAREHOUSE`:
+    Waiting for warehouse before the SQL query can start executing. * `EXECUTING_QUERY`: Executing
+    AI provided SQL query. Get the SQL query result by calling
     [getMessageQueryResult](:method:genie/getMessageQueryResult) API. **Important: The message
     status will stay in the `EXECUTING_QUERY` until a client calls
     [getMessageQueryResult](:method:genie/getMessageQueryResult)**. * `FAILED`: Generating a
@@ -696,6 +698,7 @@ class MessageStatus(Enum):
     FAILED = 'FAILED'
     FETCHING_METADATA = 'FETCHING_METADATA'
     FILTERING_CONTEXT = 'FILTERING_CONTEXT'
+    PENDING_WAREHOUSE = 'PENDING_WAREHOUSE'
     QUERY_RESULT_EXPIRED = 'QUERY_RESULT_EXPIRED'
     SUBMITTED = 'SUBMITTED'
 
