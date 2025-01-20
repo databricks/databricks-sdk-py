@@ -135,24 +135,23 @@
         :returns: :class:`ServingEndpointPermissions`
         
 
-    .. py:method:: http_request(connection_name: str, method: ExternalFunctionRequestHttpMethod, path: str [, headers: Optional[str], json: Optional[str], params: Optional[str]]) -> ExternalFunctionResponse
+    .. py:method:: http_request(conn: str, method: ExternalFunctionRequestHttpMethod, path: str [, headers: typing.Dict[str, str], json: typing.Dict[str, str], params: typing.Dict[str, str]]) -> ExternalFunctionResponse
 
         Make external services call using the credentials stored in UC Connection.
-        
-        :param connection_name: str
+        **NOTE:** Experimental: This API may change or be removed in a future release without warning.
+        :param conn: str
           The connection name to use. This is required to identify the external connection.
         :param method: :class:`ExternalFunctionRequestHttpMethod`
-          The HTTP method to use (e.g., 'GET', 'POST').
+          The HTTP method to use (e.g., 'GET', 'POST'). This is required.
         :param path: str
           The relative path for the API endpoint. This is required.
-        :param headers: str (optional)
+        :param headers: Dict[str,str] (optional)
           Additional headers for the request. If not provided, only auth headers from connections would be
           passed.
-        :param json: str (optional)
-          The JSON payload to send in the request body.
-        :param params: str (optional)
+        :param json: Dict[str,str] (optional)
+          JSON payload for the request.
+        :param params: Dict[str,str] (optional)
           Query parameters for the request.
-        
         :returns: :class:`ExternalFunctionResponse`
         
 

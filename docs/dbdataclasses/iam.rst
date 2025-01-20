@@ -12,7 +12,19 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: Actor
+   :members:
+   :undoc-members:
+
+.. autoclass:: CheckPolicyResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: ComplexValue
+   :members:
+   :undoc-members:
+
+.. autoclass:: ConsistencyToken
    :members:
    :undoc-members:
 
@@ -239,6 +251,20 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: PrincipalOutput
+   :members:
+   :undoc-members:
+
+.. py:class:: RequestAuthzIdentity
+
+   Defines the identity to be used for authZ of the request on the server side. See one pager for for more information: http://go/acl/service-identity
+
+   .. py:attribute:: REQUEST_AUTHZ_IDENTITY_SERVICE_IDENTITY
+      :value: "REQUEST_AUTHZ_IDENTITY_SERVICE_IDENTITY"
+
+   .. py:attribute:: REQUEST_AUTHZ_IDENTITY_USER_CONTEXT
+      :value: "REQUEST_AUTHZ_IDENTITY_USER_CONTEXT"
+
+.. autoclass:: ResourceInfo
    :members:
    :undoc-members:
 

@@ -44,7 +44,8 @@
         :param comment: str (optional)
           Description about the provider.
         :param recipient_profile_str: str (optional)
-          This field is required when the __authentication_type__ is **TOKEN** or not provided.
+          This field is required when the __authentication_type__ is **TOKEN**, **OAUTH_CLIENT_CREDENTIALS**
+          or not provided.
         
         :returns: :class:`ProviderInfo`
         
@@ -228,7 +229,8 @@
         :param owner: str (optional)
           Username of Provider owner.
         :param recipient_profile_str: str (optional)
-          This field is required when the __authentication_type__ is **TOKEN** or not provided.
+          This field is required when the __authentication_type__ is **TOKEN**, **OAUTH_CLIENT_CREDENTIALS**
+          or not provided.
         
         :returns: :class:`ProviderInfo`
         

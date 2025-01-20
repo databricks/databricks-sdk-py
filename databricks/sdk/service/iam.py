@@ -107,6 +107,58 @@ class AccessControlResponse:
 
 
 @dataclass
+class Actor:
+    """represents an identity trying to access a resource - user or a service principal group can be a
+    principal of a permission set assignment but an actor is always a user or a service principal"""
+
+    actor_id: Optional[int] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the Actor into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.actor_id is not None: body['actor_id'] = self.actor_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Actor into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.actor_id is not None: body['actor_id'] = self.actor_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> Actor:
+        """Deserializes the Actor from a dictionary."""
+        return cls(actor_id=d.get('actor_id', None))
+
+
+@dataclass
+class CheckPolicyResponse:
+    consistency_token: ConsistencyToken
+
+    is_permitted: Optional[bool] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the CheckPolicyResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.consistency_token: body['consistency_token'] = self.consistency_token.as_dict()
+        if self.is_permitted is not None: body['is_permitted'] = self.is_permitted
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CheckPolicyResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.consistency_token: body['consistency_token'] = self.consistency_token
+        if self.is_permitted is not None: body['is_permitted'] = self.is_permitted
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> CheckPolicyResponse:
+        """Deserializes the CheckPolicyResponse from a dictionary."""
+        return cls(consistency_token=_from_dict(d, 'consistency_token', ConsistencyToken),
+                   is_permitted=d.get('is_permitted', None))
+
+
+@dataclass
 class ComplexValue:
     display: Optional[str] = None
 
@@ -146,6 +198,28 @@ class ComplexValue:
                    ref=d.get('$ref', None),
                    type=d.get('type', None),
                    value=d.get('value', None))
+
+
+@dataclass
+class ConsistencyToken:
+    value: str
+
+    def as_dict(self) -> dict:
+        """Serializes the ConsistencyToken into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.value is not None: body['value'] = self.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ConsistencyToken into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.value is not None: body['value'] = self.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ConsistencyToken:
+        """Deserializes the ConsistencyToken from a dictionary."""
+        return cls(value=d.get('value', None))
 
 
 @dataclass
@@ -1219,6 +1293,49 @@ class PrincipalOutput:
                    user_name=d.get('user_name', None))
 
 
+class RequestAuthzIdentity(Enum):
+    """Defines the identity to be used for authZ of the request on the server side. See one pager for
+    for more information: http://go/acl/service-identity"""
+
+    REQUEST_AUTHZ_IDENTITY_SERVICE_IDENTITY = 'REQUEST_AUTHZ_IDENTITY_SERVICE_IDENTITY'
+    REQUEST_AUTHZ_IDENTITY_USER_CONTEXT = 'REQUEST_AUTHZ_IDENTITY_USER_CONTEXT'
+
+
+@dataclass
+class ResourceInfo:
+    id: str
+    """Id of the current resource."""
+
+    legacy_acl_path: Optional[str] = None
+    """The legacy acl path of the current resource."""
+
+    parent_resource_info: Optional[ResourceInfo] = None
+    """Parent resource info for the current resource. The parent may have another parent."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ResourceInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.id is not None: body['id'] = self.id
+        if self.legacy_acl_path is not None: body['legacy_acl_path'] = self.legacy_acl_path
+        if self.parent_resource_info: body['parent_resource_info'] = self.parent_resource_info.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ResourceInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.id is not None: body['id'] = self.id
+        if self.legacy_acl_path is not None: body['legacy_acl_path'] = self.legacy_acl_path
+        if self.parent_resource_info: body['parent_resource_info'] = self.parent_resource_info
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ResourceInfo:
+        """Deserializes the ResourceInfo from a dictionary."""
+        return cls(id=d.get('id', None),
+                   legacy_acl_path=d.get('legacy_acl_path', None),
+                   parent_resource_info=_from_dict(d, 'parent_resource_info', ResourceInfo))
+
+
 @dataclass
 class ResourceMeta:
     resource_type: Optional[str] = None
@@ -1620,6 +1737,47 @@ class WorkspacePermissions:
     def from_dict(cls, d: Dict[str, any]) -> WorkspacePermissions:
         """Deserializes the WorkspacePermissions from a dictionary."""
         return cls(permissions=_repeated_dict(d, 'permissions', PermissionOutput))
+
+
+class AccessControlAPI:
+    """Rule based Access Control for Databricks Resources."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def check_policy(self,
+                     actor: Actor,
+                     permission: str,
+                     resource: str,
+                     consistency_token: ConsistencyToken,
+                     authz_identity: RequestAuthzIdentity,
+                     *,
+                     resource_info: Optional[ResourceInfo] = None) -> CheckPolicyResponse:
+        """Check access policy to a resource.
+        
+        :param actor: :class:`Actor`
+        :param permission: str
+        :param resource: str
+          Ex: (servicePrincipal/use, accounts/<account-id>/servicePrincipals/<sp-id>) Ex:
+          (servicePrincipal.ruleSet/update, accounts/<account-id>/servicePrincipals/<sp-id>/ruleSets/default)
+        :param consistency_token: :class:`ConsistencyToken`
+        :param authz_identity: :class:`RequestAuthzIdentity`
+        :param resource_info: :class:`ResourceInfo` (optional)
+        
+        :returns: :class:`CheckPolicyResponse`
+        """
+
+        query = {}
+        if actor is not None: query['actor'] = actor.as_dict()
+        if authz_identity is not None: query['authz_identity'] = authz_identity.value
+        if consistency_token is not None: query['consistency_token'] = consistency_token.as_dict()
+        if permission is not None: query['permission'] = permission
+        if resource is not None: query['resource'] = resource
+        if resource_info is not None: query['resource_info'] = resource_info.as_dict()
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do('GET', '/api/2.0/access-control/check-policy-v2', query=query, headers=headers)
+        return CheckPolicyResponse.from_dict(res)
 
 
 class AccountAccessControlAPI:
