@@ -39,11 +39,6 @@
  * Added `contents` field for `databricks.sdk.service.serving.GetOpenApiResponse`.
  * Added `activated`, `activation_url`, `authentication_type`, `cloud`, `comment`, `created_at`, `created_by`, `data_recipient_global_metastore_id`, `ip_access_list`, `metastore_id`, `name`, `owner`, `properties_kvpairs`, `region`, `sharing_code`, `tokens`, `updated_at` and `updated_by` fields for `databricks.sdk.service.sharing.RecipientInfo`.
  * Added `expiration_time` field for `databricks.sdk.service.sharing.RecipientInfo`.
- * Added .
- * Added .
- * Added , ,  and .
- * Added .
- * Added , , ,  and .
  * Changed `update()` method for [a.account_federation_policy](https://databricks-sdk-py.readthedocs.io/en/latest/account/account_federation_policy.html) account-level service with new required argument order.
  * Changed `update()` method for [a.service_principal_federation_policy](https://databricks-sdk-py.readthedocs.io/en/latest/account/service_principal_federation_policy.html) account-level service with new required argument order.
  * Changed `update()` method for [w.recipients](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/recipients.html) workspace-level service to return `databricks.sdk.service.sharing.RecipientInfo` dataclass.
@@ -65,8 +60,6 @@
  * Changed `workload_type` field for `databricks.sdk.service.serving.ServedEntityInput` to type `databricks.sdk.service.serving.ServingModelWorkloadType` dataclass.
  * Changed `workload_type` field for `databricks.sdk.service.serving.ServedEntityOutput` to type `databricks.sdk.service.serving.ServingModelWorkloadType` dataclass.
  * Changed `workload_type` field for `databricks.sdk.service.serving.ServedModelOutput` to type `databricks.sdk.service.serving.ServingModelWorkloadType` dataclass.
- * Changed .
- * Changed .
 
 OpenAPI SHA: 58905570a9928fc9ed31fba14a2edaf9a7c55b08, Date: 2025-01-20
 
