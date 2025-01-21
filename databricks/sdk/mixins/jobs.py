@@ -50,5 +50,4 @@ class JobsExt(jobs.JobsAPI):
             run.repair_history.extend(next_run.repair_history)
             run.next_page_token = next_run.next_page_token
 
-        run.prev_page_token = None
         return run
