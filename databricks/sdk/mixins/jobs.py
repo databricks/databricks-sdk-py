@@ -47,3 +47,29 @@ class JobsExt(jobs.JobsAPI):
 
         run.prev_page_token = None
         return run
+
+    def get(self, job_id: int, *, page_token: Optional[str] = None) -> Job:
+        """Get a single job.
+
+        Retrieves the details for a single job. If the job has multiple pages of tasks, job_clusters, parameters or environments,
+        it will paginate through all pages and aggregate the results.
+
+        :param job_id: int
+          The canonical identifier of the job to retrieve information about. This field is required.
+        :param page_token: str (optional)
+          Use `next_page_token` returned from the previous GetJob to request the next page of the job's
+          sub-resources.
+
+        :returns: :class:`Job`
+        """
+        job = super().get(job_id, page_token=page_token)
+
+        while job.next_page_token is not None:
+            next_job = super().get(job_id, page_token=job.next_page_token)
+            job.settings.tasks.extend(next_job.settings.tasks)
+            job.settings.job_clusters.extend(next_job.settings.job_clusters)
+            job.settings.parameters.extend(next_job.settings.parameters)
+            job.settings.environments.extend(next_job.settings.environments)
+            job.next_page_token = next_job.next_page_token
+
+        return job
