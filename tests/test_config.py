@@ -42,12 +42,16 @@ def test_extra_and_upstream_user_agent(monkeypatch):
         def system(self):
             return 'TestOS'
 
+    # Clear all environment variables and cached CICD provider.
+    for k in os.environ:
+        monkeypatch.delenv(k, raising=False)
+    useragent._cicd_provider = None
+
     monkeypatch.setattr(platform, 'python_version', lambda: '3.0.0')
     monkeypatch.setattr(platform, 'uname', MockUname)
     monkeypatch.setenv('DATABRICKS_SDK_UPSTREAM', "upstream-product")
     monkeypatch.setenv('DATABRICKS_SDK_UPSTREAM_VERSION', "0.0.1")
     monkeypatch.setenv('DATABRICKS_RUNTIME_VERSION', "13.1 anything/else")
-    monkeypatch.delenv('GITHUB_ACTIONS', raising=False)
 
     config = Config(host='http://localhost', username="something", password="something", product='test',
                     product_version='0.0.0') \
