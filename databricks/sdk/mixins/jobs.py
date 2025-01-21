@@ -11,9 +11,10 @@ class JobsExt(jobs.JobsAPI):
                 include_history: Optional[bool] = None,
                 include_resolved_values: Optional[bool] = None,
                 page_token: Optional[str] = None) -> jobs.Run:
-        """
-        This method fetches the details of a run identified by `run_id`. If the run has multiple pages of tasks or iterations,
-        it will paginate through all pages and aggregate the results.
+        """Get a single job run.
+
+        Retrieve the metadata of a run. If a run has multiple pages of tasks, it will paginate through all pages of tasks, iterations, job_clusters, job_parameters, and repair history.
+
         :param run_id: int
           The canonical identifier of the run for which to retrieve the metadata. This field is required.
         :param include_history: bool (optional)
@@ -21,8 +22,9 @@ class JobsExt(jobs.JobsAPI):
         :param include_resolved_values: bool (optional)
           Whether to include resolved parameter values in the response.
         :param page_token: str (optional)
-          To list the next page or the previous page of job tasks, set this field to the value of the
-          `next_page_token` or `prev_page_token` returned in the GetJob response.
+          To list the next page of job tasks, set this field to the value of the `next_page_token` returned in
+          the GetJob response.
+
         :returns: :class:`Run`
         """
         run = super().get_run(run_id,
@@ -43,6 +45,9 @@ class JobsExt(jobs.JobsAPI):
                 run.iterations.extend(next_run.iterations)
             else:
                 run.tasks.extend(next_run.tasks)
+            run.job_clusters.extend(next_run.job_clusters)
+            run.job_parameters.extend(next_run.job_parameters)
+            run.repair_history.extend(next_run.repair_history)
             run.next_page_token = next_run.next_page_token
 
         run.prev_page_token = None
