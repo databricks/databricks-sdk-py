@@ -33,6 +33,7 @@ def test_config_host_url_format_check(mocker, host, expected):
     mocker.patch('databricks.sdk.config.Config.init_auth')
     assert Config(host=host).host == expected
 
+
 def test_extra_and_upstream_user_agent(monkeypatch):
 
     class MockUname:
