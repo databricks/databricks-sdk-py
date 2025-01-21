@@ -44,10 +44,10 @@ def test_user_agent_with_partner(user_agent):
     assert 'partner/differenttest' in user_agent.to_string()
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def clear_cicd():
     # Save and clear env vars.
-    original_env = os.environ
+    original_env = os.environ.copy()
     os.environ.clear()
 
     # Clear cached CICD provider.
