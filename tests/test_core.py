@@ -178,6 +178,10 @@ def test_extra_and_upstream_user_agent(monkeypatch):
         def system(self):
             return 'TestOS'
 
+    # Clear all environment variables.
+    for k in os.environ:
+        monkeypatch.delenv(k, raising=False)
+
     monkeypatch.setattr(platform, 'python_version', lambda: '3.0.0')
     monkeypatch.setattr(platform, 'uname', MockUname)
     monkeypatch.setenv('DATABRICKS_SDK_UPSTREAM', "upstream-product")
