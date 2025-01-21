@@ -33,7 +33,6 @@ def test_config_host_url_format_check(mocker, host, expected):
     mocker.patch('databricks.sdk.config.Config.init_auth')
     assert Config(host=host).host == expected
 
-
 def test_extra_and_upstream_user_agent(monkeypatch):
 
     class MockUname:
@@ -41,6 +40,10 @@ def test_extra_and_upstream_user_agent(monkeypatch):
         @property
         def system(self):
             return 'TestOS'
+
+    # Clear all environment variables.
+    for k in os.environ:
+        monkeypatch.delenv(k, raising=False)
 
     monkeypatch.setattr(platform, 'python_version', lambda: '3.0.0')
     monkeypatch.setattr(platform, 'uname', MockUname)
