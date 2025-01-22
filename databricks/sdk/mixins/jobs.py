@@ -1,6 +1,7 @@
 from typing import Optional
 
 from databricks.sdk.service import jobs
+from databricks.sdk.service.jobs import Job
 
 
 class JobsExt(jobs.JobsAPI):
