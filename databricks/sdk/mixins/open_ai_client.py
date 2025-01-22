@@ -1,12 +1,32 @@
 import json as js
-from typing import Dict, Optional
+from dataclasses import asdict, dataclass
+from typing import Any, Dict, Optional
 
+import databricks
 from databricks.sdk.service.serving import (ExternalFunctionRequestHttpMethod,
                                             ExternalFunctionResponse,
                                             ServingEndpointsAPI)
 
 
 class ServingEndpointsExt(ServingEndpointsAPI):
+
+    @dataclass
+    class ExternalFunctionResponseOverride(ExternalFunctionResponse):
+        text: Dict[str, Any] = None
+        """The content of the response"""
+
+        @classmethod
+        def from_dict(cls, d: Dict[str, Any]) -> "ExternalFunctionResponse":
+            """Deserializes the ExternalFunctionResponse from a dictionary."""
+            return cls(status_code=200, text=d)
+
+        def to_dict(self) -> Dict[str, Any]:
+            """Serializes the object back into a dictionary."""
+            result = asdict(self) # Use dataclasses.asdict to serialize fields
+            # Ensure the text field is serialized correctly
+            if self.text is not None and not isinstance(self.text, str):
+                result["text"] = js.dumps(self.text) # Serialize text as JSON if it's a dict
+            return result
 
     # Using the HTTP Client to pass in the databricks authorization
     # This method will be called on every invocation, so when using with model serving will always get the refreshed token
@@ -82,10 +102,15 @@ class ServingEndpointsExt(ServingEndpointsAPI):
         :returns: :class:`ExternalFunctionResponse`
         """
 
-        return super.http_request(connection_name=conn,
-                                  method=method,
-                                  path=path,
-                                  headers=js.dumps(headers),
-                                  json=js.dumps(json),
-                                  params=js.dumps(params),
-                                  )
+        databricks.sdk.service.serving.ExternalFunctionResponse = (
+            ServingEndpointsExt.ExternalFunctionResponseOverride)
+
+        response = super().http_request(connection_name=conn,
+                                        method=method,
+                                        path=path,
+                                        headers=js.dumps(headers) if headers is not None else None,
+                                        json=js.dumps(json) if json is not None else None,
+                                        params=js.dumps(params) if params is not None else None)
+
+        # Convert the overridden response back to the original response type
+        return ExternalFunctionResponse.from_dict(response.to_dict())
