@@ -40,9 +40,9 @@ class _FsUtil:
         self._dbfs = dbfs_ext
         self._proxy_factory = proxy_factory
 
-    def cp(self, from_: str, to: str, recurse: bool = False) -> bool:
+    def cp(self, from_: str, to: str, recurse: bool = False, overwrite: bool = False) -> bool:
         """Copies a file or directory, possibly across FileSystems """
-        self._dbfs.copy(from_, to, recursive=recurse)
+        self._dbfs.copy(from_, to, recursive=recurse, overwrite=overwrite)
         return True
 
     def head(self, file: str, maxBytes: int = 65536) -> str:
