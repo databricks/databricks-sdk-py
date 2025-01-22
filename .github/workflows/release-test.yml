@@ -5,10 +5,15 @@ on:
 
 jobs:
   publish:
-    runs-on: ubuntu-latest
+    runs-on:
+      group: databricks-deco-testing-runner-group
+      labels: ubuntu-latest-deco
+
     environment: release-test
+
     permissions:
       id-token: write
+
     steps:
       - uses: actions/checkout@v3
 

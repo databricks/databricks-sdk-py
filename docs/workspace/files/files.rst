@@ -13,9 +13,12 @@
     /Volumes/&lt;catalog_name&gt;/&lt;schema_name&gt;/&lt;volume_name&gt;/&lt;path_to_file&gt;.
     
     The Files API has two distinct endpoints, one for working with files (`/fs/files`) and another one for
-    working with directories (`/fs/directories`). Both endpoints, use the standard HTTP methods GET, HEAD,
-    PUT, and DELETE to manage files and directories specified using their URI path. The path is always
-    absolute.
+    working with directories (`/fs/directories`). Both endpoints use the standard HTTP methods GET, HEAD, PUT,
+    and DELETE to manage files and directories specified using their URI path. The path is always absolute.
+    
+    Some Files API client features are currently experimental. To enable them, set
+    `enable_experimental_files_api_client = True` in your configuration profile or use the environment
+    variable `DATABRICKS_ENABLE_EXPERIMENTAL_FILES_API_CLIENT=True`.
     
     [Unity Catalog volumes]: https://docs.databricks.com/en/connect/unity-catalog/volumes.html
 
@@ -64,8 +67,8 @@
 
         Download a file.
         
-        Downloads a file of up to 5 GiB. The file contents are the response body. This is a standard HTTP file
-        download, not a JSON RPC.
+        Downloads a file. The file contents are the response body. This is a standard HTTP file download, not
+        a JSON RPC. It supports the Range and If-Unmodified-Since HTTP headers.
         
         :param file_path: str
           The absolute path of the file.

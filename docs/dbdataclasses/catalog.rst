@@ -193,8 +193,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ColumnTypeName
 
-   Name of type (INT, STRUCT, MAP, etc.).
-
    .. py:attribute:: ARRAY
       :value: "ARRAY"
 
@@ -549,6 +547,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: WORKDAY_RAAS_FORMAT
       :value: "WORKDAY_RAAS_FORMAT"
 
+.. autoclass:: DatabricksGcpServiceAccount
+   :members:
+   :undoc-members:
+
 .. autoclass:: DatabricksGcpServiceAccountRequest
    :members:
    :undoc-members:
@@ -718,11 +720,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: GcpServiceAccountKey
+.. autoclass:: GenerateTemporaryServiceCredentialAzureOptions
    :members:
    :undoc-members:
 
-.. autoclass:: GenerateTemporaryServiceCredentialAzureOptions
+.. autoclass:: GenerateTemporaryServiceCredentialGcpOptions
    :members:
    :undoc-members:
 
@@ -743,11 +745,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: CATALOG
       :value: "CATALOG"
 
+   .. py:attribute:: CREDENTIAL
+      :value: "CREDENTIAL"
+
    .. py:attribute:: EXTERNAL_LOCATION
       :value: "EXTERNAL_LOCATION"
-
-   .. py:attribute:: SERVICE_CREDENTIAL
-      :value: "SERVICE_CREDENTIAL"
 
    .. py:attribute:: STORAGE_CREDENTIAL
       :value: "STORAGE_CREDENTIAL"
@@ -1122,6 +1124,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: CREATE_FOREIGN_CATALOG
       :value: "CREATE_FOREIGN_CATALOG"
 
+   .. py:attribute:: CREATE_FOREIGN_SECURABLE
+      :value: "CREATE_FOREIGN_SECURABLE"
+
    .. py:attribute:: CREATE_FUNCTION
       :value: "CREATE_FUNCTION"
 
@@ -1236,6 +1241,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: ACTIVE
       :value: "ACTIVE"
+
+   .. py:attribute:: DEGRADED
+      :value: "DEGRADED"
 
    .. py:attribute:: DELETING
       :value: "DELETING"
@@ -1455,11 +1463,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: CATALOG
       :value: "CATALOG"
 
+   .. py:attribute:: CREDENTIAL
+      :value: "CREDENTIAL"
+
    .. py:attribute:: EXTERNAL_LOCATION
       :value: "EXTERNAL_LOCATION"
-
-   .. py:attribute:: SERVICE_CREDENTIAL
-      :value: "SERVICE_CREDENTIAL"
 
    .. py:attribute:: STORAGE_CREDENTIAL
       :value: "STORAGE_CREDENTIAL"

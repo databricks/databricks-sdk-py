@@ -24,10 +24,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: DataPlaneInfo
-   :members:
-   :undoc-members:
-
 .. autoclass:: DeleteCustomAppIntegrationOutput
    :members:
    :undoc-members:
@@ -37,6 +33,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: DeleteResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: FederationPolicy
    :members:
    :undoc-members:
 
@@ -60,7 +60,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ListFederationPoliciesResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListServicePrincipalSecretsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: OidcFederationPolicy
    :members:
    :undoc-members:
 

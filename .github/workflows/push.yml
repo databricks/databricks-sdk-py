@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        pyVersion: [ '3.7', '3.8', '3.9', '3.10', '3.11', '3.12' ]
+        pyVersion: [ '3.8', '3.9', '3.10', '3.11', '3.12' ]
     with:
       os: ubuntu-latest
       pyVersion: ${{ matrix.pyVersion }}

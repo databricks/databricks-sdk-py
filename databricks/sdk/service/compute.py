@@ -55,6 +55,16 @@ class AddInstanceProfile:
         if self.skip_validation is not None: body['skip_validation'] = self.skip_validation
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AddInstanceProfile into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.iam_role_arn is not None: body['iam_role_arn'] = self.iam_role_arn
+        if self.instance_profile_arn is not None: body['instance_profile_arn'] = self.instance_profile_arn
+        if self.is_meta_instance_profile is not None:
+            body['is_meta_instance_profile'] = self.is_meta_instance_profile
+        if self.skip_validation is not None: body['skip_validation'] = self.skip_validation
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> AddInstanceProfile:
         """Deserializes the AddInstanceProfile from a dictionary."""
@@ -72,6 +82,11 @@ class AddResponse:
         body = {}
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AddResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> AddResponse:
         """Deserializes the AddResponse from a dictionary."""
@@ -86,6 +101,12 @@ class Adlsgen2Info:
 
     def as_dict(self) -> dict:
         """Serializes the Adlsgen2Info into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.destination is not None: body['destination'] = self.destination
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Adlsgen2Info into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.destination is not None: body['destination'] = self.destination
         return body
@@ -108,6 +129,13 @@ class AutoScale:
 
     def as_dict(self) -> dict:
         """Serializes the AutoScale into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.max_workers is not None: body['max_workers'] = self.max_workers
+        if self.min_workers is not None: body['min_workers'] = self.min_workers
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AutoScale into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.max_workers is not None: body['max_workers'] = self.max_workers
         if self.min_workers is not None: body['min_workers'] = self.min_workers
@@ -216,6 +244,22 @@ class AwsAttributes:
         if self.zone_id is not None: body['zone_id'] = self.zone_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AwsAttributes into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.availability is not None: body['availability'] = self.availability
+        if self.ebs_volume_count is not None: body['ebs_volume_count'] = self.ebs_volume_count
+        if self.ebs_volume_iops is not None: body['ebs_volume_iops'] = self.ebs_volume_iops
+        if self.ebs_volume_size is not None: body['ebs_volume_size'] = self.ebs_volume_size
+        if self.ebs_volume_throughput is not None: body['ebs_volume_throughput'] = self.ebs_volume_throughput
+        if self.ebs_volume_type is not None: body['ebs_volume_type'] = self.ebs_volume_type
+        if self.first_on_demand is not None: body['first_on_demand'] = self.first_on_demand
+        if self.instance_profile_arn is not None: body['instance_profile_arn'] = self.instance_profile_arn
+        if self.spot_bid_price_percent is not None:
+            body['spot_bid_price_percent'] = self.spot_bid_price_percent
+        if self.zone_id is not None: body['zone_id'] = self.zone_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> AwsAttributes:
         """Deserializes the AwsAttributes from a dictionary."""
@@ -275,6 +319,15 @@ class AzureAttributes:
         if self.spot_bid_max_price is not None: body['spot_bid_max_price'] = self.spot_bid_max_price
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AzureAttributes into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.availability is not None: body['availability'] = self.availability
+        if self.first_on_demand is not None: body['first_on_demand'] = self.first_on_demand
+        if self.log_analytics_info: body['log_analytics_info'] = self.log_analytics_info
+        if self.spot_bid_max_price is not None: body['spot_bid_max_price'] = self.spot_bid_max_price
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> AzureAttributes:
         """Deserializes the AzureAttributes from a dictionary."""
@@ -310,6 +363,14 @@ class CancelCommand:
         if self.context_id is not None: body['contextId'] = self.context_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CancelCommand into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.cluster_id is not None: body['clusterId'] = self.cluster_id
+        if self.command_id is not None: body['commandId'] = self.command_id
+        if self.context_id is not None: body['contextId'] = self.context_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CancelCommand:
         """Deserializes the CancelCommand from a dictionary."""
@@ -323,6 +384,11 @@ class CancelResponse:
 
     def as_dict(self) -> dict:
         """Serializes the CancelResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CancelResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -347,6 +413,13 @@ class ChangeClusterOwner:
         if self.owner_username is not None: body['owner_username'] = self.owner_username
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ChangeClusterOwner into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        if self.owner_username is not None: body['owner_username'] = self.owner_username
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ChangeClusterOwner:
         """Deserializes the ChangeClusterOwner from a dictionary."""
@@ -358,6 +431,11 @@ class ChangeClusterOwnerResponse:
 
     def as_dict(self) -> dict:
         """Serializes the ChangeClusterOwnerResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ChangeClusterOwnerResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -382,6 +460,13 @@ class ClientsTypes:
         if self.notebooks is not None: body['notebooks'] = self.notebooks
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ClientsTypes into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.jobs is not None: body['jobs'] = self.jobs
+        if self.notebooks is not None: body['notebooks'] = self.notebooks
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ClientsTypes:
         """Deserializes the ClientsTypes from a dictionary."""
@@ -395,6 +480,12 @@ class CloneCluster:
 
     def as_dict(self) -> dict:
         """Serializes the CloneCluster into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.source_cluster_id is not None: body['source_cluster_id'] = self.source_cluster_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CloneCluster into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.source_cluster_id is not None: body['source_cluster_id'] = self.source_cluster_id
         return body
@@ -413,6 +504,12 @@ class CloudProviderNodeInfo:
         """Serializes the CloudProviderNodeInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.status: body['status'] = [v.value for v in self.status]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CloudProviderNodeInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.status: body['status'] = self.status
         return body
 
     @classmethod
@@ -451,6 +548,16 @@ class ClusterAccessControlRequest:
         if self.user_name is not None: body['user_name'] = self.user_name
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ClusterAccessControlRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.permission_level is not None: body['permission_level'] = self.permission_level
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
+        if self.user_name is not None: body['user_name'] = self.user_name
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ClusterAccessControlRequest:
         """Deserializes the ClusterAccessControlRequest from a dictionary."""
@@ -481,6 +588,17 @@ class ClusterAccessControlResponse:
         """Serializes the ClusterAccessControlResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.all_permissions: body['all_permissions'] = [v.as_dict() for v in self.all_permissions]
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
+        if self.user_name is not None: body['user_name'] = self.user_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ClusterAccessControlResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.all_permissions: body['all_permissions'] = self.all_permissions
         if self.display_name is not None: body['display_name'] = self.display_name
         if self.group_name is not None: body['group_name'] = self.group_name
         if self.service_principal_name is not None:
@@ -541,13 +659,19 @@ class ClusterAttributes:
     data_security_mode: Optional[DataSecurityMode] = None
     """Data security mode decides what data governance model to use when accessing data from a cluster.
     
-    * `NONE`: No security isolation for multiple users sharing the cluster. Data governance features
-    are not available in this mode. * `SINGLE_USER`: A secure cluster that can only be exclusively
-    used by a single user specified in `single_user_name`. Most programming languages, cluster
-    features and data governance features are available in this mode. * `USER_ISOLATION`: A secure
-    cluster that can be shared by multiple users. Cluster users are fully isolated so that they
-    cannot see each other's data and credentials. Most data governance features are supported in
-    this mode. But programming languages and cluster features might be limited.
+    The following modes can only be used with `kind`. * `DATA_SECURITY_MODE_AUTO`: Databricks will
+    choose the most appropriate access mode depending on your compute configuration. *
+    `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:
+    Alias for `SINGLE_USER`.
+    
+    The following modes can be used regardless of `kind`. * `NONE`: No security isolation for
+    multiple users sharing the cluster. Data governance features are not available in this mode. *
+    `SINGLE_USER`: A secure cluster that can only be exclusively used by a single user specified in
+    `single_user_name`. Most programming languages, cluster features and data governance features
+    are available in this mode. * `USER_ISOLATION`: A secure cluster that can be shared by multiple
+    users. Cluster users are fully isolated so that they cannot see each other's data and
+    credentials. Most data governance features are supported in this mode. But programming languages
+    and cluster features might be limited.
     
     The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
     future Databricks Runtime versions:
@@ -587,6 +711,20 @@ class ClusterAttributes:
 
     instance_pool_id: Optional[str] = None
     """The optional ID of the instance pool to which the cluster belongs."""
+
+    is_single_node: Optional[bool] = None
+    """This field can only be used with `kind`.
+    
+    When set to true, Databricks will automatically set single node related `custom_tags`,
+    `spark_conf`, and `num_workers`"""
+
+    kind: Optional[Kind] = None
+    """The kind of compute described by this compute specification.
+    
+    Depending on `kind`, different validations and default values will be applied.
+    
+    The first usage of this value is for the simple cluster form where it sets `kind =
+    CLASSIC_PREVIEW`."""
 
     node_type_id: Optional[str] = None
     """This field encodes, through a single value, the resources available to each of the Spark nodes
@@ -632,6 +770,12 @@ class ClusterAttributes:
     private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can
     be specified."""
 
+    use_ml_runtime: Optional[bool] = None
+    """This field can only be used with `kind`.
+    
+    `effective_spark_version` is determined by `spark_version` (DBR release), this field
+    `use_ml_runtime`, and whether `node_type_id` is gpu node or not."""
+
     workload_type: Optional[WorkloadType] = None
 
     def as_dict(self) -> dict:
@@ -655,6 +799,8 @@ class ClusterAttributes:
         if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes.as_dict()
         if self.init_scripts: body['init_scripts'] = [v.as_dict() for v in self.init_scripts]
         if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        if self.is_single_node is not None: body['is_single_node'] = self.is_single_node
+        if self.kind is not None: body['kind'] = self.kind.value
         if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
         if self.policy_id is not None: body['policy_id'] = self.policy_id
         if self.runtime_engine is not None: body['runtime_engine'] = self.runtime_engine.value
@@ -663,7 +809,43 @@ class ClusterAttributes:
         if self.spark_env_vars: body['spark_env_vars'] = self.spark_env_vars
         if self.spark_version is not None: body['spark_version'] = self.spark_version
         if self.ssh_public_keys: body['ssh_public_keys'] = [v for v in self.ssh_public_keys]
+        if self.use_ml_runtime is not None: body['use_ml_runtime'] = self.use_ml_runtime
         if self.workload_type: body['workload_type'] = self.workload_type.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ClusterAttributes into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.autotermination_minutes is not None:
+            body['autotermination_minutes'] = self.autotermination_minutes
+        if self.aws_attributes: body['aws_attributes'] = self.aws_attributes
+        if self.azure_attributes: body['azure_attributes'] = self.azure_attributes
+        if self.cluster_log_conf: body['cluster_log_conf'] = self.cluster_log_conf
+        if self.cluster_name is not None: body['cluster_name'] = self.cluster_name
+        if self.custom_tags: body['custom_tags'] = self.custom_tags
+        if self.data_security_mode is not None: body['data_security_mode'] = self.data_security_mode
+        if self.docker_image: body['docker_image'] = self.docker_image
+        if self.driver_instance_pool_id is not None:
+            body['driver_instance_pool_id'] = self.driver_instance_pool_id
+        if self.driver_node_type_id is not None: body['driver_node_type_id'] = self.driver_node_type_id
+        if self.enable_elastic_disk is not None: body['enable_elastic_disk'] = self.enable_elastic_disk
+        if self.enable_local_disk_encryption is not None:
+            body['enable_local_disk_encryption'] = self.enable_local_disk_encryption
+        if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes
+        if self.init_scripts: body['init_scripts'] = self.init_scripts
+        if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        if self.is_single_node is not None: body['is_single_node'] = self.is_single_node
+        if self.kind is not None: body['kind'] = self.kind
+        if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
+        if self.policy_id is not None: body['policy_id'] = self.policy_id
+        if self.runtime_engine is not None: body['runtime_engine'] = self.runtime_engine
+        if self.single_user_name is not None: body['single_user_name'] = self.single_user_name
+        if self.spark_conf: body['spark_conf'] = self.spark_conf
+        if self.spark_env_vars: body['spark_env_vars'] = self.spark_env_vars
+        if self.spark_version is not None: body['spark_version'] = self.spark_version
+        if self.ssh_public_keys: body['ssh_public_keys'] = self.ssh_public_keys
+        if self.use_ml_runtime is not None: body['use_ml_runtime'] = self.use_ml_runtime
+        if self.workload_type: body['workload_type'] = self.workload_type
         return body
 
     @classmethod
@@ -684,6 +866,8 @@ class ClusterAttributes:
                    gcp_attributes=_from_dict(d, 'gcp_attributes', GcpAttributes),
                    init_scripts=_repeated_dict(d, 'init_scripts', InitScriptInfo),
                    instance_pool_id=d.get('instance_pool_id', None),
+                   is_single_node=d.get('is_single_node', None),
+                   kind=_enum(d, 'kind', Kind),
                    node_type_id=d.get('node_type_id', None),
                    policy_id=d.get('policy_id', None),
                    runtime_engine=_enum(d, 'runtime_engine', RuntimeEngine),
@@ -692,6 +876,7 @@ class ClusterAttributes:
                    spark_env_vars=d.get('spark_env_vars', None),
                    spark_version=d.get('spark_version', None),
                    ssh_public_keys=d.get('ssh_public_keys', None),
+                   use_ml_runtime=d.get('use_ml_runtime', None),
                    workload_type=_from_dict(d, 'workload_type', WorkloadType))
 
 
@@ -710,6 +895,14 @@ class ClusterCompliance:
 
     def as_dict(self) -> dict:
         """Serializes the ClusterCompliance into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        if self.is_compliant is not None: body['is_compliant'] = self.is_compliant
+        if self.violations: body['violations'] = self.violations
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ClusterCompliance into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
         if self.is_compliant is not None: body['is_compliant'] = self.is_compliant
@@ -790,13 +983,19 @@ class ClusterDetails:
     data_security_mode: Optional[DataSecurityMode] = None
     """Data security mode decides what data governance model to use when accessing data from a cluster.
     
-    * `NONE`: No security isolation for multiple users sharing the cluster. Data governance features
-    are not available in this mode. * `SINGLE_USER`: A secure cluster that can only be exclusively
-    used by a single user specified in `single_user_name`. Most programming languages, cluster
-    features and data governance features are available in this mode. * `USER_ISOLATION`: A secure
-    cluster that can be shared by multiple users. Cluster users are fully isolated so that they
-    cannot see each other's data and credentials. Most data governance features are supported in
-    this mode. But programming languages and cluster features might be limited.
+    The following modes can only be used with `kind`. * `DATA_SECURITY_MODE_AUTO`: Databricks will
+    choose the most appropriate access mode depending on your compute configuration. *
+    `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:
+    Alias for `SINGLE_USER`.
+    
+    The following modes can be used regardless of `kind`. * `NONE`: No security isolation for
+    multiple users sharing the cluster. Data governance features are not available in this mode. *
+    `SINGLE_USER`: A secure cluster that can only be exclusively used by a single user specified in
+    `single_user_name`. Most programming languages, cluster features and data governance features
+    are available in this mode. * `USER_ISOLATION`: A secure cluster that can be shared by multiple
+    users. Cluster users are fully isolated so that they cannot see each other's data and
+    credentials. Most data governance features are supported in this mode. But programming languages
+    and cluster features might be limited.
     
     The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
     future Databricks Runtime versions:
@@ -857,9 +1056,23 @@ class ClusterDetails:
     instance_pool_id: Optional[str] = None
     """The optional ID of the instance pool to which the cluster belongs."""
 
+    is_single_node: Optional[bool] = None
+    """This field can only be used with `kind`.
+    
+    When set to true, Databricks will automatically set single node related `custom_tags`,
+    `spark_conf`, and `num_workers`"""
+
     jdbc_port: Optional[int] = None
     """Port on which Spark JDBC server is listening, in the driver nod. No service will be listeningon
     on this port in executor nodes."""
+
+    kind: Optional[Kind] = None
+    """The kind of compute described by this compute specification.
+    
+    Depending on `kind`, different validations and default values will be applied.
+    
+    The first usage of this value is for the simple cluster form where it sets `kind =
+    CLASSIC_PREVIEW`."""
 
     last_restarted_time: Optional[int] = None
     """the timestamp that the cluster was started/restarted"""
@@ -953,6 +1166,12 @@ class ClusterDetails:
     """Information about why the cluster was terminated. This field only appears when the cluster is in
     a `TERMINATING` or `TERMINATED` state."""
 
+    use_ml_runtime: Optional[bool] = None
+    """This field can only be used with `kind`.
+    
+    `effective_spark_version` is determined by `spark_version` (DBR release), this field
+    `use_ml_runtime`, and whether `node_type_id` is gpu node or not."""
+
     workload_type: Optional[WorkloadType] = None
 
     def as_dict(self) -> dict:
@@ -986,7 +1205,9 @@ class ClusterDetails:
         if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes.as_dict()
         if self.init_scripts: body['init_scripts'] = [v.as_dict() for v in self.init_scripts]
         if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        if self.is_single_node is not None: body['is_single_node'] = self.is_single_node
         if self.jdbc_port is not None: body['jdbc_port'] = self.jdbc_port
+        if self.kind is not None: body['kind'] = self.kind.value
         if self.last_restarted_time is not None: body['last_restarted_time'] = self.last_restarted_time
         if self.last_state_loss_time is not None: body['last_state_loss_time'] = self.last_state_loss_time
         if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
@@ -1005,7 +1226,64 @@ class ClusterDetails:
         if self.state_message is not None: body['state_message'] = self.state_message
         if self.terminated_time is not None: body['terminated_time'] = self.terminated_time
         if self.termination_reason: body['termination_reason'] = self.termination_reason.as_dict()
+        if self.use_ml_runtime is not None: body['use_ml_runtime'] = self.use_ml_runtime
         if self.workload_type: body['workload_type'] = self.workload_type.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ClusterDetails into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.autoscale: body['autoscale'] = self.autoscale
+        if self.autotermination_minutes is not None:
+            body['autotermination_minutes'] = self.autotermination_minutes
+        if self.aws_attributes: body['aws_attributes'] = self.aws_attributes
+        if self.azure_attributes: body['azure_attributes'] = self.azure_attributes
+        if self.cluster_cores is not None: body['cluster_cores'] = self.cluster_cores
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        if self.cluster_log_conf: body['cluster_log_conf'] = self.cluster_log_conf
+        if self.cluster_log_status: body['cluster_log_status'] = self.cluster_log_status
+        if self.cluster_memory_mb is not None: body['cluster_memory_mb'] = self.cluster_memory_mb
+        if self.cluster_name is not None: body['cluster_name'] = self.cluster_name
+        if self.cluster_source is not None: body['cluster_source'] = self.cluster_source
+        if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
+        if self.custom_tags: body['custom_tags'] = self.custom_tags
+        if self.data_security_mode is not None: body['data_security_mode'] = self.data_security_mode
+        if self.default_tags: body['default_tags'] = self.default_tags
+        if self.docker_image: body['docker_image'] = self.docker_image
+        if self.driver: body['driver'] = self.driver
+        if self.driver_instance_pool_id is not None:
+            body['driver_instance_pool_id'] = self.driver_instance_pool_id
+        if self.driver_node_type_id is not None: body['driver_node_type_id'] = self.driver_node_type_id
+        if self.enable_elastic_disk is not None: body['enable_elastic_disk'] = self.enable_elastic_disk
+        if self.enable_local_disk_encryption is not None:
+            body['enable_local_disk_encryption'] = self.enable_local_disk_encryption
+        if self.executors: body['executors'] = self.executors
+        if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes
+        if self.init_scripts: body['init_scripts'] = self.init_scripts
+        if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        if self.is_single_node is not None: body['is_single_node'] = self.is_single_node
+        if self.jdbc_port is not None: body['jdbc_port'] = self.jdbc_port
+        if self.kind is not None: body['kind'] = self.kind
+        if self.last_restarted_time is not None: body['last_restarted_time'] = self.last_restarted_time
+        if self.last_state_loss_time is not None: body['last_state_loss_time'] = self.last_state_loss_time
+        if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
+        if self.num_workers is not None: body['num_workers'] = self.num_workers
+        if self.policy_id is not None: body['policy_id'] = self.policy_id
+        if self.runtime_engine is not None: body['runtime_engine'] = self.runtime_engine
+        if self.single_user_name is not None: body['single_user_name'] = self.single_user_name
+        if self.spark_conf: body['spark_conf'] = self.spark_conf
+        if self.spark_context_id is not None: body['spark_context_id'] = self.spark_context_id
+        if self.spark_env_vars: body['spark_env_vars'] = self.spark_env_vars
+        if self.spark_version is not None: body['spark_version'] = self.spark_version
+        if self.spec: body['spec'] = self.spec
+        if self.ssh_public_keys: body['ssh_public_keys'] = self.ssh_public_keys
+        if self.start_time is not None: body['start_time'] = self.start_time
+        if self.state is not None: body['state'] = self.state
+        if self.state_message is not None: body['state_message'] = self.state_message
+        if self.terminated_time is not None: body['terminated_time'] = self.terminated_time
+        if self.termination_reason: body['termination_reason'] = self.termination_reason
+        if self.use_ml_runtime is not None: body['use_ml_runtime'] = self.use_ml_runtime
+        if self.workload_type: body['workload_type'] = self.workload_type
         return body
 
     @classmethod
@@ -1036,7 +1314,9 @@ class ClusterDetails:
                    gcp_attributes=_from_dict(d, 'gcp_attributes', GcpAttributes),
                    init_scripts=_repeated_dict(d, 'init_scripts', InitScriptInfo),
                    instance_pool_id=d.get('instance_pool_id', None),
+                   is_single_node=d.get('is_single_node', None),
                    jdbc_port=d.get('jdbc_port', None),
+                   kind=_enum(d, 'kind', Kind),
                    last_restarted_time=d.get('last_restarted_time', None),
                    last_state_loss_time=d.get('last_state_loss_time', None),
                    node_type_id=d.get('node_type_id', None),
@@ -1055,6 +1335,7 @@ class ClusterDetails:
                    state_message=d.get('state_message', None),
                    terminated_time=d.get('terminated_time', None),
                    termination_reason=_from_dict(d, 'termination_reason', TerminationReason),
+                   use_ml_runtime=d.get('use_ml_runtime', None),
                    workload_type=_from_dict(d, 'workload_type', WorkloadType))
 
 
@@ -1086,6 +1367,16 @@ class ClusterEvent:
         if self.type is not None: body['type'] = self.type.value
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ClusterEvent into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        if self.data_plane_event_details: body['data_plane_event_details'] = self.data_plane_event_details
+        if self.details: body['details'] = self.details
+        if self.timestamp is not None: body['timestamp'] = self.timestamp
+        if self.type is not None: body['type'] = self.type
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ClusterEvent:
         """Deserializes the ClusterEvent from a dictionary."""
@@ -1109,6 +1400,13 @@ class ClusterLibraryStatuses:
         body = {}
         if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
         if self.library_statuses: body['library_statuses'] = [v.as_dict() for v in self.library_statuses]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ClusterLibraryStatuses into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        if self.library_statuses: body['library_statuses'] = self.library_statuses
         return body
 
     @classmethod
@@ -1137,6 +1435,13 @@ class ClusterLogConf:
         if self.s3: body['s3'] = self.s3.as_dict()
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ClusterLogConf into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.dbfs: body['dbfs'] = self.dbfs
+        if self.s3: body['s3'] = self.s3
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ClusterLogConf:
         """Deserializes the ClusterLogConf from a dictionary."""
@@ -1158,6 +1463,14 @@ class ClusterPermission:
         if self.inherited is not None: body['inherited'] = self.inherited
         if self.inherited_from_object: body['inherited_from_object'] = [v for v in self.inherited_from_object]
         if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ClusterPermission into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.inherited is not None: body['inherited'] = self.inherited
+        if self.inherited_from_object: body['inherited_from_object'] = self.inherited_from_object
+        if self.permission_level is not None: body['permission_level'] = self.permission_level
         return body
 
     @classmethod
@@ -1193,6 +1506,14 @@ class ClusterPermissions:
         if self.object_type is not None: body['object_type'] = self.object_type
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ClusterPermissions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.access_control_list: body['access_control_list'] = self.access_control_list
+        if self.object_id is not None: body['object_id'] = self.object_id
+        if self.object_type is not None: body['object_type'] = self.object_type
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ClusterPermissions:
         """Deserializes the ClusterPermissions from a dictionary."""
@@ -1215,6 +1536,13 @@ class ClusterPermissionsDescription:
         if self.permission_level is not None: body['permission_level'] = self.permission_level.value
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ClusterPermissionsDescription into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.description is not None: body['description'] = self.description
+        if self.permission_level is not None: body['permission_level'] = self.permission_level
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ClusterPermissionsDescription:
         """Deserializes the ClusterPermissionsDescription from a dictionary."""
@@ -1234,6 +1562,13 @@ class ClusterPermissionsRequest:
         body = {}
         if self.access_control_list:
             body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ClusterPermissionsRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.access_control_list: body['access_control_list'] = self.access_control_list
         if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
         return body
 
@@ -1263,6 +1598,16 @@ class ClusterPolicyAccessControlRequest:
         body = {}
         if self.group_name is not None: body['group_name'] = self.group_name
         if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
+        if self.user_name is not None: body['user_name'] = self.user_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ClusterPolicyAccessControlRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.permission_level is not None: body['permission_level'] = self.permission_level
         if self.service_principal_name is not None:
             body['service_principal_name'] = self.service_principal_name
         if self.user_name is not None: body['user_name'] = self.user_name
@@ -1305,6 +1650,17 @@ class ClusterPolicyAccessControlResponse:
         if self.user_name is not None: body['user_name'] = self.user_name
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ClusterPolicyAccessControlResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.all_permissions: body['all_permissions'] = self.all_permissions
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
+        if self.user_name is not None: body['user_name'] = self.user_name
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ClusterPolicyAccessControlResponse:
         """Deserializes the ClusterPolicyAccessControlResponse from a dictionary."""
@@ -1330,6 +1686,14 @@ class ClusterPolicyPermission:
         if self.inherited is not None: body['inherited'] = self.inherited
         if self.inherited_from_object: body['inherited_from_object'] = [v for v in self.inherited_from_object]
         if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ClusterPolicyPermission into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.inherited is not None: body['inherited'] = self.inherited
+        if self.inherited_from_object: body['inherited_from_object'] = self.inherited_from_object
+        if self.permission_level is not None: body['permission_level'] = self.permission_level
         return body
 
     @classmethod
@@ -1363,6 +1727,14 @@ class ClusterPolicyPermissions:
         if self.object_type is not None: body['object_type'] = self.object_type
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ClusterPolicyPermissions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.access_control_list: body['access_control_list'] = self.access_control_list
+        if self.object_id is not None: body['object_id'] = self.object_id
+        if self.object_type is not None: body['object_type'] = self.object_type
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ClusterPolicyPermissions:
         """Deserializes the ClusterPolicyPermissions from a dictionary."""
@@ -1386,6 +1758,13 @@ class ClusterPolicyPermissionsDescription:
         if self.permission_level is not None: body['permission_level'] = self.permission_level.value
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ClusterPolicyPermissionsDescription into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.description is not None: body['description'] = self.description
+        if self.permission_level is not None: body['permission_level'] = self.permission_level
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ClusterPolicyPermissionsDescription:
         """Deserializes the ClusterPolicyPermissionsDescription from a dictionary."""
@@ -1405,6 +1784,13 @@ class ClusterPolicyPermissionsRequest:
         body = {}
         if self.access_control_list:
             body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
+        if self.cluster_policy_id is not None: body['cluster_policy_id'] = self.cluster_policy_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ClusterPolicyPermissionsRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.access_control_list: body['access_control_list'] = self.access_control_list
         if self.cluster_policy_id is not None: body['cluster_policy_id'] = self.cluster_policy_id
         return body
 
@@ -1442,6 +1828,14 @@ class ClusterSettingsChange:
         if self.previous_value is not None: body['previous_value'] = self.previous_value
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ClusterSettingsChange into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.field is not None: body['field'] = self.field
+        if self.new_value is not None: body['new_value'] = self.new_value
+        if self.previous_value is not None: body['previous_value'] = self.previous_value
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ClusterSettingsChange:
         """Deserializes the ClusterSettingsChange from a dictionary."""
@@ -1470,6 +1864,13 @@ class ClusterSize:
         """Serializes the ClusterSize into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.autoscale: body['autoscale'] = self.autoscale.as_dict()
+        if self.num_workers is not None: body['num_workers'] = self.num_workers
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ClusterSize into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.autoscale: body['autoscale'] = self.autoscale
         if self.num_workers is not None: body['num_workers'] = self.num_workers
         return body
 
@@ -1539,13 +1940,19 @@ class ClusterSpec:
     data_security_mode: Optional[DataSecurityMode] = None
     """Data security mode decides what data governance model to use when accessing data from a cluster.
     
-    * `NONE`: No security isolation for multiple users sharing the cluster. Data governance features
-    are not available in this mode. * `SINGLE_USER`: A secure cluster that can only be exclusively
-    used by a single user specified in `single_user_name`. Most programming languages, cluster
-    features and data governance features are available in this mode. * `USER_ISOLATION`: A secure
-    cluster that can be shared by multiple users. Cluster users are fully isolated so that they
-    cannot see each other's data and credentials. Most data governance features are supported in
-    this mode. But programming languages and cluster features might be limited.
+    The following modes can only be used with `kind`. * `DATA_SECURITY_MODE_AUTO`: Databricks will
+    choose the most appropriate access mode depending on your compute configuration. *
+    `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:
+    Alias for `SINGLE_USER`.
+    
+    The following modes can be used regardless of `kind`. * `NONE`: No security isolation for
+    multiple users sharing the cluster. Data governance features are not available in this mode. *
+    `SINGLE_USER`: A secure cluster that can only be exclusively used by a single user specified in
+    `single_user_name`. Most programming languages, cluster features and data governance features
+    are available in this mode. * `USER_ISOLATION`: A secure cluster that can be shared by multiple
+    users. Cluster users are fully isolated so that they cannot see each other's data and
+    credentials. Most data governance features are supported in this mode. But programming languages
+    and cluster features might be limited.
     
     The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
     future Databricks Runtime versions:
@@ -1585,6 +1992,20 @@ class ClusterSpec:
 
     instance_pool_id: Optional[str] = None
     """The optional ID of the instance pool to which the cluster belongs."""
+
+    is_single_node: Optional[bool] = None
+    """This field can only be used with `kind`.
+    
+    When set to true, Databricks will automatically set single node related `custom_tags`,
+    `spark_conf`, and `num_workers`"""
+
+    kind: Optional[Kind] = None
+    """The kind of compute described by this compute specification.
+    
+    Depending on `kind`, different validations and default values will be applied.
+    
+    The first usage of this value is for the simple cluster form where it sets `kind =
+    CLASSIC_PREVIEW`."""
 
     node_type_id: Optional[str] = None
     """This field encodes, through a single value, the resources available to each of the Spark nodes
@@ -1644,6 +2065,12 @@ class ClusterSpec:
     private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can
     be specified."""
 
+    use_ml_runtime: Optional[bool] = None
+    """This field can only be used with `kind`.
+    
+    `effective_spark_version` is determined by `spark_version` (DBR release), this field
+    `use_ml_runtime`, and whether `node_type_id` is gpu node or not."""
+
     workload_type: Optional[WorkloadType] = None
 
     def as_dict(self) -> dict:
@@ -1670,6 +2097,8 @@ class ClusterSpec:
         if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes.as_dict()
         if self.init_scripts: body['init_scripts'] = [v.as_dict() for v in self.init_scripts]
         if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        if self.is_single_node is not None: body['is_single_node'] = self.is_single_node
+        if self.kind is not None: body['kind'] = self.kind.value
         if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
         if self.num_workers is not None: body['num_workers'] = self.num_workers
         if self.policy_id is not None: body['policy_id'] = self.policy_id
@@ -1679,7 +2108,47 @@ class ClusterSpec:
         if self.spark_env_vars: body['spark_env_vars'] = self.spark_env_vars
         if self.spark_version is not None: body['spark_version'] = self.spark_version
         if self.ssh_public_keys: body['ssh_public_keys'] = [v for v in self.ssh_public_keys]
+        if self.use_ml_runtime is not None: body['use_ml_runtime'] = self.use_ml_runtime
         if self.workload_type: body['workload_type'] = self.workload_type.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ClusterSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.apply_policy_default_values is not None:
+            body['apply_policy_default_values'] = self.apply_policy_default_values
+        if self.autoscale: body['autoscale'] = self.autoscale
+        if self.autotermination_minutes is not None:
+            body['autotermination_minutes'] = self.autotermination_minutes
+        if self.aws_attributes: body['aws_attributes'] = self.aws_attributes
+        if self.azure_attributes: body['azure_attributes'] = self.azure_attributes
+        if self.cluster_log_conf: body['cluster_log_conf'] = self.cluster_log_conf
+        if self.cluster_name is not None: body['cluster_name'] = self.cluster_name
+        if self.custom_tags: body['custom_tags'] = self.custom_tags
+        if self.data_security_mode is not None: body['data_security_mode'] = self.data_security_mode
+        if self.docker_image: body['docker_image'] = self.docker_image
+        if self.driver_instance_pool_id is not None:
+            body['driver_instance_pool_id'] = self.driver_instance_pool_id
+        if self.driver_node_type_id is not None: body['driver_node_type_id'] = self.driver_node_type_id
+        if self.enable_elastic_disk is not None: body['enable_elastic_disk'] = self.enable_elastic_disk
+        if self.enable_local_disk_encryption is not None:
+            body['enable_local_disk_encryption'] = self.enable_local_disk_encryption
+        if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes
+        if self.init_scripts: body['init_scripts'] = self.init_scripts
+        if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        if self.is_single_node is not None: body['is_single_node'] = self.is_single_node
+        if self.kind is not None: body['kind'] = self.kind
+        if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
+        if self.num_workers is not None: body['num_workers'] = self.num_workers
+        if self.policy_id is not None: body['policy_id'] = self.policy_id
+        if self.runtime_engine is not None: body['runtime_engine'] = self.runtime_engine
+        if self.single_user_name is not None: body['single_user_name'] = self.single_user_name
+        if self.spark_conf: body['spark_conf'] = self.spark_conf
+        if self.spark_env_vars: body['spark_env_vars'] = self.spark_env_vars
+        if self.spark_version is not None: body['spark_version'] = self.spark_version
+        if self.ssh_public_keys: body['ssh_public_keys'] = self.ssh_public_keys
+        if self.use_ml_runtime is not None: body['use_ml_runtime'] = self.use_ml_runtime
+        if self.workload_type: body['workload_type'] = self.workload_type
         return body
 
     @classmethod
@@ -1702,6 +2171,8 @@ class ClusterSpec:
                    gcp_attributes=_from_dict(d, 'gcp_attributes', GcpAttributes),
                    init_scripts=_repeated_dict(d, 'init_scripts', InitScriptInfo),
                    instance_pool_id=d.get('instance_pool_id', None),
+                   is_single_node=d.get('is_single_node', None),
+                   kind=_enum(d, 'kind', Kind),
                    node_type_id=d.get('node_type_id', None),
                    num_workers=d.get('num_workers', None),
                    policy_id=d.get('policy_id', None),
@@ -1711,6 +2182,7 @@ class ClusterSpec:
                    spark_env_vars=d.get('spark_env_vars', None),
                    spark_version=d.get('spark_version', None),
                    ssh_public_keys=d.get('ssh_public_keys', None),
+                   use_ml_runtime=d.get('use_ml_runtime', None),
                    workload_type=_from_dict(d, 'workload_type', WorkloadType))
 
 
@@ -1734,6 +2206,15 @@ class Command:
         if self.command is not None: body['command'] = self.command
         if self.context_id is not None: body['contextId'] = self.context_id
         if self.language is not None: body['language'] = self.language.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Command into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.cluster_id is not None: body['clusterId'] = self.cluster_id
+        if self.command is not None: body['command'] = self.command
+        if self.context_id is not None: body['contextId'] = self.context_id
+        if self.language is not None: body['language'] = self.language
         return body
 
     @classmethod
@@ -1771,6 +2252,14 @@ class CommandStatusResponse:
         if self.status is not None: body['status'] = self.status.value
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CommandStatusResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.id is not None: body['id'] = self.id
+        if self.results: body['results'] = self.results
+        if self.status is not None: body['status'] = self.status
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CommandStatusResponse:
         """Deserializes the CommandStatusResponse from a dictionary."""
@@ -1797,6 +2286,13 @@ class ContextStatusResponse:
         body = {}
         if self.id is not None: body['id'] = self.id
         if self.status is not None: body['status'] = self.status.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ContextStatusResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.id is not None: body['id'] = self.id
+        if self.status is not None: body['status'] = self.status
         return body
 
     @classmethod
@@ -1860,13 +2356,19 @@ class CreateCluster:
     data_security_mode: Optional[DataSecurityMode] = None
     """Data security mode decides what data governance model to use when accessing data from a cluster.
     
-    * `NONE`: No security isolation for multiple users sharing the cluster. Data governance features
-    are not available in this mode. * `SINGLE_USER`: A secure cluster that can only be exclusively
-    used by a single user specified in `single_user_name`. Most programming languages, cluster
-    features and data governance features are available in this mode. * `USER_ISOLATION`: A secure
-    cluster that can be shared by multiple users. Cluster users are fully isolated so that they
-    cannot see each other's data and credentials. Most data governance features are supported in
-    this mode. But programming languages and cluster features might be limited.
+    The following modes can only be used with `kind`. * `DATA_SECURITY_MODE_AUTO`: Databricks will
+    choose the most appropriate access mode depending on your compute configuration. *
+    `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:
+    Alias for `SINGLE_USER`.
+    
+    The following modes can be used regardless of `kind`. * `NONE`: No security isolation for
+    multiple users sharing the cluster. Data governance features are not available in this mode. *
+    `SINGLE_USER`: A secure cluster that can only be exclusively used by a single user specified in
+    `single_user_name`. Most programming languages, cluster features and data governance features
+    are available in this mode. * `USER_ISOLATION`: A secure cluster that can be shared by multiple
+    users. Cluster users are fully isolated so that they cannot see each other's data and
+    credentials. Most data governance features are supported in this mode. But programming languages
+    and cluster features might be limited.
     
     The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
     future Databricks Runtime versions:
@@ -1906,6 +2408,20 @@ class CreateCluster:
 
     instance_pool_id: Optional[str] = None
     """The optional ID of the instance pool to which the cluster belongs."""
+
+    is_single_node: Optional[bool] = None
+    """This field can only be used with `kind`.
+    
+    When set to true, Databricks will automatically set single node related `custom_tags`,
+    `spark_conf`, and `num_workers`"""
+
+    kind: Optional[Kind] = None
+    """The kind of compute described by this compute specification.
+    
+    Depending on `kind`, different validations and default values will be applied.
+    
+    The first usage of this value is for the simple cluster form where it sets `kind =
+    CLASSIC_PREVIEW`."""
 
     node_type_id: Optional[str] = None
     """This field encodes, through a single value, the resources available to each of the Spark nodes
@@ -1961,6 +2477,12 @@ class CreateCluster:
     private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can
     be specified."""
 
+    use_ml_runtime: Optional[bool] = None
+    """This field can only be used with `kind`.
+    
+    `effective_spark_version` is determined by `spark_version` (DBR release), this field
+    `use_ml_runtime`, and whether `node_type_id` is gpu node or not."""
+
     workload_type: Optional[WorkloadType] = None
 
     def as_dict(self) -> dict:
@@ -1988,6 +2510,8 @@ class CreateCluster:
         if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes.as_dict()
         if self.init_scripts: body['init_scripts'] = [v.as_dict() for v in self.init_scripts]
         if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        if self.is_single_node is not None: body['is_single_node'] = self.is_single_node
+        if self.kind is not None: body['kind'] = self.kind.value
         if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
         if self.num_workers is not None: body['num_workers'] = self.num_workers
         if self.policy_id is not None: body['policy_id'] = self.policy_id
@@ -1997,7 +2521,48 @@ class CreateCluster:
         if self.spark_env_vars: body['spark_env_vars'] = self.spark_env_vars
         if self.spark_version is not None: body['spark_version'] = self.spark_version
         if self.ssh_public_keys: body['ssh_public_keys'] = [v for v in self.ssh_public_keys]
+        if self.use_ml_runtime is not None: body['use_ml_runtime'] = self.use_ml_runtime
         if self.workload_type: body['workload_type'] = self.workload_type.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateCluster into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.apply_policy_default_values is not None:
+            body['apply_policy_default_values'] = self.apply_policy_default_values
+        if self.autoscale: body['autoscale'] = self.autoscale
+        if self.autotermination_minutes is not None:
+            body['autotermination_minutes'] = self.autotermination_minutes
+        if self.aws_attributes: body['aws_attributes'] = self.aws_attributes
+        if self.azure_attributes: body['azure_attributes'] = self.azure_attributes
+        if self.clone_from: body['clone_from'] = self.clone_from
+        if self.cluster_log_conf: body['cluster_log_conf'] = self.cluster_log_conf
+        if self.cluster_name is not None: body['cluster_name'] = self.cluster_name
+        if self.custom_tags: body['custom_tags'] = self.custom_tags
+        if self.data_security_mode is not None: body['data_security_mode'] = self.data_security_mode
+        if self.docker_image: body['docker_image'] = self.docker_image
+        if self.driver_instance_pool_id is not None:
+            body['driver_instance_pool_id'] = self.driver_instance_pool_id
+        if self.driver_node_type_id is not None: body['driver_node_type_id'] = self.driver_node_type_id
+        if self.enable_elastic_disk is not None: body['enable_elastic_disk'] = self.enable_elastic_disk
+        if self.enable_local_disk_encryption is not None:
+            body['enable_local_disk_encryption'] = self.enable_local_disk_encryption
+        if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes
+        if self.init_scripts: body['init_scripts'] = self.init_scripts
+        if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        if self.is_single_node is not None: body['is_single_node'] = self.is_single_node
+        if self.kind is not None: body['kind'] = self.kind
+        if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
+        if self.num_workers is not None: body['num_workers'] = self.num_workers
+        if self.policy_id is not None: body['policy_id'] = self.policy_id
+        if self.runtime_engine is not None: body['runtime_engine'] = self.runtime_engine
+        if self.single_user_name is not None: body['single_user_name'] = self.single_user_name
+        if self.spark_conf: body['spark_conf'] = self.spark_conf
+        if self.spark_env_vars: body['spark_env_vars'] = self.spark_env_vars
+        if self.spark_version is not None: body['spark_version'] = self.spark_version
+        if self.ssh_public_keys: body['ssh_public_keys'] = self.ssh_public_keys
+        if self.use_ml_runtime is not None: body['use_ml_runtime'] = self.use_ml_runtime
+        if self.workload_type: body['workload_type'] = self.workload_type
         return body
 
     @classmethod
@@ -2021,6 +2586,8 @@ class CreateCluster:
                    gcp_attributes=_from_dict(d, 'gcp_attributes', GcpAttributes),
                    init_scripts=_repeated_dict(d, 'init_scripts', InitScriptInfo),
                    instance_pool_id=d.get('instance_pool_id', None),
+                   is_single_node=d.get('is_single_node', None),
+                   kind=_enum(d, 'kind', Kind),
                    node_type_id=d.get('node_type_id', None),
                    num_workers=d.get('num_workers', None),
                    policy_id=d.get('policy_id', None),
@@ -2030,6 +2597,7 @@ class CreateCluster:
                    spark_env_vars=d.get('spark_env_vars', None),
                    spark_version=d.get('spark_version', None),
                    ssh_public_keys=d.get('ssh_public_keys', None),
+                   use_ml_runtime=d.get('use_ml_runtime', None),
                    workload_type=_from_dict(d, 'workload_type', WorkloadType))
 
 
@@ -2039,6 +2607,12 @@ class CreateClusterResponse:
 
     def as_dict(self) -> dict:
         """Serializes the CreateClusterResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateClusterResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
         return body
@@ -2061,6 +2635,13 @@ class CreateContext:
         body = {}
         if self.cluster_id is not None: body['clusterId'] = self.cluster_id
         if self.language is not None: body['language'] = self.language.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateContext into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.cluster_id is not None: body['clusterId'] = self.cluster_id
+        if self.language is not None: body['language'] = self.language
         return body
 
     @classmethod
@@ -2152,6 +2733,25 @@ class CreateInstancePool:
             body['preloaded_spark_versions'] = [v for v in self.preloaded_spark_versions]
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateInstancePool into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.aws_attributes: body['aws_attributes'] = self.aws_attributes
+        if self.azure_attributes: body['azure_attributes'] = self.azure_attributes
+        if self.custom_tags: body['custom_tags'] = self.custom_tags
+        if self.disk_spec: body['disk_spec'] = self.disk_spec
+        if self.enable_elastic_disk is not None: body['enable_elastic_disk'] = self.enable_elastic_disk
+        if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes
+        if self.idle_instance_autotermination_minutes is not None:
+            body['idle_instance_autotermination_minutes'] = self.idle_instance_autotermination_minutes
+        if self.instance_pool_name is not None: body['instance_pool_name'] = self.instance_pool_name
+        if self.max_capacity is not None: body['max_capacity'] = self.max_capacity
+        if self.min_idle_instances is not None: body['min_idle_instances'] = self.min_idle_instances
+        if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
+        if self.preloaded_docker_images: body['preloaded_docker_images'] = self.preloaded_docker_images
+        if self.preloaded_spark_versions: body['preloaded_spark_versions'] = self.preloaded_spark_versions
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateInstancePool:
         """Deserializes the CreateInstancePool from a dictionary."""
@@ -2177,6 +2777,12 @@ class CreateInstancePoolResponse:
 
     def as_dict(self) -> dict:
         """Serializes the CreateInstancePoolResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateInstancePoolResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
         return body
@@ -2238,6 +2844,19 @@ class CreatePolicy:
         if self.policy_family_id is not None: body['policy_family_id'] = self.policy_family_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreatePolicy into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.definition is not None: body['definition'] = self.definition
+        if self.description is not None: body['description'] = self.description
+        if self.libraries: body['libraries'] = self.libraries
+        if self.max_clusters_per_user is not None: body['max_clusters_per_user'] = self.max_clusters_per_user
+        if self.name is not None: body['name'] = self.name
+        if self.policy_family_definition_overrides is not None:
+            body['policy_family_definition_overrides'] = self.policy_family_definition_overrides
+        if self.policy_family_id is not None: body['policy_family_id'] = self.policy_family_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreatePolicy:
         """Deserializes the CreatePolicy from a dictionary."""
@@ -2261,6 +2880,12 @@ class CreatePolicyResponse:
         if self.policy_id is not None: body['policy_id'] = self.policy_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreatePolicyResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.policy_id is not None: body['policy_id'] = self.policy_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreatePolicyResponse:
         """Deserializes the CreatePolicyResponse from a dictionary."""
@@ -2278,6 +2903,12 @@ class CreateResponse:
         if self.script_id is not None: body['script_id'] = self.script_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.script_id is not None: body['script_id'] = self.script_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateResponse:
         """Deserializes the CreateResponse from a dictionary."""
@@ -2290,6 +2921,12 @@ class Created:
 
     def as_dict(self) -> dict:
         """Serializes the Created into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.id is not None: body['id'] = self.id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Created into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.id is not None: body['id'] = self.id
         return body
@@ -2323,6 +2960,15 @@ class DataPlaneEventDetails:
         if self.timestamp is not None: body['timestamp'] = self.timestamp
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DataPlaneEventDetails into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.event_type is not None: body['event_type'] = self.event_type
+        if self.executor_failures is not None: body['executor_failures'] = self.executor_failures
+        if self.host_id is not None: body['host_id'] = self.host_id
+        if self.timestamp is not None: body['timestamp'] = self.timestamp
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> DataPlaneEventDetails:
         """Deserializes the DataPlaneEventDetails from a dictionary."""
@@ -2342,13 +2988,19 @@ class DataPlaneEventDetailsEventType(Enum):
 class DataSecurityMode(Enum):
     """Data security mode decides what data governance model to use when accessing data from a cluster.
     
-    * `NONE`: No security isolation for multiple users sharing the cluster. Data governance features
-    are not available in this mode. * `SINGLE_USER`: A secure cluster that can only be exclusively
-    used by a single user specified in `single_user_name`. Most programming languages, cluster
-    features and data governance features are available in this mode. * `USER_ISOLATION`: A secure
-    cluster that can be shared by multiple users. Cluster users are fully isolated so that they
-    cannot see each other's data and credentials. Most data governance features are supported in
-    this mode. But programming languages and cluster features might be limited.
+    The following modes can only be used with `kind`. * `DATA_SECURITY_MODE_AUTO`: Databricks will
+    choose the most appropriate access mode depending on your compute configuration. *
+    `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:
+    Alias for `SINGLE_USER`.
+    
+    The following modes can be used regardless of `kind`. * `NONE`: No security isolation for
+    multiple users sharing the cluster. Data governance features are not available in this mode. *
+    `SINGLE_USER`: A secure cluster that can only be exclusively used by a single user specified in
+    `single_user_name`. Most programming languages, cluster features and data governance features
+    are available in this mode. * `USER_ISOLATION`: A secure cluster that can be shared by multiple
+    users. Cluster users are fully isolated so that they cannot see each other's data and
+    credentials. Most data governance features are supported in this mode. But programming languages
+    and cluster features might be limited.
     
     The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
     future Databricks Runtime versions:
@@ -2359,6 +3011,9 @@ class DataSecurityMode(Enum):
     Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This mode provides a way that
     doesn’t have UC nor passthrough enabled."""
 
+    DATA_SECURITY_MODE_AUTO = 'DATA_SECURITY_MODE_AUTO'
+    DATA_SECURITY_MODE_DEDICATED = 'DATA_SECURITY_MODE_DEDICATED'
+    DATA_SECURITY_MODE_STANDARD = 'DATA_SECURITY_MODE_STANDARD'
     LEGACY_PASSTHROUGH = 'LEGACY_PASSTHROUGH'
     LEGACY_SINGLE_USER = 'LEGACY_SINGLE_USER'
     LEGACY_SINGLE_USER_STANDARD = 'LEGACY_SINGLE_USER_STANDARD'
@@ -2375,6 +3030,12 @@ class DbfsStorageInfo:
 
     def as_dict(self) -> dict:
         """Serializes the DbfsStorageInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.destination is not None: body['destination'] = self.destination
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DbfsStorageInfo into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.destination is not None: body['destination'] = self.destination
         return body
@@ -2396,6 +3057,12 @@ class DeleteCluster:
         if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteCluster into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> DeleteCluster:
         """Deserializes the DeleteCluster from a dictionary."""
@@ -2407,6 +3074,11 @@ class DeleteClusterResponse:
 
     def as_dict(self) -> dict:
         """Serializes the DeleteClusterResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteClusterResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -2427,6 +3099,12 @@ class DeleteInstancePool:
         if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteInstancePool into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> DeleteInstancePool:
         """Deserializes the DeleteInstancePool from a dictionary."""
@@ -2438,6 +3116,11 @@ class DeleteInstancePoolResponse:
 
     def as_dict(self) -> dict:
         """Serializes the DeleteInstancePoolResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteInstancePoolResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -2458,6 +3141,12 @@ class DeletePolicy:
         if self.policy_id is not None: body['policy_id'] = self.policy_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeletePolicy into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.policy_id is not None: body['policy_id'] = self.policy_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> DeletePolicy:
         """Deserializes the DeletePolicy from a dictionary."""
@@ -2472,6 +3161,11 @@ class DeletePolicyResponse:
         body = {}
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeletePolicyResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> DeletePolicyResponse:
         """Deserializes the DeletePolicyResponse from a dictionary."""
@@ -2483,6 +3177,11 @@ class DeleteResponse:
 
     def as_dict(self) -> dict:
         """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -2505,6 +3204,13 @@ class DestroyContext:
         if self.context_id is not None: body['contextId'] = self.context_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DestroyContext into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.cluster_id is not None: body['clusterId'] = self.cluster_id
+        if self.context_id is not None: body['contextId'] = self.context_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> DestroyContext:
         """Deserializes the DestroyContext from a dictionary."""
@@ -2516,6 +3222,11 @@ class DestroyResponse:
 
     def as_dict(self) -> dict:
         """Serializes the DestroyResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DestroyResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -2567,6 +3278,16 @@ class DiskSpec:
         if self.disk_type: body['disk_type'] = self.disk_type.as_dict()
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DiskSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.disk_count is not None: body['disk_count'] = self.disk_count
+        if self.disk_iops is not None: body['disk_iops'] = self.disk_iops
+        if self.disk_size is not None: body['disk_size'] = self.disk_size
+        if self.disk_throughput is not None: body['disk_throughput'] = self.disk_throughput
+        if self.disk_type: body['disk_type'] = self.disk_type
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> DiskSpec:
         """Deserializes the DiskSpec from a dictionary."""
@@ -2589,6 +3310,14 @@ class DiskType:
         if self.azure_disk_volume_type is not None:
             body['azure_disk_volume_type'] = self.azure_disk_volume_type.value
         if self.ebs_volume_type is not None: body['ebs_volume_type'] = self.ebs_volume_type.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DiskType into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.azure_disk_volume_type is not None:
+            body['azure_disk_volume_type'] = self.azure_disk_volume_type
+        if self.ebs_volume_type is not None: body['ebs_volume_type'] = self.ebs_volume_type
         return body
 
     @classmethod
@@ -2625,6 +3354,13 @@ class DockerBasicAuth:
         if self.username is not None: body['username'] = self.username
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DockerBasicAuth into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.password is not None: body['password'] = self.password
+        if self.username is not None: body['username'] = self.username
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> DockerBasicAuth:
         """Deserializes the DockerBasicAuth from a dictionary."""
@@ -2642,6 +3378,13 @@ class DockerImage:
         """Serializes the DockerImage into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.basic_auth: body['basic_auth'] = self.basic_auth.as_dict()
+        if self.url is not None: body['url'] = self.url
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DockerImage into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.basic_auth: body['basic_auth'] = self.basic_auth
         if self.url is not None: body['url'] = self.url
         return body
 
@@ -2712,13 +3455,19 @@ class EditCluster:
     data_security_mode: Optional[DataSecurityMode] = None
     """Data security mode decides what data governance model to use when accessing data from a cluster.
     
-    * `NONE`: No security isolation for multiple users sharing the cluster. Data governance features
-    are not available in this mode. * `SINGLE_USER`: A secure cluster that can only be exclusively
-    used by a single user specified in `single_user_name`. Most programming languages, cluster
-    features and data governance features are available in this mode. * `USER_ISOLATION`: A secure
-    cluster that can be shared by multiple users. Cluster users are fully isolated so that they
-    cannot see each other's data and credentials. Most data governance features are supported in
-    this mode. But programming languages and cluster features might be limited.
+    The following modes can only be used with `kind`. * `DATA_SECURITY_MODE_AUTO`: Databricks will
+    choose the most appropriate access mode depending on your compute configuration. *
+    `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:
+    Alias for `SINGLE_USER`.
+    
+    The following modes can be used regardless of `kind`. * `NONE`: No security isolation for
+    multiple users sharing the cluster. Data governance features are not available in this mode. *
+    `SINGLE_USER`: A secure cluster that can only be exclusively used by a single user specified in
+    `single_user_name`. Most programming languages, cluster features and data governance features
+    are available in this mode. * `USER_ISOLATION`: A secure cluster that can be shared by multiple
+    users. Cluster users are fully isolated so that they cannot see each other's data and
+    credentials. Most data governance features are supported in this mode. But programming languages
+    and cluster features might be limited.
     
     The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
     future Databricks Runtime versions:
@@ -2758,6 +3507,20 @@ class EditCluster:
 
     instance_pool_id: Optional[str] = None
     """The optional ID of the instance pool to which the cluster belongs."""
+
+    is_single_node: Optional[bool] = None
+    """This field can only be used with `kind`.
+    
+    When set to true, Databricks will automatically set single node related `custom_tags`,
+    `spark_conf`, and `num_workers`"""
+
+    kind: Optional[Kind] = None
+    """The kind of compute described by this compute specification.
+    
+    Depending on `kind`, different validations and default values will be applied.
+    
+    The first usage of this value is for the simple cluster form where it sets `kind =
+    CLASSIC_PREVIEW`."""
 
     node_type_id: Optional[str] = None
     """This field encodes, through a single value, the resources available to each of the Spark nodes
@@ -2813,6 +3576,12 @@ class EditCluster:
     private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can
     be specified."""
 
+    use_ml_runtime: Optional[bool] = None
+    """This field can only be used with `kind`.
+    
+    `effective_spark_version` is determined by `spark_version` (DBR release), this field
+    `use_ml_runtime`, and whether `node_type_id` is gpu node or not."""
+
     workload_type: Optional[WorkloadType] = None
 
     def as_dict(self) -> dict:
@@ -2840,6 +3609,8 @@ class EditCluster:
         if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes.as_dict()
         if self.init_scripts: body['init_scripts'] = [v.as_dict() for v in self.init_scripts]
         if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        if self.is_single_node is not None: body['is_single_node'] = self.is_single_node
+        if self.kind is not None: body['kind'] = self.kind.value
         if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
         if self.num_workers is not None: body['num_workers'] = self.num_workers
         if self.policy_id is not None: body['policy_id'] = self.policy_id
@@ -2849,7 +3620,48 @@ class EditCluster:
         if self.spark_env_vars: body['spark_env_vars'] = self.spark_env_vars
         if self.spark_version is not None: body['spark_version'] = self.spark_version
         if self.ssh_public_keys: body['ssh_public_keys'] = [v for v in self.ssh_public_keys]
+        if self.use_ml_runtime is not None: body['use_ml_runtime'] = self.use_ml_runtime
         if self.workload_type: body['workload_type'] = self.workload_type.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EditCluster into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.apply_policy_default_values is not None:
+            body['apply_policy_default_values'] = self.apply_policy_default_values
+        if self.autoscale: body['autoscale'] = self.autoscale
+        if self.autotermination_minutes is not None:
+            body['autotermination_minutes'] = self.autotermination_minutes
+        if self.aws_attributes: body['aws_attributes'] = self.aws_attributes
+        if self.azure_attributes: body['azure_attributes'] = self.azure_attributes
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        if self.cluster_log_conf: body['cluster_log_conf'] = self.cluster_log_conf
+        if self.cluster_name is not None: body['cluster_name'] = self.cluster_name
+        if self.custom_tags: body['custom_tags'] = self.custom_tags
+        if self.data_security_mode is not None: body['data_security_mode'] = self.data_security_mode
+        if self.docker_image: body['docker_image'] = self.docker_image
+        if self.driver_instance_pool_id is not None:
+            body['driver_instance_pool_id'] = self.driver_instance_pool_id
+        if self.driver_node_type_id is not None: body['driver_node_type_id'] = self.driver_node_type_id
+        if self.enable_elastic_disk is not None: body['enable_elastic_disk'] = self.enable_elastic_disk
+        if self.enable_local_disk_encryption is not None:
+            body['enable_local_disk_encryption'] = self.enable_local_disk_encryption
+        if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes
+        if self.init_scripts: body['init_scripts'] = self.init_scripts
+        if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        if self.is_single_node is not None: body['is_single_node'] = self.is_single_node
+        if self.kind is not None: body['kind'] = self.kind
+        if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
+        if self.num_workers is not None: body['num_workers'] = self.num_workers
+        if self.policy_id is not None: body['policy_id'] = self.policy_id
+        if self.runtime_engine is not None: body['runtime_engine'] = self.runtime_engine
+        if self.single_user_name is not None: body['single_user_name'] = self.single_user_name
+        if self.spark_conf: body['spark_conf'] = self.spark_conf
+        if self.spark_env_vars: body['spark_env_vars'] = self.spark_env_vars
+        if self.spark_version is not None: body['spark_version'] = self.spark_version
+        if self.ssh_public_keys: body['ssh_public_keys'] = self.ssh_public_keys
+        if self.use_ml_runtime is not None: body['use_ml_runtime'] = self.use_ml_runtime
+        if self.workload_type: body['workload_type'] = self.workload_type
         return body
 
     @classmethod
@@ -2873,6 +3685,8 @@ class EditCluster:
                    gcp_attributes=_from_dict(d, 'gcp_attributes', GcpAttributes),
                    init_scripts=_repeated_dict(d, 'init_scripts', InitScriptInfo),
                    instance_pool_id=d.get('instance_pool_id', None),
+                   is_single_node=d.get('is_single_node', None),
+                   kind=_enum(d, 'kind', Kind),
                    node_type_id=d.get('node_type_id', None),
                    num_workers=d.get('num_workers', None),
                    policy_id=d.get('policy_id', None),
@@ -2882,6 +3696,7 @@ class EditCluster:
                    spark_env_vars=d.get('spark_env_vars', None),
                    spark_version=d.get('spark_version', None),
                    ssh_public_keys=d.get('ssh_public_keys', None),
+                   use_ml_runtime=d.get('use_ml_runtime', None),
                    workload_type=_from_dict(d, 'workload_type', WorkloadType))
 
 
@@ -2890,6 +3705,11 @@ class EditClusterResponse:
 
     def as_dict(self) -> dict:
         """Serializes the EditClusterResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EditClusterResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -2948,6 +3768,19 @@ class EditInstancePool:
         if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EditInstancePool into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.custom_tags: body['custom_tags'] = self.custom_tags
+        if self.idle_instance_autotermination_minutes is not None:
+            body['idle_instance_autotermination_minutes'] = self.idle_instance_autotermination_minutes
+        if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        if self.instance_pool_name is not None: body['instance_pool_name'] = self.instance_pool_name
+        if self.max_capacity is not None: body['max_capacity'] = self.max_capacity
+        if self.min_idle_instances is not None: body['min_idle_instances'] = self.min_idle_instances
+        if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> EditInstancePool:
         """Deserializes the EditInstancePool from a dictionary."""
@@ -2965,6 +3798,11 @@ class EditInstancePoolResponse:
 
     def as_dict(self) -> dict:
         """Serializes the EditInstancePoolResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EditInstancePoolResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -3029,6 +3867,20 @@ class EditPolicy:
         if self.policy_id is not None: body['policy_id'] = self.policy_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EditPolicy into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.definition is not None: body['definition'] = self.definition
+        if self.description is not None: body['description'] = self.description
+        if self.libraries: body['libraries'] = self.libraries
+        if self.max_clusters_per_user is not None: body['max_clusters_per_user'] = self.max_clusters_per_user
+        if self.name is not None: body['name'] = self.name
+        if self.policy_family_definition_overrides is not None:
+            body['policy_family_definition_overrides'] = self.policy_family_definition_overrides
+        if self.policy_family_id is not None: body['policy_family_id'] = self.policy_family_id
+        if self.policy_id is not None: body['policy_id'] = self.policy_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> EditPolicy:
         """Deserializes the EditPolicy from a dictionary."""
@@ -3050,6 +3902,11 @@ class EditPolicyResponse:
         body = {}
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EditPolicyResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> EditPolicyResponse:
         """Deserializes the EditPolicyResponse from a dictionary."""
@@ -3061,6 +3918,11 @@ class EditResponse:
 
     def as_dict(self) -> dict:
         """Serializes the EditResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EditResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -3086,6 +3948,13 @@ class EnforceClusterComplianceRequest:
         if self.validate_only is not None: body['validate_only'] = self.validate_only
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EnforceClusterComplianceRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        if self.validate_only is not None: body['validate_only'] = self.validate_only
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> EnforceClusterComplianceRequest:
         """Deserializes the EnforceClusterComplianceRequest from a dictionary."""
@@ -3106,6 +3975,13 @@ class EnforceClusterComplianceResponse:
         """Serializes the EnforceClusterComplianceResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.changes: body['changes'] = [v.as_dict() for v in self.changes]
+        if self.has_changes is not None: body['has_changes'] = self.has_changes
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EnforceClusterComplianceResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.changes: body['changes'] = self.changes
         if self.has_changes is not None: body['has_changes'] = self.has_changes
         return body
 
@@ -3139,6 +4015,13 @@ class Environment:
         body = {}
         if self.client is not None: body['client'] = self.client
         if self.dependencies: body['dependencies'] = [v for v in self.dependencies]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Environment into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.client is not None: body['client'] = self.client
+        if self.dependencies: body['dependencies'] = self.dependencies
         return body
 
     @classmethod
@@ -3238,6 +4121,32 @@ class EventDetails:
         if self.user is not None: body['user'] = self.user
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EventDetails into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.attributes: body['attributes'] = self.attributes
+        if self.cause is not None: body['cause'] = self.cause
+        if self.cluster_size: body['cluster_size'] = self.cluster_size
+        if self.current_num_vcpus is not None: body['current_num_vcpus'] = self.current_num_vcpus
+        if self.current_num_workers is not None: body['current_num_workers'] = self.current_num_workers
+        if self.did_not_expand_reason is not None: body['did_not_expand_reason'] = self.did_not_expand_reason
+        if self.disk_size is not None: body['disk_size'] = self.disk_size
+        if self.driver_state_message is not None: body['driver_state_message'] = self.driver_state_message
+        if self.enable_termination_for_node_blocklisted is not None:
+            body['enable_termination_for_node_blocklisted'] = self.enable_termination_for_node_blocklisted
+        if self.free_space is not None: body['free_space'] = self.free_space
+        if self.init_scripts: body['init_scripts'] = self.init_scripts
+        if self.instance_id is not None: body['instance_id'] = self.instance_id
+        if self.job_run_name is not None: body['job_run_name'] = self.job_run_name
+        if self.previous_attributes: body['previous_attributes'] = self.previous_attributes
+        if self.previous_cluster_size: body['previous_cluster_size'] = self.previous_cluster_size
+        if self.previous_disk_size is not None: body['previous_disk_size'] = self.previous_disk_size
+        if self.reason: body['reason'] = self.reason
+        if self.target_num_vcpus is not None: body['target_num_vcpus'] = self.target_num_vcpus
+        if self.target_num_workers is not None: body['target_num_workers'] = self.target_num_workers
+        if self.user is not None: body['user'] = self.user
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> EventDetails:
         """Deserializes the EventDetails from a dictionary."""
@@ -3275,6 +4184,10 @@ class EventDetailsCause(Enum):
 
 class EventType(Enum):
 
+    ADD_NODES_FAILED = 'ADD_NODES_FAILED'
+    AUTOMATIC_CLUSTER_UPDATE = 'AUTOMATIC_CLUSTER_UPDATE'
+    AUTOSCALING_BACKOFF = 'AUTOSCALING_BACKOFF'
+    AUTOSCALING_FAILED = 'AUTOSCALING_FAILED'
     AUTOSCALING_STATS_REPORT = 'AUTOSCALING_STATS_REPORT'
     CREATING = 'CREATING'
     DBFS_DOWN = 'DBFS_DOWN'
@@ -3348,6 +4261,19 @@ class GcpAttributes:
         if self.zone_id is not None: body['zone_id'] = self.zone_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GcpAttributes into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.availability is not None: body['availability'] = self.availability
+        if self.boot_disk_size is not None: body['boot_disk_size'] = self.boot_disk_size
+        if self.google_service_account is not None:
+            body['google_service_account'] = self.google_service_account
+        if self.local_ssd_count is not None: body['local_ssd_count'] = self.local_ssd_count
+        if self.use_preemptible_executors is not None:
+            body['use_preemptible_executors'] = self.use_preemptible_executors
+        if self.zone_id is not None: body['zone_id'] = self.zone_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> GcpAttributes:
         """Deserializes the GcpAttributes from a dictionary."""
@@ -3379,6 +4305,12 @@ class GcsStorageInfo:
         if self.destination is not None: body['destination'] = self.destination
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GcsStorageInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.destination is not None: body['destination'] = self.destination
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> GcsStorageInfo:
         """Deserializes the GcsStorageInfo from a dictionary."""
@@ -3403,6 +4335,13 @@ class GetClusterComplianceResponse:
         if self.violations: body['violations'] = self.violations
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetClusterComplianceResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.is_compliant is not None: body['is_compliant'] = self.is_compliant
+        if self.violations: body['violations'] = self.violations
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> GetClusterComplianceResponse:
         """Deserializes the GetClusterComplianceResponse from a dictionary."""
@@ -3420,6 +4359,12 @@ class GetClusterPermissionLevelsResponse:
         if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetClusterPermissionLevelsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.permission_levels: body['permission_levels'] = self.permission_levels
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> GetClusterPermissionLevelsResponse:
         """Deserializes the GetClusterPermissionLevelsResponse from a dictionary."""
@@ -3435,6 +4380,12 @@ class GetClusterPolicyPermissionLevelsResponse:
         """Serializes the GetClusterPolicyPermissionLevelsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetClusterPolicyPermissionLevelsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.permission_levels: body['permission_levels'] = self.permission_levels
         return body
 
     @classmethod
@@ -3482,6 +4433,18 @@ class GetEvents:
         if self.start_time is not None: body['start_time'] = self.start_time
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetEvents into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        if self.end_time is not None: body['end_time'] = self.end_time
+        if self.event_types: body['event_types'] = self.event_types
+        if self.limit is not None: body['limit'] = self.limit
+        if self.offset is not None: body['offset'] = self.offset
+        if self.order is not None: body['order'] = self.order
+        if self.start_time is not None: body['start_time'] = self.start_time
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> GetEvents:
         """Deserializes the GetEvents from a dictionary."""
@@ -3518,6 +4481,14 @@ class GetEventsResponse:
         body = {}
         if self.events: body['events'] = [v.as_dict() for v in self.events]
         if self.next_page: body['next_page'] = self.next_page.as_dict()
+        if self.total_count is not None: body['total_count'] = self.total_count
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetEventsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.events: body['events'] = self.events
+        if self.next_page: body['next_page'] = self.next_page
         if self.total_count is not None: body['total_count'] = self.total_count
         return body
 
@@ -3640,6 +4611,30 @@ class GetInstancePool:
         if self.status: body['status'] = self.status.as_dict()
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetInstancePool into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.aws_attributes: body['aws_attributes'] = self.aws_attributes
+        if self.azure_attributes: body['azure_attributes'] = self.azure_attributes
+        if self.custom_tags: body['custom_tags'] = self.custom_tags
+        if self.default_tags: body['default_tags'] = self.default_tags
+        if self.disk_spec: body['disk_spec'] = self.disk_spec
+        if self.enable_elastic_disk is not None: body['enable_elastic_disk'] = self.enable_elastic_disk
+        if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes
+        if self.idle_instance_autotermination_minutes is not None:
+            body['idle_instance_autotermination_minutes'] = self.idle_instance_autotermination_minutes
+        if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        if self.instance_pool_name is not None: body['instance_pool_name'] = self.instance_pool_name
+        if self.max_capacity is not None: body['max_capacity'] = self.max_capacity
+        if self.min_idle_instances is not None: body['min_idle_instances'] = self.min_idle_instances
+        if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
+        if self.preloaded_docker_images: body['preloaded_docker_images'] = self.preloaded_docker_images
+        if self.preloaded_spark_versions: body['preloaded_spark_versions'] = self.preloaded_spark_versions
+        if self.state is not None: body['state'] = self.state
+        if self.stats: body['stats'] = self.stats
+        if self.status: body['status'] = self.status
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> GetInstancePool:
         """Deserializes the GetInstancePool from a dictionary."""
@@ -3674,6 +4669,12 @@ class GetInstancePoolPermissionLevelsResponse:
         if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetInstancePoolPermissionLevelsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.permission_levels: body['permission_levels'] = self.permission_levels
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> GetInstancePoolPermissionLevelsResponse:
         """Deserializes the GetInstancePoolPermissionLevelsResponse from a dictionary."""
@@ -3690,6 +4691,12 @@ class GetSparkVersionsResponse:
         """Serializes the GetSparkVersionsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.versions: body['versions'] = [v.as_dict() for v in self.versions]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetSparkVersionsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.versions: body['versions'] = self.versions
         return body
 
     @classmethod
@@ -3722,6 +4729,15 @@ class GlobalInitScriptCreateRequest:
 
     def as_dict(self) -> dict:
         """Serializes the GlobalInitScriptCreateRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.enabled is not None: body['enabled'] = self.enabled
+        if self.name is not None: body['name'] = self.name
+        if self.position is not None: body['position'] = self.position
+        if self.script is not None: body['script'] = self.script
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GlobalInitScriptCreateRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.enabled is not None: body['enabled'] = self.enabled
         if self.name is not None: body['name'] = self.name
@@ -3767,6 +4783,19 @@ class GlobalInitScriptDetails:
 
     def as_dict(self) -> dict:
         """Serializes the GlobalInitScriptDetails into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.created_at is not None: body['created_at'] = self.created_at
+        if self.created_by is not None: body['created_by'] = self.created_by
+        if self.enabled is not None: body['enabled'] = self.enabled
+        if self.name is not None: body['name'] = self.name
+        if self.position is not None: body['position'] = self.position
+        if self.script_id is not None: body['script_id'] = self.script_id
+        if self.updated_at is not None: body['updated_at'] = self.updated_at
+        if self.updated_by is not None: body['updated_by'] = self.updated_by
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GlobalInitScriptDetails into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.created_at is not None: body['created_at'] = self.created_at
         if self.created_by is not None: body['created_by'] = self.created_by
@@ -3835,6 +4864,20 @@ class GlobalInitScriptDetailsWithContent:
         if self.updated_by is not None: body['updated_by'] = self.updated_by
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GlobalInitScriptDetailsWithContent into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.created_at is not None: body['created_at'] = self.created_at
+        if self.created_by is not None: body['created_by'] = self.created_by
+        if self.enabled is not None: body['enabled'] = self.enabled
+        if self.name is not None: body['name'] = self.name
+        if self.position is not None: body['position'] = self.position
+        if self.script is not None: body['script'] = self.script
+        if self.script_id is not None: body['script_id'] = self.script_id
+        if self.updated_at is not None: body['updated_at'] = self.updated_at
+        if self.updated_by is not None: body['updated_by'] = self.updated_by
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> GlobalInitScriptDetailsWithContent:
         """Deserializes the GlobalInitScriptDetailsWithContent from a dictionary."""
@@ -3884,6 +4927,16 @@ class GlobalInitScriptUpdateRequest:
         if self.script_id is not None: body['script_id'] = self.script_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GlobalInitScriptUpdateRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.enabled is not None: body['enabled'] = self.enabled
+        if self.name is not None: body['name'] = self.name
+        if self.position is not None: body['position'] = self.position
+        if self.script is not None: body['script'] = self.script
+        if self.script_id is not None: body['script_id'] = self.script_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> GlobalInitScriptUpdateRequest:
         """Deserializes the GlobalInitScriptUpdateRequest from a dictionary."""
@@ -3913,6 +4966,14 @@ class InitScriptEventDetails:
         if self.reported_for_node is not None: body['reported_for_node'] = self.reported_for_node
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the InitScriptEventDetails into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.cluster: body['cluster'] = self.cluster
+        if self.global_: body['global'] = self.global_
+        if self.reported_for_node is not None: body['reported_for_node'] = self.reported_for_node
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> InitScriptEventDetails:
         """Deserializes the InitScriptEventDetails from a dictionary."""
@@ -3939,6 +5000,15 @@ class InitScriptExecutionDetails:
         if self.execution_duration_seconds is not None:
             body['execution_duration_seconds'] = self.execution_duration_seconds
         if self.status is not None: body['status'] = self.status.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the InitScriptExecutionDetails into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.error_message is not None: body['error_message'] = self.error_message
+        if self.execution_duration_seconds is not None:
+            body['execution_duration_seconds'] = self.execution_duration_seconds
+        if self.status is not None: body['status'] = self.status
         return body
 
     @classmethod
@@ -4003,6 +5073,18 @@ class InitScriptInfo:
         if self.workspace: body['workspace'] = self.workspace.as_dict()
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the InitScriptInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.abfss: body['abfss'] = self.abfss
+        if self.dbfs: body['dbfs'] = self.dbfs
+        if self.file: body['file'] = self.file
+        if self.gcs: body['gcs'] = self.gcs
+        if self.s3: body['s3'] = self.s3
+        if self.volumes: body['volumes'] = self.volumes
+        if self.workspace: body['workspace'] = self.workspace
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> InitScriptInfo:
         """Deserializes the InitScriptInfo from a dictionary."""
@@ -4030,6 +5112,13 @@ class InitScriptInfoAndExecutionDetails:
         if self.script: body['script'] = self.script.as_dict()
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the InitScriptInfoAndExecutionDetails into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.execution_details: body['execution_details'] = self.execution_details
+        if self.script: body['script'] = self.script
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> InitScriptInfoAndExecutionDetails:
         """Deserializes the InitScriptInfoAndExecutionDetails from a dictionary."""
@@ -4052,6 +5141,13 @@ class InstallLibraries:
         if self.libraries: body['libraries'] = [v.as_dict() for v in self.libraries]
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the InstallLibraries into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        if self.libraries: body['libraries'] = self.libraries
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> InstallLibraries:
         """Deserializes the InstallLibraries from a dictionary."""
@@ -4063,6 +5159,11 @@ class InstallLibrariesResponse:
 
     def as_dict(self) -> dict:
         """Serializes the InstallLibrariesResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the InstallLibrariesResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -4091,6 +5192,16 @@ class InstancePoolAccessControlRequest:
         body = {}
         if self.group_name is not None: body['group_name'] = self.group_name
         if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
+        if self.user_name is not None: body['user_name'] = self.user_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the InstancePoolAccessControlRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.permission_level is not None: body['permission_level'] = self.permission_level
         if self.service_principal_name is not None:
             body['service_principal_name'] = self.service_principal_name
         if self.user_name is not None: body['user_name'] = self.user_name
@@ -4126,6 +5237,17 @@ class InstancePoolAccessControlResponse:
         """Serializes the InstancePoolAccessControlResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.all_permissions: body['all_permissions'] = [v.as_dict() for v in self.all_permissions]
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
+        if self.user_name is not None: body['user_name'] = self.user_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the InstancePoolAccessControlResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.all_permissions: body['all_permissions'] = self.all_permissions
         if self.display_name is not None: body['display_name'] = self.display_name
         if self.group_name is not None: body['group_name'] = self.group_name
         if self.service_principal_name is not None:
@@ -4254,6 +5376,30 @@ class InstancePoolAndStats:
         if self.status: body['status'] = self.status.as_dict()
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the InstancePoolAndStats into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.aws_attributes: body['aws_attributes'] = self.aws_attributes
+        if self.azure_attributes: body['azure_attributes'] = self.azure_attributes
+        if self.custom_tags: body['custom_tags'] = self.custom_tags
+        if self.default_tags: body['default_tags'] = self.default_tags
+        if self.disk_spec: body['disk_spec'] = self.disk_spec
+        if self.enable_elastic_disk is not None: body['enable_elastic_disk'] = self.enable_elastic_disk
+        if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes
+        if self.idle_instance_autotermination_minutes is not None:
+            body['idle_instance_autotermination_minutes'] = self.idle_instance_autotermination_minutes
+        if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        if self.instance_pool_name is not None: body['instance_pool_name'] = self.instance_pool_name
+        if self.max_capacity is not None: body['max_capacity'] = self.max_capacity
+        if self.min_idle_instances is not None: body['min_idle_instances'] = self.min_idle_instances
+        if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
+        if self.preloaded_docker_images: body['preloaded_docker_images'] = self.preloaded_docker_images
+        if self.preloaded_spark_versions: body['preloaded_spark_versions'] = self.preloaded_spark_versions
+        if self.state is not None: body['state'] = self.state
+        if self.stats: body['stats'] = self.stats
+        if self.status: body['status'] = self.status
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> InstancePoolAndStats:
         """Deserializes the InstancePoolAndStats from a dictionary."""
@@ -4313,6 +5459,15 @@ class InstancePoolAwsAttributes:
         if self.zone_id is not None: body['zone_id'] = self.zone_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the InstancePoolAwsAttributes into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.availability is not None: body['availability'] = self.availability
+        if self.spot_bid_price_percent is not None:
+            body['spot_bid_price_percent'] = self.spot_bid_price_percent
+        if self.zone_id is not None: body['zone_id'] = self.zone_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> InstancePoolAwsAttributes:
         """Deserializes the InstancePoolAwsAttributes from a dictionary."""
@@ -4345,6 +5500,13 @@ class InstancePoolAzureAttributes:
         """Serializes the InstancePoolAzureAttributes into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.availability is not None: body['availability'] = self.availability.value
+        if self.spot_bid_max_price is not None: body['spot_bid_max_price'] = self.spot_bid_max_price
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the InstancePoolAzureAttributes into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.availability is not None: body['availability'] = self.availability
         if self.spot_bid_max_price is not None: body['spot_bid_max_price'] = self.spot_bid_max_price
         return body
 
@@ -4399,6 +5561,14 @@ class InstancePoolGcpAttributes:
         if self.zone_id is not None: body['zone_id'] = self.zone_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the InstancePoolGcpAttributes into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.gcp_availability is not None: body['gcp_availability'] = self.gcp_availability
+        if self.local_ssd_count is not None: body['local_ssd_count'] = self.local_ssd_count
+        if self.zone_id is not None: body['zone_id'] = self.zone_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> InstancePoolGcpAttributes:
         """Deserializes the InstancePoolGcpAttributes from a dictionary."""
@@ -4422,6 +5592,14 @@ class InstancePoolPermission:
         if self.inherited is not None: body['inherited'] = self.inherited
         if self.inherited_from_object: body['inherited_from_object'] = [v for v in self.inherited_from_object]
         if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the InstancePoolPermission into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.inherited is not None: body['inherited'] = self.inherited
+        if self.inherited_from_object: body['inherited_from_object'] = self.inherited_from_object
+        if self.permission_level is not None: body['permission_level'] = self.permission_level
         return body
 
     @classmethod
@@ -4456,6 +5634,14 @@ class InstancePoolPermissions:
         if self.object_type is not None: body['object_type'] = self.object_type
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the InstancePoolPermissions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.access_control_list: body['access_control_list'] = self.access_control_list
+        if self.object_id is not None: body['object_id'] = self.object_id
+        if self.object_type is not None: body['object_type'] = self.object_type
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> InstancePoolPermissions:
         """Deserializes the InstancePoolPermissions from a dictionary."""
@@ -4479,6 +5665,13 @@ class InstancePoolPermissionsDescription:
         if self.permission_level is not None: body['permission_level'] = self.permission_level.value
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the InstancePoolPermissionsDescription into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.description is not None: body['description'] = self.description
+        if self.permission_level is not None: body['permission_level'] = self.permission_level
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> InstancePoolPermissionsDescription:
         """Deserializes the InstancePoolPermissionsDescription from a dictionary."""
@@ -4498,6 +5691,13 @@ class InstancePoolPermissionsRequest:
         body = {}
         if self.access_control_list:
             body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
+        if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the InstancePoolPermissionsRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.access_control_list: body['access_control_list'] = self.access_control_list
         if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
         return body
 
@@ -4540,6 +5740,15 @@ class InstancePoolStats:
         if self.used_count is not None: body['used_count'] = self.used_count
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the InstancePoolStats into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.idle_count is not None: body['idle_count'] = self.idle_count
+        if self.pending_idle_count is not None: body['pending_idle_count'] = self.pending_idle_count
+        if self.pending_used_count is not None: body['pending_used_count'] = self.pending_used_count
+        if self.used_count is not None: body['used_count'] = self.used_count
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> InstancePoolStats:
         """Deserializes the InstancePoolStats from a dictionary."""
@@ -4561,6 +5770,12 @@ class InstancePoolStatus:
         body = {}
         if self.pending_instance_errors:
             body['pending_instance_errors'] = [v.as_dict() for v in self.pending_instance_errors]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the InstancePoolStatus into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.pending_instance_errors: body['pending_instance_errors'] = self.pending_instance_errors
         return body
 
     @classmethod
@@ -4598,12 +5813,32 @@ class InstanceProfile:
             body['is_meta_instance_profile'] = self.is_meta_instance_profile
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the InstanceProfile into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.iam_role_arn is not None: body['iam_role_arn'] = self.iam_role_arn
+        if self.instance_profile_arn is not None: body['instance_profile_arn'] = self.instance_profile_arn
+        if self.is_meta_instance_profile is not None:
+            body['is_meta_instance_profile'] = self.is_meta_instance_profile
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> InstanceProfile:
         """Deserializes the InstanceProfile from a dictionary."""
         return cls(iam_role_arn=d.get('iam_role_arn', None),
                    instance_profile_arn=d.get('instance_profile_arn', None),
                    is_meta_instance_profile=d.get('is_meta_instance_profile', None))
+
+
+class Kind(Enum):
+    """The kind of compute described by this compute specification.
+    
+    Depending on `kind`, different validations and default values will be applied.
+    
+    The first usage of this value is for the simple cluster form where it sets `kind =
+    CLASSIC_PREVIEW`."""
+
+    CLASSIC_PREVIEW = 'CLASSIC_PREVIEW'
 
 
 class Language(Enum):
@@ -4660,6 +5895,18 @@ class Library:
         if self.whl is not None: body['whl'] = self.whl
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Library into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.cran: body['cran'] = self.cran
+        if self.egg is not None: body['egg'] = self.egg
+        if self.jar is not None: body['jar'] = self.jar
+        if self.maven: body['maven'] = self.maven
+        if self.pypi: body['pypi'] = self.pypi
+        if self.requirements is not None: body['requirements'] = self.requirements
+        if self.whl is not None: body['whl'] = self.whl
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> Library:
         """Deserializes the Library from a dictionary."""
@@ -4698,6 +5945,16 @@ class LibraryFullStatus:
         if self.status is not None: body['status'] = self.status.value
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the LibraryFullStatus into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.is_library_for_all_clusters is not None:
+            body['is_library_for_all_clusters'] = self.is_library_for_all_clusters
+        if self.library: body['library'] = self.library
+        if self.messages: body['messages'] = self.messages
+        if self.status is not None: body['status'] = self.status
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> LibraryFullStatus:
         """Deserializes the LibraryFullStatus from a dictionary."""
@@ -4731,6 +5988,12 @@ class ListAllClusterLibraryStatusesResponse:
         if self.statuses: body['statuses'] = [v.as_dict() for v in self.statuses]
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListAllClusterLibraryStatusesResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.statuses: body['statuses'] = self.statuses
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListAllClusterLibraryStatusesResponse:
         """Deserializes the ListAllClusterLibraryStatusesResponse from a dictionary."""
@@ -4750,6 +6013,13 @@ class ListAvailableZonesResponse:
         body = {}
         if self.default_zone is not None: body['default_zone'] = self.default_zone
         if self.zones: body['zones'] = [v for v in self.zones]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListAvailableZonesResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.default_zone is not None: body['default_zone'] = self.default_zone
+        if self.zones: body['zones'] = self.zones
         return body
 
     @classmethod
@@ -4775,6 +6045,14 @@ class ListClusterCompliancesResponse:
         """Serializes the ListClusterCompliancesResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.clusters: body['clusters'] = [v.as_dict() for v in self.clusters]
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.prev_page_token is not None: body['prev_page_token'] = self.prev_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListClusterCompliancesResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.clusters: body['clusters'] = self.clusters
         if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         if self.prev_page_token is not None: body['prev_page_token'] = self.prev_page_token
         return body
@@ -4810,6 +6088,15 @@ class ListClustersFilterBy:
         if self.policy_id is not None: body['policy_id'] = self.policy_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListClustersFilterBy into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.cluster_sources: body['cluster_sources'] = self.cluster_sources
+        if self.cluster_states: body['cluster_states'] = self.cluster_states
+        if self.is_pinned is not None: body['is_pinned'] = self.is_pinned
+        if self.policy_id is not None: body['policy_id'] = self.policy_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListClustersFilterBy:
         """Deserializes the ListClustersFilterBy from a dictionary."""
@@ -4840,6 +6127,14 @@ class ListClustersResponse:
         if self.prev_page_token is not None: body['prev_page_token'] = self.prev_page_token
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListClustersResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.clusters: body['clusters'] = self.clusters
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.prev_page_token is not None: body['prev_page_token'] = self.prev_page_token
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListClustersResponse:
         """Deserializes the ListClustersResponse from a dictionary."""
@@ -4862,6 +6157,13 @@ class ListClustersSortBy:
         body = {}
         if self.direction is not None: body['direction'] = self.direction.value
         if self.field is not None: body['field'] = self.field.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListClustersSortBy into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.direction is not None: body['direction'] = self.direction
+        if self.field is not None: body['field'] = self.field
         return body
 
     @classmethod
@@ -4896,6 +6198,12 @@ class ListGlobalInitScriptsResponse:
         if self.scripts: body['scripts'] = [v.as_dict() for v in self.scripts]
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListGlobalInitScriptsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.scripts: body['scripts'] = self.scripts
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListGlobalInitScriptsResponse:
         """Deserializes the ListGlobalInitScriptsResponse from a dictionary."""
@@ -4910,6 +6218,12 @@ class ListInstancePools:
         """Serializes the ListInstancePools into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.instance_pools: body['instance_pools'] = [v.as_dict() for v in self.instance_pools]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListInstancePools into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.instance_pools: body['instance_pools'] = self.instance_pools
         return body
 
     @classmethod
@@ -4929,6 +6243,12 @@ class ListInstanceProfilesResponse:
         if self.instance_profiles: body['instance_profiles'] = [v.as_dict() for v in self.instance_profiles]
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListInstanceProfilesResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.instance_profiles: body['instance_profiles'] = self.instance_profiles
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListInstanceProfilesResponse:
         """Deserializes the ListInstanceProfilesResponse from a dictionary."""
@@ -4946,6 +6266,12 @@ class ListNodeTypesResponse:
         if self.node_types: body['node_types'] = [v.as_dict() for v in self.node_types]
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListNodeTypesResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.node_types: body['node_types'] = self.node_types
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListNodeTypesResponse:
         """Deserializes the ListNodeTypesResponse from a dictionary."""
@@ -4961,6 +6287,12 @@ class ListPoliciesResponse:
         """Serializes the ListPoliciesResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.policies: body['policies'] = [v.as_dict() for v in self.policies]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListPoliciesResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.policies: body['policies'] = self.policies
         return body
 
     @classmethod
@@ -4983,6 +6315,13 @@ class ListPolicyFamiliesResponse:
         body = {}
         if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         if self.policy_families: body['policy_families'] = [v.as_dict() for v in self.policy_families]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListPolicyFamiliesResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.policy_families: body['policy_families'] = self.policy_families
         return body
 
     @classmethod
@@ -5016,6 +6355,12 @@ class LocalFileInfo:
         if self.destination is not None: body['destination'] = self.destination
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the LocalFileInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.destination is not None: body['destination'] = self.destination
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> LocalFileInfo:
         """Deserializes the LocalFileInfo from a dictionary."""
@@ -5032,6 +6377,15 @@ class LogAnalyticsInfo:
 
     def as_dict(self) -> dict:
         """Serializes the LogAnalyticsInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.log_analytics_primary_key is not None:
+            body['log_analytics_primary_key'] = self.log_analytics_primary_key
+        if self.log_analytics_workspace_id is not None:
+            body['log_analytics_workspace_id'] = self.log_analytics_workspace_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the LogAnalyticsInfo into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.log_analytics_primary_key is not None:
             body['log_analytics_primary_key'] = self.log_analytics_primary_key
@@ -5058,6 +6412,13 @@ class LogSyncStatus:
 
     def as_dict(self) -> dict:
         """Serializes the LogSyncStatus into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.last_attempted is not None: body['last_attempted'] = self.last_attempted
+        if self.last_exception is not None: body['last_exception'] = self.last_exception
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the LogSyncStatus into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.last_attempted is not None: body['last_attempted'] = self.last_attempted
         if self.last_exception is not None: body['last_exception'] = self.last_exception
@@ -5092,6 +6453,14 @@ class MavenLibrary:
         if self.repo is not None: body['repo'] = self.repo
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the MavenLibrary into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.coordinates is not None: body['coordinates'] = self.coordinates
+        if self.exclusions: body['exclusions'] = self.exclusions
+        if self.repo is not None: body['repo'] = self.repo
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> MavenLibrary:
         """Deserializes the MavenLibrary from a dictionary."""
@@ -5114,6 +6483,17 @@ class NodeInstanceType:
 
     def as_dict(self) -> dict:
         """Serializes the NodeInstanceType into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.instance_type_id is not None: body['instance_type_id'] = self.instance_type_id
+        if self.local_disk_size_gb is not None: body['local_disk_size_gb'] = self.local_disk_size_gb
+        if self.local_disks is not None: body['local_disks'] = self.local_disks
+        if self.local_nvme_disk_size_gb is not None:
+            body['local_nvme_disk_size_gb'] = self.local_nvme_disk_size_gb
+        if self.local_nvme_disks is not None: body['local_nvme_disks'] = self.local_nvme_disks
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the NodeInstanceType into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.instance_type_id is not None: body['instance_type_id'] = self.instance_type_id
         if self.local_disk_size_gb is not None: body['local_disk_size_gb'] = self.local_disk_size_gb
@@ -5217,6 +6597,34 @@ class NodeType:
         if self.supports_elastic_disk is not None: body['supports_elastic_disk'] = self.supports_elastic_disk
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the NodeType into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.category is not None: body['category'] = self.category
+        if self.description is not None: body['description'] = self.description
+        if self.display_order is not None: body['display_order'] = self.display_order
+        if self.instance_type_id is not None: body['instance_type_id'] = self.instance_type_id
+        if self.is_deprecated is not None: body['is_deprecated'] = self.is_deprecated
+        if self.is_encrypted_in_transit is not None:
+            body['is_encrypted_in_transit'] = self.is_encrypted_in_transit
+        if self.is_graviton is not None: body['is_graviton'] = self.is_graviton
+        if self.is_hidden is not None: body['is_hidden'] = self.is_hidden
+        if self.is_io_cache_enabled is not None: body['is_io_cache_enabled'] = self.is_io_cache_enabled
+        if self.memory_mb is not None: body['memory_mb'] = self.memory_mb
+        if self.node_info: body['node_info'] = self.node_info
+        if self.node_instance_type: body['node_instance_type'] = self.node_instance_type
+        if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
+        if self.num_cores is not None: body['num_cores'] = self.num_cores
+        if self.num_gpus is not None: body['num_gpus'] = self.num_gpus
+        if self.photon_driver_capable is not None: body['photon_driver_capable'] = self.photon_driver_capable
+        if self.photon_worker_capable is not None: body['photon_worker_capable'] = self.photon_worker_capable
+        if self.support_cluster_tags is not None: body['support_cluster_tags'] = self.support_cluster_tags
+        if self.support_ebs_volumes is not None: body['support_ebs_volumes'] = self.support_ebs_volumes
+        if self.support_port_forwarding is not None:
+            body['support_port_forwarding'] = self.support_port_forwarding
+        if self.supports_elastic_disk is not None: body['supports_elastic_disk'] = self.supports_elastic_disk
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> NodeType:
         """Deserializes the NodeType from a dictionary."""
@@ -5256,6 +6664,13 @@ class PendingInstanceError:
         if self.message is not None: body['message'] = self.message
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PendingInstanceError into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.instance_id is not None: body['instance_id'] = self.instance_id
+        if self.message is not None: body['message'] = self.message
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> PendingInstanceError:
         """Deserializes the PendingInstanceError from a dictionary."""
@@ -5273,6 +6688,12 @@ class PermanentDeleteCluster:
         if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PermanentDeleteCluster into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> PermanentDeleteCluster:
         """Deserializes the PermanentDeleteCluster from a dictionary."""
@@ -5284,6 +6705,11 @@ class PermanentDeleteClusterResponse:
 
     def as_dict(self) -> dict:
         """Serializes the PermanentDeleteClusterResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PermanentDeleteClusterResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -5304,6 +6730,12 @@ class PinCluster:
         if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PinCluster into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> PinCluster:
         """Deserializes the PinCluster from a dictionary."""
@@ -5315,6 +6747,11 @@ class PinClusterResponse:
 
     def as_dict(self) -> dict:
         """Serializes the PinClusterResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PinClusterResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -5395,6 +6832,23 @@ class Policy:
         if self.policy_id is not None: body['policy_id'] = self.policy_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Policy into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.created_at_timestamp is not None: body['created_at_timestamp'] = self.created_at_timestamp
+        if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
+        if self.definition is not None: body['definition'] = self.definition
+        if self.description is not None: body['description'] = self.description
+        if self.is_default is not None: body['is_default'] = self.is_default
+        if self.libraries: body['libraries'] = self.libraries
+        if self.max_clusters_per_user is not None: body['max_clusters_per_user'] = self.max_clusters_per_user
+        if self.name is not None: body['name'] = self.name
+        if self.policy_family_definition_overrides is not None:
+            body['policy_family_definition_overrides'] = self.policy_family_definition_overrides
+        if self.policy_family_id is not None: body['policy_family_id'] = self.policy_family_id
+        if self.policy_id is not None: body['policy_id'] = self.policy_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> Policy:
         """Deserializes the Policy from a dictionary."""
@@ -5436,6 +6890,15 @@ class PolicyFamily:
         if self.policy_family_id is not None: body['policy_family_id'] = self.policy_family_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PolicyFamily into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.definition is not None: body['definition'] = self.definition
+        if self.description is not None: body['description'] = self.description
+        if self.name is not None: body['name'] = self.name
+        if self.policy_family_id is not None: body['policy_family_id'] = self.policy_family_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> PolicyFamily:
         """Deserializes the PolicyFamily from a dictionary."""
@@ -5456,6 +6919,13 @@ class PythonPyPiLibrary:
 
     def as_dict(self) -> dict:
         """Serializes the PythonPyPiLibrary into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.package is not None: body['package'] = self.package
+        if self.repo is not None: body['repo'] = self.repo
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PythonPyPiLibrary into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.package is not None: body['package'] = self.package
         if self.repo is not None: body['repo'] = self.repo
@@ -5482,6 +6952,13 @@ class RCranLibrary:
         if self.repo is not None: body['repo'] = self.repo
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RCranLibrary into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.package is not None: body['package'] = self.package
+        if self.repo is not None: body['repo'] = self.repo
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> RCranLibrary:
         """Deserializes the RCranLibrary from a dictionary."""
@@ -5499,6 +6976,12 @@ class RemoveInstanceProfile:
         if self.instance_profile_arn is not None: body['instance_profile_arn'] = self.instance_profile_arn
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RemoveInstanceProfile into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.instance_profile_arn is not None: body['instance_profile_arn'] = self.instance_profile_arn
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> RemoveInstanceProfile:
         """Deserializes the RemoveInstanceProfile from a dictionary."""
@@ -5510,6 +6993,11 @@ class RemoveResponse:
 
     def as_dict(self) -> dict:
         """Serializes the RemoveResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RemoveResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -5546,6 +7034,14 @@ class ResizeCluster:
         if self.num_workers is not None: body['num_workers'] = self.num_workers
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ResizeCluster into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.autoscale: body['autoscale'] = self.autoscale
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        if self.num_workers is not None: body['num_workers'] = self.num_workers
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ResizeCluster:
         """Deserializes the ResizeCluster from a dictionary."""
@@ -5559,6 +7055,11 @@ class ResizeClusterResponse:
 
     def as_dict(self) -> dict:
         """Serializes the ResizeClusterResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ResizeClusterResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -5583,6 +7084,13 @@ class RestartCluster:
         if self.restart_user is not None: body['restart_user'] = self.restart_user
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RestartCluster into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        if self.restart_user is not None: body['restart_user'] = self.restart_user
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> RestartCluster:
         """Deserializes the RestartCluster from a dictionary."""
@@ -5594,6 +7102,11 @@ class RestartClusterResponse:
 
     def as_dict(self) -> dict:
         """Serializes the RestartClusterResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RestartClusterResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -5652,6 +7165,21 @@ class Results:
         if self.pos is not None: body['pos'] = self.pos
         if self.result_type is not None: body['resultType'] = self.result_type.value
         if self.schema: body['schema'] = [v for v in self.schema]
+        if self.summary is not None: body['summary'] = self.summary
+        if self.truncated is not None: body['truncated'] = self.truncated
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Results into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.cause is not None: body['cause'] = self.cause
+        if self.data: body['data'] = self.data
+        if self.file_name is not None: body['fileName'] = self.file_name
+        if self.file_names: body['fileNames'] = self.file_names
+        if self.is_json_schema is not None: body['isJsonSchema'] = self.is_json_schema
+        if self.pos is not None: body['pos'] = self.pos
+        if self.result_type is not None: body['resultType'] = self.result_type
+        if self.schema: body['schema'] = self.schema
         if self.summary is not None: body['summary'] = self.summary
         if self.truncated is not None: body['truncated'] = self.truncated
         return body
@@ -5732,6 +7260,18 @@ class S3StorageInfo:
         if self.region is not None: body['region'] = self.region
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the S3StorageInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.canned_acl is not None: body['canned_acl'] = self.canned_acl
+        if self.destination is not None: body['destination'] = self.destination
+        if self.enable_encryption is not None: body['enable_encryption'] = self.enable_encryption
+        if self.encryption_type is not None: body['encryption_type'] = self.encryption_type
+        if self.endpoint is not None: body['endpoint'] = self.endpoint
+        if self.kms_key is not None: body['kms_key'] = self.kms_key
+        if self.region is not None: body['region'] = self.region
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> S3StorageInfo:
         """Deserializes the S3StorageInfo from a dictionary."""
@@ -5788,6 +7328,18 @@ class SparkNode:
         if self.start_timestamp is not None: body['start_timestamp'] = self.start_timestamp
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SparkNode into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.host_private_ip is not None: body['host_private_ip'] = self.host_private_ip
+        if self.instance_id is not None: body['instance_id'] = self.instance_id
+        if self.node_aws_attributes: body['node_aws_attributes'] = self.node_aws_attributes
+        if self.node_id is not None: body['node_id'] = self.node_id
+        if self.private_ip is not None: body['private_ip'] = self.private_ip
+        if self.public_dns is not None: body['public_dns'] = self.public_dns
+        if self.start_timestamp is not None: body['start_timestamp'] = self.start_timestamp
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> SparkNode:
         """Deserializes the SparkNode from a dictionary."""
@@ -5807,6 +7359,12 @@ class SparkNodeAwsAttributes:
 
     def as_dict(self) -> dict:
         """Serializes the SparkNodeAwsAttributes into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.is_spot is not None: body['is_spot'] = self.is_spot
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SparkNodeAwsAttributes into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.is_spot is not None: body['is_spot'] = self.is_spot
         return body
@@ -5835,6 +7393,13 @@ class SparkVersion:
         if self.name is not None: body['name'] = self.name
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SparkVersion into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.key is not None: body['key'] = self.key
+        if self.name is not None: body['name'] = self.name
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> SparkVersion:
         """Deserializes the SparkVersion from a dictionary."""
@@ -5852,6 +7417,12 @@ class StartCluster:
         if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the StartCluster into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> StartCluster:
         """Deserializes the StartCluster from a dictionary."""
@@ -5863,6 +7434,11 @@ class StartClusterResponse:
 
     def as_dict(self) -> dict:
         """Serializes the StartClusterResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the StartClusterResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -5902,6 +7478,14 @@ class TerminationReason:
         if self.code is not None: body['code'] = self.code.value
         if self.parameters: body['parameters'] = self.parameters
         if self.type is not None: body['type'] = self.type.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TerminationReason into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.code is not None: body['code'] = self.code
+        if self.parameters: body['parameters'] = self.parameters
+        if self.type is not None: body['type'] = self.type
         return body
 
     @classmethod
@@ -6020,6 +7604,13 @@ class UninstallLibraries:
         if self.libraries: body['libraries'] = [v.as_dict() for v in self.libraries]
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UninstallLibraries into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        if self.libraries: body['libraries'] = self.libraries
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> UninstallLibraries:
         """Deserializes the UninstallLibraries from a dictionary."""
@@ -6031,6 +7622,11 @@ class UninstallLibrariesResponse:
 
     def as_dict(self) -> dict:
         """Serializes the UninstallLibrariesResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UninstallLibrariesResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -6051,6 +7647,12 @@ class UnpinCluster:
         if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UnpinCluster into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> UnpinCluster:
         """Deserializes the UnpinCluster from a dictionary."""
@@ -6062,6 +7664,11 @@ class UnpinClusterResponse:
 
     def as_dict(self) -> dict:
         """Serializes the UnpinClusterResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UnpinClusterResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -6089,6 +7696,14 @@ class UpdateCluster:
         """Serializes the UpdateCluster into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.cluster: body['cluster'] = self.cluster.as_dict()
+        if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
+        if self.update_mask is not None: body['update_mask'] = self.update_mask
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateCluster into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.cluster: body['cluster'] = self.cluster
         if self.cluster_id is not None: body['cluster_id'] = self.cluster_id
         if self.update_mask is not None: body['update_mask'] = self.update_mask
         return body
@@ -6144,13 +7759,19 @@ class UpdateClusterResource:
     data_security_mode: Optional[DataSecurityMode] = None
     """Data security mode decides what data governance model to use when accessing data from a cluster.
     
-    * `NONE`: No security isolation for multiple users sharing the cluster. Data governance features
-    are not available in this mode. * `SINGLE_USER`: A secure cluster that can only be exclusively
-    used by a single user specified in `single_user_name`. Most programming languages, cluster
-    features and data governance features are available in this mode. * `USER_ISOLATION`: A secure
-    cluster that can be shared by multiple users. Cluster users are fully isolated so that they
-    cannot see each other's data and credentials. Most data governance features are supported in
-    this mode. But programming languages and cluster features might be limited.
+    The following modes can only be used with `kind`. * `DATA_SECURITY_MODE_AUTO`: Databricks will
+    choose the most appropriate access mode depending on your compute configuration. *
+    `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:
+    Alias for `SINGLE_USER`.
+    
+    The following modes can be used regardless of `kind`. * `NONE`: No security isolation for
+    multiple users sharing the cluster. Data governance features are not available in this mode. *
+    `SINGLE_USER`: A secure cluster that can only be exclusively used by a single user specified in
+    `single_user_name`. Most programming languages, cluster features and data governance features
+    are available in this mode. * `USER_ISOLATION`: A secure cluster that can be shared by multiple
+    users. Cluster users are fully isolated so that they cannot see each other's data and
+    credentials. Most data governance features are supported in this mode. But programming languages
+    and cluster features might be limited.
     
     The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
     future Databricks Runtime versions:
@@ -6190,6 +7811,20 @@ class UpdateClusterResource:
 
     instance_pool_id: Optional[str] = None
     """The optional ID of the instance pool to which the cluster belongs."""
+
+    is_single_node: Optional[bool] = None
+    """This field can only be used with `kind`.
+    
+    When set to true, Databricks will automatically set single node related `custom_tags`,
+    `spark_conf`, and `num_workers`"""
+
+    kind: Optional[Kind] = None
+    """The kind of compute described by this compute specification.
+    
+    Depending on `kind`, different validations and default values will be applied.
+    
+    The first usage of this value is for the simple cluster form where it sets `kind =
+    CLASSIC_PREVIEW`."""
 
     node_type_id: Optional[str] = None
     """This field encodes, through a single value, the resources available to each of the Spark nodes
@@ -6249,6 +7884,12 @@ class UpdateClusterResource:
     private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can
     be specified."""
 
+    use_ml_runtime: Optional[bool] = None
+    """This field can only be used with `kind`.
+    
+    `effective_spark_version` is determined by `spark_version` (DBR release), this field
+    `use_ml_runtime`, and whether `node_type_id` is gpu node or not."""
+
     workload_type: Optional[WorkloadType] = None
 
     def as_dict(self) -> dict:
@@ -6273,6 +7914,8 @@ class UpdateClusterResource:
         if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes.as_dict()
         if self.init_scripts: body['init_scripts'] = [v.as_dict() for v in self.init_scripts]
         if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        if self.is_single_node is not None: body['is_single_node'] = self.is_single_node
+        if self.kind is not None: body['kind'] = self.kind.value
         if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
         if self.num_workers is not None: body['num_workers'] = self.num_workers
         if self.policy_id is not None: body['policy_id'] = self.policy_id
@@ -6282,7 +7925,45 @@ class UpdateClusterResource:
         if self.spark_env_vars: body['spark_env_vars'] = self.spark_env_vars
         if self.spark_version is not None: body['spark_version'] = self.spark_version
         if self.ssh_public_keys: body['ssh_public_keys'] = [v for v in self.ssh_public_keys]
+        if self.use_ml_runtime is not None: body['use_ml_runtime'] = self.use_ml_runtime
         if self.workload_type: body['workload_type'] = self.workload_type.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateClusterResource into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.autoscale: body['autoscale'] = self.autoscale
+        if self.autotermination_minutes is not None:
+            body['autotermination_minutes'] = self.autotermination_minutes
+        if self.aws_attributes: body['aws_attributes'] = self.aws_attributes
+        if self.azure_attributes: body['azure_attributes'] = self.azure_attributes
+        if self.cluster_log_conf: body['cluster_log_conf'] = self.cluster_log_conf
+        if self.cluster_name is not None: body['cluster_name'] = self.cluster_name
+        if self.custom_tags: body['custom_tags'] = self.custom_tags
+        if self.data_security_mode is not None: body['data_security_mode'] = self.data_security_mode
+        if self.docker_image: body['docker_image'] = self.docker_image
+        if self.driver_instance_pool_id is not None:
+            body['driver_instance_pool_id'] = self.driver_instance_pool_id
+        if self.driver_node_type_id is not None: body['driver_node_type_id'] = self.driver_node_type_id
+        if self.enable_elastic_disk is not None: body['enable_elastic_disk'] = self.enable_elastic_disk
+        if self.enable_local_disk_encryption is not None:
+            body['enable_local_disk_encryption'] = self.enable_local_disk_encryption
+        if self.gcp_attributes: body['gcp_attributes'] = self.gcp_attributes
+        if self.init_scripts: body['init_scripts'] = self.init_scripts
+        if self.instance_pool_id is not None: body['instance_pool_id'] = self.instance_pool_id
+        if self.is_single_node is not None: body['is_single_node'] = self.is_single_node
+        if self.kind is not None: body['kind'] = self.kind
+        if self.node_type_id is not None: body['node_type_id'] = self.node_type_id
+        if self.num_workers is not None: body['num_workers'] = self.num_workers
+        if self.policy_id is not None: body['policy_id'] = self.policy_id
+        if self.runtime_engine is not None: body['runtime_engine'] = self.runtime_engine
+        if self.single_user_name is not None: body['single_user_name'] = self.single_user_name
+        if self.spark_conf: body['spark_conf'] = self.spark_conf
+        if self.spark_env_vars: body['spark_env_vars'] = self.spark_env_vars
+        if self.spark_version is not None: body['spark_version'] = self.spark_version
+        if self.ssh_public_keys: body['ssh_public_keys'] = self.ssh_public_keys
+        if self.use_ml_runtime is not None: body['use_ml_runtime'] = self.use_ml_runtime
+        if self.workload_type: body['workload_type'] = self.workload_type
         return body
 
     @classmethod
@@ -6304,6 +7985,8 @@ class UpdateClusterResource:
                    gcp_attributes=_from_dict(d, 'gcp_attributes', GcpAttributes),
                    init_scripts=_repeated_dict(d, 'init_scripts', InitScriptInfo),
                    instance_pool_id=d.get('instance_pool_id', None),
+                   is_single_node=d.get('is_single_node', None),
+                   kind=_enum(d, 'kind', Kind),
                    node_type_id=d.get('node_type_id', None),
                    num_workers=d.get('num_workers', None),
                    policy_id=d.get('policy_id', None),
@@ -6313,6 +7996,7 @@ class UpdateClusterResource:
                    spark_env_vars=d.get('spark_env_vars', None),
                    spark_version=d.get('spark_version', None),
                    ssh_public_keys=d.get('ssh_public_keys', None),
+                   use_ml_runtime=d.get('use_ml_runtime', None),
                    workload_type=_from_dict(d, 'workload_type', WorkloadType))
 
 
@@ -6321,6 +8005,11 @@ class UpdateClusterResponse:
 
     def as_dict(self) -> dict:
         """Serializes the UpdateClusterResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateClusterResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -6338,6 +8027,11 @@ class UpdateResponse:
         body = {}
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> UpdateResponse:
         """Deserializes the UpdateResponse from a dictionary."""
@@ -6351,6 +8045,12 @@ class VolumesStorageInfo:
 
     def as_dict(self) -> dict:
         """Serializes the VolumesStorageInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.destination is not None: body['destination'] = self.destination
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the VolumesStorageInfo into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.destination is not None: body['destination'] = self.destination
         return body
@@ -6372,6 +8072,12 @@ class WorkloadType:
         if self.clients: body['clients'] = self.clients.as_dict()
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the WorkloadType into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.clients: body['clients'] = self.clients
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> WorkloadType:
         """Deserializes the WorkloadType from a dictionary."""
@@ -6385,6 +8091,12 @@ class WorkspaceStorageInfo:
 
     def as_dict(self) -> dict:
         """Serializes the WorkspaceStorageInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.destination is not None: body['destination'] = self.destination
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the WorkspaceStorageInfo into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.destination is not None: body['destination'] = self.destination
         return body
@@ -6823,6 +8535,8 @@ class ClustersAPI:
                gcp_attributes: Optional[GcpAttributes] = None,
                init_scripts: Optional[List[InitScriptInfo]] = None,
                instance_pool_id: Optional[str] = None,
+               is_single_node: Optional[bool] = None,
+               kind: Optional[Kind] = None,
                node_type_id: Optional[str] = None,
                num_workers: Optional[int] = None,
                policy_id: Optional[str] = None,
@@ -6831,6 +8545,7 @@ class ClustersAPI:
                spark_conf: Optional[Dict[str, str]] = None,
                spark_env_vars: Optional[Dict[str, str]] = None,
                ssh_public_keys: Optional[List[str]] = None,
+               use_ml_runtime: Optional[bool] = None,
                workload_type: Optional[WorkloadType] = None) -> Wait[ClusterDetails]:
         """Create new cluster.
         
@@ -6886,13 +8601,19 @@ class ClustersAPI:
         :param data_security_mode: :class:`DataSecurityMode` (optional)
           Data security mode decides what data governance model to use when accessing data from a cluster.
           
-          * `NONE`: No security isolation for multiple users sharing the cluster. Data governance features are
-          not available in this mode. * `SINGLE_USER`: A secure cluster that can only be exclusively used by a
-          single user specified in `single_user_name`. Most programming languages, cluster features and data
-          governance features are available in this mode. * `USER_ISOLATION`: A secure cluster that can be
-          shared by multiple users. Cluster users are fully isolated so that they cannot see each other's data
-          and credentials. Most data governance features are supported in this mode. But programming languages
-          and cluster features might be limited.
+          The following modes can only be used with `kind`. * `DATA_SECURITY_MODE_AUTO`: Databricks will
+          choose the most appropriate access mode depending on your compute configuration. *
+          `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`: Alias
+          for `SINGLE_USER`.
+          
+          The following modes can be used regardless of `kind`. * `NONE`: No security isolation for multiple
+          users sharing the cluster. Data governance features are not available in this mode. * `SINGLE_USER`:
+          A secure cluster that can only be exclusively used by a single user specified in `single_user_name`.
+          Most programming languages, cluster features and data governance features are available in this
+          mode. * `USER_ISOLATION`: A secure cluster that can be shared by multiple users. Cluster users are
+          fully isolated so that they cannot see each other's data and credentials. Most data governance
+          features are supported in this mode. But programming languages and cluster features might be
+          limited.
           
           The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
           future Databricks Runtime versions:
@@ -6924,6 +8645,17 @@ class ClustersAPI:
           logs are sent to `<destination>/<cluster-ID>/init_scripts`.
         :param instance_pool_id: str (optional)
           The optional ID of the instance pool to which the cluster belongs.
+        :param is_single_node: bool (optional)
+          This field can only be used with `kind`.
+          
+          When set to true, Databricks will automatically set single node related `custom_tags`, `spark_conf`,
+          and `num_workers`
+        :param kind: :class:`Kind` (optional)
+          The kind of compute described by this compute specification.
+          
+          Depending on `kind`, different validations and default values will be applied.
+          
+          The first usage of this value is for the simple cluster form where it sets `kind = CLASSIC_PREVIEW`.
         :param node_type_id: str (optional)
           This field encodes, through a single value, the resources available to each of the Spark nodes in
           this cluster. For example, the Spark nodes can be provisioned and optimized for memory or compute
@@ -6970,6 +8702,11 @@ class ClustersAPI:
           SSH public key contents that will be added to each Spark node in this cluster. The corresponding
           private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can be
           specified.
+        :param use_ml_runtime: bool (optional)
+          This field can only be used with `kind`.
+          
+          `effective_spark_version` is determined by `spark_version` (DBR release), this field
+          `use_ml_runtime`, and whether `node_type_id` is gpu node or not.
         :param workload_type: :class:`WorkloadType` (optional)
         
         :returns:
@@ -6997,6 +8734,8 @@ class ClustersAPI:
         if gcp_attributes is not None: body['gcp_attributes'] = gcp_attributes.as_dict()
         if init_scripts is not None: body['init_scripts'] = [v.as_dict() for v in init_scripts]
         if instance_pool_id is not None: body['instance_pool_id'] = instance_pool_id
+        if is_single_node is not None: body['is_single_node'] = is_single_node
+        if kind is not None: body['kind'] = kind.value
         if node_type_id is not None: body['node_type_id'] = node_type_id
         if num_workers is not None: body['num_workers'] = num_workers
         if policy_id is not None: body['policy_id'] = policy_id
@@ -7006,6 +8745,7 @@ class ClustersAPI:
         if spark_env_vars is not None: body['spark_env_vars'] = spark_env_vars
         if spark_version is not None: body['spark_version'] = spark_version
         if ssh_public_keys is not None: body['ssh_public_keys'] = [v for v in ssh_public_keys]
+        if use_ml_runtime is not None: body['use_ml_runtime'] = use_ml_runtime
         if workload_type is not None: body['workload_type'] = workload_type.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
@@ -7036,6 +8776,8 @@ class ClustersAPI:
         gcp_attributes: Optional[GcpAttributes] = None,
         init_scripts: Optional[List[InitScriptInfo]] = None,
         instance_pool_id: Optional[str] = None,
+        is_single_node: Optional[bool] = None,
+        kind: Optional[Kind] = None,
         node_type_id: Optional[str] = None,
         num_workers: Optional[int] = None,
         policy_id: Optional[str] = None,
@@ -7044,6 +8786,7 @@ class ClustersAPI:
         spark_conf: Optional[Dict[str, str]] = None,
         spark_env_vars: Optional[Dict[str, str]] = None,
         ssh_public_keys: Optional[List[str]] = None,
+        use_ml_runtime: Optional[bool] = None,
         workload_type: Optional[WorkloadType] = None,
         timeout=timedelta(minutes=20)) -> ClusterDetails:
         return self.create(apply_policy_default_values=apply_policy_default_values,
@@ -7064,6 +8807,8 @@ class ClustersAPI:
                            gcp_attributes=gcp_attributes,
                            init_scripts=init_scripts,
                            instance_pool_id=instance_pool_id,
+                           is_single_node=is_single_node,
+                           kind=kind,
                            node_type_id=node_type_id,
                            num_workers=num_workers,
                            policy_id=policy_id,
@@ -7073,6 +8818,7 @@ class ClustersAPI:
                            spark_env_vars=spark_env_vars,
                            spark_version=spark_version,
                            ssh_public_keys=ssh_public_keys,
+                           use_ml_runtime=use_ml_runtime,
                            workload_type=workload_type).result(timeout=timeout)
 
     def delete(self, cluster_id: str) -> Wait[ClusterDetails]:
@@ -7122,6 +8868,8 @@ class ClustersAPI:
              gcp_attributes: Optional[GcpAttributes] = None,
              init_scripts: Optional[List[InitScriptInfo]] = None,
              instance_pool_id: Optional[str] = None,
+             is_single_node: Optional[bool] = None,
+             kind: Optional[Kind] = None,
              node_type_id: Optional[str] = None,
              num_workers: Optional[int] = None,
              policy_id: Optional[str] = None,
@@ -7130,6 +8878,7 @@ class ClustersAPI:
              spark_conf: Optional[Dict[str, str]] = None,
              spark_env_vars: Optional[Dict[str, str]] = None,
              ssh_public_keys: Optional[List[str]] = None,
+             use_ml_runtime: Optional[bool] = None,
              workload_type: Optional[WorkloadType] = None) -> Wait[ClusterDetails]:
         """Update cluster configuration.
         
@@ -7185,13 +8934,19 @@ class ClustersAPI:
         :param data_security_mode: :class:`DataSecurityMode` (optional)
           Data security mode decides what data governance model to use when accessing data from a cluster.
           
-          * `NONE`: No security isolation for multiple users sharing the cluster. Data governance features are
-          not available in this mode. * `SINGLE_USER`: A secure cluster that can only be exclusively used by a
-          single user specified in `single_user_name`. Most programming languages, cluster features and data
-          governance features are available in this mode. * `USER_ISOLATION`: A secure cluster that can be
-          shared by multiple users. Cluster users are fully isolated so that they cannot see each other's data
-          and credentials. Most data governance features are supported in this mode. But programming languages
-          and cluster features might be limited.
+          The following modes can only be used with `kind`. * `DATA_SECURITY_MODE_AUTO`: Databricks will
+          choose the most appropriate access mode depending on your compute configuration. *
+          `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`: Alias
+          for `SINGLE_USER`.
+          
+          The following modes can be used regardless of `kind`. * `NONE`: No security isolation for multiple
+          users sharing the cluster. Data governance features are not available in this mode. * `SINGLE_USER`:
+          A secure cluster that can only be exclusively used by a single user specified in `single_user_name`.
+          Most programming languages, cluster features and data governance features are available in this
+          mode. * `USER_ISOLATION`: A secure cluster that can be shared by multiple users. Cluster users are
+          fully isolated so that they cannot see each other's data and credentials. Most data governance
+          features are supported in this mode. But programming languages and cluster features might be
+          limited.
           
           The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for
           future Databricks Runtime versions:
@@ -7223,6 +8978,17 @@ class ClustersAPI:
           logs are sent to `<destination>/<cluster-ID>/init_scripts`.
         :param instance_pool_id: str (optional)
           The optional ID of the instance pool to which the cluster belongs.
+        :param is_single_node: bool (optional)
+          This field can only be used with `kind`.
+          
+          When set to true, Databricks will automatically set single node related `custom_tags`, `spark_conf`,
+          and `num_workers`
+        :param kind: :class:`Kind` (optional)
+          The kind of compute described by this compute specification.
+          
+          Depending on `kind`, different validations and default values will be applied.
+          
+          The first usage of this value is for the simple cluster form where it sets `kind = CLASSIC_PREVIEW`.
         :param node_type_id: str (optional)
           This field encodes, through a single value, the resources available to each of the Spark nodes in
           this cluster. For example, the Spark nodes can be provisioned and optimized for memory or compute
@@ -7269,6 +9035,11 @@ class ClustersAPI:
           SSH public key contents that will be added to each Spark node in this cluster. The corresponding
           private keys can be used to login with the user name `ubuntu` on port `2200`. Up to 10 keys can be
           specified.
+        :param use_ml_runtime: bool (optional)
+          This field can only be used with `kind`.
+          
+          `effective_spark_version` is determined by `spark_version` (DBR release), this field
+          `use_ml_runtime`, and whether `node_type_id` is gpu node or not.
         :param workload_type: :class:`WorkloadType` (optional)
         
         :returns:
@@ -7296,6 +9067,8 @@ class ClustersAPI:
         if gcp_attributes is not None: body['gcp_attributes'] = gcp_attributes.as_dict()
         if init_scripts is not None: body['init_scripts'] = [v.as_dict() for v in init_scripts]
         if instance_pool_id is not None: body['instance_pool_id'] = instance_pool_id
+        if is_single_node is not None: body['is_single_node'] = is_single_node
+        if kind is not None: body['kind'] = kind.value
         if node_type_id is not None: body['node_type_id'] = node_type_id
         if num_workers is not None: body['num_workers'] = num_workers
         if policy_id is not None: body['policy_id'] = policy_id
@@ -7305,6 +9078,7 @@ class ClustersAPI:
         if spark_env_vars is not None: body['spark_env_vars'] = spark_env_vars
         if spark_version is not None: body['spark_version'] = spark_version
         if ssh_public_keys is not None: body['ssh_public_keys'] = [v for v in ssh_public_keys]
+        if use_ml_runtime is not None: body['use_ml_runtime'] = use_ml_runtime
         if workload_type is not None: body['workload_type'] = workload_type.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
@@ -7335,6 +9109,8 @@ class ClustersAPI:
         gcp_attributes: Optional[GcpAttributes] = None,
         init_scripts: Optional[List[InitScriptInfo]] = None,
         instance_pool_id: Optional[str] = None,
+        is_single_node: Optional[bool] = None,
+        kind: Optional[Kind] = None,
         node_type_id: Optional[str] = None,
         num_workers: Optional[int] = None,
         policy_id: Optional[str] = None,
@@ -7343,6 +9119,7 @@ class ClustersAPI:
         spark_conf: Optional[Dict[str, str]] = None,
         spark_env_vars: Optional[Dict[str, str]] = None,
         ssh_public_keys: Optional[List[str]] = None,
+        use_ml_runtime: Optional[bool] = None,
         workload_type: Optional[WorkloadType] = None,
         timeout=timedelta(minutes=20)) -> ClusterDetails:
         return self.edit(apply_policy_default_values=apply_policy_default_values,
@@ -7363,6 +9140,8 @@ class ClustersAPI:
                          gcp_attributes=gcp_attributes,
                          init_scripts=init_scripts,
                          instance_pool_id=instance_pool_id,
+                         is_single_node=is_single_node,
+                         kind=kind,
                          node_type_id=node_type_id,
                          num_workers=num_workers,
                          policy_id=policy_id,
@@ -7372,6 +9151,7 @@ class ClustersAPI:
                          spark_env_vars=spark_env_vars,
                          spark_version=spark_version,
                          ssh_public_keys=ssh_public_keys,
+                         use_ml_runtime=use_ml_runtime,
                          workload_type=workload_type).result(timeout=timeout)
 
     def events(self,

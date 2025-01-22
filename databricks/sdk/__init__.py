@@ -1,3 +1,6 @@
+# Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
+
+import logging
 from typing import Optional
 
 import databricks.sdk.core as client
@@ -5,7 +8,7 @@ import databricks.sdk.dbutils as dbutils
 from databricks.sdk import azure
 from databricks.sdk.credentials_provider import CredentialsStrategy
 from databricks.sdk.mixins.compute import ClustersExt
-from databricks.sdk.mixins.files import DbfsExt
+from databricks.sdk.mixins.files import DbfsExt, FilesExt
 from databricks.sdk.mixins.jobs import JobsExt
 from databricks.sdk.mixins.open_ai_client import ServingEndpointsExt
 from databricks.sdk.mixins.workspace import WorkspaceExt
@@ -28,6 +31,9 @@ from databricks.sdk.service.catalog import (AccountMetastoreAssignmentsAPI,
                                             TableConstraintsAPI, TablesAPI,
                                             TemporaryTableCredentialsAPI,
                                             VolumesAPI, WorkspaceBindingsAPI)
+from databricks.sdk.service.cleanrooms import (CleanRoomAssetsAPI,
+                                               CleanRoomsAPI,
+                                               CleanRoomTaskRunsAPI)
 from databricks.sdk.service.compute import (ClusterPoliciesAPI, ClustersAPI,
                                             CommandExecutionAPI,
                                             GlobalInitScriptsAPI,
@@ -37,7 +43,8 @@ from databricks.sdk.service.compute import (ClusterPoliciesAPI, ClustersAPI,
                                             PolicyFamiliesAPI)
 from databricks.sdk.service.dashboards import GenieAPI, LakeviewAPI
 from databricks.sdk.service.files import DbfsAPI, FilesAPI
-from databricks.sdk.service.iam import (AccountAccessControlAPI,
+from databricks.sdk.service.iam import (AccessControlAPI,
+                                        AccountAccessControlAPI,
                                         AccountAccessControlProxyAPI,
                                         AccountGroupsAPI,
                                         AccountServicePrincipalsAPI,
@@ -53,9 +60,11 @@ from databricks.sdk.service.marketplace import (
     ProviderListingsAPI, ProviderPersonalizationRequestsAPI,
     ProviderProviderAnalyticsDashboardsAPI, ProviderProvidersAPI)
 from databricks.sdk.service.ml import ExperimentsAPI, ModelRegistryAPI
-from databricks.sdk.service.oauth2 import (CustomAppIntegrationAPI,
+from databricks.sdk.service.oauth2 import (AccountFederationPolicyAPI,
+                                           CustomAppIntegrationAPI,
                                            OAuthPublishedAppsAPI,
                                            PublishedAppIntegrationAPI,
+                                           ServicePrincipalFederationPolicyAPI,
                                            ServicePrincipalSecretsAPI)
 from databricks.sdk.service.pipelines import PipelinesAPI
 from databricks.sdk.service.provisioning import (CredentialsAPI,
@@ -92,6 +101,8 @@ from databricks.sdk.service.vectorsearch import (VectorSearchEndpointsAPI,
 from databricks.sdk.service.workspace import (GitCredentialsAPI, ReposAPI,
                                               SecretsAPI, WorkspaceAPI)
 
+_LOG = logging.getLogger(__name__)
+
 
 def _make_dbutils(config: client.Config):
     # We try to directly check if we are in runtime, instead of
@@ -107,6 +118,14 @@ def _make_dbutils(config: client.Config):
     # We are in runtime, so we can use the runtime dbutils
     from databricks.sdk.runtime import dbutils as runtime_dbutils
     return runtime_dbutils
+
+
+def _make_files_client(apiClient: client.ApiClient, config: client.Config):
+    if config.enable_experimental_files_api_client:
+        _LOG.info("Experimental Files API client is enabled")
+        return FilesExt(apiClient, config)
+    else:
+        return FilesAPI(apiClient)
 
 
 class WorkspaceClient:
@@ -170,12 +189,16 @@ class WorkspaceClient:
         self._dbutils = _make_dbutils(self._config)
         self._api_client = client.ApiClient(self._config)
         serving_endpoints = ServingEndpointsExt(self._api_client)
+        self._access_control = AccessControlAPI(self._api_client)
         self._account_access_control_proxy = AccountAccessControlProxyAPI(self._api_client)
         self._alerts = AlertsAPI(self._api_client)
         self._alerts_legacy = AlertsLegacyAPI(self._api_client)
         self._apps = AppsAPI(self._api_client)
         self._artifact_allowlists = ArtifactAllowlistsAPI(self._api_client)
         self._catalogs = CatalogsAPI(self._api_client)
+        self._clean_room_assets = CleanRoomAssetsAPI(self._api_client)
+        self._clean_room_task_runs = CleanRoomTaskRunsAPI(self._api_client)
+        self._clean_rooms = CleanRoomsAPI(self._api_client)
         self._cluster_policies = ClusterPoliciesAPI(self._api_client)
         self._clusters = ClustersExt(self._api_client)
         self._command_execution = CommandExecutionAPI(self._api_client)
@@ -195,7 +218,7 @@ class WorkspaceClient:
         self._dbsql_permissions = DbsqlPermissionsAPI(self._api_client)
         self._experiments = ExperimentsAPI(self._api_client)
         self._external_locations = ExternalLocationsAPI(self._api_client)
-        self._files = FilesAPI(self._api_client)
+        self._files = _make_files_client(self._api_client, self._config)
         self._functions = FunctionsAPI(self._api_client)
         self._genie = GenieAPI(self._api_client)
         self._git_credentials = GitCredentialsAPI(self._api_client)
@@ -276,6 +299,11 @@ class WorkspaceClient:
         return self._dbutils
 
     @property
+    def access_control(self) -> AccessControlAPI:
+        """Rule based Access Control for Databricks Resources."""
+        return self._access_control
+
+    @property
     def account_access_control_proxy(self) -> AccountAccessControlProxyAPI:
         """These APIs manage access rules on resources in an account."""
         return self._account_access_control_proxy
@@ -304,6 +332,21 @@ class WorkspaceClient:
     def catalogs(self) -> CatalogsAPI:
         """A catalog is the first layer of Unity Catalog’s three-level namespace."""
         return self._catalogs
+
+    @property
+    def clean_room_assets(self) -> CleanRoomAssetsAPI:
+        """Clean room assets are data and code objects — Tables, volumes, and notebooks that are shared with the clean room."""
+        return self._clean_room_assets
+
+    @property
+    def clean_room_task_runs(self) -> CleanRoomTaskRunsAPI:
+        """Clean room task runs are the executions of notebooks in a clean room."""
+        return self._clean_room_task_runs
+
+    @property
+    def clean_rooms(self) -> CleanRoomsAPI:
+        """A clean room uses Delta Sharing and serverless compute to provide a secure and privacy-protecting environment where multiple parties can work together on sensitive enterprise data without direct access to each other’s data."""
+        return self._clean_rooms
 
     @property
     def cluster_policies(self) -> ClusterPoliciesAPI:
@@ -805,6 +848,7 @@ class AccountClient:
         self._credentials = CredentialsAPI(self._api_client)
         self._custom_app_integration = CustomAppIntegrationAPI(self._api_client)
         self._encryption_keys = EncryptionKeysAPI(self._api_client)
+        self._federation_policy = AccountFederationPolicyAPI(self._api_client)
         self._groups = AccountGroupsAPI(self._api_client)
         self._ip_access_lists = AccountIpAccessListsAPI(self._api_client)
         self._log_delivery = LogDeliveryAPI(self._api_client)
@@ -815,6 +859,7 @@ class AccountClient:
         self._o_auth_published_apps = OAuthPublishedAppsAPI(self._api_client)
         self._private_access = PrivateAccessAPI(self._api_client)
         self._published_app_integration = PublishedAppIntegrationAPI(self._api_client)
+        self._service_principal_federation_policy = ServicePrincipalFederationPolicyAPI(self._api_client)
         self._service_principal_secrets = ServicePrincipalSecretsAPI(self._api_client)
         self._service_principals = AccountServicePrincipalsAPI(self._api_client)
         self._settings = AccountSettingsAPI(self._api_client)
@@ -859,6 +904,11 @@ class AccountClient:
     def encryption_keys(self) -> EncryptionKeysAPI:
         """These APIs manage encryption key configurations for this workspace (optional)."""
         return self._encryption_keys
+
+    @property
+    def federation_policy(self) -> AccountFederationPolicyAPI:
+        """These APIs manage account federation policies."""
+        return self._federation_policy
 
     @property
     def groups(self) -> AccountGroupsAPI:
@@ -909,6 +959,11 @@ class AccountClient:
     def published_app_integration(self) -> PublishedAppIntegrationAPI:
         """These APIs enable administrators to manage published OAuth app integrations, which is required for adding/using Published OAuth App Integration like Tableau Desktop for Databricks in AWS cloud."""
         return self._published_app_integration
+
+    @property
+    def service_principal_federation_policy(self) -> ServicePrincipalFederationPolicyAPI:
+        """These APIs manage service principal federation policies."""
+        return self._service_principal_federation_policy
 
     @property
     def service_principal_secrets(self) -> ServicePrincipalSecretsAPI:

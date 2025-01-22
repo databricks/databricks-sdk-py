@@ -28,6 +28,95 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: CleanRoomTaskRunLifeCycleState
+
+   Copied from elastic-spark-common/api/messages/runs.proto. Using the original definition to remove coupling with jobs API definition
+
+   .. py:attribute:: BLOCKED
+      :value: "BLOCKED"
+
+   .. py:attribute:: INTERNAL_ERROR
+      :value: "INTERNAL_ERROR"
+
+   .. py:attribute:: PENDING
+      :value: "PENDING"
+
+   .. py:attribute:: QUEUED
+      :value: "QUEUED"
+
+   .. py:attribute:: RUNNING
+      :value: "RUNNING"
+
+   .. py:attribute:: RUN_LIFE_CYCLE_STATE_UNSPECIFIED
+      :value: "RUN_LIFE_CYCLE_STATE_UNSPECIFIED"
+
+   .. py:attribute:: SKIPPED
+      :value: "SKIPPED"
+
+   .. py:attribute:: TERMINATED
+      :value: "TERMINATED"
+
+   .. py:attribute:: TERMINATING
+      :value: "TERMINATING"
+
+   .. py:attribute:: WAITING_FOR_RETRY
+      :value: "WAITING_FOR_RETRY"
+
+.. py:class:: CleanRoomTaskRunResultState
+
+   Copied from elastic-spark-common/api/messages/runs.proto. Using the original definition to avoid cyclic dependency.
+
+   .. py:attribute:: CANCELED
+      :value: "CANCELED"
+
+   .. py:attribute:: DISABLED
+      :value: "DISABLED"
+
+   .. py:attribute:: EVICTED
+      :value: "EVICTED"
+
+   .. py:attribute:: EXCLUDED
+      :value: "EXCLUDED"
+
+   .. py:attribute:: FAILED
+      :value: "FAILED"
+
+   .. py:attribute:: MAXIMUM_CONCURRENT_RUNS_REACHED
+      :value: "MAXIMUM_CONCURRENT_RUNS_REACHED"
+
+   .. py:attribute:: RUN_RESULT_STATE_UNSPECIFIED
+      :value: "RUN_RESULT_STATE_UNSPECIFIED"
+
+   .. py:attribute:: SUCCESS
+      :value: "SUCCESS"
+
+   .. py:attribute:: SUCCESS_WITH_FAILURES
+      :value: "SUCCESS_WITH_FAILURES"
+
+   .. py:attribute:: TIMEDOUT
+      :value: "TIMEDOUT"
+
+   .. py:attribute:: UPSTREAM_CANCELED
+      :value: "UPSTREAM_CANCELED"
+
+   .. py:attribute:: UPSTREAM_EVICTED
+      :value: "UPSTREAM_EVICTED"
+
+   .. py:attribute:: UPSTREAM_FAILED
+      :value: "UPSTREAM_FAILED"
+
+.. autoclass:: CleanRoomTaskRunState
+   :members:
+   :undoc-members:
+
+.. autoclass:: CleanRoomsNotebookTask
+   :members:
+   :undoc-members:
+
+.. autoclass:: CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput
+   :members:
+   :undoc-members:
+
 .. autoclass:: ClusterInstance
    :members:
    :undoc-members:
@@ -317,7 +406,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. py:class:: JobsHealthMetric
 
    Specifies the health metric that is being evaluated for a particular health rule.
-   * `RUN_DURATION_SECONDS`: Expected total time for a run in seconds. * `STREAMING_BACKLOG_BYTES`: An estimate of the maximum bytes of data waiting to be consumed across all streams. This metric is in Private Preview. * `STREAMING_BACKLOG_RECORDS`: An estimate of the maximum offset lag across all streams. This metric is in Private Preview. * `STREAMING_BACKLOG_SECONDS`: An estimate of the maximum consumer delay across all streams. This metric is in Private Preview. * `STREAMING_BACKLOG_FILES`: An estimate of the maximum number of outstanding files across all streams. This metric is in Private Preview.
+   * `RUN_DURATION_SECONDS`: Expected total time for a run in seconds. * `STREAMING_BACKLOG_BYTES`: An estimate of the maximum bytes of data waiting to be consumed across all streams. This metric is in Public Preview. * `STREAMING_BACKLOG_RECORDS`: An estimate of the maximum offset lag across all streams. This metric is in Public Preview. * `STREAMING_BACKLOG_SECONDS`: An estimate of the maximum consumer delay across all streams. This metric is in Public Preview. * `STREAMING_BACKLOG_FILES`: An estimate of the maximum number of outstanding files across all streams. This metric is in Public Preview.
 
    .. py:attribute:: RUN_DURATION_SECONDS
       :value: "RUN_DURATION_SECONDS"
@@ -366,6 +455,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: NotebookTask
+   :members:
+   :undoc-members:
+
+.. autoclass:: OutputSchemaInfo
    :members:
    :undoc-members:
 
@@ -900,7 +993,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. py:class:: TriggerType
 
    The type of trigger that fired this run.
-   * `PERIODIC`: Schedules that periodically trigger runs, such as a cron scheduler. * `ONE_TIME`: One time triggers that fire a single run. This occurs you triggered a single run on demand through the UI or the API. * `RETRY`: Indicates a run that is triggered as a retry of a previously failed run. This occurs when you request to re-run the job in case of failures. * `RUN_JOB_TASK`: Indicates a run that is triggered using a Run Job task. * `FILE_ARRIVAL`: Indicates a run that is triggered by a file arrival. * `TABLE`: Indicates a run that is triggered by a table update.
+   * `PERIODIC`: Schedules that periodically trigger runs, such as a cron scheduler. * `ONE_TIME`: One time triggers that fire a single run. This occurs you triggered a single run on demand through the UI or the API. * `RETRY`: Indicates a run that is triggered as a retry of a previously failed run. This occurs when you request to re-run the job in case of failures. * `RUN_JOB_TASK`: Indicates a run that is triggered using a Run Job task. * `FILE_ARRIVAL`: Indicates a run that is triggered by a file arrival. * `TABLE`: Indicates a run that is triggered by a table update. * `CONTINUOUS_RESTART`: Indicates a run created by user to manually restart a continuous job run.
 
    .. py:attribute:: FILE_ARRIVAL
       :value: "FILE_ARRIVAL"

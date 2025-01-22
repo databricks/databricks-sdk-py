@@ -39,8 +39,8 @@
         :param config: :class:`EndpointCoreConfigInput`
           The core config of the serving endpoint.
         :param ai_gateway: :class:`AiGatewayConfig` (optional)
-          The AI Gateway configuration for the serving endpoint. NOTE: only external model endpoints are
-          supported as of now.
+          The AI Gateway configuration for the serving endpoint. NOTE: Only external model and provisioned
+          throughput endpoints are currently supported.
         :param rate_limits: List[:class:`RateLimit`] (optional)
           Rate limits to be applied to the serving endpoint. NOTE: this field is deprecated, please use AI
           Gateway to manage rate limits.
@@ -62,7 +62,6 @@
         Delete a serving endpoint.
         
         :param name: str
-          The name of the serving endpoint. This field is required.
         
         
         
@@ -98,7 +97,7 @@
     .. py:method:: get_open_ai_client()
 
 
-    .. py:method:: get_open_api(name: str)
+    .. py:method:: get_open_api(name: str) -> GetOpenApiResponse
 
         Get the schema for a serving endpoint.
         
@@ -108,7 +107,7 @@
         :param name: str
           The name of the serving endpoint that the served model belongs to. This field is required.
         
-        
+        :returns: :class:`GetOpenApiResponse`
         
 
     .. py:method:: get_permission_levels(serving_endpoint_id: str) -> GetServingEndpointPermissionLevelsResponse
@@ -136,6 +135,26 @@
         :returns: :class:`ServingEndpointPermissions`
         
 
+    .. py:method:: http_request(conn: str, method: ExternalFunctionRequestHttpMethod, path: str [, headers: typing.Dict[str, str], json: typing.Dict[str, str], params: typing.Dict[str, str]]) -> ExternalFunctionResponse
+
+        Make external services call using the credentials stored in UC Connection.
+        **NOTE:** Experimental: This API may change or be removed in a future release without warning.
+        :param conn: str
+          The connection name to use. This is required to identify the external connection.
+        :param method: :class:`ExternalFunctionRequestHttpMethod`
+          The HTTP method to use (e.g., 'GET', 'POST'). This is required.
+        :param path: str
+          The relative path for the API endpoint. This is required.
+        :param headers: Dict[str,str] (optional)
+          Additional headers for the request. If not provided, only auth headers from connections would be
+          passed.
+        :param json: Dict[str,str] (optional)
+          JSON payload for the request.
+        :param params: Dict[str,str] (optional)
+          Query parameters for the request.
+        :returns: :class:`ExternalFunctionResponse`
+        
+
     .. py:method:: list() -> Iterator[ServingEndpoint]
 
         Get all serving endpoints.
@@ -157,7 +176,7 @@
         :returns: :class:`ServerLogsResponse`
         
 
-    .. py:method:: patch(name: str [, add_tags: Optional[List[EndpointTag]], delete_tags: Optional[List[str]]]) -> Iterator[EndpointTag]
+    .. py:method:: patch(name: str [, add_tags: Optional[List[EndpointTag]], delete_tags: Optional[List[str]]]) -> EndpointTags
 
         Update tags of a serving endpoint.
         
@@ -170,7 +189,7 @@
         :param delete_tags: List[str] (optional)
           List of tag keys to delete
         
-        :returns: Iterator over :class:`EndpointTag`
+        :returns: :class:`EndpointTags`
         
 
     .. py:method:: put(name: str [, rate_limits: Optional[List[RateLimit]]]) -> PutResponse
@@ -192,8 +211,8 @@
 
         Update AI Gateway of a serving endpoint.
         
-        Used to update the AI Gateway of a serving endpoint. NOTE: Only external model endpoints are currently
-        supported.
+        Used to update the AI Gateway of a serving endpoint. NOTE: Only external model and provisioned
+        throughput endpoints are currently supported.
         
         :param name: str
           The name of the serving endpoint whose AI Gateway is being updated. This field is required.
@@ -288,14 +307,16 @@
           The name of the serving endpoint to update. This field is required.
         :param auto_capture_config: :class:`AutoCaptureConfigInput` (optional)
           Configuration for Inference Tables which automatically logs requests and responses to Unity Catalog.
+          Note: this field is deprecated for creating new provisioned throughput endpoints, or updating
+          existing provisioned throughput endpoints that never have inference table configured; in these cases
+          please use AI Gateway to manage inference tables.
         :param served_entities: List[:class:`ServedEntityInput`] (optional)
-          A list of served entities for the endpoint to serve. A serving endpoint can have up to 15 served
-          entities.
+          The list of served entities under the serving endpoint config.
         :param served_models: List[:class:`ServedModelInput`] (optional)
-          (Deprecated, use served_entities instead) A list of served models for the endpoint to serve. A
-          serving endpoint can have up to 15 served models.
+          (Deprecated, use served_entities instead) The list of served models under the serving endpoint
+          config.
         :param traffic_config: :class:`TrafficConfig` (optional)
-          The traffic config defining how invocations to the serving endpoint should be routed.
+          The traffic configuration associated with the serving endpoint config.
         
         :returns:
           Long-running operation waiter for :class:`ServingEndpointDetailed`.

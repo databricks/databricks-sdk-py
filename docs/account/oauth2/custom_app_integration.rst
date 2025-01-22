@@ -67,7 +67,7 @@
         :returns: Iterator over :class:`GetCustomAppIntegrationOutput`
         
 
-    .. py:method:: update(integration_id: str [, redirect_urls: Optional[List[str]], token_access_policy: Optional[TokenAccessPolicy]])
+    .. py:method:: update(integration_id: str [, redirect_urls: Optional[List[str]], scopes: Optional[List[str]], token_access_policy: Optional[TokenAccessPolicy]])
 
         Updates Custom OAuth App Integration.
         
@@ -77,6 +77,9 @@
         :param integration_id: str
         :param redirect_urls: List[str] (optional)
           List of OAuth redirect urls to be updated in the custom OAuth app integration
+        :param scopes: List[str] (optional)
+          List of OAuth scopes to be updated in the custom OAuth app integration, similar to redirect URIs
+          this will fully replace the existing values instead of appending
         :param token_access_policy: :class:`TokenAccessPolicy` (optional)
           Token access policy to be updated in the custom OAuth app integration
         

@@ -42,6 +42,14 @@ class CronSchedule:
         if self.timezone_id is not None: body['timezone_id'] = self.timezone_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CronSchedule into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.quartz_cron_expression is not None:
+            body['quartz_cron_expression'] = self.quartz_cron_expression
+        if self.timezone_id is not None: body['timezone_id'] = self.timezone_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CronSchedule:
         """Deserializes the CronSchedule from a dictionary."""
@@ -105,6 +113,21 @@ class Dashboard:
         if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Dashboard into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.create_time is not None: body['create_time'] = self.create_time
+        if self.dashboard_id is not None: body['dashboard_id'] = self.dashboard_id
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.etag is not None: body['etag'] = self.etag
+        if self.lifecycle_state is not None: body['lifecycle_state'] = self.lifecycle_state
+        if self.parent_path is not None: body['parent_path'] = self.parent_path
+        if self.path is not None: body['path'] = self.path
+        if self.serialized_dashboard is not None: body['serialized_dashboard'] = self.serialized_dashboard
+        if self.update_time is not None: body['update_time'] = self.update_time
+        if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> Dashboard:
         """Deserializes the Dashboard from a dictionary."""
@@ -125,11 +148,37 @@ class DashboardView(Enum):
     DASHBOARD_VIEW_BASIC = 'DASHBOARD_VIEW_BASIC'
 
 
+class DataType(Enum):
+
+    DATA_TYPE_ARRAY = 'DATA_TYPE_ARRAY'
+    DATA_TYPE_BIG_INT = 'DATA_TYPE_BIG_INT'
+    DATA_TYPE_BINARY = 'DATA_TYPE_BINARY'
+    DATA_TYPE_BOOLEAN = 'DATA_TYPE_BOOLEAN'
+    DATA_TYPE_DATE = 'DATA_TYPE_DATE'
+    DATA_TYPE_DECIMAL = 'DATA_TYPE_DECIMAL'
+    DATA_TYPE_DOUBLE = 'DATA_TYPE_DOUBLE'
+    DATA_TYPE_FLOAT = 'DATA_TYPE_FLOAT'
+    DATA_TYPE_INT = 'DATA_TYPE_INT'
+    DATA_TYPE_INTERVAL = 'DATA_TYPE_INTERVAL'
+    DATA_TYPE_MAP = 'DATA_TYPE_MAP'
+    DATA_TYPE_SMALL_INT = 'DATA_TYPE_SMALL_INT'
+    DATA_TYPE_STRING = 'DATA_TYPE_STRING'
+    DATA_TYPE_STRUCT = 'DATA_TYPE_STRUCT'
+    DATA_TYPE_TIMESTAMP = 'DATA_TYPE_TIMESTAMP'
+    DATA_TYPE_TINY_INT = 'DATA_TYPE_TINY_INT'
+    DATA_TYPE_VOID = 'DATA_TYPE_VOID'
+
+
 @dataclass
 class DeleteScheduleResponse:
 
     def as_dict(self) -> dict:
         """Serializes the DeleteScheduleResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteScheduleResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -144,6 +193,11 @@ class DeleteSubscriptionResponse:
 
     def as_dict(self) -> dict:
         """Serializes the DeleteSubscriptionResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteSubscriptionResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -166,6 +220,13 @@ class GenieAttachment:
         body = {}
         if self.query: body['query'] = self.query.as_dict()
         if self.text: body['text'] = self.text.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GenieAttachment into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.query: body['query'] = self.query
+        if self.text: body['text'] = self.text
         return body
 
     @classmethod
@@ -206,6 +267,18 @@ class GenieConversation:
         if self.user_id is not None: body['user_id'] = self.user_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GenieConversation into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.created_timestamp is not None: body['created_timestamp'] = self.created_timestamp
+        if self.id is not None: body['id'] = self.id
+        if self.last_updated_timestamp is not None:
+            body['last_updated_timestamp'] = self.last_updated_timestamp
+        if self.space_id is not None: body['space_id'] = self.space_id
+        if self.title is not None: body['title'] = self.title
+        if self.user_id is not None: body['user_id'] = self.user_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> GenieConversation:
         """Deserializes the GenieConversation from a dictionary."""
@@ -236,6 +309,14 @@ class GenieCreateConversationMessageRequest:
         if self.space_id is not None: body['space_id'] = self.space_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GenieCreateConversationMessageRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.content is not None: body['content'] = self.content
+        if self.conversation_id is not None: body['conversation_id'] = self.conversation_id
+        if self.space_id is not None: body['space_id'] = self.space_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> GenieCreateConversationMessageRequest:
         """Deserializes the GenieCreateConversationMessageRequest from a dictionary."""
@@ -254,6 +335,12 @@ class GenieGetMessageQueryResultResponse:
         """Serializes the GenieGetMessageQueryResultResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.statement_response: body['statement_response'] = self.statement_response.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GenieGetMessageQueryResultResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.statement_response: body['statement_response'] = self.statement_response
         return body
 
     @classmethod
@@ -294,8 +381,9 @@ class GenieMessage:
     status: Optional[MessageStatus] = None
     """MesssageStatus. The possible values are: * `FETCHING_METADATA`: Fetching metadata from the data
     sources. * `FILTERING_CONTEXT`: Running smart context step to determine relevant context. *
-    `ASKING_AI`: Waiting for the LLM to respond to the users question. * `EXECUTING_QUERY`:
-    Executing AI provided SQL query. Get the SQL query result by calling
+    `ASKING_AI`: Waiting for the LLM to respond to the users question. * `PENDING_WAREHOUSE`:
+    Waiting for warehouse before the SQL query can start executing. * `EXECUTING_QUERY`: Executing
+    AI provided SQL query. Get the SQL query result by calling
     [getMessageQueryResult](:method:genie/getMessageQueryResult) API. **Important: The message
     status will stay in the `EXECUTING_QUERY` until a client calls
     [getMessageQueryResult](:method:genie/getMessageQueryResult)**. * `FAILED`: Generating a
@@ -322,6 +410,23 @@ class GenieMessage:
         if self.query_result: body['query_result'] = self.query_result.as_dict()
         if self.space_id is not None: body['space_id'] = self.space_id
         if self.status is not None: body['status'] = self.status.value
+        if self.user_id is not None: body['user_id'] = self.user_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GenieMessage into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.attachments: body['attachments'] = self.attachments
+        if self.content is not None: body['content'] = self.content
+        if self.conversation_id is not None: body['conversation_id'] = self.conversation_id
+        if self.created_timestamp is not None: body['created_timestamp'] = self.created_timestamp
+        if self.error: body['error'] = self.error
+        if self.id is not None: body['id'] = self.id
+        if self.last_updated_timestamp is not None:
+            body['last_updated_timestamp'] = self.last_updated_timestamp
+        if self.query_result: body['query_result'] = self.query_result
+        if self.space_id is not None: body['space_id'] = self.space_id
+        if self.status is not None: body['status'] = self.status
         if self.user_id is not None: body['user_id'] = self.user_id
         return body
 
@@ -356,6 +461,13 @@ class GenieStartConversationMessageRequest:
         if self.space_id is not None: body['space_id'] = self.space_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GenieStartConversationMessageRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.content is not None: body['content'] = self.content
+        if self.space_id is not None: body['space_id'] = self.space_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> GenieStartConversationMessageRequest:
         """Deserializes the GenieStartConversationMessageRequest from a dictionary."""
@@ -380,6 +492,15 @@ class GenieStartConversationResponse:
         if self.conversation: body['conversation'] = self.conversation.as_dict()
         if self.conversation_id is not None: body['conversation_id'] = self.conversation_id
         if self.message: body['message'] = self.message.as_dict()
+        if self.message_id is not None: body['message_id'] = self.message_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GenieStartConversationResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.conversation: body['conversation'] = self.conversation
+        if self.conversation_id is not None: body['conversation_id'] = self.conversation_id
+        if self.message: body['message'] = self.message
         if self.message_id is not None: body['message_id'] = self.message_id
         return body
 
@@ -413,6 +534,13 @@ class ListDashboardsResponse:
         if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListDashboardsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.dashboards: body['dashboards'] = self.dashboards
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListDashboardsResponse:
         """Deserializes the ListDashboardsResponse from a dictionary."""
@@ -433,6 +561,13 @@ class ListSchedulesResponse:
         body = {}
         if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         if self.schedules: body['schedules'] = [v.as_dict() for v in self.schedules]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListSchedulesResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.schedules: body['schedules'] = self.schedules
         return body
 
     @classmethod
@@ -457,6 +592,13 @@ class ListSubscriptionsResponse:
         if self.subscriptions: body['subscriptions'] = [v.as_dict() for v in self.subscriptions]
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListSubscriptionsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.subscriptions: body['subscriptions'] = self.subscriptions
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListSubscriptionsResponse:
         """Deserializes the ListSubscriptionsResponse from a dictionary."""
@@ -475,6 +617,13 @@ class MessageError:
         body = {}
         if self.error is not None: body['error'] = self.error
         if self.type is not None: body['type'] = self.type.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the MessageError into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.error is not None: body['error'] = self.error
+        if self.type is not None: body['type'] = self.type
         return body
 
     @classmethod
@@ -530,8 +679,9 @@ class MessageErrorType(Enum):
 class MessageStatus(Enum):
     """MesssageStatus. The possible values are: * `FETCHING_METADATA`: Fetching metadata from the data
     sources. * `FILTERING_CONTEXT`: Running smart context step to determine relevant context. *
-    `ASKING_AI`: Waiting for the LLM to respond to the users question. * `EXECUTING_QUERY`:
-    Executing AI provided SQL query. Get the SQL query result by calling
+    `ASKING_AI`: Waiting for the LLM to respond to the users question. * `PENDING_WAREHOUSE`:
+    Waiting for warehouse before the SQL query can start executing. * `EXECUTING_QUERY`: Executing
+    AI provided SQL query. Get the SQL query result by calling
     [getMessageQueryResult](:method:genie/getMessageQueryResult) API. **Important: The message
     status will stay in the `EXECUTING_QUERY` until a client calls
     [getMessageQueryResult](:method:genie/getMessageQueryResult)**. * `FAILED`: Generating a
@@ -548,6 +698,7 @@ class MessageStatus(Enum):
     FAILED = 'FAILED'
     FETCHING_METADATA = 'FETCHING_METADATA'
     FILTERING_CONTEXT = 'FILTERING_CONTEXT'
+    PENDING_WAREHOUSE = 'PENDING_WAREHOUSE'
     QUERY_RESULT_EXPIRED = 'QUERY_RESULT_EXPIRED'
     SUBMITTED = 'SUBMITTED'
 
@@ -563,12 +714,28 @@ class MigrateDashboardRequest:
     parent_path: Optional[str] = None
     """The workspace path of the folder to contain the migrated Lakeview dashboard."""
 
+    update_parameter_syntax: Optional[bool] = None
+    """Flag to indicate if mustache parameter syntax ({{ param }}) should be auto-updated to named
+    syntax (:param) when converting datasets in the dashboard."""
+
     def as_dict(self) -> dict:
         """Serializes the MigrateDashboardRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.display_name is not None: body['display_name'] = self.display_name
         if self.parent_path is not None: body['parent_path'] = self.parent_path
         if self.source_dashboard_id is not None: body['source_dashboard_id'] = self.source_dashboard_id
+        if self.update_parameter_syntax is not None:
+            body['update_parameter_syntax'] = self.update_parameter_syntax
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the MigrateDashboardRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.parent_path is not None: body['parent_path'] = self.parent_path
+        if self.source_dashboard_id is not None: body['source_dashboard_id'] = self.source_dashboard_id
+        if self.update_parameter_syntax is not None:
+            body['update_parameter_syntax'] = self.update_parameter_syntax
         return body
 
     @classmethod
@@ -576,7 +743,8 @@ class MigrateDashboardRequest:
         """Deserializes the MigrateDashboardRequest from a dictionary."""
         return cls(display_name=d.get('display_name', None),
                    parent_path=d.get('parent_path', None),
-                   source_dashboard_id=d.get('source_dashboard_id', None))
+                   source_dashboard_id=d.get('source_dashboard_id', None),
+                   update_parameter_syntax=d.get('update_parameter_syntax', None))
 
 
 @dataclass
@@ -593,6 +761,14 @@ class PublishRequest:
 
     def as_dict(self) -> dict:
         """Serializes the PublishRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.dashboard_id is not None: body['dashboard_id'] = self.dashboard_id
+        if self.embed_credentials is not None: body['embed_credentials'] = self.embed_credentials
+        if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PublishRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.dashboard_id is not None: body['dashboard_id'] = self.dashboard_id
         if self.embed_credentials is not None: body['embed_credentials'] = self.embed_credentials
@@ -630,6 +806,15 @@ class PublishedDashboard:
         if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PublishedDashboard into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.embed_credentials is not None: body['embed_credentials'] = self.embed_credentials
+        if self.revision_create_time is not None: body['revision_create_time'] = self.revision_create_time
+        if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> PublishedDashboard:
         """Deserializes the PublishedDashboard from a dictionary."""
@@ -641,6 +826,8 @@ class PublishedDashboard:
 
 @dataclass
 class QueryAttachment:
+    cached_query_schema: Optional[QuerySchema] = None
+
     description: Optional[str] = None
     """Description of the query"""
 
@@ -665,6 +852,21 @@ class QueryAttachment:
     def as_dict(self) -> dict:
         """Serializes the QueryAttachment into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.cached_query_schema: body['cached_query_schema'] = self.cached_query_schema.as_dict()
+        if self.description is not None: body['description'] = self.description
+        if self.id is not None: body['id'] = self.id
+        if self.instruction_id is not None: body['instruction_id'] = self.instruction_id
+        if self.instruction_title is not None: body['instruction_title'] = self.instruction_title
+        if self.last_updated_timestamp is not None:
+            body['last_updated_timestamp'] = self.last_updated_timestamp
+        if self.query is not None: body['query'] = self.query
+        if self.title is not None: body['title'] = self.title
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the QueryAttachment into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.cached_query_schema: body['cached_query_schema'] = self.cached_query_schema
         if self.description is not None: body['description'] = self.description
         if self.id is not None: body['id'] = self.id
         if self.instruction_id is not None: body['instruction_id'] = self.instruction_id
@@ -678,13 +880,77 @@ class QueryAttachment:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> QueryAttachment:
         """Deserializes the QueryAttachment from a dictionary."""
-        return cls(description=d.get('description', None),
+        return cls(cached_query_schema=_from_dict(d, 'cached_query_schema', QuerySchema),
+                   description=d.get('description', None),
                    id=d.get('id', None),
                    instruction_id=d.get('instruction_id', None),
                    instruction_title=d.get('instruction_title', None),
                    last_updated_timestamp=d.get('last_updated_timestamp', None),
                    query=d.get('query', None),
                    title=d.get('title', None))
+
+
+@dataclass
+class QuerySchema:
+    columns: Optional[List[QuerySchemaColumn]] = None
+
+    statement_id: Optional[str] = None
+    """Used to determine if the stored query schema is compatible with the latest run. The service
+    should always clear the schema when the query is re-executed."""
+
+    def as_dict(self) -> dict:
+        """Serializes the QuerySchema into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.columns: body['columns'] = [v.as_dict() for v in self.columns]
+        if self.statement_id is not None: body['statement_id'] = self.statement_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the QuerySchema into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.columns: body['columns'] = self.columns
+        if self.statement_id is not None: body['statement_id'] = self.statement_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> QuerySchema:
+        """Deserializes the QuerySchema from a dictionary."""
+        return cls(columns=_repeated_dict(d, 'columns', QuerySchemaColumn),
+                   statement_id=d.get('statement_id', None))
+
+
+@dataclass
+class QuerySchemaColumn:
+    name: str
+
+    type_text: str
+    """Corresponds to type desc"""
+
+    data_type: DataType
+    """Populated from https://docs.databricks.com/sql/language-manual/sql-ref-datatypes.html"""
+
+    def as_dict(self) -> dict:
+        """Serializes the QuerySchemaColumn into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.data_type is not None: body['data_type'] = self.data_type.value
+        if self.name is not None: body['name'] = self.name
+        if self.type_text is not None: body['type_text'] = self.type_text
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the QuerySchemaColumn into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.data_type is not None: body['data_type'] = self.data_type
+        if self.name is not None: body['name'] = self.name
+        if self.type_text is not None: body['type_text'] = self.type_text
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> QuerySchemaColumn:
+        """Deserializes the QuerySchemaColumn from a dictionary."""
+        return cls(data_type=_enum(d, 'data_type', DataType),
+                   name=d.get('name', None),
+                   type_text=d.get('type_text', None))
 
 
 @dataclass
@@ -701,6 +967,14 @@ class Result:
 
     def as_dict(self) -> dict:
         """Serializes the Result into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.is_truncated is not None: body['is_truncated'] = self.is_truncated
+        if self.row_count is not None: body['row_count'] = self.row_count
+        if self.statement_id is not None: body['statement_id'] = self.statement_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Result into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.is_truncated is not None: body['is_truncated'] = self.is_truncated
         if self.row_count is not None: body['row_count'] = self.row_count
@@ -760,6 +1034,20 @@ class Schedule:
         if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Schedule into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.create_time is not None: body['create_time'] = self.create_time
+        if self.cron_schedule: body['cron_schedule'] = self.cron_schedule
+        if self.dashboard_id is not None: body['dashboard_id'] = self.dashboard_id
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.etag is not None: body['etag'] = self.etag
+        if self.pause_status is not None: body['pause_status'] = self.pause_status
+        if self.schedule_id is not None: body['schedule_id'] = self.schedule_id
+        if self.update_time is not None: body['update_time'] = self.update_time
+        if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> Schedule:
         """Deserializes the Schedule from a dictionary."""
@@ -795,6 +1083,13 @@ class Subscriber:
         body = {}
         if self.destination_subscriber: body['destination_subscriber'] = self.destination_subscriber.as_dict()
         if self.user_subscriber: body['user_subscriber'] = self.user_subscriber.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Subscriber into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.destination_subscriber: body['destination_subscriber'] = self.destination_subscriber
+        if self.user_subscriber: body['user_subscriber'] = self.user_subscriber
         return body
 
     @classmethod
@@ -846,6 +1141,19 @@ class Subscription:
         if self.update_time is not None: body['update_time'] = self.update_time
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Subscription into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.create_time is not None: body['create_time'] = self.create_time
+        if self.created_by_user_id is not None: body['created_by_user_id'] = self.created_by_user_id
+        if self.dashboard_id is not None: body['dashboard_id'] = self.dashboard_id
+        if self.etag is not None: body['etag'] = self.etag
+        if self.schedule_id is not None: body['schedule_id'] = self.schedule_id
+        if self.subscriber: body['subscriber'] = self.subscriber
+        if self.subscription_id is not None: body['subscription_id'] = self.subscription_id
+        if self.update_time is not None: body['update_time'] = self.update_time
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> Subscription:
         """Deserializes the Subscription from a dictionary."""
@@ -870,6 +1178,12 @@ class SubscriptionSubscriberDestination:
         if self.destination_id is not None: body['destination_id'] = self.destination_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SubscriptionSubscriberDestination into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.destination_id is not None: body['destination_id'] = self.destination_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> SubscriptionSubscriberDestination:
         """Deserializes the SubscriptionSubscriberDestination from a dictionary."""
@@ -883,6 +1197,12 @@ class SubscriptionSubscriberUser:
 
     def as_dict(self) -> dict:
         """Serializes the SubscriptionSubscriberUser into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.user_id is not None: body['user_id'] = self.user_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SubscriptionSubscriberUser into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.user_id is not None: body['user_id'] = self.user_id
         return body
@@ -907,6 +1227,13 @@ class TextAttachment:
         if self.id is not None: body['id'] = self.id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TextAttachment into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.content is not None: body['content'] = self.content
+        if self.id is not None: body['id'] = self.id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> TextAttachment:
         """Deserializes the TextAttachment from a dictionary."""
@@ -921,6 +1248,11 @@ class TrashDashboardResponse:
         body = {}
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TrashDashboardResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> TrashDashboardResponse:
         """Deserializes the TrashDashboardResponse from a dictionary."""
@@ -932,6 +1264,11 @@ class UnpublishDashboardResponse:
 
     def as_dict(self) -> dict:
         """Serializes the UnpublishDashboardResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UnpublishDashboardResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -1434,7 +1771,8 @@ class LakeviewAPI:
                 source_dashboard_id: str,
                 *,
                 display_name: Optional[str] = None,
-                parent_path: Optional[str] = None) -> Dashboard:
+                parent_path: Optional[str] = None,
+                update_parameter_syntax: Optional[bool] = None) -> Dashboard:
         """Migrate dashboard.
         
         Migrates a classic SQL dashboard to Lakeview.
@@ -1445,6 +1783,9 @@ class LakeviewAPI:
           Display name for the new Lakeview dashboard.
         :param parent_path: str (optional)
           The workspace path of the folder to contain the migrated Lakeview dashboard.
+        :param update_parameter_syntax: bool (optional)
+          Flag to indicate if mustache parameter syntax ({{ param }}) should be auto-updated to named syntax
+          (:param) when converting datasets in the dashboard.
         
         :returns: :class:`Dashboard`
         """
@@ -1452,6 +1793,7 @@ class LakeviewAPI:
         if display_name is not None: body['display_name'] = display_name
         if parent_path is not None: body['parent_path'] = parent_path
         if source_dashboard_id is not None: body['source_dashboard_id'] = source_dashboard_id
+        if update_parameter_syntax is not None: body['update_parameter_syntax'] = update_parameter_syntax
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         res = self._api.do('POST', '/api/2.0/lakeview/dashboards/migrate', body=body, headers=headers)
