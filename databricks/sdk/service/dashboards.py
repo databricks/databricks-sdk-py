@@ -846,6 +846,8 @@ class QueryAttachment:
     query: Optional[str] = None
     """AI generated SQL query"""
 
+    statement_id: Optional[str] = None
+
     title: Optional[str] = None
     """Name of the query"""
 
@@ -860,6 +862,7 @@ class QueryAttachment:
         if self.last_updated_timestamp is not None:
             body['last_updated_timestamp'] = self.last_updated_timestamp
         if self.query is not None: body['query'] = self.query
+        if self.statement_id is not None: body['statement_id'] = self.statement_id
         if self.title is not None: body['title'] = self.title
         return body
 
@@ -874,6 +877,7 @@ class QueryAttachment:
         if self.last_updated_timestamp is not None:
             body['last_updated_timestamp'] = self.last_updated_timestamp
         if self.query is not None: body['query'] = self.query
+        if self.statement_id is not None: body['statement_id'] = self.statement_id
         if self.title is not None: body['title'] = self.title
         return body
 
@@ -887,6 +891,7 @@ class QueryAttachment:
                    instruction_title=d.get('instruction_title', None),
                    last_updated_timestamp=d.get('last_updated_timestamp', None),
                    query=d.get('query', None),
+                   statement_id=d.get('statement_id', None),
                    title=d.get('title', None))
 
 

@@ -7,7 +7,7 @@
     These APIs enable administrators to manage custom OAuth app integrations, which is required for
     adding/using Custom OAuth App Integration like Tableau Cloud for Databricks in AWS cloud.
 
-    .. py:method:: create( [, confidential: Optional[bool], name: Optional[str], redirect_urls: Optional[List[str]], scopes: Optional[List[str]], token_access_policy: Optional[TokenAccessPolicy]]) -> CreateCustomAppIntegrationOutput
+    .. py:method:: create( [, confidential: Optional[bool], name: Optional[str], redirect_urls: Optional[List[str]], scopes: Optional[List[str]], token_access_policy: Optional[TokenAccessPolicy], user_authorized_scopes: Optional[List[str]]]) -> CreateCustomAppIntegrationOutput
 
         Create Custom OAuth App Integration.
         
@@ -26,6 +26,9 @@
           profile, email.
         :param token_access_policy: :class:`TokenAccessPolicy` (optional)
           Token access policy
+        :param user_authorized_scopes: List[str] (optional)
+          Scopes that will need to be consented by end user to mint the access token. If the user does not
+          authorize the access token will not be minted. Must be a subset of scopes.
         
         :returns: :class:`CreateCustomAppIntegrationOutput`
         
@@ -67,7 +70,7 @@
         :returns: Iterator over :class:`GetCustomAppIntegrationOutput`
         
 
-    .. py:method:: update(integration_id: str [, redirect_urls: Optional[List[str]], scopes: Optional[List[str]], token_access_policy: Optional[TokenAccessPolicy]])
+    .. py:method:: update(integration_id: str [, redirect_urls: Optional[List[str]], scopes: Optional[List[str]], token_access_policy: Optional[TokenAccessPolicy], user_authorized_scopes: Optional[List[str]]])
 
         Updates Custom OAuth App Integration.
         
@@ -82,6 +85,9 @@
           this will fully replace the existing values instead of appending
         :param token_access_policy: :class:`TokenAccessPolicy` (optional)
           Token access policy to be updated in the custom OAuth app integration
+        :param user_authorized_scopes: List[str] (optional)
+          Scopes that will need to be consented by end user to mint the access token. If the user does not
+          authorize the access token will not be minted. Must be a subset of scopes.
         
         
         

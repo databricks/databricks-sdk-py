@@ -18,7 +18,6 @@ These APIs are available from WorkspaceClient
    marketplace/index
    ml/index
    pipelines/index
-   provisioning/index
    serving/index
    settings/index
    sharing/index

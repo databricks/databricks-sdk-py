@@ -15,6 +15,48 @@ _LOG = logging.getLogger('databricks.sdk')
 
 
 @dataclass
+class AccountIpAccessEnable:
+    acct_ip_acl_enable: BooleanMessage
+
+    etag: Optional[str] = None
+    """etag used for versioning. The response is at least as fresh as the eTag provided. This is used
+    for optimistic concurrency control as a way to help prevent simultaneous writes of a setting
+    overwriting each other. It is strongly suggested that systems make use of the etag in the read
+    -> update pattern to perform setting updates in order to avoid race conditions. That is, get an
+    etag from a GET request, and pass it with the PATCH request to identify the setting version you
+    are updating."""
+
+    setting_name: Optional[str] = None
+    """Name of the corresponding setting. This field is populated in the response, but it will not be
+    respected even if it's set in the request body. The setting name in the path parameter will be
+    respected instead. Setting name is required to be 'default' if the setting only has one instance
+    per workspace."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AccountIpAccessEnable into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.acct_ip_acl_enable: body['acct_ip_acl_enable'] = self.acct_ip_acl_enable.as_dict()
+        if self.etag is not None: body['etag'] = self.etag
+        if self.setting_name is not None: body['setting_name'] = self.setting_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AccountIpAccessEnable into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.acct_ip_acl_enable: body['acct_ip_acl_enable'] = self.acct_ip_acl_enable
+        if self.etag is not None: body['etag'] = self.etag
+        if self.setting_name is not None: body['setting_name'] = self.setting_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> AccountIpAccessEnable:
+        """Deserializes the AccountIpAccessEnable from a dictionary."""
+        return cls(acct_ip_acl_enable=_from_dict(d, 'acct_ip_acl_enable', BooleanMessage),
+                   etag=d.get('etag', None),
+                   setting_name=d.get('setting_name', None))
+
+
+@dataclass
 class AibiDashboardEmbeddingAccessPolicy:
     access_policy_type: AibiDashboardEmbeddingAccessPolicyAccessPolicyType
 
@@ -989,6 +1031,36 @@ class DefaultNamespaceSetting:
         return cls(etag=d.get('etag', None),
                    namespace=_from_dict(d, 'namespace', StringMessage),
                    setting_name=d.get('setting_name', None))
+
+
+@dataclass
+class DeleteAccountIpAccessEnableResponse:
+    """The etag is returned."""
+
+    etag: str
+    """etag used for versioning. The response is at least as fresh as the eTag provided. This is used
+    for optimistic concurrency control as a way to help prevent simultaneous writes of a setting
+    overwriting each other. It is strongly suggested that systems make use of the etag in the read
+    -> delete pattern to perform setting deletions in order to avoid race conditions. That is, get
+    an etag from a GET request, and pass it with the DELETE request to identify the rule set version
+    you are deleting."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteAccountIpAccessEnableResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.etag is not None: body['etag'] = self.etag
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteAccountIpAccessEnableResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.etag is not None: body['etag'] = self.etag
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteAccountIpAccessEnableResponse:
+        """Deserializes the DeleteAccountIpAccessEnableResponse from a dictionary."""
+        return cls(etag=d.get('etag', None))
 
 
 @dataclass
@@ -3556,7 +3628,46 @@ class TokenType(Enum):
     """The type of token request. As of now, only `AZURE_ACTIVE_DIRECTORY_TOKEN` is supported."""
 
     ARCLIGHT_AZURE_EXCHANGE_TOKEN = 'ARCLIGHT_AZURE_EXCHANGE_TOKEN'
+    ARCLIGHT_AZURE_EXCHANGE_TOKEN_WITH_USER_DELEGATION_KEY = 'ARCLIGHT_AZURE_EXCHANGE_TOKEN_WITH_USER_DELEGATION_KEY'
     AZURE_ACTIVE_DIRECTORY_TOKEN = 'AZURE_ACTIVE_DIRECTORY_TOKEN'
+
+
+@dataclass
+class UpdateAccountIpAccessEnableRequest:
+    """Details required to update a setting."""
+
+    allow_missing: bool
+    """This should always be set to true for Settings API. Added for AIP compliance."""
+
+    setting: AccountIpAccessEnable
+
+    field_mask: str
+    """Field mask is required to be passed into the PATCH request. Field mask specifies which fields of
+    the setting payload will be updated. The field mask needs to be supplied as single string. To
+    specify multiple fields in the field mask, use comma as the separator (no space)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateAccountIpAccessEnableRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.allow_missing is not None: body['allow_missing'] = self.allow_missing
+        if self.field_mask is not None: body['field_mask'] = self.field_mask
+        if self.setting: body['setting'] = self.setting.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateAccountIpAccessEnableRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.allow_missing is not None: body['allow_missing'] = self.allow_missing
+        if self.field_mask is not None: body['field_mask'] = self.field_mask
+        if self.setting: body['setting'] = self.setting
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateAccountIpAccessEnableRequest:
+        """Deserializes the UpdateAccountIpAccessEnableRequest from a dictionary."""
+        return cls(allow_missing=d.get('allow_missing', None),
+                   field_mask=d.get('field_mask', None),
+                   setting=_from_dict(d, 'setting', AccountIpAccessEnable))
 
 
 @dataclass
@@ -4391,6 +4502,7 @@ class AccountSettingsAPI:
 
         self._csp_enablement_account = CspEnablementAccountAPI(self._api)
         self._disable_legacy_features = DisableLegacyFeaturesAPI(self._api)
+        self._enable_ip_access_lists = EnableIpAccessListsAPI(self._api)
         self._esm_enablement_account = EsmEnablementAccountAPI(self._api)
         self._personal_compute = PersonalComputeAPI(self._api)
 
@@ -4403,6 +4515,11 @@ class AccountSettingsAPI:
     def disable_legacy_features(self) -> DisableLegacyFeaturesAPI:
         """Disable legacy features for new Databricks workspaces."""
         return self._disable_legacy_features
+
+    @property
+    def enable_ip_access_lists(self) -> EnableIpAccessListsAPI:
+        """Controls the enforcement of IP access lists for accessing the account console."""
+        return self._enable_ip_access_lists
 
     @property
     def esm_enablement_account(self) -> EsmEnablementAccountAPI:
@@ -5201,6 +5318,95 @@ class DisableLegacyFeaturesAPI:
             body=body,
             headers=headers)
         return DisableLegacyFeatures.from_dict(res)
+
+
+class EnableIpAccessListsAPI:
+    """Controls the enforcement of IP access lists for accessing the account console. Allowing you to enable or
+    disable restricted access based on IP addresses."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def delete(self, *, etag: Optional[str] = None) -> DeleteAccountIpAccessEnableResponse:
+        """Delete the account IP access toggle setting.
+        
+        Reverts the value of the account IP access toggle setting to default (ON)
+        
+        :param etag: str (optional)
+          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
+          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
+          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
+          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
+          request, and pass it with the DELETE request to identify the rule set version you are deleting.
+        
+        :returns: :class:`DeleteAccountIpAccessEnableResponse`
+        """
+
+        query = {}
+        if etag is not None: query['etag'] = etag
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do(
+            'DELETE',
+            f'/api/2.0/accounts/{self._api.account_id}/settings/types/acct_ip_acl_enable/names/default',
+            query=query,
+            headers=headers)
+        return DeleteAccountIpAccessEnableResponse.from_dict(res)
+
+    def get(self, *, etag: Optional[str] = None) -> AccountIpAccessEnable:
+        """Get the account IP access toggle setting.
+        
+        Gets the value of the account IP access toggle setting.
+        
+        :param etag: str (optional)
+          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
+          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
+          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
+          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
+          request, and pass it with the DELETE request to identify the rule set version you are deleting.
+        
+        :returns: :class:`AccountIpAccessEnable`
+        """
+
+        query = {}
+        if etag is not None: query['etag'] = etag
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do(
+            'GET',
+            f'/api/2.0/accounts/{self._api.account_id}/settings/types/acct_ip_acl_enable/names/default',
+            query=query,
+            headers=headers)
+        return AccountIpAccessEnable.from_dict(res)
+
+    def update(self, allow_missing: bool, setting: AccountIpAccessEnable,
+               field_mask: str) -> AccountIpAccessEnable:
+        """Update the account IP access toggle setting.
+        
+        Updates the value of the account IP access toggle setting.
+        
+        :param allow_missing: bool
+          This should always be set to true for Settings API. Added for AIP compliance.
+        :param setting: :class:`AccountIpAccessEnable`
+        :param field_mask: str
+          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
+          setting payload will be updated. The field mask needs to be supplied as single string. To specify
+          multiple fields in the field mask, use comma as the separator (no space).
+        
+        :returns: :class:`AccountIpAccessEnable`
+        """
+        body = {}
+        if allow_missing is not None: body['allow_missing'] = allow_missing
+        if field_mask is not None: body['field_mask'] = field_mask
+        if setting is not None: body['setting'] = setting.as_dict()
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do(
+            'PATCH',
+            f'/api/2.0/accounts/{self._api.account_id}/settings/types/acct_ip_acl_enable/names/default',
+            body=body,
+            headers=headers)
+        return AccountIpAccessEnable.from_dict(res)
 
 
 class EnhancedSecurityMonitoringAPI:

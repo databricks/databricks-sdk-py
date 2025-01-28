@@ -2938,6 +2938,42 @@ class Created:
 
 
 @dataclass
+class CustomPolicyTag:
+    key: str
+    """The key of the tag. - Must be unique among all custom tags of the same policy - Cannot be
+    “budget-policy-name”, “budget-policy-id” or "budget-policy-resolution-result" - these
+    tags are preserved.
+    
+    - Follows the regex pattern defined in cluster-common/conf/src/ClusterTagConstraints.scala
+    (https://src.dev.databricks.com/databricks/universe@1647196627c8dc7b4152ad098a94b86484b93a6c/-/blob/cluster-common/conf/src/ClusterTagConstraints.scala?L17)"""
+
+    value: Optional[str] = None
+    """The value of the tag.
+    
+    - Follows the regex pattern defined in cluster-common/conf/src/ClusterTagConstraints.scala
+    (https://src.dev.databricks.com/databricks/universe@1647196627c8dc7b4152ad098a94b86484b93a6c/-/blob/cluster-common/conf/src/ClusterTagConstraints.scala?L24)"""
+
+    def as_dict(self) -> dict:
+        """Serializes the CustomPolicyTag into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.key is not None: body['key'] = self.key
+        if self.value is not None: body['value'] = self.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CustomPolicyTag into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.key is not None: body['key'] = self.key
+        if self.value is not None: body['value'] = self.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> CustomPolicyTag:
+        """Deserializes the CustomPolicyTag from a dictionary."""
+        return cls(key=d.get('key', None), value=d.get('value', None))
+
+
+@dataclass
 class DataPlaneEventDetails:
     event_type: Optional[DataPlaneEventDetailsEventType] = None
     """<needs content added>"""

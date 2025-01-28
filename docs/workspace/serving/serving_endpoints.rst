@@ -29,18 +29,18 @@
         :returns: :class:`BuildLogsResponse`
         
 
-    .. py:method:: create(name: str, config: EndpointCoreConfigInput [, ai_gateway: Optional[AiGatewayConfig], rate_limits: Optional[List[RateLimit]], route_optimized: Optional[bool], tags: Optional[List[EndpointTag]]]) -> Wait[ServingEndpointDetailed]
+    .. py:method:: create(name: str [, ai_gateway: Optional[AiGatewayConfig], config: Optional[EndpointCoreConfigInput], rate_limits: Optional[List[RateLimit]], route_optimized: Optional[bool], tags: Optional[List[EndpointTag]]]) -> Wait[ServingEndpointDetailed]
 
         Create a new serving endpoint.
         
         :param name: str
           The name of the serving endpoint. This field is required and must be unique across a Databricks
           workspace. An endpoint name can consist of alphanumeric characters, dashes, and underscores.
-        :param config: :class:`EndpointCoreConfigInput`
-          The core config of the serving endpoint.
         :param ai_gateway: :class:`AiGatewayConfig` (optional)
           The AI Gateway configuration for the serving endpoint. NOTE: Only external model and provisioned
           throughput endpoints are currently supported.
+        :param config: :class:`EndpointCoreConfigInput` (optional)
+          The core config of the serving endpoint.
         :param rate_limits: List[:class:`RateLimit`] (optional)
           Rate limits to be applied to the serving endpoint. NOTE: this field is deprecated, please use AI
           Gateway to manage rate limits.
@@ -54,7 +54,7 @@
           See :method:wait_get_serving_endpoint_not_updating for more details.
         
 
-    .. py:method:: create_and_wait(name: str, config: EndpointCoreConfigInput [, ai_gateway: Optional[AiGatewayConfig], rate_limits: Optional[List[RateLimit]], route_optimized: Optional[bool], tags: Optional[List[EndpointTag]], timeout: datetime.timedelta = 0:20:00]) -> ServingEndpointDetailed
+    .. py:method:: create_and_wait(name: str [, ai_gateway: Optional[AiGatewayConfig], config: Optional[EndpointCoreConfigInput], rate_limits: Optional[List[RateLimit]], route_optimized: Optional[bool], tags: Optional[List[EndpointTag]], timeout: datetime.timedelta = 0:20:00]) -> ServingEndpointDetailed
 
 
     .. py:method:: delete(name: str)
@@ -135,7 +135,7 @@
         :returns: :class:`ServingEndpointPermissions`
         
 
-    .. py:method:: http_request(conn: str, method: ExternalFunctionRequestHttpMethod, path: str [, headers: typing.Dict[str, str], json: typing.Dict[str, str], params: typing.Dict[str, str]]) -> ExternalFunctionResponse
+    .. py:method:: http_request(conn: str, method: ExternalFunctionRequestHttpMethod, path: str [, headers: typing.Dict[str, str], json: typing.Dict[str, str], params: typing.Dict[str, str]]) -> Response
 
         Make external services call using the credentials stored in UC Connection.
         **NOTE:** Experimental: This API may change or be removed in a future release without warning.
@@ -152,7 +152,7 @@
           JSON payload for the request.
         :param params: Dict[str,str] (optional)
           Query parameters for the request.
-        :returns: :class:`ExternalFunctionResponse`
+        :returns: :class:`Response`
         
 
     .. py:method:: list() -> Iterator[ServingEndpoint]
