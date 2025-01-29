@@ -13,7 +13,8 @@ def retried(*,
             on: Sequence[Type[BaseException]] = None,
             is_retryable: Callable[[BaseException], Optional[str]] = None,
             timeout=timedelta(minutes=20),
-            clock: Clock = None):
+            clock: Clock = None,
+            before_retry: Callable = None):
     has_allowlist = on is not None
     has_callback = is_retryable is not None
     if not (has_allowlist or has_callback) or (has_allowlist and has_callback):
@@ -54,6 +55,9 @@ def retried(*,
                         raise err
 
                     logger.debug(f'Retrying: {retry_reason} (sleeping ~{sleep}s)')
+                    if before_retry:
+                        before_retry()
+
                     clock.sleep(sleep + random())
                     attempt += 1
             raise TimeoutError(f'Timed out after {timeout}') from last_err
