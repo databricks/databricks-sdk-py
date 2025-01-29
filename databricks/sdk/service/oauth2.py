@@ -31,6 +31,10 @@ class CreateCustomAppIntegration:
     token_access_policy: Optional[TokenAccessPolicy] = None
     """Token access policy"""
 
+    user_authorized_scopes: Optional[List[str]] = None
+    """Scopes that will need to be consented by end user to mint the access token. If the user does not
+    authorize the access token will not be minted. Must be a subset of scopes."""
+
     def as_dict(self) -> dict:
         """Serializes the CreateCustomAppIntegration into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -39,6 +43,8 @@ class CreateCustomAppIntegration:
         if self.redirect_urls: body['redirect_urls'] = [v for v in self.redirect_urls]
         if self.scopes: body['scopes'] = [v for v in self.scopes]
         if self.token_access_policy: body['token_access_policy'] = self.token_access_policy.as_dict()
+        if self.user_authorized_scopes:
+            body['user_authorized_scopes'] = [v for v in self.user_authorized_scopes]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -49,6 +55,7 @@ class CreateCustomAppIntegration:
         if self.redirect_urls: body['redirect_urls'] = self.redirect_urls
         if self.scopes: body['scopes'] = self.scopes
         if self.token_access_policy: body['token_access_policy'] = self.token_access_policy
+        if self.user_authorized_scopes: body['user_authorized_scopes'] = self.user_authorized_scopes
         return body
 
     @classmethod
@@ -58,7 +65,8 @@ class CreateCustomAppIntegration:
                    name=d.get('name', None),
                    redirect_urls=d.get('redirect_urls', None),
                    scopes=d.get('scopes', None),
-                   token_access_policy=_from_dict(d, 'token_access_policy', TokenAccessPolicy))
+                   token_access_policy=_from_dict(d, 'token_access_policy', TokenAccessPolicy),
+                   user_authorized_scopes=d.get('user_authorized_scopes', None))
 
 
 @dataclass
@@ -346,6 +354,10 @@ class GetCustomAppIntegrationOutput:
     token_access_policy: Optional[TokenAccessPolicy] = None
     """Token access policy"""
 
+    user_authorized_scopes: Optional[List[str]] = None
+    """Scopes that will need to be consented by end user to mint the access token. If the user does not
+    authorize the access token will not be minted. Must be a subset of scopes."""
+
     def as_dict(self) -> dict:
         """Serializes the GetCustomAppIntegrationOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -359,6 +371,8 @@ class GetCustomAppIntegrationOutput:
         if self.redirect_urls: body['redirect_urls'] = [v for v in self.redirect_urls]
         if self.scopes: body['scopes'] = [v for v in self.scopes]
         if self.token_access_policy: body['token_access_policy'] = self.token_access_policy.as_dict()
+        if self.user_authorized_scopes:
+            body['user_authorized_scopes'] = [v for v in self.user_authorized_scopes]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -374,6 +388,7 @@ class GetCustomAppIntegrationOutput:
         if self.redirect_urls: body['redirect_urls'] = self.redirect_urls
         if self.scopes: body['scopes'] = self.scopes
         if self.token_access_policy: body['token_access_policy'] = self.token_access_policy
+        if self.user_authorized_scopes: body['user_authorized_scopes'] = self.user_authorized_scopes
         return body
 
     @classmethod
@@ -388,7 +403,8 @@ class GetCustomAppIntegrationOutput:
                    name=d.get('name', None),
                    redirect_urls=d.get('redirect_urls', None),
                    scopes=d.get('scopes', None),
-                   token_access_policy=_from_dict(d, 'token_access_policy', TokenAccessPolicy))
+                   token_access_policy=_from_dict(d, 'token_access_policy', TokenAccessPolicy),
+                   user_authorized_scopes=d.get('user_authorized_scopes', None))
 
 
 @dataclass
@@ -798,6 +814,10 @@ class UpdateCustomAppIntegration:
     token_access_policy: Optional[TokenAccessPolicy] = None
     """Token access policy to be updated in the custom OAuth app integration"""
 
+    user_authorized_scopes: Optional[List[str]] = None
+    """Scopes that will need to be consented by end user to mint the access token. If the user does not
+    authorize the access token will not be minted. Must be a subset of scopes."""
+
     def as_dict(self) -> dict:
         """Serializes the UpdateCustomAppIntegration into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -805,6 +825,8 @@ class UpdateCustomAppIntegration:
         if self.redirect_urls: body['redirect_urls'] = [v for v in self.redirect_urls]
         if self.scopes: body['scopes'] = [v for v in self.scopes]
         if self.token_access_policy: body['token_access_policy'] = self.token_access_policy.as_dict()
+        if self.user_authorized_scopes:
+            body['user_authorized_scopes'] = [v for v in self.user_authorized_scopes]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -814,6 +836,7 @@ class UpdateCustomAppIntegration:
         if self.redirect_urls: body['redirect_urls'] = self.redirect_urls
         if self.scopes: body['scopes'] = self.scopes
         if self.token_access_policy: body['token_access_policy'] = self.token_access_policy
+        if self.user_authorized_scopes: body['user_authorized_scopes'] = self.user_authorized_scopes
         return body
 
     @classmethod
@@ -822,7 +845,8 @@ class UpdateCustomAppIntegration:
         return cls(integration_id=d.get('integration_id', None),
                    redirect_urls=d.get('redirect_urls', None),
                    scopes=d.get('scopes', None),
-                   token_access_policy=_from_dict(d, 'token_access_policy', TokenAccessPolicy))
+                   token_access_policy=_from_dict(d, 'token_access_policy', TokenAccessPolicy),
+                   user_authorized_scopes=d.get('user_authorized_scopes', None))
 
 
 @dataclass
@@ -1066,7 +1090,8 @@ class CustomAppIntegrationAPI:
                name: Optional[str] = None,
                redirect_urls: Optional[List[str]] = None,
                scopes: Optional[List[str]] = None,
-               token_access_policy: Optional[TokenAccessPolicy] = None) -> CreateCustomAppIntegrationOutput:
+               token_access_policy: Optional[TokenAccessPolicy] = None,
+               user_authorized_scopes: Optional[List[str]] = None) -> CreateCustomAppIntegrationOutput:
         """Create Custom OAuth App Integration.
         
         Create Custom OAuth App Integration.
@@ -1084,6 +1109,9 @@ class CustomAppIntegrationAPI:
           profile, email.
         :param token_access_policy: :class:`TokenAccessPolicy` (optional)
           Token access policy
+        :param user_authorized_scopes: List[str] (optional)
+          Scopes that will need to be consented by end user to mint the access token. If the user does not
+          authorize the access token will not be minted. Must be a subset of scopes.
         
         :returns: :class:`CreateCustomAppIntegrationOutput`
         """
@@ -1093,6 +1121,8 @@ class CustomAppIntegrationAPI:
         if redirect_urls is not None: body['redirect_urls'] = [v for v in redirect_urls]
         if scopes is not None: body['scopes'] = [v for v in scopes]
         if token_access_policy is not None: body['token_access_policy'] = token_access_policy.as_dict()
+        if user_authorized_scopes is not None:
+            body['user_authorized_scopes'] = [v for v in user_authorized_scopes]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         res = self._api.do('POST',
@@ -1177,7 +1207,8 @@ class CustomAppIntegrationAPI:
                *,
                redirect_urls: Optional[List[str]] = None,
                scopes: Optional[List[str]] = None,
-               token_access_policy: Optional[TokenAccessPolicy] = None):
+               token_access_policy: Optional[TokenAccessPolicy] = None,
+               user_authorized_scopes: Optional[List[str]] = None):
         """Updates Custom OAuth App Integration.
         
         Updates an existing custom OAuth App Integration. You can retrieve the custom OAuth app integration
@@ -1191,6 +1222,9 @@ class CustomAppIntegrationAPI:
           this will fully replace the existing values instead of appending
         :param token_access_policy: :class:`TokenAccessPolicy` (optional)
           Token access policy to be updated in the custom OAuth app integration
+        :param user_authorized_scopes: List[str] (optional)
+          Scopes that will need to be consented by end user to mint the access token. If the user does not
+          authorize the access token will not be minted. Must be a subset of scopes.
         
         
         """
@@ -1198,6 +1232,8 @@ class CustomAppIntegrationAPI:
         if redirect_urls is not None: body['redirect_urls'] = [v for v in redirect_urls]
         if scopes is not None: body['scopes'] = [v for v in scopes]
         if token_access_policy is not None: body['token_access_policy'] = token_access_policy.as_dict()
+        if user_authorized_scopes is not None:
+            body['user_authorized_scopes'] = [v for v in user_authorized_scopes]
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         self._api.do(

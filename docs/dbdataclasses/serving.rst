@@ -222,10 +222,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: PUT
       :value: "PUT"
 
-.. autoclass:: ExternalFunctionResponse
-   :members:
-   :undoc-members:
-
 .. autoclass:: ExternalModel
    :members:
    :undoc-members:
@@ -273,6 +269,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: GoogleCloudVertexAiConfig
+   :members:
+   :undoc-members:
+
+.. autoclass:: HttpRequestResponse
    :members:
    :undoc-members:
 

@@ -4,6 +4,10 @@ Settings
 These dataclasses are used in the SDK to represent API requests and responses for services in the ``databricks.sdk.service.settings`` module.
 
 .. py:currentmodule:: databricks.sdk.service.settings
+.. autoclass:: AccountIpAccessEnable
+   :members:
+   :undoc-members:
+
 .. autoclass:: AibiDashboardEmbeddingAccessPolicy
    :members:
    :undoc-members:
@@ -212,6 +216,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: DefaultNamespaceSetting
+   :members:
+   :undoc-members:
+
+.. autoclass:: DeleteAccountIpAccessEnableResponse
    :members:
    :undoc-members:
 
@@ -652,8 +660,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: ARCLIGHT_AZURE_EXCHANGE_TOKEN
       :value: "ARCLIGHT_AZURE_EXCHANGE_TOKEN"
 
+   .. py:attribute:: ARCLIGHT_AZURE_EXCHANGE_TOKEN_WITH_USER_DELEGATION_KEY
+      :value: "ARCLIGHT_AZURE_EXCHANGE_TOKEN_WITH_USER_DELEGATION_KEY"
+
    .. py:attribute:: AZURE_ACTIVE_DIRECTORY_TOKEN
       :value: "AZURE_ACTIVE_DIRECTORY_TOKEN"
+
+.. autoclass:: UpdateAccountIpAccessEnableRequest
+   :members:
+   :undoc-members:
 
 .. autoclass:: UpdateAibiDashboardEmbeddingAccessPolicySettingRequest
    :members:

@@ -13,8 +13,9 @@ from databricks.sdk.mixins.jobs import JobsExt
 from databricks.sdk.mixins.open_ai_client import ServingEndpointsExt
 from databricks.sdk.mixins.workspace import WorkspaceExt
 from databricks.sdk.service.apps import AppsAPI
-from databricks.sdk.service.billing import (BillableUsageAPI, BudgetsAPI,
-                                            LogDeliveryAPI, UsageDashboardsAPI)
+from databricks.sdk.service.billing import (BillableUsageAPI, BudgetPolicyAPI,
+                                            BudgetsAPI, LogDeliveryAPI,
+                                            UsageDashboardsAPI)
 from databricks.sdk.service.catalog import (AccountMetastoreAssignmentsAPI,
                                             AccountMetastoresAPI,
                                             AccountStorageCredentialsAPI,
@@ -80,7 +81,7 @@ from databricks.sdk.service.settings import (
     AibiDashboardEmbeddingApprovedDomainsAPI, AutomaticClusterUpdateAPI,
     ComplianceSecurityProfileAPI, CredentialsManagerAPI,
     CspEnablementAccountAPI, DefaultNamespaceAPI, DisableLegacyAccessAPI,
-    DisableLegacyDbfsAPI, DisableLegacyFeaturesAPI,
+    DisableLegacyDbfsAPI, DisableLegacyFeaturesAPI, EnableIpAccessListsAPI,
     EnhancedSecurityMonitoringAPI, EsmEnablementAccountAPI, IpAccessListsAPI,
     NetworkConnectivityAPI, NotificationDestinationsAPI, PersonalComputeAPI,
     RestrictWorkspaceAdminsAPI, SettingsAPI, TokenManagementAPI, TokensAPI,
@@ -845,6 +846,7 @@ class AccountClient:
         self._api_client = client.ApiClient(self._config)
         self._access_control = AccountAccessControlAPI(self._api_client)
         self._billable_usage = BillableUsageAPI(self._api_client)
+        self._budget_policy = BudgetPolicyAPI(self._api_client)
         self._credentials = CredentialsAPI(self._api_client)
         self._custom_app_integration = CustomAppIntegrationAPI(self._api_client)
         self._encryption_keys = EncryptionKeysAPI(self._api_client)
@@ -889,6 +891,11 @@ class AccountClient:
     def billable_usage(self) -> BillableUsageAPI:
         """This API allows you to download billable usage logs for the specified account and date range."""
         return self._billable_usage
+
+    @property
+    def budget_policy(self) -> BudgetPolicyAPI:
+        """A service serves REST API about Budget policies."""
+        return self._budget_policy
 
     @property
     def credentials(self) -> CredentialsAPI:

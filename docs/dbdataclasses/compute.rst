@@ -299,6 +299,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: CustomPolicyTag
+   :members:
+   :undoc-members:
+
 .. autoclass:: DataPlaneEventDetails
    :members:
    :undoc-members:
