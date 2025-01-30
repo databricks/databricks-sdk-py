@@ -676,12 +676,18 @@ class MetadataServiceTokenSource(Refreshable):
         self.host = cfg.host
 
     def refresh(self) -> Token:
-        resp = requests.get(self.url,
-                            timeout=self._metadata_service_timeout,
-                            headers={
-                                self.METADATA_SERVICE_VERSION_HEADER: self.METADATA_SERVICE_VERSION,
-                                self.METADATA_SERVICE_HOST_HEADER: self.host
-                            })
+        resp = requests.get(
+            self.url,
+            timeout=self._metadata_service_timeout,
+            headers={
+                self.METADATA_SERVICE_VERSION_HEADER: self.METADATA_SERVICE_VERSION,
+                self.METADATA_SERVICE_HOST_HEADER: self.host
+            },
+            proxies={
+                # Explicitly exclude localhost from being proxied. This is necessary
+                # for Metadata URLs which typically point to localhost.
+                "no_proxy": "localhost,127.0.0.1"
+            })
         json_resp: dict[str, Union[str, float]] = resp.json()
         access_token = json_resp.get("access_token", None)
         if access_token is None:
