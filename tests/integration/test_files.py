@@ -3,6 +3,7 @@ import logging
 import pathlib
 import platform
 import time
+from pathlib import Path
 from typing import Callable, List, Tuple, Union
 
 import pytest
@@ -216,7 +217,8 @@ class ResourceWithCleanup:
         return ResourceWithCleanup(lambda: w.volumes.delete(res.full_name))
 
 
-def test_files_api_upload_download(ucws, random):
+@pytest.mark.parametrize("path_type", [str, Path])
+def test_files_api_upload_download(ucws, random, path_type):
     w = ucws
     schema = 'filesit-' + random()
     volume = 'filesit-' + random()
@@ -224,12 +226,14 @@ def test_files_api_upload_download(ucws, random):
         with ResourceWithCleanup.create_volume(w, 'main', schema, volume):
             f = io.BytesIO(b"some text data")
             target_file = f'/Volumes/main/{schema}/{volume}/filesit-with-?-and-#-{random()}.txt'
+            target_file = path_type(target_file)
             w.files.upload(target_file, f)
             with w.files.download(target_file).contents as f:
                 assert f.read() == b"some text data"
 
 
-def test_files_api_read_twice_from_one_download(ucws, random):
+@pytest.mark.parametrize("path_type", [str, Path])
+def test_files_api_read_twice_from_one_download(ucws, random, path_type):
     w = ucws
     schema = 'filesit-' + random()
     volume = 'filesit-' + random()
@@ -237,6 +241,7 @@ def test_files_api_read_twice_from_one_download(ucws, random):
         with ResourceWithCleanup.create_volume(w, 'main', schema, volume):
             f = io.BytesIO(b"some text data")
             target_file = f'/Volumes/main/{schema}/{volume}/filesit-{random()}.txt'
+            target_file = path_type(target_file)
             w.files.upload(target_file, f)
 
             res = w.files.download(target_file).contents
@@ -249,7 +254,8 @@ def test_files_api_read_twice_from_one_download(ucws, random):
                     res.read()
 
 
-def test_files_api_delete_file(ucws, random):
+@pytest.mark.parametrize("path_type", [str, Path])
+def test_files_api_delete_file(ucws, random, path_type):
     w = ucws
     schema = 'filesit-' + random()
     volume = 'filesit-' + random()
@@ -257,11 +263,13 @@ def test_files_api_delete_file(ucws, random):
         with ResourceWithCleanup.create_volume(w, 'main', schema, volume):
             f = io.BytesIO(b"some text data")
             target_file = f'/Volumes/main/{schema}/{volume}/filesit-{random()}.txt'
+            target_file = path_type(target_file)
             w.files.upload(target_file, f)
             w.files.delete(target_file)
 
 
-def test_files_api_get_metadata(ucws, random):
+@pytest.mark.parametrize("path_type", [str, Path])
+def test_files_api_get_metadata(ucws, random, path_type):
     w = ucws
     schema = 'filesit-' + random()
     volume = 'filesit-' + random()
@@ -269,6 +277,7 @@ def test_files_api_get_metadata(ucws, random):
         with ResourceWithCleanup.create_volume(w, 'main', schema, volume):
             f = io.BytesIO(b"some text data")
             target_file = f'/Volumes/main/{schema}/{volume}/filesit-{random()}.txt'
+            target_file = path_type(target_file)
             w.files.upload(target_file, f)
             m = w.files.get_metadata(target_file)
             assert m.content_type == 'application/octet-stream'
@@ -276,23 +285,27 @@ def test_files_api_get_metadata(ucws, random):
             assert m.last_modified is not None
 
 
-def test_files_api_create_directory(ucws, random):
+@pytest.mark.parametrize("path_type", [str, Path])
+def test_files_api_create_directory(ucws, random, path_type):
     w = ucws
     schema = 'filesit-' + random()
     volume = 'filesit-' + random()
     with ResourceWithCleanup.create_schema(w, 'main', schema):
         with ResourceWithCleanup.create_volume(w, 'main', schema, volume):
             target_directory = f'/Volumes/main/{schema}/{volume}/filesit-{random()}/'
+            target_directory = path_type(target_directory)
             w.files.create_directory(target_directory)
 
 
-def test_files_api_list_directory_contents(ucws, random):
+@pytest.mark.parametrize("path_type", [str, Path])
+def test_files_api_list_directory_contents(ucws, random, path_type):
     w = ucws
     schema = 'filesit-' + random()
     volume = 'filesit-' + random()
     with ResourceWithCleanup.create_schema(w, 'main', schema):
         with ResourceWithCleanup.create_volume(w, 'main', schema, volume):
             target_directory = f'/Volumes/main/{schema}/{volume}/filesit-{random()}'
+            target_directory = path_type(target_directory)
             w.files.upload(target_directory + "/file1.txt", io.BytesIO(b"some text data"))
             w.files.upload(target_directory + "/file2.txt", io.BytesIO(b"some text data"))
             w.files.upload(target_directory + "/file3.txt", io.BytesIO(b"some text data"))
@@ -301,24 +314,28 @@ def test_files_api_list_directory_contents(ucws, random):
             assert len(result) == 3
 
 
-def test_files_api_delete_directory(ucws, random):
+@pytest.mark.parametrize("path_type", [str, Path])
+def test_files_api_delete_directory(ucws, random, path_type):
     w = ucws
     schema = 'filesit-' + random()
     volume = 'filesit-' + random()
     with ResourceWithCleanup.create_schema(w, 'main', schema):
         with ResourceWithCleanup.create_volume(w, 'main', schema, volume):
             target_directory = f'/Volumes/main/{schema}/{volume}/filesit-{random()}/'
+            target_directory = path_type(target_directory)
             w.files.create_directory(target_directory)
             w.files.delete_directory(target_directory)
 
 
-def test_files_api_get_directory_metadata(ucws, random):
+@pytest.mark.parametrize("path_type", [str, Path])
+def test_files_api_get_directory_metadata(ucws, random, path_type):
     w = ucws
     schema = 'filesit-' + random()
     volume = 'filesit-' + random()
     with ResourceWithCleanup.create_schema(w, 'main', schema):
         with ResourceWithCleanup.create_volume(w, 'main', schema, volume):
             target_directory = f'/Volumes/main/{schema}/{volume}/filesit-{random()}/'
+            target_directory = path_type(target_directory)
             w.files.create_directory(target_directory)
             w.files.get_directory_metadata(target_directory)
 
