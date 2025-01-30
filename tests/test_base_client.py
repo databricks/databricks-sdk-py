@@ -63,7 +63,7 @@ def test_streaming_response_read_closes(config):
 @pytest.mark.parametrize('status_code,headers,body,expected_error', [
     (400, {}, {
         "message":
-            "errorMessage",
+        "errorMessage",
         "details": [{
             "type": DatabricksError._error_info_type,
             "reason": "error reason",
@@ -104,9 +104,9 @@ def test_streaming_response_read_closes(config):
     (429, {
         'Retry-After': '100'
     }, {
-         'error_code': 'TOO_MANY_REQUESTS',
-         'message': 'errorMessage',
-     }, errors.TooManyRequests('errorMessage', error_code='TOO_MANY_REQUESTS', retry_after_secs=100)),
+        'error_code': 'TOO_MANY_REQUESTS',
+        'message': 'errorMessage',
+    }, errors.TooManyRequests('errorMessage', error_code='TOO_MANY_REQUESTS', retry_after_secs=100)),
     (503, {}, {
         'error_code': 'TEMPORARILY_UNAVAILABLE',
         'message': 'errorMessage',
@@ -115,9 +115,9 @@ def test_streaming_response_read_closes(config):
     (503, {
         'Retry-After': '100'
     }, {
-         'error_code': 'TEMPORARILY_UNAVAILABLE',
-         'message': 'errorMessage',
-     },
+        'error_code': 'TEMPORARILY_UNAVAILABLE',
+        'message': 'errorMessage',
+    },
      errors.TemporarilyUnavailable('errorMessage', error_code='TEMPORARILY_UNAVAILABLE',
                                    retry_after_secs=100)),
     (404, {}, {
@@ -392,8 +392,7 @@ retry_test_cases = [
     # StringIO
     RetryTestCase(lambda: io.StringIO("0123456789"), None, False, b"0123456789"),
     # Non-seekable
-    RetryTestCase(lambda: RetryTestCase.create_non_seekable_stream(b"0123456789"),
-                  None, True, b"0123456789")
+    RetryTestCase(lambda: RetryTestCase.create_non_seekable_stream(b"0123456789"), None, True, b"0123456789")
 ]
 
 
@@ -439,9 +438,29 @@ def test_rewind_seekable_stream_on_retryable_error_response(test_case: RetryTest
 
 class MockSession:
 
-    def __init__(self, failure_count: int):
+    def __init__(self, failure_count: int, failure_provider: Callable[[], Response]):
         self._failure_count = failure_count
         self._received_requests: List[bytes] = []
+        self._failure_provider = failure_provider
+
+    @classmethod
+    def raise_retryable_exception(cls):
+        raise Timeout("Fake timeout")
+
+    @classmethod
+    def return_retryable_response(cls):
+        # fill response fields so that logging does not fail
+        response = Response()
+        response._content = b''
+        response.status_code = 429
+        response.reason = 'OK'
+        response.url = 'http://test.com/'
+
+        response.request = PreparedRequest()
+        response.request.url = response.url
+        response.request.method = 'POST'
+        response.request.headers = None
+        response.request.body = b''
 
     # following the signature of Session.request()
     def request(self,
@@ -469,7 +488,8 @@ class MockSession:
         self._received_requests.append(request_body)
         if self._failure_count > 0:
             self._failure_count -= 1
-            raise Timeout("Fake timeout") # retryable error
+            return self._failure_provider()
+            #
         else:
             # fill response fields so that logging does not fail
             response = Response()
@@ -487,12 +507,14 @@ class MockSession:
 
 
 @pytest.mark.parametrize('test_case', retry_test_cases)
-def test_rewind_seekable_stream_on_retryable_exception(test_case: RetryTestCase):
+@pytest.mark.parametrize('failure_provider',
+                         [MockSession.raise_retryable_exception, MockSession.return_retryable_response])
+def test_rewind_seekable_stream(test_case: RetryTestCase, failure_provider: Callable[[], Response]):
     failure_count = 2
 
     data = test_case.get_data()
 
-    session = MockSession(failure_count)
+    session = MockSession(failure_count, failure_provider)
     client = _BaseClient()
     client._session = session
 
