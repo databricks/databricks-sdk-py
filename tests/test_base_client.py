@@ -1,7 +1,7 @@
 import io
 import random
 from http.server import BaseHTTPRequestHandler
-from typing import Callable, Iterator, List, Optional
+from typing import Callable, Iterator, List, Optional, Tuple, Type
 from unittest.mock import Mock
 
 import pytest
@@ -360,12 +360,12 @@ def test_is_seekable_stream():
 
 class RetryTestCase:
 
-    def __init__(self, data_provider: Callable, offset: Optional[int], expected_exception: bool,
+    def __init__(self, data_provider: Callable, offset: Optional[int], expected_failure: bool,
                  expected_result: bytes):
         self._data_provider = data_provider
         self._offset = offset
         self._expected_result = expected_result
-        self._expected_exception = expected_exception
+        self._expected_failure = expected_failure
 
     def get_data(self):
         data = self._data_provider()
@@ -380,62 +380,6 @@ class RetryTestCase:
         return result
 
 
-retry_test_cases = [
-    # bytes -> BytesIO
-    RetryTestCase(lambda: b"0123456789", None, False, b"0123456789"),
-    # str -> BytesIO
-    RetryTestCase(lambda: "0123456789", None, False, b"0123456789"),
-    # BytesIO directly
-    RetryTestCase(lambda: io.BytesIO(b"0123456789"), None, False, b"0123456789"),
-    # BytesIO directly with offset
-    RetryTestCase(lambda: io.BytesIO(b"0123456789"), 4, False, b"456789"),
-    # StringIO
-    RetryTestCase(lambda: io.StringIO("0123456789"), None, False, b"0123456789"),
-    # Non-seekable
-    RetryTestCase(lambda: RetryTestCase.create_non_seekable_stream(b"0123456789"), None, True, b"0123456789")
-]
-
-
-@pytest.mark.parametrize('test_case', retry_test_cases)
-def test_rewind_seekable_stream_on_retryable_error_response(test_case: RetryTestCase):
-    received_requests = []
-
-    data = test_case.get_data()
-
-    failure_count = 2
-
-    # Retry two times before succeeding.
-    def inner(h: BaseHTTPRequestHandler):
-        if len(received_requests) == failure_count:
-            h.send_response(200)
-            h.end_headers()
-        else:
-            h.send_response(429)
-            h.send_header('Retry-After', '1') # avoid a warning in log
-            h.end_headers()
-
-        content_length = int(h.headers.get('Content-Length', 0))
-        if content_length > 0:
-            received_requests.append(h.rfile.read(content_length))
-
-    with http_fixture_server(inner) as host:
-        client = _BaseClient()
-
-        def do():
-            # Retries should reset the stream.
-            client.do('POST', f'{host}/foo', data=data)
-
-        if test_case._expected_exception:
-            expected_attempts_made = 1
-            with pytest.raises(DatabricksError):
-                do()
-        else:
-            expected_attempts_made = failure_count + 1
-            do()
-
-        assert received_requests == [test_case._expected_result for _ in range(expected_attempts_made)]
-
-
 class MockSession:
 
     def __init__(self, failure_count: int, failure_provider: Callable[[], Response]):
@@ -444,7 +388,7 @@ class MockSession:
         self._failure_provider = failure_provider
 
     @classmethod
-    def raise_retryable_exception(cls):
+    def raise_timeout_exception(cls):
         raise Timeout("Fake timeout")
 
     @classmethod
@@ -453,7 +397,8 @@ class MockSession:
         response = Response()
         response._content = b''
         response.status_code = 429
-        response.reason = 'OK'
+        response.headers = {'Retry-After': '1'}
+        # response.reason = 'Too Many Requests'
         response.url = 'http://test.com/'
 
         response.request = PreparedRequest()
@@ -461,6 +406,7 @@ class MockSession:
         response.request.method = 'POST'
         response.request.headers = None
         response.request.body = b''
+        return response
 
     # following the signature of Session.request()
     def request(self,
@@ -506,25 +452,41 @@ class MockSession:
             return response
 
 
-@pytest.mark.parametrize('test_case', retry_test_cases)
-@pytest.mark.parametrize('failure_provider',
-                         [MockSession.raise_retryable_exception, MockSession.return_retryable_response])
-def test_rewind_seekable_stream(test_case: RetryTestCase, failure_provider: Callable[[], Response]):
+@pytest.mark.parametrize(
+    'test_case',
+    [
+        # bytes -> BytesIO
+        RetryTestCase(lambda: b"0123456789", None, False, b"0123456789"),
+        # str -> BytesIO
+        RetryTestCase(lambda: "0123456789", None, False, b"0123456789"),
+        # BytesIO directly
+        RetryTestCase(lambda: io.BytesIO(b"0123456789"), None, False, b"0123456789"),
+        # BytesIO directly with offset
+        RetryTestCase(lambda: io.BytesIO(b"0123456789"), 4, False, b"456789"),
+        # StringIO
+        RetryTestCase(lambda: io.StringIO("0123456789"), None, False, b"0123456789"),
+        # Non-seekable
+        RetryTestCase(lambda: RetryTestCase.create_non_seekable_stream(b"0123456789"), None, True,
+                      b"0123456789")
+    ])
+@pytest.mark.parametrize('failure', [[MockSession.raise_timeout_exception, Timeout],
+                                     [MockSession.return_retryable_response, errors.TooManyRequests]])
+def test_rewind_seekable_stream(test_case: RetryTestCase, failure: Tuple[Callable[[], Response], Type]):
     failure_count = 2
 
     data = test_case.get_data()
 
-    session = MockSession(failure_count, failure_provider)
+    session = MockSession(failure_count, failure[0])
     client = _BaseClient()
     client._session = session
 
     def do():
-        # Retries should reset the stream.
         client.do('POST', f'test.com/foo', data=data)
 
-    if test_case._expected_exception:
+    if test_case._expected_failure:
         expected_attempts_made = 1
-        with pytest.raises(Timeout):
+        exception_class = failure[1]
+        with pytest.raises(exception_class):
             do()
     else:
         expected_attempts_made = failure_count + 1
