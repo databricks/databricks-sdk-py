@@ -398,7 +398,6 @@ class MockSession:
         response._content = b''
         response.status_code = 429
         response.headers = {'Retry-After': '1'}
-        # response.reason = 'Too Many Requests'
         response.url = 'http://test.com/'
 
         response.request = PreparedRequest()
