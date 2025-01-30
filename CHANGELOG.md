@@ -1,11 +1,8 @@
 # Version changelog
 
-## [Release] Release v0.42.0
-
 ### Bug Fixes
 
  * Fix docs generation when two services have the same name ([#872](https://github.com/databricks/databricks-sdk-py/pull/872)).
-
 
 ### Internal Changes
 
@@ -14,34 +11,36 @@
  * Extract "before retry" handler, use it to rewind the stream ([#878](https://github.com/databricks/databricks-sdk-py/pull/878)).
  * Update Model Serving `http_request` mixin to correctly use the underlying API.  ([#876](https://github.com/databricks/databricks-sdk-py/pull/876)).
 
+### Backward Incompatible Changes
+
+* Changed `create()` method for [w.serving_endpoints](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/serving/serving_endpoints.html) workspace-level service with new required argument order.
+* Changed `http_request()` method for [w.serving_endpoints](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/serving/serving_endpoints.html) workspace-level service to type `http_request()` method for [w.serving_endpoints](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/serving/serving_endpoints.html) workspace-level service.
+* Changed `http_request()` method for [w.serving_endpoints](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/serving/serving_endpoints.html) workspace-level service to return `databricks.sdk.service.serving.HttpRequestResponse` dataclass.
+* Changed `config` field for `databricks.sdk.service.serving.CreateServingEndpoint` to no longer be required.
+* Removed `securable_kind` field for `databricks.sdk.service.catalog.CatalogInfo`.
+* Removed `securable_kind` field for `databricks.sdk.service.catalog.ConnectionInfo`.
+* Removed `status_code` and `text` fields for `databricks.sdk.service.serving.ExternalFunctionResponse`.
 
 ### API Changes:
 
- * Added [a.budget_policy](https://databricks-sdk-py.readthedocs.io/en/latest/account/budget_policy.html) account-level service.
- * Added [a.enable_ip_access_lists](https://databricks-sdk-py.readthedocs.io/en/latest/account/account_settings/enable_ip_access_lists.html) account-level service.
- * Added `review_state`, `reviews` and `runner_collaborators` fields for `databricks.sdk.service.cleanrooms.CleanRoomAssetNotebook`.
- * Added `statement_id` field for `databricks.sdk.service.dashboards.QueryAttachment`.
- * Added `effective_performance_target` field for `databricks.sdk.service.jobs.BaseRun`.
- * Added `performance_target` field for `databricks.sdk.service.jobs.CreateJob`.
- * Added `performance_target` field for `databricks.sdk.service.jobs.JobSettings`.
- * Added `effective_performance_target` field for `databricks.sdk.service.jobs.Run`.
- * Added `performance_target` field for `databricks.sdk.service.jobs.RunNow`.
- * Added `effective_performance_target` field for `databricks.sdk.service.jobs.RunTask`.
- * Added `run_as_repl` field for `databricks.sdk.service.jobs.SparkJarTask`.
- * Added `user_authorized_scopes` field for `databricks.sdk.service.oauth2.CreateCustomAppIntegration`.
- * Added `user_authorized_scopes` field for `databricks.sdk.service.oauth2.GetCustomAppIntegrationOutput`.
- * Added `user_authorized_scopes` field for `databricks.sdk.service.oauth2.UpdateCustomAppIntegration`.
- * Added `contents` field for `databricks.sdk.service.serving.HttpRequestResponse`.
- * Added .
- * Added .
- * Added .
- * Changed `create()` method for [w.serving_endpoints](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/serving_endpoints.html) workspace-level service with new required argument order.
- * Changed `http_request()` method for [w.serving_endpoints](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/serving_endpoints.html) workspace-level service to type `http_request()` method for [w.serving_endpoints](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/serving_endpoints.html) workspace-level service.
- * Changed `http_request()` method for [w.serving_endpoints](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/serving_endpoints.html) workspace-level service to return `databricks.sdk.service.serving.HttpRequestResponse` dataclass.
- * Changed `config` field for `databricks.sdk.service.serving.CreateServingEndpoint` to no longer be required.
- * Removed `securable_kind` field for `databricks.sdk.service.catalog.CatalogInfo`.
- * Removed `securable_kind` field for `databricks.sdk.service.catalog.ConnectionInfo`.
- * Removed `status_code` and `text` fields for `databricks.sdk.service.serving.ExternalFunctionResponse`.
+* Added [a.budget_policy](https://databricks-sdk-py.readthedocs.io/en/latest/account/billing/budget_policy.html) account-level service.
+* Added [a.enable_ip_access_lists](https://databricks-sdk-py.readthedocs.io/en/latest/account/settings/settings/enable_ip_access_lists.html) account-level service.
+* Added `review_state`, `reviews` and `runner_collaborators` fields for `databricks.sdk.service.cleanrooms.CleanRoomAssetNotebook`.
+* Added `statement_id` field for `databricks.sdk.service.dashboards.QueryAttachment`.
+* Added `effective_performance_target` field for `databricks.sdk.service.jobs.BaseRun`.
+* Added `performance_target` field for `databricks.sdk.service.jobs.CreateJob`.
+* Added `performance_target` field for `databricks.sdk.service.jobs.JobSettings`.
+* Added `effective_performance_target` field for `databricks.sdk.service.jobs.Run`.
+* Added `performance_target` field for `databricks.sdk.service.jobs.RunNow`.
+* Added `effective_performance_target` field for `databricks.sdk.service.jobs.RunTask`.
+* Added `run_as_repl` field for `databricks.sdk.service.jobs.SparkJarTask`.
+* Added `user_authorized_scopes` field for `databricks.sdk.service.oauth2.CreateCustomAppIntegration`.
+* Added `user_authorized_scopes` field for `databricks.sdk.service.oauth2.GetCustomAppIntegrationOutput`.
+* Added `user_authorized_scopes` field for `databricks.sdk.service.oauth2.UpdateCustomAppIntegration`.
+* Added `contents` field for `databricks.sdk.service.serving.HttpRequestResponse`.
+* Added `clean_room` enum value for `databricks.sdk.service.catalog.SecurableType`.
+* Added `budget_policy_limit_exceeded` enum value for `databricks.sdk.service.jobs.TerminationCodeCode`.
+* Added `arclight_azure_exchange_token_with_user_delegation_key` enum value for `databricks.sdk.service.settings.TokenType`.
 
 OpenAPI SHA: 840c660106f820a1a5dff931d51fa5f65cd9fdd9, Date: 2025-01-28
 
