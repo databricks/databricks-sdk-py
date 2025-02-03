@@ -1,5 +1,5 @@
-``w.jobs``: Jobs (latest)
-=========================
+``w.jobs``: Jobs (2.2)
+======================
 .. currentmodule:: databricks.sdk.service.jobs
 
 .. py:class:: JobsExt
