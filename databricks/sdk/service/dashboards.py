@@ -21,6 +21,66 @@ from databricks.sdk.service import sql
 
 
 @dataclass
+class CancelQueryExecutionResponse:
+    status: Optional[List[CancelQueryExecutionResponseStatus]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the CancelQueryExecutionResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.status: body['status'] = [v.as_dict() for v in self.status]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CancelQueryExecutionResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.status: body['status'] = self.status
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> CancelQueryExecutionResponse:
+        """Deserializes the CancelQueryExecutionResponse from a dictionary."""
+        return cls(status=_repeated_dict(d, 'status', CancelQueryExecutionResponseStatus))
+
+
+@dataclass
+class CancelQueryExecutionResponseStatus:
+    data_token: str
+    """The token to poll for result asynchronously Example:
+    EC0A..ChAB7WCEn_4Qo4vkLqEbXsxxEgh3Y2pbWw45WhoQXgZSQo9aS5q2ZvFcbvbx9CgA-PAEAQ"""
+
+    pending: Optional[Empty] = None
+    """Represents an empty message, similar to google.protobuf.Empty, which is not available in the
+    firm right now."""
+
+    success: Optional[Empty] = None
+    """Represents an empty message, similar to google.protobuf.Empty, which is not available in the
+    firm right now."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CancelQueryExecutionResponseStatus into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.data_token is not None: body['data_token'] = self.data_token
+        if self.pending: body['pending'] = self.pending.as_dict()
+        if self.success: body['success'] = self.success.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CancelQueryExecutionResponseStatus into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.data_token is not None: body['data_token'] = self.data_token
+        if self.pending: body['pending'] = self.pending
+        if self.success: body['success'] = self.success
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> CancelQueryExecutionResponseStatus:
+        """Deserializes the CancelQueryExecutionResponseStatus from a dictionary."""
+        return cls(data_token=d.get('data_token', None),
+                   pending=_from_dict(d, 'pending', Empty),
+                   success=_from_dict(d, 'success', Empty))
+
+
+@dataclass
 class CronSchedule:
     quartz_cron_expression: str
     """A cron expression using quartz syntax. EX: `0 0 8 * * ?` represents everyday at 8am. See [Cron
@@ -204,6 +264,87 @@ class DeleteSubscriptionResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> DeleteSubscriptionResponse:
         """Deserializes the DeleteSubscriptionResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
+class Empty:
+    """Represents an empty message, similar to google.protobuf.Empty, which is not available in the
+    firm right now."""
+
+    def as_dict(self) -> dict:
+        """Serializes the Empty into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Empty into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> Empty:
+        """Deserializes the Empty from a dictionary."""
+        return cls()
+
+
+@dataclass
+class ExecutePublishedDashboardQueryRequest:
+    """Execute query request for published Dashboards. Since published dashboards have the option of
+    running as the publisher, the datasets, warehouse_id are excluded from the request and instead
+    read from the source (lakeview-config) via the additional parameters (dashboardName and
+    dashboardRevisionId)"""
+
+    dashboard_name: str
+    """Dashboard name and revision_id is required to retrieve PublishedDatasetDataModel which contains
+    the list of datasets, warehouse_id, and embedded_credentials"""
+
+    dashboard_revision_id: str
+
+    override_warehouse_id: Optional[str] = None
+    """A dashboard schedule can override the warehouse used as compute for processing the published
+    dashboard queries"""
+
+    def as_dict(self) -> dict:
+        """Serializes the ExecutePublishedDashboardQueryRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.dashboard_name is not None: body['dashboard_name'] = self.dashboard_name
+        if self.dashboard_revision_id is not None: body['dashboard_revision_id'] = self.dashboard_revision_id
+        if self.override_warehouse_id is not None: body['override_warehouse_id'] = self.override_warehouse_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ExecutePublishedDashboardQueryRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.dashboard_name is not None: body['dashboard_name'] = self.dashboard_name
+        if self.dashboard_revision_id is not None: body['dashboard_revision_id'] = self.dashboard_revision_id
+        if self.override_warehouse_id is not None: body['override_warehouse_id'] = self.override_warehouse_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ExecutePublishedDashboardQueryRequest:
+        """Deserializes the ExecutePublishedDashboardQueryRequest from a dictionary."""
+        return cls(dashboard_name=d.get('dashboard_name', None),
+                   dashboard_revision_id=d.get('dashboard_revision_id', None),
+                   override_warehouse_id=d.get('override_warehouse_id', None))
+
+
+@dataclass
+class ExecuteQueryResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the ExecuteQueryResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ExecuteQueryResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ExecuteQueryResponse:
+        """Deserializes the ExecuteQueryResponse from a dictionary."""
         return cls()
 
 
@@ -513,6 +654,25 @@ class GenieStartConversationResponse:
                    message_id=d.get('message_id', None))
 
 
+@dataclass
+class GetPublishedDashboardEmbeddedResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the GetPublishedDashboardEmbeddedResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetPublishedDashboardEmbeddedResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> GetPublishedDashboardEmbeddedResponse:
+        """Deserializes the GetPublishedDashboardEmbeddedResponse from a dictionary."""
+        return cls()
+
+
 class LifecycleState(Enum):
 
     ACTIVE = 'ACTIVE'
@@ -748,6 +908,74 @@ class MigrateDashboardRequest:
 
 
 @dataclass
+class PendingStatus:
+    data_token: str
+    """The token to poll for result asynchronously Example:
+    EC0A..ChAB7WCEn_4Qo4vkLqEbXsxxEgh3Y2pbWw45WhoQXgZSQo9aS5q2ZvFcbvbx9CgA-PAEAQ"""
+
+    def as_dict(self) -> dict:
+        """Serializes the PendingStatus into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.data_token is not None: body['data_token'] = self.data_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PendingStatus into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.data_token is not None: body['data_token'] = self.data_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> PendingStatus:
+        """Deserializes the PendingStatus from a dictionary."""
+        return cls(data_token=d.get('data_token', None))
+
+
+@dataclass
+class PollQueryStatusResponse:
+    data: Optional[List[PollQueryStatusResponseData]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the PollQueryStatusResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.data: body['data'] = [v.as_dict() for v in self.data]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PollQueryStatusResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.data: body['data'] = self.data
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> PollQueryStatusResponse:
+        """Deserializes the PollQueryStatusResponse from a dictionary."""
+        return cls(data=_repeated_dict(d, 'data', PollQueryStatusResponseData))
+
+
+@dataclass
+class PollQueryStatusResponseData:
+    status: QueryResponseStatus
+
+    def as_dict(self) -> dict:
+        """Serializes the PollQueryStatusResponseData into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.status: body['status'] = self.status.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PollQueryStatusResponseData into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.status: body['status'] = self.status
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> PollQueryStatusResponseData:
+        """Deserializes the PollQueryStatusResponseData from a dictionary."""
+        return cls(status=_from_dict(d, 'status', QueryResponseStatus))
+
+
+@dataclass
 class PublishRequest:
     dashboard_id: Optional[str] = None
     """UUID identifying the dashboard to be published."""
@@ -893,6 +1121,55 @@ class QueryAttachment:
                    query=d.get('query', None),
                    statement_id=d.get('statement_id', None),
                    title=d.get('title', None))
+
+
+@dataclass
+class QueryResponseStatus:
+    canceled: Optional[Empty] = None
+    """Represents an empty message, similar to google.protobuf.Empty, which is not available in the
+    firm right now."""
+
+    closed: Optional[Empty] = None
+    """Represents an empty message, similar to google.protobuf.Empty, which is not available in the
+    firm right now."""
+
+    pending: Optional[PendingStatus] = None
+
+    statement_id: Optional[str] = None
+    """The statement id in format(01eef5da-c56e-1f36-bafa-21906587d6ba) The statement_id should be
+    identical to data_token in SuccessStatus and PendingStatus. This field is created for audit
+    logging purpose to record the statement_id of all QueryResponseStatus."""
+
+    success: Optional[SuccessStatus] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the QueryResponseStatus into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.canceled: body['canceled'] = self.canceled.as_dict()
+        if self.closed: body['closed'] = self.closed.as_dict()
+        if self.pending: body['pending'] = self.pending.as_dict()
+        if self.statement_id is not None: body['statement_id'] = self.statement_id
+        if self.success: body['success'] = self.success.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the QueryResponseStatus into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.canceled: body['canceled'] = self.canceled
+        if self.closed: body['closed'] = self.closed
+        if self.pending: body['pending'] = self.pending
+        if self.statement_id is not None: body['statement_id'] = self.statement_id
+        if self.success: body['success'] = self.success
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> QueryResponseStatus:
+        """Deserializes the QueryResponseStatus from a dictionary."""
+        return cls(canceled=_from_dict(d, 'canceled', Empty),
+                   closed=_from_dict(d, 'closed', Empty),
+                   pending=_from_dict(d, 'pending', PendingStatus),
+                   statement_id=d.get('statement_id', None),
+                   success=_from_dict(d, 'success', SuccessStatus))
 
 
 @dataclass
@@ -1216,6 +1493,35 @@ class SubscriptionSubscriberUser:
     def from_dict(cls, d: Dict[str, any]) -> SubscriptionSubscriberUser:
         """Deserializes the SubscriptionSubscriberUser from a dictionary."""
         return cls(user_id=d.get('user_id', None))
+
+
+@dataclass
+class SuccessStatus:
+    data_token: str
+    """The token to poll for result asynchronously Example:
+    EC0A..ChAB7WCEn_4Qo4vkLqEbXsxxEgh3Y2pbWw45WhoQXgZSQo9aS5q2ZvFcbvbx9CgA-PAEAQ"""
+
+    truncated: Optional[bool] = None
+    """Whether the query result is truncated (either by byte limit or row limit)"""
+
+    def as_dict(self) -> dict:
+        """Serializes the SuccessStatus into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.data_token is not None: body['data_token'] = self.data_token
+        if self.truncated is not None: body['truncated'] = self.truncated
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SuccessStatus into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.data_token is not None: body['data_token'] = self.data_token
+        if self.truncated is not None: body['truncated'] = self.truncated
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> SuccessStatus:
+        """Deserializes the SuccessStatus from a dictionary."""
+        return cls(data_token=d.get('data_token', None), truncated=d.get('truncated', None))
 
 
 @dataclass
@@ -1907,3 +2213,107 @@ class LakeviewAPI:
                            body=body,
                            headers=headers)
         return Schedule.from_dict(res)
+
+
+class LakeviewEmbeddedAPI:
+    """Token-based Lakeview APIs for embedding dashboards in external applications."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def get_published_dashboard_embedded(self, dashboard_id: str):
+        """Read a published dashboard in an embedded ui.
+        
+        Get the current published dashboard within an embedded context.
+        
+        :param dashboard_id: str
+          UUID identifying the published dashboard.
+        
+        
+        """
+
+        headers = {'Accept': 'application/json', }
+
+        self._api.do('GET',
+                     f'/api/2.0/lakeview/dashboards/{dashboard_id}/published/embedded',
+                     headers=headers)
+
+
+class QueryExecutionAPI:
+    """Query execution APIs for AI / BI Dashboards"""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def cancel_published_query_execution(self,
+                                         dashboard_name: str,
+                                         dashboard_revision_id: str,
+                                         *,
+                                         tokens: Optional[List[str]] = None) -> CancelQueryExecutionResponse:
+        """Cancel the results for the a query for a published, embedded dashboard.
+        
+        :param dashboard_name: str
+        :param dashboard_revision_id: str
+        :param tokens: List[str] (optional)
+          Example: EC0A..ChAB7WCEn_4Qo4vkLqEbXsxxEgh3Y2pbWw45WhoQXgZSQo9aS5q2ZvFcbvbx9CgA-PAEAQ
+        
+        :returns: :class:`CancelQueryExecutionResponse`
+        """
+
+        query = {}
+        if dashboard_name is not None: query['dashboard_name'] = dashboard_name
+        if dashboard_revision_id is not None: query['dashboard_revision_id'] = dashboard_revision_id
+        if tokens is not None: query['tokens'] = [v for v in tokens]
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do('DELETE', '/api/2.0/lakeview-query/query/published', query=query, headers=headers)
+        return CancelQueryExecutionResponse.from_dict(res)
+
+    def execute_published_dashboard_query(self,
+                                          dashboard_name: str,
+                                          dashboard_revision_id: str,
+                                          *,
+                                          override_warehouse_id: Optional[str] = None):
+        """Execute a query for a published dashboard.
+        
+        :param dashboard_name: str
+          Dashboard name and revision_id is required to retrieve PublishedDatasetDataModel which contains the
+          list of datasets, warehouse_id, and embedded_credentials
+        :param dashboard_revision_id: str
+        :param override_warehouse_id: str (optional)
+          A dashboard schedule can override the warehouse used as compute for processing the published
+          dashboard queries
+        
+        
+        """
+        body = {}
+        if dashboard_name is not None: body['dashboard_name'] = dashboard_name
+        if dashboard_revision_id is not None: body['dashboard_revision_id'] = dashboard_revision_id
+        if override_warehouse_id is not None: body['override_warehouse_id'] = override_warehouse_id
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        self._api.do('POST', '/api/2.0/lakeview-query/query/published', body=body, headers=headers)
+
+    def poll_published_query_status(self,
+                                    dashboard_name: str,
+                                    dashboard_revision_id: str,
+                                    *,
+                                    tokens: Optional[List[str]] = None) -> PollQueryStatusResponse:
+        """Poll the results for the a query for a published, embedded dashboard.
+        
+        :param dashboard_name: str
+        :param dashboard_revision_id: str
+        :param tokens: List[str] (optional)
+          Example: EC0A..ChAB7WCEn_4Qo4vkLqEbXsxxEgh3Y2pbWw45WhoQXgZSQo9aS5q2ZvFcbvbx9CgA-PAEAQ
+        
+        :returns: :class:`PollQueryStatusResponse`
+        """
+
+        query = {}
+        if dashboard_name is not None: query['dashboard_name'] = dashboard_name
+        if dashboard_revision_id is not None: query['dashboard_revision_id'] = dashboard_revision_id
+        if tokens is not None: query['tokens'] = [v for v in tokens]
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do('GET', '/api/2.0/lakeview-query/query/published', query=query, headers=headers)
+        return PollQueryStatusResponse.from_dict(res)

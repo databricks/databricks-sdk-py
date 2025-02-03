@@ -6913,12 +6913,17 @@ class TemporaryCredentials:
     """Server time when the credential will expire, in epoch milliseconds. The API client is advised to
     cache the credential given this expiration time."""
 
+    gcp_oauth_token: Optional[GcpOauthToken] = None
+    """GCP temporary credentials for API authentication. Read more at
+    https://developers.google.com/identity/protocols/oauth2/service-account"""
+
     def as_dict(self) -> dict:
         """Serializes the TemporaryCredentials into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.aws_temp_credentials: body['aws_temp_credentials'] = self.aws_temp_credentials.as_dict()
         if self.azure_aad: body['azure_aad'] = self.azure_aad.as_dict()
         if self.expiration_time is not None: body['expiration_time'] = self.expiration_time
+        if self.gcp_oauth_token: body['gcp_oauth_token'] = self.gcp_oauth_token.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -6927,6 +6932,7 @@ class TemporaryCredentials:
         if self.aws_temp_credentials: body['aws_temp_credentials'] = self.aws_temp_credentials
         if self.azure_aad: body['azure_aad'] = self.azure_aad
         if self.expiration_time is not None: body['expiration_time'] = self.expiration_time
+        if self.gcp_oauth_token: body['gcp_oauth_token'] = self.gcp_oauth_token
         return body
 
     @classmethod
@@ -6934,7 +6940,8 @@ class TemporaryCredentials:
         """Deserializes the TemporaryCredentials from a dictionary."""
         return cls(aws_temp_credentials=_from_dict(d, 'aws_temp_credentials', AwsCredentials),
                    azure_aad=_from_dict(d, 'azure_aad', AzureActiveDirectoryToken),
-                   expiration_time=d.get('expiration_time', None))
+                   expiration_time=d.get('expiration_time', None),
+                   gcp_oauth_token=_from_dict(d, 'gcp_oauth_token', GcpOauthToken))
 
 
 @dataclass
@@ -7043,6 +7050,9 @@ class UpdateCatalog:
     new_name: Optional[str] = None
     """New name for the catalog."""
 
+    options: Optional[Dict[str, str]] = None
+    """A map of key-value properties attached to the securable."""
+
     owner: Optional[str] = None
     """Username of current owner of catalog."""
 
@@ -7058,6 +7068,7 @@ class UpdateCatalog:
         if self.isolation_mode is not None: body['isolation_mode'] = self.isolation_mode.value
         if self.name is not None: body['name'] = self.name
         if self.new_name is not None: body['new_name'] = self.new_name
+        if self.options: body['options'] = self.options
         if self.owner is not None: body['owner'] = self.owner
         if self.properties: body['properties'] = self.properties
         return body
@@ -7071,6 +7082,7 @@ class UpdateCatalog:
         if self.isolation_mode is not None: body['isolation_mode'] = self.isolation_mode
         if self.name is not None: body['name'] = self.name
         if self.new_name is not None: body['new_name'] = self.new_name
+        if self.options: body['options'] = self.options
         if self.owner is not None: body['owner'] = self.owner
         if self.properties: body['properties'] = self.properties
         return body
@@ -7084,6 +7096,7 @@ class UpdateCatalog:
                    isolation_mode=_enum(d, 'isolation_mode', CatalogIsolationMode),
                    name=d.get('name', None),
                    new_name=d.get('new_name', None),
+                   options=d.get('options', None),
                    owner=d.get('owner', None),
                    properties=d.get('properties', None))
 
@@ -8986,6 +8999,7 @@ class CatalogsAPI:
                enable_predictive_optimization: Optional[EnablePredictiveOptimization] = None,
                isolation_mode: Optional[CatalogIsolationMode] = None,
                new_name: Optional[str] = None,
+               options: Optional[Dict[str, str]] = None,
                owner: Optional[str] = None,
                properties: Optional[Dict[str, str]] = None) -> CatalogInfo:
         """Update a catalog.
@@ -9003,6 +9017,8 @@ class CatalogsAPI:
           Whether the current securable is accessible from all workspaces or a specific set of workspaces.
         :param new_name: str (optional)
           New name for the catalog.
+        :param options: Dict[str,str] (optional)
+          A map of key-value properties attached to the securable.
         :param owner: str (optional)
           Username of current owner of catalog.
         :param properties: Dict[str,str] (optional)
@@ -9016,6 +9032,7 @@ class CatalogsAPI:
             body['enable_predictive_optimization'] = enable_predictive_optimization.value
         if isolation_mode is not None: body['isolation_mode'] = isolation_mode.value
         if new_name is not None: body['new_name'] = new_name
+        if options is not None: body['options'] = options
         if owner is not None: body['owner'] = owner
         if properties is not None: body['properties'] = properties
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }

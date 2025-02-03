@@ -139,8 +139,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: HIPAA
       :value: "HIPAA"
 
+   .. py:attribute:: HITRUST
+      :value: "HITRUST"
+
    .. py:attribute:: IRAP_PROTECTED
       :value: "IRAP_PROTECTED"
+
+   .. py:attribute:: ISMAP
+      :value: "ISMAP"
 
    .. py:attribute:: ITAR_EAR
       :value: "ITAR_EAR"

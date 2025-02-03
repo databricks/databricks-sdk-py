@@ -4915,6 +4915,10 @@ class RunTask:
     description: Optional[str] = None
     """An optional description for this task."""
 
+    disabled: Optional[bool] = None
+    """Denotes whether or not the task was disabled by the user. Disabled tasks do not execute and are
+    immediately skipped as soon as they are unblocked."""
+
     effective_performance_target: Optional[PerformanceTarget] = None
     """effective_performance_target is the actual performance target used by the run during execution.
     effective_performance_target can differ from performance_target depending on if the job was
@@ -5069,6 +5073,7 @@ class RunTask:
         if self.dbt_task: body['dbt_task'] = self.dbt_task.as_dict()
         if self.depends_on: body['depends_on'] = [v.as_dict() for v in self.depends_on]
         if self.description is not None: body['description'] = self.description
+        if self.disabled is not None: body['disabled'] = self.disabled
         if self.effective_performance_target is not None:
             body['effective_performance_target'] = self.effective_performance_target.value
         if self.email_notifications: body['email_notifications'] = self.email_notifications.as_dict()
@@ -5116,6 +5121,7 @@ class RunTask:
         if self.dbt_task: body['dbt_task'] = self.dbt_task
         if self.depends_on: body['depends_on'] = self.depends_on
         if self.description is not None: body['description'] = self.description
+        if self.disabled is not None: body['disabled'] = self.disabled
         if self.effective_performance_target is not None:
             body['effective_performance_target'] = self.effective_performance_target
         if self.email_notifications: body['email_notifications'] = self.email_notifications
@@ -5164,6 +5170,7 @@ class RunTask:
                    dbt_task=_from_dict(d, 'dbt_task', DbtTask),
                    depends_on=_repeated_dict(d, 'depends_on', TaskDependency),
                    description=d.get('description', None),
+                   disabled=d.get('disabled', None),
                    effective_performance_target=_enum(d, 'effective_performance_target', PerformanceTarget),
                    email_notifications=_from_dict(d, 'email_notifications', JobEmailNotifications),
                    end_time=d.get('end_time', None),

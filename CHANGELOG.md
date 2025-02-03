@@ -1,5 +1,17 @@
 # Version changelog
 
+## [Release] Release v0.43.0
+
+### API Changes:
+
+ * Added [w.lakeview_embedded](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/lakeview_embedded.html) workspace-level service and [w.query_execution](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/query_execution.html) workspace-level service.
+ * Added [w.redash_config](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/redash_config.html) workspace-level service.
+ * Added `gcp_oauth_token` field for `databricks.sdk.service.catalog.TemporaryCredentials`.
+ * Added `options` field for `databricks.sdk.service.catalog.UpdateCatalog`.
+ * Added `disabled` field for `databricks.sdk.service.jobs.RunTask`.
+
+OpenAPI SHA: c72c58f97b950fcb924a90ef164bcb10cfcd5ece, Date: 2025-02-03
+
 ### Bug Fixes
 
  * Fix docs generation when two services have the same name ([#872](https://github.com/databricks/databricks-sdk-py/pull/872)).

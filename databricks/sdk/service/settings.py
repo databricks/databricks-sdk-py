@@ -563,7 +563,9 @@ class ComplianceStandard(Enum):
     FEDRAMP_IL5 = 'FEDRAMP_IL5'
     FEDRAMP_MODERATE = 'FEDRAMP_MODERATE'
     HIPAA = 'HIPAA'
+    HITRUST = 'HITRUST'
     IRAP_PROTECTED = 'IRAP_PROTECTED'
+    ISMAP = 'ISMAP'
     ITAR_EAR = 'ITAR_EAR'
     NONE = 'NONE'
     PCI_DSS = 'PCI_DSS'
@@ -3642,9 +3644,15 @@ class UpdateAccountIpAccessEnableRequest:
     setting: AccountIpAccessEnable
 
     field_mask: str
-    """Field mask is required to be passed into the PATCH request. Field mask specifies which fields of
-    the setting payload will be updated. The field mask needs to be supplied as single string. To
-    specify multiple fields in the field mask, use comma as the separator (no space)."""
+    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
+    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
+    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
+    as only the entire collection field can be specified. Field names must exactly match the
+    resource field names.
+    
+    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
+    API changes in the future."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateAccountIpAccessEnableRequest into a dictionary suitable for use as a JSON request body."""
@@ -3680,9 +3688,15 @@ class UpdateAibiDashboardEmbeddingAccessPolicySettingRequest:
     setting: AibiDashboardEmbeddingAccessPolicySetting
 
     field_mask: str
-    """Field mask is required to be passed into the PATCH request. Field mask specifies which fields of
-    the setting payload will be updated. The field mask needs to be supplied as single string. To
-    specify multiple fields in the field mask, use comma as the separator (no space)."""
+    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
+    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
+    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
+    as only the entire collection field can be specified. Field names must exactly match the
+    resource field names.
+    
+    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
+    API changes in the future."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateAibiDashboardEmbeddingAccessPolicySettingRequest into a dictionary suitable for use as a JSON request body."""
@@ -3718,9 +3732,15 @@ class UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest:
     setting: AibiDashboardEmbeddingApprovedDomainsSetting
 
     field_mask: str
-    """Field mask is required to be passed into the PATCH request. Field mask specifies which fields of
-    the setting payload will be updated. The field mask needs to be supplied as single string. To
-    specify multiple fields in the field mask, use comma as the separator (no space)."""
+    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
+    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
+    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
+    as only the entire collection field can be specified. Field names must exactly match the
+    resource field names.
+    
+    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
+    API changes in the future."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest into a dictionary suitable for use as a JSON request body."""
@@ -3756,9 +3776,15 @@ class UpdateAutomaticClusterUpdateSettingRequest:
     setting: AutomaticClusterUpdateSetting
 
     field_mask: str
-    """Field mask is required to be passed into the PATCH request. Field mask specifies which fields of
-    the setting payload will be updated. The field mask needs to be supplied as single string. To
-    specify multiple fields in the field mask, use comma as the separator (no space)."""
+    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
+    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
+    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
+    as only the entire collection field can be specified. Field names must exactly match the
+    resource field names.
+    
+    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
+    API changes in the future."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateAutomaticClusterUpdateSettingRequest into a dictionary suitable for use as a JSON request body."""
@@ -3794,9 +3820,15 @@ class UpdateComplianceSecurityProfileSettingRequest:
     setting: ComplianceSecurityProfileSetting
 
     field_mask: str
-    """Field mask is required to be passed into the PATCH request. Field mask specifies which fields of
-    the setting payload will be updated. The field mask needs to be supplied as single string. To
-    specify multiple fields in the field mask, use comma as the separator (no space)."""
+    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
+    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
+    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
+    as only the entire collection field can be specified. Field names must exactly match the
+    resource field names.
+    
+    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
+    API changes in the future."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateComplianceSecurityProfileSettingRequest into a dictionary suitable for use as a JSON request body."""
@@ -3832,9 +3864,15 @@ class UpdateCspEnablementAccountSettingRequest:
     setting: CspEnablementAccountSetting
 
     field_mask: str
-    """Field mask is required to be passed into the PATCH request. Field mask specifies which fields of
-    the setting payload will be updated. The field mask needs to be supplied as single string. To
-    specify multiple fields in the field mask, use comma as the separator (no space)."""
+    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
+    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
+    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
+    as only the entire collection field can be specified. Field names must exactly match the
+    resource field names.
+    
+    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
+    API changes in the future."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateCspEnablementAccountSettingRequest into a dictionary suitable for use as a JSON request body."""
@@ -3877,9 +3915,15 @@ class UpdateDefaultNamespaceSettingRequest:
     applies when using Unity Catalog-enabled compute."""
 
     field_mask: str
-    """Field mask is required to be passed into the PATCH request. Field mask specifies which fields of
-    the setting payload will be updated. The field mask needs to be supplied as single string. To
-    specify multiple fields in the field mask, use comma as the separator (no space)."""
+    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
+    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
+    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
+    as only the entire collection field can be specified. Field names must exactly match the
+    resource field names.
+    
+    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
+    API changes in the future."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateDefaultNamespaceSettingRequest into a dictionary suitable for use as a JSON request body."""
@@ -3915,9 +3959,15 @@ class UpdateDisableLegacyAccessRequest:
     setting: DisableLegacyAccess
 
     field_mask: str
-    """Field mask is required to be passed into the PATCH request. Field mask specifies which fields of
-    the setting payload will be updated. The field mask needs to be supplied as single string. To
-    specify multiple fields in the field mask, use comma as the separator (no space)."""
+    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
+    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
+    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
+    as only the entire collection field can be specified. Field names must exactly match the
+    resource field names.
+    
+    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
+    API changes in the future."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateDisableLegacyAccessRequest into a dictionary suitable for use as a JSON request body."""
@@ -3953,9 +4003,15 @@ class UpdateDisableLegacyDbfsRequest:
     setting: DisableLegacyDbfs
 
     field_mask: str
-    """Field mask is required to be passed into the PATCH request. Field mask specifies which fields of
-    the setting payload will be updated. The field mask needs to be supplied as single string. To
-    specify multiple fields in the field mask, use comma as the separator (no space)."""
+    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
+    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
+    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
+    as only the entire collection field can be specified. Field names must exactly match the
+    resource field names.
+    
+    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
+    API changes in the future."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateDisableLegacyDbfsRequest into a dictionary suitable for use as a JSON request body."""
@@ -3991,9 +4047,15 @@ class UpdateDisableLegacyFeaturesRequest:
     setting: DisableLegacyFeatures
 
     field_mask: str
-    """Field mask is required to be passed into the PATCH request. Field mask specifies which fields of
-    the setting payload will be updated. The field mask needs to be supplied as single string. To
-    specify multiple fields in the field mask, use comma as the separator (no space)."""
+    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
+    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
+    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
+    as only the entire collection field can be specified. Field names must exactly match the
+    resource field names.
+    
+    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
+    API changes in the future."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateDisableLegacyFeaturesRequest into a dictionary suitable for use as a JSON request body."""
@@ -4029,9 +4091,15 @@ class UpdateEnhancedSecurityMonitoringSettingRequest:
     setting: EnhancedSecurityMonitoringSetting
 
     field_mask: str
-    """Field mask is required to be passed into the PATCH request. Field mask specifies which fields of
-    the setting payload will be updated. The field mask needs to be supplied as single string. To
-    specify multiple fields in the field mask, use comma as the separator (no space)."""
+    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
+    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
+    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
+    as only the entire collection field can be specified. Field names must exactly match the
+    resource field names.
+    
+    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
+    API changes in the future."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateEnhancedSecurityMonitoringSettingRequest into a dictionary suitable for use as a JSON request body."""
@@ -4067,9 +4135,15 @@ class UpdateEsmEnablementAccountSettingRequest:
     setting: EsmEnablementAccountSetting
 
     field_mask: str
-    """Field mask is required to be passed into the PATCH request. Field mask specifies which fields of
-    the setting payload will be updated. The field mask needs to be supplied as single string. To
-    specify multiple fields in the field mask, use comma as the separator (no space)."""
+    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
+    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
+    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
+    as only the entire collection field can be specified. Field names must exactly match the
+    resource field names.
+    
+    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
+    API changes in the future."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateEsmEnablementAccountSettingRequest into a dictionary suitable for use as a JSON request body."""
@@ -4191,9 +4265,15 @@ class UpdatePersonalComputeSettingRequest:
     setting: PersonalComputeSetting
 
     field_mask: str
-    """Field mask is required to be passed into the PATCH request. Field mask specifies which fields of
-    the setting payload will be updated. The field mask needs to be supplied as single string. To
-    specify multiple fields in the field mask, use comma as the separator (no space)."""
+    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
+    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
+    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
+    as only the entire collection field can be specified. Field names must exactly match the
+    resource field names.
+    
+    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
+    API changes in the future."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdatePersonalComputeSettingRequest into a dictionary suitable for use as a JSON request body."""
@@ -4248,9 +4328,15 @@ class UpdateRestrictWorkspaceAdminsSettingRequest:
     setting: RestrictWorkspaceAdminsSetting
 
     field_mask: str
-    """Field mask is required to be passed into the PATCH request. Field mask specifies which fields of
-    the setting payload will be updated. The field mask needs to be supplied as single string. To
-    specify multiple fields in the field mask, use comma as the separator (no space)."""
+    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
+    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
+    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
+    as only the entire collection field can be specified. Field names must exactly match the
+    resource field names.
+    
+    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
+    API changes in the future."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateRestrictWorkspaceAdminsSettingRequest into a dictionary suitable for use as a JSON request body."""
@@ -4602,9 +4688,15 @@ class AibiDashboardEmbeddingAccessPolicyAPI:
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`AibiDashboardEmbeddingAccessPolicySetting`
         :param field_mask: str
-          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
-          setting payload will be updated. The field mask needs to be supplied as single string. To specify
-          multiple fields in the field mask, use comma as the separator (no space).
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+          
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
         
         :returns: :class:`AibiDashboardEmbeddingAccessPolicySetting`
         """
@@ -4692,9 +4784,15 @@ class AibiDashboardEmbeddingApprovedDomainsAPI:
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`AibiDashboardEmbeddingApprovedDomainsSetting`
         :param field_mask: str
-          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
-          setting payload will be updated. The field mask needs to be supplied as single string. To specify
-          multiple fields in the field mask, use comma as the separator (no space).
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+          
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
         
         :returns: :class:`AibiDashboardEmbeddingApprovedDomainsSetting`
         """
@@ -4756,9 +4854,15 @@ class AutomaticClusterUpdateAPI:
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`AutomaticClusterUpdateSetting`
         :param field_mask: str
-          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
-          setting payload will be updated. The field mask needs to be supplied as single string. To specify
-          multiple fields in the field mask, use comma as the separator (no space).
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+          
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
         
         :returns: :class:`AutomaticClusterUpdateSetting`
         """
@@ -4822,9 +4926,15 @@ class ComplianceSecurityProfileAPI:
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`ComplianceSecurityProfileSetting`
         :param field_mask: str
-          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
-          setting payload will be updated. The field mask needs to be supplied as single string. To specify
-          multiple fields in the field mask, use comma as the separator (no space).
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+          
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
         
         :returns: :class:`ComplianceSecurityProfileSetting`
         """
@@ -4924,9 +5034,15 @@ class CspEnablementAccountAPI:
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`CspEnablementAccountSetting`
         :param field_mask: str
-          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
-          setting payload will be updated. The field mask needs to be supplied as single string. To specify
-          multiple fields in the field mask, use comma as the separator (no space).
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+          
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
         
         :returns: :class:`CspEnablementAccountSetting`
         """
@@ -5034,9 +5150,15 @@ class DefaultNamespaceAPI:
           restart of clusters and SQL warehouses to take effect. Additionally, the default namespace only
           applies when using Unity Catalog-enabled compute.
         :param field_mask: str
-          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
-          setting payload will be updated. The field mask needs to be supplied as single string. To specify
-          multiple fields in the field mask, use comma as the separator (no space).
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+          
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
         
         :returns: :class:`DefaultNamespaceSetting`
         """
@@ -5124,9 +5246,15 @@ class DisableLegacyAccessAPI:
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`DisableLegacyAccess`
         :param field_mask: str
-          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
-          setting payload will be updated. The field mask needs to be supplied as single string. To specify
-          multiple fields in the field mask, use comma as the separator (no space).
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+          
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
         
         :returns: :class:`DisableLegacyAccess`
         """
@@ -5209,9 +5337,15 @@ class DisableLegacyDbfsAPI:
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`DisableLegacyDbfs`
         :param field_mask: str
-          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
-          setting payload will be updated. The field mask needs to be supplied as single string. To specify
-          multiple fields in the field mask, use comma as the separator (no space).
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+          
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
         
         :returns: :class:`DisableLegacyDbfs`
         """
@@ -5300,9 +5434,15 @@ class DisableLegacyFeaturesAPI:
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`DisableLegacyFeatures`
         :param field_mask: str
-          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
-          setting payload will be updated. The field mask needs to be supplied as single string. To specify
-          multiple fields in the field mask, use comma as the separator (no space).
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+          
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
         
         :returns: :class:`DisableLegacyFeatures`
         """
@@ -5389,9 +5529,15 @@ class EnableIpAccessListsAPI:
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`AccountIpAccessEnable`
         :param field_mask: str
-          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
-          setting payload will be updated. The field mask needs to be supplied as single string. To specify
-          multiple fields in the field mask, use comma as the separator (no space).
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+          
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
         
         :returns: :class:`AccountIpAccessEnable`
         """
@@ -5458,9 +5604,15 @@ class EnhancedSecurityMonitoringAPI:
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`EnhancedSecurityMonitoringSetting`
         :param field_mask: str
-          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
-          setting payload will be updated. The field mask needs to be supplied as single string. To specify
-          multiple fields in the field mask, use comma as the separator (no space).
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+          
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
         
         :returns: :class:`EnhancedSecurityMonitoringSetting`
         """
@@ -5521,9 +5673,15 @@ class EsmEnablementAccountAPI:
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`EsmEnablementAccountSetting`
         :param field_mask: str
-          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
-          setting payload will be updated. The field mask needs to be supplied as single string. To specify
-          multiple fields in the field mask, use comma as the separator (no space).
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+          
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
         
         :returns: :class:`EsmEnablementAccountSetting`
         """
@@ -6153,9 +6311,15 @@ class PersonalComputeAPI:
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`PersonalComputeSetting`
         :param field_mask: str
-          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
-          setting payload will be updated. The field mask needs to be supplied as single string. To specify
-          multiple fields in the field mask, use comma as the separator (no space).
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+          
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
         
         :returns: :class:`PersonalComputeSetting`
         """
@@ -6253,9 +6417,15 @@ class RestrictWorkspaceAdminsAPI:
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`RestrictWorkspaceAdminsSetting`
         :param field_mask: str
-          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
-          setting payload will be updated. The field mask needs to be supplied as single string. To specify
-          multiple fields in the field mask, use comma as the separator (no space).
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+          
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
         
         :returns: :class:`RestrictWorkspaceAdminsSetting`
         """
