@@ -36,6 +36,7 @@ class JobsExt(jobs.JobsAPI):
         # When querying a ForEach task run, a page token is returned when there are more than 100 iterations. Only a single task is returned, corresponding to the ForEach task itself. Therefore, the client only reads the iterations from the next page and not the tasks.
         is_paginating_iterations = run.iterations is not None and len(run.iterations) > 0
 
+        # runs/get response includes next_page_token as long as there are more pages to fetch.
         while run.next_page_token is not None:
             next_run = super().get_run(run_id,
                                        include_history=include_history,
@@ -45,6 +46,7 @@ class JobsExt(jobs.JobsAPI):
                 run.iterations.extend(next_run.iterations)
             else:
                 run.tasks.extend(next_run.tasks)
+            # Each new page of runs/get response includes the next page of the job_clusters, job_parameters, and repair history.
             run.job_clusters.extend(next_run.job_clusters)
             run.job_parameters.extend(next_run.job_parameters)
             run.repair_history.extend(next_run.repair_history)
