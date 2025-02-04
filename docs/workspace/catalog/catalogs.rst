@@ -143,7 +143,7 @@
         :returns: Iterator over :class:`CatalogInfo`
         
 
-    .. py:method:: update(name: str [, comment: Optional[str], enable_predictive_optimization: Optional[EnablePredictiveOptimization], isolation_mode: Optional[CatalogIsolationMode], new_name: Optional[str], owner: Optional[str], properties: Optional[Dict[str, str]]]) -> CatalogInfo
+    .. py:method:: update(name: str [, comment: Optional[str], enable_predictive_optimization: Optional[EnablePredictiveOptimization], isolation_mode: Optional[CatalogIsolationMode], new_name: Optional[str], options: Optional[Dict[str, str]], owner: Optional[str], properties: Optional[Dict[str, str]]]) -> CatalogInfo
 
 
         Usage:
@@ -178,6 +178,8 @@
           Whether the current securable is accessible from all workspaces or a specific set of workspaces.
         :param new_name: str (optional)
           New name for the catalog.
+        :param options: Dict[str,str] (optional)
+          A map of key-value properties attached to the securable.
         :param owner: str (optional)
           Username of current owner of catalog.
         :param properties: Dict[str,str] (optional)

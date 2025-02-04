@@ -13,8 +13,9 @@ from databricks.sdk.mixins.jobs import JobsExt
 from databricks.sdk.mixins.open_ai_client import ServingEndpointsExt
 from databricks.sdk.mixins.workspace import WorkspaceExt
 from databricks.sdk.service.apps import AppsAPI
-from databricks.sdk.service.billing import (BillableUsageAPI, BudgetsAPI,
-                                            LogDeliveryAPI, UsageDashboardsAPI)
+from databricks.sdk.service.billing import (BillableUsageAPI, BudgetPolicyAPI,
+                                            BudgetsAPI, LogDeliveryAPI,
+                                            UsageDashboardsAPI)
 from databricks.sdk.service.catalog import (AccountMetastoreAssignmentsAPI,
                                             AccountMetastoresAPI,
                                             AccountStorageCredentialsAPI,
@@ -41,7 +42,9 @@ from databricks.sdk.service.compute import (ClusterPoliciesAPI, ClustersAPI,
                                             InstanceProfilesAPI, LibrariesAPI,
                                             PolicyComplianceForClustersAPI,
                                             PolicyFamiliesAPI)
-from databricks.sdk.service.dashboards import GenieAPI, LakeviewAPI
+from databricks.sdk.service.dashboards import (GenieAPI, LakeviewAPI,
+                                               LakeviewEmbeddedAPI,
+                                               QueryExecutionAPI)
 from databricks.sdk.service.files import DbfsAPI, FilesAPI
 from databricks.sdk.service.iam import (AccessControlAPI,
                                         AccountAccessControlAPI,
@@ -80,7 +83,7 @@ from databricks.sdk.service.settings import (
     AibiDashboardEmbeddingApprovedDomainsAPI, AutomaticClusterUpdateAPI,
     ComplianceSecurityProfileAPI, CredentialsManagerAPI,
     CspEnablementAccountAPI, DefaultNamespaceAPI, DisableLegacyAccessAPI,
-    DisableLegacyDbfsAPI, DisableLegacyFeaturesAPI,
+    DisableLegacyDbfsAPI, DisableLegacyFeaturesAPI, EnableIpAccessListsAPI,
     EnhancedSecurityMonitoringAPI, EsmEnablementAccountAPI, IpAccessListsAPI,
     NetworkConnectivityAPI, NotificationDestinationsAPI, PersonalComputeAPI,
     RestrictWorkspaceAdminsAPI, SettingsAPI, TokenManagementAPI, TokensAPI,
@@ -95,7 +98,8 @@ from databricks.sdk.service.sql import (AlertsAPI, AlertsLegacyAPI,
                                         QueryHistoryAPI,
                                         QueryVisualizationsAPI,
                                         QueryVisualizationsLegacyAPI,
-                                        StatementExecutionAPI, WarehousesAPI)
+                                        RedashConfigAPI, StatementExecutionAPI,
+                                        WarehousesAPI)
 from databricks.sdk.service.vectorsearch import (VectorSearchEndpointsAPI,
                                                  VectorSearchIndexesAPI)
 from databricks.sdk.service.workspace import (GitCredentialsAPI, ReposAPI,
@@ -230,6 +234,7 @@ class WorkspaceClient:
         self._ip_access_lists = IpAccessListsAPI(self._api_client)
         self._jobs = JobsExt(self._api_client)
         self._lakeview = LakeviewAPI(self._api_client)
+        self._lakeview_embedded = LakeviewEmbeddedAPI(self._api_client)
         self._libraries = LibrariesAPI(self._api_client)
         self._metastores = MetastoresAPI(self._api_client)
         self._model_registry = ModelRegistryAPI(self._api_client)
@@ -254,11 +259,13 @@ class WorkspaceClient:
         self._quality_monitors = QualityMonitorsAPI(self._api_client)
         self._queries = QueriesAPI(self._api_client)
         self._queries_legacy = QueriesLegacyAPI(self._api_client)
+        self._query_execution = QueryExecutionAPI(self._api_client)
         self._query_history = QueryHistoryAPI(self._api_client)
         self._query_visualizations = QueryVisualizationsAPI(self._api_client)
         self._query_visualizations_legacy = QueryVisualizationsLegacyAPI(self._api_client)
         self._recipient_activation = RecipientActivationAPI(self._api_client)
         self._recipients = RecipientsAPI(self._api_client)
+        self._redash_config = RedashConfigAPI(self._api_client)
         self._registered_models = RegisteredModelsAPI(self._api_client)
         self._repos = ReposAPI(self._api_client)
         self._resource_quotas = ResourceQuotasAPI(self._api_client)
@@ -504,6 +511,11 @@ class WorkspaceClient:
         return self._lakeview
 
     @property
+    def lakeview_embedded(self) -> LakeviewEmbeddedAPI:
+        """Token-based Lakeview APIs for embedding dashboards in external applications."""
+        return self._lakeview_embedded
+
+    @property
     def libraries(self) -> LibrariesAPI:
         """The Libraries API allows you to install and uninstall libraries and get the status of libraries on a cluster."""
         return self._libraries
@@ -619,6 +631,11 @@ class WorkspaceClient:
         return self._queries_legacy
 
     @property
+    def query_execution(self) -> QueryExecutionAPI:
+        """Query execution APIs for AI / BI Dashboards."""
+        return self._query_execution
+
+    @property
     def query_history(self) -> QueryHistoryAPI:
         """A service responsible for storing and retrieving the list of queries run against SQL endpoints and serverless compute."""
         return self._query_history
@@ -642,6 +659,11 @@ class WorkspaceClient:
     def recipients(self) -> RecipientsAPI:
         """A recipient is an object you create using :method:recipients/create to represent an organization which you want to allow access shares."""
         return self._recipients
+
+    @property
+    def redash_config(self) -> RedashConfigAPI:
+        """Redash V2 service for workspace configurations (internal)."""
+        return self._redash_config
 
     @property
     def registered_models(self) -> RegisteredModelsAPI:
@@ -845,6 +867,7 @@ class AccountClient:
         self._api_client = client.ApiClient(self._config)
         self._access_control = AccountAccessControlAPI(self._api_client)
         self._billable_usage = BillableUsageAPI(self._api_client)
+        self._budget_policy = BudgetPolicyAPI(self._api_client)
         self._credentials = CredentialsAPI(self._api_client)
         self._custom_app_integration = CustomAppIntegrationAPI(self._api_client)
         self._encryption_keys = EncryptionKeysAPI(self._api_client)
@@ -889,6 +912,11 @@ class AccountClient:
     def billable_usage(self) -> BillableUsageAPI:
         """This API allows you to download billable usage logs for the specified account and date range."""
         return self._billable_usage
+
+    @property
+    def budget_policy(self) -> BudgetPolicyAPI:
+        """A service serves REST API about Budget policies."""
+        return self._budget_policy
 
     @property
     def credentials(self) -> CredentialsAPI:

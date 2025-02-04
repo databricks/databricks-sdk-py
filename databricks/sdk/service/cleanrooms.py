@@ -289,11 +289,24 @@ class CleanRoomAssetNotebook:
     """Base 64 representation of the notebook contents. This is the same format as returned by
     :method:workspace/export with the format of **HTML**."""
 
+    review_state: Optional[CleanRoomNotebookReviewNotebookReviewState] = None
+    """top-level status derived from all reviews"""
+
+    reviews: Optional[List[CleanRoomNotebookReview]] = None
+    """All existing approvals or rejections"""
+
+    runner_collaborators: Optional[List[CleanRoomCollaborator]] = None
+    """collaborators that can run the notebook"""
+
     def as_dict(self) -> dict:
         """Serializes the CleanRoomAssetNotebook into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.etag is not None: body['etag'] = self.etag
         if self.notebook_content is not None: body['notebook_content'] = self.notebook_content
+        if self.review_state is not None: body['review_state'] = self.review_state.value
+        if self.reviews: body['reviews'] = [v.as_dict() for v in self.reviews]
+        if self.runner_collaborators:
+            body['runner_collaborators'] = [v.as_dict() for v in self.runner_collaborators]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -301,12 +314,19 @@ class CleanRoomAssetNotebook:
         body = {}
         if self.etag is not None: body['etag'] = self.etag
         if self.notebook_content is not None: body['notebook_content'] = self.notebook_content
+        if self.review_state is not None: body['review_state'] = self.review_state
+        if self.reviews: body['reviews'] = self.reviews
+        if self.runner_collaborators: body['runner_collaborators'] = self.runner_collaborators
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CleanRoomAssetNotebook:
         """Deserializes the CleanRoomAssetNotebook from a dictionary."""
-        return cls(etag=d.get('etag', None), notebook_content=d.get('notebook_content', None))
+        return cls(etag=d.get('etag', None),
+                   notebook_content=d.get('notebook_content', None),
+                   review_state=_enum(d, 'review_state', CleanRoomNotebookReviewNotebookReviewState),
+                   reviews=_repeated_dict(d, 'reviews', CleanRoomNotebookReview),
+                   runner_collaborators=_repeated_dict(d, 'runner_collaborators', CleanRoomCollaborator))
 
 
 class CleanRoomAssetStatusEnum(Enum):
@@ -509,6 +529,56 @@ class CleanRoomCollaborator:
                    invite_recipient_email=d.get('invite_recipient_email', None),
                    invite_recipient_workspace_id=d.get('invite_recipient_workspace_id', None),
                    organization_name=d.get('organization_name', None))
+
+
+@dataclass
+class CleanRoomNotebookReview:
+    comment: Optional[str] = None
+    """review comment"""
+
+    created_at_millis: Optional[int] = None
+    """timestamp of when the review was submitted"""
+
+    review_state: Optional[CleanRoomNotebookReviewNotebookReviewState] = None
+    """review outcome"""
+
+    reviewer_collaborator_alias: Optional[str] = None
+    """collaborator alias of the reviewer"""
+
+    def as_dict(self) -> dict:
+        """Serializes the CleanRoomNotebookReview into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.comment is not None: body['comment'] = self.comment
+        if self.created_at_millis is not None: body['created_at_millis'] = self.created_at_millis
+        if self.review_state is not None: body['review_state'] = self.review_state.value
+        if self.reviewer_collaborator_alias is not None:
+            body['reviewer_collaborator_alias'] = self.reviewer_collaborator_alias
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CleanRoomNotebookReview into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.comment is not None: body['comment'] = self.comment
+        if self.created_at_millis is not None: body['created_at_millis'] = self.created_at_millis
+        if self.review_state is not None: body['review_state'] = self.review_state
+        if self.reviewer_collaborator_alias is not None:
+            body['reviewer_collaborator_alias'] = self.reviewer_collaborator_alias
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> CleanRoomNotebookReview:
+        """Deserializes the CleanRoomNotebookReview from a dictionary."""
+        return cls(comment=d.get('comment', None),
+                   created_at_millis=d.get('created_at_millis', None),
+                   review_state=_enum(d, 'review_state', CleanRoomNotebookReviewNotebookReviewState),
+                   reviewer_collaborator_alias=d.get('reviewer_collaborator_alias', None))
+
+
+class CleanRoomNotebookReviewNotebookReviewState(Enum):
+
+    APPROVED = 'APPROVED'
+    PENDING = 'PENDING'
+    REJECTED = 'REJECTED'
 
 
 @dataclass
@@ -1158,8 +1228,9 @@ class CleanRoomsAPI:
         
         Create a new clean room with the specified collaborators. This method is asynchronous; the returned
         name field inside the clean_room field can be used to poll the clean room status, using the
-        :method:cleanrooms/get method. When this method returns, the cluster will be in a PROVISIONING state.
-        The cluster will be usable once it enters an ACTIVE state.
+        :method:cleanrooms/get method. When this method returns, the clean room will be in a PROVISIONING
+        state, with only name, owner, comment, created_at and status populated. The clean room will be usable
+        once it enters an ACTIVE state.
         
         The caller must be a metastore admin or have the **CREATE_CLEAN_ROOM** privilege on the metastore.
         

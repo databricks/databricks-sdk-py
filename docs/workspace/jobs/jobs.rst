@@ -1,5 +1,5 @@
-``w.jobs``: Jobs (latest)
-=========================
+``w.jobs``: Jobs (2.2)
+======================
 .. currentmodule:: databricks.sdk.service.jobs
 
 .. py:class:: JobsExt
@@ -120,7 +120,7 @@
     .. py:method:: cancel_run_and_wait(run_id: int, timeout: datetime.timedelta = 0:20:00) -> Run
 
 
-    .. py:method:: create( [, access_control_list: Optional[List[JobAccessControlRequest]], budget_policy_id: Optional[str], continuous: Optional[Continuous], deployment: Optional[JobDeployment], description: Optional[str], edit_mode: Optional[JobEditMode], email_notifications: Optional[JobEmailNotifications], environments: Optional[List[JobEnvironment]], format: Optional[Format], git_source: Optional[GitSource], health: Optional[JobsHealthRules], job_clusters: Optional[List[JobCluster]], max_concurrent_runs: Optional[int], name: Optional[str], notification_settings: Optional[JobNotificationSettings], parameters: Optional[List[JobParameterDefinition]], queue: Optional[QueueSettings], run_as: Optional[JobRunAs], schedule: Optional[CronSchedule], tags: Optional[Dict[str, str]], tasks: Optional[List[Task]], timeout_seconds: Optional[int], trigger: Optional[TriggerSettings], webhook_notifications: Optional[WebhookNotifications]]) -> CreateResponse
+    .. py:method:: create( [, access_control_list: Optional[List[JobAccessControlRequest]], budget_policy_id: Optional[str], continuous: Optional[Continuous], deployment: Optional[JobDeployment], description: Optional[str], edit_mode: Optional[JobEditMode], email_notifications: Optional[JobEmailNotifications], environments: Optional[List[JobEnvironment]], format: Optional[Format], git_source: Optional[GitSource], health: Optional[JobsHealthRules], job_clusters: Optional[List[JobCluster]], max_concurrent_runs: Optional[int], name: Optional[str], notification_settings: Optional[JobNotificationSettings], parameters: Optional[List[JobParameterDefinition]], performance_target: Optional[PerformanceTarget], queue: Optional[QueueSettings], run_as: Optional[JobRunAs], schedule: Optional[CronSchedule], tags: Optional[Dict[str, str]], tasks: Optional[List[Task]], timeout_seconds: Optional[int], trigger: Optional[TriggerSettings], webhook_notifications: Optional[WebhookNotifications]]) -> CreateResponse
 
 
         Usage:
@@ -216,6 +216,9 @@
           `email_notifications` and `webhook_notifications` for this job.
         :param parameters: List[:class:`JobParameterDefinition`] (optional)
           Job-level parameter definitions
+        :param performance_target: :class:`PerformanceTarget` (optional)
+          PerformanceTarget defines how performant or cost efficient the execution of run on serverless should
+          be.
         :param queue: :class:`QueueSettings` (optional)
           The queue settings of the job.
         :param run_as: :class:`JobRunAs` (optional)
@@ -802,7 +805,7 @@
         
         
 
-    .. py:method:: run_now(job_id: int [, dbt_commands: Optional[List[str]], idempotency_token: Optional[str], jar_params: Optional[List[str]], job_parameters: Optional[Dict[str, str]], notebook_params: Optional[Dict[str, str]], only: Optional[List[str]], pipeline_params: Optional[PipelineParams], python_named_params: Optional[Dict[str, str]], python_params: Optional[List[str]], queue: Optional[QueueSettings], spark_submit_params: Optional[List[str]], sql_params: Optional[Dict[str, str]]]) -> Wait[Run]
+    .. py:method:: run_now(job_id: int [, dbt_commands: Optional[List[str]], idempotency_token: Optional[str], jar_params: Optional[List[str]], job_parameters: Optional[Dict[str, str]], notebook_params: Optional[Dict[str, str]], only: Optional[List[str]], performance_target: Optional[PerformanceTarget], pipeline_params: Optional[PipelineParams], python_named_params: Optional[Dict[str, str]], python_params: Optional[List[str]], queue: Optional[QueueSettings], spark_submit_params: Optional[List[str]], sql_params: Optional[Dict[str, str]]]) -> Wait[Run]
 
 
         Usage:
@@ -889,6 +892,10 @@
         :param only: List[str] (optional)
           A list of task keys to run inside of the job. If this field is not provided, all tasks in the job
           will be run.
+        :param performance_target: :class:`PerformanceTarget` (optional)
+          PerformanceTarget defines how performant or cost efficient the execution of run on serverless
+          compute should be. For RunNow request, the run will execute with this settings instead of ones
+          defined in job.
         :param pipeline_params: :class:`PipelineParams` (optional)
           Controls whether the pipeline should perform a full refresh
         :param python_named_params: Dict[str,str] (optional)
@@ -934,7 +941,7 @@
           See :method:wait_get_run_job_terminated_or_skipped for more details.
         
 
-    .. py:method:: run_now_and_wait(job_id: int [, dbt_commands: Optional[List[str]], idempotency_token: Optional[str], jar_params: Optional[List[str]], job_parameters: Optional[Dict[str, str]], notebook_params: Optional[Dict[str, str]], only: Optional[List[str]], pipeline_params: Optional[PipelineParams], python_named_params: Optional[Dict[str, str]], python_params: Optional[List[str]], queue: Optional[QueueSettings], spark_submit_params: Optional[List[str]], sql_params: Optional[Dict[str, str]], timeout: datetime.timedelta = 0:20:00]) -> Run
+    .. py:method:: run_now_and_wait(job_id: int [, dbt_commands: Optional[List[str]], idempotency_token: Optional[str], jar_params: Optional[List[str]], job_parameters: Optional[Dict[str, str]], notebook_params: Optional[Dict[str, str]], only: Optional[List[str]], performance_target: Optional[PerformanceTarget], pipeline_params: Optional[PipelineParams], python_named_params: Optional[Dict[str, str]], python_params: Optional[List[str]], queue: Optional[QueueSettings], spark_submit_params: Optional[List[str]], sql_params: Optional[Dict[str, str]], timeout: datetime.timedelta = 0:20:00]) -> Run
 
 
     .. py:method:: set_permissions(job_id: str [, access_control_list: Optional[List[JobAccessControlRequest]]]) -> JobPermissions

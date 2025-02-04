@@ -1,18 +1,17 @@
-``w.settings.aibi_dashboard_embedding_approved_domains``: AI/BI Dashboard Embedding Approved Domains
-====================================================================================================
+``a.settings.enable_ip_access_lists``: Enable Account IP Access Lists
+=====================================================================
 .. currentmodule:: databricks.sdk.service.settings
 
-.. py:class:: AibiDashboardEmbeddingApprovedDomainsAPI
+.. py:class:: EnableIpAccessListsAPI
 
-    Controls the list of domains approved to host the embedded AI/BI dashboards. The approved domains list
-    can't be mutated when the current access policy is not set to ALLOW_APPROVED_DOMAINS.
+    Controls the enforcement of IP access lists for accessing the account console. Allowing you to enable or
+    disable restricted access based on IP addresses.
 
-    .. py:method:: delete( [, etag: Optional[str]]) -> DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponse
+    .. py:method:: delete( [, etag: Optional[str]]) -> DeleteAccountIpAccessEnableResponse
 
-        Delete AI/BI dashboard embedding approved domains.
+        Delete the account IP access toggle setting.
         
-        Delete the list of domains approved to host embedded AI/BI dashboards, reverting back to the default
-        empty list.
+        Reverts the value of the account IP access toggle setting to default (ON)
         
         :param etag: str (optional)
           etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
@@ -21,14 +20,14 @@
           to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
           request, and pass it with the DELETE request to identify the rule set version you are deleting.
         
-        :returns: :class:`DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponse`
+        :returns: :class:`DeleteAccountIpAccessEnableResponse`
         
 
-    .. py:method:: get( [, etag: Optional[str]]) -> AibiDashboardEmbeddingApprovedDomainsSetting
+    .. py:method:: get( [, etag: Optional[str]]) -> AccountIpAccessEnable
 
-        Retrieve the list of domains approved to host embedded AI/BI dashboards.
+        Get the account IP access toggle setting.
         
-        Retrieves the list of domains approved to host embedded AI/BI dashboards.
+        Gets the value of the account IP access toggle setting.
         
         :param etag: str (optional)
           etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
@@ -37,19 +36,18 @@
           to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
           request, and pass it with the DELETE request to identify the rule set version you are deleting.
         
-        :returns: :class:`AibiDashboardEmbeddingApprovedDomainsSetting`
+        :returns: :class:`AccountIpAccessEnable`
         
 
-    .. py:method:: update(allow_missing: bool, setting: AibiDashboardEmbeddingApprovedDomainsSetting, field_mask: str) -> AibiDashboardEmbeddingApprovedDomainsSetting
+    .. py:method:: update(allow_missing: bool, setting: AccountIpAccessEnable, field_mask: str) -> AccountIpAccessEnable
 
-        Update the list of domains approved to host embedded AI/BI dashboards.
+        Update the account IP access toggle setting.
         
-        Updates the list of domains approved to host embedded AI/BI dashboards. This update will fail if the
-        current workspace access policy is not ALLOW_APPROVED_DOMAINS.
+        Updates the value of the account IP access toggle setting.
         
         :param allow_missing: bool
           This should always be set to true for Settings API. Added for AIP compliance.
-        :param setting: :class:`AibiDashboardEmbeddingApprovedDomainsSetting`
+        :param setting: :class:`AccountIpAccessEnable`
         :param field_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
           field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
@@ -61,5 +59,5 @@
           fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
           changes in the future.
         
-        :returns: :class:`AibiDashboardEmbeddingApprovedDomainsSetting`
+        :returns: :class:`AccountIpAccessEnable`
         

@@ -117,6 +117,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: CHANNEL_NAME_PREVIOUS
       :value: "CHANNEL_NAME_PREVIOUS"
 
+.. autoclass:: ClientConfig
+   :members:
+   :undoc-members:
+
 .. autoclass:: ColumnInfo
    :members:
    :undoc-members:

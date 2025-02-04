@@ -787,9 +787,6 @@ class CatalogInfo:
     provisioning_info: Optional[ProvisioningInfo] = None
     """Status of an asynchronously provisioned resource."""
 
-    securable_kind: Optional[CatalogInfoSecurableKind] = None
-    """Kind of catalog securable."""
-
     securable_type: Optional[str] = None
 
     share_name: Optional[str] = None
@@ -831,7 +828,6 @@ class CatalogInfo:
         if self.properties: body['properties'] = self.properties
         if self.provider_name is not None: body['provider_name'] = self.provider_name
         if self.provisioning_info: body['provisioning_info'] = self.provisioning_info.as_dict()
-        if self.securable_kind is not None: body['securable_kind'] = self.securable_kind.value
         if self.securable_type is not None: body['securable_type'] = self.securable_type
         if self.share_name is not None: body['share_name'] = self.share_name
         if self.storage_location is not None: body['storage_location'] = self.storage_location
@@ -862,7 +858,6 @@ class CatalogInfo:
         if self.properties: body['properties'] = self.properties
         if self.provider_name is not None: body['provider_name'] = self.provider_name
         if self.provisioning_info: body['provisioning_info'] = self.provisioning_info
-        if self.securable_kind is not None: body['securable_kind'] = self.securable_kind
         if self.securable_type is not None: body['securable_type'] = self.securable_type
         if self.share_name is not None: body['share_name'] = self.share_name
         if self.storage_location is not None: body['storage_location'] = self.storage_location
@@ -893,31 +888,12 @@ class CatalogInfo:
                    properties=d.get('properties', None),
                    provider_name=d.get('provider_name', None),
                    provisioning_info=_from_dict(d, 'provisioning_info', ProvisioningInfo),
-                   securable_kind=_enum(d, 'securable_kind', CatalogInfoSecurableKind),
                    securable_type=d.get('securable_type', None),
                    share_name=d.get('share_name', None),
                    storage_location=d.get('storage_location', None),
                    storage_root=d.get('storage_root', None),
                    updated_at=d.get('updated_at', None),
                    updated_by=d.get('updated_by', None))
-
-
-class CatalogInfoSecurableKind(Enum):
-    """Kind of catalog securable."""
-
-    CATALOG_DELTASHARING = 'CATALOG_DELTASHARING'
-    CATALOG_FOREIGN_BIGQUERY = 'CATALOG_FOREIGN_BIGQUERY'
-    CATALOG_FOREIGN_DATABRICKS = 'CATALOG_FOREIGN_DATABRICKS'
-    CATALOG_FOREIGN_MYSQL = 'CATALOG_FOREIGN_MYSQL'
-    CATALOG_FOREIGN_POSTGRESQL = 'CATALOG_FOREIGN_POSTGRESQL'
-    CATALOG_FOREIGN_REDSHIFT = 'CATALOG_FOREIGN_REDSHIFT'
-    CATALOG_FOREIGN_SNOWFLAKE = 'CATALOG_FOREIGN_SNOWFLAKE'
-    CATALOG_FOREIGN_SQLDW = 'CATALOG_FOREIGN_SQLDW'
-    CATALOG_FOREIGN_SQLSERVER = 'CATALOG_FOREIGN_SQLSERVER'
-    CATALOG_INTERNAL = 'CATALOG_INTERNAL'
-    CATALOG_STANDARD = 'CATALOG_STANDARD'
-    CATALOG_SYSTEM = 'CATALOG_SYSTEM'
-    CATALOG_SYSTEM_DELTASHARING = 'CATALOG_SYSTEM_DELTASHARING'
 
 
 class CatalogIsolationMode(Enum):
@@ -1158,9 +1134,6 @@ class ConnectionInfo:
     read_only: Optional[bool] = None
     """If the connection is read only."""
 
-    securable_kind: Optional[ConnectionInfoSecurableKind] = None
-    """Kind of connection securable."""
-
     securable_type: Optional[str] = None
 
     updated_at: Optional[int] = None
@@ -1189,7 +1162,6 @@ class ConnectionInfo:
         if self.properties: body['properties'] = self.properties
         if self.provisioning_info: body['provisioning_info'] = self.provisioning_info.as_dict()
         if self.read_only is not None: body['read_only'] = self.read_only
-        if self.securable_kind is not None: body['securable_kind'] = self.securable_kind.value
         if self.securable_type is not None: body['securable_type'] = self.securable_type
         if self.updated_at is not None: body['updated_at'] = self.updated_at
         if self.updated_by is not None: body['updated_by'] = self.updated_by
@@ -1213,7 +1185,6 @@ class ConnectionInfo:
         if self.properties: body['properties'] = self.properties
         if self.provisioning_info: body['provisioning_info'] = self.provisioning_info
         if self.read_only is not None: body['read_only'] = self.read_only
-        if self.securable_kind is not None: body['securable_kind'] = self.securable_kind
         if self.securable_type is not None: body['securable_type'] = self.securable_type
         if self.updated_at is not None: body['updated_at'] = self.updated_at
         if self.updated_by is not None: body['updated_by'] = self.updated_by
@@ -1237,29 +1208,10 @@ class ConnectionInfo:
                    properties=d.get('properties', None),
                    provisioning_info=_from_dict(d, 'provisioning_info', ProvisioningInfo),
                    read_only=d.get('read_only', None),
-                   securable_kind=_enum(d, 'securable_kind', ConnectionInfoSecurableKind),
                    securable_type=d.get('securable_type', None),
                    updated_at=d.get('updated_at', None),
                    updated_by=d.get('updated_by', None),
                    url=d.get('url', None))
-
-
-class ConnectionInfoSecurableKind(Enum):
-    """Kind of connection securable."""
-
-    CONNECTION_BIGQUERY = 'CONNECTION_BIGQUERY'
-    CONNECTION_BUILTIN_HIVE_METASTORE = 'CONNECTION_BUILTIN_HIVE_METASTORE'
-    CONNECTION_DATABRICKS = 'CONNECTION_DATABRICKS'
-    CONNECTION_EXTERNAL_HIVE_METASTORE = 'CONNECTION_EXTERNAL_HIVE_METASTORE'
-    CONNECTION_GLUE = 'CONNECTION_GLUE'
-    CONNECTION_HTTP_BEARER = 'CONNECTION_HTTP_BEARER'
-    CONNECTION_MYSQL = 'CONNECTION_MYSQL'
-    CONNECTION_ONLINE_CATALOG = 'CONNECTION_ONLINE_CATALOG'
-    CONNECTION_POSTGRESQL = 'CONNECTION_POSTGRESQL'
-    CONNECTION_REDSHIFT = 'CONNECTION_REDSHIFT'
-    CONNECTION_SNOWFLAKE = 'CONNECTION_SNOWFLAKE'
-    CONNECTION_SQLDW = 'CONNECTION_SQLDW'
-    CONNECTION_SQLSERVER = 'CONNECTION_SQLSERVER'
 
 
 class ConnectionType(Enum):
@@ -6269,20 +6221,21 @@ SecurablePropertiesMap = Dict[str, str]
 class SecurableType(Enum):
     """The type of Unity Catalog securable"""
 
-    CATALOG = 'catalog'
-    CONNECTION = 'connection'
-    CREDENTIAL = 'credential'
-    EXTERNAL_LOCATION = 'external_location'
-    FUNCTION = 'function'
-    METASTORE = 'metastore'
-    PIPELINE = 'pipeline'
-    PROVIDER = 'provider'
-    RECIPIENT = 'recipient'
-    SCHEMA = 'schema'
-    SHARE = 'share'
-    STORAGE_CREDENTIAL = 'storage_credential'
-    TABLE = 'table'
-    VOLUME = 'volume'
+    CATALOG = 'CATALOG'
+    CLEAN_ROOM = 'CLEAN_ROOM'
+    CONNECTION = 'CONNECTION'
+    CREDENTIAL = 'CREDENTIAL'
+    EXTERNAL_LOCATION = 'EXTERNAL_LOCATION'
+    FUNCTION = 'FUNCTION'
+    METASTORE = 'METASTORE'
+    PIPELINE = 'PIPELINE'
+    PROVIDER = 'PROVIDER'
+    RECIPIENT = 'RECIPIENT'
+    SCHEMA = 'SCHEMA'
+    SHARE = 'SHARE'
+    STORAGE_CREDENTIAL = 'STORAGE_CREDENTIAL'
+    TABLE = 'TABLE'
+    VOLUME = 'VOLUME'
 
 
 @dataclass
@@ -6960,12 +6913,17 @@ class TemporaryCredentials:
     """Server time when the credential will expire, in epoch milliseconds. The API client is advised to
     cache the credential given this expiration time."""
 
+    gcp_oauth_token: Optional[GcpOauthToken] = None
+    """GCP temporary credentials for API authentication. Read more at
+    https://developers.google.com/identity/protocols/oauth2/service-account"""
+
     def as_dict(self) -> dict:
         """Serializes the TemporaryCredentials into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.aws_temp_credentials: body['aws_temp_credentials'] = self.aws_temp_credentials.as_dict()
         if self.azure_aad: body['azure_aad'] = self.azure_aad.as_dict()
         if self.expiration_time is not None: body['expiration_time'] = self.expiration_time
+        if self.gcp_oauth_token: body['gcp_oauth_token'] = self.gcp_oauth_token.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -6974,6 +6932,7 @@ class TemporaryCredentials:
         if self.aws_temp_credentials: body['aws_temp_credentials'] = self.aws_temp_credentials
         if self.azure_aad: body['azure_aad'] = self.azure_aad
         if self.expiration_time is not None: body['expiration_time'] = self.expiration_time
+        if self.gcp_oauth_token: body['gcp_oauth_token'] = self.gcp_oauth_token
         return body
 
     @classmethod
@@ -6981,7 +6940,8 @@ class TemporaryCredentials:
         """Deserializes the TemporaryCredentials from a dictionary."""
         return cls(aws_temp_credentials=_from_dict(d, 'aws_temp_credentials', AwsCredentials),
                    azure_aad=_from_dict(d, 'azure_aad', AzureActiveDirectoryToken),
-                   expiration_time=d.get('expiration_time', None))
+                   expiration_time=d.get('expiration_time', None),
+                   gcp_oauth_token=_from_dict(d, 'gcp_oauth_token', GcpOauthToken))
 
 
 @dataclass
@@ -7090,6 +7050,9 @@ class UpdateCatalog:
     new_name: Optional[str] = None
     """New name for the catalog."""
 
+    options: Optional[Dict[str, str]] = None
+    """A map of key-value properties attached to the securable."""
+
     owner: Optional[str] = None
     """Username of current owner of catalog."""
 
@@ -7105,6 +7068,7 @@ class UpdateCatalog:
         if self.isolation_mode is not None: body['isolation_mode'] = self.isolation_mode.value
         if self.name is not None: body['name'] = self.name
         if self.new_name is not None: body['new_name'] = self.new_name
+        if self.options: body['options'] = self.options
         if self.owner is not None: body['owner'] = self.owner
         if self.properties: body['properties'] = self.properties
         return body
@@ -7118,6 +7082,7 @@ class UpdateCatalog:
         if self.isolation_mode is not None: body['isolation_mode'] = self.isolation_mode
         if self.name is not None: body['name'] = self.name
         if self.new_name is not None: body['new_name'] = self.new_name
+        if self.options: body['options'] = self.options
         if self.owner is not None: body['owner'] = self.owner
         if self.properties: body['properties'] = self.properties
         return body
@@ -7131,6 +7096,7 @@ class UpdateCatalog:
                    isolation_mode=_enum(d, 'isolation_mode', CatalogIsolationMode),
                    name=d.get('name', None),
                    new_name=d.get('new_name', None),
+                   options=d.get('options', None),
                    owner=d.get('owner', None),
                    properties=d.get('properties', None))
 
@@ -9033,6 +8999,7 @@ class CatalogsAPI:
                enable_predictive_optimization: Optional[EnablePredictiveOptimization] = None,
                isolation_mode: Optional[CatalogIsolationMode] = None,
                new_name: Optional[str] = None,
+               options: Optional[Dict[str, str]] = None,
                owner: Optional[str] = None,
                properties: Optional[Dict[str, str]] = None) -> CatalogInfo:
         """Update a catalog.
@@ -9050,6 +9017,8 @@ class CatalogsAPI:
           Whether the current securable is accessible from all workspaces or a specific set of workspaces.
         :param new_name: str (optional)
           New name for the catalog.
+        :param options: Dict[str,str] (optional)
+          A map of key-value properties attached to the securable.
         :param owner: str (optional)
           Username of current owner of catalog.
         :param properties: Dict[str,str] (optional)
@@ -9063,6 +9032,7 @@ class CatalogsAPI:
             body['enable_predictive_optimization'] = enable_predictive_optimization.value
         if isolation_mode is not None: body['isolation_mode'] = isolation_mode.value
         if new_name is not None: body['new_name'] = new_name
+        if options is not None: body['options'] = options
         if owner is not None: body['owner'] = owner
         if properties is not None: body['properties'] = properties
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }

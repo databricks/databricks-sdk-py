@@ -18,5 +18,6 @@ Manage Databricks SQL assets, including warehouses, dashboards, queries and quer
    query_history
    query_visualizations
    query_visualizations_legacy
+   redash_config
    statement_execution
    warehouses
