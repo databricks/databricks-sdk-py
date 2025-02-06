@@ -65,8 +65,10 @@ class JobsExt(jobs.JobsAPI):
         """
         job = super().get(job_id, page_token=page_token)
 
+        # jobs/get response includes next_page_token as long as there are more pages to fetch.
         while job.next_page_token is not None:
             next_job = super().get(job_id, page_token=job.next_page_token)
+            # Each new page of jobs/get response includes the next page of the tasks, job_clusters, job_parameters, and environments.
             job.settings.tasks.extend(next_job.settings.tasks)
             job.settings.job_clusters.extend(next_job.settings.job_clusters)
             job.settings.parameters.extend(next_job.settings.parameters)
