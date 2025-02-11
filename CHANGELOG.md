@@ -1,5 +1,22 @@
 # Version changelog
 
+## [Release] Release v0.44.0
+
+### Internal Changes
+
+ * Fix `tests/integration/test_dbutils.py::test_secrets` ([#884](https://github.com/databricks/databricks-sdk-py/pull/884)).
+
+
+### API Changes:
+
+ * Added `get_message_query_result_by_attachment()` method for [w.genie](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/genie.html) workspace-level service.
+ * Added `id` field for `databricks.sdk.service.apps.App`.
+ * Added `limit_config` field for `databricks.sdk.service.billing.UpdateBudgetPolicyRequest`.
+ * Added `volumes` field for `databricks.sdk.service.compute.ClusterLogConf`.
+ * Removed `review_state`, `reviews` and `runner_collaborators` fields for `databricks.sdk.service.cleanrooms.CleanRoomAssetNotebook`.
+
+OpenAPI SHA: 99f644e72261ef5ecf8d74db20f4b7a1e09723cc, Date: 2025-02-11
+
 ## [Release] Release v0.43.0
 
 ### API Changes:

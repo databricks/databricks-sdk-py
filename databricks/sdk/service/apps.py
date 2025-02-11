@@ -45,6 +45,9 @@ class App:
     description: Optional[str] = None
     """The description of the app."""
 
+    id: Optional[str] = None
+    """The unique identifier of the app."""
+
     pending_deployment: Optional[AppDeployment] = None
     """The pending deployment of the app. A deployment is considered pending when it is being prepared
     for deployment to the app compute."""
@@ -78,6 +81,7 @@ class App:
         if self.default_source_code_path is not None:
             body['default_source_code_path'] = self.default_source_code_path
         if self.description is not None: body['description'] = self.description
+        if self.id is not None: body['id'] = self.id
         if self.name is not None: body['name'] = self.name
         if self.pending_deployment: body['pending_deployment'] = self.pending_deployment.as_dict()
         if self.resources: body['resources'] = [v.as_dict() for v in self.resources]
@@ -102,6 +106,7 @@ class App:
         if self.default_source_code_path is not None:
             body['default_source_code_path'] = self.default_source_code_path
         if self.description is not None: body['description'] = self.description
+        if self.id is not None: body['id'] = self.id
         if self.name is not None: body['name'] = self.name
         if self.pending_deployment: body['pending_deployment'] = self.pending_deployment
         if self.resources: body['resources'] = self.resources
@@ -125,6 +130,7 @@ class App:
                    creator=d.get('creator', None),
                    default_source_code_path=d.get('default_source_code_path', None),
                    description=d.get('description', None),
+                   id=d.get('id', None),
                    name=d.get('name', None),
                    pending_deployment=_from_dict(d, 'pending_deployment', AppDeployment),
                    resources=_repeated_dict(d, 'resources', AppResource),

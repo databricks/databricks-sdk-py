@@ -8983,6 +8983,7 @@ class CatalogsAPI:
         if page_token is not None: query['page_token'] = page_token
         headers = {'Accept': 'application/json', }
 
+        if "max_results" not in query: query['max_results'] = 0
         while True:
             json = self._api.do('GET', '/api/2.1/unity-catalog/catalogs', query=query, headers=headers)
             if 'catalogs' in json:
@@ -9151,6 +9152,7 @@ class ConnectionsAPI:
         if page_token is not None: query['page_token'] = page_token
         headers = {'Accept': 'application/json', }
 
+        if "max_results" not in query: query['max_results'] = 0
         while True:
             json = self._api.do('GET', '/api/2.1/unity-catalog/connections', query=query, headers=headers)
             if 'connections' in json:
@@ -9656,6 +9658,7 @@ class ExternalLocationsAPI:
         if page_token is not None: query['page_token'] = page_token
         headers = {'Accept': 'application/json', }
 
+        if "max_results" not in query: query['max_results'] = 0
         while True:
             json = self._api.do('GET',
                                 '/api/2.1/unity-catalog/external-locations',
@@ -11389,6 +11392,7 @@ class SchemasAPI:
         if page_token is not None: query['page_token'] = page_token
         headers = {'Accept': 'application/json', }
 
+        if "max_results" not in query: query['max_results'] = 0
         while True:
             json = self._api.do('GET', '/api/2.1/unity-catalog/schemas', query=query, headers=headers)
             if 'schemas' in json:
@@ -11578,6 +11582,7 @@ class StorageCredentialsAPI:
         if page_token is not None: query['page_token'] = page_token
         headers = {'Accept': 'application/json', }
 
+        if "max_results" not in query: query['max_results'] = 0
         while True:
             json = self._api.do('GET',
                                 '/api/2.1/unity-catalog/storage-credentials',
@@ -11802,6 +11807,7 @@ class SystemSchemasAPI:
         if page_token is not None: query['page_token'] = page_token
         headers = {'Accept': 'application/json', }
 
+        if "max_results" not in query: query['max_results'] = 0
         while True:
             json = self._api.do('GET',
                                 f'/api/2.1/unity-catalog/metastores/{metastore_id}/systemschemas',
@@ -12044,6 +12050,7 @@ class TablesAPI:
         if schema_name is not None: query['schema_name'] = schema_name
         headers = {'Accept': 'application/json', }
 
+        if "max_results" not in query: query['max_results'] = 0
         while True:
             json = self._api.do('GET', '/api/2.1/unity-catalog/tables', query=query, headers=headers)
             if 'tables' in json:
@@ -12104,6 +12111,7 @@ class TablesAPI:
         if table_name_pattern is not None: query['table_name_pattern'] = table_name_pattern
         headers = {'Accept': 'application/json', }
 
+        if "max_results" not in query: query['max_results'] = 0
         while True:
             json = self._api.do('GET', '/api/2.1/unity-catalog/table-summaries', query=query, headers=headers)
             if 'tables' in json:

@@ -1247,7 +1247,7 @@ class ExternalModel:
     provider: ExternalModelProvider
     """The name of the provider for the external model. Currently, the supported providers are
     'ai21labs', 'anthropic', 'amazon-bedrock', 'cohere', 'databricks-model-serving',
-    'google-cloud-vertex-ai', 'openai', and 'palm'."""
+    'google-cloud-vertex-ai', 'openai', 'palm', and 'custom'."""
 
     name: str
     """The name of the external model."""

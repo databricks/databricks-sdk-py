@@ -1658,6 +1658,7 @@ class ProvidersAPI:
         if page_token is not None: query['page_token'] = page_token
         headers = {'Accept': 'application/json', }
 
+        if "max_results" not in query: query['max_results'] = 0
         while True:
             json = self._api.do('GET', '/api/2.1/unity-catalog/providers', query=query, headers=headers)
             if 'providers' in json:
@@ -1699,12 +1700,18 @@ class ProvidersAPI:
         if page_token is not None: query['page_token'] = page_token
         headers = {'Accept': 'application/json', }
 
-        json = self._api.do('GET',
-                            f'/api/2.1/unity-catalog/providers/{name}/shares',
-                            query=query,
-                            headers=headers)
-        parsed = ListProviderSharesResponse.from_dict(json).shares
-        return parsed if parsed is not None else []
+        if "max_results" not in query: query['max_results'] = 0
+        while True:
+            json = self._api.do('GET',
+                                f'/api/2.1/unity-catalog/providers/{name}/shares',
+                                query=query,
+                                headers=headers)
+            if 'shares' in json:
+                for v in json['shares']:
+                    yield ProviderShare.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
 
     def update(self,
                name: str,
@@ -1937,6 +1944,7 @@ class RecipientsAPI:
         if page_token is not None: query['page_token'] = page_token
         headers = {'Accept': 'application/json', }
 
+        if "max_results" not in query: query['max_results'] = 0
         while True:
             json = self._api.do('GET', '/api/2.1/unity-catalog/recipients', query=query, headers=headers)
             if 'recipients' in json:
@@ -2157,6 +2165,7 @@ class SharesAPI:
         if page_token is not None: query['page_token'] = page_token
         headers = {'Accept': 'application/json', }
 
+        if "max_results" not in query: query['max_results'] = 0
         while True:
             json = self._api.do('GET', '/api/2.1/unity-catalog/shares', query=query, headers=headers)
             if 'shares' in json:
