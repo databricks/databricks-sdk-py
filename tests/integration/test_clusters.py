@@ -41,7 +41,7 @@ def test_create_cluster(w, env_or_skip, random):
 
 def test_error_unmarshall(w, random):
     with pytest.raises(DatabricksError) as exc_info:
-        w.clusters.get('__non_existing__')
+        w.clusters.get('123__non_existing__')
     err = exc_info.value
-    assert 'Cluster __non_existing__ does not exist' in str(err)
+    assert 'Cluster 123__non_existing__ does not exist' in str(err)
     assert 'INVALID_PARAMETER_VALUE' == err.error_code

@@ -140,6 +140,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: LimitConfig
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListBudgetConfigurationsResponse
    :members:
    :undoc-members:

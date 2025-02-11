@@ -255,6 +255,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: SQL_EXECUTION_EXCEPTION
       :value: "SQL_EXECUTION_EXCEPTION"
 
+   .. py:attribute:: STOP_PROCESS_DUE_TO_AUTO_REGENERATE
+      :value: "STOP_PROCESS_DUE_TO_AUTO_REGENERATE"
+
    .. py:attribute:: TABLES_MISSING_EXCEPTION
       :value: "TABLES_MISSING_EXCEPTION"
 

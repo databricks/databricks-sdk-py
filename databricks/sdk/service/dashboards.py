@@ -827,6 +827,7 @@ class MessageErrorType(Enum):
     REPLY_PROCESS_TIMEOUT_EXCEPTION = 'REPLY_PROCESS_TIMEOUT_EXCEPTION'
     RETRYABLE_PROCESSING_EXCEPTION = 'RETRYABLE_PROCESSING_EXCEPTION'
     SQL_EXECUTION_EXCEPTION = 'SQL_EXECUTION_EXCEPTION'
+    STOP_PROCESS_DUE_TO_AUTO_REGENERATE = 'STOP_PROCESS_DUE_TO_AUTO_REGENERATE'
     TABLES_MISSING_EXCEPTION = 'TABLES_MISSING_EXCEPTION'
     TOO_MANY_CERTIFIED_ANSWERS_EXCEPTION = 'TOO_MANY_CERTIFIED_ANSWERS_EXCEPTION'
     TOO_MANY_TABLES_EXCEPTION = 'TOO_MANY_TABLES_EXCEPTION'
@@ -1740,6 +1741,33 @@ class GenieAPI:
         res = self._api.do(
             'GET',
             f'/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}/query-result',
+            headers=headers)
+        return GenieGetMessageQueryResultResponse.from_dict(res)
+
+    def get_message_query_result_by_attachment(self, space_id: str, conversation_id: str, message_id: str,
+                                               attachment_id: str) -> GenieGetMessageQueryResultResponse:
+        """Get conversation message SQL query result by attachment id.
+        
+        Get the result of SQL query by attachment id This is only available if a message has a query
+        attachment and the message status is `EXECUTING_QUERY`.
+        
+        :param space_id: str
+          Genie space ID
+        :param conversation_id: str
+          Conversation ID
+        :param message_id: str
+          Message ID
+        :param attachment_id: str
+          Attachment ID
+        
+        :returns: :class:`GenieGetMessageQueryResultResponse`
+        """
+
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do(
+            'GET',
+            f'/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}/query-result/{attachment_id}',
             headers=headers)
         return GenieGetMessageQueryResultResponse.from_dict(res)
 
