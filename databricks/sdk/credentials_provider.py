@@ -314,11 +314,12 @@ def github_oidc_azure(cfg: 'Config') -> Optional[CredentialsProvider]:
         # detect Azure AD Tenant ID if it's not specified directly
         token_endpoint = cfg.oidc_endpoints.token_endpoint
         cfg.azure_tenant_id = token_endpoint.replace(aad_endpoint, '').split('/')[0]
-    inner = ClientCredentials(client_id=cfg.azure_client_id,
-                              client_secret="", # we have no (rotatable) secrets in OIDC flow
-                              token_url=f"{aad_endpoint}{cfg.azure_tenant_id}/oauth2/token",
-                              endpoint_params=params,
-                              use_params=True)
+    inner = ClientCredentials(
+        client_id=cfg.azure_client_id,
+        client_secret="", # we have no (rotatable) secrets in OIDC flow
+        token_url=f"{aad_endpoint}{cfg.azure_tenant_id}/oauth2/token",
+        endpoint_params=params,
+        use_params=True)
 
     def refreshed_headers() -> Dict[str, str]:
         token = inner.token()
