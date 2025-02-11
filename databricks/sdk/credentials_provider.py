@@ -314,12 +314,11 @@ def github_oidc_azure(cfg: 'Config') -> Optional[CredentialsProvider]:
         # detect Azure AD Tenant ID if it's not specified directly
         token_endpoint = cfg.oidc_endpoints.token_endpoint
         cfg.azure_tenant_id = token_endpoint.replace(aad_endpoint, '').split('/')[0]
-    inner = ClientCredentials(
-        client_id=cfg.azure_client_id,
-        client_secret="", # we have no (rotatable) secrets in OIDC flow
-        token_url=f"{aad_endpoint}{cfg.azure_tenant_id}/oauth2/token",
-        endpoint_params=params,
-        use_params=True)
+    inner = ClientCredentials(client_id=cfg.azure_client_id,
+                              client_secret="", # we have no (rotatable) secrets in OIDC flow
+                              token_url=f"{aad_endpoint}{cfg.azure_tenant_id}/oauth2/token",
+                              endpoint_params=params,
+                              use_params=True)
 
     def refreshed_headers() -> Dict[str, str]:
         token = inner.token()
@@ -725,11 +724,10 @@ def metadata_service(cfg: 'Config') -> Optional[CredentialsProvider]:
 # https://github.com/mlflow/mlflow/blob/1219e3ef1aac7d337a618a352cd859b336cf5c81/mlflow/legacy_databricks_cli/configure/provider.py#L332
 class ModelServingAuthProvider():
     USER_CREDENTIALS = "user_credentials"
-    EMBEDDED_CREDENTIALS = "embedded_credentials"
 
     _MODEL_DEPENDENCY_OAUTH_TOKEN_FILE_PATH = "/var/credentials-secret/model-dependencies-oauth-token"
 
-    def __init__(self, credential_type):
+    def __init__(self, credential_type: Optional[str]):
         self.expiry_time = -1
         self.current_token = None
         self.refresh_duration = 300 # 300 Seconds
@@ -746,7 +744,7 @@ class ModelServingAuthProvider():
         return (is_in_model_serving_env == "true"
                 and os.path.isfile(ModelServingAuthProvider._MODEL_DEPENDENCY_OAUTH_TOKEN_FILE_PATH))
 
-    def get_model_dependency_oauth_token(self, should_retry=True) -> str:
+    def _get_model_dependency_oauth_token(self, should_retry=True) -> str:
         # Use Cached value if it is valid
         if self.current_token is not None and self.expiry_time > time.time():
             return self.current_token
@@ -762,14 +760,14 @@ class ModelServingAuthProvider():
                 logger.warning("Unable to read oauth token on first attmept in Model Serving Environment",
                                exc_info=e)
                 time.sleep(0.5)
-                return self.get_model_dependency_oauth_token(should_retry=False)
+                return self._get_model_dependency_oauth_token(should_retry=False)
             else:
                 raise RuntimeError(
                     "Unable to read OAuth credentials from the file mounted in Databricks Model Serving"
                 ) from e
         return self.current_token
 
-    def get_invokers_token(self):
+    def _get_invokers_token(self):
         current_thread = threading.current_thread()
         thread_data = current_thread.__dict__
         invokers_token = None
@@ -788,18 +786,16 @@ class ModelServingAuthProvider():
         # read from DB_MODEL_SERVING_HOST_ENV_VAR if available otherwise MODEL_SERVING_HOST_ENV_VAR
         host = os.environ.get("DATABRICKS_MODEL_SERVING_HOST_URL") or os.environ.get(
             "DB_MODEL_SERVING_HOST_URL")
-        token = self.get_model_dependency_oauth_token(
-        ) if self.credential_type == ModelServingAuthProvider.EMBEDDED_CREDENTIALS else self.get_invokers_token(
-        )
 
-        return (host, token)
+        if self.credential_type == ModelServingAuthProvider.USER_CREDENTIALS:
+            return (host, self._get_invokers_token())
+        else:
+            return (host, self._get_model_dependency_oauth_token())
 
 
-def model_serving_auth_func(cfg: 'Config', credential_type) -> Optional[CredentialsProvider]:
+def model_serving_auth_visitor(cfg: 'Config',
+                               credential_type: Optional[str] = None) -> Optional[CredentialsProvider]:
     try:
-        if not ModelServingAuthProvider.should_fetch_model_serving_environment_oauth():
-            logger.debug("model-serving: Not in Databricks Model Serving, skipping")
-            return None
         model_serving_auth_provider = ModelServingAuthProvider(credential_type)
         host, token = model_serving_auth_provider.get_databricks_host_token()
         if token is None:
@@ -823,7 +819,11 @@ def model_serving_auth_func(cfg: 'Config', credential_type) -> Optional[Credenti
 
 @credentials_strategy('model-serving', [])
 def model_serving_auth(cfg: 'Config') -> Optional[CredentialsProvider]:
-    return model_serving_auth_func(cfg, ModelServingAuthProvider.EMBEDDED_CREDENTIALS)
+    if not ModelServingAuthProvider.should_fetch_model_serving_environment_oauth():
+        logger.debug("model-serving: Not in Databricks Model Serving, skipping")
+        return None
+
+    return model_serving_auth_visitor(cfg)
 
 
 class DefaultCredentials:
@@ -870,21 +870,21 @@ class DefaultCredentials:
         )
 
 
-class AgentCredentials(CredentialsStrategy):
+class ModelServingUserCredentials(CredentialsStrategy):
 
-    def __init__(self, credential_type):
-        self.credential_type = credential_type
+    def __init__(self):
+        self.credential_type = ModelServingAuthProvider.USER_CREDENTIALS
         self.default_credentials = DefaultCredentials()
 
     def auth_type(self):
         if ModelServingAuthProvider.should_fetch_model_serving_environment_oauth():
-            return "agent_" + self.credential_type
+            return "model_serving_" + self.credential_type
         else:
             return self.default_credentials.auth_type()
 
     def __call__(self, cfg: 'Config') -> CredentialsProvider:
         if ModelServingAuthProvider.should_fetch_model_serving_environment_oauth():
-            header_factory = model_serving_auth_func(cfg, self.credential_type)
+            header_factory = model_serving_auth_visitor(cfg, self.credential_type)
             if not header_factory:
                 raise ValueError(
                     f"Unable to authenticate using {self.credential_type} in Databricks Model Serving Environment"
@@ -892,15 +892,3 @@ class AgentCredentials(CredentialsStrategy):
             return header_factory
         else:
             return self.default_credentials(cfg)
-
-
-class AgentUserCredentials(AgentCredentials):
-
-    def __init__(self):
-        super().__init__(ModelServingAuthProvider.USER_CREDENTIALS)
-
-
-class AgentEmbeddedCredentials(AgentCredentials):
-
-    def __init__(self):
-        super().__init__(ModelServingAuthProvider.EMBEDDED_CREDENTIALS)
