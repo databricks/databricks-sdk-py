@@ -312,6 +312,7 @@ class CleanRoomAssetNotebook:
 class CleanRoomAssetStatusEnum(Enum):
 
     ACTIVE = 'ACTIVE'
+    PENDING = 'PENDING'
     PERMISSION_DENIED = 'PERMISSION_DENIED'
 
 
@@ -443,7 +444,7 @@ class CleanRoomAssetVolumeLocalDetails:
 class CleanRoomCollaborator:
     """Publicly visible clean room collaborator."""
 
-    collaborator_alias: Optional[str] = None
+    collaborator_alias: str
     """Collaborator alias specified by the clean room creator. It is unique across all collaborators of
     this clean room, and used to derive multiple values internally such as catalog alias and clean
     room name for single metastore clean rooms. It should follow [UC securable naming requirements].
@@ -1157,8 +1158,9 @@ class CleanRoomsAPI:
         
         Create a new clean room with the specified collaborators. This method is asynchronous; the returned
         name field inside the clean_room field can be used to poll the clean room status, using the
-        :method:cleanrooms/get method. When this method returns, the cluster will be in a PROVISIONING state.
-        The cluster will be usable once it enters an ACTIVE state.
+        :method:cleanrooms/get method. When this method returns, the clean room will be in a PROVISIONING
+        state, with only name, owner, comment, created_at and status populated. The clean room will be usable
+        once it enters an ACTIVE state.
         
         The caller must be a metastore admin or have the **CREATE_CLEAN_ROOM** privilege on the metastore.
         

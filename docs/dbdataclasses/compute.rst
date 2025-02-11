@@ -299,6 +299,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: CustomPolicyTag
+   :members:
+   :undoc-members:
+
 .. autoclass:: DataPlaneEventDetails
    :members:
    :undoc-members:
@@ -494,6 +498,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "USER_REQUEST"
 
 .. py:class:: EventType
+
+   .. py:attribute:: ADD_NODES_FAILED
+      :value: "ADD_NODES_FAILED"
+
+   .. py:attribute:: AUTOMATIC_CLUSTER_UPDATE
+      :value: "AUTOMATIC_CLUSTER_UPDATE"
+
+   .. py:attribute:: AUTOSCALING_BACKOFF
+      :value: "AUTOSCALING_BACKOFF"
+
+   .. py:attribute:: AUTOSCALING_FAILED
+      :value: "AUTOSCALING_FAILED"
 
    .. py:attribute:: AUTOSCALING_STATS_REPORT
       :value: "AUTOSCALING_STATS_REPORT"

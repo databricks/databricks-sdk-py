@@ -145,11 +145,8 @@ class AiGatewayGuardrailParameters:
 
 @dataclass
 class AiGatewayGuardrailPiiBehavior:
-    behavior: AiGatewayGuardrailPiiBehaviorBehavior
-    """Behavior for PII filter. Currently only 'BLOCK' is supported. If 'BLOCK' is set for the input
-    guardrail and the request contains PII, the request is not sent to the model server and 400
-    status code is returned; if 'BLOCK' is set for the output guardrail and the model response
-    contains PII, the PII info in the response is redacted and 400 status code is returned."""
+    behavior: Optional[AiGatewayGuardrailPiiBehaviorBehavior] = None
+    """Configuration for input guardrail filters."""
 
     def as_dict(self) -> dict:
         """Serializes the AiGatewayGuardrailPiiBehavior into a dictionary suitable for use as a JSON request body."""
@@ -170,10 +167,6 @@ class AiGatewayGuardrailPiiBehavior:
 
 
 class AiGatewayGuardrailPiiBehaviorBehavior(Enum):
-    """Behavior for PII filter. Currently only 'BLOCK' is supported. If 'BLOCK' is set for the input
-    guardrail and the request contains PII, the request is not sent to the model server and 400
-    status code is returned; if 'BLOCK' is set for the output guardrail and the model response
-    contains PII, the PII info in the response is redacted and 400 status code is returned."""
 
     BLOCK = 'BLOCK'
     NONE = 'NONE'
@@ -289,15 +282,12 @@ class AiGatewayRateLimit:
 
 
 class AiGatewayRateLimitKey(Enum):
-    """Key field for a rate limit. Currently, only 'user' and 'endpoint' are supported, with 'endpoint'
-    being the default if not specified."""
 
     ENDPOINT = 'endpoint'
     USER = 'user'
 
 
 class AiGatewayRateLimitRenewalPeriod(Enum):
-    """Renewal period field for a rate limit. Currently, only 'minute' is supported."""
 
     MINUTE = 'minute'
 
@@ -336,9 +326,9 @@ class AmazonBedrockConfig:
 
     aws_access_key_id: Optional[str] = None
     """The Databricks secret key reference for an AWS access key ID with permissions to interact with
-    Bedrock services. If you prefer to paste your API key directly, see `aws_access_key_id`. You
-    must provide an API key using one of the following fields: `aws_access_key_id` or
-    `aws_access_key_id_plaintext`."""
+    Bedrock services. If you prefer to paste your API key directly, see
+    `aws_access_key_id_plaintext`. You must provide an API key using one of the following fields:
+    `aws_access_key_id` or `aws_access_key_id_plaintext`."""
 
     aws_access_key_id_plaintext: Optional[str] = None
     """An AWS access key ID with permissions to interact with Bedrock services provided as a plaintext
@@ -396,8 +386,6 @@ class AmazonBedrockConfig:
 
 
 class AmazonBedrockConfigBedrockProvider(Enum):
-    """The underlying provider in Amazon Bedrock. Supported values (case insensitive) include:
-    Anthropic, Cohere, AI21Labs, Amazon."""
 
     AI21LABS = 'ai21labs'
     AMAZON = 'amazon'
@@ -487,18 +475,21 @@ class AutoCaptureConfigInput:
 @dataclass
 class AutoCaptureConfigOutput:
     catalog_name: Optional[str] = None
-    """The name of the catalog in Unity Catalog."""
+    """The name of the catalog in Unity Catalog. NOTE: On update, you cannot change the catalog name if
+    the inference table is already enabled."""
 
     enabled: Optional[bool] = None
     """Indicates whether the inference table is enabled."""
 
     schema_name: Optional[str] = None
-    """The name of the schema in Unity Catalog."""
+    """The name of the schema in Unity Catalog. NOTE: On update, you cannot change the schema name if
+    the inference table is already enabled."""
 
     state: Optional[AutoCaptureState] = None
 
     table_name_prefix: Optional[str] = None
-    """The prefix of the table in Unity Catalog."""
+    """The prefix of the table in Unity Catalog. NOTE: On update, you cannot change the prefix name if
+    the inference table is already enabled."""
 
     def as_dict(self) -> dict:
         """Serializes the AutoCaptureConfigOutput into a dictionary suitable for use as a JSON request body."""
@@ -659,12 +650,12 @@ class CreateServingEndpoint:
     """The name of the serving endpoint. This field is required and must be unique across a Databricks
     workspace. An endpoint name can consist of alphanumeric characters, dashes, and underscores."""
 
-    config: EndpointCoreConfigInput
-    """The core config of the serving endpoint."""
-
     ai_gateway: Optional[AiGatewayConfig] = None
-    """The AI Gateway configuration for the serving endpoint. NOTE: only external model endpoints are
-    supported as of now."""
+    """The AI Gateway configuration for the serving endpoint. NOTE: Only external model and provisioned
+    throughput endpoints are currently supported."""
+
+    config: Optional[EndpointCoreConfigInput] = None
+    """The core config of the serving endpoint."""
 
     rate_limits: Optional[List[RateLimit]] = None
     """Rate limits to be applied to the serving endpoint. NOTE: this field is deprecated, please use AI
@@ -711,6 +702,8 @@ class CreateServingEndpoint:
 
 @dataclass
 class DataPlaneInfo:
+    """Details necessary to query this object's API through the DataPlane APIs."""
+
     authorization_details: Optional[str] = None
     """Authorization details as a string."""
 
@@ -879,21 +872,22 @@ class EmbeddingsV1ResponseEmbeddingElementObject(Enum):
 class EndpointCoreConfigInput:
     auto_capture_config: Optional[AutoCaptureConfigInput] = None
     """Configuration for Inference Tables which automatically logs requests and responses to Unity
-    Catalog."""
+    Catalog. Note: this field is deprecated for creating new provisioned throughput endpoints, or
+    updating existing provisioned throughput endpoints that never have inference table configured;
+    in these cases please use AI Gateway to manage inference tables."""
 
     name: Optional[str] = None
     """The name of the serving endpoint to update. This field is required."""
 
     served_entities: Optional[List[ServedEntityInput]] = None
-    """A list of served entities for the endpoint to serve. A serving endpoint can have up to 15 served
-    entities."""
+    """The list of served entities under the serving endpoint config."""
 
     served_models: Optional[List[ServedModelInput]] = None
-    """(Deprecated, use served_entities instead) A list of served models for the endpoint to serve. A
-    serving endpoint can have up to 15 served models."""
+    """(Deprecated, use served_entities instead) The list of served models under the serving endpoint
+    config."""
 
     traffic_config: Optional[TrafficConfig] = None
-    """The traffic config defining how invocations to the serving endpoint should be routed."""
+    """The traffic configuration associated with the serving endpoint config."""
 
     def as_dict(self) -> dict:
         """Serializes the EndpointCoreConfigInput into a dictionary suitable for use as a JSON request body."""
@@ -929,7 +923,9 @@ class EndpointCoreConfigInput:
 class EndpointCoreConfigOutput:
     auto_capture_config: Optional[AutoCaptureConfigOutput] = None
     """Configuration for Inference Tables which automatically logs requests and responses to Unity
-    Catalog."""
+    Catalog. Note: this field is deprecated for creating new provisioned throughput endpoints, or
+    updating existing provisioned throughput endpoints that never have inference table configured;
+    in these cases please use AI Gateway to manage inference tables."""
 
     config_version: Optional[int] = None
     """The config version that the serving endpoint is currently serving."""
@@ -1008,7 +1004,9 @@ class EndpointCoreConfigSummary:
 class EndpointPendingConfig:
     auto_capture_config: Optional[AutoCaptureConfigOutput] = None
     """Configuration for Inference Tables which automatically logs requests and responses to Unity
-    Catalog."""
+    Catalog. Note: this field is deprecated for creating new provisioned throughput endpoints, or
+    updating existing provisioned throughput endpoints that never have inference table configured;
+    in these cases please use AI Gateway to manage inference tables."""
 
     config_version: Optional[int] = None
     """The config version that the serving endpoint is currently serving."""
@@ -1094,10 +1092,6 @@ class EndpointState:
 
 
 class EndpointStateConfigUpdate(Enum):
-    """The state of an endpoint's config update. This informs the user if the pending_config is in
-    progress, if the update failed, or if there is no update in progress. Note that if the
-    endpoint's config_update state value is IN_PROGRESS, another update can not be made until the
-    update completes or fails."""
 
     IN_PROGRESS = 'IN_PROGRESS'
     NOT_UPDATING = 'NOT_UPDATING'
@@ -1106,9 +1100,6 @@ class EndpointStateConfigUpdate(Enum):
 
 
 class EndpointStateReady(Enum):
-    """The state of an endpoint, indicating whether or not the endpoint is queryable. An endpoint is
-    READY if all of the served entities in its active configuration are ready. If any of the
-    actively served entities are in a non-ready state, the endpoint state will be NOT_READY."""
 
     NOT_READY = 'NOT_READY'
     READY = 'READY'
@@ -1143,6 +1134,28 @@ class EndpointTag:
 
 
 @dataclass
+class EndpointTags:
+    tags: Optional[List[EndpointTag]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the EndpointTags into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.tags: body['tags'] = [v.as_dict() for v in self.tags]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EndpointTags into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.tags: body['tags'] = self.tags
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> EndpointTags:
+        """Deserializes the EndpointTags from a dictionary."""
+        return cls(tags=_repeated_dict(d, 'tags', EndpointTag))
+
+
+@dataclass
 class ExportMetricsResponse:
     contents: Optional[BinaryIO] = None
 
@@ -1165,11 +1178,76 @@ class ExportMetricsResponse:
 
 
 @dataclass
+class ExternalFunctionRequest:
+    """Simple Proto message for testing"""
+
+    connection_name: str
+    """The connection name to use. This is required to identify the external connection."""
+
+    method: ExternalFunctionRequestHttpMethod
+    """The HTTP method to use (e.g., 'GET', 'POST')."""
+
+    path: str
+    """The relative path for the API endpoint. This is required."""
+
+    headers: Optional[str] = None
+    """Additional headers for the request. If not provided, only auth headers from connections would be
+    passed."""
+
+    json: Optional[str] = None
+    """The JSON payload to send in the request body."""
+
+    params: Optional[str] = None
+    """Query parameters for the request."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ExternalFunctionRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.connection_name is not None: body['connection_name'] = self.connection_name
+        if self.headers is not None: body['headers'] = self.headers
+        if self.json is not None: body['json'] = self.json
+        if self.method is not None: body['method'] = self.method.value
+        if self.params is not None: body['params'] = self.params
+        if self.path is not None: body['path'] = self.path
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ExternalFunctionRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.connection_name is not None: body['connection_name'] = self.connection_name
+        if self.headers is not None: body['headers'] = self.headers
+        if self.json is not None: body['json'] = self.json
+        if self.method is not None: body['method'] = self.method
+        if self.params is not None: body['params'] = self.params
+        if self.path is not None: body['path'] = self.path
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ExternalFunctionRequest:
+        """Deserializes the ExternalFunctionRequest from a dictionary."""
+        return cls(connection_name=d.get('connection_name', None),
+                   headers=d.get('headers', None),
+                   json=d.get('json', None),
+                   method=_enum(d, 'method', ExternalFunctionRequestHttpMethod),
+                   params=d.get('params', None),
+                   path=d.get('path', None))
+
+
+class ExternalFunctionRequestHttpMethod(Enum):
+
+    DELETE = 'DELETE'
+    GET = 'GET'
+    PATCH = 'PATCH'
+    POST = 'POST'
+    PUT = 'PUT'
+
+
+@dataclass
 class ExternalModel:
     provider: ExternalModelProvider
     """The name of the provider for the external model. Currently, the supported providers are
     'ai21labs', 'anthropic', 'amazon-bedrock', 'cohere', 'databricks-model-serving',
-    'google-cloud-vertex-ai', 'openai', and 'palm'.","""
+    'google-cloud-vertex-ai', 'openai', 'palm', and 'custom'."""
 
     name: str
     """The name of the external model."""
@@ -1256,9 +1334,6 @@ class ExternalModel:
 
 
 class ExternalModelProvider(Enum):
-    """The name of the provider for the external model. Currently, the supported providers are
-    'ai21labs', 'anthropic', 'amazon-bedrock', 'cohere', 'databricks-model-serving',
-    'google-cloud-vertex-ai', 'openai', and 'palm'.","""
 
     AI21LABS = 'ai21labs'
     AMAZON_BEDROCK = 'amazon-bedrock'
@@ -1307,17 +1382,16 @@ class ExternalModelUsageElement:
 
 @dataclass
 class FoundationModel:
+    """All fields are not sensitive as they are hard-coded in the system and made available to
+    customers."""
+
     description: Optional[str] = None
-    """The description of the foundation model."""
 
     display_name: Optional[str] = None
-    """The display name of the foundation model."""
 
     docs: Optional[str] = None
-    """The URL to the documentation of the foundation model."""
 
     name: Optional[str] = None
-    """The name of the foundation model."""
 
     def as_dict(self) -> dict:
         """Serializes the FoundationModel into a dictionary suitable for use as a JSON request body."""
@@ -1348,23 +1422,24 @@ class FoundationModel:
 
 @dataclass
 class GetOpenApiResponse:
-    """The response is an OpenAPI spec in JSON format that typically includes fields like openapi,
-    info, servers and paths, etc."""
+    contents: Optional[BinaryIO] = None
 
     def as_dict(self) -> dict:
         """Serializes the GetOpenApiResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.contents: body['contents'] = self.contents
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the GetOpenApiResponse into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.contents: body['contents'] = self.contents
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> GetOpenApiResponse:
         """Deserializes the GetOpenApiResponse from a dictionary."""
-        return cls()
+        return cls(contents=d.get('contents', None))
 
 
 @dataclass
@@ -1393,13 +1468,23 @@ class GetServingEndpointPermissionLevelsResponse:
 
 @dataclass
 class GoogleCloudVertexAiConfig:
+    project_id: str
+    """This is the Google Cloud project id that the service account is associated with."""
+
+    region: str
+    """This is the region for the Google Cloud Vertex AI Service. See [supported regions] for more
+    details. Some models are only available in specific regions.
+    
+    [supported regions]: https://cloud.google.com/vertex-ai/docs/general/locations"""
+
     private_key: Optional[str] = None
     """The Databricks secret key reference for a private key for the service account which has access
     to the Google Cloud Vertex AI Service. See [Best practices for managing service account keys].
     If you prefer to paste your API key directly, see `private_key_plaintext`. You must provide an
     API key using one of the following fields: `private_key` or `private_key_plaintext`
     
-    [Best practices for managing service account keys]: https://cloud.google.com/iam/docs/best-practices-for-managing-service-account-keys"""
+    [Best practices for managing service account keys]:
+    https://cloud.google.com/iam/docs/best-practices-for-managing-service-account-keys"""
 
     private_key_plaintext: Optional[str] = None
     """The private key for the service account which has access to the Google Cloud Vertex AI Service
@@ -1407,16 +1492,8 @@ class GoogleCloudVertexAiConfig:
     prefer to reference your key using Databricks Secrets, see `private_key`. You must provide an
     API key using one of the following fields: `private_key` or `private_key_plaintext`.
     
-    [Best practices for managing service account keys]: https://cloud.google.com/iam/docs/best-practices-for-managing-service-account-keys"""
-
-    project_id: Optional[str] = None
-    """This is the Google Cloud project id that the service account is associated with."""
-
-    region: Optional[str] = None
-    """This is the region for the Google Cloud Vertex AI Service. See [supported regions] for more
-    details. Some models are only available in specific regions.
-    
-    [supported regions]: https://cloud.google.com/vertex-ai/docs/general/locations"""
+    [Best practices for managing service account keys]:
+    https://cloud.google.com/iam/docs/best-practices-for-managing-service-account-keys"""
 
     def as_dict(self) -> dict:
         """Serializes the GoogleCloudVertexAiConfig into a dictionary suitable for use as a JSON request body."""
@@ -1446,6 +1523,28 @@ class GoogleCloudVertexAiConfig:
 
 
 @dataclass
+class HttpRequestResponse:
+    contents: Optional[BinaryIO] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the HttpRequestResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.contents: body['contents'] = self.contents
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the HttpRequestResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.contents: body['contents'] = self.contents
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> HttpRequestResponse:
+        """Deserializes the HttpRequestResponse from a dictionary."""
+        return cls(contents=d.get('contents', None))
+
+
+@dataclass
 class ListEndpointsResponse:
     endpoints: Optional[List[ServingEndpoint]] = None
     """The list of endpoints."""
@@ -1470,6 +1569,9 @@ class ListEndpointsResponse:
 
 @dataclass
 class ModelDataPlaneInfo:
+    """A representation of all DataPlaneInfo for operations that can be done on a model through Data
+    Plane APIs."""
+
     query_info: Optional[DataPlaneInfo] = None
     """Information required to query DataPlane API 'query' endpoint."""
 
@@ -1493,6 +1595,8 @@ class ModelDataPlaneInfo:
 
 @dataclass
 class OpenAiConfig:
+    """Configs needed to create an OpenAI model route."""
+
     microsoft_entra_client_id: Optional[str] = None
     """This field is only required for Azure AD OpenAI and is the Microsoft Entra Client ID."""
 
@@ -1678,13 +1782,10 @@ class PatchServingEndpointTags:
 @dataclass
 class PayloadTable:
     name: Optional[str] = None
-    """The name of the payload table."""
 
     status: Optional[str] = None
-    """The status of the payload table."""
 
     status_message: Optional[str] = None
-    """The status message of the payload table."""
 
     def as_dict(self) -> dict:
         """Serializes the PayloadTable into a dictionary suitable for use as a JSON request body."""
@@ -1711,6 +1812,57 @@ class PayloadTable:
 
 
 @dataclass
+class PutAiGatewayRequest:
+    guardrails: Optional[AiGatewayGuardrails] = None
+    """Configuration for AI Guardrails to prevent unwanted data and unsafe data in requests and
+    responses."""
+
+    inference_table_config: Optional[AiGatewayInferenceTableConfig] = None
+    """Configuration for payload logging using inference tables. Use these tables to monitor and audit
+    data being sent to and received from model APIs and to improve model quality."""
+
+    name: Optional[str] = None
+    """The name of the serving endpoint whose AI Gateway is being updated. This field is required."""
+
+    rate_limits: Optional[List[AiGatewayRateLimit]] = None
+    """Configuration for rate limits which can be set to limit endpoint traffic."""
+
+    usage_tracking_config: Optional[AiGatewayUsageTrackingConfig] = None
+    """Configuration to enable usage tracking using system tables. These tables allow you to monitor
+    operational usage on endpoints and their associated costs."""
+
+    def as_dict(self) -> dict:
+        """Serializes the PutAiGatewayRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.guardrails: body['guardrails'] = self.guardrails.as_dict()
+        if self.inference_table_config: body['inference_table_config'] = self.inference_table_config.as_dict()
+        if self.name is not None: body['name'] = self.name
+        if self.rate_limits: body['rate_limits'] = [v.as_dict() for v in self.rate_limits]
+        if self.usage_tracking_config: body['usage_tracking_config'] = self.usage_tracking_config.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PutAiGatewayRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.guardrails: body['guardrails'] = self.guardrails
+        if self.inference_table_config: body['inference_table_config'] = self.inference_table_config
+        if self.name is not None: body['name'] = self.name
+        if self.rate_limits: body['rate_limits'] = self.rate_limits
+        if self.usage_tracking_config: body['usage_tracking_config'] = self.usage_tracking_config
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> PutAiGatewayRequest:
+        """Deserializes the PutAiGatewayRequest from a dictionary."""
+        return cls(guardrails=_from_dict(d, 'guardrails', AiGatewayGuardrails),
+                   inference_table_config=_from_dict(d, 'inference_table_config',
+                                                     AiGatewayInferenceTableConfig),
+                   name=d.get('name', None),
+                   rate_limits=_repeated_dict(d, 'rate_limits', AiGatewayRateLimit),
+                   usage_tracking_config=_from_dict(d, 'usage_tracking_config', AiGatewayUsageTrackingConfig))
+
+
+@dataclass
 class PutAiGatewayResponse:
     guardrails: Optional[AiGatewayGuardrails] = None
     """Configuration for AI Guardrails to prevent unwanted data and unsafe data in requests and
@@ -1718,7 +1870,7 @@ class PutAiGatewayResponse:
 
     inference_table_config: Optional[AiGatewayInferenceTableConfig] = None
     """Configuration for payload logging using inference tables. Use these tables to monitor and audit
-    data being sent to and received from model APIs and to improve model quality ."""
+    data being sent to and received from model APIs and to improve model quality."""
 
     rate_limits: Optional[List[AiGatewayRateLimit]] = None
     """Configuration for rate limits which can be set to limit endpoint traffic."""
@@ -1753,6 +1905,34 @@ class PutAiGatewayResponse:
                                                      AiGatewayInferenceTableConfig),
                    rate_limits=_repeated_dict(d, 'rate_limits', AiGatewayRateLimit),
                    usage_tracking_config=_from_dict(d, 'usage_tracking_config', AiGatewayUsageTrackingConfig))
+
+
+@dataclass
+class PutRequest:
+    name: Optional[str] = None
+    """The name of the serving endpoint whose rate limits are being updated. This field is required."""
+
+    rate_limits: Optional[List[RateLimit]] = None
+    """The list of endpoint rate limits."""
+
+    def as_dict(self) -> dict:
+        """Serializes the PutRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None: body['name'] = self.name
+        if self.rate_limits: body['rate_limits'] = [v.as_dict() for v in self.rate_limits]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PutRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.name is not None: body['name'] = self.name
+        if self.rate_limits: body['rate_limits'] = self.rate_limits
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> PutRequest:
+        """Deserializes the PutRequest from a dictionary."""
+        return cls(name=d.get('name', None), rate_limits=_repeated_dict(d, 'rate_limits', RateLimit))
 
 
 @dataclass
@@ -2020,15 +2200,12 @@ class RateLimit:
 
 
 class RateLimitKey(Enum):
-    """Key field for a serving endpoint rate limit. Currently, only 'user' and 'endpoint' are
-    supported, with 'endpoint' being the default if not specified."""
 
     ENDPOINT = 'endpoint'
     USER = 'user'
 
 
 class RateLimitRenewalPeriod(Enum):
-    """Renewal period field for a serving endpoint rate limit. Currently, only 'minute' is supported."""
 
     MINUTE = 'minute'
 
@@ -2069,11 +2246,9 @@ class ServedEntityInput:
     """The name of the entity to be served. The entity may be a model in the Databricks Model Registry,
     a model in the Unity Catalog (UC), or a function of type FEATURE_SPEC in the UC. If it is a UC
     object, the full name of the object should be given in the form of
-    __catalog_name__.__schema_name__.__model_name__."""
+    **catalog_name.schema_name.model_name**."""
 
     entity_version: Optional[str] = None
-    """The version of the model in Databricks Model Registry to be served or empty if the entity is a
-    FEATURE_SPEC."""
 
     environment_vars: Optional[Dict[str, str]] = None
     """An object containing a set of optional, user-specified environment variable key-value pairs used
@@ -2102,7 +2277,7 @@ class ServedEntityInput:
     """The name of a served entity. It must be unique across an endpoint. A served entity name can
     consist of alphanumeric characters, dashes, and underscores. If not specified for an external
     model, this field defaults to external_model.name, with '.' and ':' replaced with '-', and if
-    not specified for other entities, it defaults to <entity-name>-<entity-version>."""
+    not specified for other entities, it defaults to entity_name-entity_version."""
 
     scale_to_zero_enabled: Optional[bool] = None
     """Whether the compute resources for the served entity should scale down to zero."""
@@ -2115,13 +2290,13 @@ class ServedEntityInput:
     scale-to-zero is enabled, the lower bound of the provisioned concurrency for each workload size
     is 0."""
 
-    workload_type: Optional[str] = None
+    workload_type: Optional[ServingModelWorkloadType] = None
     """The workload type of the served entity. The workload type selects which type of compute to use
     in the endpoint. The default value for this parameter is "CPU". For deep learning workloads, GPU
     acceleration is available by selecting workload types like GPU_SMALL and others. See the
     available [GPU types].
     
-    [GPU types]: https://docs.databricks.com/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types"""
+    [GPU types]: https://docs.databricks.com/en/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types"""
 
     def as_dict(self) -> dict:
         """Serializes the ServedEntityInput into a dictionary suitable for use as a JSON request body."""
@@ -2138,7 +2313,7 @@ class ServedEntityInput:
         if self.name is not None: body['name'] = self.name
         if self.scale_to_zero_enabled is not None: body['scale_to_zero_enabled'] = self.scale_to_zero_enabled
         if self.workload_size is not None: body['workload_size'] = self.workload_size
-        if self.workload_type is not None: body['workload_type'] = self.workload_type
+        if self.workload_type is not None: body['workload_type'] = self.workload_type.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2172,26 +2347,22 @@ class ServedEntityInput:
                    name=d.get('name', None),
                    scale_to_zero_enabled=d.get('scale_to_zero_enabled', None),
                    workload_size=d.get('workload_size', None),
-                   workload_type=d.get('workload_type', None))
+                   workload_type=_enum(d, 'workload_type', ServingModelWorkloadType))
 
 
 @dataclass
 class ServedEntityOutput:
     creation_timestamp: Optional[int] = None
-    """The creation timestamp of the served entity in Unix time."""
 
     creator: Optional[str] = None
-    """The email of the user who created the served entity."""
 
     entity_name: Optional[str] = None
-    """The name of the entity served. The entity may be a model in the Databricks Model Registry, a
-    model in the Unity Catalog (UC), or a function of type FEATURE_SPEC in the UC. If it is a UC
-    object, the full name of the object is given in the form of
-    __catalog_name__.__schema_name__.__model_name__."""
+    """The name of the entity to be served. The entity may be a model in the Databricks Model Registry,
+    a model in the Unity Catalog (UC), or a function of type FEATURE_SPEC in the UC. If it is a UC
+    object, the full name of the object should be given in the form of
+    **catalog_name.schema_name.model_name**."""
 
     entity_version: Optional[str] = None
-    """The version of the served entity in Databricks Model Registry or empty if the entity is a
-    FEATURE_SPEC."""
 
     environment_vars: Optional[Dict[str, str]] = None
     """An object containing a set of optional, user-specified environment variable key-value pairs used
@@ -2200,14 +2371,16 @@ class ServedEntityOutput:
     "{{secrets/my_scope/my_key}}", "DATABRICKS_TOKEN": "{{secrets/my_scope2/my_key2}}"}`"""
 
     external_model: Optional[ExternalModel] = None
-    """The external model that is served. NOTE: Only one of external_model, foundation_model, and
-    (entity_name, entity_version, workload_size, workload_type, and scale_to_zero_enabled) is
-    returned based on the endpoint type."""
+    """The external model to be served. NOTE: Only one of external_model and (entity_name,
+    entity_version, workload_size, workload_type, and scale_to_zero_enabled) can be specified with
+    the latter set being used for custom model serving for a Databricks registered model. For an
+    existing endpoint with external_model, it cannot be updated to an endpoint without
+    external_model. If the endpoint is created without external_model, users cannot update it to add
+    external_model later. The task type of all external models within an endpoint must be the same."""
 
     foundation_model: Optional[FoundationModel] = None
-    """The foundation model that is served. NOTE: Only one of foundation_model, external_model, and
-    (entity_name, entity_version, workload_size, workload_type, and scale_to_zero_enabled) is
-    returned based on the endpoint type."""
+    """All fields are not sensitive as they are hard-coded in the system and made available to
+    customers."""
 
     instance_profile_arn: Optional[str] = None
     """ARN of the instance profile that the served entity uses to access AWS resources."""
@@ -2219,13 +2392,15 @@ class ServedEntityOutput:
     """The minimum tokens per second that the endpoint can scale down to."""
 
     name: Optional[str] = None
-    """The name of the served entity."""
+    """The name of a served entity. It must be unique across an endpoint. A served entity name can
+    consist of alphanumeric characters, dashes, and underscores. If not specified for an external
+    model, this field defaults to external_model.name, with '.' and ':' replaced with '-', and if
+    not specified for other entities, it defaults to entity_name-entity_version."""
 
     scale_to_zero_enabled: Optional[bool] = None
     """Whether the compute resources for the served entity should scale down to zero."""
 
     state: Optional[ServedModelState] = None
-    """Information corresponding to the state of the served entity."""
 
     workload_size: Optional[str] = None
     """The workload size of the served entity. The workload size corresponds to a range of provisioned
@@ -2233,15 +2408,15 @@ class ServedEntityOutput:
     process one request at a time. Valid workload sizes are "Small" (4 - 4 provisioned concurrency),
     "Medium" (8 - 16 provisioned concurrency), and "Large" (16 - 64 provisioned concurrency). If
     scale-to-zero is enabled, the lower bound of the provisioned concurrency for each workload size
-    will be 0."""
+    is 0."""
 
-    workload_type: Optional[str] = None
+    workload_type: Optional[ServingModelWorkloadType] = None
     """The workload type of the served entity. The workload type selects which type of compute to use
     in the endpoint. The default value for this parameter is "CPU". For deep learning workloads, GPU
     acceleration is available by selecting workload types like GPU_SMALL and others. See the
     available [GPU types].
     
-    [GPU types]: https://docs.databricks.com/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types"""
+    [GPU types]: https://docs.databricks.com/en/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types"""
 
     def as_dict(self) -> dict:
         """Serializes the ServedEntityOutput into a dictionary suitable for use as a JSON request body."""
@@ -2262,7 +2437,7 @@ class ServedEntityOutput:
         if self.scale_to_zero_enabled is not None: body['scale_to_zero_enabled'] = self.scale_to_zero_enabled
         if self.state: body['state'] = self.state.as_dict()
         if self.workload_size is not None: body['workload_size'] = self.workload_size
-        if self.workload_type is not None: body['workload_type'] = self.workload_type
+        if self.workload_type is not None: body['workload_type'] = self.workload_type.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2304,31 +2479,22 @@ class ServedEntityOutput:
                    scale_to_zero_enabled=d.get('scale_to_zero_enabled', None),
                    state=_from_dict(d, 'state', ServedModelState),
                    workload_size=d.get('workload_size', None),
-                   workload_type=d.get('workload_type', None))
+                   workload_type=_enum(d, 'workload_type', ServingModelWorkloadType))
 
 
 @dataclass
 class ServedEntitySpec:
     entity_name: Optional[str] = None
-    """The name of the entity served. The entity may be a model in the Databricks Model Registry, a
-    model in the Unity Catalog (UC), or a function of type FEATURE_SPEC in the UC. If it is a UC
-    object, the full name of the object is given in the form of
-    __catalog_name__.__schema_name__.__model_name__."""
 
     entity_version: Optional[str] = None
-    """The version of the served entity in Databricks Model Registry or empty if the entity is a
-    FEATURE_SPEC."""
 
     external_model: Optional[ExternalModel] = None
-    """The external model that is served. NOTE: Only one of external_model, foundation_model, and
-    (entity_name, entity_version) is returned based on the endpoint type."""
 
     foundation_model: Optional[FoundationModel] = None
-    """The foundation model that is served. NOTE: Only one of foundation_model, external_model, and
-    (entity_name, entity_version) is returned based on the endpoint type."""
+    """All fields are not sensitive as they are hard-coded in the system and made available to
+    customers."""
 
     name: Optional[str] = None
-    """The name of the served entity."""
 
     def as_dict(self) -> dict:
         """Serializes the ServedEntitySpec into a dictionary suitable for use as a JSON request body."""
@@ -2362,24 +2528,21 @@ class ServedEntitySpec:
 
 @dataclass
 class ServedModelInput:
+    scale_to_zero_enabled: bool
+    """Whether the compute resources for the served entity should scale down to zero."""
+
     model_name: str
-    """The name of the model in Databricks Model Registry to be served or if the model resides in Unity
-    Catalog, the full name of model, in the form of __catalog_name__.__schema_name__.__model_name__."""
 
     model_version: str
-    """The version of the model in Databricks Model Registry or Unity Catalog to be served."""
-
-    scale_to_zero_enabled: bool
-    """Whether the compute resources for the served model should scale down to zero."""
 
     environment_vars: Optional[Dict[str, str]] = None
     """An object containing a set of optional, user-specified environment variable key-value pairs used
-    for serving this model. Note: this is an experimental feature and subject to change. Example
-    model environment variables that refer to Databricks secrets: `{"OPENAI_API_KEY":
+    for serving this entity. Note: this is an experimental feature and subject to change. Example
+    entity environment variables that refer to Databricks secrets: `{"OPENAI_API_KEY":
     "{{secrets/my_scope/my_key}}", "DATABRICKS_TOKEN": "{{secrets/my_scope2/my_key2}}"}`"""
 
     instance_profile_arn: Optional[str] = None
-    """ARN of the instance profile that the served model will use to access AWS resources."""
+    """ARN of the instance profile that the served entity uses to access AWS resources."""
 
     max_provisioned_throughput: Optional[int] = None
     """The maximum tokens per second that the endpoint can scale up to."""
@@ -2388,25 +2551,26 @@ class ServedModelInput:
     """The minimum tokens per second that the endpoint can scale down to."""
 
     name: Optional[str] = None
-    """The name of a served model. It must be unique across an endpoint. If not specified, this field
-    will default to <model-name>-<model-version>. A served model name can consist of alphanumeric
-    characters, dashes, and underscores."""
+    """The name of a served entity. It must be unique across an endpoint. A served entity name can
+    consist of alphanumeric characters, dashes, and underscores. If not specified for an external
+    model, this field defaults to external_model.name, with '.' and ':' replaced with '-', and if
+    not specified for other entities, it defaults to entity_name-entity_version."""
 
     workload_size: Optional[ServedModelInputWorkloadSize] = None
-    """The workload size of the served model. The workload size corresponds to a range of provisioned
-    concurrency that the compute will autoscale between. A single unit of provisioned concurrency
-    can process one request at a time. Valid workload sizes are "Small" (4 - 4 provisioned
-    concurrency), "Medium" (8 - 16 provisioned concurrency), and "Large" (16 - 64 provisioned
-    concurrency). If scale-to-zero is enabled, the lower bound of the provisioned concurrency for
-    each workload size will be 0."""
+    """The workload size of the served entity. The workload size corresponds to a range of provisioned
+    concurrency that the compute autoscales between. A single unit of provisioned concurrency can
+    process one request at a time. Valid workload sizes are "Small" (4 - 4 provisioned concurrency),
+    "Medium" (8 - 16 provisioned concurrency), and "Large" (16 - 64 provisioned concurrency). If
+    scale-to-zero is enabled, the lower bound of the provisioned concurrency for each workload size
+    is 0."""
 
     workload_type: Optional[ServedModelInputWorkloadType] = None
-    """The workload type of the served model. The workload type selects which type of compute to use in
-    the endpoint. The default value for this parameter is "CPU". For deep learning workloads, GPU
+    """The workload type of the served entity. The workload type selects which type of compute to use
+    in the endpoint. The default value for this parameter is "CPU". For deep learning workloads, GPU
     acceleration is available by selecting workload types like GPU_SMALL and others. See the
     available [GPU types].
     
-    [GPU types]: https://docs.databricks.com/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types"""
+    [GPU types]: https://docs.databricks.com/en/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types"""
 
     def as_dict(self) -> dict:
         """Serializes the ServedModelInput into a dictionary suitable for use as a JSON request body."""
@@ -2458,12 +2622,6 @@ class ServedModelInput:
 
 
 class ServedModelInputWorkloadSize(Enum):
-    """The workload size of the served model. The workload size corresponds to a range of provisioned
-    concurrency that the compute will autoscale between. A single unit of provisioned concurrency
-    can process one request at a time. Valid workload sizes are "Small" (4 - 4 provisioned
-    concurrency), "Medium" (8 - 16 provisioned concurrency), and "Large" (16 - 64 provisioned
-    concurrency). If scale-to-zero is enabled, the lower bound of the provisioned concurrency for
-    each workload size will be 0."""
 
     LARGE = 'Large'
     MEDIUM = 'Medium'
@@ -2471,12 +2629,6 @@ class ServedModelInputWorkloadSize(Enum):
 
 
 class ServedModelInputWorkloadType(Enum):
-    """The workload type of the served model. The workload type selects which type of compute to use in
-    the endpoint. The default value for this parameter is "CPU". For deep learning workloads, GPU
-    acceleration is available by selecting workload types like GPU_SMALL and others. See the
-    available [GPU types].
-    
-    [GPU types]: https://docs.databricks.com/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types"""
 
     CPU = 'CPU'
     GPU_LARGE = 'GPU_LARGE'
@@ -2488,51 +2640,48 @@ class ServedModelInputWorkloadType(Enum):
 @dataclass
 class ServedModelOutput:
     creation_timestamp: Optional[int] = None
-    """The creation timestamp of the served model in Unix time."""
 
     creator: Optional[str] = None
-    """The email of the user who created the served model."""
 
     environment_vars: Optional[Dict[str, str]] = None
     """An object containing a set of optional, user-specified environment variable key-value pairs used
-    for serving this model. Note: this is an experimental feature and subject to change. Example
-    model environment variables that refer to Databricks secrets: `{"OPENAI_API_KEY":
+    for serving this entity. Note: this is an experimental feature and subject to change. Example
+    entity environment variables that refer to Databricks secrets: `{"OPENAI_API_KEY":
     "{{secrets/my_scope/my_key}}", "DATABRICKS_TOKEN": "{{secrets/my_scope2/my_key2}}"}`"""
 
     instance_profile_arn: Optional[str] = None
-    """ARN of the instance profile that the served model will use to access AWS resources."""
+    """ARN of the instance profile that the served entity uses to access AWS resources."""
 
     model_name: Optional[str] = None
-    """The name of the model in Databricks Model Registry or the full name of the model in Unity
-    Catalog."""
 
     model_version: Optional[str] = None
-    """The version of the model in Databricks Model Registry or Unity Catalog to be served."""
 
     name: Optional[str] = None
-    """The name of the served model."""
+    """The name of a served entity. It must be unique across an endpoint. A served entity name can
+    consist of alphanumeric characters, dashes, and underscores. If not specified for an external
+    model, this field defaults to external_model.name, with '.' and ':' replaced with '-', and if
+    not specified for other entities, it defaults to entity_name-entity_version."""
 
     scale_to_zero_enabled: Optional[bool] = None
-    """Whether the compute resources for the Served Model should scale down to zero."""
+    """Whether the compute resources for the served entity should scale down to zero."""
 
     state: Optional[ServedModelState] = None
-    """Information corresponding to the state of the Served Model."""
 
     workload_size: Optional[str] = None
-    """The workload size of the served model. The workload size corresponds to a range of provisioned
-    concurrency that the compute will autoscale between. A single unit of provisioned concurrency
-    can process one request at a time. Valid workload sizes are "Small" (4 - 4 provisioned
-    concurrency), "Medium" (8 - 16 provisioned concurrency), and "Large" (16 - 64 provisioned
-    concurrency). If scale-to-zero is enabled, the lower bound of the provisioned concurrency for
-    each workload size will be 0."""
+    """The workload size of the served entity. The workload size corresponds to a range of provisioned
+    concurrency that the compute autoscales between. A single unit of provisioned concurrency can
+    process one request at a time. Valid workload sizes are "Small" (4 - 4 provisioned concurrency),
+    "Medium" (8 - 16 provisioned concurrency), and "Large" (16 - 64 provisioned concurrency). If
+    scale-to-zero is enabled, the lower bound of the provisioned concurrency for each workload size
+    is 0."""
 
-    workload_type: Optional[str] = None
-    """The workload type of the served model. The workload type selects which type of compute to use in
-    the endpoint. The default value for this parameter is "CPU". For deep learning workloads, GPU
+    workload_type: Optional[ServingModelWorkloadType] = None
+    """The workload type of the served entity. The workload type selects which type of compute to use
+    in the endpoint. The default value for this parameter is "CPU". For deep learning workloads, GPU
     acceleration is available by selecting workload types like GPU_SMALL and others. See the
     available [GPU types].
     
-    [GPU types]: https://docs.databricks.com/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types"""
+    [GPU types]: https://docs.databricks.com/en/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types"""
 
     def as_dict(self) -> dict:
         """Serializes the ServedModelOutput into a dictionary suitable for use as a JSON request body."""
@@ -2547,7 +2696,7 @@ class ServedModelOutput:
         if self.scale_to_zero_enabled is not None: body['scale_to_zero_enabled'] = self.scale_to_zero_enabled
         if self.state: body['state'] = self.state.as_dict()
         if self.workload_size is not None: body['workload_size'] = self.workload_size
-        if self.workload_type is not None: body['workload_type'] = self.workload_type
+        if self.workload_type is not None: body['workload_type'] = self.workload_type.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2579,20 +2728,18 @@ class ServedModelOutput:
                    scale_to_zero_enabled=d.get('scale_to_zero_enabled', None),
                    state=_from_dict(d, 'state', ServedModelState),
                    workload_size=d.get('workload_size', None),
-                   workload_type=d.get('workload_type', None))
+                   workload_type=_enum(d, 'workload_type', ServingModelWorkloadType))
 
 
 @dataclass
 class ServedModelSpec:
     model_name: Optional[str] = None
-    """The name of the model in Databricks Model Registry or the full name of the model in Unity
-    Catalog."""
+    """Only one of model_name and entity_name should be populated"""
 
     model_version: Optional[str] = None
-    """The version of the model in Databricks Model Registry or Unity Catalog to be served."""
+    """Only one of model_version and entity_version should be populated"""
 
     name: Optional[str] = None
-    """The name of the served model."""
 
     def as_dict(self) -> dict:
         """Serializes the ServedModelSpec into a dictionary suitable for use as a JSON request body."""
@@ -2621,18 +2768,8 @@ class ServedModelSpec:
 @dataclass
 class ServedModelState:
     deployment: Optional[ServedModelStateDeployment] = None
-    """The state of the served entity deployment. DEPLOYMENT_CREATING indicates that the served entity
-    is not ready yet because the deployment is still being created (i.e container image is building,
-    model server is deploying for the first time, etc.). DEPLOYMENT_RECOVERING indicates that the
-    served entity was previously in a ready state but no longer is and is attempting to recover.
-    DEPLOYMENT_READY indicates that the served entity is ready to receive traffic. DEPLOYMENT_FAILED
-    indicates that there was an error trying to bring up the served entity (e.g container image
-    build failed, the model server failed to start due to a model loading error, etc.)
-    DEPLOYMENT_ABORTED indicates that the deployment was terminated likely due to a failure in
-    bringing up another served entity under the same endpoint and config version."""
 
     deployment_state_message: Optional[str] = None
-    """More information about the state of the served entity, if available."""
 
     def as_dict(self) -> dict:
         """Serializes the ServedModelState into a dictionary suitable for use as a JSON request body."""
@@ -2658,15 +2795,6 @@ class ServedModelState:
 
 
 class ServedModelStateDeployment(Enum):
-    """The state of the served entity deployment. DEPLOYMENT_CREATING indicates that the served entity
-    is not ready yet because the deployment is still being created (i.e container image is building,
-    model server is deploying for the first time, etc.). DEPLOYMENT_RECOVERING indicates that the
-    served entity was previously in a ready state but no longer is and is attempting to recover.
-    DEPLOYMENT_READY indicates that the served entity is ready to receive traffic. DEPLOYMENT_FAILED
-    indicates that there was an error trying to bring up the served entity (e.g container image
-    build failed, the model server failed to start due to a model loading error, etc.)
-    DEPLOYMENT_ABORTED indicates that the deployment was terminated likely due to a failure in
-    bringing up another served entity under the same endpoint and config version."""
 
     ABORTED = 'DEPLOYMENT_ABORTED'
     CREATING = 'DEPLOYMENT_CREATING'
@@ -2701,8 +2829,8 @@ class ServerLogsResponse:
 @dataclass
 class ServingEndpoint:
     ai_gateway: Optional[AiGatewayConfig] = None
-    """The AI Gateway configuration for the serving endpoint. NOTE: Only external model endpoints are
-    currently supported."""
+    """The AI Gateway configuration for the serving endpoint. NOTE: Only external model and provisioned
+    throughput endpoints are currently supported."""
 
     config: Optional[EndpointCoreConfigSummary] = None
     """The config that is currently being served by the endpoint."""
@@ -2714,8 +2842,7 @@ class ServingEndpoint:
     """The email of the user who created the serving endpoint."""
 
     id: Optional[str] = None
-    """System-generated ID of the endpoint. This is used to refer to the endpoint in the Permissions
-    API"""
+    """System-generated ID of the endpoint, included to be used by the Permissions API."""
 
     last_updated_timestamp: Optional[int] = None
     """The timestamp when the endpoint was last updated by a user in Unix time."""
@@ -2874,8 +3001,8 @@ class ServingEndpointAccessControlResponse:
 @dataclass
 class ServingEndpointDetailed:
     ai_gateway: Optional[AiGatewayConfig] = None
-    """The AI Gateway configuration for the serving endpoint. NOTE: Only external model endpoints are
-    currently supported."""
+    """The AI Gateway configuration for the serving endpoint. NOTE: Only external model and provisioned
+    throughput endpoints are currently supported."""
 
     config: Optional[EndpointCoreConfigOutput] = None
     """The config that is currently being served by the endpoint."""
@@ -2983,7 +3110,6 @@ class ServingEndpointDetailed:
 
 
 class ServingEndpointDetailedPermissionLevel(Enum):
-    """The permission level of the principal making the request."""
 
     CAN_MANAGE = 'CAN_MANAGE'
     CAN_QUERY = 'CAN_QUERY'
@@ -3121,6 +3247,15 @@ class ServingEndpointPermissionsRequest:
         return cls(access_control_list=_repeated_dict(d, 'access_control_list',
                                                       ServingEndpointAccessControlRequest),
                    serving_endpoint_id=d.get('serving_endpoint_id', None))
+
+
+class ServingModelWorkloadType(Enum):
+
+    CPU = 'CPU'
+    GPU_LARGE = 'GPU_LARGE'
+    GPU_MEDIUM = 'GPU_MEDIUM'
+    GPU_SMALL = 'GPU_SMALL'
+    MULTIGPU_MEDIUM = 'MULTIGPU_MEDIUM'
 
 
 @dataclass
@@ -3262,9 +3397,9 @@ class ServingEndpointsAPI:
 
     def create(self,
                name: str,
-               config: EndpointCoreConfigInput,
                *,
                ai_gateway: Optional[AiGatewayConfig] = None,
+               config: Optional[EndpointCoreConfigInput] = None,
                rate_limits: Optional[List[RateLimit]] = None,
                route_optimized: Optional[bool] = None,
                tags: Optional[List[EndpointTag]] = None) -> Wait[ServingEndpointDetailed]:
@@ -3273,11 +3408,11 @@ class ServingEndpointsAPI:
         :param name: str
           The name of the serving endpoint. This field is required and must be unique across a Databricks
           workspace. An endpoint name can consist of alphanumeric characters, dashes, and underscores.
-        :param config: :class:`EndpointCoreConfigInput`
-          The core config of the serving endpoint.
         :param ai_gateway: :class:`AiGatewayConfig` (optional)
-          The AI Gateway configuration for the serving endpoint. NOTE: only external model endpoints are
-          supported as of now.
+          The AI Gateway configuration for the serving endpoint. NOTE: Only external model and provisioned
+          throughput endpoints are currently supported.
+        :param config: :class:`EndpointCoreConfigInput` (optional)
+          The core config of the serving endpoint.
         :param rate_limits: List[:class:`RateLimit`] (optional)
           Rate limits to be applied to the serving endpoint. NOTE: this field is deprecated, please use AI
           Gateway to manage rate limits.
@@ -3307,9 +3442,9 @@ class ServingEndpointsAPI:
     def create_and_wait(
         self,
         name: str,
-        config: EndpointCoreConfigInput,
         *,
         ai_gateway: Optional[AiGatewayConfig] = None,
+        config: Optional[EndpointCoreConfigInput] = None,
         rate_limits: Optional[List[RateLimit]] = None,
         route_optimized: Optional[bool] = None,
         tags: Optional[List[EndpointTag]] = None,
@@ -3325,7 +3460,6 @@ class ServingEndpointsAPI:
         """Delete a serving endpoint.
         
         :param name: str
-          The name of the serving endpoint. This field is required.
         
         
         """
@@ -3367,7 +3501,7 @@ class ServingEndpointsAPI:
         res = self._api.do('GET', f'/api/2.0/serving-endpoints/{name}', headers=headers)
         return ServingEndpointDetailed.from_dict(res)
 
-    def get_open_api(self, name: str):
+    def get_open_api(self, name: str) -> GetOpenApiResponse:
         """Get the schema for a serving endpoint.
         
         Get the query schema of the serving endpoint in OpenAPI format. The schema contains information for
@@ -3376,12 +3510,13 @@ class ServingEndpointsAPI:
         :param name: str
           The name of the serving endpoint that the served model belongs to. This field is required.
         
-        
+        :returns: :class:`GetOpenApiResponse`
         """
 
-        headers = {'Accept': 'application/json', }
+        headers = {'Accept': 'text/plain', }
 
-        self._api.do('GET', f'/api/2.0/serving-endpoints/{name}/openapi', headers=headers)
+        res = self._api.do('GET', f'/api/2.0/serving-endpoints/{name}/openapi', headers=headers, raw=True)
+        return GetOpenApiResponse.from_dict(res)
 
     def get_permission_levels(self, serving_endpoint_id: str) -> GetServingEndpointPermissionLevelsResponse:
         """Get serving endpoint permission levels.
@@ -3420,6 +3555,44 @@ class ServingEndpointsAPI:
                            headers=headers)
         return ServingEndpointPermissions.from_dict(res)
 
+    def http_request(self,
+                     connection_name: str,
+                     method: ExternalFunctionRequestHttpMethod,
+                     path: str,
+                     *,
+                     headers: Optional[str] = None,
+                     json: Optional[str] = None,
+                     params: Optional[str] = None) -> HttpRequestResponse:
+        """Make external services call using the credentials stored in UC Connection.
+        
+        :param connection_name: str
+          The connection name to use. This is required to identify the external connection.
+        :param method: :class:`ExternalFunctionRequestHttpMethod`
+          The HTTP method to use (e.g., 'GET', 'POST').
+        :param path: str
+          The relative path for the API endpoint. This is required.
+        :param headers: str (optional)
+          Additional headers for the request. If not provided, only auth headers from connections would be
+          passed.
+        :param json: str (optional)
+          The JSON payload to send in the request body.
+        :param params: str (optional)
+          Query parameters for the request.
+        
+        :returns: :class:`HttpRequestResponse`
+        """
+        body = {}
+        if connection_name is not None: body['connection_name'] = connection_name
+        if headers is not None: body['headers'] = headers
+        if json is not None: body['json'] = json
+        if method is not None: body['method'] = method.value
+        if params is not None: body['params'] = params
+        if path is not None: body['path'] = path
+        headers = {'Accept': 'text/plain', 'Content-Type': 'application/json', }
+
+        res = self._api.do('POST', '/api/2.0/external-function', body=body, headers=headers, raw=True)
+        return HttpRequestResponse.from_dict(res)
+
     def list(self) -> Iterator[ServingEndpoint]:
         """Get all serving endpoints.
         
@@ -3456,7 +3629,7 @@ class ServingEndpointsAPI:
               name: str,
               *,
               add_tags: Optional[List[EndpointTag]] = None,
-              delete_tags: Optional[List[str]] = None) -> Iterator[EndpointTag]:
+              delete_tags: Optional[List[str]] = None) -> EndpointTags:
         """Update tags of a serving endpoint.
         
         Used to batch add and delete tags from a serving endpoint with a single API call.
@@ -3468,7 +3641,7 @@ class ServingEndpointsAPI:
         :param delete_tags: List[str] (optional)
           List of tag keys to delete
         
-        :returns: Iterator over :class:`EndpointTag`
+        :returns: :class:`EndpointTags`
         """
         body = {}
         if add_tags is not None: body['add_tags'] = [v.as_dict() for v in add_tags]
@@ -3477,6 +3650,7 @@ class ServingEndpointsAPI:
 
         res = self._api.do('PATCH', f'/api/2.0/serving-endpoints/{name}/tags', body=body, headers=headers)
         return [EndpointTag.from_dict(v) for v in res["tags"]]
+
 
     def put(self, name: str, *, rate_limits: Optional[List[RateLimit]] = None) -> PutResponse:
         """Update rate limits of a serving endpoint.
@@ -3511,8 +3685,8 @@ class ServingEndpointsAPI:
             usage_tracking_config: Optional[AiGatewayUsageTrackingConfig] = None) -> PutAiGatewayResponse:
         """Update AI Gateway of a serving endpoint.
         
-        Used to update the AI Gateway of a serving endpoint. NOTE: Only external model endpoints are currently
-        supported.
+        Used to update the AI Gateway of a serving endpoint. NOTE: Only external model and provisioned
+        throughput endpoints are currently supported.
         
         :param name: str
           The name of the serving endpoint whose AI Gateway is being updated. This field is required.
@@ -3672,14 +3846,16 @@ class ServingEndpointsAPI:
           The name of the serving endpoint to update. This field is required.
         :param auto_capture_config: :class:`AutoCaptureConfigInput` (optional)
           Configuration for Inference Tables which automatically logs requests and responses to Unity Catalog.
+          Note: this field is deprecated for creating new provisioned throughput endpoints, or updating
+          existing provisioned throughput endpoints that never have inference table configured; in these cases
+          please use AI Gateway to manage inference tables.
         :param served_entities: List[:class:`ServedEntityInput`] (optional)
-          A list of served entities for the endpoint to serve. A serving endpoint can have up to 15 served
-          entities.
+          The list of served entities under the serving endpoint config.
         :param served_models: List[:class:`ServedModelInput`] (optional)
-          (Deprecated, use served_entities instead) A list of served models for the endpoint to serve. A
-          serving endpoint can have up to 15 served models.
+          (Deprecated, use served_entities instead) The list of served models under the serving endpoint
+          config.
         :param traffic_config: :class:`TrafficConfig` (optional)
-          The traffic config defining how invocations to the serving endpoint should be routed.
+          The traffic configuration associated with the serving endpoint config.
         
         :returns:
           Long-running operation waiter for :class:`ServingEndpointDetailed`.

@@ -54,6 +54,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: ACTIVE
       :value: "ACTIVE"
 
+   .. py:attribute:: PENDING
+      :value: "PENDING"
+
    .. py:attribute:: PERMISSION_DENIED
       :value: "PERMISSION_DENIED"
 

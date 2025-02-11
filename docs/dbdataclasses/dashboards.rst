@@ -4,6 +4,14 @@ Dashboards
 These dataclasses are used in the SDK to represent API requests and responses for services in the ``databricks.sdk.service.dashboards`` module.
 
 .. py:currentmodule:: databricks.sdk.service.dashboards
+.. autoclass:: CancelQueryExecutionResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: CancelQueryExecutionResponseStatus
+   :members:
+   :undoc-members:
+
 .. autoclass:: CronSchedule
    :members:
    :undoc-members:
@@ -78,6 +86,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: Empty
+   :members:
+   :undoc-members:
+
+.. autoclass:: ExecutePublishedDashboardQueryRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: ExecuteQueryResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: GenieAttachment
    :members:
    :undoc-members:
@@ -103,6 +123,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: GenieStartConversationResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: GetPublishedDashboardEmbeddedResponse
    :members:
    :undoc-members:
 
@@ -231,6 +255,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: SQL_EXECUTION_EXCEPTION
       :value: "SQL_EXECUTION_EXCEPTION"
 
+   .. py:attribute:: STOP_PROCESS_DUE_TO_AUTO_REGENERATE
+      :value: "STOP_PROCESS_DUE_TO_AUTO_REGENERATE"
+
    .. py:attribute:: TABLES_MISSING_EXCEPTION
       :value: "TABLES_MISSING_EXCEPTION"
 
@@ -254,7 +281,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: MessageStatus
 
-   MesssageStatus. The possible values are: * `FETCHING_METADATA`: Fetching metadata from the data sources. * `FILTERING_CONTEXT`: Running smart context step to determine relevant context. * `ASKING_AI`: Waiting for the LLM to respond to the users question. * `EXECUTING_QUERY`: Executing AI provided SQL query. Get the SQL query result by calling [getMessageQueryResult](:method:genie/getMessageQueryResult) API. **Important: The message status will stay in the `EXECUTING_QUERY` until a client calls [getMessageQueryResult](:method:genie/getMessageQueryResult)**. * `FAILED`: Generating a response or the executing the query failed. Please see `error` field. * `COMPLETED`: Message processing is completed. Results are in the `attachments` field. Get the SQL query result by calling [getMessageQueryResult](:method:genie/getMessageQueryResult) API. * `SUBMITTED`: Message has been submitted. * `QUERY_RESULT_EXPIRED`: SQL result is not available anymore. The user needs to execute the query again. * `CANCELLED`: Message has been cancelled.
+   MesssageStatus. The possible values are: * `FETCHING_METADATA`: Fetching metadata from the data sources. * `FILTERING_CONTEXT`: Running smart context step to determine relevant context. * `ASKING_AI`: Waiting for the LLM to respond to the users question. * `PENDING_WAREHOUSE`: Waiting for warehouse before the SQL query can start executing. * `EXECUTING_QUERY`: Executing AI provided SQL query. Get the SQL query result by calling [getMessageQueryResult](:method:genie/getMessageQueryResult) API. **Important: The message status will stay in the `EXECUTING_QUERY` until a client calls [getMessageQueryResult](:method:genie/getMessageQueryResult)**. * `FAILED`: Generating a response or the executing the query failed. Please see `error` field. * `COMPLETED`: Message processing is completed. Results are in the `attachments` field. Get the SQL query result by calling [getMessageQueryResult](:method:genie/getMessageQueryResult) API. * `SUBMITTED`: Message has been submitted. * `QUERY_RESULT_EXPIRED`: SQL result is not available anymore. The user needs to execute the query again. * `CANCELLED`: Message has been cancelled.
 
    .. py:attribute:: ASKING_AI
       :value: "ASKING_AI"
@@ -277,6 +304,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: FILTERING_CONTEXT
       :value: "FILTERING_CONTEXT"
 
+   .. py:attribute:: PENDING_WAREHOUSE
+      :value: "PENDING_WAREHOUSE"
+
    .. py:attribute:: QUERY_RESULT_EXPIRED
       :value: "QUERY_RESULT_EXPIRED"
 
@@ -284,6 +314,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "SUBMITTED"
 
 .. autoclass:: MigrateDashboardRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: PendingStatus
+   :members:
+   :undoc-members:
+
+.. autoclass:: PollQueryStatusResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: PollQueryStatusResponseData
    :members:
    :undoc-members:
 
@@ -296,6 +338,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: QueryAttachment
+   :members:
+   :undoc-members:
+
+.. autoclass:: QueryResponseStatus
    :members:
    :undoc-members:
 
@@ -336,6 +382,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: SubscriptionSubscriberUser
+   :members:
+   :undoc-members:
+
+.. autoclass:: SuccessStatus
    :members:
    :undoc-members:
 

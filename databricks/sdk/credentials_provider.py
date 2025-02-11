@@ -167,6 +167,7 @@ def oauth_service_principal(cfg: 'Config') -> Optional[CredentialsProvider]:
     oidc = cfg.oidc_endpoints
     if oidc is None:
         return None
+
     token_source = ClientCredentials(client_id=cfg.client_id,
                                      client_secret=cfg.client_secret,
                                      token_url=oidc.token_endpoint,
@@ -187,6 +188,7 @@ def oauth_service_principal(cfg: 'Config') -> Optional[CredentialsProvider]:
 def external_browser(cfg: 'Config') -> Optional[CredentialsProvider]:
     if cfg.auth_type != 'external-browser':
         return None
+
     client_id, client_secret = None, None
     if cfg.client_id:
         client_id = cfg.client_id
@@ -194,12 +196,11 @@ def external_browser(cfg: 'Config') -> Optional[CredentialsProvider]:
     elif cfg.azure_client_id:
         client_id = cfg.azure_client
         client_secret = cfg.azure_client_secret
-
     if not client_id:
         client_id = 'databricks-cli'
 
-    # Load cached credentials from disk if they exist.
-    # Note that these are local to the Python SDK and not reused by other SDKs.
+    # Load cached credentials from disk if they exist. Note that these are
+    # local to the Python SDK and not reused by other SDKs.
     oidc_endpoints = cfg.oidc_endpoints
     redirect_url = 'http://localhost:8020'
     token_cache = TokenCache(host=cfg.host,
@@ -209,17 +210,25 @@ def external_browser(cfg: 'Config') -> Optional[CredentialsProvider]:
                              redirect_url=redirect_url)
     credentials = token_cache.load()
     if credentials:
-        # Force a refresh in case the loaded credentials are expired.
-        credentials.token()
-    else:
-        oauth_client = OAuthClient(oidc_endpoints=oidc_endpoints,
-                                   client_id=client_id,
-                                   redirect_url=redirect_url,
-                                   client_secret=client_secret)
-        consent = oauth_client.initiate_consent()
-        if not consent:
-            return None
-        credentials = consent.launch_external_browser()
+        try:
+            # Pro-actively refresh the loaded credentials. This is done
+            # to detect if the token is expired and needs to be refreshed
+            # by going through the OAuth login flow.
+            credentials.token()
+            return credentials(cfg)
+        # TODO: We should ideally use more specific exceptions.
+        except Exception as e:
+            logger.warning(f'Failed to refresh cached token: {e}. Initiating new OAuth login flow')
+
+    oauth_client = OAuthClient(oidc_endpoints=oidc_endpoints,
+                               client_id=client_id,
+                               redirect_url=redirect_url,
+                               client_secret=client_secret)
+    consent = oauth_client.initiate_consent()
+    if not consent:
+        return None
+
+    credentials = consent.launch_external_browser()
     token_cache.save(credentials)
     return credentials(cfg)
 
@@ -667,12 +676,18 @@ class MetadataServiceTokenSource(Refreshable):
         self.host = cfg.host
 
     def refresh(self) -> Token:
-        resp = requests.get(self.url,
-                            timeout=self._metadata_service_timeout,
-                            headers={
-                                self.METADATA_SERVICE_VERSION_HEADER: self.METADATA_SERVICE_VERSION,
-                                self.METADATA_SERVICE_HOST_HEADER: self.host
-                            })
+        resp = requests.get(
+            self.url,
+            timeout=self._metadata_service_timeout,
+            headers={
+                self.METADATA_SERVICE_VERSION_HEADER: self.METADATA_SERVICE_VERSION,
+                self.METADATA_SERVICE_HOST_HEADER: self.host
+            },
+            proxies={
+                # Explicitly exclude localhost from being proxied. This is necessary
+                # for Metadata URLs which typically point to localhost.
+                "no_proxy": "localhost,127.0.0.1"
+            })
         json_resp: dict[str, Union[str, float]] = resp.json()
         access_token = json_resp.get("access_token", None)
         if access_token is None:

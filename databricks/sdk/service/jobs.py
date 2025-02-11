@@ -111,6 +111,12 @@ class BaseRun:
     description: Optional[str] = None
     """Description of the run"""
 
+    effective_performance_target: Optional[PerformanceTarget] = None
+    """effective_performance_target is the actual performance target used by the run during execution.
+    effective_performance_target can differ from performance_target depending on if the job was
+    eligible to be cost-optimized (e.g. contains at least 1 serverless task) or if we specifically
+    override the value for the run (ex. RunNow)."""
+
     end_time: Optional[int] = None
     """The time at which this run ended in epoch milliseconds (milliseconds since 1/1/1970 UTC). This
     field is set to 0 if the job is still running."""
@@ -240,6 +246,8 @@ class BaseRun:
         if self.cluster_spec: body['cluster_spec'] = self.cluster_spec.as_dict()
         if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
         if self.description is not None: body['description'] = self.description
+        if self.effective_performance_target is not None:
+            body['effective_performance_target'] = self.effective_performance_target.value
         if self.end_time is not None: body['end_time'] = self.end_time
         if self.execution_duration is not None: body['execution_duration'] = self.execution_duration
         if self.git_source: body['git_source'] = self.git_source.as_dict()
@@ -278,6 +286,8 @@ class BaseRun:
         if self.cluster_spec: body['cluster_spec'] = self.cluster_spec
         if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
         if self.description is not None: body['description'] = self.description
+        if self.effective_performance_target is not None:
+            body['effective_performance_target'] = self.effective_performance_target
         if self.end_time is not None: body['end_time'] = self.end_time
         if self.execution_duration is not None: body['execution_duration'] = self.execution_duration
         if self.git_source: body['git_source'] = self.git_source
@@ -316,6 +326,7 @@ class BaseRun:
                    cluster_spec=_from_dict(d, 'cluster_spec', ClusterSpec),
                    creator_user_name=d.get('creator_user_name', None),
                    description=d.get('description', None),
+                   effective_performance_target=_enum(d, 'effective_performance_target', PerformanceTarget),
                    end_time=d.get('end_time', None),
                    execution_duration=d.get('execution_duration', None),
                    git_source=_from_dict(d, 'git_source', GitSource),
@@ -443,6 +454,7 @@ class CleanRoomTaskRunLifeCycleState(Enum):
     PENDING = 'PENDING'
     QUEUED = 'QUEUED'
     RUNNING = 'RUNNING'
+    RUN_LIFE_CYCLE_STATE_UNSPECIFIED = 'RUN_LIFE_CYCLE_STATE_UNSPECIFIED'
     SKIPPED = 'SKIPPED'
     TERMINATED = 'TERMINATED'
     TERMINATING = 'TERMINATING'
@@ -459,6 +471,7 @@ class CleanRoomTaskRunResultState(Enum):
     EXCLUDED = 'EXCLUDED'
     FAILED = 'FAILED'
     MAXIMUM_CONCURRENT_RUNS_REACHED = 'MAXIMUM_CONCURRENT_RUNS_REACHED'
+    RUN_RESULT_STATE_UNSPECIFIED = 'RUN_RESULT_STATE_UNSPECIFIED'
     SUCCESS = 'SUCCESS'
     SUCCESS_WITH_FAILURES = 'SUCCESS_WITH_FAILURES'
     TIMEDOUT = 'TIMEDOUT'
@@ -539,6 +552,42 @@ class CleanRoomsNotebookTask:
                    etag=d.get('etag', None),
                    notebook_base_parameters=d.get('notebook_base_parameters', None),
                    notebook_name=d.get('notebook_name', None))
+
+
+@dataclass
+class CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput:
+    clean_room_job_run_state: Optional[CleanRoomTaskRunState] = None
+    """The run state of the clean rooms notebook task."""
+
+    notebook_output: Optional[NotebookOutput] = None
+    """The notebook output for the clean room run"""
+
+    output_schema_info: Optional[OutputSchemaInfo] = None
+    """Information on how to access the output schema for the clean room run"""
+
+    def as_dict(self) -> dict:
+        """Serializes the CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.clean_room_job_run_state:
+            body['clean_room_job_run_state'] = self.clean_room_job_run_state.as_dict()
+        if self.notebook_output: body['notebook_output'] = self.notebook_output.as_dict()
+        if self.output_schema_info: body['output_schema_info'] = self.output_schema_info.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.clean_room_job_run_state: body['clean_room_job_run_state'] = self.clean_room_job_run_state
+        if self.notebook_output: body['notebook_output'] = self.notebook_output
+        if self.output_schema_info: body['output_schema_info'] = self.output_schema_info
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput:
+        """Deserializes the CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput from a dictionary."""
+        return cls(clean_room_job_run_state=_from_dict(d, 'clean_room_job_run_state', CleanRoomTaskRunState),
+                   notebook_output=_from_dict(d, 'notebook_output', NotebookOutput),
+                   output_schema_info=_from_dict(d, 'output_schema_info', OutputSchemaInfo))
 
 
 @dataclass
@@ -796,6 +845,10 @@ class CreateJob:
     parameters: Optional[List[JobParameterDefinition]] = None
     """Job-level parameter definitions"""
 
+    performance_target: Optional[PerformanceTarget] = None
+    """PerformanceTarget defines how performant or cost efficient the execution of run on serverless
+    should be."""
+
     queue: Optional[QueueSettings] = None
     """The queue settings of the job."""
 
@@ -850,6 +903,7 @@ class CreateJob:
         if self.name is not None: body['name'] = self.name
         if self.notification_settings: body['notification_settings'] = self.notification_settings.as_dict()
         if self.parameters: body['parameters'] = [v.as_dict() for v in self.parameters]
+        if self.performance_target is not None: body['performance_target'] = self.performance_target.value
         if self.queue: body['queue'] = self.queue.as_dict()
         if self.run_as: body['run_as'] = self.run_as.as_dict()
         if self.schedule: body['schedule'] = self.schedule.as_dict()
@@ -879,6 +933,7 @@ class CreateJob:
         if self.name is not None: body['name'] = self.name
         if self.notification_settings: body['notification_settings'] = self.notification_settings
         if self.parameters: body['parameters'] = self.parameters
+        if self.performance_target is not None: body['performance_target'] = self.performance_target
         if self.queue: body['queue'] = self.queue
         if self.run_as: body['run_as'] = self.run_as
         if self.schedule: body['schedule'] = self.schedule
@@ -908,6 +963,7 @@ class CreateJob:
                    name=d.get('name', None),
                    notification_settings=_from_dict(d, 'notification_settings', JobNotificationSettings),
                    parameters=_repeated_dict(d, 'parameters', JobParameterDefinition),
+                   performance_target=_enum(d, 'performance_target', PerformanceTarget),
                    queue=_from_dict(d, 'queue', QueueSettings),
                    run_as=_from_dict(d, 'run_as', JobRunAs),
                    schedule=_from_dict(d, 'schedule', CronSchedule),
@@ -2425,6 +2481,10 @@ class JobSettings:
     parameters: Optional[List[JobParameterDefinition]] = None
     """Job-level parameter definitions"""
 
+    performance_target: Optional[PerformanceTarget] = None
+    """PerformanceTarget defines how performant or cost efficient the execution of run on serverless
+    should be."""
+
     queue: Optional[QueueSettings] = None
     """The queue settings of the job."""
 
@@ -2477,6 +2537,7 @@ class JobSettings:
         if self.name is not None: body['name'] = self.name
         if self.notification_settings: body['notification_settings'] = self.notification_settings.as_dict()
         if self.parameters: body['parameters'] = [v.as_dict() for v in self.parameters]
+        if self.performance_target is not None: body['performance_target'] = self.performance_target.value
         if self.queue: body['queue'] = self.queue.as_dict()
         if self.run_as: body['run_as'] = self.run_as.as_dict()
         if self.schedule: body['schedule'] = self.schedule.as_dict()
@@ -2505,6 +2566,7 @@ class JobSettings:
         if self.name is not None: body['name'] = self.name
         if self.notification_settings: body['notification_settings'] = self.notification_settings
         if self.parameters: body['parameters'] = self.parameters
+        if self.performance_target is not None: body['performance_target'] = self.performance_target
         if self.queue: body['queue'] = self.queue
         if self.run_as: body['run_as'] = self.run_as
         if self.schedule: body['schedule'] = self.schedule
@@ -2533,6 +2595,7 @@ class JobSettings:
                    name=d.get('name', None),
                    notification_settings=_from_dict(d, 'notification_settings', JobNotificationSettings),
                    parameters=_repeated_dict(d, 'parameters', JobParameterDefinition),
+                   performance_target=_enum(d, 'performance_target', PerformanceTarget),
                    queue=_from_dict(d, 'queue', QueueSettings),
                    run_as=_from_dict(d, 'run_as', JobRunAs),
                    schedule=_from_dict(d, 'schedule', CronSchedule),
@@ -2914,10 +2977,55 @@ class NotebookTask:
                    warehouse_id=d.get('warehouse_id', None))
 
 
+@dataclass
+class OutputSchemaInfo:
+    """Stores the catalog name, schema name, and the output schema expiration time for the clean room
+    run."""
+
+    catalog_name: Optional[str] = None
+
+    expiration_time: Optional[int] = None
+    """The expiration time for the output schema as a Unix timestamp in milliseconds."""
+
+    schema_name: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the OutputSchemaInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.catalog_name is not None: body['catalog_name'] = self.catalog_name
+        if self.expiration_time is not None: body['expiration_time'] = self.expiration_time
+        if self.schema_name is not None: body['schema_name'] = self.schema_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the OutputSchemaInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.catalog_name is not None: body['catalog_name'] = self.catalog_name
+        if self.expiration_time is not None: body['expiration_time'] = self.expiration_time
+        if self.schema_name is not None: body['schema_name'] = self.schema_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> OutputSchemaInfo:
+        """Deserializes the OutputSchemaInfo from a dictionary."""
+        return cls(catalog_name=d.get('catalog_name', None),
+                   expiration_time=d.get('expiration_time', None),
+                   schema_name=d.get('schema_name', None))
+
+
 class PauseStatus(Enum):
 
     PAUSED = 'PAUSED'
     UNPAUSED = 'UNPAUSED'
+
+
+class PerformanceTarget(Enum):
+    """PerformanceTarget defines how performant (lower latency) or cost efficient the execution of run
+    on serverless compute should be. The performance mode on the job or pipeline should map to a
+    performance setting that is passed to Cluster Manager (see cluster-common PerformanceTarget)."""
+
+    COST_OPTIMIZED = 'COST_OPTIMIZED'
+    PERFORMANCE_OPTIMIZED = 'PERFORMANCE_OPTIMIZED'
 
 
 @dataclass
@@ -3681,6 +3789,12 @@ class Run:
     description: Optional[str] = None
     """Description of the run"""
 
+    effective_performance_target: Optional[PerformanceTarget] = None
+    """effective_performance_target is the actual performance target used by the run during execution.
+    effective_performance_target can differ from performance_target depending on if the job was
+    eligible to be cost-optimized (e.g. contains at least 1 serverless task) or if we specifically
+    override the value for the run (ex. RunNow)."""
+
     end_time: Optional[int] = None
     """The time at which this run ended in epoch milliseconds (milliseconds since 1/1/1970 UTC). This
     field is set to 0 if the job is still running."""
@@ -3816,6 +3930,8 @@ class Run:
         if self.cluster_spec: body['cluster_spec'] = self.cluster_spec.as_dict()
         if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
         if self.description is not None: body['description'] = self.description
+        if self.effective_performance_target is not None:
+            body['effective_performance_target'] = self.effective_performance_target.value
         if self.end_time is not None: body['end_time'] = self.end_time
         if self.execution_duration is not None: body['execution_duration'] = self.execution_duration
         if self.git_source: body['git_source'] = self.git_source.as_dict()
@@ -3856,6 +3972,8 @@ class Run:
         if self.cluster_spec: body['cluster_spec'] = self.cluster_spec
         if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
         if self.description is not None: body['description'] = self.description
+        if self.effective_performance_target is not None:
+            body['effective_performance_target'] = self.effective_performance_target
         if self.end_time is not None: body['end_time'] = self.end_time
         if self.execution_duration is not None: body['execution_duration'] = self.execution_duration
         if self.git_source: body['git_source'] = self.git_source
@@ -3896,6 +4014,7 @@ class Run:
                    cluster_spec=_from_dict(d, 'cluster_spec', ClusterSpec),
                    creator_user_name=d.get('creator_user_name', None),
                    description=d.get('description', None),
+                   effective_performance_target=_enum(d, 'effective_performance_target', PerformanceTarget),
                    end_time=d.get('end_time', None),
                    execution_duration=d.get('execution_duration', None),
                    git_source=_from_dict(d, 'git_source', GitSource),
@@ -4282,6 +4401,11 @@ class RunNow:
     """A list of task keys to run inside of the job. If this field is not provided, all tasks in the
     job will be run."""
 
+    performance_target: Optional[PerformanceTarget] = None
+    """PerformanceTarget defines how performant or cost efficient the execution of run on serverless
+    compute should be. For RunNow request, the run will execute with this settings instead of ones
+    defined in job."""
+
     pipeline_params: Optional[PipelineParams] = None
     """Controls whether the pipeline should perform a full refresh"""
 
@@ -4337,6 +4461,7 @@ class RunNow:
         if self.job_parameters: body['job_parameters'] = self.job_parameters
         if self.notebook_params: body['notebook_params'] = self.notebook_params
         if self.only: body['only'] = [v for v in self.only]
+        if self.performance_target is not None: body['performance_target'] = self.performance_target.value
         if self.pipeline_params: body['pipeline_params'] = self.pipeline_params.as_dict()
         if self.python_named_params: body['python_named_params'] = self.python_named_params
         if self.python_params: body['python_params'] = [v for v in self.python_params]
@@ -4355,6 +4480,7 @@ class RunNow:
         if self.job_parameters: body['job_parameters'] = self.job_parameters
         if self.notebook_params: body['notebook_params'] = self.notebook_params
         if self.only: body['only'] = self.only
+        if self.performance_target is not None: body['performance_target'] = self.performance_target
         if self.pipeline_params: body['pipeline_params'] = self.pipeline_params
         if self.python_named_params: body['python_named_params'] = self.python_named_params
         if self.python_params: body['python_params'] = self.python_params
@@ -4373,6 +4499,7 @@ class RunNow:
                    job_parameters=d.get('job_parameters', None),
                    notebook_params=d.get('notebook_params', None),
                    only=d.get('only', None),
+                   performance_target=_enum(d, 'performance_target', PerformanceTarget),
                    pipeline_params=_from_dict(d, 'pipeline_params', PipelineParams),
                    python_named_params=d.get('python_named_params', None),
                    python_params=d.get('python_params', None),
@@ -4414,6 +4541,9 @@ class RunNowResponse:
 @dataclass
 class RunOutput:
     """Run output was retrieved successfully."""
+
+    clean_rooms_notebook_output: Optional[CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput] = None
+    """The output of a clean rooms notebook task, if available"""
 
     dbt_output: Optional[DbtOutput] = None
     """The output of a dbt task, if available."""
@@ -4459,6 +4589,8 @@ class RunOutput:
     def as_dict(self) -> dict:
         """Serializes the RunOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.clean_rooms_notebook_output:
+            body['clean_rooms_notebook_output'] = self.clean_rooms_notebook_output.as_dict()
         if self.dbt_output: body['dbt_output'] = self.dbt_output.as_dict()
         if self.error is not None: body['error'] = self.error
         if self.error_trace is not None: body['error_trace'] = self.error_trace
@@ -4474,6 +4606,8 @@ class RunOutput:
     def as_shallow_dict(self) -> dict:
         """Serializes the RunOutput into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.clean_rooms_notebook_output:
+            body['clean_rooms_notebook_output'] = self.clean_rooms_notebook_output
         if self.dbt_output: body['dbt_output'] = self.dbt_output
         if self.error is not None: body['error'] = self.error
         if self.error_trace is not None: body['error_trace'] = self.error_trace
@@ -4489,7 +4623,9 @@ class RunOutput:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> RunOutput:
         """Deserializes the RunOutput from a dictionary."""
-        return cls(dbt_output=_from_dict(d, 'dbt_output', DbtOutput),
+        return cls(clean_rooms_notebook_output=_from_dict(d, 'clean_rooms_notebook_output',
+                                                          CleanRoomsNotebookTaskCleanRoomsNotebookTaskOutput),
+                   dbt_output=_from_dict(d, 'dbt_output', DbtOutput),
                    error=d.get('error', None),
                    error_trace=d.get('error_trace', None),
                    info=d.get('info', None),
@@ -4779,6 +4915,16 @@ class RunTask:
     description: Optional[str] = None
     """An optional description for this task."""
 
+    disabled: Optional[bool] = None
+    """Denotes whether or not the task was disabled by the user. Disabled tasks do not execute and are
+    immediately skipped as soon as they are unblocked."""
+
+    effective_performance_target: Optional[PerformanceTarget] = None
+    """effective_performance_target is the actual performance target used by the run during execution.
+    effective_performance_target can differ from performance_target depending on if the job was
+    eligible to be cost-optimized (e.g. contains at least 1 serverless task) or if an override was
+    provided for the run (ex. RunNow)."""
+
     email_notifications: Optional[JobEmailNotifications] = None
     """An optional set of email addresses notified when the task run begins or completes. The default
     behavior is to not send any emails."""
@@ -4927,6 +5073,9 @@ class RunTask:
         if self.dbt_task: body['dbt_task'] = self.dbt_task.as_dict()
         if self.depends_on: body['depends_on'] = [v.as_dict() for v in self.depends_on]
         if self.description is not None: body['description'] = self.description
+        if self.disabled is not None: body['disabled'] = self.disabled
+        if self.effective_performance_target is not None:
+            body['effective_performance_target'] = self.effective_performance_target.value
         if self.email_notifications: body['email_notifications'] = self.email_notifications.as_dict()
         if self.end_time is not None: body['end_time'] = self.end_time
         if self.environment_key is not None: body['environment_key'] = self.environment_key
@@ -4972,6 +5121,9 @@ class RunTask:
         if self.dbt_task: body['dbt_task'] = self.dbt_task
         if self.depends_on: body['depends_on'] = self.depends_on
         if self.description is not None: body['description'] = self.description
+        if self.disabled is not None: body['disabled'] = self.disabled
+        if self.effective_performance_target is not None:
+            body['effective_performance_target'] = self.effective_performance_target
         if self.email_notifications: body['email_notifications'] = self.email_notifications
         if self.end_time is not None: body['end_time'] = self.end_time
         if self.environment_key is not None: body['environment_key'] = self.environment_key
@@ -5018,6 +5170,8 @@ class RunTask:
                    dbt_task=_from_dict(d, 'dbt_task', DbtTask),
                    depends_on=_repeated_dict(d, 'depends_on', TaskDependency),
                    description=d.get('description', None),
+                   disabled=d.get('disabled', None),
+                   effective_performance_target=_enum(d, 'effective_performance_target', PerformanceTarget),
                    email_notifications=_from_dict(d, 'email_notifications', JobEmailNotifications),
                    end_time=d.get('end_time', None),
                    environment_key=d.get('environment_key', None),
@@ -5097,12 +5251,16 @@ class SparkJarTask:
     
     [Task parameter variables]: https://docs.databricks.com/jobs.html#parameter-variables"""
 
+    run_as_repl: Optional[bool] = None
+    """Deprecated. A value of `false` is no longer supported."""
+
     def as_dict(self) -> dict:
         """Serializes the SparkJarTask into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.jar_uri is not None: body['jar_uri'] = self.jar_uri
         if self.main_class_name is not None: body['main_class_name'] = self.main_class_name
         if self.parameters: body['parameters'] = [v for v in self.parameters]
+        if self.run_as_repl is not None: body['run_as_repl'] = self.run_as_repl
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -5111,6 +5269,7 @@ class SparkJarTask:
         if self.jar_uri is not None: body['jar_uri'] = self.jar_uri
         if self.main_class_name is not None: body['main_class_name'] = self.main_class_name
         if self.parameters: body['parameters'] = self.parameters
+        if self.run_as_repl is not None: body['run_as_repl'] = self.run_as_repl
         return body
 
     @classmethod
@@ -5118,7 +5277,8 @@ class SparkJarTask:
         """Deserializes the SparkJarTask from a dictionary."""
         return cls(jar_uri=d.get('jar_uri', None),
                    main_class_name=d.get('main_class_name', None),
-                   parameters=d.get('parameters', None))
+                   parameters=d.get('parameters', None),
+                   run_as_repl=d.get('run_as_repl', None))
 
 
 @dataclass
@@ -6539,6 +6699,7 @@ class TerminationCodeCode(Enum):
     
     [Link]: https://kb.databricks.com/en_US/notebooks/too-many-execution-contexts-are-open-right-now"""
 
+    BUDGET_POLICY_LIMIT_EXCEEDED = 'BUDGET_POLICY_LIMIT_EXCEEDED'
     CANCELED = 'CANCELED'
     CLOUD_FAILURE = 'CLOUD_FAILURE'
     CLUSTER_ERROR = 'CLUSTER_ERROR'
@@ -7061,6 +7222,7 @@ class JobsAPI:
                name: Optional[str] = None,
                notification_settings: Optional[JobNotificationSettings] = None,
                parameters: Optional[List[JobParameterDefinition]] = None,
+               performance_target: Optional[PerformanceTarget] = None,
                queue: Optional[QueueSettings] = None,
                run_as: Optional[JobRunAs] = None,
                schedule: Optional[CronSchedule] = None,
@@ -7133,6 +7295,9 @@ class JobsAPI:
           `email_notifications` and `webhook_notifications` for this job.
         :param parameters: List[:class:`JobParameterDefinition`] (optional)
           Job-level parameter definitions
+        :param performance_target: :class:`PerformanceTarget` (optional)
+          PerformanceTarget defines how performant or cost efficient the execution of run on serverless should
+          be.
         :param queue: :class:`QueueSettings` (optional)
           The queue settings of the job.
         :param run_as: :class:`JobRunAs` (optional)
@@ -7180,6 +7345,7 @@ class JobsAPI:
         if name is not None: body['name'] = name
         if notification_settings is not None: body['notification_settings'] = notification_settings.as_dict()
         if parameters is not None: body['parameters'] = [v.as_dict() for v in parameters]
+        if performance_target is not None: body['performance_target'] = performance_target.value
         if queue is not None: body['queue'] = queue.as_dict()
         if run_as is not None: body['run_as'] = run_as.as_dict()
         if schedule is not None: body['schedule'] = schedule.as_dict()
@@ -7678,6 +7844,7 @@ class JobsAPI:
                 job_parameters: Optional[Dict[str, str]] = None,
                 notebook_params: Optional[Dict[str, str]] = None,
                 only: Optional[List[str]] = None,
+                performance_target: Optional[PerformanceTarget] = None,
                 pipeline_params: Optional[PipelineParams] = None,
                 python_named_params: Optional[Dict[str, str]] = None,
                 python_params: Optional[List[str]] = None,
@@ -7737,6 +7904,10 @@ class JobsAPI:
         :param only: List[str] (optional)
           A list of task keys to run inside of the job. If this field is not provided, all tasks in the job
           will be run.
+        :param performance_target: :class:`PerformanceTarget` (optional)
+          PerformanceTarget defines how performant or cost efficient the execution of run on serverless
+          compute should be. For RunNow request, the run will execute with this settings instead of ones
+          defined in job.
         :param pipeline_params: :class:`PipelineParams` (optional)
           Controls whether the pipeline should perform a full refresh
         :param python_named_params: Dict[str,str] (optional)
@@ -7789,6 +7960,7 @@ class JobsAPI:
         if job_parameters is not None: body['job_parameters'] = job_parameters
         if notebook_params is not None: body['notebook_params'] = notebook_params
         if only is not None: body['only'] = [v for v in only]
+        if performance_target is not None: body['performance_target'] = performance_target.value
         if pipeline_params is not None: body['pipeline_params'] = pipeline_params.as_dict()
         if python_named_params is not None: body['python_named_params'] = python_named_params
         if python_params is not None: body['python_params'] = [v for v in python_params]
@@ -7811,6 +7983,7 @@ class JobsAPI:
                          job_parameters: Optional[Dict[str, str]] = None,
                          notebook_params: Optional[Dict[str, str]] = None,
                          only: Optional[List[str]] = None,
+                         performance_target: Optional[PerformanceTarget] = None,
                          pipeline_params: Optional[PipelineParams] = None,
                          python_named_params: Optional[Dict[str, str]] = None,
                          python_params: Optional[List[str]] = None,
@@ -7825,6 +7998,7 @@ class JobsAPI:
                             job_parameters=job_parameters,
                             notebook_params=notebook_params,
                             only=only,
+                            performance_target=performance_target,
                             pipeline_params=pipeline_params,
                             python_named_params=python_named_params,
                             python_params=python_params,

@@ -637,11 +637,11 @@ class ClusterAttributes:
     a set of default values will be used."""
 
     cluster_log_conf: Optional[ClusterLogConf] = None
-    """The configuration for delivering spark logs to a long-term storage destination. Two kinds of
-    destinations (dbfs and s3) are supported. Only one destination can be specified for one cluster.
-    If the conf is given, the logs will be delivered to the destination every `5 mins`. The
-    destination of driver logs is `$destination/$clusterId/driver`, while the destination of
-    executor logs is `$destination/$clusterId/executor`."""
+    """The configuration for delivering spark logs to a long-term storage destination. Three kinds of
+    destinations (DBFS, S3 and Unity Catalog volumes) are supported. Only one destination can be
+    specified for one cluster. If the conf is given, the logs will be delivered to the destination
+    every `5 mins`. The destination of driver logs is `$destination/$clusterId/driver`, while the
+    destination of executor logs is `$destination/$clusterId/executor`."""
 
     cluster_name: Optional[str] = None
     """Cluster name requested by the user. This doesn't have to be unique. If not specified at
@@ -947,11 +947,11 @@ class ClusterDetails:
     while each new cluster has a globally unique id."""
 
     cluster_log_conf: Optional[ClusterLogConf] = None
-    """The configuration for delivering spark logs to a long-term storage destination. Two kinds of
-    destinations (dbfs and s3) are supported. Only one destination can be specified for one cluster.
-    If the conf is given, the logs will be delivered to the destination every `5 mins`. The
-    destination of driver logs is `$destination/$clusterId/driver`, while the destination of
-    executor logs is `$destination/$clusterId/executor`."""
+    """The configuration for delivering spark logs to a long-term storage destination. Three kinds of
+    destinations (DBFS, S3 and Unity Catalog volumes) are supported. Only one destination can be
+    specified for one cluster. If the conf is given, the logs will be delivered to the destination
+    every `5 mins`. The destination of driver logs is `$destination/$clusterId/driver`, while the
+    destination of executor logs is `$destination/$clusterId/executor`."""
 
     cluster_log_status: Optional[LogSyncStatus] = None
     """Cluster log delivery status."""
@@ -1428,11 +1428,16 @@ class ClusterLogConf:
     access s3, please make sure the cluster iam role in `instance_profile_arn` has permission to
     write data to the s3 destination."""
 
+    volumes: Optional[VolumesStorageInfo] = None
+    """destination needs to be provided. e.g. `{ "volumes" : { "destination" :
+    "/Volumes/catalog/schema/volume/cluster_log" } }`"""
+
     def as_dict(self) -> dict:
         """Serializes the ClusterLogConf into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.dbfs: body['dbfs'] = self.dbfs.as_dict()
         if self.s3: body['s3'] = self.s3.as_dict()
+        if self.volumes: body['volumes'] = self.volumes.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1440,12 +1445,15 @@ class ClusterLogConf:
         body = {}
         if self.dbfs: body['dbfs'] = self.dbfs
         if self.s3: body['s3'] = self.s3
+        if self.volumes: body['volumes'] = self.volumes
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ClusterLogConf:
         """Deserializes the ClusterLogConf from a dictionary."""
-        return cls(dbfs=_from_dict(d, 'dbfs', DbfsStorageInfo), s3=_from_dict(d, 's3', S3StorageInfo))
+        return cls(dbfs=_from_dict(d, 'dbfs', DbfsStorageInfo),
+                   s3=_from_dict(d, 's3', S3StorageInfo),
+                   volumes=_from_dict(d, 'volumes', VolumesStorageInfo))
 
 
 @dataclass
@@ -1918,11 +1926,11 @@ class ClusterSpec:
     a set of default values will be used."""
 
     cluster_log_conf: Optional[ClusterLogConf] = None
-    """The configuration for delivering spark logs to a long-term storage destination. Two kinds of
-    destinations (dbfs and s3) are supported. Only one destination can be specified for one cluster.
-    If the conf is given, the logs will be delivered to the destination every `5 mins`. The
-    destination of driver logs is `$destination/$clusterId/driver`, while the destination of
-    executor logs is `$destination/$clusterId/executor`."""
+    """The configuration for delivering spark logs to a long-term storage destination. Three kinds of
+    destinations (DBFS, S3 and Unity Catalog volumes) are supported. Only one destination can be
+    specified for one cluster. If the conf is given, the logs will be delivered to the destination
+    every `5 mins`. The destination of driver logs is `$destination/$clusterId/driver`, while the
+    destination of executor logs is `$destination/$clusterId/executor`."""
 
     cluster_name: Optional[str] = None
     """Cluster name requested by the user. This doesn't have to be unique. If not specified at
@@ -2334,11 +2342,11 @@ class CreateCluster:
     cluster."""
 
     cluster_log_conf: Optional[ClusterLogConf] = None
-    """The configuration for delivering spark logs to a long-term storage destination. Two kinds of
-    destinations (dbfs and s3) are supported. Only one destination can be specified for one cluster.
-    If the conf is given, the logs will be delivered to the destination every `5 mins`. The
-    destination of driver logs is `$destination/$clusterId/driver`, while the destination of
-    executor logs is `$destination/$clusterId/executor`."""
+    """The configuration for delivering spark logs to a long-term storage destination. Three kinds of
+    destinations (DBFS, S3 and Unity Catalog volumes) are supported. Only one destination can be
+    specified for one cluster. If the conf is given, the logs will be delivered to the destination
+    every `5 mins`. The destination of driver logs is `$destination/$clusterId/driver`, while the
+    destination of executor logs is `$destination/$clusterId/executor`."""
 
     cluster_name: Optional[str] = None
     """Cluster name requested by the user. This doesn't have to be unique. If not specified at
@@ -2938,6 +2946,42 @@ class Created:
 
 
 @dataclass
+class CustomPolicyTag:
+    key: str
+    """The key of the tag. - Must be unique among all custom tags of the same policy - Cannot be
+    “budget-policy-name”, “budget-policy-id” or "budget-policy-resolution-result" - these
+    tags are preserved.
+    
+    - Follows the regex pattern defined in cluster-common/conf/src/ClusterTagConstraints.scala
+    (https://src.dev.databricks.com/databricks/universe@1647196627c8dc7b4152ad098a94b86484b93a6c/-/blob/cluster-common/conf/src/ClusterTagConstraints.scala?L17)"""
+
+    value: Optional[str] = None
+    """The value of the tag.
+    
+    - Follows the regex pattern defined in cluster-common/conf/src/ClusterTagConstraints.scala
+    (https://src.dev.databricks.com/databricks/universe@1647196627c8dc7b4152ad098a94b86484b93a6c/-/blob/cluster-common/conf/src/ClusterTagConstraints.scala?L24)"""
+
+    def as_dict(self) -> dict:
+        """Serializes the CustomPolicyTag into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.key is not None: body['key'] = self.key
+        if self.value is not None: body['value'] = self.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CustomPolicyTag into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.key is not None: body['key'] = self.key
+        if self.value is not None: body['value'] = self.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> CustomPolicyTag:
+        """Deserializes the CustomPolicyTag from a dictionary."""
+        return cls(key=d.get('key', None), value=d.get('value', None))
+
+
+@dataclass
 class DataPlaneEventDetails:
     event_type: Optional[DataPlaneEventDetailsEventType] = None
     """<needs content added>"""
@@ -3433,11 +3477,11 @@ class EditCluster:
     a set of default values will be used."""
 
     cluster_log_conf: Optional[ClusterLogConf] = None
-    """The configuration for delivering spark logs to a long-term storage destination. Two kinds of
-    destinations (dbfs and s3) are supported. Only one destination can be specified for one cluster.
-    If the conf is given, the logs will be delivered to the destination every `5 mins`. The
-    destination of driver logs is `$destination/$clusterId/driver`, while the destination of
-    executor logs is `$destination/$clusterId/executor`."""
+    """The configuration for delivering spark logs to a long-term storage destination. Three kinds of
+    destinations (DBFS, S3 and Unity Catalog volumes) are supported. Only one destination can be
+    specified for one cluster. If the conf is given, the logs will be delivered to the destination
+    every `5 mins`. The destination of driver logs is `$destination/$clusterId/driver`, while the
+    destination of executor logs is `$destination/$clusterId/executor`."""
 
     cluster_name: Optional[str] = None
     """Cluster name requested by the user. This doesn't have to be unique. If not specified at
@@ -4184,6 +4228,10 @@ class EventDetailsCause(Enum):
 
 class EventType(Enum):
 
+    ADD_NODES_FAILED = 'ADD_NODES_FAILED'
+    AUTOMATIC_CLUSTER_UPDATE = 'AUTOMATIC_CLUSTER_UPDATE'
+    AUTOSCALING_BACKOFF = 'AUTOSCALING_BACKOFF'
+    AUTOSCALING_FAILED = 'AUTOSCALING_FAILED'
     AUTOSCALING_STATS_REPORT = 'AUTOSCALING_STATS_REPORT'
     CREATING = 'CREATING'
     DBFS_DOWN = 'DBFS_DOWN'
@@ -7733,11 +7781,11 @@ class UpdateClusterResource:
     a set of default values will be used."""
 
     cluster_log_conf: Optional[ClusterLogConf] = None
-    """The configuration for delivering spark logs to a long-term storage destination. Two kinds of
-    destinations (dbfs and s3) are supported. Only one destination can be specified for one cluster.
-    If the conf is given, the logs will be delivered to the destination every `5 mins`. The
-    destination of driver logs is `$destination/$clusterId/driver`, while the destination of
-    executor logs is `$destination/$clusterId/executor`."""
+    """The configuration for delivering spark logs to a long-term storage destination. Three kinds of
+    destinations (DBFS, S3 and Unity Catalog volumes) are supported. Only one destination can be
+    specified for one cluster. If the conf is given, the logs will be delivered to the destination
+    every `5 mins`. The destination of driver logs is `$destination/$clusterId/driver`, while the
+    destination of executor logs is `$destination/$clusterId/executor`."""
 
     cluster_name: Optional[str] = None
     """Cluster name requested by the user. This doesn't have to be unique. If not specified at
@@ -8037,7 +8085,7 @@ class UpdateResponse:
 @dataclass
 class VolumesStorageInfo:
     destination: str
-    """Unity Catalog Volumes file destination, e.g. `/Volumes/my-init.sh`"""
+    """Unity Catalog volumes file destination, e.g. `/Volumes/catalog/schema/volume/dir/file`"""
 
     def as_dict(self) -> dict:
         """Serializes the VolumesStorageInfo into a dictionary suitable for use as a JSON request body."""
@@ -8579,11 +8627,11 @@ class ClustersAPI:
         :param clone_from: :class:`CloneCluster` (optional)
           When specified, this clones libraries from a source cluster during the creation of a new cluster.
         :param cluster_log_conf: :class:`ClusterLogConf` (optional)
-          The configuration for delivering spark logs to a long-term storage destination. Two kinds of
-          destinations (dbfs and s3) are supported. Only one destination can be specified for one cluster. If
-          the conf is given, the logs will be delivered to the destination every `5 mins`. The destination of
-          driver logs is `$destination/$clusterId/driver`, while the destination of executor logs is
-          `$destination/$clusterId/executor`.
+          The configuration for delivering spark logs to a long-term storage destination. Three kinds of
+          destinations (DBFS, S3 and Unity Catalog volumes) are supported. Only one destination can be
+          specified for one cluster. If the conf is given, the logs will be delivered to the destination every
+          `5 mins`. The destination of driver logs is `$destination/$clusterId/driver`, while the destination
+          of executor logs is `$destination/$clusterId/executor`.
         :param cluster_name: str (optional)
           Cluster name requested by the user. This doesn't have to be unique. If not specified at creation,
           the cluster name will be an empty string.
@@ -8912,11 +8960,11 @@ class ClustersAPI:
           Attributes related to clusters running on Microsoft Azure. If not specified at cluster creation, a
           set of default values will be used.
         :param cluster_log_conf: :class:`ClusterLogConf` (optional)
-          The configuration for delivering spark logs to a long-term storage destination. Two kinds of
-          destinations (dbfs and s3) are supported. Only one destination can be specified for one cluster. If
-          the conf is given, the logs will be delivered to the destination every `5 mins`. The destination of
-          driver logs is `$destination/$clusterId/driver`, while the destination of executor logs is
-          `$destination/$clusterId/executor`.
+          The configuration for delivering spark logs to a long-term storage destination. Three kinds of
+          destinations (DBFS, S3 and Unity Catalog volumes) are supported. Only one destination can be
+          specified for one cluster. If the conf is given, the logs will be delivered to the destination every
+          `5 mins`. The destination of driver logs is `$destination/$clusterId/driver`, while the destination
+          of executor logs is `$destination/$clusterId/executor`.
         :param cluster_name: str (optional)
           Cluster name requested by the user. This doesn't have to be unique. If not specified at creation,
           the cluster name will be an empty string.

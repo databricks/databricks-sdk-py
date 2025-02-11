@@ -5,7 +5,7 @@
 .. py:class:: TokensAPI
 
     The Token API allows you to create, list, and revoke tokens that can be used to authenticate and access
-    Databricks REST APIs.
+Databricks REST APIs.
 
     .. py:method:: create( [, comment: Optional[str], lifetime_seconds: Optional[int]]) -> CreateTokenResponse
 
@@ -26,34 +26,34 @@
             w.tokens.delete(token_id=token.token_info.token_id)
 
         Create a user token.
-        
-        Creates and returns a token for a user. If this call is made through token authentication, it creates
-        a token with the same client ID as the authenticated token. If the user's token quota is exceeded,
-        this call returns an error **QUOTA_EXCEEDED**.
-        
-        :param comment: str (optional)
-          Optional description to attach to the token.
-        :param lifetime_seconds: int (optional)
-          The lifetime of the token, in seconds.
-          
-          If the lifetime is not specified, this token remains valid indefinitely.
-        
-        :returns: :class:`CreateTokenResponse`
-        
+
+Creates and returns a token for a user. If this call is made through token authentication, it creates
+a token with the same client ID as the authenticated token. If the user's token quota is exceeded,
+this call returns an error **QUOTA_EXCEEDED**.
+
+:param comment: str (optional)
+  Optional description to attach to the token.
+:param lifetime_seconds: int (optional)
+  The lifetime of the token, in seconds.
+  
+  If the lifetime is not specified, this token remains valid indefinitely.
+
+:returns: :class:`CreateTokenResponse`
+
 
     .. py:method:: delete(token_id: str)
 
         Revoke token.
-        
-        Revokes an access token.
-        
-        If a token with the specified ID is not valid, this call returns an error **RESOURCE_DOES_NOT_EXIST**.
-        
-        :param token_id: str
-          The ID of the token to be revoked.
-        
-        
-        
+
+Revokes an access token.
+
+If a token with the specified ID is not valid, this call returns an error **RESOURCE_DOES_NOT_EXIST**.
+
+:param token_id: str
+  The ID of the token to be revoked.
+
+
+
 
     .. py:method:: list() -> Iterator[PublicTokenInfo]
 
@@ -69,8 +69,7 @@
             all = w.tokens.list()
 
         List tokens.
-        
-        Lists all the valid tokens for a user-workspace pair.
-        
-        :returns: Iterator over :class:`PublicTokenInfo`
-        
+
+Lists all the valid tokens for a user-workspace pair.
+
+:returns: Iterator over :class:`PublicTokenInfo`

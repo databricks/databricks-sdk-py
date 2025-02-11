@@ -8,7 +8,7 @@ from http.server import BaseHTTPRequestHandler
 
 import pytest
 
-from databricks.sdk import WorkspaceClient, errors
+from databricks.sdk import WorkspaceClient, errors, useragent
 from databricks.sdk.core import ApiClient, Config, DatabricksError
 from databricks.sdk.credentials_provider import (CliTokenSource,
                                                  CredentialsProvider,
@@ -177,6 +177,11 @@ def test_extra_and_upstream_user_agent(monkeypatch):
         @property
         def system(self):
             return 'TestOS'
+
+    # Clear all environment variables and cached CICD provider.
+    for k in os.environ:
+        monkeypatch.delenv(k, raising=False)
+    useragent._cicd_provider = None
 
     monkeypatch.setattr(platform, 'python_version', lambda: '3.0.0')
     monkeypatch.setattr(platform, 'uname', MockUname)
