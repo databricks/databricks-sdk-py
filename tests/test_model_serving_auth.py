@@ -1,8 +1,10 @@
+import threading
 import time
 
 import pytest
 
 from databricks.sdk.core import Config
+from databricks.sdk.credentials_provider import ModelServingUserCredentials
 
 from .conftest import raises
 
@@ -39,7 +41,6 @@ def test_model_serving_auth(env_values, del_env_values, oauth_file_name, monkeyp
     mocker.patch('databricks.sdk.config.Config._known_file_config_loader')
 
     cfg = Config()
-
     assert cfg.auth_type == 'model-serving'
     headers = cfg.authenticate()
     assert (cfg.host == 'x')
@@ -93,7 +94,6 @@ def test_model_serving_auth_refresh(monkeypatch, mocker):
     assert (cfg.host == 'x')
     assert headers.get(
         "Authorization") == 'Bearer databricks_sdk_unit_test_token' # Token defined in the test file
-
     # Simulate refreshing the token by patching to to a new file
     monkeypatch.setattr(
         "databricks.sdk.credentials_provider.ModelServingAuthProvider._MODEL_DEPENDENCY_OAUTH_TOKEN_FILE_PATH",
@@ -113,3 +113,49 @@ def test_model_serving_auth_refresh(monkeypatch, mocker):
     assert (cfg.host == 'x')
     # Read V2 now
     assert headers.get("Authorization") == 'Bearer databricks_sdk_unit_test_token_v2'
+
+
+def test_agent_user_credentials(monkeypatch, mocker):
+    monkeypatch.setenv('IS_IN_DB_MODEL_SERVING_ENV', 'true')
+    monkeypatch.setenv('DB_MODEL_SERVING_HOST_URL', 'x')
+    monkeypatch.setattr(
+        "databricks.sdk.credentials_provider.ModelServingAuthProvider._MODEL_DEPENDENCY_OAUTH_TOKEN_FILE_PATH",
+        "tests/testdata/model-serving-test-token")
+
+    invokers_token_val = "databricks_invokers_token"
+    current_thread = threading.current_thread()
+    thread_data = current_thread.__dict__
+    thread_data["invokers_token"] = invokers_token_val
+
+    cfg = Config(credentials_strategy=ModelServingUserCredentials())
+    assert cfg.auth_type == 'model_serving_user_credentials'
+
+    headers = cfg.authenticate()
+
+    assert (cfg.host == 'x')
+    assert headers.get("Authorization") == f'Bearer {invokers_token_val}'
+
+    # Test updates of invokers token
+    invokers_token_val = "databricks_invokers_token_v2"
+    current_thread = threading.current_thread()
+    thread_data = current_thread.__dict__
+    thread_data["invokers_token"] = invokers_token_val
+
+    headers = cfg.authenticate()
+    assert (cfg.host == 'x')
+    assert headers.get("Authorization") == f'Bearer {invokers_token_val}'
+
+
+# If this credential strategy is being used in a non model serving environments then use default credential strategy instead
+def test_agent_user_credentials_in_non_model_serving_environments(monkeypatch):
+
+    monkeypatch.setenv('DATABRICKS_HOST', 'x')
+    monkeypatch.setenv('DATABRICKS_TOKEN', 'token')
+
+    cfg = Config(credentials_strategy=ModelServingUserCredentials())
+    assert cfg.auth_type == 'pat' # Auth type is PAT as it is no longer in a model serving environment
+
+    headers = cfg.authenticate()
+
+    assert (cfg.host == 'https://x')
+    assert headers.get("Authorization") == f'Bearer token'
