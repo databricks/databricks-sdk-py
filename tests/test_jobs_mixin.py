@@ -146,6 +146,7 @@ def test_get_run_pagination_with_iterations(config, requests_mock):
         }],
     }
 
+
 def test_get_job_with_no_pagination(config, requests_mock):
     job1 = {"settings": {"tasks": [{"task_key": "taskKey1"}, {"task_key": "taskKey2"}], }}
     requests_mock.get(make_getjob_path_pattern(1337, "initialToken"), text=json.dumps(job1))
