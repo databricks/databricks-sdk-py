@@ -5,8 +5,8 @@
 .. py:class:: BudgetsAPI
 
     These APIs manage budget configurations for this account. Budgets enable you to monitor usage across your
-account. You can set up budgets to either track account-wide spending, or apply filters to track the
-spending of specific teams, projects, or workspaces.
+    account. You can set up budgets to either track account-wide spending, or apply filters to track the
+    spending of specific teams, projects, or workspaces.
 
     .. py:method:: create(budget: CreateBudgetConfigurationBudget) -> CreateBudgetConfigurationResponse
 
@@ -47,28 +47,28 @@ spending of specific teams, projects, or workspaces.
             a.budgets.delete(budget_id=created.budget.budget_configuration_id)
 
         Create new budget.
-
-Create a new budget configuration for an account. For full details, see
-https://docs.databricks.com/en/admin/account-settings/budgets.html.
-
-:param budget: :class:`CreateBudgetConfigurationBudget`
-  Properties of the new budget configuration.
-
-:returns: :class:`CreateBudgetConfigurationResponse`
-
+        
+        Create a new budget configuration for an account. For full details, see
+        https://docs.databricks.com/en/admin/account-settings/budgets.html.
+        
+        :param budget: :class:`CreateBudgetConfigurationBudget`
+          Properties of the new budget configuration.
+        
+        :returns: :class:`CreateBudgetConfigurationResponse`
+        
 
     .. py:method:: delete(budget_id: str)
 
         Delete budget.
-
-Deletes a budget configuration for an account. Both account and budget configuration are specified by
-ID. This cannot be undone.
-
-:param budget_id: str
-  The Databricks budget configuration ID.
-
-
-
+        
+        Deletes a budget configuration for an account. Both account and budget configuration are specified by
+        ID. This cannot be undone.
+        
+        :param budget_id: str
+          The Databricks budget configuration ID.
+        
+        
+        
 
     .. py:method:: get(budget_id: str) -> GetBudgetConfigurationResponse
 
@@ -111,14 +111,14 @@ ID. This cannot be undone.
             a.budgets.delete(budget_id=created.budget.budget_configuration_id)
 
         Get budget.
-
-Gets a budget configuration for an account. Both account and budget configuration are specified by ID.
-
-:param budget_id: str
-  The budget configuration ID
-
-:returns: :class:`GetBudgetConfigurationResponse`
-
+        
+        Gets a budget configuration for an account. Both account and budget configuration are specified by ID.
+        
+        :param budget_id: str
+          The budget configuration ID
+        
+        :returns: :class:`GetBudgetConfigurationResponse`
+        
 
     .. py:method:: list( [, page_token: Optional[str]]) -> Iterator[BudgetConfiguration]
 
@@ -135,15 +135,15 @@ Gets a budget configuration for an account. Both account and budget configuratio
             all = a.budgets.list(billing.ListBudgetConfigurationsRequest())
 
         Get all budgets.
-
-Gets all budgets associated with this account.
-
-:param page_token: str (optional)
-  A page token received from a previous get all budget configurations call. This token can be used to
-  retrieve the subsequent page. Requests first page if absent.
-
-:returns: Iterator over :class:`BudgetConfiguration`
-
+        
+        Gets all budgets associated with this account.
+        
+        :param page_token: str (optional)
+          A page token received from a previous get all budget configurations call. This token can be used to
+          retrieve the subsequent page. Requests first page if absent.
+        
+        :returns: Iterator over :class:`BudgetConfiguration`
+        
 
     .. py:method:: update(budget_id: str, budget: UpdateBudgetConfigurationBudget) -> UpdateBudgetConfigurationResponse
 
@@ -205,13 +205,14 @@ Gets all budgets associated with this account.
             a.budgets.delete(budget_id=created.budget.budget_configuration_id)
 
         Modify budget.
-
-Updates a budget configuration for an account. Both account and budget configuration are specified by
-ID.
-
-:param budget_id: str
-  The Databricks budget configuration ID.
-:param budget: :class:`UpdateBudgetConfigurationBudget`
-  The updated budget. This will overwrite the budget specified by the budget ID.
-
-:returns: :class:`UpdateBudgetConfigurationResponse`
+        
+        Updates a budget configuration for an account. Both account and budget configuration are specified by
+        ID.
+        
+        :param budget_id: str
+          The Databricks budget configuration ID.
+        :param budget: :class:`UpdateBudgetConfigurationBudget`
+          The updated budget. This will overwrite the budget specified by the budget ID.
+        
+        :returns: :class:`UpdateBudgetConfigurationResponse`
+        
