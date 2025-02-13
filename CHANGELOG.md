@@ -1,5 +1,18 @@
 # Version changelog
 
+## [Release] Release v0.44.1
+
+### New Features and Improvements
+
+ * Introduce new Credential Strategies for Agents ([#882](https://github.com/databricks/databricks-sdk-py/pull/882)).
+
+
+### Internal Changes
+
+ * GetRun logic paginates more arrays ([#867](https://github.com/databricks/databricks-sdk-py/pull/867)).
+
+
+
 ## [Release] Release v0.44.0
 
 ### Internal Changes
