@@ -872,6 +872,14 @@ class DefaultCredentials:
 
 
 class ModelServingUserCredentials(CredentialsStrategy):
+    """
+    This credential strategy is designed for authenticating the Databricks SDK in the model serving environment using user-specific rights. 
+    In the model serving environment, the strategy retrieves a downscoped user token from the thread-local variable. 
+    In any other environments, the class defaults to the DefaultCredentialStrategy. 
+    To use this credential strategy, instantiate the WorkspaceClient with the ModelServingUserCredentials strategy as follows:
+
+    invokers_client = WorkspaceClient(credential_strategy = ModelServingUserCredentials())
+    """
 
     def __init__(self):
         self.credential_type = ModelServingAuthProvider.USER_CREDENTIALS
