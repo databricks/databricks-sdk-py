@@ -5,14 +5,14 @@
 .. py:class:: GrantsAPI
 
     In Unity Catalog, data is secure by default. Initially, users have no access to data in a metastore.
-    Access can be granted by either a metastore admin, the owner of an object, or the owner of the catalog or
-    schema that contains the object. Securable objects in Unity Catalog are hierarchical and privileges are
-    inherited downward.
-    
-    Securable objects in Unity Catalog are hierarchical and privileges are inherited downward. This means that
-    granting a privilege on the catalog automatically grants the privilege to all current and future objects
-    within the catalog. Similarly, privileges granted on a schema are inherited by all current and future
-    objects within that schema.
+Access can be granted by either a metastore admin, the owner of an object, or the owner of the catalog or
+schema that contains the object. Securable objects in Unity Catalog are hierarchical and privileges are
+inherited downward.
+
+Securable objects in Unity Catalog are hierarchical and privileges are inherited downward. This means that
+granting a privilege on the catalog automatically grants the privilege to all current and future objects
+within the catalog. Similarly, privileges granted on a schema are inherited by all current and future
+objects within that schema.
 
     .. py:method:: get(securable_type: SecurableType, full_name: str [, principal: Optional[str]]) -> PermissionsList
 
@@ -52,18 +52,18 @@
             w.tables.delete(full_name=table_full_name)
 
         Get permissions.
-        
-        Gets the permissions for a securable.
-        
-        :param securable_type: :class:`SecurableType`
-          Type of securable.
-        :param full_name: str
-          Full name of securable.
-        :param principal: str (optional)
-          If provided, only the permissions for the specified principal (user or group) are returned.
-        
-        :returns: :class:`PermissionsList`
-        
+
+Gets the permissions for a securable.
+
+:param securable_type: :class:`SecurableType`
+  Type of securable.
+:param full_name: str
+  Full name of securable.
+:param principal: str (optional)
+  If provided, only the permissions for the specified principal (user or group) are returned.
+
+:returns: :class:`PermissionsList`
+
 
     .. py:method:: get_effective(securable_type: SecurableType, full_name: str [, principal: Optional[str]]) -> EffectivePermissionsList
 
@@ -103,19 +103,19 @@
             w.tables.delete(full_name=table_full_name)
 
         Get effective permissions.
-        
-        Gets the effective permissions for a securable.
-        
-        :param securable_type: :class:`SecurableType`
-          Type of securable.
-        :param full_name: str
-          Full name of securable.
-        :param principal: str (optional)
-          If provided, only the effective permissions for the specified principal (user or group) are
-          returned.
-        
-        :returns: :class:`EffectivePermissionsList`
-        
+
+Gets the effective permissions for a securable.
+
+:param securable_type: :class:`SecurableType`
+  Type of securable.
+:param full_name: str
+  Full name of securable.
+:param principal: str (optional)
+  If provided, only the effective permissions for the specified principal (user or group) are
+  returned.
+
+:returns: :class:`EffectivePermissionsList`
+
 
     .. py:method:: update(securable_type: SecurableType, full_name: str [, changes: Optional[List[PermissionsChange]]]) -> PermissionsList
 
@@ -162,15 +162,14 @@
             w.tables.delete(full_name=table_full_name)
 
         Update permissions.
-        
-        Updates the permissions for a securable.
-        
-        :param securable_type: :class:`SecurableType`
-          Type of securable.
-        :param full_name: str
-          Full name of securable.
-        :param changes: List[:class:`PermissionsChange`] (optional)
-          Array of permissions change objects.
-        
-        :returns: :class:`PermissionsList`
-        
+
+Updates the permissions for a securable.
+
+:param securable_type: :class:`SecurableType`
+  Type of securable.
+:param full_name: str
+  Full name of securable.
+:param changes: List[:class:`PermissionsChange`] (optional)
+  Array of permissions change objects.
+
+:returns: :class:`PermissionsList`

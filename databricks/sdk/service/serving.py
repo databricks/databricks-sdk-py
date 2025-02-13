@@ -650,12 +650,12 @@ class CreateServingEndpoint:
     """The name of the serving endpoint. This field is required and must be unique across a Databricks
     workspace. An endpoint name can consist of alphanumeric characters, dashes, and underscores."""
 
-    config: EndpointCoreConfigInput
-    """The core config of the serving endpoint."""
-
     ai_gateway: Optional[AiGatewayConfig] = None
     """The AI Gateway configuration for the serving endpoint. NOTE: Only external model and provisioned
     throughput endpoints are currently supported."""
+
+    config: Optional[EndpointCoreConfigInput] = None
+    """The core config of the serving endpoint."""
 
     rate_limits: Optional[List[RateLimit]] = None
     """Rate limits to be applied to the serving endpoint. NOTE: this field is deprecated, please use AI
@@ -1243,39 +1243,11 @@ class ExternalFunctionRequestHttpMethod(Enum):
 
 
 @dataclass
-class ExternalFunctionResponse:
-    status_code: Optional[int] = None
-    """The HTTP status code of the response"""
-
-    text: Optional[str] = None
-    """The content of the response"""
-
-    def as_dict(self) -> dict:
-        """Serializes the ExternalFunctionResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.status_code is not None: body['status_code'] = self.status_code
-        if self.text is not None: body['text'] = self.text
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ExternalFunctionResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.status_code is not None: body['status_code'] = self.status_code
-        if self.text is not None: body['text'] = self.text
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> ExternalFunctionResponse:
-        """Deserializes the ExternalFunctionResponse from a dictionary."""
-        return cls(status_code=d.get('status_code', None), text=d.get('text', None))
-
-
-@dataclass
 class ExternalModel:
     provider: ExternalModelProvider
     """The name of the provider for the external model. Currently, the supported providers are
     'ai21labs', 'anthropic', 'amazon-bedrock', 'cohere', 'databricks-model-serving',
-    'google-cloud-vertex-ai', 'openai', and 'palm'."""
+    'google-cloud-vertex-ai', 'openai', 'palm', and 'custom'."""
 
     name: str
     """The name of the external model."""
@@ -1548,6 +1520,28 @@ class GoogleCloudVertexAiConfig:
                    private_key_plaintext=d.get('private_key_plaintext', None),
                    project_id=d.get('project_id', None),
                    region=d.get('region', None))
+
+
+@dataclass
+class HttpRequestResponse:
+    contents: Optional[BinaryIO] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the HttpRequestResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.contents: body['contents'] = self.contents
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the HttpRequestResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.contents: body['contents'] = self.contents
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> HttpRequestResponse:
+        """Deserializes the HttpRequestResponse from a dictionary."""
+        return cls(contents=d.get('contents', None))
 
 
 @dataclass
@@ -3403,9 +3397,9 @@ class ServingEndpointsAPI:
 
     def create(self,
                name: str,
-               config: EndpointCoreConfigInput,
                *,
                ai_gateway: Optional[AiGatewayConfig] = None,
+               config: Optional[EndpointCoreConfigInput] = None,
                rate_limits: Optional[List[RateLimit]] = None,
                route_optimized: Optional[bool] = None,
                tags: Optional[List[EndpointTag]] = None) -> Wait[ServingEndpointDetailed]:
@@ -3414,11 +3408,11 @@ class ServingEndpointsAPI:
         :param name: str
           The name of the serving endpoint. This field is required and must be unique across a Databricks
           workspace. An endpoint name can consist of alphanumeric characters, dashes, and underscores.
-        :param config: :class:`EndpointCoreConfigInput`
-          The core config of the serving endpoint.
         :param ai_gateway: :class:`AiGatewayConfig` (optional)
           The AI Gateway configuration for the serving endpoint. NOTE: Only external model and provisioned
           throughput endpoints are currently supported.
+        :param config: :class:`EndpointCoreConfigInput` (optional)
+          The core config of the serving endpoint.
         :param rate_limits: List[:class:`RateLimit`] (optional)
           Rate limits to be applied to the serving endpoint. NOTE: this field is deprecated, please use AI
           Gateway to manage rate limits.
@@ -3448,9 +3442,9 @@ class ServingEndpointsAPI:
     def create_and_wait(
         self,
         name: str,
-        config: EndpointCoreConfigInput,
         *,
         ai_gateway: Optional[AiGatewayConfig] = None,
+        config: Optional[EndpointCoreConfigInput] = None,
         rate_limits: Optional[List[RateLimit]] = None,
         route_optimized: Optional[bool] = None,
         tags: Optional[List[EndpointTag]] = None,
@@ -3568,7 +3562,7 @@ class ServingEndpointsAPI:
                      *,
                      headers: Optional[str] = None,
                      json: Optional[str] = None,
-                     params: Optional[str] = None) -> ExternalFunctionResponse:
+                     params: Optional[str] = None) -> HttpRequestResponse:
         """Make external services call using the credentials stored in UC Connection.
         
         :param connection_name: str
@@ -3585,7 +3579,7 @@ class ServingEndpointsAPI:
         :param params: str (optional)
           Query parameters for the request.
         
-        :returns: :class:`ExternalFunctionResponse`
+        :returns: :class:`HttpRequestResponse`
         """
         body = {}
         if connection_name is not None: body['connection_name'] = connection_name
@@ -3594,10 +3588,10 @@ class ServingEndpointsAPI:
         if method is not None: body['method'] = method.value
         if params is not None: body['params'] = params
         if path is not None: body['path'] = path
-        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        headers = {'Accept': 'text/plain', 'Content-Type': 'application/json', }
 
-        res = self._api.do('POST', '/api/2.0/external-function', body=body, headers=headers)
-        return ExternalFunctionResponse.from_dict(res)
+        res = self._api.do('POST', '/api/2.0/external-function', body=body, headers=headers, raw=True)
+        return HttpRequestResponse.from_dict(res)
 
     def list(self) -> Iterator[ServingEndpoint]:
         """Get all serving endpoints.

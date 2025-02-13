@@ -632,6 +632,79 @@ class ChannelName(Enum):
 
 
 @dataclass
+class ClientConfig:
+    allow_custom_js_visualizations: Optional[bool] = None
+
+    allow_downloads: Optional[bool] = None
+
+    allow_external_shares: Optional[bool] = None
+
+    allow_subscriptions: Optional[bool] = None
+
+    date_format: Optional[str] = None
+
+    date_time_format: Optional[str] = None
+
+    disable_publish: Optional[bool] = None
+
+    enable_legacy_autodetect_types: Optional[bool] = None
+
+    feature_show_permissions_control: Optional[bool] = None
+
+    hide_plotly_mode_bar: Optional[bool] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ClientConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.allow_custom_js_visualizations is not None:
+            body['allow_custom_js_visualizations'] = self.allow_custom_js_visualizations
+        if self.allow_downloads is not None: body['allow_downloads'] = self.allow_downloads
+        if self.allow_external_shares is not None: body['allow_external_shares'] = self.allow_external_shares
+        if self.allow_subscriptions is not None: body['allow_subscriptions'] = self.allow_subscriptions
+        if self.date_format is not None: body['date_format'] = self.date_format
+        if self.date_time_format is not None: body['date_time_format'] = self.date_time_format
+        if self.disable_publish is not None: body['disable_publish'] = self.disable_publish
+        if self.enable_legacy_autodetect_types is not None:
+            body['enable_legacy_autodetect_types'] = self.enable_legacy_autodetect_types
+        if self.feature_show_permissions_control is not None:
+            body['feature_show_permissions_control'] = self.feature_show_permissions_control
+        if self.hide_plotly_mode_bar is not None: body['hide_plotly_mode_bar'] = self.hide_plotly_mode_bar
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ClientConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.allow_custom_js_visualizations is not None:
+            body['allow_custom_js_visualizations'] = self.allow_custom_js_visualizations
+        if self.allow_downloads is not None: body['allow_downloads'] = self.allow_downloads
+        if self.allow_external_shares is not None: body['allow_external_shares'] = self.allow_external_shares
+        if self.allow_subscriptions is not None: body['allow_subscriptions'] = self.allow_subscriptions
+        if self.date_format is not None: body['date_format'] = self.date_format
+        if self.date_time_format is not None: body['date_time_format'] = self.date_time_format
+        if self.disable_publish is not None: body['disable_publish'] = self.disable_publish
+        if self.enable_legacy_autodetect_types is not None:
+            body['enable_legacy_autodetect_types'] = self.enable_legacy_autodetect_types
+        if self.feature_show_permissions_control is not None:
+            body['feature_show_permissions_control'] = self.feature_show_permissions_control
+        if self.hide_plotly_mode_bar is not None: body['hide_plotly_mode_bar'] = self.hide_plotly_mode_bar
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ClientConfig:
+        """Deserializes the ClientConfig from a dictionary."""
+        return cls(allow_custom_js_visualizations=d.get('allow_custom_js_visualizations', None),
+                   allow_downloads=d.get('allow_downloads', None),
+                   allow_external_shares=d.get('allow_external_shares', None),
+                   allow_subscriptions=d.get('allow_subscriptions', None),
+                   date_format=d.get('date_format', None),
+                   date_time_format=d.get('date_time_format', None),
+                   disable_publish=d.get('disable_publish', None),
+                   enable_legacy_autodetect_types=d.get('enable_legacy_autodetect_types', None),
+                   feature_show_permissions_control=d.get('feature_show_permissions_control', None),
+                   hide_plotly_mode_bar=d.get('hide_plotly_mode_bar', None))
+
+
+@dataclass
 class ColumnInfo:
     name: Optional[str] = None
     """The name of the column."""
@@ -5540,9 +5613,15 @@ class TransferOwnershipObjectId:
 @dataclass
 class UpdateAlertRequest:
     update_mask: str
-    """Field mask is required to be passed into the PATCH request. Field mask specifies which fields of
-    the setting payload will be updated. The field mask needs to be supplied as single string. To
-    specify multiple fields in the field mask, use comma as the separator (no space)."""
+    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
+    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
+    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
+    as only the entire collection field can be specified. Field names must exactly match the
+    resource field names.
+    
+    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
+    API changes in the future."""
 
     alert: Optional[UpdateAlertRequestAlert] = None
 
@@ -5646,9 +5725,15 @@ class UpdateAlertRequestAlert:
 @dataclass
 class UpdateQueryRequest:
     update_mask: str
-    """Field mask is required to be passed into the PATCH request. Field mask specifies which fields of
-    the setting payload will be updated. The field mask needs to be supplied as single string. To
-    specify multiple fields in the field mask, use comma as the separator (no space)."""
+    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
+    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
+    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
+    as only the entire collection field can be specified. Field names must exactly match the
+    resource field names.
+    
+    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
+    API changes in the future."""
 
     id: Optional[str] = None
 
@@ -5782,9 +5867,15 @@ class UpdateResponse:
 @dataclass
 class UpdateVisualizationRequest:
     update_mask: str
-    """Field mask is required to be passed into the PATCH request. Field mask specifies which fields of
-    the setting payload will be updated. The field mask needs to be supplied as single string. To
-    specify multiple fields in the field mask, use comma as the separator (no space)."""
+    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
+    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
+    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
+    as only the entire collection field can be specified. Field names must exactly match the
+    resource field names.
+    
+    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
+    API changes in the future."""
 
     id: Optional[str] = None
 
@@ -6464,9 +6555,15 @@ class AlertsAPI:
         
         :param id: str
         :param update_mask: str
-          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
-          setting payload will be updated. The field mask needs to be supplied as single string. To specify
-          multiple fields in the field mask, use comma as the separator (no space).
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+          
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
         :param alert: :class:`UpdateAlertRequestAlert` (optional)
         
         :returns: :class:`Alert`
@@ -7173,9 +7270,15 @@ class QueriesAPI:
         
         :param id: str
         :param update_mask: str
-          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
-          setting payload will be updated. The field mask needs to be supplied as single string. To specify
-          multiple fields in the field mask, use comma as the separator (no space).
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+          
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
         :param query: :class:`UpdateQueryRequestQuery` (optional)
         
         :returns: :class:`Query`
@@ -7547,9 +7650,15 @@ class QueryVisualizationsAPI:
         
         :param id: str
         :param update_mask: str
-          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
-          setting payload will be updated. The field mask needs to be supplied as single string. To specify
-          multiple fields in the field mask, use comma as the separator (no space).
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+          
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
         :param visualization: :class:`UpdateVisualizationRequestVisualization` (optional)
         
         :returns: :class:`Visualization`
@@ -7684,6 +7793,24 @@ class QueryVisualizationsLegacyAPI:
 
         res = self._api.do('POST', f'/api/2.0/preview/sql/visualizations/{id}', body=body, headers=headers)
         return LegacyVisualization.from_dict(res)
+
+
+class RedashConfigAPI:
+    """Redash V2 service for workspace configurations (internal)"""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def get_config(self) -> ClientConfig:
+        """Read workspace configuration for Redash-v2.
+        
+        :returns: :class:`ClientConfig`
+        """
+
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do('GET', '/api/2.0/redash-v2/config', headers=headers)
+        return ClientConfig.from_dict(res)
 
 
 class StatementExecutionAPI:

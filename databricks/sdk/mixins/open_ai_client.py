@@ -1,8 +1,9 @@
 import json as js
 from typing import Dict, Optional
 
+from requests import Response
+
 from databricks.sdk.service.serving import (ExternalFunctionRequestHttpMethod,
-                                            ExternalFunctionResponse,
                                             ServingEndpointsAPI)
 
 
@@ -63,7 +64,7 @@ class ServingEndpointsExt(ServingEndpointsAPI):
                      *,
                      headers: Optional[Dict[str, str]] = None,
                      json: Optional[Dict[str, str]] = None,
-                     params: Optional[Dict[str, str]] = None) -> ExternalFunctionResponse:
+                     params: Optional[Dict[str, str]] = None) -> Response:
         """Make external services call using the credentials stored in UC Connection.
         **NOTE:** Experimental: This API may change or be removed in a future release without warning.
         :param conn: str
@@ -79,13 +80,27 @@ class ServingEndpointsExt(ServingEndpointsAPI):
           JSON payload for the request.
         :param params: Dict[str,str] (optional)
           Query parameters for the request.
-        :returns: :class:`ExternalFunctionResponse`
+        :returns: :class:`Response`
         """
+        response = Response()
+        response.status_code = 200
+        server_response = super().http_request(connection_name=conn,
+                                               method=method,
+                                               path=path,
+                                               headers=js.dumps(headers) if headers is not None else None,
+                                               json=js.dumps(json) if json is not None else None,
+                                               params=js.dumps(params) if params is not None else None)
 
-        return super.http_request(connection_name=conn,
-                                  method=method,
-                                  path=path,
-                                  headers=js.dumps(headers),
-                                  json=js.dumps(json),
-                                  params=js.dumps(params),
-                                  )
+        # Read the content from the HttpRequestResponse object
+        if hasattr(server_response, "contents") and hasattr(server_response.contents, "read"):
+            raw_content = server_response.contents.read() # Read the bytes
+        else:
+            raise ValueError("Invalid response from the server.")
+
+        # Set the raw content
+        if isinstance(raw_content, bytes):
+            response._content = raw_content
+        else:
+            raise ValueError("Contents must be bytes.")
+
+        return response
