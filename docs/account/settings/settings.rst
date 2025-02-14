@@ -25,6 +25,12 @@
         provisioned. 3. Disables the use of ‘No-isolation clusters’. 4. Disables Databricks Runtime versions
         prior to 13.3LTS.
 
+    .. py:property:: enable_ip_access_lists
+        :type: EnableIpAccessListsAPI
+
+        Controls the enforcement of IP access lists for accessing the account console. Allowing you to enable or
+        disable restricted access based on IP addresses.
+
     .. py:property:: esm_enablement_account
         :type: EsmEnablementAccountAPI
 

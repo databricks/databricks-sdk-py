@@ -22,8 +22,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: AiGatewayGuardrailPiiBehaviorBehavior
 
-   Behavior for PII filter. Currently only 'BLOCK' is supported. If 'BLOCK' is set for the input guardrail and the request contains PII, the request is not sent to the model server and 400 status code is returned; if 'BLOCK' is set for the output guardrail and the model response contains PII, the PII info in the response is redacted and 400 status code is returned.
-
    .. py:attribute:: BLOCK
       :value: "BLOCK"
 
@@ -44,8 +42,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: AiGatewayRateLimitKey
 
-   Key field for a rate limit. Currently, only 'user' and 'endpoint' are supported, with 'endpoint' being the default if not specified.
-
    .. py:attribute:: ENDPOINT
       :value: "ENDPOINT"
 
@@ -53,8 +49,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "USER"
 
 .. py:class:: AiGatewayRateLimitRenewalPeriod
-
-   Renewal period field for a rate limit. Currently, only 'minute' is supported.
 
    .. py:attribute:: MINUTE
       :value: "MINUTE"
@@ -68,8 +62,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. py:class:: AmazonBedrockConfigBedrockProvider
-
-   The underlying provider in Amazon Bedrock. Supported values (case insensitive) include: Anthropic, Cohere, AI21Labs, Amazon.
 
    .. py:attribute:: AI21LABS
       :value: "AI21LABS"
@@ -128,6 +120,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: DataPlaneInfo
+   :members:
+   :undoc-members:
+
 .. autoclass:: DatabricksModelServingConfig
    :members:
    :undoc-members:
@@ -173,8 +169,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: EndpointStateConfigUpdate
 
-   The state of an endpoint's config update. This informs the user if the pending_config is in progress, if the update failed, or if there is no update in progress. Note that if the endpoint's config_update state value is IN_PROGRESS, another update can not be made until the update completes or fails.
-
    .. py:attribute:: IN_PROGRESS
       :value: "IN_PROGRESS"
 
@@ -189,8 +183,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: EndpointStateReady
 
-   The state of an endpoint, indicating whether or not the endpoint is queryable. An endpoint is READY if all of the served entities in its active configuration are ready. If any of the actively served entities are in a non-ready state, the endpoint state will be NOT_READY.
-
    .. py:attribute:: NOT_READY
       :value: "NOT_READY"
 
@@ -201,17 +193,40 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: EndpointTags
+   :members:
+   :undoc-members:
+
 .. autoclass:: ExportMetricsResponse
    :members:
    :undoc-members:
+
+.. autoclass:: ExternalFunctionRequest
+   :members:
+   :undoc-members:
+
+.. py:class:: ExternalFunctionRequestHttpMethod
+
+   .. py:attribute:: DELETE
+      :value: "DELETE"
+
+   .. py:attribute:: GET
+      :value: "GET"
+
+   .. py:attribute:: PATCH
+      :value: "PATCH"
+
+   .. py:attribute:: POST
+      :value: "POST"
+
+   .. py:attribute:: PUT
+      :value: "PUT"
 
 .. autoclass:: ExternalModel
    :members:
    :undoc-members:
 
 .. py:class:: ExternalModelProvider
-
-   The name of the provider for the external model. Currently, the supported providers are 'ai21labs', 'anthropic', 'amazon-bedrock', 'cohere', 'databricks-model-serving', 'google-cloud-vertex-ai', 'openai', and 'palm'.",
 
    .. py:attribute:: AI21LABS
       :value: "AI21LABS"
@@ -257,6 +272,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: HttpRequestResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListEndpointsResponse
    :members:
    :undoc-members:
@@ -281,7 +300,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: PutAiGatewayRequest
+   :members:
+   :undoc-members:
+
 .. autoclass:: PutAiGatewayResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: PutRequest
    :members:
    :undoc-members:
 
@@ -316,8 +343,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: RateLimitKey
 
-   Key field for a serving endpoint rate limit. Currently, only 'user' and 'endpoint' are supported, with 'endpoint' being the default if not specified.
-
    .. py:attribute:: ENDPOINT
       :value: "ENDPOINT"
 
@@ -325,8 +350,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "USER"
 
 .. py:class:: RateLimitRenewalPeriod
-
-   Renewal period field for a serving endpoint rate limit. Currently, only 'minute' is supported.
 
    .. py:attribute:: MINUTE
       :value: "MINUTE"
@@ -353,8 +376,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ServedModelInputWorkloadSize
 
-   The workload size of the served model. The workload size corresponds to a range of provisioned concurrency that the compute will autoscale between. A single unit of provisioned concurrency can process one request at a time. Valid workload sizes are "Small" (4 - 4 provisioned concurrency), "Medium" (8 - 16 provisioned concurrency), and "Large" (16 - 64 provisioned concurrency). If scale-to-zero is enabled, the lower bound of the provisioned concurrency for each workload size will be 0.
-
    .. py:attribute:: LARGE
       :value: "LARGE"
 
@@ -365,9 +386,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "SMALL"
 
 .. py:class:: ServedModelInputWorkloadType
-
-   The workload type of the served model. The workload type selects which type of compute to use in the endpoint. The default value for this parameter is "CPU". For deep learning workloads, GPU acceleration is available by selecting workload types like GPU_SMALL and others. See the available [GPU types].
-   [GPU types]: https://docs.databricks.com/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types
 
    .. py:attribute:: CPU
       :value: "CPU"
@@ -397,8 +415,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. py:class:: ServedModelStateDeployment
-
-   The state of the served entity deployment. DEPLOYMENT_CREATING indicates that the served entity is not ready yet because the deployment is still being created (i.e container image is building, model server is deploying for the first time, etc.). DEPLOYMENT_RECOVERING indicates that the served entity was previously in a ready state but no longer is and is attempting to recover. DEPLOYMENT_READY indicates that the served entity is ready to receive traffic. DEPLOYMENT_FAILED indicates that there was an error trying to bring up the served entity (e.g container image build failed, the model server failed to start due to a model loading error, etc.) DEPLOYMENT_ABORTED indicates that the deployment was terminated likely due to a failure in bringing up another served entity under the same endpoint and config version.
 
    .. py:attribute:: ABORTED
       :value: "ABORTED"
@@ -437,8 +453,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ServingEndpointDetailedPermissionLevel
 
-   The permission level of the principal making the request.
-
    .. py:attribute:: CAN_MANAGE
       :value: "CAN_MANAGE"
 
@@ -476,6 +490,23 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: ServingEndpointPermissionsRequest
    :members:
    :undoc-members:
+
+.. py:class:: ServingModelWorkloadType
+
+   .. py:attribute:: CPU
+      :value: "CPU"
+
+   .. py:attribute:: GPU_LARGE
+      :value: "GPU_LARGE"
+
+   .. py:attribute:: GPU_MEDIUM
+      :value: "GPU_MEDIUM"
+
+   .. py:attribute:: GPU_SMALL
+      :value: "GPU_SMALL"
+
+   .. py:attribute:: MULTIGPU_MEDIUM
+      :value: "MULTIGPU_MEDIUM"
 
 .. autoclass:: TrafficConfig
    :members:

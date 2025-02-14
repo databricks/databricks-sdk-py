@@ -20,6 +20,31 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: DayOfWeek
+
+   Days of week in which the restart is allowed to happen (within a five-hour window starting at start_hour). If not specified all days of the week will be used.
+
+   .. py:attribute:: FRIDAY
+      :value: "FRIDAY"
+
+   .. py:attribute:: MONDAY
+      :value: "MONDAY"
+
+   .. py:attribute:: SATURDAY
+      :value: "SATURDAY"
+
+   .. py:attribute:: SUNDAY
+      :value: "SUNDAY"
+
+   .. py:attribute:: THURSDAY
+      :value: "THURSDAY"
+
+   .. py:attribute:: TUESDAY
+      :value: "TUESDAY"
+
+   .. py:attribute:: WEDNESDAY
+      :value: "WEDNESDAY"
+
 .. autoclass:: DeletePipelineResponse
    :members:
    :undoc-members:
@@ -266,6 +291,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ReportSpec
+   :members:
+   :undoc-members:
+
+.. autoclass:: RestartWindow
+   :members:
+   :undoc-members:
+
+.. autoclass:: RunAs
    :members:
    :undoc-members:
 

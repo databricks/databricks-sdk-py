@@ -106,6 +106,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: VPC
       :value: "VPC"
 
+.. autoclass:: ExternalCustomerInfo
+   :members:
+   :undoc-members:
+
 .. autoclass:: GcpKeyInfo
    :members:
    :undoc-members:

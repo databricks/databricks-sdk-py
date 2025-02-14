@@ -15,7 +15,7 @@
     also enforce data quality with Delta Live Tables expectations. Expectations allow you to define expected
     data quality and specify how to handle records that fail those expectations.
 
-    .. py:method:: create( [, allow_duplicate_names: Optional[bool], budget_policy_id: Optional[str], catalog: Optional[str], channel: Optional[str], clusters: Optional[List[PipelineCluster]], configuration: Optional[Dict[str, str]], continuous: Optional[bool], deployment: Optional[PipelineDeployment], development: Optional[bool], dry_run: Optional[bool], edition: Optional[str], filters: Optional[Filters], gateway_definition: Optional[IngestionGatewayPipelineDefinition], id: Optional[str], ingestion_definition: Optional[IngestionPipelineDefinition], libraries: Optional[List[PipelineLibrary]], name: Optional[str], notifications: Optional[List[Notifications]], photon: Optional[bool], schema: Optional[str], serverless: Optional[bool], storage: Optional[str], target: Optional[str], trigger: Optional[PipelineTrigger]]) -> CreatePipelineResponse
+    .. py:method:: create( [, allow_duplicate_names: Optional[bool], budget_policy_id: Optional[str], catalog: Optional[str], channel: Optional[str], clusters: Optional[List[PipelineCluster]], configuration: Optional[Dict[str, str]], continuous: Optional[bool], deployment: Optional[PipelineDeployment], development: Optional[bool], dry_run: Optional[bool], edition: Optional[str], filters: Optional[Filters], gateway_definition: Optional[IngestionGatewayPipelineDefinition], id: Optional[str], ingestion_definition: Optional[IngestionPipelineDefinition], libraries: Optional[List[PipelineLibrary]], name: Optional[str], notifications: Optional[List[Notifications]], photon: Optional[bool], restart_window: Optional[RestartWindow], run_as: Optional[RunAs], schema: Optional[str], serverless: Optional[bool], storage: Optional[str], target: Optional[str], trigger: Optional[PipelineTrigger]]) -> CreatePipelineResponse
 
 
         Usage:
@@ -79,7 +79,7 @@
         :param filters: :class:`Filters` (optional)
           Filters on which Pipeline packages to include in the deployed graph.
         :param gateway_definition: :class:`IngestionGatewayPipelineDefinition` (optional)
-          The definition of a gateway pipeline to support CDC.
+          The definition of a gateway pipeline to support change data capture.
         :param id: str (optional)
           Unique identifier for this pipeline.
         :param ingestion_definition: :class:`IngestionPipelineDefinition` (optional)
@@ -93,6 +93,14 @@
           List of notification settings for this pipeline.
         :param photon: bool (optional)
           Whether Photon is enabled for this pipeline.
+        :param restart_window: :class:`RestartWindow` (optional)
+          Restart window of this pipeline.
+        :param run_as: :class:`RunAs` (optional)
+          Write-only setting, available only in Create/Update calls. Specifies the user or service principal
+          that the pipeline runs as. If not specified, the pipeline runs as the user who created the pipeline.
+          
+          Only `user_name` or `service_principal_name` can be specified. If both are specified, an error is
+          thrown.
         :param schema: str (optional)
           The default schema (database) where tables are read from or published to. The presence of this field
           implies that the pipeline is in direct publishing mode.
@@ -324,7 +332,8 @@
 
         Set pipeline permissions.
         
-        Sets permissions on a pipeline. Pipelines can inherit permissions from their root object.
+        Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
+        permissions if none are specified. Objects can inherit permissions from their root object.
         
         :param pipeline_id: str
           The pipeline for which to get or manage permissions.
@@ -376,7 +385,7 @@
     .. py:method:: stop_and_wait(pipeline_id: str, timeout: datetime.timedelta = 0:20:00) -> GetPipelineResponse
 
 
-    .. py:method:: update(pipeline_id: str [, allow_duplicate_names: Optional[bool], budget_policy_id: Optional[str], catalog: Optional[str], channel: Optional[str], clusters: Optional[List[PipelineCluster]], configuration: Optional[Dict[str, str]], continuous: Optional[bool], deployment: Optional[PipelineDeployment], development: Optional[bool], edition: Optional[str], expected_last_modified: Optional[int], filters: Optional[Filters], gateway_definition: Optional[IngestionGatewayPipelineDefinition], id: Optional[str], ingestion_definition: Optional[IngestionPipelineDefinition], libraries: Optional[List[PipelineLibrary]], name: Optional[str], notifications: Optional[List[Notifications]], photon: Optional[bool], schema: Optional[str], serverless: Optional[bool], storage: Optional[str], target: Optional[str], trigger: Optional[PipelineTrigger]])
+    .. py:method:: update(pipeline_id: str [, allow_duplicate_names: Optional[bool], budget_policy_id: Optional[str], catalog: Optional[str], channel: Optional[str], clusters: Optional[List[PipelineCluster]], configuration: Optional[Dict[str, str]], continuous: Optional[bool], deployment: Optional[PipelineDeployment], development: Optional[bool], edition: Optional[str], expected_last_modified: Optional[int], filters: Optional[Filters], gateway_definition: Optional[IngestionGatewayPipelineDefinition], id: Optional[str], ingestion_definition: Optional[IngestionPipelineDefinition], libraries: Optional[List[PipelineLibrary]], name: Optional[str], notifications: Optional[List[Notifications]], photon: Optional[bool], restart_window: Optional[RestartWindow], run_as: Optional[RunAs], schema: Optional[str], serverless: Optional[bool], storage: Optional[str], target: Optional[str], trigger: Optional[PipelineTrigger]])
 
 
         Usage:
@@ -456,7 +465,7 @@
         :param filters: :class:`Filters` (optional)
           Filters on which Pipeline packages to include in the deployed graph.
         :param gateway_definition: :class:`IngestionGatewayPipelineDefinition` (optional)
-          The definition of a gateway pipeline to support CDC.
+          The definition of a gateway pipeline to support change data capture.
         :param id: str (optional)
           Unique identifier for this pipeline.
         :param ingestion_definition: :class:`IngestionPipelineDefinition` (optional)
@@ -470,6 +479,14 @@
           List of notification settings for this pipeline.
         :param photon: bool (optional)
           Whether Photon is enabled for this pipeline.
+        :param restart_window: :class:`RestartWindow` (optional)
+          Restart window of this pipeline.
+        :param run_as: :class:`RunAs` (optional)
+          Write-only setting, available only in Create/Update calls. Specifies the user or service principal
+          that the pipeline runs as. If not specified, the pipeline runs as the user who created the pipeline.
+          
+          Only `user_name` or `service_principal_name` can be specified. If both are specified, an error is
+          thrown.
         :param schema: str (optional)
           The default schema (database) where tables are read from or published to. The presence of this field
           implies that the pipeline is in direct publishing mode.

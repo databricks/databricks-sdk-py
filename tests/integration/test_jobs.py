@@ -17,18 +17,19 @@ def test_submitting_jobs(w, random, env_or_skip):
     with w.dbfs.open(py_on_dbfs, write=True, overwrite=True) as f:
         f.write(b'import time; time.sleep(10); print("Hello, World!")')
 
-    waiter = w.jobs.submit(run_name=f'py-sdk-{random(8)}',
-                           tasks=[
-                               jobs.SubmitTask(
-                                   task_key='pi',
-                                   new_cluster=compute.ClusterSpec(
-                                       spark_version=w.clusters.select_spark_version(long_term_support=True),
-                                       # node_type_id=w.clusters.select_node_type(local_disk=True),
-                                       instance_pool_id=env_or_skip('TEST_INSTANCE_POOL_ID'),
-                                       num_workers=1),
-                                   spark_python_task=jobs.SparkPythonTask(python_file=f'dbfs:{py_on_dbfs}'),
-                               )
-                           ])
+    waiter = w.jobs.submit(
+        run_name=f'py-sdk-{random(8)}',
+        tasks=[
+            jobs.SubmitTask(
+                task_key='pi',
+                new_cluster=compute.ClusterSpec(
+                    spark_version=w.clusters.select_spark_version(long_term_support=True),
+                    # node_type_id=w.clusters.select_node_type(local_disk=True),
+                    instance_pool_id=env_or_skip('TEST_INSTANCE_POOL_ID'),
+                    num_workers=1),
+                spark_python_task=jobs.SparkPythonTask(python_file=f'dbfs:{py_on_dbfs}'),
+            )
+        ])
 
     logging.info(f'starting to poll: {waiter.run_id}')
 

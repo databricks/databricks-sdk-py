@@ -1,5 +1,296 @@
 # Version changelog
 
+## [Release] Release v0.44.1
+
+### New Features and Improvements
+
+ * Introduce new Credential Strategies for Agents ([#882](https://github.com/databricks/databricks-sdk-py/pull/882)).
+
+
+### Internal Changes
+
+ * GetRun logic paginates more arrays ([#867](https://github.com/databricks/databricks-sdk-py/pull/867)).
+
+
+
+## [Release] Release v0.44.0
+
+### Internal Changes
+
+ * Fix `tests/integration/test_dbutils.py::test_secrets` ([#884](https://github.com/databricks/databricks-sdk-py/pull/884)).
+
+
+### API Changes:
+
+ * Added `get_message_query_result_by_attachment()` method for [w.genie](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/genie.html) workspace-level service.
+ * Added `id` field for `databricks.sdk.service.apps.App`.
+ * Added `limit_config` field for `databricks.sdk.service.billing.UpdateBudgetPolicyRequest`.
+ * Added `volumes` field for `databricks.sdk.service.compute.ClusterLogConf`.
+ * Removed `review_state`, `reviews` and `runner_collaborators` fields for `databricks.sdk.service.cleanrooms.CleanRoomAssetNotebook`.
+
+OpenAPI SHA: 99f644e72261ef5ecf8d74db20f4b7a1e09723cc, Date: 2025-02-11
+
+## [Release] Release v0.43.0
+
+### API Changes:
+
+ * Added [w.lakeview_embedded](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/lakeview_embedded.html) workspace-level service and [w.query_execution](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/query_execution.html) workspace-level service.
+ * Added [w.redash_config](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/redash_config.html) workspace-level service.
+ * Added `gcp_oauth_token` field for `databricks.sdk.service.catalog.TemporaryCredentials`.
+ * Added `options` field for `databricks.sdk.service.catalog.UpdateCatalog`.
+ * Added `disabled` field for `databricks.sdk.service.jobs.RunTask`.
+
+OpenAPI SHA: c72c58f97b950fcb924a90ef164bcb10cfcd5ece, Date: 2025-02-03
+
+### Bug Fixes
+
+ * Fix docs generation when two services have the same name ([#872](https://github.com/databricks/databricks-sdk-py/pull/872)).
+
+### Internal Changes
+
+ * Add CICD environment to the User Agent ([#866](https://github.com/databricks/databricks-sdk-py/pull/866)).
+ * Add unit tests for retriable requests ([#879](https://github.com/databricks/databricks-sdk-py/pull/879)).
+ * Extract "before retry" handler, use it to rewind the stream ([#878](https://github.com/databricks/databricks-sdk-py/pull/878)).
+ * Update Model Serving `http_request` mixin to correctly use the underlying API.  ([#876](https://github.com/databricks/databricks-sdk-py/pull/876)).
+
+### Backward Incompatible Changes
+
+* Changed `create()` method for [w.serving_endpoints](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/serving/serving_endpoints.html) workspace-level service with new required argument order.
+* Changed `http_request()` method for [w.serving_endpoints](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/serving/serving_endpoints.html) workspace-level service to type `http_request()` method for [w.serving_endpoints](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/serving/serving_endpoints.html) workspace-level service.
+* Changed `http_request()` method for [w.serving_endpoints](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/serving/serving_endpoints.html) workspace-level service to return `databricks.sdk.service.serving.HttpRequestResponse` dataclass.
+* Changed `config` field for `databricks.sdk.service.serving.CreateServingEndpoint` to no longer be required.
+* Removed `securable_kind` field for `databricks.sdk.service.catalog.CatalogInfo`.
+* Removed `securable_kind` field for `databricks.sdk.service.catalog.ConnectionInfo`.
+* Removed `status_code` and `text` fields for `databricks.sdk.service.serving.ExternalFunctionResponse`.
+
+### API Changes:
+
+* Added [a.budget_policy](https://databricks-sdk-py.readthedocs.io/en/latest/account/billing/budget_policy.html) account-level service.
+* Added [a.enable_ip_access_lists](https://databricks-sdk-py.readthedocs.io/en/latest/account/settings/settings/enable_ip_access_lists.html) account-level service.
+* Added `review_state`, `reviews` and `runner_collaborators` fields for `databricks.sdk.service.cleanrooms.CleanRoomAssetNotebook`.
+* Added `statement_id` field for `databricks.sdk.service.dashboards.QueryAttachment`.
+* Added `effective_performance_target` field for `databricks.sdk.service.jobs.BaseRun`.
+* Added `performance_target` field for `databricks.sdk.service.jobs.CreateJob`.
+* Added `performance_target` field for `databricks.sdk.service.jobs.JobSettings`.
+* Added `effective_performance_target` field for `databricks.sdk.service.jobs.Run`.
+* Added `performance_target` field for `databricks.sdk.service.jobs.RunNow`.
+* Added `effective_performance_target` field for `databricks.sdk.service.jobs.RunTask`.
+* Added `run_as_repl` field for `databricks.sdk.service.jobs.SparkJarTask`.
+* Added `user_authorized_scopes` field for `databricks.sdk.service.oauth2.CreateCustomAppIntegration`.
+* Added `user_authorized_scopes` field for `databricks.sdk.service.oauth2.GetCustomAppIntegrationOutput`.
+* Added `user_authorized_scopes` field for `databricks.sdk.service.oauth2.UpdateCustomAppIntegration`.
+* Added `contents` field for `databricks.sdk.service.serving.HttpRequestResponse`.
+* Added `clean_room` enum value for `databricks.sdk.service.catalog.SecurableType`.
+* Added `budget_policy_limit_exceeded` enum value for `databricks.sdk.service.jobs.TerminationCodeCode`.
+* Added `arclight_azure_exchange_token_with_user_delegation_key` enum value for `databricks.sdk.service.settings.TokenType`.
+
+OpenAPI SHA: 840c660106f820a1a5dff931d51fa5f65cd9fdd9, Date: 2025-01-28
+
+## [Release] Release v0.41.0
+
+### New Features and Improvements
+
+ * Add `serving.http_request` to call external functions. ([#857](https://github.com/databricks/databricks-sdk-py/pull/857)).
+ * Files API client: recover on download failures ([#844](https://github.com/databricks/databricks-sdk-py/pull/844)) ([#845](https://github.com/databricks/databricks-sdk-py/pull/845)).
+
+
+### Bug Fixes
+
+ * Properly pass query parameters in apps and oauth2 ([#862](https://github.com/databricks/databricks-sdk-py/pull/862)).
+
+
+### Internal Changes
+
+ * Add unit tests for external-browser authentication ([#863](https://github.com/databricks/databricks-sdk-py/pull/863)).
+ * Decouple oauth2 and serving  ([#855](https://github.com/databricks/databricks-sdk-py/pull/855)).
+ * Migrate workflows that need write access to use hosted runners ([#850](https://github.com/databricks/databricks-sdk-py/pull/850)).
+ * Stop testing Python 3.7 on Ubuntu ([#858](https://github.com/databricks/databricks-sdk-py/pull/858)).
+
+
+### API Changes:
+
+ * Added [w.access_control](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/access_control.html) workspace-level service.
+ * Added `http_request()` method for [w.serving_endpoints](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/serving_endpoints.html) workspace-level service.
+ * Added `no_compute` field for `databricks.sdk.service.apps.CreateAppRequest`.
+ * Added `has_more` field for `databricks.sdk.service.jobs.BaseJob`.
+ * Added `has_more` field for `databricks.sdk.service.jobs.BaseRun`.
+ * Added `page_token` field for `databricks.sdk.service.jobs.GetJobRequest`.
+ * Added `has_more` and `next_page_token` fields for `databricks.sdk.service.jobs.Job`.
+ * Added `has_more` field for `databricks.sdk.service.jobs.Run`.
+ * Added `clean_rooms_notebook_output` field for `databricks.sdk.service.jobs.RunOutput`.
+ * Added `scopes` field for `databricks.sdk.service.oauth2.UpdateCustomAppIntegration`.
+ * Added `run_as` field for `databricks.sdk.service.pipelines.CreatePipeline`.
+ * Added `run_as` field for `databricks.sdk.service.pipelines.EditPipeline`.
+ * Added `authorization_details` and `endpoint_url` fields for `databricks.sdk.service.serving.DataPlaneInfo`.
+ * Added `contents` field for `databricks.sdk.service.serving.GetOpenApiResponse`.
+ * Added `activated`, `activation_url`, `authentication_type`, `cloud`, `comment`, `created_at`, `created_by`, `data_recipient_global_metastore_id`, `ip_access_list`, `metastore_id`, `name`, `owner`, `properties_kvpairs`, `region`, `sharing_code`, `tokens`, `updated_at` and `updated_by` fields for `databricks.sdk.service.sharing.RecipientInfo`.
+ * Added `expiration_time` field for `databricks.sdk.service.sharing.RecipientInfo`.
+ * Changed `update()` method for [a.account_federation_policy](https://databricks-sdk-py.readthedocs.io/en/latest/account/account_federation_policy.html) account-level service with new required argument order.
+ * Changed `update()` method for [a.service_principal_federation_policy](https://databricks-sdk-py.readthedocs.io/en/latest/account/service_principal_federation_policy.html) account-level service with new required argument order.
+ * Changed `update()` method for [w.recipients](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/recipients.html) workspace-level service to return `databricks.sdk.service.sharing.RecipientInfo` dataclass.
+ * Changed `update()` method for [w.recipients](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/recipients.html) workspace-level service return type to become non-empty.
+ * Changed `update()` method for [w.recipients](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/recipients.html) workspace-level service to type `update()` method for [w.recipients](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/recipients.html) workspace-level service.
+ * Changed `get_open_api()` method for [w.serving_endpoints](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/serving_endpoints.html) workspace-level service return type to become non-empty.
+ * Changed `patch()` method for [w.serving_endpoints](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/serving_endpoints.html) workspace-level service to type `patch()` method for [w.serving_endpoints](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/serving_endpoints.html) workspace-level service.
+ * Changed `patch()` method for [w.serving_endpoints](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/serving_endpoints.html) workspace-level service to return `databricks.sdk.service.serving.EndpointTags` dataclass.
+ * Changed `databricks.sdk.service.serving.EndpointTagList` dataclass to.
+ * Changed `collaborator_alias` field for `databricks.sdk.service.cleanrooms.CleanRoomCollaborator` to be required.
+ * Changed `collaborator_alias` field for `databricks.sdk.service.cleanrooms.CleanRoomCollaborator` to be required.
+ * Changed `update_mask` field for `databricks.sdk.service.oauth2.UpdateAccountFederationPolicyRequest` to no longer be required.
+ * Changed `update_mask` field for `databricks.sdk.service.oauth2.UpdateServicePrincipalFederationPolicyRequest` to no longer be required.
+ * Changed `days_of_week` field for `databricks.sdk.service.pipelines.RestartWindow` to type `databricks.sdk.service.pipelines.DayOfWeekList` dataclass.
+ * Changed `behavior` field for `databricks.sdk.service.serving.AiGatewayGuardrailPiiBehavior` to no longer be required.
+ * Changed `behavior` field for `databricks.sdk.service.serving.AiGatewayGuardrailPiiBehavior` to no longer be required.
+ * Changed `project_id` and `region` fields for `databricks.sdk.service.serving.GoogleCloudVertexAiConfig` to be required.
+ * Changed `project_id` and `region` fields for `databricks.sdk.service.serving.GoogleCloudVertexAiConfig` to be required.
+ * Changed `workload_type` field for `databricks.sdk.service.serving.ServedEntityInput` to type `databricks.sdk.service.serving.ServingModelWorkloadType` dataclass.
+ * Changed `workload_type` field for `databricks.sdk.service.serving.ServedEntityOutput` to type `databricks.sdk.service.serving.ServingModelWorkloadType` dataclass.
+ * Changed `workload_type` field for `databricks.sdk.service.serving.ServedModelOutput` to type `databricks.sdk.service.serving.ServingModelWorkloadType` dataclass.
+
+OpenAPI SHA: 58905570a9928fc9ed31fba14a2edaf9a7c55b08, Date: 2025-01-20
+
+## [Release] Release v0.40.0
+
+### API Changes:
+
+ * Added [a.account_federation_policy](https://databricks-sdk-py.readthedocs.io/en/latest/account/account_federation_policy.html) account-level service and [a.service_principal_federation_policy](https://databricks-sdk-py.readthedocs.io/en/latest/account/service_principal_federation_policy.html) account-level service.
+ * Added `is_single_node`, `kind` and `use_ml_runtime` fields for `databricks.sdk.service.compute.ClusterAttributes`.
+ * Added `is_single_node`, `kind` and `use_ml_runtime` fields for `databricks.sdk.service.compute.ClusterDetails`.
+ * Added `is_single_node`, `kind` and `use_ml_runtime` fields for `databricks.sdk.service.compute.ClusterSpec`.
+ * Added `is_single_node`, `kind` and `use_ml_runtime` fields for `databricks.sdk.service.compute.CreateCluster`.
+ * Added `is_single_node`, `kind` and `use_ml_runtime` fields for `databricks.sdk.service.compute.EditCluster`.
+ * Added `is_single_node`, `kind` and `use_ml_runtime` fields for `databricks.sdk.service.compute.UpdateClusterResource`.
+ * Added `update_parameter_syntax` field for `databricks.sdk.service.dashboards.MigrateDashboardRequest`.
+ * Added `clean_rooms_notebook_task` field for `databricks.sdk.service.jobs.RunTask`.
+ * Added `clean_rooms_notebook_task` field for `databricks.sdk.service.jobs.SubmitTask`.
+ * Added `clean_rooms_notebook_task` field for `databricks.sdk.service.jobs.Task`.
+ * Changed `days_of_week` field for `databricks.sdk.service.pipelines.RestartWindow` to type `databricks.sdk.service.pipelines.RestartWindowDaysOfWeekList` dataclass.
+
+OpenAPI SHA: a6a317df8327c9b1e5cb59a03a42ffa2aabeef6d, Date: 2024-12-16
+
+## [Release] Release v0.39.0
+
+### Bug Fixes
+
+ * Update Changelog file ([#830](https://github.com/databricks/databricks-sdk-py/pull/830)).
+
+
+### Internal Changes
+
+ * Fix a couple of typos in open_ai_client.py ([#829](https://github.com/databricks/databricks-sdk-py/pull/829)).
+ * Update SDK to OpenAPI spec ([#834](https://github.com/databricks/databricks-sdk-py/pull/834)).
+
+
+### API Changes:
+
+ * Added `databricks.sdk.service.cleanrooms` package.
+ * Added `delete()` method for [w.aibi_dashboard_embedding_access_policy](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings/aibi_dashboard_embedding_access_policy.html) workspace-level service.
+ * Added `delete()` method for [w.aibi_dashboard_embedding_approved_domains](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings/aibi_dashboard_embedding_approved_domains.html) workspace-level service.
+ * Added `databricks_gcp_service_account` field for `databricks.sdk.service.catalog.CreateCredentialRequest`.
+ * Added `databricks_gcp_service_account` field for `databricks.sdk.service.catalog.CredentialInfo`.
+ * Added `gcp_options` field for `databricks.sdk.service.catalog.GenerateTemporaryServiceCredentialRequest`.
+ * Added `databricks_gcp_service_account` field for `databricks.sdk.service.catalog.UpdateCredentialRequest`.
+ * Added `cached_query_schema` field for `databricks.sdk.service.dashboards.QueryAttachment`.
+ * Added .
+ * Removed `gcp_service_account_key` field for `databricks.sdk.service.catalog.CreateCredentialRequest`.
+
+OpenAPI SHA: 7016dcbf2e011459416cf408ce21143bcc4b3a25, Date: 2024-12-05
+
+## [Release] Release v0.38.0
+
+### New Features and Improvements
+
+ * Read streams by 1MB chunks by default. ([#817](https://github.com/databricks/databricks-sdk-py/pull/817)).
+
+### Bug Fixes
+
+ * Rewind seekable streams before retrying ([#821](https://github.com/databricks/databricks-sdk-py/pull/821)).
+ * Properly serialize nested data classes. 
+
+### Internal Changes
+
+ * Reformat SDK with YAPF 0.43. ([#822](https://github.com/databricks/databricks-sdk-py/pull/822)).
+ * Update Jobs GetRun API to support paginated responses for jobs and ForEach tasks ([#819](https://github.com/databricks/databricks-sdk-py/pull/819)).
+
+### API Changes:
+
+ * Added `service_principal_client_id` field for `databricks.sdk.service.apps.App`.
+ * Added `azure_service_principal`, `gcp_service_account_key` and `read_only` fields for `databricks.sdk.service.catalog.CreateCredentialRequest`.
+ * Added `azure_service_principal`, `read_only` and `used_for_managed_storage` fields for `databricks.sdk.service.catalog.CredentialInfo`.
+ * Added `omit_username` field for `databricks.sdk.service.catalog.ListTablesRequest`.
+ * Added `azure_service_principal` and `read_only` fields for `databricks.sdk.service.catalog.UpdateCredentialRequest`.
+ * Added `external_location_name`, `read_only` and `url` fields for `databricks.sdk.service.catalog.ValidateCredentialRequest`.
+ * Added `is_dir` field for `databricks.sdk.service.catalog.ValidateCredentialResponse`.
+ * Added `only` field for `databricks.sdk.service.jobs.RunNow`.
+ * Added `restart_window` field for `databricks.sdk.service.pipelines.CreatePipeline`.
+ * Added `restart_window` field for `databricks.sdk.service.pipelines.EditPipeline`.
+ * Added `restart_window` field for `databricks.sdk.service.pipelines.PipelineSpec`.
+ * Added `private_access_settings_id` field for `databricks.sdk.service.provisioning.UpdateWorkspaceRequest`.
+ * Changed `create_credential()` and `generate_temporary_service_credential()` methods for [w.credentials](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/credentials.html) workspace-level service with new required argument order.
+ * Changed `access_connector_id` field for `databricks.sdk.service.catalog.AzureManagedIdentity` to be required.
+ * Changed `access_connector_id` field for `databricks.sdk.service.catalog.AzureManagedIdentity` to be required.
+ * Changed `name` field for `databricks.sdk.service.catalog.CreateCredentialRequest` to be required.
+ * Changed `credential_name` field for `databricks.sdk.service.catalog.GenerateTemporaryServiceCredentialRequest` to be required.
+
+OpenAPI SHA: f2385add116e3716c8a90a0b68e204deb40f996c, Date: 2024-11-15
+
+## [Release] Release v0.37.0
+
+### Bug Fixes
+
+ * Correctly generate classes with nested body fields ([#808](https://github.com/databricks/databricks-sdk-py/pull/808)).
+
+
+### Internal Changes
+
+ * Add `cleanrooms` package ([#806](https://github.com/databricks/databricks-sdk-py/pull/806)).
+ * Add test instructions for external contributors ([#804](https://github.com/databricks/databricks-sdk-py/pull/804)).
+ * Always write message for manual test execution ([#811](https://github.com/databricks/databricks-sdk-py/pull/811)).
+ * Automatically trigger integration tests on PR ([#800](https://github.com/databricks/databricks-sdk-py/pull/800)).
+ * Better isolate ML serving auth unit tests ([#803](https://github.com/databricks/databricks-sdk-py/pull/803)).
+ * Move templates in the code generator ([#809](https://github.com/databricks/databricks-sdk-py/pull/809)).
+
+
+### API Changes:
+
+ * Added [w.aibi_dashboard_embedding_access_policy](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings/aibi_dashboard_embedding_access_policy.html) workspace-level service and [w.aibi_dashboard_embedding_approved_domains](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings/aibi_dashboard_embedding_approved_domains.html) workspace-level service.
+ * Added [w.credentials](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/credentials.html) workspace-level service.
+ * Added `app_deployment` field for `databricks.sdk.service.apps.CreateAppDeploymentRequest`.
+ * Added `app` field for `databricks.sdk.service.apps.CreateAppRequest`.
+ * Added `app` field for `databricks.sdk.service.apps.UpdateAppRequest`.
+ * Added `table` field for `databricks.sdk.service.catalog.CreateOnlineTableRequest`.
+ * Added `azure_aad` field for `databricks.sdk.service.catalog.GenerateTemporaryTableCredentialResponse`.
+ * Added `full_name` field for `databricks.sdk.service.catalog.StorageCredentialInfo`.
+ * Added `dashboard` field for `databricks.sdk.service.dashboards.CreateDashboardRequest`.
+ * Added `schedule` field for `databricks.sdk.service.dashboards.CreateScheduleRequest`.
+ * Added `subscription` field for `databricks.sdk.service.dashboards.CreateSubscriptionRequest`.
+ * Added `warehouse_id` field for `databricks.sdk.service.dashboards.Schedule`.
+ * Added `dashboard` field for `databricks.sdk.service.dashboards.UpdateDashboardRequest`.
+ * Added `schedule` field for `databricks.sdk.service.dashboards.UpdateScheduleRequest`.
+ * Added `page_token` field for `databricks.sdk.service.oauth2.ListServicePrincipalSecretsRequest`.
+ * Added `next_page_token` field for `databricks.sdk.service.oauth2.ListServicePrincipalSecretsResponse`.
+ * Added `connection_name` field for `databricks.sdk.service.pipelines.IngestionGatewayPipelineDefinition`.
+ * Added `is_no_public_ip_enabled` field for `databricks.sdk.service.provisioning.CreateWorkspaceRequest`.
+ * Added `external_customer_info` and `is_no_public_ip_enabled` fields for `databricks.sdk.service.provisioning.Workspace`.
+ * Added `last_used_day` field for `databricks.sdk.service.settings.TokenInfo`.
+ * Changed `create()` method for [w.apps](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/apps.html) workspace-level service with new required argument order.
+ * Changed `execute_message_query()` method for [w.genie](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/genie.html) workspace-level service . New request type is `databricks.sdk.service.dashboards.GenieExecuteMessageQueryRequest` dataclass.
+ * Changed `execute_message_query()` method for [w.genie](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/genie.html) workspace-level service to type `execute_message_query()` method for [w.genie](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/genie.html) workspace-level service.
+ * Changed `create()`, `create_schedule()`, `create_subscription()` and `update_schedule()` methods for [w.lakeview](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/lakeview.html) workspace-level service with new required argument order.
+ * Removed [w.clean_rooms](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/clean_rooms.html) workspace-level service.
+ * Removed `deployment_id`, `mode` and `source_code_path` fields for `databricks.sdk.service.apps.CreateAppDeploymentRequest`.
+ * Removed `description`, `name` and `resources` fields for `databricks.sdk.service.apps.CreateAppRequest`.
+ * Removed `description` and `resources` fields for `databricks.sdk.service.apps.UpdateAppRequest`.
+ * Removed `name` and `spec` fields for `databricks.sdk.service.catalog.CreateOnlineTableRequest`.
+ * Removed `display_name`, `parent_path`, `serialized_dashboard` and `warehouse_id` fields for `databricks.sdk.service.dashboards.CreateDashboardRequest`.
+ * Removed `cron_schedule`, `display_name` and `pause_status` fields for `databricks.sdk.service.dashboards.CreateScheduleRequest`.
+ * Removed `subscriber` field for `databricks.sdk.service.dashboards.CreateSubscriptionRequest`.
+ * Removed `display_name`, `etag`, `serialized_dashboard` and `warehouse_id` fields for `databricks.sdk.service.dashboards.UpdateDashboardRequest`.
+ * Removed `cron_schedule`, `display_name`, `etag` and `pause_status` fields for `databricks.sdk.service.dashboards.UpdateScheduleRequest`.
+ * Removed `prev_page_token` field for `databricks.sdk.service.jobs.Run`.
+
+OpenAPI SHA: 5285ce76f81314f342c1702d5c2ad4ef42488781, Date: 2024-11-04
+
 ## [Release] Release v0.36.0
 
 ### Breaking Changes

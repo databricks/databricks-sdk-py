@@ -3,7 +3,6 @@ from dataclasses import dataclass
 from typing import Callable, List
 
 from databricks.sdk.oauth import Token
-from databricks.sdk.service.oauth2 import DataPlaneInfo
 
 
 @dataclass
@@ -19,6 +18,7 @@ class DataPlaneDetails:
 
 class DataPlaneService:
     """Helper class to fetch and manage DataPlane details."""
+    from .service.serving import DataPlaneInfo
 
     def __init__(self):
         self._data_plane_info = {}

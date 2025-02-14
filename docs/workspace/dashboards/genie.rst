@@ -80,6 +80,25 @@
         :returns: :class:`GenieGetMessageQueryResultResponse`
         
 
+    .. py:method:: get_message_query_result_by_attachment(space_id: str, conversation_id: str, message_id: str, attachment_id: str) -> GenieGetMessageQueryResultResponse
+
+        Get conversation message SQL query result by attachment id.
+        
+        Get the result of SQL query by attachment id This is only available if a message has a query
+        attachment and the message status is `EXECUTING_QUERY`.
+        
+        :param space_id: str
+          Genie space ID
+        :param conversation_id: str
+          Conversation ID
+        :param message_id: str
+          Message ID
+        :param attachment_id: str
+          Attachment ID
+        
+        :returns: :class:`GenieGetMessageQueryResultResponse`
+        
+
     .. py:method:: start_conversation(space_id: str, content: str) -> Wait[GenieMessage]
 
         Start conversation.

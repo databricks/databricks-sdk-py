@@ -1,4 +1,10 @@
-from databricks.sdk.service.serving import ServingEndpointsAPI
+import json as js
+from typing import Dict, Optional
+
+from requests import Response
+
+from databricks.sdk.service.serving import (ExternalFunctionRequestHttpMethod,
+                                            ServingEndpointsAPI)
 
 
 class ServingEndpointsExt(ServingEndpointsAPI):
@@ -29,7 +35,7 @@ class ServingEndpointsExt(ServingEndpointsAPI):
             from openai import OpenAI
         except Exception:
             raise ImportError(
-                "Open AI is not installed. Please install the Databricks SDK with the following command `pip isntall databricks-sdk[openai]`"
+                "Open AI is not installed. Please install the Databricks SDK with the following command `pip install databricks-sdk[openai]`"
             )
 
         return OpenAI(
@@ -42,7 +48,7 @@ class ServingEndpointsExt(ServingEndpointsAPI):
             from langchain_openai import ChatOpenAI
         except Exception:
             raise ImportError(
-                "Langchain Open AI is not installed. Please install the Databricks SDK with the following command `pip isntall databricks-sdk[openai]` and ensure you are using python>3.7"
+                "Langchain Open AI is not installed. Please install the Databricks SDK with the following command `pip install databricks-sdk[openai]` and ensure you are using python>3.7"
             )
 
         return ChatOpenAI(
@@ -50,3 +56,51 @@ class ServingEndpointsExt(ServingEndpointsAPI):
             openai_api_base=self._api._cfg.host + "/serving-endpoints",
             api_key="no-token", # Passing in a placeholder to pass validations, this will not be used
             http_client=self._get_authorized_http_client())
+
+    def http_request(self,
+                     conn: str,
+                     method: ExternalFunctionRequestHttpMethod,
+                     path: str,
+                     *,
+                     headers: Optional[Dict[str, str]] = None,
+                     json: Optional[Dict[str, str]] = None,
+                     params: Optional[Dict[str, str]] = None) -> Response:
+        """Make external services call using the credentials stored in UC Connection.
+        **NOTE:** Experimental: This API may change or be removed in a future release without warning.
+        :param conn: str
+          The connection name to use. This is required to identify the external connection.
+        :param method: :class:`ExternalFunctionRequestHttpMethod`
+          The HTTP method to use (e.g., 'GET', 'POST'). This is required.
+        :param path: str
+          The relative path for the API endpoint. This is required.
+        :param headers: Dict[str,str] (optional)
+          Additional headers for the request. If not provided, only auth headers from connections would be
+          passed.
+        :param json: Dict[str,str] (optional)
+          JSON payload for the request.
+        :param params: Dict[str,str] (optional)
+          Query parameters for the request.
+        :returns: :class:`Response`
+        """
+        response = Response()
+        response.status_code = 200
+        server_response = super().http_request(connection_name=conn,
+                                               method=method,
+                                               path=path,
+                                               headers=js.dumps(headers) if headers is not None else None,
+                                               json=js.dumps(json) if json is not None else None,
+                                               params=js.dumps(params) if params is not None else None)
+
+        # Read the content from the HttpRequestResponse object
+        if hasattr(server_response, "contents") and hasattr(server_response.contents, "read"):
+            raw_content = server_response.contents.read() # Read the bytes
+        else:
+            raise ValueError("Invalid response from the server.")
+
+        # Set the raw content
+        if isinstance(raw_content, bytes):
+            response._content = raw_content
+        else:
+            raise ValueError("Contents must be bytes.")
+
+        return response

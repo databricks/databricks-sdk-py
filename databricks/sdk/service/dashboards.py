@@ -21,100 +21,63 @@ from databricks.sdk.service import sql
 
 
 @dataclass
-class CreateDashboardRequest:
-    display_name: str
-    """The display name of the dashboard."""
-
-    parent_path: Optional[str] = None
-    """The workspace path of the folder containing the dashboard. Includes leading slash and no
-    trailing slash. This field is excluded in List Dashboards responses."""
-
-    serialized_dashboard: Optional[str] = None
-    """The contents of the dashboard in serialized string form. This field is excluded in List
-    Dashboards responses. Use the [get dashboard API] to retrieve an example response, which
-    includes the `serialized_dashboard` field. This field provides the structure of the JSON string
-    that represents the dashboard's layout and components.
-    
-    [get dashboard API]: https://docs.databricks.com/api/workspace/lakeview/get"""
-
-    warehouse_id: Optional[str] = None
-    """The warehouse ID used to run the dashboard."""
+class CancelQueryExecutionResponse:
+    status: Optional[List[CancelQueryExecutionResponseStatus]] = None
 
     def as_dict(self) -> dict:
-        """Serializes the CreateDashboardRequest into a dictionary suitable for use as a JSON request body."""
+        """Serializes the CancelQueryExecutionResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.display_name is not None: body['display_name'] = self.display_name
-        if self.parent_path is not None: body['parent_path'] = self.parent_path
-        if self.serialized_dashboard is not None: body['serialized_dashboard'] = self.serialized_dashboard
-        if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
+        if self.status: body['status'] = [v.as_dict() for v in self.status]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CancelQueryExecutionResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.status: body['status'] = self.status
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateDashboardRequest:
-        """Deserializes the CreateDashboardRequest from a dictionary."""
-        return cls(display_name=d.get('display_name', None),
-                   parent_path=d.get('parent_path', None),
-                   serialized_dashboard=d.get('serialized_dashboard', None),
-                   warehouse_id=d.get('warehouse_id', None))
+    def from_dict(cls, d: Dict[str, any]) -> CancelQueryExecutionResponse:
+        """Deserializes the CancelQueryExecutionResponse from a dictionary."""
+        return cls(status=_repeated_dict(d, 'status', CancelQueryExecutionResponseStatus))
 
 
 @dataclass
-class CreateScheduleRequest:
-    cron_schedule: CronSchedule
-    """The cron expression describing the frequency of the periodic refresh for this schedule."""
+class CancelQueryExecutionResponseStatus:
+    data_token: str
+    """The token to poll for result asynchronously Example:
+    EC0A..ChAB7WCEn_4Qo4vkLqEbXsxxEgh3Y2pbWw45WhoQXgZSQo9aS5q2ZvFcbvbx9CgA-PAEAQ"""
 
-    dashboard_id: Optional[str] = None
-    """UUID identifying the dashboard to which the schedule belongs."""
+    pending: Optional[Empty] = None
+    """Represents an empty message, similar to google.protobuf.Empty, which is not available in the
+    firm right now."""
 
-    display_name: Optional[str] = None
-    """The display name for schedule."""
-
-    pause_status: Optional[SchedulePauseStatus] = None
-    """The status indicates whether this schedule is paused or not."""
+    success: Optional[Empty] = None
+    """Represents an empty message, similar to google.protobuf.Empty, which is not available in the
+    firm right now."""
 
     def as_dict(self) -> dict:
-        """Serializes the CreateScheduleRequest into a dictionary suitable for use as a JSON request body."""
+        """Serializes the CancelQueryExecutionResponseStatus into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.cron_schedule: body['cron_schedule'] = self.cron_schedule.as_dict()
-        if self.dashboard_id is not None: body['dashboard_id'] = self.dashboard_id
-        if self.display_name is not None: body['display_name'] = self.display_name
-        if self.pause_status is not None: body['pause_status'] = self.pause_status.value
+        if self.data_token is not None: body['data_token'] = self.data_token
+        if self.pending: body['pending'] = self.pending.as_dict()
+        if self.success: body['success'] = self.success.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CancelQueryExecutionResponseStatus into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.data_token is not None: body['data_token'] = self.data_token
+        if self.pending: body['pending'] = self.pending
+        if self.success: body['success'] = self.success
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateScheduleRequest:
-        """Deserializes the CreateScheduleRequest from a dictionary."""
-        return cls(cron_schedule=_from_dict(d, 'cron_schedule', CronSchedule),
-                   dashboard_id=d.get('dashboard_id', None),
-                   display_name=d.get('display_name', None),
-                   pause_status=_enum(d, 'pause_status', SchedulePauseStatus))
-
-
-@dataclass
-class CreateSubscriptionRequest:
-    subscriber: Subscriber
-    """Subscriber details for users and destinations to be added as subscribers to the schedule."""
-
-    dashboard_id: Optional[str] = None
-    """UUID identifying the dashboard to which the subscription belongs."""
-
-    schedule_id: Optional[str] = None
-    """UUID identifying the schedule to which the subscription belongs."""
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateSubscriptionRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.dashboard_id is not None: body['dashboard_id'] = self.dashboard_id
-        if self.schedule_id is not None: body['schedule_id'] = self.schedule_id
-        if self.subscriber: body['subscriber'] = self.subscriber.as_dict()
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateSubscriptionRequest:
-        """Deserializes the CreateSubscriptionRequest from a dictionary."""
-        return cls(dashboard_id=d.get('dashboard_id', None),
-                   schedule_id=d.get('schedule_id', None),
-                   subscriber=_from_dict(d, 'subscriber', Subscriber))
+    def from_dict(cls, d: Dict[str, any]) -> CancelQueryExecutionResponseStatus:
+        """Deserializes the CancelQueryExecutionResponseStatus from a dictionary."""
+        return cls(data_token=d.get('data_token', None),
+                   pending=_from_dict(d, 'pending', Empty),
+                   success=_from_dict(d, 'success', Empty))
 
 
 @dataclass
@@ -133,6 +96,14 @@ class CronSchedule:
 
     def as_dict(self) -> dict:
         """Serializes the CronSchedule into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.quartz_cron_expression is not None:
+            body['quartz_cron_expression'] = self.quartz_cron_expression
+        if self.timezone_id is not None: body['timezone_id'] = self.timezone_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CronSchedule into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.quartz_cron_expression is not None:
             body['quartz_cron_expression'] = self.quartz_cron_expression
@@ -202,6 +173,21 @@ class Dashboard:
         if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Dashboard into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.create_time is not None: body['create_time'] = self.create_time
+        if self.dashboard_id is not None: body['dashboard_id'] = self.dashboard_id
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.etag is not None: body['etag'] = self.etag
+        if self.lifecycle_state is not None: body['lifecycle_state'] = self.lifecycle_state
+        if self.parent_path is not None: body['parent_path'] = self.parent_path
+        if self.path is not None: body['path'] = self.path
+        if self.serialized_dashboard is not None: body['serialized_dashboard'] = self.serialized_dashboard
+        if self.update_time is not None: body['update_time'] = self.update_time
+        if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> Dashboard:
         """Deserializes the Dashboard from a dictionary."""
@@ -222,11 +208,37 @@ class DashboardView(Enum):
     DASHBOARD_VIEW_BASIC = 'DASHBOARD_VIEW_BASIC'
 
 
+class DataType(Enum):
+
+    DATA_TYPE_ARRAY = 'DATA_TYPE_ARRAY'
+    DATA_TYPE_BIG_INT = 'DATA_TYPE_BIG_INT'
+    DATA_TYPE_BINARY = 'DATA_TYPE_BINARY'
+    DATA_TYPE_BOOLEAN = 'DATA_TYPE_BOOLEAN'
+    DATA_TYPE_DATE = 'DATA_TYPE_DATE'
+    DATA_TYPE_DECIMAL = 'DATA_TYPE_DECIMAL'
+    DATA_TYPE_DOUBLE = 'DATA_TYPE_DOUBLE'
+    DATA_TYPE_FLOAT = 'DATA_TYPE_FLOAT'
+    DATA_TYPE_INT = 'DATA_TYPE_INT'
+    DATA_TYPE_INTERVAL = 'DATA_TYPE_INTERVAL'
+    DATA_TYPE_MAP = 'DATA_TYPE_MAP'
+    DATA_TYPE_SMALL_INT = 'DATA_TYPE_SMALL_INT'
+    DATA_TYPE_STRING = 'DATA_TYPE_STRING'
+    DATA_TYPE_STRUCT = 'DATA_TYPE_STRUCT'
+    DATA_TYPE_TIMESTAMP = 'DATA_TYPE_TIMESTAMP'
+    DATA_TYPE_TINY_INT = 'DATA_TYPE_TINY_INT'
+    DATA_TYPE_VOID = 'DATA_TYPE_VOID'
+
+
 @dataclass
 class DeleteScheduleResponse:
 
     def as_dict(self) -> dict:
         """Serializes the DeleteScheduleResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteScheduleResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -244,9 +256,95 @@ class DeleteSubscriptionResponse:
         body = {}
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteSubscriptionResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> DeleteSubscriptionResponse:
         """Deserializes the DeleteSubscriptionResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
+class Empty:
+    """Represents an empty message, similar to google.protobuf.Empty, which is not available in the
+    firm right now."""
+
+    def as_dict(self) -> dict:
+        """Serializes the Empty into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Empty into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> Empty:
+        """Deserializes the Empty from a dictionary."""
+        return cls()
+
+
+@dataclass
+class ExecutePublishedDashboardQueryRequest:
+    """Execute query request for published Dashboards. Since published dashboards have the option of
+    running as the publisher, the datasets, warehouse_id are excluded from the request and instead
+    read from the source (lakeview-config) via the additional parameters (dashboardName and
+    dashboardRevisionId)"""
+
+    dashboard_name: str
+    """Dashboard name and revision_id is required to retrieve PublishedDatasetDataModel which contains
+    the list of datasets, warehouse_id, and embedded_credentials"""
+
+    dashboard_revision_id: str
+
+    override_warehouse_id: Optional[str] = None
+    """A dashboard schedule can override the warehouse used as compute for processing the published
+    dashboard queries"""
+
+    def as_dict(self) -> dict:
+        """Serializes the ExecutePublishedDashboardQueryRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.dashboard_name is not None: body['dashboard_name'] = self.dashboard_name
+        if self.dashboard_revision_id is not None: body['dashboard_revision_id'] = self.dashboard_revision_id
+        if self.override_warehouse_id is not None: body['override_warehouse_id'] = self.override_warehouse_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ExecutePublishedDashboardQueryRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.dashboard_name is not None: body['dashboard_name'] = self.dashboard_name
+        if self.dashboard_revision_id is not None: body['dashboard_revision_id'] = self.dashboard_revision_id
+        if self.override_warehouse_id is not None: body['override_warehouse_id'] = self.override_warehouse_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ExecutePublishedDashboardQueryRequest:
+        """Deserializes the ExecutePublishedDashboardQueryRequest from a dictionary."""
+        return cls(dashboard_name=d.get('dashboard_name', None),
+                   dashboard_revision_id=d.get('dashboard_revision_id', None),
+                   override_warehouse_id=d.get('override_warehouse_id', None))
+
+
+@dataclass
+class ExecuteQueryResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the ExecuteQueryResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ExecuteQueryResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ExecuteQueryResponse:
+        """Deserializes the ExecuteQueryResponse from a dictionary."""
         return cls()
 
 
@@ -263,6 +361,13 @@ class GenieAttachment:
         body = {}
         if self.query: body['query'] = self.query.as_dict()
         if self.text: body['text'] = self.text.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GenieAttachment into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.query: body['query'] = self.query
+        if self.text: body['text'] = self.text
         return body
 
     @classmethod
@@ -303,6 +408,18 @@ class GenieConversation:
         if self.user_id is not None: body['user_id'] = self.user_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GenieConversation into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.created_timestamp is not None: body['created_timestamp'] = self.created_timestamp
+        if self.id is not None: body['id'] = self.id
+        if self.last_updated_timestamp is not None:
+            body['last_updated_timestamp'] = self.last_updated_timestamp
+        if self.space_id is not None: body['space_id'] = self.space_id
+        if self.title is not None: body['title'] = self.title
+        if self.user_id is not None: body['user_id'] = self.user_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> GenieConversation:
         """Deserializes the GenieConversation from a dictionary."""
@@ -333,6 +450,14 @@ class GenieCreateConversationMessageRequest:
         if self.space_id is not None: body['space_id'] = self.space_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GenieCreateConversationMessageRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.content is not None: body['content'] = self.content
+        if self.conversation_id is not None: body['conversation_id'] = self.conversation_id
+        if self.space_id is not None: body['space_id'] = self.space_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> GenieCreateConversationMessageRequest:
         """Deserializes the GenieCreateConversationMessageRequest from a dictionary."""
@@ -351,6 +476,12 @@ class GenieGetMessageQueryResultResponse:
         """Serializes the GenieGetMessageQueryResultResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.statement_response: body['statement_response'] = self.statement_response.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GenieGetMessageQueryResultResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.statement_response: body['statement_response'] = self.statement_response
         return body
 
     @classmethod
@@ -391,8 +522,9 @@ class GenieMessage:
     status: Optional[MessageStatus] = None
     """MesssageStatus. The possible values are: * `FETCHING_METADATA`: Fetching metadata from the data
     sources. * `FILTERING_CONTEXT`: Running smart context step to determine relevant context. *
-    `ASKING_AI`: Waiting for the LLM to respond to the users question. * `EXECUTING_QUERY`:
-    Executing AI provided SQL query. Get the SQL query result by calling
+    `ASKING_AI`: Waiting for the LLM to respond to the users question. * `PENDING_WAREHOUSE`:
+    Waiting for warehouse before the SQL query can start executing. * `EXECUTING_QUERY`: Executing
+    AI provided SQL query. Get the SQL query result by calling
     [getMessageQueryResult](:method:genie/getMessageQueryResult) API. **Important: The message
     status will stay in the `EXECUTING_QUERY` until a client calls
     [getMessageQueryResult](:method:genie/getMessageQueryResult)**. * `FAILED`: Generating a
@@ -419,6 +551,23 @@ class GenieMessage:
         if self.query_result: body['query_result'] = self.query_result.as_dict()
         if self.space_id is not None: body['space_id'] = self.space_id
         if self.status is not None: body['status'] = self.status.value
+        if self.user_id is not None: body['user_id'] = self.user_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GenieMessage into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.attachments: body['attachments'] = self.attachments
+        if self.content is not None: body['content'] = self.content
+        if self.conversation_id is not None: body['conversation_id'] = self.conversation_id
+        if self.created_timestamp is not None: body['created_timestamp'] = self.created_timestamp
+        if self.error: body['error'] = self.error
+        if self.id is not None: body['id'] = self.id
+        if self.last_updated_timestamp is not None:
+            body['last_updated_timestamp'] = self.last_updated_timestamp
+        if self.query_result: body['query_result'] = self.query_result
+        if self.space_id is not None: body['space_id'] = self.space_id
+        if self.status is not None: body['status'] = self.status
         if self.user_id is not None: body['user_id'] = self.user_id
         return body
 
@@ -453,6 +602,13 @@ class GenieStartConversationMessageRequest:
         if self.space_id is not None: body['space_id'] = self.space_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GenieStartConversationMessageRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.content is not None: body['content'] = self.content
+        if self.space_id is not None: body['space_id'] = self.space_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> GenieStartConversationMessageRequest:
         """Deserializes the GenieStartConversationMessageRequest from a dictionary."""
@@ -480,6 +636,15 @@ class GenieStartConversationResponse:
         if self.message_id is not None: body['message_id'] = self.message_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GenieStartConversationResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.conversation: body['conversation'] = self.conversation
+        if self.conversation_id is not None: body['conversation_id'] = self.conversation_id
+        if self.message: body['message'] = self.message
+        if self.message_id is not None: body['message_id'] = self.message_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> GenieStartConversationResponse:
         """Deserializes the GenieStartConversationResponse from a dictionary."""
@@ -487,6 +652,25 @@ class GenieStartConversationResponse:
                    conversation_id=d.get('conversation_id', None),
                    message=_from_dict(d, 'message', GenieMessage),
                    message_id=d.get('message_id', None))
+
+
+@dataclass
+class GetPublishedDashboardEmbeddedResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the GetPublishedDashboardEmbeddedResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetPublishedDashboardEmbeddedResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> GetPublishedDashboardEmbeddedResponse:
+        """Deserializes the GetPublishedDashboardEmbeddedResponse from a dictionary."""
+        return cls()
 
 
 class LifecycleState(Enum):
@@ -507,6 +691,13 @@ class ListDashboardsResponse:
         """Serializes the ListDashboardsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.dashboards: body['dashboards'] = [v.as_dict() for v in self.dashboards]
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListDashboardsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.dashboards: body['dashboards'] = self.dashboards
         if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         return body
 
@@ -532,6 +723,13 @@ class ListSchedulesResponse:
         if self.schedules: body['schedules'] = [v.as_dict() for v in self.schedules]
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListSchedulesResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.schedules: body['schedules'] = self.schedules
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListSchedulesResponse:
         """Deserializes the ListSchedulesResponse from a dictionary."""
@@ -554,6 +752,13 @@ class ListSubscriptionsResponse:
         if self.subscriptions: body['subscriptions'] = [v.as_dict() for v in self.subscriptions]
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListSubscriptionsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.subscriptions: body['subscriptions'] = self.subscriptions
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListSubscriptionsResponse:
         """Deserializes the ListSubscriptionsResponse from a dictionary."""
@@ -572,6 +777,13 @@ class MessageError:
         body = {}
         if self.error is not None: body['error'] = self.error
         if self.type is not None: body['type'] = self.type.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the MessageError into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.error is not None: body['error'] = self.error
+        if self.type is not None: body['type'] = self.type
         return body
 
     @classmethod
@@ -607,6 +819,7 @@ class MessageErrorType(Enum):
     LOCAL_CONTEXT_EXCEEDED_EXCEPTION = 'LOCAL_CONTEXT_EXCEEDED_EXCEPTION'
     MESSAGE_DELETED_WHILE_EXECUTING_EXCEPTION = 'MESSAGE_DELETED_WHILE_EXECUTING_EXCEPTION'
     MESSAGE_UPDATED_WHILE_EXECUTING_EXCEPTION = 'MESSAGE_UPDATED_WHILE_EXECUTING_EXCEPTION'
+    NO_DEPLOYMENTS_AVAILABLE_TO_WORKSPACE = 'NO_DEPLOYMENTS_AVAILABLE_TO_WORKSPACE'
     NO_QUERY_TO_VISUALIZE_EXCEPTION = 'NO_QUERY_TO_VISUALIZE_EXCEPTION'
     NO_TABLES_TO_QUERY_EXCEPTION = 'NO_TABLES_TO_QUERY_EXCEPTION'
     RATE_LIMIT_EXCEEDED_GENERIC_EXCEPTION = 'RATE_LIMIT_EXCEEDED_GENERIC_EXCEPTION'
@@ -614,6 +827,7 @@ class MessageErrorType(Enum):
     REPLY_PROCESS_TIMEOUT_EXCEPTION = 'REPLY_PROCESS_TIMEOUT_EXCEPTION'
     RETRYABLE_PROCESSING_EXCEPTION = 'RETRYABLE_PROCESSING_EXCEPTION'
     SQL_EXECUTION_EXCEPTION = 'SQL_EXECUTION_EXCEPTION'
+    STOP_PROCESS_DUE_TO_AUTO_REGENERATE = 'STOP_PROCESS_DUE_TO_AUTO_REGENERATE'
     TABLES_MISSING_EXCEPTION = 'TABLES_MISSING_EXCEPTION'
     TOO_MANY_CERTIFIED_ANSWERS_EXCEPTION = 'TOO_MANY_CERTIFIED_ANSWERS_EXCEPTION'
     TOO_MANY_TABLES_EXCEPTION = 'TOO_MANY_TABLES_EXCEPTION'
@@ -626,8 +840,9 @@ class MessageErrorType(Enum):
 class MessageStatus(Enum):
     """MesssageStatus. The possible values are: * `FETCHING_METADATA`: Fetching metadata from the data
     sources. * `FILTERING_CONTEXT`: Running smart context step to determine relevant context. *
-    `ASKING_AI`: Waiting for the LLM to respond to the users question. * `EXECUTING_QUERY`:
-    Executing AI provided SQL query. Get the SQL query result by calling
+    `ASKING_AI`: Waiting for the LLM to respond to the users question. * `PENDING_WAREHOUSE`:
+    Waiting for warehouse before the SQL query can start executing. * `EXECUTING_QUERY`: Executing
+    AI provided SQL query. Get the SQL query result by calling
     [getMessageQueryResult](:method:genie/getMessageQueryResult) API. **Important: The message
     status will stay in the `EXECUTING_QUERY` until a client calls
     [getMessageQueryResult](:method:genie/getMessageQueryResult)**. * `FAILED`: Generating a
@@ -644,6 +859,7 @@ class MessageStatus(Enum):
     FAILED = 'FAILED'
     FETCHING_METADATA = 'FETCHING_METADATA'
     FILTERING_CONTEXT = 'FILTERING_CONTEXT'
+    PENDING_WAREHOUSE = 'PENDING_WAREHOUSE'
     QUERY_RESULT_EXPIRED = 'QUERY_RESULT_EXPIRED'
     SUBMITTED = 'SUBMITTED'
 
@@ -659,12 +875,28 @@ class MigrateDashboardRequest:
     parent_path: Optional[str] = None
     """The workspace path of the folder to contain the migrated Lakeview dashboard."""
 
+    update_parameter_syntax: Optional[bool] = None
+    """Flag to indicate if mustache parameter syntax ({{ param }}) should be auto-updated to named
+    syntax (:param) when converting datasets in the dashboard."""
+
     def as_dict(self) -> dict:
         """Serializes the MigrateDashboardRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.display_name is not None: body['display_name'] = self.display_name
         if self.parent_path is not None: body['parent_path'] = self.parent_path
         if self.source_dashboard_id is not None: body['source_dashboard_id'] = self.source_dashboard_id
+        if self.update_parameter_syntax is not None:
+            body['update_parameter_syntax'] = self.update_parameter_syntax
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the MigrateDashboardRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.parent_path is not None: body['parent_path'] = self.parent_path
+        if self.source_dashboard_id is not None: body['source_dashboard_id'] = self.source_dashboard_id
+        if self.update_parameter_syntax is not None:
+            body['update_parameter_syntax'] = self.update_parameter_syntax
         return body
 
     @classmethod
@@ -672,7 +904,76 @@ class MigrateDashboardRequest:
         """Deserializes the MigrateDashboardRequest from a dictionary."""
         return cls(display_name=d.get('display_name', None),
                    parent_path=d.get('parent_path', None),
-                   source_dashboard_id=d.get('source_dashboard_id', None))
+                   source_dashboard_id=d.get('source_dashboard_id', None),
+                   update_parameter_syntax=d.get('update_parameter_syntax', None))
+
+
+@dataclass
+class PendingStatus:
+    data_token: str
+    """The token to poll for result asynchronously Example:
+    EC0A..ChAB7WCEn_4Qo4vkLqEbXsxxEgh3Y2pbWw45WhoQXgZSQo9aS5q2ZvFcbvbx9CgA-PAEAQ"""
+
+    def as_dict(self) -> dict:
+        """Serializes the PendingStatus into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.data_token is not None: body['data_token'] = self.data_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PendingStatus into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.data_token is not None: body['data_token'] = self.data_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> PendingStatus:
+        """Deserializes the PendingStatus from a dictionary."""
+        return cls(data_token=d.get('data_token', None))
+
+
+@dataclass
+class PollQueryStatusResponse:
+    data: Optional[List[PollQueryStatusResponseData]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the PollQueryStatusResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.data: body['data'] = [v.as_dict() for v in self.data]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PollQueryStatusResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.data: body['data'] = self.data
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> PollQueryStatusResponse:
+        """Deserializes the PollQueryStatusResponse from a dictionary."""
+        return cls(data=_repeated_dict(d, 'data', PollQueryStatusResponseData))
+
+
+@dataclass
+class PollQueryStatusResponseData:
+    status: QueryResponseStatus
+
+    def as_dict(self) -> dict:
+        """Serializes the PollQueryStatusResponseData into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.status: body['status'] = self.status.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PollQueryStatusResponseData into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.status: body['status'] = self.status
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> PollQueryStatusResponseData:
+        """Deserializes the PollQueryStatusResponseData from a dictionary."""
+        return cls(status=_from_dict(d, 'status', QueryResponseStatus))
 
 
 @dataclass
@@ -689,6 +990,14 @@ class PublishRequest:
 
     def as_dict(self) -> dict:
         """Serializes the PublishRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.dashboard_id is not None: body['dashboard_id'] = self.dashboard_id
+        if self.embed_credentials is not None: body['embed_credentials'] = self.embed_credentials
+        if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PublishRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.dashboard_id is not None: body['dashboard_id'] = self.dashboard_id
         if self.embed_credentials is not None: body['embed_credentials'] = self.embed_credentials
@@ -726,6 +1035,15 @@ class PublishedDashboard:
         if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PublishedDashboard into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.embed_credentials is not None: body['embed_credentials'] = self.embed_credentials
+        if self.revision_create_time is not None: body['revision_create_time'] = self.revision_create_time
+        if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> PublishedDashboard:
         """Deserializes the PublishedDashboard from a dictionary."""
@@ -737,6 +1055,8 @@ class PublishedDashboard:
 
 @dataclass
 class QueryAttachment:
+    cached_query_schema: Optional[QuerySchema] = None
+
     description: Optional[str] = None
     """Description of the query"""
 
@@ -755,12 +1075,15 @@ class QueryAttachment:
     query: Optional[str] = None
     """AI generated SQL query"""
 
+    statement_id: Optional[str] = None
+
     title: Optional[str] = None
     """Name of the query"""
 
     def as_dict(self) -> dict:
         """Serializes the QueryAttachment into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.cached_query_schema: body['cached_query_schema'] = self.cached_query_schema.as_dict()
         if self.description is not None: body['description'] = self.description
         if self.id is not None: body['id'] = self.id
         if self.instruction_id is not None: body['instruction_id'] = self.instruction_id
@@ -768,19 +1091,149 @@ class QueryAttachment:
         if self.last_updated_timestamp is not None:
             body['last_updated_timestamp'] = self.last_updated_timestamp
         if self.query is not None: body['query'] = self.query
+        if self.statement_id is not None: body['statement_id'] = self.statement_id
+        if self.title is not None: body['title'] = self.title
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the QueryAttachment into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.cached_query_schema: body['cached_query_schema'] = self.cached_query_schema
+        if self.description is not None: body['description'] = self.description
+        if self.id is not None: body['id'] = self.id
+        if self.instruction_id is not None: body['instruction_id'] = self.instruction_id
+        if self.instruction_title is not None: body['instruction_title'] = self.instruction_title
+        if self.last_updated_timestamp is not None:
+            body['last_updated_timestamp'] = self.last_updated_timestamp
+        if self.query is not None: body['query'] = self.query
+        if self.statement_id is not None: body['statement_id'] = self.statement_id
         if self.title is not None: body['title'] = self.title
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> QueryAttachment:
         """Deserializes the QueryAttachment from a dictionary."""
-        return cls(description=d.get('description', None),
+        return cls(cached_query_schema=_from_dict(d, 'cached_query_schema', QuerySchema),
+                   description=d.get('description', None),
                    id=d.get('id', None),
                    instruction_id=d.get('instruction_id', None),
                    instruction_title=d.get('instruction_title', None),
                    last_updated_timestamp=d.get('last_updated_timestamp', None),
                    query=d.get('query', None),
+                   statement_id=d.get('statement_id', None),
                    title=d.get('title', None))
+
+
+@dataclass
+class QueryResponseStatus:
+    canceled: Optional[Empty] = None
+    """Represents an empty message, similar to google.protobuf.Empty, which is not available in the
+    firm right now."""
+
+    closed: Optional[Empty] = None
+    """Represents an empty message, similar to google.protobuf.Empty, which is not available in the
+    firm right now."""
+
+    pending: Optional[PendingStatus] = None
+
+    statement_id: Optional[str] = None
+    """The statement id in format(01eef5da-c56e-1f36-bafa-21906587d6ba) The statement_id should be
+    identical to data_token in SuccessStatus and PendingStatus. This field is created for audit
+    logging purpose to record the statement_id of all QueryResponseStatus."""
+
+    success: Optional[SuccessStatus] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the QueryResponseStatus into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.canceled: body['canceled'] = self.canceled.as_dict()
+        if self.closed: body['closed'] = self.closed.as_dict()
+        if self.pending: body['pending'] = self.pending.as_dict()
+        if self.statement_id is not None: body['statement_id'] = self.statement_id
+        if self.success: body['success'] = self.success.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the QueryResponseStatus into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.canceled: body['canceled'] = self.canceled
+        if self.closed: body['closed'] = self.closed
+        if self.pending: body['pending'] = self.pending
+        if self.statement_id is not None: body['statement_id'] = self.statement_id
+        if self.success: body['success'] = self.success
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> QueryResponseStatus:
+        """Deserializes the QueryResponseStatus from a dictionary."""
+        return cls(canceled=_from_dict(d, 'canceled', Empty),
+                   closed=_from_dict(d, 'closed', Empty),
+                   pending=_from_dict(d, 'pending', PendingStatus),
+                   statement_id=d.get('statement_id', None),
+                   success=_from_dict(d, 'success', SuccessStatus))
+
+
+@dataclass
+class QuerySchema:
+    columns: Optional[List[QuerySchemaColumn]] = None
+
+    statement_id: Optional[str] = None
+    """Used to determine if the stored query schema is compatible with the latest run. The service
+    should always clear the schema when the query is re-executed."""
+
+    def as_dict(self) -> dict:
+        """Serializes the QuerySchema into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.columns: body['columns'] = [v.as_dict() for v in self.columns]
+        if self.statement_id is not None: body['statement_id'] = self.statement_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the QuerySchema into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.columns: body['columns'] = self.columns
+        if self.statement_id is not None: body['statement_id'] = self.statement_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> QuerySchema:
+        """Deserializes the QuerySchema from a dictionary."""
+        return cls(columns=_repeated_dict(d, 'columns', QuerySchemaColumn),
+                   statement_id=d.get('statement_id', None))
+
+
+@dataclass
+class QuerySchemaColumn:
+    name: str
+
+    type_text: str
+    """Corresponds to type desc"""
+
+    data_type: DataType
+    """Populated from https://docs.databricks.com/sql/language-manual/sql-ref-datatypes.html"""
+
+    def as_dict(self) -> dict:
+        """Serializes the QuerySchemaColumn into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.data_type is not None: body['data_type'] = self.data_type.value
+        if self.name is not None: body['name'] = self.name
+        if self.type_text is not None: body['type_text'] = self.type_text
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the QuerySchemaColumn into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.data_type is not None: body['data_type'] = self.data_type
+        if self.name is not None: body['name'] = self.name
+        if self.type_text is not None: body['type_text'] = self.type_text
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> QuerySchemaColumn:
+        """Deserializes the QuerySchemaColumn from a dictionary."""
+        return cls(data_type=_enum(d, 'data_type', DataType),
+                   name=d.get('name', None),
+                   type_text=d.get('type_text', None))
 
 
 @dataclass
@@ -797,6 +1250,14 @@ class Result:
 
     def as_dict(self) -> dict:
         """Serializes the Result into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.is_truncated is not None: body['is_truncated'] = self.is_truncated
+        if self.row_count is not None: body['row_count'] = self.row_count
+        if self.statement_id is not None: body['statement_id'] = self.statement_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Result into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.is_truncated is not None: body['is_truncated'] = self.is_truncated
         if self.row_count is not None: body['row_count'] = self.row_count
@@ -839,6 +1300,9 @@ class Schedule:
     update_time: Optional[str] = None
     """A timestamp indicating when the schedule was last updated."""
 
+    warehouse_id: Optional[str] = None
+    """The warehouse id to run the dashboard with for the schedule."""
+
     def as_dict(self) -> dict:
         """Serializes the Schedule into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -850,6 +1314,21 @@ class Schedule:
         if self.pause_status is not None: body['pause_status'] = self.pause_status.value
         if self.schedule_id is not None: body['schedule_id'] = self.schedule_id
         if self.update_time is not None: body['update_time'] = self.update_time
+        if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Schedule into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.create_time is not None: body['create_time'] = self.create_time
+        if self.cron_schedule: body['cron_schedule'] = self.cron_schedule
+        if self.dashboard_id is not None: body['dashboard_id'] = self.dashboard_id
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.etag is not None: body['etag'] = self.etag
+        if self.pause_status is not None: body['pause_status'] = self.pause_status
+        if self.schedule_id is not None: body['schedule_id'] = self.schedule_id
+        if self.update_time is not None: body['update_time'] = self.update_time
+        if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
         return body
 
     @classmethod
@@ -862,7 +1341,8 @@ class Schedule:
                    etag=d.get('etag', None),
                    pause_status=_enum(d, 'pause_status', SchedulePauseStatus),
                    schedule_id=d.get('schedule_id', None),
-                   update_time=d.get('update_time', None))
+                   update_time=d.get('update_time', None),
+                   warehouse_id=d.get('warehouse_id', None))
 
 
 class SchedulePauseStatus(Enum):
@@ -886,6 +1366,13 @@ class Subscriber:
         body = {}
         if self.destination_subscriber: body['destination_subscriber'] = self.destination_subscriber.as_dict()
         if self.user_subscriber: body['user_subscriber'] = self.user_subscriber.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Subscriber into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.destination_subscriber: body['destination_subscriber'] = self.destination_subscriber
+        if self.user_subscriber: body['user_subscriber'] = self.user_subscriber
         return body
 
     @classmethod
@@ -937,6 +1424,19 @@ class Subscription:
         if self.update_time is not None: body['update_time'] = self.update_time
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Subscription into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.create_time is not None: body['create_time'] = self.create_time
+        if self.created_by_user_id is not None: body['created_by_user_id'] = self.created_by_user_id
+        if self.dashboard_id is not None: body['dashboard_id'] = self.dashboard_id
+        if self.etag is not None: body['etag'] = self.etag
+        if self.schedule_id is not None: body['schedule_id'] = self.schedule_id
+        if self.subscriber: body['subscriber'] = self.subscriber
+        if self.subscription_id is not None: body['subscription_id'] = self.subscription_id
+        if self.update_time is not None: body['update_time'] = self.update_time
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> Subscription:
         """Deserializes the Subscription from a dictionary."""
@@ -961,6 +1461,12 @@ class SubscriptionSubscriberDestination:
         if self.destination_id is not None: body['destination_id'] = self.destination_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SubscriptionSubscriberDestination into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.destination_id is not None: body['destination_id'] = self.destination_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> SubscriptionSubscriberDestination:
         """Deserializes the SubscriptionSubscriberDestination from a dictionary."""
@@ -978,10 +1484,45 @@ class SubscriptionSubscriberUser:
         if self.user_id is not None: body['user_id'] = self.user_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SubscriptionSubscriberUser into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.user_id is not None: body['user_id'] = self.user_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> SubscriptionSubscriberUser:
         """Deserializes the SubscriptionSubscriberUser from a dictionary."""
         return cls(user_id=d.get('user_id', None))
+
+
+@dataclass
+class SuccessStatus:
+    data_token: str
+    """The token to poll for result asynchronously Example:
+    EC0A..ChAB7WCEn_4Qo4vkLqEbXsxxEgh3Y2pbWw45WhoQXgZSQo9aS5q2ZvFcbvbx9CgA-PAEAQ"""
+
+    truncated: Optional[bool] = None
+    """Whether the query result is truncated (either by byte limit or row limit)"""
+
+    def as_dict(self) -> dict:
+        """Serializes the SuccessStatus into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.data_token is not None: body['data_token'] = self.data_token
+        if self.truncated is not None: body['truncated'] = self.truncated
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SuccessStatus into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.data_token is not None: body['data_token'] = self.data_token
+        if self.truncated is not None: body['truncated'] = self.truncated
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> SuccessStatus:
+        """Deserializes the SuccessStatus from a dictionary."""
+        return cls(data_token=d.get('data_token', None), truncated=d.get('truncated', None))
 
 
 @dataclass
@@ -993,6 +1534,13 @@ class TextAttachment:
 
     def as_dict(self) -> dict:
         """Serializes the TextAttachment into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.content is not None: body['content'] = self.content
+        if self.id is not None: body['id'] = self.id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TextAttachment into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.content is not None: body['content'] = self.content
         if self.id is not None: body['id'] = self.id
@@ -1012,6 +1560,11 @@ class TrashDashboardResponse:
         body = {}
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TrashDashboardResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> TrashDashboardResponse:
         """Deserializes the TrashDashboardResponse from a dictionary."""
@@ -1026,97 +1579,229 @@ class UnpublishDashboardResponse:
         body = {}
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UnpublishDashboardResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> UnpublishDashboardResponse:
         """Deserializes the UnpublishDashboardResponse from a dictionary."""
         return cls()
 
 
-@dataclass
-class UpdateDashboardRequest:
-    dashboard_id: Optional[str] = None
-    """UUID identifying the dashboard."""
+class GenieAPI:
+    """Genie provides a no-code experience for business users, powered by AI/BI. Analysts set up spaces that
+    business users can use to ask questions using natural language. Genie uses data registered to Unity
+    Catalog and requires at least CAN USE permission on a Pro or Serverless SQL warehouse. Also, Databricks
+    Assistant must be enabled."""
 
-    display_name: Optional[str] = None
-    """The display name of the dashboard."""
+    def __init__(self, api_client):
+        self._api = api_client
 
-    etag: Optional[str] = None
-    """The etag for the dashboard. Can be optionally provided on updates to ensure that the dashboard
-    has not been modified since the last read. This field is excluded in List Dashboards responses."""
+    def wait_get_message_genie_completed(
+            self,
+            conversation_id: str,
+            message_id: str,
+            space_id: str,
+            timeout=timedelta(minutes=20),
+            callback: Optional[Callable[[GenieMessage], None]] = None) -> GenieMessage:
+        deadline = time.time() + timeout.total_seconds()
+        target_states = (MessageStatus.COMPLETED, )
+        failure_states = (MessageStatus.FAILED, )
+        status_message = 'polling...'
+        attempt = 1
+        while time.time() < deadline:
+            poll = self.get_message(conversation_id=conversation_id, message_id=message_id, space_id=space_id)
+            status = poll.status
+            status_message = f'current status: {status}'
+            if status in target_states:
+                return poll
+            if callback:
+                callback(poll)
+            if status in failure_states:
+                msg = f'failed to reach COMPLETED, got {status}: {status_message}'
+                raise OperationFailed(msg)
+            prefix = f"conversation_id={conversation_id}, message_id={message_id}, space_id={space_id}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f'timed out after {timeout}: {status_message}')
 
-    serialized_dashboard: Optional[str] = None
-    """The contents of the dashboard in serialized string form. This field is excluded in List
-    Dashboards responses. Use the [get dashboard API] to retrieve an example response, which
-    includes the `serialized_dashboard` field. This field provides the structure of the JSON string
-    that represents the dashboard's layout and components.
-    
-    [get dashboard API]: https://docs.databricks.com/api/workspace/lakeview/get"""
-
-    warehouse_id: Optional[str] = None
-    """The warehouse ID used to run the dashboard."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateDashboardRequest into a dictionary suitable for use as a JSON request body."""
+    def create_message(self, space_id: str, conversation_id: str, content: str) -> Wait[GenieMessage]:
+        """Create conversation message.
+        
+        Create new message in [conversation](:method:genie/startconversation). The AI response uses all
+        previously created messages in the conversation to respond.
+        
+        :param space_id: str
+          The ID associated with the Genie space where the conversation is started.
+        :param conversation_id: str
+          The ID associated with the conversation.
+        :param content: str
+          User message content.
+        
+        :returns:
+          Long-running operation waiter for :class:`GenieMessage`.
+          See :method:wait_get_message_genie_completed for more details.
+        """
         body = {}
-        if self.dashboard_id is not None: body['dashboard_id'] = self.dashboard_id
-        if self.display_name is not None: body['display_name'] = self.display_name
-        if self.etag is not None: body['etag'] = self.etag
-        if self.serialized_dashboard is not None: body['serialized_dashboard'] = self.serialized_dashboard
-        if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
-        return body
+        if content is not None: body['content'] = content
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateDashboardRequest:
-        """Deserializes the UpdateDashboardRequest from a dictionary."""
-        return cls(dashboard_id=d.get('dashboard_id', None),
-                   display_name=d.get('display_name', None),
-                   etag=d.get('etag', None),
-                   serialized_dashboard=d.get('serialized_dashboard', None),
-                   warehouse_id=d.get('warehouse_id', None))
+        op_response = self._api.do(
+            'POST',
+            f'/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages',
+            body=body,
+            headers=headers)
+        return Wait(self.wait_get_message_genie_completed,
+                    response=GenieMessage.from_dict(op_response),
+                    conversation_id=conversation_id,
+                    message_id=op_response['id'],
+                    space_id=space_id)
 
+    def create_message_and_wait(self,
+                                space_id: str,
+                                conversation_id: str,
+                                content: str,
+                                timeout=timedelta(minutes=20)) -> GenieMessage:
+        return self.create_message(content=content, conversation_id=conversation_id,
+                                   space_id=space_id).result(timeout=timeout)
 
-@dataclass
-class UpdateScheduleRequest:
-    cron_schedule: CronSchedule
-    """The cron expression describing the frequency of the periodic refresh for this schedule."""
+    def execute_message_query(self, space_id: str, conversation_id: str,
+                              message_id: str) -> GenieGetMessageQueryResultResponse:
+        """Execute SQL query in a conversation message.
+        
+        Execute the SQL query in the message.
+        
+        :param space_id: str
+          Genie space ID
+        :param conversation_id: str
+          Conversation ID
+        :param message_id: str
+          Message ID
+        
+        :returns: :class:`GenieGetMessageQueryResultResponse`
+        """
 
-    dashboard_id: Optional[str] = None
-    """UUID identifying the dashboard to which the schedule belongs."""
+        headers = {'Accept': 'application/json', }
 
-    display_name: Optional[str] = None
-    """The display name for schedule."""
+        res = self._api.do(
+            'POST',
+            f'/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}/execute-query',
+            headers=headers)
+        return GenieGetMessageQueryResultResponse.from_dict(res)
 
-    etag: Optional[str] = None
-    """The etag for the schedule. Must be left empty on create, must be provided on updates to ensure
-    that the schedule has not been modified since the last read, and can be optionally provided on
-    delete."""
+    def get_message(self, space_id: str, conversation_id: str, message_id: str) -> GenieMessage:
+        """Get conversation message.
+        
+        Get message from conversation.
+        
+        :param space_id: str
+          The ID associated with the Genie space where the target conversation is located.
+        :param conversation_id: str
+          The ID associated with the target conversation.
+        :param message_id: str
+          The ID associated with the target message from the identified conversation.
+        
+        :returns: :class:`GenieMessage`
+        """
 
-    pause_status: Optional[SchedulePauseStatus] = None
-    """The status indicates whether this schedule is paused or not."""
+        headers = {'Accept': 'application/json', }
 
-    schedule_id: Optional[str] = None
-    """UUID identifying the schedule."""
+        res = self._api.do(
+            'GET',
+            f'/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}',
+            headers=headers)
+        return GenieMessage.from_dict(res)
 
-    def as_dict(self) -> dict:
-        """Serializes the UpdateScheduleRequest into a dictionary suitable for use as a JSON request body."""
+    def get_message_query_result(self, space_id: str, conversation_id: str,
+                                 message_id: str) -> GenieGetMessageQueryResultResponse:
+        """Get conversation message SQL query result.
+        
+        Get the result of SQL query if the message has a query attachment. This is only available if a message
+        has a query attachment and the message status is `EXECUTING_QUERY`.
+        
+        :param space_id: str
+          Genie space ID
+        :param conversation_id: str
+          Conversation ID
+        :param message_id: str
+          Message ID
+        
+        :returns: :class:`GenieGetMessageQueryResultResponse`
+        """
+
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do(
+            'GET',
+            f'/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}/query-result',
+            headers=headers)
+        return GenieGetMessageQueryResultResponse.from_dict(res)
+
+    def get_message_query_result_by_attachment(self, space_id: str, conversation_id: str, message_id: str,
+                                               attachment_id: str) -> GenieGetMessageQueryResultResponse:
+        """Get conversation message SQL query result by attachment id.
+        
+        Get the result of SQL query by attachment id This is only available if a message has a query
+        attachment and the message status is `EXECUTING_QUERY`.
+        
+        :param space_id: str
+          Genie space ID
+        :param conversation_id: str
+          Conversation ID
+        :param message_id: str
+          Message ID
+        :param attachment_id: str
+          Attachment ID
+        
+        :returns: :class:`GenieGetMessageQueryResultResponse`
+        """
+
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do(
+            'GET',
+            f'/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}/query-result/{attachment_id}',
+            headers=headers)
+        return GenieGetMessageQueryResultResponse.from_dict(res)
+
+    def start_conversation(self, space_id: str, content: str) -> Wait[GenieMessage]:
+        """Start conversation.
+        
+        Start a new conversation.
+        
+        :param space_id: str
+          The ID associated with the Genie space where you want to start a conversation.
+        :param content: str
+          The text of the message that starts the conversation.
+        
+        :returns:
+          Long-running operation waiter for :class:`GenieMessage`.
+          See :method:wait_get_message_genie_completed for more details.
+        """
         body = {}
-        if self.cron_schedule: body['cron_schedule'] = self.cron_schedule.as_dict()
-        if self.dashboard_id is not None: body['dashboard_id'] = self.dashboard_id
-        if self.display_name is not None: body['display_name'] = self.display_name
-        if self.etag is not None: body['etag'] = self.etag
-        if self.pause_status is not None: body['pause_status'] = self.pause_status.value
-        if self.schedule_id is not None: body['schedule_id'] = self.schedule_id
-        return body
+        if content is not None: body['content'] = content
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateScheduleRequest:
-        """Deserializes the UpdateScheduleRequest from a dictionary."""
-        return cls(cron_schedule=_from_dict(d, 'cron_schedule', CronSchedule),
-                   dashboard_id=d.get('dashboard_id', None),
-                   display_name=d.get('display_name', None),
-                   etag=d.get('etag', None),
-                   pause_status=_enum(d, 'pause_status', SchedulePauseStatus),
-                   schedule_id=d.get('schedule_id', None))
+        op_response = self._api.do('POST',
+                                   f'/api/2.0/genie/spaces/{space_id}/start-conversation',
+                                   body=body,
+                                   headers=headers)
+        return Wait(self.wait_get_message_genie_completed,
+                    response=GenieStartConversationResponse.from_dict(op_response),
+                    conversation_id=op_response['conversation_id'],
+                    message_id=op_response['message_id'],
+                    space_id=space_id)
+
+    def start_conversation_and_wait(self, space_id: str, content: str,
+                                    timeout=timedelta(minutes=20)) -> GenieMessage:
+        return self.start_conversation(content=content, space_id=space_id).result(timeout=timeout)
 
 
 class GenieAPI:
@@ -1313,66 +1998,31 @@ class LakeviewAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self,
-               display_name: str,
-               *,
-               parent_path: Optional[str] = None,
-               serialized_dashboard: Optional[str] = None,
-               warehouse_id: Optional[str] = None) -> Dashboard:
+    def create(self, *, dashboard: Optional[Dashboard] = None) -> Dashboard:
         """Create dashboard.
         
         Create a draft dashboard.
         
-        :param display_name: str
-          The display name of the dashboard.
-        :param parent_path: str (optional)
-          The workspace path of the folder containing the dashboard. Includes leading slash and no trailing
-          slash. This field is excluded in List Dashboards responses.
-        :param serialized_dashboard: str (optional)
-          The contents of the dashboard in serialized string form. This field is excluded in List Dashboards
-          responses. Use the [get dashboard API] to retrieve an example response, which includes the
-          `serialized_dashboard` field. This field provides the structure of the JSON string that represents
-          the dashboard's layout and components.
-          
-          [get dashboard API]: https://docs.databricks.com/api/workspace/lakeview/get
-        :param warehouse_id: str (optional)
-          The warehouse ID used to run the dashboard.
+        :param dashboard: :class:`Dashboard` (optional)
         
         :returns: :class:`Dashboard`
         """
-        body = {}
-        if display_name is not None: body['display_name'] = display_name
-        if parent_path is not None: body['parent_path'] = parent_path
-        if serialized_dashboard is not None: body['serialized_dashboard'] = serialized_dashboard
-        if warehouse_id is not None: body['warehouse_id'] = warehouse_id
+        body = dashboard.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         res = self._api.do('POST', '/api/2.0/lakeview/dashboards', body=body, headers=headers)
         return Dashboard.from_dict(res)
 
-    def create_schedule(self,
-                        dashboard_id: str,
-                        cron_schedule: CronSchedule,
-                        *,
-                        display_name: Optional[str] = None,
-                        pause_status: Optional[SchedulePauseStatus] = None) -> Schedule:
+    def create_schedule(self, dashboard_id: str, *, schedule: Optional[Schedule] = None) -> Schedule:
         """Create dashboard schedule.
         
         :param dashboard_id: str
           UUID identifying the dashboard to which the schedule belongs.
-        :param cron_schedule: :class:`CronSchedule`
-          The cron expression describing the frequency of the periodic refresh for this schedule.
-        :param display_name: str (optional)
-          The display name for schedule.
-        :param pause_status: :class:`SchedulePauseStatus` (optional)
-          The status indicates whether this schedule is paused or not.
+        :param schedule: :class:`Schedule` (optional)
         
         :returns: :class:`Schedule`
         """
-        body = {}
-        if cron_schedule is not None: body['cron_schedule'] = cron_schedule.as_dict()
-        if display_name is not None: body['display_name'] = display_name
-        if pause_status is not None: body['pause_status'] = pause_status.value
+        body = schedule.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         res = self._api.do('POST',
@@ -1381,21 +2031,22 @@ class LakeviewAPI:
                            headers=headers)
         return Schedule.from_dict(res)
 
-    def create_subscription(self, dashboard_id: str, schedule_id: str,
-                            subscriber: Subscriber) -> Subscription:
+    def create_subscription(self,
+                            dashboard_id: str,
+                            schedule_id: str,
+                            *,
+                            subscription: Optional[Subscription] = None) -> Subscription:
         """Create schedule subscription.
         
         :param dashboard_id: str
           UUID identifying the dashboard to which the subscription belongs.
         :param schedule_id: str
           UUID identifying the schedule to which the subscription belongs.
-        :param subscriber: :class:`Subscriber`
-          Subscriber details for users and destinations to be added as subscribers to the schedule.
+        :param subscription: :class:`Subscription` (optional)
         
         :returns: :class:`Subscription`
         """
-        body = {}
-        if subscriber is not None: body['subscriber'] = subscriber.as_dict()
+        body = subscription.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         res = self._api.do(
@@ -1481,7 +2132,7 @@ class LakeviewAPI:
         Get the current published dashboard.
         
         :param dashboard_id: str
-          UUID identifying the dashboard to be published.
+          UUID identifying the published dashboard.
         
         :returns: :class:`PublishedDashboard`
         """
@@ -1576,7 +2227,7 @@ class LakeviewAPI:
         """List dashboard schedules.
         
         :param dashboard_id: str
-          UUID identifying the dashboard to which the schedule belongs.
+          UUID identifying the dashboard to which the schedules belongs.
         :param page_size: int (optional)
           The number of schedules to return per page.
         :param page_token: str (optional)
@@ -1612,9 +2263,9 @@ class LakeviewAPI:
         """List schedule subscriptions.
         
         :param dashboard_id: str
-          UUID identifying the dashboard to which the subscription belongs.
+          UUID identifying the dashboard which the subscriptions belongs.
         :param schedule_id: str
-          UUID identifying the schedule to which the subscription belongs.
+          UUID identifying the schedule which the subscriptions belongs.
         :param page_size: int (optional)
           The number of subscriptions to return per page.
         :param page_token: str (optional)
@@ -1646,7 +2297,8 @@ class LakeviewAPI:
                 source_dashboard_id: str,
                 *,
                 display_name: Optional[str] = None,
-                parent_path: Optional[str] = None) -> Dashboard:
+                parent_path: Optional[str] = None,
+                update_parameter_syntax: Optional[bool] = None) -> Dashboard:
         """Migrate dashboard.
         
         Migrates a classic SQL dashboard to Lakeview.
@@ -1657,6 +2309,9 @@ class LakeviewAPI:
           Display name for the new Lakeview dashboard.
         :param parent_path: str (optional)
           The workspace path of the folder to contain the migrated Lakeview dashboard.
+        :param update_parameter_syntax: bool (optional)
+          Flag to indicate if mustache parameter syntax ({{ param }}) should be auto-updated to named syntax
+          (:param) when converting datasets in the dashboard.
         
         :returns: :class:`Dashboard`
         """
@@ -1664,6 +2319,7 @@ class LakeviewAPI:
         if display_name is not None: body['display_name'] = display_name
         if parent_path is not None: body['parent_path'] = parent_path
         if source_dashboard_id is not None: body['source_dashboard_id'] = source_dashboard_id
+        if update_parameter_syntax is not None: body['update_parameter_syntax'] = update_parameter_syntax
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         res = self._api.do('POST', '/api/2.0/lakeview/dashboards/migrate', body=body, headers=headers)
@@ -1720,7 +2376,7 @@ class LakeviewAPI:
         Unpublish the dashboard.
         
         :param dashboard_id: str
-          UUID identifying the dashboard to be published.
+          UUID identifying the published dashboard.
         
         
         """
@@ -1729,41 +2385,18 @@ class LakeviewAPI:
 
         self._api.do('DELETE', f'/api/2.0/lakeview/dashboards/{dashboard_id}/published', headers=headers)
 
-    def update(self,
-               dashboard_id: str,
-               *,
-               display_name: Optional[str] = None,
-               etag: Optional[str] = None,
-               serialized_dashboard: Optional[str] = None,
-               warehouse_id: Optional[str] = None) -> Dashboard:
+    def update(self, dashboard_id: str, *, dashboard: Optional[Dashboard] = None) -> Dashboard:
         """Update dashboard.
         
         Update a draft dashboard.
         
         :param dashboard_id: str
           UUID identifying the dashboard.
-        :param display_name: str (optional)
-          The display name of the dashboard.
-        :param etag: str (optional)
-          The etag for the dashboard. Can be optionally provided on updates to ensure that the dashboard has
-          not been modified since the last read. This field is excluded in List Dashboards responses.
-        :param serialized_dashboard: str (optional)
-          The contents of the dashboard in serialized string form. This field is excluded in List Dashboards
-          responses. Use the [get dashboard API] to retrieve an example response, which includes the
-          `serialized_dashboard` field. This field provides the structure of the JSON string that represents
-          the dashboard's layout and components.
-          
-          [get dashboard API]: https://docs.databricks.com/api/workspace/lakeview/get
-        :param warehouse_id: str (optional)
-          The warehouse ID used to run the dashboard.
+        :param dashboard: :class:`Dashboard` (optional)
         
         :returns: :class:`Dashboard`
         """
-        body = {}
-        if display_name is not None: body['display_name'] = display_name
-        if etag is not None: body['etag'] = etag
-        if serialized_dashboard is not None: body['serialized_dashboard'] = serialized_dashboard
-        if warehouse_id is not None: body['warehouse_id'] = warehouse_id
+        body = dashboard.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         res = self._api.do('PATCH',
@@ -1775,34 +2408,19 @@ class LakeviewAPI:
     def update_schedule(self,
                         dashboard_id: str,
                         schedule_id: str,
-                        cron_schedule: CronSchedule,
                         *,
-                        display_name: Optional[str] = None,
-                        etag: Optional[str] = None,
-                        pause_status: Optional[SchedulePauseStatus] = None) -> Schedule:
+                        schedule: Optional[Schedule] = None) -> Schedule:
         """Update dashboard schedule.
         
         :param dashboard_id: str
           UUID identifying the dashboard to which the schedule belongs.
         :param schedule_id: str
           UUID identifying the schedule.
-        :param cron_schedule: :class:`CronSchedule`
-          The cron expression describing the frequency of the periodic refresh for this schedule.
-        :param display_name: str (optional)
-          The display name for schedule.
-        :param etag: str (optional)
-          The etag for the schedule. Must be left empty on create, must be provided on updates to ensure that
-          the schedule has not been modified since the last read, and can be optionally provided on delete.
-        :param pause_status: :class:`SchedulePauseStatus` (optional)
-          The status indicates whether this schedule is paused or not.
+        :param schedule: :class:`Schedule` (optional)
         
         :returns: :class:`Schedule`
         """
-        body = {}
-        if cron_schedule is not None: body['cron_schedule'] = cron_schedule.as_dict()
-        if display_name is not None: body['display_name'] = display_name
-        if etag is not None: body['etag'] = etag
-        if pause_status is not None: body['pause_status'] = pause_status.value
+        body = schedule.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         res = self._api.do('PUT',
@@ -1810,3 +2428,107 @@ class LakeviewAPI:
                            body=body,
                            headers=headers)
         return Schedule.from_dict(res)
+
+
+class LakeviewEmbeddedAPI:
+    """Token-based Lakeview APIs for embedding dashboards in external applications."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def get_published_dashboard_embedded(self, dashboard_id: str):
+        """Read a published dashboard in an embedded ui.
+        
+        Get the current published dashboard within an embedded context.
+        
+        :param dashboard_id: str
+          UUID identifying the published dashboard.
+        
+        
+        """
+
+        headers = {'Accept': 'application/json', }
+
+        self._api.do('GET',
+                     f'/api/2.0/lakeview/dashboards/{dashboard_id}/published/embedded',
+                     headers=headers)
+
+
+class QueryExecutionAPI:
+    """Query execution APIs for AI / BI Dashboards"""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def cancel_published_query_execution(self,
+                                         dashboard_name: str,
+                                         dashboard_revision_id: str,
+                                         *,
+                                         tokens: Optional[List[str]] = None) -> CancelQueryExecutionResponse:
+        """Cancel the results for the a query for a published, embedded dashboard.
+        
+        :param dashboard_name: str
+        :param dashboard_revision_id: str
+        :param tokens: List[str] (optional)
+          Example: EC0A..ChAB7WCEn_4Qo4vkLqEbXsxxEgh3Y2pbWw45WhoQXgZSQo9aS5q2ZvFcbvbx9CgA-PAEAQ
+        
+        :returns: :class:`CancelQueryExecutionResponse`
+        """
+
+        query = {}
+        if dashboard_name is not None: query['dashboard_name'] = dashboard_name
+        if dashboard_revision_id is not None: query['dashboard_revision_id'] = dashboard_revision_id
+        if tokens is not None: query['tokens'] = [v for v in tokens]
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do('DELETE', '/api/2.0/lakeview-query/query/published', query=query, headers=headers)
+        return CancelQueryExecutionResponse.from_dict(res)
+
+    def execute_published_dashboard_query(self,
+                                          dashboard_name: str,
+                                          dashboard_revision_id: str,
+                                          *,
+                                          override_warehouse_id: Optional[str] = None):
+        """Execute a query for a published dashboard.
+        
+        :param dashboard_name: str
+          Dashboard name and revision_id is required to retrieve PublishedDatasetDataModel which contains the
+          list of datasets, warehouse_id, and embedded_credentials
+        :param dashboard_revision_id: str
+        :param override_warehouse_id: str (optional)
+          A dashboard schedule can override the warehouse used as compute for processing the published
+          dashboard queries
+        
+        
+        """
+        body = {}
+        if dashboard_name is not None: body['dashboard_name'] = dashboard_name
+        if dashboard_revision_id is not None: body['dashboard_revision_id'] = dashboard_revision_id
+        if override_warehouse_id is not None: body['override_warehouse_id'] = override_warehouse_id
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        self._api.do('POST', '/api/2.0/lakeview-query/query/published', body=body, headers=headers)
+
+    def poll_published_query_status(self,
+                                    dashboard_name: str,
+                                    dashboard_revision_id: str,
+                                    *,
+                                    tokens: Optional[List[str]] = None) -> PollQueryStatusResponse:
+        """Poll the results for the a query for a published, embedded dashboard.
+        
+        :param dashboard_name: str
+        :param dashboard_revision_id: str
+        :param tokens: List[str] (optional)
+          Example: EC0A..ChAB7WCEn_4Qo4vkLqEbXsxxEgh3Y2pbWw45WhoQXgZSQo9aS5q2ZvFcbvbx9CgA-PAEAQ
+        
+        :returns: :class:`PollQueryStatusResponse`
+        """
+
+        query = {}
+        if dashboard_name is not None: query['dashboard_name'] = dashboard_name
+        if dashboard_revision_id is not None: query['dashboard_revision_id'] = dashboard_revision_id
+        if tokens is not None: query['tokens'] = [v for v in tokens]
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do('GET', '/api/2.0/lakeview-query/query/published', query=query, headers=headers)
+        return PollQueryStatusResponse.from_dict(res)

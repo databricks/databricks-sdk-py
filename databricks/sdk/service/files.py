@@ -28,6 +28,13 @@ class AddBlock:
         if self.handle is not None: body['handle'] = self.handle
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AddBlock into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.data is not None: body['data'] = self.data
+        if self.handle is not None: body['handle'] = self.handle
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> AddBlock:
         """Deserializes the AddBlock from a dictionary."""
@@ -39,6 +46,11 @@ class AddBlockResponse:
 
     def as_dict(self) -> dict:
         """Serializes the AddBlockResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AddBlockResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -59,6 +71,12 @@ class Close:
         if self.handle is not None: body['handle'] = self.handle
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Close into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.handle is not None: body['handle'] = self.handle
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> Close:
         """Deserializes the Close from a dictionary."""
@@ -70,6 +88,11 @@ class CloseResponse:
 
     def as_dict(self) -> dict:
         """Serializes the CloseResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CloseResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -94,6 +117,13 @@ class Create:
         if self.path is not None: body['path'] = self.path
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Create into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.overwrite is not None: body['overwrite'] = self.overwrite
+        if self.path is not None: body['path'] = self.path
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> Create:
         """Deserializes the Create from a dictionary."""
@@ -105,6 +135,11 @@ class CreateDirectoryResponse:
 
     def as_dict(self) -> dict:
         """Serializes the CreateDirectoryResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateDirectoryResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -122,6 +157,12 @@ class CreateResponse:
 
     def as_dict(self) -> dict:
         """Serializes the CreateResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.handle is not None: body['handle'] = self.handle
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.handle is not None: body['handle'] = self.handle
         return body
@@ -148,6 +189,13 @@ class Delete:
         if self.recursive is not None: body['recursive'] = self.recursive
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Delete into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.path is not None: body['path'] = self.path
+        if self.recursive is not None: body['recursive'] = self.recursive
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> Delete:
         """Deserializes the Delete from a dictionary."""
@@ -162,6 +210,11 @@ class DeleteDirectoryResponse:
         body = {}
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteDirectoryResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> DeleteDirectoryResponse:
         """Deserializes the DeleteDirectoryResponse from a dictionary."""
@@ -173,6 +226,11 @@ class DeleteResponse:
 
     def as_dict(self) -> dict:
         """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -209,6 +267,16 @@ class DirectoryEntry:
         if self.path is not None: body['path'] = self.path
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DirectoryEntry into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.file_size is not None: body['file_size'] = self.file_size
+        if self.is_directory is not None: body['is_directory'] = self.is_directory
+        if self.last_modified is not None: body['last_modified'] = self.last_modified
+        if self.name is not None: body['name'] = self.name
+        if self.path is not None: body['path'] = self.path
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> DirectoryEntry:
         """Deserializes the DirectoryEntry from a dictionary."""
@@ -231,6 +299,15 @@ class DownloadResponse:
 
     def as_dict(self) -> dict:
         """Serializes the DownloadResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.content_length is not None: body['content-length'] = self.content_length
+        if self.content_type is not None: body['content-type'] = self.content_type
+        if self.contents: body['contents'] = self.contents
+        if self.last_modified is not None: body['last-modified'] = self.last_modified
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DownloadResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.content_length is not None: body['content-length'] = self.content_length
         if self.content_type is not None: body['content-type'] = self.content_type
@@ -270,6 +347,15 @@ class FileInfo:
         if self.path is not None: body['path'] = self.path
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the FileInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.file_size is not None: body['file_size'] = self.file_size
+        if self.is_dir is not None: body['is_dir'] = self.is_dir
+        if self.modification_time is not None: body['modification_time'] = self.modification_time
+        if self.path is not None: body['path'] = self.path
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> FileInfo:
         """Deserializes the FileInfo from a dictionary."""
@@ -284,6 +370,11 @@ class GetDirectoryMetadataResponse:
 
     def as_dict(self) -> dict:
         """Serializes the GetDirectoryMetadataResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetDirectoryMetadataResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -303,6 +394,14 @@ class GetMetadataResponse:
 
     def as_dict(self) -> dict:
         """Serializes the GetMetadataResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.content_length is not None: body['content-length'] = self.content_length
+        if self.content_type is not None: body['content-type'] = self.content_type
+        if self.last_modified is not None: body['last-modified'] = self.last_modified
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetMetadataResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.content_length is not None: body['content-length'] = self.content_length
         if self.content_type is not None: body['content-type'] = self.content_type
@@ -332,6 +431,13 @@ class ListDirectoryResponse:
         if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListDirectoryResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.contents: body['contents'] = self.contents
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListDirectoryResponse:
         """Deserializes the ListDirectoryResponse from a dictionary."""
@@ -348,6 +454,12 @@ class ListStatusResponse:
         """Serializes the ListStatusResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.files: body['files'] = [v.as_dict() for v in self.files]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListStatusResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.files: body['files'] = self.files
         return body
 
     @classmethod
@@ -367,6 +479,12 @@ class MkDirs:
         if self.path is not None: body['path'] = self.path
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the MkDirs into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.path is not None: body['path'] = self.path
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> MkDirs:
         """Deserializes the MkDirs from a dictionary."""
@@ -378,6 +496,11 @@ class MkDirsResponse:
 
     def as_dict(self) -> dict:
         """Serializes the MkDirsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the MkDirsResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -402,6 +525,13 @@ class Move:
         if self.source_path is not None: body['source_path'] = self.source_path
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Move into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.destination_path is not None: body['destination_path'] = self.destination_path
+        if self.source_path is not None: body['source_path'] = self.source_path
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> Move:
         """Deserializes the Move from a dictionary."""
@@ -413,6 +543,11 @@ class MoveResponse:
 
     def as_dict(self) -> dict:
         """Serializes the MoveResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the MoveResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -441,6 +576,14 @@ class Put:
         if self.path is not None: body['path'] = self.path
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Put into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.contents is not None: body['contents'] = self.contents
+        if self.overwrite is not None: body['overwrite'] = self.overwrite
+        if self.path is not None: body['path'] = self.path
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> Put:
         """Deserializes the Put from a dictionary."""
@@ -454,6 +597,11 @@ class PutResponse:
 
     def as_dict(self) -> dict:
         """Serializes the PutResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PutResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -479,6 +627,13 @@ class ReadResponse:
         if self.data is not None: body['data'] = self.data
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ReadResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.bytes_read is not None: body['bytes_read'] = self.bytes_read
+        if self.data is not None: body['data'] = self.data
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ReadResponse:
         """Deserializes the ReadResponse from a dictionary."""
@@ -490,6 +645,11 @@ class UploadResponse:
 
     def as_dict(self) -> dict:
         """Serializes the UploadResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UploadResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -765,9 +925,12 @@ class FilesAPI:
     /Volumes/&lt;catalog_name&gt;/&lt;schema_name&gt;/&lt;volume_name&gt;/&lt;path_to_file&gt;.
     
     The Files API has two distinct endpoints, one for working with files (`/fs/files`) and another one for
-    working with directories (`/fs/directories`). Both endpoints, use the standard HTTP methods GET, HEAD,
-    PUT, and DELETE to manage files and directories specified using their URI path. The path is always
-    absolute.
+    working with directories (`/fs/directories`). Both endpoints use the standard HTTP methods GET, HEAD, PUT,
+    and DELETE to manage files and directories specified using their URI path. The path is always absolute.
+    
+    Some Files API client features are currently experimental. To enable them, set
+    `enable_experimental_files_api_client = True` in your configuration profile or use the environment
+    variable `DATABRICKS_ENABLE_EXPERIMENTAL_FILES_API_CLIENT=True`.
     
     [Unity Catalog volumes]: https://docs.databricks.com/en/connect/unity-catalog/volumes.html"""
 
@@ -833,8 +996,8 @@ class FilesAPI:
     def download(self, file_path: str) -> DownloadResponse:
         """Download a file.
         
-        Downloads a file of up to 5 GiB. The file contents are the response body. This is a standard HTTP file
-        download, not a JSON RPC.
+        Downloads a file. The file contents are the response body. This is a standard HTTP file download, not
+        a JSON RPC. It supports the Range and If-Unmodified-Since HTTP headers.
         
         :param file_path: str
           The absolute path of the file.

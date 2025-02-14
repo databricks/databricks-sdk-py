@@ -45,12 +45,17 @@ class App:
     description: Optional[str] = None
     """The description of the app."""
 
+    id: Optional[str] = None
+    """The unique identifier of the app."""
+
     pending_deployment: Optional[AppDeployment] = None
     """The pending deployment of the app. A deployment is considered pending when it is being prepared
     for deployment to the app compute."""
 
     resources: Optional[List[AppResource]] = None
     """Resources for the app."""
+
+    service_principal_client_id: Optional[str] = None
 
     service_principal_id: Optional[int] = None
 
@@ -76,9 +81,37 @@ class App:
         if self.default_source_code_path is not None:
             body['default_source_code_path'] = self.default_source_code_path
         if self.description is not None: body['description'] = self.description
+        if self.id is not None: body['id'] = self.id
         if self.name is not None: body['name'] = self.name
         if self.pending_deployment: body['pending_deployment'] = self.pending_deployment.as_dict()
         if self.resources: body['resources'] = [v.as_dict() for v in self.resources]
+        if self.service_principal_client_id is not None:
+            body['service_principal_client_id'] = self.service_principal_client_id
+        if self.service_principal_id is not None: body['service_principal_id'] = self.service_principal_id
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
+        if self.update_time is not None: body['update_time'] = self.update_time
+        if self.updater is not None: body['updater'] = self.updater
+        if self.url is not None: body['url'] = self.url
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the App into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.active_deployment: body['active_deployment'] = self.active_deployment
+        if self.app_status: body['app_status'] = self.app_status
+        if self.compute_status: body['compute_status'] = self.compute_status
+        if self.create_time is not None: body['create_time'] = self.create_time
+        if self.creator is not None: body['creator'] = self.creator
+        if self.default_source_code_path is not None:
+            body['default_source_code_path'] = self.default_source_code_path
+        if self.description is not None: body['description'] = self.description
+        if self.id is not None: body['id'] = self.id
+        if self.name is not None: body['name'] = self.name
+        if self.pending_deployment: body['pending_deployment'] = self.pending_deployment
+        if self.resources: body['resources'] = self.resources
+        if self.service_principal_client_id is not None:
+            body['service_principal_client_id'] = self.service_principal_client_id
         if self.service_principal_id is not None: body['service_principal_id'] = self.service_principal_id
         if self.service_principal_name is not None:
             body['service_principal_name'] = self.service_principal_name
@@ -97,9 +130,11 @@ class App:
                    creator=d.get('creator', None),
                    default_source_code_path=d.get('default_source_code_path', None),
                    description=d.get('description', None),
+                   id=d.get('id', None),
                    name=d.get('name', None),
                    pending_deployment=_from_dict(d, 'pending_deployment', AppDeployment),
                    resources=_repeated_dict(d, 'resources', AppResource),
+                   service_principal_client_id=d.get('service_principal_client_id', None),
                    service_principal_id=d.get('service_principal_id', None),
                    service_principal_name=d.get('service_principal_name', None),
                    update_time=d.get('update_time', None),
@@ -126,6 +161,16 @@ class AppAccessControlRequest:
         body = {}
         if self.group_name is not None: body['group_name'] = self.group_name
         if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
+        if self.user_name is not None: body['user_name'] = self.user_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AppAccessControlRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.permission_level is not None: body['permission_level'] = self.permission_level
         if self.service_principal_name is not None:
             body['service_principal_name'] = self.service_principal_name
         if self.user_name is not None: body['user_name'] = self.user_name
@@ -161,6 +206,17 @@ class AppAccessControlResponse:
         """Serializes the AppAccessControlResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.all_permissions: body['all_permissions'] = [v.as_dict() for v in self.all_permissions]
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
+        if self.user_name is not None: body['user_name'] = self.user_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AppAccessControlResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.all_permissions: body['all_permissions'] = self.all_permissions
         if self.display_name is not None: body['display_name'] = self.display_name
         if self.group_name is not None: body['group_name'] = self.group_name
         if self.service_principal_name is not None:
@@ -221,6 +277,19 @@ class AppDeployment:
         if self.update_time is not None: body['update_time'] = self.update_time
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AppDeployment into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.create_time is not None: body['create_time'] = self.create_time
+        if self.creator is not None: body['creator'] = self.creator
+        if self.deployment_artifacts: body['deployment_artifacts'] = self.deployment_artifacts
+        if self.deployment_id is not None: body['deployment_id'] = self.deployment_id
+        if self.mode is not None: body['mode'] = self.mode
+        if self.source_code_path is not None: body['source_code_path'] = self.source_code_path
+        if self.status: body['status'] = self.status
+        if self.update_time is not None: body['update_time'] = self.update_time
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> AppDeployment:
         """Deserializes the AppDeployment from a dictionary."""
@@ -241,6 +310,12 @@ class AppDeploymentArtifacts:
 
     def as_dict(self) -> dict:
         """Serializes the AppDeploymentArtifacts into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.source_code_path is not None: body['source_code_path'] = self.source_code_path
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AppDeploymentArtifacts into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.source_code_path is not None: body['source_code_path'] = self.source_code_path
         return body
@@ -280,6 +355,13 @@ class AppDeploymentStatus:
         if self.state is not None: body['state'] = self.state.value
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AppDeploymentStatus into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.message is not None: body['message'] = self.message
+        if self.state is not None: body['state'] = self.state
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> AppDeploymentStatus:
         """Deserializes the AppDeploymentStatus from a dictionary."""
@@ -301,6 +383,14 @@ class AppPermission:
         if self.inherited is not None: body['inherited'] = self.inherited
         if self.inherited_from_object: body['inherited_from_object'] = [v for v in self.inherited_from_object]
         if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AppPermission into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.inherited is not None: body['inherited'] = self.inherited
+        if self.inherited_from_object: body['inherited_from_object'] = self.inherited_from_object
+        if self.permission_level is not None: body['permission_level'] = self.permission_level
         return body
 
     @classmethod
@@ -335,6 +425,14 @@ class AppPermissions:
         if self.object_type is not None: body['object_type'] = self.object_type
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AppPermissions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.access_control_list: body['access_control_list'] = self.access_control_list
+        if self.object_id is not None: body['object_id'] = self.object_id
+        if self.object_type is not None: body['object_type'] = self.object_type
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> AppPermissions:
         """Deserializes the AppPermissions from a dictionary."""
@@ -357,6 +455,13 @@ class AppPermissionsDescription:
         if self.permission_level is not None: body['permission_level'] = self.permission_level.value
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AppPermissionsDescription into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.description is not None: body['description'] = self.description
+        if self.permission_level is not None: body['permission_level'] = self.permission_level
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> AppPermissionsDescription:
         """Deserializes the AppPermissionsDescription from a dictionary."""
@@ -376,6 +481,13 @@ class AppPermissionsRequest:
         body = {}
         if self.access_control_list:
             body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
+        if self.app_name is not None: body['app_name'] = self.app_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AppPermissionsRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.access_control_list: body['access_control_list'] = self.access_control_list
         if self.app_name is not None: body['app_name'] = self.app_name
         return body
 
@@ -413,6 +525,17 @@ class AppResource:
         if self.sql_warehouse: body['sql_warehouse'] = self.sql_warehouse.as_dict()
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AppResource into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.description is not None: body['description'] = self.description
+        if self.job: body['job'] = self.job
+        if self.name is not None: body['name'] = self.name
+        if self.secret: body['secret'] = self.secret
+        if self.serving_endpoint: body['serving_endpoint'] = self.serving_endpoint
+        if self.sql_warehouse: body['sql_warehouse'] = self.sql_warehouse
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> AppResource:
         """Deserializes the AppResource from a dictionary."""
@@ -438,6 +561,13 @@ class AppResourceJob:
         body = {}
         if self.id is not None: body['id'] = self.id
         if self.permission is not None: body['permission'] = self.permission.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AppResourceJob into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.id is not None: body['id'] = self.id
+        if self.permission is not None: body['permission'] = self.permission
         return body
 
     @classmethod
@@ -474,6 +604,14 @@ class AppResourceSecret:
         if self.scope is not None: body['scope'] = self.scope
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AppResourceSecret into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.key is not None: body['key'] = self.key
+        if self.permission is not None: body['permission'] = self.permission
+        if self.scope is not None: body['scope'] = self.scope
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> AppResourceSecret:
         """Deserializes the AppResourceSecret from a dictionary."""
@@ -506,6 +644,13 @@ class AppResourceServingEndpoint:
         if self.permission is not None: body['permission'] = self.permission.value
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AppResourceServingEndpoint into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.name is not None: body['name'] = self.name
+        if self.permission is not None: body['permission'] = self.permission
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> AppResourceServingEndpoint:
         """Deserializes the AppResourceServingEndpoint from a dictionary."""
@@ -534,6 +679,13 @@ class AppResourceSqlWarehouse:
         body = {}
         if self.id is not None: body['id'] = self.id
         if self.permission is not None: body['permission'] = self.permission.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AppResourceSqlWarehouse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.id is not None: body['id'] = self.id
+        if self.permission is not None: body['permission'] = self.permission
         return body
 
     @classmethod
@@ -573,6 +725,13 @@ class ApplicationStatus:
         if self.state is not None: body['state'] = self.state.value
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ApplicationStatus into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.message is not None: body['message'] = self.message
+        if self.state is not None: body['state'] = self.state
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ApplicationStatus:
         """Deserializes the ApplicationStatus from a dictionary."""
@@ -605,74 +764,17 @@ class ComputeStatus:
         if self.state is not None: body['state'] = self.state.value
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ComputeStatus into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.message is not None: body['message'] = self.message
+        if self.state is not None: body['state'] = self.state
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ComputeStatus:
         """Deserializes the ComputeStatus from a dictionary."""
         return cls(message=d.get('message', None), state=_enum(d, 'state', ComputeState))
-
-
-@dataclass
-class CreateAppDeploymentRequest:
-    app_name: Optional[str] = None
-    """The name of the app."""
-
-    deployment_id: Optional[str] = None
-    """The unique id of the deployment."""
-
-    mode: Optional[AppDeploymentMode] = None
-    """The mode of which the deployment will manage the source code."""
-
-    source_code_path: Optional[str] = None
-    """The workspace file system path of the source code used to create the app deployment. This is
-    different from `deployment_artifacts.source_code_path`, which is the path used by the deployed
-    app. The former refers to the original source code location of the app in the workspace during
-    deployment creation, whereas the latter provides a system generated stable snapshotted source
-    code path used by the deployment."""
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateAppDeploymentRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.app_name is not None: body['app_name'] = self.app_name
-        if self.deployment_id is not None: body['deployment_id'] = self.deployment_id
-        if self.mode is not None: body['mode'] = self.mode.value
-        if self.source_code_path is not None: body['source_code_path'] = self.source_code_path
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateAppDeploymentRequest:
-        """Deserializes the CreateAppDeploymentRequest from a dictionary."""
-        return cls(app_name=d.get('app_name', None),
-                   deployment_id=d.get('deployment_id', None),
-                   mode=_enum(d, 'mode', AppDeploymentMode),
-                   source_code_path=d.get('source_code_path', None))
-
-
-@dataclass
-class CreateAppRequest:
-    name: str
-    """The name of the app. The name must contain only lowercase alphanumeric characters and hyphens.
-    It must be unique within the workspace."""
-
-    description: Optional[str] = None
-    """The description of the app."""
-
-    resources: Optional[List[AppResource]] = None
-    """Resources for the app."""
-
-    def as_dict(self) -> dict:
-        """Serializes the CreateAppRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.description is not None: body['description'] = self.description
-        if self.name is not None: body['name'] = self.name
-        if self.resources: body['resources'] = [v.as_dict() for v in self.resources]
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> CreateAppRequest:
-        """Deserializes the CreateAppRequest from a dictionary."""
-        return cls(description=d.get('description', None),
-                   name=d.get('name', None),
-                   resources=_repeated_dict(d, 'resources', AppResource))
 
 
 @dataclass
@@ -684,6 +786,12 @@ class GetAppPermissionLevelsResponse:
         """Serializes the GetAppPermissionLevelsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetAppPermissionLevelsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.permission_levels: body['permission_levels'] = self.permission_levels
         return body
 
     @classmethod
@@ -704,6 +812,13 @@ class ListAppDeploymentsResponse:
         """Serializes the ListAppDeploymentsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.app_deployments: body['app_deployments'] = [v.as_dict() for v in self.app_deployments]
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListAppDeploymentsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.app_deployments: body['app_deployments'] = self.app_deployments
         if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         return body
 
@@ -728,6 +843,13 @@ class ListAppsResponse:
         if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListAppsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.apps: body['apps'] = self.apps
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListAppsResponse:
         """Deserializes the ListAppsResponse from a dictionary."""
@@ -744,34 +866,6 @@ class StartAppRequest:
 class StopAppRequest:
     name: Optional[str] = None
     """The name of the app."""
-
-
-@dataclass
-class UpdateAppRequest:
-    name: str
-    """The name of the app. The name must contain only lowercase alphanumeric characters and hyphens.
-    It must be unique within the workspace."""
-
-    description: Optional[str] = None
-    """The description of the app."""
-
-    resources: Optional[List[AppResource]] = None
-    """Resources for the app."""
-
-    def as_dict(self) -> dict:
-        """Serializes the UpdateAppRequest into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.description is not None: body['description'] = self.description
-        if self.name is not None: body['name'] = self.name
-        if self.resources: body['resources'] = [v.as_dict() for v in self.resources]
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> UpdateAppRequest:
-        """Deserializes the UpdateAppRequest from a dictionary."""
-        return cls(description=d.get('description', None),
-                   name=d.get('name', None),
-                   resources=_repeated_dict(d, 'resources', AppResource))
 
 
 class AppsAPI:
@@ -802,38 +896,6 @@ class AppsAPI:
                 callback(poll)
             if status in failure_states:
                 msg = f'failed to reach ACTIVE, got {status}: {status_message}'
-                raise OperationFailed(msg)
-            prefix = f"name={name}"
-            sleep = attempt
-            if sleep > 10:
-                # sleep 10s max per attempt
-                sleep = 10
-            _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
-            time.sleep(sleep + random.random())
-            attempt += 1
-        raise TimeoutError(f'timed out after {timeout}: {status_message}')
-
-    def wait_get_app_stopped(self,
-                             name: str,
-                             timeout=timedelta(minutes=20),
-                             callback: Optional[Callable[[App], None]] = None) -> App:
-        deadline = time.time() + timeout.total_seconds()
-        target_states = (ComputeState.STOPPED, )
-        failure_states = (ComputeState.ERROR, )
-        status_message = 'polling...'
-        attempt = 1
-        while time.time() < deadline:
-            poll = self.get(name=name)
-            status = poll.compute_status.state
-            status_message = f'current status: {status}'
-            if poll.compute_status:
-                status_message = poll.compute_status.message
-            if status in target_states:
-                return poll
-            if callback:
-                callback(poll)
-            if status in failure_states:
-                msg = f'failed to reach STOPPED, got {status}: {status_message}'
                 raise OperationFailed(msg)
             prefix = f"name={name}"
             sleep = attempt
@@ -879,43 +941,65 @@ class AppsAPI:
             attempt += 1
         raise TimeoutError(f'timed out after {timeout}: {status_message}')
 
-    def create(self,
-               name: str,
-               *,
-               description: Optional[str] = None,
-               resources: Optional[List[AppResource]] = None) -> Wait[App]:
+    def wait_get_app_stopped(self,
+                             name: str,
+                             timeout=timedelta(minutes=20),
+                             callback: Optional[Callable[[App], None]] = None) -> App:
+        deadline = time.time() + timeout.total_seconds()
+        target_states = (ComputeState.STOPPED, )
+        failure_states = (ComputeState.ERROR, )
+        status_message = 'polling...'
+        attempt = 1
+        while time.time() < deadline:
+            poll = self.get(name=name)
+            status = poll.compute_status.state
+            status_message = f'current status: {status}'
+            if poll.compute_status:
+                status_message = poll.compute_status.message
+            if status in target_states:
+                return poll
+            if callback:
+                callback(poll)
+            if status in failure_states:
+                msg = f'failed to reach STOPPED, got {status}: {status_message}'
+                raise OperationFailed(msg)
+            prefix = f"name={name}"
+            sleep = attempt
+            if sleep > 10:
+                # sleep 10s max per attempt
+                sleep = 10
+            _LOG.debug(f'{prefix}: ({status}) {status_message} (sleeping ~{sleep}s)')
+            time.sleep(sleep + random.random())
+            attempt += 1
+        raise TimeoutError(f'timed out after {timeout}: {status_message}')
+
+    def create(self, *, app: Optional[App] = None, no_compute: Optional[bool] = None) -> Wait[App]:
         """Create an app.
         
         Creates a new app.
         
-        :param name: str
-          The name of the app. The name must contain only lowercase alphanumeric characters and hyphens. It
-          must be unique within the workspace.
-        :param description: str (optional)
-          The description of the app.
-        :param resources: List[:class:`AppResource`] (optional)
-          Resources for the app.
+        :param app: :class:`App` (optional)
+        :param no_compute: bool (optional)
+          If true, the app will not be started after creation.
         
         :returns:
           Long-running operation waiter for :class:`App`.
           See :method:wait_get_app_active for more details.
         """
-        body = {}
-        if description is not None: body['description'] = description
-        if name is not None: body['name'] = name
-        if resources is not None: body['resources'] = [v.as_dict() for v in resources]
+        body = app.as_dict()
+        query = {}
+        if no_compute is not None: query['no_compute'] = no_compute
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
-        op_response = self._api.do('POST', '/api/2.0/apps', body=body, headers=headers)
+        op_response = self._api.do('POST', '/api/2.0/apps', query=query, body=body, headers=headers)
         return Wait(self.wait_get_app_active, response=App.from_dict(op_response), name=op_response['name'])
 
     def create_and_wait(self,
-                        name: str,
                         *,
-                        description: Optional[str] = None,
-                        resources: Optional[List[AppResource]] = None,
+                        app: Optional[App] = None,
+                        no_compute: Optional[bool] = None,
                         timeout=timedelta(minutes=20)) -> App:
-        return self.create(description=description, name=name, resources=resources).result(timeout=timeout)
+        return self.create(app=app, no_compute=no_compute).result(timeout=timeout)
 
     def delete(self, name: str) -> App:
         """Delete an app.
@@ -933,37 +1017,20 @@ class AppsAPI:
         res = self._api.do('DELETE', f'/api/2.0/apps/{name}', headers=headers)
         return App.from_dict(res)
 
-    def deploy(self,
-               app_name: str,
-               *,
-               deployment_id: Optional[str] = None,
-               mode: Optional[AppDeploymentMode] = None,
-               source_code_path: Optional[str] = None) -> Wait[AppDeployment]:
+    def deploy(self, app_name: str, *, app_deployment: Optional[AppDeployment] = None) -> Wait[AppDeployment]:
         """Create an app deployment.
         
         Creates an app deployment for the app with the supplied name.
         
         :param app_name: str
           The name of the app.
-        :param deployment_id: str (optional)
-          The unique id of the deployment.
-        :param mode: :class:`AppDeploymentMode` (optional)
-          The mode of which the deployment will manage the source code.
-        :param source_code_path: str (optional)
-          The workspace file system path of the source code used to create the app deployment. This is
-          different from `deployment_artifacts.source_code_path`, which is the path used by the deployed app.
-          The former refers to the original source code location of the app in the workspace during deployment
-          creation, whereas the latter provides a system generated stable snapshotted source code path used by
-          the deployment.
+        :param app_deployment: :class:`AppDeployment` (optional)
         
         :returns:
           Long-running operation waiter for :class:`AppDeployment`.
           See :method:wait_get_deployment_app_succeeded for more details.
         """
-        body = {}
-        if deployment_id is not None: body['deployment_id'] = deployment_id
-        if mode is not None: body['mode'] = mode.value
-        if source_code_path is not None: body['source_code_path'] = source_code_path
+        body = app_deployment.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         op_response = self._api.do('POST',
@@ -975,18 +1042,12 @@ class AppsAPI:
                     app_name=app_name,
                     deployment_id=op_response['deployment_id'])
 
-    def deploy_and_wait(
-        self,
-        app_name: str,
-        *,
-        deployment_id: Optional[str] = None,
-        mode: Optional[AppDeploymentMode] = None,
-        source_code_path: Optional[str] = None,
-        timeout=timedelta(minutes=20)) -> AppDeployment:
-        return self.deploy(app_name=app_name,
-                           deployment_id=deployment_id,
-                           mode=mode,
-                           source_code_path=source_code_path).result(timeout=timeout)
+    def deploy_and_wait(self,
+                        app_name: str,
+                        *,
+                        app_deployment: Optional[AppDeployment] = None,
+                        timeout=timedelta(minutes=20)) -> AppDeployment:
+        return self.deploy(app_deployment=app_deployment, app_name=app_name).result(timeout=timeout)
 
     def get(self, name: str) -> App:
         """Get an app.
@@ -1121,7 +1182,8 @@ class AppsAPI:
             access_control_list: Optional[List[AppAccessControlRequest]] = None) -> AppPermissions:
         """Set app permissions.
         
-        Sets permissions on an app. Apps can inherit permissions from their root object.
+        Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
+        permissions if none are specified. Objects can inherit permissions from their root object.
         
         :param app_name: str
           The app for which to get or manage permissions.
@@ -1179,11 +1241,7 @@ class AppsAPI:
     def stop_and_wait(self, name: str, timeout=timedelta(minutes=20)) -> App:
         return self.stop(name=name).result(timeout=timeout)
 
-    def update(self,
-               name: str,
-               *,
-               description: Optional[str] = None,
-               resources: Optional[List[AppResource]] = None) -> App:
+    def update(self, name: str, *, app: Optional[App] = None) -> App:
         """Update an app.
         
         Updates the app with the supplied name.
@@ -1191,16 +1249,11 @@ class AppsAPI:
         :param name: str
           The name of the app. The name must contain only lowercase alphanumeric characters and hyphens. It
           must be unique within the workspace.
-        :param description: str (optional)
-          The description of the app.
-        :param resources: List[:class:`AppResource`] (optional)
-          Resources for the app.
+        :param app: :class:`App` (optional)
         
         :returns: :class:`App`
         """
-        body = {}
-        if description is not None: body['description'] = description
-        if resources is not None: body['resources'] = [v.as_dict() for v in resources]
+        body = app.as_dict()
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         res = self._api.do('PATCH', f'/api/2.0/apps/{name}', body=body, headers=headers)
