@@ -199,8 +199,8 @@ def external_browser(cfg: 'Config') -> Optional[CredentialsProvider]:
     if not client_id:
         client_id = 'databricks-cli'
 
-    # Load cached credentials from disk if they exist. Note that these are
-    # local to the Python SDK and not reused by other SDKs.
+    # Load cached credentials from disk if they exist.
+    # Note that these are local to the Python SDK and not reused by other SDKs.
     oidc_endpoints = cfg.oidc_endpoints
     redirect_url = 'http://localhost:8020'
     token_cache = TokenCache(host=cfg.host,
@@ -723,8 +723,6 @@ def metadata_service(cfg: 'Config') -> Optional[CredentialsProvider]:
 # This Code is derived from Mlflow DatabricksModelServingConfigProvider
 # https://github.com/mlflow/mlflow/blob/1219e3ef1aac7d337a618a352cd859b336cf5c81/mlflow/legacy_databricks_cli/configure/provider.py#L332
 class ModelServingAuthProvider():
-    USER_CREDENTIALS = "user_credentials"
-
     _MODEL_DEPENDENCY_OAUTH_TOKEN_FILE_PATH = "/var/credentials-secret/model-dependencies-oauth-token"
 
     def __init__(self, credential_type: Optional[str]):
@@ -733,7 +731,7 @@ class ModelServingAuthProvider():
         self.refresh_duration = 300 # 300 Seconds
         self.credential_type = credential_type
 
-    def should_fetch_model_serving_environment_oauth() -> bool:
+    def should_fetch_model_serving_environment_oauth(self) -> bool:
         """
         Check whether this is the model serving environment
         Additionally check if the oauth token file path exists
@@ -742,15 +740,15 @@ class ModelServingAuthProvider():
         is_in_model_serving_env = (os.environ.get("IS_IN_DB_MODEL_SERVING_ENV")
                                    or os.environ.get("IS_IN_DATABRICKS_MODEL_SERVING_ENV") or "false")
         return (is_in_model_serving_env == "true"
-                and os.path.isfile(ModelServingAuthProvider._MODEL_DEPENDENCY_OAUTH_TOKEN_FILE_PATH))
+                and os.path.isfile(self._MODEL_DEPENDENCY_OAUTH_TOKEN_FILE_PATH))
 
-    def _get_model_dependency_oauth_token(self, should_retry=True) -> str:
+    def get_model_dependency_oauth_token(self, should_retry=True) -> str:
         # Use Cached value if it is valid
         if self.current_token is not None and self.expiry_time > time.time():
             return self.current_token
 
         try:
-            with open(ModelServingAuthProvider._MODEL_DEPENDENCY_OAUTH_TOKEN_FILE_PATH) as f:
+            with open(self._MODEL_DEPENDENCY_OAUTH_TOKEN_FILE_PATH) as f:
                 oauth_dict = json.load(f)
                 self.current_token = oauth_dict["OAUTH_TOKEN"][0]["oauthTokenValue"]
                 self.expiry_time = time.time() + self.refresh_duration
@@ -760,32 +758,21 @@ class ModelServingAuthProvider():
                 logger.warning("Unable to read oauth token on first attmept in Model Serving Environment",
                                exc_info=e)
                 time.sleep(0.5)
-                return self._get_model_dependency_oauth_token(should_retry=False)
+                return self.get_model_dependency_oauth_token(should_retry=False)
             else:
                 raise RuntimeError(
                     "Unable to read OAuth credentials from the file mounted in Databricks Model Serving"
                 ) from e
         return self.current_token
 
-    def _get_invokers_token(self):
-        current_thread = threading.current_thread()
-        thread_data = current_thread.__dict__
-        invokers_token = None
-        if "invokers_token" in thread_data:
-            invokers_token = thread_data["invokers_token"]
-
-        if invokers_token is None:
-            raise RuntimeError("Unable to read Invokers Token in Databricks Model Serving")
-
-        return invokers_token
-
     def get_databricks_host_token(self) -> Optional[Tuple[str, str]]:
-        if not ModelServingAuthProvider.should_fetch_model_serving_environment_oauth():
+        if not self.should_fetch_model_serving_environment_oauth():
             return None
 
         # read from DB_MODEL_SERVING_HOST_ENV_VAR if available otherwise MODEL_SERVING_HOST_ENV_VAR
         host = os.environ.get("DATABRICKS_MODEL_SERVING_HOST_URL") or os.environ.get(
             "DB_MODEL_SERVING_HOST_URL")
+        token = self.get_model_dependency_oauth_token()
 
         if self.credential_type == ModelServingAuthProvider.USER_CREDENTIALS:
             return (host, self._get_invokers_token())
@@ -796,7 +783,10 @@ class ModelServingAuthProvider():
 def model_serving_auth_visitor(cfg: 'Config',
                                credential_type: Optional[str] = None) -> Optional[CredentialsProvider]:
     try:
-        model_serving_auth_provider = ModelServingAuthProvider(credential_type)
+        model_serving_auth_provider = ModelServingAuthProvider()
+        if not model_serving_auth_provider.should_fetch_model_serving_environment_oauth():
+            logger.debug("model-serving: Not in Databricks Model Serving, skipping")
+            return None
         host, token = model_serving_auth_provider.get_databricks_host_token()
         if token is None:
             raise ValueError(
@@ -807,6 +797,7 @@ def model_serving_auth_visitor(cfg: 'Config',
     except Exception as e:
         logger.warning("Unable to get auth from Databricks Model Serving Environment", exc_info=e)
         return None
+
     logger.info("Using Databricks Model Serving Authentication")
 
     def inner() -> Dict[str, str]:
