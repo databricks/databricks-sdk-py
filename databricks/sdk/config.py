@@ -92,17 +92,6 @@ class Config:
     max_connections_per_pool: int = ConfigAttribute()
     databricks_environment: Optional[DatabricksEnvironment] = None
 
-<<<<<<< HEAD
-    def __init__(self,
-                 *,
-                 # Deprecated. Use credentials_strategy instead.
-                 credentials_provider: Optional[CredentialsStrategy] = None,
-                 credentials_strategy: Optional[CredentialsStrategy] = None,
-                 product=None,
-                 product_version=None,
-                 clock: Optional[Clock] = None,
-                 **kwargs):
-=======
     enable_experimental_files_api_client: bool = ConfigAttribute(
         env='DATABRICKS_ENABLE_EXPERIMENTAL_FILES_API_CLIENT')
     files_api_client_download_max_total_recovers = None
@@ -118,7 +107,6 @@ class Config:
             product_version=None,
             clock: Optional[Clock] = None,
             **kwargs):
->>>>>>> upstream/main
         self._header_factory = None
         self._inner = {}
         self._user_agent_other_info = []
