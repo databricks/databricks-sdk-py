@@ -15,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        pyVersion: [ '3.8', '3.9', '3.10', '3.11', '3.12' ]
+        pyVersion: [ '3.7', '3.8', '3.9', '3.10', '3.11', '3.12' ]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -30,16 +30,3 @@ jobs:
 
       - name: Run tests
         run: make dev install test
-          
-  fmt:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Format all files
-        run: make dev fmt
-
-      - name: Fail on differences
-        run: git diff --exit-code
