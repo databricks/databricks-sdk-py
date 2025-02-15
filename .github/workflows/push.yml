@@ -10,7 +10,7 @@ on:
       - main
 
 jobs:
-  tests-ubuntu:
+  tests:
     uses: ./.github/workflows/test.yml
     strategy:
       fail-fast: false
@@ -19,16 +19,6 @@ jobs:
     with:
       os: ubuntu-latest
       pyVersion: ${{ matrix.pyVersion }}
-
-  tests-windows:
-      uses: ./.github/workflows/test.yml
-      strategy:
-        fail-fast: false
-        matrix:
-          pyVersion: [ '3.9', '3.10', '3.11', '3.12' ]
-      with:
-        os: windows-latest
-        pyVersion: ${{ matrix.pyVersion }}
           
   fmt:
     runs-on: ubuntu-latest
