@@ -28,8 +28,3 @@ jobs:
 
       - name: Run tests
         run: make dev install test
-
-      - name: Publish test coverage
-        uses: codecov/codecov-action@v4
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
