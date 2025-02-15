@@ -753,7 +753,7 @@ class DeleteBudgetConfigurationResponse:
 class DeleteResponse:
 
     def as_dict(self) -> dict:
-        """Serializes the DeleteBudgetConfigurationResponse into a dictionary suitable for use as a JSON request body."""
+        """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         return body
 
@@ -763,8 +763,8 @@ class DeleteResponse:
         return body
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> DeleteBudgetConfigurationResponse:
-        """Deserializes the DeleteBudgetConfigurationResponse from a dictionary."""
+    def from_dict(cls, d: Dict[str, any]) -> DeleteResponse:
+        """Deserializes the DeleteResponse from a dictionary."""
         return cls()
 
 

@@ -3078,49 +3078,74 @@ class LegacyQuery:
     can_edit: Optional[bool] = None
     """Describes whether the authenticated user is allowed to edit the definition of this query."""
 
-    catalog: Optional[str] = None
-    """Name of the catalog where this query will be executed."""
+    created_at: Optional[str] = None
+    """The timestamp when this query was created."""
 
-    create_time: Optional[str] = None
-    """Timestamp when this query was created."""
+    data_source_id: Optional[str] = None
+    """Data source ID maps to the ID of the data source used by the resource and is distinct from the
+    warehouse ID. [Learn more]
+    
+    [Learn more]: https://docs.databricks.com/api/workspace/datasources/list"""
 
     description: Optional[str] = None
     """General description that conveys additional information about this query such as usage notes."""
 
-    display_name: Optional[str] = None
-    """Display name of the query that appears in list views, widget headings, and on the query page."""
-
     id: Optional[str] = None
-    """UUID identifying the query."""
+    """Query ID."""
 
-    last_modifier_user_name: Optional[str] = None
-    """Username of the user who last saved changes to this query."""
+    is_archived: Optional[bool] = None
+    """Indicates whether the query is trashed. Trashed queries can't be used in dashboards, or appear
+    in search results. If this boolean is `true`, the `options` property for this query includes a
+    `moved_to_trash_at` timestamp. Trashed queries are permanently deleted after 30 days."""
 
-    lifecycle_state: Optional[LifecycleState] = None
-    """Indicates whether the query is trashed."""
+    is_draft: Optional[bool] = None
+    """Whether the query is a draft. Draft queries only appear in list views for their owners.
+    Visualizations from draft queries cannot appear on dashboards."""
 
-    owner_user_name: Optional[str] = None
-    """Username of the user that owns the query."""
+    is_favorite: Optional[bool] = None
+    """Whether this query object appears in the current user's favorites list. This flag determines
+    whether the star icon for favorites is selected."""
 
-    parameters: Optional[List[QueryParameter]] = None
-    """List of query parameter definitions."""
+    is_safe: Optional[bool] = None
+    """Text parameter types are not safe from SQL injection for all types of data source. Set this
+    Boolean parameter to `true` if a query either does not use any text type parameters or uses a
+    data source type where text type parameters are handled safely."""
 
-    parent_path: Optional[str] = None
-    """Workspace path of the workspace folder containing the object."""
+    last_modified_by: Optional[User] = None
 
-    query_text: Optional[str] = None
-    """Text of the query to be run."""
+    last_modified_by_id: Optional[int] = None
+    """The ID of the user who last saved changes to this query."""
 
-    run_as_mode: Optional[RunAsMode] = None
-    """Sets the "Run as" role for the object."""
+    latest_query_data_id: Optional[str] = None
+    """If there is a cached result for this query and user, this field includes the query result ID. If
+    this query uses parameters, this field is always null."""
 
-    schema: Optional[str] = None
-    """Name of the schema where this query will be executed."""
+    name: Optional[str] = None
+    """The title of this query that appears in list views, widget headings, and on the query page."""
+
+    options: Optional[QueryOptions] = None
+
+    parent: Optional[str] = None
+    """The identifier of the workspace folder containing the object."""
+
+    permission_tier: Optional[PermissionLevel] = None
+    """* `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_EDIT`: Can edit the query
+    * `CAN_MANAGE`: Can manage the query"""
+
+    query: Optional[str] = None
+    """The text of the query to be run."""
+
+    query_hash: Optional[str] = None
+    """A SHA-256 hash of the query text along with the authenticated user ID."""
+
+    run_as_role: Optional[RunAsRole] = None
+    """Sets the **Run as** role for the object. Must be set to one of `"viewer"` (signifying "run as
+    viewer" behavior) or `"owner"` (signifying "run as owner" behavior)"""
 
     tags: Optional[List[str]] = None
 
-    update_time: Optional[str] = None
-    """Timestamp when this query was last updated."""
+    updated_at: Optional[str] = None
+    """The timestamp at which this query was last updated."""
 
     user: Optional[User] = None
 
@@ -3132,24 +3157,30 @@ class LegacyQuery:
     def as_dict(self) -> dict:
         """Serializes the LegacyQuery into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.apply_auto_limit is not None: body['apply_auto_limit'] = self.apply_auto_limit
-        if self.catalog is not None: body['catalog'] = self.catalog
-        if self.create_time is not None: body['create_time'] = self.create_time
+        if self.can_edit is not None: body['can_edit'] = self.can_edit
+        if self.created_at is not None: body['created_at'] = self.created_at
+        if self.data_source_id is not None: body['data_source_id'] = self.data_source_id
         if self.description is not None: body['description'] = self.description
-        if self.display_name is not None: body['display_name'] = self.display_name
         if self.id is not None: body['id'] = self.id
-        if self.last_modifier_user_name is not None:
-            body['last_modifier_user_name'] = self.last_modifier_user_name
-        if self.lifecycle_state is not None: body['lifecycle_state'] = self.lifecycle_state.value
-        if self.owner_user_name is not None: body['owner_user_name'] = self.owner_user_name
-        if self.parameters: body['parameters'] = [v.as_dict() for v in self.parameters]
-        if self.parent_path is not None: body['parent_path'] = self.parent_path
-        if self.query_text is not None: body['query_text'] = self.query_text
-        if self.run_as_mode is not None: body['run_as_mode'] = self.run_as_mode.value
-        if self.schema is not None: body['schema'] = self.schema
+        if self.is_archived is not None: body['is_archived'] = self.is_archived
+        if self.is_draft is not None: body['is_draft'] = self.is_draft
+        if self.is_favorite is not None: body['is_favorite'] = self.is_favorite
+        if self.is_safe is not None: body['is_safe'] = self.is_safe
+        if self.last_modified_by: body['last_modified_by'] = self.last_modified_by.as_dict()
+        if self.last_modified_by_id is not None: body['last_modified_by_id'] = self.last_modified_by_id
+        if self.latest_query_data_id is not None: body['latest_query_data_id'] = self.latest_query_data_id
+        if self.name is not None: body['name'] = self.name
+        if self.options: body['options'] = self.options.as_dict()
+        if self.parent is not None: body['parent'] = self.parent
+        if self.permission_tier is not None: body['permission_tier'] = self.permission_tier.value
+        if self.query is not None: body['query'] = self.query
+        if self.query_hash is not None: body['query_hash'] = self.query_hash
+        if self.run_as_role is not None: body['run_as_role'] = self.run_as_role.value
         if self.tags: body['tags'] = [v for v in self.tags]
-        if self.update_time is not None: body['update_time'] = self.update_time
-        if self.warehouse_id is not None: body['warehouse_id'] = self.warehouse_id
+        if self.updated_at is not None: body['updated_at'] = self.updated_at
+        if self.user: body['user'] = self.user.as_dict()
+        if self.user_id is not None: body['user_id'] = self.user_id
+        if self.visualizations: body['visualizations'] = [v.as_dict() for v in self.visualizations]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3188,16 +3219,21 @@ class LegacyQuery:
                    created_at=d.get('created_at', None),
                    data_source_id=d.get('data_source_id', None),
                    description=d.get('description', None),
-                   display_name=d.get('display_name', None),
                    id=d.get('id', None),
-                   last_modifier_user_name=d.get('last_modifier_user_name', None),
-                   lifecycle_state=_enum(d, 'lifecycle_state', LifecycleState),
-                   owner_user_name=d.get('owner_user_name', None),
-                   parameters=_repeated_dict(d, 'parameters', QueryParameter),
-                   parent_path=d.get('parent_path', None),
-                   query_text=d.get('query_text', None),
-                   run_as_mode=_enum(d, 'run_as_mode', RunAsMode),
-                   schema=d.get('schema', None),
+                   is_archived=d.get('is_archived', None),
+                   is_draft=d.get('is_draft', None),
+                   is_favorite=d.get('is_favorite', None),
+                   is_safe=d.get('is_safe', None),
+                   last_modified_by=_from_dict(d, 'last_modified_by', User),
+                   last_modified_by_id=d.get('last_modified_by_id', None),
+                   latest_query_data_id=d.get('latest_query_data_id', None),
+                   name=d.get('name', None),
+                   options=_from_dict(d, 'options', QueryOptions),
+                   parent=d.get('parent', None),
+                   permission_tier=_enum(d, 'permission_tier', PermissionLevel),
+                   query=d.get('query', None),
+                   query_hash=d.get('query_hash', None),
+                   run_as_role=_enum(d, 'run_as_role', RunAsRole),
                    tags=d.get('tags', None),
                    updated_at=d.get('updated_at', None),
                    user=_from_dict(d, 'user', User),

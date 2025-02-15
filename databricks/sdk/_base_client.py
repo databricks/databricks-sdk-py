@@ -276,6 +276,7 @@ class _BaseClient:
         error = self._error_parser.get_api_error(response)
         if error is not None:
             raise error from None
+
         return response
 
     def _record_request_log(self, response: requests.Response, raw: bool = False) -> None:
