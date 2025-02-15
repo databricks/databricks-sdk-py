@@ -9,6 +9,7 @@ These APIs are available from WorkspaceClient
 
    apps/index
    catalog/index
+   cleanrooms/index
    compute/index
    dashboards/index
    files/index

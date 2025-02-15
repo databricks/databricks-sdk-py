@@ -29,6 +29,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: ASSET_TYPE_NOTEBOOK
       :value: "ASSET_TYPE_NOTEBOOK"
 
+   .. py:attribute:: ASSET_TYPE_PARTNER_INTEGRATION
+      :value: "ASSET_TYPE_PARTNER_INTEGRATION"
+
 .. autoclass:: BatchGetListingsResponse
    :members:
    :undoc-members:

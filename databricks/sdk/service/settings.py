@@ -15,6 +15,194 @@ _LOG = logging.getLogger('databricks.sdk')
 
 
 @dataclass
+class AccountIpAccessEnable:
+    acct_ip_acl_enable: BooleanMessage
+
+    etag: Optional[str] = None
+    """etag used for versioning. The response is at least as fresh as the eTag provided. This is used
+    for optimistic concurrency control as a way to help prevent simultaneous writes of a setting
+    overwriting each other. It is strongly suggested that systems make use of the etag in the read
+    -> update pattern to perform setting updates in order to avoid race conditions. That is, get an
+    etag from a GET request, and pass it with the PATCH request to identify the setting version you
+    are updating."""
+
+    setting_name: Optional[str] = None
+    """Name of the corresponding setting. This field is populated in the response, but it will not be
+    respected even if it's set in the request body. The setting name in the path parameter will be
+    respected instead. Setting name is required to be 'default' if the setting only has one instance
+    per workspace."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AccountIpAccessEnable into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.acct_ip_acl_enable: body['acct_ip_acl_enable'] = self.acct_ip_acl_enable.as_dict()
+        if self.etag is not None: body['etag'] = self.etag
+        if self.setting_name is not None: body['setting_name'] = self.setting_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AccountIpAccessEnable into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.acct_ip_acl_enable: body['acct_ip_acl_enable'] = self.acct_ip_acl_enable
+        if self.etag is not None: body['etag'] = self.etag
+        if self.setting_name is not None: body['setting_name'] = self.setting_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> AccountIpAccessEnable:
+        """Deserializes the AccountIpAccessEnable from a dictionary."""
+        return cls(acct_ip_acl_enable=_from_dict(d, 'acct_ip_acl_enable', BooleanMessage),
+                   etag=d.get('etag', None),
+                   setting_name=d.get('setting_name', None))
+
+
+@dataclass
+class AibiDashboardEmbeddingAccessPolicy:
+    access_policy_type: AibiDashboardEmbeddingAccessPolicyAccessPolicyType
+
+    def as_dict(self) -> dict:
+        """Serializes the AibiDashboardEmbeddingAccessPolicy into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.access_policy_type is not None: body['access_policy_type'] = self.access_policy_type.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AibiDashboardEmbeddingAccessPolicy into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.access_policy_type is not None: body['access_policy_type'] = self.access_policy_type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> AibiDashboardEmbeddingAccessPolicy:
+        """Deserializes the AibiDashboardEmbeddingAccessPolicy from a dictionary."""
+        return cls(access_policy_type=_enum(d, 'access_policy_type',
+                                            AibiDashboardEmbeddingAccessPolicyAccessPolicyType))
+
+
+class AibiDashboardEmbeddingAccessPolicyAccessPolicyType(Enum):
+
+    ALLOW_ALL_DOMAINS = 'ALLOW_ALL_DOMAINS'
+    ALLOW_APPROVED_DOMAINS = 'ALLOW_APPROVED_DOMAINS'
+    DENY_ALL_DOMAINS = 'DENY_ALL_DOMAINS'
+
+
+@dataclass
+class AibiDashboardEmbeddingAccessPolicySetting:
+    aibi_dashboard_embedding_access_policy: AibiDashboardEmbeddingAccessPolicy
+
+    etag: Optional[str] = None
+    """etag used for versioning. The response is at least as fresh as the eTag provided. This is used
+    for optimistic concurrency control as a way to help prevent simultaneous writes of a setting
+    overwriting each other. It is strongly suggested that systems make use of the etag in the read
+    -> update pattern to perform setting updates in order to avoid race conditions. That is, get an
+    etag from a GET request, and pass it with the PATCH request to identify the setting version you
+    are updating."""
+
+    setting_name: Optional[str] = None
+    """Name of the corresponding setting. This field is populated in the response, but it will not be
+    respected even if it's set in the request body. The setting name in the path parameter will be
+    respected instead. Setting name is required to be 'default' if the setting only has one instance
+    per workspace."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AibiDashboardEmbeddingAccessPolicySetting into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.aibi_dashboard_embedding_access_policy:
+            body[
+                'aibi_dashboard_embedding_access_policy'] = self.aibi_dashboard_embedding_access_policy.as_dict(
+                )
+        if self.etag is not None: body['etag'] = self.etag
+        if self.setting_name is not None: body['setting_name'] = self.setting_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AibiDashboardEmbeddingAccessPolicySetting into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.aibi_dashboard_embedding_access_policy:
+            body['aibi_dashboard_embedding_access_policy'] = self.aibi_dashboard_embedding_access_policy
+        if self.etag is not None: body['etag'] = self.etag
+        if self.setting_name is not None: body['setting_name'] = self.setting_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> AibiDashboardEmbeddingAccessPolicySetting:
+        """Deserializes the AibiDashboardEmbeddingAccessPolicySetting from a dictionary."""
+        return cls(aibi_dashboard_embedding_access_policy=_from_dict(
+            d, 'aibi_dashboard_embedding_access_policy', AibiDashboardEmbeddingAccessPolicy),
+                   etag=d.get('etag', None),
+                   setting_name=d.get('setting_name', None))
+
+
+@dataclass
+class AibiDashboardEmbeddingApprovedDomains:
+    approved_domains: Optional[List[str]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the AibiDashboardEmbeddingApprovedDomains into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.approved_domains: body['approved_domains'] = [v for v in self.approved_domains]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AibiDashboardEmbeddingApprovedDomains into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.approved_domains: body['approved_domains'] = self.approved_domains
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> AibiDashboardEmbeddingApprovedDomains:
+        """Deserializes the AibiDashboardEmbeddingApprovedDomains from a dictionary."""
+        return cls(approved_domains=d.get('approved_domains', None))
+
+
+@dataclass
+class AibiDashboardEmbeddingApprovedDomainsSetting:
+    aibi_dashboard_embedding_approved_domains: AibiDashboardEmbeddingApprovedDomains
+
+    etag: Optional[str] = None
+    """etag used for versioning. The response is at least as fresh as the eTag provided. This is used
+    for optimistic concurrency control as a way to help prevent simultaneous writes of a setting
+    overwriting each other. It is strongly suggested that systems make use of the etag in the read
+    -> update pattern to perform setting updates in order to avoid race conditions. That is, get an
+    etag from a GET request, and pass it with the PATCH request to identify the setting version you
+    are updating."""
+
+    setting_name: Optional[str] = None
+    """Name of the corresponding setting. This field is populated in the response, but it will not be
+    respected even if it's set in the request body. The setting name in the path parameter will be
+    respected instead. Setting name is required to be 'default' if the setting only has one instance
+    per workspace."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AibiDashboardEmbeddingApprovedDomainsSetting into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.aibi_dashboard_embedding_approved_domains:
+            body[
+                'aibi_dashboard_embedding_approved_domains'] = self.aibi_dashboard_embedding_approved_domains.as_dict(
+                )
+        if self.etag is not None: body['etag'] = self.etag
+        if self.setting_name is not None: body['setting_name'] = self.setting_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AibiDashboardEmbeddingApprovedDomainsSetting into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.aibi_dashboard_embedding_approved_domains:
+            body['aibi_dashboard_embedding_approved_domains'] = self.aibi_dashboard_embedding_approved_domains
+        if self.etag is not None: body['etag'] = self.etag
+        if self.setting_name is not None: body['setting_name'] = self.setting_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> AibiDashboardEmbeddingApprovedDomainsSetting:
+        """Deserializes the AibiDashboardEmbeddingApprovedDomainsSetting from a dictionary."""
+        return cls(aibi_dashboard_embedding_approved_domains=_from_dict(
+            d, 'aibi_dashboard_embedding_approved_domains', AibiDashboardEmbeddingApprovedDomains),
+                   etag=d.get('etag', None),
+                   setting_name=d.get('setting_name', None))
+
+
+@dataclass
 class AutomaticClusterUpdateSetting:
     automatic_cluster_update_workspace: ClusterAutoRestartMessage
 
@@ -41,6 +229,15 @@ class AutomaticClusterUpdateSetting:
         if self.setting_name is not None: body['setting_name'] = self.setting_name
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AutomaticClusterUpdateSetting into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.automatic_cluster_update_workspace:
+            body['automatic_cluster_update_workspace'] = self.automatic_cluster_update_workspace
+        if self.etag is not None: body['etag'] = self.etag
+        if self.setting_name is not None: body['setting_name'] = self.setting_name
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> AutomaticClusterUpdateSetting:
         """Deserializes the AutomaticClusterUpdateSetting from a dictionary."""
@@ -56,6 +253,12 @@ class BooleanMessage:
 
     def as_dict(self) -> dict:
         """Serializes the BooleanMessage into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.value is not None: body['value'] = self.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the BooleanMessage into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.value is not None: body['value'] = self.value
         return body
@@ -90,6 +293,17 @@ class ClusterAutoRestartMessage:
         if self.enabled is not None: body['enabled'] = self.enabled
         if self.enablement_details: body['enablement_details'] = self.enablement_details.as_dict()
         if self.maintenance_window: body['maintenance_window'] = self.maintenance_window.as_dict()
+        if self.restart_even_if_no_updates_available is not None:
+            body['restart_even_if_no_updates_available'] = self.restart_even_if_no_updates_available
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ClusterAutoRestartMessage into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.can_toggle is not None: body['can_toggle'] = self.can_toggle
+        if self.enabled is not None: body['enabled'] = self.enabled
+        if self.enablement_details: body['enablement_details'] = self.enablement_details
+        if self.maintenance_window: body['maintenance_window'] = self.maintenance_window
         if self.restart_even_if_no_updates_available is not None:
             body['restart_even_if_no_updates_available'] = self.restart_even_if_no_updates_available
         return body
@@ -135,6 +349,17 @@ class ClusterAutoRestartMessageEnablementDetails:
             body['unavailable_for_non_enterprise_tier'] = self.unavailable_for_non_enterprise_tier
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ClusterAutoRestartMessageEnablementDetails into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.forced_for_compliance_mode is not None:
+            body['forced_for_compliance_mode'] = self.forced_for_compliance_mode
+        if self.unavailable_for_disabled_entitlement is not None:
+            body['unavailable_for_disabled_entitlement'] = self.unavailable_for_disabled_entitlement
+        if self.unavailable_for_non_enterprise_tier is not None:
+            body['unavailable_for_non_enterprise_tier'] = self.unavailable_for_non_enterprise_tier
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ClusterAutoRestartMessageEnablementDetails:
         """Deserializes the ClusterAutoRestartMessageEnablementDetails from a dictionary."""
@@ -152,6 +377,12 @@ class ClusterAutoRestartMessageMaintenanceWindow:
         body = {}
         if self.week_day_based_schedule:
             body['week_day_based_schedule'] = self.week_day_based_schedule.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ClusterAutoRestartMessageMaintenanceWindow into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.week_day_based_schedule: body['week_day_based_schedule'] = self.week_day_based_schedule
         return body
 
     @classmethod
@@ -188,6 +419,14 @@ class ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule:
         if self.window_start_time: body['window_start_time'] = self.window_start_time.as_dict()
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.day_of_week is not None: body['day_of_week'] = self.day_of_week
+        if self.frequency is not None: body['frequency'] = self.frequency
+        if self.window_start_time: body['window_start_time'] = self.window_start_time
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule:
         """Deserializes the ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule from a dictionary."""
@@ -222,6 +461,13 @@ class ClusterAutoRestartMessageMaintenanceWindowWindowStartTime:
         if self.minutes is not None: body['minutes'] = self.minutes
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ClusterAutoRestartMessageMaintenanceWindowWindowStartTime into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.hours is not None: body['hours'] = self.hours
+        if self.minutes is not None: body['minutes'] = self.minutes
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ClusterAutoRestartMessageMaintenanceWindowWindowStartTime:
         """Deserializes the ClusterAutoRestartMessageMaintenanceWindowWindowStartTime from a dictionary."""
@@ -242,6 +488,13 @@ class ComplianceSecurityProfile:
         body = {}
         if self.compliance_standards:
             body['compliance_standards'] = [v.value for v in self.compliance_standards]
+        if self.is_enabled is not None: body['is_enabled'] = self.is_enabled
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ComplianceSecurityProfile into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.compliance_standards: body['compliance_standards'] = self.compliance_standards
         if self.is_enabled is not None: body['is_enabled'] = self.is_enabled
         return body
 
@@ -282,6 +535,15 @@ class ComplianceSecurityProfileSetting:
         if self.setting_name is not None: body['setting_name'] = self.setting_name
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ComplianceSecurityProfileSetting into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.compliance_security_profile_workspace:
+            body['compliance_security_profile_workspace'] = self.compliance_security_profile_workspace
+        if self.etag is not None: body['etag'] = self.etag
+        if self.setting_name is not None: body['setting_name'] = self.setting_name
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ComplianceSecurityProfileSetting:
         """Deserializes the ComplianceSecurityProfileSetting from a dictionary."""
@@ -301,7 +563,9 @@ class ComplianceStandard(Enum):
     FEDRAMP_IL5 = 'FEDRAMP_IL5'
     FEDRAMP_MODERATE = 'FEDRAMP_MODERATE'
     HIPAA = 'HIPAA'
+    HITRUST = 'HITRUST'
     IRAP_PROTECTED = 'IRAP_PROTECTED'
+    ISMAP = 'ISMAP'
     ITAR_EAR = 'ITAR_EAR'
     NONE = 'NONE'
     PCI_DSS = 'PCI_DSS'
@@ -327,6 +591,16 @@ class Config:
         if self.microsoft_teams: body['microsoft_teams'] = self.microsoft_teams.as_dict()
         if self.pagerduty: body['pagerduty'] = self.pagerduty.as_dict()
         if self.slack: body['slack'] = self.slack.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Config into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.email: body['email'] = self.email
+        if self.generic_webhook: body['generic_webhook'] = self.generic_webhook
+        if self.microsoft_teams: body['microsoft_teams'] = self.microsoft_teams
+        if self.pagerduty: body['pagerduty'] = self.pagerduty
+        if self.slack: body['slack'] = self.slack
         return body
 
     @classmethod
@@ -362,6 +636,14 @@ class CreateIpAccessList:
         if self.list_type is not None: body['list_type'] = self.list_type.value
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateIpAccessList into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.ip_addresses: body['ip_addresses'] = self.ip_addresses
+        if self.label is not None: body['label'] = self.label
+        if self.list_type is not None: body['list_type'] = self.list_type
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateIpAccessList:
         """Deserializes the CreateIpAccessList from a dictionary."""
@@ -381,6 +663,12 @@ class CreateIpAccessListResponse:
         """Serializes the CreateIpAccessListResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.ip_access_list: body['ip_access_list'] = self.ip_access_list.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateIpAccessListResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.ip_access_list: body['ip_access_list'] = self.ip_access_list
         return body
 
     @classmethod
@@ -407,6 +695,13 @@ class CreateNetworkConnectivityConfigRequest:
         if self.region is not None: body['region'] = self.region
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateNetworkConnectivityConfigRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.name is not None: body['name'] = self.name
+        if self.region is not None: body['region'] = self.region
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateNetworkConnectivityConfigRequest:
         """Deserializes the CreateNetworkConnectivityConfigRequest from a dictionary."""
@@ -425,6 +720,13 @@ class CreateNotificationDestinationRequest:
         """Serializes the CreateNotificationDestinationRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.config: body['config'] = self.config.as_dict()
+        if self.display_name is not None: body['display_name'] = self.display_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateNotificationDestinationRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.config: body['config'] = self.config
         if self.display_name is not None: body['display_name'] = self.display_name
         return body
 
@@ -455,6 +757,14 @@ class CreateOboTokenRequest:
         if self.lifetime_seconds is not None: body['lifetime_seconds'] = self.lifetime_seconds
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateOboTokenRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.application_id is not None: body['application_id'] = self.application_id
+        if self.comment is not None: body['comment'] = self.comment
+        if self.lifetime_seconds is not None: body['lifetime_seconds'] = self.lifetime_seconds
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateOboTokenRequest:
         """Deserializes the CreateOboTokenRequest from a dictionary."""
@@ -476,6 +786,13 @@ class CreateOboTokenResponse:
         """Serializes the CreateOboTokenResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.token_info: body['token_info'] = self.token_info.as_dict()
+        if self.token_value is not None: body['token_value'] = self.token_value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateOboTokenResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.token_info: body['token_info'] = self.token_info
         if self.token_value is not None: body['token_value'] = self.token_value
         return body
 
@@ -501,6 +818,15 @@ class CreatePrivateEndpointRuleRequest:
         """Serializes the CreatePrivateEndpointRuleRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.group_id is not None: body['group_id'] = self.group_id.value
+        if self.network_connectivity_config_id is not None:
+            body['network_connectivity_config_id'] = self.network_connectivity_config_id
+        if self.resource_id is not None: body['resource_id'] = self.resource_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreatePrivateEndpointRuleRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.group_id is not None: body['group_id'] = self.group_id
         if self.network_connectivity_config_id is not None:
             body['network_connectivity_config_id'] = self.network_connectivity_config_id
         if self.resource_id is not None: body['resource_id'] = self.resource_id
@@ -541,6 +867,13 @@ class CreateTokenRequest:
         if self.lifetime_seconds is not None: body['lifetime_seconds'] = self.lifetime_seconds
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateTokenRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.comment is not None: body['comment'] = self.comment
+        if self.lifetime_seconds is not None: body['lifetime_seconds'] = self.lifetime_seconds
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateTokenRequest:
         """Deserializes the CreateTokenRequest from a dictionary."""
@@ -559,6 +892,13 @@ class CreateTokenResponse:
         """Serializes the CreateTokenResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.token_info: body['token_info'] = self.token_info.as_dict()
+        if self.token_value is not None: body['token_value'] = self.token_value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateTokenResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.token_info: body['token_info'] = self.token_info
         if self.token_value is not None: body['token_value'] = self.token_value
         return body
 
@@ -585,6 +925,13 @@ class CspEnablementAccount:
         body = {}
         if self.compliance_standards:
             body['compliance_standards'] = [v.value for v in self.compliance_standards]
+        if self.is_enforced is not None: body['is_enforced'] = self.is_enforced
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CspEnablementAccount into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.compliance_standards: body['compliance_standards'] = self.compliance_standards
         if self.is_enforced is not None: body['is_enforced'] = self.is_enforced
         return body
 
@@ -618,6 +965,14 @@ class CspEnablementAccountSetting:
         """Serializes the CspEnablementAccountSetting into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.csp_enablement_account: body['csp_enablement_account'] = self.csp_enablement_account.as_dict()
+        if self.etag is not None: body['etag'] = self.etag
+        if self.setting_name is not None: body['setting_name'] = self.setting_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CspEnablementAccountSetting into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.csp_enablement_account: body['csp_enablement_account'] = self.csp_enablement_account
         if self.etag is not None: body['etag'] = self.etag
         if self.setting_name is not None: body['setting_name'] = self.setting_name
         return body
@@ -664,12 +1019,110 @@ class DefaultNamespaceSetting:
         if self.setting_name is not None: body['setting_name'] = self.setting_name
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DefaultNamespaceSetting into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.etag is not None: body['etag'] = self.etag
+        if self.namespace: body['namespace'] = self.namespace
+        if self.setting_name is not None: body['setting_name'] = self.setting_name
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> DefaultNamespaceSetting:
         """Deserializes the DefaultNamespaceSetting from a dictionary."""
         return cls(etag=d.get('etag', None),
                    namespace=_from_dict(d, 'namespace', StringMessage),
                    setting_name=d.get('setting_name', None))
+
+
+@dataclass
+class DeleteAccountIpAccessEnableResponse:
+    """The etag is returned."""
+
+    etag: str
+    """etag used for versioning. The response is at least as fresh as the eTag provided. This is used
+    for optimistic concurrency control as a way to help prevent simultaneous writes of a setting
+    overwriting each other. It is strongly suggested that systems make use of the etag in the read
+    -> delete pattern to perform setting deletions in order to avoid race conditions. That is, get
+    an etag from a GET request, and pass it with the DELETE request to identify the rule set version
+    you are deleting."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteAccountIpAccessEnableResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.etag is not None: body['etag'] = self.etag
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteAccountIpAccessEnableResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.etag is not None: body['etag'] = self.etag
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteAccountIpAccessEnableResponse:
+        """Deserializes the DeleteAccountIpAccessEnableResponse from a dictionary."""
+        return cls(etag=d.get('etag', None))
+
+
+@dataclass
+class DeleteAibiDashboardEmbeddingAccessPolicySettingResponse:
+    """The etag is returned."""
+
+    etag: str
+    """etag used for versioning. The response is at least as fresh as the eTag provided. This is used
+    for optimistic concurrency control as a way to help prevent simultaneous writes of a setting
+    overwriting each other. It is strongly suggested that systems make use of the etag in the read
+    -> delete pattern to perform setting deletions in order to avoid race conditions. That is, get
+    an etag from a GET request, and pass it with the DELETE request to identify the rule set version
+    you are deleting."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteAibiDashboardEmbeddingAccessPolicySettingResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.etag is not None: body['etag'] = self.etag
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteAibiDashboardEmbeddingAccessPolicySettingResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.etag is not None: body['etag'] = self.etag
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteAibiDashboardEmbeddingAccessPolicySettingResponse:
+        """Deserializes the DeleteAibiDashboardEmbeddingAccessPolicySettingResponse from a dictionary."""
+        return cls(etag=d.get('etag', None))
+
+
+@dataclass
+class DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponse:
+    """The etag is returned."""
+
+    etag: str
+    """etag used for versioning. The response is at least as fresh as the eTag provided. This is used
+    for optimistic concurrency control as a way to help prevent simultaneous writes of a setting
+    overwriting each other. It is strongly suggested that systems make use of the etag in the read
+    -> delete pattern to perform setting deletions in order to avoid race conditions. That is, get
+    an etag from a GET request, and pass it with the DELETE request to identify the rule set version
+    you are deleting."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.etag is not None: body['etag'] = self.etag
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.etag is not None: body['etag'] = self.etag
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponse:
+        """Deserializes the DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponse from a dictionary."""
+        return cls(etag=d.get('etag', None))
 
 
 @dataclass
@@ -686,6 +1139,12 @@ class DeleteDefaultNamespaceSettingResponse:
 
     def as_dict(self) -> dict:
         """Serializes the DeleteDefaultNamespaceSettingResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.etag is not None: body['etag'] = self.etag
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteDefaultNamespaceSettingResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.etag is not None: body['etag'] = self.etag
         return body
@@ -714,6 +1173,12 @@ class DeleteDisableLegacyAccessResponse:
         if self.etag is not None: body['etag'] = self.etag
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteDisableLegacyAccessResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.etag is not None: body['etag'] = self.etag
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> DeleteDisableLegacyAccessResponse:
         """Deserializes the DeleteDisableLegacyAccessResponse from a dictionary."""
@@ -734,6 +1199,12 @@ class DeleteDisableLegacyDbfsResponse:
 
     def as_dict(self) -> dict:
         """Serializes the DeleteDisableLegacyDbfsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.etag is not None: body['etag'] = self.etag
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteDisableLegacyDbfsResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.etag is not None: body['etag'] = self.etag
         return body
@@ -762,6 +1233,12 @@ class DeleteDisableLegacyFeaturesResponse:
         if self.etag is not None: body['etag'] = self.etag
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteDisableLegacyFeaturesResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.etag is not None: body['etag'] = self.etag
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> DeleteDisableLegacyFeaturesResponse:
         """Deserializes the DeleteDisableLegacyFeaturesResponse from a dictionary."""
@@ -773,6 +1250,11 @@ class DeleteNetworkConnectivityConfigurationResponse:
 
     def as_dict(self) -> dict:
         """Serializes the DeleteNetworkConnectivityConfigurationResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteNetworkConnectivityConfigurationResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -800,6 +1282,12 @@ class DeletePersonalComputeSettingResponse:
         if self.etag is not None: body['etag'] = self.etag
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeletePersonalComputeSettingResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.etag is not None: body['etag'] = self.etag
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> DeletePersonalComputeSettingResponse:
         """Deserializes the DeletePersonalComputeSettingResponse from a dictionary."""
@@ -811,6 +1299,11 @@ class DeleteResponse:
 
     def as_dict(self) -> dict:
         """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -834,6 +1327,12 @@ class DeleteRestrictWorkspaceAdminsSettingResponse:
 
     def as_dict(self) -> dict:
         """Serializes the DeleteRestrictWorkspaceAdminsSettingResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.etag is not None: body['etag'] = self.etag
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteRestrictWorkspaceAdminsSettingResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.etag is not None: body['etag'] = self.etag
         return body
@@ -879,6 +1378,14 @@ class DisableLegacyAccess:
         if self.setting_name is not None: body['setting_name'] = self.setting_name
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DisableLegacyAccess into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.disable_legacy_access: body['disable_legacy_access'] = self.disable_legacy_access
+        if self.etag is not None: body['etag'] = self.etag
+        if self.setting_name is not None: body['setting_name'] = self.setting_name
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> DisableLegacyAccess:
         """Deserializes the DisableLegacyAccess from a dictionary."""
@@ -909,6 +1416,14 @@ class DisableLegacyDbfs:
         """Serializes the DisableLegacyDbfs into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.disable_legacy_dbfs: body['disable_legacy_dbfs'] = self.disable_legacy_dbfs.as_dict()
+        if self.etag is not None: body['etag'] = self.etag
+        if self.setting_name is not None: body['setting_name'] = self.setting_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DisableLegacyDbfs into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.disable_legacy_dbfs: body['disable_legacy_dbfs'] = self.disable_legacy_dbfs
         if self.etag is not None: body['etag'] = self.etag
         if self.setting_name is not None: body['setting_name'] = self.setting_name
         return body
@@ -948,12 +1463,284 @@ class DisableLegacyFeatures:
         if self.setting_name is not None: body['setting_name'] = self.setting_name
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DisableLegacyFeatures into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.disable_legacy_features: body['disable_legacy_features'] = self.disable_legacy_features
+        if self.etag is not None: body['etag'] = self.etag
+        if self.setting_name is not None: body['setting_name'] = self.setting_name
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> DisableLegacyFeatures:
         """Deserializes the DisableLegacyFeatures from a dictionary."""
         return cls(disable_legacy_features=_from_dict(d, 'disable_legacy_features', BooleanMessage),
                    etag=d.get('etag', None),
                    setting_name=d.get('setting_name', None))
+
+
+@dataclass
+class EgressNetworkPolicy:
+    """The network policies applying for egress traffic. This message is used by the UI/REST API. We
+    translate this message to the format expected by the dataplane in Lakehouse Network Manager (for
+    the format expected by the dataplane, see networkconfig.textproto)."""
+
+    internet_access: Optional[EgressNetworkPolicyInternetAccessPolicy] = None
+    """The access policy enforced for egress traffic to the internet."""
+
+    def as_dict(self) -> dict:
+        """Serializes the EgressNetworkPolicy into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.internet_access: body['internet_access'] = self.internet_access.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EgressNetworkPolicy into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.internet_access: body['internet_access'] = self.internet_access
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> EgressNetworkPolicy:
+        """Deserializes the EgressNetworkPolicy from a dictionary."""
+        return cls(internet_access=_from_dict(d, 'internet_access', EgressNetworkPolicyInternetAccessPolicy))
+
+
+@dataclass
+class EgressNetworkPolicyInternetAccessPolicy:
+    allowed_internet_destinations: Optional[
+        List[EgressNetworkPolicyInternetAccessPolicyInternetDestination]] = None
+
+    allowed_storage_destinations: Optional[
+        List[EgressNetworkPolicyInternetAccessPolicyStorageDestination]] = None
+
+    log_only_mode: Optional[EgressNetworkPolicyInternetAccessPolicyLogOnlyMode] = None
+    """Optional. If not specified, assume the policy is enforced for all workloads."""
+
+    restriction_mode: Optional[EgressNetworkPolicyInternetAccessPolicyRestrictionMode] = None
+    """At which level can Databricks and Databricks managed compute access Internet. FULL_ACCESS:
+    Databricks can access Internet. No blocking rules will apply. RESTRICTED_ACCESS: Databricks can
+    only access explicitly allowed internet and storage destinations, as well as UC connections and
+    external locations. PRIVATE_ACCESS_ONLY (not used): Databricks can only access destinations via
+    private link."""
+
+    def as_dict(self) -> dict:
+        """Serializes the EgressNetworkPolicyInternetAccessPolicy into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.allowed_internet_destinations:
+            body['allowed_internet_destinations'] = [v.as_dict() for v in self.allowed_internet_destinations]
+        if self.allowed_storage_destinations:
+            body['allowed_storage_destinations'] = [v.as_dict() for v in self.allowed_storage_destinations]
+        if self.log_only_mode: body['log_only_mode'] = self.log_only_mode.as_dict()
+        if self.restriction_mode is not None: body['restriction_mode'] = self.restriction_mode.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EgressNetworkPolicyInternetAccessPolicy into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.allowed_internet_destinations:
+            body['allowed_internet_destinations'] = self.allowed_internet_destinations
+        if self.allowed_storage_destinations:
+            body['allowed_storage_destinations'] = self.allowed_storage_destinations
+        if self.log_only_mode: body['log_only_mode'] = self.log_only_mode
+        if self.restriction_mode is not None: body['restriction_mode'] = self.restriction_mode
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> EgressNetworkPolicyInternetAccessPolicy:
+        """Deserializes the EgressNetworkPolicyInternetAccessPolicy from a dictionary."""
+        return cls(allowed_internet_destinations=_repeated_dict(
+            d, 'allowed_internet_destinations', EgressNetworkPolicyInternetAccessPolicyInternetDestination),
+                   allowed_storage_destinations=_repeated_dict(
+                       d, 'allowed_storage_destinations',
+                       EgressNetworkPolicyInternetAccessPolicyStorageDestination),
+                   log_only_mode=_from_dict(d, 'log_only_mode',
+                                            EgressNetworkPolicyInternetAccessPolicyLogOnlyMode),
+                   restriction_mode=_enum(d, 'restriction_mode',
+                                          EgressNetworkPolicyInternetAccessPolicyRestrictionMode))
+
+
+@dataclass
+class EgressNetworkPolicyInternetAccessPolicyInternetDestination:
+    """Users can specify accessible internet destinations when outbound access is restricted. We only
+    support domain name (FQDN) destinations for the time being, though going forwards we want to
+    support host names and IP addresses."""
+
+    destination: Optional[str] = None
+
+    protocol: Optional[
+        EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocol] = None
+    """The filtering protocol used by the DP. For private and public preview, SEG will only support TCP
+    filtering (i.e. DNS based filtering, filtering by destination IP address), so protocol will be
+    set to TCP by default and hidden from the user. In the future, users may be able to select HTTP
+    filtering (i.e. SNI based filtering, filtering by FQDN)."""
+
+    type: Optional[EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationType] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the EgressNetworkPolicyInternetAccessPolicyInternetDestination into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.destination is not None: body['destination'] = self.destination
+        if self.protocol is not None: body['protocol'] = self.protocol.value
+        if self.type is not None: body['type'] = self.type.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EgressNetworkPolicyInternetAccessPolicyInternetDestination into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.destination is not None: body['destination'] = self.destination
+        if self.protocol is not None: body['protocol'] = self.protocol
+        if self.type is not None: body['type'] = self.type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> EgressNetworkPolicyInternetAccessPolicyInternetDestination:
+        """Deserializes the EgressNetworkPolicyInternetAccessPolicyInternetDestination from a dictionary."""
+        return cls(
+            destination=d.get('destination', None),
+            protocol=_enum(
+                d, 'protocol',
+                EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocol
+            ),
+            type=_enum(d, 'type',
+                       EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationType))
+
+
+class EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocol(Enum):
+    """The filtering protocol used by the DP. For private and public preview, SEG will only support TCP
+    filtering (i.e. DNS based filtering, filtering by destination IP address), so protocol will be
+    set to TCP by default and hidden from the user. In the future, users may be able to select HTTP
+    filtering (i.e. SNI based filtering, filtering by FQDN)."""
+
+    TCP = 'TCP'
+
+
+class EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationType(Enum):
+
+    FQDN = 'FQDN'
+
+
+@dataclass
+class EgressNetworkPolicyInternetAccessPolicyLogOnlyMode:
+    log_only_mode_type: Optional[EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType] = None
+
+    workloads: Optional[List[EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadType]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the EgressNetworkPolicyInternetAccessPolicyLogOnlyMode into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.log_only_mode_type is not None: body['log_only_mode_type'] = self.log_only_mode_type.value
+        if self.workloads: body['workloads'] = [v.value for v in self.workloads]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EgressNetworkPolicyInternetAccessPolicyLogOnlyMode into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.log_only_mode_type is not None: body['log_only_mode_type'] = self.log_only_mode_type
+        if self.workloads: body['workloads'] = self.workloads
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> EgressNetworkPolicyInternetAccessPolicyLogOnlyMode:
+        """Deserializes the EgressNetworkPolicyInternetAccessPolicyLogOnlyMode from a dictionary."""
+        return cls(log_only_mode_type=_enum(
+            d, 'log_only_mode_type', EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType),
+                   workloads=_repeated_enum(d, 'workloads',
+                                            EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadType))
+
+
+class EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType(Enum):
+
+    ALL_SERVICES = 'ALL_SERVICES'
+    SELECTED_SERVICES = 'SELECTED_SERVICES'
+
+
+class EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadType(Enum):
+    """The values should match the list of workloads used in networkconfig.proto"""
+
+    DBSQL = 'DBSQL'
+    ML_SERVING = 'ML_SERVING'
+
+
+class EgressNetworkPolicyInternetAccessPolicyRestrictionMode(Enum):
+    """At which level can Databricks and Databricks managed compute access Internet. FULL_ACCESS:
+    Databricks can access Internet. No blocking rules will apply. RESTRICTED_ACCESS: Databricks can
+    only access explicitly allowed internet and storage destinations, as well as UC connections and
+    external locations. PRIVATE_ACCESS_ONLY (not used): Databricks can only access destinations via
+    private link."""
+
+    FULL_ACCESS = 'FULL_ACCESS'
+    PRIVATE_ACCESS_ONLY = 'PRIVATE_ACCESS_ONLY'
+    RESTRICTED_ACCESS = 'RESTRICTED_ACCESS'
+
+
+@dataclass
+class EgressNetworkPolicyInternetAccessPolicyStorageDestination:
+    """Users can specify accessible storage destinations."""
+
+    allowed_paths: Optional[List[str]] = None
+
+    azure_container: Optional[str] = None
+
+    azure_dns_zone: Optional[str] = None
+
+    azure_storage_account: Optional[str] = None
+
+    azure_storage_service: Optional[str] = None
+
+    bucket_name: Optional[str] = None
+
+    region: Optional[str] = None
+
+    type: Optional[EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the EgressNetworkPolicyInternetAccessPolicyStorageDestination into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.allowed_paths: body['allowed_paths'] = [v for v in self.allowed_paths]
+        if self.azure_container is not None: body['azure_container'] = self.azure_container
+        if self.azure_dns_zone is not None: body['azure_dns_zone'] = self.azure_dns_zone
+        if self.azure_storage_account is not None: body['azure_storage_account'] = self.azure_storage_account
+        if self.azure_storage_service is not None: body['azure_storage_service'] = self.azure_storage_service
+        if self.bucket_name is not None: body['bucket_name'] = self.bucket_name
+        if self.region is not None: body['region'] = self.region
+        if self.type is not None: body['type'] = self.type.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EgressNetworkPolicyInternetAccessPolicyStorageDestination into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.allowed_paths: body['allowed_paths'] = self.allowed_paths
+        if self.azure_container is not None: body['azure_container'] = self.azure_container
+        if self.azure_dns_zone is not None: body['azure_dns_zone'] = self.azure_dns_zone
+        if self.azure_storage_account is not None: body['azure_storage_account'] = self.azure_storage_account
+        if self.azure_storage_service is not None: body['azure_storage_service'] = self.azure_storage_service
+        if self.bucket_name is not None: body['bucket_name'] = self.bucket_name
+        if self.region is not None: body['region'] = self.region
+        if self.type is not None: body['type'] = self.type
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> EgressNetworkPolicyInternetAccessPolicyStorageDestination:
+        """Deserializes the EgressNetworkPolicyInternetAccessPolicyStorageDestination from a dictionary."""
+        return cls(allowed_paths=d.get('allowed_paths', None),
+                   azure_container=d.get('azure_container', None),
+                   azure_dns_zone=d.get('azure_dns_zone', None),
+                   azure_storage_account=d.get('azure_storage_account', None),
+                   azure_storage_service=d.get('azure_storage_service', None),
+                   bucket_name=d.get('bucket_name', None),
+                   region=d.get('region', None),
+                   type=_enum(
+                       d, 'type',
+                       EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType))
+
+
+class EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType(Enum):
+
+    AWS_S3 = 'AWS_S3'
+    AZURE_STORAGE = 'AZURE_STORAGE'
+    CLOUDFLARE_R2 = 'CLOUDFLARE_R2'
+    GOOGLE_CLOUD_STORAGE = 'GOOGLE_CLOUD_STORAGE'
 
 
 @dataclass
@@ -967,6 +1754,12 @@ class EmailConfig:
         if self.addresses: body['addresses'] = [v for v in self.addresses]
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EmailConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.addresses: body['addresses'] = self.addresses
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> EmailConfig:
         """Deserializes the EmailConfig from a dictionary."""
@@ -978,6 +1771,11 @@ class Empty:
 
     def as_dict(self) -> dict:
         """Serializes the Empty into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Empty into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -995,6 +1793,12 @@ class EnhancedSecurityMonitoring:
 
     def as_dict(self) -> dict:
         """Serializes the EnhancedSecurityMonitoring into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.is_enabled is not None: body['is_enabled'] = self.is_enabled
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EnhancedSecurityMonitoring into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.is_enabled is not None: body['is_enabled'] = self.is_enabled
         return body
@@ -1035,6 +1839,15 @@ class EnhancedSecurityMonitoringSetting:
         if self.setting_name is not None: body['setting_name'] = self.setting_name
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EnhancedSecurityMonitoringSetting into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.enhanced_security_monitoring_workspace:
+            body['enhanced_security_monitoring_workspace'] = self.enhanced_security_monitoring_workspace
+        if self.etag is not None: body['etag'] = self.etag
+        if self.setting_name is not None: body['setting_name'] = self.setting_name
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> EnhancedSecurityMonitoringSetting:
         """Deserializes the EnhancedSecurityMonitoringSetting from a dictionary."""
@@ -1052,6 +1865,12 @@ class EsmEnablementAccount:
 
     def as_dict(self) -> dict:
         """Serializes the EsmEnablementAccount into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.is_enforced is not None: body['is_enforced'] = self.is_enforced
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EsmEnablementAccount into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.is_enforced is not None: body['is_enforced'] = self.is_enforced
         return body
@@ -1085,6 +1904,14 @@ class EsmEnablementAccountSetting:
         """Serializes the EsmEnablementAccountSetting into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.esm_enablement_account: body['esm_enablement_account'] = self.esm_enablement_account.as_dict()
+        if self.etag is not None: body['etag'] = self.etag
+        if self.setting_name is not None: body['setting_name'] = self.setting_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EsmEnablementAccountSetting into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.esm_enablement_account: body['esm_enablement_account'] = self.esm_enablement_account
         if self.etag is not None: body['etag'] = self.etag
         if self.setting_name is not None: body['setting_name'] = self.setting_name
         return body
@@ -1126,6 +1953,16 @@ class ExchangeToken:
         if self.token_type is not None: body['tokenType'] = self.token_type.value
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ExchangeToken into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.credential is not None: body['credential'] = self.credential
+        if self.credential_eol_time is not None: body['credentialEolTime'] = self.credential_eol_time
+        if self.owner_id is not None: body['ownerId'] = self.owner_id
+        if self.scopes: body['scopes'] = self.scopes
+        if self.token_type is not None: body['tokenType'] = self.token_type
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ExchangeToken:
         """Deserializes the ExchangeToken from a dictionary."""
@@ -1157,6 +1994,14 @@ class ExchangeTokenRequest:
         if self.token_type: body['tokenType'] = [v.value for v in self.token_type]
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ExchangeTokenRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.partition_id: body['partitionId'] = self.partition_id
+        if self.scopes: body['scopes'] = self.scopes
+        if self.token_type: body['tokenType'] = self.token_type
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ExchangeTokenRequest:
         """Deserializes the ExchangeTokenRequest from a dictionary."""
@@ -1177,6 +2022,12 @@ class ExchangeTokenResponse:
         if self.values: body['values'] = [v.as_dict() for v in self.values]
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ExchangeTokenResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.values: body['values'] = self.values
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ExchangeTokenResponse:
         """Deserializes the ExchangeTokenResponse from a dictionary."""
@@ -1194,6 +2045,12 @@ class FetchIpAccessListResponse:
         """Serializes the FetchIpAccessListResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.ip_access_list: body['ip_access_list'] = self.ip_access_list.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the FetchIpAccessListResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.ip_access_list: body['ip_access_list'] = self.ip_access_list
         return body
 
     @classmethod
@@ -1233,6 +2090,17 @@ class GenericWebhookConfig:
         if self.username_set is not None: body['username_set'] = self.username_set
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GenericWebhookConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.password is not None: body['password'] = self.password
+        if self.password_set is not None: body['password_set'] = self.password_set
+        if self.url is not None: body['url'] = self.url
+        if self.url_set is not None: body['url_set'] = self.url_set
+        if self.username is not None: body['username'] = self.username
+        if self.username_set is not None: body['username_set'] = self.username_set
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> GenericWebhookConfig:
         """Deserializes the GenericWebhookConfig from a dictionary."""
@@ -1255,6 +2123,12 @@ class GetIpAccessListResponse:
         if self.ip_access_list: body['ip_access_list'] = self.ip_access_list.as_dict()
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetIpAccessListResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.ip_access_list: body['ip_access_list'] = self.ip_access_list
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> GetIpAccessListResponse:
         """Deserializes the GetIpAccessListResponse from a dictionary."""
@@ -1271,6 +2145,12 @@ class GetIpAccessListsResponse:
         """Serializes the GetIpAccessListsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.ip_access_lists: body['ip_access_lists'] = [v.as_dict() for v in self.ip_access_lists]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetIpAccessListsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.ip_access_lists: body['ip_access_lists'] = self.ip_access_lists
         return body
 
     @classmethod
@@ -1290,6 +2170,12 @@ class GetTokenPermissionLevelsResponse:
         if self.permission_levels: body['permission_levels'] = [v.as_dict() for v in self.permission_levels]
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetTokenPermissionLevelsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.permission_levels: body['permission_levels'] = self.permission_levels
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> GetTokenPermissionLevelsResponse:
         """Deserializes the GetTokenPermissionLevelsResponse from a dictionary."""
@@ -1306,6 +2192,12 @@ class GetTokenResponse:
         """Serializes the GetTokenResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.token_info: body['token_info'] = self.token_info.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetTokenResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.token_info: body['token_info'] = self.token_info
         return body
 
     @classmethod
@@ -1365,6 +2257,21 @@ class IpAccessListInfo:
         if self.updated_by is not None: body['updated_by'] = self.updated_by
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the IpAccessListInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.address_count is not None: body['address_count'] = self.address_count
+        if self.created_at is not None: body['created_at'] = self.created_at
+        if self.created_by is not None: body['created_by'] = self.created_by
+        if self.enabled is not None: body['enabled'] = self.enabled
+        if self.ip_addresses: body['ip_addresses'] = self.ip_addresses
+        if self.label is not None: body['label'] = self.label
+        if self.list_id is not None: body['list_id'] = self.list_id
+        if self.list_type is not None: body['list_type'] = self.list_type
+        if self.updated_at is not None: body['updated_at'] = self.updated_at
+        if self.updated_by is not None: body['updated_by'] = self.updated_by
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> IpAccessListInfo:
         """Deserializes the IpAccessListInfo from a dictionary."""
@@ -1392,6 +2299,12 @@ class ListIpAccessListResponse:
         if self.ip_access_lists: body['ip_access_lists'] = [v.as_dict() for v in self.ip_access_lists]
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListIpAccessListResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.ip_access_lists: body['ip_access_lists'] = self.ip_access_lists
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListIpAccessListResponse:
         """Deserializes the ListIpAccessListResponse from a dictionary."""
@@ -1410,6 +2323,13 @@ class ListNccAzurePrivateEndpointRulesResponse:
         """Serializes the ListNccAzurePrivateEndpointRulesResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.items: body['items'] = [v.as_dict() for v in self.items]
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListNccAzurePrivateEndpointRulesResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.items: body['items'] = self.items
         if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         return body
 
@@ -1435,6 +2355,13 @@ class ListNetworkConnectivityConfigurationsResponse:
         if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListNetworkConnectivityConfigurationsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.items: body['items'] = self.items
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListNetworkConnectivityConfigurationsResponse:
         """Deserializes the ListNetworkConnectivityConfigurationsResponse from a dictionary."""
@@ -1454,6 +2381,13 @@ class ListNotificationDestinationsResponse:
         body = {}
         if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         if self.results: body['results'] = [v.as_dict() for v in self.results]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListNotificationDestinationsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.results: body['results'] = self.results
         return body
 
     @classmethod
@@ -1482,6 +2416,14 @@ class ListNotificationDestinationsResult:
         if self.id is not None: body['id'] = self.id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListNotificationDestinationsResult into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.destination_type is not None: body['destination_type'] = self.destination_type
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.id is not None: body['id'] = self.id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListNotificationDestinationsResult:
         """Deserializes the ListNotificationDestinationsResult from a dictionary."""
@@ -1501,6 +2443,12 @@ class ListPublicTokensResponse:
         if self.token_infos: body['token_infos'] = [v.as_dict() for v in self.token_infos]
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListPublicTokensResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.token_infos: body['token_infos'] = self.token_infos
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListPublicTokensResponse:
         """Deserializes the ListPublicTokensResponse from a dictionary."""
@@ -1518,6 +2466,12 @@ class ListTokensResponse:
         """Serializes the ListTokensResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.token_infos: body['token_infos'] = [v.as_dict() for v in self.token_infos]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListTokensResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.token_infos: body['token_infos'] = self.token_infos
         return body
 
     @classmethod
@@ -1551,6 +2505,13 @@ class MicrosoftTeamsConfig:
         if self.url_set is not None: body['url_set'] = self.url_set
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the MicrosoftTeamsConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.url is not None: body['url'] = self.url
+        if self.url_set is not None: body['url_set'] = self.url_set
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> MicrosoftTeamsConfig:
         """Deserializes the MicrosoftTeamsConfig from a dictionary."""
@@ -1570,6 +2531,12 @@ class NccAwsStableIpRule:
         """Serializes the NccAwsStableIpRule into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.cidr_blocks: body['cidr_blocks'] = [v for v in self.cidr_blocks]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the NccAwsStableIpRule into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.cidr_blocks: body['cidr_blocks'] = self.cidr_blocks
         return body
 
     @classmethod
@@ -1630,6 +2597,22 @@ class NccAzurePrivateEndpointRule:
         if self.deactivated_at is not None: body['deactivated_at'] = self.deactivated_at
         if self.endpoint_name is not None: body['endpoint_name'] = self.endpoint_name
         if self.group_id is not None: body['group_id'] = self.group_id.value
+        if self.network_connectivity_config_id is not None:
+            body['network_connectivity_config_id'] = self.network_connectivity_config_id
+        if self.resource_id is not None: body['resource_id'] = self.resource_id
+        if self.rule_id is not None: body['rule_id'] = self.rule_id
+        if self.updated_time is not None: body['updated_time'] = self.updated_time
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the NccAzurePrivateEndpointRule into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.connection_state is not None: body['connection_state'] = self.connection_state
+        if self.creation_time is not None: body['creation_time'] = self.creation_time
+        if self.deactivated is not None: body['deactivated'] = self.deactivated
+        if self.deactivated_at is not None: body['deactivated_at'] = self.deactivated_at
+        if self.endpoint_name is not None: body['endpoint_name'] = self.endpoint_name
+        if self.group_id is not None: body['group_id'] = self.group_id
         if self.network_connectivity_config_id is not None:
             body['network_connectivity_config_id'] = self.network_connectivity_config_id
         if self.resource_id is not None: body['resource_id'] = self.resource_id
@@ -1704,6 +2687,14 @@ class NccAzureServiceEndpointRule:
         if self.target_services: body['target_services'] = [v for v in self.target_services]
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the NccAzureServiceEndpointRule into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.subnets: body['subnets'] = self.subnets
+        if self.target_region is not None: body['target_region'] = self.target_region
+        if self.target_services: body['target_services'] = self.target_services
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> NccAzureServiceEndpointRule:
         """Deserializes the NccAzureServiceEndpointRule from a dictionary."""
@@ -1731,6 +2722,13 @@ class NccEgressConfig:
         body = {}
         if self.default_rules: body['default_rules'] = self.default_rules.as_dict()
         if self.target_rules: body['target_rules'] = self.target_rules.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the NccEgressConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.default_rules: body['default_rules'] = self.default_rules
+        if self.target_rules: body['target_rules'] = self.target_rules
         return body
 
     @classmethod
@@ -1762,6 +2760,14 @@ class NccEgressDefaultRules:
             body['azure_service_endpoint_rule'] = self.azure_service_endpoint_rule.as_dict()
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the NccEgressDefaultRules into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.aws_stable_ip_rule: body['aws_stable_ip_rule'] = self.aws_stable_ip_rule
+        if self.azure_service_endpoint_rule:
+            body['azure_service_endpoint_rule'] = self.azure_service_endpoint_rule
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> NccEgressDefaultRules:
         """Deserializes the NccEgressDefaultRules from a dictionary."""
@@ -1782,6 +2788,13 @@ class NccEgressTargetRules:
         body = {}
         if self.azure_private_endpoint_rules:
             body['azure_private_endpoint_rules'] = [v.as_dict() for v in self.azure_private_endpoint_rules]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the NccEgressTargetRules into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.azure_private_endpoint_rules:
+            body['azure_private_endpoint_rules'] = self.azure_private_endpoint_rules
         return body
 
     @classmethod
@@ -1831,6 +2844,19 @@ class NetworkConnectivityConfiguration:
         if self.updated_time is not None: body['updated_time'] = self.updated_time
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the NetworkConnectivityConfiguration into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.account_id is not None: body['account_id'] = self.account_id
+        if self.creation_time is not None: body['creation_time'] = self.creation_time
+        if self.egress_config: body['egress_config'] = self.egress_config
+        if self.name is not None: body['name'] = self.name
+        if self.network_connectivity_config_id is not None:
+            body['network_connectivity_config_id'] = self.network_connectivity_config_id
+        if self.region is not None: body['region'] = self.region
+        if self.updated_time is not None: body['updated_time'] = self.updated_time
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> NetworkConnectivityConfiguration:
         """Deserializes the NetworkConnectivityConfiguration from a dictionary."""
@@ -1867,6 +2893,15 @@ class NotificationDestination:
         if self.id is not None: body['id'] = self.id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the NotificationDestination into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.config: body['config'] = self.config
+        if self.destination_type is not None: body['destination_type'] = self.destination_type
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.id is not None: body['id'] = self.id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> NotificationDestination:
         """Deserializes the NotificationDestination from a dictionary."""
@@ -1886,6 +2921,13 @@ class PagerdutyConfig:
 
     def as_dict(self) -> dict:
         """Serializes the PagerdutyConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.integration_key is not None: body['integration_key'] = self.integration_key
+        if self.integration_key_set is not None: body['integration_key_set'] = self.integration_key_set
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PagerdutyConfig into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.integration_key is not None: body['integration_key'] = self.integration_key
         if self.integration_key_set is not None: body['integration_key_set'] = self.integration_key_set
@@ -1911,6 +2953,12 @@ class PartitionId:
         if self.workspace_id is not None: body['workspaceId'] = self.workspace_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PartitionId into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.workspace_id is not None: body['workspaceId'] = self.workspace_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> PartitionId:
         """Deserializes the PartitionId from a dictionary."""
@@ -1930,6 +2978,12 @@ class PersonalComputeMessage:
         """Serializes the PersonalComputeMessage into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.value is not None: body['value'] = self.value.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PersonalComputeMessage into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.value is not None: body['value'] = self.value
         return body
 
     @classmethod
@@ -1975,6 +3029,14 @@ class PersonalComputeSetting:
         if self.setting_name is not None: body['setting_name'] = self.setting_name
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PersonalComputeSetting into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.etag is not None: body['etag'] = self.etag
+        if self.personal_compute: body['personal_compute'] = self.personal_compute
+        if self.setting_name is not None: body['setting_name'] = self.setting_name
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> PersonalComputeSetting:
         """Deserializes the PersonalComputeSetting from a dictionary."""
@@ -1999,6 +3061,15 @@ class PublicTokenInfo:
 
     def as_dict(self) -> dict:
         """Serializes the PublicTokenInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.comment is not None: body['comment'] = self.comment
+        if self.creation_time is not None: body['creation_time'] = self.creation_time
+        if self.expiry_time is not None: body['expiry_time'] = self.expiry_time
+        if self.token_id is not None: body['token_id'] = self.token_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PublicTokenInfo into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.comment is not None: body['comment'] = self.comment
         if self.creation_time is not None: body['creation_time'] = self.creation_time
@@ -2046,6 +3117,16 @@ class ReplaceIpAccessList:
         if self.list_type is not None: body['list_type'] = self.list_type.value
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ReplaceIpAccessList into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.enabled is not None: body['enabled'] = self.enabled
+        if self.ip_access_list_id is not None: body['ip_access_list_id'] = self.ip_access_list_id
+        if self.ip_addresses: body['ip_addresses'] = self.ip_addresses
+        if self.label is not None: body['label'] = self.label
+        if self.list_type is not None: body['list_type'] = self.list_type
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ReplaceIpAccessList:
         """Deserializes the ReplaceIpAccessList from a dictionary."""
@@ -2064,6 +3145,11 @@ class ReplaceResponse:
         body = {}
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ReplaceResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ReplaceResponse:
         """Deserializes the ReplaceResponse from a dictionary."""
@@ -2078,6 +3164,12 @@ class RestrictWorkspaceAdminsMessage:
         """Serializes the RestrictWorkspaceAdminsMessage into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.status is not None: body['status'] = self.status.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RestrictWorkspaceAdminsMessage into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.status is not None: body['status'] = self.status
         return body
 
     @classmethod
@@ -2119,6 +3211,14 @@ class RestrictWorkspaceAdminsSetting:
         if self.setting_name is not None: body['setting_name'] = self.setting_name
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RestrictWorkspaceAdminsSetting into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.etag is not None: body['etag'] = self.etag
+        if self.restrict_workspace_admins: body['restrict_workspace_admins'] = self.restrict_workspace_admins
+        if self.setting_name is not None: body['setting_name'] = self.setting_name
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> RestrictWorkspaceAdminsSetting:
         """Deserializes the RestrictWorkspaceAdminsSetting from a dictionary."""
@@ -2139,6 +3239,12 @@ class RevokeTokenRequest:
         if self.token_id is not None: body['token_id'] = self.token_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RevokeTokenRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.token_id is not None: body['token_id'] = self.token_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> RevokeTokenRequest:
         """Deserializes the RevokeTokenRequest from a dictionary."""
@@ -2153,6 +3259,11 @@ class RevokeTokenResponse:
         body = {}
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RevokeTokenResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> RevokeTokenResponse:
         """Deserializes the RevokeTokenResponse from a dictionary."""
@@ -2164,6 +3275,11 @@ class SetStatusResponse:
 
     def as_dict(self) -> dict:
         """Serializes the SetStatusResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SetStatusResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -2188,6 +3304,13 @@ class SlackConfig:
         if self.url_set is not None: body['url_set'] = self.url_set
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SlackConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.url is not None: body['url'] = self.url
+        if self.url_set is not None: body['url_set'] = self.url_set
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> SlackConfig:
         """Deserializes the SlackConfig from a dictionary."""
@@ -2201,6 +3324,12 @@ class StringMessage:
 
     def as_dict(self) -> dict:
         """Serializes the StringMessage into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.value is not None: body['value'] = self.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the StringMessage into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.value is not None: body['value'] = self.value
         return body
@@ -2230,6 +3359,16 @@ class TokenAccessControlRequest:
         body = {}
         if self.group_name is not None: body['group_name'] = self.group_name
         if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
+        if self.user_name is not None: body['user_name'] = self.user_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TokenAccessControlRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.permission_level is not None: body['permission_level'] = self.permission_level
         if self.service_principal_name is not None:
             body['service_principal_name'] = self.service_principal_name
         if self.user_name is not None: body['user_name'] = self.user_name
@@ -2272,6 +3411,17 @@ class TokenAccessControlResponse:
         if self.user_name is not None: body['user_name'] = self.user_name
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TokenAccessControlResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.all_permissions: body['all_permissions'] = self.all_permissions
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.group_name is not None: body['group_name'] = self.group_name
+        if self.service_principal_name is not None:
+            body['service_principal_name'] = self.service_principal_name
+        if self.user_name is not None: body['user_name'] = self.user_name
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> TokenAccessControlResponse:
         """Deserializes the TokenAccessControlResponse from a dictionary."""
@@ -2299,6 +3449,9 @@ class TokenInfo:
     expiry_time: Optional[int] = None
     """Timestamp when the token expires."""
 
+    last_used_day: Optional[int] = None
+    """Approximate timestamp for the day the token was last used. Accurate up to 1 day."""
+
     owner_id: Optional[int] = None
     """User ID of the user that owns the token."""
 
@@ -2316,6 +3469,21 @@ class TokenInfo:
         if self.created_by_username is not None: body['created_by_username'] = self.created_by_username
         if self.creation_time is not None: body['creation_time'] = self.creation_time
         if self.expiry_time is not None: body['expiry_time'] = self.expiry_time
+        if self.last_used_day is not None: body['last_used_day'] = self.last_used_day
+        if self.owner_id is not None: body['owner_id'] = self.owner_id
+        if self.token_id is not None: body['token_id'] = self.token_id
+        if self.workspace_id is not None: body['workspace_id'] = self.workspace_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TokenInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.comment is not None: body['comment'] = self.comment
+        if self.created_by_id is not None: body['created_by_id'] = self.created_by_id
+        if self.created_by_username is not None: body['created_by_username'] = self.created_by_username
+        if self.creation_time is not None: body['creation_time'] = self.creation_time
+        if self.expiry_time is not None: body['expiry_time'] = self.expiry_time
+        if self.last_used_day is not None: body['last_used_day'] = self.last_used_day
         if self.owner_id is not None: body['owner_id'] = self.owner_id
         if self.token_id is not None: body['token_id'] = self.token_id
         if self.workspace_id is not None: body['workspace_id'] = self.workspace_id
@@ -2329,6 +3497,7 @@ class TokenInfo:
                    created_by_username=d.get('created_by_username', None),
                    creation_time=d.get('creation_time', None),
                    expiry_time=d.get('expiry_time', None),
+                   last_used_day=d.get('last_used_day', None),
                    owner_id=d.get('owner_id', None),
                    token_id=d.get('token_id', None),
                    workspace_id=d.get('workspace_id', None))
@@ -2349,6 +3518,14 @@ class TokenPermission:
         if self.inherited is not None: body['inherited'] = self.inherited
         if self.inherited_from_object: body['inherited_from_object'] = [v for v in self.inherited_from_object]
         if self.permission_level is not None: body['permission_level'] = self.permission_level.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TokenPermission into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.inherited is not None: body['inherited'] = self.inherited
+        if self.inherited_from_object: body['inherited_from_object'] = self.inherited_from_object
+        if self.permission_level is not None: body['permission_level'] = self.permission_level
         return body
 
     @classmethod
@@ -2382,6 +3559,14 @@ class TokenPermissions:
         if self.object_type is not None: body['object_type'] = self.object_type
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TokenPermissions into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.access_control_list: body['access_control_list'] = self.access_control_list
+        if self.object_id is not None: body['object_id'] = self.object_id
+        if self.object_type is not None: body['object_type'] = self.object_type
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> TokenPermissions:
         """Deserializes the TokenPermissions from a dictionary."""
@@ -2404,6 +3589,13 @@ class TokenPermissionsDescription:
         if self.permission_level is not None: body['permission_level'] = self.permission_level.value
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TokenPermissionsDescription into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.description is not None: body['description'] = self.description
+        if self.permission_level is not None: body['permission_level'] = self.permission_level
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> TokenPermissionsDescription:
         """Deserializes the TokenPermissionsDescription from a dictionary."""
@@ -2422,6 +3614,12 @@ class TokenPermissionsRequest:
             body['access_control_list'] = [v.as_dict() for v in self.access_control_list]
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TokenPermissionsRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.access_control_list: body['access_control_list'] = self.access_control_list
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> TokenPermissionsRequest:
         """Deserializes the TokenPermissionsRequest from a dictionary."""
@@ -2432,7 +3630,140 @@ class TokenType(Enum):
     """The type of token request. As of now, only `AZURE_ACTIVE_DIRECTORY_TOKEN` is supported."""
 
     ARCLIGHT_AZURE_EXCHANGE_TOKEN = 'ARCLIGHT_AZURE_EXCHANGE_TOKEN'
+    ARCLIGHT_AZURE_EXCHANGE_TOKEN_WITH_USER_DELEGATION_KEY = 'ARCLIGHT_AZURE_EXCHANGE_TOKEN_WITH_USER_DELEGATION_KEY'
     AZURE_ACTIVE_DIRECTORY_TOKEN = 'AZURE_ACTIVE_DIRECTORY_TOKEN'
+
+
+@dataclass
+class UpdateAccountIpAccessEnableRequest:
+    """Details required to update a setting."""
+
+    allow_missing: bool
+    """This should always be set to true for Settings API. Added for AIP compliance."""
+
+    setting: AccountIpAccessEnable
+
+    field_mask: str
+    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
+    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
+    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
+    as only the entire collection field can be specified. Field names must exactly match the
+    resource field names.
+    
+    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
+    API changes in the future."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateAccountIpAccessEnableRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.allow_missing is not None: body['allow_missing'] = self.allow_missing
+        if self.field_mask is not None: body['field_mask'] = self.field_mask
+        if self.setting: body['setting'] = self.setting.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateAccountIpAccessEnableRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.allow_missing is not None: body['allow_missing'] = self.allow_missing
+        if self.field_mask is not None: body['field_mask'] = self.field_mask
+        if self.setting: body['setting'] = self.setting
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateAccountIpAccessEnableRequest:
+        """Deserializes the UpdateAccountIpAccessEnableRequest from a dictionary."""
+        return cls(allow_missing=d.get('allow_missing', None),
+                   field_mask=d.get('field_mask', None),
+                   setting=_from_dict(d, 'setting', AccountIpAccessEnable))
+
+
+@dataclass
+class UpdateAibiDashboardEmbeddingAccessPolicySettingRequest:
+    """Details required to update a setting."""
+
+    allow_missing: bool
+    """This should always be set to true for Settings API. Added for AIP compliance."""
+
+    setting: AibiDashboardEmbeddingAccessPolicySetting
+
+    field_mask: str
+    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
+    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
+    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
+    as only the entire collection field can be specified. Field names must exactly match the
+    resource field names.
+    
+    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
+    API changes in the future."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateAibiDashboardEmbeddingAccessPolicySettingRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.allow_missing is not None: body['allow_missing'] = self.allow_missing
+        if self.field_mask is not None: body['field_mask'] = self.field_mask
+        if self.setting: body['setting'] = self.setting.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateAibiDashboardEmbeddingAccessPolicySettingRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.allow_missing is not None: body['allow_missing'] = self.allow_missing
+        if self.field_mask is not None: body['field_mask'] = self.field_mask
+        if self.setting: body['setting'] = self.setting
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateAibiDashboardEmbeddingAccessPolicySettingRequest:
+        """Deserializes the UpdateAibiDashboardEmbeddingAccessPolicySettingRequest from a dictionary."""
+        return cls(allow_missing=d.get('allow_missing', None),
+                   field_mask=d.get('field_mask', None),
+                   setting=_from_dict(d, 'setting', AibiDashboardEmbeddingAccessPolicySetting))
+
+
+@dataclass
+class UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest:
+    """Details required to update a setting."""
+
+    allow_missing: bool
+    """This should always be set to true for Settings API. Added for AIP compliance."""
+
+    setting: AibiDashboardEmbeddingApprovedDomainsSetting
+
+    field_mask: str
+    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
+    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
+    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
+    as only the entire collection field can be specified. Field names must exactly match the
+    resource field names.
+    
+    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
+    API changes in the future."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.allow_missing is not None: body['allow_missing'] = self.allow_missing
+        if self.field_mask is not None: body['field_mask'] = self.field_mask
+        if self.setting: body['setting'] = self.setting.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.allow_missing is not None: body['allow_missing'] = self.allow_missing
+        if self.field_mask is not None: body['field_mask'] = self.field_mask
+        if self.setting: body['setting'] = self.setting
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest:
+        """Deserializes the UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest from a dictionary."""
+        return cls(allow_missing=d.get('allow_missing', None),
+                   field_mask=d.get('field_mask', None),
+                   setting=_from_dict(d, 'setting', AibiDashboardEmbeddingApprovedDomainsSetting))
 
 
 @dataclass
@@ -2445,9 +3776,15 @@ class UpdateAutomaticClusterUpdateSettingRequest:
     setting: AutomaticClusterUpdateSetting
 
     field_mask: str
-    """Field mask is required to be passed into the PATCH request. Field mask specifies which fields of
-    the setting payload will be updated. The field mask needs to be supplied as single string. To
-    specify multiple fields in the field mask, use comma as the separator (no space)."""
+    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
+    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
+    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
+    as only the entire collection field can be specified. Field names must exactly match the
+    resource field names.
+    
+    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
+    API changes in the future."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateAutomaticClusterUpdateSettingRequest into a dictionary suitable for use as a JSON request body."""
@@ -2455,6 +3792,14 @@ class UpdateAutomaticClusterUpdateSettingRequest:
         if self.allow_missing is not None: body['allow_missing'] = self.allow_missing
         if self.field_mask is not None: body['field_mask'] = self.field_mask
         if self.setting: body['setting'] = self.setting.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateAutomaticClusterUpdateSettingRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.allow_missing is not None: body['allow_missing'] = self.allow_missing
+        if self.field_mask is not None: body['field_mask'] = self.field_mask
+        if self.setting: body['setting'] = self.setting
         return body
 
     @classmethod
@@ -2475,9 +3820,15 @@ class UpdateComplianceSecurityProfileSettingRequest:
     setting: ComplianceSecurityProfileSetting
 
     field_mask: str
-    """Field mask is required to be passed into the PATCH request. Field mask specifies which fields of
-    the setting payload will be updated. The field mask needs to be supplied as single string. To
-    specify multiple fields in the field mask, use comma as the separator (no space)."""
+    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
+    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
+    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
+    as only the entire collection field can be specified. Field names must exactly match the
+    resource field names.
+    
+    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
+    API changes in the future."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateComplianceSecurityProfileSettingRequest into a dictionary suitable for use as a JSON request body."""
@@ -2485,6 +3836,14 @@ class UpdateComplianceSecurityProfileSettingRequest:
         if self.allow_missing is not None: body['allow_missing'] = self.allow_missing
         if self.field_mask is not None: body['field_mask'] = self.field_mask
         if self.setting: body['setting'] = self.setting.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateComplianceSecurityProfileSettingRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.allow_missing is not None: body['allow_missing'] = self.allow_missing
+        if self.field_mask is not None: body['field_mask'] = self.field_mask
+        if self.setting: body['setting'] = self.setting
         return body
 
     @classmethod
@@ -2505,9 +3864,15 @@ class UpdateCspEnablementAccountSettingRequest:
     setting: CspEnablementAccountSetting
 
     field_mask: str
-    """Field mask is required to be passed into the PATCH request. Field mask specifies which fields of
-    the setting payload will be updated. The field mask needs to be supplied as single string. To
-    specify multiple fields in the field mask, use comma as the separator (no space)."""
+    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
+    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
+    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
+    as only the entire collection field can be specified. Field names must exactly match the
+    resource field names.
+    
+    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
+    API changes in the future."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateCspEnablementAccountSettingRequest into a dictionary suitable for use as a JSON request body."""
@@ -2515,6 +3880,14 @@ class UpdateCspEnablementAccountSettingRequest:
         if self.allow_missing is not None: body['allow_missing'] = self.allow_missing
         if self.field_mask is not None: body['field_mask'] = self.field_mask
         if self.setting: body['setting'] = self.setting.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateCspEnablementAccountSettingRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.allow_missing is not None: body['allow_missing'] = self.allow_missing
+        if self.field_mask is not None: body['field_mask'] = self.field_mask
+        if self.setting: body['setting'] = self.setting
         return body
 
     @classmethod
@@ -2542,9 +3915,15 @@ class UpdateDefaultNamespaceSettingRequest:
     applies when using Unity Catalog-enabled compute."""
 
     field_mask: str
-    """Field mask is required to be passed into the PATCH request. Field mask specifies which fields of
-    the setting payload will be updated. The field mask needs to be supplied as single string. To
-    specify multiple fields in the field mask, use comma as the separator (no space)."""
+    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
+    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
+    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
+    as only the entire collection field can be specified. Field names must exactly match the
+    resource field names.
+    
+    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
+    API changes in the future."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateDefaultNamespaceSettingRequest into a dictionary suitable for use as a JSON request body."""
@@ -2552,6 +3931,14 @@ class UpdateDefaultNamespaceSettingRequest:
         if self.allow_missing is not None: body['allow_missing'] = self.allow_missing
         if self.field_mask is not None: body['field_mask'] = self.field_mask
         if self.setting: body['setting'] = self.setting.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateDefaultNamespaceSettingRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.allow_missing is not None: body['allow_missing'] = self.allow_missing
+        if self.field_mask is not None: body['field_mask'] = self.field_mask
+        if self.setting: body['setting'] = self.setting
         return body
 
     @classmethod
@@ -2572,9 +3959,15 @@ class UpdateDisableLegacyAccessRequest:
     setting: DisableLegacyAccess
 
     field_mask: str
-    """Field mask is required to be passed into the PATCH request. Field mask specifies which fields of
-    the setting payload will be updated. The field mask needs to be supplied as single string. To
-    specify multiple fields in the field mask, use comma as the separator (no space)."""
+    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
+    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
+    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
+    as only the entire collection field can be specified. Field names must exactly match the
+    resource field names.
+    
+    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
+    API changes in the future."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateDisableLegacyAccessRequest into a dictionary suitable for use as a JSON request body."""
@@ -2582,6 +3975,14 @@ class UpdateDisableLegacyAccessRequest:
         if self.allow_missing is not None: body['allow_missing'] = self.allow_missing
         if self.field_mask is not None: body['field_mask'] = self.field_mask
         if self.setting: body['setting'] = self.setting.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateDisableLegacyAccessRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.allow_missing is not None: body['allow_missing'] = self.allow_missing
+        if self.field_mask is not None: body['field_mask'] = self.field_mask
+        if self.setting: body['setting'] = self.setting
         return body
 
     @classmethod
@@ -2602,9 +4003,15 @@ class UpdateDisableLegacyDbfsRequest:
     setting: DisableLegacyDbfs
 
     field_mask: str
-    """Field mask is required to be passed into the PATCH request. Field mask specifies which fields of
-    the setting payload will be updated. The field mask needs to be supplied as single string. To
-    specify multiple fields in the field mask, use comma as the separator (no space)."""
+    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
+    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
+    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
+    as only the entire collection field can be specified. Field names must exactly match the
+    resource field names.
+    
+    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
+    API changes in the future."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateDisableLegacyDbfsRequest into a dictionary suitable for use as a JSON request body."""
@@ -2612,6 +4019,14 @@ class UpdateDisableLegacyDbfsRequest:
         if self.allow_missing is not None: body['allow_missing'] = self.allow_missing
         if self.field_mask is not None: body['field_mask'] = self.field_mask
         if self.setting: body['setting'] = self.setting.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateDisableLegacyDbfsRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.allow_missing is not None: body['allow_missing'] = self.allow_missing
+        if self.field_mask is not None: body['field_mask'] = self.field_mask
+        if self.setting: body['setting'] = self.setting
         return body
 
     @classmethod
@@ -2632,9 +4047,15 @@ class UpdateDisableLegacyFeaturesRequest:
     setting: DisableLegacyFeatures
 
     field_mask: str
-    """Field mask is required to be passed into the PATCH request. Field mask specifies which fields of
-    the setting payload will be updated. The field mask needs to be supplied as single string. To
-    specify multiple fields in the field mask, use comma as the separator (no space)."""
+    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
+    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
+    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
+    as only the entire collection field can be specified. Field names must exactly match the
+    resource field names.
+    
+    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
+    API changes in the future."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateDisableLegacyFeaturesRequest into a dictionary suitable for use as a JSON request body."""
@@ -2642,6 +4063,14 @@ class UpdateDisableLegacyFeaturesRequest:
         if self.allow_missing is not None: body['allow_missing'] = self.allow_missing
         if self.field_mask is not None: body['field_mask'] = self.field_mask
         if self.setting: body['setting'] = self.setting.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateDisableLegacyFeaturesRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.allow_missing is not None: body['allow_missing'] = self.allow_missing
+        if self.field_mask is not None: body['field_mask'] = self.field_mask
+        if self.setting: body['setting'] = self.setting
         return body
 
     @classmethod
@@ -2662,9 +4091,15 @@ class UpdateEnhancedSecurityMonitoringSettingRequest:
     setting: EnhancedSecurityMonitoringSetting
 
     field_mask: str
-    """Field mask is required to be passed into the PATCH request. Field mask specifies which fields of
-    the setting payload will be updated. The field mask needs to be supplied as single string. To
-    specify multiple fields in the field mask, use comma as the separator (no space)."""
+    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
+    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
+    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
+    as only the entire collection field can be specified. Field names must exactly match the
+    resource field names.
+    
+    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
+    API changes in the future."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateEnhancedSecurityMonitoringSettingRequest into a dictionary suitable for use as a JSON request body."""
@@ -2672,6 +4107,14 @@ class UpdateEnhancedSecurityMonitoringSettingRequest:
         if self.allow_missing is not None: body['allow_missing'] = self.allow_missing
         if self.field_mask is not None: body['field_mask'] = self.field_mask
         if self.setting: body['setting'] = self.setting.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateEnhancedSecurityMonitoringSettingRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.allow_missing is not None: body['allow_missing'] = self.allow_missing
+        if self.field_mask is not None: body['field_mask'] = self.field_mask
+        if self.setting: body['setting'] = self.setting
         return body
 
     @classmethod
@@ -2692,9 +4135,15 @@ class UpdateEsmEnablementAccountSettingRequest:
     setting: EsmEnablementAccountSetting
 
     field_mask: str
-    """Field mask is required to be passed into the PATCH request. Field mask specifies which fields of
-    the setting payload will be updated. The field mask needs to be supplied as single string. To
-    specify multiple fields in the field mask, use comma as the separator (no space)."""
+    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
+    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
+    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
+    as only the entire collection field can be specified. Field names must exactly match the
+    resource field names.
+    
+    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
+    API changes in the future."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateEsmEnablementAccountSettingRequest into a dictionary suitable for use as a JSON request body."""
@@ -2702,6 +4151,14 @@ class UpdateEsmEnablementAccountSettingRequest:
         if self.allow_missing is not None: body['allow_missing'] = self.allow_missing
         if self.field_mask is not None: body['field_mask'] = self.field_mask
         if self.setting: body['setting'] = self.setting.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateEsmEnablementAccountSettingRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.allow_missing is not None: body['allow_missing'] = self.allow_missing
+        if self.field_mask is not None: body['field_mask'] = self.field_mask
+        if self.setting: body['setting'] = self.setting
         return body
 
     @classmethod
@@ -2743,6 +4200,16 @@ class UpdateIpAccessList:
         if self.list_type is not None: body['list_type'] = self.list_type.value
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateIpAccessList into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.enabled is not None: body['enabled'] = self.enabled
+        if self.ip_access_list_id is not None: body['ip_access_list_id'] = self.ip_access_list_id
+        if self.ip_addresses: body['ip_addresses'] = self.ip_addresses
+        if self.label is not None: body['label'] = self.label
+        if self.list_type is not None: body['list_type'] = self.list_type
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> UpdateIpAccessList:
         """Deserializes the UpdateIpAccessList from a dictionary."""
@@ -2762,11 +4229,20 @@ class UpdateNotificationDestinationRequest:
     """The display name for the notification destination."""
 
     id: Optional[str] = None
+    """UUID identifying notification destination."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateNotificationDestinationRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.config: body['config'] = self.config.as_dict()
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.id is not None: body['id'] = self.id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateNotificationDestinationRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.config: body['config'] = self.config
         if self.display_name is not None: body['display_name'] = self.display_name
         if self.id is not None: body['id'] = self.id
         return body
@@ -2789,9 +4265,15 @@ class UpdatePersonalComputeSettingRequest:
     setting: PersonalComputeSetting
 
     field_mask: str
-    """Field mask is required to be passed into the PATCH request. Field mask specifies which fields of
-    the setting payload will be updated. The field mask needs to be supplied as single string. To
-    specify multiple fields in the field mask, use comma as the separator (no space)."""
+    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
+    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
+    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
+    as only the entire collection field can be specified. Field names must exactly match the
+    resource field names.
+    
+    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
+    API changes in the future."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdatePersonalComputeSettingRequest into a dictionary suitable for use as a JSON request body."""
@@ -2799,6 +4281,14 @@ class UpdatePersonalComputeSettingRequest:
         if self.allow_missing is not None: body['allow_missing'] = self.allow_missing
         if self.field_mask is not None: body['field_mask'] = self.field_mask
         if self.setting: body['setting'] = self.setting.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdatePersonalComputeSettingRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.allow_missing is not None: body['allow_missing'] = self.allow_missing
+        if self.field_mask is not None: body['field_mask'] = self.field_mask
+        if self.setting: body['setting'] = self.setting
         return body
 
     @classmethod
@@ -2814,6 +4304,11 @@ class UpdateResponse:
 
     def as_dict(self) -> dict:
         """Serializes the UpdateResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         return body
 
@@ -2833,9 +4328,15 @@ class UpdateRestrictWorkspaceAdminsSettingRequest:
     setting: RestrictWorkspaceAdminsSetting
 
     field_mask: str
-    """Field mask is required to be passed into the PATCH request. Field mask specifies which fields of
-    the setting payload will be updated. The field mask needs to be supplied as single string. To
-    specify multiple fields in the field mask, use comma as the separator (no space)."""
+    """The field mask must be a single string, with multiple fields separated by commas (no spaces).
+    The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields
+    (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed,
+    as only the entire collection field can be specified. Field names must exactly match the
+    resource field names.
+    
+    A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+    fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
+    API changes in the future."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateRestrictWorkspaceAdminsSettingRequest into a dictionary suitable for use as a JSON request body."""
@@ -2843,6 +4344,14 @@ class UpdateRestrictWorkspaceAdminsSettingRequest:
         if self.allow_missing is not None: body['allow_missing'] = self.allow_missing
         if self.field_mask is not None: body['field_mask'] = self.field_mask
         if self.setting: body['setting'] = self.setting.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateRestrictWorkspaceAdminsSettingRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.allow_missing is not None: body['allow_missing'] = self.allow_missing
+        if self.field_mask is not None: body['field_mask'] = self.field_mask
+        if self.setting: body['setting'] = self.setting
         return body
 
     @classmethod
@@ -3079,6 +4588,7 @@ class AccountSettingsAPI:
 
         self._csp_enablement_account = CspEnablementAccountAPI(self._api)
         self._disable_legacy_features = DisableLegacyFeaturesAPI(self._api)
+        self._enable_ip_access_lists = EnableIpAccessListsAPI(self._api)
         self._esm_enablement_account = EsmEnablementAccountAPI(self._api)
         self._personal_compute = PersonalComputeAPI(self._api)
 
@@ -3093,6 +4603,11 @@ class AccountSettingsAPI:
         return self._disable_legacy_features
 
     @property
+    def enable_ip_access_lists(self) -> EnableIpAccessListsAPI:
+        """Controls the enforcement of IP access lists for accessing the account console."""
+        return self._enable_ip_access_lists
+
+    @property
     def esm_enablement_account(self) -> EsmEnablementAccountAPI:
         """The enhanced security monitoring setting at the account level controls whether to enable the feature on new workspaces."""
         return self._esm_enablement_account
@@ -3101,6 +4616,197 @@ class AccountSettingsAPI:
     def personal_compute(self) -> PersonalComputeAPI:
         """The Personal Compute enablement setting lets you control which users can use the Personal Compute default policy to create compute resources."""
         return self._personal_compute
+
+
+class AibiDashboardEmbeddingAccessPolicyAPI:
+    """Controls whether AI/BI published dashboard embedding is enabled, conditionally enabled, or disabled at the
+    workspace level. By default, this setting is conditionally enabled (ALLOW_APPROVED_DOMAINS)."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def delete(self,
+               *,
+               etag: Optional[str] = None) -> DeleteAibiDashboardEmbeddingAccessPolicySettingResponse:
+        """Delete the AI/BI dashboard embedding access policy.
+        
+        Delete the AI/BI dashboard embedding access policy, reverting back to the default.
+        
+        :param etag: str (optional)
+          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
+          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
+          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
+          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
+          request, and pass it with the DELETE request to identify the rule set version you are deleting.
+        
+        :returns: :class:`DeleteAibiDashboardEmbeddingAccessPolicySettingResponse`
+        """
+
+        query = {}
+        if etag is not None: query['etag'] = etag
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do('DELETE',
+                           '/api/2.0/settings/types/aibi_dash_embed_ws_acc_policy/names/default',
+                           query=query,
+                           headers=headers)
+        return DeleteAibiDashboardEmbeddingAccessPolicySettingResponse.from_dict(res)
+
+    def get(self, *, etag: Optional[str] = None) -> AibiDashboardEmbeddingAccessPolicySetting:
+        """Retrieve the AI/BI dashboard embedding access policy.
+        
+        Retrieves the AI/BI dashboard embedding access policy. The default setting is ALLOW_APPROVED_DOMAINS,
+        permitting AI/BI dashboards to be embedded on approved domains.
+        
+        :param etag: str (optional)
+          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
+          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
+          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
+          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
+          request, and pass it with the DELETE request to identify the rule set version you are deleting.
+        
+        :returns: :class:`AibiDashboardEmbeddingAccessPolicySetting`
+        """
+
+        query = {}
+        if etag is not None: query['etag'] = etag
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do('GET',
+                           '/api/2.0/settings/types/aibi_dash_embed_ws_acc_policy/names/default',
+                           query=query,
+                           headers=headers)
+        return AibiDashboardEmbeddingAccessPolicySetting.from_dict(res)
+
+    def update(self, allow_missing: bool, setting: AibiDashboardEmbeddingAccessPolicySetting,
+               field_mask: str) -> AibiDashboardEmbeddingAccessPolicySetting:
+        """Update the AI/BI dashboard embedding access policy.
+        
+        Updates the AI/BI dashboard embedding access policy at the workspace level.
+        
+        :param allow_missing: bool
+          This should always be set to true for Settings API. Added for AIP compliance.
+        :param setting: :class:`AibiDashboardEmbeddingAccessPolicySetting`
+        :param field_mask: str
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+          
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
+        
+        :returns: :class:`AibiDashboardEmbeddingAccessPolicySetting`
+        """
+        body = {}
+        if allow_missing is not None: body['allow_missing'] = allow_missing
+        if field_mask is not None: body['field_mask'] = field_mask
+        if setting is not None: body['setting'] = setting.as_dict()
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do('PATCH',
+                           '/api/2.0/settings/types/aibi_dash_embed_ws_acc_policy/names/default',
+                           body=body,
+                           headers=headers)
+        return AibiDashboardEmbeddingAccessPolicySetting.from_dict(res)
+
+
+class AibiDashboardEmbeddingApprovedDomainsAPI:
+    """Controls the list of domains approved to host the embedded AI/BI dashboards. The approved domains list
+    can't be mutated when the current access policy is not set to ALLOW_APPROVED_DOMAINS."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def delete(self,
+               *,
+               etag: Optional[str] = None) -> DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponse:
+        """Delete AI/BI dashboard embedding approved domains.
+        
+        Delete the list of domains approved to host embedded AI/BI dashboards, reverting back to the default
+        empty list.
+        
+        :param etag: str (optional)
+          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
+          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
+          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
+          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
+          request, and pass it with the DELETE request to identify the rule set version you are deleting.
+        
+        :returns: :class:`DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponse`
+        """
+
+        query = {}
+        if etag is not None: query['etag'] = etag
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do('DELETE',
+                           '/api/2.0/settings/types/aibi_dash_embed_ws_apprvd_domains/names/default',
+                           query=query,
+                           headers=headers)
+        return DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponse.from_dict(res)
+
+    def get(self, *, etag: Optional[str] = None) -> AibiDashboardEmbeddingApprovedDomainsSetting:
+        """Retrieve the list of domains approved to host embedded AI/BI dashboards.
+        
+        Retrieves the list of domains approved to host embedded AI/BI dashboards.
+        
+        :param etag: str (optional)
+          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
+          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
+          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
+          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
+          request, and pass it with the DELETE request to identify the rule set version you are deleting.
+        
+        :returns: :class:`AibiDashboardEmbeddingApprovedDomainsSetting`
+        """
+
+        query = {}
+        if etag is not None: query['etag'] = etag
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do('GET',
+                           '/api/2.0/settings/types/aibi_dash_embed_ws_apprvd_domains/names/default',
+                           query=query,
+                           headers=headers)
+        return AibiDashboardEmbeddingApprovedDomainsSetting.from_dict(res)
+
+    def update(self, allow_missing: bool, setting: AibiDashboardEmbeddingApprovedDomainsSetting,
+               field_mask: str) -> AibiDashboardEmbeddingApprovedDomainsSetting:
+        """Update the list of domains approved to host embedded AI/BI dashboards.
+        
+        Updates the list of domains approved to host embedded AI/BI dashboards. This update will fail if the
+        current workspace access policy is not ALLOW_APPROVED_DOMAINS.
+        
+        :param allow_missing: bool
+          This should always be set to true for Settings API. Added for AIP compliance.
+        :param setting: :class:`AibiDashboardEmbeddingApprovedDomainsSetting`
+        :param field_mask: str
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+          
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
+        
+        :returns: :class:`AibiDashboardEmbeddingApprovedDomainsSetting`
+        """
+        body = {}
+        if allow_missing is not None: body['allow_missing'] = allow_missing
+        if field_mask is not None: body['field_mask'] = field_mask
+        if setting is not None: body['setting'] = setting.as_dict()
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do('PATCH',
+                           '/api/2.0/settings/types/aibi_dash_embed_ws_apprvd_domains/names/default',
+                           body=body,
+                           headers=headers)
+        return AibiDashboardEmbeddingApprovedDomainsSetting.from_dict(res)
 
 
 class AutomaticClusterUpdateAPI:
@@ -3148,9 +4854,15 @@ class AutomaticClusterUpdateAPI:
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`AutomaticClusterUpdateSetting`
         :param field_mask: str
-          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
-          setting payload will be updated. The field mask needs to be supplied as single string. To specify
-          multiple fields in the field mask, use comma as the separator (no space).
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+          
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
         
         :returns: :class:`AutomaticClusterUpdateSetting`
         """
@@ -3214,9 +4926,15 @@ class ComplianceSecurityProfileAPI:
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`ComplianceSecurityProfileSetting`
         :param field_mask: str
-          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
-          setting payload will be updated. The field mask needs to be supplied as single string. To specify
-          multiple fields in the field mask, use comma as the separator (no space).
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+          
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
         
         :returns: :class:`ComplianceSecurityProfileSetting`
         """
@@ -3316,9 +5034,15 @@ class CspEnablementAccountAPI:
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`CspEnablementAccountSetting`
         :param field_mask: str
-          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
-          setting payload will be updated. The field mask needs to be supplied as single string. To specify
-          multiple fields in the field mask, use comma as the separator (no space).
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+          
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
         
         :returns: :class:`CspEnablementAccountSetting`
         """
@@ -3426,9 +5150,15 @@ class DefaultNamespaceAPI:
           restart of clusters and SQL warehouses to take effect. Additionally, the default namespace only
           applies when using Unity Catalog-enabled compute.
         :param field_mask: str
-          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
-          setting payload will be updated. The field mask needs to be supplied as single string. To specify
-          multiple fields in the field mask, use comma as the separator (no space).
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+          
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
         
         :returns: :class:`DefaultNamespaceSetting`
         """
@@ -3516,9 +5246,15 @@ class DisableLegacyAccessAPI:
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`DisableLegacyAccess`
         :param field_mask: str
-          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
-          setting payload will be updated. The field mask needs to be supplied as single string. To specify
-          multiple fields in the field mask, use comma as the separator (no space).
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+          
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
         
         :returns: :class:`DisableLegacyAccess`
         """
@@ -3601,9 +5337,15 @@ class DisableLegacyDbfsAPI:
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`DisableLegacyDbfs`
         :param field_mask: str
-          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
-          setting payload will be updated. The field mask needs to be supplied as single string. To specify
-          multiple fields in the field mask, use comma as the separator (no space).
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+          
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
         
         :returns: :class:`DisableLegacyDbfs`
         """
@@ -3692,9 +5434,15 @@ class DisableLegacyFeaturesAPI:
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`DisableLegacyFeatures`
         :param field_mask: str
-          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
-          setting payload will be updated. The field mask needs to be supplied as single string. To specify
-          multiple fields in the field mask, use comma as the separator (no space).
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+          
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
         
         :returns: :class:`DisableLegacyFeatures`
         """
@@ -3710,6 +5458,101 @@ class DisableLegacyFeaturesAPI:
             body=body,
             headers=headers)
         return DisableLegacyFeatures.from_dict(res)
+
+
+class EnableIpAccessListsAPI:
+    """Controls the enforcement of IP access lists for accessing the account console. Allowing you to enable or
+    disable restricted access based on IP addresses."""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def delete(self, *, etag: Optional[str] = None) -> DeleteAccountIpAccessEnableResponse:
+        """Delete the account IP access toggle setting.
+        
+        Reverts the value of the account IP access toggle setting to default (ON)
+        
+        :param etag: str (optional)
+          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
+          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
+          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
+          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
+          request, and pass it with the DELETE request to identify the rule set version you are deleting.
+        
+        :returns: :class:`DeleteAccountIpAccessEnableResponse`
+        """
+
+        query = {}
+        if etag is not None: query['etag'] = etag
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do(
+            'DELETE',
+            f'/api/2.0/accounts/{self._api.account_id}/settings/types/acct_ip_acl_enable/names/default',
+            query=query,
+            headers=headers)
+        return DeleteAccountIpAccessEnableResponse.from_dict(res)
+
+    def get(self, *, etag: Optional[str] = None) -> AccountIpAccessEnable:
+        """Get the account IP access toggle setting.
+        
+        Gets the value of the account IP access toggle setting.
+        
+        :param etag: str (optional)
+          etag used for versioning. The response is at least as fresh as the eTag provided. This is used for
+          optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting
+          each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern
+          to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET
+          request, and pass it with the DELETE request to identify the rule set version you are deleting.
+        
+        :returns: :class:`AccountIpAccessEnable`
+        """
+
+        query = {}
+        if etag is not None: query['etag'] = etag
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do(
+            'GET',
+            f'/api/2.0/accounts/{self._api.account_id}/settings/types/acct_ip_acl_enable/names/default',
+            query=query,
+            headers=headers)
+        return AccountIpAccessEnable.from_dict(res)
+
+    def update(self, allow_missing: bool, setting: AccountIpAccessEnable,
+               field_mask: str) -> AccountIpAccessEnable:
+        """Update the account IP access toggle setting.
+        
+        Updates the value of the account IP access toggle setting.
+        
+        :param allow_missing: bool
+          This should always be set to true for Settings API. Added for AIP compliance.
+        :param setting: :class:`AccountIpAccessEnable`
+        :param field_mask: str
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+          
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
+        
+        :returns: :class:`AccountIpAccessEnable`
+        """
+        body = {}
+        if allow_missing is not None: body['allow_missing'] = allow_missing
+        if field_mask is not None: body['field_mask'] = field_mask
+        if setting is not None: body['setting'] = setting.as_dict()
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do(
+            'PATCH',
+            f'/api/2.0/accounts/{self._api.account_id}/settings/types/acct_ip_acl_enable/names/default',
+            body=body,
+            headers=headers)
+        return AccountIpAccessEnable.from_dict(res)
 
 
 class EnhancedSecurityMonitoringAPI:
@@ -3761,9 +5604,15 @@ class EnhancedSecurityMonitoringAPI:
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`EnhancedSecurityMonitoringSetting`
         :param field_mask: str
-          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
-          setting payload will be updated. The field mask needs to be supplied as single string. To specify
-          multiple fields in the field mask, use comma as the separator (no space).
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+          
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
         
         :returns: :class:`EnhancedSecurityMonitoringSetting`
         """
@@ -3824,9 +5673,15 @@ class EsmEnablementAccountAPI:
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`EsmEnablementAccountSetting`
         :param field_mask: str
-          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
-          setting payload will be updated. The field mask needs to be supplied as single string. To specify
-          multiple fields in the field mask, use comma as the separator (no space).
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+          
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
         
         :returns: :class:`EsmEnablementAccountSetting`
         """
@@ -4365,6 +6220,7 @@ class NotificationDestinationsAPI:
         required in the request body.
         
         :param id: str
+          UUID identifying notification destination.
         :param config: :class:`Config` (optional)
           The configuration for the notification destination. Must wrap EXACTLY one of the nested configs.
         :param display_name: str (optional)
@@ -4455,9 +6311,15 @@ class PersonalComputeAPI:
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`PersonalComputeSetting`
         :param field_mask: str
-          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
-          setting payload will be updated. The field mask needs to be supplied as single string. To specify
-          multiple fields in the field mask, use comma as the separator (no space).
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+          
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
         
         :returns: :class:`PersonalComputeSetting`
         """
@@ -4555,9 +6417,15 @@ class RestrictWorkspaceAdminsAPI:
           This should always be set to true for Settings API. Added for AIP compliance.
         :param setting: :class:`RestrictWorkspaceAdminsSetting`
         :param field_mask: str
-          Field mask is required to be passed into the PATCH request. Field mask specifies which fields of the
-          setting payload will be updated. The field mask needs to be supplied as single string. To specify
-          multiple fields in the field mask, use comma as the separator (no space).
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+          
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
         
         :returns: :class:`RestrictWorkspaceAdminsSetting`
         """
@@ -4580,6 +6448,8 @@ class SettingsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
+        self._aibi_dashboard_embedding_access_policy = AibiDashboardEmbeddingAccessPolicyAPI(self._api)
+        self._aibi_dashboard_embedding_approved_domains = AibiDashboardEmbeddingApprovedDomainsAPI(self._api)
         self._automatic_cluster_update = AutomaticClusterUpdateAPI(self._api)
         self._compliance_security_profile = ComplianceSecurityProfileAPI(self._api)
         self._default_namespace = DefaultNamespaceAPI(self._api)
@@ -4587,6 +6457,16 @@ class SettingsAPI:
         self._disable_legacy_dbfs = DisableLegacyDbfsAPI(self._api)
         self._enhanced_security_monitoring = EnhancedSecurityMonitoringAPI(self._api)
         self._restrict_workspace_admins = RestrictWorkspaceAdminsAPI(self._api)
+
+    @property
+    def aibi_dashboard_embedding_access_policy(self) -> AibiDashboardEmbeddingAccessPolicyAPI:
+        """Controls whether AI/BI published dashboard embedding is enabled, conditionally enabled, or disabled at the workspace level."""
+        return self._aibi_dashboard_embedding_access_policy
+
+    @property
+    def aibi_dashboard_embedding_approved_domains(self) -> AibiDashboardEmbeddingApprovedDomainsAPI:
+        """Controls the list of domains approved to host the embedded AI/BI dashboards."""
+        return self._aibi_dashboard_embedding_approved_domains
 
     @property
     def automatic_cluster_update(self) -> AutomaticClusterUpdateAPI:
@@ -4667,7 +6547,7 @@ class TokenManagementAPI:
         Deletes a token, specified by its ID.
         
         :param token_id: str
-          The ID of the token to get.
+          The ID of the token to revoke.
         
         
         """
@@ -4751,7 +6631,8 @@ class TokenManagementAPI:
             access_control_list: Optional[List[TokenAccessControlRequest]] = None) -> TokenPermissions:
         """Set token permissions.
         
-        Sets permissions on all tokens. Tokens can inherit permissions from their root object.
+        Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
+        permissions if none are specified. Objects can inherit permissions from their root object.
         
         :param access_control_list: List[:class:`TokenAccessControlRequest`] (optional)
         

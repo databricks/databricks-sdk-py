@@ -248,6 +248,7 @@ class Generator:
         Package("dashboards", "Dashboards", "Manage Lakeview dashboards"),
         Package("marketplace", "Marketplace", "Manage AI and analytics assets such as ML models, notebooks, applications in an open marketplace"),
         Package("apps", "Apps", "Build custom applications on Databricks"),
+        Package("cleanrooms", "Clean Rooms", "Manage clean rooms and their assets and task runs"),
     ]
 
     def __init__(self):
@@ -266,11 +267,22 @@ class Generator:
         pkgs = {p.name: p for p in self.packages}
         spec = json.loads(self._openapi_spec())
         for tag in spec['tags']:
+            is_account=tag.get('x-databricks-is-accounts')
+            # Unique identifier for the tag. Note that the service name may not be unique
+            key = 'a' if is_account else 'w'
+            parent_service = tag.get('x-databricks-parent-service')
+            if parent_service:
+                # SDK generation removes the "account" prefix from account services
+                clean_parent_service = parent_service.lower().removeprefix("account")
+                key = f"{key}.{clean_parent_service}"
+
+            key = f"{key}.{tag['x-databricks-service']}".lower()
+
             t = Tag(name=tag['name'],
                     service=tag['x-databricks-service'],
                     is_account=tag.get('x-databricks-is-accounts', False),
                     package=pkgs[tag['x-databricks-package']])
-            mapping[tag['name']] = t
+            mapping[key] = t
         return mapping
 
     @staticmethod
@@ -359,7 +371,7 @@ class Generator:
                            service_name=service_name,
                            class_name=class_name,
                            doc=class_doc,
-                           tag=self._get_tag_name(service_inst.__class__.__name__, service_name),
+                           tag=self._get_tag_name(service_inst.__class__.__name__, client_prefix, service_name),
                            methods=self.class_methods(service_inst),
                            property=self.class_properties(service_inst)))
         return all
@@ -375,13 +387,19 @@ class Generator:
 
     def write_dataclass_docs(self):
         self._make_folder_if_not_exists(f'{__dir__}/dbdataclasses')
+        all_packages = []
         for pkg in self.packages:
-            module = importlib.import_module(f'databricks.sdk.service.{pkg.name}')
+            try:
+                module = importlib.import_module(f'databricks.sdk.service.{pkg.name}')
+            except ModuleNotFoundError:
+                print(f'No module found for {pkg.name}, continuing')
+                continue
+            all_packages.append(pkg.name)
             all_members = [name for name, _ in inspect.getmembers(module, predicate=self._should_document)]
             doc = DataclassesDoc(package=pkg, dataclasses=sorted(all_members))
             with open(f'{__dir__}/dbdataclasses/{pkg.name}.rst', 'w') as f:
                 f.write(doc.as_rst())
-        all = "\n   ".join(sorted([p.name for p in self.packages]))
+        all = "\n   ".join(sorted(all_packages))
         with open(f'{__dir__}/dbdataclasses/index.rst', 'w') as f:
             f.write(f'''
 Dataclasses
@@ -392,13 +410,13 @@ Dataclasses
    
    {all}''')
 
-    def _get_tag_name(self, class_name, service_name) -> Tag:
+    def _get_tag_name(self, class_name, client_prefix, service_name) -> Tag:
         if class_name[-3:] == 'Ext':
             # ClustersExt, DbfsExt, WorkspaceExt, but not ExternalLocations
             class_name = class_name.replace('Ext', 'API')
         class_name = class_name[:-3]
-        for tag_name, t in self.mapping.items():
-            if t.service.lower() == str(class_name).lower():
+        for key, t in self.mapping.items(): 
+            if key == f'{client_prefix}.{str(class_name).lower()}':
                 return t
         raise KeyError(f'Cannot find {class_name} / {service_name} tag')
 

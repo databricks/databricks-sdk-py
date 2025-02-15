@@ -148,4 +148,58 @@ def to_string(alternate_product_info: Optional[Tuple[str, str]] = None,
     base.extend(_extra)
     base.extend(_get_upstream_user_agent_info())
     base.extend(_get_runtime_info())
+    if cicd_provider() != "":
+        base.append((CICD_KEY, cicd_provider()))
     return " ".join(f"{k}/{v}" for k, v in base)
+
+
+# List of CI/CD providers and pairs of envvar/value that are used to detect them.
+_PROVIDERS = {
+    "github": [("GITHUB_ACTIONS", "true")],
+    "gitlab": [("GITLAB_CI", "true")],
+    "jenkins": [("JENKINS_URL", "")],
+    "azure-devops": [("TF_BUILD", "True")],
+    "circle": [("CIRCLECI", "true")],
+    "travis": [("TRAVIS", "true")],
+    "bitbucket": [("BITBUCKET_BUILD_NUMBER", "")],
+    "google-cloud-build": [("PROJECT_ID", ""), ("BUILD_ID", ""), ("PROJECT_NUMBER", ""), ("LOCATION", "")],
+    "aws-code-build": [("CODEBUILD_BUILD_ARN", "")],
+    "tf-cloud": [("TFC_RUN_ID", "")],
+}
+
+# Private variable to store the CI/CD provider. This value is computed at
+# the first invocation of cicd_providers() and is cached for subsequent calls.
+_cicd_provider = None
+
+
+def cicd_provider() -> str:
+    """Return the CI/CD provider if detected, or an empty string otherwise."""
+
+    # This function is safe because (i) assignation are atomic, and (ii)
+    # computating the CI/CD provider is idempotent.
+    global _cicd_provider
+    if _cicd_provider is not None:
+        return _cicd_provider
+
+    providers = []
+    for p in _PROVIDERS:
+        found = True
+        for envvar, value in _PROVIDERS[p]:
+            v = os.getenv(envvar)
+            if v is None or (value != "" and v != value):
+                found = False
+                break
+
+        if found:
+            providers.append(p)
+
+    if len(providers) == 0:
+        _cicd_provider = ""
+    else:
+        # TODO: reconsider what to do if multiple providers are detected.
+        # The current mechanism as the benefit of being deterministic and
+        # robust to ordering changes in _PROVIDERS.
+        providers.sort()
+        _cicd_provider = providers[0]
+
+    return _cicd_provider

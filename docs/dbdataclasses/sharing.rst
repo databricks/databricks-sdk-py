@@ -14,117 +14,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: TOKEN
       :value: "TOKEN"
 
-.. autoclass:: CentralCleanRoomInfo
-   :members:
-   :undoc-members:
-
-.. autoclass:: CleanRoomAssetInfo
-   :members:
-   :undoc-members:
-
-.. autoclass:: CleanRoomCatalog
-   :members:
-   :undoc-members:
-
-.. autoclass:: CleanRoomCatalogUpdate
-   :members:
-   :undoc-members:
-
-.. autoclass:: CleanRoomCollaboratorInfo
-   :members:
-   :undoc-members:
-
-.. autoclass:: CleanRoomInfo
-   :members:
-   :undoc-members:
-
-.. autoclass:: CleanRoomNotebookInfo
-   :members:
-   :undoc-members:
-
-.. autoclass:: CleanRoomTableInfo
-   :members:
-   :undoc-members:
-
-.. autoclass:: ColumnInfo
-   :members:
-   :undoc-members:
-
-.. autoclass:: ColumnMask
-   :members:
-   :undoc-members:
-
-.. py:class:: ColumnTypeName
-
-   Name of type (INT, STRUCT, MAP, etc.).
-
-   .. py:attribute:: ARRAY
-      :value: "ARRAY"
-
-   .. py:attribute:: BINARY
-      :value: "BINARY"
-
-   .. py:attribute:: BOOLEAN
-      :value: "BOOLEAN"
-
-   .. py:attribute:: BYTE
-      :value: "BYTE"
-
-   .. py:attribute:: CHAR
-      :value: "CHAR"
-
-   .. py:attribute:: DATE
-      :value: "DATE"
-
-   .. py:attribute:: DECIMAL
-      :value: "DECIMAL"
-
-   .. py:attribute:: DOUBLE
-      :value: "DOUBLE"
-
-   .. py:attribute:: FLOAT
-      :value: "FLOAT"
-
-   .. py:attribute:: INT
-      :value: "INT"
-
-   .. py:attribute:: INTERVAL
-      :value: "INTERVAL"
-
-   .. py:attribute:: LONG
-      :value: "LONG"
-
-   .. py:attribute:: MAP
-      :value: "MAP"
-
-   .. py:attribute:: NULL
-      :value: "NULL"
-
-   .. py:attribute:: SHORT
-      :value: "SHORT"
-
-   .. py:attribute:: STRING
-      :value: "STRING"
-
-   .. py:attribute:: STRUCT
-      :value: "STRUCT"
-
-   .. py:attribute:: TABLE_TYPE
-      :value: "TABLE_TYPE"
-
-   .. py:attribute:: TIMESTAMP
-      :value: "TIMESTAMP"
-
-   .. py:attribute:: TIMESTAMP_NTZ
-      :value: "TIMESTAMP_NTZ"
-
-   .. py:attribute:: USER_DEFINED_TYPE
-      :value: "USER_DEFINED_TYPE"
-
-.. autoclass:: CreateCleanRoom
-   :members:
-   :undoc-members:
-
 .. autoclass:: CreateProvider
    :members:
    :undoc-members:
@@ -153,10 +42,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: ListCleanRoomsResponse
-   :members:
-   :undoc-members:
-
 .. autoclass:: ListProviderSharesResponse
    :members:
    :undoc-members:
@@ -177,13 +62,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: PartitionSpecificationPartition
+   :members:
+   :undoc-members:
+
 .. autoclass:: PartitionValue
    :members:
    :undoc-members:
 
 .. py:class:: PartitionValueOp
-
-   The operator to apply for the value.
 
    .. py:attribute:: EQUAL
       :value: "EQUAL"
@@ -222,6 +109,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: CREATE_FOREIGN_CATALOG
       :value: "CREATE_FOREIGN_CATALOG"
+
+   .. py:attribute:: CREATE_FOREIGN_SECURABLE
+      :value: "CREATE_FOREIGN_SECURABLE"
 
    .. py:attribute:: CREATE_FUNCTION
       :value: "CREATE_FUNCTION"
@@ -377,6 +267,12 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    The type of the data object.
 
+   .. py:attribute:: FEATURE_SPEC
+      :value: "FEATURE_SPEC"
+
+   .. py:attribute:: FUNCTION
+      :value: "FUNCTION"
+
    .. py:attribute:: MATERIALIZED_VIEW
       :value: "MATERIALIZED_VIEW"
 
@@ -435,10 +331,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: UPDATE
       :value: "UPDATE"
 
-.. autoclass:: UpdateCleanRoom
-   :members:
-   :undoc-members:
-
 .. autoclass:: UpdatePermissionsResponse
    :members:
    :undoc-members:
@@ -448,10 +340,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: UpdateRecipient
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateResponse
    :members:
    :undoc-members:
 

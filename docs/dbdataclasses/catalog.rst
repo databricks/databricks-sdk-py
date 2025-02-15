@@ -69,11 +69,23 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: AwsIamRole
+   :members:
+   :undoc-members:
+
 .. autoclass:: AwsIamRoleRequest
    :members:
    :undoc-members:
 
 .. autoclass:: AwsIamRoleResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: AzureActiveDirectoryToken
+   :members:
+   :undoc-members:
+
+.. autoclass:: AzureManagedIdentity
    :members:
    :undoc-members:
 
@@ -100,49 +112,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: CatalogInfo
    :members:
    :undoc-members:
-
-.. py:class:: CatalogInfoSecurableKind
-
-   Kind of catalog securable.
-
-   .. py:attribute:: CATALOG_DELTASHARING
-      :value: "CATALOG_DELTASHARING"
-
-   .. py:attribute:: CATALOG_FOREIGN_BIGQUERY
-      :value: "CATALOG_FOREIGN_BIGQUERY"
-
-   .. py:attribute:: CATALOG_FOREIGN_DATABRICKS
-      :value: "CATALOG_FOREIGN_DATABRICKS"
-
-   .. py:attribute:: CATALOG_FOREIGN_MYSQL
-      :value: "CATALOG_FOREIGN_MYSQL"
-
-   .. py:attribute:: CATALOG_FOREIGN_POSTGRESQL
-      :value: "CATALOG_FOREIGN_POSTGRESQL"
-
-   .. py:attribute:: CATALOG_FOREIGN_REDSHIFT
-      :value: "CATALOG_FOREIGN_REDSHIFT"
-
-   .. py:attribute:: CATALOG_FOREIGN_SNOWFLAKE
-      :value: "CATALOG_FOREIGN_SNOWFLAKE"
-
-   .. py:attribute:: CATALOG_FOREIGN_SQLDW
-      :value: "CATALOG_FOREIGN_SQLDW"
-
-   .. py:attribute:: CATALOG_FOREIGN_SQLSERVER
-      :value: "CATALOG_FOREIGN_SQLSERVER"
-
-   .. py:attribute:: CATALOG_INTERNAL
-      :value: "CATALOG_INTERNAL"
-
-   .. py:attribute:: CATALOG_STANDARD
-      :value: "CATALOG_STANDARD"
-
-   .. py:attribute:: CATALOG_SYSTEM
-      :value: "CATALOG_SYSTEM"
-
-   .. py:attribute:: CATALOG_SYSTEM_DELTASHARING
-      :value: "CATALOG_SYSTEM_DELTASHARING"
 
 .. py:class:: CatalogIsolationMode
 
@@ -180,8 +149,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. py:class:: ColumnTypeName
-
-   Name of type (INT, STRUCT, MAP, etc.).
 
    .. py:attribute:: ARRAY
       :value: "ARRAY"
@@ -246,52 +213,12 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: USER_DEFINED_TYPE
       :value: "USER_DEFINED_TYPE"
 
+   .. py:attribute:: VARIANT
+      :value: "VARIANT"
+
 .. autoclass:: ConnectionInfo
    :members:
    :undoc-members:
-
-.. py:class:: ConnectionInfoSecurableKind
-
-   Kind of connection securable.
-
-   .. py:attribute:: CONNECTION_BIGQUERY
-      :value: "CONNECTION_BIGQUERY"
-
-   .. py:attribute:: CONNECTION_BUILTIN_HIVE_METASTORE
-      :value: "CONNECTION_BUILTIN_HIVE_METASTORE"
-
-   .. py:attribute:: CONNECTION_DATABRICKS
-      :value: "CONNECTION_DATABRICKS"
-
-   .. py:attribute:: CONNECTION_EXTERNAL_HIVE_METASTORE
-      :value: "CONNECTION_EXTERNAL_HIVE_METASTORE"
-
-   .. py:attribute:: CONNECTION_GLUE
-      :value: "CONNECTION_GLUE"
-
-   .. py:attribute:: CONNECTION_HTTP_BEARER
-      :value: "CONNECTION_HTTP_BEARER"
-
-   .. py:attribute:: CONNECTION_MYSQL
-      :value: "CONNECTION_MYSQL"
-
-   .. py:attribute:: CONNECTION_ONLINE_CATALOG
-      :value: "CONNECTION_ONLINE_CATALOG"
-
-   .. py:attribute:: CONNECTION_POSTGRESQL
-      :value: "CONNECTION_POSTGRESQL"
-
-   .. py:attribute:: CONNECTION_REDSHIFT
-      :value: "CONNECTION_REDSHIFT"
-
-   .. py:attribute:: CONNECTION_SNOWFLAKE
-      :value: "CONNECTION_SNOWFLAKE"
-
-   .. py:attribute:: CONNECTION_SQLDW
-      :value: "CONNECTION_SQLDW"
-
-   .. py:attribute:: CONNECTION_SQLSERVER
-      :value: "CONNECTION_SQLSERVER"
 
 .. py:class:: ConnectionType
 
@@ -342,6 +269,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: CreateCredentialRequest
+   :members:
+   :undoc-members:
+
 .. autoclass:: CreateExternalLocation
    :members:
    :undoc-members:
@@ -373,7 +304,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: CreateFunctionSecurityType
 
-   Function security type.
+   The security type of the function.
 
    .. py:attribute:: DEFINER
       :value: "DEFINER"
@@ -403,10 +334,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: CreateOnlineTableRequest
-   :members:
-   :undoc-members:
-
 .. autoclass:: CreateRegisteredModelRequest
    :members:
    :undoc-members:
@@ -431,6 +358,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: CredentialInfo
+   :members:
+   :undoc-members:
+
+.. py:class:: CredentialPurpose
+
+   .. py:attribute:: SERVICE
+      :value: "SERVICE"
+
+   .. py:attribute:: STORAGE
+      :value: "STORAGE"
+
 .. py:class:: CredentialType
 
    The type of credential.
@@ -440,6 +379,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: USERNAME_PASSWORD
       :value: "USERNAME_PASSWORD"
+
+.. autoclass:: CredentialValidationResult
+   :members:
+   :undoc-members:
 
 .. autoclass:: CurrentWorkspaceBindings
    :members:
@@ -518,6 +461,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: WORKDAY_RAAS_FORMAT
       :value: "WORKDAY_RAAS_FORMAT"
 
+.. autoclass:: DatabricksGcpServiceAccount
+   :members:
+   :undoc-members:
+
 .. autoclass:: DatabricksGcpServiceAccountRequest
    :members:
    :undoc-members:
@@ -527,6 +474,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: DeleteAliasResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: DeleteCredentialResponse
    :members:
    :undoc-members:
 
@@ -636,7 +587,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: FunctionInfoSecurityType
 
-   Function security type.
+   The security type of the function.
 
    .. py:attribute:: DEFINER
       :value: "DEFINER"
@@ -683,6 +634,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: GenerateTemporaryServiceCredentialAzureOptions
+   :members:
+   :undoc-members:
+
+.. autoclass:: GenerateTemporaryServiceCredentialGcpOptions
+   :members:
+   :undoc-members:
+
+.. autoclass:: GenerateTemporaryServiceCredentialRequest
+   :members:
+   :undoc-members:
+
 .. autoclass:: GenerateTemporaryTableCredentialRequest
    :members:
    :undoc-members:
@@ -695,6 +658,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: CATALOG
       :value: "CATALOG"
+
+   .. py:attribute:: CREDENTIAL
+      :value: "CREDENTIAL"
 
    .. py:attribute:: EXTERNAL_LOCATION
       :value: "EXTERNAL_LOCATION"
@@ -722,8 +688,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: IsolationMode
 
-   Whether the current securable is accessible from all workspaces or a specific set of workspaces.
-
    .. py:attribute:: ISOLATION_MODE_ISOLATED
       :value: "ISOLATION_MODE_ISOLATED"
 
@@ -743,6 +707,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ListConnectionsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListCredentialsResponse
    :members:
    :undoc-members:
 
@@ -1070,6 +1038,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: CREATE_FOREIGN_CATALOG
       :value: "CREATE_FOREIGN_CATALOG"
 
+   .. py:attribute:: CREATE_FOREIGN_SECURABLE
+      :value: "CREATE_FOREIGN_SECURABLE"
+
    .. py:attribute:: CREATE_FUNCTION
       :value: "CREATE_FUNCTION"
 
@@ -1185,6 +1156,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: ACTIVE
       :value: "ACTIVE"
 
+   .. py:attribute:: DEGRADED
+      :value: "DEGRADED"
+
    .. py:attribute:: DELETING
       :value: "DELETING"
 
@@ -1236,8 +1210,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: CATALOG
       :value: "CATALOG"
 
+   .. py:attribute:: CLEAN_ROOM
+      :value: "CLEAN_ROOM"
+
    .. py:attribute:: CONNECTION
       :value: "CONNECTION"
+
+   .. py:attribute:: CREDENTIAL
+      :value: "CREDENTIAL"
 
    .. py:attribute:: EXTERNAL_LOCATION
       :value: "EXTERNAL_LOCATION"
@@ -1379,6 +1359,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: VIEW
       :value: "VIEW"
 
+.. autoclass:: TemporaryCredentials
+   :members:
+   :undoc-members:
+
 .. autoclass:: TriggeredUpdateStatus
    :members:
    :undoc-members:
@@ -1396,6 +1380,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: CATALOG
       :value: "CATALOG"
 
+   .. py:attribute:: CREDENTIAL
+      :value: "CREDENTIAL"
+
    .. py:attribute:: EXTERNAL_LOCATION
       :value: "EXTERNAL_LOCATION"
 
@@ -1407,6 +1394,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: UpdateConnection
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateCredentialRequest
    :members:
    :undoc-members:
 
@@ -1475,6 +1466,27 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: UpdateWorkspaceBindingsParameters
    :members:
    :undoc-members:
+
+.. autoclass:: ValidateCredentialRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: ValidateCredentialResponse
+   :members:
+   :undoc-members:
+
+.. py:class:: ValidateCredentialResult
+
+   A enum represents the result of the file operation
+
+   .. py:attribute:: FAIL
+      :value: "FAIL"
+
+   .. py:attribute:: PASS
+      :value: "PASS"
+
+   .. py:attribute:: SKIP
+      :value: "SKIP"
 
 .. autoclass:: ValidateStorageCredential
    :members:

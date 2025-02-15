@@ -11,6 +11,8 @@ from ._internal import _enum, _from_dict, _repeated_dict
 
 _LOG = logging.getLogger('databricks.sdk')
 
+from databricks.sdk.service import compute
+
 # all definitions in this file are in alphabetical order
 
 
@@ -31,6 +33,15 @@ class ActionConfiguration:
         if self.action_configuration_id is not None:
             body['action_configuration_id'] = self.action_configuration_id
         if self.action_type is not None: body['action_type'] = self.action_type.value
+        if self.target is not None: body['target'] = self.target
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ActionConfiguration into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.action_configuration_id is not None:
+            body['action_configuration_id'] = self.action_configuration_id
+        if self.action_type is not None: body['action_type'] = self.action_type
         if self.target is not None: body['target'] = self.target
         return body
 
@@ -81,6 +92,18 @@ class AlertConfiguration:
         if self.quantity_type is not None: body['quantity_type'] = self.quantity_type.value
         if self.time_period is not None: body['time_period'] = self.time_period.value
         if self.trigger_type is not None: body['trigger_type'] = self.trigger_type.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AlertConfiguration into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.action_configurations: body['action_configurations'] = self.action_configurations
+        if self.alert_configuration_id is not None:
+            body['alert_configuration_id'] = self.alert_configuration_id
+        if self.quantity_threshold is not None: body['quantity_threshold'] = self.quantity_threshold
+        if self.quantity_type is not None: body['quantity_type'] = self.quantity_type
+        if self.time_period is not None: body['time_period'] = self.time_period
+        if self.trigger_type is not None: body['trigger_type'] = self.trigger_type
         return body
 
     @classmethod
@@ -149,6 +172,19 @@ class BudgetConfiguration:
         if self.update_time is not None: body['update_time'] = self.update_time
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the BudgetConfiguration into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.account_id is not None: body['account_id'] = self.account_id
+        if self.alert_configurations: body['alert_configurations'] = self.alert_configurations
+        if self.budget_configuration_id is not None:
+            body['budget_configuration_id'] = self.budget_configuration_id
+        if self.create_time is not None: body['create_time'] = self.create_time
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.filter: body['filter'] = self.filter
+        if self.update_time is not None: body['update_time'] = self.update_time
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> BudgetConfiguration:
         """Deserializes the BudgetConfiguration from a dictionary."""
@@ -178,6 +214,13 @@ class BudgetConfigurationFilter:
         if self.workspace_id: body['workspace_id'] = self.workspace_id.as_dict()
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the BudgetConfigurationFilter into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.tags: body['tags'] = self.tags
+        if self.workspace_id: body['workspace_id'] = self.workspace_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> BudgetConfigurationFilter:
         """Deserializes the BudgetConfigurationFilter from a dictionary."""
@@ -196,6 +239,13 @@ class BudgetConfigurationFilterClause:
         body = {}
         if self.operator is not None: body['operator'] = self.operator.value
         if self.values: body['values'] = [v for v in self.values]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the BudgetConfigurationFilterClause into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.operator is not None: body['operator'] = self.operator
+        if self.values: body['values'] = self.values
         return body
 
     @classmethod
@@ -223,6 +273,13 @@ class BudgetConfigurationFilterTagClause:
         if self.value: body['value'] = self.value.as_dict()
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the BudgetConfigurationFilterTagClause into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.key is not None: body['key'] = self.key
+        if self.value: body['value'] = self.value
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> BudgetConfigurationFilterTagClause:
         """Deserializes the BudgetConfigurationFilterTagClause from a dictionary."""
@@ -242,11 +299,56 @@ class BudgetConfigurationFilterWorkspaceIdClause:
         if self.values: body['values'] = [v for v in self.values]
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the BudgetConfigurationFilterWorkspaceIdClause into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.operator is not None: body['operator'] = self.operator
+        if self.values: body['values'] = self.values
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> BudgetConfigurationFilterWorkspaceIdClause:
         """Deserializes the BudgetConfigurationFilterWorkspaceIdClause from a dictionary."""
         return cls(operator=_enum(d, 'operator', BudgetConfigurationFilterOperator),
                    values=d.get('values', None))
+
+
+@dataclass
+class BudgetPolicy:
+    """Contains the BudgetPolicy details."""
+
+    policy_id: str
+    """The Id of the policy. This field is generated by Databricks and globally unique."""
+
+    custom_tags: Optional[List[compute.CustomPolicyTag]] = None
+    """A list of tags defined by the customer. At most 20 entries are allowed per policy."""
+
+    policy_name: Optional[str] = None
+    """The name of the policy. - Must be unique among active policies. - Can contain only characters
+    from the ISO 8859-1 (latin1) set."""
+
+    def as_dict(self) -> dict:
+        """Serializes the BudgetPolicy into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.custom_tags: body['custom_tags'] = [v.as_dict() for v in self.custom_tags]
+        if self.policy_id is not None: body['policy_id'] = self.policy_id
+        if self.policy_name is not None: body['policy_name'] = self.policy_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the BudgetPolicy into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.custom_tags: body['custom_tags'] = self.custom_tags
+        if self.policy_id is not None: body['policy_id'] = self.policy_id
+        if self.policy_name is not None: body['policy_name'] = self.policy_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> BudgetPolicy:
+        """Deserializes the BudgetPolicy from a dictionary."""
+        return cls(custom_tags=_repeated_dict(d, 'custom_tags', compute.CustomPolicyTag),
+                   policy_id=d.get('policy_id', None),
+                   policy_name=d.get('policy_name', None))
 
 
 @dataclass
@@ -265,6 +367,13 @@ class CreateBillingUsageDashboardRequest:
         if self.workspace_id is not None: body['workspace_id'] = self.workspace_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateBillingUsageDashboardRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.dashboard_type is not None: body['dashboard_type'] = self.dashboard_type
+        if self.workspace_id is not None: body['workspace_id'] = self.workspace_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateBillingUsageDashboardRequest:
         """Deserializes the CreateBillingUsageDashboardRequest from a dictionary."""
@@ -279,6 +388,12 @@ class CreateBillingUsageDashboardResponse:
 
     def as_dict(self) -> dict:
         """Serializes the CreateBillingUsageDashboardResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.dashboard_id is not None: body['dashboard_id'] = self.dashboard_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateBillingUsageDashboardResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.dashboard_id is not None: body['dashboard_id'] = self.dashboard_id
         return body
@@ -316,6 +431,15 @@ class CreateBudgetConfigurationBudget:
         if self.filter: body['filter'] = self.filter.as_dict()
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateBudgetConfigurationBudget into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.account_id is not None: body['account_id'] = self.account_id
+        if self.alert_configurations: body['alert_configurations'] = self.alert_configurations
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.filter: body['filter'] = self.filter
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateBudgetConfigurationBudget:
         """Deserializes the CreateBudgetConfigurationBudget from a dictionary."""
@@ -338,6 +462,13 @@ class CreateBudgetConfigurationBudgetActionConfigurations:
         """Serializes the CreateBudgetConfigurationBudgetActionConfigurations into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.action_type is not None: body['action_type'] = self.action_type.value
+        if self.target is not None: body['target'] = self.target
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateBudgetConfigurationBudgetActionConfigurations into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.action_type is not None: body['action_type'] = self.action_type
         if self.target is not None: body['target'] = self.target
         return body
 
@@ -378,6 +509,16 @@ class CreateBudgetConfigurationBudgetAlertConfigurations:
         if self.trigger_type is not None: body['trigger_type'] = self.trigger_type.value
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateBudgetConfigurationBudgetAlertConfigurations into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.action_configurations: body['action_configurations'] = self.action_configurations
+        if self.quantity_threshold is not None: body['quantity_threshold'] = self.quantity_threshold
+        if self.quantity_type is not None: body['quantity_type'] = self.quantity_type
+        if self.time_period is not None: body['time_period'] = self.time_period
+        if self.trigger_type is not None: body['trigger_type'] = self.trigger_type
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateBudgetConfigurationBudgetAlertConfigurations:
         """Deserializes the CreateBudgetConfigurationBudgetAlertConfigurations from a dictionary."""
@@ -400,6 +541,12 @@ class CreateBudgetConfigurationRequest:
         if self.budget: body['budget'] = self.budget.as_dict()
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateBudgetConfigurationRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.budget: body['budget'] = self.budget
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateBudgetConfigurationRequest:
         """Deserializes the CreateBudgetConfigurationRequest from a dictionary."""
@@ -417,10 +564,55 @@ class CreateBudgetConfigurationResponse:
         if self.budget: body['budget'] = self.budget.as_dict()
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateBudgetConfigurationResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.budget: body['budget'] = self.budget
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateBudgetConfigurationResponse:
         """Deserializes the CreateBudgetConfigurationResponse from a dictionary."""
         return cls(budget=_from_dict(d, 'budget', BudgetConfiguration))
+
+
+@dataclass
+class CreateBudgetPolicyRequest:
+    """A request to create a BudgetPolicy."""
+
+    custom_tags: Optional[List[compute.CustomPolicyTag]] = None
+    """A list of tags defined by the customer. At most 40 entries are allowed per policy."""
+
+    policy_name: Optional[str] = None
+    """The name of the policy. - Must be unique among active policies. - Can contain only characters of
+    0-9, a-z, A-Z, -, =, ., :, /, @, _, +, whitespace."""
+
+    request_id: Optional[str] = None
+    """A unique identifier for this request. Restricted to 36 ASCII characters. A random UUID is
+    recommended. This request is only idempotent if a `request_id` is provided."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CreateBudgetPolicyRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.custom_tags: body['custom_tags'] = [v.as_dict() for v in self.custom_tags]
+        if self.policy_name is not None: body['policy_name'] = self.policy_name
+        if self.request_id is not None: body['request_id'] = self.request_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateBudgetPolicyRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.custom_tags: body['custom_tags'] = self.custom_tags
+        if self.policy_name is not None: body['policy_name'] = self.policy_name
+        if self.request_id is not None: body['request_id'] = self.request_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> CreateBudgetPolicyRequest:
+        """Deserializes the CreateBudgetPolicyRequest from a dictionary."""
+        return cls(custom_tags=_repeated_dict(d, 'custom_tags', compute.CustomPolicyTag),
+                   policy_name=d.get('policy_name', None),
+                   request_id=d.get('request_id', None))
 
 
 @dataclass
@@ -509,6 +701,21 @@ class CreateLogDeliveryConfigurationParams:
         if self.workspace_ids_filter: body['workspace_ids_filter'] = [v for v in self.workspace_ids_filter]
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateLogDeliveryConfigurationParams into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.config_name is not None: body['config_name'] = self.config_name
+        if self.credentials_id is not None: body['credentials_id'] = self.credentials_id
+        if self.delivery_path_prefix is not None: body['delivery_path_prefix'] = self.delivery_path_prefix
+        if self.delivery_start_time is not None: body['delivery_start_time'] = self.delivery_start_time
+        if self.log_type is not None: body['log_type'] = self.log_type
+        if self.output_format is not None: body['output_format'] = self.output_format
+        if self.status is not None: body['status'] = self.status
+        if self.storage_configuration_id is not None:
+            body['storage_configuration_id'] = self.storage_configuration_id
+        if self.workspace_ids_filter: body['workspace_ids_filter'] = self.workspace_ids_filter
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateLogDeliveryConfigurationParams:
         """Deserializes the CreateLogDeliveryConfigurationParams from a dictionary."""
@@ -531,9 +738,33 @@ class DeleteBudgetConfigurationResponse:
         body = {}
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteBudgetConfigurationResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> DeleteBudgetConfigurationResponse:
         """Deserializes the DeleteBudgetConfigurationResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
+class DeleteResponse:
+
+    def as_dict(self) -> dict:
+        """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DeleteResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> DeleteResponse:
+        """Deserializes the DeleteResponse from a dictionary."""
         return cls()
 
 
@@ -563,10 +794,54 @@ class DownloadResponse:
         if self.contents: body['contents'] = self.contents
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DownloadResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.contents: body['contents'] = self.contents
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> DownloadResponse:
         """Deserializes the DownloadResponse from a dictionary."""
         return cls(contents=d.get('contents', None))
+
+
+@dataclass
+class Filter:
+    """Structured representation of a filter to be applied to a list of policies. All specified filters
+    will be applied in conjunction."""
+
+    creator_user_id: Optional[int] = None
+    """The policy creator user id to be filtered on. If unspecified, all policies will be returned."""
+
+    creator_user_name: Optional[str] = None
+    """The policy creator user name to be filtered on. If unspecified, all policies will be returned."""
+
+    policy_name: Optional[str] = None
+    """The partial name of policies to be filtered on. If unspecified, all policies will be returned."""
+
+    def as_dict(self) -> dict:
+        """Serializes the Filter into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.creator_user_id is not None: body['creator_user_id'] = self.creator_user_id
+        if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
+        if self.policy_name is not None: body['policy_name'] = self.policy_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Filter into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.creator_user_id is not None: body['creator_user_id'] = self.creator_user_id
+        if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
+        if self.policy_name is not None: body['policy_name'] = self.policy_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> Filter:
+        """Deserializes the Filter from a dictionary."""
+        return cls(creator_user_id=d.get('creator_user_id', None),
+                   creator_user_name=d.get('creator_user_name', None),
+                   policy_name=d.get('policy_name', None))
 
 
 @dataclass
@@ -579,6 +854,13 @@ class GetBillingUsageDashboardResponse:
 
     def as_dict(self) -> dict:
         """Serializes the GetBillingUsageDashboardResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.dashboard_id is not None: body['dashboard_id'] = self.dashboard_id
+        if self.dashboard_url is not None: body['dashboard_url'] = self.dashboard_url
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetBillingUsageDashboardResponse into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.dashboard_id is not None: body['dashboard_id'] = self.dashboard_id
         if self.dashboard_url is not None: body['dashboard_url'] = self.dashboard_url
@@ -600,10 +882,37 @@ class GetBudgetConfigurationResponse:
         if self.budget: body['budget'] = self.budget.as_dict()
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetBudgetConfigurationResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.budget: body['budget'] = self.budget
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> GetBudgetConfigurationResponse:
         """Deserializes the GetBudgetConfigurationResponse from a dictionary."""
         return cls(budget=_from_dict(d, 'budget', BudgetConfiguration))
+
+
+@dataclass
+class LimitConfig:
+    """The limit configuration of the policy. Limit configuration provide a budget policy level cost
+    control by enforcing the limit."""
+
+    def as_dict(self) -> dict:
+        """Serializes the LimitConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the LimitConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> LimitConfig:
+        """Deserializes the LimitConfig from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -621,11 +930,56 @@ class ListBudgetConfigurationsResponse:
         if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListBudgetConfigurationsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.budgets: body['budgets'] = self.budgets
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListBudgetConfigurationsResponse:
         """Deserializes the ListBudgetConfigurationsResponse from a dictionary."""
         return cls(budgets=_repeated_dict(d, 'budgets', BudgetConfiguration),
                    next_page_token=d.get('next_page_token', None))
+
+
+@dataclass
+class ListBudgetPoliciesResponse:
+    """A list of policies."""
+
+    next_page_token: Optional[str] = None
+    """A token that can be sent as `page_token` to retrieve the next page. If this field is omitted,
+    there are no subsequent pages."""
+
+    policies: Optional[List[BudgetPolicy]] = None
+
+    previous_page_token: Optional[str] = None
+    """A token that can be sent as `page_token` to retrieve the previous page. In this field is
+    omitted, there are no previous pages."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListBudgetPoliciesResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.policies: body['policies'] = [v.as_dict() for v in self.policies]
+        if self.previous_page_token is not None: body['previous_page_token'] = self.previous_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListBudgetPoliciesResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.policies: body['policies'] = self.policies
+        if self.previous_page_token is not None: body['previous_page_token'] = self.previous_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> ListBudgetPoliciesResponse:
+        """Deserializes the ListBudgetPoliciesResponse from a dictionary."""
+        return cls(next_page_token=d.get('next_page_token', None),
+                   policies=_repeated_dict(d, 'policies', BudgetPolicy),
+                   previous_page_token=d.get('previous_page_token', None))
 
 
 class LogDeliveryConfigStatus(Enum):
@@ -744,6 +1098,26 @@ class LogDeliveryConfiguration:
         if self.workspace_ids_filter: body['workspace_ids_filter'] = [v for v in self.workspace_ids_filter]
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the LogDeliveryConfiguration into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.account_id is not None: body['account_id'] = self.account_id
+        if self.config_id is not None: body['config_id'] = self.config_id
+        if self.config_name is not None: body['config_name'] = self.config_name
+        if self.creation_time is not None: body['creation_time'] = self.creation_time
+        if self.credentials_id is not None: body['credentials_id'] = self.credentials_id
+        if self.delivery_path_prefix is not None: body['delivery_path_prefix'] = self.delivery_path_prefix
+        if self.delivery_start_time is not None: body['delivery_start_time'] = self.delivery_start_time
+        if self.log_delivery_status: body['log_delivery_status'] = self.log_delivery_status
+        if self.log_type is not None: body['log_type'] = self.log_type
+        if self.output_format is not None: body['output_format'] = self.output_format
+        if self.status is not None: body['status'] = self.status
+        if self.storage_configuration_id is not None:
+            body['storage_configuration_id'] = self.storage_configuration_id
+        if self.update_time is not None: body['update_time'] = self.update_time
+        if self.workspace_ids_filter: body['workspace_ids_filter'] = self.workspace_ids_filter
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> LogDeliveryConfiguration:
         """Deserializes the LogDeliveryConfiguration from a dictionary."""
@@ -796,6 +1170,16 @@ class LogDeliveryStatus:
         if self.status is not None: body['status'] = self.status.value
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the LogDeliveryStatus into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.last_attempt_time is not None: body['last_attempt_time'] = self.last_attempt_time
+        if self.last_successful_attempt_time is not None:
+            body['last_successful_attempt_time'] = self.last_successful_attempt_time
+        if self.message is not None: body['message'] = self.message
+        if self.status is not None: body['status'] = self.status
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> LogDeliveryStatus:
         """Deserializes the LogDeliveryStatus from a dictionary."""
@@ -846,10 +1230,48 @@ class PatchStatusResponse:
         body = {}
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PatchStatusResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> PatchStatusResponse:
         """Deserializes the PatchStatusResponse from a dictionary."""
         return cls()
+
+
+@dataclass
+class SortSpec:
+    descending: Optional[bool] = None
+    """Whether to sort in descending order."""
+
+    field: Optional[SortSpecField] = None
+    """The filed to sort by"""
+
+    def as_dict(self) -> dict:
+        """Serializes the SortSpec into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.descending is not None: body['descending'] = self.descending
+        if self.field is not None: body['field'] = self.field.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SortSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.descending is not None: body['descending'] = self.descending
+        if self.field is not None: body['field'] = self.field
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, any]) -> SortSpec:
+        """Deserializes the SortSpec from a dictionary."""
+        return cls(descending=d.get('descending', None), field=_enum(d, 'field', SortSpecField))
+
+
+class SortSpecField(Enum):
+
+    POLICY_NAME = 'POLICY_NAME'
 
 
 @dataclass
@@ -884,6 +1306,17 @@ class UpdateBudgetConfigurationBudget:
         if self.filter: body['filter'] = self.filter.as_dict()
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateBudgetConfigurationBudget into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.account_id is not None: body['account_id'] = self.account_id
+        if self.alert_configurations: body['alert_configurations'] = self.alert_configurations
+        if self.budget_configuration_id is not None:
+            body['budget_configuration_id'] = self.budget_configuration_id
+        if self.display_name is not None: body['display_name'] = self.display_name
+        if self.filter: body['filter'] = self.filter
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> UpdateBudgetConfigurationBudget:
         """Deserializes the UpdateBudgetConfigurationBudget from a dictionary."""
@@ -909,6 +1342,13 @@ class UpdateBudgetConfigurationRequest:
         if self.budget_id is not None: body['budget_id'] = self.budget_id
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateBudgetConfigurationRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.budget: body['budget'] = self.budget
+        if self.budget_id is not None: body['budget_id'] = self.budget_id
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> UpdateBudgetConfigurationRequest:
         """Deserializes the UpdateBudgetConfigurationRequest from a dictionary."""
@@ -925,6 +1365,12 @@ class UpdateBudgetConfigurationResponse:
         """Serializes the UpdateBudgetConfigurationResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.budget: body['budget'] = self.budget.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateBudgetConfigurationResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.budget: body['budget'] = self.budget
         return body
 
     @classmethod
@@ -952,6 +1398,14 @@ class UpdateLogDeliveryConfigurationStatusRequest:
         if self.status is not None: body['status'] = self.status.value
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateLogDeliveryConfigurationStatusRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.log_delivery_configuration_id is not None:
+            body['log_delivery_configuration_id'] = self.log_delivery_configuration_id
+        if self.status is not None: body['status'] = self.status
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> UpdateLogDeliveryConfigurationStatusRequest:
         """Deserializes the UpdateLogDeliveryConfigurationStatusRequest from a dictionary."""
@@ -976,6 +1430,13 @@ class WrappedCreateLogDeliveryConfiguration:
             body['log_delivery_configuration'] = self.log_delivery_configuration.as_dict()
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the WrappedCreateLogDeliveryConfiguration into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.log_delivery_configuration:
+            body['log_delivery_configuration'] = self.log_delivery_configuration
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> WrappedCreateLogDeliveryConfiguration:
         """Deserializes the WrappedCreateLogDeliveryConfiguration from a dictionary."""
@@ -994,6 +1455,13 @@ class WrappedLogDeliveryConfiguration:
             body['log_delivery_configuration'] = self.log_delivery_configuration.as_dict()
         return body
 
+    def as_shallow_dict(self) -> dict:
+        """Serializes the WrappedLogDeliveryConfiguration into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.log_delivery_configuration:
+            body['log_delivery_configuration'] = self.log_delivery_configuration
+        return body
+
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> WrappedLogDeliveryConfiguration:
         """Deserializes the WrappedLogDeliveryConfiguration from a dictionary."""
@@ -1010,6 +1478,13 @@ class WrappedLogDeliveryConfigurations:
         body = {}
         if self.log_delivery_configurations:
             body['log_delivery_configurations'] = [v.as_dict() for v in self.log_delivery_configurations]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the WrappedLogDeliveryConfigurations into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.log_delivery_configurations:
+            body['log_delivery_configurations'] = self.log_delivery_configurations
         return body
 
     @classmethod
@@ -1068,6 +1543,156 @@ class BillableUsageAPI:
         return DownloadResponse.from_dict(res)
 
 
+class BudgetPolicyAPI:
+    """A service serves REST API about Budget policies"""
+
+    def __init__(self, api_client):
+        self._api = api_client
+
+    def create(self,
+               *,
+               custom_tags: Optional[List[compute.CustomPolicyTag]] = None,
+               policy_name: Optional[str] = None,
+               request_id: Optional[str] = None) -> BudgetPolicy:
+        """Create a budget policy.
+        
+        Creates a new policy.
+        
+        :param custom_tags: List[:class:`CustomPolicyTag`] (optional)
+          A list of tags defined by the customer. At most 40 entries are allowed per policy.
+        :param policy_name: str (optional)
+          The name of the policy. - Must be unique among active policies. - Can contain only characters of
+          0-9, a-z, A-Z, -, =, ., :, /, @, _, +, whitespace.
+        :param request_id: str (optional)
+          A unique identifier for this request. Restricted to 36 ASCII characters. A random UUID is
+          recommended. This request is only idempotent if a `request_id` is provided.
+        
+        :returns: :class:`BudgetPolicy`
+        """
+        body = {}
+        if custom_tags is not None: body['custom_tags'] = [v.as_dict() for v in custom_tags]
+        if policy_name is not None: body['policy_name'] = policy_name
+        if request_id is not None: body['request_id'] = request_id
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do('POST',
+                           f'/api/2.1/accounts/{self._api.account_id}/budget-policies',
+                           body=body,
+                           headers=headers)
+        return BudgetPolicy.from_dict(res)
+
+    def delete(self, policy_id: str):
+        """Delete a budget policy.
+        
+        Deletes a policy
+        
+        :param policy_id: str
+          The Id of the policy.
+        
+        
+        """
+
+        headers = {'Accept': 'application/json', }
+
+        self._api.do('DELETE',
+                     f'/api/2.1/accounts/{self._api.account_id}/budget-policies/{policy_id}',
+                     headers=headers)
+
+    def get(self, policy_id: str) -> BudgetPolicy:
+        """Get a budget policy.
+        
+        Retrieves a policy by it's ID.
+        
+        :param policy_id: str
+          The Id of the policy.
+        
+        :returns: :class:`BudgetPolicy`
+        """
+
+        headers = {'Accept': 'application/json', }
+
+        res = self._api.do('GET',
+                           f'/api/2.1/accounts/{self._api.account_id}/budget-policies/{policy_id}',
+                           headers=headers)
+        return BudgetPolicy.from_dict(res)
+
+    def list(self,
+             *,
+             filter_by: Optional[Filter] = None,
+             page_size: Optional[int] = None,
+             page_token: Optional[str] = None,
+             sort_spec: Optional[SortSpec] = None) -> Iterator[BudgetPolicy]:
+        """List policies.
+        
+        Lists all policies. Policies are returned in the alphabetically ascending order of their names.
+        
+        :param filter_by: :class:`Filter` (optional)
+          A filter to apply to the list of policies.
+        :param page_size: int (optional)
+          The maximum number of budget policies to return. If unspecified, at most 100 budget policies will be
+          returned. The maximum value is 1000; values above 1000 will be coerced to 1000.
+        :param page_token: str (optional)
+          A page token, received from a previous `ListServerlessPolicies` call. Provide this to retrieve the
+          subsequent page. If unspecified, the first page will be returned.
+          
+          When paginating, all other parameters provided to `ListServerlessPoliciesRequest` must match the
+          call that provided the page token.
+        :param sort_spec: :class:`SortSpec` (optional)
+          The sort specification.
+        
+        :returns: Iterator over :class:`BudgetPolicy`
+        """
+
+        query = {}
+        if filter_by is not None: query['filter_by'] = filter_by.as_dict()
+        if page_size is not None: query['page_size'] = page_size
+        if page_token is not None: query['page_token'] = page_token
+        if sort_spec is not None: query['sort_spec'] = sort_spec.as_dict()
+        headers = {'Accept': 'application/json', }
+
+        while True:
+            json = self._api.do('GET',
+                                f'/api/2.1/accounts/{self._api.account_id}/budget-policies',
+                                query=query,
+                                headers=headers)
+            if 'policies' in json:
+                for v in json['policies']:
+                    yield BudgetPolicy.from_dict(v)
+            if 'next_page_token' not in json or not json['next_page_token']:
+                return
+            query['page_token'] = json['next_page_token']
+
+    def update(self,
+               policy_id: str,
+               *,
+               limit_config: Optional[LimitConfig] = None,
+               policy: Optional[BudgetPolicy] = None) -> BudgetPolicy:
+        """Update a budget policy.
+        
+        Updates a policy
+        
+        :param policy_id: str
+          The Id of the policy. This field is generated by Databricks and globally unique.
+        :param limit_config: :class:`LimitConfig` (optional)
+          DEPRECATED. This is redundant field as LimitConfig is part of the BudgetPolicy
+        :param policy: :class:`BudgetPolicy` (optional)
+          Contains the BudgetPolicy details.
+        
+        :returns: :class:`BudgetPolicy`
+        """
+        body = policy.as_dict()
+        query = {}
+        if limit_config is not None: query['limit_config'] = limit_config.as_dict()
+        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+
+        res = self._api.do('PATCH',
+                           f'/api/2.1/accounts/{self._api.account_id}/budget-policies/{policy_id}',
+                           query=query,
+                           body=body,
+                           headers=headers)
+        return BudgetPolicy.from_dict(res)
+
+
 class BudgetsAPI:
     """These APIs manage budget configurations for this account. Budgets enable you to monitor usage across your
     account. You can set up budgets to either track account-wide spending, or apply filters to track the
@@ -1121,7 +1746,7 @@ class BudgetsAPI:
         Gets a budget configuration for an account. Both account and budget configuration are specified by ID.
         
         :param budget_id: str
-          The Databricks budget configuration ID.
+          The budget configuration ID
         
         :returns: :class:`GetBudgetConfigurationResponse`
         """

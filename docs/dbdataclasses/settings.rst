@@ -4,6 +4,37 @@ Settings
 These dataclasses are used in the SDK to represent API requests and responses for services in the ``databricks.sdk.service.settings`` module.
 
 .. py:currentmodule:: databricks.sdk.service.settings
+.. autoclass:: AccountIpAccessEnable
+   :members:
+   :undoc-members:
+
+.. autoclass:: AibiDashboardEmbeddingAccessPolicy
+   :members:
+   :undoc-members:
+
+.. py:class:: AibiDashboardEmbeddingAccessPolicyAccessPolicyType
+
+   .. py:attribute:: ALLOW_ALL_DOMAINS
+      :value: "ALLOW_ALL_DOMAINS"
+
+   .. py:attribute:: ALLOW_APPROVED_DOMAINS
+      :value: "ALLOW_APPROVED_DOMAINS"
+
+   .. py:attribute:: DENY_ALL_DOMAINS
+      :value: "DENY_ALL_DOMAINS"
+
+.. autoclass:: AibiDashboardEmbeddingAccessPolicySetting
+   :members:
+   :undoc-members:
+
+.. autoclass:: AibiDashboardEmbeddingApprovedDomains
+   :members:
+   :undoc-members:
+
+.. autoclass:: AibiDashboardEmbeddingApprovedDomainsSetting
+   :members:
+   :undoc-members:
+
 .. autoclass:: AutomaticClusterUpdateSetting
    :members:
    :undoc-members:
@@ -108,8 +139,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: HIPAA
       :value: "HIPAA"
 
+   .. py:attribute:: HITRUST
+      :value: "HITRUST"
+
    .. py:attribute:: IRAP_PROTECTED
       :value: "IRAP_PROTECTED"
+
+   .. py:attribute:: ISMAP
+      :value: "ISMAP"
 
    .. py:attribute:: ITAR_EAR
       :value: "ITAR_EAR"
@@ -188,6 +225,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: DeleteAccountIpAccessEnableResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: DeleteAibiDashboardEmbeddingAccessPolicySettingResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: DeleteDefaultNamespaceSettingResponse
    :members:
    :undoc-members:
@@ -248,6 +297,83 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: DisableLegacyFeatures
    :members:
    :undoc-members:
+
+.. autoclass:: EgressNetworkPolicy
+   :members:
+   :undoc-members:
+
+.. autoclass:: EgressNetworkPolicyInternetAccessPolicy
+   :members:
+   :undoc-members:
+
+.. autoclass:: EgressNetworkPolicyInternetAccessPolicyInternetDestination
+   :members:
+   :undoc-members:
+
+.. py:class:: EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocol
+
+   The filtering protocol used by the DP. For private and public preview, SEG will only support TCP filtering (i.e. DNS based filtering, filtering by destination IP address), so protocol will be set to TCP by default and hidden from the user. In the future, users may be able to select HTTP filtering (i.e. SNI based filtering, filtering by FQDN).
+
+   .. py:attribute:: TCP
+      :value: "TCP"
+
+.. py:class:: EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationType
+
+   .. py:attribute:: FQDN
+      :value: "FQDN"
+
+.. autoclass:: EgressNetworkPolicyInternetAccessPolicyLogOnlyMode
+   :members:
+   :undoc-members:
+
+.. py:class:: EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType
+
+   .. py:attribute:: ALL_SERVICES
+      :value: "ALL_SERVICES"
+
+   .. py:attribute:: SELECTED_SERVICES
+      :value: "SELECTED_SERVICES"
+
+.. py:class:: EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadType
+
+   The values should match the list of workloads used in networkconfig.proto
+
+   .. py:attribute:: DBSQL
+      :value: "DBSQL"
+
+   .. py:attribute:: ML_SERVING
+      :value: "ML_SERVING"
+
+.. py:class:: EgressNetworkPolicyInternetAccessPolicyRestrictionMode
+
+   At which level can Databricks and Databricks managed compute access Internet. FULL_ACCESS: Databricks can access Internet. No blocking rules will apply. RESTRICTED_ACCESS: Databricks can only access explicitly allowed internet and storage destinations, as well as UC connections and external locations. PRIVATE_ACCESS_ONLY (not used): Databricks can only access destinations via private link.
+
+   .. py:attribute:: FULL_ACCESS
+      :value: "FULL_ACCESS"
+
+   .. py:attribute:: PRIVATE_ACCESS_ONLY
+      :value: "PRIVATE_ACCESS_ONLY"
+
+   .. py:attribute:: RESTRICTED_ACCESS
+      :value: "RESTRICTED_ACCESS"
+
+.. autoclass:: EgressNetworkPolicyInternetAccessPolicyStorageDestination
+   :members:
+   :undoc-members:
+
+.. py:class:: EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType
+
+   .. py:attribute:: AWS_S3
+      :value: "AWS_S3"
+
+   .. py:attribute:: AZURE_STORAGE
+      :value: "AZURE_STORAGE"
+
+   .. py:attribute:: CLOUDFLARE_R2
+      :value: "CLOUDFLARE_R2"
+
+   .. py:attribute:: GOOGLE_CLOUD_STORAGE
+      :value: "GOOGLE_CLOUD_STORAGE"
 
 .. autoclass:: EmailConfig
    :members:
@@ -540,8 +666,23 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: ARCLIGHT_AZURE_EXCHANGE_TOKEN
       :value: "ARCLIGHT_AZURE_EXCHANGE_TOKEN"
 
+   .. py:attribute:: ARCLIGHT_AZURE_EXCHANGE_TOKEN_WITH_USER_DELEGATION_KEY
+      :value: "ARCLIGHT_AZURE_EXCHANGE_TOKEN_WITH_USER_DELEGATION_KEY"
+
    .. py:attribute:: AZURE_ACTIVE_DIRECTORY_TOKEN
       :value: "AZURE_ACTIVE_DIRECTORY_TOKEN"
+
+.. autoclass:: UpdateAccountIpAccessEnableRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateAibiDashboardEmbeddingAccessPolicySettingRequest
+   :members:
+   :undoc-members:
+
+.. autoclass:: UpdateAibiDashboardEmbeddingApprovedDomainsSettingRequest
+   :members:
+   :undoc-members:
 
 .. autoclass:: UpdateAutomaticClusterUpdateSettingRequest
    :members:

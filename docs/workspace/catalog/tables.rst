@@ -100,7 +100,7 @@
         :returns: :class:`TableInfo`
         
 
-    .. py:method:: list(catalog_name: str, schema_name: str [, include_browse: Optional[bool], include_delta_metadata: Optional[bool], include_manifest_capabilities: Optional[bool], max_results: Optional[int], omit_columns: Optional[bool], omit_properties: Optional[bool], page_token: Optional[str]]) -> Iterator[TableInfo]
+    .. py:method:: list(catalog_name: str, schema_name: str [, include_browse: Optional[bool], include_delta_metadata: Optional[bool], include_manifest_capabilities: Optional[bool], max_results: Optional[int], omit_columns: Optional[bool], omit_properties: Optional[bool], omit_username: Optional[bool], page_token: Optional[str]]) -> Iterator[TableInfo]
 
 
         Usage:
@@ -151,6 +151,9 @@
           Whether to omit the columns of the table from the response or not.
         :param omit_properties: bool (optional)
           Whether to omit the properties of the table from the response or not.
+        :param omit_username: bool (optional)
+          Whether to omit the username of the table (e.g. owner, updated_by, created_by) from the response or
+          not.
         :param page_token: str (optional)
           Opaque token to send for the next page of results (pagination).
         
