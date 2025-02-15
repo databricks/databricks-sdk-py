@@ -189,6 +189,7 @@ def oauth_service_principal(cfg: 'Config') -> Optional[CredentialsProvider]:
 def external_browser(cfg: 'Config') -> Optional[CredentialsProvider]:
     if cfg.auth_type != 'external-browser':
         return None
+
     client_id, client_secret = None, None
     if cfg.client_id:
         client_id = cfg.client_id

@@ -41,9 +41,6 @@
           throughput endpoints are currently supported.
         :param config: :class:`EndpointCoreConfigInput` (optional)
           The core config of the serving endpoint.
-        :param ai_gateway: :class:`AiGatewayConfig` (optional)
-          The AI Gateway configuration for the serving endpoint. NOTE: only external model endpoints are
-          supported as of now.
         :param rate_limits: List[:class:`RateLimit`] (optional)
           Rate limits to be applied to the serving endpoint. NOTE: this field is deprecated, please use AI
           Gateway to manage rate limits.
