@@ -1,6 +1,6 @@
 {
   "mode": "py_v0",
-  "changelog_config": ".codegen/changelog_config.yml",
+  "api_changelog": true,  
   "version": {
     "databricks/sdk/version.py": "__version__ = '$VERSION'"
   },
