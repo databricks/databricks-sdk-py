@@ -1,10 +1,89 @@
-from typing import Optional
+from typing import Iterator, Optional
 
 from databricks.sdk.service import jobs
-from databricks.sdk.service.jobs import Job
+from databricks.sdk.service.jobs import BaseRun, Job, RunType
 
 
 class JobsExt(jobs.JobsAPI):
+
+    def list_runs(self,
+                  *,
+                  active_only: Optional[bool] = None,
+                  completed_only: Optional[bool] = None,
+                  expand_tasks: Optional[bool] = None,
+                  job_id: Optional[int] = None,
+                  limit: Optional[int] = None,
+                  offset: Optional[int] = None,
+                  page_token: Optional[str] = None,
+                  run_type: Optional[RunType] = None,
+                  start_time_from: Optional[int] = None,
+                  start_time_to: Optional[int] = None) -> Iterator[BaseRun]:
+        """List job runs.
+
+        List runs in descending order by start time. If the job has multiple pages of tasks, job_clusters, parameters or repair history,
+        it will paginate through all pages and aggregate the results.
+
+        :param active_only: bool (optional)
+          If active_only is `true`, only active runs are included in the results; otherwise, lists both active
+          and completed runs. An active run is a run in the `QUEUED`, `PENDING`, `RUNNING`, or `TERMINATING`.
+          This field cannot be `true` when completed_only is `true`.
+        :param completed_only: bool (optional)
+          If completed_only is `true`, only completed runs are included in the results; otherwise, lists both
+          active and completed runs. This field cannot be `true` when active_only is `true`.
+        :param expand_tasks: bool (optional)
+          Whether to include task and cluster details in the response. Note that in API 2.2, only the first
+          100 elements will be shown. Use :method:jobs/getrun to paginate through all tasks and clusters.
+        :param job_id: int (optional)
+          The job for which to list runs. If omitted, the Jobs service lists runs from all jobs.
+        :param limit: int (optional)
+          The number of runs to return. This value must be greater than 0 and less than 25. The default value
+          is 20. If a request specifies a limit of 0, the service instead uses the maximum limit.
+        :param offset: int (optional)
+          The offset of the first run to return, relative to the most recent run. Deprecated since June 2023.
+          Use `page_token` to iterate through the pages instead.
+        :param page_token: str (optional)
+          Use `next_page_token` or `prev_page_token` returned from the previous request to list the next or
+          previous page of runs respectively.
+        :param run_type: :class:`RunType` (optional)
+          The type of runs to return. For a description of run types, see :method:jobs/getRun.
+        :param start_time_from: int (optional)
+          Show runs that started _at or after_ this value. The value must be a UTC timestamp in milliseconds.
+          Can be combined with _start_time_to_ to filter by a time range.
+        :param start_time_to: int (optional)
+          Show runs that started _at or before_ this value. The value must be a UTC timestamp in milliseconds.
+          Can be combined with _start_time_from_ to filter by a time range.
+
+        :returns: Iterator over :class:`BaseRun`
+        """
+        # fetch runs with limited elements in top level arrays
+        runs_list = super().list_runs(active_only=active_only,
+                                      completed_only=completed_only,
+                                      expand_tasks=expand_tasks,
+                                      job_id=job_id,
+                                      limit=limit,
+                                      offset=offset,
+                                      page_token=page_token,
+                                      run_type=run_type,
+                                      start_time_from=start_time_from,
+                                      start_time_to=start_time_to)
+
+        if not expand_tasks:
+            yield from runs_list
+
+        # fully fetch all top level arrays for each run in the list
+        for run in runs_list:
+            if run.has_more:
+                run_from_get_call = self.get_run(run.run_id)
+                run.tasks = run_from_get_call.tasks
+                run.job_clusters = run_from_get_call.job_clusters
+                run.job_parameters = run_from_get_call.job_parameters
+                run.repair_history = run_from_get_call.repair_history
+            # Remove has_more fields for each run in the list.
+            # This field in Jobs API 2.2 is useful for pagination. It indicates if there are more than 100 tasks or job_clusters in the run.
+            # This function hides pagination details from the user. So the field does not play useful role here.
+            if hasattr(run, 'has_more'):
+                delattr(run, 'has_more')
+            yield run
 
     def get_run(self,
                 run_id: int,
