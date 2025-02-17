@@ -10,6 +10,7 @@ def make_getrun_path_pattern(run_id: int, page_token: str) -> Pattern[str]:
         rf'{re.escape("http://localhost/api/")}2.\d{re.escape(f"/jobs/runs/get?page_token={page_token}&run_id={run_id}")}'
     )
 
+
 def make_getjob_path_pattern(job_id: int, page_token: Optional[str] = None) -> Pattern[str]:
     if page_token:
         return re.compile(
@@ -18,6 +19,7 @@ def make_getjob_path_pattern(job_id: int, page_token: Optional[str] = None) -> P
     else:
         return re.compile(
             rf'{re.escape("http://localhost/api/")}2.\d{re.escape(f"/jobs/get?job_id={job_id}")}')
+
 
 def make_listjobs_path_pattern(page_token: str) -> Pattern[str]:
     return re.compile(
@@ -270,6 +272,7 @@ def test_get_job_pagination_with_tasks(config, requests_mock):
         }
     }
 
+
 def test_list_jobs_without_task_expansion(config, requests_mock):
     listjobs_page1 = {
         "jobs": [{
@@ -343,6 +346,7 @@ def test_list_jobs_without_task_expansion(config, requests_mock):
     # only two requests should be made which are jobs/list requests
     assert requests_mock.call_count == 2
 
+
 def test_list_jobs_with_many_tasks(config, requests_mock):
     from databricks.sdk.service import compute, jobs
     cluster_spec = compute.ClusterSpec(spark_version="11.3.x-scala2.12",
@@ -393,7 +397,8 @@ def test_list_jobs_with_many_tasks(config, requests_mock):
                 }]
             }
         }],
-        "next_page_token": "tokenToSecondPage"
+        "next_page_token":
+        "tokenToSecondPage"
     }
     listjobs_page2 = {
         "jobs": [{
