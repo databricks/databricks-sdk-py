@@ -11,8 +11,10 @@ import webbrowser
 from abc import abstractmethod
 from dataclasses import dataclass
 from datetime import datetime, timedelta
+from enum import Enum
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from typing import Any, Dict, List, Optional
+from concurrent.futures import ThreadPoolExecutor
 
 import requests
 import requests.auth
@@ -186,22 +188,112 @@ def retrieve_token(client_id,
     except Exception as e:
         raise NotImplementedError(f"Not supported yet: {e}")
 
+class _TokenState(Enum):
+    """
+    tokenState represents the state of the token. Each token can be in one of
+    the following three states:
+      - FRESH: The token is valid.
+      - STALE: The token is valid but will expire soon.
+      - EXPIRED: The token has expired and cannot be used.
+
+    Token state through time:
+     issue time     expiry time
+    	v               v
+    	| fresh | stale | expired -> time
+    	|     valid     |
+    """
+    FRESH = 1 # The token is valid.
+    STALE = 2 # The token is valid but will expire soon.
+    EXPIRED = 3 # The token has expired and cannot be used.
+
 
 class Refreshable(TokenSource):
+    _executor = ThreadPoolExecutor(max_workers=10)
+    _default_stale_duration = 3
 
-    def __init__(self, token=None):
+    def __init__(self, token=None, disable_async = True, stale_duration=timedelta(minutes=_default_stale_duration)):
         self._lock = threading.Lock() # to guard _token
         self._token = token
+        self._stale_duration = stale_duration
+        self._disable_async = disable_async
+        self._is_refreshing = False
+        self._refresh_err = False
 
-    def token(self) -> Token:
+    def token(self, blocking=False) -> Token:
+        if self._disable_async:
+            return self._blocking_token()
+        return self._async_token()
+
+    def _async_token(self) -> Token:
         self._lock.acquire()
-        try:
-            if self._token and self._token.valid:
+        token_state = self._token_state()
+        token = self._token
+        self._lock.release()
+        match token_state:
+            case _TokenState.FRESH:
+                return token
+            case _TokenState.STALE:
+                self._trigger_async_refresh()
+                return token
+            case _: #Expired
+                return self._blocking_token()
+
+
+    def _token_state(self) -> _TokenState:
+        """
+        Returns the state of the token.
+        """
+        # Invalid tokens are considered expired.
+        if not self._token or not self._token.valid:
+            return _TokenState.EXPIRED
+        # Tokens without an expiry are considered always.
+        if not self._token.expiry:
+            return _TokenState.FRESH
+        lifespan = self._token.expiry - datetime.now()
+        if lifespan < timedelta(seconds=0):
+            return _TokenState.EXPIRED
+        if lifespan < self._stale_duration:
+            return _TokenState.STALE
+        return _TokenState.FRESH
+
+    def _blocking_token(self) -> Token:
+
+        # The lock is kept for the entire operation to ensure that only one
+        # refresh operation is running at a time.
+        with self._lock:
+            # This is important to recover from potential previous failed attempts
+            # to refresh the token asynchronously, see declaration of refresh_err for
+            # more information.
+            self._refresh_err = False
+            self._is_refreshing = False
+
+            # It's possible that the token got refreshed (either by a _blocking_refresh or
+            # an _async_refresh call) while this particular call was waiting to acquire
+            # the lock. This check avoids refreshing the token again in such cases.
+            if self._token_state() != _TokenState.EXPIRED:
                 return self._token
+
+            # Refresh the token
             self._token = self.refresh()
             return self._token
-        finally:
-            self._lock.release()
+
+
+    def _trigger_async_refresh(self):
+        # Note: this is not thread safe.
+        # Only call it inside the lock.
+        def _refresh_internal():
+            try:
+                self._token = self.refresh()
+            except Exception:
+                self._refresh_err = True
+            finally:
+                self._is_refreshing = False
+        # The lock is kept for the entire operation to ensure that only one
+        # refresh operation is running at a time.
+        with self._lock:
+            if not self._is_refreshing and not self._refresh_err:
+                self._is_refreshing = True
+                self._executor.submit(_refresh_internal)
 
     @abstractmethod
     def refresh(self) -> Token:
