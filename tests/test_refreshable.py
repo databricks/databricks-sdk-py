@@ -25,7 +25,7 @@ class _MockRefreshable(Refreshable):
 
 
 def fail() -> Token:
-    raise Exception("Failed to refresh token")
+    raise Exception("Simulated token refresh failure")
 
 
 def static_token(token: Token, wait: int = 0) -> Callable[[], Token]:
