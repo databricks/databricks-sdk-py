@@ -5,8 +5,8 @@
 .. py:class:: QueriesAPI
 
     The queries API can be used to perform CRUD operations on queries. A query is a Databricks SQL object that
-includes the target SQL warehouse, query text, name, description, tags, and parameters. Queries can be
-scheduled using the `sql_task` type of the Jobs API, e.g. :method:jobs/create.
+    includes the target SQL warehouse, query text, name, description, tags, and parameters. Queries can be
+    scheduled using the `sql_task` type of the Jobs API, e.g. :method:jobs/create.
 
     .. py:method:: create( [, query: Optional[CreateQueryRequestQuery]]) -> Query
 
@@ -33,26 +33,26 @@ scheduled using the `sql_task` type of the Jobs API, e.g. :method:jobs/create.
             w.queries.delete(id=query.id)
 
         Create a query.
-
-Creates a query.
-
-:param query: :class:`CreateQueryRequestQuery` (optional)
-
-:returns: :class:`Query`
-
+        
+        Creates a query.
+        
+        :param query: :class:`CreateQueryRequestQuery` (optional)
+        
+        :returns: :class:`Query`
+        
 
     .. py:method:: delete(id: str)
 
         Delete a query.
-
-Moves a query to the trash. Trashed queries immediately disappear from searches and list views, and
-cannot be used for alerts. You can restore a trashed query through the UI. A trashed query is
-permanently deleted after 30 days.
-
-:param id: str
-
-
-
+        
+        Moves a query to the trash. Trashed queries immediately disappear from searches and list views, and
+        cannot be used for alerts. You can restore a trashed query through the UI. A trashed query is
+        permanently deleted after 30 days.
+        
+        :param id: str
+        
+        
+        
 
     .. py:method:: get(id: str) -> Query
 
@@ -81,39 +81,39 @@ permanently deleted after 30 days.
             w.queries.delete(id=query.id)
 
         Get a query.
-
-Gets a query.
-
-:param id: str
-
-:returns: :class:`Query`
-
+        
+        Gets a query.
+        
+        :param id: str
+        
+        :returns: :class:`Query`
+        
 
     .. py:method:: list( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[ListQueryObjectsResponseQuery]
 
         List queries.
-
-Gets a list of queries accessible to the user, ordered by creation time. **Warning:** Calling this API
-concurrently 10 or more times could result in throttling, service degradation, or a temporary ban.
-
-:param page_size: int (optional)
-:param page_token: str (optional)
-
-:returns: Iterator over :class:`ListQueryObjectsResponseQuery`
-
+        
+        Gets a list of queries accessible to the user, ordered by creation time. **Warning:** Calling this API
+        concurrently 10 or more times could result in throttling, service degradation, or a temporary ban.
+        
+        :param page_size: int (optional)
+        :param page_token: str (optional)
+        
+        :returns: Iterator over :class:`ListQueryObjectsResponseQuery`
+        
 
     .. py:method:: list_visualizations(id: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Visualization]
 
         List visualizations on a query.
-
-Gets a list of visualizations on a query.
-
-:param id: str
-:param page_size: int (optional)
-:param page_token: str (optional)
-
-:returns: Iterator over :class:`Visualization`
-
+        
+        Gets a list of visualizations on a query.
+        
+        :param id: str
+        :param page_size: int (optional)
+        :param page_token: str (optional)
+        
+        :returns: Iterator over :class:`Visualization`
+        
 
     .. py:method:: update(id: str, update_mask: str [, query: Optional[UpdateQueryRequestQuery]]) -> Query
 
@@ -146,20 +146,21 @@ Gets a list of visualizations on a query.
             w.queries.delete(id=query.id)
 
         Update a query.
-
-Updates a query.
-
-:param id: str
-:param update_mask: str
-  The field mask must be a single string, with multiple fields separated by commas (no spaces). The
-  field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
-  `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
-  the entire collection field can be specified. Field names must exactly match the resource field
-  names.
-  
-  A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
-  fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
-  changes in the future.
-:param query: :class:`UpdateQueryRequestQuery` (optional)
-
-:returns: :class:`Query`
+        
+        Updates a query.
+        
+        :param id: str
+        :param update_mask: str
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+          
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
+        :param query: :class:`UpdateQueryRequestQuery` (optional)
+        
+        :returns: :class:`Query`
+        
