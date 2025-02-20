@@ -51,7 +51,8 @@ dev = [
     "pytest-rerunfailures",
     "openai",
     'langchain-openai; python_version > "3.7"',
-    "httpx"
+    "httpx",
+    "build", # some integration tests depend on the databricks-sdk-py wheel
 ]
 notebook = [
     "ipython>=8,<9",
