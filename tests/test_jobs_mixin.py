@@ -494,12 +494,15 @@ def test_list_jobs_with_many_tasks(config, requests_mock):
     getjob_400_page1 = {
         "job_id": 400,
         "settings": {
-            "tasks": [{
-                "task_key": "taskkey401"
-            }, {
-                "task_key":
-                "taskkey403" # jobs/get returns tasks in different order. jobs/get order is the ground truth
-            }],
+            "tasks": [
+                {
+                    "task_key": "taskkey401"
+                },
+                {
+                    "task_key":
+                    "taskkey403" # jobs/get returns tasks in different order. jobs/get order is the ground truth
+                }
+            ],
             "job_clusters": [cluster1.as_dict()]
         },
         "next_page_token": "tokenToSecondPage_400"
