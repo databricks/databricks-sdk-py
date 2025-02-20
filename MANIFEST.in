@@ -12,6 +12,9 @@ include databricks/sdk/py.typed
 exclude .codegen.json
 exclude .readthedocs.yaml
 exclude docs-requirements.txt
+exclude NEXT_CHANGELOG.md
+exclude tagging.py
+exclude .package.json
 
 recursive-exclude docs *
 recursive-exclude examples *
