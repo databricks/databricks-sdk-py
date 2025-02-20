@@ -30,8 +30,8 @@ jobs:
         with:
           draft: true
           files: |
-            dist/databricks-*.whl
-            dist/databricks-*.tar.gz
+            dist/databricks_*.whl
+            dist/databricks_*.tar.gz
 
       - uses: pypa/gh-action-pypi-publish@release/v1
         name: Publish package distributions to PyPI
