@@ -67,7 +67,7 @@ openai = [
 version = { attr = "databricks.sdk.version.__version__" }
 
 [tool.setuptools.packages.find]
-exclude = ["tests", "*tests.*", "*tests"]
+include = ["databricks", "databricks.*"]
 
 [tool.setuptools.package-data]
 "databricks.sdk" = ["py.typed"]

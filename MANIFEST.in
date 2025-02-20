@@ -1,0 +1,20 @@
+include README.md
+include LICENSE
+include NOTICE
+include DCO
+include Makefile
+include SECURITY.md
+include CHANGELOG.md
+include CONTRIBUTING.md
+include pyproject.toml
+include databricks/sdk/py.typed
+
+exclude .codegen.json
+exclude .readthedocs.yaml
+exclude docs-requirements.txt
+
+recursive-exclude docs *
+recursive-exclude examples *
+recursive-exclude tests *
+recursive-exclude .codegen *
+recursive-exclude .vscode *
