@@ -20,8 +20,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 3.13
+
+      - name: Install build
+        run: pip install build
+
       - name: Build wheel
-        run: make dev install dist
+        run: python -m build
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -30,8 +37,8 @@ jobs:
         with:
           draft: true
           files: |
-            dist/databricks-*.whl
-            dist/databricks-*.tar.gz
+            dist/databricks_*.whl
+            dist/databricks_*.tar.gz
 
       - uses: pypa/gh-action-pypi-publish@release/v1
         name: Publish package distributions to PyPI

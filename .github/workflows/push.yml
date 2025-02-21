@@ -39,3 +39,19 @@ jobs:
 
       - name: Fail on differences
         run: git diff --exit-code
+
+  check-manifest:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 3.13
+
+      - name: Check MANIFEST.in
+        run: |
+          pip install check-manifest
+          check-manifest .

@@ -25,7 +25,7 @@ def fresh_wheel_file(tmp_path) -> Path:
     build_root = tmp_path / 'databricks-sdk-py'
     shutil.copytree(project_root, build_root)
     try:
-        completed_process = subprocess.run([sys.executable, 'setup.py', 'bdist_wheel'],
+        completed_process = subprocess.run([sys.executable, '-m', 'build'],
                                            capture_output=True,
                                            cwd=build_root)
         if completed_process.returncode != 0:

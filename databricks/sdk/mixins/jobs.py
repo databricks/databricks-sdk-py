@@ -1,10 +1,63 @@
 from typing import Iterator, Optional
 
 from databricks.sdk.service import jobs
-from databricks.sdk.service.jobs import BaseRun, Job, RunType
+from databricks.sdk.service.jobs import BaseJob, BaseRun, Job, RunType
 
 
 class JobsExt(jobs.JobsAPI):
+
+    def list(self,
+             *,
+             expand_tasks: Optional[bool] = None,
+             limit: Optional[int] = None,
+             name: Optional[str] = None,
+             offset: Optional[int] = None,
+             page_token: Optional[str] = None) -> Iterator[BaseJob]:
+        """List jobs.
+
+        Retrieves a list of jobs. If the job has multiple pages of tasks, job_clusters, parameters or environments,
+        it will paginate through all pages and aggregate the results.
+
+        :param expand_tasks: bool (optional)
+          Whether to include task and cluster details in the response. Note that in API 2.2, only the first
+          100 elements will be shown. Use :method:jobs/get to paginate through all tasks and clusters.
+        :param limit: int (optional)
+          The number of jobs to return. This value must be greater than 0 and less or equal to 100. The
+          default value is 20.
+        :param name: str (optional)
+          A filter on the list based on the exact (case insensitive) job name.
+        :param offset: int (optional)
+          The offset of the first job to return, relative to the most recently created job. Deprecated since
+          June 2023. Use `page_token` to iterate through the pages instead.
+        :param page_token: str (optional)
+          Use `next_page_token` or `prev_page_token` returned from the previous request to list the next or
+          previous page of jobs respectively.
+
+        :returns: Iterator over :class:`BaseJob`
+        """
+        # fetch jobs with limited elements in top level arrays
+        jobs_list = super().list(expand_tasks=expand_tasks,
+                                 limit=limit,
+                                 name=name,
+                                 offset=offset,
+                                 page_token=page_token)
+        if not expand_tasks:
+            yield from jobs_list
+
+        # fully fetch all top level arrays for each job in the list
+        for job in jobs_list:
+            if job.has_more:
+                job_from_get_call = self.get(job.job_id)
+                job.settings.tasks = job_from_get_call.settings.tasks
+                job.settings.job_clusters = job_from_get_call.settings.job_clusters
+                job.settings.parameters = job_from_get_call.settings.parameters
+                job.settings.environments = job_from_get_call.settings.environments
+            # Remove has_more fields for each job in the list.
+            # This field in Jobs API 2.2 is useful for pagination. It indicates if there are more than 100 tasks or job_clusters in the job.
+            # This function hides pagination details from the user. So the field does not play useful role here.
+            if hasattr(job, 'has_more'):
+                delattr(job, 'has_more')
+            yield job
 
     def list_runs(self,
                   *,
