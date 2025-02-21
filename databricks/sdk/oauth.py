@@ -9,8 +9,10 @@ import threading
 import urllib.parse
 import webbrowser
 from abc import abstractmethod
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from datetime import datetime, timedelta
+from enum import Enum
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from typing import Any, Dict, List, Optional
 
@@ -187,21 +189,132 @@ def retrieve_token(client_id,
         raise NotImplementedError(f"Not supported yet: {e}")
 
 
+class _TokenState(Enum):
+    """
+    Represents the state of a token. Each token can be in one of
+    the following three states:
+      - FRESH: The token is valid.
+      - STALE: The token is valid but will expire soon.
+      - EXPIRED: The token has expired and cannot be used.
+    """
+    FRESH = 1 # The token is valid.
+    STALE = 2 # The token is valid but will expire soon.
+    EXPIRED = 3 # The token has expired and cannot be used.
+
+
 class Refreshable(TokenSource):
+    """A token source that supports refreshing expired tokens."""
 
-    def __init__(self, token=None):
-        self._lock = threading.Lock() # to guard _token
+    _EXECUTOR = None
+    _EXECUTOR_LOCK = threading.Lock()
+    _DEFAULT_STALE_DURATION = timedelta(minutes=3)
+
+    @classmethod
+    def _get_executor(cls):
+        """Lazy initialization of the ThreadPoolExecutor."""
+        if cls._EXECUTOR is None:
+            with cls._EXECUTOR_LOCK:
+                if cls._EXECUTOR is None:
+                    # This thread pool has multiple workers because it is shared by all instances of Refreshable.
+                    cls._EXECUTOR = ThreadPoolExecutor(max_workers=10)
+        return cls._EXECUTOR
+
+    def __init__(self,
+                 token: Token = None,
+                 disable_async: bool = True,
+                 stale_duration: timedelta = _DEFAULT_STALE_DURATION):
+        # Config properties
+        self._stale_duration = stale_duration
+        self._disable_async = disable_async
+        # Lock
+        self._lock = threading.Lock()
+        # Non Thread safe properties. They should be accessed only when protected by the lock above.
         self._token = token
+        self._is_refreshing = False
+        self._refresh_err = False
 
+    # This is the main entry point for the Token. Do not access the token
+    # using any of the internal functions.
     def token(self) -> Token:
-        self._lock.acquire()
-        try:
-            if self._token and self._token.valid:
-                return self._token
-            self._token = self.refresh()
+        """Returns a valid token, blocking if async refresh is disabled."""
+        with self._lock:
+            if self._disable_async:
+                return self._blocking_token()
+            return self._async_token()
+
+    def _async_token(self) -> Token:
+        """
+        Returns a token.
+        If the token is stale, triggers an asynchronous refresh.
+        If the token is expired, refreshes it synchronously, blocking until the refresh is complete.
+        """
+        state = self._token_state()
+        token = self._token
+
+        if state == _TokenState.FRESH:
+            return token
+        if state == _TokenState.STALE:
+            self._trigger_async_refresh()
+            return token
+        return self._blocking_token()
+
+    def _token_state(self) -> _TokenState:
+        """Returns the current state of the token."""
+        if not self._token or not self._token.valid:
+            return _TokenState.EXPIRED
+        if not self._token.expiry:
+            return _TokenState.FRESH
+
+        lifespan = self._token.expiry - datetime.now()
+        if lifespan < timedelta(seconds=0):
+            return _TokenState.EXPIRED
+        if lifespan < self._stale_duration:
+            return _TokenState.STALE
+        return _TokenState.FRESH
+
+    def _blocking_token(self) -> Token:
+        """Returns a token, blocking if necessary to refresh it."""
+        state = self._token_state()
+        # This is important to recover from potential previous failed attempts
+        # to refresh the token asynchronously.
+        self._refresh_err = False
+        self._is_refreshing = False
+
+        # It's possible that the token got refreshed (either by a _blocking_refresh or
+        # an _async_refresh call) while this particular call was waiting to acquire
+        # the lock. This check avoids refreshing the token again in such cases.
+        if state != _TokenState.EXPIRED:
             return self._token
-        finally:
-            self._lock.release()
+
+        self._token = self.refresh()
+        return self._token
+
+    def _trigger_async_refresh(self):
+        """Starts an asynchronous refresh if none is in progress."""
+
+        def _refresh_internal():
+            new_token: Token = None
+            try:
+                new_token = self.refresh()
+            except Exception as e:
+                # This happens on a thread, so we don't want to propagate the error.
+                # Instead, if there is no new_token for any reason, we will disable async refresh below
+                # But we will do it inside the lock.
+                logger.warning(f'Tried to refresh token asynchronously, but failed: {e}')
+
+            with self._lock:
+                if new_token is not None:
+                    self._token = new_token
+                else:
+                    self._refresh_err = True
+                self._is_refreshing = False
+
+        # The token may have been refreshed by another thread.
+        if self._token_state() == _TokenState.FRESH:
+            return
+        if not self._is_refreshing and not self._refresh_err:
+            self._is_refreshing = True
+            Refreshable._get_executor().submit(_refresh_internal)
 
     @abstractmethod
     def refresh(self) -> Token:
@@ -295,7 +408,7 @@ class SessionCredentials(Refreshable):
         super().__init__(token)
 
     def as_dict(self) -> dict:
-        return {'token': self._token.as_dict()}
+        return {'token': self.token().as_dict()}
 
     @staticmethod
     def from_dict(raw: dict,
