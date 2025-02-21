@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
+from pathlib import Path
 from typing import BinaryIO, Dict, Iterator, List, Optional
 
 from ._internal import _escape_multi_segment_path_parameter, _repeated_dict
@@ -104,11 +105,14 @@ class CloseResponse:
 
 @dataclass
 class Create:
-    path: str
+    path: str | Path
     """The path of the new file. The path should be the absolute DBFS path."""
 
     overwrite: Optional[bool] = None
     """The flag that specifies whether to overwrite existing file/files."""
+
+    def __post_init__(self):
+        self.path = str(self.path)
 
     def as_dict(self) -> dict:
         """Serializes the Create into a dictionary suitable for use as a JSON request body."""
@@ -175,12 +179,15 @@ class CreateResponse:
 
 @dataclass
 class Delete:
-    path: str
+    path: str | Path
     """The path of the file or directory to delete. The path should be the absolute DBFS path."""
 
     recursive: Optional[bool] = None
     """Whether or not to recursively delete the directory's contents. Deleting empty directories can be
     done without providing the recursive flag."""
+
+    def __post_init__(self):
+        self.path = str(self.path)
 
     def as_dict(self) -> dict:
         """Serializes the Delete into a dictionary suitable for use as a JSON request body."""
@@ -470,8 +477,11 @@ class ListStatusResponse:
 
 @dataclass
 class MkDirs:
-    path: str
+    path: str | Path
     """The path of the new directory. The path should be the absolute DBFS path."""
+
+    def __post_init__(self):
+        self.path = str(self.path)
 
     def as_dict(self) -> dict:
         """Serializes the MkDirs into a dictionary suitable for use as a JSON request body."""
@@ -512,11 +522,15 @@ class MkDirsResponse:
 
 @dataclass
 class Move:
-    source_path: str
+    source_path: str | Path
     """The source path of the file or directory. The path should be the absolute DBFS path."""
 
-    destination_path: str
+    destination_path: str | Path
     """The destination path of the file or directory. The path should be the absolute DBFS path."""
+
+    def __post_init__(self):
+        self.source_path = str(self.source_path)
+        self.destination_path = str(self.destination_path)
 
     def as_dict(self) -> dict:
         """Serializes the Move into a dictionary suitable for use as a JSON request body."""
@@ -559,7 +573,7 @@ class MoveResponse:
 
 @dataclass
 class Put:
-    path: str
+    path: str | Path
     """The path of the new file. The path should be the absolute DBFS path."""
 
     contents: Optional[str] = None
@@ -567,6 +581,9 @@ class Put:
 
     overwrite: Optional[bool] = None
     """The flag that specifies whether to overwrite existing file/files."""
+
+    def __post_init__(self):
+        self.path = str(self.path)
 
     def as_dict(self) -> dict:
         """Serializes the Put into a dictionary suitable for use as a JSON request body."""
@@ -705,7 +722,7 @@ class DbfsAPI:
 
         self._api.do('POST', '/api/2.0/dbfs/close', body=body, headers=headers)
 
-    def create(self, path: str, *, overwrite: Optional[bool] = None) -> CreateResponse:
+    def create(self, path: str | Path, *, overwrite: Optional[bool] = None) -> CreateResponse:
         """Open a stream.
         
         Opens a stream to write to a file and returns a handle to this stream. There is a 10 minute idle
@@ -717,7 +734,7 @@ class DbfsAPI:
         1. Issue a ``create`` call and get a handle. 2. Issue one or more ``add-block`` calls with the handle
         you have. 3. Issue a ``close`` call with the handle you have.
         
-        :param path: str
+        :param path: str | Path
           The path of the new file. The path should be the absolute DBFS path.
         :param overwrite: bool (optional)
           The flag that specifies whether to overwrite existing file/files.
@@ -726,13 +743,13 @@ class DbfsAPI:
         """
         body = {}
         if overwrite is not None: body['overwrite'] = overwrite
-        if path is not None: body['path'] = path
+        if path is not None: body['path'] = str(path)
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         res = self._api.do('POST', '/api/2.0/dbfs/create', body=body, headers=headers)
         return CreateResponse.from_dict(res)
 
-    def delete(self, path: str, *, recursive: Optional[bool] = None):
+    def delete(self, path: str | Path, *, recursive: Optional[bool] = None):
         """Delete a file/directory.
         
         Delete the file or directory (optionally recursively delete all files in the directory). This call
@@ -750,7 +767,7 @@ class DbfsAPI:
         control and manageability, such as selective deletes, and the possibility to automate periodic delete
         jobs.
         
-        :param path: str
+        :param path: str | Path
           The path of the file or directory to delete. The path should be the absolute DBFS path.
         :param recursive: bool (optional)
           Whether or not to recursively delete the directory's contents. Deleting empty directories can be
@@ -759,32 +776,32 @@ class DbfsAPI:
         
         """
         body = {}
-        if path is not None: body['path'] = path
+        if path is not None: body['path'] = str(path)
         if recursive is not None: body['recursive'] = recursive
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         self._api.do('POST', '/api/2.0/dbfs/delete', body=body, headers=headers)
 
-    def get_status(self, path: str) -> FileInfo:
+    def get_status(self, path: str | Path) -> FileInfo:
         """Get the information of a file or directory.
         
         Gets the file information for a file or directory. If the file or directory does not exist, this call
         throws an exception with `RESOURCE_DOES_NOT_EXIST`.
         
-        :param path: str
+        :param path: str | Path
           The path of the file or directory. The path should be the absolute DBFS path.
         
         :returns: :class:`FileInfo`
         """
 
         query = {}
-        if path is not None: query['path'] = path
+        if path is not None: query['path'] = str(path)
         headers = {'Accept': 'application/json', }
 
         res = self._api.do('GET', '/api/2.0/dbfs/get-status', query=query, headers=headers)
         return FileInfo.from_dict(res)
 
-    def list(self, path: str) -> Iterator[FileInfo]:
+    def list(self, path: str | Path) -> Iterator[FileInfo]:
         """List directory contents or file details.
         
         List the contents of a directory, or details of the file. If the file or directory does not exist,
@@ -797,21 +814,21 @@ class DbfsAPI:
         (dbutils.fs)](/dev-tools/databricks-utils.html#dbutils-fs), which provides the same functionality
         without timing out.
         
-        :param path: str
+        :param path: str | Path
           The path of the file or directory. The path should be the absolute DBFS path.
         
         :returns: Iterator over :class:`FileInfo`
         """
 
         query = {}
-        if path is not None: query['path'] = path
+        if path is not None: query['path'] = str(path)
         headers = {'Accept': 'application/json', }
 
         json = self._api.do('GET', '/api/2.0/dbfs/list', query=query, headers=headers)
         parsed = ListStatusResponse.from_dict(json).files
         return parsed if parsed is not None else []
 
-    def mkdirs(self, path: str):
+    def mkdirs(self, path: str | Path):
         """Create a directory.
         
         Creates the given directory and necessary parent directories if they do not exist. If a file (not a
@@ -819,18 +836,18 @@ class DbfsAPI:
         `RESOURCE_ALREADY_EXISTS`. **Note**: If this operation fails, it might have succeeded in creating some
         of the necessary parent directories.
         
-        :param path: str
+        :param path: str | Path
           The path of the new directory. The path should be the absolute DBFS path.
         
         
         """
         body = {}
-        if path is not None: body['path'] = path
+        if path is not None: body['path'] = str(path)
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         self._api.do('POST', '/api/2.0/dbfs/mkdirs', body=body, headers=headers)
 
-    def move(self, source_path: str, destination_path: str):
+    def move(self, source_path: str | Path, destination_path: str | Path):
         """Move a file.
         
         Moves a file from one location to another location within DBFS. If the source file does not exist,
@@ -838,21 +855,21 @@ class DbfsAPI:
         destination path, this call throws an exception with `RESOURCE_ALREADY_EXISTS`. If the given source
         path is a directory, this call always recursively moves all files.
         
-        :param source_path: str
+        :param source_path: str | Path
           The source path of the file or directory. The path should be the absolute DBFS path.
-        :param destination_path: str
+        :param destination_path: str | Path
           The destination path of the file or directory. The path should be the absolute DBFS path.
         
         
         """
         body = {}
-        if destination_path is not None: body['destination_path'] = destination_path
-        if source_path is not None: body['source_path'] = source_path
+        if destination_path is not None: body['destination_path'] = str(destination_path)
+        if source_path is not None: body['source_path'] = str(source_path)
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         self._api.do('POST', '/api/2.0/dbfs/move', body=body, headers=headers)
 
-    def put(self, path: str, *, contents: Optional[str] = None, overwrite: Optional[bool] = None):
+    def put(self, path: str | Path, *, contents: Optional[str] = None, overwrite: Optional[bool] = None):
         """Upload a file.
         
         Uploads a file through the use of multipart form post. It is mainly used for streaming uploads, but
@@ -866,7 +883,7 @@ class DbfsAPI:
         If you want to upload large files, use the streaming upload. For details, see :method:dbfs/create,
         :method:dbfs/addBlock, :method:dbfs/close.
         
-        :param path: str
+        :param path: str | Path
           The path of the new file. The path should be the absolute DBFS path.
         :param contents: str (optional)
           This parameter might be absent, and instead a posted file will be used.
@@ -878,12 +895,16 @@ class DbfsAPI:
         body = {}
         if contents is not None: body['contents'] = contents
         if overwrite is not None: body['overwrite'] = overwrite
-        if path is not None: body['path'] = path
+        if path is not None: body['path'] = str(path)
         headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
 
         self._api.do('POST', '/api/2.0/dbfs/put', body=body, headers=headers)
 
-    def read(self, path: str, *, length: Optional[int] = None, offset: Optional[int] = None) -> ReadResponse:
+    def read(self,
+             path: str | Path,
+             *,
+             length: Optional[int] = None,
+             offset: Optional[int] = None) -> ReadResponse:
         """Get the contents of a file.
         
         Returns the contents of a file. If the file does not exist, this call throws an exception with
@@ -894,7 +915,7 @@ class DbfsAPI:
         If `offset + length` exceeds the number of bytes in a file, it reads the contents until the end of
         file.
         
-        :param path: str
+        :param path: str | Path
           The path of the file to read. The path should be the absolute DBFS path.
         :param length: int (optional)
           The number of bytes to read starting from the offset. This has a limit of 1 MB, and a default value
@@ -908,7 +929,7 @@ class DbfsAPI:
         query = {}
         if length is not None: query['length'] = length
         if offset is not None: query['offset'] = offset
-        if path is not None: query['path'] = path
+        if path is not None: query['path'] = str(path)
         headers = {'Accept': 'application/json', }
 
         res = self._api.do('GET', '/api/2.0/dbfs/read', query=query, headers=headers)
@@ -937,14 +958,14 @@ class FilesAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create_directory(self, directory_path: str):
+    def create_directory(self, directory_path: str | Path):
         """Create a directory.
         
         Creates an empty directory. If necessary, also creates any parent directories of the new, empty
         directory (like the shell command `mkdir -p`). If called on an existing directory, returns a success
         response; this method is idempotent (it will succeed if the directory already exists).
         
-        :param directory_path: str
+        :param directory_path: str | Path
           The absolute path of a directory.
         
         
@@ -953,15 +974,15 @@ class FilesAPI:
         headers = {}
 
         self._api.do('PUT',
-                     f'/api/2.0/fs/directories{_escape_multi_segment_path_parameter(directory_path)}',
+                     f'/api/2.0/fs/directories{_escape_multi_segment_path_parameter(str(directory_path))}',
                      headers=headers)
 
-    def delete(self, file_path: str):
+    def delete(self, file_path: str | Path):
         """Delete a file.
         
         Deletes a file. If the request is successful, there is no response body.
         
-        :param file_path: str
+        :param file_path: str | Path
           The absolute path of the file.
         
         
@@ -970,10 +991,10 @@ class FilesAPI:
         headers = {}
 
         self._api.do('DELETE',
-                     f'/api/2.0/fs/files{_escape_multi_segment_path_parameter(file_path)}',
+                     f'/api/2.0/fs/files{_escape_multi_segment_path_parameter(str(file_path))}',
                      headers=headers)
 
-    def delete_directory(self, directory_path: str):
+    def delete_directory(self, directory_path: str | Path):
         """Delete a directory.
         
         Deletes an empty directory.
@@ -981,7 +1002,7 @@ class FilesAPI:
         To delete a non-empty directory, first delete all of its contents. This can be done by listing the
         directory contents and deleting each file and subdirectory recursively.
         
-        :param directory_path: str
+        :param directory_path: str | Path
           The absolute path of a directory.
         
         
@@ -990,16 +1011,16 @@ class FilesAPI:
         headers = {}
 
         self._api.do('DELETE',
-                     f'/api/2.0/fs/directories{_escape_multi_segment_path_parameter(directory_path)}',
+                     f'/api/2.0/fs/directories{_escape_multi_segment_path_parameter(str(directory_path))}',
                      headers=headers)
 
-    def download(self, file_path: str) -> DownloadResponse:
+    def download(self, file_path: str | Path) -> DownloadResponse:
         """Download a file.
         
         Downloads a file. The file contents are the response body. This is a standard HTTP file download, not
         a JSON RPC. It supports the Range and If-Unmodified-Since HTTP headers.
         
-        :param file_path: str
+        :param file_path: str | Path
           The absolute path of the file.
         
         :returns: :class:`DownloadResponse`
@@ -1008,13 +1029,13 @@ class FilesAPI:
         headers = {'Accept': 'application/octet-stream', }
         response_headers = ['content-length', 'content-type', 'last-modified', ]
         res = self._api.do('GET',
-                           f'/api/2.0/fs/files{_escape_multi_segment_path_parameter(file_path)}',
+                           f'/api/2.0/fs/files{_escape_multi_segment_path_parameter(str(file_path))}',
                            headers=headers,
                            response_headers=response_headers,
                            raw=True)
         return DownloadResponse.from_dict(res)
 
-    def get_directory_metadata(self, directory_path: str):
+    def get_directory_metadata(self, directory_path: str | Path):
         """Get directory metadata.
         
         Get the metadata of a directory. The response HTTP headers contain the metadata. There is no response
@@ -1025,7 +1046,7 @@ class FilesAPI:
         If you wish to ensure the directory exists, you can instead use `PUT`, which will create the directory
         if it does not exist, and is idempotent (it will succeed if the directory already exists).
         
-        :param directory_path: str
+        :param directory_path: str | Path
           The absolute path of a directory.
         
         
@@ -1034,15 +1055,15 @@ class FilesAPI:
         headers = {}
 
         self._api.do('HEAD',
-                     f'/api/2.0/fs/directories{_escape_multi_segment_path_parameter(directory_path)}',
+                     f'/api/2.0/fs/directories{_escape_multi_segment_path_parameter(str(directory_path))}',
                      headers=headers)
 
-    def get_metadata(self, file_path: str) -> GetMetadataResponse:
+    def get_metadata(self, file_path: str | Path) -> GetMetadataResponse:
         """Get file metadata.
         
         Get the metadata of a file. The response HTTP headers contain the metadata. There is no response body.
         
-        :param file_path: str
+        :param file_path: str | Path
           The absolute path of the file.
         
         :returns: :class:`GetMetadataResponse`
@@ -1051,13 +1072,13 @@ class FilesAPI:
         headers = {}
         response_headers = ['content-length', 'content-type', 'last-modified', ]
         res = self._api.do('HEAD',
-                           f'/api/2.0/fs/files{_escape_multi_segment_path_parameter(file_path)}',
+                           f'/api/2.0/fs/files{_escape_multi_segment_path_parameter(str(file_path))}',
                            headers=headers,
                            response_headers=response_headers)
         return GetMetadataResponse.from_dict(res)
 
     def list_directory_contents(self,
-                                directory_path: str,
+                                directory_path: str | Path,
                                 *,
                                 page_size: Optional[int] = None,
                                 page_token: Optional[str] = None) -> Iterator[DirectoryEntry]:
@@ -1066,7 +1087,7 @@ class FilesAPI:
         Returns the contents of a directory. If there is no directory at the specified path, the API returns a
         HTTP 404 error.
         
-        :param directory_path: str
+        :param directory_path: str | Path
           The absolute path of a directory.
         :param page_size: int (optional)
           The maximum number of directory entries to return. The response may contain fewer entries. If the
@@ -1097,7 +1118,7 @@ class FilesAPI:
         while True:
             json = self._api.do(
                 'GET',
-                f'/api/2.0/fs/directories{_escape_multi_segment_path_parameter(directory_path)}',
+                f'/api/2.0/fs/directories{_escape_multi_segment_path_parameter(str(directory_path))}',
                 query=query,
                 headers=headers)
             if 'contents' in json:
@@ -1107,7 +1128,7 @@ class FilesAPI:
                 return
             query['page_token'] = json['next_page_token']
 
-    def upload(self, file_path: str, contents: BinaryIO, *, overwrite: Optional[bool] = None):
+    def upload(self, file_path: str | Path, contents: BinaryIO, *, overwrite: Optional[bool] = None):
         """Upload a file.
         
         Uploads a file of up to 5 GiB. The file contents should be sent as the request body as raw bytes (an
@@ -1115,7 +1136,7 @@ class FilesAPI:
         resulting file will be exactly the bytes sent in the request body. If the request is successful, there
         is no response body.
         
-        :param file_path: str
+        :param file_path: str | Path
           The absolute path of the file.
         :param contents: BinaryIO
         :param overwrite: bool (optional)
@@ -1129,7 +1150,7 @@ class FilesAPI:
         headers = {'Content-Type': 'application/octet-stream', }
 
         self._api.do('PUT',
-                     f'/api/2.0/fs/files{_escape_multi_segment_path_parameter(file_path)}',
+                     f'/api/2.0/fs/files{_escape_multi_segment_path_parameter(str(file_path))}',
                      query=query,
                      headers=headers,
                      data=contents)
