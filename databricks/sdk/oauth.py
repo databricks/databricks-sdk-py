@@ -228,16 +228,19 @@ class Refreshable(TokenSource):
         self._disable_async = disable_async
         # Lock
         self._lock = threading.Lock()
-        # Non Thread safe properties. Protected by the lock above.
+        # Non Thread safe properties. They should be accessed only when protected by the lock above.
         self._token = token
         self._is_refreshing = False
         self._refresh_err = False
 
+    # This is the main entry point for the Token. Do not access the token
+    # using any of the internal functions.
     def token(self) -> Token:
         """Returns a valid token, blocking if async refresh is disabled."""
-        if self._disable_async:
-            return self._blocking_token()
-        return self._async_token()
+        with self._lock:
+            if self._disable_async:
+                return self._blocking_token()
+            return self._async_token()
 
     def _async_token(self) -> Token:
         """
@@ -245,9 +248,8 @@ class Refreshable(TokenSource):
         If the token is stale, triggers an asynchronous refresh.
         If the token is expired, refreshes it synchronously, blocking until the refresh is complete.
         """
-        with self._lock:
-            state = Refreshable._token_state(self._token, self._stale_duration)
-            token = self._token
+        state = self._token_state()
+        token = self._token
 
         if state == _TokenState.FRESH:
             return token
@@ -256,40 +258,36 @@ class Refreshable(TokenSource):
             return token
         return self._blocking_token()
 
-    # This is a class method and we pass the token to avoid
-    # concurrency issues and deadlocks.
-    @classmethod
-    def _token_state(cls, token: Token, stale_duration: timedelta) -> _TokenState:
+    def _token_state(self) -> _TokenState:
         """Returns the current state of the token."""
-        if not token or not token.valid:
+        if not self._token or not self._token.valid:
             return _TokenState.EXPIRED
-        if not token.expiry:
+        if not self._token.expiry:
             return _TokenState.FRESH
 
-        lifespan = token.expiry - datetime.now()
+        lifespan = self._token.expiry - datetime.now()
         if lifespan < timedelta(seconds=0):
             return _TokenState.EXPIRED
-        if lifespan < stale_duration:
+        if lifespan < self._stale_duration:
             return _TokenState.STALE
         return _TokenState.FRESH
 
     def _blocking_token(self) -> Token:
         """Returns a token, blocking if necessary to refresh it."""
-        with self._lock:
-            state = Refreshable._token_state(self._token, self._stale_duration)
-            # This is important to recover from potential previous failed attempts
-            # to refresh the token asynchronously.
-            self._refresh_err = False
-            self._is_refreshing = False
+        state = self._token_state()
+        # This is important to recover from potential previous failed attempts
+        # to refresh the token asynchronously.
+        self._refresh_err = False
+        self._is_refreshing = False
 
-            # It's possible that the token got refreshed (either by a _blocking_refresh or
-            # an _async_refresh call) while this particular call was waiting to acquire
-            # the lock. This check avoids refreshing the token again in such cases.
-            if state != _TokenState.EXPIRED:
-                return self._token
-
-            self._token = self.refresh()
+        # It's possible that the token got refreshed (either by a _blocking_refresh or
+        # an _async_refresh call) while this particular call was waiting to acquire
+        # the lock. This check avoids refreshing the token again in such cases.
+        if state != _TokenState.EXPIRED:
             return self._token
+
+        self._token = self.refresh()
+        return self._token
 
     def _trigger_async_refresh(self):
         """Starts an asynchronous refresh if none is in progress."""
@@ -311,14 +309,12 @@ class Refreshable(TokenSource):
                     self._refresh_err = True
                 self._is_refreshing = False
 
-        with self._lock:
-            state = Refreshable._token_state(self._token, self._stale_duration)
-            # The token may have been refreshed by another thread.
-            if state == _TokenState.FRESH:
-                return
-            if not self._is_refreshing and not self._refresh_err:
-                self._is_refreshing = True
-                Refreshable._get_executor().submit(_refresh_internal)
+        # The token may have been refreshed by another thread.
+        if self._token_state() == _TokenState.FRESH:
+            return
+        if not self._is_refreshing and not self._refresh_err:
+            self._is_refreshing = True
+            Refreshable._get_executor().submit(_refresh_internal)
 
     @abstractmethod
     def refresh(self) -> Token:
@@ -412,7 +408,7 @@ class SessionCredentials(Refreshable):
         super().__init__(token)
 
     def as_dict(self) -> dict:
-        return {'token': self._token.as_dict()}
+        return {'token': self.token().as_dict()}
 
     @staticmethod
     def from_dict(raw: dict,
