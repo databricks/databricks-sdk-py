@@ -5,10 +5,14 @@ from typing import Optional, Pattern
 from databricks.sdk import WorkspaceClient
 
 
-def make_getrun_path_pattern(run_id: int, page_token: str) -> Pattern[str]:
-    return re.compile(
-        rf'{re.escape("http://localhost/api/")}2.\d{re.escape(f"/jobs/runs/get?page_token={page_token}&run_id={run_id}")}'
-    )
+def make_getrun_path_pattern(run_id: int, page_token: Optional[str] = None) -> Pattern[str]:
+    if page_token:
+        return re.compile(
+            rf'{re.escape("http://localhost/api/")}2.\d{re.escape(f"/jobs/runs/get?page_token={page_token}&run_id={run_id}")}'
+        )
+    else:
+        return re.compile(
+            rf'{re.escape("http://localhost/api/")}2.\d{re.escape(f"/jobs/runs/get?run_id={run_id}")}')
 
 
 def make_getjob_path_pattern(job_id: int, page_token: Optional[str] = None) -> Pattern[str]:
@@ -24,6 +28,12 @@ def make_getjob_path_pattern(job_id: int, page_token: Optional[str] = None) -> P
 def make_listjobs_path_pattern(page_token: str) -> Pattern[str]:
     return re.compile(
         rf'{re.escape("http://localhost/api/")}2.\d{re.escape(f"/jobs/list")}\?(?:expand_tasks=(?:true|false)&)?page_token={re.escape(page_token)}'
+    )
+
+
+def make_listruns_path_pattern(page_token: str) -> Pattern[str]:
+    return re.compile(
+        rf'{re.escape("http://localhost/api/")}2.\d{re.escape(f"/jobs/runs/list")}\?(?:expand_tasks=(?:true|false)&)?page_token={re.escape(page_token)}'
     )
 
 
@@ -617,3 +627,190 @@ def test_list_jobs_with_many_tasks(config, requests_mock):
     # check that job_id 300 was never used in jobs/get call
     history = requests_mock.request_history
     assert all('300' not in request.qs.get("job_id", ['']) for request in history)
+
+
+def test_list_runs_without_task_expansion(config, requests_mock):
+    listruns_page1 = {
+        "runs": [{
+            "run_id": 100,
+            "run_name": "run100",
+        }, {
+            "run_id":
+            200,
+            "run_name":
+            "run200",
+            "job_parameters": [{
+                "name": "param1",
+                "default": "default1"
+            }, {
+                "name": "param2",
+                "default": "default2"
+            }]
+        }, {
+            "run_id": 300,
+            "run_name": "run300",
+        }],
+        "next_page_token":
+        "tokenToSecondPage"
+    }
+    listruns_page2 = {
+        "runs": [{
+            "run_id": 400,
+            "run_name": "run400",
+            "repair_history": [{
+                "id": "repair400_1",
+            }, {
+                "id": "repair400_2",
+            }]
+        }]
+    }
+
+    requests_mock.get(make_listruns_path_pattern("initialToken"), text=json.dumps(listruns_page1))
+    requests_mock.get(make_listruns_path_pattern("tokenToSecondPage"), text=json.dumps(listruns_page2))
+    w = WorkspaceClient(config=config)
+
+    runs_list = list(w.jobs.list_runs(expand_tasks=False, page_token="initialToken"))
+    runs_dict = [run.as_dict() for run in runs_list]
+
+    assert runs_dict == [{
+        "run_id": 100,
+        "run_name": "run100",
+    }, {
+        "run_id":
+        200,
+        "run_name":
+        "run200",
+        "job_parameters": [{
+            "name": "param1",
+            "default": "default1"
+        }, {
+            "name": "param2",
+            "default": "default2"
+        }]
+    }, {
+        "run_id": 300,
+        "run_name": "run300",
+    }, {
+        "run_id": 400,
+        "run_name": "run400",
+        "repair_history": [{
+            "id": "repair400_1",
+        }, {
+            "id": "repair400_2",
+        }]
+    }]
+
+    # only two requests should be made which are jobs/list requests
+    assert requests_mock.call_count == 2
+
+
+def test_list_runs(config, requests_mock):
+    listruns_page1 = {
+        "runs": [{
+            "run_id": 100,
+            "tasks": [{
+                "task_key": "taskkey101"
+            }, {
+                "task_key": "taskkey102"
+            }],
+            "has_more": True
+        }, {
+            "run_id": 200,
+            "tasks": [{
+                "task_key": "taskkey201"
+            }]
+        }, {
+            "run_id": 300,
+            "tasks": [{
+                "task_key": "taskkey301"
+            }]
+        }],
+        "next_page_token":
+        "tokenToSecondPage"
+    }
+    listruns_page2 = {
+        "runs": [{
+            "run_id": 400,
+            "tasks": [{
+                "task_key": "taskkey401"
+            }, {
+                "task_key": "taskkey402"
+            }],
+            "has_more": True
+        }]
+    }
+
+    getrun_100_page1 = {
+        "run_id": 100,
+        "tasks": [{
+            "task_key": "taskkey101"
+        }, {
+            "task_key": "taskkey102"
+        }],
+        "next_page_token": "tokenToSecondPage_100"
+    }
+    getrun_100_page2 = {"run_id": 100, "tasks": [{"task_key": "taskkey103"}]}
+    getrun_400_page1 = {
+        "run_id": 400,
+        "tasks": [{
+            "task_key": "taskkey401"
+        }, {
+            "task_key": "taskkey403"
+        }],
+        "next_page_token": "tokenToSecondPage_400"
+    }
+    getrun_400_page2 = {"run_id": 400, "tasks": [{"task_key": "taskkey402"}, {"task_key": "taskkey404"}]}
+
+    requests_mock.get(make_listruns_path_pattern("initialToken"), text=json.dumps(listruns_page1))
+    requests_mock.get(make_listruns_path_pattern("tokenToSecondPage"), text=json.dumps(listruns_page2))
+
+    requests_mock.get(make_getrun_path_pattern(100), text=json.dumps(getrun_100_page1))
+    requests_mock.get(make_getrun_path_pattern(100, "tokenToSecondPage_100"),
+                      text=json.dumps(getrun_100_page2))
+
+    requests_mock.get(make_getrun_path_pattern(400), text=json.dumps(getrun_400_page1))
+    requests_mock.get(make_getrun_path_pattern(400, "tokenToSecondPage_400"),
+                      text=json.dumps(getrun_400_page2))
+    w = WorkspaceClient(config=config)
+
+    runs_list = list(w.jobs.list_runs(expand_tasks=True, page_token="initialToken"))
+    runs_dict = [run.as_dict() for run in runs_list]
+
+    assert runs_dict == [{
+        "run_id":
+        100,
+        "tasks": [{
+            "task_key": "taskkey101",
+        }, {
+            "task_key": "taskkey102",
+        }, {
+            "task_key": "taskkey103",
+        }],
+    }, {
+        "run_id": 200,
+        "tasks": [{
+            "task_key": "taskkey201",
+        }],
+    }, {
+        "run_id": 300,
+        "tasks": [{
+            "task_key": "taskkey301",
+        }],
+    }, {
+        "run_id":
+        400,
+        "tasks": [{
+            "task_key": "taskkey401",
+        }, {
+            "task_key": "taskkey403",
+        }, {
+            "task_key": "taskkey402",
+        }, {
+            "task_key": "taskkey404",
+        }],
+    }]
+
+    # check that job_id 200 and 300 was never used in runs/get call
+    history = requests_mock.request_history
+    assert all('300' not in request.qs.get("run_id", ['']) for request in history)
+    assert all('200' not in request.qs.get("run_id", ['']) for request in history)
