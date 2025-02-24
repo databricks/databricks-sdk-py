@@ -1,8 +1,68 @@
+from __future__ import annotations
+
 import threading
 from dataclasses import dataclass
-from typing import Callable, List
+from typing import Callable, List, Optional
+from urllib import parse
 
+from databricks.sdk import config, oauth
 from databricks.sdk.oauth import Token
+
+URL_ENCODED_CONTENT_TYPE = "application/x-www-form-urlencoded"
+JWT_BEARER_GRANT_TYPE = "urn:ietf:params:oauth:grant-type:jwt-bearer"
+OIDC_TOKEN_PATH = "/oidc/v1/token"
+
+
+class DataPlaneTokenSource:
+    """
+    EXPERIMENTAL Manages token sources for multiple DataPlane endpoints.
+    """
+
+    # TODO: Enable async once its stable. @oauth_credentials_provider must also have async enabled.
+    def __init__(self, cfg: config.Config, disable_async: Optional[bool] = True):
+        self._cfg = cfg
+        self._token_sources = {}
+        self._disable_async = disable_async
+
+    def token(self, endpoint: str, auth_details: str):
+        """
+        Get a token for a specific DataPlane endpoint.
+        :param endpoint: endpoint URL for which to get a token
+        :param auth_details:  authorization details used to generate the token
+        :return: a token for the specified endpoint
+        """
+        key = f"{endpoint}:{auth_details}"
+        token_source = self._token_sources.get(key)
+        if not token_source:
+            token_source = DataPlaneEndpointTokenSource(self._cfg, auth_details, self._disable_async)
+            self._token_sources[key] = token_source
+        return token_source.token()
+
+
+class DataPlaneEndpointTokenSource(oauth.Refreshable):
+    """
+    EXPERIMENTAL A token source for a specific DataPlane endpoint.
+    """
+
+    def __init__(self, cfg: config.Config, auth_details: str, disable_async: bool):
+        super().__init__(disable_async=disable_async)
+        self._auth_details = auth_details
+        self._cpts = cfg.oauth_token
+        self._cfg = cfg
+
+    def refresh(self) -> Token:
+        control_plane_token = self._cpts()
+        headers = {"Content-Type": URL_ENCODED_CONTENT_TYPE}
+        params = parse.urlencode({
+            "grant_type": JWT_BEARER_GRANT_TYPE,
+            "authorization_details": self._auth_details,
+            "assertion": control_plane_token.access_token
+        })
+        return oauth.retrieve_token(client_id=self._cfg.client_id,
+                                    client_secret=self._cfg.client_secret,
+                                    token_url=self._cfg.host + OIDC_TOKEN_PATH,
+                                    params=params,
+                                    headers=headers)
 
 
 @dataclass
@@ -14,6 +74,9 @@ class DataPlaneDetails:
     """URL used to query the endpoint through the DataPlane."""
     token: Token
     """Token to query the DataPlane endpoint."""
+
+
+## Old implementation. #TODO: Remove after the new implementation is used
 
 
 class DataPlaneService:
