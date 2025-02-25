@@ -7631,7 +7631,7 @@ class UpdatePermissions:
         body = {}
         if self.changes: body['changes'] = [v.as_dict() for v in self.changes]
         if self.full_name is not None: body['full_name'] = self.full_name
-        if self.securable_type is not None: body['securable_type'] = self.securable_type.value
+        if self.securable_type is not None: body['securable_type'] = self.securable_type
         return body
 
     def as_shallow_dict(self) -> dict:
