@@ -1,5 +1,6 @@
 import configparser
 import copy
+import datetime
 import logging
 import os
 import pathlib
@@ -96,6 +97,45 @@ class Config:
         env='DATABRICKS_ENABLE_EXPERIMENTAL_FILES_API_CLIENT')
     files_api_client_download_max_total_recovers = None
     files_api_client_download_max_total_recovers_without_progressing = 1
+
+    # File multipart upload parameters
+    # ----------------------
+
+    # Minimal input stream size (bytes) to use multipart / resumable uploads.
+    # For small files it's more efficient to make one single-shot upload request.
+    # When uploading a file, SDK will initially buffer this many bytes from input stream.
+    # This parameter can be less or bigger than multipart_upload_chunk_size.
+    multipart_upload_min_stream_size: int = 5 * 1024 * 1024
+
+    # Maximum number of presigned URLs that can be requested at a time.
+    #
+    # The more URLs we request at once, the higher chance is that some of the URLs will expire
+    # before we get to use it. We discover the presigned URL is expired *after* sending the
+    # input stream partition to the server. So to retry the upload of this partition we must rewind
+    # the stream back. In case of a non-seekable stream we cannot rewind, so we'll abort
+    # the upload. To reduce the chance of this, we're requesting presigned URLs one by one
+    # and using them immediately.
+    multipart_upload_batch_url_count: int = 1
+
+    # Size of the chunk to use for multipart uploads.
+    #
+    # The smaller chunk is, the less chance for network errors (or URL get expired),
+    # but the more requests we'll make.
+    # For AWS, minimum is 5Mb: https://docs.aws.amazon.com/AmazonS3/latest/userguide/qfacts.html
+    # For GCP, minimum is 256 KiB (and also recommended multiple is 256 KiB)
+    # boto uses 8Mb: https://boto3.amazonaws.com/v1/documentation/api/latest/reference/customizations/s3.html#boto3.s3.transfer.TransferConfig
+    multipart_upload_chunk_size: int = 10 * 1024 * 1024
+
+    # use maximum duration of 1 hour
+    multipart_upload_url_expiration_duration: datetime.timedelta = datetime.timedelta(hours=1)
+
+    # This is not a "wall time" cutoff for the whole upload request,
+    # but a maximum time between consecutive data reception events (even 1 byte) from the server
+    multipart_upload_single_chunk_upload_timeout_seconds: float = 60
+
+    # Limit of retries during multipart upload.
+    # Retry counter is reset when progressing along the stream.
+    multipart_upload_max_retries = 3
 
     def __init__(
             self,
