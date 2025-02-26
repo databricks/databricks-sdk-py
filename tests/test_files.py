@@ -1429,7 +1429,7 @@ class ResumableUploadTestCase:
                     if not is_status_check_request:
                         body = request.body.read()
 
-                        match = re.match('bytes (\d+)-(\d+)/(.+)', content_range_header)
+                        match = re.match('bytes (\\d+)-(\\d+)/(.+)', content_range_header)
                         [range_start_s, range_end_s, file_size_s] = match.groups()
 
                         server_state.save_part(int(range_start_s), int(range_end_s), body, file_size_s)
