@@ -9,7 +9,7 @@ from typing import BinaryIO, Dict, Iterator, List, Optional
 
 from ._internal import _enum, _from_dict, _repeated_dict
 
-_LOG = logging.getLogger('databricks.sdk')
+_LOG = logging.getLogger("databricks.sdk")
 
 from databricks.sdk.service import compute
 
@@ -31,31 +31,37 @@ class ActionConfiguration:
         """Serializes the ActionConfiguration into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.action_configuration_id is not None:
-            body['action_configuration_id'] = self.action_configuration_id
-        if self.action_type is not None: body['action_type'] = self.action_type.value
-        if self.target is not None: body['target'] = self.target
+            body["action_configuration_id"] = self.action_configuration_id
+        if self.action_type is not None:
+            body["action_type"] = self.action_type.value
+        if self.target is not None:
+            body["target"] = self.target
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ActionConfiguration into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.action_configuration_id is not None:
-            body['action_configuration_id'] = self.action_configuration_id
-        if self.action_type is not None: body['action_type'] = self.action_type
-        if self.target is not None: body['target'] = self.target
+            body["action_configuration_id"] = self.action_configuration_id
+        if self.action_type is not None:
+            body["action_type"] = self.action_type
+        if self.target is not None:
+            body["target"] = self.target
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ActionConfiguration:
         """Deserializes the ActionConfiguration from a dictionary."""
-        return cls(action_configuration_id=d.get('action_configuration_id', None),
-                   action_type=_enum(d, 'action_type', ActionConfigurationType),
-                   target=d.get('target', None))
+        return cls(
+            action_configuration_id=d.get("action_configuration_id", None),
+            action_type=_enum(d, "action_type", ActionConfigurationType),
+            target=d.get("target", None),
+        )
 
 
 class ActionConfigurationType(Enum):
 
-    EMAIL_NOTIFICATION = 'EMAIL_NOTIFICATION'
+    EMAIL_NOTIFICATION = "EMAIL_NOTIFICATION"
 
 
 @dataclass
@@ -85,51 +91,62 @@ class AlertConfiguration:
         """Serializes the AlertConfiguration into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.action_configurations:
-            body['action_configurations'] = [v.as_dict() for v in self.action_configurations]
+            body["action_configurations"] = [v.as_dict() for v in self.action_configurations]
         if self.alert_configuration_id is not None:
-            body['alert_configuration_id'] = self.alert_configuration_id
-        if self.quantity_threshold is not None: body['quantity_threshold'] = self.quantity_threshold
-        if self.quantity_type is not None: body['quantity_type'] = self.quantity_type.value
-        if self.time_period is not None: body['time_period'] = self.time_period.value
-        if self.trigger_type is not None: body['trigger_type'] = self.trigger_type.value
+            body["alert_configuration_id"] = self.alert_configuration_id
+        if self.quantity_threshold is not None:
+            body["quantity_threshold"] = self.quantity_threshold
+        if self.quantity_type is not None:
+            body["quantity_type"] = self.quantity_type.value
+        if self.time_period is not None:
+            body["time_period"] = self.time_period.value
+        if self.trigger_type is not None:
+            body["trigger_type"] = self.trigger_type.value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the AlertConfiguration into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.action_configurations: body['action_configurations'] = self.action_configurations
+        if self.action_configurations:
+            body["action_configurations"] = self.action_configurations
         if self.alert_configuration_id is not None:
-            body['alert_configuration_id'] = self.alert_configuration_id
-        if self.quantity_threshold is not None: body['quantity_threshold'] = self.quantity_threshold
-        if self.quantity_type is not None: body['quantity_type'] = self.quantity_type
-        if self.time_period is not None: body['time_period'] = self.time_period
-        if self.trigger_type is not None: body['trigger_type'] = self.trigger_type
+            body["alert_configuration_id"] = self.alert_configuration_id
+        if self.quantity_threshold is not None:
+            body["quantity_threshold"] = self.quantity_threshold
+        if self.quantity_type is not None:
+            body["quantity_type"] = self.quantity_type
+        if self.time_period is not None:
+            body["time_period"] = self.time_period
+        if self.trigger_type is not None:
+            body["trigger_type"] = self.trigger_type
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> AlertConfiguration:
         """Deserializes the AlertConfiguration from a dictionary."""
-        return cls(action_configurations=_repeated_dict(d, 'action_configurations', ActionConfiguration),
-                   alert_configuration_id=d.get('alert_configuration_id', None),
-                   quantity_threshold=d.get('quantity_threshold', None),
-                   quantity_type=_enum(d, 'quantity_type', AlertConfigurationQuantityType),
-                   time_period=_enum(d, 'time_period', AlertConfigurationTimePeriod),
-                   trigger_type=_enum(d, 'trigger_type', AlertConfigurationTriggerType))
+        return cls(
+            action_configurations=_repeated_dict(d, "action_configurations", ActionConfiguration),
+            alert_configuration_id=d.get("alert_configuration_id", None),
+            quantity_threshold=d.get("quantity_threshold", None),
+            quantity_type=_enum(d, "quantity_type", AlertConfigurationQuantityType),
+            time_period=_enum(d, "time_period", AlertConfigurationTimePeriod),
+            trigger_type=_enum(d, "trigger_type", AlertConfigurationTriggerType),
+        )
 
 
 class AlertConfigurationQuantityType(Enum):
 
-    LIST_PRICE_DOLLARS_USD = 'LIST_PRICE_DOLLARS_USD'
+    LIST_PRICE_DOLLARS_USD = "LIST_PRICE_DOLLARS_USD"
 
 
 class AlertConfigurationTimePeriod(Enum):
 
-    MONTH = 'MONTH'
+    MONTH = "MONTH"
 
 
 class AlertConfigurationTriggerType(Enum):
 
-    CUMULATIVE_SPENDING_EXCEEDED = 'CUMULATIVE_SPENDING_EXCEEDED'
+    CUMULATIVE_SPENDING_EXCEEDED = "CUMULATIVE_SPENDING_EXCEEDED"
 
 
 @dataclass
@@ -161,40 +178,53 @@ class BudgetConfiguration:
     def as_dict(self) -> dict:
         """Serializes the BudgetConfiguration into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.account_id is not None: body['account_id'] = self.account_id
+        if self.account_id is not None:
+            body["account_id"] = self.account_id
         if self.alert_configurations:
-            body['alert_configurations'] = [v.as_dict() for v in self.alert_configurations]
+            body["alert_configurations"] = [v.as_dict() for v in self.alert_configurations]
         if self.budget_configuration_id is not None:
-            body['budget_configuration_id'] = self.budget_configuration_id
-        if self.create_time is not None: body['create_time'] = self.create_time
-        if self.display_name is not None: body['display_name'] = self.display_name
-        if self.filter: body['filter'] = self.filter.as_dict()
-        if self.update_time is not None: body['update_time'] = self.update_time
+            body["budget_configuration_id"] = self.budget_configuration_id
+        if self.create_time is not None:
+            body["create_time"] = self.create_time
+        if self.display_name is not None:
+            body["display_name"] = self.display_name
+        if self.filter:
+            body["filter"] = self.filter.as_dict()
+        if self.update_time is not None:
+            body["update_time"] = self.update_time
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the BudgetConfiguration into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.account_id is not None: body['account_id'] = self.account_id
-        if self.alert_configurations: body['alert_configurations'] = self.alert_configurations
+        if self.account_id is not None:
+            body["account_id"] = self.account_id
+        if self.alert_configurations:
+            body["alert_configurations"] = self.alert_configurations
         if self.budget_configuration_id is not None:
-            body['budget_configuration_id'] = self.budget_configuration_id
-        if self.create_time is not None: body['create_time'] = self.create_time
-        if self.display_name is not None: body['display_name'] = self.display_name
-        if self.filter: body['filter'] = self.filter
-        if self.update_time is not None: body['update_time'] = self.update_time
+            body["budget_configuration_id"] = self.budget_configuration_id
+        if self.create_time is not None:
+            body["create_time"] = self.create_time
+        if self.display_name is not None:
+            body["display_name"] = self.display_name
+        if self.filter:
+            body["filter"] = self.filter
+        if self.update_time is not None:
+            body["update_time"] = self.update_time
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> BudgetConfiguration:
         """Deserializes the BudgetConfiguration from a dictionary."""
-        return cls(account_id=d.get('account_id', None),
-                   alert_configurations=_repeated_dict(d, 'alert_configurations', AlertConfiguration),
-                   budget_configuration_id=d.get('budget_configuration_id', None),
-                   create_time=d.get('create_time', None),
-                   display_name=d.get('display_name', None),
-                   filter=_from_dict(d, 'filter', BudgetConfigurationFilter),
-                   update_time=d.get('update_time', None))
+        return cls(
+            account_id=d.get("account_id", None),
+            alert_configurations=_repeated_dict(d, "alert_configurations", AlertConfiguration),
+            budget_configuration_id=d.get("budget_configuration_id", None),
+            create_time=d.get("create_time", None),
+            display_name=d.get("display_name", None),
+            filter=_from_dict(d, "filter", BudgetConfigurationFilter),
+            update_time=d.get("update_time", None),
+        )
 
 
 @dataclass
@@ -210,22 +240,28 @@ class BudgetConfigurationFilter:
     def as_dict(self) -> dict:
         """Serializes the BudgetConfigurationFilter into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.tags: body['tags'] = [v.as_dict() for v in self.tags]
-        if self.workspace_id: body['workspace_id'] = self.workspace_id.as_dict()
+        if self.tags:
+            body["tags"] = [v.as_dict() for v in self.tags]
+        if self.workspace_id:
+            body["workspace_id"] = self.workspace_id.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the BudgetConfigurationFilter into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.tags: body['tags'] = self.tags
-        if self.workspace_id: body['workspace_id'] = self.workspace_id
+        if self.tags:
+            body["tags"] = self.tags
+        if self.workspace_id:
+            body["workspace_id"] = self.workspace_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> BudgetConfigurationFilter:
         """Deserializes the BudgetConfigurationFilter from a dictionary."""
-        return cls(tags=_repeated_dict(d, 'tags', BudgetConfigurationFilterTagClause),
-                   workspace_id=_from_dict(d, 'workspace_id', BudgetConfigurationFilterWorkspaceIdClause))
+        return cls(
+            tags=_repeated_dict(d, "tags", BudgetConfigurationFilterTagClause),
+            workspace_id=_from_dict(d, "workspace_id", BudgetConfigurationFilterWorkspaceIdClause),
+        )
 
 
 @dataclass
@@ -237,27 +273,33 @@ class BudgetConfigurationFilterClause:
     def as_dict(self) -> dict:
         """Serializes the BudgetConfigurationFilterClause into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.operator is not None: body['operator'] = self.operator.value
-        if self.values: body['values'] = [v for v in self.values]
+        if self.operator is not None:
+            body["operator"] = self.operator.value
+        if self.values:
+            body["values"] = [v for v in self.values]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the BudgetConfigurationFilterClause into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.operator is not None: body['operator'] = self.operator
-        if self.values: body['values'] = self.values
+        if self.operator is not None:
+            body["operator"] = self.operator
+        if self.values:
+            body["values"] = self.values
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> BudgetConfigurationFilterClause:
         """Deserializes the BudgetConfigurationFilterClause from a dictionary."""
-        return cls(operator=_enum(d, 'operator', BudgetConfigurationFilterOperator),
-                   values=d.get('values', None))
+        return cls(
+            operator=_enum(d, "operator", BudgetConfigurationFilterOperator),
+            values=d.get("values", None),
+        )
 
 
 class BudgetConfigurationFilterOperator(Enum):
 
-    IN = 'IN'
+    IN = "IN"
 
 
 @dataclass
@@ -269,21 +311,28 @@ class BudgetConfigurationFilterTagClause:
     def as_dict(self) -> dict:
         """Serializes the BudgetConfigurationFilterTagClause into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.key is not None: body['key'] = self.key
-        if self.value: body['value'] = self.value.as_dict()
+        if self.key is not None:
+            body["key"] = self.key
+        if self.value:
+            body["value"] = self.value.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the BudgetConfigurationFilterTagClause into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.key is not None: body['key'] = self.key
-        if self.value: body['value'] = self.value
+        if self.key is not None:
+            body["key"] = self.key
+        if self.value:
+            body["value"] = self.value
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> BudgetConfigurationFilterTagClause:
         """Deserializes the BudgetConfigurationFilterTagClause from a dictionary."""
-        return cls(key=d.get('key', None), value=_from_dict(d, 'value', BudgetConfigurationFilterClause))
+        return cls(
+            key=d.get("key", None),
+            value=_from_dict(d, "value", BudgetConfigurationFilterClause),
+        )
 
 
 @dataclass
@@ -295,22 +344,28 @@ class BudgetConfigurationFilterWorkspaceIdClause:
     def as_dict(self) -> dict:
         """Serializes the BudgetConfigurationFilterWorkspaceIdClause into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.operator is not None: body['operator'] = self.operator.value
-        if self.values: body['values'] = [v for v in self.values]
+        if self.operator is not None:
+            body["operator"] = self.operator.value
+        if self.values:
+            body["values"] = [v for v in self.values]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the BudgetConfigurationFilterWorkspaceIdClause into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.operator is not None: body['operator'] = self.operator
-        if self.values: body['values'] = self.values
+        if self.operator is not None:
+            body["operator"] = self.operator
+        if self.values:
+            body["values"] = self.values
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> BudgetConfigurationFilterWorkspaceIdClause:
         """Deserializes the BudgetConfigurationFilterWorkspaceIdClause from a dictionary."""
-        return cls(operator=_enum(d, 'operator', BudgetConfigurationFilterOperator),
-                   values=d.get('values', None))
+        return cls(
+            operator=_enum(d, "operator", BudgetConfigurationFilterOperator),
+            values=d.get("values", None),
+        )
 
 
 @dataclass
@@ -330,25 +385,33 @@ class BudgetPolicy:
     def as_dict(self) -> dict:
         """Serializes the BudgetPolicy into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.custom_tags: body['custom_tags'] = [v.as_dict() for v in self.custom_tags]
-        if self.policy_id is not None: body['policy_id'] = self.policy_id
-        if self.policy_name is not None: body['policy_name'] = self.policy_name
+        if self.custom_tags:
+            body["custom_tags"] = [v.as_dict() for v in self.custom_tags]
+        if self.policy_id is not None:
+            body["policy_id"] = self.policy_id
+        if self.policy_name is not None:
+            body["policy_name"] = self.policy_name
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the BudgetPolicy into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.custom_tags: body['custom_tags'] = self.custom_tags
-        if self.policy_id is not None: body['policy_id'] = self.policy_id
-        if self.policy_name is not None: body['policy_name'] = self.policy_name
+        if self.custom_tags:
+            body["custom_tags"] = self.custom_tags
+        if self.policy_id is not None:
+            body["policy_id"] = self.policy_id
+        if self.policy_name is not None:
+            body["policy_name"] = self.policy_name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> BudgetPolicy:
         """Deserializes the BudgetPolicy from a dictionary."""
-        return cls(custom_tags=_repeated_dict(d, 'custom_tags', compute.CustomPolicyTag),
-                   policy_id=d.get('policy_id', None),
-                   policy_name=d.get('policy_name', None))
+        return cls(
+            custom_tags=_repeated_dict(d, "custom_tags", compute.CustomPolicyTag),
+            policy_id=d.get("policy_id", None),
+            policy_name=d.get("policy_name", None),
+        )
 
 
 @dataclass
@@ -363,22 +426,28 @@ class CreateBillingUsageDashboardRequest:
     def as_dict(self) -> dict:
         """Serializes the CreateBillingUsageDashboardRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.dashboard_type is not None: body['dashboard_type'] = self.dashboard_type.value
-        if self.workspace_id is not None: body['workspace_id'] = self.workspace_id
+        if self.dashboard_type is not None:
+            body["dashboard_type"] = self.dashboard_type.value
+        if self.workspace_id is not None:
+            body["workspace_id"] = self.workspace_id
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the CreateBillingUsageDashboardRequest into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.dashboard_type is not None: body['dashboard_type'] = self.dashboard_type
-        if self.workspace_id is not None: body['workspace_id'] = self.workspace_id
+        if self.dashboard_type is not None:
+            body["dashboard_type"] = self.dashboard_type
+        if self.workspace_id is not None:
+            body["workspace_id"] = self.workspace_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateBillingUsageDashboardRequest:
         """Deserializes the CreateBillingUsageDashboardRequest from a dictionary."""
-        return cls(dashboard_type=_enum(d, 'dashboard_type', UsageDashboardType),
-                   workspace_id=d.get('workspace_id', None))
+        return cls(
+            dashboard_type=_enum(d, "dashboard_type", UsageDashboardType),
+            workspace_id=d.get("workspace_id", None),
+        )
 
 
 @dataclass
@@ -389,19 +458,21 @@ class CreateBillingUsageDashboardResponse:
     def as_dict(self) -> dict:
         """Serializes the CreateBillingUsageDashboardResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.dashboard_id is not None: body['dashboard_id'] = self.dashboard_id
+        if self.dashboard_id is not None:
+            body["dashboard_id"] = self.dashboard_id
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the CreateBillingUsageDashboardResponse into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.dashboard_id is not None: body['dashboard_id'] = self.dashboard_id
+        if self.dashboard_id is not None:
+            body["dashboard_id"] = self.dashboard_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateBillingUsageDashboardResponse:
         """Deserializes the CreateBillingUsageDashboardResponse from a dictionary."""
-        return cls(dashboard_id=d.get('dashboard_id', None))
+        return cls(dashboard_id=d.get("dashboard_id", None))
 
 
 @dataclass
@@ -424,30 +495,42 @@ class CreateBudgetConfigurationBudget:
     def as_dict(self) -> dict:
         """Serializes the CreateBudgetConfigurationBudget into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.account_id is not None: body['account_id'] = self.account_id
+        if self.account_id is not None:
+            body["account_id"] = self.account_id
         if self.alert_configurations:
-            body['alert_configurations'] = [v.as_dict() for v in self.alert_configurations]
-        if self.display_name is not None: body['display_name'] = self.display_name
-        if self.filter: body['filter'] = self.filter.as_dict()
+            body["alert_configurations"] = [v.as_dict() for v in self.alert_configurations]
+        if self.display_name is not None:
+            body["display_name"] = self.display_name
+        if self.filter:
+            body["filter"] = self.filter.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the CreateBudgetConfigurationBudget into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.account_id is not None: body['account_id'] = self.account_id
-        if self.alert_configurations: body['alert_configurations'] = self.alert_configurations
-        if self.display_name is not None: body['display_name'] = self.display_name
-        if self.filter: body['filter'] = self.filter
+        if self.account_id is not None:
+            body["account_id"] = self.account_id
+        if self.alert_configurations:
+            body["alert_configurations"] = self.alert_configurations
+        if self.display_name is not None:
+            body["display_name"] = self.display_name
+        if self.filter:
+            body["filter"] = self.filter
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateBudgetConfigurationBudget:
         """Deserializes the CreateBudgetConfigurationBudget from a dictionary."""
-        return cls(account_id=d.get('account_id', None),
-                   alert_configurations=_repeated_dict(d, 'alert_configurations',
-                                                       CreateBudgetConfigurationBudgetAlertConfigurations),
-                   display_name=d.get('display_name', None),
-                   filter=_from_dict(d, 'filter', BudgetConfigurationFilter))
+        return cls(
+            account_id=d.get("account_id", None),
+            alert_configurations=_repeated_dict(
+                d,
+                "alert_configurations",
+                CreateBudgetConfigurationBudgetAlertConfigurations,
+            ),
+            display_name=d.get("display_name", None),
+            filter=_from_dict(d, "filter", BudgetConfigurationFilter),
+        )
 
 
 @dataclass
@@ -461,21 +544,28 @@ class CreateBudgetConfigurationBudgetActionConfigurations:
     def as_dict(self) -> dict:
         """Serializes the CreateBudgetConfigurationBudgetActionConfigurations into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.action_type is not None: body['action_type'] = self.action_type.value
-        if self.target is not None: body['target'] = self.target
+        if self.action_type is not None:
+            body["action_type"] = self.action_type.value
+        if self.target is not None:
+            body["target"] = self.target
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the CreateBudgetConfigurationBudgetActionConfigurations into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.action_type is not None: body['action_type'] = self.action_type
-        if self.target is not None: body['target'] = self.target
+        if self.action_type is not None:
+            body["action_type"] = self.action_type
+        if self.target is not None:
+            body["target"] = self.target
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateBudgetConfigurationBudgetActionConfigurations:
         """Deserializes the CreateBudgetConfigurationBudgetActionConfigurations from a dictionary."""
-        return cls(action_type=_enum(d, 'action_type', ActionConfigurationType), target=d.get('target', None))
+        return cls(
+            action_type=_enum(d, "action_type", ActionConfigurationType),
+            target=d.get("target", None),
+        )
 
 
 @dataclass
@@ -502,32 +592,46 @@ class CreateBudgetConfigurationBudgetAlertConfigurations:
         """Serializes the CreateBudgetConfigurationBudgetAlertConfigurations into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.action_configurations:
-            body['action_configurations'] = [v.as_dict() for v in self.action_configurations]
-        if self.quantity_threshold is not None: body['quantity_threshold'] = self.quantity_threshold
-        if self.quantity_type is not None: body['quantity_type'] = self.quantity_type.value
-        if self.time_period is not None: body['time_period'] = self.time_period.value
-        if self.trigger_type is not None: body['trigger_type'] = self.trigger_type.value
+            body["action_configurations"] = [v.as_dict() for v in self.action_configurations]
+        if self.quantity_threshold is not None:
+            body["quantity_threshold"] = self.quantity_threshold
+        if self.quantity_type is not None:
+            body["quantity_type"] = self.quantity_type.value
+        if self.time_period is not None:
+            body["time_period"] = self.time_period.value
+        if self.trigger_type is not None:
+            body["trigger_type"] = self.trigger_type.value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the CreateBudgetConfigurationBudgetAlertConfigurations into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.action_configurations: body['action_configurations'] = self.action_configurations
-        if self.quantity_threshold is not None: body['quantity_threshold'] = self.quantity_threshold
-        if self.quantity_type is not None: body['quantity_type'] = self.quantity_type
-        if self.time_period is not None: body['time_period'] = self.time_period
-        if self.trigger_type is not None: body['trigger_type'] = self.trigger_type
+        if self.action_configurations:
+            body["action_configurations"] = self.action_configurations
+        if self.quantity_threshold is not None:
+            body["quantity_threshold"] = self.quantity_threshold
+        if self.quantity_type is not None:
+            body["quantity_type"] = self.quantity_type
+        if self.time_period is not None:
+            body["time_period"] = self.time_period
+        if self.trigger_type is not None:
+            body["trigger_type"] = self.trigger_type
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateBudgetConfigurationBudgetAlertConfigurations:
         """Deserializes the CreateBudgetConfigurationBudgetAlertConfigurations from a dictionary."""
-        return cls(action_configurations=_repeated_dict(d, 'action_configurations',
-                                                        CreateBudgetConfigurationBudgetActionConfigurations),
-                   quantity_threshold=d.get('quantity_threshold', None),
-                   quantity_type=_enum(d, 'quantity_type', AlertConfigurationQuantityType),
-                   time_period=_enum(d, 'time_period', AlertConfigurationTimePeriod),
-                   trigger_type=_enum(d, 'trigger_type', AlertConfigurationTriggerType))
+        return cls(
+            action_configurations=_repeated_dict(
+                d,
+                "action_configurations",
+                CreateBudgetConfigurationBudgetActionConfigurations,
+            ),
+            quantity_threshold=d.get("quantity_threshold", None),
+            quantity_type=_enum(d, "quantity_type", AlertConfigurationQuantityType),
+            time_period=_enum(d, "time_period", AlertConfigurationTimePeriod),
+            trigger_type=_enum(d, "trigger_type", AlertConfigurationTriggerType),
+        )
 
 
 @dataclass
@@ -538,19 +642,21 @@ class CreateBudgetConfigurationRequest:
     def as_dict(self) -> dict:
         """Serializes the CreateBudgetConfigurationRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.budget: body['budget'] = self.budget.as_dict()
+        if self.budget:
+            body["budget"] = self.budget.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the CreateBudgetConfigurationRequest into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.budget: body['budget'] = self.budget
+        if self.budget:
+            body["budget"] = self.budget
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateBudgetConfigurationRequest:
         """Deserializes the CreateBudgetConfigurationRequest from a dictionary."""
-        return cls(budget=_from_dict(d, 'budget', CreateBudgetConfigurationBudget))
+        return cls(budget=_from_dict(d, "budget", CreateBudgetConfigurationBudget))
 
 
 @dataclass
@@ -561,19 +667,21 @@ class CreateBudgetConfigurationResponse:
     def as_dict(self) -> dict:
         """Serializes the CreateBudgetConfigurationResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.budget: body['budget'] = self.budget.as_dict()
+        if self.budget:
+            body["budget"] = self.budget.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the CreateBudgetConfigurationResponse into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.budget: body['budget'] = self.budget
+        if self.budget:
+            body["budget"] = self.budget
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateBudgetConfigurationResponse:
         """Deserializes the CreateBudgetConfigurationResponse from a dictionary."""
-        return cls(budget=_from_dict(d, 'budget', BudgetConfiguration))
+        return cls(budget=_from_dict(d, "budget", BudgetConfiguration))
 
 
 @dataclass
@@ -594,25 +702,33 @@ class CreateBudgetPolicyRequest:
     def as_dict(self) -> dict:
         """Serializes the CreateBudgetPolicyRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.custom_tags: body['custom_tags'] = [v.as_dict() for v in self.custom_tags]
-        if self.policy_name is not None: body['policy_name'] = self.policy_name
-        if self.request_id is not None: body['request_id'] = self.request_id
+        if self.custom_tags:
+            body["custom_tags"] = [v.as_dict() for v in self.custom_tags]
+        if self.policy_name is not None:
+            body["policy_name"] = self.policy_name
+        if self.request_id is not None:
+            body["request_id"] = self.request_id
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the CreateBudgetPolicyRequest into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.custom_tags: body['custom_tags'] = self.custom_tags
-        if self.policy_name is not None: body['policy_name'] = self.policy_name
-        if self.request_id is not None: body['request_id'] = self.request_id
+        if self.custom_tags:
+            body["custom_tags"] = self.custom_tags
+        if self.policy_name is not None:
+            body["policy_name"] = self.policy_name
+        if self.request_id is not None:
+            body["request_id"] = self.request_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateBudgetPolicyRequest:
         """Deserializes the CreateBudgetPolicyRequest from a dictionary."""
-        return cls(custom_tags=_repeated_dict(d, 'custom_tags', compute.CustomPolicyTag),
-                   policy_name=d.get('policy_name', None),
-                   request_id=d.get('request_id', None))
+        return cls(
+            custom_tags=_repeated_dict(d, "custom_tags", compute.CustomPolicyTag),
+            policy_name=d.get("policy_name", None),
+            request_id=d.get("request_id", None),
+        )
 
 
 @dataclass
@@ -689,45 +805,63 @@ class CreateLogDeliveryConfigurationParams:
     def as_dict(self) -> dict:
         """Serializes the CreateLogDeliveryConfigurationParams into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.config_name is not None: body['config_name'] = self.config_name
-        if self.credentials_id is not None: body['credentials_id'] = self.credentials_id
-        if self.delivery_path_prefix is not None: body['delivery_path_prefix'] = self.delivery_path_prefix
-        if self.delivery_start_time is not None: body['delivery_start_time'] = self.delivery_start_time
-        if self.log_type is not None: body['log_type'] = self.log_type.value
-        if self.output_format is not None: body['output_format'] = self.output_format.value
-        if self.status is not None: body['status'] = self.status.value
+        if self.config_name is not None:
+            body["config_name"] = self.config_name
+        if self.credentials_id is not None:
+            body["credentials_id"] = self.credentials_id
+        if self.delivery_path_prefix is not None:
+            body["delivery_path_prefix"] = self.delivery_path_prefix
+        if self.delivery_start_time is not None:
+            body["delivery_start_time"] = self.delivery_start_time
+        if self.log_type is not None:
+            body["log_type"] = self.log_type.value
+        if self.output_format is not None:
+            body["output_format"] = self.output_format.value
+        if self.status is not None:
+            body["status"] = self.status.value
         if self.storage_configuration_id is not None:
-            body['storage_configuration_id'] = self.storage_configuration_id
-        if self.workspace_ids_filter: body['workspace_ids_filter'] = [v for v in self.workspace_ids_filter]
+            body["storage_configuration_id"] = self.storage_configuration_id
+        if self.workspace_ids_filter:
+            body["workspace_ids_filter"] = [v for v in self.workspace_ids_filter]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the CreateLogDeliveryConfigurationParams into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.config_name is not None: body['config_name'] = self.config_name
-        if self.credentials_id is not None: body['credentials_id'] = self.credentials_id
-        if self.delivery_path_prefix is not None: body['delivery_path_prefix'] = self.delivery_path_prefix
-        if self.delivery_start_time is not None: body['delivery_start_time'] = self.delivery_start_time
-        if self.log_type is not None: body['log_type'] = self.log_type
-        if self.output_format is not None: body['output_format'] = self.output_format
-        if self.status is not None: body['status'] = self.status
+        if self.config_name is not None:
+            body["config_name"] = self.config_name
+        if self.credentials_id is not None:
+            body["credentials_id"] = self.credentials_id
+        if self.delivery_path_prefix is not None:
+            body["delivery_path_prefix"] = self.delivery_path_prefix
+        if self.delivery_start_time is not None:
+            body["delivery_start_time"] = self.delivery_start_time
+        if self.log_type is not None:
+            body["log_type"] = self.log_type
+        if self.output_format is not None:
+            body["output_format"] = self.output_format
+        if self.status is not None:
+            body["status"] = self.status
         if self.storage_configuration_id is not None:
-            body['storage_configuration_id'] = self.storage_configuration_id
-        if self.workspace_ids_filter: body['workspace_ids_filter'] = self.workspace_ids_filter
+            body["storage_configuration_id"] = self.storage_configuration_id
+        if self.workspace_ids_filter:
+            body["workspace_ids_filter"] = self.workspace_ids_filter
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateLogDeliveryConfigurationParams:
         """Deserializes the CreateLogDeliveryConfigurationParams from a dictionary."""
-        return cls(config_name=d.get('config_name', None),
-                   credentials_id=d.get('credentials_id', None),
-                   delivery_path_prefix=d.get('delivery_path_prefix', None),
-                   delivery_start_time=d.get('delivery_start_time', None),
-                   log_type=_enum(d, 'log_type', LogType),
-                   output_format=_enum(d, 'output_format', OutputFormat),
-                   status=_enum(d, 'status', LogDeliveryConfigStatus),
-                   storage_configuration_id=d.get('storage_configuration_id', None),
-                   workspace_ids_filter=d.get('workspace_ids_filter', None))
+        return cls(
+            config_name=d.get("config_name", None),
+            credentials_id=d.get("credentials_id", None),
+            delivery_path_prefix=d.get("delivery_path_prefix", None),
+            delivery_start_time=d.get("delivery_start_time", None),
+            log_type=_enum(d, "log_type", LogType),
+            output_format=_enum(d, "output_format", OutputFormat),
+            status=_enum(d, "status", LogDeliveryConfigStatus),
+            storage_configuration_id=d.get("storage_configuration_id", None),
+            workspace_ids_filter=d.get("workspace_ids_filter", None),
+        )
 
 
 @dataclass
@@ -775,13 +909,14 @@ class DeliveryStatus(Enum):
     misconfiguration of customer provided permissions on role or storage. * `SYSTEM_FAILURE`: The
     latest attempt of log delivery failed because of an Databricks internal error. Contact support
     if it doesn't go away soon. * `NOT_FOUND`: The log delivery status as the configuration has been
-    disabled since the release of this feature or there are no workspaces in the account."""
+    disabled since the release of this feature or there are no workspaces in the account.
+    """
 
-    CREATED = 'CREATED'
-    NOT_FOUND = 'NOT_FOUND'
-    SUCCEEDED = 'SUCCEEDED'
-    SYSTEM_FAILURE = 'SYSTEM_FAILURE'
-    USER_FAILURE = 'USER_FAILURE'
+    CREATED = "CREATED"
+    NOT_FOUND = "NOT_FOUND"
+    SUCCEEDED = "SUCCEEDED"
+    SYSTEM_FAILURE = "SYSTEM_FAILURE"
+    USER_FAILURE = "USER_FAILURE"
 
 
 @dataclass
@@ -791,19 +926,21 @@ class DownloadResponse:
     def as_dict(self) -> dict:
         """Serializes the DownloadResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.contents: body['contents'] = self.contents
+        if self.contents:
+            body["contents"] = self.contents
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the DownloadResponse into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.contents: body['contents'] = self.contents
+        if self.contents:
+            body["contents"] = self.contents
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> DownloadResponse:
         """Deserializes the DownloadResponse from a dictionary."""
-        return cls(contents=d.get('contents', None))
+        return cls(contents=d.get("contents", None))
 
 
 @dataclass
@@ -823,25 +960,33 @@ class Filter:
     def as_dict(self) -> dict:
         """Serializes the Filter into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.creator_user_id is not None: body['creator_user_id'] = self.creator_user_id
-        if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
-        if self.policy_name is not None: body['policy_name'] = self.policy_name
+        if self.creator_user_id is not None:
+            body["creator_user_id"] = self.creator_user_id
+        if self.creator_user_name is not None:
+            body["creator_user_name"] = self.creator_user_name
+        if self.policy_name is not None:
+            body["policy_name"] = self.policy_name
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the Filter into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.creator_user_id is not None: body['creator_user_id'] = self.creator_user_id
-        if self.creator_user_name is not None: body['creator_user_name'] = self.creator_user_name
-        if self.policy_name is not None: body['policy_name'] = self.policy_name
+        if self.creator_user_id is not None:
+            body["creator_user_id"] = self.creator_user_id
+        if self.creator_user_name is not None:
+            body["creator_user_name"] = self.creator_user_name
+        if self.policy_name is not None:
+            body["policy_name"] = self.policy_name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> Filter:
         """Deserializes the Filter from a dictionary."""
-        return cls(creator_user_id=d.get('creator_user_id', None),
-                   creator_user_name=d.get('creator_user_name', None),
-                   policy_name=d.get('policy_name', None))
+        return cls(
+            creator_user_id=d.get("creator_user_id", None),
+            creator_user_name=d.get("creator_user_name", None),
+            policy_name=d.get("policy_name", None),
+        )
 
 
 @dataclass
@@ -855,21 +1000,28 @@ class GetBillingUsageDashboardResponse:
     def as_dict(self) -> dict:
         """Serializes the GetBillingUsageDashboardResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.dashboard_id is not None: body['dashboard_id'] = self.dashboard_id
-        if self.dashboard_url is not None: body['dashboard_url'] = self.dashboard_url
+        if self.dashboard_id is not None:
+            body["dashboard_id"] = self.dashboard_id
+        if self.dashboard_url is not None:
+            body["dashboard_url"] = self.dashboard_url
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the GetBillingUsageDashboardResponse into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.dashboard_id is not None: body['dashboard_id'] = self.dashboard_id
-        if self.dashboard_url is not None: body['dashboard_url'] = self.dashboard_url
+        if self.dashboard_id is not None:
+            body["dashboard_id"] = self.dashboard_id
+        if self.dashboard_url is not None:
+            body["dashboard_url"] = self.dashboard_url
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> GetBillingUsageDashboardResponse:
         """Deserializes the GetBillingUsageDashboardResponse from a dictionary."""
-        return cls(dashboard_id=d.get('dashboard_id', None), dashboard_url=d.get('dashboard_url', None))
+        return cls(
+            dashboard_id=d.get("dashboard_id", None),
+            dashboard_url=d.get("dashboard_url", None),
+        )
 
 
 @dataclass
@@ -879,19 +1031,21 @@ class GetBudgetConfigurationResponse:
     def as_dict(self) -> dict:
         """Serializes the GetBudgetConfigurationResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.budget: body['budget'] = self.budget.as_dict()
+        if self.budget:
+            body["budget"] = self.budget.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the GetBudgetConfigurationResponse into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.budget: body['budget'] = self.budget
+        if self.budget:
+            body["budget"] = self.budget
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> GetBudgetConfigurationResponse:
         """Deserializes the GetBudgetConfigurationResponse from a dictionary."""
-        return cls(budget=_from_dict(d, 'budget', BudgetConfiguration))
+        return cls(budget=_from_dict(d, "budget", BudgetConfiguration))
 
 
 @dataclass
@@ -926,22 +1080,28 @@ class ListBudgetConfigurationsResponse:
     def as_dict(self) -> dict:
         """Serializes the ListBudgetConfigurationsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.budgets: body['budgets'] = [v.as_dict() for v in self.budgets]
-        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.budgets:
+            body["budgets"] = [v.as_dict() for v in self.budgets]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ListBudgetConfigurationsResponse into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.budgets: body['budgets'] = self.budgets
-        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
+        if self.budgets:
+            body["budgets"] = self.budgets
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListBudgetConfigurationsResponse:
         """Deserializes the ListBudgetConfigurationsResponse from a dictionary."""
-        return cls(budgets=_repeated_dict(d, 'budgets', BudgetConfiguration),
-                   next_page_token=d.get('next_page_token', None))
+        return cls(
+            budgets=_repeated_dict(d, "budgets", BudgetConfiguration),
+            next_page_token=d.get("next_page_token", None),
+        )
 
 
 @dataclass
@@ -961,35 +1121,44 @@ class ListBudgetPoliciesResponse:
     def as_dict(self) -> dict:
         """Serializes the ListBudgetPoliciesResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
-        if self.policies: body['policies'] = [v.as_dict() for v in self.policies]
-        if self.previous_page_token is not None: body['previous_page_token'] = self.previous_page_token
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.policies:
+            body["policies"] = [v.as_dict() for v in self.policies]
+        if self.previous_page_token is not None:
+            body["previous_page_token"] = self.previous_page_token
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ListBudgetPoliciesResponse into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
-        if self.policies: body['policies'] = self.policies
-        if self.previous_page_token is not None: body['previous_page_token'] = self.previous_page_token
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.policies:
+            body["policies"] = self.policies
+        if self.previous_page_token is not None:
+            body["previous_page_token"] = self.previous_page_token
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListBudgetPoliciesResponse:
         """Deserializes the ListBudgetPoliciesResponse from a dictionary."""
-        return cls(next_page_token=d.get('next_page_token', None),
-                   policies=_repeated_dict(d, 'policies', BudgetPolicy),
-                   previous_page_token=d.get('previous_page_token', None))
+        return cls(
+            next_page_token=d.get("next_page_token", None),
+            policies=_repeated_dict(d, "policies", BudgetPolicy),
+            previous_page_token=d.get("previous_page_token", None),
+        )
 
 
 class LogDeliveryConfigStatus(Enum):
     """Status of log delivery configuration. Set to `ENABLED` (enabled) or `DISABLED` (disabled).
     Defaults to `ENABLED`. You can [enable or disable the
     configuration](#operation/patch-log-delivery-config-status) later. Deletion of a configuration
-    is not supported, so disable a log delivery configuration that is no longer needed."""
+    is not supported, so disable a log delivery configuration that is no longer needed.
+    """
 
-    DISABLED = 'DISABLED'
-    ENABLED = 'ENABLED'
+    DISABLED = "DISABLED"
+    ENABLED = "ENABLED"
 
 
 @dataclass
@@ -1081,60 +1250,88 @@ class LogDeliveryConfiguration:
     def as_dict(self) -> dict:
         """Serializes the LogDeliveryConfiguration into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.account_id is not None: body['account_id'] = self.account_id
-        if self.config_id is not None: body['config_id'] = self.config_id
-        if self.config_name is not None: body['config_name'] = self.config_name
-        if self.creation_time is not None: body['creation_time'] = self.creation_time
-        if self.credentials_id is not None: body['credentials_id'] = self.credentials_id
-        if self.delivery_path_prefix is not None: body['delivery_path_prefix'] = self.delivery_path_prefix
-        if self.delivery_start_time is not None: body['delivery_start_time'] = self.delivery_start_time
-        if self.log_delivery_status: body['log_delivery_status'] = self.log_delivery_status.as_dict()
-        if self.log_type is not None: body['log_type'] = self.log_type.value
-        if self.output_format is not None: body['output_format'] = self.output_format.value
-        if self.status is not None: body['status'] = self.status.value
+        if self.account_id is not None:
+            body["account_id"] = self.account_id
+        if self.config_id is not None:
+            body["config_id"] = self.config_id
+        if self.config_name is not None:
+            body["config_name"] = self.config_name
+        if self.creation_time is not None:
+            body["creation_time"] = self.creation_time
+        if self.credentials_id is not None:
+            body["credentials_id"] = self.credentials_id
+        if self.delivery_path_prefix is not None:
+            body["delivery_path_prefix"] = self.delivery_path_prefix
+        if self.delivery_start_time is not None:
+            body["delivery_start_time"] = self.delivery_start_time
+        if self.log_delivery_status:
+            body["log_delivery_status"] = self.log_delivery_status.as_dict()
+        if self.log_type is not None:
+            body["log_type"] = self.log_type.value
+        if self.output_format is not None:
+            body["output_format"] = self.output_format.value
+        if self.status is not None:
+            body["status"] = self.status.value
         if self.storage_configuration_id is not None:
-            body['storage_configuration_id'] = self.storage_configuration_id
-        if self.update_time is not None: body['update_time'] = self.update_time
-        if self.workspace_ids_filter: body['workspace_ids_filter'] = [v for v in self.workspace_ids_filter]
+            body["storage_configuration_id"] = self.storage_configuration_id
+        if self.update_time is not None:
+            body["update_time"] = self.update_time
+        if self.workspace_ids_filter:
+            body["workspace_ids_filter"] = [v for v in self.workspace_ids_filter]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the LogDeliveryConfiguration into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.account_id is not None: body['account_id'] = self.account_id
-        if self.config_id is not None: body['config_id'] = self.config_id
-        if self.config_name is not None: body['config_name'] = self.config_name
-        if self.creation_time is not None: body['creation_time'] = self.creation_time
-        if self.credentials_id is not None: body['credentials_id'] = self.credentials_id
-        if self.delivery_path_prefix is not None: body['delivery_path_prefix'] = self.delivery_path_prefix
-        if self.delivery_start_time is not None: body['delivery_start_time'] = self.delivery_start_time
-        if self.log_delivery_status: body['log_delivery_status'] = self.log_delivery_status
-        if self.log_type is not None: body['log_type'] = self.log_type
-        if self.output_format is not None: body['output_format'] = self.output_format
-        if self.status is not None: body['status'] = self.status
+        if self.account_id is not None:
+            body["account_id"] = self.account_id
+        if self.config_id is not None:
+            body["config_id"] = self.config_id
+        if self.config_name is not None:
+            body["config_name"] = self.config_name
+        if self.creation_time is not None:
+            body["creation_time"] = self.creation_time
+        if self.credentials_id is not None:
+            body["credentials_id"] = self.credentials_id
+        if self.delivery_path_prefix is not None:
+            body["delivery_path_prefix"] = self.delivery_path_prefix
+        if self.delivery_start_time is not None:
+            body["delivery_start_time"] = self.delivery_start_time
+        if self.log_delivery_status:
+            body["log_delivery_status"] = self.log_delivery_status
+        if self.log_type is not None:
+            body["log_type"] = self.log_type
+        if self.output_format is not None:
+            body["output_format"] = self.output_format
+        if self.status is not None:
+            body["status"] = self.status
         if self.storage_configuration_id is not None:
-            body['storage_configuration_id'] = self.storage_configuration_id
-        if self.update_time is not None: body['update_time'] = self.update_time
-        if self.workspace_ids_filter: body['workspace_ids_filter'] = self.workspace_ids_filter
+            body["storage_configuration_id"] = self.storage_configuration_id
+        if self.update_time is not None:
+            body["update_time"] = self.update_time
+        if self.workspace_ids_filter:
+            body["workspace_ids_filter"] = self.workspace_ids_filter
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> LogDeliveryConfiguration:
         """Deserializes the LogDeliveryConfiguration from a dictionary."""
-        return cls(account_id=d.get('account_id', None),
-                   config_id=d.get('config_id', None),
-                   config_name=d.get('config_name', None),
-                   creation_time=d.get('creation_time', None),
-                   credentials_id=d.get('credentials_id', None),
-                   delivery_path_prefix=d.get('delivery_path_prefix', None),
-                   delivery_start_time=d.get('delivery_start_time', None),
-                   log_delivery_status=_from_dict(d, 'log_delivery_status', LogDeliveryStatus),
-                   log_type=_enum(d, 'log_type', LogType),
-                   output_format=_enum(d, 'output_format', OutputFormat),
-                   status=_enum(d, 'status', LogDeliveryConfigStatus),
-                   storage_configuration_id=d.get('storage_configuration_id', None),
-                   update_time=d.get('update_time', None),
-                   workspace_ids_filter=d.get('workspace_ids_filter', None))
+        return cls(
+            account_id=d.get("account_id", None),
+            config_id=d.get("config_id", None),
+            config_name=d.get("config_name", None),
+            creation_time=d.get("creation_time", None),
+            credentials_id=d.get("credentials_id", None),
+            delivery_path_prefix=d.get("delivery_path_prefix", None),
+            delivery_start_time=d.get("delivery_start_time", None),
+            log_delivery_status=_from_dict(d, "log_delivery_status", LogDeliveryStatus),
+            log_type=_enum(d, "log_type", LogType),
+            output_format=_enum(d, "output_format", OutputFormat),
+            status=_enum(d, "status", LogDeliveryConfigStatus),
+            storage_configuration_id=d.get("storage_configuration_id", None),
+            update_time=d.get("update_time", None),
+            workspace_ids_filter=d.get("workspace_ids_filter", None),
+        )
 
 
 @dataclass
@@ -1163,63 +1360,73 @@ class LogDeliveryStatus:
     def as_dict(self) -> dict:
         """Serializes the LogDeliveryStatus into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.last_attempt_time is not None: body['last_attempt_time'] = self.last_attempt_time
+        if self.last_attempt_time is not None:
+            body["last_attempt_time"] = self.last_attempt_time
         if self.last_successful_attempt_time is not None:
-            body['last_successful_attempt_time'] = self.last_successful_attempt_time
-        if self.message is not None: body['message'] = self.message
-        if self.status is not None: body['status'] = self.status.value
+            body["last_successful_attempt_time"] = self.last_successful_attempt_time
+        if self.message is not None:
+            body["message"] = self.message
+        if self.status is not None:
+            body["status"] = self.status.value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the LogDeliveryStatus into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.last_attempt_time is not None: body['last_attempt_time'] = self.last_attempt_time
+        if self.last_attempt_time is not None:
+            body["last_attempt_time"] = self.last_attempt_time
         if self.last_successful_attempt_time is not None:
-            body['last_successful_attempt_time'] = self.last_successful_attempt_time
-        if self.message is not None: body['message'] = self.message
-        if self.status is not None: body['status'] = self.status
+            body["last_successful_attempt_time"] = self.last_successful_attempt_time
+        if self.message is not None:
+            body["message"] = self.message
+        if self.status is not None:
+            body["status"] = self.status
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> LogDeliveryStatus:
         """Deserializes the LogDeliveryStatus from a dictionary."""
-        return cls(last_attempt_time=d.get('last_attempt_time', None),
-                   last_successful_attempt_time=d.get('last_successful_attempt_time', None),
-                   message=d.get('message', None),
-                   status=_enum(d, 'status', DeliveryStatus))
+        return cls(
+            last_attempt_time=d.get("last_attempt_time", None),
+            last_successful_attempt_time=d.get("last_successful_attempt_time", None),
+            message=d.get("message", None),
+            status=_enum(d, "status", DeliveryStatus),
+        )
 
 
 class LogType(Enum):
     """Log delivery type. Supported values are:
-    
+
     * `BILLABLE_USAGE` — Configure [billable usage log delivery]. For the CSV schema, see the
     [View billable usage].
-    
+
     * `AUDIT_LOGS` — Configure [audit log delivery]. For the JSON schema, see [Configure audit
     logging]
-    
+
     [Configure audit logging]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
     [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html
     [audit log delivery]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
-    [billable usage log delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html"""
+    [billable usage log delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
+    """
 
-    AUDIT_LOGS = 'AUDIT_LOGS'
-    BILLABLE_USAGE = 'BILLABLE_USAGE'
+    AUDIT_LOGS = "AUDIT_LOGS"
+    BILLABLE_USAGE = "BILLABLE_USAGE"
 
 
 class OutputFormat(Enum):
     """The file type of log delivery.
-    
+
     * If `log_type` is `BILLABLE_USAGE`, this value must be `CSV`. Only the CSV (comma-separated
     values) format is supported. For the schema, see the [View billable usage] * If `log_type` is
     `AUDIT_LOGS`, this value must be `JSON`. Only the JSON (JavaScript Object Notation) format is
     supported. For the schema, see the [Configuring audit logs].
-    
-    [Configuring audit logs]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
-    [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html"""
 
-    CSV = 'CSV'
-    JSON = 'JSON'
+    [Configuring audit logs]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
+    [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html
+    """
+
+    CSV = "CSV"
+    JSON = "JSON"
 
 
 @dataclass
@@ -1252,26 +1459,33 @@ class SortSpec:
     def as_dict(self) -> dict:
         """Serializes the SortSpec into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.descending is not None: body['descending'] = self.descending
-        if self.field is not None: body['field'] = self.field.value
+        if self.descending is not None:
+            body["descending"] = self.descending
+        if self.field is not None:
+            body["field"] = self.field.value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the SortSpec into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.descending is not None: body['descending'] = self.descending
-        if self.field is not None: body['field'] = self.field
+        if self.descending is not None:
+            body["descending"] = self.descending
+        if self.field is not None:
+            body["field"] = self.field
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> SortSpec:
         """Deserializes the SortSpec from a dictionary."""
-        return cls(descending=d.get('descending', None), field=_enum(d, 'field', SortSpecField))
+        return cls(
+            descending=d.get("descending", None),
+            field=_enum(d, "field", SortSpecField),
+        )
 
 
 class SortSpecField(Enum):
 
-    POLICY_NAME = 'POLICY_NAME'
+    POLICY_NAME = "POLICY_NAME"
 
 
 @dataclass
@@ -1297,34 +1511,43 @@ class UpdateBudgetConfigurationBudget:
     def as_dict(self) -> dict:
         """Serializes the UpdateBudgetConfigurationBudget into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.account_id is not None: body['account_id'] = self.account_id
+        if self.account_id is not None:
+            body["account_id"] = self.account_id
         if self.alert_configurations:
-            body['alert_configurations'] = [v.as_dict() for v in self.alert_configurations]
+            body["alert_configurations"] = [v.as_dict() for v in self.alert_configurations]
         if self.budget_configuration_id is not None:
-            body['budget_configuration_id'] = self.budget_configuration_id
-        if self.display_name is not None: body['display_name'] = self.display_name
-        if self.filter: body['filter'] = self.filter.as_dict()
+            body["budget_configuration_id"] = self.budget_configuration_id
+        if self.display_name is not None:
+            body["display_name"] = self.display_name
+        if self.filter:
+            body["filter"] = self.filter.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the UpdateBudgetConfigurationBudget into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.account_id is not None: body['account_id'] = self.account_id
-        if self.alert_configurations: body['alert_configurations'] = self.alert_configurations
+        if self.account_id is not None:
+            body["account_id"] = self.account_id
+        if self.alert_configurations:
+            body["alert_configurations"] = self.alert_configurations
         if self.budget_configuration_id is not None:
-            body['budget_configuration_id'] = self.budget_configuration_id
-        if self.display_name is not None: body['display_name'] = self.display_name
-        if self.filter: body['filter'] = self.filter
+            body["budget_configuration_id"] = self.budget_configuration_id
+        if self.display_name is not None:
+            body["display_name"] = self.display_name
+        if self.filter:
+            body["filter"] = self.filter
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> UpdateBudgetConfigurationBudget:
         """Deserializes the UpdateBudgetConfigurationBudget from a dictionary."""
-        return cls(account_id=d.get('account_id', None),
-                   alert_configurations=_repeated_dict(d, 'alert_configurations', AlertConfiguration),
-                   budget_configuration_id=d.get('budget_configuration_id', None),
-                   display_name=d.get('display_name', None),
-                   filter=_from_dict(d, 'filter', BudgetConfigurationFilter))
+        return cls(
+            account_id=d.get("account_id", None),
+            alert_configurations=_repeated_dict(d, "alert_configurations", AlertConfiguration),
+            budget_configuration_id=d.get("budget_configuration_id", None),
+            display_name=d.get("display_name", None),
+            filter=_from_dict(d, "filter", BudgetConfigurationFilter),
+        )
 
 
 @dataclass
@@ -1338,22 +1561,28 @@ class UpdateBudgetConfigurationRequest:
     def as_dict(self) -> dict:
         """Serializes the UpdateBudgetConfigurationRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.budget: body['budget'] = self.budget.as_dict()
-        if self.budget_id is not None: body['budget_id'] = self.budget_id
+        if self.budget:
+            body["budget"] = self.budget.as_dict()
+        if self.budget_id is not None:
+            body["budget_id"] = self.budget_id
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the UpdateBudgetConfigurationRequest into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.budget: body['budget'] = self.budget
-        if self.budget_id is not None: body['budget_id'] = self.budget_id
+        if self.budget:
+            body["budget"] = self.budget
+        if self.budget_id is not None:
+            body["budget_id"] = self.budget_id
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> UpdateBudgetConfigurationRequest:
         """Deserializes the UpdateBudgetConfigurationRequest from a dictionary."""
-        return cls(budget=_from_dict(d, 'budget', UpdateBudgetConfigurationBudget),
-                   budget_id=d.get('budget_id', None))
+        return cls(
+            budget=_from_dict(d, "budget", UpdateBudgetConfigurationBudget),
+            budget_id=d.get("budget_id", None),
+        )
 
 
 @dataclass
@@ -1364,19 +1593,21 @@ class UpdateBudgetConfigurationResponse:
     def as_dict(self) -> dict:
         """Serializes the UpdateBudgetConfigurationResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.budget: body['budget'] = self.budget.as_dict()
+        if self.budget:
+            body["budget"] = self.budget.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the UpdateBudgetConfigurationResponse into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.budget: body['budget'] = self.budget
+        if self.budget:
+            body["budget"] = self.budget
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> UpdateBudgetConfigurationResponse:
         """Deserializes the UpdateBudgetConfigurationResponse from a dictionary."""
-        return cls(budget=_from_dict(d, 'budget', BudgetConfiguration))
+        return cls(budget=_from_dict(d, "budget", BudgetConfiguration))
 
 
 @dataclass
@@ -1394,29 +1625,33 @@ class UpdateLogDeliveryConfigurationStatusRequest:
         """Serializes the UpdateLogDeliveryConfigurationStatusRequest into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.log_delivery_configuration_id is not None:
-            body['log_delivery_configuration_id'] = self.log_delivery_configuration_id
-        if self.status is not None: body['status'] = self.status.value
+            body["log_delivery_configuration_id"] = self.log_delivery_configuration_id
+        if self.status is not None:
+            body["status"] = self.status.value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the UpdateLogDeliveryConfigurationStatusRequest into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.log_delivery_configuration_id is not None:
-            body['log_delivery_configuration_id'] = self.log_delivery_configuration_id
-        if self.status is not None: body['status'] = self.status
+            body["log_delivery_configuration_id"] = self.log_delivery_configuration_id
+        if self.status is not None:
+            body["status"] = self.status
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> UpdateLogDeliveryConfigurationStatusRequest:
         """Deserializes the UpdateLogDeliveryConfigurationStatusRequest from a dictionary."""
-        return cls(log_delivery_configuration_id=d.get('log_delivery_configuration_id', None),
-                   status=_enum(d, 'status', LogDeliveryConfigStatus))
+        return cls(
+            log_delivery_configuration_id=d.get("log_delivery_configuration_id", None),
+            status=_enum(d, "status", LogDeliveryConfigStatus),
+        )
 
 
 class UsageDashboardType(Enum):
 
-    USAGE_DASHBOARD_TYPE_GLOBAL = 'USAGE_DASHBOARD_TYPE_GLOBAL'
-    USAGE_DASHBOARD_TYPE_WORKSPACE = 'USAGE_DASHBOARD_TYPE_WORKSPACE'
+    USAGE_DASHBOARD_TYPE_GLOBAL = "USAGE_DASHBOARD_TYPE_GLOBAL"
+    USAGE_DASHBOARD_TYPE_WORKSPACE = "USAGE_DASHBOARD_TYPE_WORKSPACE"
 
 
 @dataclass
@@ -1427,21 +1662,26 @@ class WrappedCreateLogDeliveryConfiguration:
         """Serializes the WrappedCreateLogDeliveryConfiguration into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.log_delivery_configuration:
-            body['log_delivery_configuration'] = self.log_delivery_configuration.as_dict()
+            body["log_delivery_configuration"] = self.log_delivery_configuration.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the WrappedCreateLogDeliveryConfiguration into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.log_delivery_configuration:
-            body['log_delivery_configuration'] = self.log_delivery_configuration
+            body["log_delivery_configuration"] = self.log_delivery_configuration
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> WrappedCreateLogDeliveryConfiguration:
         """Deserializes the WrappedCreateLogDeliveryConfiguration from a dictionary."""
-        return cls(log_delivery_configuration=_from_dict(d, 'log_delivery_configuration',
-                                                         CreateLogDeliveryConfigurationParams))
+        return cls(
+            log_delivery_configuration=_from_dict(
+                d,
+                "log_delivery_configuration",
+                CreateLogDeliveryConfigurationParams,
+            )
+        )
 
 
 @dataclass
@@ -1452,21 +1692,20 @@ class WrappedLogDeliveryConfiguration:
         """Serializes the WrappedLogDeliveryConfiguration into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.log_delivery_configuration:
-            body['log_delivery_configuration'] = self.log_delivery_configuration.as_dict()
+            body["log_delivery_configuration"] = self.log_delivery_configuration.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the WrappedLogDeliveryConfiguration into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.log_delivery_configuration:
-            body['log_delivery_configuration'] = self.log_delivery_configuration
+            body["log_delivery_configuration"] = self.log_delivery_configuration
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> WrappedLogDeliveryConfiguration:
         """Deserializes the WrappedLogDeliveryConfiguration from a dictionary."""
-        return cls(
-            log_delivery_configuration=_from_dict(d, 'log_delivery_configuration', LogDeliveryConfiguration))
+        return cls(log_delivery_configuration=_from_dict(d, "log_delivery_configuration", LogDeliveryConfiguration))
 
 
 @dataclass
@@ -1477,21 +1716,22 @@ class WrappedLogDeliveryConfigurations:
         """Serializes the WrappedLogDeliveryConfigurations into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.log_delivery_configurations:
-            body['log_delivery_configurations'] = [v.as_dict() for v in self.log_delivery_configurations]
+            body["log_delivery_configurations"] = [v.as_dict() for v in self.log_delivery_configurations]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the WrappedLogDeliveryConfigurations into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.log_delivery_configurations:
-            body['log_delivery_configurations'] = self.log_delivery_configurations
+            body["log_delivery_configurations"] = self.log_delivery_configurations
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> WrappedLogDeliveryConfigurations:
         """Deserializes the WrappedLogDeliveryConfigurations from a dictionary."""
-        return cls(log_delivery_configurations=_repeated_dict(d, 'log_delivery_configurations',
-                                                              LogDeliveryConfiguration))
+        return cls(
+            log_delivery_configurations=_repeated_dict(d, "log_delivery_configurations", LogDeliveryConfiguration)
+        )
 
 
 class BillableUsageAPI:
@@ -1501,22 +1741,24 @@ class BillableUsageAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def download(self,
-                 start_month: str,
-                 end_month: str,
-                 *,
-                 personal_data: Optional[bool] = None) -> DownloadResponse:
+    def download(
+        self,
+        start_month: str,
+        end_month: str,
+        *,
+        personal_data: Optional[bool] = None,
+    ) -> DownloadResponse:
         """Return billable usage logs.
-        
+
         Returns billable usage logs in CSV format for the specified account and date range. For the data
         schema, see [CSV file schema]. Note that this method might take multiple minutes to complete.
-        
+
         **Warning**: Depending on the queried date range, the number of workspaces in the account, the size of
         the response and the internet speed of the caller, this API may hit a timeout after a few minutes. If
         you experience this, try to mitigate by calling the API with narrower date ranges.
-        
+
         [CSV file schema]: https://docs.databricks.com/administration-guide/account-settings/usage-analysis.html#schema
-        
+
         :param start_month: str
           Format: `YYYY-MM`. First month to return billable usage logs for. This field is required.
         :param end_month: str
@@ -1525,21 +1767,28 @@ class BillableUsageAPI:
           Specify whether to include personally identifiable information in the billable usage logs, for
           example the email addresses of cluster creators. Handle this information with care. Defaults to
           false.
-        
+
         :returns: :class:`DownloadResponse`
         """
 
         query = {}
-        if end_month is not None: query['end_month'] = end_month
-        if personal_data is not None: query['personal_data'] = personal_data
-        if start_month is not None: query['start_month'] = start_month
-        headers = {'Accept': 'text/plain', }
+        if end_month is not None:
+            query["end_month"] = end_month
+        if personal_data is not None:
+            query["personal_data"] = personal_data
+        if start_month is not None:
+            query["start_month"] = start_month
+        headers = {
+            "Accept": "text/plain",
+        }
 
-        res = self._api.do('GET',
-                           f'/api/2.0/accounts/{self._api.account_id}/usage/download',
-                           query=query,
-                           headers=headers,
-                           raw=True)
+        res = self._api.do(
+            "GET",
+            f"/api/2.0/accounts/{self._api.account_id}/usage/download",
+            query=query,
+            headers=headers,
+            raw=True,
+        )
         return DownloadResponse.from_dict(res)
 
 
@@ -1549,15 +1798,17 @@ class BudgetPolicyAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self,
-               *,
-               custom_tags: Optional[List[compute.CustomPolicyTag]] = None,
-               policy_name: Optional[str] = None,
-               request_id: Optional[str] = None) -> BudgetPolicy:
+    def create(
+        self,
+        *,
+        custom_tags: Optional[List[compute.CustomPolicyTag]] = None,
+        policy_name: Optional[str] = None,
+        request_id: Optional[str] = None,
+    ) -> BudgetPolicy:
         """Create a budget policy.
-        
+
         Creates a new policy.
-        
+
         :param custom_tags: List[:class:`CustomPolicyTag`] (optional)
           A list of tags defined by the customer. At most 40 entries are allowed per policy.
         :param policy_name: str (optional)
@@ -1566,66 +1817,84 @@ class BudgetPolicyAPI:
         :param request_id: str (optional)
           A unique identifier for this request. Restricted to 36 ASCII characters. A random UUID is
           recommended. This request is only idempotent if a `request_id` is provided.
-        
+
         :returns: :class:`BudgetPolicy`
         """
         body = {}
-        if custom_tags is not None: body['custom_tags'] = [v.as_dict() for v in custom_tags]
-        if policy_name is not None: body['policy_name'] = policy_name
-        if request_id is not None: body['request_id'] = request_id
-        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        if custom_tags is not None:
+            body["custom_tags"] = [v.as_dict() for v in custom_tags]
+        if policy_name is not None:
+            body["policy_name"] = policy_name
+        if request_id is not None:
+            body["request_id"] = request_id
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
 
-        res = self._api.do('POST',
-                           f'/api/2.1/accounts/{self._api.account_id}/budget-policies',
-                           body=body,
-                           headers=headers)
+        res = self._api.do(
+            "POST",
+            f"/api/2.1/accounts/{self._api.account_id}/budget-policies",
+            body=body,
+            headers=headers,
+        )
         return BudgetPolicy.from_dict(res)
 
     def delete(self, policy_id: str):
         """Delete a budget policy.
-        
+
         Deletes a policy
-        
+
         :param policy_id: str
           The Id of the policy.
-        
-        
+
+
         """
 
-        headers = {'Accept': 'application/json', }
+        headers = {
+            "Accept": "application/json",
+        }
 
-        self._api.do('DELETE',
-                     f'/api/2.1/accounts/{self._api.account_id}/budget-policies/{policy_id}',
-                     headers=headers)
+        self._api.do(
+            "DELETE",
+            f"/api/2.1/accounts/{self._api.account_id}/budget-policies/{policy_id}",
+            headers=headers,
+        )
 
     def get(self, policy_id: str) -> BudgetPolicy:
         """Get a budget policy.
-        
+
         Retrieves a policy by it's ID.
-        
+
         :param policy_id: str
           The Id of the policy.
-        
+
         :returns: :class:`BudgetPolicy`
         """
 
-        headers = {'Accept': 'application/json', }
+        headers = {
+            "Accept": "application/json",
+        }
 
-        res = self._api.do('GET',
-                           f'/api/2.1/accounts/{self._api.account_id}/budget-policies/{policy_id}',
-                           headers=headers)
+        res = self._api.do(
+            "GET",
+            f"/api/2.1/accounts/{self._api.account_id}/budget-policies/{policy_id}",
+            headers=headers,
+        )
         return BudgetPolicy.from_dict(res)
 
-    def list(self,
-             *,
-             filter_by: Optional[Filter] = None,
-             page_size: Optional[int] = None,
-             page_token: Optional[str] = None,
-             sort_spec: Optional[SortSpec] = None) -> Iterator[BudgetPolicy]:
+    def list(
+        self,
+        *,
+        filter_by: Optional[Filter] = None,
+        page_size: Optional[int] = None,
+        page_token: Optional[str] = None,
+        sort_spec: Optional[SortSpec] = None,
+    ) -> Iterator[BudgetPolicy]:
         """List policies.
-        
+
         Lists all policies. Policies are returned in the alphabetically ascending order of their names.
-        
+
         :param filter_by: :class:`Filter` (optional)
           A filter to apply to the list of policies.
         :param page_size: int (optional)
@@ -1634,62 +1903,78 @@ class BudgetPolicyAPI:
         :param page_token: str (optional)
           A page token, received from a previous `ListServerlessPolicies` call. Provide this to retrieve the
           subsequent page. If unspecified, the first page will be returned.
-          
+
           When paginating, all other parameters provided to `ListServerlessPoliciesRequest` must match the
           call that provided the page token.
         :param sort_spec: :class:`SortSpec` (optional)
           The sort specification.
-        
+
         :returns: Iterator over :class:`BudgetPolicy`
         """
 
         query = {}
-        if filter_by is not None: query['filter_by'] = filter_by.as_dict()
-        if page_size is not None: query['page_size'] = page_size
-        if page_token is not None: query['page_token'] = page_token
-        if sort_spec is not None: query['sort_spec'] = sort_spec.as_dict()
-        headers = {'Accept': 'application/json', }
+        if filter_by is not None:
+            query["filter_by"] = filter_by.as_dict()
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        if sort_spec is not None:
+            query["sort_spec"] = sort_spec.as_dict()
+        headers = {
+            "Accept": "application/json",
+        }
 
         while True:
-            json = self._api.do('GET',
-                                f'/api/2.1/accounts/{self._api.account_id}/budget-policies',
-                                query=query,
-                                headers=headers)
-            if 'policies' in json:
-                for v in json['policies']:
+            json = self._api.do(
+                "GET",
+                f"/api/2.1/accounts/{self._api.account_id}/budget-policies",
+                query=query,
+                headers=headers,
+            )
+            if "policies" in json:
+                for v in json["policies"]:
                     yield BudgetPolicy.from_dict(v)
-            if 'next_page_token' not in json or not json['next_page_token']:
+            if "next_page_token" not in json or not json["next_page_token"]:
                 return
-            query['page_token'] = json['next_page_token']
+            query["page_token"] = json["next_page_token"]
 
-    def update(self,
-               policy_id: str,
-               *,
-               limit_config: Optional[LimitConfig] = None,
-               policy: Optional[BudgetPolicy] = None) -> BudgetPolicy:
+    def update(
+        self,
+        policy_id: str,
+        *,
+        limit_config: Optional[LimitConfig] = None,
+        policy: Optional[BudgetPolicy] = None,
+    ) -> BudgetPolicy:
         """Update a budget policy.
-        
+
         Updates a policy
-        
+
         :param policy_id: str
           The Id of the policy. This field is generated by Databricks and globally unique.
         :param limit_config: :class:`LimitConfig` (optional)
           DEPRECATED. This is redundant field as LimitConfig is part of the BudgetPolicy
         :param policy: :class:`BudgetPolicy` (optional)
           Contains the BudgetPolicy details.
-        
+
         :returns: :class:`BudgetPolicy`
         """
         body = policy.as_dict()
         query = {}
-        if limit_config is not None: query['limit_config'] = limit_config.as_dict()
-        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        if limit_config is not None:
+            query["limit_config"] = limit_config.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
 
-        res = self._api.do('PATCH',
-                           f'/api/2.1/accounts/{self._api.account_id}/budget-policies/{policy_id}',
-                           query=query,
-                           body=body,
-                           headers=headers)
+        res = self._api.do(
+            "PATCH",
+            f"/api/2.1/accounts/{self._api.account_id}/budget-policies/{policy_id}",
+            query=query,
+            body=body,
+            headers=headers,
+        )
         return BudgetPolicy.from_dict(res)
 
 
@@ -1703,111 +1988,135 @@ class BudgetsAPI:
 
     def create(self, budget: CreateBudgetConfigurationBudget) -> CreateBudgetConfigurationResponse:
         """Create new budget.
-        
+
         Create a new budget configuration for an account. For full details, see
         https://docs.databricks.com/en/admin/account-settings/budgets.html.
-        
+
         :param budget: :class:`CreateBudgetConfigurationBudget`
           Properties of the new budget configuration.
-        
+
         :returns: :class:`CreateBudgetConfigurationResponse`
         """
         body = {}
-        if budget is not None: body['budget'] = budget.as_dict()
-        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        if budget is not None:
+            body["budget"] = budget.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
 
-        res = self._api.do('POST',
-                           f'/api/2.1/accounts/{self._api.account_id}/budgets',
-                           body=body,
-                           headers=headers)
+        res = self._api.do(
+            "POST",
+            f"/api/2.1/accounts/{self._api.account_id}/budgets",
+            body=body,
+            headers=headers,
+        )
         return CreateBudgetConfigurationResponse.from_dict(res)
 
     def delete(self, budget_id: str):
         """Delete budget.
-        
+
         Deletes a budget configuration for an account. Both account and budget configuration are specified by
         ID. This cannot be undone.
-        
+
         :param budget_id: str
           The Databricks budget configuration ID.
-        
-        
+
+
         """
 
-        headers = {'Accept': 'application/json', }
+        headers = {
+            "Accept": "application/json",
+        }
 
-        self._api.do('DELETE',
-                     f'/api/2.1/accounts/{self._api.account_id}/budgets/{budget_id}',
-                     headers=headers)
+        self._api.do(
+            "DELETE",
+            f"/api/2.1/accounts/{self._api.account_id}/budgets/{budget_id}",
+            headers=headers,
+        )
 
     def get(self, budget_id: str) -> GetBudgetConfigurationResponse:
         """Get budget.
-        
+
         Gets a budget configuration for an account. Both account and budget configuration are specified by ID.
-        
+
         :param budget_id: str
           The budget configuration ID
-        
+
         :returns: :class:`GetBudgetConfigurationResponse`
         """
 
-        headers = {'Accept': 'application/json', }
+        headers = {
+            "Accept": "application/json",
+        }
 
-        res = self._api.do('GET',
-                           f'/api/2.1/accounts/{self._api.account_id}/budgets/{budget_id}',
-                           headers=headers)
+        res = self._api.do(
+            "GET",
+            f"/api/2.1/accounts/{self._api.account_id}/budgets/{budget_id}",
+            headers=headers,
+        )
         return GetBudgetConfigurationResponse.from_dict(res)
 
     def list(self, *, page_token: Optional[str] = None) -> Iterator[BudgetConfiguration]:
         """Get all budgets.
-        
+
         Gets all budgets associated with this account.
-        
+
         :param page_token: str (optional)
           A page token received from a previous get all budget configurations call. This token can be used to
           retrieve the subsequent page. Requests first page if absent.
-        
+
         :returns: Iterator over :class:`BudgetConfiguration`
         """
 
         query = {}
-        if page_token is not None: query['page_token'] = page_token
-        headers = {'Accept': 'application/json', }
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
 
         while True:
-            json = self._api.do('GET',
-                                f'/api/2.1/accounts/{self._api.account_id}/budgets',
-                                query=query,
-                                headers=headers)
-            if 'budgets' in json:
-                for v in json['budgets']:
+            json = self._api.do(
+                "GET",
+                f"/api/2.1/accounts/{self._api.account_id}/budgets",
+                query=query,
+                headers=headers,
+            )
+            if "budgets" in json:
+                for v in json["budgets"]:
                     yield BudgetConfiguration.from_dict(v)
-            if 'next_page_token' not in json or not json['next_page_token']:
+            if "next_page_token" not in json or not json["next_page_token"]:
                 return
-            query['page_token'] = json['next_page_token']
+            query["page_token"] = json["next_page_token"]
 
-    def update(self, budget_id: str,
-               budget: UpdateBudgetConfigurationBudget) -> UpdateBudgetConfigurationResponse:
+    def update(self, budget_id: str, budget: UpdateBudgetConfigurationBudget) -> UpdateBudgetConfigurationResponse:
         """Modify budget.
-        
+
         Updates a budget configuration for an account. Both account and budget configuration are specified by
         ID.
-        
+
         :param budget_id: str
           The Databricks budget configuration ID.
         :param budget: :class:`UpdateBudgetConfigurationBudget`
           The updated budget. This will overwrite the budget specified by the budget ID.
-        
+
         :returns: :class:`UpdateBudgetConfigurationResponse`
         """
         body = {}
-        if budget is not None: body['budget'] = budget.as_dict()
-        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        if budget is not None:
+            body["budget"] = budget.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
 
-        res = self._api.do('PUT',
-                           f'/api/2.1/accounts/{self._api.account_id}/budgets/{budget_id}',
-                           body=body,
-                           headers=headers)
+        res = self._api.do(
+            "PUT",
+            f"/api/2.1/accounts/{self._api.account_id}/budgets/{budget_id}",
+            body=body,
+            headers=headers,
+        )
         return UpdateBudgetConfigurationResponse.from_dict(res)
 
 
@@ -1815,12 +2124,12 @@ class LogDeliveryAPI:
     """These APIs manage log delivery configurations for this account. The two supported log types for this API
     are _billable usage logs_ and _audit logs_. This feature is in Public Preview. This feature works with all
     account ID types.
-    
+
     Log delivery works with all account types. However, if your account is on the E2 version of the platform
     or on a select custom plan that allows multiple workspaces per account, you can optionally configure
     different storage destinations for each workspace. Log delivery status is also provided to know the latest
     status of log delivery attempts. The high-level flow of billable usage delivery:
-    
+
     1. **Create storage**: In AWS, [create a new AWS S3 bucket] with a specific bucket policy. Using
     Databricks APIs, call the Account API to create a [storage configuration object](:method:Storage/Create)
     that uses the bucket name. 2. **Create credentials**: In AWS, create the appropriate AWS IAM role. For
@@ -1834,7 +2143,7 @@ class LogDeliveryAPI:
     Account level log delivery applies to all current and future workspaces plus account level logs, while
     workspace level log delivery solely delivers logs related to the specified workspaces. You can create
     multiple types of delivery configurations per account.
-    
+
     For billable usage delivery: * For more information about billable usage logs, see [Billable usage log
     delivery]. For the CSV schema, see the [Usage page]. * The delivery location is
     `<bucket-name>/<prefix>/billable-usage/csv/`, where `<prefix>` is the name of the optional delivery path
@@ -1843,7 +2152,7 @@ class LogDeliveryAPI:
     workspaces (_workspace level_ logs). You can aggregate usage for your entire account by creating an
     _account level_ delivery configuration that delivers logs for all current and future workspaces in your
     account. * The files are delivered daily by overwriting the month's CSV file for each workspace.
-    
+
     For audit log delivery: * For more information about about audit log delivery, see [Audit log delivery],
     which includes information about the used JSON schema. * The delivery location is
     `<bucket-name>/<delivery-path-prefix>/workspaceId=<workspaceId>/date=<yyyy-mm-dd>/auditlogs_<internal-id>.json`.
@@ -1853,11 +2162,12 @@ class LogDeliveryAPI:
     level_ delivery configuration), the audit log delivery includes workspace-level audit logs for all
     workspaces in the account as well as account-level audit logs. See [Audit log delivery] for details. *
     Auditable events are typically available in logs within 15 minutes.
-    
+
     [Audit log delivery]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
     [Billable usage log delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
     [Usage page]: https://docs.databricks.com/administration-guide/account-settings/usage.html
-    [create a new AWS S3 bucket]: https://docs.databricks.com/administration-guide/account-api/aws-storage.html"""
+    [create a new AWS S3 bucket]: https://docs.databricks.com/administration-guide/account-api/aws-storage.html
+    """
 
     def __init__(self, api_client):
         self._api = api_client
@@ -1865,105 +2175,126 @@ class LogDeliveryAPI:
     def create(
         self,
         *,
-        log_delivery_configuration: Optional[CreateLogDeliveryConfigurationParams] = None
+        log_delivery_configuration: Optional[CreateLogDeliveryConfigurationParams] = None,
     ) -> WrappedLogDeliveryConfiguration:
         """Create a new log delivery configuration.
-        
+
         Creates a new Databricks log delivery configuration to enable delivery of the specified type of logs
         to your storage location. This requires that you already created a [credential
         object](:method:Credentials/Create) (which encapsulates a cross-account service IAM role) and a
         [storage configuration object](:method:Storage/Create) (which encapsulates an S3 bucket).
-        
+
         For full details, including the required IAM role policies and bucket policies, see [Deliver and
         access billable usage logs] or [Configure audit logging].
-        
+
         **Note**: There is a limit on the number of log delivery configurations available per account (each
         limit applies separately to each log type including billable usage and audit logs). You can create a
         maximum of two enabled account-level delivery configurations (configurations without a workspace
         filter) per type. Additionally, you can create two enabled workspace-level delivery configurations per
         workspace for each log type, which means that the same workspace ID can occur in the workspace filter
         for no more than two delivery configurations per log type.
-        
+
         You cannot delete a log delivery configuration, but you can disable it (see [Enable or disable log
         delivery configuration](:method:LogDelivery/PatchStatus)).
-        
+
         [Configure audit logging]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
         [Deliver and access billable usage logs]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
-        
+
         :param log_delivery_configuration: :class:`CreateLogDeliveryConfigurationParams` (optional)
-        
+
         :returns: :class:`WrappedLogDeliveryConfiguration`
         """
         body = {}
         if log_delivery_configuration is not None:
-            body['log_delivery_configuration'] = log_delivery_configuration.as_dict()
-        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+            body["log_delivery_configuration"] = log_delivery_configuration.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
 
-        res = self._api.do('POST',
-                           f'/api/2.0/accounts/{self._api.account_id}/log-delivery',
-                           body=body,
-                           headers=headers)
+        res = self._api.do(
+            "POST",
+            f"/api/2.0/accounts/{self._api.account_id}/log-delivery",
+            body=body,
+            headers=headers,
+        )
         return WrappedLogDeliveryConfiguration.from_dict(res)
 
     def get(self, log_delivery_configuration_id: str) -> WrappedLogDeliveryConfiguration:
         """Get log delivery configuration.
-        
+
         Gets a Databricks log delivery configuration object for an account, both specified by ID.
-        
+
         :param log_delivery_configuration_id: str
           Databricks log delivery configuration ID
-        
+
         :returns: :class:`WrappedLogDeliveryConfiguration`
         """
 
-        headers = {'Accept': 'application/json', }
+        headers = {
+            "Accept": "application/json",
+        }
 
         res = self._api.do(
-            'GET',
-            f'/api/2.0/accounts/{self._api.account_id}/log-delivery/{log_delivery_configuration_id}',
-            headers=headers)
+            "GET",
+            f"/api/2.0/accounts/{self._api.account_id}/log-delivery/{log_delivery_configuration_id}",
+            headers=headers,
+        )
         return WrappedLogDeliveryConfiguration.from_dict(res)
 
-    def list(self,
-             *,
-             credentials_id: Optional[str] = None,
-             status: Optional[LogDeliveryConfigStatus] = None,
-             storage_configuration_id: Optional[str] = None) -> Iterator[LogDeliveryConfiguration]:
+    def list(
+        self,
+        *,
+        credentials_id: Optional[str] = None,
+        status: Optional[LogDeliveryConfigStatus] = None,
+        storage_configuration_id: Optional[str] = None,
+    ) -> Iterator[LogDeliveryConfiguration]:
         """Get all log delivery configurations.
-        
+
         Gets all Databricks log delivery configurations associated with an account specified by ID.
-        
+
         :param credentials_id: str (optional)
           Filter by credential configuration ID.
         :param status: :class:`LogDeliveryConfigStatus` (optional)
           Filter by status `ENABLED` or `DISABLED`.
         :param storage_configuration_id: str (optional)
           Filter by storage configuration ID.
-        
+
         :returns: Iterator over :class:`LogDeliveryConfiguration`
         """
 
         query = {}
-        if credentials_id is not None: query['credentials_id'] = credentials_id
-        if status is not None: query['status'] = status.value
-        if storage_configuration_id is not None: query['storage_configuration_id'] = storage_configuration_id
-        headers = {'Accept': 'application/json', }
+        if credentials_id is not None:
+            query["credentials_id"] = credentials_id
+        if status is not None:
+            query["status"] = status.value
+        if storage_configuration_id is not None:
+            query["storage_configuration_id"] = storage_configuration_id
+        headers = {
+            "Accept": "application/json",
+        }
 
-        json = self._api.do('GET',
-                            f'/api/2.0/accounts/{self._api.account_id}/log-delivery',
-                            query=query,
-                            headers=headers)
+        json = self._api.do(
+            "GET",
+            f"/api/2.0/accounts/{self._api.account_id}/log-delivery",
+            query=query,
+            headers=headers,
+        )
         parsed = WrappedLogDeliveryConfigurations.from_dict(json).log_delivery_configurations
         return parsed if parsed is not None else []
 
-    def patch_status(self, log_delivery_configuration_id: str, status: LogDeliveryConfigStatus):
+    def patch_status(
+        self,
+        log_delivery_configuration_id: str,
+        status: LogDeliveryConfigStatus,
+    ):
         """Enable or disable log delivery configuration.
-        
+
         Enables or disables a log delivery configuration. Deletion of delivery configurations is not
         supported, so disable log delivery configurations that are no longer needed. Note that you can't
         re-enable a delivery configuration if this would violate the delivery configuration limits described
         under [Create log delivery](:method:LogDelivery/Create).
-        
+
         :param log_delivery_configuration_id: str
           Databricks log delivery configuration ID
         :param status: :class:`LogDeliveryConfigStatus`
@@ -1971,17 +2302,23 @@ class LogDeliveryAPI:
           to `ENABLED`. You can [enable or disable the
           configuration](#operation/patch-log-delivery-config-status) later. Deletion of a configuration is
           not supported, so disable a log delivery configuration that is no longer needed.
-        
-        
+
+
         """
         body = {}
-        if status is not None: body['status'] = status.value
-        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        if status is not None:
+            body["status"] = status.value
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
 
-        self._api.do('PATCH',
-                     f'/api/2.0/accounts/{self._api.account_id}/log-delivery/{log_delivery_configuration_id}',
-                     body=body,
-                     headers=headers)
+        self._api.do(
+            "PATCH",
+            f"/api/2.0/accounts/{self._api.account_id}/log-delivery/{log_delivery_configuration_id}",
+            body=body,
+            headers=headers,
+        )
 
 
 class UsageDashboardsAPI:
@@ -1992,57 +2329,74 @@ class UsageDashboardsAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self,
-               *,
-               dashboard_type: Optional[UsageDashboardType] = None,
-               workspace_id: Optional[int] = None) -> CreateBillingUsageDashboardResponse:
+    def create(
+        self,
+        *,
+        dashboard_type: Optional[UsageDashboardType] = None,
+        workspace_id: Optional[int] = None,
+    ) -> CreateBillingUsageDashboardResponse:
         """Create new usage dashboard.
-        
+
         Create a usage dashboard specified by workspaceId, accountId, and dashboard type.
-        
+
         :param dashboard_type: :class:`UsageDashboardType` (optional)
           Workspace level usage dashboard shows usage data for the specified workspace ID. Global level usage
           dashboard shows usage data for all workspaces in the account.
         :param workspace_id: int (optional)
           The workspace ID of the workspace in which the usage dashboard is created.
-        
+
         :returns: :class:`CreateBillingUsageDashboardResponse`
         """
         body = {}
-        if dashboard_type is not None: body['dashboard_type'] = dashboard_type.value
-        if workspace_id is not None: body['workspace_id'] = workspace_id
-        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        if dashboard_type is not None:
+            body["dashboard_type"] = dashboard_type.value
+        if workspace_id is not None:
+            body["workspace_id"] = workspace_id
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
 
-        res = self._api.do('POST',
-                           f'/api/2.0/accounts/{self._api.account_id}/dashboard',
-                           body=body,
-                           headers=headers)
+        res = self._api.do(
+            "POST",
+            f"/api/2.0/accounts/{self._api.account_id}/dashboard",
+            body=body,
+            headers=headers,
+        )
         return CreateBillingUsageDashboardResponse.from_dict(res)
 
-    def get(self,
-            *,
-            dashboard_type: Optional[UsageDashboardType] = None,
-            workspace_id: Optional[int] = None) -> GetBillingUsageDashboardResponse:
+    def get(
+        self,
+        *,
+        dashboard_type: Optional[UsageDashboardType] = None,
+        workspace_id: Optional[int] = None,
+    ) -> GetBillingUsageDashboardResponse:
         """Get usage dashboard.
-        
+
         Get a usage dashboard specified by workspaceId, accountId, and dashboard type.
-        
+
         :param dashboard_type: :class:`UsageDashboardType` (optional)
           Workspace level usage dashboard shows usage data for the specified workspace ID. Global level usage
           dashboard shows usage data for all workspaces in the account.
         :param workspace_id: int (optional)
           The workspace ID of the workspace in which the usage dashboard is created.
-        
+
         :returns: :class:`GetBillingUsageDashboardResponse`
         """
 
         query = {}
-        if dashboard_type is not None: query['dashboard_type'] = dashboard_type.value
-        if workspace_id is not None: query['workspace_id'] = workspace_id
-        headers = {'Accept': 'application/json', }
+        if dashboard_type is not None:
+            query["dashboard_type"] = dashboard_type.value
+        if workspace_id is not None:
+            query["workspace_id"] = workspace_id
+        headers = {
+            "Accept": "application/json",
+        }
 
-        res = self._api.do('GET',
-                           f'/api/2.0/accounts/{self._api.account_id}/dashboard',
-                           query=query,
-                           headers=headers)
+        res = self._api.do(
+            "GET",
+            f"/api/2.0/accounts/{self._api.account_id}/dashboard",
+            query=query,
+            headers=headers,
+        )
         return GetBillingUsageDashboardResponse.from_dict(res)

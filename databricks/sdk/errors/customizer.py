@@ -24,7 +24,7 @@ class _RetryAfterCustomizer(_ErrorCustomizer):
         retry_after = response.headers.get("Retry-After")
         if retry_after is None:
             logging.debug(
-                f'No Retry-After header received in response with status code 429 or 503. Defaulting to {cls._DEFAULT_RETRY_AFTER_SECONDS}'
+                f"No Retry-After header received in response with status code 429 or 503. Defaulting to {cls._DEFAULT_RETRY_AFTER_SECONDS}"
             )
             # 429 requests should include a `Retry-After` header, but if it's missing,
             # we default to 1 second.
@@ -40,11 +40,11 @@ class _RetryAfterCustomizer(_ErrorCustomizer):
             return int(retry_after)
         except ValueError:
             logging.debug(
-                f'Invalid Retry-After header received: {retry_after}. Defaulting to {cls._DEFAULT_RETRY_AFTER_SECONDS}'
+                f"Invalid Retry-After header received: {retry_after}. Defaulting to {cls._DEFAULT_RETRY_AFTER_SECONDS}"
             )
             # defaulting to 1 sleep second to make self._is_retryable() simpler
             return cls._DEFAULT_RETRY_AFTER_SECONDS
 
     def customize_error(self, response: requests.Response, kwargs: dict):
         if response.status_code in (429, 503):
-            kwargs['retry_after_secs'] = self._parse_retry_after(response)
+            kwargs["retry_after_secs"] = self._parse_retry_after(response)

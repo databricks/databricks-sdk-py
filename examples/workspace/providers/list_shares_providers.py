@@ -11,7 +11,7 @@ public_share_recipient = """{
     }
 """
 
-created = w.providers.create(name=f'sdk-{time.time_ns()}', recipient_profile_str=public_share_recipient)
+created = w.providers.create(name=f"sdk-{time.time_ns()}", recipient_profile_str=public_share_recipient)
 
 shares = w.providers.list_shares(name=created.name)
 

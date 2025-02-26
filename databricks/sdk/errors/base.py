@@ -8,40 +8,45 @@ import requests
 
 class ErrorDetail:
 
-    def __init__(self,
-                 type: str = None,
-                 reason: str = None,
-                 domain: str = None,
-                 metadata: dict = None,
-                 **kwargs):
+    def __init__(
+        self,
+        type: str = None,
+        reason: str = None,
+        domain: str = None,
+        metadata: dict = None,
+        **kwargs,
+    ):
         self.type = type
         self.reason = reason
         self.domain = domain
         self.metadata = metadata
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> 'ErrorDetail':
-        if '@type' in d:
-            d['type'] = d['@type']
+    def from_dict(cls, d: Dict[str, any]) -> "ErrorDetail":
+        if "@type" in d:
+            d["type"] = d["@type"]
         return cls(**d)
 
 
 class DatabricksError(IOError):
-    """ Generic error from Databricks REST API """
+    """Generic error from Databricks REST API"""
+
     # Known ErrorDetail types
     _error_info_type = "type.googleapis.com/google.rpc.ErrorInfo"
 
-    def __init__(self,
-                 message: str = None,
-                 *,
-                 error_code: str = None,
-                 detail: str = None,
-                 status: str = None,
-                 scimType: str = None,
-                 error: str = None,
-                 retry_after_secs: int = None,
-                 details: List[Dict[str, any]] = None,
-                 **kwargs):
+    def __init__(
+        self,
+        message: str = None,
+        *,
+        error_code: str = None,
+        detail: str = None,
+        status: str = None,
+        scimType: str = None,
+        error: str = None,
+        retry_after_secs: int = None,
+        details: List[Dict[str, any]] = None,
+        **kwargs,
+    ):
         """
 
         :param message:
@@ -132,8 +137,8 @@ class _ErrorOverride:
             return False
         if self.status_code_matcher and not self.status_code_matcher.match(str(response.status_code)):
             return False
-        if self.error_code_matcher and not self.error_code_matcher.match(raw_error.get('error_code', '')):
+        if self.error_code_matcher and not self.error_code_matcher.match(raw_error.get("error_code", "")):
             return False
-        if self.message_matcher and not self.message_matcher.match(raw_error.get('message', '')):
+        if self.message_matcher and not self.message_matcher.match(raw_error.get("message", "")):
             return False
         return True

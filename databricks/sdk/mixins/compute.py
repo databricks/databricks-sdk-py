@@ -9,7 +9,7 @@ from databricks.sdk.core import DatabricksError
 from databricks.sdk.errors import OperationFailed
 from databricks.sdk.service import compute
 
-_LOG = logging.getLogger('databricks.sdk')
+_LOG = logging.getLogger("databricks.sdk")
 
 
 @dataclass
@@ -22,35 +22,39 @@ class SemVer:
 
     # official https://semver.org/ recommendation: https://regex101.com/r/Ly7O1x/
     # with addition of "x" wildcards for minor/patch versions. Also, patch version may be omitted.
-    _pattern = re.compile(r"^"
-                          r"(?P<major>0|[1-9]\d*)\.(?P<minor>x|0|[1-9]\d*)(\.(?P<patch>x|0|[1-9x]\d*))?"
-                          r"(?:-(?P<pre_release>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)"
-                          r"(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?"
-                          r"(?:\+(?P<build>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$")
+    _pattern = re.compile(
+        r"^"
+        r"(?P<major>0|[1-9]\d*)\.(?P<minor>x|0|[1-9]\d*)(\.(?P<patch>x|0|[1-9x]\d*))?"
+        r"(?:-(?P<pre_release>(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)"
+        r"(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?"
+        r"(?:\+(?P<build>[0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$"
+    )
 
     @classmethod
-    def parse(cls, v: str) -> 'SemVer':
+    def parse(cls, v: str) -> "SemVer":
         if not v:
-            raise ValueError(f'Not a valid SemVer: {v}')
-        if v[0] != 'v':
-            v = f'v{v}'
+            raise ValueError(f"Not a valid SemVer: {v}")
+        if v[0] != "v":
+            v = f"v{v}"
         m = cls._pattern.match(v[1:])
         if not m:
-            raise ValueError(f'Not a valid SemVer: {v}')
+            raise ValueError(f"Not a valid SemVer: {v}")
         # patch and/or minor versions may be wildcards.
         # for now, we're converting wildcards to zeroes.
-        minor = m.group('minor')
+        minor = m.group("minor")
         try:
-            patch = m.group('patch')
+            patch = m.group("patch")
         except IndexError:
             patch = 0
-        return SemVer(major=int(m.group('major')),
-                      minor=0 if minor == 'x' else int(minor),
-                      patch=0 if patch == 'x' or patch is None else int(patch),
-                      pre_release=m.group('pre_release'),
-                      build=m.group('build'))
+        return SemVer(
+            major=int(m.group("major")),
+            minor=0 if minor == "x" else int(minor),
+            patch=0 if patch == "x" or patch is None else int(patch),
+            pre_release=m.group("pre_release"),
+            build=m.group("build"),
+        )
 
-    def __lt__(self, other: 'SemVer'):
+    def __lt__(self, other: "SemVer"):
         if not other:
             return False
         if self.major != other.major:
@@ -69,17 +73,19 @@ class SemVer:
 class ClustersExt(compute.ClustersAPI):
     __doc__ = compute.ClustersAPI.__doc__
 
-    def select_spark_version(self,
-                             long_term_support: bool = False,
-                             beta: bool = False,
-                             latest: bool = True,
-                             ml: bool = False,
-                             genomics: bool = False,
-                             gpu: bool = False,
-                             scala: str = "2.12",
-                             spark_version: str = None,
-                             photon: bool = False,
-                             graviton: bool = False) -> str:
+    def select_spark_version(
+        self,
+        long_term_support: bool = False,
+        beta: bool = False,
+        latest: bool = True,
+        ml: bool = False,
+        genomics: bool = False,
+        gpu: bool = False,
+        scala: str = "2.12",
+        spark_version: str = None,
+        photon: bool = False,
+        graviton: bool = False,
+    ) -> str:
         """Selects the latest Databricks Runtime Version.
 
         :param long_term_support: bool
@@ -101,10 +107,15 @@ class ClustersExt(compute.ClustersAPI):
         for version in sv.versions:
             if "-scala" + scala not in version.key:
                 continue
-            matches = (("apache-spark-" not in version.key) and (("-ml-" in version.key) == ml)
-                       and (("-hls-" in version.key) == genomics) and (("-gpu-" in version.key) == gpu)
-                       and (("-photon-" in version.key) == photon)
-                       and (("-aarch64-" in version.key) == graviton) and (("Beta" in version.name) == beta))
+            matches = (
+                ("apache-spark-" not in version.key)
+                and (("-ml-" in version.key) == ml)
+                and (("-hls-" in version.key) == genomics)
+                and (("-gpu-" in version.key) == gpu)
+                and (("-photon-" in version.key) == photon)
+                and (("-aarch64-" in version.key) == graviton)
+                and (("Beta" in version.name) == beta)
+            )
             if matches and long_term_support:
                 matches = matches and (("LTS" in version.name) or ("-esr-" in version.key))
             if matches and spark_version:
@@ -127,8 +138,17 @@ class ClustersExt(compute.ClustersAPI):
             local_nvme_disk = item.node_instance_type.local_nvme_disks
             local_disk_size_gb = item.node_instance_type.local_disk_size_gb
             local_nvme_disk_size_gb = item.node_instance_type.local_nvme_disk_size_gb
-        return (item.is_deprecated, item.num_cores, item.memory_mb, local_disks, local_disk_size_gb,
-                local_nvme_disk, local_nvme_disk_size_gb, item.num_gpus, item.instance_type_id)
+        return (
+            item.is_deprecated,
+            item.num_cores,
+            item.memory_mb,
+            local_disks,
+            local_disk_size_gb,
+            local_nvme_disk,
+            local_nvme_disk_size_gb,
+            item.num_gpus,
+            item.instance_type_id,
+        )
 
     @staticmethod
     def _should_node_be_skipped(nt: compute.NodeType) -> bool:
@@ -138,24 +158,29 @@ class ClustersExt(compute.ClustersAPI):
             return False
         val = compute.CloudProviderNodeStatus
         for st in nt.node_info.status:
-            if st in (val.NOT_AVAILABLE_IN_REGION, val.NOT_ENABLED_ON_SUBSCRIPTION):
+            if st in (
+                val.NOT_AVAILABLE_IN_REGION,
+                val.NOT_ENABLED_ON_SUBSCRIPTION,
+            ):
                 return True
         return False
 
-    def select_node_type(self,
-                         min_memory_gb: int = None,
-                         gb_per_core: int = None,
-                         min_cores: int = None,
-                         min_gpus: int = None,
-                         local_disk: bool = None,
-                         local_disk_min_size: int = None,
-                         category: str = None,
-                         photon_worker_capable: bool = None,
-                         photon_driver_capable: bool = None,
-                         graviton: bool = None,
-                         is_io_cache_enabled: bool = None,
-                         support_port_forwarding: bool = None,
-                         fleet: str = None) -> str:
+    def select_node_type(
+        self,
+        min_memory_gb: int = None,
+        gb_per_core: int = None,
+        min_cores: int = None,
+        min_gpus: int = None,
+        local_disk: bool = None,
+        local_disk_min_size: int = None,
+        category: str = None,
+        photon_worker_capable: bool = None,
+        photon_driver_capable: bool = None,
+        graviton: bool = None,
+        is_io_cache_enabled: bool = None,
+        support_port_forwarding: bool = None,
+        fleet: str = None,
+    ) -> str:
         """Selects smallest available node type given the conditions.
 
         :param min_memory_gb: int
@@ -194,12 +219,13 @@ class ClustersExt(compute.ClustersAPI):
             if local_disk or local_disk_min_size is not None:
                 instance_type = nt.node_instance_type
                 local_disks = int(instance_type.local_disks) if instance_type.local_disks else 0
-                local_nvme_disks = int(
-                    instance_type.local_nvme_disks) if instance_type.local_nvme_disks else 0
+                local_nvme_disks = int(instance_type.local_nvme_disks) if instance_type.local_nvme_disks else 0
                 if instance_type is None or (local_disks < 1 and local_nvme_disks < 1):
                     continue
                 local_disk_size_gb = instance_type.local_disk_size_gb if instance_type.local_disk_size_gb else 0
-                local_nvme_disk_size_gb = instance_type.local_nvme_disk_size_gb if instance_type.local_nvme_disk_size_gb else 0
+                local_nvme_disk_size_gb = (
+                    instance_type.local_nvme_disk_size_gb if instance_type.local_nvme_disk_size_gb else 0
+                )
                 all_disks_size = local_disk_size_gb + local_nvme_disk_size_gb
                 if local_disk_min_size is not None and all_disks_size < local_disk_min_size:
                     continue
@@ -235,16 +261,20 @@ class ClustersExt(compute.ClustersAPI):
                     self.wait_get_cluster_terminated(cluster_id)
                     self.start(cluster_id).result()
                     return
-                elif info.state in (state.PENDING, state.RESIZING, state.RESTARTING):
+                elif info.state in (
+                    state.PENDING,
+                    state.RESIZING,
+                    state.RESTARTING,
+                ):
                     self.wait_get_cluster_running(cluster_id)
                     return
                 elif info.state in (state.ERROR, state.UNKNOWN):
-                    raise RuntimeError(f'Cluster {info.cluster_name} is {info.state}: {info.state_message}')
+                    raise RuntimeError(f"Cluster {info.cluster_name} is {info.state}: {info.state_message}")
             except DatabricksError as e:
-                if e.error_code == 'INVALID_STATE':
-                    _LOG.debug(f'Cluster was started by other process: {e} Retrying.')
+                if e.error_code == "INVALID_STATE":
+                    _LOG.debug(f"Cluster was started by other process: {e} Retrying.")
                     continue
                 raise e
             except OperationFailed as e:
-                _LOG.debug('Operation failed, retrying', exc_info=e)
-        raise TimeoutError(f'timed out after {timeout}')
+                _LOG.debug("Operation failed, retrying", exc_info=e)
+        raise TimeoutError(f"timed out after {timeout}")

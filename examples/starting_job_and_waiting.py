@@ -1,5 +1,5 @@
 #!env python3
-""" Detailed demonstration of long-running operations
+"""Detailed demonstration of long-running operations
 
 This example goes over the advanced usage of long-running operations like:
 
@@ -39,14 +39,15 @@ import logging
 import sys
 import time
 
-from databricks.sdk.service import compute, jobs
 from databricks.sdk import WorkspaceClient
+from databricks.sdk.service import compute, jobs
 
 if __name__ == "__main__":
-    logging.basicConfig(stream=sys.stdout,
-                        level=logging.INFO,
-                        format="%(asctime)s [%(name)s][%(levelname)s] %(message)s",
-                        )
+    logging.basicConfig(
+        stream=sys.stdout,
+        level=logging.INFO,
+        format="%(asctime)s [%(name)s][%(levelname)s] %(message)s",
+    )
 
     w = WorkspaceClient()
 
@@ -56,19 +57,20 @@ if __name__ == "__main__":
         f.write(b'import time; time.sleep(10); print("Hello, World!")')
 
     # trigger one-time-run job and get waiter object
-    waiter = w.jobs.submit(run_name=f"py-sdk-run-{time.time()}",
-                           tasks=[
-                               jobs.SubmitTask(
-                                   task_key="hello_world",
-                                   new_cluster=compute.ClusterSpec(
-                                       spark_version=w.clusters.select_spark_version(long_term_support=True),
-                                       node_type_id=w.clusters.select_node_type(local_disk=True),
-                                       num_workers=1,
-                                   ),
-                                   spark_python_task=jobs.SparkPythonTask(python_file=f"dbfs:{py_on_dbfs}"),
-                               )
-                           ],
-                           )
+    waiter = w.jobs.submit(
+        run_name=f"py-sdk-run-{time.time()}",
+        tasks=[
+            jobs.SubmitTask(
+                task_key="hello_world",
+                new_cluster=compute.ClusterSpec(
+                    spark_version=w.clusters.select_spark_version(long_term_support=True),
+                    node_type_id=w.clusters.select_node_type(local_disk=True),
+                    num_workers=1,
+                ),
+                spark_python_task=jobs.SparkPythonTask(python_file=f"dbfs:{py_on_dbfs}"),
+            )
+        ],
+    )
 
     logging.info(f"starting to poll: {waiter.run_id}")
 

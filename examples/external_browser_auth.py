@@ -1,6 +1,7 @@
-from databricks.sdk import WorkspaceClient
 import argparse
 import logging
+
+from databricks.sdk import WorkspaceClient
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -21,9 +22,11 @@ def register_custom_app(confidential: bool) -> tuple[str, str]:
         confidential=confidential,
         scopes=["all-apis"],
     )
-    logging.info(f"Created new custom app: "
-                 f"--client_id {custom_app.client_id} "
-                 f"{'--client_secret ' + custom_app.client_secret if confidential else ''}")
+    logging.info(
+        f"Created new custom app: "
+        f"--client_id {custom_app.client_id} "
+        f"{'--client_secret ' + custom_app.client_secret if confidential else ''}"
+    )
 
     return custom_app.client_id, custom_app.client_secret
 
@@ -32,6 +35,7 @@ def delete_custom_app(client_id: str):
     """Creates new Custom OAuth App in Databricks Account"""
     logging.info(f"Deleting custom app {client_id}")
     from databricks.sdk import AccountClient
+
     account_client = AccountClient()
     account_client.custom_app_integration.delete(client_id)
 
@@ -42,9 +46,21 @@ if __name__ == "__main__":
     parser.add_argument("--client_id", help="Databricks client_id", default=None)
     parser.add_argument("--azure_client_id", help="Databricks azure_client_id", default=None)
     parser.add_argument("--client_secret", help="Databricks client_secret", default=None)
-    parser.add_argument("--azure_client_secret", help="Databricks azure_client_secret", default=None)
-    parser.add_argument("--register-custom-app", action="store_true", help="Register a new custom app")
-    parser.add_argument("--register-custom-app-confidential", action="store_true", help="Register a new custom app")
+    parser.add_argument(
+        "--azure_client_secret",
+        help="Databricks azure_client_secret",
+        default=None,
+    )
+    parser.add_argument(
+        "--register-custom-app",
+        action="store_true",
+        help="Register a new custom app",
+    )
+    parser.add_argument(
+        "--register-custom-app-confidential",
+        action="store_true",
+        help="Register a new custom app",
+    )
     namespace = parser.parse_args()
     if namespace.register_custom_app and (namespace.client_id is not None or namespace.azure_client_id is not None):
         raise ValueError("Cannot register custom app and provide --client_id/--azure_client_id at the same time")
@@ -68,5 +84,3 @@ if __name__ == "__main__":
 
     if namespace.register_custom_app:
         delete_custom_app(client_id)
-
-

@@ -7,10 +7,11 @@ from datetime import datetime, timezone
 from databricks.sdk import WorkspaceClient
 
 if __name__ == "__main__":
-    logging.basicConfig(stream=sys.stdout,
-                        level=logging.INFO,
-                        format="%(asctime)s [%(name)s][%(levelname)s] %(message)s",
-                        )
+    logging.basicConfig(
+        stream=sys.stdout,
+        level=logging.INFO,
+        format="%(asctime)s [%(name)s][%(levelname)s] %(message)s",
+    )
 
     latest_state = {}
     all_jobs = {}
@@ -30,12 +31,14 @@ if __name__ == "__main__":
 
     summary = []
     for job_id, run in latest_state.items():
-        summary.append({
-            "job_name": all_jobs[job_id].settings.name,
-            "last_status": run.state.result_state,
-            "last_finished": datetime.fromtimestamp(run.end_time / 1000, timezone.utc),
-            "average_duration": sum(durations[job_id]) / len(durations[job_id]),
-        })
+        summary.append(
+            {
+                "job_name": all_jobs[job_id].settings.name,
+                "last_status": run.state.result_state,
+                "last_finished": datetime.fromtimestamp(run.end_time / 1000, timezone.utc),
+                "average_duration": sum(durations[job_id]) / len(durations[job_id]),
+            }
+        )
 
     for line in sorted(summary, key=lambda s: s["last_finished"], reverse=True):
         logging.info(f"Latest: {line}")

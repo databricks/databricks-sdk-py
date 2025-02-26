@@ -6,13 +6,15 @@ from databricks.sdk.service.jobs import BaseJob, BaseRun, Job, RunType
 
 class JobsExt(jobs.JobsAPI):
 
-    def list(self,
-             *,
-             expand_tasks: Optional[bool] = None,
-             limit: Optional[int] = None,
-             name: Optional[str] = None,
-             offset: Optional[int] = None,
-             page_token: Optional[str] = None) -> Iterator[BaseJob]:
+    def list(
+        self,
+        *,
+        expand_tasks: Optional[bool] = None,
+        limit: Optional[int] = None,
+        name: Optional[str] = None,
+        offset: Optional[int] = None,
+        page_token: Optional[str] = None,
+    ) -> Iterator[BaseJob]:
         """List jobs.
 
         Retrieves a list of jobs. If the job has multiple pages of tasks, job_clusters, parameters or environments,
@@ -36,11 +38,13 @@ class JobsExt(jobs.JobsAPI):
         :returns: Iterator over :class:`BaseJob`
         """
         # fetch jobs with limited elements in top level arrays
-        jobs_list = super().list(expand_tasks=expand_tasks,
-                                 limit=limit,
-                                 name=name,
-                                 offset=offset,
-                                 page_token=page_token)
+        jobs_list = super().list(
+            expand_tasks=expand_tasks,
+            limit=limit,
+            name=name,
+            offset=offset,
+            page_token=page_token,
+        )
         if not expand_tasks:
             yield from jobs_list
 
@@ -55,22 +59,24 @@ class JobsExt(jobs.JobsAPI):
             # Remove has_more fields for each job in the list.
             # This field in Jobs API 2.2 is useful for pagination. It indicates if there are more than 100 tasks or job_clusters in the job.
             # This function hides pagination details from the user. So the field does not play useful role here.
-            if hasattr(job, 'has_more'):
-                delattr(job, 'has_more')
+            if hasattr(job, "has_more"):
+                delattr(job, "has_more")
             yield job
 
-    def list_runs(self,
-                  *,
-                  active_only: Optional[bool] = None,
-                  completed_only: Optional[bool] = None,
-                  expand_tasks: Optional[bool] = None,
-                  job_id: Optional[int] = None,
-                  limit: Optional[int] = None,
-                  offset: Optional[int] = None,
-                  page_token: Optional[str] = None,
-                  run_type: Optional[RunType] = None,
-                  start_time_from: Optional[int] = None,
-                  start_time_to: Optional[int] = None) -> Iterator[BaseRun]:
+    def list_runs(
+        self,
+        *,
+        active_only: Optional[bool] = None,
+        completed_only: Optional[bool] = None,
+        expand_tasks: Optional[bool] = None,
+        job_id: Optional[int] = None,
+        limit: Optional[int] = None,
+        offset: Optional[int] = None,
+        page_token: Optional[str] = None,
+        run_type: Optional[RunType] = None,
+        start_time_from: Optional[int] = None,
+        start_time_to: Optional[int] = None,
+    ) -> Iterator[BaseRun]:
         """List job runs.
 
         List runs in descending order by start time. If the job has multiple pages of tasks, job_clusters, parameters or repair history,
@@ -109,16 +115,18 @@ class JobsExt(jobs.JobsAPI):
         :returns: Iterator over :class:`BaseRun`
         """
         # fetch runs with limited elements in top level arrays
-        runs_list = super().list_runs(active_only=active_only,
-                                      completed_only=completed_only,
-                                      expand_tasks=expand_tasks,
-                                      job_id=job_id,
-                                      limit=limit,
-                                      offset=offset,
-                                      page_token=page_token,
-                                      run_type=run_type,
-                                      start_time_from=start_time_from,
-                                      start_time_to=start_time_to)
+        runs_list = super().list_runs(
+            active_only=active_only,
+            completed_only=completed_only,
+            expand_tasks=expand_tasks,
+            job_id=job_id,
+            limit=limit,
+            offset=offset,
+            page_token=page_token,
+            run_type=run_type,
+            start_time_from=start_time_from,
+            start_time_to=start_time_to,
+        )
 
         if not expand_tasks:
             yield from runs_list
@@ -134,16 +142,18 @@ class JobsExt(jobs.JobsAPI):
             # Remove has_more fields for each run in the list.
             # This field in Jobs API 2.2 is useful for pagination. It indicates if there are more than 100 tasks or job_clusters in the run.
             # This function hides pagination details from the user. So the field does not play useful role here.
-            if hasattr(run, 'has_more'):
-                delattr(run, 'has_more')
+            if hasattr(run, "has_more"):
+                delattr(run, "has_more")
             yield run
 
-    def get_run(self,
-                run_id: int,
-                *,
-                include_history: Optional[bool] = None,
-                include_resolved_values: Optional[bool] = None,
-                page_token: Optional[str] = None) -> jobs.Run:
+    def get_run(
+        self,
+        run_id: int,
+        *,
+        include_history: Optional[bool] = None,
+        include_resolved_values: Optional[bool] = None,
+        page_token: Optional[str] = None,
+    ) -> jobs.Run:
         """Get a single job run.
 
         Retrieve the metadata of a run. If a run has multiple pages of tasks, it will paginate through all pages of tasks, iterations, job_clusters, job_parameters, and repair history.
@@ -160,10 +170,12 @@ class JobsExt(jobs.JobsAPI):
 
         :returns: :class:`Run`
         """
-        run = super().get_run(run_id,
-                              include_history=include_history,
-                              include_resolved_values=include_resolved_values,
-                              page_token=page_token)
+        run = super().get_run(
+            run_id,
+            include_history=include_history,
+            include_resolved_values=include_resolved_values,
+            page_token=page_token,
+        )
 
         # When querying a Job run, a page token is returned when there are more than 100 tasks. No iterations are defined for a Job run. Therefore, the next page in the response only includes the next page of tasks.
         # When querying a ForEach task run, a page token is returned when there are more than 100 iterations. Only a single task is returned, corresponding to the ForEach task itself. Therefore, the client only reads the iterations from the next page and not the tasks.
@@ -171,10 +183,12 @@ class JobsExt(jobs.JobsAPI):
 
         # runs/get response includes next_page_token as long as there are more pages to fetch.
         while run.next_page_token is not None:
-            next_run = super().get_run(run_id,
-                                       include_history=include_history,
-                                       include_resolved_values=include_resolved_values,
-                                       page_token=run.next_page_token)
+            next_run = super().get_run(
+                run_id,
+                include_history=include_history,
+                include_resolved_values=include_resolved_values,
+                page_token=run.next_page_token,
+            )
             if is_paginating_iterations:
                 run.iterations.extend(next_run.iterations)
             else:

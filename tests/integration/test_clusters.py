@@ -31,17 +31,19 @@ def test_ensure_cluster_is_running(w, env_or_skip):
 
 
 def test_create_cluster(w, env_or_skip, random):
-    info = w.clusters.create(cluster_name=f'databricks-sdk-py-{random(8)}',
-                             spark_version=w.clusters.select_spark_version(long_term_support=True),
-                             instance_pool_id=env_or_skip('TEST_INSTANCE_POOL_ID'),
-                             autotermination_minutes=10,
-                             num_workers=1).result(timeout=timedelta(minutes=20))
-    logging.info(f'Created: {info}')
+    info = w.clusters.create(
+        cluster_name=f"databricks-sdk-py-{random(8)}",
+        spark_version=w.clusters.select_spark_version(long_term_support=True),
+        instance_pool_id=env_or_skip("TEST_INSTANCE_POOL_ID"),
+        autotermination_minutes=10,
+        num_workers=1,
+    ).result(timeout=timedelta(minutes=20))
+    logging.info(f"Created: {info}")
 
 
 def test_error_unmarshall(w, random):
     with pytest.raises(DatabricksError) as exc_info:
-        w.clusters.get('123__non_existing__')
+        w.clusters.get("123__non_existing__")
     err = exc_info.value
-    assert 'Cluster 123__non_existing__ does not exist' in str(err)
-    assert 'INVALID_PARAMETER_VALUE' == err.error_code
+    assert "Cluster 123__non_existing__ does not exist" in str(err)
+    assert "INVALID_PARAMETER_VALUE" == err.error_code

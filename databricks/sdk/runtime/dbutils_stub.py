@@ -2,21 +2,21 @@ import typing
 from collections import namedtuple
 
 
-class FileInfo(namedtuple('FileInfo', ['path', 'name', 'size', "modificationTime"])):
+class FileInfo(namedtuple("FileInfo", ["path", "name", "size", "modificationTime"])):
     pass
 
 
-class MountInfo(namedtuple('MountInfo', ['mountPoint', 'source', 'encryptionType'])):
+class MountInfo(namedtuple("MountInfo", ["mountPoint", "source", "encryptionType"])):
     pass
 
 
-class SecretScope(namedtuple('SecretScope', ['name'])):
+class SecretScope(namedtuple("SecretScope", ["name"])):
 
     def getName(self):
         return self.name
 
 
-class SecretMetadata(namedtuple('SecretMetadata', ['key'])):
+class SecretMetadata(namedtuple("SecretMetadata", ["key"])):
     pass
 
 
@@ -49,8 +49,7 @@ class dbutils:
             ...
 
         @staticmethod
-        def getCurrentCredentials() -> typing.Mapping[str, str]:
-            ...
+        def getCurrentCredentials() -> typing.Mapping[str, str]: ...
 
     class data:
         """
@@ -129,40 +128,38 @@ class dbutils:
             ...
 
         @staticmethod
-        def cacheFiles(*files):
-            ...
+        def cacheFiles(*files): ...
 
         @staticmethod
-        def cacheTable(name: str):
-            ...
+        def cacheTable(name: str): ...
 
         @staticmethod
-        def uncacheFiles(*files):
-            ...
+        def uncacheFiles(*files): ...
 
         @staticmethod
-        def uncacheTable(name: str):
-            ...
+        def uncacheTable(name: str): ...
 
         @staticmethod
-        def mount(source: str,
-                  mount_point: str,
-                  encryption_type: str = "",
-                  owner: typing.Optional[str] = None,
-                  extra_configs: typing.Mapping[str, str] = {},
-                  ) -> bool:
+        def mount(
+            source: str,
+            mount_point: str,
+            encryption_type: str = "",
+            owner: typing.Optional[str] = None,
+            extra_configs: typing.Mapping[str, str] = {},
+        ) -> bool:
             """
             Mounts the given source directory into DBFS at the given mount point
             """
             ...
 
         @staticmethod
-        def updateMount(source: str,
-                        mount_point: str,
-                        encryption_type: str = "",
-                        owner: typing.Optional[str] = None,
-                        extra_configs: typing.Mapping[str, str] = {},
-                        ) -> bool:
+        def updateMount(
+            source: str,
+            mount_point: str,
+            encryption_type: str = "",
+            owner: typing.Optional[str] = None,
+            extra_configs: typing.Mapping[str, str] = {},
+        ) -> bool:
             """
             Similar to mount(), but updates an existing mount point (if present) instead of creating a new one
             """
@@ -200,7 +197,12 @@ class dbutils:
             """
 
             @staticmethod
-            def get(taskKey: str, key: str, default: any = None, debugValue: any = None) -> None:
+            def get(
+                taskKey: str,
+                key: str,
+                default: any = None,
+                debugValue: any = None,
+            ) -> None:
                 """
                 Returns the latest task value that belongs to the current job run
                 """
@@ -238,7 +240,11 @@ class dbutils:
             ...
 
         @staticmethod
-        def run(path: str, timeout_seconds: int, arguments: typing.Mapping[str, str]) -> str:
+        def run(
+            path: str,
+            timeout_seconds: int,
+            arguments: typing.Mapping[str, str],
+        ) -> str:
             """
             This method runs a notebook and returns its exit value
             """
@@ -307,7 +313,12 @@ class dbutils:
             ...
 
         @staticmethod
-        def dropdown(name: str, defaultValue: str, choices: typing.List[str], label: str = None):
+        def dropdown(
+            name: str,
+            defaultValue: str,
+            choices: typing.List[str],
+            label: str = None,
+        ):
             """Creates a dropdown input widget with given specification.
             :param name: Name of argument associated with the new input widget
             :param defaultValue: Default value of the input widget (must be one of choices)
@@ -317,11 +328,12 @@ class dbutils:
             ...
 
         @staticmethod
-        def combobox(name: str,
-                     defaultValue: str,
-                     choices: typing.List[str],
-                     label: typing.Optional[str] = None,
-                     ):
+        def combobox(
+            name: str,
+            defaultValue: str,
+            choices: typing.List[str],
+            label: typing.Optional[str] = None,
+        ):
             """Creates a combobox input widget with given specification.
             :param name: Name of argument associated with the new input widget
             :param defaultValue: Default value of the input widget
@@ -331,11 +343,12 @@ class dbutils:
             ...
 
         @staticmethod
-        def multiselect(name: str,
-                        defaultValue: str,
-                        choices: typing.List[str],
-                        label: typing.Optional[str] = None,
-                        ):
+        def multiselect(
+            name: str,
+            defaultValue: str,
+            choices: typing.List[str],
+            label: typing.Optional[str] = None,
+        ):
             """Creates a multiselect input widget with given specification.
             :param name: Name of argument associated with the new input widget
             :param defaultValue: Default value of the input widget (must be one of choices)

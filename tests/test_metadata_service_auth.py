@@ -12,9 +12,11 @@ def get_test_server(host: str, token: str, expires_after: int):
 
     def inner(*args, **kwargs):
         nonlocal counter
-        headers = kwargs['headers']
-        if headers.get(MetadataServiceTokenSource.METADATA_SERVICE_VERSION_HEADER
-                       ) != MetadataServiceTokenSource.METADATA_SERVICE_VERSION:
+        headers = kwargs["headers"]
+        if (
+            headers.get(MetadataServiceTokenSource.METADATA_SERVICE_VERSION_HEADER)
+            != MetadataServiceTokenSource.METADATA_SERVICE_VERSION
+        ):
             resp = requests.Response()
             resp.status_code = 400
             return resp
@@ -26,11 +28,11 @@ def get_test_server(host: str, token: str, expires_after: int):
         json_data = {
             "access_token": f"{token}-{counter}",
             "expires_on": int((datetime.now() + timedelta(seconds=expires_after)).timestamp()),
-            "token_type": "Bearer"
+            "token_type": "Bearer",
         }
         resp = requests.Response()
         resp.status_code = 200
-        resp._content = json.dumps(json_data).encode('utf-8')
+        resp._content = json.dumps(json_data).encode("utf-8")
         counter += 1
         return resp
 
@@ -38,39 +40,39 @@ def get_test_server(host: str, token: str, expires_after: int):
 
 
 def test_config_metadata_service(monkeypatch):
-    monkeypatch.setattr(requests, 'get', get_test_server('https://x', 'token', 100))
-    monkeypatch.setenv('DATABRICKS_HOST', 'x')
-    monkeypatch.setenv('DATABRICKS_METADATA_SERVICE_URL', 'http://y')
+    monkeypatch.setattr(requests, "get", get_test_server("https://x", "token", 100))
+    monkeypatch.setenv("DATABRICKS_HOST", "x")
+    monkeypatch.setenv("DATABRICKS_METADATA_SERVICE_URL", "http://y")
     cfg = Config()
 
-    assert cfg.auth_type == 'metadata-service'
-    assert cfg.host == 'https://x'
-    assert cfg.metadata_service_url == 'http://y'
+    assert cfg.auth_type == "metadata-service"
+    assert cfg.host == "https://x"
+    assert cfg.metadata_service_url == "http://y"
 
 
 def test_config_metadata_service_athenticate(monkeypatch):
-    monkeypatch.setattr(requests, 'get', get_test_server('https://x', 'token', 1000))
-    monkeypatch.setenv('DATABRICKS_HOST', 'x')
-    monkeypatch.setenv('DATABRICKS_METADATA_SERVICE_URL', 'http://y')
+    monkeypatch.setattr(requests, "get", get_test_server("https://x", "token", 1000))
+    monkeypatch.setenv("DATABRICKS_HOST", "x")
+    monkeypatch.setenv("DATABRICKS_METADATA_SERVICE_URL", "http://y")
     cfg = Config()
 
-    assert cfg.auth_type == 'metadata-service'
-    assert cfg.host == 'https://x'
-    assert cfg.metadata_service_url == 'http://y'
+    assert cfg.auth_type == "metadata-service"
+    assert cfg.host == "https://x"
+    assert cfg.metadata_service_url == "http://y"
 
     headers = cfg.authenticate()
     assert headers.get("Authorization") == "Bearer token-0"
 
 
 def test_config_metadata_service_refresh(monkeypatch):
-    monkeypatch.setattr(requests, 'get', get_test_server('https://x', 'token', 10))
-    monkeypatch.setenv('DATABRICKS_HOST', 'x')
-    monkeypatch.setenv('DATABRICKS_METADATA_SERVICE_URL', 'http://y')
+    monkeypatch.setattr(requests, "get", get_test_server("https://x", "token", 10))
+    monkeypatch.setenv("DATABRICKS_HOST", "x")
+    monkeypatch.setenv("DATABRICKS_METADATA_SERVICE_URL", "http://y")
     cfg = Config()
 
-    assert cfg.auth_type == 'metadata-service'
-    assert cfg.host == 'https://x'
-    assert cfg.metadata_service_url == 'http://y'
+    assert cfg.auth_type == "metadata-service"
+    assert cfg.host == "https://x"
+    assert cfg.metadata_service_url == "http://y"
 
     headers = cfg.authenticate()
     # the first refresh happens when initialising config. So this is the second refresh

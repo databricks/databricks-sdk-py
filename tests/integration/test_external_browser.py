@@ -5,36 +5,42 @@ from databricks.sdk import WorkspaceClient
 from .conftest import _load_debug_env_if_runs_from_ide
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def env(env_or_skip):
-    if not _load_debug_env_if_runs_from_ide('workspace'):
-        pytest.skip('runnable only on dev machines')
+    if not _load_debug_env_if_runs_from_ide("workspace"):
+        pytest.skip("runnable only on dev machines")
     return env_or_skip
 
 
 def test_pkce_app(env):
-    w = WorkspaceClient(host=env('DATABRICKS_HOST'),
-                        client_id=env('TEST_PKCE_APP_CLIENT_ID'),
-                        auth_type='external-browser')
+    w = WorkspaceClient(
+        host=env("DATABRICKS_HOST"),
+        client_id=env("TEST_PKCE_APP_CLIENT_ID"),
+        auth_type="external-browser",
+    )
     clusters = w.clusters.list()
     for cl in clusters:
-        print(f' - {cl.cluster_name} is {cl.state}')
+        print(f" - {cl.cluster_name} is {cl.state}")
 
 
 def test_public_app(env):
-    w = WorkspaceClient(host=env('DATABRICKS_HOST'),
-                        client_id=env('TEST_PUBLIC_APP_CLIENT_ID'),
-                        auth_type='external-browser')
+    w = WorkspaceClient(
+        host=env("DATABRICKS_HOST"),
+        client_id=env("TEST_PUBLIC_APP_CLIENT_ID"),
+        auth_type="external-browser",
+    )
     clusters = w.clusters.list()
     for cl in clusters:
-        print(f' - {cl.cluster_name} is {cl.state}')
+        print(f" - {cl.cluster_name} is {cl.state}")
 
 
 def test_private_app(env):
-    w = WorkspaceClient(host=env('DATABRICKS_HOST'),
-                        client_id=env('TEST_PRIVATE_APP_CLIENT_ID'),
-                        client_secret=env('TEST_PRIVATE_APP_CLIENT_SECRET'),
-                        auth_type='external-browser')
+    w = WorkspaceClient(
+        host=env("DATABRICKS_HOST"),
+        client_id=env("TEST_PRIVATE_APP_CLIENT_ID"),
+        client_secret=env("TEST_PRIVATE_APP_CLIENT_SECRET"),
+        auth_type="external-browser",
+    )
     clusters = w.clusters.list()
     for cl in clusters:
-        print(f' - {cl.cluster_name} is {cl.state}')
+        print(f" - {cl.cluster_name} is {cl.state}")

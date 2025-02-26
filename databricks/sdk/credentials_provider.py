@@ -26,13 +26,17 @@ from .oauth import (ClientCredentials, OAuthClient, Refreshable, Token,
 
 CredentialsProvider = Callable[[], Dict[str, str]]
 
-logger = logging.getLogger('databricks.sdk')
+logger = logging.getLogger("databricks.sdk")
 
 
 class OAuthCredentialsProvider:
-    """ OAuthCredentialsProvider is a type of CredentialsProvider which exposes OAuth tokens. """
+    """OAuthCredentialsProvider is a type of CredentialsProvider which exposes OAuth tokens."""
 
-    def __init__(self, credentials_provider: CredentialsProvider, token_provider: Callable[[], Token]):
+    def __init__(
+        self,
+        credentials_provider: CredentialsProvider,
+        token_provider: Callable[[], Token],
+    ):
         self._credentials_provider = credentials_provider
         self._token_provider = token_provider
 
@@ -44,45 +48,49 @@ class OAuthCredentialsProvider:
 
 
 class CredentialsStrategy(abc.ABC):
-    """ CredentialsProvider is the protocol (call-side interface)
-     for authenticating requests to Databricks REST APIs"""
+    """CredentialsProvider is the protocol (call-side interface)
+    for authenticating requests to Databricks REST APIs"""
 
     @abc.abstractmethod
-    def auth_type(self) -> str:
-        ...
+    def auth_type(self) -> str: ...
 
     @abc.abstractmethod
-    def __call__(self, cfg: 'Config') -> CredentialsProvider:
-        ...
+    def __call__(self, cfg: "Config") -> CredentialsProvider: ...
 
 
 class OauthCredentialsStrategy(CredentialsStrategy):
-    """ OauthCredentialsProvider is a CredentialsProvider which
+    """OauthCredentialsProvider is a CredentialsProvider which
     supports Oauth tokens"""
 
-    def __init__(self, auth_type: str, headers_provider: Callable[['Config'], OAuthCredentialsProvider]):
+    def __init__(
+        self,
+        auth_type: str,
+        headers_provider: Callable[["Config"], OAuthCredentialsProvider],
+    ):
         self._headers_provider = headers_provider
         self._auth_type = auth_type
 
     def auth_type(self) -> str:
         return self._auth_type
 
-    def __call__(self, cfg: 'Config') -> OAuthCredentialsProvider:
+    def __call__(self, cfg: "Config") -> OAuthCredentialsProvider:
         return self._headers_provider(cfg)
 
-    def oauth_token(self, cfg: 'Config') -> Token:
+    def oauth_token(self, cfg: "Config") -> Token:
         return self._headers_provider(cfg).oauth_token()
 
 
 def credentials_strategy(name: str, require: List[str]):
-    """ Given the function that receives a Config and returns RequestVisitor,
+    """Given the function that receives a Config and returns RequestVisitor,
     create CredentialsProvider with a given name and required configuration
-    attribute names to be present for this function to be called. """
+    attribute names to be present for this function to be called."""
 
-    def inner(func: Callable[['Config'], CredentialsProvider]) -> CredentialsStrategy:
+    def inner(
+        func: Callable[["Config"], CredentialsProvider],
+    ) -> CredentialsStrategy:
 
         @functools.wraps(func)
-        def wrapper(cfg: 'Config') -> Optional[CredentialsProvider]:
+        def wrapper(cfg: "Config") -> Optional[CredentialsProvider]:
             for attr in require:
                 getattr(cfg, attr)
                 if not getattr(cfg, attr):
@@ -96,14 +104,16 @@ def credentials_strategy(name: str, require: List[str]):
 
 
 def oauth_credentials_strategy(name: str, require: List[str]):
-    """ Given the function that receives a Config and returns an OauthHeaderFactory,
+    """Given the function that receives a Config and returns an OauthHeaderFactory,
     create an OauthCredentialsProvider with a given name and required configuration
-    attribute names to be present for this function to be called. """
+    attribute names to be present for this function to be called."""
 
-    def inner(func: Callable[['Config'], OAuthCredentialsProvider]) -> OauthCredentialsStrategy:
+    def inner(
+        func: Callable[["Config"], OAuthCredentialsProvider],
+    ) -> OauthCredentialsStrategy:
 
         @functools.wraps(func)
-        def wrapper(cfg: 'Config') -> Optional[OAuthCredentialsProvider]:
+        def wrapper(cfg: "Config") -> Optional[OAuthCredentialsProvider]:
             for attr in require:
                 if not getattr(cfg, attr):
                     return None
@@ -114,11 +124,11 @@ def oauth_credentials_strategy(name: str, require: List[str]):
     return inner
 
 
-@credentials_strategy('basic', ['host', 'username', 'password'])
-def basic_auth(cfg: 'Config') -> CredentialsProvider:
-    """ Given username and password, add base64-encoded Basic credentials """
-    encoded = base64.b64encode(f'{cfg.username}:{cfg.password}'.encode()).decode()
-    static_credentials = {'Authorization': f'Basic {encoded}'}
+@credentials_strategy("basic", ["host", "username", "password"])
+def basic_auth(cfg: "Config") -> CredentialsProvider:
+    """Given username and password, add base64-encoded Basic credentials"""
+    encoded = base64.b64encode(f"{cfg.username}:{cfg.password}".encode()).decode()
+    static_credentials = {"Authorization": f"Basic {encoded}"}
 
     def inner() -> Dict[str, str]:
         return static_credentials
@@ -126,10 +136,10 @@ def basic_auth(cfg: 'Config') -> CredentialsProvider:
     return inner
 
 
-@credentials_strategy('pat', ['host', 'token'])
-def pat_auth(cfg: 'Config') -> CredentialsProvider:
-    """ Adds Databricks Personal Access Token to every request """
-    static_credentials = {'Authorization': f'Bearer {cfg.token}'}
+@credentials_strategy("pat", ["host", "token"])
+def pat_auth(cfg: "Config") -> CredentialsProvider:
+    """Adds Databricks Personal Access Token to every request"""
+    static_credentials = {"Authorization": f"Bearer {cfg.token}"}
 
     def inner() -> Dict[str, str]:
         return static_credentials
@@ -137,9 +147,9 @@ def pat_auth(cfg: 'Config') -> CredentialsProvider:
     return inner
 
 
-@credentials_strategy('runtime', [])
-def runtime_native_auth(cfg: 'Config') -> Optional[CredentialsProvider]:
-    if 'DATABRICKS_RUNTIME_VERSION' not in os.environ:
+@credentials_strategy("runtime", [])
+def runtime_native_auth(cfg: "Config") -> Optional[CredentialsProvider]:
+    if "DATABRICKS_RUNTIME_VERSION" not in os.environ:
         return None
 
     # This import MUST be after the "DATABRICKS_RUNTIME_VERSION" check
@@ -148,36 +158,44 @@ def runtime_native_auth(cfg: 'Config') -> Optional[CredentialsProvider]:
     from databricks.sdk.runtime import (init_runtime_legacy_auth,
                                         init_runtime_native_auth,
                                         init_runtime_repl_auth)
-    for init in [init_runtime_native_auth, init_runtime_repl_auth, init_runtime_legacy_auth]:
+
+    for init in [
+        init_runtime_native_auth,
+        init_runtime_repl_auth,
+        init_runtime_legacy_auth,
+    ]:
         if init is None:
             continue
         host, inner = init()
         if host is None:
-            logger.debug(f'[{init.__name__}] no host detected')
+            logger.debug(f"[{init.__name__}] no host detected")
             continue
         cfg.host = host
-        logger.debug(f'[{init.__name__}] runtime native auth configured')
+        logger.debug(f"[{init.__name__}] runtime native auth configured")
         return inner
     return None
 
 
-@oauth_credentials_strategy('oauth-m2m', ['host', 'client_id', 'client_secret'])
-def oauth_service_principal(cfg: 'Config') -> Optional[CredentialsProvider]:
-    """ Adds refreshed Databricks machine-to-machine OAuth Bearer token to every request,
-    if /oidc/.well-known/oauth-authorization-server is available on the given host. """
+@oauth_credentials_strategy("oauth-m2m", ["host", "client_id", "client_secret"])
+def oauth_service_principal(cfg: "Config") -> Optional[CredentialsProvider]:
+    """Adds refreshed Databricks machine-to-machine OAuth Bearer token to every request,
+    if /oidc/.well-known/oauth-authorization-server is available on the given host.
+    """
     oidc = cfg.oidc_endpoints
     if oidc is None:
         return None
 
-    token_source = ClientCredentials(client_id=cfg.client_id,
-                                     client_secret=cfg.client_secret,
-                                     token_url=oidc.token_endpoint,
-                                     scopes=["all-apis"],
-                                     use_header=True)
+    token_source = ClientCredentials(
+        client_id=cfg.client_id,
+        client_secret=cfg.client_secret,
+        token_url=oidc.token_endpoint,
+        scopes=["all-apis"],
+        use_header=True,
+    )
 
     def inner() -> Dict[str, str]:
         token = token_source.token()
-        return {'Authorization': f'{token.token_type} {token.access_token}'}
+        return {"Authorization": f"{token.token_type} {token.access_token}"}
 
     def token() -> Token:
         return token_source.token()
@@ -185,9 +203,9 @@ def oauth_service_principal(cfg: 'Config') -> Optional[CredentialsProvider]:
     return OAuthCredentialsProvider(inner, token)
 
 
-@credentials_strategy('external-browser', ['host', 'auth_type'])
-def external_browser(cfg: 'Config') -> Optional[CredentialsProvider]:
-    if cfg.auth_type != 'external-browser':
+@credentials_strategy("external-browser", ["host", "auth_type"])
+def external_browser(cfg: "Config") -> Optional[CredentialsProvider]:
+    if cfg.auth_type != "external-browser":
         return None
 
     client_id, client_secret = None, None
@@ -198,17 +216,19 @@ def external_browser(cfg: 'Config') -> Optional[CredentialsProvider]:
         client_id = cfg.azure_client
         client_secret = cfg.azure_client_secret
     if not client_id:
-        client_id = 'databricks-cli'
+        client_id = "databricks-cli"
 
     # Load cached credentials from disk if they exist. Note that these are
     # local to the Python SDK and not reused by other SDKs.
     oidc_endpoints = cfg.oidc_endpoints
-    redirect_url = 'http://localhost:8020'
-    token_cache = TokenCache(host=cfg.host,
-                             oidc_endpoints=oidc_endpoints,
-                             client_id=client_id,
-                             client_secret=client_secret,
-                             redirect_url=redirect_url)
+    redirect_url = "http://localhost:8020"
+    token_cache = TokenCache(
+        host=cfg.host,
+        oidc_endpoints=oidc_endpoints,
+        client_id=client_id,
+        client_secret=client_secret,
+        redirect_url=redirect_url,
+    )
     credentials = token_cache.load()
     if credentials:
         try:
@@ -219,12 +239,14 @@ def external_browser(cfg: 'Config') -> Optional[CredentialsProvider]:
             return credentials(cfg)
         # TODO: We should ideally use more specific exceptions.
         except Exception as e:
-            logger.warning(f'Failed to refresh cached token: {e}. Initiating new OAuth login flow')
+            logger.warning(f"Failed to refresh cached token: {e}. Initiating new OAuth login flow")
 
-    oauth_client = OAuthClient(oidc_endpoints=oidc_endpoints,
-                               client_id=client_id,
-                               redirect_url=redirect_url,
-                               client_secret=client_secret)
+    oauth_client = OAuthClient(
+        oidc_endpoints=oidc_endpoints,
+        client_id=client_id,
+        redirect_url=redirect_url,
+        client_secret=client_secret,
+    )
     consent = oauth_client.initiate_consent()
     if not consent:
         return None
@@ -234,33 +256,41 @@ def external_browser(cfg: 'Config') -> Optional[CredentialsProvider]:
     return credentials(cfg)
 
 
-def _ensure_host_present(cfg: 'Config', token_source_for: Callable[[str], TokenSource]):
-    """ Resolves Azure Databricks workspace URL from ARM Resource ID """
+def _ensure_host_present(cfg: "Config", token_source_for: Callable[[str], TokenSource]):
+    """Resolves Azure Databricks workspace URL from ARM Resource ID"""
     if cfg.host:
         return
     if not cfg.azure_workspace_resource_id:
         return
     arm = cfg.arm_environment.resource_manager_endpoint
     token = token_source_for(arm).token()
-    resp = requests.get(f"{arm}{cfg.azure_workspace_resource_id}?api-version=2018-04-01",
-                        headers={"Authorization": f"Bearer {token.access_token}"})
+    resp = requests.get(
+        f"{arm}{cfg.azure_workspace_resource_id}?api-version=2018-04-01",
+        headers={"Authorization": f"Bearer {token.access_token}"},
+    )
     if not resp.ok:
         raise ValueError(f"Cannot resolve Azure Databricks workspace: {resp.content}")
     cfg.host = f"https://{resp.json()['properties']['workspaceUrl']}"
 
 
-@oauth_credentials_strategy('azure-client-secret', ['is_azure', 'azure_client_id', 'azure_client_secret'])
-def azure_service_principal(cfg: 'Config') -> CredentialsProvider:
-    """ Adds refreshed Azure Active Directory (AAD) Service Principal OAuth tokens
-    to every request, while automatically resolving different Azure environment endpoints. """
+@oauth_credentials_strategy(
+    "azure-client-secret",
+    ["is_azure", "azure_client_id", "azure_client_secret"],
+)
+def azure_service_principal(cfg: "Config") -> CredentialsProvider:
+    """Adds refreshed Azure Active Directory (AAD) Service Principal OAuth tokens
+    to every request, while automatically resolving different Azure environment endpoints.
+    """
 
     def token_source_for(resource: str) -> TokenSource:
         aad_endpoint = cfg.arm_environment.active_directory_endpoint
-        return ClientCredentials(client_id=cfg.azure_client_id,
-                                 client_secret=cfg.azure_client_secret,
-                                 token_url=f"{aad_endpoint}{cfg.azure_tenant_id}/oauth2/token",
-                                 endpoint_params={"resource": resource},
-                                 use_params=True)
+        return ClientCredentials(
+            client_id=cfg.azure_client_id,
+            client_secret=cfg.azure_client_secret,
+            token_url=f"{aad_endpoint}{cfg.azure_tenant_id}/oauth2/token",
+            endpoint_params={"resource": resource},
+            use_params=True,
+        )
 
     _ensure_host_present(cfg, token_source_for)
     cfg.load_azure_tenant_id()
@@ -269,7 +299,9 @@ def azure_service_principal(cfg: 'Config') -> CredentialsProvider:
     cloud = token_source_for(cfg.arm_environment.service_management_endpoint)
 
     def refreshed_headers() -> Dict[str, str]:
-        headers = {'Authorization': f"Bearer {inner.token().access_token}", }
+        headers = {
+            "Authorization": f"Bearer {inner.token().access_token}",
+        }
         add_workspace_id_header(cfg, headers)
         add_sp_management_token(cloud, headers)
         return headers
@@ -280,9 +312,9 @@ def azure_service_principal(cfg: 'Config') -> CredentialsProvider:
     return OAuthCredentialsProvider(refreshed_headers, token)
 
 
-@oauth_credentials_strategy('github-oidc-azure', ['host', 'azure_client_id'])
-def github_oidc_azure(cfg: 'Config') -> Optional[CredentialsProvider]:
-    if 'ACTIONS_ID_TOKEN_REQUEST_TOKEN' not in os.environ:
+@oauth_credentials_strategy("github-oidc-azure", ["host", "azure_client_id"])
+def github_oidc_azure(cfg: "Config") -> Optional[CredentialsProvider]:
+    if "ACTIONS_ID_TOKEN_REQUEST_TOKEN" not in os.environ:
         # not in GitHub actions
         return None
 
@@ -292,7 +324,7 @@ def github_oidc_azure(cfg: 'Config') -> Optional[CredentialsProvider]:
         return None
 
     # See https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-cloud-providers
-    headers = {'Authorization': f"Bearer {os.environ['ACTIONS_ID_TOKEN_REQUEST_TOKEN']}"}
+    headers = {"Authorization": f"Bearer {os.environ['ACTIONS_ID_TOKEN_REQUEST_TOKEN']}"}
     endpoint = f"{os.environ['ACTIONS_ID_TOKEN_REQUEST_URL']}&audience=api://AzureADTokenExchange"
     response = requests.get(endpoint, headers=headers)
     if not response.ok:
@@ -300,30 +332,34 @@ def github_oidc_azure(cfg: 'Config') -> Optional[CredentialsProvider]:
 
     # get the ID Token with aud=api://AzureADTokenExchange sub=repo:org/repo:environment:name
     response_json = response.json()
-    if 'value' not in response_json:
+    if "value" not in response_json:
         return None
 
-    logger.info("Configured AAD token for GitHub Actions OIDC (%s)", cfg.azure_client_id)
+    logger.info(
+        "Configured AAD token for GitHub Actions OIDC (%s)",
+        cfg.azure_client_id,
+    )
     params = {
-        'client_assertion_type': 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
-        'resource': cfg.effective_azure_login_app_id,
-        'client_assertion': response_json['value'],
+        "client_assertion_type": "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
+        "resource": cfg.effective_azure_login_app_id,
+        "client_assertion": response_json["value"],
     }
     aad_endpoint = cfg.arm_environment.active_directory_endpoint
     if not cfg.azure_tenant_id:
         # detect Azure AD Tenant ID if it's not specified directly
         token_endpoint = cfg.oidc_endpoints.token_endpoint
-        cfg.azure_tenant_id = token_endpoint.replace(aad_endpoint, '').split('/')[0]
+        cfg.azure_tenant_id = token_endpoint.replace(aad_endpoint, "").split("/")[0]
     inner = ClientCredentials(
         client_id=cfg.azure_client_id,
-        client_secret="", # we have no (rotatable) secrets in OIDC flow
+        client_secret="",  # we have no (rotatable) secrets in OIDC flow
         token_url=f"{aad_endpoint}{cfg.azure_tenant_id}/oauth2/token",
         endpoint_params=params,
-        use_params=True)
+        use_params=True,
+    )
 
     def refreshed_headers() -> Dict[str, str]:
         token = inner.token()
-        return {'Authorization': f'{token.token_type} {token.access_token}'}
+        return {"Authorization": f"{token.token_type} {token.access_token}"}
 
     def token() -> Token:
         return inner.token()
@@ -331,29 +367,32 @@ def github_oidc_azure(cfg: 'Config') -> Optional[CredentialsProvider]:
     return OAuthCredentialsProvider(refreshed_headers, token)
 
 
-GcpScopes = ["https://www.googleapis.com/auth/cloud-platform", "https://www.googleapis.com/auth/compute"]
+GcpScopes = [
+    "https://www.googleapis.com/auth/cloud-platform",
+    "https://www.googleapis.com/auth/compute",
+]
 
 
-@oauth_credentials_strategy('google-credentials', ['host', 'google_credentials'])
-def google_credentials(cfg: 'Config') -> Optional[CredentialsProvider]:
+@oauth_credentials_strategy("google-credentials", ["host", "google_credentials"])
+def google_credentials(cfg: "Config") -> Optional[CredentialsProvider]:
     if not cfg.is_gcp:
         return None
     # Reads credentials as JSON. Credentials can be either a path to JSON file, or actual JSON string.
     # Obtain the id token by providing the json file path and target audience.
-    if (os.path.isfile(cfg.google_credentials)):
+    if os.path.isfile(cfg.google_credentials):
         with io.open(cfg.google_credentials, "r", encoding="utf-8") as json_file:
             account_info = json.load(json_file)
     else:
         # If the file doesn't exist, assume that the config is the actual JSON content.
         account_info = json.loads(cfg.google_credentials)
 
-    credentials = service_account.IDTokenCredentials.from_service_account_info(info=account_info,
-                                                                               target_audience=cfg.host)
+    credentials = service_account.IDTokenCredentials.from_service_account_info(
+        info=account_info, target_audience=cfg.host
+    )
 
     request = Request()
 
-    gcp_credentials = service_account.Credentials.from_service_account_info(info=account_info,
-                                                                            scopes=GcpScopes)
+    gcp_credentials = service_account.Credentials.from_service_account_info(info=account_info, scopes=GcpScopes)
 
     def token() -> Token:
         credentials.refresh(request)
@@ -361,7 +400,7 @@ def google_credentials(cfg: 'Config') -> Optional[CredentialsProvider]:
 
     def refreshed_headers() -> Dict[str, str]:
         credentials.refresh(request)
-        headers = {'Authorization': f'Bearer {credentials.token}'}
+        headers = {"Authorization": f"Bearer {credentials.token}"}
         if cfg.is_account_client:
             gcp_credentials.refresh(request)
             headers["X-Databricks-GCP-SA-Access-Token"] = gcp_credentials.token
@@ -370,24 +409,29 @@ def google_credentials(cfg: 'Config') -> Optional[CredentialsProvider]:
     return OAuthCredentialsProvider(refreshed_headers, token)
 
 
-@oauth_credentials_strategy('google-id', ['host', 'google_service_account'])
-def google_id(cfg: 'Config') -> Optional[CredentialsProvider]:
+@oauth_credentials_strategy("google-id", ["host", "google_service_account"])
+def google_id(cfg: "Config") -> Optional[CredentialsProvider]:
     if not cfg.is_gcp:
         return None
     credentials, _project_id = google.auth.default()
 
     # Create the impersonated credential.
-    target_credentials = impersonated_credentials.Credentials(source_credentials=credentials,
-                                                              target_principal=cfg.google_service_account,
-                                                              target_scopes=[])
+    target_credentials = impersonated_credentials.Credentials(
+        source_credentials=credentials,
+        target_principal=cfg.google_service_account,
+        target_scopes=[],
+    )
 
     # Set the impersonated credential, target audience and token options.
-    id_creds = impersonated_credentials.IDTokenCredentials(target_credentials,
-                                                           target_audience=cfg.host,
-                                                           include_email=True)
+    id_creds = impersonated_credentials.IDTokenCredentials(
+        target_credentials, target_audience=cfg.host, include_email=True
+    )
 
     gcp_impersonated_credentials = impersonated_credentials.Credentials(
-        source_credentials=credentials, target_principal=cfg.google_service_account, target_scopes=GcpScopes)
+        source_credentials=credentials,
+        target_principal=cfg.google_service_account,
+        target_scopes=GcpScopes,
+    )
 
     request = Request()
 
@@ -397,7 +441,7 @@ def google_id(cfg: 'Config') -> Optional[CredentialsProvider]:
 
     def refreshed_headers() -> Dict[str, str]:
         id_creds.refresh(request)
-        headers = {'Authorization': f'Bearer {id_creds.token}'}
+        headers = {"Authorization": f"Bearer {id_creds.token}"}
         if cfg.is_account_client:
             gcp_impersonated_credentials.refresh(request)
             headers["X-Databricks-GCP-SA-Access-Token"] = gcp_impersonated_credentials.token
@@ -408,7 +452,13 @@ def google_id(cfg: 'Config') -> Optional[CredentialsProvider]:
 
 class CliTokenSource(Refreshable):
 
-    def __init__(self, cmd: List[str], token_type_field: str, access_token_field: str, expiry_field: str):
+    def __init__(
+        self,
+        cmd: List[str],
+        token_type_field: str,
+        access_token_field: str,
+        expiry_field: str,
+    ):
         super().__init__()
         self._cmd = cmd
         self._token_type_field = token_type_field
@@ -431,52 +481,74 @@ class CliTokenSource(Refreshable):
             out = _run_subprocess(self._cmd, capture_output=True, check=True)
             it = json.loads(out.stdout.decode())
             expires_on = self._parse_expiry(it[self._expiry_field])
-            return Token(access_token=it[self._access_token_field],
-                         token_type=it[self._token_type_field],
-                         expiry=expires_on)
+            return Token(
+                access_token=it[self._access_token_field],
+                token_type=it[self._token_type_field],
+                expiry=expires_on,
+            )
         except ValueError as e:
             raise ValueError(f"cannot unmarshal CLI result: {e}")
         except subprocess.CalledProcessError as e:
             stdout = e.stdout.decode().strip()
             stderr = e.stderr.decode().strip()
             message = stdout or stderr
-            raise IOError(f'cannot get access token: {message}') from e
+            raise IOError(f"cannot get access token: {message}") from e
 
 
-def _run_subprocess(popenargs,
-                    input=None,
-                    capture_output=True,
-                    timeout=None,
-                    check=False,
-                    **kwargs) -> subprocess.CompletedProcess:
+def _run_subprocess(
+    popenargs,
+    input=None,
+    capture_output=True,
+    timeout=None,
+    check=False,
+    **kwargs,
+) -> subprocess.CompletedProcess:
     """Runs subprocess with given arguments.
-    This handles OS-specific modifications that need to be made to the invocation of subprocess.run."""
-    kwargs['shell'] = sys.platform.startswith('win')
+    This handles OS-specific modifications that need to be made to the invocation of subprocess.run.
+    """
+    kwargs["shell"] = sys.platform.startswith("win")
     # windows requires shell=True to be able to execute 'az login' or other commands
     # cannot use shell=True all the time, as it breaks macOS
     logging.debug(f'Running command: {" ".join(popenargs)}')
-    return subprocess.run(popenargs,
-                          input=input,
-                          capture_output=capture_output,
-                          timeout=timeout,
-                          check=check,
-                          **kwargs)
+    return subprocess.run(
+        popenargs,
+        input=input,
+        capture_output=capture_output,
+        timeout=timeout,
+        check=check,
+        **kwargs,
+    )
 
 
 class AzureCliTokenSource(CliTokenSource):
-    """ Obtain the token granted by `az login` CLI command """
+    """Obtain the token granted by `az login` CLI command"""
 
-    def __init__(self, resource: str, subscription: Optional[str] = None, tenant: Optional[str] = None):
-        cmd = ["az", "account", "get-access-token", "--resource", resource, "--output", "json"]
+    def __init__(
+        self,
+        resource: str,
+        subscription: Optional[str] = None,
+        tenant: Optional[str] = None,
+    ):
+        cmd = [
+            "az",
+            "account",
+            "get-access-token",
+            "--resource",
+            resource,
+            "--output",
+            "json",
+        ]
         if subscription is not None:
             cmd.append("--subscription")
             cmd.append(subscription)
         if tenant and not self.__is_cli_using_managed_identity():
             cmd.extend(["--tenant", tenant])
-        super().__init__(cmd=cmd,
-                         token_type_field='tokenType',
-                         access_token_field='accessToken',
-                         expiry_field='expiresOn')
+        super().__init__(
+            cmd=cmd,
+            token_type_field="tokenType",
+            access_token_field="accessToken",
+            expiry_field="expiresOn",
+        )
 
     @staticmethod
     def __is_cli_using_managed_identity() -> bool:
@@ -489,7 +561,8 @@ class AzureCliTokenSource(CliTokenSource):
             if user is None:
                 return False
             return user.get("type") == "servicePrincipal" and user.get("name") in [
-                'systemAssignedIdentity', 'userAssignedIdentity'
+                "systemAssignedIdentity",
+                "userAssignedIdentity",
             ]
         except subprocess.CalledProcessError as e:
             logger.debug("Failed to get account information from Azure CLI", exc_info=e)
@@ -512,15 +585,13 @@ class AzureCliTokenSource(CliTokenSource):
               guaranteed to be unique within a tenant and should be used only for display purposes.
         - 'upn' - The username of the user.
         """
-        return 'upn' in self.token().jwt_claims()
+        return "upn" in self.token().jwt_claims()
 
     @staticmethod
-    def for_resource(cfg: 'Config', resource: str) -> 'AzureCliTokenSource':
+    def for_resource(cfg: "Config", resource: str) -> "AzureCliTokenSource":
         subscription = AzureCliTokenSource.get_subscription(cfg)
         if subscription is not None:
-            token_source = AzureCliTokenSource(resource,
-                                               subscription=subscription,
-                                               tenant=cfg.azure_tenant_id)
+            token_source = AzureCliTokenSource(resource, subscription=subscription, tenant=cfg.azure_tenant_id)
             try:
                 # This will fail if the user has access to the workspace, but not to the subscription
                 # itself.
@@ -535,32 +606,32 @@ class AzureCliTokenSource(CliTokenSource):
         return token_source
 
     @staticmethod
-    def get_subscription(cfg: 'Config') -> Optional[str]:
+    def get_subscription(cfg: "Config") -> Optional[str]:
         resource = cfg.azure_workspace_resource_id
         if resource is None or resource == "":
             return None
-        components = resource.split('/')
+        components = resource.split("/")
         if len(components) < 3:
             logger.warning("Invalid azure workspace resource ID")
             return None
         return components[2]
 
 
-@credentials_strategy('azure-cli', ['is_azure'])
-def azure_cli(cfg: 'Config') -> Optional[CredentialsProvider]:
-    """ Adds refreshed OAuth token granted by `az login` command to every request. """
+@credentials_strategy("azure-cli", ["is_azure"])
+def azure_cli(cfg: "Config") -> Optional[CredentialsProvider]:
+    """Adds refreshed OAuth token granted by `az login` command to every request."""
     cfg.load_azure_tenant_id()
     token_source = None
     mgmt_token_source = None
     try:
         token_source = AzureCliTokenSource.for_resource(cfg, cfg.effective_azure_login_app_id)
     except FileNotFoundError:
-        doc = 'https://docs.microsoft.com/en-us/cli/azure/?view=azure-cli-latest'
-        logger.debug(f'Most likely Azure CLI is not installed. See {doc} for details')
+        doc = "https://docs.microsoft.com/en-us/cli/azure/?view=azure-cli-latest"
+        logger.debug(f"Most likely Azure CLI is not installed. See {doc} for details")
         return None
     except OSError as e:
-        logger.debug('skipping Azure CLI auth', exc_info=e)
-        logger.debug('This may happen if you are attempting to login to a dev or staging workspace')
+        logger.debug("skipping Azure CLI auth", exc_info=e)
+        logger.debug("This may happen if you are attempting to login to a dev or staging workspace")
         return None
 
     if not token_source.is_human_user():
@@ -568,7 +639,10 @@ def azure_cli(cfg: 'Config') -> Optional[CredentialsProvider]:
             management_endpoint = cfg.arm_environment.service_management_endpoint
             mgmt_token_source = AzureCliTokenSource.for_resource(cfg, management_endpoint)
         except Exception as e:
-            logger.debug(f'Not including service management token in headers', exc_info=e)
+            logger.debug(
+                f"Not including service management token in headers",
+                exc_info=e,
+            )
             mgmt_token_source = None
 
     _ensure_host_present(cfg, lambda resource: AzureCliTokenSource.for_resource(cfg, resource))
@@ -576,7 +650,7 @@ def azure_cli(cfg: 'Config') -> Optional[CredentialsProvider]:
 
     def inner() -> Dict[str, str]:
         token = token_source.token()
-        headers = {'Authorization': f'{token.token_type} {token.access_token}'}
+        headers = {"Authorization": f"{token.token_type} {token.access_token}"}
         add_workspace_id_header(cfg, headers)
         if mgmt_token_source:
             add_sp_management_token(mgmt_token_source, headers)
@@ -586,12 +660,12 @@ def azure_cli(cfg: 'Config') -> Optional[CredentialsProvider]:
 
 
 class DatabricksCliTokenSource(CliTokenSource):
-    """ Obtain the token granted by `databricks auth login` CLI command """
+    """Obtain the token granted by `databricks auth login` CLI command"""
 
-    def __init__(self, cfg: 'Config'):
-        args = ['auth', 'token', '--host', cfg.host]
+    def __init__(self, cfg: "Config"):
+        args = ["auth", "token", "--host", cfg.host]
         if cfg.is_account_client:
-            args += ['--account-id', cfg.account_id]
+            args += ["--account-id", cfg.account_id]
 
         cli_path = cfg.databricks_cli_path
 
@@ -611,10 +685,12 @@ class DatabricksCliTokenSource(CliTokenSource):
         elif cli_path.count("/") == 0:
             cli_path = self.__class__._find_executable(cli_path)
 
-        super().__init__(cmd=[cli_path, *args],
-                         token_type_field='token_type',
-                         access_token_field='access_token',
-                         expiry_field='expiry')
+        super().__init__(
+            cmd=[cli_path, *args],
+            token_type_field="token_type",
+            access_token_field="access_token",
+            expiry_field="expiry",
+        )
 
     @staticmethod
     def _find_executable(name) -> str:
@@ -636,8 +712,8 @@ class DatabricksCliTokenSource(CliTokenSource):
         raise err
 
 
-@oauth_credentials_strategy('databricks-cli', ['host'])
-def databricks_cli(cfg: 'Config') -> Optional[CredentialsProvider]:
+@oauth_credentials_strategy("databricks-cli", ["host"])
+def databricks_cli(cfg: "Config") -> Optional[CredentialsProvider]:
     try:
         token_source = DatabricksCliTokenSource(cfg)
     except FileNotFoundError as e:
@@ -647,8 +723,8 @@ def databricks_cli(cfg: 'Config') -> Optional[CredentialsProvider]:
     try:
         token_source.token()
     except IOError as e:
-        if 'databricks OAuth is not' in str(e):
-            logger.debug(f'OAuth not configured or not available: {e}')
+        if "databricks OAuth is not" in str(e):
+            logger.debug(f"OAuth not configured or not available: {e}")
             return None
         raise e
 
@@ -656,7 +732,7 @@ def databricks_cli(cfg: 'Config') -> Optional[CredentialsProvider]:
 
     def inner() -> Dict[str, str]:
         token = token_source.token()
-        return {'Authorization': f'{token.token_type} {token.access_token}'}
+        return {"Authorization": f"{token.token_type} {token.access_token}"}
 
     def token() -> Token:
         return token_source.token()
@@ -665,13 +741,14 @@ def databricks_cli(cfg: 'Config') -> Optional[CredentialsProvider]:
 
 
 class MetadataServiceTokenSource(Refreshable):
-    """ Obtain the token granted by Databricks Metadata Service """
+    """Obtain the token granted by Databricks Metadata Service"""
+
     METADATA_SERVICE_VERSION = "1"
     METADATA_SERVICE_VERSION_HEADER = "X-Databricks-Metadata-Version"
     METADATA_SERVICE_HOST_HEADER = "X-Databricks-Host"
-    _metadata_service_timeout = 10 # seconds
+    _metadata_service_timeout = 10  # seconds
 
-    def __init__(self, cfg: 'Config'):
+    def __init__(self, cfg: "Config"):
         super().__init__()
         self.url = cfg.metadata_service_url
         self.host = cfg.host
@@ -682,13 +759,14 @@ class MetadataServiceTokenSource(Refreshable):
             timeout=self._metadata_service_timeout,
             headers={
                 self.METADATA_SERVICE_VERSION_HEADER: self.METADATA_SERVICE_VERSION,
-                self.METADATA_SERVICE_HOST_HEADER: self.host
+                self.METADATA_SERVICE_HOST_HEADER: self.host,
             },
             proxies={
                 # Explicitly exclude localhost from being proxied. This is necessary
                 # for Metadata URLs which typically point to localhost.
                 "no_proxy": "localhost,127.0.0.1"
-            })
+            },
+        )
         json_resp: dict[str, Union[str, float]] = resp.json()
         access_token = json_resp.get("access_token", None)
         if access_token is None:
@@ -706,9 +784,9 @@ class MetadataServiceTokenSource(Refreshable):
         return Token(access_token=access_token, token_type=token_type, expiry=expiry)
 
 
-@credentials_strategy('metadata-service', ['host', 'metadata_service_url'])
-def metadata_service(cfg: 'Config') -> Optional[CredentialsProvider]:
-    """ Adds refreshed token granted by Databricks Metadata Service to every request. """
+@credentials_strategy("metadata-service", ["host", "metadata_service_url"])
+def metadata_service(cfg: "Config") -> Optional[CredentialsProvider]:
+    """Adds refreshed token granted by Databricks Metadata Service to every request."""
 
     token_source = MetadataServiceTokenSource(cfg)
     token_source.token()
@@ -716,14 +794,14 @@ def metadata_service(cfg: 'Config') -> Optional[CredentialsProvider]:
 
     def inner() -> Dict[str, str]:
         token = token_source.token()
-        return {'Authorization': f'{token.token_type} {token.access_token}'}
+        return {"Authorization": f"{token.token_type} {token.access_token}"}
 
     return inner
 
 
 # This Code is derived from Mlflow DatabricksModelServingConfigProvider
 # https://github.com/mlflow/mlflow/blob/1219e3ef1aac7d337a618a352cd859b336cf5c81/mlflow/legacy_databricks_cli/configure/provider.py#L332
-class ModelServingAuthProvider():
+class ModelServingAuthProvider:
     USER_CREDENTIALS = "user_credentials"
 
     _MODEL_DEPENDENCY_OAUTH_TOKEN_FILE_PATH = "/var/credentials-secret/model-dependencies-oauth-token"
@@ -731,7 +809,7 @@ class ModelServingAuthProvider():
     def __init__(self, credential_type: Optional[str]):
         self.expiry_time = -1
         self.current_token = None
-        self.refresh_duration = 300 # 300 Seconds
+        self.refresh_duration = 300  # 300 Seconds
         self.credential_type = credential_type
 
     def should_fetch_model_serving_environment_oauth() -> bool:
@@ -740,10 +818,14 @@ class ModelServingAuthProvider():
         Additionally check if the oauth token file path exists
         """
 
-        is_in_model_serving_env = (os.environ.get("IS_IN_DB_MODEL_SERVING_ENV")
-                                   or os.environ.get("IS_IN_DATABRICKS_MODEL_SERVING_ENV") or "false")
-        return (is_in_model_serving_env == "true"
-                and os.path.isfile(ModelServingAuthProvider._MODEL_DEPENDENCY_OAUTH_TOKEN_FILE_PATH))
+        is_in_model_serving_env = (
+            os.environ.get("IS_IN_DB_MODEL_SERVING_ENV")
+            or os.environ.get("IS_IN_DATABRICKS_MODEL_SERVING_ENV")
+            or "false"
+        )
+        return is_in_model_serving_env == "true" and os.path.isfile(
+            ModelServingAuthProvider._MODEL_DEPENDENCY_OAUTH_TOKEN_FILE_PATH
+        )
 
     def _get_model_dependency_oauth_token(self, should_retry=True) -> str:
         # Use Cached value if it is valid
@@ -758,8 +840,10 @@ class ModelServingAuthProvider():
         except Exception as e:
             # sleep and retry in case of any race conditions with OAuth refreshing
             if should_retry:
-                logger.warning("Unable to read oauth token on first attmept in Model Serving Environment",
-                               exc_info=e)
+                logger.warning(
+                    "Unable to read oauth token on first attmept in Model Serving Environment",
+                    exc_info=e,
+                )
                 time.sleep(0.5)
                 return self._get_model_dependency_oauth_token(should_retry=False)
             else:
@@ -785,8 +869,7 @@ class ModelServingAuthProvider():
             return None
 
         # read from DB_MODEL_SERVING_HOST_ENV_VAR if available otherwise MODEL_SERVING_HOST_ENV_VAR
-        host = os.environ.get("DATABRICKS_MODEL_SERVING_HOST_URL") or os.environ.get(
-            "DB_MODEL_SERVING_HOST_URL")
+        host = os.environ.get("DATABRICKS_MODEL_SERVING_HOST_URL") or os.environ.get("DB_MODEL_SERVING_HOST_URL")
 
         if self.credential_type == ModelServingAuthProvider.USER_CREDENTIALS:
             return (host, self._get_invokers_token())
@@ -794,8 +877,7 @@ class ModelServingAuthProvider():
             return (host, self._get_model_dependency_oauth_token())
 
 
-def model_serving_auth_visitor(cfg: 'Config',
-                               credential_type: Optional[str] = None) -> Optional[CredentialsProvider]:
+def model_serving_auth_visitor(cfg: "Config", credential_type: Optional[str] = None) -> Optional[CredentialsProvider]:
     try:
         model_serving_auth_provider = ModelServingAuthProvider(credential_type)
         host, token = model_serving_auth_provider.get_databricks_host_token()
@@ -806,7 +888,10 @@ def model_serving_auth_visitor(cfg: 'Config',
         if cfg.host is None:
             cfg.host = host
     except Exception as e:
-        logger.warning("Unable to get auth from Databricks Model Serving Environment", exc_info=e)
+        logger.warning(
+            "Unable to get auth from Databricks Model Serving Environment",
+            exc_info=e,
+        )
         return None
     logger.info("Using Databricks Model Serving Authentication")
 
@@ -818,8 +903,8 @@ def model_serving_auth_visitor(cfg: 'Config',
     return inner
 
 
-@credentials_strategy('model-serving', [])
-def model_serving_auth(cfg: 'Config') -> Optional[CredentialsProvider]:
+@credentials_strategy("model-serving", [])
+def model_serving_auth(cfg: "Config") -> Optional[CredentialsProvider]:
     if not ModelServingAuthProvider.should_fetch_model_serving_environment_oauth():
         logger.debug("model-serving: Not in Databricks Model Serving, skipping")
         return None
@@ -828,20 +913,30 @@ def model_serving_auth(cfg: 'Config') -> Optional[CredentialsProvider]:
 
 
 class DefaultCredentials:
-    """ Select the first applicable credential provider from the chain """
+    """Select the first applicable credential provider from the chain"""
 
     def __init__(self) -> None:
-        self._auth_type = 'default'
+        self._auth_type = "default"
         self._auth_providers = [
-            pat_auth, basic_auth, metadata_service, oauth_service_principal, azure_service_principal,
-            github_oidc_azure, azure_cli, external_browser, databricks_cli, runtime_native_auth,
-            google_credentials, google_id, model_serving_auth
+            pat_auth,
+            basic_auth,
+            metadata_service,
+            oauth_service_principal,
+            azure_service_principal,
+            github_oidc_azure,
+            azure_cli,
+            external_browser,
+            databricks_cli,
+            runtime_native_auth,
+            google_credentials,
+            google_id,
+            model_serving_auth,
         ]
 
     def auth_type(self) -> str:
         return self._auth_type
 
-    def oauth_token(self, cfg: 'Config') -> Token:
+    def oauth_token(self, cfg: "Config") -> Token:
         for provider in self._auth_providers:
             auth_type = provider.auth_type()
             if auth_type != self._auth_type:
@@ -849,14 +944,14 @@ class DefaultCredentials:
                 continue
             return provider.oauth_token(cfg)
 
-    def __call__(self, cfg: 'Config') -> CredentialsProvider:
+    def __call__(self, cfg: "Config") -> CredentialsProvider:
         for provider in self._auth_providers:
             auth_type = provider.auth_type()
             if cfg.auth_type and auth_type != cfg.auth_type:
                 # ignore other auth types if one is explicitly enforced
                 logger.debug(f"Ignoring {auth_type} auth, because {cfg.auth_type} is preferred")
                 continue
-            logger.debug(f'Attempting to configure auth: {auth_type}')
+            logger.debug(f"Attempting to configure auth: {auth_type}")
             try:
                 header_factory = provider(cfg)
                 if not header_factory:
@@ -864,18 +959,18 @@ class DefaultCredentials:
                 self._auth_type = auth_type
                 return header_factory
             except Exception as e:
-                raise ValueError(f'{auth_type}: {e}') from e
+                raise ValueError(f"{auth_type}: {e}") from e
         auth_flow_url = "https://docs.databricks.com/en/dev-tools/auth.html#databricks-client-unified-authentication"
         raise ValueError(
-            f'cannot configure default credentials, please check {auth_flow_url} to configure credentials for your preferred authentication method.'
+            f"cannot configure default credentials, please check {auth_flow_url} to configure credentials for your preferred authentication method."
         )
 
 
 class ModelServingUserCredentials(CredentialsStrategy):
     """
-    This credential strategy is designed for authenticating the Databricks SDK in the model serving environment using user-specific rights. 
-    In the model serving environment, the strategy retrieves a downscoped user token from the thread-local variable. 
-    In any other environments, the class defaults to the DefaultCredentialStrategy. 
+    This credential strategy is designed for authenticating the Databricks SDK in the model serving environment using user-specific rights.
+    In the model serving environment, the strategy retrieves a downscoped user token from the thread-local variable.
+    In any other environments, the class defaults to the DefaultCredentialStrategy.
     To use this credential strategy, instantiate the WorkspaceClient with the ModelServingUserCredentials strategy as follows:
 
     invokers_client = WorkspaceClient(credential_strategy = ModelServingUserCredentials())
@@ -891,7 +986,7 @@ class ModelServingUserCredentials(CredentialsStrategy):
         else:
             return self.default_credentials.auth_type()
 
-    def __call__(self, cfg: 'Config') -> CredentialsProvider:
+    def __call__(self, cfg: "Config") -> CredentialsProvider:
         if ModelServingAuthProvider.should_fetch_model_serving_environment_oauth():
             header_factory = model_serving_auth_visitor(cfg, self.credential_type)
             if not header_factory:

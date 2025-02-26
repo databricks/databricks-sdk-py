@@ -17,7 +17,7 @@ from .errors import DatabricksError, _ErrorCustomizer, _Parser
 from .logger import RoundTrip
 from .retries import retried
 
-logger = logging.getLogger('databricks.sdk')
+logger = logging.getLogger("databricks.sdk")
 
 
 def _fix_host_if_needed(host: Optional[str]) -> Optional[str]:
@@ -25,35 +25,37 @@ def _fix_host_if_needed(host: Optional[str]) -> Optional[str]:
         return host
 
     # Add a default scheme if it's missing
-    if '://' not in host:
-        host = 'https://' + host
+    if "://" not in host:
+        host = "https://" + host
 
     o = urllib.parse.urlparse(host)
     # remove trailing slash
-    path = o.path.rstrip('/')
+    path = o.path.rstrip("/")
     # remove port if 443
     netloc = o.netloc
     if o.port == 443:
-        netloc = netloc.split(':')[0]
+        netloc = netloc.split(":")[0]
 
     return urllib.parse.urlunparse((o.scheme, netloc, path, o.params, o.query, o.fragment))
 
 
 class _BaseClient:
 
-    def __init__(self,
-                 debug_truncate_bytes: int = None,
-                 retry_timeout_seconds: int = None,
-                 user_agent_base: str = None,
-                 header_factory: Callable[[], dict] = None,
-                 max_connection_pools: int = None,
-                 max_connections_per_pool: int = None,
-                 pool_block: bool = True,
-                 http_timeout_seconds: float = None,
-                 extra_error_customizers: List[_ErrorCustomizer] = None,
-                 debug_headers: bool = False,
-                 clock: Clock = None,
-                 streaming_buffer_size: int = 1024 * 1024): # 1MB
+    def __init__(
+        self,
+        debug_truncate_bytes: int = None,
+        retry_timeout_seconds: int = None,
+        user_agent_base: str = None,
+        header_factory: Callable[[], dict] = None,
+        max_connection_pools: int = None,
+        max_connections_per_pool: int = None,
+        pool_block: bool = True,
+        http_timeout_seconds: float = None,
+        extra_error_customizers: List[_ErrorCustomizer] = None,
+        debug_headers: bool = False,
+        clock: Clock = None,
+        streaming_buffer_size: int = 1024 * 1024,
+    ):  # 1MB
         """
         :param debug_truncate_bytes:
         :param retry_timeout_seconds:
@@ -87,9 +89,11 @@ class _BaseClient:
         # We don't use `max_retries` from HTTPAdapter to align with a more production-ready
         # retry strategy established in the Databricks SDK for Go. See _is_retryable and
         # @retried for more details.
-        http_adapter = requests.adapters.HTTPAdapter(pool_connections=max_connections_per_pool or 20,
-                                                     pool_maxsize=max_connection_pools or 20,
-                                                     pool_block=pool_block)
+        http_adapter = requests.adapters.HTTPAdapter(
+            pool_connections=max_connections_per_pool or 20,
+            pool_maxsize=max_connection_pools or 20,
+            pool_block=pool_block,
+        )
         self._session.mount("https://", http_adapter)
 
         # Default to 60 seconds
@@ -110,7 +114,7 @@ class _BaseClient:
         # See: https://github.com/databricks/databricks-sdk-py/issues/142
         if query is None:
             return None
-        with_fixed_bools = {k: v if type(v) != bool else ('true' if v else 'false') for k, v in query.items()}
+        with_fixed_bools = {k: v if type(v) != bool else ("true" if v else "false") for k, v in query.items()}
 
         # Query parameters may be nested, e.g.
         # {'filter_by': {'user_ids': [123, 456]}}
@@ -140,30 +144,34 @@ class _BaseClient:
             return False
         return data.seekable()
 
-    def do(self,
-           method: str,
-           url: str,
-           query: dict = None,
-           headers: dict = None,
-           body: dict = None,
-           raw: bool = False,
-           files=None,
-           data=None,
-           auth: Callable[[requests.PreparedRequest], requests.PreparedRequest] = None,
-           response_headers: List[str] = None) -> Union[dict, list, BinaryIO]:
+    def do(
+        self,
+        method: str,
+        url: str,
+        query: dict = None,
+        headers: dict = None,
+        body: dict = None,
+        raw: bool = False,
+        files=None,
+        data=None,
+        auth: Callable[[requests.PreparedRequest], requests.PreparedRequest] = None,
+        response_headers: List[str] = None,
+    ) -> Union[dict, list, BinaryIO]:
         if headers is None:
             headers = {}
-        headers['User-Agent'] = self._user_agent_base
+        headers["User-Agent"] = self._user_agent_base
 
         # Wrap strings and bytes in a seekable stream so that we can rewind them.
         if isinstance(data, (str, bytes)):
-            data = io.BytesIO(data.encode('utf-8') if isinstance(data, str) else data)
+            data = io.BytesIO(data.encode("utf-8") if isinstance(data, str) else data)
 
         if not data:
             # The request is not a stream.
-            call = retried(timeout=timedelta(seconds=self._retry_timeout_seconds),
-                           is_retryable=self._is_retryable,
-                           clock=self._clock)(self._perform)
+            call = retried(
+                timeout=timedelta(seconds=self._retry_timeout_seconds),
+                is_retryable=self._is_retryable,
+                clock=self._clock,
+            )(self._perform)
         elif self._is_seekable_stream(data):
             # Keep track of the initial position of the stream so that we can rewind to it
             # if we need to retry the request.
@@ -173,25 +181,29 @@ class _BaseClient:
                 logger.debug(f"Rewinding input data to offset {initial_data_position} before retry")
                 data.seek(initial_data_position)
 
-            call = retried(timeout=timedelta(seconds=self._retry_timeout_seconds),
-                           is_retryable=self._is_retryable,
-                           clock=self._clock,
-                           before_retry=rewind)(self._perform)
+            call = retried(
+                timeout=timedelta(seconds=self._retry_timeout_seconds),
+                is_retryable=self._is_retryable,
+                clock=self._clock,
+                before_retry=rewind,
+            )(self._perform)
         else:
             # Do not retry if the stream is not seekable. This is necessary to avoid bugs
             # where the retry doesn't re-read already read data from the stream.
             logger.debug(f"Retry disabled for non-seekable stream: type={type(data)}")
             call = self._perform
 
-        response = call(method,
-                        url,
-                        query=query,
-                        headers=headers,
-                        body=body,
-                        raw=raw,
-                        files=files,
-                        data=data,
-                        auth=auth)
+        response = call(
+            method,
+            url,
+            query=query,
+            headers=headers,
+            body=body,
+            raw=raw,
+            files=files,
+            data=data,
+            auth=auth,
+        )
 
         resp = dict()
         for header in response_headers if response_headers else []:
@@ -220,6 +232,7 @@ class _BaseClient:
         # and Databricks SDK for Go retries
         # (see https://github.com/databricks/databricks-sdk-go/blob/main/apierr/errors.go)
         from urllib3.exceptions import ProxyError
+
         if isinstance(err, ProxyError):
             err = err.original_error
         if isinstance(err, requests.ConnectionError):
@@ -230,48 +243,55 @@ class _BaseClient:
             #
             # return a simple string for debug log readability, as `raise TimeoutError(...) from err`
             # will bubble up the original exception in case we reach max retries.
-            return f'cannot connect'
+            return f"cannot connect"
         if isinstance(err, requests.Timeout):
             # corresponds to `TLS handshake timeout` and `i/o timeout` in Go.
             #
             # return a simple string for debug log readability, as `raise TimeoutError(...) from err`
             # will bubble up the original exception in case we reach max retries.
-            return f'timeout'
+            return f"timeout"
         if isinstance(err, DatabricksError):
             message = str(err)
             transient_error_string_matches = [
                 "com.databricks.backend.manager.util.UnknownWorkerEnvironmentException",
-                "does not have any associated worker environments", "There is no worker environment with id",
-                "Unknown worker environment", "ClusterNotReadyException", "Unexpected error",
+                "does not have any associated worker environments",
+                "There is no worker environment with id",
+                "Unknown worker environment",
+                "ClusterNotReadyException",
+                "Unexpected error",
                 "Please try again later or try a faster operation.",
                 "RPC token bucket limit has been exceeded",
             ]
             for substring in transient_error_string_matches:
                 if substring not in message:
                     continue
-                return f'matched {substring}'
+                return f"matched {substring}"
         return None
 
-    def _perform(self,
-                 method: str,
-                 url: str,
-                 query: dict = None,
-                 headers: dict = None,
-                 body: dict = None,
-                 raw: bool = False,
-                 files=None,
-                 data=None,
-                 auth: Callable[[requests.PreparedRequest], requests.PreparedRequest] = None):
-        response = self._session.request(method,
-                                         url,
-                                         params=self._fix_query_string(query),
-                                         json=body,
-                                         headers=headers,
-                                         files=files,
-                                         data=data,
-                                         auth=auth,
-                                         stream=raw,
-                                         timeout=self._http_timeout_seconds)
+    def _perform(
+        self,
+        method: str,
+        url: str,
+        query: dict = None,
+        headers: dict = None,
+        body: dict = None,
+        raw: bool = False,
+        files=None,
+        data=None,
+        auth: Callable[[requests.PreparedRequest], requests.PreparedRequest] = None,
+    ):
+        response = self._session.request(
+            method,
+            url,
+            params=self._fix_query_string(query),
+            json=body,
+            headers=headers,
+            files=files,
+            data=data,
+            auth=auth,
+            stream=raw,
+            timeout=self._http_timeout_seconds,
+        )
         self._record_request_log(response, raw=raw or data is not None or files is not None)
         error = self._error_parser.get_api_error(response)
         if error is not None:
@@ -312,7 +332,7 @@ class _StreamingResponse(BinaryIO):
 
     def __init__(self, response: _RawResponse, chunk_size: Union[int, None] = None):
         self._response = response
-        self._buffer = b''
+        self._buffer = b""
         self._content = None
         self._chunk_size = chunk_size
 
@@ -338,14 +358,14 @@ class _StreamingResponse(BinaryIO):
 
     def read(self, n: int = -1) -> bytes:
         """
-        Read up to n bytes from the response stream. If n is negative, read 
-        until the end of the stream. 
+        Read up to n bytes from the response stream. If n is negative, read
+        until the end of the stream.
         """
 
         self._open()
         read_everything = n < 0
         remaining_bytes = n
-        res = b''
+        res = b""
         while remaining_bytes > 0 or read_everything:
             if len(self._buffer) == 0:
                 try:
@@ -395,8 +415,12 @@ class _StreamingResponse(BinaryIO):
     def __iter__(self) -> Iterator[bytes]:
         return self._content
 
-    def __exit__(self, t: Union[Type[BaseException], None], value: Union[BaseException, None],
-                 traceback: Union[TracebackType, None]) -> None:
+    def __exit__(
+        self,
+        t: Union[Type[BaseException], None],
+        value: Union[BaseException, None],
+        traceback: Union[TracebackType, None],
+    ) -> None:
         self._content = None
-        self._buffer = b''
+        self._buffer = b""
         self.close()

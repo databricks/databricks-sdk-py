@@ -13,7 +13,8 @@ If it is appropriate to write a design document, the document must be hosted eit
 Small patches and bug fixes don't need prior communication.
 
 ## Coding Style
-Code style is enforced by a formatter check in your pull request. We use [yapf](https://github.com/google/yapf) to format our code. Run `make fmt` to ensure your code is properly formatted prior to raising a pull request.
+
+Code style is enforced by a formatter check in your pull request. We use [Black](https://github.com/psf/black) to format our code. Run `make fmt` to ensure your code is properly formatted prior to raising a pull request.
 
 ## Signed Commits
 This repo requires all contributors to sign their commits. To configure this, you can follow [Github's documentation](https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-commits) to create a GPG key, upload it to your Github account, and configure your git client to sign commits.
