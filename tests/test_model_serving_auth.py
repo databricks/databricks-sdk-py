@@ -179,7 +179,7 @@ def test_agent_user_credentials(monkeypatch, mocker):
 
     headers = cfg.authenticate()
 
-    assert (cfg.host == "x")
+    assert cfg.host == "x"
     assert headers.get("Authorization") == f"Bearer {invokers_token_val}"
 
     # Test updates of invokers token
