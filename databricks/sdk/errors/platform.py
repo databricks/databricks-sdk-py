@@ -103,14 +103,14 @@ STATUS_CODE_MAPPING = {
 }
 
 ERROR_CODE_MAPPING = {
-    'INVALID_STATE': InvalidState,
-    'INVALID_PARAMETER_VALUE': InvalidParameterValue,
-    'RESOURCE_DOES_NOT_EXIST': ResourceDoesNotExist,
-    'ABORTED': Aborted,
-    'ALREADY_EXISTS': AlreadyExists,
-    'RESOURCE_ALREADY_EXISTS': ResourceAlreadyExists,
-    'RESOURCE_EXHAUSTED': ResourceExhausted,
-    'REQUEST_LIMIT_EXCEEDED': RequestLimitExceeded,
-    'UNKNOWN': Unknown,
-    'DATA_LOSS': DataLoss,
+    "INVALID_STATE": InvalidState,
+    "INVALID_PARAMETER_VALUE": InvalidParameterValue,
+    "RESOURCE_DOES_NOT_EXIST": ResourceDoesNotExist,
+    "ABORTED": Aborted,
+    "ALREADY_EXISTS": AlreadyExists,
+    "RESOURCE_ALREADY_EXISTS": ResourceAlreadyExists,
+    "RESOURCE_EXHAUSTED": ResourceExhausted,
+    "REQUEST_LIMIT_EXCEEDED": RequestLimitExceeded,
+    "UNKNOWN": Unknown,
+    "DATA_LOSS": DataLoss,
 }

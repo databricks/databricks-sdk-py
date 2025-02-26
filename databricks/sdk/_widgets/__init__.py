@@ -43,7 +43,17 @@ try:
     # Detect if we are in an interactive notebook by iterating over the mro of the current ipython instance,
     # to find ZMQInteractiveShell (jupyter). When used from REPL or file, this check will fail, since the
     # mro only contains TerminalInteractiveShell.
-    if len(list(filter(lambda i: i.__name__ == 'ZMQInteractiveShell', get_ipython().__class__.__mro__))) == 0:
+    if (
+        len(
+            list(
+                filter(
+                    lambda i: i.__name__ == "ZMQInteractiveShell",
+                    get_ipython().__class__.__mro__,
+                )
+            )
+        )
+        == 0
+    ):
         logging.debug("Not in an interactive notebook. Skipping ipywidgets implementation for dbutils.")
         raise EnvironmentError("Not in an interactive notebook.")
 
@@ -61,7 +71,8 @@ try:
         warnings.warn(
             "\nTo use databricks widgets interactively in your notebook, please install databricks sdk using:\n"
             "\tpip install 'databricks-sdk[notebook]'\n"
-            "Falling back to default_value_only implementation for databricks widgets.")
+            "Falling back to default_value_only implementation for databricks widgets."
+        )
         logging.debug(f"{e.msg}. Skipping ipywidgets implementation for dbutils.")
         raise e
 

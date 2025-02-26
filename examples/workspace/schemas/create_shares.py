@@ -4,9 +4,9 @@ from databricks.sdk import WorkspaceClient
 
 w = WorkspaceClient()
 
-created_catalog = w.catalogs.create(name=f'sdk-{time.time_ns()}')
+created_catalog = w.catalogs.create(name=f"sdk-{time.time_ns()}")
 
-created_schema = w.schemas.create(name=f'sdk-{time.time_ns()}', catalog_name=created_catalog.name)
+created_schema = w.schemas.create(name=f"sdk-{time.time_ns()}", catalog_name=created_catalog.name)
 
 # cleanup
 w.catalogs.delete(name=created_catalog.name, force=True)

@@ -18,7 +18,7 @@ def test_match_retry_condition_on_no_qualifier():
 def test_match_retry_condition_on_conflict():
     with pytest.raises(SyntaxError):
 
-        @retried(on=[IOError], is_retryable=lambda _: 'always', clock=FakeClock())
+        @retried(on=[IOError], is_retryable=lambda _: "always", clock=FakeClock())
         def foo():
             return 1
 
@@ -26,7 +26,11 @@ def test_match_retry_condition_on_conflict():
 def test_match_retry_always():
     with pytest.raises(TimeoutError):
 
-        @retried(is_retryable=lambda _: 'always', timeout=timedelta(seconds=1), clock=FakeClock())
+        @retried(
+            is_retryable=lambda _: "always",
+            timeout=timedelta(seconds=1),
+            clock=FakeClock(),
+        )
         def foo():
             raise StopIteration()
 
@@ -36,7 +40,11 @@ def test_match_retry_always():
 def test_match_on_errors():
     with pytest.raises(TimeoutError):
 
-        @retried(on=[KeyError, AttributeError], timeout=timedelta(seconds=0.5), clock=FakeClock())
+        @retried(
+            on=[KeyError, AttributeError],
+            timeout=timedelta(seconds=0.5),
+            clock=FakeClock(),
+        )
         def foo():
             raise KeyError(1)
 
@@ -56,7 +64,11 @@ def test_match_on_subclass():
 def test_propagates_outside_exception():
     with pytest.raises(KeyError):
 
-        @retried(on=[AttributeError], timeout=timedelta(seconds=0.5), clock=FakeClock())
+        @retried(
+            on=[AttributeError],
+            timeout=timedelta(seconds=0.5),
+            clock=FakeClock(),
+        )
         def foo():
             raise KeyError(1)
 
