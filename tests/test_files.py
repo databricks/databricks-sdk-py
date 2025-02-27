@@ -10,7 +10,7 @@ import time
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from tempfile import mkstemp
-from typing import Callable, List, Optional, Union
+from typing import Callable, List, Optional, Union, Type
 from urllib.parse import parse_qs, urlparse
 
 import pytest
@@ -475,7 +475,7 @@ class CustomResponse:
         body: Optional[str] = None,
 
         # Custom exception to raise
-        exception: Optional[type[BaseException]] = None,
+        exception: Optional[Type[BaseException]] = None,
 
         # Whether exception should be raised before calling processor()
         # (so changing server state)
@@ -610,7 +610,7 @@ class MultipartUploadTestCase:
             custom_response_on_create_abort_url=CustomResponse(enabled=False),
             custom_response_on_abort=CustomResponse(enabled=False),
             # exception which is expected to be thrown (so upload is expected to have failed)
-            expected_exception_type: Optional[type[BaseException]] = None,
+            expected_exception_type: Optional[Type[BaseException]] = None,
             # if abort is expected to be called
             expected_aborted: bool = False):
         self.name = name
@@ -1341,7 +1341,7 @@ class ResumableUploadTestCase:
             custom_response_on_abort=CustomResponse(enabled=False),
 
             # exception which is expected to be thrown (so upload is expected to have failed)
-            expected_exception_type: Optional[type[BaseException]] = None,
+            expected_exception_type: Optional[Type[BaseException]] = None,
 
             # if abort is expected to be called
             expected_aborted: bool = False):
