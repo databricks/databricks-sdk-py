@@ -723,15 +723,6 @@ class FilesExt(files.FilesAPI):
         initial_response.contents._response = wrapped_response
         return initial_response
 
-    def _download_raw_stream(
-        self,
-        file_path: str,
-        start_byte_offset: int,
-        if_unmodified_since_timestamp: Optional[str] = None,
-    ) -> DownloadResponse:
-        headers = {
-            "Accept": "application/octet-stream",
-        }
 
     def upload(self, file_path: str, contents: BinaryIO, *, overwrite: Optional[bool] = None):
         # Upload empty and small files with one-shot upload.
@@ -885,6 +876,8 @@ class FilesExt(files.FilesAPI):
 
                 # following _BaseClient timeout
                 retry_timeout_seconds = self._config.retry_timeout_seconds or 300
+
+                # Uploading same data to the same URL is an idempotent operation, safe to retry.
                 upload_response = retried(
                     timeout=timedelta(seconds=retry_timeout_seconds),
                     is_retryable=_BaseClient._is_retryable,
@@ -1219,6 +1212,8 @@ class FilesExt(files.FilesAPI):
 
         # following _BaseClient timeout
         retry_timeout_seconds = self._config.retry_timeout_seconds or 300
+
+        # Aborting upload is an idempotent operation, safe to retry.
         abort_response = retried(
             timeout=timedelta(seconds=retry_timeout_seconds), is_retryable=_BaseClient._is_retryable, clock=self._clock
         )(perform)()
@@ -1245,6 +1240,7 @@ class FilesExt(files.FilesAPI):
 
         # following _BaseClient timeout
         retry_timeout_seconds = self._config.retry_timeout_seconds or 300
+        # Aborting upload is an idempotent operation, safe to retry.
         abort_response = retried(
             timeout=timedelta(seconds=retry_timeout_seconds), is_retryable=_BaseClient._is_retryable, clock=self._clock
         )(perform)()
