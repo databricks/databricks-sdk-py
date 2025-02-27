@@ -4,9 +4,9 @@ from databricks.sdk import WorkspaceClient
 
 w = WorkspaceClient()
 
-key_name = f'sdk-{time.time_ns()}'
+key_name = f"sdk-{time.time_ns()}"
 
-scope_name = f'sdk-{time.time_ns()}'
+scope_name = f"sdk-{time.time_ns()}"
 
 w.secrets.create_scope(scope=scope_name)
 

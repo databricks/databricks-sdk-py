@@ -11,12 +11,12 @@ install:
 	pip install .
 
 fmt:
-	yapf -pri databricks tests
+	black databricks tests
 	autoflake -ri databricks tests
 	isort databricks tests
 
 fmte:
-	yapf -pri examples
+	black examples
 	autoflake -ri examples
 	isort examples
 

@@ -11,7 +11,7 @@ from databricks.sdk.errors import NotFound
 def test_rest_dbfs_ls(w, env_or_skip):
     from databricks.sdk.runtime import dbutils
 
-    x = dbutils.fs.ls('/')
+    x = dbutils.fs.ls("/")
 
     assert len(x) > 1
 
@@ -24,11 +24,11 @@ def test_proxy_dbfs_mounts(w, env_or_skip):
     assert len(x) > 1
 
 
-@pytest.fixture(params=['dbfs', 'volumes'])
+@pytest.fixture(params=["dbfs", "volumes"])
 def fs_and_base_path(request, ucws, volume):
-    if request.param == 'dbfs':
+    if request.param == "dbfs":
         fs = ucws.dbutils.fs
-        base_path = '/tmp'
+        base_path = "/tmp"
     else:
         fs = ucws.dbutils.fs
         base_path = volume
@@ -54,8 +54,8 @@ def test_large_put(fs_and_base_path):
 def test_put_local_path(w, random, tmp_path):
     to_write = random(1024 * 1024 * 2)
     tmp_path = tmp_path / "tmp_file"
-    w.dbutils.fs.put(f'file:{tmp_path}', to_write, True)
-    assert w.dbutils.fs.head(f'file:{tmp_path}', 1024 * 1024 * 2) == to_write
+    w.dbutils.fs.put(f"file:{tmp_path}", to_write, True)
+    assert w.dbutils.fs.head(f"file:{tmp_path}", 1024 * 1024 * 2) == to_write
 
 
 def test_cp_file(fs_and_base_path, random):
@@ -120,7 +120,7 @@ def test_mv_dir(fs_and_base_path, random):
     fs.put(path + "/file1", "test1", True)
     fs.put(path + "/file2", "test2", True)
     # DBFS can do recursive mv as a single API call, but Volumes cannot
-    kw = {'recurse': True} if '/Volumes' in path else {}
+    kw = {"recurse": True} if "/Volumes" in path else {}
     fs.mv(path, path + "_moved", **kw)
     output = fs.ls(path + "_moved")
     assert len(output) == 2
@@ -135,7 +135,7 @@ def test_mv_local_to_remote(fs_and_base_path, random, tmp_path):
     path = base_path + "/dbc_qa_file-" + random()
     with open(tmp_path / "test", "w") as f:
         f.write("test")
-    fs.mv('file:' + str(tmp_path / "test"), path)
+    fs.mv("file:" + str(tmp_path / "test"), path)
     output = fs.head(path)
     assert output == "test"
     assert os.listdir(tmp_path) == []
@@ -145,7 +145,7 @@ def test_mv_remote_to_local(fs_and_base_path, random, tmp_path):
     fs, base_path = fs_and_base_path
     path = base_path + "/dbc_qa_file-" + random()
     fs.put(path, "test", True)
-    fs.mv(path, 'file:' + str(tmp_path / "test"))
+    fs.mv(path, "file:" + str(tmp_path / "test"))
     with open(tmp_path / "test", "r") as f:
         output = f.read()
     assert output == "test"
@@ -176,19 +176,21 @@ def test_rm_dir(fs_and_base_path, random):
 
 
 def test_secrets(w, random):
-    random_scope = f'scope-{random()}'
-    key_for_string = f'string-{random()}'
-    key_for_bytes = f'bytes-{random()}'
-    random_value = f'SECRET-{random()}'
+    random_scope = f"scope-{random()}"
+    key_for_string = f"string-{random()}"
+    key_for_bytes = f"bytes-{random()}"
+    random_value = f"SECRET-{random()}"
 
-    logger = logging.getLogger('foo')
-    logger.info(f'Before loading secret: {random_value}')
+    logger = logging.getLogger("foo")
+    logger.info(f"Before loading secret: {random_value}")
 
     w.secrets.create_scope(random_scope)
     w.secrets.put_secret(random_scope, key_for_string, string_value=random_value)
-    w.secrets.put_secret(random_scope,
-                         key_for_bytes,
-                         bytes_value=base64.b64encode(random_value.encode()).decode())
+    w.secrets.put_secret(
+        random_scope,
+        key_for_bytes,
+        bytes_value=base64.b64encode(random_value.encode()).decode(),
+    )
 
     from databricks.sdk.runtime import dbutils
 
@@ -201,12 +203,12 @@ def test_secrets(w, random):
         try:
             all_secrets[key] = dbutils.secrets.get(random_scope, key)
         except DatabricksError as e:
-            if e.error_code == 'BAD_REQUEST':
-                pytest.skip('dbconnect is not enabled on this workspace')
+            if e.error_code == "BAD_REQUEST":
+                pytest.skip("dbconnect is not enabled on this workspace")
             raise e
 
-    logger.info(f'After loading secret: {random_value}')
-    logging.getLogger('databricks.sdk').info(f'After loading secret: {random_value}')
+    logger.info(f"After loading secret: {random_value}")
+    logging.getLogger("databricks.sdk").info(f"After loading secret: {random_value}")
 
     assert all_secrets[key_for_string] == random_value
     assert all_secrets[key_for_bytes] == random_value

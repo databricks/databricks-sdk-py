@@ -15,5 +15,9 @@ def test_environment_azure():
 
 
 def test_default_environment_can_be_overridden():
-    c = Config(host="https://test.cloud.databricks.com", token="token", databricks_environment=ALL_ENVS[1])
+    c = Config(
+        host="https://test.cloud.databricks.com",
+        token="token",
+        databricks_environment=ALL_ENVS[1],
+    )
     assert c.environment == ALL_ENVS[1]

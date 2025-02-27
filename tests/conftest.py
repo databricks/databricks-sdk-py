@@ -11,19 +11,20 @@ from databricks.sdk.credentials_provider import credentials_strategy
 from .integration.conftest import restorable_env  # type: ignore
 
 
-@credentials_strategy('noop', [])
+@credentials_strategy("noop", [])
 def noop_credentials(_: any):
     return lambda: {}
 
 
 @pytest.fixture
 def config():
-    return Config(host='http://localhost', credentials_strategy=noop_credentials)
+    return Config(host="http://localhost", credentials_strategy=noop_credentials)
 
 
 @pytest.fixture
 def w(config):
     from databricks.sdk import WorkspaceClient
+
     return WorkspaceClient(config=config)
 
 
@@ -39,11 +40,11 @@ def raises(msg):
             with pytest.raises(ValueError) as info:
                 func(*args, **kwargs)
             exception_str = str(info.value)
-            if platform.system() == 'Windows':
-                exception_str = exception_str.replace(__tests__ + '\\', '')
-                exception_str = exception_str.replace('\\', '/')
+            if platform.system() == "Windows":
+                exception_str = exception_str.replace(__tests__ + "\\", "")
+                exception_str = exception_str.replace("\\", "/")
             else:
-                exception_str = exception_str.replace(__tests__ + '/', '')
+                exception_str = exception_str.replace(__tests__ + "/", "")
             assert msg in exception_str
 
         return wrapper
@@ -61,22 +62,25 @@ def fake_fs():
         test_data_path = __tests__
         patcher.fs.add_real_directory(test_data_path)
 
-        yield patcher.fs # This will return a fake file system
+        yield patcher.fs  # This will return a fake file system
 
 
 def set_home(monkeypatch, path):
-    if platform.system() == 'Windows':
-        monkeypatch.setenv('USERPROFILE', __tests__ + path)
+    if platform.system() == "Windows":
+        monkeypatch.setenv("USERPROFILE", __tests__ + path)
     else:
-        monkeypatch.setenv('HOME', __tests__ + path)
+        monkeypatch.setenv("HOME", __tests__ + path)
 
 
 def set_az_path(monkeypatch):
-    if platform.system() == 'Windows':
-        monkeypatch.setenv('Path', __tests__ + "\\testdata\\windows\\")
-        monkeypatch.setenv('COMSPEC', 'C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe')
+    if platform.system() == "Windows":
+        monkeypatch.setenv("Path", __tests__ + "\\testdata\\windows\\")
+        monkeypatch.setenv(
+            "COMSPEC",
+            "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        )
     else:
-        monkeypatch.setenv('PATH', __tests__ + "/testdata:/bin")
+        monkeypatch.setenv("PATH", __tests__ + "/testdata:/bin")
 
 
 @pytest.fixture
@@ -84,9 +88,10 @@ def mock_tenant(requests_mock):
 
     def stub_tenant_request(host, tenant_id="test-tenant-id"):
         mock = requests_mock.get(
-            f'https://{host}/aad/auth',
+            f"https://{host}/aad/auth",
             status_code=302,
-            headers={'Location': f'https://login.microsoftonline.com/{tenant_id}/oauth2/authorize'})
+            headers={"Location": f"https://login.microsoftonline.com/{tenant_id}/oauth2/authorize"},
+        )
         return mock
 
     return stub_tenant_request

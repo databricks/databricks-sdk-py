@@ -8,16 +8,16 @@ def test_external_browser_refresh_success(mocker):
 
     # Mock Config.
     mock_cfg = Mock()
-    mock_cfg.auth_type = 'external-browser'
-    mock_cfg.host = 'test-host'
-    mock_cfg.oidc_endpoints = {'token_endpoint': 'test-token-endpoint'}
-    mock_cfg.client_id = 'test-client-id' # Or use azure_client_id
-    mock_cfg.client_secret = 'test-client-secret' # Or use azure_client_secret
+    mock_cfg.auth_type = "external-browser"
+    mock_cfg.host = "test-host"
+    mock_cfg.oidc_endpoints = {"token_endpoint": "test-token-endpoint"}
+    mock_cfg.client_id = "test-client-id"  # Or use azure_client_id
+    mock_cfg.client_secret = "test-client-secret"  # Or use azure_client_secret
 
     # Mock TokenCache.
     mock_token_cache = Mock()
     mock_session_credentials = Mock()
-    mock_session_credentials.token.return_value = "valid_token" # Simulate successful refresh
+    mock_session_credentials.token.return_value = "valid_token"  # Simulate successful refresh
     mock_token_cache.load.return_value = mock_session_credentials
 
     # Mock SessionCredentials.
@@ -25,12 +25,15 @@ def test_external_browser_refresh_success(mocker):
     mock_session_credentials.return_value = want_credentials_provider
 
     # Inject the mock implementations.
-    mocker.patch('databricks.sdk.credentials_provider.TokenCache', return_value=mock_token_cache)
+    mocker.patch(
+        "databricks.sdk.credentials_provider.TokenCache",
+        return_value=mock_token_cache,
+    )
 
     got_credentials_provider = external_browser(mock_cfg)
 
     mock_token_cache.load.assert_called_once()
-    mock_session_credentials.token.assert_called_once() # Verify token refresh was attempted
+    mock_session_credentials.token.assert_called_once()  # Verify token refresh was attempted
     assert got_credentials_provider == want_credentials_provider
 
 
@@ -39,17 +42,16 @@ def test_external_browser_refresh_failure_new_oauth_flow(mocker):
 
     # Mock Config.
     mock_cfg = Mock()
-    mock_cfg.auth_type = 'external-browser'
-    mock_cfg.host = 'test-host'
-    mock_cfg.oidc_endpoints = {'token_endpoint': 'test-token-endpoint'}
-    mock_cfg.client_id = 'test-client-id'
-    mock_cfg.client_secret = 'test-client-secret'
+    mock_cfg.auth_type = "external-browser"
+    mock_cfg.host = "test-host"
+    mock_cfg.oidc_endpoints = {"token_endpoint": "test-token-endpoint"}
+    mock_cfg.client_id = "test-client-id"
+    mock_cfg.client_secret = "test-client-secret"
 
     # Mock TokenCache.
     mock_token_cache = Mock()
     mock_session_credentials = Mock()
-    mock_session_credentials.token.side_effect = Exception(
-        "Simulated refresh error") # Simulate a failed refresh
+    mock_session_credentials.token.side_effect = Exception("Simulated refresh error")  # Simulate a failed refresh
     mock_token_cache.load.return_value = mock_session_credentials
 
     # Mock SessionCredentials.
@@ -63,13 +65,19 @@ def test_external_browser_refresh_failure_new_oauth_flow(mocker):
     mock_oauth_client.initiate_consent.return_value = mock_consent
 
     # Inject the mock implementations.
-    mocker.patch('databricks.sdk.credentials_provider.TokenCache', return_value=mock_token_cache)
-    mocker.patch('databricks.sdk.credentials_provider.OAuthClient', return_value=mock_oauth_client)
+    mocker.patch(
+        "databricks.sdk.credentials_provider.TokenCache",
+        return_value=mock_token_cache,
+    )
+    mocker.patch(
+        "databricks.sdk.credentials_provider.OAuthClient",
+        return_value=mock_oauth_client,
+    )
 
     got_credentials_provider = external_browser(mock_cfg)
 
     mock_token_cache.load.assert_called_once()
-    mock_session_credentials.token.assert_called_once() # Refresh attempt
+    mock_session_credentials.token.assert_called_once()  # Refresh attempt
     mock_oauth_client.initiate_consent.assert_called_once()
     mock_consent.launch_external_browser.assert_called_once()
     mock_token_cache.save.assert_called_once_with(mock_session_credentials)
@@ -81,15 +89,15 @@ def test_external_browser_no_cached_credentials(mocker):
 
     # Mock Config.
     mock_cfg = Mock()
-    mock_cfg.auth_type = 'external-browser'
-    mock_cfg.host = 'test-host'
-    mock_cfg.oidc_endpoints = {'token_endpoint': 'test-token-endpoint'}
-    mock_cfg.client_id = 'test-client-id'
-    mock_cfg.client_secret = 'test-client-secret'
+    mock_cfg.auth_type = "external-browser"
+    mock_cfg.host = "test-host"
+    mock_cfg.oidc_endpoints = {"token_endpoint": "test-token-endpoint"}
+    mock_cfg.client_id = "test-client-id"
+    mock_cfg.client_secret = "test-client-secret"
 
     # Mock TokenCache.
     mock_token_cache = Mock()
-    mock_token_cache.load.return_value = None # No cached credentials
+    mock_token_cache.load.return_value = None  # No cached credentials
 
     # Mock SessionCredentials.
     mock_session_credentials = Mock()
@@ -103,8 +111,14 @@ def test_external_browser_no_cached_credentials(mocker):
     mock_oauth_client.initiate_consent.return_value = mock_consent
 
     # Inject the mock implementations.
-    mocker.patch('databricks.sdk.credentials_provider.TokenCache', return_value=mock_token_cache)
-    mocker.patch('databricks.sdk.credentials_provider.OAuthClient', return_value=mock_oauth_client)
+    mocker.patch(
+        "databricks.sdk.credentials_provider.TokenCache",
+        return_value=mock_token_cache,
+    )
+    mocker.patch(
+        "databricks.sdk.credentials_provider.OAuthClient",
+        return_value=mock_oauth_client,
+    )
 
     got_credentials_provider = external_browser(mock_cfg)
 
@@ -120,23 +134,29 @@ def test_external_browser_consent_fails(mocker):
 
     # Mock Config.
     mock_cfg = Mock()
-    mock_cfg.auth_type = 'external-browser'
-    mock_cfg.host = 'test-host'
-    mock_cfg.oidc_endpoints = {'token_endpoint': 'test-token-endpoint'}
-    mock_cfg.client_id = 'test-client-id'
-    mock_cfg.client_secret = 'test-client-secret'
+    mock_cfg.auth_type = "external-browser"
+    mock_cfg.host = "test-host"
+    mock_cfg.oidc_endpoints = {"token_endpoint": "test-token-endpoint"}
+    mock_cfg.client_id = "test-client-id"
+    mock_cfg.client_secret = "test-client-secret"
 
     # Mock TokenCache.
     mock_token_cache = Mock()
-    mock_token_cache.load.return_value = None # No cached credentials
+    mock_token_cache.load.return_value = None  # No cached credentials
 
     # Mock OAuthClient.
     mock_oauth_client = Mock()
-    mock_oauth_client.initiate_consent.return_value = None # Simulate consent failure
+    mock_oauth_client.initiate_consent.return_value = None  # Simulate consent failure
 
     # Inject the mock implementations.
-    mocker.patch('databricks.sdk.credentials_provider.TokenCache', return_value=mock_token_cache)
-    mocker.patch('databricks.sdk.credentials_provider.OAuthClient', return_value=mock_oauth_client)
+    mocker.patch(
+        "databricks.sdk.credentials_provider.TokenCache",
+        return_value=mock_token_cache,
+    )
+    mocker.patch(
+        "databricks.sdk.credentials_provider.OAuthClient",
+        return_value=mock_oauth_client,
+    )
 
     got_credentials_provider = external_browser(mock_cfg)
 

@@ -6,7 +6,11 @@ from databricks.sdk.service.serving import DataPlaneInfo
 
 info = DataPlaneInfo(authorization_details="authDetails", endpoint_url="url")
 
-token = Token(access_token="token", token_type="type", expiry=datetime.now() + timedelta(hours=1))
+token = Token(
+    access_token="token",
+    token_type="type",
+    expiry=datetime.now() + timedelta(hours=1),
+)
 
 
 class MockRefresher:
@@ -25,18 +29,30 @@ def throw_exception():
 
 def test_not_cached():
     data_plane = DataPlaneService()
-    res = data_plane.get_data_plane_details("method", ["params"], lambda: info,
-                                            lambda a: MockRefresher(info.authorization_details).__call__(a))
+    res = data_plane.get_data_plane_details(
+        "method",
+        ["params"],
+        lambda: info,
+        lambda a: MockRefresher(info.authorization_details).__call__(a),
+    )
     assert res.endpoint_url == info.endpoint_url
     assert res.token == token
 
 
 def test_token_expired():
-    expired = Token(access_token="expired", token_type="type", expiry=datetime.now() + timedelta(hours=-1))
+    expired = Token(
+        access_token="expired",
+        token_type="type",
+        expiry=datetime.now() + timedelta(hours=-1),
+    )
     data_plane = DataPlaneService()
     data_plane._tokens["method/params"] = expired
-    res = data_plane.get_data_plane_details("method", ["params"], lambda: info,
-                                            lambda a: MockRefresher(info.authorization_details).__call__(a))
+    res = data_plane.get_data_plane_details(
+        "method",
+        ["params"],
+        lambda: info,
+        lambda a: MockRefresher(info.authorization_details).__call__(a),
+    )
     assert res.endpoint_url == info.endpoint_url
     assert res.token == token
 
@@ -44,8 +60,12 @@ def test_token_expired():
 def test_info_cached():
     data_plane = DataPlaneService()
     data_plane._data_plane_info["method/params"] = info
-    res = data_plane.get_data_plane_details("method", ["params"], throw_exception,
-                                            lambda a: MockRefresher(info.authorization_details).__call__(a))
+    res = data_plane.get_data_plane_details(
+        "method",
+        ["params"],
+        throw_exception,
+        lambda a: MockRefresher(info.authorization_details).__call__(a),
+    )
     assert res.endpoint_url == info.endpoint_url
     assert res.token == token
 
