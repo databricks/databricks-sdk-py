@@ -21,11 +21,13 @@ from typing import (TYPE_CHECKING, AnyStr, BinaryIO, Generator, Iterable,
 from urllib import parse
 
 import requests
+import requests.adapters
 from requests import RequestException
 
 from .._base_client import _BaseClient, _RawResponse, _StreamingResponse
 from .._property import _cached_property
 from ..clock import Clock, RealClock
+from ..config import Config
 from ..errors import AlreadyExists, NotFound
 from ..errors.mapper import _error_mapper
 from ..retries import retried
@@ -723,7 +725,6 @@ class FilesExt(files.FilesAPI):
         initial_response.contents._response = wrapped_response
         return initial_response
 
-
     def upload(self, file_path: str, contents: BinaryIO, *, overwrite: Optional[bool] = None):
         # Upload empty and small files with one-shot upload.
         pre_read_buffer = contents.read(self._config.multipart_upload_min_stream_size)
@@ -731,7 +732,7 @@ class FilesExt(files.FilesAPI):
             _LOG.debug(
                 f"Using one-shot upload for input stream of size {len(pre_read_buffer)} below {self._config.multipart_upload_min_stream_size} bytes"
             )
-            return super().upload(file_path=file_path, contents=pre_read_buffer, overwrite=overwrite)
+            return super().upload(file_path=file_path, contents=BytesIO(pre_read_buffer), overwrite=overwrite)
 
         query = {"action": "initiate-upload"}
         if overwrite is not None:
@@ -829,6 +830,7 @@ class FilesExt(files.FilesAPI):
 
             headers = {"Content-Type": "application/json"}
 
+            # Requesting URLs for the same set of parts is an idempotent operation, safe to retry.
             # _api.do() does retry
             upload_part_urls_response = self._api.do(
                 "POST", "/api/2.0/fs/create-upload-part-urls", headers=headers, body=body
@@ -931,6 +933,7 @@ class FilesExt(files.FilesAPI):
 
         body["parts"] = parts
 
+        # Completing upload is an idempotent operation, safe to retry.
         # _api.do() does retry
         self._api.do(
             "POST",
@@ -1109,7 +1112,7 @@ class FilesExt(files.FilesAPI):
                     break
 
                 elif upload_response.status_code == 308:
-                    # chunk accepted, let's determine received offset to resume from there
+                    # chunk accepted (or check-status succeeded), let's determine received offset to resume from there
                     range_string = upload_response.headers.get("Range")
                     confirmed_offset = self._extract_range_offset(range_string)
                     _LOG.debug(f"Received confirmed offset: {confirmed_offset}")
