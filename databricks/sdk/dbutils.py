@@ -12,123 +12,136 @@ from .mixins import compute as compute_ext
 from .mixins import files as dbfs_ext
 from .service import compute, workspace
 
-_LOG = logging.getLogger('databricks.sdk')
+_LOG = logging.getLogger("databricks.sdk")
 
 
-class FileInfo(namedtuple('FileInfo', ['path', 'name', 'size', "modificationTime"])):
+class FileInfo(namedtuple("FileInfo", ["path", "name", "size", "modificationTime"])):
     pass
 
 
-class MountInfo(namedtuple('MountInfo', ['mountPoint', 'source', 'encryptionType'])):
+class MountInfo(namedtuple("MountInfo", ["mountPoint", "source", "encryptionType"])):
     pass
 
 
-class SecretScope(namedtuple('SecretScope', ['name'])):
+class SecretScope(namedtuple("SecretScope", ["name"])):
 
     def getName(self):
         return self.name
 
 
-class SecretMetadata(namedtuple('SecretMetadata', ['key'])):
+class SecretMetadata(namedtuple("SecretMetadata", ["key"])):
     pass
 
 
 class _FsUtil:
-    """ Manipulates the Databricks filesystem (DBFS) """
+    """Manipulates the Databricks filesystem (DBFS)"""
 
-    def __init__(self, dbfs_ext: dbfs_ext.DbfsExt, proxy_factory: Callable[[str], '_ProxyUtil']):
+    def __init__(
+        self,
+        dbfs_ext: dbfs_ext.DbfsExt,
+        proxy_factory: Callable[[str], "_ProxyUtil"],
+    ):
         self._dbfs = dbfs_ext
         self._proxy_factory = proxy_factory
 
     def cp(self, from_: str, to: str, recurse: bool = False) -> bool:
-        """Copies a file or directory, possibly across FileSystems """
+        """Copies a file or directory, possibly across FileSystems"""
         self._dbfs.copy(from_, to, recursive=recurse)
         return True
 
     def head(self, file: str, maxBytes: int = 65536) -> str:
-        """Returns up to the first 'maxBytes' bytes of the given file as a String encoded in UTF-8 """
+        """Returns up to the first 'maxBytes' bytes of the given file as a String encoded in UTF-8"""
         with self._dbfs.download(file) as f:
-            return f.read(maxBytes).decode('utf8')
+            return f.read(maxBytes).decode("utf8")
 
     def ls(self, dir: str) -> List[FileInfo]:
-        """Lists the contents of a directory """
+        """Lists the contents of a directory"""
         return [
-            FileInfo(f.path, os.path.basename(f.path), f.file_size, f.modification_time)
+            FileInfo(
+                f.path,
+                os.path.basename(f.path),
+                f.file_size,
+                f.modification_time,
+            )
             for f in self._dbfs.list(dir)
         ]
 
     def mkdirs(self, dir: str) -> bool:
-        """Creates the given directory if it does not exist, also creating any necessary parent directories """
+        """Creates the given directory if it does not exist, also creating any necessary parent directories"""
         self._dbfs.mkdirs(dir)
         return True
 
     def mv(self, from_: str, to: str, recurse: bool = False) -> bool:
-        """Moves a file or directory, possibly across FileSystems """
+        """Moves a file or directory, possibly across FileSystems"""
         self._dbfs.move_(from_, to, recursive=recurse, overwrite=True)
         return True
 
     def put(self, file: str, contents: str, overwrite: bool = False) -> bool:
-        """Writes the given String out to a file, encoded in UTF-8 """
+        """Writes the given String out to a file, encoded in UTF-8"""
         with self._dbfs.open(file, write=True, overwrite=overwrite) as f:
-            f.write(contents.encode('utf8'))
+            f.write(contents.encode("utf8"))
         return True
 
     def rm(self, dir: str, recurse: bool = False) -> bool:
-        """Removes a file or directory """
+        """Removes a file or directory"""
         self._dbfs.delete(dir, recursive=recurse)
         return True
 
-    def mount(self,
-              source: str,
-              mount_point: str,
-              encryption_type: str = None,
-              owner: str = None,
-              extra_configs: Dict[str, str] = None) -> bool:
+    def mount(
+        self,
+        source: str,
+        mount_point: str,
+        encryption_type: str = None,
+        owner: str = None,
+        extra_configs: Dict[str, str] = None,
+    ) -> bool:
         """Mounts the given source directory into DBFS at the given mount point"""
-        fs = self._proxy_factory('fs')
+        fs = self._proxy_factory("fs")
         kwargs = {}
         if encryption_type:
-            kwargs['encryption_type'] = encryption_type
+            kwargs["encryption_type"] = encryption_type
         if owner:
-            kwargs['owner'] = owner
+            kwargs["owner"] = owner
         if extra_configs:
-            kwargs['extra_configs'] = extra_configs
+            kwargs["extra_configs"] = extra_configs
         return fs.mount(source, mount_point, **kwargs)
 
     def unmount(self, mount_point: str) -> bool:
         """Deletes a DBFS mount point"""
-        fs = self._proxy_factory('fs')
+        fs = self._proxy_factory("fs")
         return fs.unmount(mount_point)
 
-    def updateMount(self,
-                    source: str,
-                    mount_point: str,
-                    encryption_type: str = None,
-                    owner: str = None,
-                    extra_configs: Dict[str, str] = None) -> bool:
-        """ Similar to mount(), but updates an existing mount point (if present) instead of creating a new one """
-        fs = self._proxy_factory('fs')
+    def updateMount(
+        self,
+        source: str,
+        mount_point: str,
+        encryption_type: str = None,
+        owner: str = None,
+        extra_configs: Dict[str, str] = None,
+    ) -> bool:
+        """Similar to mount(), but updates an existing mount point (if present) instead of creating a new one"""
+        fs = self._proxy_factory("fs")
         kwargs = {}
         if encryption_type:
-            kwargs['encryption_type'] = encryption_type
+            kwargs["encryption_type"] = encryption_type
         if owner:
-            kwargs['owner'] = owner
+            kwargs["owner"] = owner
         if extra_configs:
-            kwargs['extra_configs'] = extra_configs
+            kwargs["extra_configs"] = extra_configs
         return fs.updateMount(source, mount_point, **kwargs)
 
     def mounts(self) -> List[MountInfo]:
-        """ Displays information about what is mounted within DBFS """
+        """Displays information about what is mounted within DBFS"""
         result = []
-        fs = self._proxy_factory('fs')
+        fs = self._proxy_factory("fs")
         for info in fs.mounts():
             result.append(MountInfo(info[0], info[1], info[2]))
         return result
 
     def refreshMounts(self) -> bool:
-        """ Forces all machines in this cluster to refresh their mount cache,
-        ensuring they receive the most recent information """
-        fs = self._proxy_factory('fs')
+        """Forces all machines in this cluster to refresh their mount cache,
+        ensuring they receive the most recent information"""
+        fs = self._proxy_factory("fs")
         return fs.refreshMounts()
 
 
@@ -136,13 +149,13 @@ class _SecretsUtil:
     """Remote equivalent of secrets util"""
 
     def __init__(self, secrets_api: workspace.SecretsAPI):
-        self._api = secrets_api # nolint
+        self._api = secrets_api  # nolint
 
     def getBytes(self, scope: str, key: str) -> bytes:
         """Gets the bytes representation of a secret value for the specified scope and key."""
-        query = {'scope': scope, 'key': key}
-        raw = self._api._api.do('GET', '/api/2.0/secrets/get', query=query)
-        return base64.b64decode(raw['value'])
+        query = {"scope": scope, "key": key}
+        raw = self._api._api.do("GET", "/api/2.0/secrets/get", query=query)
+        return base64.b64decode(raw["value"])
 
     def get(self, scope: str, key: str) -> str:
         """Gets the string representation of a secret value for the specified secrets scope and key."""
@@ -169,13 +182,19 @@ class _JobsUtil:
     class _TaskValuesUtil:
         """Remote equivalent of task values util"""
 
-        def get(self, taskKey: str, key: str, default: any = None, debugValue: any = None) -> None:
+        def get(
+            self,
+            taskKey: str,
+            key: str,
+            default: any = None,
+            debugValue: any = None,
+        ) -> None:
             """
             Returns `debugValue` if present, throws an error otherwise as this implementation is always run outside of a job run
             """
             if debugValue is None:
                 raise TypeError(
-                    'Must pass debugValue when calling get outside of a job context. debugValue cannot be None.'
+                    "Must pass debugValue when calling get outside of a job context. debugValue cannot be None."
                 )
             return debugValue
 
@@ -190,7 +209,7 @@ class _JobsUtil:
 
 class RemoteDbUtils:
 
-    def __init__(self, config: 'Config' = None):
+    def __init__(self, config: "Config" = None):
         self._config = Config() if not config else config
         self._client = ApiClient(self._config)
         self._clusters = compute_ext.ClustersExt(self._client)
@@ -211,6 +230,7 @@ class RemoteDbUtils:
     def widgets(self):
         if self._widgets is None:
             from ._widgets import widget_impl
+
             self._widgets = widget_impl()
 
         return self._widgets
@@ -219,7 +239,7 @@ class RemoteDbUtils:
     def _cluster_id(self) -> str:
         cluster_id = self._config.cluster_id
         if not cluster_id:
-            message = 'cluster_id is required in the configuration'
+            message = "cluster_id is required in the configuration"
             raise ValueError(self._config.wrap_debug_info(message))
         return cluster_id
 
@@ -230,15 +250,16 @@ class RemoteDbUtils:
             if self._ctx:
                 return self._ctx
             self._clusters.ensure_cluster_is_running(self._cluster_id)
-            self._ctx = self._commands.create(cluster_id=self._cluster_id,
-                                              language=compute.Language.PYTHON).result()
+            self._ctx = self._commands.create(cluster_id=self._cluster_id, language=compute.Language.PYTHON).result()
         return self._ctx
 
-    def __getattr__(self, util) -> '_ProxyUtil':
-        return _ProxyUtil(command_execution=self._commands,
-                          context_factory=self._running_command_context,
-                          cluster_id=self._cluster_id,
-                          name=util)
+    def __getattr__(self, util) -> "_ProxyUtil":
+        return _ProxyUtil(
+            command_execution=self._commands,
+            context_factory=self._running_command_context,
+            cluster_id=self._cluster_id,
+            name=util,
+        )
 
 
 @dataclass
@@ -273,8 +294,7 @@ class _OverrideProxyUtil:
     # This means, it is completely safe to override paths starting with `{util}.{attribute}.<other_parts>`, since none of the prefixes
     # are being proxied to remote dbutils currently.
     proxy_override_paths = {
-        'notebook.entry_point.getDbutils().notebook().getContext().notebookPath().get()':
-        get_local_notebook_path,
+        "notebook.entry_point.getDbutils().notebook().getContext().notebookPath().get()": get_local_notebook_path,
     }
 
     @classmethod
@@ -294,7 +314,8 @@ class _OverrideProxyUtil:
     def __call__(self, *args, **kwds) -> Any:
         if len(args) != 0 or len(kwds) != 0:
             raise TypeError(
-                f"Arguments are not supported for overridden method {self._name}. Invoke as: {self._name}()")
+                f"Arguments are not supported for overridden method {self._name}. Invoke as: {self._name}()"
+            )
 
         callable_path = f"{self._name}()"
         result = self.__run_override(callable_path)
@@ -314,8 +335,14 @@ class _OverrideProxyUtil:
 class _ProxyUtil:
     """Enables temporary workaround to call remote in-REPL dbutils without having to re-implement them"""
 
-    def __init__(self, *, command_execution: compute.CommandExecutionAPI,
-                 context_factory: Callable[[], compute.ContextStatusResponse], cluster_id: str, name: str):
+    def __init__(
+        self,
+        *,
+        command_execution: compute.CommandExecutionAPI,
+        context_factory: Callable[[], compute.ContextStatusResponse],
+        cluster_id: str,
+        name: str,
+    ):
         self._commands = command_execution
         self._cluster_id = cluster_id
         self._context_factory = context_factory
@@ -324,16 +351,18 @@ class _ProxyUtil:
     def __call__(self):
         raise NotImplementedError(f"dbutils.{self._name} is not callable")
 
-    def __getattr__(self, method: str) -> '_ProxyCall | _ProxyUtil | _OverrideProxyUtil':
+    def __getattr__(self, method: str) -> "_ProxyCall | _ProxyUtil | _OverrideProxyUtil":
         override = _OverrideProxyUtil.new(f"{self._name}.{method}")
         if override:
             return override
 
-        return _ProxyCall(command_execution=self._commands,
-                          cluster_id=self._cluster_id,
-                          context_factory=self._context_factory,
-                          util=self._name,
-                          method=method)
+        return _ProxyCall(
+            command_execution=self._commands,
+            cluster_id=self._cluster_id,
+            context_factory=self._context_factory,
+            util=self._name,
+            method=method,
+        )
 
 
 import html
@@ -342,29 +371,34 @@ import re
 
 class _ProxyCall:
 
-    def __init__(self, *, command_execution: compute.CommandExecutionAPI,
-                 context_factory: Callable[[], compute.ContextStatusResponse], cluster_id: str, util: str,
-                 method: str):
+    def __init__(
+        self,
+        *,
+        command_execution: compute.CommandExecutionAPI,
+        context_factory: Callable[[], compute.ContextStatusResponse],
+        cluster_id: str,
+        util: str,
+        method: str,
+    ):
         self._commands = command_execution
         self._cluster_id = cluster_id
         self._context_factory = context_factory
         self._util = util
         self._method = method
 
-    _out_re = re.compile(r'Out\[[\d\s]+]:\s')
-    _tag_re = re.compile(r'<[^>]*>')
-    _exception_re = re.compile(r'.*Exception:\s+(.*)')
-    _execution_error_re = re.compile(
-        r'ExecutionError: ([\s\S]*)\n(StatusCode=[0-9]*)\n(StatusDescription=.*)\n')
-    _error_message_re = re.compile(r'ErrorMessage=(.+)\n')
-    _ascii_escape_re = re.compile(r'(\x9B|\x1B\[)[0-?]*[ -/]*[@-~]')
+    _out_re = re.compile(r"Out\[[\d\s]+]:\s")
+    _tag_re = re.compile(r"<[^>]*>")
+    _exception_re = re.compile(r".*Exception:\s+(.*)")
+    _execution_error_re = re.compile(r"ExecutionError: ([\s\S]*)\n(StatusCode=[0-9]*)\n(StatusDescription=.*)\n")
+    _error_message_re = re.compile(r"ErrorMessage=(.+)\n")
+    _ascii_escape_re = re.compile(r"(\x9B|\x1B\[)[0-?]*[ -/]*[@-~]")
 
     def _is_failed(self, results: compute.Results) -> bool:
         return results.result_type == compute.ResultType.ERROR
 
     def _text(self, results: compute.Results) -> str:
         if results.result_type != compute.ResultType.TEXT:
-            return ''
+            return ""
         return self._out_re.sub("", str(results.data))
 
     def _raise_if_failed(self, results: compute.Results):
@@ -399,17 +433,19 @@ class _ProxyCall:
 
     def __call__(self, *args, **kwargs):
         raw = json.dumps((args, kwargs))
-        code = f'''
+        code = f"""
         import json
         (args, kwargs) = json.loads('{raw}')
         result = dbutils.{self._util}.{self._method}(*args, **kwargs)
         dbutils.notebook.exit(json.dumps(result))
-        '''
+        """
         ctx = self._context_factory()
-        result = self._commands.execute(cluster_id=self._cluster_id,
-                                        language=compute.Language.PYTHON,
-                                        context_id=ctx.id,
-                                        command=code).result()
+        result = self._commands.execute(
+            cluster_id=self._cluster_id,
+            language=compute.Language.PYTHON,
+            context_id=ctx.id,
+            command=code,
+        ).result()
         if result.status == compute.CommandStatus.FINISHED:
             self._raise_if_failed(result.results)
             raw = result.results.data

@@ -47,19 +47,25 @@ class _DbfsIO(BinaryIO):
     _offset = 0
     _closed = False
 
-    def __init__(self,
-                 api: files.DbfsAPI,
-                 path: str,
-                 *,
-                 read: bool = False,
-                 write: bool = False,
-                 overwrite: bool = False):
+    def __init__(
+        self,
+        api: files.DbfsAPI,
+        path: str,
+        *,
+        read: bool = False,
+        write: bool = False,
+        overwrite: bool = False,
+    ):
         self._api = api
         self._path = path
-        if write and read: raise IOError(f'can open either for reading or writing')
-        if read: self._status = api.get_status(path)
-        elif write: self._created = api.create(path, overwrite=overwrite)
-        else: raise IOError(f'need to open either for reading or writing')
+        if write and read:
+            raise IOError(f"can open either for reading or writing")
+        if read:
+            self._status = api.get_status(path)
+        elif write:
+            self._created = api.create(path, overwrite=overwrite)
+        else:
+            raise IOError(f"need to open either for reading or writing")
 
     def __enter__(self) -> Self:
         return self
@@ -77,54 +83,59 @@ class _DbfsIO(BinaryIO):
         return self._created is not None
 
     def write(self, buffer: bytes) -> int:
-        """ Write bytes to file.
+        """Write bytes to file.
 
         :return: Return the number of bytes written.
         """
         if not self.writable():
-            raise IOError('file not open for writing')
+            raise IOError("file not open for writing")
         if type(buffer) is not bytes:
             # Python doesn't strictly enforce types. Even if they're specified.
-            raise TypeError(f'a bytes-like object is required, not {type(buffer)}')
+            raise TypeError(f"a bytes-like object is required, not {type(buffer)}")
         total = 0
         while total < len(buffer):
             chunk = buffer[total:]
             if len(chunk) > self.MAX_CHUNK_SIZE:
-                chunk = chunk[:self.MAX_CHUNK_SIZE]
+                chunk = chunk[: self.MAX_CHUNK_SIZE]
             encoded = base64.b64encode(chunk).decode()
             self._api.add_block(self._created.handle, encoded)
             total += len(chunk)
         return total
 
     def close(self) -> None:
-        """ Disable all I/O operations. """
-        if self.writable(): self._api.close(self._created.handle)
+        """Disable all I/O operations."""
+        if self.writable():
+            self._api.close(self._created.handle)
         self._closed = True
 
     @property
     def closed(self) -> bool:
         return self._closed
 
-    def __exit__(self, __t: Type[BaseException] | None, __value: BaseException | None,
-                 __traceback: TracebackType | None):
+    def __exit__(
+        self,
+        __t: Type[BaseException] | None,
+        __value: BaseException | None,
+        __traceback: TracebackType | None,
+    ):
         self.close()
 
     def readable(self) -> bool:
         return self._status is not None
 
     def read(self, size: int = ...) -> bytes:
-        """ Read at most size bytes, returned as a bytes object.
+        """Read at most size bytes, returned as a bytes object.
 
         :param size: If the size argument is negative, read until EOF is reached.
                      Return an empty bytes object at EOF.
         :return: bytes
         """
         if not self.readable():
-            raise IOError('file not open for reading')
+            raise IOError("file not open for reading")
 
         # call __iter__() and read until EOF is reached
         if size is ... or size < 0:
-            buffer = b''
+            buffer = b""
             for chunk in self:
                 buffer += chunk
             return buffer
@@ -136,7 +147,7 @@ class _DbfsIO(BinaryIO):
         if response.bytes_read == 0:
             # as per Python interface convention, return an empty bytes object at EOF,
             # and not the EOFError as in other SDKs
-            return b''
+            return b""
 
         raw = base64.b64decode(response.data)
         self._offset += response.bytes_read
@@ -186,7 +197,15 @@ class _DbfsIO(BinaryIO):
 
 class _VolumesIO(BinaryIO):
 
-    def __init__(self, api: files.FilesAPI, path: str, *, read: bool, write: bool, overwrite: bool):
+    def __init__(
+        self,
+        api: files.FilesAPI,
+        path: str,
+        *,
+        read: bool,
+        write: bool,
+        overwrite: bool,
+    ):
         self._buffer = []
         self._api = api
         self._path = path
@@ -206,8 +225,12 @@ class _VolumesIO(BinaryIO):
         if self._closed:
             return
         if self._write:
-            to_write = b''.join(self._buffer)
-            self._api.upload(self._path, contents=BytesIO(to_write), overwrite=self._overwrite)
+            to_write = b"".join(self._buffer)
+            self._api.upload(
+                self._path,
+                contents=BytesIO(to_write),
+                overwrite=self._overwrite,
+            )
         elif self._read:
             self._read_handle.close()
         self._closed = True
@@ -223,7 +246,7 @@ class _VolumesIO(BinaryIO):
 
     def __check_closed(self):
         if self._closed:
-            raise ValueError('I/O operation on closed file')
+            raise ValueError("I/O operation on closed file")
 
     def __open_read(self):
         if self._read_handle is None:
@@ -285,55 +308,45 @@ class _VolumesIO(BinaryIO):
 class _Path(ABC):
 
     @abstractmethod
-    def __init__(self):
-        ...
+    def __init__(self): ...
 
     @property
     def is_local(self) -> bool:
         return self._is_local()
 
     @abstractmethod
-    def _is_local(self) -> bool:
-        ...
+    def _is_local(self) -> bool: ...
 
     @property
     def is_dbfs(self) -> bool:
         return self._is_dbfs()
 
     @abstractmethod
-    def _is_dbfs(self) -> bool:
-        ...
+    def _is_dbfs(self) -> bool: ...
 
     @abstractmethod
-    def child(self, path: str) -> str:
-        ...
+    def child(self, path: str) -> str: ...
 
     @_cached_property
     def is_dir(self) -> bool:
         return self._is_dir()
 
     @abstractmethod
-    def _is_dir(self) -> bool:
-        ...
+    def _is_dir(self) -> bool: ...
 
     @abstractmethod
-    def exists(self) -> bool:
-        ...
+    def exists(self) -> bool: ...
 
     @abstractmethod
-    def open(self, *, read=False, write=False, overwrite=False):
-        ...
+    def open(self, *, read=False, write=False, overwrite=False): ...
 
-    def list(self, *, recursive=False) -> Generator[files.FileInfo, None, None]:
-        ...
+    def list(self, *, recursive=False) -> Generator[files.FileInfo, None, None]: ...
 
     @abstractmethod
-    def mkdir(self):
-        ...
+    def mkdir(self): ...
 
     @abstractmethod
-    def delete(self, *, recursive=False):
-        ...
+    def delete(self, *, recursive=False): ...
 
     @property
     def name(self) -> str:
@@ -348,9 +361,9 @@ class _LocalPath(_Path):
 
     def __init__(self, path: str):
         if platform.system() == "Windows":
-            self._path = pathlib.Path(str(path).replace('file:///', '').replace('file:', ''))
+            self._path = pathlib.Path(str(path).replace("file:///", "").replace("file:", ""))
         else:
-            self._path = pathlib.Path(str(path).replace('file:', ''))
+            self._path = pathlib.Path(str(path).replace("file:", ""))
 
     def _is_local(self) -> bool:
         return True
@@ -373,16 +386,17 @@ class _LocalPath(_Path):
     def open(self, *, read=False, write=False, overwrite=False):
         # make local fs follow the similar semantics as DBFS
         self._path.parent.mkdir(mode=0o755, parents=True, exist_ok=True)
-        return self._path.open(mode='wb' if overwrite else 'rb' if read else 'xb')
+        return self._path.open(mode="wb" if overwrite else "rb" if read else "xb")
 
     def list(self, recursive=False) -> Generator[files.FileInfo, None, None]:
         if not self.is_dir:
             st = self._path.stat()
-            yield files.FileInfo(path='file:' + str(self._path.absolute()),
-                                 is_dir=False,
-                                 file_size=st.st_size,
-                                 modification_time=int(st.st_mtime_ns / 1e6),
-                                 )
+            yield files.FileInfo(
+                path="file:" + str(self._path.absolute()),
+                is_dir=False,
+                file_size=st.st_size,
+                modification_time=int(st.st_mtime_ns / 1e6),
+            )
             return
         queue = deque([self._path])
         while queue:
@@ -393,11 +407,12 @@ class _LocalPath(_Path):
                         queue.append(leaf)
                     continue
                 info = leaf.stat()
-                yield files.FileInfo(path='file:' + str(leaf.absolute()),
-                                     is_dir=False,
-                                     file_size=info.st_size,
-                                     modification_time=int(info.st_mtime_ns / 1e6),
-                                     )
+                yield files.FileInfo(
+                    path="file:" + str(leaf.absolute()),
+                    is_dir=False,
+                    file_size=info.st_size,
+                    modification_time=int(info.st_mtime_ns / 1e6),
+                )
 
     def delete(self, *, recursive=False):
         if self.is_dir:
@@ -408,17 +423,17 @@ class _LocalPath(_Path):
         else:
             kw = {}
             if sys.version_info[:2] > (3, 7):
-                kw['missing_ok'] = True
+                kw["missing_ok"] = True
             self._path.unlink(**kw)
 
     def __repr__(self) -> str:
-        return f'<_LocalPath {self._path}>'
+        return f"<_LocalPath {self._path}>"
 
 
 class _VolumesPath(_Path):
 
     def __init__(self, api: files.FilesAPI, src: Union[str, pathlib.Path]):
-        self._path = pathlib.PurePosixPath(str(src).replace('dbfs:', '').replace('file:', ''))
+        self._path = pathlib.PurePosixPath(str(src).replace("dbfs:", "").replace("file:", ""))
         self._api = api
 
     def _is_local(self) -> bool:
@@ -448,16 +463,23 @@ class _VolumesPath(_Path):
             return self.is_dir
 
     def open(self, *, read=False, write=False, overwrite=False) -> BinaryIO:
-        return _VolumesIO(self._api, self.as_string, read=read, write=write, overwrite=overwrite)
+        return _VolumesIO(
+            self._api,
+            self.as_string,
+            read=read,
+            write=write,
+            overwrite=overwrite,
+        )
 
     def list(self, *, recursive=False) -> Generator[files.FileInfo, None, None]:
         if not self.is_dir:
             meta = self._api.get_metadata(self.as_string)
-            yield files.FileInfo(path=self.as_string,
-                                 is_dir=False,
-                                 file_size=meta.content_length,
-                                 modification_time=meta.last_modified,
-                                 )
+            yield files.FileInfo(
+                path=self.as_string,
+                is_dir=False,
+                file_size=meta.content_length,
+                modification_time=meta.last_modified,
+            )
             return
         queue = deque([self])
         while queue:
@@ -466,11 +488,12 @@ class _VolumesPath(_Path):
                 if recursive and file.is_directory:
                     queue.append(self.child(file.name))
                 if not recursive or not file.is_directory:
-                    yield files.FileInfo(path=file.path,
-                                         is_dir=file.is_directory,
-                                         file_size=file.file_size,
-                                         modification_time=file.last_modified,
-                                         )
+                    yield files.FileInfo(
+                        path=file.path,
+                        is_dir=file.is_directory,
+                        file_size=file.file_size,
+                        modification_time=file.last_modified,
+                    )
 
     def delete(self, *, recursive=False):
         if self.is_dir:
@@ -481,13 +504,13 @@ class _VolumesPath(_Path):
             self._api.delete(self.as_string)
 
     def __repr__(self) -> str:
-        return f'<_VolumesPath {self._path}>'
+        return f"<_VolumesPath {self._path}>"
 
 
 class _DbfsPath(_Path):
 
     def __init__(self, api: files.DbfsAPI, src: str):
-        self._path = pathlib.PurePosixPath(str(src).replace('dbfs:', '').replace('file:', ''))
+        self._path = pathlib.PurePosixPath(str(src).replace("dbfs:", "").replace("file:", ""))
         self._api = api
 
     def _is_local(self) -> bool:
@@ -518,16 +541,23 @@ class _DbfsPath(_Path):
             return False
 
     def open(self, *, read=False, write=False, overwrite=False) -> BinaryIO:
-        return _DbfsIO(self._api, self.as_string, read=read, write=write, overwrite=overwrite)
+        return _DbfsIO(
+            self._api,
+            self.as_string,
+            read=read,
+            write=write,
+            overwrite=overwrite,
+        )
 
     def list(self, *, recursive=False) -> Generator[files.FileInfo, None, None]:
         if not self.is_dir:
             meta = self._api.get_status(self.as_string)
-            yield files.FileInfo(path=self.as_string,
-                                 is_dir=False,
-                                 file_size=meta.file_size,
-                                 modification_time=meta.modification_time,
-                                 )
+            yield files.FileInfo(
+                path=self.as_string,
+                is_dir=False,
+                file_size=meta.file_size,
+                modification_time=meta.modification_time,
+            )
             return
         queue = deque([self])
         while queue:
@@ -542,7 +572,7 @@ class _DbfsPath(_Path):
         self._api.delete(self.as_string, recursive=recursive)
 
     def __repr__(self) -> str:
-        return f'<_DbfsPath {self._path}>'
+        return f"<_DbfsPath {self._path}>"
 
 
 class DbfsExt(files.DbfsAPI):
@@ -553,12 +583,14 @@ class DbfsExt(files.DbfsAPI):
         self._files_api = files.FilesAPI(api_client)
         self._dbfs_api = files.DbfsAPI(api_client)
 
-    def open(self,
-             path: str,
-             *,
-             read: bool = False,
-             write: bool = False,
-             overwrite: bool = False) -> BinaryIO:
+    def open(
+        self,
+        path: str,
+        *,
+        read: bool = False,
+        write: bool = False,
+        overwrite: bool = False,
+    ) -> BinaryIO:
         return self._path(path).open(read=read, write=write, overwrite=overwrite)
 
     def upload(self, path: str, src: BinaryIO, *, overwrite: bool = False):
@@ -596,17 +628,18 @@ class DbfsExt(files.DbfsAPI):
         p = self._path(path)
         return p.exists()
 
-    __ALLOWED_SCHEMES = [None, 'file', 'dbfs']
+    __ALLOWED_SCHEMES = [None, "file", "dbfs"]
 
     def _path(self, src):
         src = parse.urlparse(str(src))
         if src.scheme and src.scheme not in self.__ALLOWED_SCHEMES:
             raise ValueError(
                 f'unsupported scheme "{src.scheme}". DBUtils in the SDK only supports local, root DBFS, and '
-                'UC Volumes paths, not external locations or DBFS mount points.')
-        if src.scheme == 'file':
+                "UC Volumes paths, not external locations or DBFS mount points."
+            )
+        if src.scheme == "file":
             return _LocalPath(src.geturl())
-        if src.path.startswith('/Volumes'):
+        if src.path.startswith("/Volumes"):
             return _VolumesPath(self._files_api, src.geturl())
         return _DbfsPath(self._dbfs_api, src.geturl())
 
@@ -615,7 +648,7 @@ class DbfsExt(files.DbfsAPI):
         src = self._path(src)
         dst = self._path(dst)
         if src.is_local and dst.is_local:
-            raise IOError('both destinations are on local FS')
+            raise IOError("both destinations are on local FS")
         if dst.exists() and dst.is_dir:
             # if target is a folder, make file with the same name there
             dst = dst.child(src.name)
@@ -638,11 +671,11 @@ class DbfsExt(files.DbfsAPI):
             # this operation is recursive by default.
             return self.move(source.as_string, target.as_string)
         if source.is_local and target.is_local:
-            raise IOError('both destinations are on local FS')
+            raise IOError("both destinations are on local FS")
         if source.is_dir and not recursive:
-            src_type = 'local' if source.is_local else 'DBFS' if source.is_dbfs else 'UC Volume'
-            dst_type = 'local' if target.is_local else 'DBFS' if target.is_dbfs else 'UC Volume'
-            raise IOError(f'moving a directory from {src_type} to {dst_type} requires recursive flag')
+            src_type = "local" if source.is_local else "DBFS" if source.is_dbfs else "UC Volume"
+            dst_type = "local" if target.is_local else "DBFS" if target.is_dbfs else "UC Volume"
+            raise IOError(f"moving a directory from {src_type} to {dst_type} requires recursive flag")
         # do cross-fs moving
         self.copy(src, dst, recursive=recursive, overwrite=overwrite)
         self.delete(src, recursive=recursive)
@@ -651,7 +684,7 @@ class DbfsExt(files.DbfsAPI):
         """Delete file or directory on DBFS"""
         p = self._path(path)
         if p.is_dir and not recursive:
-            raise IOError('deleting directories requires recursive flag')
+            raise IOError("deleting directories requires recursive flag")
         p.delete(recursive=recursive)
 
 
@@ -680,14 +713,25 @@ class FilesExt(files.FilesAPI):
         :returns: :class:`DownloadResponse`
         """
 
-        initial_response: DownloadResponse = self._download_raw_stream(file_path=file_path,
-                                                                       start_byte_offset=0,
-                                                                       if_unmodified_since_timestamp=None)
+        initial_response: DownloadResponse = self._download_raw_stream(
+            file_path=file_path,
+            start_byte_offset=0,
+            if_unmodified_since_timestamp=None,
+        )
 
         wrapped_response = self._wrap_stream(file_path, initial_response)
         initial_response.contents._response = wrapped_response
         return initial_response
 
+    def _download_raw_stream(
+        self,
+        file_path: str,
+        start_byte_offset: int,
+        if_unmodified_since_timestamp: Optional[str] = None,
+    ) -> DownloadResponse:
+        headers = {
+            "Accept": "application/octet-stream",
+        }
     def upload(self, file_path: str, contents: BinaryIO, *, overwrite: Optional[bool] = None):
         # Upload empty and small files with one-shot upload.
         pre_read_buffer = contents.read(self._config.multipart_upload_min_stream_size)
@@ -1219,38 +1263,53 @@ class FilesExt(files.FilesAPI):
             raise Exception("if_unmodified_since_timestamp is required if start_byte_offset is specified")
 
         if start_byte_offset:
-            headers['Range'] = f'bytes={start_byte_offset}-'
+            headers["Range"] = f"bytes={start_byte_offset}-"
 
         if if_unmodified_since_timestamp:
-            headers['If-Unmodified-Since'] = if_unmodified_since_timestamp
+            headers["If-Unmodified-Since"] = if_unmodified_since_timestamp
 
-        response_headers = ['content-length', 'content-type', 'last-modified', ]
-        res = self._api.do('GET',
-                           f'/api/2.0/fs/files{_escape_multi_segment_path_parameter(file_path)}',
-                           headers=headers,
-                           response_headers=response_headers,
-                           raw=True)
+        response_headers = [
+            "content-length",
+            "content-type",
+            "last-modified",
+        ]
+        res = self._api.do(
+            "GET",
+            f"/api/2.0/fs/files{_escape_multi_segment_path_parameter(file_path)}",
+            headers=headers,
+            response_headers=response_headers,
+            raw=True,
+        )
 
         result = DownloadResponse.from_dict(res)
         if not isinstance(result.contents, _StreamingResponse):
-            raise Exception("Internal error: response contents is of unexpected type: " +
-                            type(result.contents).__name__)
+            raise Exception(
+                "Internal error: response contents is of unexpected type: " + type(result.contents).__name__
+            )
 
         return result
 
     def _wrap_stream(self, file_path: str, downloadResponse: DownloadResponse):
         underlying_response = _ResilientIterator._extract_raw_response(downloadResponse)
-        return _ResilientResponse(self,
-                                  file_path,
-                                  downloadResponse.last_modified,
-                                  offset=0,
-                                  underlying_response=underlying_response)
+        return _ResilientResponse(
+            self,
+            file_path,
+            downloadResponse.last_modified,
+            offset=0,
+            underlying_response=underlying_response,
+        )
 
 
 class _ResilientResponse(_RawResponse):
 
-    def __init__(self, api: FilesExt, file_path: str, file_last_modified: str, offset: int,
-                 underlying_response: _RawResponse):
+    def __init__(
+        self,
+        api: FilesExt,
+        file_path: str,
+        file_last_modified: str,
+        offset: int,
+        underlying_response: _RawResponse,
+    ):
         self.api = api
         self.file_path = file_path
         self.underlying_response = underlying_response
@@ -1259,11 +1318,17 @@ class _ResilientResponse(_RawResponse):
 
     def iter_content(self, chunk_size=1, decode_unicode=False):
         if decode_unicode:
-            raise ValueError('Decode unicode is not supported')
+            raise ValueError("Decode unicode is not supported")
 
         iterator = self.underlying_response.iter_content(chunk_size=chunk_size, decode_unicode=False)
-        self.iterator = _ResilientIterator(iterator, self.file_path, self.file_last_modified, self.offset,
-                                           self.api, chunk_size)
+        self.iterator = _ResilientIterator(
+            iterator,
+            self.file_path,
+            self.file_last_modified,
+            self.offset,
+            self.api,
+            chunk_size,
+        )
         return self.iterator
 
     def close(self):
@@ -1275,12 +1340,21 @@ class _ResilientIterator(Iterator):
     # and recovers from failures by requesting download from the current offset.
 
     @staticmethod
-    def _extract_raw_response(download_response: DownloadResponse) -> _RawResponse:
-        streaming_response: _StreamingResponse = download_response.contents # this is an instance of _StreamingResponse
+    def _extract_raw_response(
+        download_response: DownloadResponse,
+    ) -> _RawResponse:
+        streaming_response: _StreamingResponse = download_response.contents  # this is an instance of _StreamingResponse
         return streaming_response._response
 
-    def __init__(self, underlying_iterator, file_path: str, file_last_modified: str, offset: int,
-                 api: FilesExt, chunk_size: int):
+    def __init__(
+        self,
+        underlying_iterator,
+        file_path: str,
+        file_last_modified: str,
+        offset: int,
+        api: FilesExt,
+        chunk_size: int,
+    ):
         self._underlying_iterator = underlying_iterator
         self._api = api
         self._file_path = file_path
@@ -1299,14 +1373,18 @@ class _ResilientIterator(Iterator):
         if self._total_recovers_count == self._api._config.files_api_client_download_max_total_recovers:
             _LOG.debug("Total recovers limit exceeded")
             return False
-        if self._api._config.files_api_client_download_max_total_recovers_without_progressing is not None and self._recovers_without_progressing_count >= self._api._config.files_api_client_download_max_total_recovers_without_progressing:
+        if (
+            self._api._config.files_api_client_download_max_total_recovers_without_progressing is not None
+            and self._recovers_without_progressing_count
+            >= self._api._config.files_api_client_download_max_total_recovers_without_progressing
+        ):
             _LOG.debug("No progression recovers limit exceeded")
             return False
         return True
 
     def _recover(self) -> bool:
         if not self._should_recover():
-            return False # recover suppressed, rethrow original exception
+            return False  # recover suppressed, rethrow original exception
 
         self._total_recovers_count += 1
         self._recovers_without_progressing_count += 1
@@ -1317,15 +1395,15 @@ class _ResilientIterator(Iterator):
             _LOG.debug("Trying to recover from offset " + str(self._offset))
 
             # following call includes all the required network retries
-            downloadResponse = self._api._download_raw_stream(self._file_path, self._offset,
-                                                              self._file_last_modified)
+            downloadResponse = self._api._download_raw_stream(self._file_path, self._offset, self._file_last_modified)
             underlying_response = _ResilientIterator._extract_raw_response(downloadResponse)
-            self._underlying_iterator = underlying_response.iter_content(chunk_size=self._chunk_size,
-                                                                         decode_unicode=False)
+            self._underlying_iterator = underlying_response.iter_content(
+                chunk_size=self._chunk_size, decode_unicode=False
+            )
             _LOG.debug("Recover succeeded")
             return True
         except:
-            return False # recover failed, rethrow original exception
+            return False  # recover failed, rethrow original exception
 
     def __next__(self):
         if self._closed:

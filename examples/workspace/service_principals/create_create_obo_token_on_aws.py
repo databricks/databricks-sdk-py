@@ -7,8 +7,10 @@ w = WorkspaceClient()
 
 groups = w.groups.group_display_name_to_id_map(iam.ListGroupsRequest())
 
-spn = w.service_principals.create(display_name=f'sdk-{time.time_ns()}',
-                                  groups=[iam.ComplexValue(value=groups["admins"])])
+spn = w.service_principals.create(
+    display_name=f"sdk-{time.time_ns()}",
+    groups=[iam.ComplexValue(value=groups["admins"])],
+)
 
 # cleanup
 w.service_principals.delete(id=spn.id)

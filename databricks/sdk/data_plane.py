@@ -10,6 +10,7 @@ class DataPlaneDetails:
     """
     Contains details required to query a DataPlane endpoint.
     """
+
     endpoint_url: str
     """URL used to query the endpoint through the DataPlane."""
     token: Token
@@ -18,6 +19,7 @@ class DataPlaneDetails:
 
 class DataPlaneService:
     """Helper class to fetch and manage DataPlane details."""
+
     from .service.serving import DataPlaneInfo
 
     def __init__(self):
@@ -25,8 +27,13 @@ class DataPlaneService:
         self._tokens = {}
         self._lock = threading.Lock()
 
-    def get_data_plane_details(self, method: str, params: List[str], info_getter: Callable[[], DataPlaneInfo],
-                               refresh: Callable[[str], Token]):
+    def get_data_plane_details(
+        self,
+        method: str,
+        params: List[str],
+        info_getter: Callable[[], DataPlaneInfo],
+        refresh: Callable[[str], Token],
+    ):
         """Get and cache information required to query a Data Plane endpoint using the provided methods.
 
         Returns a cached DataPlaneDetails if the details have already been fetched previously and are still valid.

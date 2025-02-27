@@ -26,7 +26,9 @@ _error_deserializers = [
 # A list of _ErrorCustomizers that are applied to the error arguments after they are parsed. Customizers can modify the
 # error arguments in any way, including adding or removing fields. Customizers are applied in order, so later
 # customizers can override the changes made by earlier customizers.
-_error_customizers = [_RetryAfterCustomizer(), ]
+_error_customizers = [
+    _RetryAfterCustomizer(),
+]
 
 
 def _unknown_error(response: requests.Response) -> str:
@@ -36,9 +38,10 @@ def _unknown_error(response: requests.Response) -> str:
     """
     request_log = RoundTrip(response, debug_headers=True, debug_truncate_bytes=10 * 1024).generate()
     return (
-        'This is likely a bug in the Databricks SDK for Python or the underlying '
-        'API. Please report this issue with the following debugging information to the SDK issue tracker at '
-        f'https://github.com/databricks/databricks-sdk-go/issues. Request log:```{request_log}```')
+        "This is likely a bug in the Databricks SDK for Python or the underlying "
+        "API. Please report this issue with the following debugging information to the SDK issue tracker at "
+        f"https://github.com/databricks/databricks-sdk-go/issues. Request log:```{request_log}```"
+    )
 
 
 class _Parser:
@@ -49,13 +52,15 @@ class _Parser:
     issue tracker.
     """
 
-    def __init__(self,
-                 extra_error_parsers: List[_ErrorDeserializer] = [],
-                 extra_error_customizers: List[_ErrorCustomizer] = []):
-        self._error_parsers = _error_deserializers + (extra_error_parsers
-                                                      if extra_error_parsers is not None else [])
-        self._error_customizers = _error_customizers + (extra_error_customizers
-                                                        if extra_error_customizers is not None else [])
+    def __init__(
+        self,
+        extra_error_parsers: List[_ErrorDeserializer] = [],
+        extra_error_customizers: List[_ErrorCustomizer] = [],
+    ):
+        self._error_parsers = _error_deserializers + (extra_error_parsers if extra_error_parsers is not None else [])
+        self._error_customizers = _error_customizers + (
+            extra_error_customizers if extra_error_customizers is not None else []
+        )
 
     def get_api_error(self, response: requests.Response) -> Optional[DatabricksError]:
         """
@@ -73,9 +78,14 @@ class _Parser:
                             customizer.customize_error(response, error_args)
                         return _error_mapper(response, error_args)
                 except Exception as e:
-                    logging.debug(f'Error parsing response with {parser}, continuing', exc_info=e)
-            return _error_mapper(response,
-                                 {'message': 'unable to parse response. ' + _unknown_error(response)})
+                    logging.debug(
+                        f"Error parsing response with {parser}, continuing",
+                        exc_info=e,
+                    )
+            return _error_mapper(
+                response,
+                {"message": "unable to parse response. " + _unknown_error(response)},
+            )
 
         # Private link failures happen via a redirect to the login page. From a requests-perspective, the request
         # is successful, but the response is not what we expect. We need to handle this case separately.

@@ -1,12 +1,15 @@
 import pytest
 
-DBCONNECT_DBR_CLIENT = {"13.3": "13.3.3", "14.3": "14.3.1", }
+DBCONNECT_DBR_CLIENT = {
+    "13.3": "13.3.3",
+    "14.3": "14.3.1",
+}
 
 
 def reload_modules(name: str):
     """
-    Reloads the specified module. This is useful when testing Databricks Connect, since both 
-    the `databricks.connect` and `databricks.sdk.runtime` modules are stateful, and we need 
+    Reloads the specified module. This is useful when testing Databricks Connect, since both
+    the `databricks.connect` and `databricks.sdk.runtime` modules are stateful, and we need
     to reload these modules to reset the state cache between test runs.
     """
 
@@ -26,14 +29,17 @@ def reload_modules(name: str):
 @pytest.fixture(params=list(DBCONNECT_DBR_CLIENT.keys()))
 def setup_dbconnect_test(request, env_or_skip, restorable_env):
     dbr = request.param
-    assert dbr in DBCONNECT_DBR_CLIENT, f"Unsupported Databricks Runtime version {dbr}. Please update DBCONNECT_DBR_CLIENT."
+    assert (
+        dbr in DBCONNECT_DBR_CLIENT
+    ), f"Unsupported Databricks Runtime version {dbr}. Please update DBCONNECT_DBR_CLIENT."
 
     import os
-    os.environ["DATABRICKS_CLUSTER_ID"] = env_or_skip(
-        f"TEST_DBR_{dbr.replace('.', '_')}_DBCONNECT_CLUSTER_ID")
+
+    os.environ["DATABRICKS_CLUSTER_ID"] = env_or_skip(f"TEST_DBR_{dbr.replace('.', '_')}_DBCONNECT_CLUSTER_ID")
 
     import subprocess
     import sys
+
     lib = f"databricks-connect=={DBCONNECT_DBR_CLIENT[dbr]}"
     subprocess.check_call([sys.executable, "-m", "pip", "install", lib])
 
