@@ -114,6 +114,7 @@ def test_model_serving_auth_refresh(monkeypatch, mocker):
     # Read V2 now
     assert headers.get("Authorization") == 'Bearer databricks_sdk_unit_test_token_v2'
 
+
 def test_agent_user_credentials(monkeypatch, mocker):
     monkeypatch.setenv('IS_IN_DB_MODEL_SERVING_ENV', 'true')
     monkeypatch.setenv('DB_MODEL_SERVING_HOST_URL', 'x')
@@ -145,7 +146,7 @@ def test_agent_user_credentials(monkeypatch, mocker):
     assert headers.get("Authorization") == f'Bearer {invokers_token_val}'
 
     # Test invokers token in child thread
-    
+
     successful_authentication_event = threading.Event()
 
     def authenticate():
@@ -155,14 +156,14 @@ def test_agent_user_credentials(monkeypatch, mocker):
             assert (cfg.host == 'x')
             assert headers.get("Authorization") == f'Bearer databricks_invokers_token_v2'
             successful_authentication_event.set()
-        except Exception as e:
+        except Exception:
             successful_authentication_event.clear()
 
     thread = threading.Thread(target=authenticate)
 
     thread.start()
     thread.join()
-    assert(successful_authentication_event.is_set())
+    assert (successful_authentication_event.is_set())
 
 
 # If this credential strategy is being used in a non model serving environments then use default credential strategy instead
