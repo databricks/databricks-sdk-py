@@ -7,12 +7,8 @@ from databricks.sdk.data_plane import DataPlaneService
 from databricks.sdk.oauth import Token
 from databricks.sdk.service.serving import DataPlaneInfo
 
-cp_token = Token(access_token="control plane token",
-                 token_type="type",
-                 expiry=datetime.now() + timedelta(hours=1))
-dp_token = Token(access_token="data plane token",
-                 token_type="type",
-                 expiry=datetime.now() + timedelta(hours=1))
+cp_token = Token(access_token="control plane token", token_type="type", expiry=datetime.now() + timedelta(hours=1))
+dp_token = Token(access_token="data plane token", token_type="type", expiry=datetime.now() + timedelta(hours=1))
 
 
 def success_callable(token: oauth.Token):
@@ -24,10 +20,9 @@ def success_callable(token: oauth.Token):
 
 
 def test_endpoint_token_source_get_token(config):
-    token_source = data_plane.DataPlaneEndpointTokenSource(config.host,
-                                                           success_callable(cp_token),
-                                                           "authDetails",
-                                                           disable_async=True)
+    token_source = data_plane.DataPlaneEndpointTokenSource(
+        config.host, success_callable(cp_token), "authDetails", disable_async=True
+    )
 
     with patch("databricks.sdk.oauth.retrieve_token", return_value=dp_token) as retrieve_token:
         token_source.token()
@@ -36,18 +31,18 @@ def test_endpoint_token_source_get_token(config):
     args, kwargs = retrieve_token.call_args
 
     assert kwargs["token_url"] == config.host + "/oidc/v1/token"
-    assert kwargs["params"] == parse.urlencode({
-        "grant_type": "urn:ietf:params:oauth:grant-type:jwt-bearer",
-        "authorization_details": "authDetails",
-        "assertion": cp_token.access_token
-    })
+    assert kwargs["params"] == parse.urlencode(
+        {
+            "grant_type": "urn:ietf:params:oauth:grant-type:jwt-bearer",
+            "authorization_details": "authDetails",
+            "assertion": cp_token.access_token,
+        }
+    )
     assert kwargs["headers"] == {"Content-Type": "application/x-www-form-urlencoded"}
 
 
 def test_token_source_get_token_not_existing(config):
-    token_source = data_plane.DataPlaneTokenSource(config.host,
-                                                   success_callable(cp_token),
-                                                   disable_async=True)
+    token_source = data_plane.DataPlaneTokenSource(config.host, success_callable(cp_token), disable_async=True)
 
     with patch("databricks.sdk.oauth.retrieve_token", return_value=dp_token) as retrieve_token:
         result_token = token_source.token(endpoint="endpoint", auth_details="authDetails")
@@ -67,9 +62,7 @@ class MockEndpointTokenSource:
 
 
 def test_token_source_get_token_existing(config):
-    another_token = Token(access_token="another token",
-                          token_type="type",
-                          expiry=datetime.now() + timedelta(hours=1))
+    another_token = Token(access_token="another token", token_type="type", expiry=datetime.now() + timedelta(hours=1))
     token_source = data_plane.DataPlaneTokenSource(config.host, success_callable(token), disable_async=True)
     token_source._token_sources["endpoint:authDetails"] = MockEndpointTokenSource(another_token)
 
