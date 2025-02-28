@@ -134,8 +134,12 @@ class Config:
     # but a maximum time between consecutive data reception events (even 1 byte) from the server
     multipart_upload_single_chunk_upload_timeout_seconds: float = 60
 
-    # Limit of retries during multipart upload.
-    # Retry counter is reset when progressing along the stream.
+    # Cap on the number of custom retries during incremental uploads:
+    # 1) multipart: upload part URL is expired, so new upload URLs must be requested to continue upload
+    # 2) resumable: chunk upload produced a retryable response (or exception), so upload status must be
+    # retrieved to continue the upload.
+    # In these two cases standard SDK retries (which are capped by the `retry_timeout_seconds` option) are not used.
+    # Note that retry counter is reset when upload is successfully resumed.
     multipart_upload_max_retries = 3
 
     def __init__(

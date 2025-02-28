@@ -16,8 +16,8 @@ from collections.abc import Iterator
 from datetime import timedelta
 from io import BytesIO
 from types import TracebackType
-from typing import (TYPE_CHECKING, AnyStr, BinaryIO, Generator, Iterable,
-                    Optional, Type, Union)
+from typing import (TYPE_CHECKING, AnyStr, BinaryIO, Callable, Generator,
+                    Iterable, Optional, Type, Union)
 from urllib import parse
 
 import requests
@@ -26,9 +26,9 @@ from requests import RequestException
 
 from .._base_client import _BaseClient, _RawResponse, _StreamingResponse
 from .._property import _cached_property
-from ..clock import Clock, RealClock
 from ..config import Config
 from ..errors import AlreadyExists, NotFound
+from ..errors.customizer import _RetryAfterCustomizer
 from ..errors.mapper import _error_mapper
 from ..retries import retried
 from ..service import files
@@ -693,10 +693,12 @@ class DbfsExt(files.DbfsAPI):
 class FilesExt(files.FilesAPI):
     __doc__ = files.FilesAPI.__doc__
 
-    def __init__(self, api_client, config: Config, clock: Clock = None):
+    # note that these error codes are retryable only for idempotent operations
+    _RETRYABLE_STATUS_CODES = [408, 429, 500, 502, 503, 504]
+
+    def __init__(self, api_client, config: Config):
         super().__init__(api_client)
         self._config = config.copy()
-        self._clock = clock or RealClock()
         self._multipart_upload_read_ahead_bytes = 1
 
     def download(self, file_path: str) -> DownloadResponse:
@@ -867,25 +869,15 @@ class FilesExt(files.FilesAPI):
                     chunk.seek(0, os.SEEK_SET)
 
                 def perform():
-                    result = cloud_provider_session.request(
+                    return cloud_provider_session.request(
                         "PUT",
                         url,
                         headers=headers,
                         data=chunk,
                         timeout=self._config.multipart_upload_single_chunk_upload_timeout_seconds,
                     )
-                    return result
 
-                # following _BaseClient timeout
-                retry_timeout_seconds = self._config.retry_timeout_seconds or 300
-
-                # Uploading same data to the same URL is an idempotent operation, safe to retry.
-                upload_response = retried(
-                    timeout=timedelta(seconds=retry_timeout_seconds),
-                    is_retryable=_BaseClient._is_retryable,
-                    clock=self._clock,
-                    before_retry=rewind,
-                )(perform)()
+                upload_response = self._retry_idempotent_operation(perform, rewind)
 
                 if upload_response.status_code in (200, 201):
                     # Chunk upload successful
@@ -1068,38 +1060,55 @@ class FilesExt(files.FilesAPI):
                 _LOG.debug(f"Uploading chunk: {content_range_header}")
                 headers["Content-Range"] = content_range_header
 
+                def retrieve_upload_status() -> Optional[requests.Response]:
+                    def perform():
+                        return cloud_provider_session.request(
+                            "PUT",
+                            resumable_upload_url,
+                            headers={"Content-Range": "bytes */*"},
+                            data=b"",
+                            timeout=self._config.multipart_upload_single_chunk_upload_timeout_seconds,
+                        )
+
+                    try:
+                        return self._retry_idempotent_operation(perform)
+                    except RequestException:
+                        _LOG.warning("Failed to retrieve upload status")
+                        return None
+
                 try:
-                    # We're not retrying this single request as we don't know where to rewind to.
-                    # Instead, in case of retryable failure we'll re-request the current offset
-                    # from the server and resume upload from there in the main upload loop.
-                    upload_response: requests.Response = cloud_provider_session.request(
+                    upload_response = cloud_provider_session.request(
                         "PUT",
                         resumable_upload_url,
                         headers=headers,
                         data=BytesIO(buffer[:actual_chunk_length]),
                         timeout=self._config.multipart_upload_single_chunk_upload_timeout_seconds,
                     )
-                    retry_count = 0  # reset retry count when progressing along the stream
+
+                    # https://cloud.google.com/storage/docs/performing-resumable-uploads#resume-upload
+                    # If an upload request is terminated before receiving a response, or if you receive
+                    # a 503 or 500 response, then you need to resume the interrupted upload from where it left off.
+
+                    # Let's follow that for all potentially retryable status codes.
+                    if upload_response.status_code in self._RETRYABLE_STATUS_CODES:
+                        if retry_count < self._config.multipart_upload_max_retries:
+                            retry_count += 1
+                            # let original upload_response be handled as an error
+                            upload_response = retrieve_upload_status() or upload_response
+                    else:
+                        # we received non-retryable response, reset retry count
+                        retry_count = 0
+
                 except RequestException as e:
-                    _LOG.warning(f"Failure during upload request: {sys.exc_info()}")
+                    # Let's do the same for retryable network errors
                     if _BaseClient._is_retryable(e) and retry_count < self._config.multipart_upload_max_retries:
                         retry_count += 1
-                        # Chunk upload threw an error, try to retrieve the current received offset
-                        try:
-                            # https://cloud.google.com/storage/docs/performing-resumable-uploads#status-check
-                            headers["Content-Range"] = "bytes */*"
-                            upload_response = cloud_provider_session.request(
-                                "PUT",
-                                resumable_upload_url,
-                                headers=headers,
-                                data=b"",
-                                timeout=self._config.multipart_upload_single_chunk_upload_timeout_seconds,
-                            )
-                        except RequestException:
-                            # status check failed, abort the upload
+                        upload_response = retrieve_upload_status()
+                        if not upload_response:
+                            # rethrow original exception
                             raise e from None
                     else:
-                        # error is not retryable, abort the upload
+                        # rethrow original exception
                         raise e from None
 
                 if upload_response.status_code in (200, 201):
@@ -1138,23 +1147,16 @@ class FilesExt(files.FilesAPI):
                     uploaded_bytes_count = next_chunk_offset - chunk_offset
                     chunk_offset = next_chunk_offset
 
-                elif upload_response.status_code == 400:
-                    # Expecting response body to be small to be safely logged
-                    mapped_error = _error_mapper(upload_response, {})
-                    raise mapped_error or ValueError(
-                        f"Failed to upload (status: {upload_response.status_code}): {upload_response.text}"
-                    )
-
                 elif upload_response.status_code == 412 and not overwrite:
                     # Assuming this is only possible reason
                     # Full message in this case: "At least one of the pre-conditions you specified did not hold."
                     raise AlreadyExists("The file being created already exists.")
-                else:
-                    if _LOG.isEnabledFor(logging.DEBUG):
-                        _LOG.debug(f"Failed to upload (status: {upload_response.status_code}): {upload_response.text}")
 
+                else:
+                    message = f"Unsuccessful chunk upload. Response status: {upload_response.status_code}, body: {upload_response.content}"
+                    _LOG.warning(message)
                     mapped_error = _error_mapper(upload_response, {})
-                    raise mapped_error or ValueError(f"Failed to upload: {upload_response}")
+                    raise mapped_error or ValueError(message)
 
         except Exception as e:
             _LOG.info(f"Aborting resumable upload on error: {e}")
@@ -1204,22 +1206,15 @@ class FilesExt(files.FilesAPI):
             headers[h["name"]] = h["value"]
 
         def perform():
-            result = cloud_provider_session.request(
+            return cloud_provider_session.request(
                 "DELETE",
                 abort_url,
                 headers=headers,
                 data=b"",
                 timeout=self._config.multipart_upload_single_chunk_upload_timeout_seconds,
             )
-            return result
 
-        # following _BaseClient timeout
-        retry_timeout_seconds = self._config.retry_timeout_seconds or 300
-
-        # Aborting upload is an idempotent operation, safe to retry.
-        abort_response = retried(
-            timeout=timedelta(seconds=retry_timeout_seconds), is_retryable=_BaseClient._is_retryable, clock=self._clock
-        )(perform)()
+        abort_response = self._retry_idempotent_operation(perform)
 
         if abort_response.status_code not in (200, 201):
             raise ValueError(abort_response)
@@ -1232,21 +1227,15 @@ class FilesExt(files.FilesAPI):
             headers[h["name"]] = h["value"]
 
         def perform():
-            result = cloud_provider_session.request(
+            return cloud_provider_session.request(
                 "DELETE",
                 resumable_upload_url,
                 headers=headers,
                 data=b"",
                 timeout=self._config.multipart_upload_single_chunk_upload_timeout_seconds,
             )
-            return result
 
-        # following _BaseClient timeout
-        retry_timeout_seconds = self._config.retry_timeout_seconds or 300
-        # Aborting upload is an idempotent operation, safe to retry.
-        abort_response = retried(
-            timeout=timedelta(seconds=retry_timeout_seconds), is_retryable=_BaseClient._is_retryable, clock=self._clock
-        )(perform)()
+        abort_response = self._retry_idempotent_operation(perform)
 
         if abort_response.status_code not in (200, 201):
             raise ValueError(abort_response)
@@ -1264,6 +1253,30 @@ class FilesExt(files.FilesAPI):
         # presigned URL for storage proxy can use plain HTTP
         session.mount("http://", http_adapter)
         return session
+
+    def _retry_idempotent_operation(
+        self, operation: Callable[[], requests.Response], before_retry: Callable = None
+    ) -> requests.Response:
+        def delegate():
+            response = operation()
+            if response.status_code in self._RETRYABLE_STATUS_CODES:
+                attrs = {}
+                # this will assign "retry_after_secs" to the attrs, essentially making exception look retryable
+                _RetryAfterCustomizer().customize_error(response, attrs)
+                raise _error_mapper(response, attrs)
+            else:
+                return response
+
+        # following _BaseClient timeout
+        retry_timeout_seconds = self._config.retry_timeout_seconds or 300
+
+        return retried(
+            timeout=timedelta(seconds=retry_timeout_seconds),
+            # also retry on network errors (connection error, connection timeout)
+            # where we believe request didn't reach the server
+            is_retryable=_BaseClient._is_retryable,
+            before_retry=before_retry,
+        )(delegate)()
 
     def _download_raw_stream(
         self, file_path: str, start_byte_offset: int, if_unmodified_since_timestamp: Optional[str] = None
@@ -1302,12 +1315,12 @@ class FilesExt(files.FilesAPI):
 
         return result
 
-    def _wrap_stream(self, file_path: str, downloadResponse: DownloadResponse):
-        underlying_response = _ResilientIterator._extract_raw_response(downloadResponse)
+    def _wrap_stream(self, file_path: str, download_response: DownloadResponse):
+        underlying_response = _ResilientIterator._extract_raw_response(download_response)
         return _ResilientResponse(
             self,
             file_path,
-            downloadResponse.last_modified,
+            download_response.last_modified,
             offset=0,
             underlying_response=underlying_response,
         )
