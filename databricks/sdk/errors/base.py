@@ -7,7 +7,6 @@ import requests
 
 
 class ErrorDetail:
-
     def __init__(
         self,
         type: str = None,
