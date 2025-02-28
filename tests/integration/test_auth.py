@@ -108,12 +108,12 @@ def _get_lts_versions(w) -> typing.List[SparkVersion]:
     return lts_runtimes
 
 
-def test_runtime_auth_from_jobs_volumes(ucws, fresh_wheel_file, env_or_skip, random, volume):
+def test_runtime_auth_from_jobs_volumes(ucws, files_api, fresh_wheel_file, env_or_skip, random, volume):
     dbr_versions = [v for v in _get_lts_versions(ucws) if int(v.key.split(".")[0]) >= 15]
 
     volume_wheel = f"{volume}/tmp/wheels/{random(10)}/{fresh_wheel_file.name}"
     with fresh_wheel_file.open("rb") as f:
-        ucws.files.upload(volume_wheel, f)
+        files_api.upload(volume_wheel, f)
 
     lib = Library(whl=volume_wheel)
     return _test_runtime_auth_from_jobs_inner(ucws, env_or_skip, random, dbr_versions, lib)
