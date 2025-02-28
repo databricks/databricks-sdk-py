@@ -9,7 +9,7 @@ from typing import Dict, Iterator, List, Optional
 
 from ._internal import _enum, _from_dict, _repeated_dict, _repeated_enum
 
-_LOG = logging.getLogger('databricks.sdk')
+_LOG = logging.getLogger("databricks.sdk")
 
 from databricks.sdk.service import catalog
 
@@ -19,8 +19,8 @@ from databricks.sdk.service import catalog
 class AuthenticationType(Enum):
     """The delta sharing authentication type."""
 
-    DATABRICKS = 'DATABRICKS'
-    TOKEN = 'TOKEN'
+    DATABRICKS = "DATABRICKS"
+    TOKEN = "TOKEN"
 
 
 @dataclass
@@ -41,28 +41,38 @@ class CreateProvider:
     def as_dict(self) -> dict:
         """Serializes the CreateProvider into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.authentication_type is not None: body['authentication_type'] = self.authentication_type.value
-        if self.comment is not None: body['comment'] = self.comment
-        if self.name is not None: body['name'] = self.name
-        if self.recipient_profile_str is not None: body['recipient_profile_str'] = self.recipient_profile_str
+        if self.authentication_type is not None:
+            body["authentication_type"] = self.authentication_type.value
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.name is not None:
+            body["name"] = self.name
+        if self.recipient_profile_str is not None:
+            body["recipient_profile_str"] = self.recipient_profile_str
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the CreateProvider into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.authentication_type is not None: body['authentication_type'] = self.authentication_type
-        if self.comment is not None: body['comment'] = self.comment
-        if self.name is not None: body['name'] = self.name
-        if self.recipient_profile_str is not None: body['recipient_profile_str'] = self.recipient_profile_str
+        if self.authentication_type is not None:
+            body["authentication_type"] = self.authentication_type
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.name is not None:
+            body["name"] = self.name
+        if self.recipient_profile_str is not None:
+            body["recipient_profile_str"] = self.recipient_profile_str
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateProvider:
         """Deserializes the CreateProvider from a dictionary."""
-        return cls(authentication_type=_enum(d, 'authentication_type', AuthenticationType),
-                   comment=d.get('comment', None),
-                   name=d.get('name', None),
-                   recipient_profile_str=d.get('recipient_profile_str', None))
+        return cls(
+            authentication_type=_enum(d, "authentication_type", AuthenticationType),
+            comment=d.get("comment", None),
+            name=d.get("name", None),
+            recipient_profile_str=d.get("recipient_profile_str", None),
+        )
 
 
 @dataclass
@@ -102,45 +112,63 @@ class CreateRecipient:
     def as_dict(self) -> dict:
         """Serializes the CreateRecipient into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.authentication_type is not None: body['authentication_type'] = self.authentication_type.value
-        if self.comment is not None: body['comment'] = self.comment
+        if self.authentication_type is not None:
+            body["authentication_type"] = self.authentication_type.value
+        if self.comment is not None:
+            body["comment"] = self.comment
         if self.data_recipient_global_metastore_id is not None:
-            body['data_recipient_global_metastore_id'] = self.data_recipient_global_metastore_id
-        if self.expiration_time is not None: body['expiration_time'] = self.expiration_time
-        if self.ip_access_list: body['ip_access_list'] = self.ip_access_list.as_dict()
-        if self.name is not None: body['name'] = self.name
-        if self.owner is not None: body['owner'] = self.owner
-        if self.properties_kvpairs: body['properties_kvpairs'] = self.properties_kvpairs.as_dict()
-        if self.sharing_code is not None: body['sharing_code'] = self.sharing_code
+            body["data_recipient_global_metastore_id"] = self.data_recipient_global_metastore_id
+        if self.expiration_time is not None:
+            body["expiration_time"] = self.expiration_time
+        if self.ip_access_list:
+            body["ip_access_list"] = self.ip_access_list.as_dict()
+        if self.name is not None:
+            body["name"] = self.name
+        if self.owner is not None:
+            body["owner"] = self.owner
+        if self.properties_kvpairs:
+            body["properties_kvpairs"] = self.properties_kvpairs.as_dict()
+        if self.sharing_code is not None:
+            body["sharing_code"] = self.sharing_code
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the CreateRecipient into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.authentication_type is not None: body['authentication_type'] = self.authentication_type
-        if self.comment is not None: body['comment'] = self.comment
+        if self.authentication_type is not None:
+            body["authentication_type"] = self.authentication_type
+        if self.comment is not None:
+            body["comment"] = self.comment
         if self.data_recipient_global_metastore_id is not None:
-            body['data_recipient_global_metastore_id'] = self.data_recipient_global_metastore_id
-        if self.expiration_time is not None: body['expiration_time'] = self.expiration_time
-        if self.ip_access_list: body['ip_access_list'] = self.ip_access_list
-        if self.name is not None: body['name'] = self.name
-        if self.owner is not None: body['owner'] = self.owner
-        if self.properties_kvpairs: body['properties_kvpairs'] = self.properties_kvpairs
-        if self.sharing_code is not None: body['sharing_code'] = self.sharing_code
+            body["data_recipient_global_metastore_id"] = self.data_recipient_global_metastore_id
+        if self.expiration_time is not None:
+            body["expiration_time"] = self.expiration_time
+        if self.ip_access_list:
+            body["ip_access_list"] = self.ip_access_list
+        if self.name is not None:
+            body["name"] = self.name
+        if self.owner is not None:
+            body["owner"] = self.owner
+        if self.properties_kvpairs:
+            body["properties_kvpairs"] = self.properties_kvpairs
+        if self.sharing_code is not None:
+            body["sharing_code"] = self.sharing_code
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateRecipient:
         """Deserializes the CreateRecipient from a dictionary."""
-        return cls(authentication_type=_enum(d, 'authentication_type', AuthenticationType),
-                   comment=d.get('comment', None),
-                   data_recipient_global_metastore_id=d.get('data_recipient_global_metastore_id', None),
-                   expiration_time=d.get('expiration_time', None),
-                   ip_access_list=_from_dict(d, 'ip_access_list', IpAccessList),
-                   name=d.get('name', None),
-                   owner=d.get('owner', None),
-                   properties_kvpairs=_from_dict(d, 'properties_kvpairs', SecurablePropertiesKvPairs),
-                   sharing_code=d.get('sharing_code', None))
+        return cls(
+            authentication_type=_enum(d, "authentication_type", AuthenticationType),
+            comment=d.get("comment", None),
+            data_recipient_global_metastore_id=d.get("data_recipient_global_metastore_id", None),
+            expiration_time=d.get("expiration_time", None),
+            ip_access_list=_from_dict(d, "ip_access_list", IpAccessList),
+            name=d.get("name", None),
+            owner=d.get("owner", None),
+            properties_kvpairs=_from_dict(d, "properties_kvpairs", SecurablePropertiesKvPairs),
+            sharing_code=d.get("sharing_code", None),
+        )
 
 
 @dataclass
@@ -157,25 +185,33 @@ class CreateShare:
     def as_dict(self) -> dict:
         """Serializes the CreateShare into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.comment is not None: body['comment'] = self.comment
-        if self.name is not None: body['name'] = self.name
-        if self.storage_root is not None: body['storage_root'] = self.storage_root
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.name is not None:
+            body["name"] = self.name
+        if self.storage_root is not None:
+            body["storage_root"] = self.storage_root
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the CreateShare into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.comment is not None: body['comment'] = self.comment
-        if self.name is not None: body['name'] = self.name
-        if self.storage_root is not None: body['storage_root'] = self.storage_root
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.name is not None:
+            body["name"] = self.name
+        if self.storage_root is not None:
+            body["storage_root"] = self.storage_root
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateShare:
         """Deserializes the CreateShare from a dictionary."""
-        return cls(comment=d.get('comment', None),
-                   name=d.get('name', None),
-                   storage_root=d.get('storage_root', None))
+        return cls(
+            comment=d.get("comment", None),
+            name=d.get("name", None),
+            storage_root=d.get("storage_root", None),
+        )
 
 
 @dataclass
@@ -228,22 +264,28 @@ class GetRecipientSharePermissionsResponse:
     def as_dict(self) -> dict:
         """Serializes the GetRecipientSharePermissionsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
-        if self.permissions_out: body['permissions_out'] = [v.as_dict() for v in self.permissions_out]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.permissions_out:
+            body["permissions_out"] = [v.as_dict() for v in self.permissions_out]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the GetRecipientSharePermissionsResponse into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
-        if self.permissions_out: body['permissions_out'] = self.permissions_out
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.permissions_out:
+            body["permissions_out"] = self.permissions_out
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> GetRecipientSharePermissionsResponse:
         """Deserializes the GetRecipientSharePermissionsResponse from a dictionary."""
-        return cls(next_page_token=d.get('next_page_token', None),
-                   permissions_out=_repeated_dict(d, 'permissions_out', ShareToPrivilegeAssignment))
+        return cls(
+            next_page_token=d.get("next_page_token", None),
+            permissions_out=_repeated_dict(d, "permissions_out", ShareToPrivilegeAssignment),
+        )
 
 
 @dataclass
@@ -254,19 +296,21 @@ class IpAccessList:
     def as_dict(self) -> dict:
         """Serializes the IpAccessList into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.allowed_ip_addresses: body['allowed_ip_addresses'] = [v for v in self.allowed_ip_addresses]
+        if self.allowed_ip_addresses:
+            body["allowed_ip_addresses"] = [v for v in self.allowed_ip_addresses]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the IpAccessList into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.allowed_ip_addresses: body['allowed_ip_addresses'] = self.allowed_ip_addresses
+        if self.allowed_ip_addresses:
+            body["allowed_ip_addresses"] = self.allowed_ip_addresses
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> IpAccessList:
         """Deserializes the IpAccessList from a dictionary."""
-        return cls(allowed_ip_addresses=d.get('allowed_ip_addresses', None))
+        return cls(allowed_ip_addresses=d.get("allowed_ip_addresses", None))
 
 
 @dataclass
@@ -281,22 +325,28 @@ class ListProviderSharesResponse:
     def as_dict(self) -> dict:
         """Serializes the ListProviderSharesResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
-        if self.shares: body['shares'] = [v.as_dict() for v in self.shares]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.shares:
+            body["shares"] = [v.as_dict() for v in self.shares]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ListProviderSharesResponse into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
-        if self.shares: body['shares'] = self.shares
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.shares:
+            body["shares"] = self.shares
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListProviderSharesResponse:
         """Deserializes the ListProviderSharesResponse from a dictionary."""
-        return cls(next_page_token=d.get('next_page_token', None),
-                   shares=_repeated_dict(d, 'shares', ProviderShare))
+        return cls(
+            next_page_token=d.get("next_page_token", None),
+            shares=_repeated_dict(d, "shares", ProviderShare),
+        )
 
 
 @dataclass
@@ -311,22 +361,28 @@ class ListProvidersResponse:
     def as_dict(self) -> dict:
         """Serializes the ListProvidersResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
-        if self.providers: body['providers'] = [v.as_dict() for v in self.providers]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.providers:
+            body["providers"] = [v.as_dict() for v in self.providers]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ListProvidersResponse into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
-        if self.providers: body['providers'] = self.providers
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.providers:
+            body["providers"] = self.providers
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListProvidersResponse:
         """Deserializes the ListProvidersResponse from a dictionary."""
-        return cls(next_page_token=d.get('next_page_token', None),
-                   providers=_repeated_dict(d, 'providers', ProviderInfo))
+        return cls(
+            next_page_token=d.get("next_page_token", None),
+            providers=_repeated_dict(d, "providers", ProviderInfo),
+        )
 
 
 @dataclass
@@ -341,22 +397,28 @@ class ListRecipientsResponse:
     def as_dict(self) -> dict:
         """Serializes the ListRecipientsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
-        if self.recipients: body['recipients'] = [v.as_dict() for v in self.recipients]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.recipients:
+            body["recipients"] = [v.as_dict() for v in self.recipients]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ListRecipientsResponse into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
-        if self.recipients: body['recipients'] = self.recipients
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.recipients:
+            body["recipients"] = self.recipients
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListRecipientsResponse:
         """Deserializes the ListRecipientsResponse from a dictionary."""
-        return cls(next_page_token=d.get('next_page_token', None),
-                   recipients=_repeated_dict(d, 'recipients', RecipientInfo))
+        return cls(
+            next_page_token=d.get("next_page_token", None),
+            recipients=_repeated_dict(d, "recipients", RecipientInfo),
+        )
 
 
 @dataclass
@@ -371,22 +433,28 @@ class ListSharesResponse:
     def as_dict(self) -> dict:
         """Serializes the ListSharesResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
-        if self.shares: body['shares'] = [v.as_dict() for v in self.shares]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.shares:
+            body["shares"] = [v.as_dict() for v in self.shares]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ListSharesResponse into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.next_page_token is not None: body['next_page_token'] = self.next_page_token
-        if self.shares: body['shares'] = self.shares
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.shares:
+            body["shares"] = self.shares
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListSharesResponse:
         """Deserializes the ListSharesResponse from a dictionary."""
-        return cls(next_page_token=d.get('next_page_token', None),
-                   shares=_repeated_dict(d, 'shares', ShareInfo))
+        return cls(
+            next_page_token=d.get("next_page_token", None),
+            shares=_repeated_dict(d, "shares", ShareInfo),
+        )
 
 
 @dataclass
@@ -397,19 +465,21 @@ class Partition:
     def as_dict(self) -> dict:
         """Serializes the Partition into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.values: body['values'] = [v.as_dict() for v in self.values]
+        if self.values:
+            body["values"] = [v.as_dict() for v in self.values]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the Partition into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.values: body['values'] = self.values
+        if self.values:
+            body["values"] = self.values
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> Partition:
         """Deserializes the Partition from a dictionary."""
-        return cls(values=_repeated_dict(d, 'values', PartitionValue))
+        return cls(values=_repeated_dict(d, "values", PartitionValue))
 
 
 @dataclass
@@ -420,19 +490,21 @@ class PartitionSpecificationPartition:
     def as_dict(self) -> dict:
         """Serializes the PartitionSpecificationPartition into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.values: body['values'] = [v.as_dict() for v in self.values]
+        if self.values:
+            body["values"] = [v.as_dict() for v in self.values]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the PartitionSpecificationPartition into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.values: body['values'] = self.values
+        if self.values:
+            body["values"] = self.values
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> PartitionSpecificationPartition:
         """Deserializes the PartitionSpecificationPartition from a dictionary."""
-        return cls(values=_repeated_dict(d, 'values', PartitionValue))
+        return cls(values=_repeated_dict(d, "values", PartitionValue))
 
 
 @dataclass
@@ -454,85 +526,93 @@ class PartitionValue:
     def as_dict(self) -> dict:
         """Serializes the PartitionValue into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.name is not None: body['name'] = self.name
-        if self.op is not None: body['op'] = self.op.value
+        if self.name is not None:
+            body["name"] = self.name
+        if self.op is not None:
+            body["op"] = self.op.value
         if self.recipient_property_key is not None:
-            body['recipient_property_key'] = self.recipient_property_key
-        if self.value is not None: body['value'] = self.value
+            body["recipient_property_key"] = self.recipient_property_key
+        if self.value is not None:
+            body["value"] = self.value
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the PartitionValue into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.name is not None: body['name'] = self.name
-        if self.op is not None: body['op'] = self.op
+        if self.name is not None:
+            body["name"] = self.name
+        if self.op is not None:
+            body["op"] = self.op
         if self.recipient_property_key is not None:
-            body['recipient_property_key'] = self.recipient_property_key
-        if self.value is not None: body['value'] = self.value
+            body["recipient_property_key"] = self.recipient_property_key
+        if self.value is not None:
+            body["value"] = self.value
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> PartitionValue:
         """Deserializes the PartitionValue from a dictionary."""
-        return cls(name=d.get('name', None),
-                   op=_enum(d, 'op', PartitionValueOp),
-                   recipient_property_key=d.get('recipient_property_key', None),
-                   value=d.get('value', None))
+        return cls(
+            name=d.get("name", None),
+            op=_enum(d, "op", PartitionValueOp),
+            recipient_property_key=d.get("recipient_property_key", None),
+            value=d.get("value", None),
+        )
 
 
 class PartitionValueOp(Enum):
 
-    EQUAL = 'EQUAL'
-    LIKE = 'LIKE'
+    EQUAL = "EQUAL"
+    LIKE = "LIKE"
 
 
 class Privilege(Enum):
 
-    ACCESS = 'ACCESS'
-    ALL_PRIVILEGES = 'ALL_PRIVILEGES'
-    APPLY_TAG = 'APPLY_TAG'
-    CREATE = 'CREATE'
-    CREATE_CATALOG = 'CREATE_CATALOG'
-    CREATE_CONNECTION = 'CREATE_CONNECTION'
-    CREATE_EXTERNAL_LOCATION = 'CREATE_EXTERNAL_LOCATION'
-    CREATE_EXTERNAL_TABLE = 'CREATE_EXTERNAL_TABLE'
-    CREATE_EXTERNAL_VOLUME = 'CREATE_EXTERNAL_VOLUME'
-    CREATE_FOREIGN_CATALOG = 'CREATE_FOREIGN_CATALOG'
-    CREATE_FOREIGN_SECURABLE = 'CREATE_FOREIGN_SECURABLE'
-    CREATE_FUNCTION = 'CREATE_FUNCTION'
-    CREATE_MANAGED_STORAGE = 'CREATE_MANAGED_STORAGE'
-    CREATE_MATERIALIZED_VIEW = 'CREATE_MATERIALIZED_VIEW'
-    CREATE_MODEL = 'CREATE_MODEL'
-    CREATE_PROVIDER = 'CREATE_PROVIDER'
-    CREATE_RECIPIENT = 'CREATE_RECIPIENT'
-    CREATE_SCHEMA = 'CREATE_SCHEMA'
-    CREATE_SERVICE_CREDENTIAL = 'CREATE_SERVICE_CREDENTIAL'
-    CREATE_SHARE = 'CREATE_SHARE'
-    CREATE_STORAGE_CREDENTIAL = 'CREATE_STORAGE_CREDENTIAL'
-    CREATE_TABLE = 'CREATE_TABLE'
-    CREATE_VIEW = 'CREATE_VIEW'
-    CREATE_VOLUME = 'CREATE_VOLUME'
-    EXECUTE = 'EXECUTE'
-    MANAGE = 'MANAGE'
-    MANAGE_ALLOWLIST = 'MANAGE_ALLOWLIST'
-    MODIFY = 'MODIFY'
-    READ_FILES = 'READ_FILES'
-    READ_PRIVATE_FILES = 'READ_PRIVATE_FILES'
-    READ_VOLUME = 'READ_VOLUME'
-    REFRESH = 'REFRESH'
-    SELECT = 'SELECT'
-    SET_SHARE_PERMISSION = 'SET_SHARE_PERMISSION'
-    USAGE = 'USAGE'
-    USE_CATALOG = 'USE_CATALOG'
-    USE_CONNECTION = 'USE_CONNECTION'
-    USE_MARKETPLACE_ASSETS = 'USE_MARKETPLACE_ASSETS'
-    USE_PROVIDER = 'USE_PROVIDER'
-    USE_RECIPIENT = 'USE_RECIPIENT'
-    USE_SCHEMA = 'USE_SCHEMA'
-    USE_SHARE = 'USE_SHARE'
-    WRITE_FILES = 'WRITE_FILES'
-    WRITE_PRIVATE_FILES = 'WRITE_PRIVATE_FILES'
-    WRITE_VOLUME = 'WRITE_VOLUME'
+    ACCESS = "ACCESS"
+    ALL_PRIVILEGES = "ALL_PRIVILEGES"
+    APPLY_TAG = "APPLY_TAG"
+    CREATE = "CREATE"
+    CREATE_CATALOG = "CREATE_CATALOG"
+    CREATE_CONNECTION = "CREATE_CONNECTION"
+    CREATE_EXTERNAL_LOCATION = "CREATE_EXTERNAL_LOCATION"
+    CREATE_EXTERNAL_TABLE = "CREATE_EXTERNAL_TABLE"
+    CREATE_EXTERNAL_VOLUME = "CREATE_EXTERNAL_VOLUME"
+    CREATE_FOREIGN_CATALOG = "CREATE_FOREIGN_CATALOG"
+    CREATE_FOREIGN_SECURABLE = "CREATE_FOREIGN_SECURABLE"
+    CREATE_FUNCTION = "CREATE_FUNCTION"
+    CREATE_MANAGED_STORAGE = "CREATE_MANAGED_STORAGE"
+    CREATE_MATERIALIZED_VIEW = "CREATE_MATERIALIZED_VIEW"
+    CREATE_MODEL = "CREATE_MODEL"
+    CREATE_PROVIDER = "CREATE_PROVIDER"
+    CREATE_RECIPIENT = "CREATE_RECIPIENT"
+    CREATE_SCHEMA = "CREATE_SCHEMA"
+    CREATE_SERVICE_CREDENTIAL = "CREATE_SERVICE_CREDENTIAL"
+    CREATE_SHARE = "CREATE_SHARE"
+    CREATE_STORAGE_CREDENTIAL = "CREATE_STORAGE_CREDENTIAL"
+    CREATE_TABLE = "CREATE_TABLE"
+    CREATE_VIEW = "CREATE_VIEW"
+    CREATE_VOLUME = "CREATE_VOLUME"
+    EXECUTE = "EXECUTE"
+    MANAGE = "MANAGE"
+    MANAGE_ALLOWLIST = "MANAGE_ALLOWLIST"
+    MODIFY = "MODIFY"
+    READ_FILES = "READ_FILES"
+    READ_PRIVATE_FILES = "READ_PRIVATE_FILES"
+    READ_VOLUME = "READ_VOLUME"
+    REFRESH = "REFRESH"
+    SELECT = "SELECT"
+    SET_SHARE_PERMISSION = "SET_SHARE_PERMISSION"
+    USAGE = "USAGE"
+    USE_CATALOG = "USE_CATALOG"
+    USE_CONNECTION = "USE_CONNECTION"
+    USE_MARKETPLACE_ASSETS = "USE_MARKETPLACE_ASSETS"
+    USE_PROVIDER = "USE_PROVIDER"
+    USE_RECIPIENT = "USE_RECIPIENT"
+    USE_SCHEMA = "USE_SCHEMA"
+    USE_SHARE = "USE_SHARE"
+    WRITE_FILES = "WRITE_FILES"
+    WRITE_PRIVATE_FILES = "WRITE_PRIVATE_FILES"
+    WRITE_VOLUME = "WRITE_VOLUME"
 
 
 @dataclass
@@ -546,21 +626,28 @@ class PrivilegeAssignment:
     def as_dict(self) -> dict:
         """Serializes the PrivilegeAssignment into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.principal is not None: body['principal'] = self.principal
-        if self.privileges: body['privileges'] = [v.value for v in self.privileges]
+        if self.principal is not None:
+            body["principal"] = self.principal
+        if self.privileges:
+            body["privileges"] = [v.value for v in self.privileges]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the PrivilegeAssignment into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.principal is not None: body['principal'] = self.principal
-        if self.privileges: body['privileges'] = self.privileges
+        if self.principal is not None:
+            body["principal"] = self.principal
+        if self.privileges:
+            body["privileges"] = self.privileges
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> PrivilegeAssignment:
         """Deserializes the PrivilegeAssignment from a dictionary."""
-        return cls(principal=d.get('principal', None), privileges=_repeated_enum(d, 'privileges', Privilege))
+        return cls(
+            principal=d.get("principal", None),
+            privileges=_repeated_enum(d, "privileges", Privilege),
+        )
 
 
 @dataclass
@@ -617,60 +704,88 @@ class ProviderInfo:
     def as_dict(self) -> dict:
         """Serializes the ProviderInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.authentication_type is not None: body['authentication_type'] = self.authentication_type.value
-        if self.cloud is not None: body['cloud'] = self.cloud
-        if self.comment is not None: body['comment'] = self.comment
-        if self.created_at is not None: body['created_at'] = self.created_at
-        if self.created_by is not None: body['created_by'] = self.created_by
+        if self.authentication_type is not None:
+            body["authentication_type"] = self.authentication_type.value
+        if self.cloud is not None:
+            body["cloud"] = self.cloud
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.created_at is not None:
+            body["created_at"] = self.created_at
+        if self.created_by is not None:
+            body["created_by"] = self.created_by
         if self.data_provider_global_metastore_id is not None:
-            body['data_provider_global_metastore_id'] = self.data_provider_global_metastore_id
-        if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
-        if self.name is not None: body['name'] = self.name
-        if self.owner is not None: body['owner'] = self.owner
-        if self.recipient_profile: body['recipient_profile'] = self.recipient_profile.as_dict()
-        if self.recipient_profile_str is not None: body['recipient_profile_str'] = self.recipient_profile_str
-        if self.region is not None: body['region'] = self.region
-        if self.updated_at is not None: body['updated_at'] = self.updated_at
-        if self.updated_by is not None: body['updated_by'] = self.updated_by
+            body["data_provider_global_metastore_id"] = self.data_provider_global_metastore_id
+        if self.metastore_id is not None:
+            body["metastore_id"] = self.metastore_id
+        if self.name is not None:
+            body["name"] = self.name
+        if self.owner is not None:
+            body["owner"] = self.owner
+        if self.recipient_profile:
+            body["recipient_profile"] = self.recipient_profile.as_dict()
+        if self.recipient_profile_str is not None:
+            body["recipient_profile_str"] = self.recipient_profile_str
+        if self.region is not None:
+            body["region"] = self.region
+        if self.updated_at is not None:
+            body["updated_at"] = self.updated_at
+        if self.updated_by is not None:
+            body["updated_by"] = self.updated_by
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ProviderInfo into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.authentication_type is not None: body['authentication_type'] = self.authentication_type
-        if self.cloud is not None: body['cloud'] = self.cloud
-        if self.comment is not None: body['comment'] = self.comment
-        if self.created_at is not None: body['created_at'] = self.created_at
-        if self.created_by is not None: body['created_by'] = self.created_by
+        if self.authentication_type is not None:
+            body["authentication_type"] = self.authentication_type
+        if self.cloud is not None:
+            body["cloud"] = self.cloud
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.created_at is not None:
+            body["created_at"] = self.created_at
+        if self.created_by is not None:
+            body["created_by"] = self.created_by
         if self.data_provider_global_metastore_id is not None:
-            body['data_provider_global_metastore_id'] = self.data_provider_global_metastore_id
-        if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
-        if self.name is not None: body['name'] = self.name
-        if self.owner is not None: body['owner'] = self.owner
-        if self.recipient_profile: body['recipient_profile'] = self.recipient_profile
-        if self.recipient_profile_str is not None: body['recipient_profile_str'] = self.recipient_profile_str
-        if self.region is not None: body['region'] = self.region
-        if self.updated_at is not None: body['updated_at'] = self.updated_at
-        if self.updated_by is not None: body['updated_by'] = self.updated_by
+            body["data_provider_global_metastore_id"] = self.data_provider_global_metastore_id
+        if self.metastore_id is not None:
+            body["metastore_id"] = self.metastore_id
+        if self.name is not None:
+            body["name"] = self.name
+        if self.owner is not None:
+            body["owner"] = self.owner
+        if self.recipient_profile:
+            body["recipient_profile"] = self.recipient_profile
+        if self.recipient_profile_str is not None:
+            body["recipient_profile_str"] = self.recipient_profile_str
+        if self.region is not None:
+            body["region"] = self.region
+        if self.updated_at is not None:
+            body["updated_at"] = self.updated_at
+        if self.updated_by is not None:
+            body["updated_by"] = self.updated_by
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ProviderInfo:
         """Deserializes the ProviderInfo from a dictionary."""
-        return cls(authentication_type=_enum(d, 'authentication_type', AuthenticationType),
-                   cloud=d.get('cloud', None),
-                   comment=d.get('comment', None),
-                   created_at=d.get('created_at', None),
-                   created_by=d.get('created_by', None),
-                   data_provider_global_metastore_id=d.get('data_provider_global_metastore_id', None),
-                   metastore_id=d.get('metastore_id', None),
-                   name=d.get('name', None),
-                   owner=d.get('owner', None),
-                   recipient_profile=_from_dict(d, 'recipient_profile', RecipientProfile),
-                   recipient_profile_str=d.get('recipient_profile_str', None),
-                   region=d.get('region', None),
-                   updated_at=d.get('updated_at', None),
-                   updated_by=d.get('updated_by', None))
+        return cls(
+            authentication_type=_enum(d, "authentication_type", AuthenticationType),
+            cloud=d.get("cloud", None),
+            comment=d.get("comment", None),
+            created_at=d.get("created_at", None),
+            created_by=d.get("created_by", None),
+            data_provider_global_metastore_id=d.get("data_provider_global_metastore_id", None),
+            metastore_id=d.get("metastore_id", None),
+            name=d.get("name", None),
+            owner=d.get("owner", None),
+            recipient_profile=_from_dict(d, "recipient_profile", RecipientProfile),
+            recipient_profile_str=d.get("recipient_profile_str", None),
+            region=d.get("region", None),
+            updated_at=d.get("updated_at", None),
+            updated_by=d.get("updated_by", None),
+        )
 
 
 @dataclass
@@ -681,19 +796,21 @@ class ProviderShare:
     def as_dict(self) -> dict:
         """Serializes the ProviderShare into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.name is not None: body['name'] = self.name
+        if self.name is not None:
+            body["name"] = self.name
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ProviderShare into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.name is not None: body['name'] = self.name
+        if self.name is not None:
+            body["name"] = self.name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ProviderShare:
         """Deserializes the ProviderShare from a dictionary."""
-        return cls(name=d.get('name', None))
+        return cls(name=d.get("name", None))
 
 
 @dataclass
@@ -767,75 +884,113 @@ class RecipientInfo:
     def as_dict(self) -> dict:
         """Serializes the RecipientInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.activated is not None: body['activated'] = self.activated
-        if self.activation_url is not None: body['activation_url'] = self.activation_url
-        if self.authentication_type is not None: body['authentication_type'] = self.authentication_type.value
-        if self.cloud is not None: body['cloud'] = self.cloud
-        if self.comment is not None: body['comment'] = self.comment
-        if self.created_at is not None: body['created_at'] = self.created_at
-        if self.created_by is not None: body['created_by'] = self.created_by
+        if self.activated is not None:
+            body["activated"] = self.activated
+        if self.activation_url is not None:
+            body["activation_url"] = self.activation_url
+        if self.authentication_type is not None:
+            body["authentication_type"] = self.authentication_type.value
+        if self.cloud is not None:
+            body["cloud"] = self.cloud
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.created_at is not None:
+            body["created_at"] = self.created_at
+        if self.created_by is not None:
+            body["created_by"] = self.created_by
         if self.data_recipient_global_metastore_id is not None:
-            body['data_recipient_global_metastore_id'] = self.data_recipient_global_metastore_id
-        if self.expiration_time is not None: body['expiration_time'] = self.expiration_time
-        if self.ip_access_list: body['ip_access_list'] = self.ip_access_list.as_dict()
-        if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
-        if self.name is not None: body['name'] = self.name
-        if self.owner is not None: body['owner'] = self.owner
-        if self.properties_kvpairs: body['properties_kvpairs'] = self.properties_kvpairs.as_dict()
-        if self.region is not None: body['region'] = self.region
-        if self.sharing_code is not None: body['sharing_code'] = self.sharing_code
-        if self.tokens: body['tokens'] = [v.as_dict() for v in self.tokens]
-        if self.updated_at is not None: body['updated_at'] = self.updated_at
-        if self.updated_by is not None: body['updated_by'] = self.updated_by
+            body["data_recipient_global_metastore_id"] = self.data_recipient_global_metastore_id
+        if self.expiration_time is not None:
+            body["expiration_time"] = self.expiration_time
+        if self.ip_access_list:
+            body["ip_access_list"] = self.ip_access_list.as_dict()
+        if self.metastore_id is not None:
+            body["metastore_id"] = self.metastore_id
+        if self.name is not None:
+            body["name"] = self.name
+        if self.owner is not None:
+            body["owner"] = self.owner
+        if self.properties_kvpairs:
+            body["properties_kvpairs"] = self.properties_kvpairs.as_dict()
+        if self.region is not None:
+            body["region"] = self.region
+        if self.sharing_code is not None:
+            body["sharing_code"] = self.sharing_code
+        if self.tokens:
+            body["tokens"] = [v.as_dict() for v in self.tokens]
+        if self.updated_at is not None:
+            body["updated_at"] = self.updated_at
+        if self.updated_by is not None:
+            body["updated_by"] = self.updated_by
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the RecipientInfo into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.activated is not None: body['activated'] = self.activated
-        if self.activation_url is not None: body['activation_url'] = self.activation_url
-        if self.authentication_type is not None: body['authentication_type'] = self.authentication_type
-        if self.cloud is not None: body['cloud'] = self.cloud
-        if self.comment is not None: body['comment'] = self.comment
-        if self.created_at is not None: body['created_at'] = self.created_at
-        if self.created_by is not None: body['created_by'] = self.created_by
+        if self.activated is not None:
+            body["activated"] = self.activated
+        if self.activation_url is not None:
+            body["activation_url"] = self.activation_url
+        if self.authentication_type is not None:
+            body["authentication_type"] = self.authentication_type
+        if self.cloud is not None:
+            body["cloud"] = self.cloud
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.created_at is not None:
+            body["created_at"] = self.created_at
+        if self.created_by is not None:
+            body["created_by"] = self.created_by
         if self.data_recipient_global_metastore_id is not None:
-            body['data_recipient_global_metastore_id'] = self.data_recipient_global_metastore_id
-        if self.expiration_time is not None: body['expiration_time'] = self.expiration_time
-        if self.ip_access_list: body['ip_access_list'] = self.ip_access_list
-        if self.metastore_id is not None: body['metastore_id'] = self.metastore_id
-        if self.name is not None: body['name'] = self.name
-        if self.owner is not None: body['owner'] = self.owner
-        if self.properties_kvpairs: body['properties_kvpairs'] = self.properties_kvpairs
-        if self.region is not None: body['region'] = self.region
-        if self.sharing_code is not None: body['sharing_code'] = self.sharing_code
-        if self.tokens: body['tokens'] = self.tokens
-        if self.updated_at is not None: body['updated_at'] = self.updated_at
-        if self.updated_by is not None: body['updated_by'] = self.updated_by
+            body["data_recipient_global_metastore_id"] = self.data_recipient_global_metastore_id
+        if self.expiration_time is not None:
+            body["expiration_time"] = self.expiration_time
+        if self.ip_access_list:
+            body["ip_access_list"] = self.ip_access_list
+        if self.metastore_id is not None:
+            body["metastore_id"] = self.metastore_id
+        if self.name is not None:
+            body["name"] = self.name
+        if self.owner is not None:
+            body["owner"] = self.owner
+        if self.properties_kvpairs:
+            body["properties_kvpairs"] = self.properties_kvpairs
+        if self.region is not None:
+            body["region"] = self.region
+        if self.sharing_code is not None:
+            body["sharing_code"] = self.sharing_code
+        if self.tokens:
+            body["tokens"] = self.tokens
+        if self.updated_at is not None:
+            body["updated_at"] = self.updated_at
+        if self.updated_by is not None:
+            body["updated_by"] = self.updated_by
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> RecipientInfo:
         """Deserializes the RecipientInfo from a dictionary."""
-        return cls(activated=d.get('activated', None),
-                   activation_url=d.get('activation_url', None),
-                   authentication_type=_enum(d, 'authentication_type', AuthenticationType),
-                   cloud=d.get('cloud', None),
-                   comment=d.get('comment', None),
-                   created_at=d.get('created_at', None),
-                   created_by=d.get('created_by', None),
-                   data_recipient_global_metastore_id=d.get('data_recipient_global_metastore_id', None),
-                   expiration_time=d.get('expiration_time', None),
-                   ip_access_list=_from_dict(d, 'ip_access_list', IpAccessList),
-                   metastore_id=d.get('metastore_id', None),
-                   name=d.get('name', None),
-                   owner=d.get('owner', None),
-                   properties_kvpairs=_from_dict(d, 'properties_kvpairs', SecurablePropertiesKvPairs),
-                   region=d.get('region', None),
-                   sharing_code=d.get('sharing_code', None),
-                   tokens=_repeated_dict(d, 'tokens', RecipientTokenInfo),
-                   updated_at=d.get('updated_at', None),
-                   updated_by=d.get('updated_by', None))
+        return cls(
+            activated=d.get("activated", None),
+            activation_url=d.get("activation_url", None),
+            authentication_type=_enum(d, "authentication_type", AuthenticationType),
+            cloud=d.get("cloud", None),
+            comment=d.get("comment", None),
+            created_at=d.get("created_at", None),
+            created_by=d.get("created_by", None),
+            data_recipient_global_metastore_id=d.get("data_recipient_global_metastore_id", None),
+            expiration_time=d.get("expiration_time", None),
+            ip_access_list=_from_dict(d, "ip_access_list", IpAccessList),
+            metastore_id=d.get("metastore_id", None),
+            name=d.get("name", None),
+            owner=d.get("owner", None),
+            properties_kvpairs=_from_dict(d, "properties_kvpairs", SecurablePropertiesKvPairs),
+            region=d.get("region", None),
+            sharing_code=d.get("sharing_code", None),
+            tokens=_repeated_dict(d, "tokens", RecipientTokenInfo),
+            updated_at=d.get("updated_at", None),
+            updated_by=d.get("updated_by", None),
+        )
 
 
 @dataclass
@@ -852,27 +1007,33 @@ class RecipientProfile:
     def as_dict(self) -> dict:
         """Serializes the RecipientProfile into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.bearer_token is not None: body['bearer_token'] = self.bearer_token
-        if self.endpoint is not None: body['endpoint'] = self.endpoint
+        if self.bearer_token is not None:
+            body["bearer_token"] = self.bearer_token
+        if self.endpoint is not None:
+            body["endpoint"] = self.endpoint
         if self.share_credentials_version is not None:
-            body['share_credentials_version'] = self.share_credentials_version
+            body["share_credentials_version"] = self.share_credentials_version
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the RecipientProfile into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.bearer_token is not None: body['bearer_token'] = self.bearer_token
-        if self.endpoint is not None: body['endpoint'] = self.endpoint
+        if self.bearer_token is not None:
+            body["bearer_token"] = self.bearer_token
+        if self.endpoint is not None:
+            body["endpoint"] = self.endpoint
         if self.share_credentials_version is not None:
-            body['share_credentials_version'] = self.share_credentials_version
+            body["share_credentials_version"] = self.share_credentials_version
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> RecipientProfile:
         """Deserializes the RecipientProfile from a dictionary."""
-        return cls(bearer_token=d.get('bearer_token', None),
-                   endpoint=d.get('endpoint', None),
-                   share_credentials_version=d.get('share_credentials_version', None))
+        return cls(
+            bearer_token=d.get("bearer_token", None),
+            endpoint=d.get("endpoint", None),
+            share_credentials_version=d.get("share_credentials_version", None),
+        )
 
 
 @dataclass
@@ -902,37 +1063,53 @@ class RecipientTokenInfo:
     def as_dict(self) -> dict:
         """Serializes the RecipientTokenInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.activation_url is not None: body['activation_url'] = self.activation_url
-        if self.created_at is not None: body['created_at'] = self.created_at
-        if self.created_by is not None: body['created_by'] = self.created_by
-        if self.expiration_time is not None: body['expiration_time'] = self.expiration_time
-        if self.id is not None: body['id'] = self.id
-        if self.updated_at is not None: body['updated_at'] = self.updated_at
-        if self.updated_by is not None: body['updated_by'] = self.updated_by
+        if self.activation_url is not None:
+            body["activation_url"] = self.activation_url
+        if self.created_at is not None:
+            body["created_at"] = self.created_at
+        if self.created_by is not None:
+            body["created_by"] = self.created_by
+        if self.expiration_time is not None:
+            body["expiration_time"] = self.expiration_time
+        if self.id is not None:
+            body["id"] = self.id
+        if self.updated_at is not None:
+            body["updated_at"] = self.updated_at
+        if self.updated_by is not None:
+            body["updated_by"] = self.updated_by
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the RecipientTokenInfo into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.activation_url is not None: body['activation_url'] = self.activation_url
-        if self.created_at is not None: body['created_at'] = self.created_at
-        if self.created_by is not None: body['created_by'] = self.created_by
-        if self.expiration_time is not None: body['expiration_time'] = self.expiration_time
-        if self.id is not None: body['id'] = self.id
-        if self.updated_at is not None: body['updated_at'] = self.updated_at
-        if self.updated_by is not None: body['updated_by'] = self.updated_by
+        if self.activation_url is not None:
+            body["activation_url"] = self.activation_url
+        if self.created_at is not None:
+            body["created_at"] = self.created_at
+        if self.created_by is not None:
+            body["created_by"] = self.created_by
+        if self.expiration_time is not None:
+            body["expiration_time"] = self.expiration_time
+        if self.id is not None:
+            body["id"] = self.id
+        if self.updated_at is not None:
+            body["updated_at"] = self.updated_at
+        if self.updated_by is not None:
+            body["updated_by"] = self.updated_by
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> RecipientTokenInfo:
         """Deserializes the RecipientTokenInfo from a dictionary."""
-        return cls(activation_url=d.get('activation_url', None),
-                   created_at=d.get('created_at', None),
-                   created_by=d.get('created_by', None),
-                   expiration_time=d.get('expiration_time', None),
-                   id=d.get('id', None),
-                   updated_at=d.get('updated_at', None),
-                   updated_by=d.get('updated_by', None))
+        return cls(
+            activation_url=d.get("activation_url", None),
+            created_at=d.get("created_at", None),
+            created_by=d.get("created_by", None),
+            expiration_time=d.get("expiration_time", None),
+            id=d.get("id", None),
+            updated_at=d.get("updated_at", None),
+            updated_by=d.get("updated_by", None),
+        )
 
 
 @dataclass
@@ -952,30 +1129,38 @@ class RetrieveTokenResponse:
     def as_dict(self) -> dict:
         """Serializes the RetrieveTokenResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.bearer_token is not None: body['bearerToken'] = self.bearer_token
-        if self.endpoint is not None: body['endpoint'] = self.endpoint
-        if self.expiration_time is not None: body['expirationTime'] = self.expiration_time
+        if self.bearer_token is not None:
+            body["bearerToken"] = self.bearer_token
+        if self.endpoint is not None:
+            body["endpoint"] = self.endpoint
+        if self.expiration_time is not None:
+            body["expirationTime"] = self.expiration_time
         if self.share_credentials_version is not None:
-            body['shareCredentialsVersion'] = self.share_credentials_version
+            body["shareCredentialsVersion"] = self.share_credentials_version
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the RetrieveTokenResponse into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.bearer_token is not None: body['bearerToken'] = self.bearer_token
-        if self.endpoint is not None: body['endpoint'] = self.endpoint
-        if self.expiration_time is not None: body['expirationTime'] = self.expiration_time
+        if self.bearer_token is not None:
+            body["bearerToken"] = self.bearer_token
+        if self.endpoint is not None:
+            body["endpoint"] = self.endpoint
+        if self.expiration_time is not None:
+            body["expirationTime"] = self.expiration_time
         if self.share_credentials_version is not None:
-            body['shareCredentialsVersion'] = self.share_credentials_version
+            body["shareCredentialsVersion"] = self.share_credentials_version
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> RetrieveTokenResponse:
         """Deserializes the RetrieveTokenResponse from a dictionary."""
-        return cls(bearer_token=d.get('bearerToken', None),
-                   endpoint=d.get('endpoint', None),
-                   expiration_time=d.get('expirationTime', None),
-                   share_credentials_version=d.get('shareCredentialsVersion', None))
+        return cls(
+            bearer_token=d.get("bearerToken", None),
+            endpoint=d.get("endpoint", None),
+            expiration_time=d.get("expirationTime", None),
+            share_credentials_version=d.get("shareCredentialsVersion", None),
+        )
 
 
 @dataclass
@@ -992,23 +1177,27 @@ class RotateRecipientToken:
         """Serializes the RotateRecipientToken into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.existing_token_expire_in_seconds is not None:
-            body['existing_token_expire_in_seconds'] = self.existing_token_expire_in_seconds
-        if self.name is not None: body['name'] = self.name
+            body["existing_token_expire_in_seconds"] = self.existing_token_expire_in_seconds
+        if self.name is not None:
+            body["name"] = self.name
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the RotateRecipientToken into a shallow dictionary of its immediate attributes."""
         body = {}
         if self.existing_token_expire_in_seconds is not None:
-            body['existing_token_expire_in_seconds'] = self.existing_token_expire_in_seconds
-        if self.name is not None: body['name'] = self.name
+            body["existing_token_expire_in_seconds"] = self.existing_token_expire_in_seconds
+        if self.name is not None:
+            body["name"] = self.name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> RotateRecipientToken:
         """Deserializes the RotateRecipientToken from a dictionary."""
-        return cls(existing_token_expire_in_seconds=d.get('existing_token_expire_in_seconds', None),
-                   name=d.get('name', None))
+        return cls(
+            existing_token_expire_in_seconds=d.get("existing_token_expire_in_seconds", None),
+            name=d.get("name", None),
+        )
 
 
 @dataclass
@@ -1021,19 +1210,21 @@ class SecurablePropertiesKvPairs:
     def as_dict(self) -> dict:
         """Serializes the SecurablePropertiesKvPairs into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.properties: body['properties'] = self.properties
+        if self.properties:
+            body["properties"] = self.properties
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the SecurablePropertiesKvPairs into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.properties: body['properties'] = self.properties
+        if self.properties:
+            body["properties"] = self.properties
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> SecurablePropertiesKvPairs:
         """Deserializes the SecurablePropertiesKvPairs from a dictionary."""
-        return cls(properties=d.get('properties', None))
+        return cls(properties=d.get("properties", None))
 
 
 @dataclass
@@ -1071,46 +1262,68 @@ class ShareInfo:
     def as_dict(self) -> dict:
         """Serializes the ShareInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.comment is not None: body['comment'] = self.comment
-        if self.created_at is not None: body['created_at'] = self.created_at
-        if self.created_by is not None: body['created_by'] = self.created_by
-        if self.name is not None: body['name'] = self.name
-        if self.objects: body['objects'] = [v.as_dict() for v in self.objects]
-        if self.owner is not None: body['owner'] = self.owner
-        if self.storage_location is not None: body['storage_location'] = self.storage_location
-        if self.storage_root is not None: body['storage_root'] = self.storage_root
-        if self.updated_at is not None: body['updated_at'] = self.updated_at
-        if self.updated_by is not None: body['updated_by'] = self.updated_by
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.created_at is not None:
+            body["created_at"] = self.created_at
+        if self.created_by is not None:
+            body["created_by"] = self.created_by
+        if self.name is not None:
+            body["name"] = self.name
+        if self.objects:
+            body["objects"] = [v.as_dict() for v in self.objects]
+        if self.owner is not None:
+            body["owner"] = self.owner
+        if self.storage_location is not None:
+            body["storage_location"] = self.storage_location
+        if self.storage_root is not None:
+            body["storage_root"] = self.storage_root
+        if self.updated_at is not None:
+            body["updated_at"] = self.updated_at
+        if self.updated_by is not None:
+            body["updated_by"] = self.updated_by
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ShareInfo into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.comment is not None: body['comment'] = self.comment
-        if self.created_at is not None: body['created_at'] = self.created_at
-        if self.created_by is not None: body['created_by'] = self.created_by
-        if self.name is not None: body['name'] = self.name
-        if self.objects: body['objects'] = self.objects
-        if self.owner is not None: body['owner'] = self.owner
-        if self.storage_location is not None: body['storage_location'] = self.storage_location
-        if self.storage_root is not None: body['storage_root'] = self.storage_root
-        if self.updated_at is not None: body['updated_at'] = self.updated_at
-        if self.updated_by is not None: body['updated_by'] = self.updated_by
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.created_at is not None:
+            body["created_at"] = self.created_at
+        if self.created_by is not None:
+            body["created_by"] = self.created_by
+        if self.name is not None:
+            body["name"] = self.name
+        if self.objects:
+            body["objects"] = self.objects
+        if self.owner is not None:
+            body["owner"] = self.owner
+        if self.storage_location is not None:
+            body["storage_location"] = self.storage_location
+        if self.storage_root is not None:
+            body["storage_root"] = self.storage_root
+        if self.updated_at is not None:
+            body["updated_at"] = self.updated_at
+        if self.updated_by is not None:
+            body["updated_by"] = self.updated_by
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ShareInfo:
         """Deserializes the ShareInfo from a dictionary."""
-        return cls(comment=d.get('comment', None),
-                   created_at=d.get('created_at', None),
-                   created_by=d.get('created_by', None),
-                   name=d.get('name', None),
-                   objects=_repeated_dict(d, 'objects', SharedDataObject),
-                   owner=d.get('owner', None),
-                   storage_location=d.get('storage_location', None),
-                   storage_root=d.get('storage_root', None),
-                   updated_at=d.get('updated_at', None),
-                   updated_by=d.get('updated_by', None))
+        return cls(
+            comment=d.get("comment", None),
+            created_at=d.get("created_at", None),
+            created_by=d.get("created_by", None),
+            name=d.get("name", None),
+            objects=_repeated_dict(d, "objects", SharedDataObject),
+            owner=d.get("owner", None),
+            storage_location=d.get("storage_location", None),
+            storage_root=d.get("storage_root", None),
+            updated_at=d.get("updated_at", None),
+            updated_by=d.get("updated_by", None),
+        )
 
 
 @dataclass
@@ -1125,22 +1338,27 @@ class ShareToPrivilegeAssignment:
         """Serializes the ShareToPrivilegeAssignment into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.privilege_assignments:
-            body['privilege_assignments'] = [v.as_dict() for v in self.privilege_assignments]
-        if self.share_name is not None: body['share_name'] = self.share_name
+            body["privilege_assignments"] = [v.as_dict() for v in self.privilege_assignments]
+        if self.share_name is not None:
+            body["share_name"] = self.share_name
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the ShareToPrivilegeAssignment into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.privilege_assignments: body['privilege_assignments'] = self.privilege_assignments
-        if self.share_name is not None: body['share_name'] = self.share_name
+        if self.privilege_assignments:
+            body["privilege_assignments"] = self.privilege_assignments
+        if self.share_name is not None:
+            body["share_name"] = self.share_name
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ShareToPrivilegeAssignment:
         """Deserializes the ShareToPrivilegeAssignment from a dictionary."""
-        return cls(privilege_assignments=_repeated_dict(d, 'privilege_assignments', PrivilegeAssignment),
-                   share_name=d.get('share_name', None))
+        return cls(
+            privilege_assignments=_repeated_dict(d, "privilege_assignments", PrivilegeAssignment),
+            share_name=d.get("share_name", None),
+        )
 
 
 @dataclass
@@ -1202,87 +1420,116 @@ class SharedDataObject:
     def as_dict(self) -> dict:
         """Serializes the SharedDataObject into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.added_at is not None: body['added_at'] = self.added_at
-        if self.added_by is not None: body['added_by'] = self.added_by
-        if self.cdf_enabled is not None: body['cdf_enabled'] = self.cdf_enabled
-        if self.comment is not None: body['comment'] = self.comment
-        if self.content is not None: body['content'] = self.content
-        if self.data_object_type is not None: body['data_object_type'] = self.data_object_type.value
+        if self.added_at is not None:
+            body["added_at"] = self.added_at
+        if self.added_by is not None:
+            body["added_by"] = self.added_by
+        if self.cdf_enabled is not None:
+            body["cdf_enabled"] = self.cdf_enabled
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.content is not None:
+            body["content"] = self.content
+        if self.data_object_type is not None:
+            body["data_object_type"] = self.data_object_type.value
         if self.history_data_sharing_status is not None:
-            body['history_data_sharing_status'] = self.history_data_sharing_status.value
-        if self.name is not None: body['name'] = self.name
-        if self.partitions: body['partitions'] = [v.as_dict() for v in self.partitions]
-        if self.shared_as is not None: body['shared_as'] = self.shared_as
-        if self.start_version is not None: body['start_version'] = self.start_version
-        if self.status is not None: body['status'] = self.status.value
-        if self.string_shared_as is not None: body['string_shared_as'] = self.string_shared_as
+            body["history_data_sharing_status"] = self.history_data_sharing_status.value
+        if self.name is not None:
+            body["name"] = self.name
+        if self.partitions:
+            body["partitions"] = [v.as_dict() for v in self.partitions]
+        if self.shared_as is not None:
+            body["shared_as"] = self.shared_as
+        if self.start_version is not None:
+            body["start_version"] = self.start_version
+        if self.status is not None:
+            body["status"] = self.status.value
+        if self.string_shared_as is not None:
+            body["string_shared_as"] = self.string_shared_as
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the SharedDataObject into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.added_at is not None: body['added_at'] = self.added_at
-        if self.added_by is not None: body['added_by'] = self.added_by
-        if self.cdf_enabled is not None: body['cdf_enabled'] = self.cdf_enabled
-        if self.comment is not None: body['comment'] = self.comment
-        if self.content is not None: body['content'] = self.content
-        if self.data_object_type is not None: body['data_object_type'] = self.data_object_type
+        if self.added_at is not None:
+            body["added_at"] = self.added_at
+        if self.added_by is not None:
+            body["added_by"] = self.added_by
+        if self.cdf_enabled is not None:
+            body["cdf_enabled"] = self.cdf_enabled
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.content is not None:
+            body["content"] = self.content
+        if self.data_object_type is not None:
+            body["data_object_type"] = self.data_object_type
         if self.history_data_sharing_status is not None:
-            body['history_data_sharing_status'] = self.history_data_sharing_status
-        if self.name is not None: body['name'] = self.name
-        if self.partitions: body['partitions'] = self.partitions
-        if self.shared_as is not None: body['shared_as'] = self.shared_as
-        if self.start_version is not None: body['start_version'] = self.start_version
-        if self.status is not None: body['status'] = self.status
-        if self.string_shared_as is not None: body['string_shared_as'] = self.string_shared_as
+            body["history_data_sharing_status"] = self.history_data_sharing_status
+        if self.name is not None:
+            body["name"] = self.name
+        if self.partitions:
+            body["partitions"] = self.partitions
+        if self.shared_as is not None:
+            body["shared_as"] = self.shared_as
+        if self.start_version is not None:
+            body["start_version"] = self.start_version
+        if self.status is not None:
+            body["status"] = self.status
+        if self.string_shared_as is not None:
+            body["string_shared_as"] = self.string_shared_as
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> SharedDataObject:
         """Deserializes the SharedDataObject from a dictionary."""
-        return cls(added_at=d.get('added_at', None),
-                   added_by=d.get('added_by', None),
-                   cdf_enabled=d.get('cdf_enabled', None),
-                   comment=d.get('comment', None),
-                   content=d.get('content', None),
-                   data_object_type=_enum(d, 'data_object_type', SharedDataObjectDataObjectType),
-                   history_data_sharing_status=_enum(d, 'history_data_sharing_status',
-                                                     SharedDataObjectHistoryDataSharingStatus),
-                   name=d.get('name', None),
-                   partitions=_repeated_dict(d, 'partitions', Partition),
-                   shared_as=d.get('shared_as', None),
-                   start_version=d.get('start_version', None),
-                   status=_enum(d, 'status', SharedDataObjectStatus),
-                   string_shared_as=d.get('string_shared_as', None))
+        return cls(
+            added_at=d.get("added_at", None),
+            added_by=d.get("added_by", None),
+            cdf_enabled=d.get("cdf_enabled", None),
+            comment=d.get("comment", None),
+            content=d.get("content", None),
+            data_object_type=_enum(d, "data_object_type", SharedDataObjectDataObjectType),
+            history_data_sharing_status=_enum(
+                d,
+                "history_data_sharing_status",
+                SharedDataObjectHistoryDataSharingStatus,
+            ),
+            name=d.get("name", None),
+            partitions=_repeated_dict(d, "partitions", Partition),
+            shared_as=d.get("shared_as", None),
+            start_version=d.get("start_version", None),
+            status=_enum(d, "status", SharedDataObjectStatus),
+            string_shared_as=d.get("string_shared_as", None),
+        )
 
 
 class SharedDataObjectDataObjectType(Enum):
     """The type of the data object."""
 
-    FEATURE_SPEC = 'FEATURE_SPEC'
-    FUNCTION = 'FUNCTION'
-    MATERIALIZED_VIEW = 'MATERIALIZED_VIEW'
-    MODEL = 'MODEL'
-    NOTEBOOK_FILE = 'NOTEBOOK_FILE'
-    SCHEMA = 'SCHEMA'
-    STREAMING_TABLE = 'STREAMING_TABLE'
-    TABLE = 'TABLE'
-    VIEW = 'VIEW'
+    FEATURE_SPEC = "FEATURE_SPEC"
+    FUNCTION = "FUNCTION"
+    MATERIALIZED_VIEW = "MATERIALIZED_VIEW"
+    MODEL = "MODEL"
+    NOTEBOOK_FILE = "NOTEBOOK_FILE"
+    SCHEMA = "SCHEMA"
+    STREAMING_TABLE = "STREAMING_TABLE"
+    TABLE = "TABLE"
+    VIEW = "VIEW"
 
 
 class SharedDataObjectHistoryDataSharingStatus(Enum):
     """Whether to enable or disable sharing of data history. If not specified, the default is
     **DISABLED**."""
 
-    DISABLED = 'DISABLED'
-    ENABLED = 'ENABLED'
+    DISABLED = "DISABLED"
+    ENABLED = "ENABLED"
 
 
 class SharedDataObjectStatus(Enum):
     """One of: **ACTIVE**, **PERMISSION_DENIED**."""
 
-    ACTIVE = 'ACTIVE'
-    PERMISSION_DENIED = 'PERMISSION_DENIED'
+    ACTIVE = "ACTIVE"
+    PERMISSION_DENIED = "PERMISSION_DENIED"
 
 
 @dataclass
@@ -1296,30 +1543,36 @@ class SharedDataObjectUpdate:
     def as_dict(self) -> dict:
         """Serializes the SharedDataObjectUpdate into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.action is not None: body['action'] = self.action.value
-        if self.data_object: body['data_object'] = self.data_object.as_dict()
+        if self.action is not None:
+            body["action"] = self.action.value
+        if self.data_object:
+            body["data_object"] = self.data_object.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the SharedDataObjectUpdate into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.action is not None: body['action'] = self.action
-        if self.data_object: body['data_object'] = self.data_object
+        if self.action is not None:
+            body["action"] = self.action
+        if self.data_object:
+            body["data_object"] = self.data_object
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> SharedDataObjectUpdate:
         """Deserializes the SharedDataObjectUpdate from a dictionary."""
-        return cls(action=_enum(d, 'action', SharedDataObjectUpdateAction),
-                   data_object=_from_dict(d, 'data_object', SharedDataObject))
+        return cls(
+            action=_enum(d, "action", SharedDataObjectUpdateAction),
+            data_object=_from_dict(d, "data_object", SharedDataObject),
+        )
 
 
 class SharedDataObjectUpdateAction(Enum):
     """One of: **ADD**, **REMOVE**, **UPDATE**."""
 
-    ADD = 'ADD'
-    REMOVE = 'REMOVE'
-    UPDATE = 'UPDATE'
+    ADD = "ADD"
+    REMOVE = "REMOVE"
+    UPDATE = "UPDATE"
 
 
 @dataclass
@@ -1362,31 +1615,43 @@ class UpdateProvider:
     def as_dict(self) -> dict:
         """Serializes the UpdateProvider into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.comment is not None: body['comment'] = self.comment
-        if self.name is not None: body['name'] = self.name
-        if self.new_name is not None: body['new_name'] = self.new_name
-        if self.owner is not None: body['owner'] = self.owner
-        if self.recipient_profile_str is not None: body['recipient_profile_str'] = self.recipient_profile_str
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.name is not None:
+            body["name"] = self.name
+        if self.new_name is not None:
+            body["new_name"] = self.new_name
+        if self.owner is not None:
+            body["owner"] = self.owner
+        if self.recipient_profile_str is not None:
+            body["recipient_profile_str"] = self.recipient_profile_str
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the UpdateProvider into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.comment is not None: body['comment'] = self.comment
-        if self.name is not None: body['name'] = self.name
-        if self.new_name is not None: body['new_name'] = self.new_name
-        if self.owner is not None: body['owner'] = self.owner
-        if self.recipient_profile_str is not None: body['recipient_profile_str'] = self.recipient_profile_str
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.name is not None:
+            body["name"] = self.name
+        if self.new_name is not None:
+            body["new_name"] = self.new_name
+        if self.owner is not None:
+            body["owner"] = self.owner
+        if self.recipient_profile_str is not None:
+            body["recipient_profile_str"] = self.recipient_profile_str
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> UpdateProvider:
         """Deserializes the UpdateProvider from a dictionary."""
-        return cls(comment=d.get('comment', None),
-                   name=d.get('name', None),
-                   new_name=d.get('new_name', None),
-                   owner=d.get('owner', None),
-                   recipient_profile_str=d.get('recipient_profile_str', None))
+        return cls(
+            comment=d.get("comment", None),
+            name=d.get("name", None),
+            new_name=d.get("new_name", None),
+            owner=d.get("owner", None),
+            recipient_profile_str=d.get("recipient_profile_str", None),
+        )
 
 
 @dataclass
@@ -1417,37 +1682,53 @@ class UpdateRecipient:
     def as_dict(self) -> dict:
         """Serializes the UpdateRecipient into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.comment is not None: body['comment'] = self.comment
-        if self.expiration_time is not None: body['expiration_time'] = self.expiration_time
-        if self.ip_access_list: body['ip_access_list'] = self.ip_access_list.as_dict()
-        if self.name is not None: body['name'] = self.name
-        if self.new_name is not None: body['new_name'] = self.new_name
-        if self.owner is not None: body['owner'] = self.owner
-        if self.properties_kvpairs: body['properties_kvpairs'] = self.properties_kvpairs.as_dict()
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.expiration_time is not None:
+            body["expiration_time"] = self.expiration_time
+        if self.ip_access_list:
+            body["ip_access_list"] = self.ip_access_list.as_dict()
+        if self.name is not None:
+            body["name"] = self.name
+        if self.new_name is not None:
+            body["new_name"] = self.new_name
+        if self.owner is not None:
+            body["owner"] = self.owner
+        if self.properties_kvpairs:
+            body["properties_kvpairs"] = self.properties_kvpairs.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the UpdateRecipient into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.comment is not None: body['comment'] = self.comment
-        if self.expiration_time is not None: body['expiration_time'] = self.expiration_time
-        if self.ip_access_list: body['ip_access_list'] = self.ip_access_list
-        if self.name is not None: body['name'] = self.name
-        if self.new_name is not None: body['new_name'] = self.new_name
-        if self.owner is not None: body['owner'] = self.owner
-        if self.properties_kvpairs: body['properties_kvpairs'] = self.properties_kvpairs
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.expiration_time is not None:
+            body["expiration_time"] = self.expiration_time
+        if self.ip_access_list:
+            body["ip_access_list"] = self.ip_access_list
+        if self.name is not None:
+            body["name"] = self.name
+        if self.new_name is not None:
+            body["new_name"] = self.new_name
+        if self.owner is not None:
+            body["owner"] = self.owner
+        if self.properties_kvpairs:
+            body["properties_kvpairs"] = self.properties_kvpairs
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> UpdateRecipient:
         """Deserializes the UpdateRecipient from a dictionary."""
-        return cls(comment=d.get('comment', None),
-                   expiration_time=d.get('expiration_time', None),
-                   ip_access_list=_from_dict(d, 'ip_access_list', IpAccessList),
-                   name=d.get('name', None),
-                   new_name=d.get('new_name', None),
-                   owner=d.get('owner', None),
-                   properties_kvpairs=_from_dict(d, 'properties_kvpairs', SecurablePropertiesKvPairs))
+        return cls(
+            comment=d.get("comment", None),
+            expiration_time=d.get("expiration_time", None),
+            ip_access_list=_from_dict(d, "ip_access_list", IpAccessList),
+            name=d.get("name", None),
+            new_name=d.get("new_name", None),
+            owner=d.get("owner", None),
+            properties_kvpairs=_from_dict(d, "properties_kvpairs", SecurablePropertiesKvPairs),
+        )
 
 
 @dataclass
@@ -1473,34 +1754,48 @@ class UpdateShare:
     def as_dict(self) -> dict:
         """Serializes the UpdateShare into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.comment is not None: body['comment'] = self.comment
-        if self.name is not None: body['name'] = self.name
-        if self.new_name is not None: body['new_name'] = self.new_name
-        if self.owner is not None: body['owner'] = self.owner
-        if self.storage_root is not None: body['storage_root'] = self.storage_root
-        if self.updates: body['updates'] = [v.as_dict() for v in self.updates]
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.name is not None:
+            body["name"] = self.name
+        if self.new_name is not None:
+            body["new_name"] = self.new_name
+        if self.owner is not None:
+            body["owner"] = self.owner
+        if self.storage_root is not None:
+            body["storage_root"] = self.storage_root
+        if self.updates:
+            body["updates"] = [v.as_dict() for v in self.updates]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the UpdateShare into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.comment is not None: body['comment'] = self.comment
-        if self.name is not None: body['name'] = self.name
-        if self.new_name is not None: body['new_name'] = self.new_name
-        if self.owner is not None: body['owner'] = self.owner
-        if self.storage_root is not None: body['storage_root'] = self.storage_root
-        if self.updates: body['updates'] = self.updates
+        if self.comment is not None:
+            body["comment"] = self.comment
+        if self.name is not None:
+            body["name"] = self.name
+        if self.new_name is not None:
+            body["new_name"] = self.new_name
+        if self.owner is not None:
+            body["owner"] = self.owner
+        if self.storage_root is not None:
+            body["storage_root"] = self.storage_root
+        if self.updates:
+            body["updates"] = self.updates
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> UpdateShare:
         """Deserializes the UpdateShare from a dictionary."""
-        return cls(comment=d.get('comment', None),
-                   name=d.get('name', None),
-                   new_name=d.get('new_name', None),
-                   owner=d.get('owner', None),
-                   storage_root=d.get('storage_root', None),
-                   updates=_repeated_dict(d, 'updates', SharedDataObjectUpdate))
+        return cls(
+            comment=d.get("comment", None),
+            name=d.get("name", None),
+            new_name=d.get("new_name", None),
+            owner=d.get("owner", None),
+            storage_root=d.get("storage_root", None),
+            updates=_repeated_dict(d, "updates", SharedDataObjectUpdate),
+        )
 
 
 @dataclass
@@ -1526,28 +1821,38 @@ class UpdateSharePermissions:
     def as_dict(self) -> dict:
         """Serializes the UpdateSharePermissions into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.changes: body['changes'] = [v.as_dict() for v in self.changes]
-        if self.max_results is not None: body['max_results'] = self.max_results
-        if self.name is not None: body['name'] = self.name
-        if self.page_token is not None: body['page_token'] = self.page_token
+        if self.changes:
+            body["changes"] = [v.as_dict() for v in self.changes]
+        if self.max_results is not None:
+            body["max_results"] = self.max_results
+        if self.name is not None:
+            body["name"] = self.name
+        if self.page_token is not None:
+            body["page_token"] = self.page_token
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the UpdateSharePermissions into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.changes: body['changes'] = self.changes
-        if self.max_results is not None: body['max_results'] = self.max_results
-        if self.name is not None: body['name'] = self.name
-        if self.page_token is not None: body['page_token'] = self.page_token
+        if self.changes:
+            body["changes"] = self.changes
+        if self.max_results is not None:
+            body["max_results"] = self.max_results
+        if self.name is not None:
+            body["name"] = self.name
+        if self.page_token is not None:
+            body["page_token"] = self.page_token
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> UpdateSharePermissions:
         """Deserializes the UpdateSharePermissions from a dictionary."""
-        return cls(changes=_repeated_dict(d, 'changes', catalog.PermissionsChange),
-                   max_results=d.get('max_results', None),
-                   name=d.get('name', None),
-                   page_token=d.get('page_token', None))
+        return cls(
+            changes=_repeated_dict(d, "changes", catalog.PermissionsChange),
+            max_results=d.get("max_results", None),
+            name=d.get("name", None),
+            page_token=d.get("page_token", None),
+        )
 
 
 class ProvidersAPI:
@@ -1557,17 +1862,19 @@ class ProvidersAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self,
-               name: str,
-               authentication_type: AuthenticationType,
-               *,
-               comment: Optional[str] = None,
-               recipient_profile_str: Optional[str] = None) -> ProviderInfo:
+    def create(
+        self,
+        name: str,
+        authentication_type: AuthenticationType,
+        *,
+        comment: Optional[str] = None,
+        recipient_profile_str: Optional[str] = None,
+    ) -> ProviderInfo:
         """Create an auth provider.
-        
+
         Creates a new authentication provider minimally based on a name and authentication type. The caller
         must be an admin on the metastore.
-        
+
         :param name: str
           The name of the Provider.
         :param authentication_type: :class:`AuthenticationType`
@@ -1577,63 +1884,85 @@ class ProvidersAPI:
         :param recipient_profile_str: str (optional)
           This field is required when the __authentication_type__ is **TOKEN**, **OAUTH_CLIENT_CREDENTIALS**
           or not provided.
-        
+
         :returns: :class:`ProviderInfo`
         """
         body = {}
-        if authentication_type is not None: body['authentication_type'] = authentication_type.value
-        if comment is not None: body['comment'] = comment
-        if name is not None: body['name'] = name
-        if recipient_profile_str is not None: body['recipient_profile_str'] = recipient_profile_str
-        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        if authentication_type is not None:
+            body["authentication_type"] = authentication_type.value
+        if comment is not None:
+            body["comment"] = comment
+        if name is not None:
+            body["name"] = name
+        if recipient_profile_str is not None:
+            body["recipient_profile_str"] = recipient_profile_str
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
 
-        res = self._api.do('POST', '/api/2.1/unity-catalog/providers', body=body, headers=headers)
+        res = self._api.do(
+            "POST",
+            "/api/2.1/unity-catalog/providers",
+            body=body,
+            headers=headers,
+        )
         return ProviderInfo.from_dict(res)
 
     def delete(self, name: str):
         """Delete a provider.
-        
+
         Deletes an authentication provider, if the caller is a metastore admin or is the owner of the
         provider.
-        
+
         :param name: str
           Name of the provider.
-        
-        
+
+
         """
 
-        headers = {'Accept': 'application/json', }
+        headers = {
+            "Accept": "application/json",
+        }
 
-        self._api.do('DELETE', f'/api/2.1/unity-catalog/providers/{name}', headers=headers)
+        self._api.do(
+            "DELETE",
+            f"/api/2.1/unity-catalog/providers/{name}",
+            headers=headers,
+        )
 
     def get(self, name: str) -> ProviderInfo:
         """Get a provider.
-        
+
         Gets a specific authentication provider. The caller must supply the name of the provider, and must
         either be a metastore admin or the owner of the provider.
-        
+
         :param name: str
           Name of the provider.
-        
+
         :returns: :class:`ProviderInfo`
         """
 
-        headers = {'Accept': 'application/json', }
+        headers = {
+            "Accept": "application/json",
+        }
 
-        res = self._api.do('GET', f'/api/2.1/unity-catalog/providers/{name}', headers=headers)
+        res = self._api.do("GET", f"/api/2.1/unity-catalog/providers/{name}", headers=headers)
         return ProviderInfo.from_dict(res)
 
-    def list(self,
-             *,
-             data_provider_global_metastore_id: Optional[str] = None,
-             max_results: Optional[int] = None,
-             page_token: Optional[str] = None) -> Iterator[ProviderInfo]:
+    def list(
+        self,
+        *,
+        data_provider_global_metastore_id: Optional[str] = None,
+        max_results: Optional[int] = None,
+        page_token: Optional[str] = None,
+    ) -> Iterator[ProviderInfo]:
         """List providers.
-        
+
         Gets an array of available authentication providers. The caller must either be a metastore admin or
         the owner of the providers. Providers not owned by the caller are not included in the response. There
         is no guarantee of a specific ordering of the elements in the array.
-        
+
         :param data_provider_global_metastore_id: str (optional)
           If not provided, all providers will be returned. If no providers exist with this ID, no results will
           be returned.
@@ -1647,38 +1976,50 @@ class ProvidersAPI:
           from the response.
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
-        
+
         :returns: Iterator over :class:`ProviderInfo`
         """
 
         query = {}
         if data_provider_global_metastore_id is not None:
-            query['data_provider_global_metastore_id'] = data_provider_global_metastore_id
-        if max_results is not None: query['max_results'] = max_results
-        if page_token is not None: query['page_token'] = page_token
-        headers = {'Accept': 'application/json', }
+            query["data_provider_global_metastore_id"] = data_provider_global_metastore_id
+        if max_results is not None:
+            query["max_results"] = max_results
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
 
-        if "max_results" not in query: query['max_results'] = 0
+        if "max_results" not in query:
+            query["max_results"] = 0
         while True:
-            json = self._api.do('GET', '/api/2.1/unity-catalog/providers', query=query, headers=headers)
-            if 'providers' in json:
-                for v in json['providers']:
+            json = self._api.do(
+                "GET",
+                "/api/2.1/unity-catalog/providers",
+                query=query,
+                headers=headers,
+            )
+            if "providers" in json:
+                for v in json["providers"]:
                     yield ProviderInfo.from_dict(v)
-            if 'next_page_token' not in json or not json['next_page_token']:
+            if "next_page_token" not in json or not json["next_page_token"]:
                 return
-            query['page_token'] = json['next_page_token']
+            query["page_token"] = json["next_page_token"]
 
-    def list_shares(self,
-                    name: str,
-                    *,
-                    max_results: Optional[int] = None,
-                    page_token: Optional[str] = None) -> Iterator[ProviderShare]:
+    def list_shares(
+        self,
+        name: str,
+        *,
+        max_results: Optional[int] = None,
+        page_token: Optional[str] = None,
+    ) -> Iterator[ProviderShare]:
         """List shares by Provider.
-        
+
         Gets an array of a specified provider's shares within the metastore where:
-        
+
         * the caller is a metastore admin, or * the caller is the owner.
-        
+
         :param name: str
           Name of the provider in which to list shares.
         :param max_results: int (optional)
@@ -1691,41 +2032,50 @@ class ProvidersAPI:
           response.
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
-        
+
         :returns: Iterator over :class:`ProviderShare`
         """
 
         query = {}
-        if max_results is not None: query['max_results'] = max_results
-        if page_token is not None: query['page_token'] = page_token
-        headers = {'Accept': 'application/json', }
+        if max_results is not None:
+            query["max_results"] = max_results
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
 
-        if "max_results" not in query: query['max_results'] = 0
+        if "max_results" not in query:
+            query["max_results"] = 0
         while True:
-            json = self._api.do('GET',
-                                f'/api/2.1/unity-catalog/providers/{name}/shares',
-                                query=query,
-                                headers=headers)
-            if 'shares' in json:
-                for v in json['shares']:
+            json = self._api.do(
+                "GET",
+                f"/api/2.1/unity-catalog/providers/{name}/shares",
+                query=query,
+                headers=headers,
+            )
+            if "shares" in json:
+                for v in json["shares"]:
                     yield ProviderShare.from_dict(v)
-            if 'next_page_token' not in json or not json['next_page_token']:
+            if "next_page_token" not in json or not json["next_page_token"]:
                 return
-            query['page_token'] = json['next_page_token']
+            query["page_token"] = json["next_page_token"]
 
-    def update(self,
-               name: str,
-               *,
-               comment: Optional[str] = None,
-               new_name: Optional[str] = None,
-               owner: Optional[str] = None,
-               recipient_profile_str: Optional[str] = None) -> ProviderInfo:
+    def update(
+        self,
+        name: str,
+        *,
+        comment: Optional[str] = None,
+        new_name: Optional[str] = None,
+        owner: Optional[str] = None,
+        recipient_profile_str: Optional[str] = None,
+    ) -> ProviderInfo:
         """Update a provider.
-        
+
         Updates the information for an authentication provider, if the caller is a metastore admin or is the
         owner of the provider. If the update changes the provider name, the caller must be both a metastore
         admin and the owner of the provider.
-        
+
         :param name: str
           Name of the provider.
         :param comment: str (optional)
@@ -1737,17 +2087,29 @@ class ProvidersAPI:
         :param recipient_profile_str: str (optional)
           This field is required when the __authentication_type__ is **TOKEN**, **OAUTH_CLIENT_CREDENTIALS**
           or not provided.
-        
+
         :returns: :class:`ProviderInfo`
         """
         body = {}
-        if comment is not None: body['comment'] = comment
-        if new_name is not None: body['new_name'] = new_name
-        if owner is not None: body['owner'] = owner
-        if recipient_profile_str is not None: body['recipient_profile_str'] = recipient_profile_str
-        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        if comment is not None:
+            body["comment"] = comment
+        if new_name is not None:
+            body["new_name"] = new_name
+        if owner is not None:
+            body["owner"] = owner
+        if recipient_profile_str is not None:
+            body["recipient_profile_str"] = recipient_profile_str
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
 
-        res = self._api.do('PATCH', f'/api/2.1/unity-catalog/providers/{name}', body=body, headers=headers)
+        res = self._api.do(
+            "PATCH",
+            f"/api/2.1/unity-catalog/providers/{name}",
+            body=body,
+            headers=headers,
+        )
         return ProviderInfo.from_dict(res)
 
 
@@ -1756,46 +2118,55 @@ class RecipientActivationAPI:
     the authentication type of `TOKEN`. The data recipient follows the activation link shared by the data
     provider to download the credential file that includes the access token. The recipient will then use the
     credential file to establish a secure connection with the provider to receive the shared data.
-    
+
     Note that you can download the credential file only once. Recipients should treat the downloaded
-    credential as a secret and must not share it outside of their organization."""
+    credential as a secret and must not share it outside of their organization.
+    """
 
     def __init__(self, api_client):
         self._api = api_client
 
     def get_activation_url_info(self, activation_url: str):
         """Get a share activation URL.
-        
+
         Gets an activation URL for a share.
-        
+
         :param activation_url: str
           The one time activation url. It also accepts activation token.
-        
-        
+
+
         """
 
-        headers = {'Accept': 'application/json', }
+        headers = {
+            "Accept": "application/json",
+        }
 
-        self._api.do('GET',
-                     f'/api/2.1/unity-catalog/public/data_sharing_activation_info/{activation_url}',
-                     headers=headers)
+        self._api.do(
+            "GET",
+            f"/api/2.1/unity-catalog/public/data_sharing_activation_info/{activation_url}",
+            headers=headers,
+        )
 
     def retrieve_token(self, activation_url: str) -> RetrieveTokenResponse:
         """Get an access token.
-        
+
         Retrieve access token with an activation url. This is a public API without any authentication.
-        
+
         :param activation_url: str
           The one time activation url. It also accepts activation token.
-        
+
         :returns: :class:`RetrieveTokenResponse`
         """
 
-        headers = {'Accept': 'application/json', }
+        headers = {
+            "Accept": "application/json",
+        }
 
-        res = self._api.do('GET',
-                           f'/api/2.1/unity-catalog/public/data_sharing_activation/{activation_url}',
-                           headers=headers)
+        res = self._api.do(
+            "GET",
+            f"/api/2.1/unity-catalog/public/data_sharing_activation/{activation_url}",
+            headers=headers,
+        )
         return RetrieveTokenResponse.from_dict(res)
 
 
@@ -1803,36 +2174,39 @@ class RecipientsAPI:
     """A recipient is an object you create using :method:recipients/create to represent an organization which you
     want to allow access shares. The way how sharing works differs depending on whether or not your recipient
     has access to a Databricks workspace that is enabled for Unity Catalog:
-    
+
     - For recipients with access to a Databricks workspace that is enabled for Unity Catalog, you can create a
     recipient object along with a unique sharing identifier you get from the recipient. The sharing identifier
     is the key identifier that enables the secure connection. This sharing mode is called
     **Databricks-to-Databricks sharing**.
-    
+
     - For recipients without access to a Databricks workspace that is enabled for Unity Catalog, when you
     create a recipient object, Databricks generates an activation link you can send to the recipient. The
     recipient follows the activation link to download the credential file, and then uses the credential file
-    to establish a secure connection to receive the shared data. This sharing mode is called **open sharing**."""
+    to establish a secure connection to receive the shared data. This sharing mode is called **open sharing**.
+    """
 
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self,
-               name: str,
-               authentication_type: AuthenticationType,
-               *,
-               comment: Optional[str] = None,
-               data_recipient_global_metastore_id: Optional[str] = None,
-               expiration_time: Optional[int] = None,
-               ip_access_list: Optional[IpAccessList] = None,
-               owner: Optional[str] = None,
-               properties_kvpairs: Optional[SecurablePropertiesKvPairs] = None,
-               sharing_code: Optional[str] = None) -> RecipientInfo:
+    def create(
+        self,
+        name: str,
+        authentication_type: AuthenticationType,
+        *,
+        comment: Optional[str] = None,
+        data_recipient_global_metastore_id: Optional[str] = None,
+        expiration_time: Optional[int] = None,
+        ip_access_list: Optional[IpAccessList] = None,
+        owner: Optional[str] = None,
+        properties_kvpairs: Optional[SecurablePropertiesKvPairs] = None,
+        sharing_code: Optional[str] = None,
+    ) -> RecipientInfo:
         """Create a share recipient.
-        
+
         Creates a new recipient with the delta sharing authentication type in the metastore. The caller must
         be a metastore admin or have the **CREATE_RECIPIENT** privilege on the metastore.
-        
+
         :param name: str
           Name of Recipient.
         :param authentication_type: :class:`AuthenticationType`
@@ -1856,70 +2230,96 @@ class RecipientsAPI:
         :param sharing_code: str (optional)
           The one-time sharing code provided by the data recipient. This field is only present when the
           __authentication_type__ is **DATABRICKS**.
-        
+
         :returns: :class:`RecipientInfo`
         """
         body = {}
-        if authentication_type is not None: body['authentication_type'] = authentication_type.value
-        if comment is not None: body['comment'] = comment
+        if authentication_type is not None:
+            body["authentication_type"] = authentication_type.value
+        if comment is not None:
+            body["comment"] = comment
         if data_recipient_global_metastore_id is not None:
-            body['data_recipient_global_metastore_id'] = data_recipient_global_metastore_id
-        if expiration_time is not None: body['expiration_time'] = expiration_time
-        if ip_access_list is not None: body['ip_access_list'] = ip_access_list.as_dict()
-        if name is not None: body['name'] = name
-        if owner is not None: body['owner'] = owner
-        if properties_kvpairs is not None: body['properties_kvpairs'] = properties_kvpairs.as_dict()
-        if sharing_code is not None: body['sharing_code'] = sharing_code
-        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+            body["data_recipient_global_metastore_id"] = data_recipient_global_metastore_id
+        if expiration_time is not None:
+            body["expiration_time"] = expiration_time
+        if ip_access_list is not None:
+            body["ip_access_list"] = ip_access_list.as_dict()
+        if name is not None:
+            body["name"] = name
+        if owner is not None:
+            body["owner"] = owner
+        if properties_kvpairs is not None:
+            body["properties_kvpairs"] = properties_kvpairs.as_dict()
+        if sharing_code is not None:
+            body["sharing_code"] = sharing_code
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
 
-        res = self._api.do('POST', '/api/2.1/unity-catalog/recipients', body=body, headers=headers)
+        res = self._api.do(
+            "POST",
+            "/api/2.1/unity-catalog/recipients",
+            body=body,
+            headers=headers,
+        )
         return RecipientInfo.from_dict(res)
 
     def delete(self, name: str):
         """Delete a share recipient.
-        
+
         Deletes the specified recipient from the metastore. The caller must be the owner of the recipient.
-        
+
         :param name: str
           Name of the recipient.
-        
-        
+
+
         """
 
-        headers = {'Accept': 'application/json', }
+        headers = {
+            "Accept": "application/json",
+        }
 
-        self._api.do('DELETE', f'/api/2.1/unity-catalog/recipients/{name}', headers=headers)
+        self._api.do(
+            "DELETE",
+            f"/api/2.1/unity-catalog/recipients/{name}",
+            headers=headers,
+        )
 
     def get(self, name: str) -> RecipientInfo:
         """Get a share recipient.
-        
+
         Gets a share recipient from the metastore if:
-        
+
         * the caller is the owner of the share recipient, or: * is a metastore admin
-        
+
         :param name: str
           Name of the recipient.
-        
+
         :returns: :class:`RecipientInfo`
         """
 
-        headers = {'Accept': 'application/json', }
+        headers = {
+            "Accept": "application/json",
+        }
 
-        res = self._api.do('GET', f'/api/2.1/unity-catalog/recipients/{name}', headers=headers)
+        res = self._api.do("GET", f"/api/2.1/unity-catalog/recipients/{name}", headers=headers)
         return RecipientInfo.from_dict(res)
 
-    def list(self,
-             *,
-             data_recipient_global_metastore_id: Optional[str] = None,
-             max_results: Optional[int] = None,
-             page_token: Optional[str] = None) -> Iterator[RecipientInfo]:
+    def list(
+        self,
+        *,
+        data_recipient_global_metastore_id: Optional[str] = None,
+        max_results: Optional[int] = None,
+        page_token: Optional[str] = None,
+    ) -> Iterator[RecipientInfo]:
         """List share recipients.
-        
+
         Gets an array of all share recipients within the current metastore where:
-        
+
         * the caller is a metastore admin, or * the caller is the owner. There is no guarantee of a specific
         ordering of the elements in the array.
-        
+
         :param data_recipient_global_metastore_id: str (optional)
           If not provided, all recipients will be returned. If no recipients exist with this ID, no results
           will be returned.
@@ -1933,63 +2333,80 @@ class RecipientsAPI:
           from the response.
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
-        
+
         :returns: Iterator over :class:`RecipientInfo`
         """
 
         query = {}
         if data_recipient_global_metastore_id is not None:
-            query['data_recipient_global_metastore_id'] = data_recipient_global_metastore_id
-        if max_results is not None: query['max_results'] = max_results
-        if page_token is not None: query['page_token'] = page_token
-        headers = {'Accept': 'application/json', }
+            query["data_recipient_global_metastore_id"] = data_recipient_global_metastore_id
+        if max_results is not None:
+            query["max_results"] = max_results
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
 
-        if "max_results" not in query: query['max_results'] = 0
+        if "max_results" not in query:
+            query["max_results"] = 0
         while True:
-            json = self._api.do('GET', '/api/2.1/unity-catalog/recipients', query=query, headers=headers)
-            if 'recipients' in json:
-                for v in json['recipients']:
+            json = self._api.do(
+                "GET",
+                "/api/2.1/unity-catalog/recipients",
+                query=query,
+                headers=headers,
+            )
+            if "recipients" in json:
+                for v in json["recipients"]:
                     yield RecipientInfo.from_dict(v)
-            if 'next_page_token' not in json or not json['next_page_token']:
+            if "next_page_token" not in json or not json["next_page_token"]:
                 return
-            query['page_token'] = json['next_page_token']
+            query["page_token"] = json["next_page_token"]
 
     def rotate_token(self, name: str, existing_token_expire_in_seconds: int) -> RecipientInfo:
         """Rotate a token.
-        
+
         Refreshes the specified recipient's delta sharing authentication token with the provided token info.
         The caller must be the owner of the recipient.
-        
+
         :param name: str
           The name of the Recipient.
         :param existing_token_expire_in_seconds: int
           The expiration time of the bearer token in ISO 8601 format. This will set the expiration_time of
           existing token only to a smaller timestamp, it cannot extend the expiration_time. Use 0 to expire
           the existing token immediately, negative number will return an error.
-        
+
         :returns: :class:`RecipientInfo`
         """
         body = {}
         if existing_token_expire_in_seconds is not None:
-            body['existing_token_expire_in_seconds'] = existing_token_expire_in_seconds
-        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+            body["existing_token_expire_in_seconds"] = existing_token_expire_in_seconds
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
 
-        res = self._api.do('POST',
-                           f'/api/2.1/unity-catalog/recipients/{name}/rotate-token',
-                           body=body,
-                           headers=headers)
+        res = self._api.do(
+            "POST",
+            f"/api/2.1/unity-catalog/recipients/{name}/rotate-token",
+            body=body,
+            headers=headers,
+        )
         return RecipientInfo.from_dict(res)
 
-    def share_permissions(self,
-                          name: str,
-                          *,
-                          max_results: Optional[int] = None,
-                          page_token: Optional[str] = None) -> GetRecipientSharePermissionsResponse:
+    def share_permissions(
+        self,
+        name: str,
+        *,
+        max_results: Optional[int] = None,
+        page_token: Optional[str] = None,
+    ) -> GetRecipientSharePermissionsResponse:
         """Get recipient share permissions.
-        
+
         Gets the share permissions for the specified Recipient. The caller must be a metastore admin or the
         owner of the Recipient.
-        
+
         :param name: str
           The name of the Recipient.
         :param max_results: int (optional)
@@ -2002,36 +2419,44 @@ class RecipientsAPI:
           unset from the response.
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
-        
+
         :returns: :class:`GetRecipientSharePermissionsResponse`
         """
 
         query = {}
-        if max_results is not None: query['max_results'] = max_results
-        if page_token is not None: query['page_token'] = page_token
-        headers = {'Accept': 'application/json', }
+        if max_results is not None:
+            query["max_results"] = max_results
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
 
-        res = self._api.do('GET',
-                           f'/api/2.1/unity-catalog/recipients/{name}/share-permissions',
-                           query=query,
-                           headers=headers)
+        res = self._api.do(
+            "GET",
+            f"/api/2.1/unity-catalog/recipients/{name}/share-permissions",
+            query=query,
+            headers=headers,
+        )
         return GetRecipientSharePermissionsResponse.from_dict(res)
 
-    def update(self,
-               name: str,
-               *,
-               comment: Optional[str] = None,
-               expiration_time: Optional[int] = None,
-               ip_access_list: Optional[IpAccessList] = None,
-               new_name: Optional[str] = None,
-               owner: Optional[str] = None,
-               properties_kvpairs: Optional[SecurablePropertiesKvPairs] = None) -> RecipientInfo:
+    def update(
+        self,
+        name: str,
+        *,
+        comment: Optional[str] = None,
+        expiration_time: Optional[int] = None,
+        ip_access_list: Optional[IpAccessList] = None,
+        new_name: Optional[str] = None,
+        owner: Optional[str] = None,
+        properties_kvpairs: Optional[SecurablePropertiesKvPairs] = None,
+    ) -> RecipientInfo:
         """Update a share recipient.
-        
+
         Updates an existing recipient in the metastore. The caller must be a metastore admin or the owner of
         the recipient. If the recipient name will be updated, the user must be both a metastore admin and the
         owner of the recipient.
-        
+
         :param name: str
           Name of the recipient.
         :param comment: str (optional)
@@ -2048,19 +2473,33 @@ class RecipientsAPI:
           Recipient properties as map of string key-value pairs. When provided in update request, the
           specified properties will override the existing properties. To add and remove properties, one would
           need to perform a read-modify-write.
-        
+
         :returns: :class:`RecipientInfo`
         """
         body = {}
-        if comment is not None: body['comment'] = comment
-        if expiration_time is not None: body['expiration_time'] = expiration_time
-        if ip_access_list is not None: body['ip_access_list'] = ip_access_list.as_dict()
-        if new_name is not None: body['new_name'] = new_name
-        if owner is not None: body['owner'] = owner
-        if properties_kvpairs is not None: body['properties_kvpairs'] = properties_kvpairs.as_dict()
-        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        if comment is not None:
+            body["comment"] = comment
+        if expiration_time is not None:
+            body["expiration_time"] = expiration_time
+        if ip_access_list is not None:
+            body["ip_access_list"] = ip_access_list.as_dict()
+        if new_name is not None:
+            body["new_name"] = new_name
+        if owner is not None:
+            body["owner"] = owner
+        if properties_kvpairs is not None:
+            body["properties_kvpairs"] = properties_kvpairs.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
 
-        res = self._api.do('PATCH', f'/api/2.1/unity-catalog/recipients/{name}', body=body, headers=headers)
+        res = self._api.do(
+            "PATCH",
+            f"/api/2.1/unity-catalog/recipients/{name}",
+            body=body,
+            headers=headers,
+        )
         return RecipientInfo.from_dict(res)
 
 
@@ -2073,79 +2512,99 @@ class SharesAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self,
-               name: str,
-               *,
-               comment: Optional[str] = None,
-               storage_root: Optional[str] = None) -> ShareInfo:
+    def create(
+        self,
+        name: str,
+        *,
+        comment: Optional[str] = None,
+        storage_root: Optional[str] = None,
+    ) -> ShareInfo:
         """Create a share.
-        
+
         Creates a new share for data objects. Data objects can be added after creation with **update**. The
         caller must be a metastore admin or have the **CREATE_SHARE** privilege on the metastore.
-        
+
         :param name: str
           Name of the share.
         :param comment: str (optional)
           User-provided free-form text description.
         :param storage_root: str (optional)
           Storage root URL for the share.
-        
+
         :returns: :class:`ShareInfo`
         """
         body = {}
-        if comment is not None: body['comment'] = comment
-        if name is not None: body['name'] = name
-        if storage_root is not None: body['storage_root'] = storage_root
-        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        if comment is not None:
+            body["comment"] = comment
+        if name is not None:
+            body["name"] = name
+        if storage_root is not None:
+            body["storage_root"] = storage_root
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
 
-        res = self._api.do('POST', '/api/2.1/unity-catalog/shares', body=body, headers=headers)
+        res = self._api.do("POST", "/api/2.1/unity-catalog/shares", body=body, headers=headers)
         return ShareInfo.from_dict(res)
 
     def delete(self, name: str):
         """Delete a share.
-        
+
         Deletes a data object share from the metastore. The caller must be an owner of the share.
-        
+
         :param name: str
           The name of the share.
-        
-        
+
+
         """
 
-        headers = {'Accept': 'application/json', }
+        headers = {
+            "Accept": "application/json",
+        }
 
-        self._api.do('DELETE', f'/api/2.1/unity-catalog/shares/{name}', headers=headers)
+        self._api.do("DELETE", f"/api/2.1/unity-catalog/shares/{name}", headers=headers)
 
     def get(self, name: str, *, include_shared_data: Optional[bool] = None) -> ShareInfo:
         """Get a share.
-        
+
         Gets a data object share from the metastore. The caller must be a metastore admin or the owner of the
         share.
-        
+
         :param name: str
           The name of the share.
         :param include_shared_data: bool (optional)
           Query for data to include in the share.
-        
+
         :returns: :class:`ShareInfo`
         """
 
         query = {}
-        if include_shared_data is not None: query['include_shared_data'] = include_shared_data
-        headers = {'Accept': 'application/json', }
+        if include_shared_data is not None:
+            query["include_shared_data"] = include_shared_data
+        headers = {
+            "Accept": "application/json",
+        }
 
-        res = self._api.do('GET', f'/api/2.1/unity-catalog/shares/{name}', query=query, headers=headers)
+        res = self._api.do(
+            "GET",
+            f"/api/2.1/unity-catalog/shares/{name}",
+            query=query,
+            headers=headers,
+        )
         return ShareInfo.from_dict(res)
 
-    def list(self,
-             *,
-             max_results: Optional[int] = None,
-             page_token: Optional[str] = None) -> Iterator[ShareInfo]:
+    def list(
+        self,
+        *,
+        max_results: Optional[int] = None,
+        page_token: Optional[str] = None,
+    ) -> Iterator[ShareInfo]:
         """List shares.
-        
+
         Gets an array of data object shares from the metastore. The caller must be a metastore admin or the
         owner of the share. There is no guarantee of a specific ordering of the elements in the array.
-        
+
         :param max_results: int (optional)
           Maximum number of shares to return. - when set to 0, the page length is set to a server configured
           value (recommended); - when set to a value greater than 0, the page length is the minimum of this
@@ -2156,35 +2615,47 @@ class SharesAPI:
           response.
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
-        
+
         :returns: Iterator over :class:`ShareInfo`
         """
 
         query = {}
-        if max_results is not None: query['max_results'] = max_results
-        if page_token is not None: query['page_token'] = page_token
-        headers = {'Accept': 'application/json', }
+        if max_results is not None:
+            query["max_results"] = max_results
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
 
-        if "max_results" not in query: query['max_results'] = 0
+        if "max_results" not in query:
+            query["max_results"] = 0
         while True:
-            json = self._api.do('GET', '/api/2.1/unity-catalog/shares', query=query, headers=headers)
-            if 'shares' in json:
-                for v in json['shares']:
+            json = self._api.do(
+                "GET",
+                "/api/2.1/unity-catalog/shares",
+                query=query,
+                headers=headers,
+            )
+            if "shares" in json:
+                for v in json["shares"]:
                     yield ShareInfo.from_dict(v)
-            if 'next_page_token' not in json or not json['next_page_token']:
+            if "next_page_token" not in json or not json["next_page_token"]:
                 return
-            query['page_token'] = json['next_page_token']
+            query["page_token"] = json["next_page_token"]
 
-    def share_permissions(self,
-                          name: str,
-                          *,
-                          max_results: Optional[int] = None,
-                          page_token: Optional[str] = None) -> catalog.PermissionsList:
+    def share_permissions(
+        self,
+        name: str,
+        *,
+        max_results: Optional[int] = None,
+        page_token: Optional[str] = None,
+    ) -> catalog.PermissionsList:
         """Get permissions.
-        
+
         Gets the permissions for a data share from the metastore. The caller must be a metastore admin or the
         owner of the share.
-        
+
         :param name: str
           The name of the share.
         :param max_results: int (optional)
@@ -2197,47 +2668,55 @@ class SharesAPI:
           unset from the response.
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
-        
+
         :returns: :class:`PermissionsList`
         """
 
         query = {}
-        if max_results is not None: query['max_results'] = max_results
-        if page_token is not None: query['page_token'] = page_token
-        headers = {'Accept': 'application/json', }
+        if max_results is not None:
+            query["max_results"] = max_results
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
 
-        res = self._api.do('GET',
-                           f'/api/2.1/unity-catalog/shares/{name}/permissions',
-                           query=query,
-                           headers=headers)
+        res = self._api.do(
+            "GET",
+            f"/api/2.1/unity-catalog/shares/{name}/permissions",
+            query=query,
+            headers=headers,
+        )
         return catalog.PermissionsList.from_dict(res)
 
-    def update(self,
-               name: str,
-               *,
-               comment: Optional[str] = None,
-               new_name: Optional[str] = None,
-               owner: Optional[str] = None,
-               storage_root: Optional[str] = None,
-               updates: Optional[List[SharedDataObjectUpdate]] = None) -> ShareInfo:
+    def update(
+        self,
+        name: str,
+        *,
+        comment: Optional[str] = None,
+        new_name: Optional[str] = None,
+        owner: Optional[str] = None,
+        storage_root: Optional[str] = None,
+        updates: Optional[List[SharedDataObjectUpdate]] = None,
+    ) -> ShareInfo:
         """Update a share.
-        
+
         Updates the share with the changes and data objects in the request. The caller must be the owner of
         the share or a metastore admin.
-        
+
         When the caller is a metastore admin, only the __owner__ field can be updated.
-        
+
         In the case that the share name is changed, **updateShare** requires that the caller is both the share
         owner and a metastore admin.
-        
+
         If there are notebook files in the share, the __storage_root__ field cannot be updated.
-        
+
         For each table that is added through this method, the share owner must also have **SELECT** privilege
         on the table. This privilege must be maintained indefinitely for recipients to be able to access the
         table. Typically, you should use a group as the share owner.
-        
+
         Table removals through **update** do not require additional privileges.
-        
+
         :param name: str
           The name of the share.
         :param comment: str (optional)
@@ -2250,34 +2729,49 @@ class SharesAPI:
           Storage root URL for the share.
         :param updates: List[:class:`SharedDataObjectUpdate`] (optional)
           Array of shared data object updates.
-        
+
         :returns: :class:`ShareInfo`
         """
         body = {}
-        if comment is not None: body['comment'] = comment
-        if new_name is not None: body['new_name'] = new_name
-        if owner is not None: body['owner'] = owner
-        if storage_root is not None: body['storage_root'] = storage_root
-        if updates is not None: body['updates'] = [v.as_dict() for v in updates]
-        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        if comment is not None:
+            body["comment"] = comment
+        if new_name is not None:
+            body["new_name"] = new_name
+        if owner is not None:
+            body["owner"] = owner
+        if storage_root is not None:
+            body["storage_root"] = storage_root
+        if updates is not None:
+            body["updates"] = [v.as_dict() for v in updates]
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
 
-        res = self._api.do('PATCH', f'/api/2.1/unity-catalog/shares/{name}', body=body, headers=headers)
+        res = self._api.do(
+            "PATCH",
+            f"/api/2.1/unity-catalog/shares/{name}",
+            body=body,
+            headers=headers,
+        )
         return ShareInfo.from_dict(res)
 
-    def update_permissions(self,
-                           name: str,
-                           *,
-                           changes: Optional[List[catalog.PermissionsChange]] = None,
-                           max_results: Optional[int] = None,
-                           page_token: Optional[str] = None):
+    def update_permissions(
+        self,
+        name: str,
+        *,
+        changes: Optional[List[catalog.PermissionsChange]] = None,
+        max_results: Optional[int] = None,
+        page_token: Optional[str] = None,
+    ):
         """Update permissions.
-        
+
         Updates the permissions for a data share in the metastore. The caller must be a metastore admin or an
         owner of the share.
-        
+
         For new recipient grants, the user must also be the owner of the recipients. recipient revocations do
         not require additional privileges.
-        
+
         :param name: str
           The name of the share.
         :param changes: List[:class:`PermissionsChange`] (optional)
@@ -2292,18 +2786,26 @@ class SharesAPI:
           unset from the response.
         :param page_token: str (optional)
           Opaque pagination token to go to next page based on previous query.
-        
-        
+
+
         """
         body = {}
         query = {}
-        if changes is not None: body['changes'] = [v.as_dict() for v in changes]
-        if max_results is not None: query['max_results'] = max_results
-        if page_token is not None: query['page_token'] = page_token
-        headers = {'Accept': 'application/json', 'Content-Type': 'application/json', }
+        if changes is not None:
+            body["changes"] = [v.as_dict() for v in changes]
+        if max_results is not None:
+            query["max_results"] = max_results
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
 
-        self._api.do('PATCH',
-                     f'/api/2.1/unity-catalog/shares/{name}/permissions',
-                     query=query,
-                     body=body,
-                     headers=headers)
+        self._api.do(
+            "PATCH",
+            f"/api/2.1/unity-catalog/shares/{name}/permissions",
+            query=query,
+            body=body,
+            headers=headers,
+        )

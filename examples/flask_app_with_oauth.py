@@ -72,15 +72,18 @@ def create_flask_app(workspace_host: str, client_id: str, client_secret: str):
     @app.route("/")
     def index():
         """The index page checks if the user has already authenticated and retrieves the user's credentials using
-        the Databricks SDK WorkspaceClient. It then renders the template with the clusters' list."""
+        the Databricks SDK WorkspaceClient. It then renders the template with the clusters' list.
+        """
         oidc_endpoints = get_workspace_endpoints(workspace_host)
         port = request.environ.get("SERVER_PORT")
-        redirect_url=f"http://localhost:{port}/callback"
+        redirect_url = f"http://localhost:{port}/callback"
         if "creds" not in session:
-            oauth_client = OAuthClient(oidc_endpoints=oidc_endpoints,
-                                       client_id=client_id,
-                                       client_secret=client_secret,
-                                       redirect_url=redirect_url)
+            oauth_client = OAuthClient(
+                oidc_endpoints=oidc_endpoints,
+                client_id=client_id,
+                client_secret=client_secret,
+                redirect_url=redirect_url,
+            )
             consent = oauth_client.initiate_consent()
             session["consent"] = consent.as_dict()
             return redirect(consent.authorization_url)
@@ -88,19 +91,26 @@ def create_flask_app(workspace_host: str, client_id: str, client_secret: str):
         from databricks.sdk import WorkspaceClient
         from databricks.sdk.oauth import SessionCredentials
 
-        credentials_strategy = SessionCredentials.from_dict(session["creds"],
-                                                            token_endpoint=oidc_endpoints.token_endpoint,
-                                                            client_id=client_id,
-                                                            client_secret=client_secret,
-                                                            redirect_url=redirect_url)
-        workspace_client = WorkspaceClient(host=workspace_host,
-                                           product=APP_NAME,
-                                           credentials_strategy=credentials_strategy,
-                                           )
+        credentials_strategy = SessionCredentials.from_dict(
+            session["creds"],
+            token_endpoint=oidc_endpoints.token_endpoint,
+            client_id=client_id,
+            client_secret=client_secret,
+            redirect_url=redirect_url,
+        )
+        workspace_client = WorkspaceClient(
+            host=workspace_host,
+            product=APP_NAME,
+            credentials_strategy=credentials_strategy,
+        )
         clusters = workspace_client.clusters.list(
             filter_by=ListClustersFilterBy(cluster_states=[State.RUNNING, State.PENDING])
         )
-        return render_template_string(all_clusters_template, workspace_host=workspace_host, clusters=clusters)
+        return render_template_string(
+            all_clusters_template,
+            workspace_host=workspace_host,
+            clusters=clusters,
+        )
 
     return app
 
@@ -121,9 +131,9 @@ def register_custom_app(args: argparse.Namespace) -> tuple[str, str]:
         confidential=True,
         scopes=["all-apis"],
     )
-    logging.info(f"Created new custom app: "
-                 f"--client_id {custom_app.client_id} "
-                 f"--client_secret {custom_app.client_secret}")
+    logging.info(
+        f"Created new custom app: " f"--client_id {custom_app.client_id} " f"--client_secret {custom_app.client_secret}"
+    )
 
     return custom_app.client_id, custom_app.client_secret
 
@@ -135,15 +145,20 @@ def parse_arguments() -> argparse.Namespace:
     for flag in ["client_id", "client_secret"]:
         parser.add_argument(f"--{flag}")
     parser.add_argument("--port", default=5001, type=int)
-    parser.add_argument("--profile", default="DEFAULT", help="Databricks account profile to use for authentication.")
+    parser.add_argument(
+        "--profile",
+        default="DEFAULT",
+        help="Databricks account profile to use for authentication.",
+    )
     return parser.parse_args()
 
 
 if __name__ == "__main__":
-    logging.basicConfig(stream=sys.stdout,
-                        level=logging.INFO,
-                        format="%(asctime)s [%(name)s][%(levelname)s] %(message)s",
-                        )
+    logging.basicConfig(
+        stream=sys.stdout,
+        level=logging.INFO,
+        format="%(asctime)s [%(name)s][%(levelname)s] %(message)s",
+    )
     logging.getLogger("databricks.sdk").setLevel(logging.DEBUG)
 
     args = parse_arguments()
