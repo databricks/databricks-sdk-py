@@ -107,12 +107,22 @@ subclass_test_cases = [(fake_valid_response("GET", x[0], x[1], "nope"), x[2], "n
     + [
         (fake_response("GET", 400, ""), errors.BadRequest, "Bad Request"),
         (
-            fake_valid_response("GET", 417, "WHOOPS", "nope"),
+            fake_valid_response(
+                "GET",
+                417,
+                "WHOOPS",
+                "nope",
+            ),
             errors.DatabricksError,
             "nope",
         ),
         (
-            fake_valid_response("GET", 522, "", "nope"),
+            fake_valid_response(
+                "GET",
+                522,
+                "",
+                "nope",
+            ),
             errors.DatabricksError,
             "nope",
         ),
@@ -180,12 +190,20 @@ subclass_test_cases = [(fake_valid_response("GET", x[0], x[1], "nope"), x[2], "n
             "vpc_endpoints malformed parameters: VPC Endpoint ... with use_case ... cannot be attached in ... list",
         ),
         (
-            fake_response("GET", 400, "<pre>Worker environment not ready</pre>"),
+            fake_response(
+                "GET",
+                400,
+                "<pre>Worker environment not ready</pre>",
+            ),
             errors.BadRequest,
             "Worker environment not ready",
         ),
         (
-            fake_response("GET", 400, "this is not a real response"),
+            fake_response(
+                "GET",
+                400,
+                "this is not a real response",
+            ),
             errors.BadRequest,
             (
                 "unable to parse response. This is likely a bug in the Databricks SDK for Python or the underlying API. "
@@ -211,12 +229,20 @@ subclass_test_cases = [(fake_valid_response("GET", x[0], x[1], "nope"), x[2], "n
             "None Group with id 1234 is not found",
         ),
         (
-            fake_response("GET", 404, json.dumps("This is JSON but not a dictionary")),
+            fake_response(
+                "GET",
+                404,
+                json.dumps("This is JSON but not a dictionary"),
+            ),
             errors.NotFound,
             'unable to parse response. This is likely a bug in the Databricks SDK for Python or the underlying API. Please report this issue with the following debugging information to the SDK issue tracker at https://github.com/databricks/databricks-sdk-go/issues. Request log:```GET /api/2.0/service\n< 404 Not Found\n< "This is JSON but not a dictionary"```',
         ),
         (
-            fake_raw_response("GET", 404, b"\x80"),
+            fake_raw_response(
+                "GET",
+                404,
+                b"\x80",
+            ),
             errors.NotFound,
             "unable to parse response. This is likely a bug in the Databricks SDK for Python or the underlying API. Please report this issue with the following debugging information to the SDK issue tracker at https://github.com/databricks/databricks-sdk-go/issues. Request log:```GET /api/2.0/service\n< 404 Not Found\n< �```",
         ),

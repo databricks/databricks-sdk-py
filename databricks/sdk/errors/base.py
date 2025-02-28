@@ -5,9 +5,12 @@ from typing import Dict, List, Optional
 
 import requests
 
+from . import details as errdetails
 
+
+# Deprecated.
 class ErrorDetail:
-
+    
     def __init__(
         self,
         type: str = None,
@@ -31,9 +34,6 @@ class ErrorDetail:
 class DatabricksError(IOError):
     """Generic error from Databricks REST API"""
 
-    # Known ErrorDetail types
-    _error_info_type = "type.googleapis.com/google.rpc.ErrorInfo"
-
     def __init__(
         self,
         message: str = None,
@@ -55,11 +55,11 @@ class DatabricksError(IOError):
         :param status: [Deprecated]
         :param scimType: [Deprecated]
         :param error: [Deprecated]
-        :param retry_after_secs:
+        :param retry_after_secs: [Deprecated]
         :param details:
         :param kwargs:
         """
-        # SCIM-specific parameters are deprecated
+        # SCIM-specific parameters are deprecated.
         if detail:
             warnings.warn(
                 "The 'detail' parameter of DatabricksError is deprecated and will be removed in a future version."
@@ -73,10 +73,16 @@ class DatabricksError(IOError):
                 "The 'status' parameter of DatabricksError is deprecated and will be removed in a future version."
             )
 
-        # API 1.2-specific parameters are deprecated
+        # API 1.2-specific parameters are deprecated.
         if error:
             warnings.warn(
                 "The 'error' parameter of DatabricksError is deprecated and will be removed in a future version."
+            )
+
+        # Retry-after is deprecated.
+        if retry_after_secs:
+            warnings.warn(
+                "The 'retry_after_secs' parameter of DatabricksError is deprecated and will be removed in a future version."
             )
 
         if detail:
@@ -89,19 +95,29 @@ class DatabricksError(IOError):
             # add more context from SCIM responses
             message = f"{scimType} {message}".strip(" ")
             error_code = f"SCIM_{status}"
+
         super().__init__(message if message else error)
         self.error_code = error_code
         self.retry_after_secs = retry_after_secs
-        self.details = [ErrorDetail.from_dict(detail) for detail in details] if details else []
+
+        parsed_details = [errdetails.parse_json_details(d) for d in details] if details else []
+        self._error_details = errdetails.parse_error_details(parsed_details)
+
         self.kwargs = kwargs
 
+        # Deprecated.
+        self.details = [ErrorDetail.from_dict(d) for d in details] if details else []
+
     def get_error_info(self) -> List[ErrorDetail]:
-        return self._get_details_by_type(DatabricksError._error_info_type)
+        return self._get_details_by_type(errdetails._ERROR_INFO_TYPE)
 
     def _get_details_by_type(self, error_type) -> List[ErrorDetail]:
-        if self.details == None:
+        if self.details is None:
             return []
         return [detail for detail in self.details if detail.type == error_type]
+
+    def get_error_details(self) -> errdetails.ErrorDetails:
+        return self._error_details
 
 
 @dataclass
