@@ -162,6 +162,12 @@ def test_model_serving_auth_refresh(monkeypatch, mocker):
 
 
 def test_agent_user_credentials(monkeypatch, mocker):
+    # Guarantee that the tests defaults to env variables rather than config file.
+    #
+    # TODO: this is hacky and we should find a better way to tell the config
+    # that it should not read from the config file.
+    monkeypatch.setenv("DATABRICKS_CONFIG_FILE", "x")
+
     monkeypatch.setenv("IS_IN_DB_MODEL_SERVING_ENV", "true")
     monkeypatch.setenv("DB_MODEL_SERVING_HOST_URL", "x")
     monkeypatch.setattr(
@@ -205,4 +211,4 @@ def test_agent_user_credentials_in_non_model_serving_environments(monkeypatch):
     headers = cfg.authenticate()
 
     assert cfg.host == "https://x"
-    assert headers.get("Authorization") == f"Bearer token"
+    assert headers.get("Authorization") == "Bearer token"

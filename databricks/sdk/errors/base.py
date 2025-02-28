@@ -10,7 +10,6 @@ from . import details as errdetails
 
 # Deprecated.
 class ErrorDetail:
-    
     def __init__(
         self,
         type: str = None,
