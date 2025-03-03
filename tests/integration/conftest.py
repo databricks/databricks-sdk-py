@@ -7,7 +7,7 @@ import sys
 
 import pytest
 
-from databricks.sdk import AccountClient, WorkspaceClient
+from databricks.sdk import AccountClient, FilesAPI, FilesExt, WorkspaceClient
 from databricks.sdk.service.catalog import VolumeType
 
 
@@ -123,6 +123,18 @@ def volume(ucws, schema):
     volume = ucws.volumes.create("main", schema.name, "dbfs-test", VolumeType.MANAGED)
     yield "/Volumes/" + volume.full_name.replace(".", "/")
     ucws.volumes.delete(volume.full_name)
+
+
+@pytest.fixture(scope="session", params=[False, True])
+def files_api(request, ucws) -> FilesAPI:
+    if request.param:
+        # ensure new Files API client is used for files of any size
+        ucws.config.multipart_upload_min_stream_size = 0
+        # enable new Files API client
+        return FilesExt(ucws.api_client, ucws.config)
+    else:
+        # use the default client
+        return ucws.files
 
 
 @pytest.fixture()
