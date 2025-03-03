@@ -1090,6 +1090,7 @@ class FilesExt(files.FilesAPI):
                     # a 503 or 500 response, then you need to resume the interrupted upload from where it left off.
 
                     # Let's follow that for all potentially retryable status codes.
+                    # Together with the catch block below we replicate the logic in _retry_idempotent_operation().
                     if upload_response.status_code in self._RETRYABLE_STATUS_CODES:
                         if retry_count < self._config.multipart_upload_max_retries:
                             retry_count += 1
@@ -1100,7 +1101,7 @@ class FilesExt(files.FilesAPI):
                         retry_count = 0
 
                 except RequestException as e:
-                    # Let's do the same for retryable network errors
+                    # Let's do the same for retryable network errors.
                     if _BaseClient._is_retryable(e) and retry_count < self._config.multipart_upload_max_retries:
                         retry_count += 1
                         upload_response = retrieve_upload_status()
