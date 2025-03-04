@@ -296,6 +296,13 @@ def _parse_debug_info(d: Dict[str, Any]) -> DebugInfo:
     return di
 
 
+def _parse_quota_failure_violation(d: Dict[str, Any]) -> QuotaFailureViolation:
+    return QuotaFailureViolation(
+        subject=_parse_string(d.get("subject", "")),
+        description=_parse_string(d.get("description", "")),
+    )
+
+
 def _parse_quota_failure(d: Dict[str, Any]) -> QuotaFailure:
     violations = []
     if "violations" in d:
@@ -304,7 +311,7 @@ def _parse_quota_failure(d: Dict[str, Any]) -> QuotaFailure:
         for violation in d["violations"]:
             if not isinstance(violation, dict):
                 raise ValueError(f"Expected dict, got {violation!r}")
-            violations.append(QuotaFailureViolation(**violation))
+            violations.append(_parse_quota_failure_violation(violation))
     return QuotaFailure(violations=violations)
 
 
@@ -328,6 +335,13 @@ def _parse_precondition_failure(d: Dict[str, Any]) -> PreconditionFailure:
     return PreconditionFailure(violations=violations)
 
 
+def _parse_bad_request_field_violation(d: Dict[str, Any]) -> BadRequestFieldViolation:
+    return BadRequestFieldViolation(
+        field=_parse_string(d.get("field", "")),
+        description=_parse_string(d.get("description", "")),
+    )
+
+
 def _parse_bad_request(d: Dict[str, Any]) -> BadRequest:
     field_violations = []
     if "field_violations" in d:
@@ -336,7 +350,7 @@ def _parse_bad_request(d: Dict[str, Any]) -> BadRequest:
         for violation in d["field_violations"]:
             if not isinstance(violation, dict):
                 raise ValueError(f"Expected dict, got {violation!r}")
-            field_violations.append(BadRequestFieldViolation(**violation))
+            field_violations.append(_parse_bad_request_field_violation(violation))
     return BadRequest(field_violations=field_violations)
 
 
@@ -349,6 +363,13 @@ def _parse_resource_info(d: Dict[str, Any]) -> ResourceInfo:
     )
 
 
+def _parse_help_link(d: Dict[str, Any]) -> HelpLink:
+    return HelpLink(
+        description=_parse_string(d.get("description", "")),
+        url=_parse_string(d.get("url", "")),
+    )
+
+
 def _parse_help(d: Dict[str, Any]) -> Help:
     links = []
     if "links" in d:
@@ -357,7 +378,7 @@ def _parse_help(d: Dict[str, Any]) -> Help:
         for link in d["links"]:
             if not isinstance(link, dict):
                 raise ValueError(f"Expected dict, got {link!r}")
-            links.append(HelpLink(**link))
+            links.append(_parse_help_link(link))
     return Help(links=links)
 
 
