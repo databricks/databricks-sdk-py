@@ -163,7 +163,7 @@ def test_agent_user_credentials(monkeypatch, mocker):
 
     thread.start()
     thread.join()
-    assert (successful_authentication_event.is_set())
+    assert successful_authentication_event.is_set()
 
 
 # If this credential strategy is being used in a non model serving environments then use default credential strategy instead
