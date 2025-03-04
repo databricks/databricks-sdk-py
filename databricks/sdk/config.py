@@ -19,11 +19,11 @@ from .oauth import (OidcEndpoints, Token, get_account_endpoints,
                     get_azure_entra_id_workspace_endpoints,
                     get_workspace_endpoints)
 
-logger = logging.getLogger('databricks.sdk')
+logger = logging.getLogger("databricks.sdk")
 
 
 class ConfigAttribute:
-    """ Configuration attribute metadata and descriptor protocols. """
+    """Configuration attribute metadata and descriptor protocols."""
 
     # name and transform are discovered from Config.__new__
     name: str = None
@@ -34,12 +34,12 @@ class ConfigAttribute:
         self.auth = auth
         self.sensitive = sensitive
 
-    def __get__(self, cfg: 'Config', owner):
+    def __get__(self, cfg: "Config", owner):
         if not cfg:
             return None
         return cfg._inner.get(self.name, None)
 
-    def __set__(self, cfg: 'Config', value: any):
+    def __set__(self, cfg: "Config", value: any):
         cfg._inner[self.name] = self.transform(value)
 
     def __repr__(self) -> str:
@@ -57,71 +57,77 @@ def with_user_agent_extra(key: str, value: str):
 
 
 class Config:
-    host: str = ConfigAttribute(env='DATABRICKS_HOST')
-    account_id: str = ConfigAttribute(env='DATABRICKS_ACCOUNT_ID')
-    token: str = ConfigAttribute(env='DATABRICKS_TOKEN', auth='pat', sensitive=True)
-    username: str = ConfigAttribute(env='DATABRICKS_USERNAME', auth='basic')
-    password: str = ConfigAttribute(env='DATABRICKS_PASSWORD', auth='basic', sensitive=True)
-    client_id: str = ConfigAttribute(env='DATABRICKS_CLIENT_ID', auth='oauth')
-    client_secret: str = ConfigAttribute(env='DATABRICKS_CLIENT_SECRET', auth='oauth', sensitive=True)
-    profile: str = ConfigAttribute(env='DATABRICKS_CONFIG_PROFILE')
-    config_file: str = ConfigAttribute(env='DATABRICKS_CONFIG_FILE')
-    google_service_account: str = ConfigAttribute(env='DATABRICKS_GOOGLE_SERVICE_ACCOUNT', auth='google')
-    google_credentials: str = ConfigAttribute(env='GOOGLE_CREDENTIALS', auth='google', sensitive=True)
-    azure_workspace_resource_id: str = ConfigAttribute(env='DATABRICKS_AZURE_RESOURCE_ID', auth='azure')
-    azure_use_msi: bool = ConfigAttribute(env='ARM_USE_MSI', auth='azure')
-    azure_client_secret: str = ConfigAttribute(env='ARM_CLIENT_SECRET', auth='azure', sensitive=True)
-    azure_client_id: str = ConfigAttribute(env='ARM_CLIENT_ID', auth='azure')
-    azure_tenant_id: str = ConfigAttribute(env='ARM_TENANT_ID', auth='azure')
-    azure_environment: str = ConfigAttribute(env='ARM_ENVIRONMENT')
-    databricks_cli_path: str = ConfigAttribute(env='DATABRICKS_CLI_PATH')
-    auth_type: str = ConfigAttribute(env='DATABRICKS_AUTH_TYPE')
-    cluster_id: str = ConfigAttribute(env='DATABRICKS_CLUSTER_ID')
-    warehouse_id: str = ConfigAttribute(env='DATABRICKS_WAREHOUSE_ID')
-    serverless_compute_id: str = ConfigAttribute(env='DATABRICKS_SERVERLESS_COMPUTE_ID')
+    host: str = ConfigAttribute(env="DATABRICKS_HOST")
+    account_id: str = ConfigAttribute(env="DATABRICKS_ACCOUNT_ID")
+    token: str = ConfigAttribute(env="DATABRICKS_TOKEN", auth="pat", sensitive=True)
+    username: str = ConfigAttribute(env="DATABRICKS_USERNAME", auth="basic")
+    password: str = ConfigAttribute(env="DATABRICKS_PASSWORD", auth="basic", sensitive=True)
+    client_id: str = ConfigAttribute(env="DATABRICKS_CLIENT_ID", auth="oauth")
+    client_secret: str = ConfigAttribute(env="DATABRICKS_CLIENT_SECRET", auth="oauth", sensitive=True)
+    profile: str = ConfigAttribute(env="DATABRICKS_CONFIG_PROFILE")
+    config_file: str = ConfigAttribute(env="DATABRICKS_CONFIG_FILE")
+    google_service_account: str = ConfigAttribute(env="DATABRICKS_GOOGLE_SERVICE_ACCOUNT", auth="google")
+    google_credentials: str = ConfigAttribute(env="GOOGLE_CREDENTIALS", auth="google", sensitive=True)
+    azure_workspace_resource_id: str = ConfigAttribute(env="DATABRICKS_AZURE_RESOURCE_ID", auth="azure")
+    azure_use_msi: bool = ConfigAttribute(env="ARM_USE_MSI", auth="azure")
+    azure_client_secret: str = ConfigAttribute(env="ARM_CLIENT_SECRET", auth="azure", sensitive=True)
+    azure_client_id: str = ConfigAttribute(env="ARM_CLIENT_ID", auth="azure")
+    azure_tenant_id: str = ConfigAttribute(env="ARM_TENANT_ID", auth="azure")
+    azure_environment: str = ConfigAttribute(env="ARM_ENVIRONMENT")
+    databricks_cli_path: str = ConfigAttribute(env="DATABRICKS_CLI_PATH")
+    auth_type: str = ConfigAttribute(env="DATABRICKS_AUTH_TYPE")
+    cluster_id: str = ConfigAttribute(env="DATABRICKS_CLUSTER_ID")
+    warehouse_id: str = ConfigAttribute(env="DATABRICKS_WAREHOUSE_ID")
+    serverless_compute_id: str = ConfigAttribute(env="DATABRICKS_SERVERLESS_COMPUTE_ID")
     skip_verify: bool = ConfigAttribute()
     http_timeout_seconds: float = ConfigAttribute()
-    debug_truncate_bytes: int = ConfigAttribute(env='DATABRICKS_DEBUG_TRUNCATE_BYTES')
-    debug_headers: bool = ConfigAttribute(env='DATABRICKS_DEBUG_HEADERS')
-    rate_limit: int = ConfigAttribute(env='DATABRICKS_RATE_LIMIT')
+    debug_truncate_bytes: int = ConfigAttribute(env="DATABRICKS_DEBUG_TRUNCATE_BYTES")
+    debug_headers: bool = ConfigAttribute(env="DATABRICKS_DEBUG_HEADERS")
+    rate_limit: int = ConfigAttribute(env="DATABRICKS_RATE_LIMIT")
     retry_timeout_seconds: int = ConfigAttribute()
-    metadata_service_url = ConfigAttribute(env='DATABRICKS_METADATA_SERVICE_URL',
-                                           auth='metadata-service',
-                                           sensitive=True)
+    metadata_service_url = ConfigAttribute(
+        env="DATABRICKS_METADATA_SERVICE_URL",
+        auth="metadata-service",
+        sensitive=True,
+    )
     max_connection_pools: int = ConfigAttribute()
     max_connections_per_pool: int = ConfigAttribute()
     databricks_environment: Optional[DatabricksEnvironment] = None
 
-    enable_experimental_files_api_client: bool = ConfigAttribute(
-        env='DATABRICKS_ENABLE_EXPERIMENTAL_FILES_API_CLIENT')
+    enable_experimental_files_api_client: bool = ConfigAttribute(env="DATABRICKS_ENABLE_EXPERIMENTAL_FILES_API_CLIENT")
     files_api_client_download_max_total_recovers = None
     files_api_client_download_max_total_recovers_without_progressing = 1
 
     def __init__(
-            self,
-            *,
-            # Deprecated. Use credentials_strategy instead.
-            credentials_provider: Optional[CredentialsStrategy] = None,
-            credentials_strategy: Optional[CredentialsStrategy] = None,
-            product=None,
-            product_version=None,
-            clock: Optional[Clock] = None,
-            **kwargs):
+        self,
+        *,
+        # Deprecated. Use credentials_strategy instead.
+        credentials_provider: Optional[CredentialsStrategy] = None,
+        credentials_strategy: Optional[CredentialsStrategy] = None,
+        product=None,
+        product_version=None,
+        clock: Optional[Clock] = None,
+        **kwargs,
+    ):
         self._header_factory = None
         self._inner = {}
         self._user_agent_other_info = []
         if credentials_strategy and credentials_provider:
-            raise ValueError(
-                "When providing `credentials_strategy` field, `credential_provider` cannot be specified.")
+            raise ValueError("When providing `credentials_strategy` field, `credential_provider` cannot be specified.")
         if credentials_provider:
-            logger.warning(
-                "parameter 'credentials_provider' is deprecated. Use 'credentials_strategy' instead.")
+            logger.warning("parameter 'credentials_provider' is deprecated. Use 'credentials_strategy' instead.")
         self._credentials_strategy = next(
-            s for s in [credentials_strategy, credentials_provider,
-                        DefaultCredentials()] if s is not None)
-        if 'databricks_environment' in kwargs:
-            self.databricks_environment = kwargs['databricks_environment']
-            del kwargs['databricks_environment']
+            s
+            for s in [
+                credentials_strategy,
+                credentials_provider,
+                DefaultCredentials(),
+            ]
+            if s is not None
+        )
+        if "databricks_environment" in kwargs:
+            self.databricks_environment = kwargs["databricks_environment"]
+            del kwargs["databricks_environment"]
         self._clock = clock if clock is not None else RealClock()
         try:
             self._set_inner_config(kwargs)
@@ -145,15 +151,15 @@ class Config:
         return message
 
     @staticmethod
-    def parse_dsn(dsn: str) -> 'Config':
+    def parse_dsn(dsn: str) -> "Config":
         uri = urllib.parse.urlparse(dsn)
-        if uri.scheme != 'databricks':
-            raise ValueError(f'Expected databricks:// scheme, got {uri.scheme}://')
-        kwargs = {'host': f'https://{uri.hostname}'}
+        if uri.scheme != "databricks":
+            raise ValueError(f"Expected databricks:// scheme, got {uri.scheme}://")
+        kwargs = {"host": f"https://{uri.hostname}"}
         if uri.username:
-            kwargs['username'] = uri.username
+            kwargs["username"] = uri.username
         if uri.password:
-            kwargs['password'] = uri.password
+            kwargs["password"] = uri.password
         query = dict(urllib.parse.parse_qsl(uri.query))
         for attr in Config.attributes():
             if attr.name not in query:
@@ -162,7 +168,7 @@ class Config:
         return Config(**kwargs)
 
     def authenticate(self) -> Dict[str, str]:
-        """ Returns a list of fresh authentication headers """
+        """Returns a list of fresh authentication headers"""
         return self._header_factory()
 
     def as_dict(self) -> dict:
@@ -174,9 +180,9 @@ class Config:
         env = self.azure_environment.upper()
         # Compatibility with older versions of the SDK that allowed users to specify AzurePublicCloud or AzureChinaCloud
         if env.startswith("AZURE"):
-            env = env[len("AZURE"):]
+            env = env[len("AZURE") :]
         if env.endswith("CLOUD"):
-            env = env[:-len("CLOUD")]
+            env = env[: -len("CLOUD")]
         return env
 
     @property
@@ -241,19 +247,21 @@ class Config:
 
     @property
     def user_agent(self):
-        """ Returns User-Agent header used by this SDK """
+        """Returns User-Agent header used by this SDK"""
 
         # global user agent includes SDK version, product name & version, platform info,
         # and global extra info. Config can have specific extra info associated with it,
         # such as an override product, auth type, and other user-defined information.
-        return useragent.to_string(self._product_info,
-                                   [("auth", self.auth_type)] + self._user_agent_other_info)
+        return useragent.to_string(
+            self._product_info,
+            [("auth", self.auth_type)] + self._user_agent_other_info,
+        )
 
     @property
     def _upstream_user_agent(self) -> str:
         return " ".join(f"{k}/{v}" for k, v in useragent._get_upstream_user_agent_info())
 
-    def with_user_agent_extra(self, key: str, value: str) -> 'Config':
+    def with_user_agent_extra(self, key: str, value: str) -> "Config":
         self._user_agent_other_info.append((key, value))
         return self
 
@@ -269,7 +277,7 @@ class Config:
         return get_workspace_endpoints(self.host)
 
     def debug_string(self) -> str:
-        """ Returns log-friendly representation of configured attributes """
+        """Returns log-friendly representation of configured attributes"""
         buf = []
         attrs_used = []
         envs_used = []
@@ -279,13 +287,13 @@ class Config:
             value = getattr(self, attr.name)
             if not value:
                 continue
-            safe = '***' if attr.sensitive else f'{value}'
-            attrs_used.append(f'{attr.name}={safe}')
+            safe = "***" if attr.sensitive else f"{value}"
+            attrs_used.append(f"{attr.name}={safe}")
         if attrs_used:
             buf.append(f'Config: {", ".join(attrs_used)}')
         if envs_used:
             buf.append(f'Env: {", ".join(envs_used)}')
-        return '. '.join(buf)
+        return ". ".join(buf)
 
     def to_dict(self) -> Dict[str, any]:
         return self._inner
@@ -302,16 +310,16 @@ class Config:
         if (not self.cluster_id) and (not self.warehouse_id):
             return None
         if self.cluster_id and self.warehouse_id:
-            raise ValueError('cannot have both cluster_id and warehouse_id')
+            raise ValueError("cannot have both cluster_id and warehouse_id")
         headers = self.authenticate()
-        headers['User-Agent'] = f'{self.user_agent} sdk-feature/sql-http-path'
+        headers["User-Agent"] = f"{self.user_agent} sdk-feature/sql-http-path"
         if self.cluster_id:
             response = requests.get(f"{self.host}/api/2.0/preview/scim/v2/Me", headers=headers)
             # get workspace ID from the response header
-            workspace_id = response.headers.get('x-databricks-org-id')
-            return f'sql/protocolv1/o/{workspace_id}/{self.cluster_id}'
+            workspace_id = response.headers.get("x-databricks-org-id")
+            return f"sql/protocolv1/o/{workspace_id}/{self.cluster_id}"
         if self.warehouse_id:
-            return f'/sql/1.0/warehouses/{self.warehouse_id}'
+            return f"/sql/1.0/warehouses/{self.warehouse_id}"
 
     @property
     def clock(self) -> Clock:
@@ -319,17 +327,18 @@ class Config:
 
     @classmethod
     def attributes(cls) -> Iterable[ConfigAttribute]:
-        """ Returns a list of Databricks SDK configuration metadata """
-        if hasattr(cls, '_attributes'):
+        """Returns a list of Databricks SDK configuration metadata"""
+        if hasattr(cls, "_attributes"):
             return cls._attributes
         if sys.version_info[1] >= 10:
             import inspect
+
             anno = inspect.get_annotations(cls)
         else:
             # Python 3.7 compatibility: getting type hints require extra hop, as described in
             # "Accessing The Annotations Dict Of An Object In Python 3.9 And Older" section of
             # https://docs.python.org/3/howto/annotations.html
-            anno = cls.__dict__['__annotations__']
+            anno = cls.__dict__["__annotations__"]
         attrs = []
         for name, v in cls.__dict__.items():
             if type(v) != ConfigAttribute:
@@ -351,26 +360,25 @@ class Config:
         If the tenant ID is already set, this method does nothing."""
         if not self.is_azure or self.azure_tenant_id is not None or self.host is None:
             return
-        login_url = f'{self.host}/aad/auth'
-        logger.debug(f'Loading tenant ID from {login_url}')
+        login_url = f"{self.host}/aad/auth"
+        logger.debug(f"Loading tenant ID from {login_url}")
         resp = requests.get(login_url, allow_redirects=False)
         if resp.status_code // 100 != 3:
-            logger.debug(
-                f'Failed to get tenant ID from {login_url}: expected status code 3xx, got {resp.status_code}')
+            logger.debug(f"Failed to get tenant ID from {login_url}: expected status code 3xx, got {resp.status_code}")
             return
-        entra_id_endpoint = resp.headers.get('Location')
+        entra_id_endpoint = resp.headers.get("Location")
         if entra_id_endpoint is None:
-            logger.debug(f'No Location header in response from {login_url}')
+            logger.debug(f"No Location header in response from {login_url}")
             return
         # The Location header has the following form: https://login.microsoftonline.com/<tenant-id>/oauth2/authorize?...
         # The domain may change depending on the Azure cloud (e.g. login.microsoftonline.us for US Government cloud).
         url = urllib.parse.urlparse(entra_id_endpoint)
-        path_segments = url.path.split('/')
+        path_segments = url.path.split("/")
         if len(path_segments) < 2:
-            logger.debug(f'Invalid path in Location header: {url.path}')
+            logger.debug(f"Invalid path in Location header: {url.path}")
             return
         self.azure_tenant_id = path_segments[1]
-        logger.debug(f'Loaded tenant ID: {self.azure_tenant_id}')
+        logger.debug(f"Loaded tenant ID: {self.azure_tenant_id}")
 
     def _set_inner_config(self, keyword_args: Dict[str, any]):
         for attr in self.attributes():
@@ -393,11 +401,10 @@ class Config:
             self.__setattr__(attr.name, value)
             found = True
         if found:
-            logger.debug('Loaded from environment')
+            logger.debug("Loaded from environment")
 
     def _known_file_config_loader(self):
-        if not self.profile and (self.is_any_auth_configured or self.host
-                                 or self.azure_workspace_resource_id):
+        if not self.profile and (self.is_any_auth_configured or self.host or self.azure_workspace_resource_id):
             # skip loading configuration file if there's any auth configured
             # directly as part of the Config() constructor.
             return
@@ -417,15 +424,15 @@ class Config:
         # from Unified Auth test suite at the moment. Hence, the private variable access.
         # See: https://docs.python.org/3/library/configparser.html#mapping-protocol-access
         if not has_explicit_profile and not ini_file.defaults():
-            logger.debug(f'{config_path} has no DEFAULT profile configured')
+            logger.debug(f"{config_path} has no DEFAULT profile configured")
             return
         if not has_explicit_profile:
             profile = "DEFAULT"
         profiles = ini_file._sections
         if ini_file.defaults():
-            profiles['DEFAULT'] = ini_file.defaults()
+            profiles["DEFAULT"] = ini_file.defaults()
         if profile not in profiles:
-            raise ValueError(f'resolve: {config_path} has no {profile} profile configured')
+            raise ValueError(f"resolve: {config_path} has no {profile} profile configured")
         raw_config = profiles[profile]
         logger.info(f'loading {profile} profile from {config_file}: {", ".join(raw_config.keys())}')
         for k, v in raw_config.items():
@@ -448,26 +455,29 @@ class Config:
             # client has auth preference set
             return
         names = " and ".join(sorted(auths_used))
-        raise ValueError(f'validate: more than one authorization method configured: {names}')
+        raise ValueError(f"validate: more than one authorization method configured: {names}")
 
     def init_auth(self):
         try:
             self._header_factory = self._credentials_strategy(self)
             self.auth_type = self._credentials_strategy.auth_type()
             if not self._header_factory:
-                raise ValueError('not configured')
+                raise ValueError("not configured")
         except ValueError as e:
-            raise ValueError(f'{self._credentials_strategy.auth_type()} auth: {e}') from e
+            raise ValueError(f"{self._credentials_strategy.auth_type()} auth: {e}") from e
 
     def _init_product(self, product, product_version):
         if product is not None or product_version is not None:
             default_product, default_version = useragent.product()
-            self._product_info = (product or default_product, product_version or default_version)
+            self._product_info = (
+                product or default_product,
+                product_version or default_version,
+            )
         else:
             self._product_info = None
 
     def __repr__(self):
-        return f'<{self.debug_string()}>'
+        return f"<{self.debug_string()}>"
 
     def copy(self):
         """Creates a copy of the config object.
@@ -480,6 +490,5 @@ class Config:
         return cpy
 
     def deep_copy(self):
-        """Creates a deep copy of the config object.
-        """
+        """Creates a deep copy of the config object."""
         return copy.deepcopy(self)

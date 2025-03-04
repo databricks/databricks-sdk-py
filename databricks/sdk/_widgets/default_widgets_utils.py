@@ -11,25 +11,31 @@ class DefaultValueOnlyWidgetUtils(WidgetUtils):
     def text(self, name: str, defaultValue: str, label: typing.Optional[str] = None):
         self._widgets[name] = defaultValue
 
-    def dropdown(self,
-                 name: str,
-                 defaultValue: str,
-                 choices: typing.List[str],
-                 label: typing.Optional[str] = None):
+    def dropdown(
+        self,
+        name: str,
+        defaultValue: str,
+        choices: typing.List[str],
+        label: typing.Optional[str] = None,
+    ):
         self._widgets[name] = defaultValue
 
-    def combobox(self,
-                 name: str,
-                 defaultValue: str,
-                 choices: typing.List[str],
-                 label: typing.Optional[str] = None):
+    def combobox(
+        self,
+        name: str,
+        defaultValue: str,
+        choices: typing.List[str],
+        label: typing.Optional[str] = None,
+    ):
         self._widgets[name] = defaultValue
 
-    def multiselect(self,
-                    name: str,
-                    defaultValue: str,
-                    choices: typing.List[str],
-                    label: typing.Optional[str] = None):
+    def multiselect(
+        self,
+        name: str,
+        defaultValue: str,
+        choices: typing.List[str],
+        label: typing.Optional[str] = None,
+    ):
         self._widgets[name] = defaultValue
 
     def _get(self, name: str) -> str:

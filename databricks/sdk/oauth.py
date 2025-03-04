@@ -9,8 +9,10 @@ import threading
 import urllib.parse
 import webbrowser
 from abc import abstractmethod
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
 from datetime import datetime, timedelta
+from enum import Enum
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from typing import Any, Dict, List, Optional
 
@@ -21,7 +23,7 @@ from ._base_client import _BaseClient, _fix_host_if_needed
 
 # Error code for PKCE flow in Azure Active Directory, that gets additional retry.
 # See https://stackoverflow.com/a/75466778/277035 for more info
-NO_ORIGIN_FOR_SPA_CLIENT_ERROR = 'AADSTS9002327'
+NO_ORIGIN_FOR_SPA_CLIENT_ERROR = "AADSTS9002327"
 
 URL_ENCODED_CONTENT_TYPE = "application/x-www-form-urlencoded"
 JWT_BEARER_GRANT_TYPE = "urn:ietf:params:oauth:grant-type:jwt-bearer"
@@ -52,20 +54,25 @@ class OidcEndpoints:
     The endpoints used for OAuth-based authentication in Databricks.
     """
 
-    authorization_endpoint: str # ../v1/authorize
+    authorization_endpoint: str  # ../v1/authorize
     """The authorization endpoint for the OAuth flow. The user-agent should be directed to this endpoint in order for
     the user to login and authorize the client for user-to-machine (U2M) flows."""
 
-    token_endpoint: str # ../v1/token
+    token_endpoint: str  # ../v1/token
     """The token endpoint for the OAuth flow."""
 
     @staticmethod
-    def from_dict(d: dict) -> 'OidcEndpoints':
-        return OidcEndpoints(authorization_endpoint=d.get('authorization_endpoint'),
-                             token_endpoint=d.get('token_endpoint'))
+    def from_dict(d: dict) -> "OidcEndpoints":
+        return OidcEndpoints(
+            authorization_endpoint=d.get("authorization_endpoint"),
+            token_endpoint=d.get("token_endpoint"),
+        )
 
     def as_dict(self) -> dict:
-        return {'authorization_endpoint': self.authorization_endpoint, 'token_endpoint': self.token_endpoint}
+        return {
+            "authorization_endpoint": self.authorization_endpoint,
+            "token_endpoint": self.token_endpoint,
+        }
 
 
 @dataclass
@@ -91,19 +98,24 @@ class Token:
         return self.access_token and not self.expired
 
     def as_dict(self) -> dict:
-        raw = {'access_token': self.access_token, 'token_type': self.token_type}
+        raw = {
+            "access_token": self.access_token,
+            "token_type": self.token_type,
+        }
         if self.expiry:
-            raw['expiry'] = self.expiry.isoformat()
+            raw["expiry"] = self.expiry.isoformat()
         if self.refresh_token:
-            raw['refresh_token'] = self.refresh_token
+            raw["refresh_token"] = self.refresh_token
         return raw
 
     @staticmethod
-    def from_dict(raw: dict) -> 'Token':
-        return Token(access_token=raw['access_token'],
-                     token_type=raw['token_type'],
-                     expiry=datetime.fromisoformat(raw['expiry']),
-                     refresh_token=raw.get('refresh_token'))
+    def from_dict(raw: dict) -> "Token":
+        return Token(
+            access_token=raw["access_token"],
+            token_type=raw["token_type"],
+            expiry=datetime.fromisoformat(raw["expiry"]),
+            refresh_token=raw.get("refresh_token"),
+        )
 
     def jwt_claims(self) -> Dict[str, str]:
         """Get claims from the access token or return an empty dictionary if it is not a JWT token.
@@ -131,7 +143,7 @@ class Token:
         try:
             jwt_split = self.access_token.split(".")
             if len(jwt_split) != 3:
-                logger.debug(f'Tried to decode access token as JWT, but failed: {len(jwt_split)} components')
+                logger.debug(f"Tried to decode access token as JWT, but failed: {len(jwt_split)} components")
                 return {}
             payload_with_padding = jwt_split[1] + "=="
             payload_bytes = base64.standard_b64decode(payload_with_padding)
@@ -139,7 +151,7 @@ class Token:
             claims = json.loads(payload_json)
             return claims
         except ValueError as err:
-            logger.debug(f'Tried to decode access token as JWT, but failed: {err}')
+            logger.debug(f"Tried to decode access token as JWT, but failed: {err}")
             return {}
 
 
@@ -150,17 +162,21 @@ class TokenSource:
         pass
 
 
-def retrieve_token(client_id,
-                   client_secret,
-                   token_url,
-                   params,
-                   use_params=False,
-                   use_header=False,
-                   headers=None) -> Token:
-    logger.debug(f'Retrieving token for {client_id}')
+def retrieve_token(
+    client_id,
+    client_secret,
+    token_url,
+    params,
+    use_params=False,
+    use_header=False,
+    headers=None,
+) -> Token:
+    logger.debug(f"Retrieving token for {client_id}")
     if use_params:
-        if client_id: params["client_id"] = client_id
-        if client_secret: params["client_secret"] = client_secret
+        if client_id:
+            params["client_id"] = client_id
+        if client_secret:
+            params["client_secret"] = client_secret
     auth = None
     if use_header:
         auth = requests.auth.HTTPBasicAuth(client_id, client_secret)
@@ -168,40 +184,156 @@ def retrieve_token(client_id,
         auth = IgnoreNetrcAuth()
     resp = requests.post(token_url, params, auth=auth, headers=headers)
     if not resp.ok:
-        if resp.headers['Content-Type'].startswith('application/json'):
+        if resp.headers["Content-Type"].startswith("application/json"):
             err = resp.json()
-            code = err.get('errorCode', err.get('error', 'unknown'))
-            summary = err.get('errorSummary', err.get('error_description', 'unknown'))
-            summary = summary.replace("\r\n", ' ')
-            raise ValueError(f'{code}: {summary}')
+            code = err.get("errorCode", err.get("error", "unknown"))
+            summary = err.get("errorSummary", err.get("error_description", "unknown"))
+            summary = summary.replace("\r\n", " ")
+            raise ValueError(f"{code}: {summary}")
         raise ValueError(resp.content)
     try:
         j = resp.json()
         expires_in = int(j["expires_in"])
         expiry = datetime.now() + timedelta(seconds=expires_in)
-        return Token(access_token=j["access_token"],
-                     refresh_token=j.get('refresh_token'),
-                     token_type=j["token_type"],
-                     expiry=expiry)
+        return Token(
+            access_token=j["access_token"],
+            refresh_token=j.get("refresh_token"),
+            token_type=j["token_type"],
+            expiry=expiry,
+        )
     except Exception as e:
         raise NotImplementedError(f"Not supported yet: {e}")
 
 
+class _TokenState(Enum):
+    """
+    Represents the state of a token. Each token can be in one of
+    the following three states:
+      - FRESH: The token is valid.
+      - STALE: The token is valid but will expire soon.
+      - EXPIRED: The token has expired and cannot be used.
+    """
+
+    FRESH = 1  # The token is valid.
+    STALE = 2  # The token is valid but will expire soon.
+    EXPIRED = 3  # The token has expired and cannot be used.
+
+
 class Refreshable(TokenSource):
+    """A token source that supports refreshing expired tokens."""
 
-    def __init__(self, token=None):
-        self._lock = threading.Lock() # to guard _token
+    _EXECUTOR = None
+    _EXECUTOR_LOCK = threading.Lock()
+    _DEFAULT_STALE_DURATION = timedelta(minutes=3)
+
+    @classmethod
+    def _get_executor(cls):
+        """Lazy initialization of the ThreadPoolExecutor."""
+        if cls._EXECUTOR is None:
+            with cls._EXECUTOR_LOCK:
+                if cls._EXECUTOR is None:
+                    # This thread pool has multiple workers because it is shared by all instances of Refreshable.
+                    cls._EXECUTOR = ThreadPoolExecutor(max_workers=10)
+        return cls._EXECUTOR
+
+    def __init__(
+        self,
+        token: Token = None,
+        disable_async: bool = True,
+        stale_duration: timedelta = _DEFAULT_STALE_DURATION,
+    ):
+        # Config properties
+        self._stale_duration = stale_duration
+        self._disable_async = disable_async
+        # Lock
+        self._lock = threading.Lock()
+        # Non Thread safe properties. They should be accessed only when protected by the lock above.
         self._token = token
+        self._is_refreshing = False
+        self._refresh_err = False
 
+    # This is the main entry point for the Token. Do not access the token
+    # using any of the internal functions.
     def token(self) -> Token:
-        self._lock.acquire()
-        try:
-            if self._token and self._token.valid:
-                return self._token
-            self._token = self.refresh()
+        """Returns a valid token, blocking if async refresh is disabled."""
+        with self._lock:
+            if self._disable_async:
+                return self._blocking_token()
+            return self._async_token()
+
+    def _async_token(self) -> Token:
+        """
+        Returns a token.
+        If the token is stale, triggers an asynchronous refresh.
+        If the token is expired, refreshes it synchronously, blocking until the refresh is complete.
+        """
+        state = self._token_state()
+        token = self._token
+
+        if state == _TokenState.FRESH:
+            return token
+        if state == _TokenState.STALE:
+            self._trigger_async_refresh()
+            return token
+        return self._blocking_token()
+
+    def _token_state(self) -> _TokenState:
+        """Returns the current state of the token."""
+        if not self._token or not self._token.valid:
+            return _TokenState.EXPIRED
+        if not self._token.expiry:
+            return _TokenState.FRESH
+
+        lifespan = self._token.expiry - datetime.now()
+        if lifespan < timedelta(seconds=0):
+            return _TokenState.EXPIRED
+        if lifespan < self._stale_duration:
+            return _TokenState.STALE
+        return _TokenState.FRESH
+
+    def _blocking_token(self) -> Token:
+        """Returns a token, blocking if necessary to refresh it."""
+        state = self._token_state()
+        # This is important to recover from potential previous failed attempts
+        # to refresh the token asynchronously.
+        self._refresh_err = False
+        self._is_refreshing = False
+
+        # It's possible that the token got refreshed (either by a _blocking_refresh or
+        # an _async_refresh call) while this particular call was waiting to acquire
+        # the lock. This check avoids refreshing the token again in such cases.
+        if state != _TokenState.EXPIRED:
             return self._token
-        finally:
-            self._lock.release()
+
+        self._token = self.refresh()
+        return self._token
+
+    def _trigger_async_refresh(self):
+        """Starts an asynchronous refresh if none is in progress."""
+
+        def _refresh_internal():
+            new_token: Token = None
+            try:
+                new_token = self.refresh()
+            except Exception as e:
+                # This happens on a thread, so we don't want to propagate the error.
+                # Instead, if there is no new_token for any reason, we will disable async refresh below
+                # But we will do it inside the lock.
+                logger.warning(f"Tried to refresh token asynchronously, but failed: {e}")
+
+            with self._lock:
+                if new_token is not None:
+                    self._token = new_token
+                else:
+                    self._refresh_err = True
+                self._is_refreshing = False
+
+        # The token may have been refreshed by another thread.
+        if self._token_state() == _TokenState.FRESH:
+            return
+        if not self._is_refreshing and not self._refresh_err:
+            self._is_refreshing = True
+            Refreshable._get_executor().submit(_refresh_internal)
 
     @abstractmethod
     def refresh(self) -> Token:
@@ -219,23 +351,24 @@ class _OAuthCallback(BaseHTTPRequestHandler):
 
     def do_GET(self):
         from urllib.parse import parse_qsl
-        parts = self.path.split('?')
+
+        parts = self.path.split("?")
         if len(parts) != 2:
-            self.send_error(400, 'Missing Query')
+            self.send_error(400, "Missing Query")
             return
 
         query = dict(parse_qsl(parts[1]))
         self._feedback.append(query)
 
-        if 'error' in query:
-            self.send_error(400, query['error'], query.get('error_description'))
+        if "error" in query:
+            self.send_error(400, query["error"], query.get("error_description"))
             return
 
         self.send_response(200)
-        self.send_header('Content-type', 'text/html')
+        self.send_header("Content-type", "text/html")
         self.end_headers()
         # TODO: show better message
-        self.wfile.write(b'You can close this tab.')
+        self.wfile.write(b"You can close this tab.")
 
 
 def get_account_endpoints(host: str, account_id: str, client: _BaseClient = _BaseClient()) -> OidcEndpoints:
@@ -246,8 +379,8 @@ def get_account_endpoints(host: str, account_id: str, client: _BaseClient = _Bas
     :return: The account's OIDC endpoints.
     """
     host = _fix_host_if_needed(host)
-    oidc = f'{host}/oidc/accounts/{account_id}/.well-known/oauth-authorization-server'
-    resp = client.do('GET', oidc)
+    oidc = f"{host}/oidc/accounts/{account_id}/.well-known/oauth-authorization-server"
+    resp = client.do("GET", oidc)
     return OidcEndpoints.from_dict(resp)
 
 
@@ -258,12 +391,14 @@ def get_workspace_endpoints(host: str, client: _BaseClient = _BaseClient()) -> O
     :return: The workspace's OIDC endpoints.
     """
     host = _fix_host_if_needed(host)
-    oidc = f'{host}/oidc/.well-known/oauth-authorization-server'
-    resp = client.do('GET', oidc)
+    oidc = f"{host}/oidc/.well-known/oauth-authorization-server"
+    resp = client.do("GET", oidc)
     return OidcEndpoints.from_dict(resp)
 
 
-def get_azure_entra_id_workspace_endpoints(host: str) -> Optional[OidcEndpoints]:
+def get_azure_entra_id_workspace_endpoints(
+    host: str,
+) -> Optional[OidcEndpoints]:
     """
     Get the Azure Entra ID endpoints for a given workspace. Can only be used when authenticating to Azure Databricks
     using an application registered in Azure Entra ID.
@@ -272,22 +407,26 @@ def get_azure_entra_id_workspace_endpoints(host: str) -> Optional[OidcEndpoints]
     """
     # In Azure, this workspace endpoint redirects to the Entra ID authorization endpoint
     host = _fix_host_if_needed(host)
-    res = requests.get(f'{host}/oidc/oauth2/v2.0/authorize', allow_redirects=False)
-    real_auth_url = res.headers.get('location')
+    res = requests.get(f"{host}/oidc/oauth2/v2.0/authorize", allow_redirects=False)
+    real_auth_url = res.headers.get("location")
     if not real_auth_url:
         return None
-    return OidcEndpoints(authorization_endpoint=real_auth_url,
-                         token_endpoint=real_auth_url.replace('/authorize', '/token'))
+    return OidcEndpoints(
+        authorization_endpoint=real_auth_url,
+        token_endpoint=real_auth_url.replace("/authorize", "/token"),
+    )
 
 
 class SessionCredentials(Refreshable):
 
-    def __init__(self,
-                 token: Token,
-                 token_endpoint: str,
-                 client_id: str,
-                 client_secret: str = None,
-                 redirect_url: str = None):
+    def __init__(
+        self,
+        token: Token,
+        token_endpoint: str,
+        client_id: str,
+        client_secret: str = None,
+        redirect_url: str = None,
+    ):
         self._token_endpoint = token_endpoint
         self._client_id = client_id
         self._client_secret = client_secret
@@ -295,61 +434,72 @@ class SessionCredentials(Refreshable):
         super().__init__(token)
 
     def as_dict(self) -> dict:
-        return {'token': self._token.as_dict()}
+        return {"token": self.token().as_dict()}
 
     @staticmethod
-    def from_dict(raw: dict,
-                  token_endpoint: str,
-                  client_id: str,
-                  client_secret: str = None,
-                  redirect_url: str = None) -> 'SessionCredentials':
-        return SessionCredentials(token=Token.from_dict(raw['token']),
-                                  token_endpoint=token_endpoint,
-                                  client_id=client_id,
-                                  client_secret=client_secret,
-                                  redirect_url=redirect_url)
+    def from_dict(
+        raw: dict,
+        token_endpoint: str,
+        client_id: str,
+        client_secret: str = None,
+        redirect_url: str = None,
+    ) -> "SessionCredentials":
+        return SessionCredentials(
+            token=Token.from_dict(raw["token"]),
+            token_endpoint=token_endpoint,
+            client_id=client_id,
+            client_secret=client_secret,
+            redirect_url=redirect_url,
+        )
 
     def auth_type(self):
         """Implementing CredentialsProvider protocol"""
         # TODO: distinguish between Databricks IDP and Azure AD
-        return 'oauth'
+        return "oauth"
 
     def __call__(self, *args, **kwargs):
         """Implementing CredentialsProvider protocol"""
 
         def inner() -> Dict[str, str]:
-            return {'Authorization': f"Bearer {self.token().access_token}"}
+            return {"Authorization": f"Bearer {self.token().access_token}"}
 
         return inner
 
     def refresh(self) -> Token:
         refresh_token = self._token.refresh_token
         if not refresh_token:
-            raise ValueError('oauth2: token expired and refresh token is not set')
-        params = {'grant_type': 'refresh_token', 'refresh_token': refresh_token}
+            raise ValueError("oauth2: token expired and refresh token is not set")
+        params = {
+            "grant_type": "refresh_token",
+            "refresh_token": refresh_token,
+        }
         headers = {}
-        if 'microsoft' in self._token_endpoint:
+        if "microsoft" in self._token_endpoint:
             # Tokens issued for the 'Single-Page Application' client-type may
             # only be redeemed via cross-origin requests
-            headers = {'Origin': self._redirect_url}
-        return retrieve_token(client_id=self._client_id,
-                              client_secret=self._client_secret,
-                              token_url=self._token_endpoint,
-                              params=params,
-                              use_params=True,
-                              headers=headers)
+            headers = {"Origin": self._redirect_url}
+        return retrieve_token(
+            client_id=self._client_id,
+            client_secret=self._client_secret,
+            token_url=self._token_endpoint,
+            params=params,
+            use_params=True,
+            headers=headers,
+        )
 
 
 class Consent:
 
-    def __init__(self,
-                 state: str,
-                 verifier: str,
-                 authorization_url: str,
-                 redirect_url: str,
-                 token_endpoint: str,
-                 client_id: str,
-                 client_secret: str = None) -> None:
+    def __init__(
+        self,
+        state: str,
+        verifier: str,
+        authorization_url: str,
+        redirect_url: str,
+        token_endpoint: str,
+        client_id: str,
+        client_secret: str = None,
+    ) -> None:
         self._verifier = verifier
         self._state = state
         self._authorization_url = authorization_url
@@ -360,12 +510,12 @@ class Consent:
 
     def as_dict(self) -> dict:
         return {
-            'state': self._state,
-            'verifier': self._verifier,
-            'authorization_url': self._authorization_url,
-            'redirect_url': self._redirect_url,
-            'token_endpoint': self._token_endpoint,
-            'client_id': self._client_id,
+            "state": self._state,
+            "verifier": self._verifier,
+            "authorization_url": self._authorization_url,
+            "redirect_url": self._redirect_url,
+            "token_endpoint": self._token_endpoint,
+            "client_id": self._client_id,
         }
 
     @property
@@ -373,65 +523,74 @@ class Consent:
         return self._authorization_url
 
     @staticmethod
-    def from_dict(raw: dict, client_secret: str = None) -> 'Consent':
-        return Consent(raw['state'],
-                       raw['verifier'],
-                       authorization_url=raw['authorization_url'],
-                       redirect_url=raw['redirect_url'],
-                       token_endpoint=raw['token_endpoint'],
-                       client_id=raw['client_id'],
-                       client_secret=client_secret)
+    def from_dict(raw: dict, client_secret: str = None) -> "Consent":
+        return Consent(
+            raw["state"],
+            raw["verifier"],
+            authorization_url=raw["authorization_url"],
+            redirect_url=raw["redirect_url"],
+            token_endpoint=raw["token_endpoint"],
+            client_id=raw["client_id"],
+            client_secret=client_secret,
+        )
 
     def launch_external_browser(self) -> SessionCredentials:
         redirect_url = urllib.parse.urlparse(self._redirect_url)
-        if redirect_url.hostname not in ('localhost', '127.0.0.1'):
-            raise ValueError(f'cannot listen on {redirect_url.hostname}')
+        if redirect_url.hostname not in ("localhost", "127.0.0.1"):
+            raise ValueError(f"cannot listen on {redirect_url.hostname}")
         feedback = []
-        logger.info(f'Opening {self._authorization_url} in a browser')
+        logger.info(f"Opening {self._authorization_url} in a browser")
         webbrowser.open_new(self._authorization_url)
         port = redirect_url.port
         handler_factory = functools.partial(_OAuthCallback, feedback)
         with HTTPServer(("localhost", port), handler_factory) as httpd:
-            logger.info(f'Waiting for redirect to http://localhost:{port}')
+            logger.info(f"Waiting for redirect to http://localhost:{port}")
             httpd.handle_request()
         if not feedback:
-            raise ValueError('No data received in callback')
+            raise ValueError("No data received in callback")
         query = feedback.pop()
         return self.exchange_callback_parameters(query)
 
     def exchange_callback_parameters(self, query: Dict[str, str]) -> SessionCredentials:
-        if 'error' in query:
-            raise ValueError('{error}: {error_description}'.format(**query))
-        if 'code' not in query or 'state' not in query:
-            raise ValueError('No code returned in callback')
-        return self.exchange(query['code'], query['state'])
+        if "error" in query:
+            raise ValueError("{error}: {error_description}".format(**query))
+        if "code" not in query or "state" not in query:
+            raise ValueError("No code returned in callback")
+        return self.exchange(query["code"], query["state"])
 
     def exchange(self, code: str, state: str) -> SessionCredentials:
         if self._state != state:
-            raise ValueError('state mismatch')
+            raise ValueError("state mismatch")
         params = {
-            'redirect_uri': self._redirect_url,
-            'grant_type': 'authorization_code',
-            'code_verifier': self._verifier,
-            'code': code
+            "redirect_uri": self._redirect_url,
+            "grant_type": "authorization_code",
+            "code_verifier": self._verifier,
+            "code": code,
         }
         headers = {}
         while True:
             try:
-                token = retrieve_token(client_id=self._client_id,
-                                       client_secret=self._client_secret,
-                                       token_url=self._token_endpoint,
-                                       params=params,
-                                       headers=headers,
-                                       use_params=True)
-                return SessionCredentials(token, self._token_endpoint, self._client_id, self._client_secret,
-                                          self._redirect_url)
+                token = retrieve_token(
+                    client_id=self._client_id,
+                    client_secret=self._client_secret,
+                    token_url=self._token_endpoint,
+                    params=params,
+                    headers=headers,
+                    use_params=True,
+                )
+                return SessionCredentials(
+                    token,
+                    self._token_endpoint,
+                    self._client_id,
+                    self._client_secret,
+                    self._redirect_url,
+                )
             except ValueError as e:
                 if NO_ORIGIN_FOR_SPA_CLIENT_ERROR in str(e):
                     # Retry in cases of 'Single-Page Application' client-type with
                     # 'Origin' header equal to client's redirect URL.
-                    headers['Origin'] = self._redirect_url
-                    msg = f'Retrying OAuth token exchange with {self._redirect_url} origin'
+                    headers["Origin"] = self._redirect_url
+                    msg = f"Retrying OAuth token exchange with {self._redirect_url} origin"
                     logger.debug(msg)
                     continue
                 raise e
@@ -456,15 +615,17 @@ class OAuthClient:
     exchange it for a token without possessing the Code Verifier.
     """
 
-    def __init__(self,
-                 oidc_endpoints: OidcEndpoints,
-                 redirect_url: str,
-                 client_id: str,
-                 scopes: List[str] = None,
-                 client_secret: str = None):
+    def __init__(
+        self,
+        oidc_endpoints: OidcEndpoints,
+        redirect_url: str,
+        client_id: str,
+        scopes: List[str] = None,
+        client_secret: str = None,
+    ):
 
         if not scopes:
-            scopes = ['all-apis']
+            scopes = ["all-apis"]
 
         self.redirect_url = redirect_url
         self._client_id = client_id
@@ -473,25 +634,27 @@ class OAuthClient:
         self._scopes = scopes
 
     @staticmethod
-    def from_host(host: str,
-                  client_id: str,
-                  redirect_url: str,
-                  *,
-                  scopes: List[str] = None,
-                  client_secret: str = None) -> 'OAuthClient':
+    def from_host(
+        host: str,
+        client_id: str,
+        redirect_url: str,
+        *,
+        scopes: List[str] = None,
+        client_secret: str = None,
+    ) -> "OAuthClient":
         from .core import Config
         from .credentials_provider import credentials_strategy
 
-        @credentials_strategy('noop', [])
+        @credentials_strategy("noop", [])
         def noop_credentials(_: any):
             return lambda: {}
 
         config = Config(host=host, credentials_strategy=noop_credentials)
         if not scopes:
-            scopes = ['all-apis']
+            scopes = ["all-apis"]
         oidc = config.oidc_endpoints
         if not oidc:
-            raise ValueError(f'{host} does not support OAuth')
+            raise ValueError(f"{host} does not support OAuth")
         return OAuthClient(oidc, redirect_url, client_id, scopes, client_secret)
 
     def initiate_consent(self) -> Consent:
@@ -500,28 +663,30 @@ class OAuthClient:
         # token_urlsafe() already returns base64-encoded string
         verifier = secrets.token_urlsafe(32)
         digest = hashlib.sha256(verifier.encode("UTF-8")).digest()
-        challenge = (base64.urlsafe_b64encode(digest).decode("UTF-8").replace("=", ""))
+        challenge = base64.urlsafe_b64encode(digest).decode("UTF-8").replace("=", "")
 
         params = {
-            'response_type': 'code',
-            'client_id': self._client_id,
-            'redirect_uri': self.redirect_url,
-            'scope': ' '.join(self._scopes),
-            'state': state,
-            'code_challenge': challenge,
-            'code_challenge_method': 'S256'
+            "response_type": "code",
+            "client_id": self._client_id,
+            "redirect_uri": self.redirect_url,
+            "scope": " ".join(self._scopes),
+            "state": state,
+            "code_challenge": challenge,
+            "code_challenge_method": "S256",
         }
-        auth_url = f'{self._oidc_endpoints.authorization_endpoint}?{urllib.parse.urlencode(params)}'
-        return Consent(state,
-                       verifier,
-                       authorization_url=auth_url,
-                       redirect_url=self.redirect_url,
-                       token_endpoint=self._oidc_endpoints.token_endpoint,
-                       client_id=self._client_id,
-                       client_secret=self._client_secret)
+        auth_url = f"{self._oidc_endpoints.authorization_endpoint}?{urllib.parse.urlencode(params)}"
+        return Consent(
+            state,
+            verifier,
+            authorization_url=auth_url,
+            redirect_url=self.redirect_url,
+            token_endpoint=self._oidc_endpoints.token_endpoint,
+            client_id=self._client_id,
+            client_secret=self._client_secret,
+        )
 
     def __repr__(self) -> str:
-        return f'<OAuthClient client_id={self._client_id} token_url={self._oidc_endpoints.token_endpoint} auth_url={self._oidc_endpoints.authorization_endpoint}>'
+        return f"<OAuthClient client_id={self._client_id} token_url={self._oidc_endpoints.token_endpoint} auth_url={self._oidc_endpoints.authorization_endpoint}>"
 
 
 @dataclass
@@ -535,6 +700,7 @@ class ClientCredentials(Refreshable):
     the background job uses the Client ID and Client Secret to obtain
     an Access Token from the Authorization Server.
     """
+
     client_id: str
     client_secret: str
     token_url: str
@@ -553,24 +719,28 @@ class ClientCredentials(Refreshable):
         if self.endpoint_params:
             for k, v in self.endpoint_params.items():
                 params[k] = v
-        return retrieve_token(self.client_id,
-                              self.client_secret,
-                              self.token_url,
-                              params,
-                              use_params=self.use_params,
-                              use_header=self.use_header)
+        return retrieve_token(
+            self.client_id,
+            self.client_secret,
+            self.token_url,
+            params,
+            use_params=self.use_params,
+            use_header=self.use_header,
+        )
 
 
 class TokenCache:
     BASE_PATH = "~/.config/databricks-sdk-py/oauth"
 
-    def __init__(self,
-                 host: str,
-                 oidc_endpoints: OidcEndpoints,
-                 client_id: str,
-                 redirect_url: str = None,
-                 client_secret: str = None,
-                 scopes: List[str] = None) -> None:
+    def __init__(
+        self,
+        host: str,
+        oidc_endpoints: OidcEndpoints,
+        client_id: str,
+        redirect_url: str = None,
+        client_secret: str = None,
+        scopes: List[str] = None,
+    ) -> None:
         self._host = host
         self._client_id = client_id
         self._oidc_endpoints = oidc_endpoints
@@ -582,8 +752,12 @@ class TokenCache:
     def filename(self) -> str:
         # Include host, client_id, and scopes in the cache filename to make it unique.
         hash = hashlib.sha256()
-        for chunk in [self._host, self._client_id, ",".join(self._scopes), ]:
-            hash.update(chunk.encode('utf-8'))
+        for chunk in [
+            self._host,
+            self._client_id,
+            ",".join(self._scopes),
+        ]:
+            hash.update(chunk.encode("utf-8"))
         return os.path.expanduser(os.path.join(self.__class__.BASE_PATH, hash.hexdigest() + ".json"))
 
     def load(self) -> Optional[SessionCredentials]:
@@ -594,13 +768,15 @@ class TokenCache:
             return None
 
         try:
-            with open(self.filename, 'r') as f:
+            with open(self.filename, "r") as f:
                 raw = json.load(f)
-                return SessionCredentials.from_dict(raw,
-                                                    token_endpoint=self._oidc_endpoints.token_endpoint,
-                                                    client_id=self._client_id,
-                                                    client_secret=self._client_secret,
-                                                    redirect_url=self._redirect_url)
+                return SessionCredentials.from_dict(
+                    raw,
+                    token_endpoint=self._oidc_endpoints.token_endpoint,
+                    client_id=self._client_id,
+                    client_secret=self._client_secret,
+                    redirect_url=self._redirect_url,
+                )
         except Exception:
             return None
 
@@ -609,6 +785,6 @@ class TokenCache:
         Save credentials to cache file.
         """
         os.makedirs(os.path.dirname(self.filename), exist_ok=True)
-        with open(self.filename, 'w') as f:
+        with open(self.filename, "w") as f:
             json.dump(credentials.as_dict(), f)
         os.chmod(self.filename, 0o600)
