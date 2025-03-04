@@ -1,5 +1,5 @@
+import re
 from dataclasses import dataclass, field
-from datetime import timedelta
 from typing import Any, Dict, List, Optional
 
 
@@ -41,7 +41,7 @@ class RetryInfo:
     cap has been reached.
     """
 
-    retry_delay: timedelta
+    retry_delay_seconds: float
 
 
 @dataclass
@@ -119,8 +119,8 @@ class ResourceInfo:
 
     resource_type: str
     resource_name: str
-    owner: Optional[str] = None
-    description: Optional[str] = None
+    owner: str
+    description: str
 
 
 @dataclass
@@ -165,89 +165,6 @@ class ErrorDetails:
     unknown_details: List[Any] = field(default_factory=list)
 
 
-@dataclass
-class _ErrorInfoPb:
-    reason: str
-    domain: str
-    metadata: Dict[str, str]
-
-
-@dataclass
-class _RequestInfoPb:
-    request_id: str
-    serving_data: str
-
-
-@dataclass
-class _DurationPb:
-    seconds: int
-    nanos: int
-
-
-@dataclass
-class _RetryInfoPb:
-    retry_delay: _DurationPb
-
-
-@dataclass
-class _DebugInfoPb:
-    stack_entries: List[str]
-    detail: str
-
-
-@dataclass
-class _QuotaFailureViolationPb:
-    subject: str
-    description: str
-
-
-@dataclass
-class _QuotaFailurePb:
-    violations: List[_QuotaFailureViolationPb]
-
-
-@dataclass
-class _PreconditionFailureViolationPb:
-    type: str
-    subject: str
-    description: str
-
-
-@dataclass
-class _PreconditionFailurePb:
-    violations: List[_PreconditionFailureViolationPb]
-
-
-@dataclass
-class _BadRequestFieldViolationPb:
-    field: str
-    description: str
-
-
-@dataclass
-class _BadRequestPb:
-    field_violations: List[_BadRequestFieldViolationPb]
-
-
-@dataclass
-class _ResourceInfoPb:
-    resource_type: str
-    resource_name: str
-    owner: str
-    description: str
-
-
-@dataclass
-class _HelpLinkPb:
-    description: str
-    url: str
-
-
-@dataclass
-class _HelpPb:
-    links: List[_HelpLinkPb]
-
-
 # Supported error details proto types.
 _ERROR_INFO_TYPE = "type.googleapis.com/google.rpc.ErrorInfo"
 _REQUEST_INFO_TYPE = "type.googleapis.com/google.rpc.RequestInfo"
@@ -262,31 +179,38 @@ _HELP_TYPE = "type.googleapis.com/google.rpc.Help"
 
 def parse_error_details(details: List[Any]) -> ErrorDetails:
     ed = ErrorDetails()
+
+    if not details:
+        return ed
+
     for d in details:
-        if isinstance(d, ErrorInfo):
-            ed.error_info = d
-        elif isinstance(d, RequestInfo):
-            ed.request_info = d
-        elif isinstance(d, RetryInfo):
-            ed.retry_info = d
-        elif isinstance(d, DebugInfo):
-            ed.debug_info = d
-        elif isinstance(d, QuotaFailure):
-            ed.quota_failure = d
-        elif isinstance(d, PreconditionFailure):
-            ed.precondition_failure = d
-        elif isinstance(d, BadRequest):
-            ed.bad_request = d
-        elif isinstance(d, ResourceInfo):
-            ed.resource_info = d
-        elif isinstance(d, Help):
-            ed.help = d
+        pd = _parse_json_error_details(d)
+
+        if isinstance(pd, ErrorInfo):
+            ed.error_info = pd
+        elif isinstance(pd, RequestInfo):
+            ed.request_info = pd
+        elif isinstance(pd, RetryInfo):
+            ed.retry_info = pd
+        elif isinstance(pd, DebugInfo):
+            ed.debug_info = pd
+        elif isinstance(pd, QuotaFailure):
+            ed.quota_failure = pd
+        elif isinstance(pd, PreconditionFailure):
+            ed.precondition_failure = pd
+        elif isinstance(pd, BadRequest):
+            ed.bad_request = pd
+        elif isinstance(pd, ResourceInfo):
+            ed.resource_info = pd
+        elif isinstance(pd, Help):
+            ed.help = pd
         else:
-            ed.unknown_details.append(d)
+            ed.unknown_details.append(pd)
+
     return ed
 
 
-def parse_json_details(value: Any) -> Any:
+def _parse_json_error_details(value: Any) -> Any:
     """
     Attempts to parse an error details type from the given JSON value. If the
     value is not a known error details type, it returns the input as is.
@@ -305,42 +229,168 @@ def parse_json_details(value: Any) -> Any:
 
     try:
         if t == _ERROR_INFO_TYPE:
-            pb = _ErrorInfoPb(**value)
-            return ErrorInfo(**pb.__dict__)
+            return _parse_error_info(value)
         elif t == _REQUEST_INFO_TYPE:
-            pb = _RequestInfoPb(**value)
-            return RequestInfo(**pb.__dict__)
+            return _parse_req_info(value)
         elif t == _RETRY_INFO_TYPE:
-            pb = _RetryInfoPb(**value)
-            return RetryInfo(
-                retry_delay=timedelta(
-                    seconds=pb.retry_delay.seconds,
-                    microseconds=pb.retry_delay.nanos / 1000,
-                )
-            )
+            return _parse_retry_info(value)
         elif t == _DEBUG_INFO_TYPE:
-            pb = _DebugInfoPb(**value)
-            return DebugInfo(**pb.__dict__)
+            return _parse_debug_info(value)
         elif t == _QUOTA_FAILURE_TYPE:
-            pb = _QuotaFailurePb(**value)
-            violations = [QuotaFailureViolation(**v.__dict__) for v in pb.violations]
-            return QuotaFailure(violations=violations)
+            return _parse_quota_failure(value)
         elif t == _PRECONDITION_FAILURE_TYPE:
-            pb = _PreconditionFailurePb(**value)
-            violations = [PreconditionFailureViolation(**v.__dict__) for v in pb.violations]
-            return PreconditionFailure(violations=violations)
+            return _parse_precondition_failure(value)
         elif t == _BAD_REQUEST_TYPE:
-            pb = _BadRequestPb(**value)
-            field_violations = [BadRequestFieldViolation(**v.__dict__) for v in pb.field_violations]
-            return BadRequest(field_violations=field_violations)
+            return _parse_bad_request(value)
         elif t == _RESOURCE_INFO_TYPE:
-            pb = _ResourceInfoPb(**value)
-            return ResourceInfo(**pb.__dict__)
+            return _parse_resource_info(value)
         elif t == _HELP_TYPE:
-            pb = _HelpPb(**value)
-            links = [HelpLink(**link.__dict__) for link in pb.links]
-            return Help(links=links)
+            return _parse_help(value)
+        else:  # unknown type
+            return value
     except (TypeError, ValueError):
         return value  # not a valid known type
+    except Exception:
+        return value
 
-    return value  # unknown type
+
+def _parse_error_info(d: Dict[str, Any]) -> ErrorInfo:
+    return ErrorInfo(
+        domain=_parse_string(d.get("domain", "")),
+        reason=_parse_string(d.get("reason", "")),
+        metadata=_parse_dict(d.get("metadata", {})),
+    )
+
+
+def _parse_req_info(d: Dict[str, Any]) -> RequestInfo:
+    return RequestInfo(
+        request_id=_parse_string(d.get("request_id", "")),
+        serving_data=_parse_string(d.get("serving_data", "")),
+    )
+
+
+def _parse_retry_info(d: Dict[str, Any]) -> RetryInfo:
+    delay = 0.0
+    if "retry_delay" in d:
+        delay = _parse_seconds(d["retry_delay"])
+
+    return RetryInfo(
+        retry_delay_seconds=delay,
+    )
+
+
+def _parse_debug_info(d: Dict[str, Any]) -> DebugInfo:
+    di = DebugInfo(
+        stack_entries=[],
+        detail=_parse_string(d.get("detail", "")),
+    )
+
+    if "stack_entries" not in d:
+        return di
+
+    if not isinstance(d["stack_entries"], list):
+        raise ValueError(f"Expected list, got {d['stack_entries']!r}")
+    for entry in d["stack_entries"]:
+        di.stack_entries.append(_parse_string(entry))
+
+    return di
+
+
+def _parse_quota_failure(d: Dict[str, Any]) -> QuotaFailure:
+    violations = []
+    if "violations" in d:
+        if not isinstance(d["violations"], list):
+            raise ValueError(f"Expected list, got {d['violations']!r}")
+        for violation in d["violations"]:
+            if not isinstance(violation, dict):
+                raise ValueError(f"Expected dict, got {violation!r}")
+            violations.append(QuotaFailureViolation(**violation))
+    return QuotaFailure(violations=violations)
+
+
+def _parse_precondition_failure_violation(d: Dict[str, Any]) -> PreconditionFailureViolation:
+    return PreconditionFailureViolation(
+        type=_parse_string(d.get("type", "")),
+        subject=_parse_string(d.get("subject", "")),
+        description=_parse_string(d.get("description", "")),
+    )
+
+
+def _parse_precondition_failure(d: Dict[str, Any]) -> PreconditionFailure:
+    violations = []
+    if "violations" in d:
+        if not isinstance(d["violations"], list):
+            raise ValueError(f"Expected list, got {d['violations']!r}")
+        for v in d["violations"]:
+            if not isinstance(v, dict):
+                raise ValueError(f"Expected dict, got {v!r}")
+            violations.append(_parse_precondition_failure_violation(v))
+    return PreconditionFailure(violations=violations)
+
+
+def _parse_bad_request(d: Dict[str, Any]) -> BadRequest:
+    field_violations = []
+    if "field_violations" in d:
+        if not isinstance(d["field_violations"], list):
+            raise ValueError(f"Expected list, got {d['field_violations']!r}")
+        for violation in d["field_violations"]:
+            if not isinstance(violation, dict):
+                raise ValueError(f"Expected dict, got {violation!r}")
+            field_violations.append(BadRequestFieldViolation(**violation))
+    return BadRequest(field_violations=field_violations)
+
+
+def _parse_resource_info(d: Dict[str, Any]) -> ResourceInfo:
+    return ResourceInfo(
+        resource_type=_parse_string(d.get("resource_type", "")),
+        resource_name=_parse_string(d.get("resource_name", "")),
+        owner=_parse_string(d.get("owner", "")),
+        description=_parse_string(d.get("description", "")),
+    )
+
+
+def _parse_help(d: Dict[str, Any]) -> Help:
+    links = []
+    if "links" in d:
+        if not isinstance(d["links"], list):
+            raise ValueError(f"Expected list, got {d['links']!r}")
+        for link in d["links"]:
+            if not isinstance(link, dict):
+                raise ValueError(f"Expected dict, got {link!r}")
+            links.append(HelpLink(**link))
+    return Help(links=links)
+
+
+def _parse_string(a: Any) -> str:
+    if isinstance(a, str):
+        return a
+    raise ValueError(f"Expected string, got {a!r}")
+
+
+def _parse_dict(a: Any) -> Dict[str, str]:
+    if not isinstance(a, dict):
+        raise ValueError(f"Expected Dict[str, str], got {a!r}")
+    for key, value in a.items():
+        if not isinstance(key, str) or not isinstance(value, str):
+            raise ValueError(f"Expected Dict[str, str], got {a!r}")
+    return a
+
+
+def _parse_seconds(a: Any) -> float:
+    """
+    Parse a duration string into a float representing the number of seconds.
+
+    The duration type is encoded as a string rather than an where the string
+    ends in the suffix "s" (indicating seconds) and is preceded by a decimal
+    number of seconds. For example, "3.000000001s", represents a duration of
+    3 seconds and 1 nanosecond.
+    """
+
+    if not isinstance(a, str):
+        raise ValueError(f"Expected string, got {a!r}")
+
+    match = re.match(r"^(\d+(\.\d+)?)s$", a)
+    if match:
+        return float(match.group(1))
+
+    raise ValueError(f"Expected duration string, got {a!r}")

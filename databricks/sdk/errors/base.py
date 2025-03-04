@@ -25,9 +25,13 @@ class ErrorDetail:
 
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> "ErrorDetail":
-        if "@type" in d:
-            d["type"] = d["@type"]
-        return cls(**d)
+        # Key "@type" is not a valid keyword argument name in Python. Rename
+        # it to "type" to avoid conflicts.
+        safe_args = {}
+        for k, v in d.items():
+            safe_args[k if k != "@type" else "type"] = v
+
+        return cls(**safe_args)
 
 
 class DatabricksError(IOError):
@@ -98,14 +102,16 @@ class DatabricksError(IOError):
         super().__init__(message if message else error)
         self.error_code = error_code
         self.retry_after_secs = retry_after_secs
-
-        parsed_details = [errdetails.parse_json_details(d) for d in details] if details else []
-        self._error_details = errdetails.parse_error_details(parsed_details)
-
+        self._error_details = errdetails.parse_error_details(details)
         self.kwargs = kwargs
 
         # Deprecated.
-        self.details = [ErrorDetail.from_dict(d) for d in details] if details else []
+        self.details = []
+        if details:
+            for d in details:
+                if not isinstance(d, dict):
+                    continue
+                self.details.append(ErrorDetail.from_dict(d))
 
     def get_error_info(self) -> List[ErrorDetail]:
         return self._get_details_by_type(errdetails._ERROR_INFO_TYPE)
