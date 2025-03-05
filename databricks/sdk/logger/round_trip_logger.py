@@ -1,6 +1,6 @@
 import json
 import urllib.parse
-from typing import Dict, List
+from typing import Any, Dict, List
 
 import requests
 
@@ -99,7 +99,7 @@ class RoundTrip:
             budget -= len(str(raw))
         return out
 
-    def _recursive_marshal(self, v: any, budget: int) -> any:
+    def _recursive_marshal(self, v: Any, budget: int) -> Any:
         if isinstance(v, dict):
             return self._recursive_marshal_dict(v, budget)
         elif isinstance(v, list):

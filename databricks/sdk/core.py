@@ -66,16 +66,16 @@ class ApiClient:
     def do(
         self,
         method: str,
-        path: str = None,
-        url: str = None,
-        query: dict = None,
-        headers: dict = None,
-        body: dict = None,
+        path: Optional[str] = None,
+        url: Optional[str] = None,
+        query: Optional[dict] = None,
+        headers: Optional[dict] = None,
+        body: Optional[dict] = None,
         raw: bool = False,
         files=None,
         data=None,
-        auth: Callable[[requests.PreparedRequest], requests.PreparedRequest] = None,
-        response_headers: List[str] = None,
+        auth: Optional[Callable[[requests.PreparedRequest], requests.PreparedRequest]] = None,
+        response_headers: Optional[List[str]] = None,
     ) -> Union[dict, list, BinaryIO]:
         if url is None:
             # Remove extra `/` from path for Files API
