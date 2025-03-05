@@ -50,13 +50,13 @@ class _DbfsIO(BinaryIO):
     _closed = False
 
     def __init__(
-            self,
-            api: files.DbfsAPI,
-            path: str,
-            *,
-            read: bool = False,
-            write: bool = False,
-            overwrite: bool = False,
+        self,
+        api: files.DbfsAPI,
+        path: str,
+        *,
+        read: bool = False,
+        write: bool = False,
+        overwrite: bool = False,
     ):
         self._api = api
         self._path = path
@@ -115,10 +115,10 @@ class _DbfsIO(BinaryIO):
         return self._closed
 
     def __exit__(
-            self,
-            __t: Type[BaseException] | None,
-            __value: BaseException | None,
-            __traceback: TracebackType | None,
+        self,
+        __t: Type[BaseException] | None,
+        __value: BaseException | None,
+        __traceback: TracebackType | None,
     ):
         self.close()
 
@@ -200,13 +200,13 @@ class _DbfsIO(BinaryIO):
 class _VolumesIO(BinaryIO):
 
     def __init__(
-            self,
-            api: files.FilesAPI,
-            path: str,
-            *,
-            read: bool,
-            write: bool,
-            overwrite: bool,
+        self,
+        api: files.FilesAPI,
+        path: str,
+        *,
+        read: bool,
+        write: bool,
+        overwrite: bool,
     ):
         self._buffer = []
         self._api = api
@@ -586,12 +586,12 @@ class DbfsExt(files.DbfsAPI):
         self._dbfs_api = files.DbfsAPI(api_client)
 
     def open(
-            self,
-            path: str,
-            *,
-            read: bool = False,
-            write: bool = False,
-            overwrite: bool = False,
+        self,
+        path: str,
+        *,
+        read: bool = False,
+        write: bool = False,
+        overwrite: bool = False,
     ) -> BinaryIO:
         return self._path(path).open(read=read, write=write, overwrite=overwrite)
 
@@ -790,12 +790,12 @@ class FilesExt(files.FilesAPI):
             raise ValueError(f"Unexpected server response: {initiate_upload_response}")
 
     def _perform_multipart_upload(
-            self,
-            target_path: str,
-            input_stream: BinaryIO,
-            session_token: str,
-            pre_read_buffer: bytes,
-            cloud_provider_session: requests.Session,
+        self,
+        target_path: str,
+        input_stream: BinaryIO,
+        session_token: str,
+        pre_read_buffer: bytes,
+        cloud_provider_session: requests.Session,
     ):
         """
         Performs multipart upload using presigned URLs on AWS and Azure:
@@ -992,13 +992,13 @@ class FilesExt(files.FilesAPI):
         return False
 
     def _perform_resumable_upload(
-            self,
-            target_path: str,
-            input_stream: BinaryIO,
-            session_token: str,
-            overwrite: bool,
-            pre_read_buffer: bytes,
-            cloud_provider_session: requests.Session,
+        self,
+        target_path: str,
+        input_stream: BinaryIO,
+        session_token: str,
+        overwrite: bool,
+        pre_read_buffer: bytes,
+        cloud_provider_session: requests.Session,
     ):
         """
         Performs resumable upload on GCP: https://cloud.google.com/storage/docs/performing-resumable-uploads
@@ -1249,7 +1249,7 @@ class FilesExt(files.FilesAPI):
             raise ValueError(abort_response)
 
     def _abort_resumable_upload(
-            self, resumable_upload_url: str, required_headers: list, cloud_provider_session: requests.Session
+        self, resumable_upload_url: str, required_headers: list, cloud_provider_session: requests.Session
     ):
         """Aborts ongoing resumable upload session to clean up incomplete file."""
         headers: dict = {}
@@ -1284,7 +1284,7 @@ class FilesExt(files.FilesAPI):
         return session
 
     def _retry_idempotent_operation(
-            self, operation: Callable[[], requests.Response], before_retry: Callable = None
+        self, operation: Callable[[], requests.Response], before_retry: Callable = None
     ) -> requests.Response:
         """Perform given idempotent operation with necessary retries. Since operation is idempotent it's
         safe to retry it for response codes where server state might have changed.
@@ -1312,7 +1312,7 @@ class FilesExt(files.FilesAPI):
         )(delegate)()
 
     def _open_download_stream(
-            self, file_path: str, start_byte_offset: int, if_unmodified_since_timestamp: Optional[str] = None
+        self, file_path: str, start_byte_offset: int, if_unmodified_since_timestamp: Optional[str] = None
     ) -> DownloadResponse:
         """Opens a download stream from given offset, performing necessary retries."""
         headers = {
@@ -1364,12 +1364,12 @@ class FilesExt(files.FilesAPI):
 class _ResilientResponse(_RawResponse):
 
     def __init__(
-            self,
-            api: FilesExt,
-            file_path: str,
-            file_last_modified: str,
-            offset: int,
-            underlying_response: _RawResponse,
+        self,
+        api: FilesExt,
+        file_path: str,
+        file_last_modified: str,
+        offset: int,
+        underlying_response: _RawResponse,
     ):
         self.api = api
         self.file_path = file_path
@@ -1402,19 +1402,19 @@ class _ResilientIterator(Iterator):
 
     @staticmethod
     def _extract_raw_response(
-            download_response: DownloadResponse,
+        download_response: DownloadResponse,
     ) -> _RawResponse:
         streaming_response: _StreamingResponse = download_response.contents  # this is an instance of _StreamingResponse
         return streaming_response._response
 
     def __init__(
-            self,
-            underlying_iterator,
-            file_path: str,
-            file_last_modified: str,
-            offset: int,
-            api: FilesExt,
-            chunk_size: int,
+        self,
+        underlying_iterator,
+        file_path: str,
+        file_last_modified: str,
+        offset: int,
+        api: FilesExt,
+        chunk_size: int,
     ):
         self._underlying_iterator = underlying_iterator
         self._api = api
@@ -1435,9 +1435,9 @@ class _ResilientIterator(Iterator):
             _LOG.debug("Total recovers limit exceeded")
             return False
         if (
-                self._api._config.files_api_client_download_max_total_recovers_without_progressing is not None
-                and self._recovers_without_progressing_count
-                >= self._api._config.files_api_client_download_max_total_recovers_without_progressing
+            self._api._config.files_api_client_download_max_total_recovers_without_progressing is not None
+            and self._recovers_without_progressing_count
+            >= self._api._config.files_api_client_download_max_total_recovers_without_progressing
         ):
             _LOG.debug("No progression recovers limit exceeded")
             return False
