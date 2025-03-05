@@ -17,6 +17,7 @@ from ._internal import Wait, _enum, _from_dict, _repeated_dict
 
 _LOG = logging.getLogger("databricks.sdk")
 
+
 # all definitions in this file are in alphabetical order
 
 
@@ -686,10 +687,7 @@ class ChatMessage:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ChatMessage:
         """Deserializes the ChatMessage from a dictionary."""
-        return cls(
-            content=d.get("content", None),
-            role=_enum(d, "role", ChatMessageRole),
-        )
+        return cls(content=d.get("content", None), role=_enum(d, "role", ChatMessageRole))
 
 
 class ChatMessageRole(Enum):
@@ -849,10 +847,7 @@ class DataPlaneInfo:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> DataPlaneInfo:
         """Deserializes the DataPlaneInfo from a dictionary."""
-        return cls(
-            authorization_details=d.get("authorization_details", None),
-            endpoint_url=d.get("endpoint_url", None),
-        )
+        return cls(authorization_details=d.get("authorization_details", None), endpoint_url=d.get("endpoint_url", None))
 
 
 @dataclass
@@ -940,16 +935,11 @@ class DataframeSplitInput:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> DataframeSplitInput:
         """Deserializes the DataframeSplitInput from a dictionary."""
-        return cls(
-            columns=d.get("columns", None),
-            data=d.get("data", None),
-            index=d.get("index", None),
-        )
+        return cls(columns=d.get("columns", None), data=d.get("data", None), index=d.get("index", None))
 
 
 @dataclass
 class DeleteResponse:
-
     def as_dict(self) -> dict:
         """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1560,9 +1550,7 @@ class ExternalModel:
             anthropic_config=_from_dict(d, "anthropic_config", AnthropicConfig),
             cohere_config=_from_dict(d, "cohere_config", CohereConfig),
             databricks_model_serving_config=_from_dict(
-                d,
-                "databricks_model_serving_config",
-                DatabricksModelServingConfig,
+                d, "databricks_model_serving_config", DatabricksModelServingConfig
             ),
             google_cloud_vertex_ai_config=_from_dict(d, "google_cloud_vertex_ai_config", GoogleCloudVertexAiConfig),
             name=d.get("name", None),
@@ -2031,8 +2019,7 @@ class PaLmConfig:
     def from_dict(cls, d: Dict[str, any]) -> PaLmConfig:
         """Deserializes the PaLmConfig from a dictionary."""
         return cls(
-            palm_api_key=d.get("palm_api_key", None),
-            palm_api_key_plaintext=d.get("palm_api_key_plaintext", None),
+            palm_api_key=d.get("palm_api_key", None), palm_api_key_plaintext=d.get("palm_api_key_plaintext", None)
         )
 
 
@@ -2112,11 +2099,7 @@ class PayloadTable:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> PayloadTable:
         """Deserializes the PayloadTable from a dictionary."""
-        return cls(
-            name=d.get("name", None),
-            status=d.get("status", None),
-            status_message=d.get("status_message", None),
-        )
+        return cls(name=d.get("name", None), status=d.get("status", None), status_message=d.get("status_message", None))
 
 
 @dataclass
@@ -2264,10 +2247,7 @@ class PutRequest:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> PutRequest:
         """Deserializes the PutRequest from a dictionary."""
-        return cls(
-            name=d.get("name", None),
-            rate_limits=_repeated_dict(d, "rate_limits", RateLimit),
-        )
+        return cls(name=d.get("name", None), rate_limits=_repeated_dict(d, "rate_limits", RateLimit))
 
 
 @dataclass
@@ -2636,8 +2616,7 @@ class Route:
     def from_dict(cls, d: Dict[str, any]) -> Route:
         """Deserializes the Route from a dictionary."""
         return cls(
-            served_model_name=d.get("served_model_name", None),
-            traffic_percentage=d.get("traffic_percentage", None),
+            served_model_name=d.get("served_model_name", None), traffic_percentage=d.get("traffic_percentage", None)
         )
 
 
@@ -3270,9 +3249,7 @@ class ServedModelSpec:
     def from_dict(cls, d: Dict[str, any]) -> ServedModelSpec:
         """Deserializes the ServedModelSpec from a dictionary."""
         return cls(
-            model_name=d.get("model_name", None),
-            model_version=d.get("model_version", None),
-            name=d.get("name", None),
+            model_name=d.get("model_name", None), model_version=d.get("model_version", None), name=d.get("name", None)
         )
 
 
@@ -4019,9 +3996,7 @@ class ServingEndpointsAPI:
         }
 
         res = self._api.do(
-            "GET",
-            f"/api/2.0/serving-endpoints/{name}/served-models/{served_model_name}/build-logs",
-            headers=headers,
+            "GET", f"/api/2.0/serving-endpoints/{name}/served-models/{served_model_name}/build-logs", headers=headers
         )
         return BuildLogsResponse.from_dict(res)
 
@@ -4132,12 +4107,7 @@ class ServingEndpointsAPI:
             "Accept": "text/plain",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.0/serving-endpoints/{name}/metrics",
-            headers=headers,
-            raw=True,
-        )
+        res = self._api.do("GET", f"/api/2.0/serving-endpoints/{name}/metrics", headers=headers, raw=True)
         return ExportMetricsResponse.from_dict(res)
 
     def get(self, name: str) -> ServingEndpointDetailed:
@@ -4174,12 +4144,7 @@ class ServingEndpointsAPI:
             "Accept": "text/plain",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.0/serving-endpoints/{name}/openapi",
-            headers=headers,
-            raw=True,
-        )
+        res = self._api.do("GET", f"/api/2.0/serving-endpoints/{name}/openapi", headers=headers, raw=True)
         return GetOpenApiResponse.from_dict(res)
 
     def get_permission_levels(self, serving_endpoint_id: str) -> GetServingEndpointPermissionLevelsResponse:
@@ -4198,9 +4163,7 @@ class ServingEndpointsAPI:
         }
 
         res = self._api.do(
-            "GET",
-            f"/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}/permissionLevels",
-            headers=headers,
+            "GET", f"/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}/permissionLevels", headers=headers
         )
         return GetServingEndpointPermissionLevelsResponse.from_dict(res)
 
@@ -4220,11 +4183,7 @@ class ServingEndpointsAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}",
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}", headers=headers)
         return ServingEndpointPermissions.from_dict(res)
 
     def http_request(
@@ -4273,13 +4232,7 @@ class ServingEndpointsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            "/api/2.0/external-function",
-            body=body,
-            headers=headers,
-            raw=True,
-        )
+        res = self._api.do("POST", "/api/2.0/external-function", body=body, headers=headers, raw=True)
         return HttpRequestResponse.from_dict(res)
 
     def list(self) -> Iterator[ServingEndpoint]:
@@ -4314,18 +4267,12 @@ class ServingEndpointsAPI:
         }
 
         res = self._api.do(
-            "GET",
-            f"/api/2.0/serving-endpoints/{name}/served-models/{served_model_name}/logs",
-            headers=headers,
+            "GET", f"/api/2.0/serving-endpoints/{name}/served-models/{served_model_name}/logs", headers=headers
         )
         return ServerLogsResponse.from_dict(res)
 
     def patch(
-        self,
-        name: str,
-        *,
-        add_tags: Optional[List[EndpointTag]] = None,
-        delete_tags: Optional[List[str]] = None,
+        self, name: str, *, add_tags: Optional[List[EndpointTag]] = None, delete_tags: Optional[List[str]] = None
     ) -> EndpointTags:
         """Update tags of a serving endpoint.
 
@@ -4350,12 +4297,7 @@ class ServingEndpointsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "PATCH",
-            f"/api/2.0/serving-endpoints/{name}/tags",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("PATCH", f"/api/2.0/serving-endpoints/{name}/tags", body=body, headers=headers)
         return EndpointTags.from_dict(res)
 
     def put(self, name: str, *, rate_limits: Optional[List[RateLimit]] = None) -> PutResponse:
@@ -4379,12 +4321,7 @@ class ServingEndpointsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "PUT",
-            f"/api/2.0/serving-endpoints/{name}/rate-limits",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("PUT", f"/api/2.0/serving-endpoints/{name}/rate-limits", body=body, headers=headers)
         return PutResponse.from_dict(res)
 
     def put_ai_gateway(
@@ -4430,12 +4367,7 @@ class ServingEndpointsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "PUT",
-            f"/api/2.0/serving-endpoints/{name}/ai-gateway",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("PUT", f"/api/2.0/serving-endpoints/{name}/ai-gateway", body=body, headers=headers)
         return PutAiGatewayResponse.from_dict(res)
 
     def query(
@@ -4573,10 +4505,7 @@ class ServingEndpointsAPI:
         }
 
         res = self._api.do(
-            "PUT",
-            f"/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}",
-            body=body,
-            headers=headers,
+            "PUT", f"/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}", body=body, headers=headers
         )
         return ServingEndpointPermissions.from_dict(res)
 
@@ -4628,12 +4557,7 @@ class ServingEndpointsAPI:
             "Content-Type": "application/json",
         }
 
-        op_response = self._api.do(
-            "PUT",
-            f"/api/2.0/serving-endpoints/{name}/config",
-            body=body,
-            headers=headers,
-        )
+        op_response = self._api.do("PUT", f"/api/2.0/serving-endpoints/{name}/config", body=body, headers=headers)
         return Wait(
             self.wait_get_serving_endpoint_not_updating,
             response=ServingEndpointDetailed.from_dict(op_response),
@@ -4684,10 +4608,7 @@ class ServingEndpointsAPI:
         }
 
         res = self._api.do(
-            "PATCH",
-            f"/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}",
-            body=body,
-            headers=headers,
+            "PATCH", f"/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}", body=body, headers=headers
         )
         return ServingEndpointPermissions.from_dict(res)
 

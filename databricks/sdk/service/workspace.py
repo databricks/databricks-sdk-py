@@ -11,6 +11,7 @@ from ._internal import _enum, _from_dict, _repeated_dict
 
 _LOG = logging.getLogger("databricks.sdk")
 
+
 # all definitions in this file are in alphabetical order
 
 
@@ -43,10 +44,7 @@ class AclItem:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> AclItem:
         """Deserializes the AclItem from a dictionary."""
-        return cls(
-            permission=_enum(d, "permission", AclPermission),
-            principal=d.get("principal", None),
-        )
+        return cls(permission=_enum(d, "permission", AclPermission), principal=d.get("principal", None))
 
 
 class AclPermission(Enum):
@@ -85,10 +83,7 @@ class AzureKeyVaultSecretScopeMetadata:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> AzureKeyVaultSecretScopeMetadata:
         """Deserializes the AzureKeyVaultSecretScopeMetadata from a dictionary."""
-        return cls(
-            dns_name=d.get("dns_name", None),
-            resource_id=d.get("resource_id", None),
-        )
+        return cls(dns_name=d.get("dns_name", None), resource_id=d.get("resource_id", None))
 
 
 @dataclass
@@ -370,7 +365,6 @@ class CreateScope:
 
 @dataclass
 class CreateScopeResponse:
-
     def as_dict(self) -> dict:
         """Serializes the CreateScopeResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -499,7 +493,6 @@ class DeleteAcl:
 
 @dataclass
 class DeleteAclResponse:
-
     def as_dict(self) -> dict:
         """Serializes the DeleteAclResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -518,7 +511,6 @@ class DeleteAclResponse:
 
 @dataclass
 class DeleteCredentialsResponse:
-
     def as_dict(self) -> dict:
         """Serializes the DeleteCredentialsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -537,7 +529,6 @@ class DeleteCredentialsResponse:
 
 @dataclass
 class DeleteRepoResponse:
-
     def as_dict(self) -> dict:
         """Serializes the DeleteRepoResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -556,7 +547,6 @@ class DeleteRepoResponse:
 
 @dataclass
 class DeleteResponse:
-
     def as_dict(self) -> dict:
         """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -600,7 +590,6 @@ class DeleteScope:
 
 @dataclass
 class DeleteScopeResponse:
-
     def as_dict(self) -> dict:
         """Serializes the DeleteScopeResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -651,7 +640,6 @@ class DeleteSecret:
 
 @dataclass
 class DeleteSecretResponse:
-
     def as_dict(self) -> dict:
         """Serializes the DeleteSecretResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1010,7 +998,6 @@ class ImportFormat(Enum):
 
 @dataclass
 class ImportResponse:
-
     def as_dict(self) -> dict:
         """Serializes the ImportResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1116,10 +1103,7 @@ class ListReposResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListReposResponse:
         """Deserializes the ListReposResponse from a dictionary."""
-        return cls(
-            next_page_token=d.get("next_page_token", None),
-            repos=_repeated_dict(d, "repos", RepoInfo),
-        )
+        return cls(next_page_token=d.get("next_page_token", None), repos=_repeated_dict(d, "repos", RepoInfo))
 
 
 @dataclass
@@ -1225,7 +1209,6 @@ class Mkdirs:
 
 @dataclass
 class MkdirsResponse:
-
     def as_dict(self) -> dict:
         """Serializes the MkdirsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1389,7 +1372,6 @@ class PutAcl:
 
 @dataclass
 class PutAclResponse:
-
     def as_dict(self) -> dict:
         """Serializes the PutAclResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1459,7 +1441,6 @@ class PutSecret:
 
 @dataclass
 class PutSecretResponse:
-
     def as_dict(self) -> dict:
         """Serializes the PutSecretResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1782,8 +1763,7 @@ class RepoPermissionsDescription:
     def from_dict(cls, d: Dict[str, any]) -> RepoPermissionsDescription:
         """Deserializes the RepoPermissionsDescription from a dictionary."""
         return cls(
-            description=d.get("description", None),
-            permission_level=_enum(d, "permission_level", RepoPermissionLevel),
+            description=d.get("description", None), permission_level=_enum(d, "permission_level", RepoPermissionLevel)
         )
 
 
@@ -1856,10 +1836,7 @@ class SecretMetadata:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> SecretMetadata:
         """Deserializes the SecretMetadata from a dictionary."""
-        return cls(
-            key=d.get("key", None),
-            last_updated_timestamp=d.get("last_updated_timestamp", None),
-        )
+        return cls(key=d.get("key", None), last_updated_timestamp=d.get("last_updated_timestamp", None))
 
 
 @dataclass
@@ -2025,7 +2002,6 @@ class UpdateCredentialsRequest:
 
 @dataclass
 class UpdateCredentialsResponse:
-
     def as_dict(self) -> dict:
         """Serializes the UpdateCredentialsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -2098,7 +2074,6 @@ class UpdateRepoRequest:
 
 @dataclass
 class UpdateRepoResponse:
-
     def as_dict(self) -> dict:
         """Serializes the UpdateRepoResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -2396,18 +2371,13 @@ class GitCredentialsAPI:
 
     See [more info].
 
-    [more info]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html
-    """
+    [more info]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html"""
 
     def __init__(self, api_client):
         self._api = api_client
 
     def create(
-        self,
-        git_provider: str,
-        *,
-        git_username: Optional[str] = None,
-        personal_access_token: Optional[str] = None,
+        self, git_provider: str, *, git_username: Optional[str] = None, personal_access_token: Optional[str] = None
     ) -> CreateCredentialsResponse:
         """Create a credential entry.
 
@@ -2463,11 +2433,7 @@ class GitCredentialsAPI:
             "Accept": "application/json",
         }
 
-        self._api.do(
-            "DELETE",
-            f"/api/2.0/git-credentials/{credential_id}",
-            headers=headers,
-        )
+        self._api.do("DELETE", f"/api/2.0/git-credentials/{credential_id}", headers=headers)
 
     def get(self, credential_id: int) -> GetCredentialsResponse:
         """Get a credential entry.
@@ -2547,12 +2513,7 @@ class GitCredentialsAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do(
-            "PATCH",
-            f"/api/2.0/git-credentials/{credential_id}",
-            body=body,
-            headers=headers,
-        )
+        self._api.do("PATCH", f"/api/2.0/git-credentials/{credential_id}", body=body, headers=headers)
 
 
 class ReposAPI:
@@ -2564,19 +2525,13 @@ class ReposAPI:
     committing.
 
     Within Repos you can develop code in notebooks or other files and follow data science and engineering code
-    development best practices using Git for version control, collaboration, and CI/CD.
-    """
+    development best practices using Git for version control, collaboration, and CI/CD."""
 
     def __init__(self, api_client):
         self._api = api_client
 
     def create(
-        self,
-        url: str,
-        provider: str,
-        *,
-        path: Optional[str] = None,
-        sparse_checkout: Optional[SparseCheckout] = None,
+        self, url: str, provider: str, *, path: Optional[str] = None, sparse_checkout: Optional[SparseCheckout] = None
     ) -> CreateRepoResponse:
         """Create a repo.
 
@@ -2665,11 +2620,7 @@ class ReposAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.0/permissions/repos/{repo_id}/permissionLevels",
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.0/permissions/repos/{repo_id}/permissionLevels", headers=headers)
         return GetRepoPermissionLevelsResponse.from_dict(res)
 
     def get_permissions(self, repo_id: str) -> RepoPermissions:
@@ -2690,12 +2641,7 @@ class ReposAPI:
         res = self._api.do("GET", f"/api/2.0/permissions/repos/{repo_id}", headers=headers)
         return RepoPermissions.from_dict(res)
 
-    def list(
-        self,
-        *,
-        next_page_token: Optional[str] = None,
-        path_prefix: Optional[str] = None,
-    ) -> Iterator[RepoInfo]:
+    def list(self, *, next_page_token: Optional[str] = None, path_prefix: Optional[str] = None) -> Iterator[RepoInfo]:
         """Get repos.
 
         Returns repos that the calling user has Manage permissions on. Use `next_page_token` to iterate
@@ -2731,10 +2677,7 @@ class ReposAPI:
             query["next_page_token"] = json["next_page_token"]
 
     def set_permissions(
-        self,
-        repo_id: str,
-        *,
-        access_control_list: Optional[List[RepoAccessControlRequest]] = None,
+        self, repo_id: str, *, access_control_list: Optional[List[RepoAccessControlRequest]] = None
     ) -> RepoPermissions:
         """Set repo permissions.
 
@@ -2755,12 +2698,7 @@ class ReposAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "PUT",
-            f"/api/2.0/permissions/repos/{repo_id}",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("PUT", f"/api/2.0/permissions/repos/{repo_id}", body=body, headers=headers)
         return RepoPermissions.from_dict(res)
 
     def update(
@@ -2805,10 +2743,7 @@ class ReposAPI:
         self._api.do("PATCH", f"/api/2.0/repos/{repo_id}", body=body, headers=headers)
 
     def update_permissions(
-        self,
-        repo_id: str,
-        *,
-        access_control_list: Optional[List[RepoAccessControlRequest]] = None,
+        self, repo_id: str, *, access_control_list: Optional[List[RepoAccessControlRequest]] = None
     ) -> RepoPermissions:
         """Update repo permissions.
 
@@ -2828,12 +2763,7 @@ class ReposAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "PATCH",
-            f"/api/2.0/permissions/repos/{repo_id}",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("PATCH", f"/api/2.0/permissions/repos/{repo_id}", body=body, headers=headers)
         return RepoPermissions.from_dict(res)
 
 
@@ -2889,12 +2819,7 @@ class SecretsAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do(
-            "POST",
-            "/api/2.0/secrets/scopes/create",
-            body=body,
-            headers=headers,
-        )
+        self._api.do("POST", "/api/2.0/secrets/scopes/create", body=body, headers=headers)
 
     def delete_acl(self, scope: str, principal: str):
         """Delete an ACL.
@@ -2945,12 +2870,7 @@ class SecretsAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do(
-            "POST",
-            "/api/2.0/secrets/scopes/delete",
-            body=body,
-            headers=headers,
-        )
+        self._api.do("POST", "/api/2.0/secrets/scopes/delete", body=body, headers=headers)
 
     def delete_secret(self, scope: str, key: str):
         """Delete a secret.
@@ -3164,12 +3084,7 @@ class SecretsAPI:
         self._api.do("POST", "/api/2.0/secrets/acls/put", body=body, headers=headers)
 
     def put_secret(
-        self,
-        scope: str,
-        key: str,
-        *,
-        bytes_value: Optional[str] = None,
-        string_value: Optional[str] = None,
+        self, scope: str, key: str, *, bytes_value: Optional[str] = None, string_value: Optional[str] = None
     ):
         """Add a secret.
 
@@ -3342,9 +3257,7 @@ class WorkspaceAPI:
         }
 
         res = self._api.do(
-            "GET",
-            f"/api/2.0/permissions/{workspace_object_type}/{workspace_object_id}",
-            headers=headers,
+            "GET", f"/api/2.0/permissions/{workspace_object_type}/{workspace_object_id}", headers=headers
         )
         return WorkspaceObjectPermissions.from_dict(res)
 
@@ -3367,12 +3280,7 @@ class WorkspaceAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            "/api/2.0/workspace/get-status",
-            query=query,
-            headers=headers,
-        )
+        res = self._api.do("GET", "/api/2.0/workspace/get-status", query=query, headers=headers)
         return ObjectInfo.from_dict(res)
 
     def import_(
@@ -3520,10 +3428,7 @@ class WorkspaceAPI:
         }
 
         res = self._api.do(
-            "PUT",
-            f"/api/2.0/permissions/{workspace_object_type}/{workspace_object_id}",
-            body=body,
-            headers=headers,
+            "PUT", f"/api/2.0/permissions/{workspace_object_type}/{workspace_object_id}", body=body, headers=headers
         )
         return WorkspaceObjectPermissions.from_dict(res)
 
@@ -3556,9 +3461,6 @@ class WorkspaceAPI:
         }
 
         res = self._api.do(
-            "PATCH",
-            f"/api/2.0/permissions/{workspace_object_type}/{workspace_object_id}",
-            body=body,
-            headers=headers,
+            "PATCH", f"/api/2.0/permissions/{workspace_object_type}/{workspace_object_id}", body=body, headers=headers
         )
         return WorkspaceObjectPermissions.from_dict(res)

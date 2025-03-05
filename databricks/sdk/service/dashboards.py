@@ -15,6 +15,7 @@ from ._internal import Wait, _enum, _from_dict, _repeated_dict
 
 _LOG = logging.getLogger("databricks.sdk")
 
+
 from databricks.sdk.service import sql
 
 # all definitions in this file are in alphabetical order
@@ -125,10 +126,7 @@ class CronSchedule:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CronSchedule:
         """Deserializes the CronSchedule from a dictionary."""
-        return cls(
-            quartz_cron_expression=d.get("quartz_cron_expression", None),
-            timezone_id=d.get("timezone_id", None),
-        )
+        return cls(quartz_cron_expression=d.get("quartz_cron_expression", None), timezone_id=d.get("timezone_id", None))
 
 
 @dataclass
@@ -267,7 +265,6 @@ class DataType(Enum):
 
 @dataclass
 class DeleteScheduleResponse:
-
     def as_dict(self) -> dict:
         """Serializes the DeleteScheduleResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -286,7 +283,6 @@ class DeleteScheduleResponse:
 
 @dataclass
 class DeleteSubscriptionResponse:
-
     def as_dict(self) -> dict:
         """Serializes the DeleteSubscriptionResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -375,7 +371,6 @@ class ExecutePublishedDashboardQueryRequest:
 
 @dataclass
 class ExecuteQueryResponse:
-
     def as_dict(self) -> dict:
         """Serializes the ExecuteQueryResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -421,10 +416,7 @@ class GenieAttachment:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> GenieAttachment:
         """Deserializes the GenieAttachment from a dictionary."""
-        return cls(
-            query=_from_dict(d, "query", QueryAttachment),
-            text=_from_dict(d, "text", TextAttachment),
-        )
+        return cls(query=_from_dict(d, "query", QueryAttachment), text=_from_dict(d, "text", TextAttachment))
 
 
 @dataclass
@@ -765,7 +757,6 @@ class GenieStartConversationResponse:
 
 @dataclass
 class GetPublishedDashboardEmbeddedResponse:
-
     def as_dict(self) -> dict:
         """Serializes the GetPublishedDashboardEmbeddedResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -818,8 +809,7 @@ class ListDashboardsResponse:
     def from_dict(cls, d: Dict[str, any]) -> ListDashboardsResponse:
         """Deserializes the ListDashboardsResponse from a dictionary."""
         return cls(
-            dashboards=_repeated_dict(d, "dashboards", Dashboard),
-            next_page_token=d.get("next_page_token", None),
+            dashboards=_repeated_dict(d, "dashboards", Dashboard), next_page_token=d.get("next_page_token", None)
         )
 
 
@@ -852,10 +842,7 @@ class ListSchedulesResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListSchedulesResponse:
         """Deserializes the ListSchedulesResponse from a dictionary."""
-        return cls(
-            next_page_token=d.get("next_page_token", None),
-            schedules=_repeated_dict(d, "schedules", Schedule),
-        )
+        return cls(next_page_token=d.get("next_page_token", None), schedules=_repeated_dict(d, "schedules", Schedule))
 
 
 @dataclass
@@ -981,8 +968,7 @@ class MessageStatus(Enum):
     processing is completed. Results are in the `attachments` field. Get the SQL query result by
     calling [getMessageQueryResult](:method:genie/getMessageQueryResult) API. * `SUBMITTED`: Message
     has been submitted. * `QUERY_RESULT_EXPIRED`: SQL result is not available anymore. The user
-    needs to execute the query again. * `CANCELLED`: Message has been cancelled.
-    """
+    needs to execute the query again. * `CANCELLED`: Message has been cancelled."""
 
     ASKING_AI = "ASKING_AI"
     CANCELLED = "CANCELLED"
@@ -1396,10 +1382,7 @@ class QuerySchema:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> QuerySchema:
         """Deserializes the QuerySchema from a dictionary."""
-        return cls(
-            columns=_repeated_dict(d, "columns", QuerySchemaColumn),
-            statement_id=d.get("statement_id", None),
-        )
+        return cls(columns=_repeated_dict(d, "columns", QuerySchemaColumn), statement_id=d.get("statement_id", None))
 
 
 @dataclass
@@ -1438,9 +1421,7 @@ class QuerySchemaColumn:
     def from_dict(cls, d: Dict[str, any]) -> QuerySchemaColumn:
         """Deserializes the QuerySchemaColumn from a dictionary."""
         return cls(
-            data_type=_enum(d, "data_type", DataType),
-            name=d.get("name", None),
-            type_text=d.get("type_text", None),
+            data_type=_enum(d, "data_type", DataType), name=d.get("name", None), type_text=d.get("type_text", None)
         )
 
 
@@ -1789,10 +1770,7 @@ class SuccessStatus:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> SuccessStatus:
         """Deserializes the SuccessStatus from a dictionary."""
-        return cls(
-            data_token=d.get("data_token", None),
-            truncated=d.get("truncated", None),
-        )
+        return cls(data_token=d.get("data_token", None), truncated=d.get("truncated", None))
 
 
 @dataclass
@@ -1828,7 +1806,6 @@ class TextAttachment:
 
 @dataclass
 class TrashDashboardResponse:
-
     def as_dict(self) -> dict:
         """Serializes the TrashDashboardResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1847,7 +1824,6 @@ class TrashDashboardResponse:
 
 @dataclass
 class UnpublishDashboardResponse:
-
     def as_dict(self) -> dict:
         """Serializes the UnpublishDashboardResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1887,11 +1863,7 @@ class GenieAPI:
         status_message = "polling..."
         attempt = 1
         while time.time() < deadline:
-            poll = self.get_message(
-                conversation_id=conversation_id,
-                message_id=message_id,
-                space_id=space_id,
-            )
+            poll = self.get_message(conversation_id=conversation_id, message_id=message_id, space_id=space_id)
             status = poll.status
             status_message = f"current status: {status}"
             if status in target_states:
@@ -1951,11 +1923,7 @@ class GenieAPI:
         )
 
     def create_message_and_wait(
-        self,
-        space_id: str,
-        conversation_id: str,
-        content: str,
-        timeout=timedelta(minutes=20),
+        self, space_id: str, conversation_id: str, content: str, timeout=timedelta(minutes=20)
     ) -> GenieMessage:
         return self.create_message(content=content, conversation_id=conversation_id, space_id=space_id).result(
             timeout=timeout
@@ -2045,11 +2013,7 @@ class GenieAPI:
         return GenieGetMessageQueryResultResponse.from_dict(res)
 
     def get_message_query_result_by_attachment(
-        self,
-        space_id: str,
-        conversation_id: str,
-        message_id: str,
-        attachment_id: str,
+        self, space_id: str, conversation_id: str, message_id: str, attachment_id: str
     ) -> GenieGetMessageQueryResultResponse:
         """Get conversation message SQL query result by attachment id.
 
@@ -2102,10 +2066,7 @@ class GenieAPI:
         }
 
         op_response = self._api.do(
-            "POST",
-            f"/api/2.0/genie/spaces/{space_id}/start-conversation",
-            body=body,
-            headers=headers,
+            "POST", f"/api/2.0/genie/spaces/{space_id}/start-conversation", body=body, headers=headers
         )
         return Wait(
             self.wait_get_message_genie_completed,
@@ -2159,20 +2120,11 @@ class LakeviewAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            f"/api/2.0/lakeview/dashboards/{dashboard_id}/schedules",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", f"/api/2.0/lakeview/dashboards/{dashboard_id}/schedules", body=body, headers=headers)
         return Schedule.from_dict(res)
 
     def create_subscription(
-        self,
-        dashboard_id: str,
-        schedule_id: str,
-        *,
-        subscription: Optional[Subscription] = None,
+        self, dashboard_id: str, schedule_id: str, *, subscription: Optional[Subscription] = None
     ) -> Subscription:
         """Create schedule subscription.
 
@@ -2198,13 +2150,7 @@ class LakeviewAPI:
         )
         return Subscription.from_dict(res)
 
-    def delete_schedule(
-        self,
-        dashboard_id: str,
-        schedule_id: str,
-        *,
-        etag: Optional[str] = None,
-    ):
+    def delete_schedule(self, dashboard_id: str, schedule_id: str, *, etag: Optional[str] = None):
         """Delete dashboard schedule.
 
         :param dashboard_id: str
@@ -2233,12 +2179,7 @@ class LakeviewAPI:
         )
 
     def delete_subscription(
-        self,
-        dashboard_id: str,
-        schedule_id: str,
-        subscription_id: str,
-        *,
-        etag: Optional[str] = None,
+        self, dashboard_id: str, schedule_id: str, subscription_id: str, *, etag: Optional[str] = None
     ):
         """Delete schedule subscription.
 
@@ -2284,11 +2225,7 @@ class LakeviewAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.0/lakeview/dashboards/{dashboard_id}",
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.0/lakeview/dashboards/{dashboard_id}", headers=headers)
         return Dashboard.from_dict(res)
 
     def get_published(self, dashboard_id: str) -> PublishedDashboard:
@@ -2306,11 +2243,7 @@ class LakeviewAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.0/lakeview/dashboards/{dashboard_id}/published",
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.0/lakeview/dashboards/{dashboard_id}/published", headers=headers)
         return PublishedDashboard.from_dict(res)
 
     def get_schedule(self, dashboard_id: str, schedule_id: str) -> Schedule:
@@ -2329,9 +2262,7 @@ class LakeviewAPI:
         }
 
         res = self._api.do(
-            "GET",
-            f"/api/2.0/lakeview/dashboards/{dashboard_id}/schedules/{schedule_id}",
-            headers=headers,
+            "GET", f"/api/2.0/lakeview/dashboards/{dashboard_id}/schedules/{schedule_id}", headers=headers
         )
         return Schedule.from_dict(res)
 
@@ -2397,12 +2328,7 @@ class LakeviewAPI:
         }
 
         while True:
-            json = self._api.do(
-                "GET",
-                "/api/2.0/lakeview/dashboards",
-                query=query,
-                headers=headers,
-            )
+            json = self._api.do("GET", "/api/2.0/lakeview/dashboards", query=query, headers=headers)
             if "dashboards" in json:
                 for v in json["dashboards"]:
                     yield Dashboard.from_dict(v)
@@ -2411,11 +2337,7 @@ class LakeviewAPI:
             query["page_token"] = json["next_page_token"]
 
     def list_schedules(
-        self,
-        dashboard_id: str,
-        *,
-        page_size: Optional[int] = None,
-        page_token: Optional[str] = None,
+        self, dashboard_id: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[Schedule]:
         """List dashboard schedules.
 
@@ -2441,10 +2363,7 @@ class LakeviewAPI:
 
         while True:
             json = self._api.do(
-                "GET",
-                f"/api/2.0/lakeview/dashboards/{dashboard_id}/schedules",
-                query=query,
-                headers=headers,
+                "GET", f"/api/2.0/lakeview/dashboards/{dashboard_id}/schedules", query=query, headers=headers
             )
             if "schedules" in json:
                 for v in json["schedules"]:
@@ -2454,12 +2373,7 @@ class LakeviewAPI:
             query["page_token"] = json["next_page_token"]
 
     def list_subscriptions(
-        self,
-        dashboard_id: str,
-        schedule_id: str,
-        *,
-        page_size: Optional[int] = None,
-        page_token: Optional[str] = None,
+        self, dashboard_id: str, schedule_id: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[Subscription]:
         """List schedule subscriptions.
 
@@ -2537,20 +2451,11 @@ class LakeviewAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            "/api/2.0/lakeview/dashboards/migrate",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", "/api/2.0/lakeview/dashboards/migrate", body=body, headers=headers)
         return Dashboard.from_dict(res)
 
     def publish(
-        self,
-        dashboard_id: str,
-        *,
-        embed_credentials: Optional[bool] = None,
-        warehouse_id: Optional[str] = None,
+        self, dashboard_id: str, *, embed_credentials: Optional[bool] = None, warehouse_id: Optional[str] = None
     ) -> PublishedDashboard:
         """Publish dashboard.
 
@@ -2576,12 +2481,7 @@ class LakeviewAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            f"/api/2.0/lakeview/dashboards/{dashboard_id}/published",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", f"/api/2.0/lakeview/dashboards/{dashboard_id}/published", body=body, headers=headers)
         return PublishedDashboard.from_dict(res)
 
     def trash(self, dashboard_id: str):
@@ -2599,11 +2499,7 @@ class LakeviewAPI:
             "Accept": "application/json",
         }
 
-        self._api.do(
-            "DELETE",
-            f"/api/2.0/lakeview/dashboards/{dashboard_id}",
-            headers=headers,
-        )
+        self._api.do("DELETE", f"/api/2.0/lakeview/dashboards/{dashboard_id}", headers=headers)
 
     def unpublish(self, dashboard_id: str):
         """Unpublish dashboard.
@@ -2620,11 +2516,7 @@ class LakeviewAPI:
             "Accept": "application/json",
         }
 
-        self._api.do(
-            "DELETE",
-            f"/api/2.0/lakeview/dashboards/{dashboard_id}/published",
-            headers=headers,
-        )
+        self._api.do("DELETE", f"/api/2.0/lakeview/dashboards/{dashboard_id}/published", headers=headers)
 
     def update(self, dashboard_id: str, *, dashboard: Optional[Dashboard] = None) -> Dashboard:
         """Update dashboard.
@@ -2643,21 +2535,10 @@ class LakeviewAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "PATCH",
-            f"/api/2.0/lakeview/dashboards/{dashboard_id}",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("PATCH", f"/api/2.0/lakeview/dashboards/{dashboard_id}", body=body, headers=headers)
         return Dashboard.from_dict(res)
 
-    def update_schedule(
-        self,
-        dashboard_id: str,
-        schedule_id: str,
-        *,
-        schedule: Optional[Schedule] = None,
-    ) -> Schedule:
+    def update_schedule(self, dashboard_id: str, schedule_id: str, *, schedule: Optional[Schedule] = None) -> Schedule:
         """Update dashboard schedule.
 
         :param dashboard_id: str
@@ -2675,10 +2556,7 @@ class LakeviewAPI:
         }
 
         res = self._api.do(
-            "PUT",
-            f"/api/2.0/lakeview/dashboards/{dashboard_id}/schedules/{schedule_id}",
-            body=body,
-            headers=headers,
+            "PUT", f"/api/2.0/lakeview/dashboards/{dashboard_id}/schedules/{schedule_id}", body=body, headers=headers
         )
         return Schedule.from_dict(res)
 
@@ -2704,11 +2582,7 @@ class LakeviewEmbeddedAPI:
             "Accept": "application/json",
         }
 
-        self._api.do(
-            "GET",
-            f"/api/2.0/lakeview/dashboards/{dashboard_id}/published/embedded",
-            headers=headers,
-        )
+        self._api.do("GET", f"/api/2.0/lakeview/dashboards/{dashboard_id}/published/embedded", headers=headers)
 
 
 class QueryExecutionAPI:
@@ -2718,11 +2592,7 @@ class QueryExecutionAPI:
         self._api = api_client
 
     def cancel_published_query_execution(
-        self,
-        dashboard_name: str,
-        dashboard_revision_id: str,
-        *,
-        tokens: Optional[List[str]] = None,
+        self, dashboard_name: str, dashboard_revision_id: str, *, tokens: Optional[List[str]] = None
     ) -> CancelQueryExecutionResponse:
         """Cancel the results for the a query for a published, embedded dashboard.
 
@@ -2745,20 +2615,11 @@ class QueryExecutionAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "DELETE",
-            "/api/2.0/lakeview-query/query/published",
-            query=query,
-            headers=headers,
-        )
+        res = self._api.do("DELETE", "/api/2.0/lakeview-query/query/published", query=query, headers=headers)
         return CancelQueryExecutionResponse.from_dict(res)
 
     def execute_published_dashboard_query(
-        self,
-        dashboard_name: str,
-        dashboard_revision_id: str,
-        *,
-        override_warehouse_id: Optional[str] = None,
+        self, dashboard_name: str, dashboard_revision_id: str, *, override_warehouse_id: Optional[str] = None
     ):
         """Execute a query for a published dashboard.
 
@@ -2784,19 +2645,10 @@ class QueryExecutionAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do(
-            "POST",
-            "/api/2.0/lakeview-query/query/published",
-            body=body,
-            headers=headers,
-        )
+        self._api.do("POST", "/api/2.0/lakeview-query/query/published", body=body, headers=headers)
 
     def poll_published_query_status(
-        self,
-        dashboard_name: str,
-        dashboard_revision_id: str,
-        *,
-        tokens: Optional[List[str]] = None,
+        self, dashboard_name: str, dashboard_revision_id: str, *, tokens: Optional[List[str]] = None
     ) -> PollQueryStatusResponse:
         """Poll the results for the a query for a published, embedded dashboard.
 
@@ -2819,10 +2671,5 @@ class QueryExecutionAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            "/api/2.0/lakeview-query/query/published",
-            query=query,
-            headers=headers,
-        )
+        res = self._api.do("GET", "/api/2.0/lakeview-query/query/published", query=query, headers=headers)
         return PollQueryStatusResponse.from_dict(res)

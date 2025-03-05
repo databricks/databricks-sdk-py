@@ -11,6 +11,7 @@ from ._internal import _enum, _from_dict, _repeated_dict, _repeated_enum
 
 _LOG = logging.getLogger("databricks.sdk")
 
+
 # all definitions in this file are in alphabetical order
 
 
@@ -381,11 +382,7 @@ class CreateComment:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateComment:
         """Deserializes the CreateComment from a dictionary."""
-        return cls(
-            comment=d.get("comment", None),
-            name=d.get("name", None),
-            version=d.get("version", None),
-        )
+        return cls(comment=d.get("comment", None), name=d.get("name", None), version=d.get("version", None))
 
 
 @dataclass
@@ -522,9 +519,7 @@ class CreateModelRequest:
     def from_dict(cls, d: Dict[str, any]) -> CreateModelRequest:
         """Deserializes the CreateModelRequest from a dictionary."""
         return cls(
-            description=d.get("description", None),
-            name=d.get("name", None),
-            tags=_repeated_dict(d, "tags", ModelTag),
+            description=d.get("description", None), name=d.get("name", None), tags=_repeated_dict(d, "tags", ModelTag)
         )
 
 
@@ -1029,15 +1024,11 @@ class DatasetInput:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> DatasetInput:
         """Deserializes the DatasetInput from a dictionary."""
-        return cls(
-            dataset=_from_dict(d, "dataset", Dataset),
-            tags=_repeated_dict(d, "tags", InputTag),
-        )
+        return cls(dataset=_from_dict(d, "dataset", Dataset), tags=_repeated_dict(d, "tags", InputTag))
 
 
 @dataclass
 class DeleteCommentResponse:
-
     def as_dict(self) -> dict:
         """Serializes the DeleteCommentResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1081,7 +1072,6 @@ class DeleteExperiment:
 
 @dataclass
 class DeleteExperimentResponse:
-
     def as_dict(self) -> dict:
         """Serializes the DeleteExperimentResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1100,7 +1090,6 @@ class DeleteExperimentResponse:
 
 @dataclass
 class DeleteModelResponse:
-
     def as_dict(self) -> dict:
         """Serializes the DeleteModelResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1119,7 +1108,6 @@ class DeleteModelResponse:
 
 @dataclass
 class DeleteModelTagResponse:
-
     def as_dict(self) -> dict:
         """Serializes the DeleteModelTagResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1138,7 +1126,6 @@ class DeleteModelTagResponse:
 
 @dataclass
 class DeleteModelVersionResponse:
-
     def as_dict(self) -> dict:
         """Serializes the DeleteModelVersionResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1157,7 +1144,6 @@ class DeleteModelVersionResponse:
 
 @dataclass
 class DeleteModelVersionTagResponse:
-
     def as_dict(self) -> dict:
         """Serializes the DeleteModelVersionTagResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1201,7 +1187,6 @@ class DeleteRun:
 
 @dataclass
 class DeleteRunResponse:
-
     def as_dict(self) -> dict:
         """Serializes the DeleteRunResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1322,7 +1307,6 @@ class DeleteTag:
 
 @dataclass
 class DeleteTagResponse:
-
     def as_dict(self) -> dict:
         """Serializes the DeleteTagResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1341,7 +1325,6 @@ class DeleteTagResponse:
 
 @dataclass
 class DeleteTransitionRequestResponse:
-
     def as_dict(self) -> dict:
         """Serializes the DeleteTransitionRequestResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1368,7 +1351,6 @@ class DeleteTransitionRequestStage(Enum):
 
 @dataclass
 class DeleteWebhookResponse:
-
     def as_dict(self) -> dict:
         """Serializes the DeleteWebhookResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1796,11 +1778,7 @@ class FileInfo:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> FileInfo:
         """Deserializes the FileInfo from a dictionary."""
-        return cls(
-            file_size=d.get("file_size", None),
-            is_dir=d.get("is_dir", None),
-            path=d.get("path", None),
-        )
+        return cls(file_size=d.get("file_size", None), is_dir=d.get("is_dir", None), path=d.get("path", None))
 
 
 @dataclass
@@ -1940,10 +1918,7 @@ class GetMetricHistoryResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> GetMetricHistoryResponse:
         """Deserializes the GetMetricHistoryResponse from a dictionary."""
-        return cls(
-            metrics=_repeated_dict(d, "metrics", Metric),
-            next_page_token=d.get("next_page_token", None),
-        )
+        return cls(metrics=_repeated_dict(d, "metrics", Metric), next_page_token=d.get("next_page_token", None))
 
 
 @dataclass
@@ -2160,10 +2135,7 @@ class HttpUrlSpecWithoutSecret:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> HttpUrlSpecWithoutSecret:
         """Deserializes the HttpUrlSpecWithoutSecret from a dictionary."""
-        return cls(
-            enable_ssl_verification=d.get("enable_ssl_verification", None),
-            url=d.get("url", None),
-        )
+        return cls(enable_ssl_verification=d.get("enable_ssl_verification", None), url=d.get("url", None))
 
 
 @dataclass
@@ -2273,10 +2245,7 @@ class JobSpecWithoutSecret:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> JobSpecWithoutSecret:
         """Deserializes the JobSpecWithoutSecret from a dictionary."""
-        return cls(
-            job_id=d.get("job_id", None),
-            workspace_url=d.get("workspace_url", None),
-        )
+        return cls(job_id=d.get("job_id", None), workspace_url=d.get("workspace_url", None))
 
 
 @dataclass
@@ -2353,8 +2322,7 @@ class ListExperimentsResponse:
     def from_dict(cls, d: Dict[str, any]) -> ListExperimentsResponse:
         """Deserializes the ListExperimentsResponse from a dictionary."""
         return cls(
-            experiments=_repeated_dict(d, "experiments", Experiment),
-            next_page_token=d.get("next_page_token", None),
+            experiments=_repeated_dict(d, "experiments", Experiment), next_page_token=d.get("next_page_token", None)
         )
 
 
@@ -2422,8 +2390,7 @@ class ListRegistryWebhooks:
     def from_dict(cls, d: Dict[str, any]) -> ListRegistryWebhooks:
         """Deserializes the ListRegistryWebhooks from a dictionary."""
         return cls(
-            next_page_token=d.get("next_page_token", None),
-            webhooks=_repeated_dict(d, "webhooks", RegistryWebhook),
+            next_page_token=d.get("next_page_token", None), webhooks=_repeated_dict(d, "webhooks", RegistryWebhook)
         )
 
 
@@ -2508,7 +2475,6 @@ class LogBatch:
 
 @dataclass
 class LogBatchResponse:
-
     def as_dict(self) -> dict:
         """Serializes the LogBatchResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -2554,15 +2520,11 @@ class LogInputs:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> LogInputs:
         """Deserializes the LogInputs from a dictionary."""
-        return cls(
-            datasets=_repeated_dict(d, "datasets", DatasetInput),
-            run_id=d.get("run_id", None),
-        )
+        return cls(datasets=_repeated_dict(d, "datasets", DatasetInput), run_id=d.get("run_id", None))
 
 
 @dataclass
 class LogInputsResponse:
-
     def as_dict(self) -> dict:
         """Serializes the LogInputsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -2649,7 +2611,6 @@ class LogMetric:
 
 @dataclass
 class LogMetricResponse:
-
     def as_dict(self) -> dict:
         """Serializes the LogMetricResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -2700,7 +2661,6 @@ class LogModel:
 
 @dataclass
 class LogModelResponse:
-
     def as_dict(self) -> dict:
         """Serializes the LogModelResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -2771,7 +2731,6 @@ class LogParam:
 
 @dataclass
 class LogParamResponse:
-
     def as_dict(self) -> dict:
         """Serializes the LogParamResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -3982,7 +3941,6 @@ class RestoreExperiment:
 
 @dataclass
 class RestoreExperimentResponse:
-
     def as_dict(self) -> dict:
         """Serializes the RestoreExperimentResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -4026,7 +3984,6 @@ class RestoreRun:
 
 @dataclass
 class RestoreRunResponse:
-
     def as_dict(self) -> dict:
         """Serializes the RestoreRunResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -4454,8 +4411,7 @@ class SearchExperimentsResponse:
     def from_dict(cls, d: Dict[str, any]) -> SearchExperimentsResponse:
         """Deserializes the SearchExperimentsResponse from a dictionary."""
         return cls(
-            experiments=_repeated_dict(d, "experiments", Experiment),
-            next_page_token=d.get("next_page_token", None),
+            experiments=_repeated_dict(d, "experiments", Experiment), next_page_token=d.get("next_page_token", None)
         )
 
 
@@ -4647,10 +4603,7 @@ class SearchRunsResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> SearchRunsResponse:
         """Deserializes the SearchRunsResponse from a dictionary."""
-        return cls(
-            next_page_token=d.get("next_page_token", None),
-            runs=_repeated_dict(d, "runs", Run),
-        )
+        return cls(next_page_token=d.get("next_page_token", None), runs=_repeated_dict(d, "runs", Run))
 
 
 class SearchRunsRunViewType(Enum):
@@ -4699,16 +4652,11 @@ class SetExperimentTag:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> SetExperimentTag:
         """Deserializes the SetExperimentTag from a dictionary."""
-        return cls(
-            experiment_id=d.get("experiment_id", None),
-            key=d.get("key", None),
-            value=d.get("value", None),
-        )
+        return cls(experiment_id=d.get("experiment_id", None), key=d.get("key", None), value=d.get("value", None))
 
 
 @dataclass
 class SetExperimentTagResponse:
-
     def as_dict(self) -> dict:
         """Serializes the SetExperimentTagResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -4764,16 +4712,11 @@ class SetModelTagRequest:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> SetModelTagRequest:
         """Deserializes the SetModelTagRequest from a dictionary."""
-        return cls(
-            key=d.get("key", None),
-            name=d.get("name", None),
-            value=d.get("value", None),
-        )
+        return cls(key=d.get("key", None), name=d.get("name", None), value=d.get("value", None))
 
 
 @dataclass
 class SetModelTagResponse:
-
     def as_dict(self) -> dict:
         """Serializes the SetModelTagResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -4837,16 +4780,12 @@ class SetModelVersionTagRequest:
     def from_dict(cls, d: Dict[str, any]) -> SetModelVersionTagRequest:
         """Deserializes the SetModelVersionTagRequest from a dictionary."""
         return cls(
-            key=d.get("key", None),
-            name=d.get("name", None),
-            value=d.get("value", None),
-            version=d.get("version", None),
+            key=d.get("key", None), name=d.get("name", None), value=d.get("value", None), version=d.get("version", None)
         )
 
 
 @dataclass
 class SetModelVersionTagResponse:
-
     def as_dict(self) -> dict:
         """Serializes the SetModelVersionTagResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -4919,7 +4858,6 @@ class SetTag:
 
 @dataclass
 class SetTagResponse:
-
     def as_dict(self) -> dict:
         """Serializes the SetTagResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -5304,15 +5242,11 @@ class UpdateExperiment:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> UpdateExperiment:
         """Deserializes the UpdateExperiment from a dictionary."""
-        return cls(
-            experiment_id=d.get("experiment_id", None),
-            new_name=d.get("new_name", None),
-        )
+        return cls(experiment_id=d.get("experiment_id", None), new_name=d.get("new_name", None))
 
 
 @dataclass
 class UpdateExperimentResponse:
-
     def as_dict(self) -> dict:
         """Serializes the UpdateExperimentResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -5363,7 +5297,6 @@ class UpdateModelRequest:
 
 @dataclass
 class UpdateModelResponse:
-
     def as_dict(self) -> dict:
         """Serializes the UpdateModelResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -5416,16 +5349,11 @@ class UpdateModelVersionRequest:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> UpdateModelVersionRequest:
         """Deserializes the UpdateModelVersionRequest from a dictionary."""
-        return cls(
-            description=d.get("description", None),
-            name=d.get("name", None),
-            version=d.get("version", None),
-        )
+        return cls(description=d.get("description", None), name=d.get("name", None), version=d.get("version", None))
 
 
 @dataclass
 class UpdateModelVersionResponse:
-
     def as_dict(self) -> dict:
         """Serializes the UpdateModelVersionResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -5629,7 +5557,6 @@ class UpdateRunStatus(Enum):
 
 @dataclass
 class UpdateWebhookResponse:
-
     def as_dict(self) -> dict:
         """Serializes the UpdateWebhookResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -5652,18 +5579,13 @@ class ExperimentsAPI:
     analysis in other tools. Experiments are maintained in a Databricks hosted MLflow tracking server.
 
     Experiments are located in the workspace file tree. You manage experiments using the same tools you use to
-    manage other workspace objects such as folders, notebooks, and libraries.
-    """
+    manage other workspace objects such as folders, notebooks, and libraries."""
 
     def __init__(self, api_client):
         self._api = api_client
 
     def create_experiment(
-        self,
-        name: str,
-        *,
-        artifact_location: Optional[str] = None,
-        tags: Optional[List[ExperimentTag]] = None,
+        self, name: str, *, artifact_location: Optional[str] = None, tags: Optional[List[ExperimentTag]] = None
     ) -> CreateExperimentResponse:
         """Create experiment.
 
@@ -5698,12 +5620,7 @@ class ExperimentsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            "/api/2.0/mlflow/experiments/create",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", "/api/2.0/mlflow/experiments/create", body=body, headers=headers)
         return CreateExperimentResponse.from_dict(res)
 
     def create_run(
@@ -5768,12 +5685,7 @@ class ExperimentsAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do(
-            "POST",
-            "/api/2.0/mlflow/experiments/delete",
-            body=body,
-            headers=headers,
-        )
+        self._api.do("POST", "/api/2.0/mlflow/experiments/delete", body=body, headers=headers)
 
     def delete_run(self, run_id: str):
         """Delete a run.
@@ -5796,11 +5708,7 @@ class ExperimentsAPI:
         self._api.do("POST", "/api/2.0/mlflow/runs/delete", body=body, headers=headers)
 
     def delete_runs(
-        self,
-        experiment_id: str,
-        max_timestamp_millis: int,
-        *,
-        max_runs: Optional[int] = None,
+        self, experiment_id: str, max_timestamp_millis: int, *, max_runs: Optional[int] = None
     ) -> DeleteRunsResponse:
         """Delete runs by creation time.
 
@@ -5831,12 +5739,7 @@ class ExperimentsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            "/api/2.0/mlflow/databricks/runs/delete-runs",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", "/api/2.0/mlflow/databricks/runs/delete-runs", body=body, headers=headers)
         return DeleteRunsResponse.from_dict(res)
 
     def delete_tag(self, run_id: str, key: str):
@@ -5862,12 +5765,7 @@ class ExperimentsAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do(
-            "POST",
-            "/api/2.0/mlflow/runs/delete-tag",
-            body=body,
-            headers=headers,
-        )
+        self._api.do("POST", "/api/2.0/mlflow/runs/delete-tag", body=body, headers=headers)
 
     def get_by_name(self, experiment_name: str) -> GetExperimentResponse:
         """Get metadata.
@@ -5893,12 +5791,7 @@ class ExperimentsAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            "/api/2.0/mlflow/experiments/get-by-name",
-            query=query,
-            headers=headers,
-        )
+        res = self._api.do("GET", "/api/2.0/mlflow/experiments/get-by-name", query=query, headers=headers)
         return GetExperimentResponse.from_dict(res)
 
     def get_experiment(self, experiment_id: str) -> GetExperimentResponse:
@@ -5919,12 +5812,7 @@ class ExperimentsAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            "/api/2.0/mlflow/experiments/get",
-            query=query,
-            headers=headers,
-        )
+        res = self._api.do("GET", "/api/2.0/mlflow/experiments/get", query=query, headers=headers)
         return GetExperimentResponse.from_dict(res)
 
     def get_history(
@@ -5972,12 +5860,7 @@ class ExperimentsAPI:
         }
 
         while True:
-            json = self._api.do(
-                "GET",
-                "/api/2.0/mlflow/metrics/get-history",
-                query=query,
-                headers=headers,
-            )
+            json = self._api.do("GET", "/api/2.0/mlflow/metrics/get-history", query=query, headers=headers)
             if "metrics" in json:
                 for v in json["metrics"]:
                     yield Metric.from_dict(v)
@@ -6000,11 +5883,7 @@ class ExperimentsAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.0/permissions/experiments/{experiment_id}/permissionLevels",
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.0/permissions/experiments/{experiment_id}/permissionLevels", headers=headers)
         return GetExperimentPermissionLevelsResponse.from_dict(res)
 
     def get_permissions(self, experiment_id: str) -> ExperimentPermissions:
@@ -6022,11 +5901,7 @@ class ExperimentsAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.0/permissions/experiments/{experiment_id}",
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.0/permissions/experiments/{experiment_id}", headers=headers)
         return ExperimentPermissions.from_dict(res)
 
     def get_run(self, run_id: str, *, run_uuid: Optional[str] = None) -> GetRunResponse:
@@ -6104,12 +5979,7 @@ class ExperimentsAPI:
         }
 
         while True:
-            json = self._api.do(
-                "GET",
-                "/api/2.0/mlflow/artifacts/list",
-                query=query,
-                headers=headers,
-            )
+            json = self._api.do("GET", "/api/2.0/mlflow/artifacts/list", query=query, headers=headers)
             if "files" in json:
                 for v in json["files"]:
                     yield FileInfo.from_dict(v)
@@ -6118,11 +5988,7 @@ class ExperimentsAPI:
             query["page_token"] = json["next_page_token"]
 
     def list_experiments(
-        self,
-        *,
-        max_results: Optional[int] = None,
-        page_token: Optional[str] = None,
-        view_type: Optional[str] = None,
+        self, *, max_results: Optional[int] = None, page_token: Optional[str] = None, view_type: Optional[str] = None
     ) -> Iterator[Experiment]:
         """List experiments.
 
@@ -6152,12 +6018,7 @@ class ExperimentsAPI:
         }
 
         while True:
-            json = self._api.do(
-                "GET",
-                "/api/2.0/mlflow/experiments/list",
-                query=query,
-                headers=headers,
-            )
+            json = self._api.do("GET", "/api/2.0/mlflow/experiments/list", query=query, headers=headers)
             if "experiments" in json:
                 for v in json["experiments"]:
                     yield Experiment.from_dict(v)
@@ -6238,19 +6099,9 @@ class ExperimentsAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do(
-            "POST",
-            "/api/2.0/mlflow/runs/log-batch",
-            body=body,
-            headers=headers,
-        )
+        self._api.do("POST", "/api/2.0/mlflow/runs/log-batch", body=body, headers=headers)
 
-    def log_inputs(
-        self,
-        *,
-        datasets: Optional[List[DatasetInput]] = None,
-        run_id: Optional[str] = None,
-    ):
+    def log_inputs(self, *, datasets: Optional[List[DatasetInput]] = None, run_id: Optional[str] = None):
         """Log inputs to a run.
 
         **NOTE:** Experimental: This API may change or be removed in a future release without warning.
@@ -6272,12 +6123,7 @@ class ExperimentsAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do(
-            "POST",
-            "/api/2.0/mlflow/runs/log-inputs",
-            body=body,
-            headers=headers,
-        )
+        self._api.do("POST", "/api/2.0/mlflow/runs/log-inputs", body=body, headers=headers)
 
     def log_metric(
         self,
@@ -6329,12 +6175,7 @@ class ExperimentsAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do(
-            "POST",
-            "/api/2.0/mlflow/runs/log-metric",
-            body=body,
-            headers=headers,
-        )
+        self._api.do("POST", "/api/2.0/mlflow/runs/log-metric", body=body, headers=headers)
 
     def log_model(self, *, model_json: Optional[str] = None, run_id: Optional[str] = None):
         """Log a model.
@@ -6358,21 +6199,9 @@ class ExperimentsAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do(
-            "POST",
-            "/api/2.0/mlflow/runs/log-model",
-            body=body,
-            headers=headers,
-        )
+        self._api.do("POST", "/api/2.0/mlflow/runs/log-model", body=body, headers=headers)
 
-    def log_param(
-        self,
-        key: str,
-        value: str,
-        *,
-        run_id: Optional[str] = None,
-        run_uuid: Optional[str] = None,
-    ):
+    def log_param(self, key: str, value: str, *, run_id: Optional[str] = None, run_uuid: Optional[str] = None):
         """Log a param.
 
         Logs a param used for a run. A param is a key-value pair (string key, string value). Examples include
@@ -6405,12 +6234,7 @@ class ExperimentsAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do(
-            "POST",
-            "/api/2.0/mlflow/runs/log-parameter",
-            body=body,
-            headers=headers,
-        )
+        self._api.do("POST", "/api/2.0/mlflow/runs/log-parameter", body=body, headers=headers)
 
     def restore_experiment(self, experiment_id: str):
         """Restores an experiment.
@@ -6434,12 +6258,7 @@ class ExperimentsAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do(
-            "POST",
-            "/api/2.0/mlflow/experiments/restore",
-            body=body,
-            headers=headers,
-        )
+        self._api.do("POST", "/api/2.0/mlflow/experiments/restore", body=body, headers=headers)
 
     def restore_run(self, run_id: str):
         """Restore a run.
@@ -6462,11 +6281,7 @@ class ExperimentsAPI:
         self._api.do("POST", "/api/2.0/mlflow/runs/restore", body=body, headers=headers)
 
     def restore_runs(
-        self,
-        experiment_id: str,
-        min_timestamp_millis: int,
-        *,
-        max_runs: Optional[int] = None,
+        self, experiment_id: str, min_timestamp_millis: int, *, max_runs: Optional[int] = None
     ) -> RestoreRunsResponse:
         """Restore runs by deletion time.
 
@@ -6497,12 +6312,7 @@ class ExperimentsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            "/api/2.0/mlflow/databricks/runs/restore-runs",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", "/api/2.0/mlflow/databricks/runs/restore-runs", body=body, headers=headers)
         return RestoreRunsResponse.from_dict(res)
 
     def search_experiments(
@@ -6550,12 +6360,7 @@ class ExperimentsAPI:
         }
 
         while True:
-            json = self._api.do(
-                "POST",
-                "/api/2.0/mlflow/experiments/search",
-                body=body,
-                headers=headers,
-            )
+            json = self._api.do("POST", "/api/2.0/mlflow/experiments/search", body=body, headers=headers)
             if "experiments" in json:
                 for v in json["experiments"]:
                     yield Experiment.from_dict(v)
@@ -6626,12 +6431,7 @@ class ExperimentsAPI:
         }
 
         while True:
-            json = self._api.do(
-                "POST",
-                "/api/2.0/mlflow/runs/search",
-                body=body,
-                headers=headers,
-            )
+            json = self._api.do("POST", "/api/2.0/mlflow/runs/search", body=body, headers=headers)
             if "runs" in json:
                 for v in json["runs"]:
                     yield Run.from_dict(v)
@@ -6667,18 +6467,10 @@ class ExperimentsAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do(
-            "POST",
-            "/api/2.0/mlflow/experiments/set-experiment-tag",
-            body=body,
-            headers=headers,
-        )
+        self._api.do("POST", "/api/2.0/mlflow/experiments/set-experiment-tag", body=body, headers=headers)
 
     def set_permissions(
-        self,
-        experiment_id: str,
-        *,
-        access_control_list: Optional[List[ExperimentAccessControlRequest]] = None,
+        self, experiment_id: str, *, access_control_list: Optional[List[ExperimentAccessControlRequest]] = None
     ) -> ExperimentPermissions:
         """Set experiment permissions.
 
@@ -6699,22 +6491,10 @@ class ExperimentsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "PUT",
-            f"/api/2.0/permissions/experiments/{experiment_id}",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("PUT", f"/api/2.0/permissions/experiments/{experiment_id}", body=body, headers=headers)
         return ExperimentPermissions.from_dict(res)
 
-    def set_tag(
-        self,
-        key: str,
-        value: str,
-        *,
-        run_id: Optional[str] = None,
-        run_uuid: Optional[str] = None,
-    ):
+    def set_tag(self, key: str, value: str, *, run_id: Optional[str] = None, run_uuid: Optional[str] = None):
         """Set a tag.
 
         Sets a tag on a run. Tags are run metadata that can be updated during a run and after a run completes.
@@ -6771,18 +6551,10 @@ class ExperimentsAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do(
-            "POST",
-            "/api/2.0/mlflow/experiments/update",
-            body=body,
-            headers=headers,
-        )
+        self._api.do("POST", "/api/2.0/mlflow/experiments/update", body=body, headers=headers)
 
     def update_permissions(
-        self,
-        experiment_id: str,
-        *,
-        access_control_list: Optional[List[ExperimentAccessControlRequest]] = None,
+        self, experiment_id: str, *, access_control_list: Optional[List[ExperimentAccessControlRequest]] = None
     ) -> ExperimentPermissions:
         """Update experiment permissions.
 
@@ -6802,12 +6574,7 @@ class ExperimentsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "PATCH",
-            f"/api/2.0/permissions/experiments/{experiment_id}",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("PATCH", f"/api/2.0/permissions/experiments/{experiment_id}", body=body, headers=headers)
         return ExperimentPermissions.from_dict(res)
 
     def update_run(
@@ -6865,13 +6632,7 @@ class ModelRegistryAPI:
         self._api = api_client
 
     def approve_transition_request(
-        self,
-        name: str,
-        version: str,
-        stage: Stage,
-        archive_existing_versions: bool,
-        *,
-        comment: Optional[str] = None,
+        self, name: str, version: str, stage: Stage, archive_existing_versions: bool, *, comment: Optional[str] = None
     ) -> ApproveTransitionRequestResponse:
         """Approve transition request.
 
@@ -6914,12 +6675,7 @@ class ModelRegistryAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            "/api/2.0/mlflow/transition-requests/approve",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", "/api/2.0/mlflow/transition-requests/approve", body=body, headers=headers)
         return ApproveTransitionRequestResponse.from_dict(res)
 
     def create_comment(self, name: str, version: str, comment: str) -> CreateCommentResponse:
@@ -6949,20 +6705,11 @@ class ModelRegistryAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            "/api/2.0/mlflow/comments/create",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", "/api/2.0/mlflow/comments/create", body=body, headers=headers)
         return CreateCommentResponse.from_dict(res)
 
     def create_model(
-        self,
-        name: str,
-        *,
-        description: Optional[str] = None,
-        tags: Optional[List[ModelTag]] = None,
+        self, name: str, *, description: Optional[str] = None, tags: Optional[List[ModelTag]] = None
     ) -> CreateModelResponse:
         """Create a model.
 
@@ -6991,12 +6738,7 @@ class ModelRegistryAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            "/api/2.0/mlflow/registered-models/create",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", "/api/2.0/mlflow/registered-models/create", body=body, headers=headers)
         return CreateModelResponse.from_dict(res)
 
     def create_model_version(
@@ -7048,21 +6790,11 @@ class ModelRegistryAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            "/api/2.0/mlflow/model-versions/create",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", "/api/2.0/mlflow/model-versions/create", body=body, headers=headers)
         return CreateModelVersionResponse.from_dict(res)
 
     def create_transition_request(
-        self,
-        name: str,
-        version: str,
-        stage: Stage,
-        *,
-        comment: Optional[str] = None,
+        self, name: str, version: str, stage: Stage, *, comment: Optional[str] = None
     ) -> CreateTransitionRequestResponse:
         """Make a transition request.
 
@@ -7101,12 +6833,7 @@ class ModelRegistryAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            "/api/2.0/mlflow/transition-requests/create",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", "/api/2.0/mlflow/transition-requests/create", body=body, headers=headers)
         return CreateTransitionRequestResponse.from_dict(res)
 
     def create_webhook(
@@ -7189,12 +6916,7 @@ class ModelRegistryAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            "/api/2.0/mlflow/registry-webhooks/create",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", "/api/2.0/mlflow/registry-webhooks/create", body=body, headers=headers)
         return CreateWebhookResponse.from_dict(res)
 
     def delete_comment(self, id: str):
@@ -7214,12 +6936,7 @@ class ModelRegistryAPI:
             "Accept": "application/json",
         }
 
-        self._api.do(
-            "DELETE",
-            "/api/2.0/mlflow/comments/delete",
-            query=query,
-            headers=headers,
-        )
+        self._api.do("DELETE", "/api/2.0/mlflow/comments/delete", query=query, headers=headers)
 
     def delete_model(self, name: str):
         """Delete a model.
@@ -7239,12 +6956,7 @@ class ModelRegistryAPI:
             "Accept": "application/json",
         }
 
-        self._api.do(
-            "DELETE",
-            "/api/2.0/mlflow/registered-models/delete",
-            query=query,
-            headers=headers,
-        )
+        self._api.do("DELETE", "/api/2.0/mlflow/registered-models/delete", query=query, headers=headers)
 
     def delete_model_tag(self, name: str, key: str):
         """Delete a model tag.
@@ -7269,12 +6981,7 @@ class ModelRegistryAPI:
             "Accept": "application/json",
         }
 
-        self._api.do(
-            "DELETE",
-            "/api/2.0/mlflow/registered-models/delete-tag",
-            query=query,
-            headers=headers,
-        )
+        self._api.do("DELETE", "/api/2.0/mlflow/registered-models/delete-tag", query=query, headers=headers)
 
     def delete_model_version(self, name: str, version: str):
         """Delete a model version.
@@ -7298,12 +7005,7 @@ class ModelRegistryAPI:
             "Accept": "application/json",
         }
 
-        self._api.do(
-            "DELETE",
-            "/api/2.0/mlflow/model-versions/delete",
-            query=query,
-            headers=headers,
-        )
+        self._api.do("DELETE", "/api/2.0/mlflow/model-versions/delete", query=query, headers=headers)
 
     def delete_model_version_tag(self, name: str, version: str, key: str):
         """Delete a model version tag.
@@ -7332,12 +7034,7 @@ class ModelRegistryAPI:
             "Accept": "application/json",
         }
 
-        self._api.do(
-            "DELETE",
-            "/api/2.0/mlflow/model-versions/delete-tag",
-            query=query,
-            headers=headers,
-        )
+        self._api.do("DELETE", "/api/2.0/mlflow/model-versions/delete-tag", query=query, headers=headers)
 
     def delete_transition_request(
         self,
@@ -7390,12 +7087,7 @@ class ModelRegistryAPI:
             "Accept": "application/json",
         }
 
-        self._api.do(
-            "DELETE",
-            "/api/2.0/mlflow/transition-requests/delete",
-            query=query,
-            headers=headers,
-        )
+        self._api.do("DELETE", "/api/2.0/mlflow/transition-requests/delete", query=query, headers=headers)
 
     def delete_webhook(self, *, id: Optional[str] = None):
         """Delete a webhook.
@@ -7417,12 +7109,7 @@ class ModelRegistryAPI:
             "Accept": "application/json",
         }
 
-        self._api.do(
-            "DELETE",
-            "/api/2.0/mlflow/registry-webhooks/delete",
-            query=query,
-            headers=headers,
-        )
+        self._api.do("DELETE", "/api/2.0/mlflow/registry-webhooks/delete", query=query, headers=headers)
 
     def get_latest_versions(self, name: str, *, stages: Optional[List[str]] = None) -> Iterator[ModelVersion]:
         """Get the latest version.
@@ -7446,12 +7133,7 @@ class ModelRegistryAPI:
             "Content-Type": "application/json",
         }
 
-        json = self._api.do(
-            "POST",
-            "/api/2.0/mlflow/registered-models/get-latest-versions",
-            body=body,
-            headers=headers,
-        )
+        json = self._api.do("POST", "/api/2.0/mlflow/registered-models/get-latest-versions", body=body, headers=headers)
         parsed = GetLatestVersionsResponse.from_dict(json).model_versions
         return parsed if parsed is not None else []
 
@@ -7477,12 +7159,7 @@ class ModelRegistryAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            "/api/2.0/mlflow/databricks/registered-models/get",
-            query=query,
-            headers=headers,
-        )
+        res = self._api.do("GET", "/api/2.0/mlflow/databricks/registered-models/get", query=query, headers=headers)
         return GetModelResponse.from_dict(res)
 
     def get_model_version(self, name: str, version: str) -> GetModelVersionResponse:
@@ -7507,12 +7184,7 @@ class ModelRegistryAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            "/api/2.0/mlflow/model-versions/get",
-            query=query,
-            headers=headers,
-        )
+        res = self._api.do("GET", "/api/2.0/mlflow/model-versions/get", query=query, headers=headers)
         return GetModelVersionResponse.from_dict(res)
 
     def get_model_version_download_uri(self, name: str, version: str) -> GetModelVersionDownloadUriResponse:
@@ -7537,12 +7209,7 @@ class ModelRegistryAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            "/api/2.0/mlflow/model-versions/get-download-uri",
-            query=query,
-            headers=headers,
-        )
+        res = self._api.do("GET", "/api/2.0/mlflow/model-versions/get-download-uri", query=query, headers=headers)
         return GetModelVersionDownloadUriResponse.from_dict(res)
 
     def get_permission_levels(self, registered_model_id: str) -> GetRegisteredModelPermissionLevelsResponse:
@@ -7561,9 +7228,7 @@ class ModelRegistryAPI:
         }
 
         res = self._api.do(
-            "GET",
-            f"/api/2.0/permissions/registered-models/{registered_model_id}/permissionLevels",
-            headers=headers,
+            "GET", f"/api/2.0/permissions/registered-models/{registered_model_id}/permissionLevels", headers=headers
         )
         return GetRegisteredModelPermissionLevelsResponse.from_dict(res)
 
@@ -7583,19 +7248,10 @@ class ModelRegistryAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.0/permissions/registered-models/{registered_model_id}",
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.0/permissions/registered-models/{registered_model_id}", headers=headers)
         return RegisteredModelPermissions.from_dict(res)
 
-    def list_models(
-        self,
-        *,
-        max_results: Optional[int] = None,
-        page_token: Optional[str] = None,
-    ) -> Iterator[Model]:
+    def list_models(self, *, max_results: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[Model]:
         """List models.
 
         Lists all available registered models, up to the limit specified in __max_results__.
@@ -7618,12 +7274,7 @@ class ModelRegistryAPI:
         }
 
         while True:
-            json = self._api.do(
-                "GET",
-                "/api/2.0/mlflow/registered-models/list",
-                query=query,
-                headers=headers,
-            )
+            json = self._api.do("GET", "/api/2.0/mlflow/registered-models/list", query=query, headers=headers)
             if "registered_models" in json:
                 for v in json["registered_models"]:
                     yield Model.from_dict(v)
@@ -7653,12 +7304,7 @@ class ModelRegistryAPI:
             "Accept": "application/json",
         }
 
-        json = self._api.do(
-            "GET",
-            "/api/2.0/mlflow/transition-requests/list",
-            query=query,
-            headers=headers,
-        )
+        json = self._api.do("GET", "/api/2.0/mlflow/transition-requests/list", query=query, headers=headers)
         parsed = ListTransitionRequestsResponse.from_dict(json).requests
         return parsed if parsed is not None else []
 
@@ -7699,12 +7345,7 @@ class ModelRegistryAPI:
         }
 
         while True:
-            json = self._api.do(
-                "GET",
-                "/api/2.0/mlflow/registry-webhooks/list",
-                query=query,
-                headers=headers,
-            )
+            json = self._api.do("GET", "/api/2.0/mlflow/registry-webhooks/list", query=query, headers=headers)
             if "webhooks" in json:
                 for v in json["webhooks"]:
                     yield RegistryWebhook.from_dict(v)
@@ -7713,12 +7354,7 @@ class ModelRegistryAPI:
             query["page_token"] = json["next_page_token"]
 
     def reject_transition_request(
-        self,
-        name: str,
-        version: str,
-        stage: Stage,
-        *,
-        comment: Optional[str] = None,
+        self, name: str, version: str, stage: Stage, *, comment: Optional[str] = None
     ) -> RejectTransitionRequestResponse:
         """Reject a transition request.
 
@@ -7757,12 +7393,7 @@ class ModelRegistryAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            "/api/2.0/mlflow/transition-requests/reject",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", "/api/2.0/mlflow/transition-requests/reject", body=body, headers=headers)
         return RejectTransitionRequestResponse.from_dict(res)
 
     def rename_model(self, name: str, *, new_name: Optional[str] = None) -> RenameModelResponse:
@@ -7787,12 +7418,7 @@ class ModelRegistryAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            "/api/2.0/mlflow/registered-models/rename",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", "/api/2.0/mlflow/registered-models/rename", body=body, headers=headers)
         return RenameModelResponse.from_dict(res)
 
     def search_model_versions(
@@ -7836,12 +7462,7 @@ class ModelRegistryAPI:
         }
 
         while True:
-            json = self._api.do(
-                "GET",
-                "/api/2.0/mlflow/model-versions/search",
-                query=query,
-                headers=headers,
-            )
+            json = self._api.do("GET", "/api/2.0/mlflow/model-versions/search", query=query, headers=headers)
             if "model_versions" in json:
                 for v in json["model_versions"]:
                     yield ModelVersion.from_dict(v)
@@ -7891,12 +7512,7 @@ class ModelRegistryAPI:
         }
 
         while True:
-            json = self._api.do(
-                "GET",
-                "/api/2.0/mlflow/registered-models/search",
-                query=query,
-                headers=headers,
-            )
+            json = self._api.do("GET", "/api/2.0/mlflow/registered-models/search", query=query, headers=headers)
             if "registered_models" in json:
                 for v in json["registered_models"]:
                     yield Model.from_dict(v)
@@ -7933,12 +7549,7 @@ class ModelRegistryAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do(
-            "POST",
-            "/api/2.0/mlflow/registered-models/set-tag",
-            body=body,
-            headers=headers,
-        )
+        self._api.do("POST", "/api/2.0/mlflow/registered-models/set-tag", body=body, headers=headers)
 
     def set_model_version_tag(self, name: str, version: str, key: str, value: str):
         """Set a version tag.
@@ -7973,12 +7584,7 @@ class ModelRegistryAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do(
-            "POST",
-            "/api/2.0/mlflow/model-versions/set-tag",
-            body=body,
-            headers=headers,
-        )
+        self._api.do("POST", "/api/2.0/mlflow/model-versions/set-tag", body=body, headers=headers)
 
     def set_permissions(
         self,
@@ -8006,10 +7612,7 @@ class ModelRegistryAPI:
         }
 
         res = self._api.do(
-            "PUT",
-            f"/api/2.0/permissions/registered-models/{registered_model_id}",
-            body=body,
-            headers=headers,
+            "PUT", f"/api/2.0/permissions/registered-models/{registered_model_id}", body=body, headers=headers
         )
         return RegisteredModelPermissions.from_dict(res)
 
@@ -8040,22 +7643,11 @@ class ModelRegistryAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            "/api/2.0/mlflow/registry-webhooks/test",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", "/api/2.0/mlflow/registry-webhooks/test", body=body, headers=headers)
         return TestRegistryWebhookResponse.from_dict(res)
 
     def transition_stage(
-        self,
-        name: str,
-        version: str,
-        stage: Stage,
-        archive_existing_versions: bool,
-        *,
-        comment: Optional[str] = None,
+        self, name: str, version: str, stage: Stage, archive_existing_versions: bool, *, comment: Optional[str] = None
     ) -> TransitionStageResponse:
         """Transition a stage.
 
@@ -8102,10 +7694,7 @@ class ModelRegistryAPI:
         }
 
         res = self._api.do(
-            "POST",
-            "/api/2.0/mlflow/databricks/model-versions/transition-stage",
-            body=body,
-            headers=headers,
+            "POST", "/api/2.0/mlflow/databricks/model-versions/transition-stage", body=body, headers=headers
         )
         return TransitionStageResponse.from_dict(res)
 
@@ -8131,12 +7720,7 @@ class ModelRegistryAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "PATCH",
-            "/api/2.0/mlflow/comments/update",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("PATCH", "/api/2.0/mlflow/comments/update", body=body, headers=headers)
         return UpdateCommentResponse.from_dict(res)
 
     def update_model(self, name: str, *, description: Optional[str] = None):
@@ -8161,12 +7745,7 @@ class ModelRegistryAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do(
-            "PATCH",
-            "/api/2.0/mlflow/registered-models/update",
-            body=body,
-            headers=headers,
-        )
+        self._api.do("PATCH", "/api/2.0/mlflow/registered-models/update", body=body, headers=headers)
 
     def update_model_version(self, name: str, version: str, *, description: Optional[str] = None):
         """Update model version.
@@ -8194,12 +7773,7 @@ class ModelRegistryAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do(
-            "PATCH",
-            "/api/2.0/mlflow/model-versions/update",
-            body=body,
-            headers=headers,
-        )
+        self._api.do("PATCH", "/api/2.0/mlflow/model-versions/update", body=body, headers=headers)
 
     def update_permissions(
         self,
@@ -8227,10 +7801,7 @@ class ModelRegistryAPI:
         }
 
         res = self._api.do(
-            "PATCH",
-            f"/api/2.0/permissions/registered-models/{registered_model_id}",
-            body=body,
-            headers=headers,
+            "PATCH", f"/api/2.0/permissions/registered-models/{registered_model_id}", body=body, headers=headers
         )
         return RegisteredModelPermissions.from_dict(res)
 
@@ -8314,9 +7885,4 @@ class ModelRegistryAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do(
-            "PATCH",
-            "/api/2.0/mlflow/registry-webhooks/update",
-            body=body,
-            headers=headers,
-        )
+        self._api.do("PATCH", "/api/2.0/mlflow/registry-webhooks/update", body=body, headers=headers)

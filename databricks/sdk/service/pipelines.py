@@ -15,6 +15,7 @@ from ._internal import Wait, _enum, _from_dict, _repeated_dict, _repeated_enum
 
 _LOG = logging.getLogger("databricks.sdk")
 
+
 from databricks.sdk.service import compute
 
 # all definitions in this file are in alphabetical order
@@ -288,8 +289,7 @@ class CreatePipelineResponse:
     def from_dict(cls, d: Dict[str, any]) -> CreatePipelineResponse:
         """Deserializes the CreatePipelineResponse from a dictionary."""
         return cls(
-            effective_settings=_from_dict(d, "effective_settings", PipelineSpec),
-            pipeline_id=d.get("pipeline_id", None),
+            effective_settings=_from_dict(d, "effective_settings", PipelineSpec), pipeline_id=d.get("pipeline_id", None)
         )
 
 
@@ -320,10 +320,7 @@ class CronTrigger:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CronTrigger:
         """Deserializes the CronTrigger from a dictionary."""
-        return cls(
-            quartz_cron_schedule=d.get("quartz_cron_schedule", None),
-            timezone_id=d.get("timezone_id", None),
-        )
+        return cls(quartz_cron_schedule=d.get("quartz_cron_schedule", None), timezone_id=d.get("timezone_id", None))
 
 
 @dataclass
@@ -373,7 +370,6 @@ class DayOfWeek(Enum):
 
 @dataclass
 class DeletePipelineResponse:
-
     def as_dict(self) -> dict:
         """Serializes the DeletePipelineResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -647,7 +643,6 @@ class EditPipeline:
 
 @dataclass
 class EditPipelineResponse:
-
     def as_dict(self) -> dict:
         """Serializes the EditPipelineResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -693,10 +688,7 @@ class ErrorDetail:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ErrorDetail:
         """Deserializes the ErrorDetail from a dictionary."""
-        return cls(
-            exceptions=_repeated_dict(d, "exceptions", SerializedException),
-            fatal=d.get("fatal", None),
-        )
+        return cls(exceptions=_repeated_dict(d, "exceptions", SerializedException), fatal=d.get("fatal", None))
 
 
 class EventLevel(Enum):
@@ -1170,8 +1162,7 @@ class ListPipelinesResponse:
     def from_dict(cls, d: Dict[str, any]) -> ListPipelinesResponse:
         """Deserializes the ListPipelinesResponse from a dictionary."""
         return cls(
-            next_page_token=d.get("next_page_token", None),
-            statuses=_repeated_dict(d, "statuses", PipelineStateInfo),
+            next_page_token=d.get("next_page_token", None), statuses=_repeated_dict(d, "statuses", PipelineStateInfo)
         )
 
 
@@ -1220,7 +1211,6 @@ class ListUpdatesResponse:
 
 @dataclass
 class ManualTrigger:
-
     def as_dict(self) -> dict:
         """Serializes the ManualTrigger into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1304,10 +1294,7 @@ class Notifications:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> Notifications:
         """Deserializes the Notifications from a dictionary."""
-        return cls(
-            alerts=d.get("alerts", None),
-            email_recipients=d.get("email_recipients", None),
-        )
+        return cls(alerts=d.get("alerts", None), email_recipients=d.get("email_recipients", None))
 
 
 @dataclass
@@ -1877,10 +1864,7 @@ class PipelineDeployment:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> PipelineDeployment:
         """Deserializes the PipelineDeployment from a dictionary."""
-        return cls(
-            kind=_enum(d, "kind", DeploymentKind),
-            metadata_file_path=d.get("metadata_file_path", None),
-        )
+        return cls(kind=_enum(d, "kind", DeploymentKind), metadata_file_path=d.get("metadata_file_path", None))
 
 
 @dataclass
@@ -2533,10 +2517,7 @@ class PipelineTrigger:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> PipelineTrigger:
         """Deserializes the PipelineTrigger from a dictionary."""
-        return cls(
-            cron=_from_dict(d, "cron", CronTrigger),
-            manual=_from_dict(d, "manual", ManualTrigger),
-        )
+        return cls(cron=_from_dict(d, "cron", CronTrigger), manual=_from_dict(d, "manual", ManualTrigger))
 
 
 @dataclass
@@ -2683,10 +2664,7 @@ class RunAs:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> RunAs:
         """Deserializes the RunAs from a dictionary."""
-        return cls(
-            service_principal_name=d.get("service_principal_name", None),
-            user_name=d.get("user_name", None),
-        )
+        return cls(service_principal_name=d.get("service_principal_name", None), user_name=d.get("user_name", None))
 
 
 @dataclass
@@ -2987,7 +2965,6 @@ class StartUpdateResponse:
 
 @dataclass
 class StopPipelineResponse:
-
     def as_dict(self) -> dict:
         """Serializes the StopPipelineResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -3346,8 +3323,7 @@ class PipelinesAPI:
     Instead of defining your data pipelines using a series of separate Apache Spark tasks, Delta Live Tables
     manages how your data is transformed based on a target schema you define for each processing step. You can
     also enforce data quality with Delta Live Tables expectations. Expectations allow you to define expected
-    data quality and specify how to handle records that fail those expectations.
-    """
+    data quality and specify how to handle records that fail those expectations."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -3621,11 +3597,7 @@ class PipelinesAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.0/permissions/pipelines/{pipeline_id}/permissionLevels",
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.0/permissions/pipelines/{pipeline_id}/permissionLevels", headers=headers)
         return GetPipelinePermissionLevelsResponse.from_dict(res)
 
     def get_permissions(self, pipeline_id: str) -> PipelinePermissions:
@@ -3643,11 +3615,7 @@ class PipelinesAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.0/permissions/pipelines/{pipeline_id}",
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.0/permissions/pipelines/{pipeline_id}", headers=headers)
         return PipelinePermissions.from_dict(res)
 
     def get_update(self, pipeline_id: str, update_id: str) -> GetUpdateResponse:
@@ -3667,11 +3635,7 @@ class PipelinesAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.0/pipelines/{pipeline_id}/updates/{update_id}",
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.0/pipelines/{pipeline_id}/updates/{update_id}", headers=headers)
         return GetUpdateResponse.from_dict(res)
 
     def list_pipeline_events(
@@ -3724,12 +3688,7 @@ class PipelinesAPI:
         }
 
         while True:
-            json = self._api.do(
-                "GET",
-                f"/api/2.0/pipelines/{pipeline_id}/events",
-                query=query,
-                headers=headers,
-            )
+            json = self._api.do("GET", f"/api/2.0/pipelines/{pipeline_id}/events", query=query, headers=headers)
             if "events" in json:
                 for v in json["events"]:
                     yield PipelineEvent.from_dict(v)
@@ -3828,19 +3787,11 @@ class PipelinesAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.0/pipelines/{pipeline_id}/updates",
-            query=query,
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.0/pipelines/{pipeline_id}/updates", query=query, headers=headers)
         return ListUpdatesResponse.from_dict(res)
 
     def set_permissions(
-        self,
-        pipeline_id: str,
-        *,
-        access_control_list: Optional[List[PipelineAccessControlRequest]] = None,
+        self, pipeline_id: str, *, access_control_list: Optional[List[PipelineAccessControlRequest]] = None
     ) -> PipelinePermissions:
         """Set pipeline permissions.
 
@@ -3861,12 +3812,7 @@ class PipelinesAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "PUT",
-            f"/api/2.0/permissions/pipelines/{pipeline_id}",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("PUT", f"/api/2.0/permissions/pipelines/{pipeline_id}", body=body, headers=headers)
         return PipelinePermissions.from_dict(res)
 
     def start_update(
@@ -3918,12 +3864,7 @@ class PipelinesAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            f"/api/2.0/pipelines/{pipeline_id}/updates",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", f"/api/2.0/pipelines/{pipeline_id}/updates", body=body, headers=headers)
         return StartUpdateResponse.from_dict(res)
 
     def stop(self, pipeline_id: str) -> Wait[GetPipelineResponse]:
@@ -3945,9 +3886,7 @@ class PipelinesAPI:
 
         op_response = self._api.do("POST", f"/api/2.0/pipelines/{pipeline_id}/stop", headers=headers)
         return Wait(
-            self.wait_get_pipeline_idle,
-            response=StopPipelineResponse.from_dict(op_response),
-            pipeline_id=pipeline_id,
+            self.wait_get_pipeline_idle, response=StopPipelineResponse.from_dict(op_response), pipeline_id=pipeline_id
         )
 
     def stop_and_wait(self, pipeline_id: str, timeout=timedelta(minutes=20)) -> GetPipelineResponse:
@@ -4113,18 +4052,10 @@ class PipelinesAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do(
-            "PUT",
-            f"/api/2.0/pipelines/{pipeline_id}",
-            body=body,
-            headers=headers,
-        )
+        self._api.do("PUT", f"/api/2.0/pipelines/{pipeline_id}", body=body, headers=headers)
 
     def update_permissions(
-        self,
-        pipeline_id: str,
-        *,
-        access_control_list: Optional[List[PipelineAccessControlRequest]] = None,
+        self, pipeline_id: str, *, access_control_list: Optional[List[PipelineAccessControlRequest]] = None
     ) -> PipelinePermissions:
         """Update pipeline permissions.
 
@@ -4144,10 +4075,5 @@ class PipelinesAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "PATCH",
-            f"/api/2.0/permissions/pipelines/{pipeline_id}",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("PATCH", f"/api/2.0/permissions/pipelines/{pipeline_id}", body=body, headers=headers)
         return PipelinePermissions.from_dict(res)

@@ -11,6 +11,7 @@ from ._internal import _enum, _from_dict, _repeated_dict, _repeated_enum
 
 _LOG = logging.getLogger("databricks.sdk")
 
+
 # all definitions in this file are in alphabetical order
 
 
@@ -41,10 +42,7 @@ class AddExchangeForListingRequest:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> AddExchangeForListingRequest:
         """Deserializes the AddExchangeForListingRequest from a dictionary."""
-        return cls(
-            exchange_id=d.get("exchange_id", None),
-            listing_id=d.get("listing_id", None),
-        )
+        return cls(exchange_id=d.get("exchange_id", None), listing_id=d.get("listing_id", None))
 
 
 @dataclass
@@ -405,10 +403,7 @@ class CreateFileResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateFileResponse:
         """Deserializes the CreateFileResponse from a dictionary."""
-        return cls(
-            file_info=_from_dict(d, "file_info", FileInfo),
-            upload_url=d.get("upload_url", None),
-        )
+        return cls(file_info=_from_dict(d, "file_info", FileInfo), upload_url=d.get("upload_url", None))
 
 
 @dataclass
@@ -717,15 +712,11 @@ class DataRefreshInfo:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> DataRefreshInfo:
         """Deserializes the DataRefreshInfo from a dictionary."""
-        return cls(
-            interval=d.get("interval", None),
-            unit=_enum(d, "unit", DataRefresh),
-        )
+        return cls(interval=d.get("interval", None), unit=_enum(d, "unit", DataRefresh))
 
 
 @dataclass
 class DeleteExchangeFilterResponse:
-
     def as_dict(self) -> dict:
         """Serializes the DeleteExchangeFilterResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -744,7 +735,6 @@ class DeleteExchangeFilterResponse:
 
 @dataclass
 class DeleteExchangeResponse:
-
     def as_dict(self) -> dict:
         """Serializes the DeleteExchangeResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -763,7 +753,6 @@ class DeleteExchangeResponse:
 
 @dataclass
 class DeleteFileResponse:
-
     def as_dict(self) -> dict:
         """Serializes the DeleteFileResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -782,7 +771,6 @@ class DeleteFileResponse:
 
 @dataclass
 class DeleteInstallationResponse:
-
     def as_dict(self) -> dict:
         """Serializes the DeleteInstallationResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -801,7 +789,6 @@ class DeleteInstallationResponse:
 
 @dataclass
 class DeleteListingResponse:
-
     def as_dict(self) -> dict:
         """Serializes the DeleteListingResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -820,7 +807,6 @@ class DeleteListingResponse:
 
 @dataclass
 class DeleteProviderResponse:
-
     def as_dict(self) -> dict:
         """Serializes the DeleteProviderResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1199,10 +1185,7 @@ class FileParent:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> FileParent:
         """Deserializes the FileParent from a dictionary."""
-        return cls(
-            file_parent_type=_enum(d, "file_parent_type", FileParentType),
-            parent_id=d.get("parent_id", None),
-        )
+        return cls(file_parent_type=_enum(d, "file_parent_type", FileParentType), parent_id=d.get("parent_id", None))
 
 
 class FileParentType(Enum):
@@ -1382,10 +1365,7 @@ class GetListingsResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> GetListingsResponse:
         """Deserializes the GetListingsResponse from a dictionary."""
-        return cls(
-            listings=_repeated_dict(d, "listings", Listing),
-            next_page_token=d.get("next_page_token", None),
-        )
+        return cls(listings=_repeated_dict(d, "listings", Listing), next_page_token=d.get("next_page_token", None))
 
 
 @dataclass
@@ -1669,10 +1649,7 @@ class ListExchangeFiltersResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListExchangeFiltersResponse:
         """Deserializes the ListExchangeFiltersResponse from a dictionary."""
-        return cls(
-            filters=_repeated_dict(d, "filters", ExchangeFilter),
-            next_page_token=d.get("next_page_token", None),
-        )
+        return cls(filters=_repeated_dict(d, "filters", ExchangeFilter), next_page_token=d.get("next_page_token", None))
 
 
 @dataclass
@@ -1735,10 +1712,7 @@ class ListExchangesResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListExchangesResponse:
         """Deserializes the ListExchangesResponse from a dictionary."""
-        return cls(
-            exchanges=_repeated_dict(d, "exchanges", Exchange),
-            next_page_token=d.get("next_page_token", None),
-        )
+        return cls(exchanges=_repeated_dict(d, "exchanges", Exchange), next_page_token=d.get("next_page_token", None))
 
 
 @dataclass
@@ -1768,10 +1742,7 @@ class ListFilesResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListFilesResponse:
         """Deserializes the ListFilesResponse from a dictionary."""
-        return cls(
-            file_infos=_repeated_dict(d, "file_infos", FileInfo),
-            next_page_token=d.get("next_page_token", None),
-        )
+        return cls(file_infos=_repeated_dict(d, "file_infos", FileInfo), next_page_token=d.get("next_page_token", None))
 
 
 @dataclass
@@ -1900,10 +1871,7 @@ class ListListingsResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListListingsResponse:
         """Deserializes the ListListingsResponse from a dictionary."""
-        return cls(
-            listings=_repeated_dict(d, "listings", Listing),
-            next_page_token=d.get("next_page_token", None),
-        )
+        return cls(listings=_repeated_dict(d, "listings", Listing), next_page_token=d.get("next_page_token", None))
 
 
 @dataclass
@@ -1940,11 +1908,7 @@ class ListProviderAnalyticsDashboardResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListProviderAnalyticsDashboardResponse:
         """Deserializes the ListProviderAnalyticsDashboardResponse from a dictionary."""
-        return cls(
-            dashboard_id=d.get("dashboard_id", None),
-            id=d.get("id", None),
-            version=d.get("version", None),
-        )
+        return cls(dashboard_id=d.get("dashboard_id", None), id=d.get("id", None), version=d.get("version", None))
 
 
 @dataclass
@@ -1975,8 +1939,7 @@ class ListProvidersResponse:
     def from_dict(cls, d: Dict[str, any]) -> ListProvidersResponse:
         """Deserializes the ListProvidersResponse from a dictionary."""
         return cls(
-            next_page_token=d.get("next_page_token", None),
-            providers=_repeated_dict(d, "providers", ProviderInfo),
+            next_page_token=d.get("next_page_token", None), providers=_repeated_dict(d, "providers", ProviderInfo)
         )
 
 
@@ -2471,10 +2434,7 @@ class ListingTag:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListingTag:
         """Deserializes the ListingTag from a dictionary."""
-        return cls(
-            tag_name=_enum(d, "tag_name", ListingTagType),
-            tag_values=d.get("tag_values", None),
-        )
+        return cls(tag_name=_enum(d, "tag_name", ListingTagType), tag_values=d.get("tag_values", None))
 
 
 class ListingTagType(Enum):
@@ -2810,7 +2770,6 @@ class RegionInfo:
 
 @dataclass
 class RemoveExchangeForListingResponse:
-
     def as_dict(self) -> dict:
         """Serializes the RemoveExchangeForListingResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -2882,10 +2841,7 @@ class RepoInstallation:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> RepoInstallation:
         """Deserializes the RepoInstallation from a dictionary."""
-        return cls(
-            repo_name=d.get("repo_name", None),
-            repo_path=d.get("repo_path", None),
-        )
+        return cls(repo_name=d.get("repo_name", None), repo_path=d.get("repo_path", None))
 
 
 @dataclass
@@ -2915,10 +2871,7 @@ class SearchListingsResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> SearchListingsResponse:
         """Deserializes the SearchListingsResponse from a dictionary."""
-        return cls(
-            listings=_repeated_dict(d, "listings", Listing),
-            next_page_token=d.get("next_page_token", None),
-        )
+        return cls(listings=_repeated_dict(d, "listings", Listing), next_page_token=d.get("next_page_token", None))
 
 
 @dataclass
@@ -2980,10 +2933,7 @@ class SharedDataObject:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> SharedDataObject:
         """Deserializes the SharedDataObject from a dictionary."""
-        return cls(
-            data_object_type=d.get("data_object_type", None),
-            name=d.get("name", None),
-        )
+        return cls(data_object_type=d.get("data_object_type", None), name=d.get("name", None))
 
 
 @dataclass
@@ -3138,10 +3088,7 @@ class UpdateExchangeFilterRequest:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> UpdateExchangeFilterRequest:
         """Deserializes the UpdateExchangeFilterRequest from a dictionary."""
-        return cls(
-            filter=_from_dict(d, "filter", ExchangeFilter),
-            id=d.get("id", None),
-        )
+        return cls(filter=_from_dict(d, "filter", ExchangeFilter), id=d.get("id", None))
 
 
 @dataclass
@@ -3493,11 +3440,7 @@ class UpdateProviderAnalyticsDashboardResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> UpdateProviderAnalyticsDashboardResponse:
         """Deserializes the UpdateProviderAnalyticsDashboardResponse from a dictionary."""
-        return cls(
-            dashboard_id=d.get("dashboard_id", None),
-            id=d.get("id", None),
-            version=d.get("version", None),
-        )
+        return cls(dashboard_id=d.get("dashboard_id", None), id=d.get("id", None), version=d.get("version", None))
 
 
 @dataclass
@@ -3527,10 +3470,7 @@ class UpdateProviderRequest:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> UpdateProviderRequest:
         """Deserializes the UpdateProviderRequest from a dictionary."""
-        return cls(
-            id=d.get("id", None),
-            provider=_from_dict(d, "provider", ProviderInfo),
-        )
+        return cls(id=d.get("id", None), provider=_from_dict(d, "provider", ProviderInfo))
 
 
 @dataclass
@@ -3570,11 +3510,7 @@ class ConsumerFulfillmentsAPI:
         self._api = api_client
 
     def get(
-        self,
-        listing_id: str,
-        *,
-        page_size: Optional[int] = None,
-        page_token: Optional[str] = None,
+        self, listing_id: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[SharedDataObject]:
         """Get listing content metadata.
 
@@ -3598,10 +3534,7 @@ class ConsumerFulfillmentsAPI:
 
         while True:
             json = self._api.do(
-                "GET",
-                f"/api/2.1/marketplace-consumer/listings/{listing_id}/content",
-                query=query,
-                headers=headers,
+                "GET", f"/api/2.1/marketplace-consumer/listings/{listing_id}/content", query=query, headers=headers
             )
             if "shared_data_objects" in json:
                 for v in json["shared_data_objects"]:
@@ -3611,11 +3544,7 @@ class ConsumerFulfillmentsAPI:
             query["page_token"] = json["next_page_token"]
 
     def list(
-        self,
-        listing_id: str,
-        *,
-        page_size: Optional[int] = None,
-        page_token: Optional[str] = None,
+        self, listing_id: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[ListingFulfillment]:
         """List all listing fulfillments.
 
@@ -3642,10 +3571,7 @@ class ConsumerFulfillmentsAPI:
 
         while True:
             json = self._api.do(
-                "GET",
-                f"/api/2.1/marketplace-consumer/listings/{listing_id}/fulfillments",
-                query=query,
-                headers=headers,
+                "GET", f"/api/2.1/marketplace-consumer/listings/{listing_id}/fulfillments", query=query, headers=headers
             )
             if "fulfillments" in json:
                 for v in json["fulfillments"]:
@@ -3702,10 +3628,7 @@ class ConsumerInstallationsAPI:
         }
 
         res = self._api.do(
-            "POST",
-            f"/api/2.1/marketplace-consumer/listings/{listing_id}/installations",
-            body=body,
-            headers=headers,
+            "POST", f"/api/2.1/marketplace-consumer/listings/{listing_id}/installations", body=body, headers=headers
         )
         return Installation.from_dict(res)
 
@@ -3731,10 +3654,7 @@ class ConsumerInstallationsAPI:
         )
 
     def list(
-        self,
-        *,
-        page_size: Optional[int] = None,
-        page_token: Optional[str] = None,
+        self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[InstallationDetail]:
         """List all installations.
 
@@ -3756,12 +3676,7 @@ class ConsumerInstallationsAPI:
         }
 
         while True:
-            json = self._api.do(
-                "GET",
-                "/api/2.1/marketplace-consumer/installations",
-                query=query,
-                headers=headers,
-            )
+            json = self._api.do("GET", "/api/2.1/marketplace-consumer/installations", query=query, headers=headers)
             if "installations" in json:
                 for v in json["installations"]:
                     yield InstallationDetail.from_dict(v)
@@ -3770,11 +3685,7 @@ class ConsumerInstallationsAPI:
             query["page_token"] = json["next_page_token"]
 
     def list_listing_installations(
-        self,
-        listing_id: str,
-        *,
-        page_size: Optional[int] = None,
-        page_token: Optional[str] = None,
+        self, listing_id: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[InstallationDetail]:
         """List installations for a listing.
 
@@ -3875,12 +3786,7 @@ class ConsumerListingsAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            "/api/2.1/marketplace-consumer/listings:batchGet",
-            query=query,
-            headers=headers,
-        )
+        res = self._api.do("GET", "/api/2.1/marketplace-consumer/listings:batchGet", query=query, headers=headers)
         return BatchGetListingsResponse.from_dict(res)
 
     def get(self, id: str) -> GetListingResponse:
@@ -3897,11 +3803,7 @@ class ConsumerListingsAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.1/marketplace-consumer/listings/{id}",
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.1/marketplace-consumer/listings/{id}", headers=headers)
         return GetListingResponse.from_dict(res)
 
     def list(
@@ -3965,12 +3867,7 @@ class ConsumerListingsAPI:
         }
 
         while True:
-            json = self._api.do(
-                "GET",
-                "/api/2.1/marketplace-consumer/listings",
-                query=query,
-                headers=headers,
-            )
+            json = self._api.do("GET", "/api/2.1/marketplace-consumer/listings", query=query, headers=headers)
             if "listings" in json:
                 for v in json["listings"]:
                     yield Listing.from_dict(v)
@@ -4033,12 +3930,7 @@ class ConsumerListingsAPI:
         }
 
         while True:
-            json = self._api.do(
-                "GET",
-                "/api/2.1/marketplace-consumer/search-listings",
-                query=query,
-                headers=headers,
-            )
+            json = self._api.do("GET", "/api/2.1/marketplace-consumer/search-listings", query=query, headers=headers)
             if "listings" in json:
                 for v in json["listings"]:
                     yield Listing.from_dict(v)
@@ -4128,17 +4020,12 @@ class ConsumerPersonalizationRequestsAPI:
         }
 
         res = self._api.do(
-            "GET",
-            f"/api/2.1/marketplace-consumer/listings/{listing_id}/personalization-requests",
-            headers=headers,
+            "GET", f"/api/2.1/marketplace-consumer/listings/{listing_id}/personalization-requests", headers=headers
         )
         return GetPersonalizationRequestResponse.from_dict(res)
 
     def list(
-        self,
-        *,
-        page_size: Optional[int] = None,
-        page_token: Optional[str] = None,
+        self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[PersonalizationRequest]:
         """List all personalization requests.
 
@@ -4161,10 +4048,7 @@ class ConsumerPersonalizationRequestsAPI:
 
         while True:
             json = self._api.do(
-                "GET",
-                "/api/2.1/marketplace-consumer/personalization-requests",
-                query=query,
-                headers=headers,
+                "GET", "/api/2.1/marketplace-consumer/personalization-requests", query=query, headers=headers
             )
             if "personalization_requests" in json:
                 for v in json["personalization_requests"]:
@@ -4197,12 +4081,7 @@ class ConsumerProvidersAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            "/api/2.1/marketplace-consumer/providers:batchGet",
-            query=query,
-            headers=headers,
-        )
+        res = self._api.do("GET", "/api/2.1/marketplace-consumer/providers:batchGet", query=query, headers=headers)
         return BatchGetProvidersResponse.from_dict(res)
 
     def get(self, id: str) -> GetProviderResponse:
@@ -4219,19 +4098,11 @@ class ConsumerProvidersAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.1/marketplace-consumer/providers/{id}",
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.1/marketplace-consumer/providers/{id}", headers=headers)
         return GetProviderResponse.from_dict(res)
 
     def list(
-        self,
-        *,
-        is_featured: Optional[bool] = None,
-        page_size: Optional[int] = None,
-        page_token: Optional[str] = None,
+        self, *, is_featured: Optional[bool] = None, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[ProviderInfo]:
         """List providers.
 
@@ -4256,12 +4127,7 @@ class ConsumerProvidersAPI:
         }
 
         while True:
-            json = self._api.do(
-                "GET",
-                "/api/2.1/marketplace-consumer/providers",
-                query=query,
-                headers=headers,
-            )
+            json = self._api.do("GET", "/api/2.1/marketplace-consumer/providers", query=query, headers=headers)
             if "providers" in json:
                 for v in json["providers"]:
                     yield ProviderInfo.from_dict(v)
@@ -4293,12 +4159,7 @@ class ProviderExchangeFiltersAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            "/api/2.0/marketplace-exchange/filters",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", "/api/2.0/marketplace-exchange/filters", body=body, headers=headers)
         return CreateExchangeFilterResponse.from_dict(res)
 
     def delete(self, id: str):
@@ -4315,18 +4176,10 @@ class ProviderExchangeFiltersAPI:
             "Accept": "application/json",
         }
 
-        self._api.do(
-            "DELETE",
-            f"/api/2.0/marketplace-exchange/filters/{id}",
-            headers=headers,
-        )
+        self._api.do("DELETE", f"/api/2.0/marketplace-exchange/filters/{id}", headers=headers)
 
     def list(
-        self,
-        exchange_id: str,
-        *,
-        page_size: Optional[int] = None,
-        page_token: Optional[str] = None,
+        self, exchange_id: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[ExchangeFilter]:
         """List exchange filters.
 
@@ -4351,12 +4204,7 @@ class ProviderExchangeFiltersAPI:
         }
 
         while True:
-            json = self._api.do(
-                "GET",
-                "/api/2.0/marketplace-exchange/filters",
-                query=query,
-                headers=headers,
-            )
+            json = self._api.do("GET", "/api/2.0/marketplace-exchange/filters", query=query, headers=headers)
             if "filters" in json:
                 for v in json["filters"]:
                     yield ExchangeFilter.from_dict(v)
@@ -4382,12 +4230,7 @@ class ProviderExchangeFiltersAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "PUT",
-            f"/api/2.0/marketplace-exchange/filters/{id}",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("PUT", f"/api/2.0/marketplace-exchange/filters/{id}", body=body, headers=headers)
         return UpdateExchangeFilterResponse.from_dict(res)
 
 
@@ -4417,12 +4260,7 @@ class ProviderExchangesAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            "/api/2.0/marketplace-exchange/exchanges-for-listing",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", "/api/2.0/marketplace-exchange/exchanges-for-listing", body=body, headers=headers)
         return AddExchangeForListingResponse.from_dict(res)
 
     def create(self, exchange: Exchange) -> CreateExchangeResponse:
@@ -4442,12 +4280,7 @@ class ProviderExchangesAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            "/api/2.0/marketplace-exchange/exchanges",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", "/api/2.0/marketplace-exchange/exchanges", body=body, headers=headers)
         return CreateExchangeResponse.from_dict(res)
 
     def delete(self, id: str):
@@ -4464,11 +4297,7 @@ class ProviderExchangesAPI:
             "Accept": "application/json",
         }
 
-        self._api.do(
-            "DELETE",
-            f"/api/2.0/marketplace-exchange/exchanges/{id}",
-            headers=headers,
-        )
+        self._api.do("DELETE", f"/api/2.0/marketplace-exchange/exchanges/{id}", headers=headers)
 
     def delete_listing_from_exchange(self, id: str):
         """Remove an exchange for listing.
@@ -4484,11 +4313,7 @@ class ProviderExchangesAPI:
             "Accept": "application/json",
         }
 
-        self._api.do(
-            "DELETE",
-            f"/api/2.0/marketplace-exchange/exchanges-for-listing/{id}",
-            headers=headers,
-        )
+        self._api.do("DELETE", f"/api/2.0/marketplace-exchange/exchanges-for-listing/{id}", headers=headers)
 
     def get(self, id: str) -> GetExchangeResponse:
         """Get an exchange.
@@ -4504,19 +4329,10 @@ class ProviderExchangesAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.0/marketplace-exchange/exchanges/{id}",
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.0/marketplace-exchange/exchanges/{id}", headers=headers)
         return GetExchangeResponse.from_dict(res)
 
-    def list(
-        self,
-        *,
-        page_size: Optional[int] = None,
-        page_token: Optional[str] = None,
-    ) -> Iterator[Exchange]:
+    def list(self, *, page_size: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[Exchange]:
         """List exchanges.
 
         List exchanges visible to provider
@@ -4537,12 +4353,7 @@ class ProviderExchangesAPI:
         }
 
         while True:
-            json = self._api.do(
-                "GET",
-                "/api/2.0/marketplace-exchange/exchanges",
-                query=query,
-                headers=headers,
-            )
+            json = self._api.do("GET", "/api/2.0/marketplace-exchange/exchanges", query=query, headers=headers)
             if "exchanges" in json:
                 for v in json["exchanges"]:
                     yield Exchange.from_dict(v)
@@ -4551,11 +4362,7 @@ class ProviderExchangesAPI:
             query["page_token"] = json["next_page_token"]
 
     def list_exchanges_for_listing(
-        self,
-        listing_id: str,
-        *,
-        page_size: Optional[int] = None,
-        page_token: Optional[str] = None,
+        self, listing_id: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[ExchangeListing]:
         """List exchanges for listing.
 
@@ -4581,10 +4388,7 @@ class ProviderExchangesAPI:
 
         while True:
             json = self._api.do(
-                "GET",
-                "/api/2.0/marketplace-exchange/exchanges-for-listing",
-                query=query,
-                headers=headers,
+                "GET", "/api/2.0/marketplace-exchange/exchanges-for-listing", query=query, headers=headers
             )
             if "exchange_listing" in json:
                 for v in json["exchange_listing"]:
@@ -4594,11 +4398,7 @@ class ProviderExchangesAPI:
             query["page_token"] = json["next_page_token"]
 
     def list_listings_for_exchange(
-        self,
-        exchange_id: str,
-        *,
-        page_size: Optional[int] = None,
-        page_token: Optional[str] = None,
+        self, exchange_id: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[ExchangeListing]:
         """List listings for exchange.
 
@@ -4624,10 +4424,7 @@ class ProviderExchangesAPI:
 
         while True:
             json = self._api.do(
-                "GET",
-                "/api/2.0/marketplace-exchange/listings-for-exchange",
-                query=query,
-                headers=headers,
+                "GET", "/api/2.0/marketplace-exchange/listings-for-exchange", query=query, headers=headers
             )
             if "exchange_listings" in json:
                 for v in json["exchange_listings"]:
@@ -4654,12 +4451,7 @@ class ProviderExchangesAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "PUT",
-            f"/api/2.0/marketplace-exchange/exchanges/{id}",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("PUT", f"/api/2.0/marketplace-exchange/exchanges/{id}", body=body, headers=headers)
         return UpdateExchangeResponse.from_dict(res)
 
 
@@ -4702,12 +4494,7 @@ class ProviderFilesAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            "/api/2.0/marketplace-provider/files",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", "/api/2.0/marketplace-provider/files", body=body, headers=headers)
         return CreateFileResponse.from_dict(res)
 
     def delete(self, file_id: str):
@@ -4724,11 +4511,7 @@ class ProviderFilesAPI:
             "Accept": "application/json",
         }
 
-        self._api.do(
-            "DELETE",
-            f"/api/2.0/marketplace-provider/files/{file_id}",
-            headers=headers,
-        )
+        self._api.do("DELETE", f"/api/2.0/marketplace-provider/files/{file_id}", headers=headers)
 
     def get(self, file_id: str) -> GetFileResponse:
         """Get a file.
@@ -4744,19 +4527,11 @@ class ProviderFilesAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.0/marketplace-provider/files/{file_id}",
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.0/marketplace-provider/files/{file_id}", headers=headers)
         return GetFileResponse.from_dict(res)
 
     def list(
-        self,
-        file_parent: FileParent,
-        *,
-        page_size: Optional[int] = None,
-        page_token: Optional[str] = None,
+        self, file_parent: FileParent, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[FileInfo]:
         """List files.
 
@@ -4781,12 +4556,7 @@ class ProviderFilesAPI:
         }
 
         while True:
-            json = self._api.do(
-                "GET",
-                "/api/2.0/marketplace-provider/files",
-                query=query,
-                headers=headers,
-            )
+            json = self._api.do("GET", "/api/2.0/marketplace-provider/files", query=query, headers=headers)
             if "file_infos" in json:
                 for v in json["file_infos"]:
                     yield FileInfo.from_dict(v)
@@ -4819,12 +4589,7 @@ class ProviderListingsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            "/api/2.0/marketplace-provider/listing",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", "/api/2.0/marketplace-provider/listing", body=body, headers=headers)
         return CreateListingResponse.from_dict(res)
 
     def delete(self, id: str):
@@ -4841,11 +4606,7 @@ class ProviderListingsAPI:
             "Accept": "application/json",
         }
 
-        self._api.do(
-            "DELETE",
-            f"/api/2.0/marketplace-provider/listings/{id}",
-            headers=headers,
-        )
+        self._api.do("DELETE", f"/api/2.0/marketplace-provider/listings/{id}", headers=headers)
 
     def get(self, id: str) -> GetListingResponse:
         """Get a listing.
@@ -4861,19 +4622,10 @@ class ProviderListingsAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.0/marketplace-provider/listings/{id}",
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.0/marketplace-provider/listings/{id}", headers=headers)
         return GetListingResponse.from_dict(res)
 
-    def list(
-        self,
-        *,
-        page_size: Optional[int] = None,
-        page_token: Optional[str] = None,
-    ) -> Iterator[Listing]:
+    def list(self, *, page_size: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[Listing]:
         """List listings.
 
         List listings owned by this provider
@@ -4894,12 +4646,7 @@ class ProviderListingsAPI:
         }
 
         while True:
-            json = self._api.do(
-                "GET",
-                "/api/2.0/marketplace-provider/listings",
-                query=query,
-                headers=headers,
-            )
+            json = self._api.do("GET", "/api/2.0/marketplace-provider/listings", query=query, headers=headers)
             if "listings" in json:
                 for v in json["listings"]:
                     yield Listing.from_dict(v)
@@ -4925,12 +4672,7 @@ class ProviderListingsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "PUT",
-            f"/api/2.0/marketplace-provider/listings/{id}",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("PUT", f"/api/2.0/marketplace-provider/listings/{id}", body=body, headers=headers)
         return UpdateListingResponse.from_dict(res)
 
 
@@ -4942,10 +4684,7 @@ class ProviderPersonalizationRequestsAPI:
         self._api = api_client
 
     def list(
-        self,
-        *,
-        page_size: Optional[int] = None,
-        page_token: Optional[str] = None,
+        self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[PersonalizationRequest]:
         """All personalization requests across all listings.
 
@@ -4969,10 +4708,7 @@ class ProviderPersonalizationRequestsAPI:
 
         while True:
             json = self._api.do(
-                "GET",
-                "/api/2.0/marketplace-provider/personalization-requests",
-                query=query,
-                headers=headers,
+                "GET", "/api/2.0/marketplace-provider/personalization-requests", query=query, headers=headers
             )
             if "personalization_requests" in json:
                 for v in json["personalization_requests"]:
@@ -5042,11 +4778,7 @@ class ProviderProviderAnalyticsDashboardsAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            "/api/2.0/marketplace-provider/analytics_dashboard",
-            headers=headers,
-        )
+        res = self._api.do("POST", "/api/2.0/marketplace-provider/analytics_dashboard", headers=headers)
         return ProviderAnalyticsDashboard.from_dict(res)
 
     def get(self) -> ListProviderAnalyticsDashboardResponse:
@@ -5061,16 +4793,10 @@ class ProviderProviderAnalyticsDashboardsAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            "/api/2.0/marketplace-provider/analytics_dashboard",
-            headers=headers,
-        )
+        res = self._api.do("GET", "/api/2.0/marketplace-provider/analytics_dashboard", headers=headers)
         return ListProviderAnalyticsDashboardResponse.from_dict(res)
 
-    def get_latest_version(
-        self,
-    ) -> GetLatestVersionProviderAnalyticsDashboardResponse:
+    def get_latest_version(self) -> GetLatestVersionProviderAnalyticsDashboardResponse:
         """Get latest version of provider analytics dashboard.
 
         Get latest version of provider analytics dashboard.
@@ -5082,11 +4808,7 @@ class ProviderProviderAnalyticsDashboardsAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            "/api/2.0/marketplace-provider/analytics_dashboard/latest",
-            headers=headers,
-        )
+        res = self._api.do("GET", "/api/2.0/marketplace-provider/analytics_dashboard/latest", headers=headers)
         return GetLatestVersionProviderAnalyticsDashboardResponse.from_dict(res)
 
     def update(self, id: str, *, version: Optional[int] = None) -> UpdateProviderAnalyticsDashboardResponse:
@@ -5110,12 +4832,7 @@ class ProviderProviderAnalyticsDashboardsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "PUT",
-            f"/api/2.0/marketplace-provider/analytics_dashboard/{id}",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("PUT", f"/api/2.0/marketplace-provider/analytics_dashboard/{id}", body=body, headers=headers)
         return UpdateProviderAnalyticsDashboardResponse.from_dict(res)
 
 
@@ -5142,12 +4859,7 @@ class ProviderProvidersAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            "/api/2.0/marketplace-provider/provider",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", "/api/2.0/marketplace-provider/provider", body=body, headers=headers)
         return CreateProviderResponse.from_dict(res)
 
     def delete(self, id: str):
@@ -5164,11 +4876,7 @@ class ProviderProvidersAPI:
             "Accept": "application/json",
         }
 
-        self._api.do(
-            "DELETE",
-            f"/api/2.0/marketplace-provider/providers/{id}",
-            headers=headers,
-        )
+        self._api.do("DELETE", f"/api/2.0/marketplace-provider/providers/{id}", headers=headers)
 
     def get(self, id: str) -> GetProviderResponse:
         """Get provider.
@@ -5184,19 +4892,10 @@ class ProviderProvidersAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.0/marketplace-provider/providers/{id}",
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.0/marketplace-provider/providers/{id}", headers=headers)
         return GetProviderResponse.from_dict(res)
 
-    def list(
-        self,
-        *,
-        page_size: Optional[int] = None,
-        page_token: Optional[str] = None,
-    ) -> Iterator[ProviderInfo]:
+    def list(self, *, page_size: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[ProviderInfo]:
         """List providers.
 
         List provider profiles for account.
@@ -5217,12 +4916,7 @@ class ProviderProvidersAPI:
         }
 
         while True:
-            json = self._api.do(
-                "GET",
-                "/api/2.0/marketplace-provider/providers",
-                query=query,
-                headers=headers,
-            )
+            json = self._api.do("GET", "/api/2.0/marketplace-provider/providers", query=query, headers=headers)
             if "providers" in json:
                 for v in json["providers"]:
                     yield ProviderInfo.from_dict(v)
@@ -5248,10 +4942,5 @@ class ProviderProvidersAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "PUT",
-            f"/api/2.0/marketplace-provider/providers/{id}",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("PUT", f"/api/2.0/marketplace-provider/providers/{id}", body=body, headers=headers)
         return UpdateProviderResponse.from_dict(res)

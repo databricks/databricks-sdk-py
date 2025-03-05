@@ -11,6 +11,7 @@ from ._internal import _enum, _from_dict, _repeated_dict, _repeated_enum
 
 _LOG = logging.getLogger("databricks.sdk")
 
+
 # all definitions in this file are in alphabetical order
 
 
@@ -127,8 +128,7 @@ class AccessControlResponse:
 @dataclass
 class Actor:
     """represents an identity trying to access a resource - user or a service principal group can be a
-    principal of a permission set assignment but an actor is always a user or a service principal
-    """
+    principal of a permission set assignment but an actor is always a user or a service principal"""
 
     actor_id: Optional[int] = None
 
@@ -265,7 +265,6 @@ class ConsistencyToken:
 
 @dataclass
 class DeleteResponse:
-
     def as_dict(self) -> dict:
         """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -284,7 +283,6 @@ class DeleteResponse:
 
 @dataclass
 class DeleteWorkspacePermissionAssignmentResponse:
-
     def as_dict(self) -> dict:
         """Serializes the DeleteWorkspacePermissionAssignmentResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -802,10 +800,7 @@ class Name:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> Name:
         """Deserializes the Name from a dictionary."""
-        return cls(
-            family_name=d.get("familyName", None),
-            given_name=d.get("givenName", None),
-        )
+        return cls(family_name=d.get("familyName", None), given_name=d.get("givenName", None))
 
 
 @dataclass
@@ -1181,11 +1176,7 @@ class Patch:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> Patch:
         """Deserializes the Patch from a dictionary."""
-        return cls(
-            op=_enum(d, "op", PatchOp),
-            path=d.get("path", None),
-            value=d.get("value", None),
-        )
+        return cls(op=_enum(d, "op", PatchOp), path=d.get("path", None), value=d.get("value", None))
 
 
 class PatchOp(Enum):
@@ -1198,7 +1189,6 @@ class PatchOp(Enum):
 
 @dataclass
 class PatchResponse:
-
     def as_dict(self) -> dict:
         """Serializes the PatchResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1383,8 +1373,7 @@ class PermissionOutput:
     def from_dict(cls, d: Dict[str, any]) -> PermissionOutput:
         """Deserializes the PermissionOutput from a dictionary."""
         return cls(
-            description=d.get("description", None),
-            permission_level=_enum(d, "permission_level", WorkspacePermission),
+            description=d.get("description", None), permission_level=_enum(d, "permission_level", WorkspacePermission)
         )
 
 
@@ -1417,8 +1406,7 @@ class PermissionsDescription:
     def from_dict(cls, d: Dict[str, any]) -> PermissionsDescription:
         """Deserializes the PermissionsDescription from a dictionary."""
         return cls(
-            description=d.get("description", None),
-            permission_level=_enum(d, "permission_level", PermissionLevel),
+            description=d.get("description", None), permission_level=_enum(d, "permission_level", PermissionLevel)
         )
 
 
@@ -1665,9 +1653,7 @@ class RuleSetResponse:
     def from_dict(cls, d: Dict[str, any]) -> RuleSetResponse:
         """Deserializes the RuleSetResponse from a dictionary."""
         return cls(
-            etag=d.get("etag", None),
-            grant_rules=_repeated_dict(d, "grant_rules", GrantRule),
-            name=d.get("name", None),
+            etag=d.get("etag", None), grant_rules=_repeated_dict(d, "grant_rules", GrantRule), name=d.get("name", None)
         )
 
 
@@ -1708,9 +1694,7 @@ class RuleSetUpdateRequest:
     def from_dict(cls, d: Dict[str, any]) -> RuleSetUpdateRequest:
         """Deserializes the RuleSetUpdateRequest from a dictionary."""
         return cls(
-            etag=d.get("etag", None),
-            grant_rules=_repeated_dict(d, "grant_rules", GrantRule),
-            name=d.get("name", None),
+            etag=d.get("etag", None), grant_rules=_repeated_dict(d, "grant_rules", GrantRule), name=d.get("name", None)
         )
 
 
@@ -1813,7 +1797,6 @@ class ServicePrincipalSchema(Enum):
 
 @dataclass
 class UpdateResponse:
-
     def as_dict(self) -> dict:
         """Serializes the UpdateResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1858,10 +1841,7 @@ class UpdateRuleSetRequest:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> UpdateRuleSetRequest:
         """Deserializes the UpdateRuleSetRequest from a dictionary."""
-        return cls(
-            name=d.get("name", None),
-            rule_set=_from_dict(d, "rule_set", RuleSetUpdateRequest),
-        )
+        return cls(name=d.get("name", None), rule_set=_from_dict(d, "rule_set", RuleSetUpdateRequest))
 
 
 @dataclass
@@ -2111,12 +2091,7 @@ class AccessControlAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            "/api/2.0/access-control/check-policy-v2",
-            query=query,
-            headers=headers,
-        )
+        res = self._api.do("GET", "/api/2.0/access-control/check-policy-v2", query=query, headers=headers)
         return CheckPolicyResponse.from_dict(res)
 
 
@@ -2225,8 +2200,7 @@ class AccountAccessControlAPI:
 class AccountAccessControlProxyAPI:
     """These APIs manage access rules on resources in an account. Currently, only grant rules are supported. A
     grant rule specifies a role assigned to a set of principals. A list of rules attached to a resource is
-    called a rule set. A workspace must belong to an account for these APIs to work.
-    """
+    called a rule set. A workspace must belong to an account for these APIs to work."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -2251,10 +2225,7 @@ class AccountAccessControlProxyAPI:
         }
 
         res = self._api.do(
-            "GET",
-            "/api/2.0/preview/accounts/access-control/assignable-roles",
-            query=query,
-            headers=headers,
+            "GET", "/api/2.0/preview/accounts/access-control/assignable-roles", query=query, headers=headers
         )
         return GetAssignableRolesForResourceResponse.from_dict(res)
 
@@ -2286,12 +2257,7 @@ class AccountAccessControlProxyAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            "/api/2.0/preview/accounts/access-control/rule-sets",
-            query=query,
-            headers=headers,
-        )
+        res = self._api.do("GET", "/api/2.0/preview/accounts/access-control/rule-sets", query=query, headers=headers)
         return RuleSetResponse.from_dict(res)
 
     def update_rule_set(self, name: str, rule_set: RuleSetUpdateRequest) -> RuleSetResponse:
@@ -2316,12 +2282,7 @@ class AccountAccessControlProxyAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "PUT",
-            "/api/2.0/preview/accounts/access-control/rule-sets",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("PUT", "/api/2.0/preview/accounts/access-control/rule-sets", body=body, headers=headers)
         return RuleSetResponse.from_dict(res)
 
 
@@ -2399,10 +2360,7 @@ class AccountGroupsAPI:
         }
 
         res = self._api.do(
-            "POST",
-            f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups",
-            body=body,
-            headers=headers,
+            "POST", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups", body=body, headers=headers
         )
         return Group.from_dict(res)
 
@@ -2419,11 +2377,7 @@ class AccountGroupsAPI:
 
         headers = {}
 
-        self._api.do(
-            "DELETE",
-            f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups/{id}",
-            headers=headers,
-        )
+        self._api.do("DELETE", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups/{id}", headers=headers)
 
     def get(self, id: str) -> Group:
         """Get group details.
@@ -2440,11 +2394,7 @@ class AccountGroupsAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups/{id}",
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups/{id}", headers=headers)
         return Group.from_dict(res)
 
     def list(
@@ -2511,10 +2461,7 @@ class AccountGroupsAPI:
             query["count"] = 100
         while True:
             json = self._api.do(
-                "GET",
-                f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups",
-                query=query,
-                headers=headers,
+                "GET", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups", query=query, headers=headers
             )
             if "Resources" in json:
                 for v in json["Resources"]:
@@ -2527,13 +2474,7 @@ class AccountGroupsAPI:
                 return
             query["startIndex"] += len(json["Resources"])
 
-    def patch(
-        self,
-        id: str,
-        *,
-        operations: Optional[List[Patch]] = None,
-        schemas: Optional[List[PatchSchema]] = None,
-    ):
+    def patch(self, id: str, *, operations: Optional[List[Patch]] = None, schemas: Optional[List[PatchSchema]] = None):
         """Update group details.
 
         Partially updates the details of a group.
@@ -2557,10 +2498,7 @@ class AccountGroupsAPI:
         }
 
         self._api.do(
-            "PATCH",
-            f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups/{id}",
-            body=body,
-            headers=headers,
+            "PATCH", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups/{id}", body=body, headers=headers
         )
 
     def update(
@@ -2623,12 +2561,7 @@ class AccountGroupsAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do(
-            "PUT",
-            f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups/{id}",
-            body=body,
-            headers=headers,
-        )
+        self._api.do("PUT", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups/{id}", body=body, headers=headers)
 
 
 class AccountServicePrincipalsAPI:
@@ -2705,10 +2638,7 @@ class AccountServicePrincipalsAPI:
         }
 
         res = self._api.do(
-            "POST",
-            f"/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals",
-            body=body,
-            headers=headers,
+            "POST", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals", body=body, headers=headers
         )
         return ServicePrincipal.from_dict(res)
 
@@ -2726,9 +2656,7 @@ class AccountServicePrincipalsAPI:
         headers = {}
 
         self._api.do(
-            "DELETE",
-            f"/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals/{id}",
-            headers=headers,
+            "DELETE", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals/{id}", headers=headers
         )
 
     def get(self, id: str) -> ServicePrincipal:
@@ -2747,9 +2675,7 @@ class AccountServicePrincipalsAPI:
         }
 
         res = self._api.do(
-            "GET",
-            f"/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals/{id}",
-            headers=headers,
+            "GET", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals/{id}", headers=headers
         )
         return ServicePrincipal.from_dict(res)
 
@@ -2833,13 +2759,7 @@ class AccountServicePrincipalsAPI:
                 return
             query["startIndex"] += len(json["Resources"])
 
-    def patch(
-        self,
-        id: str,
-        *,
-        operations: Optional[List[Patch]] = None,
-        schemas: Optional[List[PatchSchema]] = None,
-    ):
+    def patch(self, id: str, *, operations: Optional[List[Patch]] = None, schemas: Optional[List[PatchSchema]] = None):
         """Update service principal details.
 
         Partially updates the details of a single service principal in the Databricks account.
@@ -3033,10 +2953,7 @@ class AccountUsersAPI:
         }
 
         res = self._api.do(
-            "POST",
-            f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Users",
-            body=body,
-            headers=headers,
+            "POST", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Users", body=body, headers=headers
         )
         return User.from_dict(res)
 
@@ -3054,11 +2971,7 @@ class AccountUsersAPI:
 
         headers = {}
 
-        self._api.do(
-            "DELETE",
-            f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Users/{id}",
-            headers=headers,
-        )
+        self._api.do("DELETE", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Users/{id}", headers=headers)
 
     def get(
         self,
@@ -3122,10 +3035,7 @@ class AccountUsersAPI:
         }
 
         res = self._api.do(
-            "GET",
-            f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Users/{id}",
-            query=query,
-            headers=headers,
+            "GET", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Users/{id}", query=query, headers=headers
         )
         return User.from_dict(res)
 
@@ -3194,10 +3104,7 @@ class AccountUsersAPI:
             query["count"] = 100
         while True:
             json = self._api.do(
-                "GET",
-                f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Users",
-                query=query,
-                headers=headers,
+                "GET", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Users", query=query, headers=headers
             )
             if "Resources" in json:
                 for v in json["Resources"]:
@@ -3210,13 +3117,7 @@ class AccountUsersAPI:
                 return
             query["startIndex"] += len(json["Resources"])
 
-    def patch(
-        self,
-        id: str,
-        *,
-        operations: Optional[List[Patch]] = None,
-        schemas: Optional[List[PatchSchema]] = None,
-    ):
+    def patch(self, id: str, *, operations: Optional[List[Patch]] = None, schemas: Optional[List[PatchSchema]] = None):
         """Update user details.
 
         Partially updates a user resource by applying the supplied operations on specific user attributes.
@@ -3240,10 +3141,7 @@ class AccountUsersAPI:
         }
 
         self._api.do(
-            "PATCH",
-            f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Users/{id}",
-            body=body,
-            headers=headers,
+            "PATCH", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Users/{id}", body=body, headers=headers
         )
 
     def update(
@@ -3321,12 +3219,7 @@ class AccountUsersAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do(
-            "PUT",
-            f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Users/{id}",
-            body=body,
-            headers=headers,
-        )
+        self._api.do("PUT", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Users/{id}", body=body, headers=headers)
 
 
 class CurrentUserAPI:
@@ -3357,8 +3250,7 @@ class GroupsAPI:
 
     It is best practice to assign access to workspaces and access-control policies in Unity Catalog to groups,
     instead of to users individually. All Databricks workspace identities can be assigned as members of
-    groups, and members inherit permissions that are assigned to their group.
-    """
+    groups, and members inherit permissions that are assigned to their group."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -3425,12 +3317,7 @@ class GroupsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            "/api/2.0/preview/scim/v2/Groups",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", "/api/2.0/preview/scim/v2/Groups", body=body, headers=headers)
         return Group.from_dict(res)
 
     def delete(self, id: str):
@@ -3529,12 +3416,7 @@ class GroupsAPI:
         if "count" not in query:
             query["count"] = 100
         while True:
-            json = self._api.do(
-                "GET",
-                "/api/2.0/preview/scim/v2/Groups",
-                query=query,
-                headers=headers,
-            )
+            json = self._api.do("GET", "/api/2.0/preview/scim/v2/Groups", query=query, headers=headers)
             if "Resources" in json:
                 for v in json["Resources"]:
                     i = v["id"]
@@ -3546,13 +3428,7 @@ class GroupsAPI:
                 return
             query["startIndex"] += len(json["Resources"])
 
-    def patch(
-        self,
-        id: str,
-        *,
-        operations: Optional[List[Patch]] = None,
-        schemas: Optional[List[PatchSchema]] = None,
-    ):
+    def patch(self, id: str, *, operations: Optional[List[Patch]] = None, schemas: Optional[List[PatchSchema]] = None):
         """Update group details.
 
         Partially updates the details of a group.
@@ -3575,12 +3451,7 @@ class GroupsAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do(
-            "PATCH",
-            f"/api/2.0/preview/scim/v2/Groups/{id}",
-            body=body,
-            headers=headers,
-        )
+        self._api.do("PATCH", f"/api/2.0/preview/scim/v2/Groups/{id}", body=body, headers=headers)
 
     def update(
         self,
@@ -3642,12 +3513,7 @@ class GroupsAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do(
-            "PUT",
-            f"/api/2.0/preview/scim/v2/Groups/{id}",
-            body=body,
-            headers=headers,
-        )
+        self._api.do("PUT", f"/api/2.0/preview/scim/v2/Groups/{id}", body=body, headers=headers)
 
 
 class PermissionMigrationAPI:
@@ -3744,8 +3610,7 @@ class PermissionsAPI:
     Note that to manage access control on service principals, use **[Account Access Control
     Proxy](:service:accountaccesscontrolproxy)**.
 
-    [Access Control]: https://docs.databricks.com/security/auth-authz/access-control/index.html
-    """
+    [Access Control]: https://docs.databricks.com/security/auth-authz/access-control/index.html"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -3770,11 +3635,7 @@ class PermissionsAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.0/permissions/{request_object_type}/{request_object_id}",
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.0/permissions/{request_object_type}/{request_object_id}", headers=headers)
         return ObjectPermissions.from_dict(res)
 
     def get_permission_levels(self, request_object_type: str, request_object_id: str) -> GetPermissionLevelsResponse:
@@ -3795,9 +3656,7 @@ class PermissionsAPI:
         }
 
         res = self._api.do(
-            "GET",
-            f"/api/2.0/permissions/{request_object_type}/{request_object_id}/permissionLevels",
-            headers=headers,
+            "GET", f"/api/2.0/permissions/{request_object_type}/{request_object_id}/permissionLevels", headers=headers
         )
         return GetPermissionLevelsResponse.from_dict(res)
 
@@ -3833,10 +3692,7 @@ class PermissionsAPI:
         }
 
         res = self._api.do(
-            "PUT",
-            f"/api/2.0/permissions/{request_object_type}/{request_object_id}",
-            body=body,
-            headers=headers,
+            "PUT", f"/api/2.0/permissions/{request_object_type}/{request_object_id}", body=body, headers=headers
         )
         return ObjectPermissions.from_dict(res)
 
@@ -3871,10 +3727,7 @@ class PermissionsAPI:
         }
 
         res = self._api.do(
-            "PATCH",
-            f"/api/2.0/permissions/{request_object_type}/{request_object_id}",
-            body=body,
-            headers=headers,
+            "PATCH", f"/api/2.0/permissions/{request_object_type}/{request_object_id}", body=body, headers=headers
         )
         return ObjectPermissions.from_dict(res)
 
@@ -3952,12 +3805,7 @@ class ServicePrincipalsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            "/api/2.0/preview/scim/v2/ServicePrincipals",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", "/api/2.0/preview/scim/v2/ServicePrincipals", body=body, headers=headers)
         return ServicePrincipal.from_dict(res)
 
     def delete(self, id: str):
@@ -3973,11 +3821,7 @@ class ServicePrincipalsAPI:
 
         headers = {}
 
-        self._api.do(
-            "DELETE",
-            f"/api/2.0/preview/scim/v2/ServicePrincipals/{id}",
-            headers=headers,
-        )
+        self._api.do("DELETE", f"/api/2.0/preview/scim/v2/ServicePrincipals/{id}", headers=headers)
 
     def get(self, id: str) -> ServicePrincipal:
         """Get service principal details.
@@ -3994,11 +3838,7 @@ class ServicePrincipalsAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.0/preview/scim/v2/ServicePrincipals/{id}",
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.0/preview/scim/v2/ServicePrincipals/{id}", headers=headers)
         return ServicePrincipal.from_dict(res)
 
     def list(
@@ -4064,12 +3904,7 @@ class ServicePrincipalsAPI:
         if "count" not in query:
             query["count"] = 100
         while True:
-            json = self._api.do(
-                "GET",
-                "/api/2.0/preview/scim/v2/ServicePrincipals",
-                query=query,
-                headers=headers,
-            )
+            json = self._api.do("GET", "/api/2.0/preview/scim/v2/ServicePrincipals", query=query, headers=headers)
             if "Resources" in json:
                 for v in json["Resources"]:
                     i = v["id"]
@@ -4081,13 +3916,7 @@ class ServicePrincipalsAPI:
                 return
             query["startIndex"] += len(json["Resources"])
 
-    def patch(
-        self,
-        id: str,
-        *,
-        operations: Optional[List[Patch]] = None,
-        schemas: Optional[List[PatchSchema]] = None,
-    ):
+    def patch(self, id: str, *, operations: Optional[List[Patch]] = None, schemas: Optional[List[PatchSchema]] = None):
         """Update service principal details.
 
         Partially updates the details of a single service principal in the Databricks workspace.
@@ -4110,12 +3939,7 @@ class ServicePrincipalsAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do(
-            "PATCH",
-            f"/api/2.0/preview/scim/v2/ServicePrincipals/{id}",
-            body=body,
-            headers=headers,
-        )
+        self._api.do("PATCH", f"/api/2.0/preview/scim/v2/ServicePrincipals/{id}", body=body, headers=headers)
 
     def update(
         self,
@@ -4180,12 +4004,7 @@ class ServicePrincipalsAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do(
-            "PUT",
-            f"/api/2.0/preview/scim/v2/ServicePrincipals/{id}",
-            body=body,
-            headers=headers,
-        )
+        self._api.do("PUT", f"/api/2.0/preview/scim/v2/ServicePrincipals/{id}", body=body, headers=headers)
 
 
 class UsersAPI:
@@ -4280,12 +4099,7 @@ class UsersAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            "/api/2.0/preview/scim/v2/Users",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", "/api/2.0/preview/scim/v2/Users", body=body, headers=headers)
         return User.from_dict(res)
 
     def delete(self, id: str):
@@ -4365,12 +4179,7 @@ class UsersAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.0/preview/scim/v2/Users/{id}",
-            query=query,
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.0/preview/scim/v2/Users/{id}", query=query, headers=headers)
         return User.from_dict(res)
 
     def get_permission_levels(self) -> GetPasswordPermissionLevelsResponse:
@@ -4385,11 +4194,7 @@ class UsersAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            "/api/2.0/permissions/authorization/passwords/permissionLevels",
-            headers=headers,
-        )
+        res = self._api.do("GET", "/api/2.0/permissions/authorization/passwords/permissionLevels", headers=headers)
         return GetPasswordPermissionLevelsResponse.from_dict(res)
 
     def get_permissions(self) -> PasswordPermissions:
@@ -4404,11 +4209,7 @@ class UsersAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            "/api/2.0/permissions/authorization/passwords",
-            headers=headers,
-        )
+        res = self._api.do("GET", "/api/2.0/permissions/authorization/passwords", headers=headers)
         return PasswordPermissions.from_dict(res)
 
     def list(
@@ -4475,12 +4276,7 @@ class UsersAPI:
         if "count" not in query:
             query["count"] = 100
         while True:
-            json = self._api.do(
-                "GET",
-                "/api/2.0/preview/scim/v2/Users",
-                query=query,
-                headers=headers,
-            )
+            json = self._api.do("GET", "/api/2.0/preview/scim/v2/Users", query=query, headers=headers)
             if "Resources" in json:
                 for v in json["Resources"]:
                     i = v["id"]
@@ -4492,13 +4288,7 @@ class UsersAPI:
                 return
             query["startIndex"] += len(json["Resources"])
 
-    def patch(
-        self,
-        id: str,
-        *,
-        operations: Optional[List[Patch]] = None,
-        schemas: Optional[List[PatchSchema]] = None,
-    ):
+    def patch(self, id: str, *, operations: Optional[List[Patch]] = None, schemas: Optional[List[PatchSchema]] = None):
         """Update user details.
 
         Partially updates a user resource by applying the supplied operations on specific user attributes.
@@ -4521,17 +4311,10 @@ class UsersAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do(
-            "PATCH",
-            f"/api/2.0/preview/scim/v2/Users/{id}",
-            body=body,
-            headers=headers,
-        )
+        self._api.do("PATCH", f"/api/2.0/preview/scim/v2/Users/{id}", body=body, headers=headers)
 
     def set_permissions(
-        self,
-        *,
-        access_control_list: Optional[List[PasswordAccessControlRequest]] = None,
+        self, *, access_control_list: Optional[List[PasswordAccessControlRequest]] = None
     ) -> PasswordPermissions:
         """Set password permissions.
 
@@ -4550,12 +4333,7 @@ class UsersAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "PUT",
-            "/api/2.0/permissions/authorization/passwords",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("PUT", "/api/2.0/permissions/authorization/passwords", body=body, headers=headers)
         return PasswordPermissions.from_dict(res)
 
     def update(
@@ -4633,17 +4411,10 @@ class UsersAPI:
             "Content-Type": "application/json",
         }
 
-        self._api.do(
-            "PUT",
-            f"/api/2.0/preview/scim/v2/Users/{id}",
-            body=body,
-            headers=headers,
-        )
+        self._api.do("PUT", f"/api/2.0/preview/scim/v2/Users/{id}", body=body, headers=headers)
 
     def update_permissions(
-        self,
-        *,
-        access_control_list: Optional[List[PasswordAccessControlRequest]] = None,
+        self, *, access_control_list: Optional[List[PasswordAccessControlRequest]] = None
     ) -> PasswordPermissions:
         """Update password permissions.
 
@@ -4661,12 +4432,7 @@ class UsersAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "PATCH",
-            "/api/2.0/permissions/authorization/passwords",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("PATCH", "/api/2.0/permissions/authorization/passwords", body=body, headers=headers)
         return PasswordPermissions.from_dict(res)
 
 
@@ -4747,11 +4513,7 @@ class WorkspaceAssignmentAPI:
         return parsed if parsed is not None else []
 
     def update(
-        self,
-        workspace_id: int,
-        principal_id: int,
-        *,
-        permissions: Optional[List[WorkspacePermission]] = None,
+        self, workspace_id: int, principal_id: int, *, permissions: Optional[List[WorkspacePermission]] = None
     ) -> PermissionAssignment:
         """Create or update permissions assignment.
 

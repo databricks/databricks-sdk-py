@@ -10,6 +10,7 @@ from ._internal import _from_dict, _repeated_dict
 
 _LOG = logging.getLogger("databricks.sdk")
 
+
 # all definitions in this file are in alphabetical order
 
 
@@ -156,8 +157,7 @@ class CreatePublishedAppIntegration:
     def from_dict(cls, d: Dict[str, any]) -> CreatePublishedAppIntegration:
         """Deserializes the CreatePublishedAppIntegration from a dictionary."""
         return cls(
-            app_id=d.get("app_id", None),
-            token_access_policy=_from_dict(d, "token_access_policy", TokenAccessPolicy),
+            app_id=d.get("app_id", None), token_access_policy=_from_dict(d, "token_access_policy", TokenAccessPolicy)
         )
 
 
@@ -255,7 +255,6 @@ class CreateServicePrincipalSecretResponse:
 
 @dataclass
 class DeleteCustomAppIntegrationOutput:
-
     def as_dict(self) -> dict:
         """Serializes the DeleteCustomAppIntegrationOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -274,7 +273,6 @@ class DeleteCustomAppIntegrationOutput:
 
 @dataclass
 class DeletePublishedAppIntegrationOutput:
-
     def as_dict(self) -> dict:
         """Serializes the DeletePublishedAppIntegrationOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -293,7 +291,6 @@ class DeletePublishedAppIntegrationOutput:
 
 @dataclass
 class DeleteResponse:
-
     def as_dict(self) -> dict:
         """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -650,10 +647,7 @@ class GetPublishedAppsOutput:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> GetPublishedAppsOutput:
         """Deserializes the GetPublishedAppsOutput from a dictionary."""
-        return cls(
-            apps=_repeated_dict(d, "apps", PublishedAppOutput),
-            next_page_token=d.get("next_page_token", None),
-        )
+        return cls(apps=_repeated_dict(d, "apps", PublishedAppOutput), next_page_token=d.get("next_page_token", None))
 
 
 @dataclass
@@ -684,8 +678,7 @@ class ListFederationPoliciesResponse:
     def from_dict(cls, d: Dict[str, any]) -> ListFederationPoliciesResponse:
         """Deserializes the ListFederationPoliciesResponse from a dictionary."""
         return cls(
-            next_page_token=d.get("next_page_token", None),
-            policies=_repeated_dict(d, "policies", FederationPolicy),
+            next_page_token=d.get("next_page_token", None), policies=_repeated_dict(d, "policies", FederationPolicy)
         )
 
 
@@ -718,10 +711,7 @@ class ListServicePrincipalSecretsResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListServicePrincipalSecretsResponse:
         """Deserializes the ListServicePrincipalSecretsResponse from a dictionary."""
-        return cls(
-            next_page_token=d.get("next_page_token", None),
-            secrets=_repeated_dict(d, "secrets", SecretInfo),
-        )
+        return cls(next_page_token=d.get("next_page_token", None), secrets=_repeated_dict(d, "secrets", SecretInfo))
 
 
 @dataclass
@@ -1026,7 +1016,6 @@ class UpdateCustomAppIntegration:
 
 @dataclass
 class UpdateCustomAppIntegrationOutput:
-
     def as_dict(self) -> dict:
         """Serializes the UpdateCustomAppIntegrationOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1079,7 +1068,6 @@ class UpdatePublishedAppIntegration:
 
 @dataclass
 class UpdatePublishedAppIntegrationOutput:
-
     def as_dict(self) -> dict:
         """Serializes the UpdatePublishedAppIntegrationOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1141,12 +1129,7 @@ class AccountFederationPolicyAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(
-        self,
-        *,
-        policy: Optional[FederationPolicy] = None,
-        policy_id: Optional[str] = None,
-    ) -> FederationPolicy:
+    def create(self, *, policy: Optional[FederationPolicy] = None, policy_id: Optional[str] = None) -> FederationPolicy:
         """Create account federation policy.
 
         :param policy: :class:`FederationPolicy` (optional)
@@ -1188,9 +1171,7 @@ class AccountFederationPolicyAPI:
         }
 
         self._api.do(
-            "DELETE",
-            f"/api/2.0/accounts/{self._api.account_id}/federationPolicies/{policy_id}",
-            headers=headers,
+            "DELETE", f"/api/2.0/accounts/{self._api.account_id}/federationPolicies/{policy_id}", headers=headers
         )
 
     def get(self, policy_id: str) -> FederationPolicy:
@@ -1207,18 +1188,11 @@ class AccountFederationPolicyAPI:
         }
 
         res = self._api.do(
-            "GET",
-            f"/api/2.0/accounts/{self._api.account_id}/federationPolicies/{policy_id}",
-            headers=headers,
+            "GET", f"/api/2.0/accounts/{self._api.account_id}/federationPolicies/{policy_id}", headers=headers
         )
         return FederationPolicy.from_dict(res)
 
-    def list(
-        self,
-        *,
-        page_size: Optional[int] = None,
-        page_token: Optional[str] = None,
-    ) -> Iterator[FederationPolicy]:
+    def list(self, *, page_size: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[FederationPolicy]:
         """List account federation policies.
 
         :param page_size: int (optional)
@@ -1238,10 +1212,7 @@ class AccountFederationPolicyAPI:
 
         while True:
             json = self._api.do(
-                "GET",
-                f"/api/2.0/accounts/{self._api.account_id}/federationPolicies",
-                query=query,
-                headers=headers,
+                "GET", f"/api/2.0/accounts/{self._api.account_id}/federationPolicies", query=query, headers=headers
             )
             if "policies" in json:
                 for v in json["policies"]:
@@ -1251,11 +1222,7 @@ class AccountFederationPolicyAPI:
             query["page_token"] = json["next_page_token"]
 
     def update(
-        self,
-        policy_id: str,
-        *,
-        policy: Optional[FederationPolicy] = None,
-        update_mask: Optional[str] = None,
+        self, policy_id: str, *, policy: Optional[FederationPolicy] = None, update_mask: Optional[str] = None
     ) -> FederationPolicy:
         """Update account federation policy.
 
@@ -1292,8 +1259,7 @@ class AccountFederationPolicyAPI:
 
 class CustomAppIntegrationAPI:
     """These APIs enable administrators to manage custom OAuth app integrations, which is required for
-    adding/using Custom OAuth App Integration like Tableau Cloud for Databricks in AWS cloud.
-    """
+    adding/using Custom OAuth App Integration like Tableau Cloud for Databricks in AWS cloud."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -1502,10 +1468,7 @@ class OAuthPublishedAppsAPI:
         self._api = api_client
 
     def list(
-        self,
-        *,
-        page_size: Optional[int] = None,
-        page_token: Optional[str] = None,
+        self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[PublishedAppOutput]:
         """Get all the published OAuth apps.
 
@@ -1530,10 +1493,7 @@ class OAuthPublishedAppsAPI:
 
         while True:
             json = self._api.do(
-                "GET",
-                f"/api/2.0/accounts/{self._api.account_id}/oauth2/published-apps",
-                query=query,
-                headers=headers,
+                "GET", f"/api/2.0/accounts/{self._api.account_id}/oauth2/published-apps", query=query, headers=headers
             )
             if "apps" in json:
                 for v in json["apps"]:
@@ -1545,17 +1505,13 @@ class OAuthPublishedAppsAPI:
 
 class PublishedAppIntegrationAPI:
     """These APIs enable administrators to manage published OAuth app integrations, which is required for
-    adding/using Published OAuth App Integration like Tableau Desktop for Databricks in AWS cloud.
-    """
+    adding/using Published OAuth App Integration like Tableau Desktop for Databricks in AWS cloud."""
 
     def __init__(self, api_client):
         self._api = api_client
 
     def create(
-        self,
-        *,
-        app_id: Optional[str] = None,
-        token_access_policy: Optional[TokenAccessPolicy] = None,
+        self, *, app_id: Optional[str] = None, token_access_policy: Optional[TokenAccessPolicy] = None
     ) -> CreatePublishedAppIntegrationOutput:
         """Create Published OAuth App Integration.
 
@@ -1631,10 +1587,7 @@ class PublishedAppIntegrationAPI:
         return GetPublishedAppIntegrationOutput.from_dict(res)
 
     def list(
-        self,
-        *,
-        page_size: Optional[int] = None,
-        page_token: Optional[str] = None,
+        self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[GetPublishedAppIntegrationOutput]:
         """Get published oauth app integrations.
 
@@ -1669,12 +1622,7 @@ class PublishedAppIntegrationAPI:
                 return
             query["page_token"] = json["next_page_token"]
 
-    def update(
-        self,
-        integration_id: str,
-        *,
-        token_access_policy: Optional[TokenAccessPolicy] = None,
-    ):
+    def update(self, integration_id: str, *, token_access_policy: Optional[TokenAccessPolicy] = None):
         """Updates Published OAuth App Integration.
 
         Updates an existing published OAuth App Integration. You can retrieve the published OAuth app
@@ -1742,18 +1690,13 @@ class ServicePrincipalFederationPolicyAPI:
 
     You may also need to configure the workload runtime to generate tokens for your workloads.
 
-    You do not need to configure an OAuth application in Databricks to use token federation.
-    """
+    You do not need to configure an OAuth application in Databricks to use token federation."""
 
     def __init__(self, api_client):
         self._api = api_client
 
     def create(
-        self,
-        service_principal_id: int,
-        *,
-        policy: Optional[FederationPolicy] = None,
-        policy_id: Optional[str] = None,
+        self, service_principal_id: int, *, policy: Optional[FederationPolicy] = None, policy_id: Optional[str] = None
     ) -> FederationPolicy:
         """Create service principal federation policy.
 
@@ -1828,11 +1771,7 @@ class ServicePrincipalFederationPolicyAPI:
         return FederationPolicy.from_dict(res)
 
     def list(
-        self,
-        service_principal_id: int,
-        *,
-        page_size: Optional[int] = None,
-        page_token: Optional[str] = None,
+        self, service_principal_id: int, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[FederationPolicy]:
         """List service principal federation policies.
 

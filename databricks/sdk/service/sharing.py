@@ -11,6 +11,7 @@ from ._internal import _enum, _from_dict, _repeated_dict, _repeated_enum
 
 _LOG = logging.getLogger("databricks.sdk")
 
+
 from databricks.sdk.service import catalog
 
 # all definitions in this file are in alphabetical order
@@ -207,16 +208,11 @@ class CreateShare:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateShare:
         """Deserializes the CreateShare from a dictionary."""
-        return cls(
-            comment=d.get("comment", None),
-            name=d.get("name", None),
-            storage_root=d.get("storage_root", None),
-        )
+        return cls(comment=d.get("comment", None), name=d.get("name", None), storage_root=d.get("storage_root", None))
 
 
 @dataclass
 class DeleteResponse:
-
     def as_dict(self) -> dict:
         """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -235,7 +231,6 @@ class DeleteResponse:
 
 @dataclass
 class GetActivationUrlInfoResponse:
-
     def as_dict(self) -> dict:
         """Serializes the GetActivationUrlInfoResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -343,10 +338,7 @@ class ListProviderSharesResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListProviderSharesResponse:
         """Deserializes the ListProviderSharesResponse from a dictionary."""
-        return cls(
-            next_page_token=d.get("next_page_token", None),
-            shares=_repeated_dict(d, "shares", ProviderShare),
-        )
+        return cls(next_page_token=d.get("next_page_token", None), shares=_repeated_dict(d, "shares", ProviderShare))
 
 
 @dataclass
@@ -380,8 +372,7 @@ class ListProvidersResponse:
     def from_dict(cls, d: Dict[str, any]) -> ListProvidersResponse:
         """Deserializes the ListProvidersResponse from a dictionary."""
         return cls(
-            next_page_token=d.get("next_page_token", None),
-            providers=_repeated_dict(d, "providers", ProviderInfo),
+            next_page_token=d.get("next_page_token", None), providers=_repeated_dict(d, "providers", ProviderInfo)
         )
 
 
@@ -416,8 +407,7 @@ class ListRecipientsResponse:
     def from_dict(cls, d: Dict[str, any]) -> ListRecipientsResponse:
         """Deserializes the ListRecipientsResponse from a dictionary."""
         return cls(
-            next_page_token=d.get("next_page_token", None),
-            recipients=_repeated_dict(d, "recipients", RecipientInfo),
+            next_page_token=d.get("next_page_token", None), recipients=_repeated_dict(d, "recipients", RecipientInfo)
         )
 
 
@@ -451,10 +441,7 @@ class ListSharesResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ListSharesResponse:
         """Deserializes the ListSharesResponse from a dictionary."""
-        return cls(
-            next_page_token=d.get("next_page_token", None),
-            shares=_repeated_dict(d, "shares", ShareInfo),
-        )
+        return cls(next_page_token=d.get("next_page_token", None), shares=_repeated_dict(d, "shares", ShareInfo))
 
 
 @dataclass
@@ -644,10 +631,7 @@ class PrivilegeAssignment:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> PrivilegeAssignment:
         """Deserializes the PrivilegeAssignment from a dictionary."""
-        return cls(
-            principal=d.get("principal", None),
-            privileges=_repeated_enum(d, "privileges", Privilege),
-        )
+        return cls(principal=d.get("principal", None), privileges=_repeated_enum(d, "privileges", Privilege))
 
 
 @dataclass
@@ -1195,8 +1179,7 @@ class RotateRecipientToken:
     def from_dict(cls, d: Dict[str, any]) -> RotateRecipientToken:
         """Deserializes the RotateRecipientToken from a dictionary."""
         return cls(
-            existing_token_expire_in_seconds=d.get("existing_token_expire_in_seconds", None),
-            name=d.get("name", None),
+            existing_token_expire_in_seconds=d.get("existing_token_expire_in_seconds", None), name=d.get("name", None)
         )
 
 
@@ -1490,9 +1473,7 @@ class SharedDataObject:
             content=d.get("content", None),
             data_object_type=_enum(d, "data_object_type", SharedDataObjectDataObjectType),
             history_data_sharing_status=_enum(
-                d,
-                "history_data_sharing_status",
-                SharedDataObjectHistoryDataSharingStatus,
+                d, "history_data_sharing_status", SharedDataObjectHistoryDataSharingStatus
             ),
             name=d.get("name", None),
             partitions=_repeated_dict(d, "partitions", Partition),
@@ -1577,7 +1558,6 @@ class SharedDataObjectUpdateAction(Enum):
 
 @dataclass
 class UpdatePermissionsResponse:
-
     def as_dict(self) -> dict:
         """Serializes the UpdatePermissionsResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1901,12 +1881,7 @@ class ProvidersAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            "/api/2.1/unity-catalog/providers",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", "/api/2.1/unity-catalog/providers", body=body, headers=headers)
         return ProviderInfo.from_dict(res)
 
     def delete(self, name: str):
@@ -1925,11 +1900,7 @@ class ProvidersAPI:
             "Accept": "application/json",
         }
 
-        self._api.do(
-            "DELETE",
-            f"/api/2.1/unity-catalog/providers/{name}",
-            headers=headers,
-        )
+        self._api.do("DELETE", f"/api/2.1/unity-catalog/providers/{name}", headers=headers)
 
     def get(self, name: str) -> ProviderInfo:
         """Get a provider.
@@ -1994,12 +1965,7 @@ class ProvidersAPI:
         if "max_results" not in query:
             query["max_results"] = 0
         while True:
-            json = self._api.do(
-                "GET",
-                "/api/2.1/unity-catalog/providers",
-                query=query,
-                headers=headers,
-            )
+            json = self._api.do("GET", "/api/2.1/unity-catalog/providers", query=query, headers=headers)
             if "providers" in json:
                 for v in json["providers"]:
                     yield ProviderInfo.from_dict(v)
@@ -2008,11 +1974,7 @@ class ProvidersAPI:
             query["page_token"] = json["next_page_token"]
 
     def list_shares(
-        self,
-        name: str,
-        *,
-        max_results: Optional[int] = None,
-        page_token: Optional[str] = None,
+        self, name: str, *, max_results: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[ProviderShare]:
         """List shares by Provider.
 
@@ -2048,12 +2010,7 @@ class ProvidersAPI:
         if "max_results" not in query:
             query["max_results"] = 0
         while True:
-            json = self._api.do(
-                "GET",
-                f"/api/2.1/unity-catalog/providers/{name}/shares",
-                query=query,
-                headers=headers,
-            )
+            json = self._api.do("GET", f"/api/2.1/unity-catalog/providers/{name}/shares", query=query, headers=headers)
             if "shares" in json:
                 for v in json["shares"]:
                     yield ProviderShare.from_dict(v)
@@ -2104,12 +2061,7 @@ class ProvidersAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "PATCH",
-            f"/api/2.1/unity-catalog/providers/{name}",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("PATCH", f"/api/2.1/unity-catalog/providers/{name}", body=body, headers=headers)
         return ProviderInfo.from_dict(res)
 
 
@@ -2120,8 +2072,7 @@ class RecipientActivationAPI:
     credential file to establish a secure connection with the provider to receive the shared data.
 
     Note that you can download the credential file only once. Recipients should treat the downloaded
-    credential as a secret and must not share it outside of their organization.
-    """
+    credential as a secret and must not share it outside of their organization."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -2142,9 +2093,7 @@ class RecipientActivationAPI:
         }
 
         self._api.do(
-            "GET",
-            f"/api/2.1/unity-catalog/public/data_sharing_activation_info/{activation_url}",
-            headers=headers,
+            "GET", f"/api/2.1/unity-catalog/public/data_sharing_activation_info/{activation_url}", headers=headers
         )
 
     def retrieve_token(self, activation_url: str) -> RetrieveTokenResponse:
@@ -2163,9 +2112,7 @@ class RecipientActivationAPI:
         }
 
         res = self._api.do(
-            "GET",
-            f"/api/2.1/unity-catalog/public/data_sharing_activation/{activation_url}",
-            headers=headers,
+            "GET", f"/api/2.1/unity-catalog/public/data_sharing_activation/{activation_url}", headers=headers
         )
         return RetrieveTokenResponse.from_dict(res)
 
@@ -2183,8 +2130,7 @@ class RecipientsAPI:
     - For recipients without access to a Databricks workspace that is enabled for Unity Catalog, when you
     create a recipient object, Databricks generates an activation link you can send to the recipient. The
     recipient follows the activation link to download the credential file, and then uses the credential file
-    to establish a secure connection to receive the shared data. This sharing mode is called **open sharing**.
-    """
+    to establish a secure connection to receive the shared data. This sharing mode is called **open sharing**."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -2257,12 +2203,7 @@ class RecipientsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            "/api/2.1/unity-catalog/recipients",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", "/api/2.1/unity-catalog/recipients", body=body, headers=headers)
         return RecipientInfo.from_dict(res)
 
     def delete(self, name: str):
@@ -2280,11 +2221,7 @@ class RecipientsAPI:
             "Accept": "application/json",
         }
 
-        self._api.do(
-            "DELETE",
-            f"/api/2.1/unity-catalog/recipients/{name}",
-            headers=headers,
-        )
+        self._api.do("DELETE", f"/api/2.1/unity-catalog/recipients/{name}", headers=headers)
 
     def get(self, name: str) -> RecipientInfo:
         """Get a share recipient.
@@ -2351,12 +2288,7 @@ class RecipientsAPI:
         if "max_results" not in query:
             query["max_results"] = 0
         while True:
-            json = self._api.do(
-                "GET",
-                "/api/2.1/unity-catalog/recipients",
-                query=query,
-                headers=headers,
-            )
+            json = self._api.do("GET", "/api/2.1/unity-catalog/recipients", query=query, headers=headers)
             if "recipients" in json:
                 for v in json["recipients"]:
                     yield RecipientInfo.from_dict(v)
@@ -2387,20 +2319,11 @@ class RecipientsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            f"/api/2.1/unity-catalog/recipients/{name}/rotate-token",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", f"/api/2.1/unity-catalog/recipients/{name}/rotate-token", body=body, headers=headers)
         return RecipientInfo.from_dict(res)
 
     def share_permissions(
-        self,
-        name: str,
-        *,
-        max_results: Optional[int] = None,
-        page_token: Optional[str] = None,
+        self, name: str, *, max_results: Optional[int] = None, page_token: Optional[str] = None
     ) -> GetRecipientSharePermissionsResponse:
         """Get recipient share permissions.
 
@@ -2433,10 +2356,7 @@ class RecipientsAPI:
         }
 
         res = self._api.do(
-            "GET",
-            f"/api/2.1/unity-catalog/recipients/{name}/share-permissions",
-            query=query,
-            headers=headers,
+            "GET", f"/api/2.1/unity-catalog/recipients/{name}/share-permissions", query=query, headers=headers
         )
         return GetRecipientSharePermissionsResponse.from_dict(res)
 
@@ -2494,12 +2414,7 @@ class RecipientsAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "PATCH",
-            f"/api/2.1/unity-catalog/recipients/{name}",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("PATCH", f"/api/2.1/unity-catalog/recipients/{name}", body=body, headers=headers)
         return RecipientInfo.from_dict(res)
 
 
@@ -2512,13 +2427,7 @@ class SharesAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(
-        self,
-        name: str,
-        *,
-        comment: Optional[str] = None,
-        storage_root: Optional[str] = None,
-    ) -> ShareInfo:
+    def create(self, name: str, *, comment: Optional[str] = None, storage_root: Optional[str] = None) -> ShareInfo:
         """Create a share.
 
         Creates a new share for data objects. Data objects can be added after creation with **update**. The
@@ -2586,20 +2495,10 @@ class SharesAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.1/unity-catalog/shares/{name}",
-            query=query,
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.1/unity-catalog/shares/{name}", query=query, headers=headers)
         return ShareInfo.from_dict(res)
 
-    def list(
-        self,
-        *,
-        max_results: Optional[int] = None,
-        page_token: Optional[str] = None,
-    ) -> Iterator[ShareInfo]:
+    def list(self, *, max_results: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[ShareInfo]:
         """List shares.
 
         Gets an array of data object shares from the metastore. The caller must be a metastore admin or the
@@ -2631,12 +2530,7 @@ class SharesAPI:
         if "max_results" not in query:
             query["max_results"] = 0
         while True:
-            json = self._api.do(
-                "GET",
-                "/api/2.1/unity-catalog/shares",
-                query=query,
-                headers=headers,
-            )
+            json = self._api.do("GET", "/api/2.1/unity-catalog/shares", query=query, headers=headers)
             if "shares" in json:
                 for v in json["shares"]:
                     yield ShareInfo.from_dict(v)
@@ -2645,11 +2539,7 @@ class SharesAPI:
             query["page_token"] = json["next_page_token"]
 
     def share_permissions(
-        self,
-        name: str,
-        *,
-        max_results: Optional[int] = None,
-        page_token: Optional[str] = None,
+        self, name: str, *, max_results: Optional[int] = None, page_token: Optional[str] = None
     ) -> catalog.PermissionsList:
         """Get permissions.
 
@@ -2681,12 +2571,7 @@ class SharesAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.1/unity-catalog/shares/{name}/permissions",
-            query=query,
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.1/unity-catalog/shares/{name}/permissions", query=query, headers=headers)
         return catalog.PermissionsList.from_dict(res)
 
     def update(
@@ -2748,12 +2633,7 @@ class SharesAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "PATCH",
-            f"/api/2.1/unity-catalog/shares/{name}",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("PATCH", f"/api/2.1/unity-catalog/shares/{name}", body=body, headers=headers)
         return ShareInfo.from_dict(res)
 
     def update_permissions(
@@ -2803,9 +2683,5 @@ class SharesAPI:
         }
 
         self._api.do(
-            "PATCH",
-            f"/api/2.1/unity-catalog/shares/{name}/permissions",
-            query=query,
-            body=body,
-            headers=headers,
+            "PATCH", f"/api/2.1/unity-catalog/shares/{name}/permissions", query=query, body=body, headers=headers
         )

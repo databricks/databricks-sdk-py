@@ -15,6 +15,7 @@ from ._internal import Wait, _enum, _from_dict, _repeated_dict
 
 _LOG = logging.getLogger("databricks.sdk")
 
+
 # all definitions in this file are in alphabetical order
 
 
@@ -72,10 +73,7 @@ class CreateEndpoint:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> CreateEndpoint:
         """Deserializes the CreateEndpoint from a dictionary."""
-        return cls(
-            endpoint_type=_enum(d, "endpoint_type", EndpointType),
-            name=d.get("name", None),
-        )
+        return cls(endpoint_type=_enum(d, "endpoint_type", EndpointType), name=d.get("name", None))
 
 
 @dataclass
@@ -206,8 +204,7 @@ class DeleteDataResult:
     def from_dict(cls, d: Dict[str, any]) -> DeleteDataResult:
         """Deserializes the DeleteDataResult from a dictionary."""
         return cls(
-            failed_primary_keys=d.get("failed_primary_keys", None),
-            success_row_count=d.get("success_row_count", None),
+            failed_primary_keys=d.get("failed_primary_keys", None), success_row_count=d.get("success_row_count", None)
         )
 
 
@@ -250,10 +247,7 @@ class DeleteDataVectorIndexRequest:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> DeleteDataVectorIndexRequest:
         """Deserializes the DeleteDataVectorIndexRequest from a dictionary."""
-        return cls(
-            index_name=d.get("index_name", None),
-            primary_keys=d.get("primary_keys", None),
-        )
+        return cls(index_name=d.get("index_name", None), primary_keys=d.get("primary_keys", None))
 
 
 @dataclass
@@ -287,15 +281,11 @@ class DeleteDataVectorIndexResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> DeleteDataVectorIndexResponse:
         """Deserializes the DeleteDataVectorIndexResponse from a dictionary."""
-        return cls(
-            result=_from_dict(d, "result", DeleteDataResult),
-            status=_enum(d, "status", DeleteDataStatus),
-        )
+        return cls(result=_from_dict(d, "result", DeleteDataResult), status=_enum(d, "status", DeleteDataStatus))
 
 
 @dataclass
 class DeleteEndpointResponse:
-
     def as_dict(self) -> dict:
         """Serializes the DeleteEndpointResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -314,7 +304,6 @@ class DeleteEndpointResponse:
 
 @dataclass
 class DeleteIndexResponse:
-
     def as_dict(self) -> dict:
         """Serializes the DeleteIndexResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -556,10 +545,7 @@ class EmbeddingSourceColumn:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> EmbeddingSourceColumn:
         """Deserializes the EmbeddingSourceColumn from a dictionary."""
-        return cls(
-            embedding_model_endpoint_name=d.get("embedding_model_endpoint_name", None),
-            name=d.get("name", None),
-        )
+        return cls(embedding_model_endpoint_name=d.get("embedding_model_endpoint_name", None), name=d.get("name", None))
 
 
 @dataclass
@@ -591,10 +577,7 @@ class EmbeddingVectorColumn:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> EmbeddingVectorColumn:
         """Deserializes the EmbeddingVectorColumn from a dictionary."""
-        return cls(
-            embedding_dimension=d.get("embedding_dimension", None),
-            name=d.get("name", None),
-        )
+        return cls(embedding_dimension=d.get("embedding_dimension", None), name=d.get("name", None))
 
 
 @dataclass
@@ -719,10 +702,7 @@ class EndpointStatus:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> EndpointStatus:
         """Deserializes the EndpointStatus from a dictionary."""
-        return cls(
-            message=d.get("message", None),
-            state=_enum(d, "state", EndpointStatusState),
-        )
+        return cls(message=d.get("message", None), state=_enum(d, "state", EndpointStatusState))
 
 
 class EndpointStatusState(Enum):
@@ -770,8 +750,7 @@ class ListEndpointResponse:
     def from_dict(cls, d: Dict[str, any]) -> ListEndpointResponse:
         """Deserializes the ListEndpointResponse from a dictionary."""
         return cls(
-            endpoints=_repeated_dict(d, "endpoints", EndpointInfo),
-            next_page_token=d.get("next_page_token", None),
+            endpoints=_repeated_dict(d, "endpoints", EndpointInfo), next_page_token=d.get("next_page_token", None)
         )
 
 
@@ -1154,10 +1133,7 @@ class ResultData:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ResultData:
         """Deserializes the ResultData from a dictionary."""
-        return cls(
-            data_array=d.get("data_array", None),
-            row_count=d.get("row_count", None),
-        )
+        return cls(data_array=d.get("data_array", None), row_count=d.get("row_count", None))
 
 
 @dataclass
@@ -1191,10 +1167,7 @@ class ResultManifest:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ResultManifest:
         """Deserializes the ResultManifest from a dictionary."""
-        return cls(
-            column_count=d.get("column_count", None),
-            columns=_repeated_dict(d, "columns", ColumnInfo),
-        )
+        return cls(column_count=d.get("column_count", None), columns=_repeated_dict(d, "columns", ColumnInfo))
 
 
 @dataclass
@@ -1273,10 +1246,7 @@ class ScanVectorIndexResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> ScanVectorIndexResponse:
         """Deserializes the ScanVectorIndexResponse from a dictionary."""
-        return cls(
-            data=_repeated_dict(d, "data", Struct),
-            last_primary_key=d.get("last_primary_key", None),
-        )
+        return cls(data=_repeated_dict(d, "data", Struct), last_primary_key=d.get("last_primary_key", None))
 
 
 @dataclass
@@ -1306,7 +1276,6 @@ class Struct:
 
 @dataclass
 class SyncIndexResponse:
-
     def as_dict(self) -> dict:
         """Serializes the SyncIndexResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1355,8 +1324,7 @@ class UpsertDataResult:
     def from_dict(cls, d: Dict[str, any]) -> UpsertDataResult:
         """Deserializes the UpsertDataResult from a dictionary."""
         return cls(
-            failed_primary_keys=d.get("failed_primary_keys", None),
-            success_row_count=d.get("success_row_count", None),
+            failed_primary_keys=d.get("failed_primary_keys", None), success_row_count=d.get("success_row_count", None)
         )
 
 
@@ -1399,10 +1367,7 @@ class UpsertDataVectorIndexRequest:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> UpsertDataVectorIndexRequest:
         """Deserializes the UpsertDataVectorIndexRequest from a dictionary."""
-        return cls(
-            index_name=d.get("index_name", None),
-            inputs_json=d.get("inputs_json", None),
-        )
+        return cls(index_name=d.get("index_name", None), inputs_json=d.get("inputs_json", None))
 
 
 @dataclass
@@ -1436,10 +1401,7 @@ class UpsertDataVectorIndexResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, any]) -> UpsertDataVectorIndexResponse:
         """Deserializes the UpsertDataVectorIndexResponse from a dictionary."""
-        return cls(
-            result=_from_dict(d, "result", UpsertDataResult),
-            status=_enum(d, "status", UpsertDataStatus),
-        )
+        return cls(result=_from_dict(d, "result", UpsertDataResult), status=_enum(d, "status", UpsertDataStatus))
 
 
 @dataclass
@@ -1715,12 +1677,7 @@ class VectorSearchEndpointsAPI:
             "Content-Type": "application/json",
         }
 
-        op_response = self._api.do(
-            "POST",
-            "/api/2.0/vector-search/endpoints",
-            body=body,
-            headers=headers,
-        )
+        op_response = self._api.do("POST", "/api/2.0/vector-search/endpoints", body=body, headers=headers)
         return Wait(
             self.wait_get_endpoint_vector_search_endpoint_online,
             response=EndpointInfo.from_dict(op_response),
@@ -1728,10 +1685,7 @@ class VectorSearchEndpointsAPI:
         )
 
     def create_endpoint_and_wait(
-        self,
-        name: str,
-        endpoint_type: EndpointType,
-        timeout=timedelta(minutes=20),
+        self, name: str, endpoint_type: EndpointType, timeout=timedelta(minutes=20)
     ) -> EndpointInfo:
         return self.create_endpoint(endpoint_type=endpoint_type, name=name).result(timeout=timeout)
 
@@ -1746,11 +1700,7 @@ class VectorSearchEndpointsAPI:
 
         headers = {}
 
-        self._api.do(
-            "DELETE",
-            f"/api/2.0/vector-search/endpoints/{endpoint_name}",
-            headers=headers,
-        )
+        self._api.do("DELETE", f"/api/2.0/vector-search/endpoints/{endpoint_name}", headers=headers)
 
     def get_endpoint(self, endpoint_name: str) -> EndpointInfo:
         """Get an endpoint.
@@ -1765,11 +1715,7 @@ class VectorSearchEndpointsAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.0/vector-search/endpoints/{endpoint_name}",
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.0/vector-search/endpoints/{endpoint_name}", headers=headers)
         return EndpointInfo.from_dict(res)
 
     def list_endpoints(self, *, page_token: Optional[str] = None) -> Iterator[EndpointInfo]:
@@ -1789,12 +1735,7 @@ class VectorSearchEndpointsAPI:
         }
 
         while True:
-            json = self._api.do(
-                "GET",
-                "/api/2.0/vector-search/endpoints",
-                query=query,
-                headers=headers,
-            )
+            json = self._api.do("GET", "/api/2.0/vector-search/endpoints", query=query, headers=headers)
             if "endpoints" in json:
                 for v in json["endpoints"]:
                     yield EndpointInfo.from_dict(v)
@@ -1810,8 +1751,7 @@ class VectorSearchIndexesAPI:
     There are 2 types of Vector Search indexes: * **Delta Sync Index**: An index that automatically syncs with
     a source Delta Table, automatically and incrementally updating the index as the underlying data in the
     Delta Table changes. * **Direct Vector Access Index**: An index that supports direct read and write of
-    vectors and metadata through our REST and SDK APIs. With this model, the user manages index updates.
-    """
+    vectors and metadata through our REST and SDK APIs. With this model, the user manages index updates."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -1868,12 +1808,7 @@ class VectorSearchIndexesAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            "/api/2.0/vector-search/indexes",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", "/api/2.0/vector-search/indexes", body=body, headers=headers)
         return CreateVectorIndexResponse.from_dict(res)
 
     def delete_data_vector_index(self, index_name: str, primary_keys: List[str]) -> DeleteDataVectorIndexResponse:
@@ -1897,10 +1832,7 @@ class VectorSearchIndexesAPI:
         }
 
         res = self._api.do(
-            "POST",
-            f"/api/2.0/vector-search/indexes/{index_name}/delete-data",
-            body=body,
-            headers=headers,
+            "POST", f"/api/2.0/vector-search/indexes/{index_name}/delete-data", body=body, headers=headers
         )
         return DeleteDataVectorIndexResponse.from_dict(res)
 
@@ -1917,11 +1849,7 @@ class VectorSearchIndexesAPI:
 
         headers = {}
 
-        self._api.do(
-            "DELETE",
-            f"/api/2.0/vector-search/indexes/{index_name}",
-            headers=headers,
-        )
+        self._api.do("DELETE", f"/api/2.0/vector-search/indexes/{index_name}", headers=headers)
 
     def get_index(self, index_name: str) -> VectorIndex:
         """Get an index.
@@ -1938,11 +1866,7 @@ class VectorSearchIndexesAPI:
             "Accept": "application/json",
         }
 
-        res = self._api.do(
-            "GET",
-            f"/api/2.0/vector-search/indexes/{index_name}",
-            headers=headers,
-        )
+        res = self._api.do("GET", f"/api/2.0/vector-search/indexes/{index_name}", headers=headers)
         return VectorIndex.from_dict(res)
 
     def list_indexes(self, endpoint_name: str, *, page_token: Optional[str] = None) -> Iterator[MiniVectorIndex]:
@@ -1968,12 +1892,7 @@ class VectorSearchIndexesAPI:
         }
 
         while True:
-            json = self._api.do(
-                "GET",
-                "/api/2.0/vector-search/indexes",
-                query=query,
-                headers=headers,
-            )
+            json = self._api.do("GET", "/api/2.0/vector-search/indexes", query=query, headers=headers)
             if "vector_indexes" in json:
                 for v in json["vector_indexes"]:
                     yield MiniVectorIndex.from_dict(v)
@@ -2041,20 +1960,11 @@ class VectorSearchIndexesAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            f"/api/2.0/vector-search/indexes/{index_name}/query",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", f"/api/2.0/vector-search/indexes/{index_name}/query", body=body, headers=headers)
         return QueryVectorIndexResponse.from_dict(res)
 
     def query_next_page(
-        self,
-        index_name: str,
-        *,
-        endpoint_name: Optional[str] = None,
-        page_token: Optional[str] = None,
+        self, index_name: str, *, endpoint_name: Optional[str] = None, page_token: Optional[str] = None
     ) -> QueryVectorIndexResponse:
         """Query next page.
 
@@ -2081,19 +1991,12 @@ class VectorSearchIndexesAPI:
         }
 
         res = self._api.do(
-            "POST",
-            f"/api/2.0/vector-search/indexes/{index_name}/query-next-page",
-            body=body,
-            headers=headers,
+            "POST", f"/api/2.0/vector-search/indexes/{index_name}/query-next-page", body=body, headers=headers
         )
         return QueryVectorIndexResponse.from_dict(res)
 
     def scan_index(
-        self,
-        index_name: str,
-        *,
-        last_primary_key: Optional[str] = None,
-        num_results: Optional[int] = None,
+        self, index_name: str, *, last_primary_key: Optional[str] = None, num_results: Optional[int] = None
     ) -> ScanVectorIndexResponse:
         """Scan an index.
 
@@ -2119,12 +2022,7 @@ class VectorSearchIndexesAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do(
-            "POST",
-            f"/api/2.0/vector-search/indexes/{index_name}/scan",
-            body=body,
-            headers=headers,
-        )
+        res = self._api.do("POST", f"/api/2.0/vector-search/indexes/{index_name}/scan", body=body, headers=headers)
         return ScanVectorIndexResponse.from_dict(res)
 
     def sync_index(self, index_name: str):
@@ -2140,11 +2038,7 @@ class VectorSearchIndexesAPI:
 
         headers = {}
 
-        self._api.do(
-            "POST",
-            f"/api/2.0/vector-search/indexes/{index_name}/sync",
-            headers=headers,
-        )
+        self._api.do("POST", f"/api/2.0/vector-search/indexes/{index_name}/sync", headers=headers)
 
     def upsert_data_vector_index(self, index_name: str, inputs_json: str) -> UpsertDataVectorIndexResponse:
         """Upsert data into an index.
@@ -2167,9 +2061,6 @@ class VectorSearchIndexesAPI:
         }
 
         res = self._api.do(
-            "POST",
-            f"/api/2.0/vector-search/indexes/{index_name}/upsert-data",
-            body=body,
-            headers=headers,
+            "POST", f"/api/2.0/vector-search/indexes/{index_name}/upsert-data", body=body, headers=headers
         )
         return UpsertDataVectorIndexResponse.from_dict(res)
