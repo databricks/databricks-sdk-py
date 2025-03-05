@@ -70,7 +70,7 @@ def test_streaming_response_read_closes(config):
                 "message": "errorMessage",
                 "details": [
                     {
-                        "type": DatabricksError._error_info_type,
+                        "type": "type.googleapis.com/google.rpc.ErrorInfo",
                         "reason": "error reason",
                         "domain": "error domain",
                         "metadata": {"etag": "error etag"},
@@ -87,7 +87,7 @@ def test_streaming_response_read_closes(config):
                 "errorMessage",
                 details=[
                     {
-                        "type": DatabricksError._error_info_type,
+                        "type": "type.googleapis.com/google.rpc.ErrorInfo",
                         "reason": "error reason",
                         "domain": "error domain",
                         "metadata": {"etag": "error etag"},
@@ -553,7 +553,7 @@ def test_rewind_seekable_stream(test_case: RetryTestCase, failure: Tuple[Callabl
     client._session = session
 
     def do():
-        client.do("POST", f"test.com/foo", data=data)
+        client.do("POST", "test.com/foo", data=data)
 
     if test_case._expected_failure:
         expected_attempts_made = 1

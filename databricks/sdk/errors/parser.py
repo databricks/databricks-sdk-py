@@ -91,3 +91,5 @@ class _Parser:
         # is successful, but the response is not what we expect. We need to handle this case separately.
         if _is_private_link_redirect(response):
             return _get_private_link_validation_error(response.url)
+
+        return None
