@@ -30,7 +30,7 @@ class DbUtilsWidget:
         if type(value) == list or type(value) == tuple:
             return ",".join(value)
 
-        raise ValueError("The returned value has invalid type (" + type(value) + ").")
+        raise ValueError(f"The returned value has invalid type ({type(value)}).")
 
 
 class IPyWidgetUtil(WidgetUtils):

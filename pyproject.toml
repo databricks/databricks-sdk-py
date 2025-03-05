@@ -76,3 +76,10 @@ include = ["databricks", "databricks.*"]
 [tool.black]
 line-length = 120 
 target-version = ['py37', 'py38', 'py39', 'py310', 'py311','py312','py313']
+
+[tool.pyright]
+include = ["."]
+exclude = ["**/node_modules", "**/__pycache__"]
+reportMissingImports = true
+reportMissingTypeStubs = false
+pythonVersion = "3.7"

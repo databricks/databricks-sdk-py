@@ -43,17 +43,17 @@ class _BaseClient:
 
     def __init__(
         self,
-        debug_truncate_bytes: int = None,
-        retry_timeout_seconds: int = None,
-        user_agent_base: str = None,
-        header_factory: Callable[[], dict] = None,
-        max_connection_pools: int = None,
-        max_connections_per_pool: int = None,
-        pool_block: bool = True,
-        http_timeout_seconds: float = None,
-        extra_error_customizers: List[_ErrorCustomizer] = None,
-        debug_headers: bool = False,
-        clock: Clock = None,
+        debug_truncate_bytes: Optional[int] = None,
+        retry_timeout_seconds: Optional[int] = None,
+        user_agent_base: Optional[str] = None,
+        header_factory: Optional[Callable[[], dict]] = None,
+        max_connection_pools: Optional[int] = None,
+        max_connections_per_pool: Optional[int] = None,
+        pool_block: Optional[bool] = True,
+        http_timeout_seconds: Optional[float] = None,
+        extra_error_customizers: Optional[List[_ErrorCustomizer]] = None,
+        debug_headers: Optional[bool] = False,
+        clock: Optional[Clock] = None,
         streaming_buffer_size: int = 1024 * 1024,
     ):  # 1MB
         """
@@ -148,14 +148,14 @@ class _BaseClient:
         self,
         method: str,
         url: str,
-        query: dict = None,
-        headers: dict = None,
-        body: dict = None,
+        query: Optional[dict] = None,
+        headers: Optional[dict] = None,
+        body: Optional[dict] = None,
         raw: bool = False,
         files=None,
         data=None,
-        auth: Callable[[requests.PreparedRequest], requests.PreparedRequest] = None,
-        response_headers: List[str] = None,
+        auth: Optional[Callable[[requests.PreparedRequest], requests.PreparedRequest]] = None,
+        response_headers: Optional[List[str]] = None,
     ) -> Union[dict, list, BinaryIO]:
         if headers is None:
             headers = {}
@@ -272,9 +272,9 @@ class _BaseClient:
         self,
         method: str,
         url: str,
-        query: dict = None,
-        headers: dict = None,
-        body: dict = None,
+        query: Optional[dict] = None,
+        headers: Optional[dict] = None,
+        body: Optional[dict] = None,
         raw: bool = False,
         files=None,
         data=None,
@@ -325,10 +325,10 @@ class _StreamingResponse(BinaryIO):
     _closed: bool = False
 
     def fileno(self) -> int:
-        pass
+        return 0
 
-    def flush(self) -> int:
-        pass
+    def flush(self) -> int:  # type: ignore
+        return 0
 
     def __init__(self, response: _RawResponse, chunk_size: Union[int, None] = None):
         self._response = response
@@ -403,10 +403,10 @@ class _StreamingResponse(BinaryIO):
     def writable(self) -> bool:
         return False
 
-    def write(self, s: Union[bytes, bytearray]) -> int:
+    def write(self, s: Union[bytes, bytearray]) -> int:  # type: ignore
         raise NotImplementedError()
 
-    def writelines(self, lines: Iterable[bytes]) -> None:
+    def writelines(self, lines: Iterable[bytes]) -> None:  # type: ignore
         raise NotImplementedError()
 
     def __next__(self) -> bytes:

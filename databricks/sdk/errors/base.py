@@ -1,7 +1,7 @@
 import re
 import warnings
 from dataclasses import dataclass
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 import requests
 
@@ -12,10 +12,10 @@ from . import details as errdetails
 class ErrorDetail:
     def __init__(
         self,
-        type: str = None,
-        reason: str = None,
-        domain: str = None,
-        metadata: dict = None,
+        type: Optional[str] = None,
+        reason: Optional[str] = None,
+        domain: Optional[str] = None,
+        metadata: Optional[dict] = None,
         **kwargs,
     ):
         self.type = type
@@ -24,7 +24,7 @@ class ErrorDetail:
         self.metadata = metadata
 
     @classmethod
-    def from_dict(cls, d: Dict[str, any]) -> "ErrorDetail":
+    def from_dict(cls, d: Dict[str, Any]) -> "ErrorDetail":
         # Key "@type" is not a valid keyword argument name in Python. Rename
         # it to "type" to avoid conflicts.
         safe_args = {}
@@ -39,15 +39,15 @@ class DatabricksError(IOError):
 
     def __init__(
         self,
-        message: str = None,
+        message: Optional[str] = None,
         *,
-        error_code: str = None,
-        detail: str = None,
-        status: str = None,
-        scimType: str = None,
-        error: str = None,
-        retry_after_secs: int = None,
-        details: List[Dict[str, any]] = None,
+        error_code: Optional[str] = None,
+        detail: Optional[str] = None,
+        status: Optional[str] = None,
+        scimType: Optional[str] = None,
+        error: Optional[str] = None,
+        retry_after_secs: Optional[int] = None,
+        details: Optional[List[Dict[str, Any]]] = None,
         **kwargs,
     ):
         """
@@ -102,7 +102,7 @@ class DatabricksError(IOError):
         super().__init__(message if message else error)
         self.error_code = error_code
         self.retry_after_secs = retry_after_secs
-        self._error_details = errdetails.parse_error_details(details)
+        self._error_details = errdetails.parse_error_details(details or [])
         self.kwargs = kwargs
 
         # Deprecated.

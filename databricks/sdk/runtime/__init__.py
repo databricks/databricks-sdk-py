@@ -132,7 +132,7 @@ except ImportError:
 
     try:
         # We expect this to fail locally since dbconnect does not support sparkcontext. This is just for typing
-        sc = spark.sparkContext
+        sc = spark.sparkContext  # type: ignore
     except Exception as e:
         logging.debug(f"Failed to initialize global 'sc', continuing. Cause: {e}")
 

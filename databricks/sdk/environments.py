@@ -113,7 +113,7 @@ ALL_ENVS = [
 ]
 
 
-def get_environment_for_hostname(hostname: str) -> DatabricksEnvironment:
+def get_environment_for_hostname(hostname: Optional[str]) -> DatabricksEnvironment:
     if not hostname:
         return DEFAULT_ENVIRONMENT
     for env in ALL_ENVS:
