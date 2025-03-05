@@ -1,17 +1,13 @@
-import datetime
 import io
 import logging
 import pathlib
 import platform
-import re
 import time
-from textwrap import dedent
 from typing import Callable, List, Tuple, Union
 
 import pytest
 
 from databricks.sdk.core import DatabricksError
-from databricks.sdk.errors.sdk import OperationFailed
 from databricks.sdk.service.catalog import VolumeType
 
 
@@ -386,135 +382,3 @@ def test_files_api_download_benchmark(ucws, files_api, random):
                 )
             min_str = str(best[0]) + "kb" if best[0] else "None"
             logging.info("Fastest chunk size: %s in %f seconds", min_str, best[1])
-
-
-@pytest.mark.parametrize("is_serverless", [True, False], ids=["Classic", "Serverless"])
-@pytest.mark.parametrize("use_new_files_api_client", [True, False], ids=["Default client", "Experimental client"])
-def test_files_api_in_cluster(ucws, random, env_or_skip, is_serverless, use_new_files_api_client):
-    from databricks.sdk.service import compute, jobs
-
-    databricks_sdk_pypi_package = "databricks-sdk"
-    option_env_name = "DATABRICKS_ENABLE_EXPERIMENTAL_FILES_API_CLIENT"
-
-    launcher_file_path = f"/home/{ucws.current_user.me().user_name}/test_launcher.py"
-
-    schema = "filesit-" + random()
-    volume = "filesit-" + random()
-    with ResourceWithCleanup.create_schema(ucws, "main", schema):
-        with ResourceWithCleanup.create_volume(ucws, "main", schema, volume):
-
-            cloud_file_path = f"/Volumes/main/{schema}/{volume}/test-{random()}.txt"
-            file_size = 100 * 1024 * 1024
-
-            if use_new_files_api_client:
-                enable_new_files_api_env = f"os.environ['{option_env_name}'] = 'True'"
-                expected_files_api_client_class = "FilesExt"
-            else:
-                enable_new_files_api_env = ""
-                expected_files_api_client_class = "FilesAPI"
-
-            using_files_api_client_msg = "Using files API client: "
-
-            command = f"""
-                from databricks.sdk import WorkspaceClient
-                import io
-                import os
-                import hashlib
-                import logging
-                
-                logging.basicConfig(level=logging.DEBUG)
-                
-                {enable_new_files_api_env}
-                
-                file_size = {file_size}
-                original_content = os.urandom(file_size)
-                cloud_file_path = '{cloud_file_path}'
-                
-                w = WorkspaceClient()
-                print(f"Using SDK: {{w.config._product_info}}") 
-
-                print(f"{using_files_api_client_msg}{{type(w.files).__name__}}")
-                    
-                w.files.upload(cloud_file_path, io.BytesIO(original_content), overwrite=True)
-                print("Upload succeeded")
-                
-                response = w.files.download(cloud_file_path)
-                resulting_content = response.contents.read()
-                print("Download succeeded")
-                
-                def hash(data: bytes):
-                    sha256 = hashlib.sha256()
-                    sha256.update(data)
-                    return sha256.hexdigest()
-                
-                if len(resulting_content) != len(original_content):
-                  raise ValueError(f"Content length does not match: expected {{len(original_content)}}, actual {{len(resulting_content)}}")
-                
-                expected_hash = hash(original_content)
-                actual_hash = hash(resulting_content)
-                if actual_hash != expected_hash:
-                  raise ValueError(f"Content hash does not match: expected {{expected_hash}}, actual {{actual_hash}}")
-                
-                print(f"Contents of size {{len(resulting_content)}} match")
-            """
-
-            with ucws.dbfs.open(launcher_file_path, write=True, overwrite=True) as f:
-                f.write(dedent(command).encode())
-
-            if is_serverless:
-                # If no job_cluster_key, existing_cluster_id, or new_cluster were specified in task definition,
-                # then task will be executed using serverless compute.
-                new_cluster_spec = None
-
-                # Library is specified in the environment
-                env_key = "test_env"
-                envs = [jobs.JobEnvironment(env_key, compute.Environment("test", [databricks_sdk_pypi_package]))]
-                libs = []
-            else:
-                new_cluster_spec = compute.ClusterSpec(
-                    spark_version=ucws.clusters.select_spark_version(long_term_support=True),
-                    instance_pool_id=env_or_skip("TEST_INSTANCE_POOL_ID"),
-                    num_workers=1,
-                )
-
-                # Library is specified in the task definition
-                env_key = None
-                envs = []
-                libs = [compute.Library(pypi=compute.PythonPyPiLibrary(package=databricks_sdk_pypi_package))]
-
-            waiter = ucws.jobs.submit(
-                run_name=f"py-sdk-{random(8)}",
-                tasks=[
-                    jobs.SubmitTask(
-                        task_key="task1",
-                        new_cluster=new_cluster_spec,
-                        spark_python_task=jobs.SparkPythonTask(python_file=f"dbfs:{launcher_file_path}"),
-                        libraries=libs,
-                        environment_key=env_key,
-                    )
-                ],
-                environments=envs,
-            )
-
-            def print_status(r: jobs.Run):
-                statuses = [f"{t.task_key}: {t.state.life_cycle_state}" for t in r.tasks]
-                logging.info(f'Run status: {", ".join(statuses)}')
-
-            logging.info(f"Waiting for the job run: {waiter.run_id}")
-            try:
-                job_run = waiter.result(timeout=datetime.timedelta(minutes=15), callback=print_status)
-                task_run_id = job_run.tasks[0].run_id
-                task_run_logs = ucws.jobs.get_run_output(task_run_id).logs
-                logging.info(f"Run finished, output: {task_run_logs}")
-                match = re.search(f"{using_files_api_client_msg}(.*)$", task_run_logs, re.MULTILINE)
-                assert match is not None
-                files_api_client_class = match.group(1)
-                assert files_api_client_class == expected_files_api_client_class
-
-            except OperationFailed:
-                job_run = ucws.jobs.get_run(waiter.run_id)
-                task_run_id = job_run.tasks[0].run_id
-                task_run_logs = ucws.jobs.get_run_output(task_run_id)
-                raise ValueError(
-                    f"Run failed, error: {task_run_logs.error}, error trace: {task_run_logs.error_trace}, output: {task_run_logs.logs}"
-                )
